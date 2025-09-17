@@ -1,0 +1,43 @@
+.upload-table {
+    overflow-x: auto;
+}
+
+.sign-in-button {
+    background:none;
+    border:none;
+    padding:6px 0 6px 0;
+    color:#ffffff;
+    cursor:pointer;
+}
+
+.username {
+    font-weight: bold;
+    color: #1d8feb;
+}
+
+.search-panel {
+    padding: 15px 20px 0px 20px;
+    border-bottom: 1px solid transparent;
+    background-color: #f3f2f1;
+}
+
+@media print {
+    .upload-table {
+        overflow: visible !important;
+    }
+
+    .govuk-table {
+        width: 100%;
+        font-size: 8px;
+        table-layout: auto;
+        word-break: break-all;
+    }
+
+    #print-button,
+    .govuk-link,
+    .govuk-header,
+    .govuk-footer,
+    .govuk-back-link {
+        display: none;
+    }
+}

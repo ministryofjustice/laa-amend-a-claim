@@ -1,0 +1,126 @@
+# Amend a Claim
+
+<!-- [![Standards Icon]][Standards Link] -->
+
+![govuk-frontend 5.11.0](https://img.shields.io/badge/govuk--frontend%20version-5.11.0-005EA5?logo=gov.uk&style=flat)
+
+A Spring Boot web application for securely uploading bulk claim files to the Legal Aid Agency. The application provides a user-friendly interface for file uploads, provider selection, virus scanning, and result tracking.
+
+## Table of Contents
+
+- [Features](#features)
+- [Architecture](#architecture)
+- [Technologies](#technologies)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Build](#build)
+  - [Run](#run)
+- [Usage](#usage)
+- [Testing](#testing)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Features
+
+- **Secure File Upload:** Upload files with size and format validation.
+- **Virus Scanning:** All files are scanned for viruses before processing.
+- **Provider Selection:** Users must select a provider before uploading.
+- **Error Handling:** User-friendly error messages for all validation and system errors.
+- **Upload Summary:** View results and errors for each upload.
+- **Search:** Search for previous uploads by file reference.
+- **Role-based Access:** Handles forbidden access and error scenarios gracefully.
+
+## Architecture
+
+- **Controller Layer:** Handles HTTP requests and responses.
+- **Service Layer:** Business logic for file upload, virus scanning, and search.
+- **Helper Classes:** Provider population and utility logic.
+- **Thymeleaf Views:** User interface templates for upload, results, and errors.
+
+## Technologies
+
+- Java 21+
+- Spring Boot
+- Gradle
+- Thymeleaf
+- JUnit 5, MockMvc (testing)
+- Mockito (mocking dependencies)
+- Docker
+
+## Getting Started
+
+### Prerequisites
+
+The project uses the `laa-ccms-spring-boot-gradle-plugin`. Please follow the steps in the [laa-ccms-spring-boot-common](https://github.com/ministryofjustice/laa-ccms-spring-boot-common?tab=readme-ov-file#provide-your-repository-credentials) repository to set up your GitHub Packages credentials locally before building the application.
+
+- Java 21 or higher
+- Gradle (or use the Gradle wrapper)
+- (Optional) Docker for running dependencies
+- Install Docker desktop (https://www.docker.com/products/docker-desktop)
+
+### Build
+
+Clone the repository and build the project:
+
+```sh
+git clone git@github.com:ministryofjustice/laa-amend-a-claim.git
+cd laa-amend-a-claim
+./gradlew clean build
+```
+
+### Run
+
+1. Run the [laa-oidc-mock-server](https://github.com/ministryofjustice/laa-oidc-mock-server), following the instructions in the README.
+2. Request the `application-local.yaml` file from one of the other developers. This contains values not suitable for version control. Store this in [resources](/laa-submit-a-bulk-claim-ui/src/main/resources/).
+3. Run `./gradlew bootRun --args='--spring.profiles.active=local'` to start the application.
+4. Navigate to [http://localhost:8082](http://localhost:8082). This should redirect you to a login page at [http://localhost:9000/login](http://localhost:9000/login).
+5. Enter these dummy credentials and submit:
+   1. Username: `provider.user@provider.com`
+   2. Password: `password`
+
+## Usage
+
+1. **Open the application** in your browser at [http://localhost:8082](http://localhost:8082).
+2. **Select a provider** from the dropdown.
+3. **Choose a file** to upload (must be under the configured size limit and virus-free).
+4. **Submit the form** to upload.
+5. **View the results** or any error messages.
+6. **Search** for previous uploads using the file reference and provider.
+
+## Testing
+
+Run all unit and integration tests:
+
+```sh
+./gradlew test
+```
+
+Test coverage includes:
+
+- Controller logic (file upload, error handling, search)
+- Service layer (mocked in controller tests)
+- Validation and error scenarios
+
+## Project Structure
+
+- `src/main/java/uk/gov/justice/laa/bulkclaim/controller` — Web controllers
+- `src/main/java/uk/gov/justice/laa/bulkclaim/service` — Business logic and services
+- `src/main/java/uk/gov/justice/laa/bulkclaim/helper` — Helper and utility classes
+- `src/main/resources/templates` — Thymeleaf HTML templates
+- `src/test/java/uk/gov/justice/laa/bulkclaim/controller` — Controller tests
+
+## Contributing
+
+Pull requests are welcome! Please:
+
+- Fork the repository and create a feature branch.
+- Write clear, concise commit messages.
+- Add or update tests for new features or bug fixes.
+- Ensure all tests pass before submitting a PR.
+
+## License
+
+[MIT](LICENSE)
