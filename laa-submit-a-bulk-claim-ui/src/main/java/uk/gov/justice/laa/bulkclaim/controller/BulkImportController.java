@@ -24,7 +24,7 @@ import uk.gov.justice.laa.bulkclaim.validation.BulkImportFileValidator;
 import uk.gov.justice.laa.bulkclaim.validation.BulkImportFileVirusValidator;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateBulkSubmission201Response;
 
-/** Controller for handling the bulk upload requests. */
+/** Controller for handling the bulk upload requests. Foo. */
 @Slf4j
 @RequiredArgsConstructor
 @Controller
