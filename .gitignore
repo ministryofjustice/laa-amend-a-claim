@@ -4,9 +4,6 @@
 # Ignore Gradle build output directory
 build
 
-# Ignore local application config
-application-local.yaml
-
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -26,4 +23,5 @@ out/
 
 claims-api-reference/generated
 
-laa-amend-a-claim/src/main/resources/application-local.yml
+# Ignore local application config
+laa-amend-a-claim-ui/src/main/resources/application-local.yml

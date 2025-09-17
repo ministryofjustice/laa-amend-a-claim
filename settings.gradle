@@ -20,4 +20,4 @@ plugins {
 
 rootProject.name = 'laa-amend-a-claim'
 
-include 'laa-amend-a-claim'
+include 'laa-amend-a-claim-ui'
