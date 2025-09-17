@@ -4,7 +4,7 @@
 
 ![govuk-frontend 5.11.0](https://img.shields.io/badge/govuk--frontend%20version-5.11.0-005EA5?logo=gov.uk&style=flat)
 
-A Spring Boot web application for securely uploading bulk claim files to the Legal Aid Agency. The application provides a user-friendly interface for file uploads, provider selection, virus scanning, and result tracking.
+A Spring Boot web application for securely uploading bulk claim amendments to the Legal Aid Agency. The application provides a user-friendly interface for file uploads, provider selection, virus scanning, and result tracking.
 
 ## Table of Contents
 
@@ -74,7 +74,7 @@ cd laa-amend-a-claim
 ### Run
 
 1. Run the [laa-oidc-mock-server](https://github.com/ministryofjustice/laa-oidc-mock-server), following the instructions in the README.
-2. Request the `application-local.yaml` file from one of the other developers. This contains values not suitable for version control. Store this in [resources](/laa-submit-a-bulk-claim-ui/src/main/resources/).
+2. Request the `application-local.yaml` file from one of the other developers. This contains values not suitable for version control. Store this in [resources](/laa-amend-a-claim-ui/src/main/resources/).
 3. Run `./gradlew bootRun --args='--spring.profiles.active=local'` to start the application.
 4. Navigate to [http://localhost:8082](http://localhost:8082). This should redirect you to a login page at [http://localhost:9000/login](http://localhost:9000/login).
 5. Enter these dummy credentials and submit:
@@ -106,11 +106,11 @@ Test coverage includes:
 
 ## Project Structure
 
-- `src/main/java/uk/gov/justice/laa/bulkclaim/controller` — Web controllers
-- `src/main/java/uk/gov/justice/laa/bulkclaim/service` — Business logic and services
-- `src/main/java/uk/gov/justice/laa/bulkclaim/helper` — Helper and utility classes
+- `src/main/java/uk/gov/justice/laa/amendaclaim/controller` — Web controllers
+- `src/main/java/uk/gov/justice/laa/amendaclaim/service` — Business logic and services
+- `src/main/java/uk/gov/justice/laa/amendaclaim/helper` — Helper and utility classes
 - `src/main/resources/templates` — Thymeleaf HTML templates
-- `src/test/java/uk/gov/justice/laa/bulkclaim/controller` — Controller tests
+- `src/test/java/uk/gov/justice/laa/amendaclaim/controller` — Controller tests
 
 ## Contributing
 

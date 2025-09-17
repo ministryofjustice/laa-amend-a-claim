@@ -2,11 +2,11 @@
 FROM eclipse-temurin:21
 
 # Set up working directory in the container
-RUN mkdir -p /opt/laa-submit-a-bulk-claim-ui/
-WORKDIR /opt/laa-submit-a-bulk-claim-ui/
+RUN mkdir -p /opt/laa-amend-a-claim-ui/
+WORKDIR /opt/laa-amend-a-claim-ui/
 
 # Copy the JAR file into the container
-COPY laa-submit-a-bulk-claim-ui/build/libs/laa-submit-a-bulk-claim-service-1.0.0-SNAPSHOT.jar app.jar
+COPY laa-amend-a-claim-ui/build/libs/laa-amend-a-claim-service-1.0.0-SNAPSHOT.jar app.jar
 
 # Expose the port that the application will run on
 EXPOSE 8080
