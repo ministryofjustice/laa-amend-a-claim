@@ -74,7 +74,7 @@ cd laa-amend-a-claim
 ### Run
 
 1. Run the [laa-oidc-mock-server](https://github.com/ministryofjustice/laa-oidc-mock-server), following the instructions in the README.
-2. Request the `application-local.yaml` file from one of the other developers. This contains values not suitable for version control. Store this in [resources](/laa-amend-a-claim/src/main/resources/).
+2. Request the `application-local.yaml` file from one of the other developers. This contains values not suitable for version control. Store this in [resources](/laa-amend-a-claim-ui/src/main/resources/).
 3. Run `./gradlew bootRun --args='--spring.profiles.active=local'` to start the application.
 4. Navigate to [http://localhost:8082](http://localhost:8082). This should redirect you to a login page at [http://localhost:9000/login](http://localhost:9000/login).
 5. Enter these dummy credentials and submit:

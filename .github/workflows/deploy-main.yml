@@ -31,7 +31,7 @@ jobs:
       contents: read
       id-token: write
     with:
-      jar_subproject: "laa-amend-a-claim"
+      jar_subproject: "laa-amend-a-claim-ui"
       image_version: ${{ format('{0}-{1}', vars.IMAGE_PREFIX, needs.assemble.outputs.published_artifact_version) }}
     secrets:
       gh_token: ${{ secrets.GITHUB_TOKEN }}
