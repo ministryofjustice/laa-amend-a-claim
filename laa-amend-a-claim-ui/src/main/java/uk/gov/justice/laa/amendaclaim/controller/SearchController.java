@@ -50,7 +50,7 @@ public class SearchController {
    *
    * @return the search form page template
    */
-  @GetMapping("/submissions/search")
+  @GetMapping("/")
   public String search(Model model) {
     model.addAttribute("submissionsSearchForm", new SubmissionsSearchForm(null, null, null));
 

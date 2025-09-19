@@ -8,7 +8,7 @@ import org.springframework.cache.annotation.EnableCaching;
 @SpringBootApplication
 @EnableCaching
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class SubmitABulkClaimApplication {
+public class AmendAClaimApplication {
 
   /**
    * The application main method.
@@ -16,6 +16,6 @@ public class SubmitABulkClaimApplication {
    * @param args the application arguments.
    */
   public static void main(String[] args) {
-    SpringApplication.run(SubmitABulkClaimApplication.class, args);
+    SpringApplication.run(AmendAClaimApplication.class, args);
   }
 }
