@@ -1,12 +1,12 @@
 # Specify java runtime base image
 FROM amazoncorretto:21-alpine
 
-# Set up working directory in the container
-RUN mkdir -p /opt/laa-spring-boot-microservice/
-WORKDIR /opt/laa-spring-boot-microservice/
+# Define a volume to safely store temporary files across restarts
+VOLUME /tmp
+WORKDIR /app
 
-# Copy the JAR file into the container
-COPY spring-boot-microservice-service/build/libs/spring-boot-microservice-service-1.0.0.jar app.jar
+# Copy the JAR from the build output to the container
+COPY build/libs/laa-record-link-service.jar /app/application.jar
 
 # Create a group and non-root user
 RUN addgroup -S appgroup && adduser -u 1001 -S appuser -G appgroup
@@ -18,4 +18,4 @@ USER 1001
 EXPOSE 8080
 
 # Run the JAR file
-CMD java -jar app.jar
+CMD java -jar application.jar

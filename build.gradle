@@ -1,3 +1,58 @@
-subprojects {
-    group = 'uk.gov.justice.laa.springboot.microservice'
+plugins {
+    id 'uk.gov.laa.ccms.springboot.laa-ccms-spring-boot-gradle-plugin' version '0.0.32'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+checkstyle {
+    toolVersion = '10.21.2'
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.12'
+
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.10'
+
+    implementation 'org.apache.commons:commons-lang3:3.18.0'
+
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+
+
+
+    compileOnly 'org.projectlombok:lombok'
+
+
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
+    // test dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+    testImplementation('org.testcontainers:junit-jupiter')
+    testImplementation('org.springframework.boot:spring-boot-testcontainers')
+    testImplementation 'org.jmockit:jmockit:1.49'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+test {
+    jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
+    useJUnitPlatform()
+    // finalizedBy jacocoTestReport
 }
