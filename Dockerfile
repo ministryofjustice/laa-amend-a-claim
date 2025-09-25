@@ -6,7 +6,7 @@ VOLUME /tmp
 WORKDIR /app
 
 # Copy the JAR from the build output to the container
-COPY build/libs/laa-record-link-service.jar /app/application.jar
+COPY build/libs/laa-amend-a-claim-1.0.0.jar /app/application.jar
 
 # Create a group and non-root user
 RUN addgroup -S appgroup && adduser -u 1001 -S appuser -G appgroup
