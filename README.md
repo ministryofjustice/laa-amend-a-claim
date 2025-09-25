@@ -1,8 +1,40 @@
-# laa-spring-boot-microservice-template
+# laa-amend-a-claim
 [![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/laa-spring-boot-microservice-template/badge)](https://github-community.service.justice.gov.uk/repository-standards/laa-spring-boot-microservice-template)
 
 ### ⚠️ WORK IN PROGRESS ⚠️
-This template is still under development and features may be added or subject to change.
+
+#### Creating a GitHub Token
+
+1. Ensure you have created a classic GitHub Personal Access Token with the following permissions:
+  1. repo
+  2. write:packages
+  3. read:packages
+2. The token **must be authorised with (MoJ) SSO**.
+3. Add the following parameters to `~/.gradle/gradle.properties`
+
+```
+project.ext.gitPackageUser = <your GitHub username>
+project.ext.gitPackageKey = <your GitHub access token>
+
+```
+
+#### Filling out .env
+
+Using the `.env-template` file as a template, copy to a new .env file
+`cp .env-template .env`
+
+Be sure to fill out all values as they are required for pulling dependencies for the application to run
+
+### Build And Run Application
+Ensure that all environment variables from `.env` set
+
+`export $(grep -v '^#' .env | xargs)`
+
+Note: to run application without Silas integration, please use SPRING_PROFILES_ACTIVE = local 
+
+Silas integration is work in progress
+
+
 
 ## Overview
 
