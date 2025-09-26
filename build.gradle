@@ -16,6 +16,12 @@ repositories {
     mavenCentral()
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.security:spring-security-bom:6.5.5"
+    }
+}
+
 dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -25,6 +31,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.12'
+    // Overrides to address vulnerabilities
+    implementation 'org.springframework:spring-core:6.2.11'
 
     implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.10'
 
@@ -50,6 +58,7 @@ dependencies {
     testImplementation 'org.jmockit:jmockit:1.49'
     testImplementation 'org.springframework.security:spring-security-test'
 }
+
 test {
     jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
     useJUnitPlatform()
