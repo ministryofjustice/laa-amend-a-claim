@@ -6,9 +6,9 @@
 #### Creating a GitHub Token
 
 1. Ensure you have created a classic GitHub Personal Access Token with the following permissions:
-  1. repo
-  2. write:packages
-  3. read:packages
+   1. repo
+   2. write:packages
+   3. read:packages
 2. The token **must be authorised with (MoJ) SSO**.
 3. Add the following parameters to `~/.gradle/gradle.properties`
 
@@ -26,15 +26,11 @@ Using the `.env-template` file as a template, copy to a new .env file
 Be sure to fill out all values as they are required for pulling dependencies for the application to run
 
 ### Build And Run Application
-Ensure that all environment variables from `.env` set
-
-`export $(grep -v '^#' .env | xargs)`
-
-Note: to run application without Silas integration, please use SPRING_PROFILES_ACTIVE = local 
-
-Silas integration is work in progress
-
-
+1. Ensure that all environment variables from `.env` are set using:<br>
+```export $(grep -v '^#' .env | xargs)```
+2. Note: to run the application without Silas integration (Silas integration is a work in progress), use the local Spring profile with:<br>
+`./gradlew bootRun --args='--spring.profiles.active=local'`
+3. Navigate to the landing page at [http://localhost:8080/](http://localhost:8080/)
 
 ## Overview
 
