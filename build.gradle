@@ -34,10 +34,7 @@ dependencies {
     // Overrides to address vulnerabilities
     implementation 'org.springframework:spring-core:6.2.11'
 
-    implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.10'
-
     implementation 'org.apache.commons:commons-lang3:3.18.0'
-
     implementation 'org.mapstruct:mapstruct:1.6.3'
 
 
