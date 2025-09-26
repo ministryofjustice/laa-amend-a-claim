@@ -13,7 +13,7 @@ jobs:
           BRANCH_NAME="${{ github.head_ref }}"
           echo "Checking branch name: $BRANCH_NAME"
           
-          if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|hotfix|spike)\/[a-z]+-[0-9]{3,}-[a-z0-9-]+$ ]]; then
+          if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|hotfix|spike)\/[a-z]+-[0-9]{2,}-[a-z0-9-]+$ ]]; then
             echo "Branch name '$BRANCH_NAME' does not follow the required pattern."
             echo "Expected format: feature|bugfix|hotfix/abc-123-description"
             exit 1
