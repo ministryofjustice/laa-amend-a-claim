@@ -25,7 +25,7 @@ public abstract class ViewTestBase {
   @Autowired
   protected SpringTemplateEngine templateEngine;
 
-  protected WebContext context;
+  protected IServletWebExchange exchange;
 
   protected String view;
 
@@ -39,11 +39,15 @@ public abstract class ViewTestBase {
     MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpServletResponse response = new MockHttpServletResponse();
     JakartaServletWebApplication app = JakartaServletWebApplication.buildApplication(context);
-    IServletWebExchange exchange = app.buildExchange(request, response);
-    this.context = new WebContext(exchange, Locale.UK, Map.of());
+    this.exchange = app.buildExchange(request, response);
   }
 
   protected Document renderDocument() {
+    return renderDocument(Map.of());
+  }
+
+  protected Document renderDocument(Map<String, Object> variables) {
+    WebContext context = new WebContext(exchange, Locale.UK, variables);
     return Jsoup.parse(templateEngine.process(view, context));
   }
 
