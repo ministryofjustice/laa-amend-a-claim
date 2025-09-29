@@ -15,8 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -59,5 +58,13 @@ public class SecurityConfigTest {
     mockMvc.perform(get("/"))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrlPattern("**/login"));
+  }
+
+  @Test
+  @WithMockUser(roles = "USER")
+  void incorrectRoleRedirectsToNotAuthorised() throws Exception {
+    mockMvc.perform(get("/admin"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/not-authorised"));
   }
 }
