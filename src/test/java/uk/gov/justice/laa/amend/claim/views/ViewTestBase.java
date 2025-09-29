@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
@@ -26,6 +27,12 @@ public abstract class ViewTestBase {
 
   protected WebContext context;
 
+  protected String view;
+
+  protected ViewTestBase(String view) {
+    this.view = view;
+  }
+
   @BeforeEach
   void setup() {
     MockServletContext context = new MockServletContext();
@@ -34,6 +41,10 @@ public abstract class ViewTestBase {
     JakartaServletWebApplication app = JakartaServletWebApplication.buildApplication(context);
     IServletWebExchange exchange = app.buildExchange(request, response);
     this.context = new WebContext(exchange, Locale.UK, Map.of());
+  }
+
+  protected Document renderDocument() {
+    return Jsoup.parse(templateEngine.process(view, context));
   }
 
   protected void assertPageHasHeading(Document doc, String expectedText) {
