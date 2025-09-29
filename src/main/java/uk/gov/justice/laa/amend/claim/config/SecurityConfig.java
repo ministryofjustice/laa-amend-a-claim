@@ -26,57 +26,55 @@ import java.util.stream.Collectors;
 @EnableWebSecurity
 public class SecurityConfig {
 
-  private final String APP_ROLES = "LAA_APP_ROLES";
-
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(auth -> auth
-            .requestMatchers("/actuator/**").permitAll()
-            .requestMatchers("/admin").hasRole("ADMIN")
-            .anyRequest().authenticated())
-        .oauth2Login(oauth2 -> oauth2
-            .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
-            .successHandler((request, response, authentication) -> {
-              response.sendRedirect("/");
-            }))
-        .exceptionHandling(ex -> ex
-            .accessDeniedHandler((request, response, accessDeniedException) -> {
-              response.sendRedirect("/not-authorised");
-            }))
-        .csrf(AbstractHttpConfigurer::disable)
-        .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny));
-    return http.build();
-  }
-
-  @Bean
-  public OidcUserService oidcUserService() {
-    return new OidcUserService() {
-      @Override
-      public OidcUser loadUser(OidcUserRequest userRequest) {
-        OidcUser oidcUser = super.loadUser(userRequest);
-
-        Map<String, Object> attributes = oidcUser.getAttributes();
-        List<String> roles = parseRawRoles(attributes.get(APP_ROLES));
-
-        Set<GrantedAuthority> authorities = new SimpleAuthorityMapper()
-            .mapAuthorities(
-                roles.stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList())
-            );
-
-        return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
-      }
-    };
-  }
-
-  private List<String> parseRawRoles(Object rawRoles) {
-    if (rawRoles instanceof List<?> list) {
-      return list.stream().map(Object::toString).toList();
-    } else if (rawRoles instanceof String str) {
-      return List.of(str.split(","));
-    } else {
-      return List.of();
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers("/admin").hasRole("ADMIN")
+                .anyRequest().authenticated())
+            .oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
+                .successHandler((request, response, authentication) -> {
+                    response.sendRedirect("/");
+                }))
+            .exceptionHandling(ex -> ex
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.sendRedirect("/not-authorised");
+                }))
+            .csrf(AbstractHttpConfigurer::disable)
+            .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny));
+        return http.build();
     }
-  }
+
+    @Bean
+    public OidcUserService oidcUserService() {
+        return new OidcUserService() {
+            @Override
+            public OidcUser loadUser(OidcUserRequest userRequest) {
+                OidcUser oidcUser = super.loadUser(userRequest);
+
+                Map<String, Object> attributes = oidcUser.getAttributes();
+                List<String> roles = parseRawRoles(attributes.get("LAA_APP_ROLES"));
+
+                Set<GrantedAuthority> authorities = new SimpleAuthorityMapper()
+                    .mapAuthorities(
+                        roles.stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList())
+                    );
+
+                return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
+            }
+        };
+    }
+
+    private List<String> parseRawRoles(Object rawRoles) {
+        if (rawRoles instanceof List<?> list) {
+            return list.stream().map(Object::toString).toList();
+        } else if (rawRoles instanceof String str) {
+            return List.of(str.split(","));
+        } else {
+            return List.of();
+        }
+    }
 }

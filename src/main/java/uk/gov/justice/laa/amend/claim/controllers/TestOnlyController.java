@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile("test")
 public class TestOnlyController {
 
-  @GetMapping("/admin")
-  @PreAuthorize("hasRole('ADMIN')")
-  public String admin() {
-    return "admin";
-  }
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String admin() {
+        return "admin";
+    }
 }
