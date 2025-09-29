@@ -1,78 +1,63 @@
 package uk.gov.justice.laa.amend.claim.config;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-import java.util.Map;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+@SpringBootTest
+@AutoConfigureMockMvc
 @Import({SecurityConfig.class})
-@ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 public class SecurityConfigTest {
 
-  @Mock
-  HttpServletRequest request;
+  @Autowired
+  private MockMvc mockMvc;
 
-  @Mock
-  HttpServletResponse response;
+  @TestConfiguration
+  static class MockSecurityBeans {
 
-  @Mock
-  Authentication authentication;
+    @Bean
+    ClientRegistrationRepository clientRegistrationRepository() {
+      return Mockito.mock(ClientRegistrationRepository.class);
+    }
 
-  @Mock
-  OidcUser oidcUser;
-
-  @InjectMocks
-  SecurityConfig securityConfig;
-
-  @Test
-  void shouldRedirectInternalUserToLandingPage() throws Exception {
-    Map<String, Object> attributes = Map.of("LAA_APP_ROLES", List.of("REQUESTS TO TRANSFER CCMS CASES_VIEWER_INTERN"));
-
-    when(authentication.getPrincipal()).thenReturn(oidcUser);
-    when(oidcUser.getAttributes()).thenReturn(attributes);
-
-    AuthenticationSuccessHandler handler = securityConfig.customSuccessHandler();
-    handler.onAuthenticationSuccess(request, response, authentication);
-
-    verify(response).sendRedirect("/");
+    @Bean
+    OAuth2AuthorizedClientRepository authorizedClientRepository() {
+      return Mockito.mock(OAuth2AuthorizedClientRepository.class);
+    }
   }
 
   @Test
-  void shouldRedirectExternalUserToUnauthorisedPage() throws Exception {
-    Map<String, Object> attributes = Map.of("LAA_APP_ROLES", List.of("REQUESTS TO TRANSFER CCMS CASES_VIEWER_EXTERN"));
-
-    when(authentication.getPrincipal()).thenReturn(oidcUser);
-    when(oidcUser.getAttributes()).thenReturn(attributes);
-
-    AuthenticationSuccessHandler handler = securityConfig.customSuccessHandler();
-    handler.onAuthenticationSuccess(request, response, authentication);
-
-    verify(response).sendRedirect("/not-authorised");
+  void actuatorEndpointsArePermittedWithoutAuth() throws Exception {
+    mockMvc.perform(get("/actuator/health"))
+        .andExpect(status().isOk());
   }
 
   @Test
-  void shouldRedirectUserWithNoRolesToUnauthorisedPage() throws Exception {
-    Map<String, Object> attributes = Map.of("LAA_APP_ROLES", List.of("UNAUTHORIZED"));
+  @WithMockUser(roles = "USER")
+  void authenticatedEndpointsAccessibleWithValidRole() throws Exception {
+    mockMvc.perform(get("/"))
+        .andExpect(status().isOk());
+  }
 
-    when(authentication.getPrincipal()).thenReturn(oidcUser);
-    when(oidcUser.getAttributes()).thenReturn(attributes);
-
-    AuthenticationSuccessHandler handler = securityConfig.customSuccessHandler();
-    handler.onAuthenticationSuccess(request, response, authentication);
-
-    verify(response).sendRedirect("/not-authorised");
+  @Test
+  void unauthenticatedUsersRedirectToLogin() throws Exception {
+    mockMvc.perform(get("/"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrlPattern("**/login"));
   }
 }

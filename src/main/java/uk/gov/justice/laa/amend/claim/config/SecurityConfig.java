@@ -1,7 +1,5 @@
 package uk.gov.justice.laa.amend.claim.config;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -9,7 +7,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
@@ -18,7 +15,6 @@ import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -35,12 +31,13 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(auth -> auth
-            .requestMatchers("/actuator/**", "/health/**").permitAll()
+            .requestMatchers("/actuator/**").permitAll()
             .anyRequest().authenticated())
         .oauth2Login(oauth2 -> oauth2
             .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
-            .successHandler(customSuccessHandler())
-            .failureUrl("/login?error=true"))
+            .successHandler((request, response, authentication) -> {
+              response.sendRedirect("/");
+            }))
         .exceptionHandling(ex -> ex
             .accessDeniedHandler((request, response, accessDeniedException) -> {
               response.sendRedirect("/not-authorised");
@@ -69,28 +66,6 @@ public class SecurityConfig {
 
         return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
       }
-    };
-  }
-
-  AuthenticationSuccessHandler customSuccessHandler() {
-    return (HttpServletRequest request, HttpServletResponse response, Authentication authentication) -> {
-      String redirectUrl;
-      Object principal = authentication.getPrincipal();
-
-      if (principal instanceof OidcUser oidcUser) {
-        Object rawRoles = oidcUser.getAttributes().get(APP_ROLES);
-        List<String> roles = parseRawRoles(rawRoles != null ? rawRoles : "");
-
-        if (roles.stream().anyMatch(r -> r.contains("_INTERN"))) {
-          redirectUrl = "/";
-        } else {
-          redirectUrl = "/not-authorised";
-        }
-      } else {
-        redirectUrl = "/not-authorised";
-      }
-
-      response.sendRedirect(redirectUrl);
     };
   }
 
