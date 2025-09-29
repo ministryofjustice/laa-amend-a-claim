@@ -30,7 +30,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/actuator/**").permitAll()
-                .requestMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .oauth2Login(oauth2 -> oauth2
                 .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))

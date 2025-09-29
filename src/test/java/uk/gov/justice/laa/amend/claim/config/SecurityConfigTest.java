@@ -8,12 +8,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
@@ -44,6 +48,16 @@ public class SecurityConfigTest {
         OAuth2AuthorizedClientRepository authorizedClientRepository() {
             return mock(OAuth2AuthorizedClientRepository.class);
         }
+
+        @RestController
+        @EnableMethodSecurity
+        static class TestController {
+            @GetMapping("/denied")
+            @PreAuthorize("hasRole('NON_EXISTENT_ROLE')")
+            public String denied() {
+                return "should never reach here";
+            }
+        }
     }
 
     @Test
@@ -69,7 +83,7 @@ public class SecurityConfigTest {
     @Test
     @WithMockUser(roles = "USER")
     void incorrectRoleRedirectsToNotAuthorised() throws Exception {
-        mockMvc.perform(get("/admin"))
+        mockMvc.perform(get("/denied"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/not-authorised"));
     }
