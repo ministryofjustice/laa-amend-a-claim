@@ -1,19 +1,25 @@
 package uk.gov.justice.laa.amend.claim.config;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -23,48 +29,76 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class SecurityConfigTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-  @TestConfiguration
-  static class MockSecurityBeans {
+    @TestConfiguration
+    static class MockSecurityBeans {
 
-    @Bean
-    ClientRegistrationRepository clientRegistrationRepository() {
-      return Mockito.mock(ClientRegistrationRepository.class);
+        @Bean
+        ClientRegistrationRepository clientRegistrationRepository() {
+            return mock(ClientRegistrationRepository.class);
+        }
+
+        @Bean
+        OAuth2AuthorizedClientRepository authorizedClientRepository() {
+            return mock(OAuth2AuthorizedClientRepository.class);
+        }
     }
 
-    @Bean
-    OAuth2AuthorizedClientRepository authorizedClientRepository() {
-      return Mockito.mock(OAuth2AuthorizedClientRepository.class);
+    @Test
+    void actuatorEndpointsArePermittedWithoutAuth() throws Exception {
+        mockMvc.perform(get("/actuator/health"))
+            .andExpect(status().isOk());
     }
-  }
 
-  @Test
-  void actuatorEndpointsArePermittedWithoutAuth() throws Exception {
-    mockMvc.perform(get("/actuator/health"))
-        .andExpect(status().isOk());
-  }
+    @Test
+    @WithMockUser(roles = "USER")
+    void authenticatedEndpointsAccessibleWithValidRole() throws Exception {
+        mockMvc.perform(get("/"))
+            .andExpect(status().isOk());
+    }
 
-  @Test
-  @WithMockUser(roles = "USER")
-  void authenticatedEndpointsAccessibleWithValidRole() throws Exception {
-    mockMvc.perform(get("/"))
-        .andExpect(status().isOk());
-  }
+    @Test
+    void unauthenticatedUsersRedirectToLogin() throws Exception {
+        mockMvc.perform(get("/"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("**/login"));
+    }
 
-  @Test
-  void unauthenticatedUsersRedirectToLogin() throws Exception {
-    mockMvc.perform(get("/"))
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrlPattern("**/login"));
-  }
+    @Test
+    @WithMockUser(roles = "USER")
+    void incorrectRoleRedirectsToNotAuthorised() throws Exception {
+        mockMvc.perform(get("/admin"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/not-authorised"));
+    }
 
-  @Test
-  @WithMockUser(roles = "USER")
-  void incorrectRoleRedirectsToNotAuthorised() throws Exception {
-    mockMvc.perform(get("/admin"))
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl("/not-authorised"));
-  }
+    @Test
+    void mapRolesToAuthoritiesWhenRolesAreCommaSeparated() {
+        SecurityConfig config = new SecurityConfig();
+        Map<String, Object> attributes = Map.of("LAA_APP_ROLES", "USER,ADMIN");
+
+        Set<GrantedAuthority> result = config.getAuthorities(attributes);
+
+        Assertions.assertTrue(result.stream()
+            .anyMatch(x -> x.getAuthority().equals("ROLE_USER")));
+
+        Assertions.assertTrue(result.stream()
+            .anyMatch(x -> x.getAuthority().equals("ROLE_ADMIN")));
+    }
+
+    @Test
+    void mapRolesToAuthoritiesWhenRolesAreInAList() {
+        SecurityConfig config = new SecurityConfig();
+        Map<String, Object> attributes = Map.of("LAA_APP_ROLES", List.of("USER", "ADMIN"));
+
+        Set<GrantedAuthority> result = config.getAuthorities(attributes);
+
+        Assertions.assertTrue(result.stream()
+            .anyMatch(x -> x.getAuthority().equals("ROLE_USER")));
+
+        Assertions.assertTrue(result.stream()
+            .anyMatch(x -> x.getAuthority().equals("ROLE_ADMIN")));
+    }
 }

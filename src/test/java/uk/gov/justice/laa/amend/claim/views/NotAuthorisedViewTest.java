@@ -7,13 +7,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class NotAuthorisedViewTest extends ViewTestBase {
 
-  NotAuthorisedViewTest() {
-    super("not-authorised");
-  }
+    NotAuthorisedViewTest() {
+        super("not-authorised");
+    }
 
-  @Test
-  void testHomePage() {
-    Document doc = renderDocument();
-    assertPageHasHeading(doc, "You are not authorised");
-  }
+    @Test
+    void testHomePage() {
+        Document doc = renderDocument();
+        assertPageHasHeading(doc, "You are not authorised");
+    }
 }

@@ -52,20 +52,20 @@ public class SecurityConfig {
             @Override
             public OidcUser loadUser(OidcUserRequest userRequest) {
                 OidcUser oidcUser = super.loadUser(userRequest);
-
-                Map<String, Object> attributes = oidcUser.getAttributes();
-                List<String> roles = parseRawRoles(attributes.get("LAA_APP_ROLES"));
-
-                Set<GrantedAuthority> authorities = new SimpleAuthorityMapper()
-                    .mapAuthorities(
-                        roles.stream()
-                            .map(SimpleGrantedAuthority::new)
-                            .collect(Collectors.toList())
-                    );
-
+                Set<GrantedAuthority> authorities = getAuthorities(oidcUser.getAttributes());
                 return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
             }
         };
+    }
+
+    public Set<GrantedAuthority> getAuthorities(Map<String, Object> attributes) {
+        List<String> roles = parseRawRoles(attributes.get("LAA_APP_ROLES"));
+        return new SimpleAuthorityMapper()
+            .mapAuthorities(
+                roles.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList())
+            );
     }
 
     private List<String> parseRawRoles(Object rawRoles) {
