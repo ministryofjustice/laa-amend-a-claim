@@ -8,4 +8,9 @@ spring:
           azure:
             client-id: test-client-id
             client-secret: test-secret
-            tenant-id: test-tenant
+            authorization-grant-type: client_credentials
+            scope: openid,profile,email
+            provider: azure
+        provider:
+          azure:
+            issuer-uri: https://login.microsoftonline.com/test-tenant/v2.0
