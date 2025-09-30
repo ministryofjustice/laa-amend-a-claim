@@ -14,8 +14,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class LocalSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChainLocal(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .csrf(AbstractHttpConfigurer::disable);
+        http
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+            .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 }
