@@ -12,7 +12,7 @@ class IndexViewTest extends ViewTestBase {
   }
 
   @Test
-  void testHomePage() {
+  void testPage() {
     Document doc = renderDocument();
     assertPageHasTitle(doc, "Amend a claim");
     assertPageHasHeading(doc, "Amend a claim");

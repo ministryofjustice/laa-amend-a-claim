@@ -11,6 +11,9 @@ import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfigurati
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletContext;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.web.servlet.IServletWebExchange;
@@ -28,6 +31,12 @@ public abstract class ViewTestBase {
   protected IServletWebExchange exchange;
 
   protected String view;
+
+  @MockitoBean
+  private ClientRegistrationRepository clientRegistrationRepository;
+
+  @MockitoBean
+  private OAuth2AuthorizedClientService authorizedClientService;
 
   protected ViewTestBase(String view) {
     this.view = view;
