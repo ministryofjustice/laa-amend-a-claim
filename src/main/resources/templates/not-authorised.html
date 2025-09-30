@@ -1,23 +1,16 @@
 <!-- index.html -->
 <!DOCTYPE html>
 <html lang="en" th:replace="~{layout :: layout(
-      title=~{::title},
+      title=#{notAuthorised.title},
       mainContent=~{::#main-content},
       pageCategory=${'login'})}" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <title th:text="#{notAuthorised.title}">Homepage</title>
-</head>
-
-<body>
-<script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
-<main class="govuk-main-wrapper" id="main-content">
-
-    <div class="moj-page-header-actions">
-        <div class="moj-page-header-actions__title">
-            <h1 class="govuk-heading-xl"><span th:text="#{notAuthorised.heading}"/></h1>
-        </div>
-    </div>
-</main>
-</body>
+    <body>
+        <main class="govuk-main-wrapper" id="main-content">
+            <div class="moj-page-header-actions">
+                <div class="moj-page-header-actions__title">
+                    <h1 class="govuk-heading-xl"><span th:text="#{notAuthorised.heading}"/></h1>
+                </div>
+            </div>
+        </main>
+    </body>
 </html>

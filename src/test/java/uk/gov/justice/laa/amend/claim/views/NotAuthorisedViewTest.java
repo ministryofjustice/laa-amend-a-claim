@@ -14,6 +14,7 @@ class NotAuthorisedViewTest extends ViewTestBase {
     @Test
     void testHomePage() {
         Document doc = renderDocument();
+        assertPageHasTitle(doc, "You are not authorised");
         assertPageHasHeading(doc, "You are not authorised");
     }
 }
