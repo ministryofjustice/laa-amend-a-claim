@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local # or dev, staging, etc.
+    active: dev # or dev, staging, etc.
 ---
 
 spring:
