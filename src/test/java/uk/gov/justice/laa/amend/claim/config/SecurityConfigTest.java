@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.config;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,16 +37,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Import({SecurityConfig.class})
 @ActiveProfiles("test")
+@Import({SecurityConfigTest.MockSecurityBeans.class, SecurityConfig.class})
 public class SecurityConfigTest {
 
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * Shared mock beans
+     */
     @TestConfiguration
-    static class MockSecurityConfigBeans {
-
+    static class MockSecurityBeans {
         @Bean
         ClientRegistrationRepository clientRegistrationRepository() {
             return mock(ClientRegistrationRepository.class);
@@ -55,6 +57,11 @@ public class SecurityConfigTest {
         @Bean
         OAuth2AuthorizedClientRepository authorizedClientRepository() {
             return mock(OAuth2AuthorizedClientRepository.class);
+        }
+
+        @Bean
+        OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService() {
+            return mock(OAuth2UserService.class);
         }
 
         @RestController
@@ -96,8 +103,10 @@ public class SecurityConfigTest {
             .andExpect(redirectedUrl("/not-authorised"));
     }
 
+    /**
+     * Authority mapping tests
+     */
     @Nested
-    @Import(MockSecurityConfigBeans.class)
     class SecurityConfigGetAuthoritiesTest {
 
         @Test
@@ -107,11 +116,8 @@ public class SecurityConfigTest {
 
             Set<GrantedAuthority> result = config.getAuthorities(attributes);
 
-            Assertions.assertTrue(result.stream()
-                .anyMatch(x -> x.getAuthority().equals("ROLE_USER")));
-
-            Assertions.assertTrue(result.stream()
-                .anyMatch(x -> x.getAuthority().equals("ROLE_ADMIN")));
+            assertThat(result).extracting(GrantedAuthority::getAuthority)
+                .containsExactlyInAnyOrder("ROLE_USER", "ROLE_ADMIN");
         }
 
         @Test
@@ -121,41 +127,26 @@ public class SecurityConfigTest {
 
             Set<GrantedAuthority> result = config.getAuthorities(attributes);
 
-            Assertions.assertTrue(result.stream()
-                .anyMatch(x -> x.getAuthority().equals("ROLE_USER")));
-
-            Assertions.assertTrue(result.stream()
-                .anyMatch(x -> x.getAuthority().equals("ROLE_ADMIN")));
+            assertThat(result).extracting(GrantedAuthority::getAuthority)
+                .containsExactlyInAnyOrder("ROLE_USER", "ROLE_ADMIN");
         }
     }
 
+    /**
+     * OAuth2 user service tests
+     */
     @Nested
-    @Import(SecurityConfigOidcUserServiceTest.MockSecurityConfigOidcUserServiceBeans.class)
     class SecurityConfigOidcUserServiceTest {
 
         @Autowired
         private OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService;
-
-        @TestConfiguration
-        static class MockSecurityConfigOidcUserServiceBeans {
-
-            @Bean
-            ClientRegistrationRepository clientRegistrationRepository() {
-                return mock(ClientRegistrationRepository.class);
-            }
-
-            @Bean
-            OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService() {
-                return mock(OAuth2UserService.class);
-            }
-        }
 
         @Test
         void failedOAuthRedirectsToLoginErrorPage() throws Exception {
             when(oAuth2UserService.loadUser(any()))
                 .thenThrow(new OAuth2AuthenticationException(new OAuth2Error("invalid_token")));
 
-            mockMvc.perform(get("/login/oauth2/code/google"))
+            mockMvc.perform(get("/login/oauth2/code/id"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?error"));
         }
