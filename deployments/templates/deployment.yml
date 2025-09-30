@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: laa-amend-a-claim-deployment
+  labels:
+    app: laa-amend-a-claim
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: laa-amend-a-claim # this should match the selector in service.yml
+  template:
+    metadata:
+      labels:
+        app: laa-amend-a-claim # this should match the selector in service.yml
+    spec:
+      containers:
+        - name: laa-amend-a-claim
+          image: ${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "1200Mi"
+              cpu: "300m"
+            limits:
+              memory: "3000Mi"
+              cpu: "1"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+              httpGet:
+                path: /actuator/health/readiness
+                port: 8080
+              initialDelaySeconds: 60
+              periodSeconds: 10
