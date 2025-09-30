@@ -2,3 +2,10 @@ spring:
   security:
     csrf:
       enabled: false
+    oauth2:
+      client:
+        registration:
+          azure:
+            client-id: test-client-id
+            client-secret: test-secret
+            tenant-id: test-tenant
