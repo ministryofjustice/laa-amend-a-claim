@@ -59,7 +59,7 @@ public abstract class ViewTestBase {
 
   protected void assertPageHasTitle(Document doc, String expectedText) {
     Element title = doc.selectFirst("title");
-    Assertions.assertNotNull(title, String.format("Expected page to have title '%s' but no heading was found", expectedText));
+    Assertions.assertNotNull(title, String.format("Expected page to have title '%s' but no title was found", expectedText));
     Assertions.assertEquals(String.format("%s - Amend a claim - GOV.UK", expectedText), title.text());
   }
 }
