@@ -3,7 +3,8 @@ package uk.gov.justice.laa.amend.claim.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,8 +14,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@WebMvcTest(NotAuthorisedController.class)
-@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = NotAuthorisedController.class,
+    excludeAutoConfiguration = {
+        SecurityAutoConfiguration.class,
+        OAuth2ResourceServerAutoConfiguration.class
+    })
 @Import(TestSecurityConfig.class)
 public class NotAuthorisedControllerTest {
 
