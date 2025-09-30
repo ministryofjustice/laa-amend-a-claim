@@ -2,15 +2,5 @@ spring:
   security:
     csrf:
       enabled: false
-    oauth2:
-      client:
-        registration:
-          azure:
-            client-id: test-client-id
-            client-secret: test-secret
-            authorization-grant-type: client_credentials
-            scope: openid,profile,email
-            provider: azure
-        provider:
-          azure:
-            issuer-uri: https://login.microsoftonline.com/test-tenant/v2.0
+    basic:
+      enabled: false
