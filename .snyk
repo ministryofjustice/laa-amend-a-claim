@@ -1,0 +1,4 @@
+ignore:
+  "csrf-disabled-in-local":
+    - path: src/main/java/uk/gov/justice/laa/amend/claim/config/LocalSecurityConfig.java
+      reason: "File is local security config, not vulnerable in production"

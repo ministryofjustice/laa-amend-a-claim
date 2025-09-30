@@ -83,7 +83,7 @@ jobs:
         continue-on-error: true # To make sure that SARIF upload gets called
         with:
           command: monitor
-          args: --severity-threshold=high --exclude=src/main/java/uk/gov/justice/laa/amend/claim/config/LocalSecurityConfig.java
+          args: --severity-threshold=high
 
 
       - name: Generate sarif Snyk report
