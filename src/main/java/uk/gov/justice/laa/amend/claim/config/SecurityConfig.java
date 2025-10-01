@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
                     response.sendRedirect("/not-authorised");
                 }))
-               .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny));
+            .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny));
         return http.build();
     }
 

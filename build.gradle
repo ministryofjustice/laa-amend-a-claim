@@ -1,5 +1,5 @@
 plugins {
-    id 'uk.gov.laa.ccms.springboot.laa-ccms-spring-boot-gradle-plugin' version '0.0.32'
+    id 'uk.gov.laa.ccms.springboot.laa-ccms-spring-boot-gradle-plugin' version '0.0.43'
 }
 
 java {
@@ -16,15 +16,8 @@ repositories {
     mavenCentral()
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.security:spring-security-bom:6.5.5"
-    }
-}
-
 dependencies {
 
-    implementation 'org.springframework.boot:spring-boot-starter:3.2.5'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -32,7 +25,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.12'
-
 
     implementation 'org.apache.commons:commons-lang3:3.18.0'
     implementation 'org.mapstruct:mapstruct:1.6.3'

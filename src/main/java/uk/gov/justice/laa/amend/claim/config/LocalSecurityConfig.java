@@ -10,9 +10,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Profile("local")
 @Configuration
 @EnableWebSecurity
-public class DevSecurityConfig {
+public class LocalSecurityConfig {
     @Bean
-    public SecurityFilterChain securityFilterChainDev(final HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChainLocal(final HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         return http.build();
     }
