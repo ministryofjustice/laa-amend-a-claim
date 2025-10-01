@@ -31,17 +31,15 @@
         </div>
         <footer th:replace="~{partials/footer :: footer}"></footer>
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
-        </script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
         <script type="module" th:src="@{/js/govuk-frontend-5.8.0.min.js}"></script>
         <script type="module" th:src="@{/js/moj-frontend-5.1.2.min.js}"></script>
         <script type="module">
-        import * as GOVUKFrontend from '/js/govuk-frontend-5.8.0.min.js'
-        import * as MOJUKFrontend from '/js/moj-frontend-5.1.2.min.js'
+            import * as GOVUKFrontend from '/js/govuk-frontend-5.8.0.min.js'
+            import * as MOJUKFrontend from '/js/moj-frontend-5.1.2.min.js'
 
-        GOVUKFrontend.initAll()
-        MOJUKFrontend.initAll()
+            GOVUKFrontend.initAll()
+            MOJUKFrontend.initAll()
         </script>
     </body>
 
