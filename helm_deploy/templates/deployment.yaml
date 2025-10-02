@@ -68,3 +68,7 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secrets.baseUrl.name }}
                   key: {{ .Values.secrets.baseUrl.key }}
+            - name: SENTRY_DSN
+              value: {{ .Values.sentry.dsn }}
+            - name: SENTRY_ENVIRONMENT
+              value: {{ .Values.sentry.environment }}

@@ -9,10 +9,10 @@ image:
 containerPort: 8080
 
 ingress:
-  className: ""
-  host: {{ .Values.namespace }}.apps.live.cloud-platform.service.justice.gov.uk
+  className: "modsec-non-prod"
+  host: "laa-amend-a-claim-dev.apps.live.cloud-platform.service.justice.gov.uk"
   annotations:
-    external-dns.alpha.kubernetes.io/set-identifier: laa-amend-a-claim-ingress-{{ .Values.namespace }}-green
+    external-dns.alpha.kubernetes.io/set-identifier: "laa-amend-a-claim-ingress-dev-green"
     external-dns.alpha.kubernetes.io/aws-weight: "100"
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-name: "sticky"
@@ -56,3 +56,7 @@ secrets:
   baseUrl:
     name: laa-amend-a-claim-base-url
     key: BASE_URL_HOMEPAGE
+
+sentry:
+  dsn: ""
+  environment: ""
