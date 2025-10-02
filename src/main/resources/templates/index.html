@@ -7,9 +7,49 @@
     )}">
     <body>
         <main class="govuk-main-wrapper" id="main-content">
-            <h1 class="govuk-heading-xl">
-                <span th:text="#{index.heading}"></span>
-            </h1>
+            <fieldset class="govuk-fieldset" aria-describedby="search-hint">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading" th:text="#{index.heading}"></h1>
+                </legend>
+
+                <div id="search-hint" class="govuk-hint" th:text="#{index.hint}"></div>
+
+                <div class="search-panel">
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-label--s" for="provider-account-number" th:text="#{index.providerAccountNumber}"></label>
+                        <input class="govuk-input govuk-!-width-one-half" id="provider-account-number" name="providerAccountNumber" type="text">
+                    </div>
+
+                    <fieldset class="govuk-fieldset" role="group" aria-describedby="submission-date-hint">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" th:text="#{index.submissionDate}"></legend>
+                        <div id="submission-date-hint" class="govuk-hint" th:text="#{index.submissionDate.hint}"></div>
+                        <div class="govuk-date-input">
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="submission-date-month" th:text="#{index.submissionDate.month}"></label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="submission-date-month" name="submissionDateMonth" type="text" inputmode="numeric">
+                                </div>
+                            </div>
+                            <div class="govuk-date-input__item">
+                                <div class="govuk-form-group">
+                                    <label class="govuk-label govuk-date-input__label" for="submission-date-year" th:text="#{index.submissionDate.year}"></label>
+                                    <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="submission-date-year" name="submissionDateYear" type="text" inputmode="numeric">
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-label--s" for="reference-number" th:text="#{index.referenceNumber}"></label>
+                        <input class="govuk-input govuk-!-width-one-half" id="reference-number" name="referenceNumber" type="text">
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <button type="submit" class="govuk-button" data-module="govuk-button" th:text="#{index.search}"></button>
+                        <a class="govuk-link" th:href="@{/}" th:text="#{index.clear}"></a>
+                    </div>
+                </div>
+            </fieldset>
         </main>
     </body>
 </html>

@@ -53,13 +53,31 @@ public abstract class ViewTestBase {
 
   protected void assertPageHasHeading(Document doc, String expectedText) {
     Element heading = doc.selectFirst("h1");
-    Assertions.assertNotNull(heading, String.format("Expected page to have heading '%s' but no heading was found", expectedText));
+    Assertions.assertNotNull(heading, String.format("Expected page to have heading '%s'", expectedText));
     Assertions.assertEquals(expectedText, heading.text());
   }
 
   protected void assertPageHasTitle(Document doc, String expectedText) {
-    Element title = doc.selectFirst("title");
-    Assertions.assertNotNull(title, String.format("Expected page to have title '%s' but no title was found", expectedText));
-    Assertions.assertEquals(String.format("%s - Amend a claim - GOV.UK", expectedText), title.text());
+    String title = doc.title();
+    Assertions.assertEquals(String.format("%s - Amend a claim - GOV.UK", expectedText), title);
+  }
+
+  protected void assertPageHasHint(Document doc, String id, String expectedText) {
+    Element hint = doc.getElementById(id);
+    Assertions.assertNotNull(hint, String.format("Expected page to have hint with id '%s'", id));
+    Assertions.assertEquals(expectedText, hint.text());
+  }
+
+  protected void assertPageHasTextInput(Document doc, String id, String expectedLabel) {
+    Element input = doc.getElementById(id);
+    Assertions.assertNotNull(input, String.format("Expected page to have input with id '%s'", id));
+    Element label = doc.selectFirst(String.format("label[for=%s]", id));
+    Assertions.assertNotNull(label, String.format("Expected page to have label for '%s'", id));
+    Assertions.assertEquals(expectedLabel, label.text());
+  }
+
+  protected void assertPageHasDateInput(Document doc) {
+    Element input = doc.selectFirst(".govuk-date-input");
+    Assertions.assertNotNull(input, "Expected page to have date input");
   }
 }
