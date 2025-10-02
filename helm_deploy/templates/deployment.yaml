@@ -14,9 +14,9 @@ spec:
     metadata:
       labels:
         {{ include "laa-amend-a-claim.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{ toYaml . | nindent 8 }}
-        {{- end }}
+            {{- with .Values.podLabels }}
+            {{ toYaml . | nindent 8 }}
+            {{- end }}
     spec:
       containers:
         - name: {{ .Values.name }}
