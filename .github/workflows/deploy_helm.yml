@@ -76,7 +76,7 @@ jobs:
         uses: ministryofjustice/laa-reusable-github-actions/.github/actions/helm-deploy@main
         with:
           k8s_namespace: ${{ secrets.KUBE_NAMESPACE }}
-          helm_release_name: laa-amend-a-claim-${{ vars.ENV_NAME }}
+          helm_release_name: laa-amend-a-claim
           helm_chart: helm_deploy
           helm_values_path: helm_deploy/values-${{ vars.ENV_NAME }}.yaml
           image_registry: ${{ steps.login-ecr.outputs.image_registry }}
