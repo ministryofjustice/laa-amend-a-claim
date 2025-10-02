@@ -1,5 +1,6 @@
 plugins {
     id 'uk.gov.laa.ccms.springboot.laa-ccms-spring-boot-gradle-plugin' version '0.0.43'
+    id "io.sentry.jvm.gradle" version "5.10.0"
 }
 
 java {
@@ -16,6 +17,7 @@ repositories {
     mavenCentral()
 }
 
+
 dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -28,7 +30,6 @@ dependencies {
 
     implementation 'org.apache.commons:commons-lang3:3.18.0'
     implementation 'org.mapstruct:mapstruct:1.6.3'
-
 
 
     compileOnly 'org.projectlombok:lombok'
@@ -52,5 +53,5 @@ dependencies {
 test {
     jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
     useJUnitPlatform()
-    // finalizedBy jacocoTestReport
+    finalizedBy jacocoTestReport
 }

@@ -1,0 +1,58 @@
+name: laa-amend-a-claim
+namespace: {{ .Release.Namespace }}
+replicaCount: 3
+
+image:
+  repository: ""
+  tag: ""
+
+containerPort: 8080
+
+ingress:
+  className: ""
+  host: {{ .Values.namespace }}.apps.live.cloud-platform.service.justice.gov.uk
+  annotations:
+    external-dns.alpha.kubernetes.io/set-identifier: laa-amend-a-claim-ingress-{{ .Values.namespace }}-green
+    external-dns.alpha.kubernetes.io/aws-weight: "100"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "sticky"
+    nginx.ingress.kubernetes.io/session-cookie-hash: sha1
+    nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+    nginx.ingress.kubernetes.io/modsecurity-snippet: |
+      SecRuleEngine On
+      SecAuditEngine On
+      SecDefaultAction "phase:2,pass,log,tag:github_team=laa-amend-a-claim"
+      SecDebugLogLevel 1
+
+resources:
+  requests:
+    memory: "1200Mi"
+    cpu: "300m"
+  limits:
+    memory: "3000Mi"
+    cpu: "1"
+
+probes:
+  liveness:
+    path: /actuator/health/liveness
+    initialDelaySeconds: 60
+    periodSeconds: 10
+  readiness:
+    path: /actuator/health/readiness
+    initialDelaySeconds: 60
+    periodSeconds: 10
+
+secrets:
+  azureClientId:
+    name: laa-amend-a-claim-azure-client-id
+    key: AZURE_CLIENT_ID
+  azureClientSecret:
+    name: laa-amend-a-claim-azure-client-secret
+    key: AZURE_CLIENT_SECRET
+  azureTenant:
+    name: laa-amend-a-claim-azure-tenant
+    key: AZURE_TENANT_ID
+  baseUrl:
+    name: laa-amend-a-claim-base-url
+    key: BASE_URL_HOMEPAGE
