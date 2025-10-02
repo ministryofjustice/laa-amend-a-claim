@@ -1,0 +1,10 @@
+<th:block th:fragment="serviceNavigationItem(pageCategory,itemCategory,text)">
+    <li th:if="${pageCategory == itemCategory}" class="govuk-service-navigation__item govuk-service-navigation__item--active">
+        <a class="govuk-service-navigation__link" th:href="@{/}" aria-current="true">
+            <strong class="govuk-service-navigation__active-fallback" th:text="${text}"></strong>
+        </a>
+    </li>
+    <li th:unless="${pageCategory == itemCategory}" class="govuk-service-navigation__item">
+        <a class="govuk-service-navigation__link" th:href="@{/}" th:text="${text}"></a>
+    </li>
+</th:block>

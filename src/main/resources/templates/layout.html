@@ -1,4 +1,4 @@
-<html th:fragment="layout" lang="en" class="govuk-template">
+<html th:fragment="layout(title,mainContent,pageCategory)" lang="en" class="govuk-template">
 
     <head th:replace="~{partials/head :: head(title=${title})}"></head>
 
@@ -9,7 +9,7 @@
 
         <th:block th:replace="~{partials/header :: header}"></th:block>
 
-        <th:block th:replace="~{partials/service-navigation :: serviceNavigation}"></th:block>
+        <th:block th:replace="~{partials/service-navigation :: serviceNavigation(pageCategory=${pageCategory})}"></th:block>
 
         <div class="govuk-width-container">
             <div class="govuk-phase-banner" id="feedback">

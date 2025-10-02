@@ -3,7 +3,8 @@
       xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout :: layout(
         title=#{index.title},
-        mainContent=~{::#main-content}
+        mainContent=~{::#main-content},
+        pageCategory='search'
     )}">
     <body>
         <main class="govuk-main-wrapper" id="main-content">

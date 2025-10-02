@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.views;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +53,7 @@ public abstract class ViewTestBase {
   }
 
   protected void assertPageHasHeading(Document doc, String expectedText) {
-    Element heading = doc.selectFirst("h1");
-    Assertions.assertNotNull(heading, String.format("Expected page to have heading '%s'", expectedText));
+    Element heading = selectFirst(doc, "h1");
     Assertions.assertEquals(expectedText, heading.text());
   }
 
@@ -63,21 +63,40 @@ public abstract class ViewTestBase {
   }
 
   protected void assertPageHasHint(Document doc, String id, String expectedText) {
-    Element hint = doc.getElementById(id);
-    Assertions.assertNotNull(hint, String.format("Expected page to have hint with id '%s'", id));
+    Element hint = getElementById(doc, id);
     Assertions.assertEquals(expectedText, hint.text());
   }
 
   protected void assertPageHasTextInput(Document doc, String id, String expectedLabel) {
-    Element input = doc.getElementById(id);
-    Assertions.assertNotNull(input, String.format("Expected page to have input with id '%s'", id));
-    Element label = doc.selectFirst(String.format("label[for=%s]", id));
-    Assertions.assertNotNull(label, String.format("Expected page to have label for '%s'", id));
+    Element label = selectFirst(doc, String.format("label[for=%s]", id));
     Assertions.assertEquals(expectedLabel, label.text());
   }
 
-  protected void assertPageHasDateInput(Document doc) {
-    Element input = doc.selectFirst(".govuk-date-input");
-    Assertions.assertNotNull(input, "Expected page to have date input");
+  protected void assertPageHasDateInput(Document doc, String expectedLegend) {
+    Element input = selectFirst(doc, ".govuk-date-input");
+    Element fieldset = input.parent();
+    Assertions.assertNotNull(fieldset);
+    Element legend = selectFirst(fieldset, "legend");
+    Assertions.assertEquals(expectedLegend, legend.text());
+  }
+
+  protected void assertPageHasActiveServiceNavigationItem(Document doc, String expectedText) {
+    Element element = selectFirst(doc, ".govuk-service-navigation__item--active");
+    Assertions.assertEquals(expectedText, element.text());
+  }
+
+  protected void assertPageHasNoActiveServiceNavigationItems(Document doc) {
+    Elements elements = doc.getElementsByClass("govuk-service-navigation__item--active");
+    Assertions.assertTrue(elements.isEmpty(), "Expected page to have no active service navigation items");
+  }
+
+  private Element selectFirst(Element element, String cssQuery) {
+    Element result = element.selectFirst(cssQuery);
+    Assertions.assertNotNull(element, String.format("Expected page to have element with CSS query '%s'", cssQuery));
+    return result;
+  }
+
+  private Element getElementById(Element element, String id) {
+    return selectFirst(element, String.format("#%s", id));
   }
 }
