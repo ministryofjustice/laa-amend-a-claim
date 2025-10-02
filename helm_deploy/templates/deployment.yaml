@@ -2,17 +2,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.name }}-deployment
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Values.name }}
+    {{ include "laa-amend-a-claim.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Values.name }}
+      {{ include "laa-amend-a-claim.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ .Values.name }}
+        {{ include "laa-amend-a-claim.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: {{ .Values.name }}
