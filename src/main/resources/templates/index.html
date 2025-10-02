@@ -1,16 +1,15 @@
-<!-- index.html -->
-<!DOCTYPE html>
-<html lang="en" th:replace="~{layout :: layout(
+<!DOCTYPE html >
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
         title=#{index.title},
         mainContent=~{::#main-content}
-    )}" xmlns:th="http://www.thymeleaf.org">
+    )}">
     <body>
         <main class="govuk-main-wrapper" id="main-content">
-            <div class="moj-page-header-actions">
-                <div class="moj-page-header-actions__title">
-                    <h1 class="govuk-heading-xl"><span th:text="#{index.heading}"/></h1>
-                </div>
-            </div>
+            <h1 class="govuk-heading-xl">
+                <span th:text="#{index.heading}"></span>
+            </h1>
         </main>
     </body>
 </html>
