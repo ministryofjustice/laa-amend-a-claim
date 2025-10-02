@@ -1,0 +1,20 @@
+<section aria-label="Service information" class="govuk-service-navigation"
+         data-module="govuk-service-navigation" th:fragment="serviceNavigation">
+    <div class="govuk-width-container">
+        <div class="govuk-service-navigation__container">
+			<span class="govuk-service-navigation__service-name">
+				<a th:href="@{/}" class="govuk-service-navigation__link" th:text="#{service.name}"></a>
+			</span>
+            <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+                <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+                    Menu
+                </button>
+                <ul class="govuk-service-navigation__list" id="navigation">
+                    <li class="govuk-service-navigation__item">
+                        <a class="govuk-service-navigation__link" th:href="@{/}" th:text="#{service.navigation.search}"></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
