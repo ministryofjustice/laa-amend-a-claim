@@ -9,7 +9,7 @@ image:
 containerPort: 8080
 
 ingress:
-  className: modsec-non-prod
+  className: "modsec-non-prod"
   host: {{ .Values.namespace }}.apps.live.cloud-platform.service.justice.gov.uk
   annotations:
     external-dns.alpha.kubernetes.io/set-identifier: laa-amend-a-claim-ingress-{{ .Values.namespace }}-green
