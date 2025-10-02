@@ -3,10 +3,10 @@ namespace: dev
 replicaCount: 3
 
 ingress:
-  className: "modsec-non-prod"
-  host: "laa-amend-a-claim-dev.apps.live.cloud-platform.service.justice.gov.uk"
+  className: modsec-non-prod
+  host: laa-amend-a-claim-dev.apps.live.cloud-platform.service.justice.gov.uk
   annotations:
-    external-dns.alpha.kubernetes.io/set-identifier: "laa-amend-a-claim-ingress-dev-green"
+    external-dns.alpha.kubernetes.io/set-identifier: laa-amend-a-claim-ingress-dev-green
 
 
 secrets:
