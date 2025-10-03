@@ -38,7 +38,16 @@ class DateValidatorTest {
     }
 
     @Test
-    void testMonthMissingInvalid() {
+    void testBothBlankValid() {
+        SearchForm form = new SearchForm();
+        form.setSubmissionDateMonth("");
+        form.setSubmissionDateYear("");
+
+        assertTrue(validator.isValid(form, constraintValidatorContext));
+    }
+
+    @Test
+    void testNullMonthInvalid() {
         SearchForm form = new SearchForm();
         form.setSubmissionDateMonth(null);
         form.setSubmissionDateYear("2025");
@@ -48,10 +57,30 @@ class DateValidatorTest {
     }
 
     @Test
-    void testYearMissingInvalid() {
+    void tesBlankMonthInvalid() {
+        SearchForm form = new SearchForm();
+        form.setSubmissionDateMonth("");
+        form.setSubmissionDateYear("2025");
+
+        assertFalse(validator.isValid(form, constraintValidatorContext));
+        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.month.error.required}");
+    }
+
+    @Test
+    void testNullYearInvalid() {
         SearchForm form = new SearchForm();
         form.setSubmissionDateMonth("5");
         form.setSubmissionDateYear(null);
+
+        assertFalse(validator.isValid(form, constraintValidatorContext));
+        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.year.error.required}");
+    }
+
+    @Test
+    void testBlankYearInvalid() {
+        SearchForm form = new SearchForm();
+        form.setSubmissionDateMonth("5");
+        form.setSubmissionDateYear("");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
         verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.year.error.required}");
@@ -64,7 +93,7 @@ class DateValidatorTest {
         form.setSubmissionDateYear("2025");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.error.invalid}");
+        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.month.error.invalid}");
     }
 
     @Test
@@ -74,7 +103,18 @@ class DateValidatorTest {
         form.setSubmissionDateYear("xyz");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.error.invalid}");
+        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.year.error.invalid}");
+    }
+
+    @Test
+    void testNonNumericMonthAndYearInvalid() {
+        SearchForm form = new SearchForm();
+        form.setSubmissionDateMonth("abc");
+        form.setSubmissionDateYear("xyz");
+
+        assertFalse(validator.isValid(form, constraintValidatorContext));
+        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.month.error.invalid}");
+        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.year.error.invalid}");
     }
 
     @Test
@@ -84,7 +124,7 @@ class DateValidatorTest {
         form.setSubmissionDateYear("2025");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.error.invalid}");
+        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.month.error.range}");
     }
 
     @Test
