@@ -38,4 +38,9 @@ public class HomePageController {
         // TODO - get results and add to model
         return "index";
     }
+
+    @GetMapping("/throw-error")
+    public String sentryTest() {
+        throw new RuntimeException("This is a test exception");
+    }
 }

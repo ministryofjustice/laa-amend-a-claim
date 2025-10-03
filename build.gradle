@@ -1,5 +1,6 @@
 plugins {
     id 'uk.gov.laa.ccms.springboot.laa-ccms-spring-boot-gradle-plugin' version '0.0.43'
+    id "io.sentry.jvm.gradle" version "5.10.0"
 }
 
 java {
@@ -55,5 +56,5 @@ dependencies {
 test {
     jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
     useJUnitPlatform()
-    // finalizedBy jacocoTestReport
+    finalizedBy jacocoTestReport
 }
