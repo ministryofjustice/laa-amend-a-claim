@@ -54,7 +54,9 @@ public class DateValidator implements ConstraintValidator<ValidSubmissionDate, S
                 .addConstraintViolation();
         }
 
-        if (month == null || year == null) return false;
+        if (month == null || year == null) {
+            return false;
+        }
 
         try {
             YearMonth.of(year, month);
