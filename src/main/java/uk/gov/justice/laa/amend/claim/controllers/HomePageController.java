@@ -10,4 +10,9 @@ public class HomePageController {
     public String onPageLoad() {
         return "index";
     }
+
+    @GetMapping("/throw-error")
+    public String sentryTest() {
+        throw new RuntimeException("This is a test exception");
+    }
 }
