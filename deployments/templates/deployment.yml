@@ -69,6 +69,9 @@ spec:
                   name: laa-amend-a-claim-base-url
                   key: BASE_URL_HOMEPAGE
             - name: SENTRY_DSN
-              value: https://07a4e036e1305d8dd00a9fede404c9e4@o345774.ingest.us.sentry.io/4510119326908416
+              valueFrom:
+                secretKeyRef:
+                  name: laa-amend-a-claim-sentry-dsn
+                  key: SENTRY_DSN
             - name: SENTRY_ENVIRONMENT
-              value: development
+              value: ${SENTRY_ENV}

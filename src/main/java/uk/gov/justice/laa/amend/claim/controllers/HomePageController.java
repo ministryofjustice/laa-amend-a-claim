@@ -39,8 +39,4 @@ public class HomePageController {
         return "index";
     }
 
-    @GetMapping("/throw-error")
-    public String sentryTest() {
-        throw new RuntimeException("This is a test exception");
-    }
 }
