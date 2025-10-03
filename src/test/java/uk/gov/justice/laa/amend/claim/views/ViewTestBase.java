@@ -5,51 +5,44 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockServletContext;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.web.servlet.IServletWebExchange;
-import org.thymeleaf.web.servlet.JakartaServletWebApplication;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.Locale;
 import java.util.Map;
 
-@ImportAutoConfiguration(ThymeleafAutoConfiguration.class)
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 public abstract class ViewTestBase {
 
   @Autowired
-  protected SpringTemplateEngine templateEngine;
+  private MockMvc mockMvc;
 
-  protected IServletWebExchange exchange;
+  protected String mapping;
 
-  protected String view;
-
-  protected ViewTestBase(String view) {
-    this.view = view;
+  protected ViewTestBase(String mapping) {
+    this.mapping = mapping;
   }
 
-  @BeforeEach
-  void setup() {
-    MockServletContext context = new MockServletContext();
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    MockHttpServletResponse response = new MockHttpServletResponse();
-    JakartaServletWebApplication app = JakartaServletWebApplication.buildApplication(context);
-    this.exchange = app.buildExchange(request, response);
-  }
-
-  protected Document renderDocument() {
+  protected Document renderDocument() throws Exception {
     return renderDocument(Map.of());
   }
 
-  protected Document renderDocument(Map<String, Object> variables) {
-    WebContext context = new WebContext(exchange, Locale.UK, variables);
-    return Jsoup.parse(templateEngine.process(view, context));
+  protected Document renderDocument(Map<String, Object> variables) throws Exception {
+    MockHttpServletRequestBuilder requestBuilder = get(mapping);
+
+    for (Map.Entry<String, Object> entry : variables.entrySet()) {
+      requestBuilder = requestBuilder.flashAttr(entry.getKey(), entry.getValue());
+    }
+
+    String html = mockMvc.perform(requestBuilder)
+        .andExpect(status().isOk())
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    return Jsoup.parse(html);
   }
 
   protected void assertPageHasHeading(Document doc, String expectedText) {

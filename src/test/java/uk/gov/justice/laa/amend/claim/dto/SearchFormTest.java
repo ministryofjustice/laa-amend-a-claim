@@ -7,31 +7,56 @@ public class SearchFormTest {
 
     @Test
     void testWithNullValues() {
-        SearchForm form = new SearchForm(
-            null,
-            null,
-            null,
-            null
-        );
+        SearchForm form = new SearchForm();
 
-        Assertions.assertNull(form.providerAccountNumber());
-        Assertions.assertNull(form.submissionDateMonth());
-        Assertions.assertNull(form.submissionDateYear());
-        Assertions.assertNull(form.referenceNumber());
+        Assertions.assertNull(form.getProviderAccountNumber());
+        Assertions.assertNull(form.getSubmissionDateMonth());
+        Assertions.assertNull(form.getSubmissionDateYear());
+        Assertions.assertNull(form.getReferenceNumber());
     }
 
     @Test
     void testRecordCreationAndGetters() {
         SearchForm form = new SearchForm(
-            "ACC123",
-            5,
-            2023,
-            "REF456"
+            "123",
+            3,
+            2007,
+            "456"
         );
 
-        Assertions.assertEquals("ACC123", form.providerAccountNumber());
-        Assertions.assertEquals(5, form.submissionDateMonth());
-        Assertions.assertEquals(2023, form.submissionDateYear());
-        Assertions.assertEquals("REF456", form.referenceNumber());
+        Assertions.assertEquals("123", form.getProviderAccountNumber());
+        Assertions.assertEquals(3, form.getSubmissionDateMonth());
+        Assertions.assertEquals(2007, form.getSubmissionDateYear());
+        Assertions.assertEquals("456", form.getReferenceNumber());
+    }
+
+    @Test
+    void testAllEmptyReturnsTrueWhenAllValuesAreNull() {
+        SearchForm form = new SearchForm();
+        Assertions.assertTrue(form.allEmpty());
+    }
+
+    @Test
+    void testAllEmptyReturnsTrueWhenAllValuesAreBlank() {
+        SearchForm form = new SearchForm(
+            "",
+            null,
+            null,
+            ""
+        );
+
+        Assertions.assertTrue(form.allEmpty());
+    }
+
+    @Test
+    void testAllEmptyReturnsFalseWhenValuesAreNotNull() {
+        SearchForm form = new SearchForm(
+            "123",
+            3,
+            2007,
+            "456"
+        );
+
+        Assertions.assertFalse(form.allEmpty());
     }
 }
