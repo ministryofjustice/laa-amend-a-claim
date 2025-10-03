@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import uk.gov.justice.laa.amend.claim.dto.SearchForm;
+import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 
 @Controller
 public class HomePageController {

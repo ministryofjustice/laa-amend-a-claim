@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.dto;
+package uk.gov.justice.laa.amend.claim.forms;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,14 +19,14 @@ public class SearchFormTest {
     void testRecordCreationAndGetters() {
         SearchForm form = new SearchForm(
             "123",
-            3,
-            2007,
+            "3",
+            "2007",
             "456"
         );
 
         Assertions.assertEquals("123", form.getProviderAccountNumber());
-        Assertions.assertEquals(3, form.getSubmissionDateMonth());
-        Assertions.assertEquals(2007, form.getSubmissionDateYear());
+        Assertions.assertEquals("3", form.getSubmissionDateMonth());
+        Assertions.assertEquals("2007", form.getSubmissionDateYear());
         Assertions.assertEquals("456", form.getReferenceNumber());
     }
 
@@ -52,8 +52,8 @@ public class SearchFormTest {
     void testAllEmptyReturnsFalseWhenValuesAreNotNull() {
         SearchForm form = new SearchForm(
             "123",
-            3,
-            2007,
+            "3",
+            "2007",
             "456"
         );
 

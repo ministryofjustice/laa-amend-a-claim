@@ -25,24 +25,32 @@
                             <input class="govuk-input govuk-!-width-one-half" th:classappend="${#fields.hasErrors('providerAccountNumber') ? ' govuk-input--error' : ''}" id="provider-account-number" name="providerAccountNumber" type="text" th:field="*{providerAccountNumber}">
                         </div>
 
-                        <fieldset class="govuk-fieldset" role="group" aria-describedby="submission-date-hint">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" th:text="#{index.submissionDate}"></legend>
-                            <div id="submission-date-hint" class="govuk-hint" th:text="#{index.submissionDate.hint}"></div>
-                            <div class="govuk-date-input">
-                                <div class="govuk-date-input__item">
-                                    <div class="govuk-form-group">
-                                        <label class="govuk-label govuk-date-input__label" for="submission-date-month" th:text="#{index.submissionDate.month}"></label>
-                                        <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="submission-date-month" name="submissionDateMonth" type="text" inputmode="numeric" th:field="*{submissionDateMonth}">
+                        <div class="govuk-form-group" th:classappend="${#fields.hasErrors('submissionDateMonth') || #fields.hasErrors('submissionDateYear') ? ' govuk-form-group--error' : ''}">
+                            <fieldset class="govuk-fieldset" role="group" aria-describedby="submission-date-hint">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" th:text="#{index.submissionDate}"></legend>
+                                <div id="submission-date-hint" class="govuk-hint" th:text="#{index.submissionDate.hint}"></div>
+                                <p th:if="${#fields.hasErrors('submissionDateMonth')}" class="govuk-error-message" th:errors=" *{submissionDateMonth}">
+                                    <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                                </p>
+                                <p th:if="${#fields.hasErrors('submissionDateYear')}" class="govuk-error-message" th:errors=" *{submissionDateYear}">
+                                    <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                                </p>
+                                <div class="govuk-date-input">
+                                    <div class="govuk-date-input__item">
+                                        <div class="govuk-form-group">
+                                            <label class="govuk-label govuk-date-input__label" for="submission-date-month" th:text="#{index.submissionDate.month}"></label>
+                                            <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="submission-date-month" name="submissionDateMonth" type="text" inputmode="numeric" th:field="*{submissionDateMonth}" th:classappend="${#fields.hasErrors('submissionDateMonth') ? ' govuk-input--error' : ''}">
+                                        </div>
+                                    </div>
+                                    <div class="govuk-date-input__item">
+                                        <div class="govuk-form-group">
+                                            <label class="govuk-label govuk-date-input__label" for="submission-date-year" th:text="#{index.submissionDate.year}"></label>
+                                            <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="submission-date-year" name="submissionDateYear" type="text" inputmode="numeric" th:field="*{submissionDateYear}" th:classappend="${#fields.hasErrors('submissionDateYear') ? ' govuk-input--error' : ''}">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="govuk-date-input__item">
-                                    <div class="govuk-form-group">
-                                        <label class="govuk-label govuk-date-input__label" for="submission-date-year" th:text="#{index.submissionDate.year}"></label>
-                                        <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="submission-date-year" name="submissionDateYear" type="text" inputmode="numeric" th:field="*{submissionDateYear}">
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
+                            </fieldset>
+                        </div>
 
                         <div class="govuk-form-group">
                             <label class="govuk-label govuk-label--s" for="reference-number" th:text="#{index.referenceNumber}"></label>
