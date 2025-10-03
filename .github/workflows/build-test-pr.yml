@@ -80,6 +80,13 @@ jobs:
         with:
           command: code test
           args: --severity-threshold=high
+        continue-on-error: true
+
+      - name: Extract Snyk vulnerability IDs
+        if: always()
+        run: |
+          cat snyk.json || true
+          snyk code test --severity-threshold=high --json | jq -r '.vulnerabilities[] | "\(.id) - \(.title) [\(.severity)]"'
 
   vulnerability-scan-docker:
     runs-on: ubuntu-latest
