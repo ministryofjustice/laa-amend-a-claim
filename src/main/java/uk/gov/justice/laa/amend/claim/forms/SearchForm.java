@@ -18,14 +18,14 @@ import static uk.gov.justice.laa.amend.claim.forms.helpers.StringUtils.isEmpty;
 public class SearchForm {
 
     @NotBlank(message = "{index.providerAccountNumber.error.required}")
-    @Pattern(regexp = "^[a-zA-Z0-9 ]*$", message = "{index.providerAccountNumber.error.invalid}")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "{index.providerAccountNumber.error.invalid}")
     private String providerAccountNumber;
 
     private String submissionDateMonth;
 
     private String submissionDateYear;
 
-    @Pattern(regexp = "^[a-zA-Z0-9 ]*$", message = "{index.referenceNumber.error.invalid}")
+    @Pattern(regexp = "^[0-9\\p{L} /\\-'&]*$", message = "{index.referenceNumber.error.invalid}")
     private String referenceNumber;
 
     public boolean allEmpty() {
