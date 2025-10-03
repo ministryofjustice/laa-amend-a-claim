@@ -1,7 +1,8 @@
-# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-exclude:
-  - 'src/main/java/uk/gov/justice/laa/amend/claim/config/LocalSecurityConfig.java'
 version: v1.25.1
-# ignores vulnerabilities until expiry date; change duration by modifying expiry date
-ignore: {}
+
+ignore:
+  java/DisablesCSRFProtection:
+    - path: src/main/java/uk/gov/justice/laa/amend/claim/config/LocalSecurityConfig.java
+      reason: "CSRF disabled intentionally in LocalSecurityConfig"
+
 patch: {}
