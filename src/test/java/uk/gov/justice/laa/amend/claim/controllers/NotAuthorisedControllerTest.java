@@ -21,7 +21,7 @@ public class NotAuthorisedControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void testPageReturnsView() throws Exception {
+    public void testOnPageLoadReturnsView() throws Exception {
         mockMvc.perform(get("/not-authorised"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("not-authorised"));

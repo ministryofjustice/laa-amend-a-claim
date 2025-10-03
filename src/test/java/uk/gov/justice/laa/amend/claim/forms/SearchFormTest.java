@@ -1,0 +1,154 @@
+package uk.gov.justice.laa.amend.claim.forms;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import java.util.Set;
+
+public class SearchFormTest {
+
+    private static Validator validator;
+
+    @BeforeAll
+    static void setUpValidator() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+    }
+
+    @Test
+    void testMissingProviderAccountNumber() {
+        SearchForm form = new SearchForm(
+            "",
+            "",
+            "",
+            ""
+        );
+
+        Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
+        ConstraintViolation<SearchForm> violation = violations.stream()
+            .filter(v -> v.getPropertyPath().toString().equals("providerAccountNumber"))
+            .findFirst()
+            .orElse(null);
+
+        Assertions.assertNotNull(violation);
+        Assertions.assertEquals("{index.providerAccountNumber.error.required}", violation.getMessage());
+    }
+
+    @Test
+    void testInvalidProviderAccountNumber() {
+        SearchForm form = new SearchForm(
+            "!",
+            "5",
+            "2025",
+            "ABC 123"
+        );
+
+        Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
+        ConstraintViolation<SearchForm> violation = violations.stream()
+            .filter(v -> v.getPropertyPath().toString().equals("providerAccountNumber"))
+            .findFirst()
+            .orElse(null);
+
+        Assertions.assertNotNull(violation);
+        Assertions.assertEquals("{index.providerAccountNumber.error.invalid}", violation.getMessage());
+    }
+
+    @Test
+    void testInvalidMonthAndYear() {
+        SearchForm form = new SearchForm(
+            "ABC 123",
+            "!",
+            "!",
+            "ABC 123"
+        );
+
+        Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
+        ConstraintViolation<SearchForm> monthViolation = getViolation(violations, "submissionDateMonth");
+        ConstraintViolation<SearchForm> yearViolation = getViolation(violations, "submissionDateYear");
+
+        Assertions.assertEquals("{index.submissionDate.month.error.invalid}", monthViolation.getMessage());
+        Assertions.assertEquals("{index.submissionDate.year.error.invalid}", yearViolation.getMessage());
+    }
+
+    @Test
+    void testInvalidReferenceNumber() {
+        SearchForm form = new SearchForm(
+            "ABC 123",
+            "5",
+            "2025",
+            "!"
+        );
+
+        Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
+        ConstraintViolation<SearchForm> violation = getViolation(violations, "referenceNumber");
+
+        Assertions.assertNotNull(violation);
+        Assertions.assertEquals("{index.referenceNumber.error.invalid}", violation.getMessage());
+    }
+
+    @Nested
+    class SearchFormAllEmptyTest {
+
+        @Test
+        void testAllEmptyReturnsTrueWhenAllValuesAreNull() {
+            SearchForm form = new SearchForm(
+                null,
+                null,
+                null,
+                null
+            );
+            Assertions.assertTrue(form.allEmpty());
+        }
+
+        @Test
+        void testAllEmptyReturnsTrueWhenAllValuesAreEmpty() {
+            SearchForm form = new SearchForm(
+                "",
+                "",
+                "",
+                ""
+            );
+
+            Assertions.assertTrue(form.allEmpty());
+        }
+
+        @Test
+        void testAllEmptyReturnsTrueWhenAllValuesAreBlank() {
+            SearchForm form = new SearchForm(
+                " ",
+                " ",
+                " ",
+                " "
+            );
+
+            Assertions.assertTrue(form.allEmpty());
+        }
+
+        @Test
+        void testAllEmptyReturnsFalseWhenValuesAreNotNull() {
+            SearchForm form = new SearchForm(
+                "123",
+                "3",
+                "2007",
+                "456"
+            );
+
+            Assertions.assertFalse(form.allEmpty());
+        }
+    }
+
+    private ConstraintViolation<SearchForm> getViolation(Set<ConstraintViolation<SearchForm>> violations, String field) {
+        ConstraintViolation<SearchForm> violation = violations.stream()
+            .filter(v -> v.getPropertyPath().toString().equals(field))
+            .findFirst()
+            .orElse(null);
+        Assertions.assertNotNull(violation);
+        return violation;
+    }
+}

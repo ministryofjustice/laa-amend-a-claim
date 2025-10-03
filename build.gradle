@@ -31,6 +31,8 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.18.0'
     implementation 'org.mapstruct:mapstruct:1.6.3'
 
+    implementation 'org.webjars.npm:govuk-frontend:5.12.0'
+    implementation 'org.webjars.npm:ministryofjustice__frontend:5.1.5'
 
 
     compileOnly 'org.projectlombok:lombok'

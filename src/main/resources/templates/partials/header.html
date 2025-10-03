@@ -1,6 +1,4 @@
-<html lang="en"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.w3.org/1999/xhtml">
-<header class="moj-header" role="banner">
+<header class="moj-header" role="banner" th:fragment="header">
 
     <div class="moj-header__container">
 
@@ -39,8 +37,6 @@
             </svg>
 
             <a class="moj-header__link moj-header__link--organisation-name" th:href="@{/}" th:text="#{service.provider}"></a>
-
-            <a class="moj-header__link moj-header__link--service-name" th:href="@{/}" th:text="#{service.name}"></a>
         </div>
 
         <th:block sec:authorize="isAuthenticated()">
@@ -64,5 +60,3 @@
     </div>
 
 </header>
-
-</html>
