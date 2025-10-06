@@ -17,7 +17,11 @@ public class Claim {
     private String type; // TODO - create enum?
     private String status; // TODO - create enum?
 
-    public String getDateSubmitted() {
+    public String getDateSubmittedForDisplay() {
         return dateSubmitted.format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
+    }
+
+    public long getDateSubmittedForSorting() {
+        return dateSubmitted.toEpochDay();
     }
 }

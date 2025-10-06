@@ -96,7 +96,7 @@
                         </td>
                         <td class="govuk-table__cell" th:text="${claim.clientReferenceNumber}"></td>
                         <td class="govuk-table__cell" th:text="${claim.clientSurname}"></td>
-                        <td class="govuk-table__cell" th:text="${claim.dateSubmitted}"></td>
+                        <td class="govuk-table__cell" th:text="${claim.dateSubmittedForDisplay}" th:data-sort-value="${claim.dateSubmittedForSorting}"></td>
                         <td class="govuk-table__cell" th:text="${claim.account}"></td>
                         <td class="govuk-table__cell" th:text="${claim.type}"></td>
                         <td class="govuk-table__cell" th:text="${claim.status}"></td>
