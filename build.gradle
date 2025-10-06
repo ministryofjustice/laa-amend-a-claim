@@ -36,6 +36,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.webjars.npm:govuk-frontend:5.12.0'
     implementation 'org.webjars.npm:ministryofjustice__frontend:5.1.5'
+    implementation 'io.netty:netty-codec-http2:4.1.125.Final'
+
 
 
     compileOnly 'org.projectlombok:lombok'
