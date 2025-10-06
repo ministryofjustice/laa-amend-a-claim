@@ -7,8 +7,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.HomePageController;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @ActiveProfiles("local")
@@ -47,9 +50,40 @@ class IndexViewTest extends ViewTestBase {
 
     @Test
     void testPageWithPagination() throws Exception {
-        Map<String, Object> variables = Map.of(
-            "viewModel", new SearchResultViewModel()
+        List<Claim> claims = List.of(
+            new Claim(
+                "01012025/123",
+                "No data",
+                "Doe",
+                LocalDate.of(2025, 7, 25),
+                "ABC123",
+                "Family",
+                "EC"
+            ),
+            new Claim(
+                "1203022025/123",
+                "No data",
+                "White",
+                LocalDate.of(2025, 7, 25),
+                "ABC123",
+                "Family",
+                "EC"
+            ),
+            new Claim(
+                "18042025/123",
+                "No data",
+                "Stevens",
+                LocalDate.of(2025, 7, 25),
+                "ABC123",
+                "Family",
+                "EC"
+            )
         );
+
+        Map<String, Object> variables = Map.of(
+            "viewModel", new SearchResultViewModel(claims)
+        );
+
         Document doc = renderDocument(variables);
 
         assertPageHasH2(doc, "3 search results");
