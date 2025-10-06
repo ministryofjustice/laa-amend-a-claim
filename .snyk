@@ -1,8 +1,0 @@
-version: v1.25.1
-
-ignore:
-  java/DisablesCSRFProtection:
-    - path: src/main/java/uk/gov/justice/laa/amend/claim/config/LocalSecurityConfig.java
-      reason: "CSRF disabled intentionally in LocalSecurityConfig"
-
-patch: {}
