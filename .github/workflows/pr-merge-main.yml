@@ -91,7 +91,7 @@ jobs:
         continue-on-error: true
         with:
           command: test
-          args: --severity-threshold=high --sarif-file-output=snyk-app.sarif
+          args: --sarif-file-output=snyk-app.sarif
 
       # Fix/hack for Snyk's sarif file to avoid this error uploading to GitHub.
       # See https://github.com/github/codeql-action/issues/2187 for more context.
