@@ -13,7 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class LocalSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChainLocal(final HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+        http
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         return http.build();
     }
 }
