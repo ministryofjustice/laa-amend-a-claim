@@ -1,0 +1,707 @@
+{
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Snyk Open Source",
+          "semanticVersion": "1.1299.1",
+          "version": "1.1299.1",
+          "informationUri": "https://docs.snyk.io/",
+          "properties": {
+            "artifactsScanned": 197
+          },
+          "rules": [
+            {
+              "id": "SNYK-JAVA-CHQOSLOGBACK-13169722",
+              "shortDescription": {
+                "text": "Medium severity - External Initialization of Trusted Variables or Data Stores vulnerability in ch.qos.logback:logback-core"
+              },
+              "fullDescription": {
+                "text": "(CVE-2025-11226) ch.qos.logback:logback-core@1.5.18"
+              },
+              "help": {
+                "text": "",
+                "markdown": "* Package Manager: gradle\n* Vulnerable module: ch.qos.logback:logback-core\n* Introduced through: laa-amend-a-claim@1.0.0, org.springframework.boot:spring-boot-starter-actuator@3.5.5 and others\n### Detailed paths\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-actuator@3.5.5 › org.springframework.boot:spring-boot-starter@3.5.5 › org.springframework.boot:spring-boot-starter-logging@3.5.5 › ch.qos.logback:logback-classic@1.5.18 › ch.qos.logback:logback-core@1.5.18\n# Overview\n[ch.qos.logback:logback-core](https://mvnrepository.com/artifact/ch.qos.logback/logback-core) is a logback-core module.\n\nAffected versions of this package are vulnerable to External Initialization of Trusted Variables or Data Stores via the conditional processing of the `logback.xml` configuration file when both the Janino library and Spring Framework are present on the class path. An attacker can execute arbitrary code by compromising an existing configuration file or injecting a malicious environment variable before program execution. This is only exploitable if the attacker has write access to a configuration file or can set a malicious environment variable.\n# Remediation\nUpgrade `ch.qos.logback:logback-core` to version 1.5.19 or higher.\n# References\n- [GitHub Commit](https://github.com/qos-ch/logback/commit/61f6a2544f36b3016e0efd434ee21f19269f1df7)\n- [Release Notes](https://logback.qos.ch/news.html#1.5.19)\n"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "CWE-454",
+                  "gradle"
+                ],
+                "cvssv3_baseScore": 5.9,
+                "security-severity": "5.9"
+              }
+            },
+            {
+              "id": "snyk:lic:maven:ch.qos.logback:logback-core:(EPL-1.0_OR_LGPL-2.1)",
+              "shortDescription": {
+                "text": "Medium severity - Dual license: EPL-1.0, LGPL-2.1 vulnerability in ch.qos.logback:logback-core"
+              },
+              "fullDescription": {
+                "text": "ch.qos.logback:logback-core@1.5.18"
+              },
+              "help": {
+                "text": "",
+                "markdown": "* Package Manager: gradle\n* Module: ch.qos.logback:logback-core\n* Introduced through: laa-amend-a-claim@1.0.0, org.springframework.boot:spring-boot-starter-actuator@3.5.5 and others\n### Detailed paths\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-actuator@3.5.5 › org.springframework.boot:spring-boot-starter@3.5.5 › org.springframework.boot:spring-boot-starter-logging@3.5.5 › ch.qos.logback:logback-classic@1.5.18 › ch.qos.logback:logback-core@1.5.18\nDual license: EPL-1.0, LGPL-2.1"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "gradle"
+                ],
+                "security-severity": "undefined"
+              }
+            },
+            {
+              "id": "SNYK-JAVA-COMMONSBEANUTILS-10259368",
+              "shortDescription": {
+                "text": "High severity - Use of Externally-Controlled Input to Select Classes or Code ('Unsafe Reflection') vulnerability in commons-beanutils:commons-beanutils"
+              },
+              "fullDescription": {
+                "text": "(CVE-2025-48734) commons-beanutils:commons-beanutils@1.10.0"
+              },
+              "help": {
+                "text": "",
+                "markdown": "* Package Manager: gradle\n* Vulnerable module: commons-beanutils:commons-beanutils\n* Introduced through: laa-amend-a-claim@1.0.0, com.puppycrawl.tools:checkstyle@10.21.2 and others\n### Detailed paths\n* _Introduced through_: laa-amend-a-claim@1.0.0 › com.puppycrawl.tools:checkstyle@10.21.2 › commons-beanutils:commons-beanutils@1.10.0\n# Overview\n[commons-beanutils:commons-beanutils](https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils) is a provides an easy-to-use but flexible wrapper around reflection and introspection.\n\nAffected versions of this package are vulnerable to Use of Externally-Controlled Input to Select Classes or Code ('Unsafe Reflection') via the `getProperty` and `getNestedProperty` methods of the `PropertyUtilsBean` class. An attacker can execute arbitrary code by accessing the `declaredClass` property of Java enum objects, which allows access to the ClassLoader.\r\n\r\n**Note:**\r\n\r\nThe `BeanIntrospector` class that can mitigate this vulnerability was added in version 1.9.2 but its usage was not enabled by default.\n# Remediation\nUpgrade `commons-beanutils:commons-beanutils` to version 1.11.0 or higher.\n# References\n- [Apache Advisory](https://lists.apache.org/thread/s0hb3jkfj5f3ryx6c57zqtfohb0of1g9)\n- [GitHub Commit](https://github.com/apache/commons-beanutils/commit/28ad955a1613ed5885870cc7da52093c1ce739dc)\n- [GitHub Commit](https://github.com/apache/commons-beanutils/commit/bd20740da25b69552ddef8523beec0837297eaf9)\n"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "CWE-470",
+                  "gradle"
+                ],
+                "cvssv3_baseScore": 8.7,
+                "security-severity": "8.7"
+              }
+            },
+            {
+              "id": "SNYK-JAVA-COMNIMBUSDS-10691768",
+              "shortDescription": {
+                "text": "Medium severity - Uncontrolled Recursion vulnerability in com.nimbusds:nimbus-jose-jwt"
+              },
+              "fullDescription": {
+                "text": "(CVE-2025-53864) com.nimbusds:nimbus-jose-jwt@9.37.3"
+              },
+              "help": {
+                "text": "",
+                "markdown": "* Package Manager: gradle\n* Vulnerable module: com.nimbusds:nimbus-jose-jwt\n* Introduced through: laa-amend-a-claim@1.0.0, org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 and others\n### Detailed paths\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 › org.springframework.security:spring-security-oauth2-jose@6.5.3 › com.nimbusds:nimbus-jose-jwt@9.37.3\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 › org.springframework.security:spring-security-oauth2-client@6.5.3 › com.nimbusds:oauth2-oidc-sdk@9.43.6 › com.nimbusds:nimbus-jose-jwt@9.37.3\n# Overview\n[com.nimbusds:nimbus-jose-jwt](https://connect2id.com/products/nimbus-jose-jwt) is a library for JSON Web Tokens (JWT)\n\nAffected versions of this package are vulnerable to Uncontrolled Recursion due to the improper handling JWT claim sets containing deeply nested JSON objects. An attacker can cause application downtime or resource exhaustion by submitting a specially crafted JWT with excessive nesting.\r\n\r\n**Note:**\r\n\r\nThis issue only affects `nimbus-jose-jwt`, not `Gson` because the Connect2id product could have checked the JSON object nesting depth, regardless of what limits (if any) were imposed by Gson.\n# PoC\n```java\r\nimport com.nimbusds.jwt.JWTClaimsSet;\r\nimport java.text.ParseException;\r\nimport java.util.HashMap;\r\nimport java.util.Map;\r\n\r\npublic class Test {\r\n    // This builds a claimset with a deeply nested map, which could theoretically be supplied by a client.\r\n    // If the JWT is serialized into JSON (for example, in logging or debugging), it can cause a StackOverflowError.\r\n    public static void main(String[] args) throws ParseException {        \r\n        Map<String, Object> nestedMap = new HashMap<>();\r\n        Map<String, Object> currentLevel = nestedMap;\r\n\r\n        for (int i = 0; i < 5000; i++) {\r\n            Map<String, Object> nextLevel = new HashMap<>();\r\n            currentLevel.put(\"\", nextLevel);\r\n            currentLevel = nextLevel;\r\n        }\r\n\r\n        JWTClaimsSet claimSet = JWTClaimsSet.parse(nestedMap);\r\n\r\n        // This will cause a StackOverflowError due to excessive recursion in GSON's serialization\r\n        claimSet.toString();\r\n    }\r\n}\r\n```\n# Remediation\nUpgrade `com.nimbusds:nimbus-jose-jwt` to version 9.37.4, 10.0.2 or higher.\n# References\n- [Bitbucket Commit](https://bitbucket.org/connect2id/nimbus-jose-jwt/commits/393a96fd858a5a74276158ca9740b67ca9484b4d)\n- [Bitbucket Issue](https://bitbucket.org/connect2id/nimbus-jose-jwt/issues/583/stackoverflowerror-due-to-deeply-nested)\n- [Bitbucket Issue](https://bitbucket.org/connect2id/nimbus-jose-jwt/issues/593/back-port-cve-2025-53864-fix-to-9x-branch)\n- [GitHub Commit](https://github.com/google/gson/commit/1039427ff0100293dd3cf967a53a55282c0fef6b)\n"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "CWE-674",
+                  "gradle"
+                ],
+                "cvssv3_baseScore": 6.9,
+                "security-severity": "6.9"
+              }
+            },
+            {
+              "id": "SNYK-JAVA-ORGAPACHECOMMONS-10734078",
+              "shortDescription": {
+                "text": "High severity - Uncontrolled Recursion vulnerability in org.apache.commons:commons-lang3"
+              },
+              "fullDescription": {
+                "text": "(CVE-2025-48924) org.apache.commons:commons-lang3@3.17.0"
+              },
+              "help": {
+                "text": "",
+                "markdown": "* Package Manager: gradle\n* Vulnerable module: org.apache.commons:commons-lang3\n* Introduced through: laa-amend-a-claim@1.0.0, com.puppycrawl.tools:checkstyle@10.21.2 and others\n### Detailed paths\n* _Introduced through_: laa-amend-a-claim@1.0.0 › com.puppycrawl.tools:checkstyle@10.21.2 › org.apache.maven.doxia:doxia-core@1.12.0 › org.apache.commons:commons-lang3@3.17.0\n* _Introduced through_: laa-amend-a-claim@1.0.0 › com.puppycrawl.tools:checkstyle@10.21.2 › org.apache.maven.doxia:doxia-core@1.12.0 › org.apache.commons:commons-text@1.3 › org.apache.commons:commons-lang3@3.17.0\n# Overview\n\nAffected versions of this package are vulnerable to Uncontrolled Recursion via the `ClassUtils.getClass` function. An attacker can cause the application to terminate unexpectedly by providing excessively long input values.\n# Remediation\nUpgrade `org.apache.commons:commons-lang3` to version 3.18.0 or higher.\n# References\n- [Apache Pony Mail](https://lists.apache.org/thread/bgv0lpswokgol11tloxnjfzdl7yrc1g1)\n- [GitHub Commit](https://github.com/apache/commons-lang/commit/b424803abdb2bec818e4fbcb251ce031c22aca53)\n"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "CWE-674",
+                  "gradle"
+                ],
+                "cvssv3_baseScore": 8.8,
+                "security-severity": "8.8"
+              }
+            },
+            {
+              "id": "SNYK-JAVA-ORGAPACHECOMMONS-6254296",
+              "shortDescription": {
+                "text": "High severity - Infinite loop vulnerability in org.apache.commons:commons-compress"
+              },
+              "fullDescription": {
+                "text": "(CVE-2024-25710) org.apache.commons:commons-compress@1.24.0"
+              },
+              "help": {
+                "text": "",
+                "markdown": "* Package Manager: gradle\n* Vulnerable module: org.apache.commons:commons-compress\n* Introduced through: laa-amend-a-claim@1.0.0, org.testcontainers:junit-jupiter@1.21.3 and others\n### Detailed paths\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.testcontainers:junit-jupiter@1.21.3 › org.testcontainers:testcontainers@1.21.3 › org.apache.commons:commons-compress@1.24.0\n# Overview\n[org.apache.commons:commons-compress](https://github.com/apache/commons-compress) is an API for working with compression and archive formats.\n\nAffected versions of this package are vulnerable to Infinite loop due to the improper handling of certain inputs during the parsing of dump files. An attacker can cause the application to enter an infinite loop by supplying crafted inputs.\n# Remediation\nUpgrade `org.apache.commons:commons-compress` to version 1.26.0 or higher.\n# References\n- [Apache Lists](https://lists.apache.org/thread/cz8qkcwphy4cx8gltn932ln51cbtq6kf)\n- [GitHub Commit](https://github.com/apache/commons-compress/commit/8a9a5847c04ae39a1d45b365f8bb82022466067d)\n"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "CWE-835",
+                  "gradle"
+                ],
+                "cvssv3_baseScore": 8.1,
+                "security-severity": "8.1"
+              }
+            },
+            {
+              "id": "SNYK-JAVA-ORGAPACHECOMMONS-6254297",
+              "shortDescription": {
+                "text": "Medium severity - Allocation of Resources Without Limits or Throttling vulnerability in org.apache.commons:commons-compress"
+              },
+              "fullDescription": {
+                "text": "(CVE-2024-26308) org.apache.commons:commons-compress@1.24.0"
+              },
+              "help": {
+                "text": "",
+                "markdown": "* Package Manager: gradle\n* Vulnerable module: org.apache.commons:commons-compress\n* Introduced through: laa-amend-a-claim@1.0.0, org.testcontainers:junit-jupiter@1.21.3 and others\n### Detailed paths\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.testcontainers:junit-jupiter@1.21.3 › org.testcontainers:testcontainers@1.21.3 › org.apache.commons:commons-compress@1.24.0\n# Overview\n[org.apache.commons:commons-compress](https://github.com/apache/commons-compress) is an API for working with compression and archive formats.\n\nAffected versions of this package are vulnerable to Allocation of Resources Without Limits or Throttling due to an `OutOfMemoryError` during the handling of a broken `Pack200` file.\n# Remediation\nUpgrade `org.apache.commons:commons-compress` to version 1.26.0 or higher.\n# References\n- [Apache Lists](https://lists.apache.org/thread/ch5yo2d21p7vlqrhll9b17otbyq4npfg)\n- [GitHub Commit](https://github.com/apache/commons-compress/commit/a770a37bf52b1b1a75ddc47732085a3462ebf65b)\n"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "CWE-770",
+                  "gradle"
+                ],
+                "cvssv3_baseScore": 4.3,
+                "security-severity": "4.3"
+              }
+            },
+            {
+              "id": "SNYK-JAVA-ORGSPRINGFRAMEWORK-12817817",
+              "shortDescription": {
+                "text": "High severity - Incorrect Authorization vulnerability in org.springframework:spring-core"
+              },
+              "fullDescription": {
+                "text": "(CVE-2025-41249) org.springframework:spring-core@6.2.10"
+              },
+              "help": {
+                "text": "",
+                "markdown": "* Package Manager: gradle\n* Vulnerable module: org.springframework:spring-core\n* Introduced through: laa-amend-a-claim@1.0.0, org.springframework.boot:spring-boot-starter-test@3.5.5 and others\n### Detailed paths\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-test@3.5.5 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.security:spring-security-test@6.5.3 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-actuator@3.5.5 › org.springframework.boot:spring-boot-starter@3.5.5 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-web@3.5.5 › org.springframework:spring-web@6.2.10 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-web@3.5.5 › org.springframework:spring-webmvc@6.2.10 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 › org.springframework.security:spring-security-oauth2-client@6.5.3 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 › org.springframework.security:spring-security-core@6.5.3 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 › org.springframework.security:spring-security-oauth2-jose@6.5.3 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 › org.springframework.security:spring-security-config@6.5.3 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-resource-server@3.5.5 › org.springframework.security:spring-security-oauth2-resource-server@6.5.3 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › uk.gov.justice.laa.datastewardship.payments:data-claims-api-models@0f57254 › org.springframework.data:spring-data-commons@3.5.3 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-webflux@3.5.5 › org.springframework:spring-webflux@6.2.10 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-devtools@3.5.5 › org.springframework.boot:spring-boot@3.5.5 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-test@3.5.5 › org.springframework:spring-test@6.2.10 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.security:spring-security-test@6.5.3 › org.springframework.security:spring-security-web@6.5.3 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-web@3.5.5 › org.springframework:spring-web@6.2.10 › org.springframework:spring-beans@6.2.10 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-web@3.5.5 › org.springframework:spring-webmvc@6.2.10 › org.springframework:spring-context@6.2.10 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-web@3.5.5 › org.springframework:spring-webmvc@6.2.10 › org.springframework:spring-aop@6.2.10 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-web@3.5.5 › org.springframework:spring-webmvc@6.2.10 › org.springframework:spring-expression@6.2.10 › org.springframework:spring-core@6.2.10\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 › org.springframework.security:spring-security-oauth2-client@6.5.3 › org.springframework.security:spring-security-oauth2-core@6.5.3 › org.springframework:spring-core@6.2.10\n# Overview\n[org.springframework:spring-core](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22spring-core%22) is a core package within the spring-framework that contains multiple classes and utilities.\n\nAffected versions of this package are vulnerable to Incorrect Authorization via the `AnnotationsScanner` and `AnnotatedMethod` class. An attacker can gain unauthorized access to sensitive information by exploiting improper resolution of annotations on methods within type hierarchies that use parameterized supertypes with unbounded generics.\r\n\r\n**Note:**\r\nThis is only exploitable if security annotations are used on methods in generic superclasses or generic interfaces and the `@EnableMethodSecurity` feature is enabled.\n# Remediation\nUpgrade `org.springframework:spring-core` to version 6.2.11 or higher.\n# References\n- [GitHub Commit](https://github.com/spring-projects/spring-framework/commit/6d710d482a6785b069e35022e81758953afc21ff)\n- [GitHub Issue](https://github.com/spring-projects/spring-framework/issues/35342)\n- [GitHub Release](https://github.com/spring-projects/spring-framework/releases/tag/v6.2.11)\n- [Vendor Advisory](https://spring.io/security/cve-2025-41249)\n"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "CWE-863",
+                  "gradle"
+                ],
+                "cvssv3_baseScore": 8.7,
+                "security-severity": "8.7"
+              }
+            },
+            {
+              "id": "SNYK-JAVA-ORGSPRINGFRAMEWORKSECURITY-12817818",
+              "shortDescription": {
+                "text": "High severity - Incorrect Authorization vulnerability in org.springframework.security:spring-security-core"
+              },
+              "fullDescription": {
+                "text": "(CVE-2025-41248) org.springframework.security:spring-security-core@6.5.3"
+              },
+              "help": {
+                "text": "",
+                "markdown": "* Package Manager: gradle\n* Vulnerable module: org.springframework.security:spring-security-core\n* Introduced through: laa-amend-a-claim@1.0.0, org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 and others\n### Detailed paths\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 › org.springframework.security:spring-security-core@6.5.3\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-resource-server@3.5.5 › org.springframework.security:spring-security-core@6.5.3\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.security:spring-security-test@6.5.3 › org.springframework.security:spring-security-core@6.5.3\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 › org.springframework.security:spring-security-oauth2-client@6.5.3 › org.springframework.security:spring-security-core@6.5.3\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 › org.springframework.security:spring-security-oauth2-jose@6.5.3 › org.springframework.security:spring-security-core@6.5.3\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 › org.springframework.security:spring-security-config@6.5.3 › org.springframework.security:spring-security-core@6.5.3\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-resource-server@3.5.5 › org.springframework.security:spring-security-oauth2-resource-server@6.5.3 › org.springframework.security:spring-security-core@6.5.3\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.security:spring-security-test@6.5.3 › org.springframework.security:spring-security-web@6.5.3 › org.springframework.security:spring-security-core@6.5.3\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-oauth2-client@3.5.5 › org.springframework.security:spring-security-oauth2-client@6.5.3 › org.springframework.security:spring-security-oauth2-core@6.5.3 › org.springframework.security:spring-security-core@6.5.3\n# Overview\n[org.springframework.security:spring-security-core](http://spring.io/spring-security) is a package that provides security services for the Spring IO Platform.\n\nAffected versions of this package are vulnerable to Incorrect Authorization via the annotation detection mechanism when resolving annotations on methods within type hierarchies that use a parameterized super type with unbounded generics. An attacker can gain unauthorized access to protected resources by invoking methods that should be secured but are not properly checked due to incorrect annotation resolution.\r\n\r\n**Note:**\r\nThis is only exploitable if the application uses the `@EnableMethodSecurity` feature and applies security annotations on methods in generic superclasses or generic interfaces.\n# Remediation\nUpgrade `org.springframework.security:spring-security-core` to version 6.4.10, 6.5.4 or higher.\n# References\n- [GitHub Commit](https://github.com/spring-projects/spring-security/commit/d0f93fa6d8338149943ae640c53db07de827867f)\n- [GitHub Commit](https://github.com/spring-projects/spring-security/commit/e5694ac7b5e4394b920c6cab48b7bfbd871f84bd)\n- [GitHub Issue](https://github.com/spring-projects/spring-security/issues/17898)\n- [GitHub Issue](https://github.com/spring-projects/spring-security/issues/17899)\n- [GitHub Release](https://github.com/spring-projects/spring-security/releases/tag/6.4.10)\n- [GitHub Release](https://github.com/spring-projects/spring-security/releases/tag/6.5.4)\n- [Vendor Advisory](https://spring.io/security/cve-2025-41248)\n"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "CWE-863",
+                  "gradle"
+                ],
+                "cvssv3_baseScore": 8.7,
+                "security-severity": "8.7"
+              }
+            },
+            {
+              "id": "snyk:lic:maven:ch.qos.logback:logback-classic:(EPL-1.0_OR_LGPL-2.1)",
+              "shortDescription": {
+                "text": "Medium severity - Dual license: EPL-1.0, LGPL-2.1 vulnerability in ch.qos.logback:logback-classic"
+              },
+              "fullDescription": {
+                "text": "ch.qos.logback:logback-classic@1.5.18"
+              },
+              "help": {
+                "text": "",
+                "markdown": "* Package Manager: gradle\n* Module: ch.qos.logback:logback-classic\n* Introduced through: laa-amend-a-claim@1.0.0, org.springframework.boot:spring-boot-starter-actuator@3.5.5 and others\n### Detailed paths\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.springframework.boot:spring-boot-starter-actuator@3.5.5 › org.springframework.boot:spring-boot-starter@3.5.5 › org.springframework.boot:spring-boot-starter-logging@3.5.5 › ch.qos.logback:logback-classic@1.5.18\nDual license: EPL-1.0, LGPL-2.1"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "gradle"
+                ],
+                "security-severity": "undefined"
+              }
+            },
+            {
+              "id": "snyk:lic:maven:com.puppycrawl.tools:checkstyle:LGPL-2.1",
+              "shortDescription": {
+                "text": "Medium severity - LGPL-2.1 license vulnerability in com.puppycrawl.tools:checkstyle"
+              },
+              "fullDescription": {
+                "text": "com.puppycrawl.tools:checkstyle@10.21.2"
+              },
+              "help": {
+                "text": "",
+                "markdown": "* Package Manager: gradle\n* Module: com.puppycrawl.tools:checkstyle\n* Introduced through: laa-amend-a-claim@1.0.0 and com.puppycrawl.tools:checkstyle@10.21.2\n### Detailed paths\n* _Introduced through_: laa-amend-a-claim@1.0.0 › com.puppycrawl.tools:checkstyle@10.21.2\nLGPL-2.1 license"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "gradle"
+                ],
+                "security-severity": "undefined"
+              }
+            },
+            {
+              "id": "snyk:lic:maven:junit:junit:EPL-1.0",
+              "shortDescription": {
+                "text": "Medium severity - EPL-1.0 license vulnerability in junit:junit"
+              },
+              "fullDescription": {
+                "text": "junit:junit@4.13.2"
+              },
+              "help": {
+                "text": "",
+                "markdown": "* Package Manager: gradle\n* Module: junit:junit\n* Introduced through: laa-amend-a-claim@1.0.0, org.testcontainers:junit-jupiter@1.21.3 and others\n### Detailed paths\n* _Introduced through_: laa-amend-a-claim@1.0.0 › org.testcontainers:junit-jupiter@1.21.3 › org.testcontainers:testcontainers@1.21.3 › junit:junit@4.13.2\nEPL-1.0 license"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "gradle"
+                ],
+                "security-severity": "undefined"
+              }
+            },
+            {
+              "id": "snyk:lic:maven:net.sf.saxon:Saxon-HE:MPL-2.0",
+              "shortDescription": {
+                "text": "Medium severity - MPL-2.0 license vulnerability in net.sf.saxon:Saxon-HE"
+              },
+              "fullDescription": {
+                "text": "net.sf.saxon:Saxon-HE@12.5"
+              },
+              "help": {
+                "text": "",
+                "markdown": "* Package Manager: gradle\n* Module: net.sf.saxon:Saxon-HE\n* Introduced through: laa-amend-a-claim@1.0.0, com.puppycrawl.tools:checkstyle@10.21.2 and others\n### Detailed paths\n* _Introduced through_: laa-amend-a-claim@1.0.0 › com.puppycrawl.tools:checkstyle@10.21.2 › net.sf.saxon:Saxon-HE@12.5\nMPL-2.0 license"
+              },
+              "properties": {
+                "tags": [
+                  "security",
+                  "gradle"
+                ],
+                "security-severity": "undefined"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "SNYK-JAVA-CHQOSLOGBACK-13169722",
+          "level": "warning",
+          "message": {
+            "text": "This file introduces a vulnerable ch.qos.logback:logback-core package with a medium severity vulnerability."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build.gradle"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "ch.qos.logback:logback-core@1.5.18"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "snyk:lic:maven:ch.qos.logback:logback-core:(EPL-1.0_OR_LGPL-2.1)",
+          "level": "warning",
+          "message": {
+            "text": "This file introduces a vulnerable ch.qos.logback:logback-core package with a medium severity vulnerability."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build.gradle"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "ch.qos.logback:logback-core@1.5.18"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-JAVA-COMMONSBEANUTILS-10259368",
+          "level": "error",
+          "message": {
+            "text": "This file introduces a vulnerable commons-beanutils:commons-beanutils package with a high severity vulnerability."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build.gradle"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "commons-beanutils:commons-beanutils@1.10.0"
+                }
+              ]
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Upgrade to com.puppycrawl.tools:checkstyle@10.25.0"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "build.gradle"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 1
+                      },
+                      "insertedContent": {
+                        "text": "com.puppycrawl.tools:checkstyle@10.25.0"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-JAVA-COMNIMBUSDS-10691768",
+          "level": "warning",
+          "message": {
+            "text": "This file introduces a vulnerable com.nimbusds:nimbus-jose-jwt package with a medium severity vulnerability."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build.gradle"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "com.nimbusds:nimbus-jose-jwt@9.37.3"
+                }
+              ]
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Upgrade to org.springframework.boot:spring-boot-starter-oauth2-client@3.5.6"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "build.gradle"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 1
+                      },
+                      "insertedContent": {
+                        "text": "org.springframework.boot:spring-boot-starter-oauth2-client@3.5.6"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-JAVA-ORGAPACHECOMMONS-10734078",
+          "level": "error",
+          "message": {
+            "text": "This file introduces a vulnerable org.apache.commons:commons-lang3 package with a high severity vulnerability."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build.gradle"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "org.apache.commons:commons-lang3@3.17.0"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-JAVA-ORGAPACHECOMMONS-6254296",
+          "level": "error",
+          "message": {
+            "text": "This file introduces a vulnerable org.apache.commons:commons-compress package with a high severity vulnerability."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build.gradle"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "org.apache.commons:commons-compress@1.24.0"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-JAVA-ORGAPACHECOMMONS-6254297",
+          "level": "warning",
+          "message": {
+            "text": "This file introduces a vulnerable org.apache.commons:commons-compress package with a medium severity vulnerability."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build.gradle"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "org.apache.commons:commons-compress@1.24.0"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-JAVA-ORGSPRINGFRAMEWORK-12817817",
+          "level": "error",
+          "message": {
+            "text": "This file introduces a vulnerable org.springframework:spring-core package with a high severity vulnerability."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build.gradle"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "org.springframework:spring-core@6.2.10"
+                }
+              ]
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Upgrade to org.springframework.boot:spring-boot-starter-test@3.5.6"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "build.gradle"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 1
+                      },
+                      "insertedContent": {
+                        "text": "org.springframework.boot:spring-boot-starter-test@3.5.6"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "SNYK-JAVA-ORGSPRINGFRAMEWORKSECURITY-12817818",
+          "level": "error",
+          "message": {
+            "text": "This file introduces a vulnerable org.springframework.security:spring-security-core package with a high severity vulnerability."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build.gradle"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "org.springframework.security:spring-security-core@6.5.3"
+                }
+              ]
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Upgrade to org.springframework.boot:spring-boot-starter-oauth2-client@3.5.6"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "build.gradle"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 1
+                      },
+                      "insertedContent": {
+                        "text": "org.springframework.boot:spring-boot-starter-oauth2-client@3.5.6"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "snyk:lic:maven:ch.qos.logback:logback-classic:(EPL-1.0_OR_LGPL-2.1)",
+          "level": "warning",
+          "message": {
+            "text": "This file introduces a vulnerable ch.qos.logback:logback-classic package with a medium severity vulnerability."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build.gradle"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "ch.qos.logback:logback-classic@1.5.18"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "snyk:lic:maven:com.puppycrawl.tools:checkstyle:LGPL-2.1",
+          "level": "warning",
+          "message": {
+            "text": "This file introduces a vulnerable com.puppycrawl.tools:checkstyle package with a medium severity vulnerability."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build.gradle"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "com.puppycrawl.tools:checkstyle@10.21.2"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "snyk:lic:maven:junit:junit:EPL-1.0",
+          "level": "warning",
+          "message": {
+            "text": "This file introduces a vulnerable junit:junit package with a medium severity vulnerability."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build.gradle"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "junit:junit@4.13.2"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "snyk:lic:maven:net.sf.saxon:Saxon-HE:MPL-2.0",
+          "level": "warning",
+          "message": {
+            "text": "This file introduces a vulnerable net.sf.saxon:Saxon-HE package with a medium severity vulnerability."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "build.gradle"
+                },
+                "region": {
+                  "startLine": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "net.sf.saxon:Saxon-HE@12.5"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
