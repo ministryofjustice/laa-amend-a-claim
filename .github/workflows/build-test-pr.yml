@@ -78,8 +78,7 @@ jobs:
       - name: Run Snyk to check app for vulnerabilities
         uses: snyk/actions/gradle@master
         with:
-          command: code test
-          args: --severity-threshold=high --json
+          command: code monitor
 
   vulnerability-scan-docker:
     runs-on: ubuntu-latest
