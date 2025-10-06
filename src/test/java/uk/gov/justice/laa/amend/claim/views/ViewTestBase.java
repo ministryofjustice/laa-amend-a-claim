@@ -92,4 +92,19 @@ public abstract class ViewTestBase {
   private Element getElementById(Element element, String id) {
     return selectFirst(element, String.format("#%s", id));
   }
+
+  protected void assertPageHasH2(Document doc, String expectedText) {
+    Element heading = selectFirst(doc, "h2");
+    Assertions.assertEquals(expectedText, heading.text());
+  }
+
+  protected void assertPageHasTable(Document doc) {
+    Elements elements = doc.getElementsByClass("govuk-table");
+    Assertions.assertFalse(elements.isEmpty());
+  }
+
+  protected void assertPageHasPagination(Document doc) {
+    Elements elements = doc.getElementsByClass("moj-pagination");
+    Assertions.assertFalse(elements.isEmpty());
+  }
 }
