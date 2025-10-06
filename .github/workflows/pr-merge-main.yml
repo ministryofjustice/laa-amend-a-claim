@@ -90,6 +90,7 @@ jobs:
         uses: snyk/actions/gradle@master
         continue-on-error: true
         with:
+          command: test
           args: --sarif-file-output=snyk-app.sarif
 
       # Fix/hack for Snyk's sarif file to avoid this error uploading to GitHub.
