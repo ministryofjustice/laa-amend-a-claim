@@ -20,3 +20,5 @@ out/
 ### VS Code ###
 .vscode/
 .env
+
+snyk-app.sarif
