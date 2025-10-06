@@ -1,6 +1,17 @@
+#services:
+#  app:
+#    build:
+#      context: .
+#    ports:
+#      - "8080:8080"
+
+version: '3.8'
 services:
-  app:
-    build:
-      context: .
+  wiremock:
+    image: wiremock/wiremock:2.35.0
+    container_name: wiremock
     ports:
-      - "8080:8080"
+      - "8081:8080" # Expose WireMock on port 8081
+    volumes:
+      - ./wiremock/__files:/home/wiremock/__files
+      - ./wiremock/mappings:/home/wiremock/mappings
