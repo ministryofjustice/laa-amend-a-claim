@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
+import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 
 @Controller
 public class HomePageController {
@@ -35,7 +36,9 @@ public class HomePageController {
             return "index";
         }
 
-        // TODO - get results and add to model
+        SearchResultViewModel viewModel = new SearchResultViewModel();
+
+        model.addAttribute("viewModel", viewModel);
         return "index";
     }
 

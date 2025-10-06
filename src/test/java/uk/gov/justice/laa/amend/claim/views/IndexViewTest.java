@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.HomePageController;
+import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
+
+import java.util.Map;
 
 @ActiveProfiles("local")
 @WebMvcTest(HomePageController.class)
@@ -40,5 +43,19 @@ class IndexViewTest extends ViewTestBase {
         assertPageHasTextInput(doc, "reference-number", "UFN or CRN");
 
         assertPageHasActiveServiceNavigationItem(doc, "Search");
+    }
+
+    @Test
+    void testPageWithPagination() throws Exception {
+        Map<String, Object> variables = Map.of(
+            "viewModel", new SearchResultViewModel()
+        );
+        Document doc = renderDocument(variables);
+
+        assertPageHasH2(doc, "3 search results");
+
+        assertPageHasTable(doc);
+
+        assertPageHasPagination(doc);
     }
 }
