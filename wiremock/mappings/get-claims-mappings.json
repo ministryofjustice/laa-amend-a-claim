@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/api/v0/claims",
+    "queryParameters": {
+      "office_code": {
+        "matches": ".*"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "get-claims-response.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
