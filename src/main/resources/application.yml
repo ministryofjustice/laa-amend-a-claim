@@ -19,8 +19,8 @@ spring:
             user-info-uri: https://graph.microsoft.com/oidc/userinfo
             jwk-set-uri: https://login.microsoftonline.com/${AZURE_TENANT_ID}/discovery/v2.0/keys
 sentry:
-  dsn: https://07a4e036e1305d8dd00a9fede404c9e4@o345774.ingest.us.sentry.io/4510119326908416
-  environment: local
+  dsn: ""
+  environment: ""
 
 logging:
   level:
