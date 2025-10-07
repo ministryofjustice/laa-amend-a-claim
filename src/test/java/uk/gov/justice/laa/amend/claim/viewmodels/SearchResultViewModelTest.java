@@ -13,7 +13,7 @@ public class SearchResultViewModelTest {
     @Test
     void handleEmptyResponse() {
         ClaimResultSet response = new ClaimResultSet();
-        SearchResultViewModel result = new SearchResultViewModel(response, "pan");
+        SearchResultViewModel result = new SearchResultViewModel(response);
 
         Assertions.assertEquals(0, result.getClaims().size());
         Assertions.assertEquals(0, result.getPagination().getItems().size());
@@ -43,7 +43,7 @@ public class SearchResultViewModelTest {
         response.setNumber(5);
         response.setSize(10);
 
-        SearchResultViewModel result = new SearchResultViewModel(response, "pan");
+        SearchResultViewModel result = new SearchResultViewModel(response);
 
         Assertions.assertEquals(10, result.getClaims().size());
         Assertions.assertEquals(7, result.getPagination().getItems().size());

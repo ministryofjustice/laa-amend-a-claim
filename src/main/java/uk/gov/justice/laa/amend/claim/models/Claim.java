@@ -17,16 +17,16 @@ public class Claim {
     private LocalDate dateSubmitted;
     private String account;
     private String type;
-    private ClaimStatus status;
+    private String status;
 
-    public Claim(ClaimResponse response, String providerAccountNumber) {
+    public Claim(ClaimResponse response) {
         this.uniqueFileNumber = response.getUniqueFileNumber();
         this.caseReferenceNumber = response.getCaseReferenceNumber();
         this.clientSurname = response.getClientSurname();
         this.dateSubmitted = response.getCaseStartDate() != null ? LocalDate.parse(response.getCaseStartDate()) : null;
-        this.account = providerAccountNumber;
-        this.type = response.getMatterTypeCode();
-        this.status = response.getStatus();
+        this.account = response.getScheduleReference() != null ? response.getScheduleReference().split("/")[0] : null;
+        this.type = ""; // TODO - response doesn't contain this yet
+        this.status = ""; // TODO - response doesn't contain this yet
     }
 
     public String getDateSubmittedForDisplay() {
