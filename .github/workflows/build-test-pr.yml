@@ -130,6 +130,9 @@ jobs:
           java-version: 21
           distribution: 'corretto'
 
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Run Snyk to check app for vulnerabilities
         uses: snyk/actions/gradle@master
         continue-on-error: true # To make sure that SARIF upload gets called
