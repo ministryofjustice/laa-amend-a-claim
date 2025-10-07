@@ -130,12 +130,16 @@ jobs:
         with:
           command: monitor
           args: --severity-threshold=high
+        env:
+          SNYK_DOCKER_IMAGE: snyk/snyk:gradle-jdk21
 
       - name: Generate SARIF Snyk report
         uses: snyk/actions/gradle@master
         continue-on-error: true
         with:
           args: --sarif-file-output=snyk-app.sarif
+        env:
+          SNYK_DOCKER_IMAGE: snyk/snyk:gradle-jdk21
 
       - name: Fix undefined values
         run: |
