@@ -16,11 +16,10 @@ public class ClaimTest {
         claim.setCaseReferenceNumber("EF/4560/2018/4364683");
         claim.setClientSurname("Doe");
         claim.setCaseStartDate("2019-04-29");
-        claim.setFeeCode("CAPA");
         claim.setMatterTypeCode("IMCB:IRVL");
         claim.setStatus(ClaimStatus.READY_TO_PROCESS);
 
-        Claim result = new Claim(claim);
+        Claim result = new Claim(claim, "pan");
 
         Assertions.assertEquals("290419/711", result.getUniqueFileNumber());
         Assertions.assertEquals("EF/4560/2018/4364683", result.getCaseReferenceNumber());
@@ -28,7 +27,7 @@ public class ClaimTest {
         Assertions.assertEquals(LocalDate.of(2019, 4, 29), result.getDateSubmitted());
         Assertions.assertEquals("29 Apr 2019", result.getDateSubmittedForDisplay());
         Assertions.assertEquals(18015, result.getDateSubmittedForSorting());
-        Assertions.assertEquals("CAPA", result.getAccount());
+        Assertions.assertEquals("pan", result.getAccount());
         Assertions.assertEquals("IMCB:IRVL", result.getType());
         Assertions.assertEquals(ClaimStatus.READY_TO_PROCESS, result.getStatus());
     }
@@ -37,7 +36,7 @@ public class ClaimTest {
     void handleNulls() {
         ClaimResponse claim = new ClaimResponse();
 
-        Claim result = new Claim(claim);
+        Claim result = new Claim(claim, "pan");
 
         Assertions.assertNull(result.getUniqueFileNumber());
         Assertions.assertNull(result.getCaseReferenceNumber());
@@ -45,7 +44,7 @@ public class ClaimTest {
         Assertions.assertNull(result.getDateSubmitted());
         Assertions.assertEquals("", result.getDateSubmittedForDisplay());
         Assertions.assertEquals(0, result.getDateSubmittedForSorting());
-        Assertions.assertNull(result.getAccount());
+        Assertions.assertEquals("pan", result.getAccount());
         Assertions.assertNull(result.getType());
         Assertions.assertNull(result.getStatus());
     }

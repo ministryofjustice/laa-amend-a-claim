@@ -70,7 +70,7 @@ public class HomePageController {
 
         ClaimResultSet result = new ClaimResultSet();
         result.setContent(List.of(claim1, claim2, claim3));
-        SearchResultViewModel viewModel = new SearchResultViewModel(result);
+        SearchResultViewModel viewModel = new SearchResultViewModel(result, searchForm.getProviderAccountNumber());
 
         model.addAttribute("viewModel", viewModel);
         return "index";

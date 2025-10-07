@@ -19,12 +19,12 @@ public class Claim {
     private String type;
     private ClaimStatus status;
 
-    public Claim(ClaimResponse response) {
+    public Claim(ClaimResponse response, String providerAccountNumber) {
         this.uniqueFileNumber = response.getUniqueFileNumber();
         this.caseReferenceNumber = response.getCaseReferenceNumber();
         this.clientSurname = response.getClientSurname();
         this.dateSubmitted = response.getCaseStartDate() != null ? LocalDate.parse(response.getCaseStartDate()) : null;
-        this.account = response.getFeeCode();
+        this.account = providerAccountNumber;
         this.type = response.getMatterTypeCode();
         this.status = response.getStatus();
     }
