@@ -8,10 +8,12 @@ import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.util.MultiValueMap;
 
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public abstract class ViewTestBase {
@@ -38,6 +40,18 @@ public abstract class ViewTestBase {
 
     String html = mockMvc.perform(requestBuilder)
         .andExpect(status().isOk())
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    return Jsoup.parse(html);
+  }
+
+  protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) throws Exception {
+    MockHttpServletRequestBuilder requestBuilder = post(mapping);
+
+    String html = mockMvc.perform(requestBuilder.params(params))
+        .andExpect(status().isBadRequest())
         .andReturn()
         .getResponse()
         .getContentAsString();
@@ -105,6 +119,11 @@ public abstract class ViewTestBase {
 
   protected void assertPageHasPagination(Document doc) {
     Elements elements = doc.getElementsByClass("moj-pagination");
+    Assertions.assertFalse(elements.isEmpty());
+  }
+
+  protected void assertPageHasErrorSummary(Document doc) {
+    Elements elements = doc.getElementsByClass("govuk-error-summary");
     Assertions.assertFalse(elements.isEmpty());
   }
 }

@@ -5,12 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.HomePageController;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 import java.util.List;
 import java.util.Map;
@@ -87,5 +88,15 @@ class IndexViewTest extends ViewTestBase {
         assertPageHasTable(doc);
 
         assertPageHasPagination(doc);
+    }
+
+    @Test
+    void testPageWithErrors() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("providerAccountNumber", "!");
+
+        Document doc = renderDocumentWithErrors(params);
+
+        assertPageHasErrorSummary(doc);
     }
 }
