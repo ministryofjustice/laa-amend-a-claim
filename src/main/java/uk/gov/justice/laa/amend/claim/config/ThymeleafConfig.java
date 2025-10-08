@@ -7,7 +7,7 @@ import uk.gov.justice.laa.amend.claim.forms.helpers.StringUtils;
 @Configuration
 public class ThymeleafConfig {
 
-    @Bean(name="stringUtils")
+    @Bean(name = "StringUtils")
     public StringUtils stringUtils() {
         return new StringUtils();
     }
