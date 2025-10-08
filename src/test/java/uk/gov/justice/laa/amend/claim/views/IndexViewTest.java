@@ -94,9 +94,17 @@ class IndexViewTest extends ViewTestBase {
     void testPageWithErrors() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("providerAccountNumber", "!");
+        params.add("submissionDateMonth", "!");
+        params.add("submissionDateYear", "!");
+        params.add("referenceNumber", "!");
 
         Document doc = renderDocumentWithErrors(params);
 
-        assertPageHasErrorSummary(doc);
+        assertPageHasErrorSummary(doc,
+            "provider-account-number",
+            "submission-date-month",
+            "submission-date-year",
+            "reference-number"
+        );
     }
 }

@@ -6,9 +6,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.MultiValueMap;
+import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 
 import java.util.Map;
 
@@ -16,6 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(ThymeleafConfig.class)
 public abstract class ViewTestBase {
 
   @Autowired
@@ -122,8 +125,17 @@ public abstract class ViewTestBase {
     Assertions.assertFalse(elements.isEmpty());
   }
 
-  protected void assertPageHasErrorSummary(Document doc) {
-    Elements elements = doc.getElementsByClass("govuk-error-summary");
-    Assertions.assertFalse(elements.isEmpty());
+  protected void assertPageHasErrorSummary(Document doc, String... errorFields) {
+    Element errorSummary = selectFirst(doc, ".govuk-error-summary");
+    Element errorSummaryList = selectFirst(errorSummary, ".govuk-error-summary__list");
+
+    for (String errorField : errorFields) {
+      boolean errorLinkFound = errorSummaryList
+          .select("li a")
+          .stream()
+          .anyMatch(element -> String.format("#%s", errorField).equals(element.attr("href")));
+
+      Assertions.assertTrue(errorLinkFound, String.format("Error summary does not contain an error link for field: %s", errorField));
+    }
   }
 }

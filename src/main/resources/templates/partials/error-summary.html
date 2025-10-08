@@ -7,7 +7,7 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     <li th:each="error : ${#fields.detailedErrors()}"
-                        th:with="id=${error.fieldName != null ? #strings.replace(error.fieldName, '([A-Z])', '-$1').toLowerCase() : 'main-content'}">
+                        th:with="id=${@stringUtils.toId(error.fieldName)}">
                         <a th:href="'#' + ${id}" th:text="${error.message}"></a>
                     </li>
                 </ul>
