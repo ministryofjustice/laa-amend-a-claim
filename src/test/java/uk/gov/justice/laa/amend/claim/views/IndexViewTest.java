@@ -33,7 +33,7 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasHeading(doc, "Search for a claim");
 
-        assertPageHasHint(doc, "search-hint", "Enter a provider account number to search.");
+        assertPageHasHint(doc, "search-hint", "Enter at least a provider account number to search.");
 
         assertPageHasTextInput(doc, "provider-account-number", "Provider account number");
 
