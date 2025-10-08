@@ -12,7 +12,8 @@ import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @ActiveProfiles("local")
 @WebMvcTest(HomePageController.class)
@@ -27,15 +28,6 @@ public class HomePageControllerTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"));
-    }
-
-    @Test
-    public void testOnSubmitRedirectsWhenEmptyForm() throws Exception {
-        mockMvc.perform(post("/")
-                .with(csrf())
-            )
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/"));
     }
 
     @Test

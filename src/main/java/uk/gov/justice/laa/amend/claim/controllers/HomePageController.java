@@ -31,10 +31,6 @@ public class HomePageController {
         Model model,
         HttpServletResponse response
     ) {
-        if (searchForm.allEmpty()) {
-            return "redirect:/";
-        }
-
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "index";
