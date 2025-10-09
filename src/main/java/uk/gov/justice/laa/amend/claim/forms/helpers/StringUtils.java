@@ -6,7 +6,7 @@ public class StringUtils {
         return value == null || value.isBlank();
     }
 
-    public String toId(String fieldName) {
+    public static String toFieldId(String fieldName) {
         return fieldName != null ? fieldName.replaceAll("([a-z])([A-Z]+)", "$1-$2").toLowerCase() : "main-content";
     }
 }

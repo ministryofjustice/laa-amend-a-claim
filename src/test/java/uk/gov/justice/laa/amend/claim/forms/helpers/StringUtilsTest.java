@@ -34,25 +34,22 @@ public class StringUtilsTest {
     }
 
     @Nested
-    class ToIdTests {
+    class ToFieldIdTests {
         @Test
         void nullStringReturnsDefault() {
-            StringUtils stringUtils = new StringUtils();
-            String result = stringUtils.toId(null);
+            String result = StringUtils.toFieldId(null);
             Assertions.assertEquals("main-content", result);
         }
 
         @Test
         void camelCaseStringConverted() {
-            StringUtils stringUtils = new StringUtils();
-            String result = stringUtils.toId("someRandomId");
+            String result = StringUtils.toFieldId("someRandomId");
             Assertions.assertEquals("some-random-id", result);
         }
 
         @Test
         void lowerCaseHyphenatedStringUnaffected() {
-            StringUtils stringUtils = new StringUtils();
-            String result = stringUtils.toId("some-random-id");
+            String result = StringUtils.toFieldId("some-random-id");
             Assertions.assertEquals("some-random-id", result);
         }
     }

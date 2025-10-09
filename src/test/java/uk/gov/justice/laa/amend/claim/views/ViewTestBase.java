@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -133,13 +135,16 @@ public abstract class ViewTestBase {
     Element errorSummary = selectFirst(doc, ".govuk-error-summary");
     Element errorSummaryList = selectFirst(errorSummary, ".govuk-error-summary__list");
 
-    for (String errorField : errorFields) {
-      boolean errorLinkFound = errorSummaryList
-          .select("li a")
-          .stream()
-          .anyMatch(element -> String.format("#%s", errorField).equals(element.attr("href")));
+    List<String> actualErrorHrefs = errorSummaryList
+        .select("li a")
+        .stream()
+        .map(element -> element.attr("href"))
+        .toList();
 
-      Assertions.assertTrue(errorLinkFound, String.format("Error summary does not contain an error link for field: %s", errorField));
-    }
+    List<String> expectedErrorHrefs = Arrays.stream(errorFields)
+        .map(field -> "#" + field)
+        .toList();
+
+    Assertions.assertEquals(expectedErrorHrefs, actualErrorHrefs);
   }
 }
