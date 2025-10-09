@@ -21,6 +21,9 @@ spring:
 sentry:
   dsn: ""
   environment: ""
+claims-api:
+  url: http://localhost:8081
+  accessToken: ""
 
 logging:
   level:

@@ -49,6 +49,7 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
     // test dependencies
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:4.3.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -60,8 +61,9 @@ dependencies {
     testImplementation 'org.jsoup:jsoup:1.21.2'
 }
 
+
 test {
-    jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
-    useJUnitPlatform()
-    finalizedBy jacocoTestReport
+        jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
+        useJUnitPlatform()
+        finalizedBy jacocoTestReport
 }
