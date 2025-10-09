@@ -25,7 +25,7 @@ public class SearchForm {
 
     private String submissionDateYear;
 
-    @Pattern(regexp = "^[0-9\\p{L} /\\-'&]*$", message = "{index.referenceNumber.error.invalid}")
+    @Pattern(regexp = "^[a-zA-Z0-9/.\\-\\s]*$", message = "{index.referenceNumber.error.invalid}")
     private String referenceNumber;
 
     public boolean allEmpty() {
