@@ -6,6 +6,7 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -89,6 +90,57 @@ public class SearchFormTest {
 
         Assertions.assertNotNull(violation);
         Assertions.assertEquals("{index.referenceNumber.error.invalid}", violation.getMessage());
+    }
+
+    @Nested
+    class SearchFormAllEmptyTest {
+
+        @Test
+        void testAllEmptyReturnsTrueWhenAllValuesAreNull() {
+            SearchForm form = new SearchForm(
+                null,
+                null,
+                null,
+                null
+            );
+            Assertions.assertTrue(form.allEmpty());
+        }
+
+        @Test
+        void testAllEmptyReturnsTrueWhenAllValuesAreEmpty() {
+            SearchForm form = new SearchForm(
+                "",
+                "",
+                "",
+                ""
+            );
+
+            Assertions.assertTrue(form.allEmpty());
+        }
+
+        @Test
+        void testAllEmptyReturnsTrueWhenAllValuesAreBlank() {
+            SearchForm form = new SearchForm(
+                " ",
+                " ",
+                " ",
+                " "
+            );
+
+            Assertions.assertTrue(form.allEmpty());
+        }
+
+        @Test
+        void testAllEmptyReturnsFalseWhenValuesAreNotNull() {
+            SearchForm form = new SearchForm(
+                "123",
+                "3",
+                "2007",
+                "456"
+            );
+
+            Assertions.assertFalse(form.allEmpty());
+        }
     }
 
     private ConstraintViolation<SearchForm> getViolation(Set<ConstraintViolation<SearchForm>> violations, String field) {

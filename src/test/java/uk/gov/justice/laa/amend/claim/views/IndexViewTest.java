@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.views;
 
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -75,7 +76,7 @@ class IndexViewTest extends ViewTestBase {
 
         ClaimResultSet result = new ClaimResultSet();
         result.setContent(List.of(claim1, claim2, claim3));
-        SearchResultViewModel viewModel = new SearchResultViewModel(result);
+        SearchResultViewModel viewModel = new SearchResultViewModel(result, "/");
 
         Map<String, Object> variables = Map.of(
             "viewModel", viewModel
@@ -106,5 +107,21 @@ class IndexViewTest extends ViewTestBase {
             "submission-date-year",
             "reference-number"
         );
+    }
+
+    @Test
+    void testPageWithNoResultsFound() throws Exception {
+        ClaimResultSet result = new ClaimResultSet();
+        SearchResultViewModel viewModel = new SearchResultViewModel(result);
+
+        Map<String, Object> variables = Map.of(
+            "viewModel", viewModel
+        );
+
+        Document doc = renderDocument(variables);
+
+        assertPageHasH2(doc, "There are no results that match the search criteria");
+
+        assertPageHasContent(doc, "Check you've entered the correct details");
     }
 }

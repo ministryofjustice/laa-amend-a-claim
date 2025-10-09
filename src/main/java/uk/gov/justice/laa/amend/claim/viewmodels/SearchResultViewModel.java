@@ -11,13 +11,13 @@ public class SearchResultViewModel {
     private List<Claim> claims;
     private Pagination pagination;
 
-    public SearchResultViewModel(ClaimResultSet response) {
+    public SearchResultViewModel(ClaimResultSet response, String href) {
         this.claims = response.getContent().stream().map(Claim::new).toList();
         this.pagination = new Pagination(
             response.getTotalElements() != null ? response.getTotalElements() : 0,
             response.getSize() != null ? response.getSize() : 10,
             response.getNumber() != null ? response.getNumber() : 1,
-            "/"
+            href
         );
     }
 }

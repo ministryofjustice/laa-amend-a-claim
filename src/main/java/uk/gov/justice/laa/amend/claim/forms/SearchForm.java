@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 
+import static uk.gov.justice.laa.amend.claim.forms.helpers.StringUtils.isEmpty;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,4 +27,11 @@ public class SearchForm {
 
     @Pattern(regexp = "^[0-9\\p{L} /\\-'&]*$", message = "{index.referenceNumber.error.invalid}")
     private String referenceNumber;
+
+    public boolean allEmpty() {
+        return isEmpty(providerAccountNumber)
+            && isEmpty(submissionDateMonth)
+            && isEmpty(submissionDateYear)
+            && isEmpty(referenceNumber);
+    }
 }

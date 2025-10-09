@@ -117,6 +117,10 @@ public abstract class ViewTestBase {
     Assertions.assertEquals(expectedText, heading.text());
   }
 
+  protected void assertPageHasContent(Document doc, String expectedText) {
+    Assertions.assertTrue(doc.text().contains(expectedText));
+  }
+
   protected void assertPageHasTable(Document doc) {
     Elements elements = doc.getElementsByClass("govuk-table");
     Assertions.assertFalse(elements.isEmpty());

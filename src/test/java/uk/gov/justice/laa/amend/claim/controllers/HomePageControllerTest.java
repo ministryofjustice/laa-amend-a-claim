@@ -9,11 +9,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("local")
 @WebMvcTest(HomePageController.class)
@@ -31,6 +32,21 @@ public class HomePageControllerTest {
     }
 
     @Test
+    public void testOnPageLoadWithParamsReturnsView() throws Exception {
+        mockMvc.perform(get("/")
+                .param("providerAccountNumber", "12345")
+                .param("submissionDateMonth", "3")
+                .param("submissionDateYear", "2007")
+                .param("referenceNumber", "REF001"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("index"))
+            .andExpect(model().attribute("searchForm", hasProperty("providerAccountNumber", is("12345"))))
+            .andExpect(model().attribute("searchForm", hasProperty("submissionDateMonth", is("3"))))
+            .andExpect(model().attribute("searchForm", hasProperty("submissionDateYear", is("2007"))))
+            .andExpect(model().attribute("searchForm", hasProperty("referenceNumber", is("REF001"))));
+    }
+
+    @Test
     public void testOnSubmitReturnsBadRequestWithViewForInvalidForm() throws Exception {
         mockMvc.perform(post("/")
                 .with(csrf())
@@ -42,12 +58,25 @@ public class HomePageControllerTest {
     }
 
     @Test
-    public void testOnSubmitReturnsViewForValidForm() throws Exception {
+    public void testOnSubmitReturnsViewForValidFormWithOneField() throws Exception {
         mockMvc.perform(post("/")
                 .with(csrf())
-                .param("providerAccountNumber", "123")
+                .param("providerAccountNumber", "12345")
             )
-            .andExpect(status().isOk())
-            .andExpect(view().name("index"));
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/?page=1&providerAccountNumber=12345"));;
+    }
+
+    @Test
+    public void testOnSubmitReturnsViewForValidFormWithAllFields() throws Exception {
+        mockMvc.perform(post("/")
+                .with(csrf())
+                .param("providerAccountNumber", "12345")
+                .param("submissionDateMonth", "3")
+                .param("submissionDateYear", "2007")
+                .param("referenceNumber", "REF001")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/?page=1&providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&referenceNumber=REF001"));;
     }
 }
