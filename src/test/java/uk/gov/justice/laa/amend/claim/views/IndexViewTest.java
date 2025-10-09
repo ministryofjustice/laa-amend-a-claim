@@ -76,7 +76,7 @@ class IndexViewTest extends ViewTestBase {
 
         ClaimResultSet result = new ClaimResultSet();
         result.setContent(List.of(claim1, claim2, claim3));
-        SearchResultViewModel viewModel = new SearchResultViewModel(result);
+        SearchResultViewModel viewModel = new SearchResultViewModel(result, "/");
 
         Map<String, Object> variables = Map.of(
             "viewModel", viewModel
