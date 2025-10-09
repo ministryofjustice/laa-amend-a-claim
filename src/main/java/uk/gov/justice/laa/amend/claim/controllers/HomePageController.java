@@ -36,7 +36,6 @@ public class HomePageController {
         form.setSubmissionDateYear(submissionDateYear);
         form.setReferenceNumber(referenceNumber);
         model.addAttribute("searchForm", form);
-        model.addAttribute("page", page);
 
         if (!form.allEmpty()) {
             ClaimResultSet result = getResult(page);

@@ -34,14 +34,12 @@ public class HomePageControllerTest {
     @Test
     public void testOnPageLoadWithParamsReturnsView() throws Exception {
         mockMvc.perform(get("/")
-                .param("page", "2")
                 .param("providerAccountNumber", "12345")
                 .param("submissionDateMonth", "3")
                 .param("submissionDateYear", "2007")
                 .param("referenceNumber", "REF001"))
             .andExpect(status().isOk())
             .andExpect(view().name("index"))
-            .andExpect(model().attribute("page", 2))
             .andExpect(model().attribute("searchForm", hasProperty("providerAccountNumber", is("12345"))))
             .andExpect(model().attribute("searchForm", hasProperty("submissionDateMonth", is("3"))))
             .andExpect(model().attribute("searchForm", hasProperty("submissionDateYear", is("2007"))))

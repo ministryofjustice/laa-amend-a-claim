@@ -12,8 +12,6 @@
 
                 <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.sortSearchErrors(#fields.detailedErrors())})}"></th:block>
 
-                <input type="hidden" name="page" th:value="${page}" />
-
                 <fieldset class="govuk-fieldset" aria-describedby="search-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading" th:text="#{index.heading}"></h1>
