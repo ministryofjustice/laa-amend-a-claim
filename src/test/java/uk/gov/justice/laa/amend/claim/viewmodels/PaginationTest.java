@@ -196,4 +196,18 @@ class PaginationTest {
     assertThat(result.getNext().getText()).isEqualTo("Next");
     assertThat(result.getNext().getHref()).isEqualTo("/foo?page=6");
   }
+
+  @Test
+  void shouldHandleHrefWithNoPageQueryParameter() {
+    Pagination result = new Pagination(6, 3, 1, "/foo");
+
+    assertThat(result.getNext().getHref()).isEqualTo("/foo?page=2");
+  }
+
+  @Test
+  void shouldHandleHrefWithOtherQueryParameter() {
+    Pagination result = new Pagination(6, 3, 1, "/foo?key=value");
+
+    assertThat(result.getNext().getHref()).isEqualTo("/foo?key=value&page=2");
+  }
 }
