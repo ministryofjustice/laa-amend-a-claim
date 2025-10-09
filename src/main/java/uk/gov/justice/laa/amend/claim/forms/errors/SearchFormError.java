@@ -18,9 +18,9 @@ public class SearchFormError extends FormError {
     protected Map<String, Integer> getFieldOrderMap() {
         return Map.of(
             "providerAccountNumber", 1,
-            "submissionDateMonth",  2,
-            "submissionDateYear",   3,
-            "referenceNumber",      4
+            "submissionDateMonth", 2,
+            "submissionDateYear", 3,
+            "referenceNumber", 4
         );
     }
 }
