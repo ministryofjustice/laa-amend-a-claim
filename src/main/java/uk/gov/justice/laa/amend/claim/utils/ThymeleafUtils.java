@@ -7,10 +7,7 @@ import java.util.List;
 
 public class ThymeleafUtils {
 
-    public List<SearchFormError> sortSearchErrors(List<DetailedError> detailedErrors) {
-        return detailedErrors.stream()
-            .map(SearchFormError::new)
-            .sorted()
-            .toList();
+    public List<SearchFormError> sortSearchErrors(List<DetailedError> errors) {
+        return errors.stream().map(SearchFormError::new).sorted().toList();
     }
 }
