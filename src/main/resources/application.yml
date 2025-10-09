@@ -19,11 +19,11 @@ spring:
             user-info-uri: https://graph.microsoft.com/oidc/userinfo
             jwk-set-uri: https://login.microsoftonline.com/${AZURE_TENANT_ID}/discovery/v2.0/keys
 sentry:
-  dsn: ""
-  environment: ""
+  dsn: ${SENTRY_DSN}
+  environment: ${SENTRY_ENVIRONMENT}
 claims-api:
-  url: http://localhost:8081
-  accessToken: ""
+  url: ${CLAIMS_API}
+  accessToken: ${CLAIMS_TOKEN}
 
 logging:
   level:
