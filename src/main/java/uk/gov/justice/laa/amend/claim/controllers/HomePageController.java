@@ -86,9 +86,9 @@ public class HomePageController {
         ClaimResultSet result = new ClaimResultSet();
         result.setContent(List.of(claim1, claim2, claim3));
         result.setTotalPages(9);
-        result.setTotalElements(90);
+        result.setTotalElements(27);
         result.setNumber(page);
-        result.setSize(10);
+        result.setSize(3);
 
         return result;
     }
