@@ -112,7 +112,7 @@ class IndexViewTest extends ViewTestBase {
     @Test
     void testPageWithNoResultsFound() throws Exception {
         ClaimResultSet result = new ClaimResultSet();
-        SearchResultViewModel viewModel = new SearchResultViewModel(result);
+        SearchResultViewModel viewModel = new SearchResultViewModel(result, "/");
 
         Map<String, Object> variables = Map.of(
             "viewModel", viewModel
