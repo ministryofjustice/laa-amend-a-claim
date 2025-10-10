@@ -73,7 +73,7 @@ public class HomePageControllerTest {
                 .param("providerAccountNumber", "12345")
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/?page=1&providerAccountNumber=12345"));;
+            .andExpect(redirectedUrl("/?page=1&providerAccountNumber=12345"));
     }
 
     @Test
