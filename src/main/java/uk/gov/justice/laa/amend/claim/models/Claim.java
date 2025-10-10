@@ -36,4 +36,8 @@ public class Claim {
     public Long getDateSubmittedForSorting() {
         return dateSubmitted != null ? dateSubmitted.toEpochDay() : 0;
     }
+
+    public String getReferenceNumber() {
+        return uniqueFileNumber != null ? uniqueFileNumber : caseReferenceNumber;
+    }
 }

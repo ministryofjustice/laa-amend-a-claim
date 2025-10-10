@@ -22,6 +22,7 @@ public class ClaimTest {
 
         Assertions.assertEquals("290419/711", result.getUniqueFileNumber());
         Assertions.assertEquals("EF/4560/2018/4364683", result.getCaseReferenceNumber());
+        Assertions.assertEquals("290419/711", result.getReferenceNumber());
         Assertions.assertEquals("Doe", result.getClientSurname());
         Assertions.assertEquals(LocalDate.of(2019, 4, 29), result.getDateSubmitted());
         Assertions.assertEquals("29 Apr 2019", result.getDateSubmittedForDisplay());
@@ -39,6 +40,7 @@ public class ClaimTest {
 
         Assertions.assertNull(result.getUniqueFileNumber());
         Assertions.assertNull(result.getCaseReferenceNumber());
+        Assertions.assertNull(result.getReferenceNumber());
         Assertions.assertNull(result.getClientSurname());
         Assertions.assertNull(result.getDateSubmitted());
         Assertions.assertEquals("", result.getDateSubmittedForDisplay());
@@ -46,5 +48,15 @@ public class ClaimTest {
         Assertions.assertNull(result.getAccount());
         Assertions.assertEquals("", result.getType());
         Assertions.assertEquals("", result.getStatus());
+    }
+
+    @Test
+    void deferToCaseReferenceNumberIfUniqueFileNumberIsNull() {
+        ClaimResponse claim = new ClaimResponse();
+        claim.setCaseReferenceNumber("EF/4560/2018/4364683");
+
+        Claim result = new Claim(claim);
+
+        Assertions.assertEquals("EF/4560/2018/4364683", result.getReferenceNumber());
     }
 }
