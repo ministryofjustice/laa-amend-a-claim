@@ -2,21 +2,24 @@ package uk.gov.justice.laa.amend.claim.controllers;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import uk.gov.justice.laa.amend.claim.forms.SearchForm;
-import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import uk.gov.justice.laa.amend.claim.forms.SearchForm;
+import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 @Controller
+@RequiredArgsConstructor
 public class HomePageController {
+
+    private final ClaimService claimService;
 
     @GetMapping("/")
     public String onPageLoad(Model model) {
@@ -25,7 +28,8 @@ public class HomePageController {
     }
 
     @PostMapping("/")
-    public String onSubmit(
+    public String onSubmit(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = "3") Integer size,
         @Valid @ModelAttribute("searchForm") SearchForm searchForm,
         BindingResult bindingResult,
         Model model,
@@ -39,39 +43,8 @@ public class HomePageController {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "index";
         }
-
-        ClaimResponse claim1 = new ClaimResponse();
-        claim1.setUniqueFileNumber("290419/711");
-        claim1.setCaseReferenceNumber("EF/4560/2018/4364683");
-        claim1.setClientSurname("Doe");
-        claim1.setCaseStartDate("2019-04-29");
-        claim1.setScheduleReference("0X766A/2018/02");
-
-        ClaimResponse claim2 = new ClaimResponse();
-        claim2.setUniqueFileNumber("101117/712");
-        claim2.setCaseReferenceNumber("EF/4439/2017/3078011");
-        claim2.setClientSurname("White");
-        claim2.setCaseStartDate("2017-11-10");
-        claim2.setScheduleReference("0X766A/2018/02");
-
-        ClaimResponse claim3 = new ClaimResponse();
-        claim3.setUniqueFileNumber("120419/714");
-        claim3.setCaseReferenceNumber("DM/4604/2019/4334501");
-        claim3.setClientSurname("Stevens");
-        claim3.setCaseStartDate("2019-04-12");
-        claim3.setScheduleReference("0X766A/2018/02");
-
-        ClaimResultSet result = new ClaimResultSet();
-        result.setContent(List.of(claim1, claim2, claim3));
-        result.setTotalPages(1);
-        result.setTotalElements(3);
-        result.setNumber(1);
-        result.setSize(10);
-
-        SearchResultViewModel viewModel = new SearchResultViewModel(result);
-
-        model.addAttribute("viewModel", viewModel);
+        var result = claimService.searchClaims(searchForm.getProviderAccountNumber(), page, size);
+        model.addAttribute("viewModel", result);
         return "index";
     }
-
 }

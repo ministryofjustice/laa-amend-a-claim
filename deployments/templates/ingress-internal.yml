@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: laa-amend-a-claim-internal
+  annotations:
+    external-dns.alpha.kubernetes.io/set-identifier: laa-amend-a-claim-internal-${NAMESPACE}-green
+    external-dns.alpha.kubernetes.io/aws-weight: "100"
+    nginx.ingress.kubernetes.io/limit-rps: "10"
+    nginx.ingress.kubernetes.io/limit-rpm: "100"
+    nginx.ingress.kubernetes.io/limit-conn-status-code: "429"
+    nginx.ingress.kubernetes.io/limit-req-status-code: "429"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: "internal-non-prod"
+  tls:
+    - hosts:
+        - laa-amend-a-claim-${NAMESPACE}.internal-non-prod.cloud-platform.service.justice.gov.uk
+  rules:
+    - host: laa-amend-a-claim-${NAMESPACE}.internal-non-prod.cloud-platform.service.justice.gov.uk
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: laa-amend-a-claim # this should match the metadata.name in service.yml
+                port:
+                  number: 8080

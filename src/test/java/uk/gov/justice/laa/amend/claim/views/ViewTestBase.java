@@ -5,9 +5,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Assertions;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 import java.util.Map;
 
@@ -18,6 +21,9 @@ public abstract class ViewTestBase {
 
   @Autowired
   private MockMvc mockMvc;
+
+  @MockitoBean
+  private ClaimService claimService;
 
   protected String mapping;
 
