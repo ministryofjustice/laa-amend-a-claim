@@ -16,8 +16,8 @@ import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
-import static uk.gov.justice.laa.amend.claim.forms.helpers.StringUtils.isEmpty;
 
 @Controller
 @RequiredArgsConstructor
@@ -67,16 +67,16 @@ public class HomePageController {
 
     private String getRedirectUrl(int page, SearchForm form) {
         String redirectUrl = String.format("/?page=%d", page);
-        if (!isEmpty(form.getProviderAccountNumber())) {
+        if (!isBlank(form.getProviderAccountNumber())) {
             redirectUrl += String.format("&providerAccountNumber=%s", form.getProviderAccountNumber());
         }
-        if (!isEmpty(form.getSubmissionDateMonth())) {
+        if (!isBlank(form.getSubmissionDateMonth())) {
             redirectUrl += String.format("&submissionDateMonth=%s", form.getSubmissionDateMonth());
         }
-        if (!isEmpty(form.getSubmissionDateYear())) {
+        if (!isBlank(form.getSubmissionDateYear())) {
             redirectUrl += String.format("&submissionDateYear=%s", form.getSubmissionDateYear());
         }
-        if (!isEmpty(form.getReferenceNumber())) {
+        if (!isBlank(form.getReferenceNumber())) {
             redirectUrl += String.format("&referenceNumber=%s", form.getReferenceNumber());
         }
         return redirectUrl;
