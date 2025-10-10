@@ -82,7 +82,7 @@ class IndexViewTest extends ViewTestBase {
         Map<String, Object> variables = Map.of("viewModel", viewModel);
         Document doc = renderDocument(variables);
 
-        assertPageHasH2(doc, "3 search results");
+        assertPageHasH2(doc, "10 search results");
 
         assertPageHasTable(doc);
 
