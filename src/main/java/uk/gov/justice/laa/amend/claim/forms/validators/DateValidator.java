@@ -7,7 +7,8 @@ import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 
 import java.time.YearMonth;
 
-import static uk.gov.justice.laa.amend.claim.forms.helpers.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 
 public class DateValidator implements ConstraintValidator<ValidSubmissionDate, SearchForm> {
 
@@ -15,18 +16,18 @@ public class DateValidator implements ConstraintValidator<ValidSubmissionDate, S
     public boolean isValid(SearchForm form, ConstraintValidatorContext context) {
         context.disableDefaultConstraintViolation();
 
-        if (isEmpty(form.getSubmissionDateMonth()) && isEmpty(form.getSubmissionDateYear())) {
+        if (isBlank(form.getSubmissionDateMonth()) && isBlank(form.getSubmissionDateYear())) {
             return true;
         }
 
-        if (isEmpty(form.getSubmissionDateMonth())) {
+        if (isBlank(form.getSubmissionDateMonth())) {
             context.buildConstraintViolationWithTemplate("{index.submissionDate.month.error.required}")
                 .addPropertyNode("submissionDateMonth")
                 .addConstraintViolation();
             return false;
         }
 
-        if (isEmpty(form.getSubmissionDateYear())) {
+        if (isBlank(form.getSubmissionDateYear())) {
             context.buildConstraintViolationWithTemplate("{index.submissionDate.year.error.required}")
                 .addPropertyNode("submissionDateYear")
                 .addConstraintViolation();

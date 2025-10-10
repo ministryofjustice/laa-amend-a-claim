@@ -1,8 +1,8 @@
 <nav th:fragment="pagination(pagination)" class="moj-pagination" aria-label="Pagination navigation"
-     xmlns:th="http://www.w3.org/1999/xhtml">
+     xmlns:th="http://www.thymeleaf.org">
     <ul class="moj-pagination__list">
         <li th:if="${pagination.previous != null}" class="moj-pagination__item  moj-pagination__item--prev">
-            <a class="moj-pagination__link" th:href="${pagination.previous.href}">Previous<span class="govuk-visually-hidden"> page</span></a>
+            <a class="moj-pagination__link" th:href="${pagination.previous.href}" th:text="#{pagination.page.previous}"><span class="govuk-visually-hidden" th:text=" #{pagination.page}"></span></a>
         </li>
 
         <th:block th:each="item : ${pagination.items}">
@@ -29,16 +29,8 @@
         </th:block>
 
         <li th:if="${pagination.next != null}" class="moj-pagination__item moj-pagination__item--next">
-            <a class="moj-pagination__link" th:href="${pagination.next.href}">Next<span class="govuk-visually-hidden"> page</span></a>
+            <a class="moj-pagination__link" th:href="${pagination.next.href}" th:text="#{pagination.page.next}"><span class="govuk-visually-hidden" th:text=" #{pagination.page}"></span></a>
         </li>
     </ul>
-    <p class="moj-pagination__results">
-        Showing
-        <b th:text="${pagination.results.from}"></b>
-        to
-        <b th:text="${pagination.results.to}"></b>
-        of
-        <b th:text="${pagination.results.count}"></b>
-        <span th:text="${pagination.results.text}"></span>
-    </p>
+    <p class="moj-pagination__results" th:utext="#{pagination.results(${pagination.results.from}, ${pagination.results.to}, ${pagination.results.count}, ${pagination.results.text})}"></p>
 </nav>

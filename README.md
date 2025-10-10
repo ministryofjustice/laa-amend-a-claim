@@ -43,12 +43,12 @@ Using the `.env-template` file as a template, copy to a new .env file
 Be sure to fill out all values as they are required for pulling dependencies for the application to run
 
 ### Build And Run Application
-
-1. Ensure that all environment variables from `.env` are set using:<br>
+1. Run `docker-compose up` to start wiremock server
+2. Ensure that all environment variables from `.env` are set using:<br>
 `export $(grep -v '^#' .env | xargs)`
-2. Note: to run the application without Silas integration (Silas integration is a work in progress), use the local Spring profile with:<br>
+3. Note: to run the application without Silas integration (Silas integration is a work in progress), use the local Spring profile with:<br>
 `./gradlew bootRun --args='--spring.profiles.active=local'`
-3. Navigate to the landing page at [http://localhost:8080/](http://localhost:8080/)
+4. Navigate to the landing page at [http://localhost:8080/](http://localhost:8080/)
 
 ### Build application
 `./gradlew clean build`

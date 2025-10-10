@@ -75,3 +75,13 @@ spec:
                   key: SENTRY_DSN
             - name: SENTRY_ENVIRONMENT
               value: ${SENTRY_ENV}
+            - name: CLAIMS_API
+              valueFrom:
+                secretKeyRef:
+                  name: laa-amend-a-claim-claims-api-url
+                  key: CLAIMS_API
+            - name: CLAIMS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: laa-amend-a-claim-claims-api-token
+                  key: CLAIMS_TOKEN

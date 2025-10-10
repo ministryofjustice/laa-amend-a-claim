@@ -8,7 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 
-import static uk.gov.justice.laa.amend.claim.forms.helpers.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_INVALID;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_REQUIRED;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX_REFERENCE_NUMBER_ERROR_INVALID;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVIDER_ACCOUNT_REGEX;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.REF_NUMBER_REGEX;
 
 @Getter
 @Setter
@@ -17,21 +22,22 @@ import static uk.gov.justice.laa.amend.claim.forms.helpers.StringUtils.isEmpty;
 @ValidSubmissionDate
 public class SearchForm {
 
-    @NotBlank(message = "{index.providerAccountNumber.error.required}")
-    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "{index.providerAccountNumber.error.invalid}")
+
+    @NotBlank(message = INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_REQUIRED)
+    @Pattern(regexp = PROVIDER_ACCOUNT_REGEX, message = INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_INVALID)
     private String providerAccountNumber;
 
     private String submissionDateMonth;
 
     private String submissionDateYear;
 
-    @Pattern(regexp = "^[0-9\\p{L} /\\-'&]*$", message = "{index.referenceNumber.error.invalid}")
+    @Pattern(regexp = REF_NUMBER_REGEX, message = INDEX_REFERENCE_NUMBER_ERROR_INVALID)
     private String referenceNumber;
 
     public boolean allEmpty() {
-        return isEmpty(providerAccountNumber)
-            && isEmpty(submissionDateMonth)
-            && isEmpty(submissionDateYear)
-            && isEmpty(referenceNumber);
+        return isBlank(providerAccountNumber)
+            && isBlank(submissionDateMonth)
+            && isBlank(submissionDateYear)
+            && isBlank(referenceNumber);
     }
 }

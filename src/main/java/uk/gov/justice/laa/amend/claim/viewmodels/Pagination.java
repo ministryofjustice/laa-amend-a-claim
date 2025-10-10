@@ -18,7 +18,8 @@ public class Pagination {
         int totalNumberOfResults,
         int numberOfResultsPerPage,
         int currentPage,
-        String href) {
+        String href
+    ) {
         int totalNumberOfPages = getTotalNumberOfPages(totalNumberOfResults, numberOfResultsPerPage);
 
         if (currentPage > 1) {
@@ -65,6 +66,12 @@ public class Pagination {
     }
 
     private String buildHref(String href, int page) {
-        return String.format("%s?page=%d", href, page);
+        if (href.matches(".*[?&]page=\\d+.*")) {
+            return href.replaceAll("([?&]page=)\\d+", "$1" + page);
+        } else if (href.contains("?")) {
+            return href + "&page=" + page;
+        } else {
+            return href + "?page=" + page;
+        }
     }
 }

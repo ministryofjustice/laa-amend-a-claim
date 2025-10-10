@@ -6,14 +6,21 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.util.MultiValueMap;
+import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(ThymeleafConfig.class)
 public abstract class ViewTestBase {
 
   @Autowired
@@ -38,6 +45,18 @@ public abstract class ViewTestBase {
 
     String html = mockMvc.perform(requestBuilder)
         .andExpect(status().isOk())
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    return Jsoup.parse(html);
+  }
+
+  protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) throws Exception {
+    MockHttpServletRequestBuilder requestBuilder = post(mapping);
+
+    String html = mockMvc.perform(requestBuilder.params(params))
+        .andExpect(status().isBadRequest())
         .andReturn()
         .getResponse()
         .getContentAsString();
@@ -98,6 +117,10 @@ public abstract class ViewTestBase {
     Assertions.assertEquals(expectedText, heading.text());
   }
 
+  protected void assertPageHasContent(Document doc, String expectedText) {
+    Assertions.assertTrue(doc.text().contains(expectedText));
+  }
+
   protected void assertPageHasTable(Document doc) {
     Elements elements = doc.getElementsByClass("govuk-table");
     Assertions.assertFalse(elements.isEmpty());
@@ -106,5 +129,22 @@ public abstract class ViewTestBase {
   protected void assertPageHasPagination(Document doc) {
     Elements elements = doc.getElementsByClass("moj-pagination");
     Assertions.assertFalse(elements.isEmpty());
+  }
+
+  protected void assertPageHasErrorSummary(Document doc, String... errorFields) {
+    Element errorSummary = selectFirst(doc, ".govuk-error-summary");
+    Element errorSummaryList = selectFirst(errorSummary, ".govuk-error-summary__list");
+
+    List<String> actualErrorHrefs = errorSummaryList
+        .select("li a")
+        .stream()
+        .map(element -> element.attr("href"))
+        .toList();
+
+    List<String> expectedErrorHrefs = Arrays.stream(errorFields)
+        .map(field -> "#" + field)
+        .toList();
+
+    Assertions.assertEquals(expectedErrorHrefs, actualErrorHrefs);
   }
 }
