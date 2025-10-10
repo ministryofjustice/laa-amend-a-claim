@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    active: local
+claims-api:
+    url: http://localhost:8089
+    accessToken: ""

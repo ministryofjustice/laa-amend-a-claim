@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{index.title},
+        mainContent=~{::#main-content},
+        pageCategory='error'
+    )}">
+<body>
+    <main class="govuk-main-wrapper" id="main-content">
+        <h1><span class="govuk-visually-hidden" th:text="#{error.generic.message}"></span></h1>
+        <p> <span class="govuk-visually-hidden" th:text="#{error.code(${statusCode})}"></span> </p>
+        <a href="/"><span class="govuk-visually-hidden" th:text="#{back.to.home}"></span></a>
+    </main>
+</body>
+</html>
