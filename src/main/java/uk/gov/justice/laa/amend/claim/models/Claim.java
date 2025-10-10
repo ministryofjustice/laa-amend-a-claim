@@ -13,5 +13,7 @@ public class Claim {
     private String account;
     private String type;
     private String status;
+    private String referenceNumber;
     private String dateSubmittedForDisplay;
+    private long dateSubmittedForSorting;
 }

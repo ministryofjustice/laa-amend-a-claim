@@ -8,5 +8,5 @@ public class AmendClaimConstants {
     public static final String REF_NUMBER_REGEX = "^[0-9\\p{L} /\\-'&]*$";
 
     public static final int DEFAULT_PAGE_SIZE = 3;
-    public static final int DEFAULT_PAGE_NUMBER = 0;
+    public static final int DEFAULT_PAGE_NUMBER = 1;
 }

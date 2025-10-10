@@ -8,8 +8,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
+import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -17,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("local")
 @WebMvcTest(HomePageController.class)
-@Import(LocalSecurityConfig.class)
+@Import({LocalSecurityConfig.class, ThymeleafConfig.class})
 public class HomePageControllerTest {
 
     @Autowired
@@ -25,6 +29,9 @@ public class HomePageControllerTest {
 
     @MockitoBean
     private ClaimService claimService;
+
+    @MockitoBean
+    private ClaimResultMapper claimResultMapper;
 
     @Test
     public void testOnPageLoadReturnsView() throws Exception {
@@ -34,12 +41,18 @@ public class HomePageControllerTest {
     }
 
     @Test
-    public void testOnSubmitRedirectsWhenEmptyForm() throws Exception {
-        mockMvc.perform(post("/")
-                .with(csrf())
-            )
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/"));
+    public void testOnPageLoadWithParamsReturnsView() throws Exception {
+        mockMvc.perform(get("/")
+                .param("providerAccountNumber", "12345")
+                .param("submissionDateMonth", "3")
+                .param("submissionDateYear", "2007")
+                .param("referenceNumber", "REF001"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("index"))
+            .andExpect(model().attribute("searchForm", hasProperty("providerAccountNumber", is("12345"))))
+            .andExpect(model().attribute("searchForm", hasProperty("submissionDateMonth", is("3"))))
+            .andExpect(model().attribute("searchForm", hasProperty("submissionDateYear", is("2007"))))
+            .andExpect(model().attribute("searchForm", hasProperty("referenceNumber", is("REF001"))));
     }
 
     @Test
@@ -54,12 +67,25 @@ public class HomePageControllerTest {
     }
 
     @Test
-    public void testOnSubmitReturnsViewForValidForm() throws Exception {
+    public void testOnSubmitReturnsViewForValidFormWithOneField() throws Exception {
         mockMvc.perform(post("/")
                 .with(csrf())
-                .param("providerAccountNumber", "123")
+                .param("providerAccountNumber", "12345")
             )
-            .andExpect(status().isOk())
-            .andExpect(view().name("index"));
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/?page=1&providerAccountNumber=12345"));;
+    }
+
+    @Test
+    public void testOnSubmitReturnsViewForValidFormWithAllFields() throws Exception {
+        mockMvc.perform(post("/")
+                .with(csrf())
+                .param("providerAccountNumber", "12345")
+                .param("submissionDateMonth", "3")
+                .param("submissionDateYear", "2007")
+                .param("referenceNumber", "REF001")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/?page=1&providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&referenceNumber=REF001"));;
     }
 }
