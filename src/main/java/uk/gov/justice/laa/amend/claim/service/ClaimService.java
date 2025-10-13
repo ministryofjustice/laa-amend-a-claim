@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
-import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
-import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
 
@@ -22,7 +20,7 @@ public class ClaimService {
                             null,
                             null,
                             page - 1,
-                            size);
+                            size).block();
         } catch (Exception e) {
             log.error("Error searching claims", e);
             throw new RuntimeException(e);

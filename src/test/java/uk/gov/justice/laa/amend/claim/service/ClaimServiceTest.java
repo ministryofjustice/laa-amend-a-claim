@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
@@ -30,7 +31,7 @@ class ClaimServiceTest {
         var mockApiResponse = new ClaimResultSet(); // Replace with appropriate type or mock object
 
         when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10))
-                .thenReturn(mockApiResponse);
+                .thenReturn(Mono.just(mockApiResponse));
 
         // Act
         ClaimResultSet result = claimService.searchClaims("0P322F", 1, 10);
@@ -63,7 +64,7 @@ class ClaimServiceTest {
     void testSearchClaims_EmptyResponse() {
         // Arrange
         when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10))
-                .thenReturn(null);
+                .thenReturn(Mono.empty());
 
         // Act
         ClaimResultSet result = claimService.searchClaims("0P322F", 1, 10);

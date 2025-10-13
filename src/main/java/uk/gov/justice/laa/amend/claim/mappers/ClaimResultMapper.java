@@ -18,8 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_NUMBER;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.*;
 
 @Mapper(componentModel = "spring")
 public interface ClaimResultMapper {
@@ -88,7 +87,7 @@ public interface ClaimResultMapper {
     }
 
     default String getDateSubmittedForDisplay(LocalDate date) {
-        return date != null ? date.format(DateTimeFormatter.ofPattern("dd MMM yyyy")) : null;
+        return date != null ? date.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
     }
 
     default long getDateSubmittedForSorting(LocalDate date) {
