@@ -21,41 +21,36 @@ public class DateValidator implements ConstraintValidator<ValidSubmissionDate, S
         }
 
         if (isBlank(form.getSubmissionDateMonth())) {
-            context.buildConstraintViolationWithTemplate("{index.submissionDate.month.error.required}")
-                .addPropertyNode("submissionDateMonth")
-                .addConstraintViolation();
+            addViolation(context, "submissionDateMonth", "{index.submissionDate.month.error.required}");
             return false;
         }
 
         if (isBlank(form.getSubmissionDateYear())) {
-            context.buildConstraintViolationWithTemplate("{index.submissionDate.year.error.required}")
-                .addPropertyNode("submissionDateYear")
-                .addConstraintViolation();
+            addViolation(context, "submissionDateYear", "{index.submissionDate.year.error.required}");
             return false;
         }
 
-        Integer month;
-        Integer year;
+        Integer month = parseInt(form.getSubmissionDateMonth());
+        Integer year = parseInt(form.getSubmissionDateYear());
 
-        try {
-            month = Integer.parseInt(form.getSubmissionDateMonth());
-        } catch (NumberFormatException e) {
-            month = null;
-            context.buildConstraintViolationWithTemplate("{index.submissionDate.month.error.invalid}")
-                .addPropertyNode("submissionDateMonth")
-                .addConstraintViolation();
+        if (month == null && year == null) {
+            addViolation(context, "submissionDateMonth", "{index.submissionDate.error.invalid}");
+            addViolation(context, "submissionDateYear", "{index.submissionDate.error.invalid}");
+            return false;
         }
 
-        try {
-            year = Integer.parseInt(form.getSubmissionDateYear());
-        } catch (NumberFormatException e) {
-            year = null;
-            context.buildConstraintViolationWithTemplate("{index.submissionDate.year.error.invalid}")
-                .addPropertyNode("submissionDateYear")
-                .addConstraintViolation();
+        if (month == null) {
+            addViolation(context, "submissionDateMonth", "{index.submissionDate.month.error.invalid}");
+            return false;
         }
 
-        if (month == null || year == null) {
+        if (year == null) {
+            addViolation(context, "submissionDateYear", "{index.submissionDate.year.error.invalid}");
+            return false;
+        }
+
+        if (month < 1 || month > 12) {
+            addViolation(context, "submissionDateMonth", "{index.submissionDate.month.error.range}");
             return false;
         }
 
@@ -63,12 +58,23 @@ public class DateValidator implements ConstraintValidator<ValidSubmissionDate, S
             YearMonth.of(year, month);
             return true;
         } catch (Exception e) {
-            if (month < 1 || month > 12) {
-                context.buildConstraintViolationWithTemplate("{index.submissionDate.month.error.range}")
-                    .addPropertyNode("submissionDateMonth")
-                    .addConstraintViolation();
-            }
+            addViolation(context, "submissionDateMonth", "{index.submissionDate.error.invalid}");
+            addViolation(context, "submissionDateYear", "{index.submissionDate.error.invalid}");
             return false;
         }
+    }
+
+    private Integer parseInt(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private void addViolation(ConstraintValidatorContext context, String fieldName, String message) {
+        context.buildConstraintViolationWithTemplate(message)
+            .addPropertyNode(fieldName)
+            .addConstraintViolation();
     }
 }

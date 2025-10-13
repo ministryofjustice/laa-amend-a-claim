@@ -29,7 +29,7 @@ class DateValidatorTest {
     }
 
     @Test
-    void testBothNullValid() {
+    void testBothNullIsValid() {
         SearchForm form = new SearchForm();
         form.setSubmissionDateMonth(null);
         form.setSubmissionDateYear(null);
@@ -38,7 +38,7 @@ class DateValidatorTest {
     }
 
     @Test
-    void testBothBlankValid() {
+    void testBothBlankIsValid() {
         SearchForm form = new SearchForm();
         form.setSubmissionDateMonth("");
         form.setSubmissionDateYear("");
@@ -47,7 +47,7 @@ class DateValidatorTest {
     }
 
     @Test
-    void testNullMonthInvalid() {
+    void testNullMonthIsInvalid() {
         SearchForm form = new SearchForm();
         form.setSubmissionDateMonth(null);
         form.setSubmissionDateYear("2025");
@@ -57,7 +57,7 @@ class DateValidatorTest {
     }
 
     @Test
-    void tesBlankMonthInvalid() {
+    void tesBlankMonthIsInvalid() {
         SearchForm form = new SearchForm();
         form.setSubmissionDateMonth("");
         form.setSubmissionDateYear("2025");
@@ -67,7 +67,7 @@ class DateValidatorTest {
     }
 
     @Test
-    void testNullYearInvalid() {
+    void testNullYearIsInvalid() {
         SearchForm form = new SearchForm();
         form.setSubmissionDateMonth("5");
         form.setSubmissionDateYear(null);
@@ -77,7 +77,7 @@ class DateValidatorTest {
     }
 
     @Test
-    void testBlankYearInvalid() {
+    void testBlankYearIsInvalid() {
         SearchForm form = new SearchForm();
         form.setSubmissionDateMonth("5");
         form.setSubmissionDateYear("");
@@ -87,7 +87,7 @@ class DateValidatorTest {
     }
 
     @Test
-    void testNonNumericMonthInvalid() {
+    void testNonNumericMonthIsInvalid() {
         SearchForm form = new SearchForm();
         form.setSubmissionDateMonth("abc");
         form.setSubmissionDateYear("2025");
@@ -97,7 +97,7 @@ class DateValidatorTest {
     }
 
     @Test
-    void testNonNumericYearInvalid() {
+    void testNonNumericYearIsInvalid() {
         SearchForm form = new SearchForm();
         form.setSubmissionDateMonth("5");
         form.setSubmissionDateYear("xyz");
@@ -107,18 +107,17 @@ class DateValidatorTest {
     }
 
     @Test
-    void testNonNumericMonthAndYearInvalid() {
+    void testNonNumericMonthAndYearIsInvalid() {
         SearchForm form = new SearchForm();
         form.setSubmissionDateMonth("abc");
         form.setSubmissionDateYear("xyz");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.month.error.invalid}");
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.year.error.invalid}");
+        verify(constraintValidatorContext, times(2)).buildConstraintViolationWithTemplate("{index.submissionDate.error.invalid}");
     }
 
     @Test
-    void testInvalidMonthCombination() {
+    void testOutOfRangeMonthAndValidYearIsInvalid() {
         SearchForm form = new SearchForm();
         form.setSubmissionDateMonth("13");
         form.setSubmissionDateYear("2025");
@@ -128,7 +127,7 @@ class DateValidatorTest {
     }
 
     @Test
-    void testValidMonthYear() {
+    void testValidMonthAndYearIsValid() {
         SearchForm form = new SearchForm();
         form.setSubmissionDateMonth("2");
         form.setSubmissionDateYear("2025");

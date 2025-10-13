@@ -72,8 +72,8 @@ public class SearchFormTest {
         ConstraintViolation<SearchForm> monthViolation = getViolation(violations, "submissionDateMonth");
         ConstraintViolation<SearchForm> yearViolation = getViolation(violations, "submissionDateYear");
 
-        Assertions.assertEquals("{index.submissionDate.month.error.invalid}", monthViolation.getMessage());
-        Assertions.assertEquals("{index.submissionDate.year.error.invalid}", yearViolation.getMessage());
+        Assertions.assertEquals("{index.submissionDate.error.invalid}", monthViolation.getMessage());
+        Assertions.assertEquals("{index.submissionDate.error.invalid}", yearViolation.getMessage());
     }
 
     @Test
