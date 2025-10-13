@@ -93,21 +93,21 @@ public class SearchFormTest {
     }
 
     @Nested
-    class SearchFormAllEmptyTest {
+    class SearchFormAnyNonEmptyTest {
 
         @Test
-        void testAllEmptyReturnsTrueWhenAllValuesAreNull() {
+        void testAnyNonEmptyReturnsFalseWhenAllValuesAreNull() {
             SearchForm form = new SearchForm(
                 null,
                 null,
                 null,
                 null
             );
-            Assertions.assertTrue(form.allEmpty());
+            Assertions.assertFalse(form.anyNonEmpty());
         }
 
         @Test
-        void testAllEmptyReturnsTrueWhenAllValuesAreEmpty() {
+        void testAllEmptyReturnsFalseWhenAllValuesAreEmpty() {
             SearchForm form = new SearchForm(
                 "",
                 "",
@@ -115,11 +115,11 @@ public class SearchFormTest {
                 ""
             );
 
-            Assertions.assertTrue(form.allEmpty());
+            Assertions.assertFalse(form.anyNonEmpty());
         }
 
         @Test
-        void testAllEmptyReturnsTrueWhenAllValuesAreBlank() {
+        void testAllEmptyReturnsFalseWhenAllValuesAreBlank() {
             SearchForm form = new SearchForm(
                 " ",
                 " ",
@@ -127,11 +127,23 @@ public class SearchFormTest {
                 " "
             );
 
-            Assertions.assertTrue(form.allEmpty());
+            Assertions.assertFalse(form.anyNonEmpty());
         }
 
         @Test
-        void testAllEmptyReturnsFalseWhenValuesAreNotNull() {
+        void testAllEmptyReturnsTrueWhenOneValueIsNotNull() {
+            SearchForm form = new SearchForm(
+                "123",
+                null,
+                null,
+                null
+            );
+
+            Assertions.assertTrue(form.anyNonEmpty());
+        }
+
+        @Test
+        void testAllEmptyReturnsTrueWhenAllValuesAreNotNull() {
             SearchForm form = new SearchForm(
                 "123",
                 "3",
@@ -139,7 +151,52 @@ public class SearchFormTest {
                 "456"
             );
 
-            Assertions.assertFalse(form.allEmpty());
+            Assertions.assertTrue(form.anyNonEmpty());
+        }
+    }
+
+    @Nested
+    class RedirectUrlTests {
+        @Test
+        void createRedirectUrlWhenAccountNumberPresent() {
+            SearchForm form = new SearchForm(
+                "123",
+                null,
+                null,
+                null
+            );
+
+            String result = form.getRedirectUrl(1);
+
+            Assertions.assertEquals("/?page=1&providerAccountNumber=123", result);
+        }
+
+        @Test
+        void createRedirectUrlWhenAccountNumberAndDatePresent() {
+            SearchForm form = new SearchForm(
+                "123",
+                "3",
+                "2007",
+                null
+            );
+
+            String result = form.getRedirectUrl(2);
+
+            Assertions.assertEquals("/?page=2&providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007", result);
+        }
+
+        @Test
+        void createRedirectUrlWhenAllPresent() {
+            SearchForm form = new SearchForm(
+                "123",
+                "3",
+                "2007",
+                "456"
+            );
+
+            String result = form.getRedirectUrl(3);
+
+            Assertions.assertEquals("/?page=3&providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&referenceNumber=456", result);
         }
     }
 

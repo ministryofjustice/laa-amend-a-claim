@@ -12,7 +12,7 @@ class PaginationTest {
   @Test
   @DisplayName("Should handle empty results set")
   void shouldHandleEmptyResultsSet() {
-    Pagination result = new Pagination(0, 3, 1, "/foo");
+    Pagination result = new Pagination(0, 3, 1, "/foo?page=1");
 
     assertThat(result.getItems().size()).isEqualTo(0);
 
@@ -29,7 +29,7 @@ class PaginationTest {
   @Test
   @DisplayName("Should handle one page of results")
   void shouldHandleOnePageOfResults() {
-    Pagination result = new Pagination(3, 3, 1, "/foo");
+    Pagination result = new Pagination(3, 3, 1, "/foo?page=1");
 
     assertThat(result.getItems().size()).isEqualTo(0);
 
@@ -46,7 +46,7 @@ class PaginationTest {
   @Test
   @DisplayName("Should handle first page of two pages of results")
   void shouldHandleFirstPageOfTwoPagesOfResults() {
-    Pagination result = new Pagination(6, 3, 1, "/foo");
+    Pagination result = new Pagination(6, 3, 1, "/foo?page=1");
 
     assertThat(result.getItems().size()).isEqualTo(2);
 
@@ -74,7 +74,7 @@ class PaginationTest {
   @Test
   @DisplayName("Should handle second page of two pages of results")
   void shouldHandleSecondPageOfTwoPagesOfResults() {
-    Pagination result = new Pagination(6, 3, 2, "/foo");
+    Pagination result = new Pagination(6, 3, 2, "/foo?page=2");
 
     assertThat(result.getItems().size()).isEqualTo(2);
 
@@ -102,7 +102,7 @@ class PaginationTest {
   @Test
   @DisplayName("Should handle second page of five pages of results")
   void shouldHandleSecondPageOfFivePagesOfResults() {
-    Pagination result = new Pagination(15, 3, 2, "/foo");
+    Pagination result = new Pagination(15, 3, 2, "/foo?page=2");
 
     assertThat(result.getItems().size()).isEqualTo(5);
 
@@ -146,7 +146,7 @@ class PaginationTest {
   @Test
   @DisplayName("Should handle fifth page of nine pages of results")
   void shouldHandleFifthPageOfNinePagesOfResults() {
-    Pagination result = new Pagination(27, 3, 5, "/foo");
+    Pagination result = new Pagination(27, 3, 5, "/foo?page=5");
 
     assertThat(result.getItems().size()).isEqualTo(7);
 
@@ -195,5 +195,19 @@ class PaginationTest {
 
     assertThat(result.getNext().getText()).isEqualTo("Next");
     assertThat(result.getNext().getHref()).isEqualTo("/foo?page=6");
+  }
+
+  @Test
+  void shouldHandleHrefWithNoPageQueryParameter() {
+    Pagination result = new Pagination(6, 3, 1, "/foo");
+
+    assertThat(result.getNext().getHref()).isEqualTo("/foo?page=2");
+  }
+
+  @Test
+  void shouldHandleHrefWithOtherQueryParameter() {
+    Pagination result = new Pagination(6, 3, 1, "/foo?key=value");
+
+    assertThat(result.getNext().getHref()).isEqualTo("/foo?key=value&page=2");
   }
 }

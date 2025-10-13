@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_INVALID;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_REQUIRED;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX_REFERENCE_NUMBER_ERROR_INVALID;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVIDER_ACCOUNT_REGEX;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.REF_NUMBER_REGEX;
+import static uk.gov.justice.laa.amend.claim.utils.FormUtils.nonEmpty;
 
 @Getter
 @Setter
@@ -21,7 +21,6 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.REF_N
 @AllArgsConstructor
 @ValidSubmissionDate
 public class SearchForm {
-
 
     @NotBlank(message = INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_REQUIRED)
     @Pattern(regexp = PROVIDER_ACCOUNT_REGEX, message = INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_INVALID)
@@ -34,10 +33,27 @@ public class SearchForm {
     @Pattern(regexp = REF_NUMBER_REGEX, message = INDEX_REFERENCE_NUMBER_ERROR_INVALID)
     private String referenceNumber;
 
-    public boolean allEmpty() {
-        return isBlank(providerAccountNumber)
-            && isBlank(submissionDateMonth)
-            && isBlank(submissionDateYear)
-            && isBlank(referenceNumber);
+    public boolean anyNonEmpty() {
+        return nonEmpty(providerAccountNumber)
+            || nonEmpty(submissionDateMonth)
+            || nonEmpty(submissionDateYear)
+            || nonEmpty(referenceNumber);
+    }
+
+    public String getRedirectUrl(int page) {
+        String redirectUrl = String.format("/?page=%d", page);
+        if (nonEmpty(providerAccountNumber)) {
+            redirectUrl += String.format("&providerAccountNumber=%s", providerAccountNumber);
+        }
+        if (nonEmpty(submissionDateMonth)) {
+            redirectUrl += String.format("&submissionDateMonth=%s", submissionDateMonth);
+        }
+        if (nonEmpty(submissionDateYear)) {
+            redirectUrl += String.format("&submissionDateYear=%s", submissionDateYear);
+        }
+        if (nonEmpty(referenceNumber)) {
+            redirectUrl += String.format("&referenceNumber=%s", referenceNumber);
+        }
+        return redirectUrl;
     }
 }

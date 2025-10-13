@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -20,8 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @AutoConfigureWireMock(port = 8089)
-@Import(LocalSecurityConfig.class)
-@Profile("local")
+@ActiveProfiles("local")
 class HomePageControllerIntegrationTest {
 
     @Autowired
@@ -60,11 +57,11 @@ class HomePageControllerIntegrationTest {
     }
 
     @Test
-    void testSearchWithEmptyFormRedirectsToHome() throws Exception {
+    void testSearchWithEmptyFormReturnsBadRequest() throws Exception {
         mockMvc.perform(post("/")
                         .flashAttr("searchForm", new SearchForm("", "", "", "")))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
+                .andExpect(status().isBadRequest())
+            .andExpect(view().name("index"));
     }
 
     @Test
@@ -79,17 +76,15 @@ class HomePageControllerIntegrationTest {
     void testSearchWithValidProviderAccountNumberReturnsResults() throws Exception {
         mockMvc.perform(post("/")
                         .flashAttr("searchForm", new SearchForm("0P322F", "", "", "")))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"))
-                .andExpect(model().attributeExists("viewModel"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/?page=1&providerAccountNumber=0P322F"));
     }
 
     @Test
     void testSearchWithPaginationParameters() throws Exception {
-        mockMvc.perform(post("/")
+        mockMvc.perform(get("/")
                         .param("page", "1")
-                        .param("size", "10")
-                        .flashAttr("searchForm", new SearchForm("0P322F", "", "", "")))
+                        .param("providerAccountNumber", "0P322F"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
                 .andExpect(model().attributeExists("viewModel"));
@@ -107,9 +102,8 @@ class HomePageControllerIntegrationTest {
     void testSearchWithValidSubmissionDate() throws Exception {
         mockMvc.perform(post("/")
                         .flashAttr("searchForm", new SearchForm("0P322F", "12", "2024", "")))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"))
-                .andExpect(model().attributeExists("viewModel"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/?page=1&providerAccountNumber=0P322F&submissionDateMonth=12&submissionDateYear=2024"));
     }
 
     private void setupClaimsApiStub() {

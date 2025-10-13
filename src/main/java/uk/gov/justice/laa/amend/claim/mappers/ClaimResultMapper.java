@@ -1,8 +1,11 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Context;
 import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
@@ -15,9 +18,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_DATE_FORMAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_DATE_FORMAT;
 
 @Mapper(componentModel = "spring")
 public interface ClaimResultMapper {
@@ -30,12 +33,12 @@ public interface ClaimResultMapper {
 
     @Mapping(target = "pagination", source = ".", qualifiedByName = "toPagination")
     @Mapping(target = "claims", source = "content")
-    SearchResultViewModel toDto(ClaimResultSet claimResultSet);
+    SearchResultViewModel toDto(ClaimResultSet claimResultSet, @Context String href);
 
 
     @IterableMapping(elementTargetType = Claim.class)
     default List<Claim> map(List<ClaimResponse>  claimResponses) {
-        return claimResponses.stream().map(this::mapToClaim).collect(Collectors. toList());
+        return claimResponses.stream().map(this::mapToClaim).collect(Collectors.toList());
     }
 
     /**
@@ -51,8 +54,19 @@ public interface ClaimResultMapper {
     @Mapping(target = "account", source = "scheduleReference")
     @Mapping(target = "type", source = "matterTypeCode")
     @Mapping(target = "status", source = "status", defaultValue = "Unknown")
-    @Mapping(target = "dateSubmittedForDisplay", source = "caseStartDate", qualifiedByName = "toFormattedDate")
+    @Mapping(target = "referenceNumber", ignore = true)
+    @Mapping(target = "dateSubmittedForDisplay", ignore = true)
+    @Mapping(target = "dateSubmittedForSorting", ignore = true)
     Claim mapToClaim(ClaimResponse claimResponse);
+
+    @AfterMapping
+    default void setExtraFields(ClaimResponse source, @MappingTarget Claim target) {
+        target.setReferenceNumber(getReferenceNumber(target.getUniqueFileNumber(), target.getCaseReferenceNumber()));
+
+        target.setDateSubmittedForDisplay(getDateSubmittedForDisplay(target.getDateSubmitted()));
+
+        target.setDateSubmittedForSorting(getDateSubmittedForSorting(target.getDateSubmitted()));
+    }
 
     /**
      * Converts ClaimResultSet to a Pagination object.
@@ -61,25 +75,24 @@ public interface ClaimResultMapper {
      * @return The Pagination component.
      */
     @Named("toPagination")
-    default Pagination toPagination(ClaimResultSet claimResultSet) {
+    default Pagination toPagination(ClaimResultSet claimResultSet, @Context String href) {
         return new Pagination(
                 claimResultSet.getTotalElements() != null ? claimResultSet.getTotalElements() : 0,
                 claimResultSet.getSize() != null ? claimResultSet.getSize() : DEFAULT_PAGE_SIZE,
-                claimResultSet.getNumber() != null ? claimResultSet.getNumber() : DEFAULT_PAGE_NUMBER,
-                "/"
+                claimResultSet.getNumber() != null ? claimResultSet.getNumber() + 1 : DEFAULT_PAGE_NUMBER,
+                href
         );
     }
 
-    /**
-     * Formats the date string into the required format (dd MMM yyyy)
-     */
-    @Named("toFormattedDate")
-    default String convertToFormattedDate(String displayDate) {
-        if (displayDate == null) {
-            return null;
-        }
-        LocalDate date = LocalDate.parse(displayDate);
-        return date.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT));
+    default String getReferenceNumber(String uniqueFileNumber, String caseReferenceNumber) {
+        return uniqueFileNumber != null ? uniqueFileNumber : caseReferenceNumber;
     }
 
+    default String getDateSubmittedForDisplay(LocalDate date) {
+        return date != null ? date.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
+    }
+
+    default long getDateSubmittedForSorting(LocalDate date) {
+        return date != null ? date.toEpochDay() : 0;
+    }
 }

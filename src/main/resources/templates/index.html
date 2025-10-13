@@ -10,6 +10,8 @@
         <main class="govuk-main-wrapper" id="main-content">
             <form th:action="@{/}" th:object="${searchForm}" method="post">
 
+                <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.sortSearchErrors(#fields.detailedErrors())})}"></th:block>
+
                 <fieldset class="govuk-fieldset" aria-describedby="search-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading" th:text="#{index.heading}"></h1>
@@ -73,36 +75,42 @@
             </form>
 
             <th:block th:if="${viewModel != null}">
-                <h2 class="govuk-heading-m" th:text="#{index.results.searchResults(${viewModel.claims.size()})}"></h2>
+                <th:block th:if="${viewModel.claims.isEmpty()}">
+                    <h2 class="govuk-heading-m" th:text="#{index.results.none}"></h2>
 
-                <table class="govuk-table" data-module="moj-sortable-table">
-                    <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header" aria-sort="ascending" th:text="#{index.results.uniqueFileNumber}"></th>
-                        <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.caseReferenceNumber}"></th>
-                        <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.clientSurname}"></th>
-                        <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.dateSubmitted}"></th>
-                        <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.account}"></th>
-                        <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.type}"></th>
-                        <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.status}"></th>
-                    </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row" th:each="claim : ${viewModel.claims}">
-                        <td class="govuk-table__cell">
-                            <a th:href="@{/}" th:text="${claim.uniqueFileNumber}" class="govuk-link--no-visited-state"></a>
-                        </td>
-                        <td class="govuk-table__cell" th:text="${claim.caseReferenceNumber}"></td>
-                        <td class="govuk-table__cell" th:text="${claim.clientSurname}"></td>
-                        <td class="govuk-table__cell" th:text="${claim.dateSubmittedForDisplay}" th:data-sort-value="${claim.dateSubmittedForDisplay}"></td>
-                        <td class="govuk-table__cell" th:text="${claim.account}"></td>
-                        <td class="govuk-table__cell" th:text="${claim.type}"></td>
-                        <td class="govuk-table__cell" th:text="${claim.status}"></td>
-                    </tr>
-                    </tbody>
-                </table>
+                    <p class="govuk-body" th:text="#{index.results.retry}"></p>
+                </th:block>
 
-                <th:block th:replace="~{partials/pagination :: pagination(${viewModel.pagination})}"></th:block>
+                <th:block th:unless="${viewModel.claims.isEmpty()}">
+                    <h2 class="govuk-heading-m" th:text="#{index.results.searchResults(${viewModel.pagination.results.count})}"></h2>
+
+                    <table class="govuk-table" data-module="moj-sortable-table">
+                        <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header" aria-sort="ascending" th:text="#{index.results.referenceNumber}"></th>
+                            <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.clientSurname}"></th>
+                            <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.dateSubmitted}"></th>
+                            <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.account}"></th>
+                            <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.type}"></th>
+                            <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.status}"></th>
+                        </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                        <tr class="govuk-table__row" th:each="claim : ${viewModel.claims}">
+                            <td class="govuk-table__cell">
+                                <a th:href="@{/}" th:text="${claim.referenceNumber}" class="govuk-link--no-visited-state"></a>
+                            </td>
+                            <td class="govuk-table__cell" th:text="${claim.clientSurname}"></td>
+                            <td class="govuk-table__cell" th:text="${claim.dateSubmittedForDisplay}" th:data-sort-value="${claim.dateSubmittedForSorting}"></td>
+                            <td class="govuk-table__cell" th:text="${claim.account}"></td>
+                            <td class="govuk-table__cell" th:text="${claim.type}"></td>
+                            <td class="govuk-table__cell" th:text="${claim.status}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <th:block th:replace="~{partials/pagination :: pagination(${viewModel.pagination})}"></th:block>
+                </th:block>
             </th:block>
         </main>
     </body>

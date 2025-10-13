@@ -38,7 +38,9 @@ class ClaimResultMapperTest {
         expectedClaim.setAccount("Account001");
         expectedClaim.setType("MatterType001");
         expectedClaim.setStatus("VALID");
+        expectedClaim.setReferenceNumber("UFN123");
         expectedClaim.setDateSubmittedForDisplay("01 Jan 2023");
+        expectedClaim.setDateSubmittedForSorting(19358);
 
         when(claimResponseMock.getUniqueFileNumber()).thenReturn("UFN123");
         when(claimResponseMock.getCaseReferenceNumber()).thenReturn("CRN001");
@@ -49,7 +51,7 @@ class ClaimResultMapperTest {
         when(claimResponseMock.getStatus()).thenReturn(ClaimStatus.VALID);
 
         // Act
-        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSet);
+        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSet, "/");
 
         // Assert
         assertEquals(15, resultViewModel.getPagination().getResults().getCount());
@@ -67,6 +69,7 @@ class ClaimResultMapperTest {
         assertEquals(expectedClaim.getType(), resultClaim.getType());
         assertEquals(expectedClaim.getStatus(), resultClaim.getStatus());
         assertEquals(expectedClaim.getDateSubmittedForDisplay(), resultClaim.getDateSubmittedForDisplay());
+        assertEquals(expectedClaim.getDateSubmittedForSorting(), resultClaim.getDateSubmittedForSorting());
     }
 
     @Test
@@ -82,7 +85,7 @@ class ClaimResultMapperTest {
         ClaimResultMapper mapper = new ClaimResultMapperImpl();
 
         // Act
-        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSet);
+        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSet, "/");
 
         assertEquals(0, resultViewModel.getPagination().getResults().getCount());
         assertEquals(0, resultViewModel.getPagination().getItems().size());
@@ -111,7 +114,7 @@ class ClaimResultMapperTest {
         ClaimResultMapper mapper = new ClaimResultMapperImpl();
 
         // Act
-        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSet);
+        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSet, "/");
 
         // Assert
         List<Claim> claims = resultViewModel.getClaims();
@@ -125,6 +128,42 @@ class ClaimResultMapperTest {
         assertNull(resultClaim.getAccount());
         assertNull(resultClaim.getType());
         assertEquals("Unknown", resultClaim.getStatus());
+        assertEquals("UFN456", resultClaim.getReferenceNumber());
         assertNull(resultClaim.getDateSubmittedForDisplay());
+        assertEquals(0, resultClaim.getDateSubmittedForSorting());
+    }
+
+    @Test
+    void givenClaimResponseWithoutUniqueFileNumber_whenToDtoIsCalled_thenCaseReferenceNumberIsUsed() {
+        // Arrange
+        ClaimResultSet claimResultSet = mock(ClaimResultSet.class);
+        ClaimResponse claimResponseMock = mock(ClaimResponse.class);
+
+        when(claimResultSet.getContent()).thenReturn(Collections.singletonList(claimResponseMock));
+        when(claimResultSet.getTotalElements()).thenReturn(1);
+        when(claimResultSet.getSize()).thenReturn(1);
+        when(claimResultSet.getNumber()).thenReturn(1);
+
+        when(claimResponseMock.getUniqueFileNumber()).thenReturn(null);
+        when(claimResponseMock.getCaseStartDate()).thenReturn(null);
+        when(claimResponseMock.getScheduleReference()).thenReturn(null);
+        when(claimResponseMock.getMatterTypeCode()).thenReturn(null);
+        when(claimResponseMock.getStatus()).thenReturn(null);
+        when(claimResponseMock.getClientSurname()).thenReturn(null);
+        when(claimResponseMock.getCaseReferenceNumber()).thenReturn("CRN001");
+
+        ClaimResultMapper mapper = new ClaimResultMapperImpl();
+
+        // Act
+        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSet, "/");
+
+        // Assert
+        List<Claim> claims = resultViewModel.getClaims();
+        assertEquals(1, claims.size());
+        Claim resultClaim = claims.get(0);
+
+        assertNull(resultClaim.getUniqueFileNumber());
+        assertEquals("CRN001", resultClaim.getCaseReferenceNumber());
+        assertEquals("CRN001", resultClaim.getReferenceNumber());
     }
 }
