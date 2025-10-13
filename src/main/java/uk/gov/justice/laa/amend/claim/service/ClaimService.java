@@ -16,7 +16,7 @@ public class ClaimService {
 
     public ClaimResultSet searchClaims(String officeCode, int page, int size) {
         try {
-            return claimsApiClient.searchClaims("0P322F",
+            return claimsApiClient.searchClaims(officeCode,
                             null,
                             null,
                             page - 1,
