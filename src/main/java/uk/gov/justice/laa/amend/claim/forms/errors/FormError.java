@@ -3,7 +3,7 @@ package uk.gov.justice.laa.amend.claim.forms.errors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.thymeleaf.spring6.util.DetailedError;
-import uk.gov.justice.laa.amend.claim.forms.helpers.StringUtils;
+import uk.gov.justice.laa.amend.claim.utils.StringUtils;
 
 import java.util.Map;
 

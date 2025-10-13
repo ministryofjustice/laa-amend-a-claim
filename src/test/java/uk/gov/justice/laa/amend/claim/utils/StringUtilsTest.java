@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.forms.helpers;
+package uk.gov.justice.laa.amend.claim.utils;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
