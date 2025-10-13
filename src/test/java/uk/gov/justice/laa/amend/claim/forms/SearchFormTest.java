@@ -155,6 +155,51 @@ public class SearchFormTest {
         }
     }
 
+    @Nested
+    class RedirectUrlTests {
+        @Test
+        void createRedirectUrlWhenAccountNumberPresent() {
+            SearchForm form = new SearchForm(
+                "123",
+                null,
+                null,
+                null
+            );
+
+            String result = form.getRedirectUrl(1);
+
+            Assertions.assertEquals("/?page=1&providerAccountNumber=123", result);
+        }
+
+        @Test
+        void createRedirectUrlWhenAccountNumberAndDatePresent() {
+            SearchForm form = new SearchForm(
+                "123",
+                "3",
+                "2007",
+                null
+            );
+
+            String result = form.getRedirectUrl(2);
+
+            Assertions.assertEquals("/?page=2&providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007", result);
+        }
+
+        @Test
+        void createRedirectUrlWhenAllPresent() {
+            SearchForm form = new SearchForm(
+                "123",
+                "3",
+                "2007",
+                "456"
+            );
+
+            String result = form.getRedirectUrl(3);
+
+            Assertions.assertEquals("/?page=3&providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&referenceNumber=456", result);
+        }
+    }
+
     private ConstraintViolation<SearchForm> getViolation(Set<ConstraintViolation<SearchForm>> violations, String field) {
         ConstraintViolation<SearchForm> violation = violations.stream()
             .filter(v -> v.getPropertyPath().toString().equals(field))

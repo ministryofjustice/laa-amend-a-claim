@@ -42,17 +42,17 @@ public class SearchForm {
 
     public String getRedirectUrl(int page) {
         String redirectUrl = String.format("/?page=%d", page);
-        if (nonEmpty(this.getProviderAccountNumber())) {
-            redirectUrl += String.format("&providerAccountNumber=%s", this.getProviderAccountNumber());
+        if (nonEmpty(providerAccountNumber)) {
+            redirectUrl += String.format("&providerAccountNumber=%s", providerAccountNumber);
         }
-        if (nonEmpty(this.getSubmissionDateMonth())) {
-            redirectUrl += String.format("&submissionDateMonth=%s", this.getSubmissionDateMonth());
+        if (nonEmpty(submissionDateMonth)) {
+            redirectUrl += String.format("&submissionDateMonth=%s", submissionDateMonth);
         }
-        if (nonEmpty(this.getSubmissionDateYear())) {
-            redirectUrl += String.format("&submissionDateYear=%s", this.getSubmissionDateYear());
+        if (nonEmpty(submissionDateYear)) {
+            redirectUrl += String.format("&submissionDateYear=%s", submissionDateYear);
         }
-        if (nonEmpty(this.getReferenceNumber())) {
-            redirectUrl += String.format("&referenceNumber=%s", this.getReferenceNumber());
+        if (nonEmpty(referenceNumber)) {
+            redirectUrl += String.format("&referenceNumber=%s", referenceNumber);
         }
         return redirectUrl;
     }
