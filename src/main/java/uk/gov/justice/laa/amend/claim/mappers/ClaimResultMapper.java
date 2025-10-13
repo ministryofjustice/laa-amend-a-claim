@@ -17,11 +17,10 @@ import java.util.stream.Collectors;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_DATE_FORMAT;
 
 @Mapper(componentModel = "spring")
 public interface ClaimResultMapper {
-
-    String DEFAULT_DATE_FORMAT = "dd MMM yyyy";
 
     /**
      * Maps ClaimResultSet to a SearchResultViewModel.
