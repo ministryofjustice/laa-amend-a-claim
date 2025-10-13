@@ -21,6 +21,8 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAU
 @Mapper(componentModel = "spring")
 public interface ClaimResultMapper {
 
+    String DEFAULT_DATE_FORMAT = "dd MMM yyyy";
+
     /**
      * Maps ClaimResultSet to a SearchResultViewModel.
      * @param claimResultSet The ClaimResultSet input.
@@ -78,7 +80,7 @@ public interface ClaimResultMapper {
             return null;
         }
         LocalDate date = LocalDate.parse(displayDate);
-        return date.format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
+        return date.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT));
     }
 
 }

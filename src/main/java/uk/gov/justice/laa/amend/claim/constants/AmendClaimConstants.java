@@ -7,6 +7,8 @@ public class AmendClaimConstants {
     public static final String PROVIDER_ACCOUNT_REGEX = "^[a-zA-Z0-9]*$";
     public static final String REF_NUMBER_REGEX = "^[a-zA-Z0-9/.\\-\\s]*$";
 
-    public static final int DEFAULT_PAGE_SIZE = 3;
+    public static final int DEFAULT_PAGE_SIZE = 10;
     public static final int DEFAULT_PAGE_NUMBER = 0;
+
+    public static final String  DEFAULT_DATE_FORMAT = "dd MMM yyyy";
 }
