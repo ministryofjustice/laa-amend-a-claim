@@ -8,13 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_INVALID;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_REQUIRED;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX_REFERENCE_NUMBER_ERROR_INVALID;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVIDER_ACCOUNT_REGEX;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.REF_NUMBER_REGEX;
-import static uk.gov.justice.laa.amend.claim.utils.StringUtils.nonBlank;
+import static uk.gov.justice.laa.amend.claim.utils.StringUtils.nonEmpty;
 
 @Getter
 @Setter
@@ -35,9 +34,9 @@ public class SearchForm {
     private String referenceNumber;
 
     public boolean anyNonEmpty() {
-        return nonBlank(providerAccountNumber)
-            || nonBlank(submissionDateMonth)
-            || nonBlank(submissionDateYear)
-            || nonBlank(referenceNumber);
+        return nonEmpty(providerAccountNumber)
+            || nonEmpty(submissionDateMonth)
+            || nonEmpty(submissionDateYear)
+            || nonEmpty(referenceNumber);
     }
 }

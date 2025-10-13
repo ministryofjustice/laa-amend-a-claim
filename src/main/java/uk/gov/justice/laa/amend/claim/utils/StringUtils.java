@@ -4,7 +4,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class StringUtils {
 
-    public static boolean nonBlank(String value) {
+    public static boolean nonEmpty(String value) {
         return !isBlank(value);
     }
 
