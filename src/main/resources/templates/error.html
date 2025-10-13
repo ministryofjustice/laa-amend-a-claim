@@ -10,7 +10,9 @@
     <main class="govuk-main-wrapper" id="main-content">
         <h1 class="govuk-heading-xl" th:text="#{error.generic.message}"></h1>
         <p class="govuk-body" th:text="#{error.code(${statusCode})}"></p>
-        <a class="govuk-link" href="/" th:text="#{back.to.home}"></a>
+        <p class="govuk-body">
+            <a class="govuk-link" href="/" th:text="#{back.to.home}"></a>
+        </p>
     </main>
 </body>
 </html>
