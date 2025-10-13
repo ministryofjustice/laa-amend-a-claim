@@ -3,7 +3,7 @@ package uk.gov.justice.laa.amend.claim.forms.errors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.thymeleaf.spring6.util.DetailedError;
-import uk.gov.justice.laa.amend.claim.utils.StringUtils;
+import uk.gov.justice.laa.amend.claim.utils.FormUtils;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ public abstract class FormError implements Comparable<FormError> {
     }
 
     public String getFieldId() {
-        return StringUtils.toFieldId(fieldName);
+        return FormUtils.toFieldId(fieldName);
     }
 
     @Override

@@ -13,7 +13,7 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX_REFERENCE_NUMBER_ERROR_INVALID;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVIDER_ACCOUNT_REGEX;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.REF_NUMBER_REGEX;
-import static uk.gov.justice.laa.amend.claim.utils.StringUtils.nonEmpty;
+import static uk.gov.justice.laa.amend.claim.utils.FormUtils.nonEmpty;
 
 @Getter
 @Setter
@@ -38,5 +38,22 @@ public class SearchForm {
             || nonEmpty(submissionDateMonth)
             || nonEmpty(submissionDateYear)
             || nonEmpty(referenceNumber);
+    }
+
+    public String getRedirectUrl(int page) {
+        String redirectUrl = String.format("/?page=%d", page);
+        if (nonEmpty(this.getProviderAccountNumber())) {
+            redirectUrl += String.format("&providerAccountNumber=%s", this.getProviderAccountNumber());
+        }
+        if (nonEmpty(this.getSubmissionDateMonth())) {
+            redirectUrl += String.format("&submissionDateMonth=%s", this.getSubmissionDateMonth());
+        }
+        if (nonEmpty(this.getSubmissionDateYear())) {
+            redirectUrl += String.format("&submissionDateYear=%s", this.getSubmissionDateYear());
+        }
+        if (nonEmpty(this.getReferenceNumber())) {
+            redirectUrl += String.format("&referenceNumber=%s", this.getReferenceNumber());
+        }
+        return redirectUrl;
     }
 }

@@ -4,25 +4,25 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public class StringUtilsTest {
+public class FormUtilsTest {
 
     @Nested
     class ToFieldIdTests {
         @Test
         void nullStringReturnsDefault() {
-            String result = StringUtils.toFieldId(null);
+            String result = FormUtils.toFieldId(null);
             Assertions.assertEquals("main-content", result);
         }
 
         @Test
         void camelCaseStringConverted() {
-            String result = StringUtils.toFieldId("someRandomId");
+            String result = FormUtils.toFieldId("someRandomId");
             Assertions.assertEquals("some-random-id", result);
         }
 
         @Test
         void lowerCaseHyphenatedStringUnaffected() {
-            String result = StringUtils.toFieldId("some-random-id");
+            String result = FormUtils.toFieldId("some-random-id");
             Assertions.assertEquals("some-random-id", result);
         }
     }

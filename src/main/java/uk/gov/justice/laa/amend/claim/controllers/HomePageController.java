@@ -17,7 +17,6 @@ import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
-import static uk.gov.justice.laa.amend.claim.utils.StringUtils.nonEmpty;
 
 @Controller
 @RequiredArgsConstructor
@@ -44,7 +43,7 @@ public class HomePageController {
 
         if (form.anyNonEmpty()) {
             ClaimResultSet result = claimService.searchClaims(form.getProviderAccountNumber(), page, DEFAULT_PAGE_SIZE);
-            SearchResultViewModel viewModel = claimResultMapper.toDto(result, getRedirectUrl(page, form));
+            SearchResultViewModel viewModel = claimResultMapper.toDto(result, form.getRedirectUrl(page));
             model.addAttribute("viewModel", viewModel);
         }
 
@@ -62,23 +61,6 @@ public class HomePageController {
             return "index";
         }
 
-        return "redirect:" + getRedirectUrl(1, form);
-    }
-
-    private String getRedirectUrl(int page, SearchForm form) {
-        String redirectUrl = String.format("/?page=%d", page);
-        if (nonEmpty(form.getProviderAccountNumber())) {
-            redirectUrl += String.format("&providerAccountNumber=%s", form.getProviderAccountNumber());
-        }
-        if (nonEmpty(form.getSubmissionDateMonth())) {
-            redirectUrl += String.format("&submissionDateMonth=%s", form.getSubmissionDateMonth());
-        }
-        if (nonEmpty(form.getSubmissionDateYear())) {
-            redirectUrl += String.format("&submissionDateYear=%s", form.getSubmissionDateYear());
-        }
-        if (nonEmpty(form.getReferenceNumber())) {
-            redirectUrl += String.format("&referenceNumber=%s", form.getReferenceNumber());
-        }
-        return redirectUrl;
+        return "redirect:" + form.getRedirectUrl(1);
     }
 }
