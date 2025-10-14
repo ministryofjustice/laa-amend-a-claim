@@ -21,24 +21,24 @@ public class DateValidator implements ConstraintValidator<ValidSubmissionDate, S
         Either<FieldError, Integer> month = validateMonth(form);
         Either<FieldError, Integer> year = validateYear(form);
 
-        if (isRequired(month) && isRequired(year)) {
+        if (isValueRequired(month) && isValueRequired(year)) {
             return true;
         }
 
-        if (isInvalid(month) && isInvalid(year)) {
+        if (isValueRequiredOrInvalid(month) && isValueRequiredOrInvalid(year)) {
             addViolations(context);
             return false;
         }
 
-        if (isInvalid(month)) {
+        if (isValueRequiredOrInvalid(month)) {
             addViolation(context, "submissionDateMonth", month.getLeft().getMessage());
         }
 
-        if (isInvalid(year)) {
+        if (isValueRequiredOrInvalid(year)) {
             addViolation(context, "submissionDateYear", year.getLeft().getMessage());
         }
 
-        if (isValid(month) && isValid(year)) {
+        if (isValueValid(month) && isValueValid(year)) {
             try {
                 YearMonth.of(year.get(), month.get());
                 return true;
@@ -101,15 +101,15 @@ public class DateValidator implements ConstraintValidator<ValidSubmissionDate, S
         addViolation(context, "submissionDateYear", "{index.submissionDate.error.invalid}");
     }
 
-    private boolean isRequired(Either<FieldError, Integer> value) {
-        return isInvalid(value) && value.getLeft().getType() == FieldErrorType.REQUIRED;
+    private boolean isValueRequired(Either<FieldError, Integer> value) {
+        return isValueRequiredOrInvalid(value) && value.getLeft().getType() == FieldErrorType.REQUIRED;
     }
 
-    private boolean isValid(Either<FieldError, Integer> value) {
+    private boolean isValueValid(Either<FieldError, Integer> value) {
         return value.isRight();
     }
 
-    private boolean isInvalid(Either<FieldError, Integer> value) {
+    private boolean isValueRequiredOrInvalid(Either<FieldError, Integer> value) {
         return value.isLeft();
     }
 }
