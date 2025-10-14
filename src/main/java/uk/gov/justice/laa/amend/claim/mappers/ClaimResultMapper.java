@@ -107,7 +107,7 @@ public interface ClaimResultMapper {
                 return "index.status.fixed";
             }
         } else {
-            return null;
+            return "index.status.unknown";
         }
     }
 }

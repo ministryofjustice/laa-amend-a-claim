@@ -133,6 +133,7 @@ class ClaimResultMapperTest {
         assertEquals("UFN456", resultClaim.getReferenceNumber());
         assertNull(resultClaim.getDateSubmittedForDisplay());
         assertEquals(0, resultClaim.getDateSubmittedForSorting());
+        assertEquals("index.status.unknown", resultClaim.getStatus());
     }
 
     @Test
