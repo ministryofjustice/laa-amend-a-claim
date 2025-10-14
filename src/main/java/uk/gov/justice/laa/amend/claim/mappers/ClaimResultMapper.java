@@ -53,10 +53,11 @@ public interface ClaimResultMapper {
     @Mapping(target = "dateSubmitted", source = "caseStartDate")
     @Mapping(target = "account", source = "scheduleReference")
     @Mapping(target = "type", source = "matterTypeCode")
-    @Mapping(target = "status", source = "status", defaultValue = "Unknown")
+    @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
     @Mapping(target = "referenceNumber", ignore = true)
     @Mapping(target = "dateSubmittedForDisplay", ignore = true)
     @Mapping(target = "dateSubmittedForSorting", ignore = true)
+    @Mapping(target = "status", ignore = true)
     Claim mapToClaim(ClaimResponse claimResponse);
 
     @AfterMapping
@@ -66,6 +67,8 @@ public interface ClaimResultMapper {
         target.setDateSubmittedForDisplay(getDateSubmittedForDisplay(target.getDateSubmitted()));
 
         target.setDateSubmittedForSorting(getDateSubmittedForSorting(target.getDateSubmitted()));
+
+        target.setStatus(getStatus(target.getEscaped()));
     }
 
     /**
@@ -94,5 +97,17 @@ public interface ClaimResultMapper {
 
     default long getDateSubmittedForSorting(LocalDate date) {
         return date != null ? date.toEpochDay() : 0;
+    }
+
+    default String getStatus(Boolean escaped) {
+        if (escaped != null) {
+            if (escaped) {
+                return "index.status.escape";
+            } else {
+                return "index.status.fixed";
+            }
+        } else {
+            return null;
+        }
     }
 }

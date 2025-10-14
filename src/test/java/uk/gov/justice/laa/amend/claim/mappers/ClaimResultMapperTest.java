@@ -3,9 +3,7 @@ package uk.gov.justice.laa.amend.claim.mappers;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.*;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -21,13 +19,15 @@ class ClaimResultMapperTest {
     @Test
     void givenValidClaimResultSet_whenToDtoIsCalled_thenCorrectViewModelIsReturned() {
         // Arrange
-        ClaimResultSet claimResultSet = mock(ClaimResultSet.class);
+        ClaimResultSet claimResultSetMock = mock(ClaimResultSet.class);
         ClaimResponse claimResponseMock = mock(ClaimResponse.class);
+        FeeCalculationPatch feeCalculationPatchMock = mock(FeeCalculationPatch.class);
+        BoltOnPatch boltOnPatchMock = mock(BoltOnPatch.class);
 
-        when(claimResultSet.getTotalElements()).thenReturn(15);
-        when(claimResultSet.getSize()).thenReturn(5);
-        when(claimResultSet.getNumber()).thenReturn(2);
-        when(claimResultSet.getContent()).thenReturn(Collections.singletonList(claimResponseMock));
+        when(claimResultSetMock.getTotalElements()).thenReturn(15);
+        when(claimResultSetMock.getSize()).thenReturn(5);
+        when(claimResultSetMock.getNumber()).thenReturn(2);
+        when(claimResultSetMock.getContent()).thenReturn(Collections.singletonList(claimResponseMock));
 
         ClaimResultMapper mapper = new ClaimResultMapperImpl();
         Claim expectedClaim = new Claim();
@@ -37,7 +37,7 @@ class ClaimResultMapperTest {
         expectedClaim.setDateSubmitted(LocalDate.of(2023, 1, 1));
         expectedClaim.setAccount("Account001");
         expectedClaim.setType("MatterType001");
-        expectedClaim.setStatus("VALID");
+        expectedClaim.setEscaped(true);
         expectedClaim.setReferenceNumber("UFN123");
         expectedClaim.setDateSubmittedForDisplay("01 Jan 2023");
         expectedClaim.setDateSubmittedForSorting(19358);
@@ -48,10 +48,12 @@ class ClaimResultMapperTest {
         when(claimResponseMock.getCaseStartDate()).thenReturn(LocalDate.of(2023, 1, 1).toString());
         when(claimResponseMock.getScheduleReference()).thenReturn("Account001");
         when(claimResponseMock.getMatterTypeCode()).thenReturn("MatterType001");
-        when(claimResponseMock.getStatus()).thenReturn(ClaimStatus.VALID);
+        when(claimResponseMock.getFeeCalculationResponse()).thenReturn(feeCalculationPatchMock);
+        when(feeCalculationPatchMock.getBoltOnDetails()).thenReturn(boltOnPatchMock);
+        when(boltOnPatchMock.getEscapeCaseFlag()).thenReturn(true);
 
         // Act
-        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSet, "/");
+        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSetMock, "/");
 
         // Assert
         assertEquals(15, resultViewModel.getPagination().getResults().getCount());
@@ -67,7 +69,7 @@ class ClaimResultMapperTest {
         assertEquals(expectedClaim.getDateSubmitted(), resultClaim.getDateSubmitted());
         assertEquals(expectedClaim.getAccount(), resultClaim.getAccount());
         assertEquals(expectedClaim.getType(), resultClaim.getType());
-        assertEquals(expectedClaim.getStatus(), resultClaim.getStatus());
+        assertEquals(expectedClaim.getEscaped(), resultClaim.getEscaped());
         assertEquals(expectedClaim.getDateSubmittedForDisplay(), resultClaim.getDateSubmittedForDisplay());
         assertEquals(expectedClaim.getDateSubmittedForSorting(), resultClaim.getDateSubmittedForSorting());
     }
@@ -107,7 +109,7 @@ class ClaimResultMapperTest {
         when(claimResponseMock.getCaseStartDate()).thenReturn(null);
         when(claimResponseMock.getScheduleReference()).thenReturn(null);
         when(claimResponseMock.getMatterTypeCode()).thenReturn(null);
-        when(claimResponseMock.getStatus()).thenReturn(null);
+        when(claimResponseMock.getFeeCalculationResponse()).thenReturn(null);
         when(claimResponseMock.getClientSurname()).thenReturn(null);
         when(claimResponseMock.getCaseReferenceNumber()).thenReturn(null);
 
@@ -127,7 +129,7 @@ class ClaimResultMapperTest {
         assertNull(resultClaim.getDateSubmitted());
         assertNull(resultClaim.getAccount());
         assertNull(resultClaim.getType());
-        assertEquals("Unknown", resultClaim.getStatus());
+        assertNull(resultClaim.getEscaped());
         assertEquals("UFN456", resultClaim.getReferenceNumber());
         assertNull(resultClaim.getDateSubmittedForDisplay());
         assertEquals(0, resultClaim.getDateSubmittedForSorting());
@@ -136,26 +138,20 @@ class ClaimResultMapperTest {
     @Test
     void givenClaimResponseWithoutUniqueFileNumber_whenToDtoIsCalled_thenCaseReferenceNumberIsUsed() {
         // Arrange
-        ClaimResultSet claimResultSet = mock(ClaimResultSet.class);
+        ClaimResultSet claimResultSetMock = mock(ClaimResultSet.class);
         ClaimResponse claimResponseMock = mock(ClaimResponse.class);
 
-        when(claimResultSet.getContent()).thenReturn(Collections.singletonList(claimResponseMock));
-        when(claimResultSet.getTotalElements()).thenReturn(1);
-        when(claimResultSet.getSize()).thenReturn(1);
-        when(claimResultSet.getNumber()).thenReturn(1);
+        when(claimResultSetMock.getContent()).thenReturn(Collections.singletonList(claimResponseMock));
+        when(claimResultSetMock.getTotalElements()).thenReturn(1);
+        when(claimResultSetMock.getSize()).thenReturn(1);
+        when(claimResultSetMock.getNumber()).thenReturn(1);
 
-        when(claimResponseMock.getUniqueFileNumber()).thenReturn(null);
-        when(claimResponseMock.getCaseStartDate()).thenReturn(null);
-        when(claimResponseMock.getScheduleReference()).thenReturn(null);
-        when(claimResponseMock.getMatterTypeCode()).thenReturn(null);
-        when(claimResponseMock.getStatus()).thenReturn(null);
-        when(claimResponseMock.getClientSurname()).thenReturn(null);
         when(claimResponseMock.getCaseReferenceNumber()).thenReturn("CRN001");
 
         ClaimResultMapper mapper = new ClaimResultMapperImpl();
 
         // Act
-        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSet, "/");
+        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSetMock, "/");
 
         // Assert
         List<Claim> claims = resultViewModel.getClaims();
@@ -165,5 +161,67 @@ class ClaimResultMapperTest {
         assertNull(resultClaim.getUniqueFileNumber());
         assertEquals("CRN001", resultClaim.getCaseReferenceNumber());
         assertEquals("CRN001", resultClaim.getReferenceNumber());
+    }
+
+    @Test
+    void givenEscapedClaimThenReturnCorrectStatus() {
+        // Arrange
+        ClaimResultSet claimResultSetMock = mock(ClaimResultSet.class);
+        ClaimResponse claimResponseMock = mock(ClaimResponse.class);
+        FeeCalculationPatch feeCalculationPatchMock = mock(FeeCalculationPatch.class);
+        BoltOnPatch boltOnPatchMock = mock(BoltOnPatch.class);
+
+        when(claimResultSetMock.getContent()).thenReturn(Collections.singletonList(claimResponseMock));
+        when(claimResultSetMock.getTotalElements()).thenReturn(1);
+        when(claimResultSetMock.getSize()).thenReturn(1);
+        when(claimResultSetMock.getNumber()).thenReturn(1);
+
+        when(claimResponseMock.getFeeCalculationResponse()).thenReturn(feeCalculationPatchMock);
+        when(feeCalculationPatchMock.getBoltOnDetails()).thenReturn(boltOnPatchMock);
+        when(boltOnPatchMock.getEscapeCaseFlag()).thenReturn(true);
+
+        ClaimResultMapper mapper = new ClaimResultMapperImpl();
+
+        // Act
+        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSetMock, "/");
+
+        // Assert
+        List<Claim> claims = resultViewModel.getClaims();
+        assertEquals(1, claims.size());
+        Claim resultClaim = claims.get(0);
+
+        assertEquals(true, resultClaim.getEscaped());
+        assertEquals("index.status.escape", resultClaim.getStatus());
+    }
+
+    @Test
+    void givenFixedFeeClaimThenReturnCorrectStatus() {
+        // Arrange
+        ClaimResultSet claimResultSetMock = mock(ClaimResultSet.class);
+        ClaimResponse claimResponseMock = mock(ClaimResponse.class);
+        FeeCalculationPatch feeCalculationPatchMock = mock(FeeCalculationPatch.class);
+        BoltOnPatch boltOnPatchMock = mock(BoltOnPatch.class);
+
+        when(claimResultSetMock.getContent()).thenReturn(Collections.singletonList(claimResponseMock));
+        when(claimResultSetMock.getTotalElements()).thenReturn(1);
+        when(claimResultSetMock.getSize()).thenReturn(1);
+        when(claimResultSetMock.getNumber()).thenReturn(1);
+
+        when(claimResponseMock.getFeeCalculationResponse()).thenReturn(feeCalculationPatchMock);
+        when(feeCalculationPatchMock.getBoltOnDetails()).thenReturn(boltOnPatchMock);
+        when(boltOnPatchMock.getEscapeCaseFlag()).thenReturn(false);
+
+        ClaimResultMapper mapper = new ClaimResultMapperImpl();
+
+        // Act
+        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSetMock, "/");
+
+        // Assert
+        List<Claim> claims = resultViewModel.getClaims();
+        assertEquals(1, claims.size());
+        Claim resultClaim = claims.get(0);
+
+        assertEquals(false, resultClaim.getEscaped());
+        assertEquals("index.status.fixed", resultClaim.getStatus());
     }
 }
