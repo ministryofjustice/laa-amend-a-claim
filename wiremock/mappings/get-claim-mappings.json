@@ -1,12 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPattern": "/api/v0/submissions/(.*)/claims/(.*)",
-    "queryParameters": {
-      "office_code": {
-        "matches": ".*"
-      }
-    }
+    "urlPattern": "/api/v0/submissions/(.*)/claims/(.*)"
   },
   "response": {
     "status": 200,
