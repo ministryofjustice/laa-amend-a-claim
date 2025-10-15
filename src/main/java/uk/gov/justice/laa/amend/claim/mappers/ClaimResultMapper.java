@@ -48,12 +48,12 @@ public interface ClaimResultMapper {
      * @return A fully mapped Claim.
      */
     @Mapping(target = "uniqueFileNumber", source = "uniqueFileNumber")
-    @Mapping(target = "caseReferenceNumber", source = "caseReferenceNumber", defaultValue = "Unknown")
-    @Mapping(target = "clientSurname", source = "clientSurname", defaultValue = "Unknown")
+    @Mapping(target = "caseReferenceNumber", source = "caseReferenceNumber")
+    @Mapping(target = "clientSurname", source = "clientSurname")
     @Mapping(target = "dateSubmitted", source = "caseStartDate")
-    @Mapping(target = "account", source = "scheduleReference")
-    @Mapping(target = "type", source = "matterTypeCode")
-    @Mapping(target = "status", source = "status", defaultValue = "Unknown")
+    @Mapping(target = "account", ignore = true)
+    @Mapping(target = "type", ignore = true)
+    @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
     @Mapping(target = "referenceNumber", ignore = true)
     @Mapping(target = "dateSubmittedForDisplay", ignore = true)
     @Mapping(target = "dateSubmittedForSorting", ignore = true)
@@ -61,6 +61,10 @@ public interface ClaimResultMapper {
 
     @AfterMapping
     default void setExtraFields(ClaimResponse source, @MappingTarget Claim target) {
+        target.setAccount(getAccountNumber(source.getScheduleReference()));
+
+        target.setType(null); // TODO once API exposes this value feeCalculationResponse.categoryOfLawDescription
+
         target.setReferenceNumber(getReferenceNumber(target.getUniqueFileNumber(), target.getCaseReferenceNumber()));
 
         target.setDateSubmittedForDisplay(getDateSubmittedForDisplay(target.getDateSubmitted()));
@@ -82,6 +86,10 @@ public interface ClaimResultMapper {
                 claimResultSet.getNumber() != null ? claimResultSet.getNumber() + 1 : DEFAULT_PAGE_NUMBER,
                 href
         );
+    }
+
+    default String getAccountNumber(String scheduleReference) {
+        return scheduleReference != null ? scheduleReference.split("/")[0] : null;
     }
 
     default String getReferenceNumber(String uniqueFileNumber, String caseReferenceNumber) {

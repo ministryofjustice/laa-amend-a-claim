@@ -128,7 +128,6 @@ class IndexViewTest extends ViewTestBase {
         Claim claim = new Claim();
         claim.setAccount(claimResponse.getScheduleReference());
         claim.setType("Unknown");
-        claim.setStatus(ClaimStatus.VALID.name());
         claim.setClientSurname(claimResponse.getClientSurname());
         claim.setCaseReferenceNumber(claimResponse.getCaseReferenceNumber());
         Assertions.assertNotNull(claimResponse.getCaseStartDate());
