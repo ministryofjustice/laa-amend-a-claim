@@ -65,7 +65,7 @@ public interface ClaimResultMapper {
     default void setExtraFields(ClaimResponse source, @MappingTarget Claim target) {
         target.setAccount(getAccountNumber(source.getScheduleReference()));
 
-        target.setType(null); // TODO once API exposes this value
+        target.setType(null); // TODO once API exposes this value feeCalculationResponse.categoryOfLawDescription
 
         target.setReferenceNumber(getReferenceNumber(target.getUniqueFileNumber(), target.getCaseReferenceNumber()));
 
