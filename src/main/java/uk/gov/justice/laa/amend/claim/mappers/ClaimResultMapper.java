@@ -52,7 +52,15 @@ public interface ClaimResultMapper {
     @Mapping(target = "claimId", source = "id")
     @Mapping(target = "caseReferenceNumber", source = "caseReferenceNumber")
     @Mapping(target = "clientSurname", source = "clientSurname")
+    @Mapping(target = "clientForename", source = "clientForename")
     @Mapping(target = "dateSubmitted", source = "caseStartDate")
+    @Mapping(target = "caseStartDate", source = "caseStartDate")
+    @Mapping(target = "caseStartDateForDisplay", ignore = true)
+    @Mapping(target = "caseEndDateForDisplay", ignore = true)
+    @Mapping(target = "caseEndDate", source = "caseConcludedDate")
+    @Mapping(target = "feeScheme", source = "feeCalculationResponse.feeCodeDescription")
+    @Mapping(target = "categoryOfLaw", source = "feeCalculationResponse.categoryOfLaw")
+    @Mapping(target = "matterTypeCode", source = "matterTypeCode")
     @Mapping(target = "account", ignore = true)
     @Mapping(target = "type", ignore = true)
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
@@ -70,6 +78,10 @@ public interface ClaimResultMapper {
         target.setReferenceNumber(getReferenceNumber(target.getUniqueFileNumber(), target.getCaseReferenceNumber()));
 
         target.setDateSubmittedForDisplay(getDateSubmittedForDisplay(target.getDateSubmitted()));
+
+        target.setCaseStartDateForDisplay(getCaseStartDateForDisplay(target.getCaseStartDate()));
+
+        target.setCaseEndDateForDisplay(getCaseEndDateForDisplay(target.getCaseEndDate()));
 
         target.setDateSubmittedForSorting(getDateSubmittedForSorting(target.getDateSubmitted()));
     }
@@ -99,6 +111,14 @@ public interface ClaimResultMapper {
     }
 
     default String getDateSubmittedForDisplay(LocalDate date) {
+        return date != null ? date.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
+    }
+
+    default String getCaseStartDateForDisplay(LocalDate date) {
+        return date != null ? date.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
+    }
+
+    default String getCaseEndDateForDisplay(LocalDate date) {
         return date != null ? date.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
     }
 

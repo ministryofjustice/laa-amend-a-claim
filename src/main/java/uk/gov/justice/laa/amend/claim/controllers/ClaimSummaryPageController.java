@@ -30,6 +30,8 @@ public class ClaimSummaryPageController {
 
         model.addAttribute("claim", claim);
 
+        log.info(claim.toString());
+
         return "claim-summary";
     }
 }
