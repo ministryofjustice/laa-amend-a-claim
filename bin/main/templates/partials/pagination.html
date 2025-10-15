@@ -1,0 +1,36 @@
+<nav th:fragment="pagination(pagination)" class="moj-pagination" aria-label="Pagination navigation"
+     xmlns:th="http://www.thymeleaf.org">
+    <ul class="moj-pagination__list">
+        <li th:if="${pagination.previous != null}" class="moj-pagination__item  moj-pagination__item--prev">
+            <a class="moj-pagination__link" th:href="${pagination.previous.href}" th:text="#{pagination.page.previous}"><span class="govuk-visually-hidden" th:text=" #{pagination.page}"></span></a>
+        </li>
+
+        <th:block th:each="item : ${pagination.items}">
+            <li th:if="${item.type.name() == 'ACTIVE_PAGE'}"
+                class="moj-pagination__item moj-pagination__item--active"
+                th:aria-label="${item.ariaLabel}"
+                aria-current="page"
+                th:text="${item.text}">
+            </li>
+
+            <li th:if="${item.type.name() == 'INACTIVE_PAGE'}"
+                class="moj-pagination__item">
+                <a class="moj-pagination__link"
+                   th:href="${item.href}"
+                   th:aria-label="${item.ariaLabel}"
+                   th:text="${item.text}">
+                </a>
+            </li>
+
+            <li th:if="${item.type.name() == 'ELLIPSIS'}"
+                class="moj-pagination__item moj-pagination__item--dots"
+                th:text="${item.text}">
+            </li>
+        </th:block>
+
+        <li th:if="${pagination.next != null}" class="moj-pagination__item moj-pagination__item--next">
+            <a class="moj-pagination__link" th:href="${pagination.next.href}" th:text="#{pagination.page.next}"><span class="govuk-visually-hidden" th:text=" #{pagination.page}"></span></a>
+        </li>
+    </ul>
+    <p class="moj-pagination__results" th:utext="#{pagination.results(${pagination.results.from}, ${pagination.results.to}, ${pagination.results.count}, ${pagination.results.text})}"></p>
+</nav>

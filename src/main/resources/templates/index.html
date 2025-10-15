@@ -98,7 +98,7 @@
                         <tbody class="govuk-table__body">
                             <tr class="govuk-table__row" th:each="claim : ${viewModel.claims}">
                                 <td class="govuk-table__cell">
-                                    <a th:href="@{/}" th:text="${claim.referenceNumber}" class="govuk-link--no-visited-state"></a>
+                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.submissionId}, claimId=${claim.claimId})}" th:text="${claim.referenceNumber}" class="govuk-link--no-visited-state"></a>
                                 </td>
                                 <td class="govuk-table__cell" th:text="${claim.clientSurname}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.dateSubmittedForDisplay}" th:data-sort-value="${claim.dateSubmittedForSorting}"></td>

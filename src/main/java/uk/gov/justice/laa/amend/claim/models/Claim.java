@@ -7,6 +7,8 @@ import java.time.LocalDate;
 @Data
 public class Claim {
     private String uniqueFileNumber;
+    private String submissionId;
+    private String claimId;
     private String caseReferenceNumber;
     private String clientSurname;
     private LocalDate dateSubmitted;

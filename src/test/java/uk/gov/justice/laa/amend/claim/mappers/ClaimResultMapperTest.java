@@ -35,6 +35,8 @@ class ClaimResultMapperTest {
         ClaimResultMapper mapper = new ClaimResultMapperImpl();
         Claim expectedClaim = new Claim();
         expectedClaim.setUniqueFileNumber("UFN123");
+        expectedClaim.setSubmissionId("submissionId");
+        expectedClaim.setClaimId("claimId");
         expectedClaim.setCaseReferenceNumber("CRN001");
         expectedClaim.setClientSurname("Doe");
         expectedClaim.setDateSubmitted(LocalDate.of(2023, 1, 1));
@@ -46,6 +48,8 @@ class ClaimResultMapperTest {
         expectedClaim.setDateSubmittedForSorting(19358);
 
         when(claimResponseMock.getUniqueFileNumber()).thenReturn("UFN123");
+        when(claimResponseMock.getSubmissionId()).thenReturn("submissionId");
+        when(claimResponseMock.getId()).thenReturn("claimId");
         when(claimResponseMock.getCaseReferenceNumber()).thenReturn("CRN001");
         when(claimResponseMock.getClientSurname()).thenReturn("Doe");
         when(claimResponseMock.getCaseStartDate()).thenReturn(LocalDate.of(2023, 1, 1).toString());
@@ -66,6 +70,8 @@ class ClaimResultMapperTest {
         Claim resultClaim = claims.getFirst();
 
         assertEquals(expectedClaim.getUniqueFileNumber(), resultClaim.getUniqueFileNumber());
+        assertEquals(expectedClaim.getClaimId(), resultClaim.getClaimId());
+        assertEquals(expectedClaim.getSubmissionId(), resultClaim.getSubmissionId());
         assertEquals(expectedClaim.getCaseReferenceNumber(), resultClaim.getCaseReferenceNumber());
         assertEquals(expectedClaim.getClientSurname(), resultClaim.getClientSurname());
         assertEquals(expectedClaim.getDateSubmitted(), resultClaim.getDateSubmitted());

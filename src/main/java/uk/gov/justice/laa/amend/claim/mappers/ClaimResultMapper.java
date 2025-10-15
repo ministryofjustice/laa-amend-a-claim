@@ -48,6 +48,8 @@ public interface ClaimResultMapper {
      * @return A fully mapped Claim.
      */
     @Mapping(target = "uniqueFileNumber", source = "uniqueFileNumber")
+    @Mapping(target = "submissionId", source = "submissionId")
+    @Mapping(target = "claimId", source = "id")
     @Mapping(target = "caseReferenceNumber", source = "caseReferenceNumber")
     @Mapping(target = "clientSurname", source = "clientSurname")
     @Mapping(target = "dateSubmitted", source = "caseStartDate")

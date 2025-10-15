@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{claimSummary.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null}
+    )}">
+    <body>
+        <main class="govuk-main-wrapper" id="main-content">
+            <h1 class="govuk-heading-xl">
+                <span th:text="#{claimSummary.heading}"></span>
+            </h1>
+
+        </main>
+    </body>
+</html>

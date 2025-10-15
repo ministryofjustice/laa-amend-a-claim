@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
 
@@ -23,6 +24,16 @@ public class ClaimService {
                             size).block();
         } catch (Exception e) {
             log.error("Error searching claims", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ClaimResponse getClaim(String submissionId, String claimId) {
+        try {
+            return claimsApiClient.getClaim(submissionId,
+                    claimId).block();
+        } catch (Exception e) {
+            log.error("Error getting claim {}", claimId, e);
             throw new RuntimeException(e);
         }
     }
