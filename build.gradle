@@ -40,6 +40,7 @@ dependencies {
     implementation 'io.netty:netty-codec-http:4.1.125.Final'
     implementation 'io.netty:netty-codec-http2:4.1.125.Final'
 
+    implementation("io.vavr:vavr:0.10.7")
 
 
     compileOnly 'org.projectlombok:lombok'

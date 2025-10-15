@@ -102,8 +102,7 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasErrorSummary(doc,
             "provider-account-number",
-            "submission-date-month",
-            "submission-date-year",
+            "submission-date-month", // date errors get combined
             "reference-number"
         );
     }
