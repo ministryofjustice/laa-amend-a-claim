@@ -17,5 +17,5 @@ public class Claim {
     private String referenceNumber;
     private String dateSubmittedForDisplay;
     private long dateSubmittedForSorting;
-    private String status;
+    private ClaimType status;
 }

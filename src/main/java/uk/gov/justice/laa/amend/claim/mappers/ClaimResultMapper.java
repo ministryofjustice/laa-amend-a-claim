@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.ClaimType;
 import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -18,9 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_DATE_FORMAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_NUMBER;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.*;
 
 @Mapper(componentModel = "spring")
 public interface ClaimResultMapper {
@@ -48,11 +47,11 @@ public interface ClaimResultMapper {
      * @return A fully mapped Claim.
      */
     @Mapping(target = "uniqueFileNumber", source = "uniqueFileNumber")
-    @Mapping(target = "caseReferenceNumber", source = "caseReferenceNumber", defaultValue = "Unknown")
-    @Mapping(target = "clientSurname", source = "clientSurname", defaultValue = "Unknown")
+    @Mapping(target = "caseReferenceNumber", source = "caseReferenceNumber")
+    @Mapping(target = "clientSurname", source = "clientSurname")
     @Mapping(target = "dateSubmitted", source = "caseStartDate")
-    @Mapping(target = "account", source = "scheduleReference")
-    @Mapping(target = "type", source = "matterTypeCode")
+    @Mapping(target = "account", ignore = true)
+    @Mapping(target = "type", ignore = true)
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
     @Mapping(target = "referenceNumber", ignore = true)
     @Mapping(target = "dateSubmittedForDisplay", ignore = true)
@@ -62,6 +61,10 @@ public interface ClaimResultMapper {
 
     @AfterMapping
     default void setExtraFields(ClaimResponse source, @MappingTarget Claim target) {
+        target.setAccount(getAccountNumber(source.getScheduleReference()));
+
+        target.setType(null); // TODO once API exposes this value
+
         target.setReferenceNumber(getReferenceNumber(target.getUniqueFileNumber(), target.getCaseReferenceNumber()));
 
         target.setDateSubmittedForDisplay(getDateSubmittedForDisplay(target.getDateSubmitted()));
@@ -87,6 +90,10 @@ public interface ClaimResultMapper {
         );
     }
 
+    default String getAccountNumber(String scheduleReference) {
+        return scheduleReference != null ? scheduleReference.split("/")[0] : null;
+    }
+
     default String getReferenceNumber(String uniqueFileNumber, String caseReferenceNumber) {
         return uniqueFileNumber != null ? uniqueFileNumber : caseReferenceNumber;
     }
@@ -99,15 +106,15 @@ public interface ClaimResultMapper {
         return date != null ? date.toEpochDay() : 0;
     }
 
-    default String getStatus(Boolean escaped) {
+    default ClaimType getStatus(Boolean escaped) {
         if (escaped != null) {
             if (escaped) {
-                return "index.status.escape";
+                return ClaimType.ESCAPE;
             } else {
-                return "index.status.fixed";
+                return ClaimType.FIXED;
             }
         } else {
-            return "index.status.unknown";
+            return ClaimType.UNKNOWN;
         }
     }
 }

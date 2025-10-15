@@ -2,8 +2,12 @@ package uk.gov.justice.laa.amend.claim.mappers;
 
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.ClaimType;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.*;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -35,8 +39,8 @@ class ClaimResultMapperTest {
         expectedClaim.setCaseReferenceNumber("CRN001");
         expectedClaim.setClientSurname("Doe");
         expectedClaim.setDateSubmitted(LocalDate.of(2023, 1, 1));
-        expectedClaim.setAccount("Account001");
-        expectedClaim.setType("MatterType001");
+        expectedClaim.setAccount("0U733A");
+        expectedClaim.setType(null);
         expectedClaim.setEscaped(true);
         expectedClaim.setReferenceNumber("UFN123");
         expectedClaim.setDateSubmittedForDisplay("01 Jan 2023");
@@ -46,8 +50,7 @@ class ClaimResultMapperTest {
         when(claimResponseMock.getCaseReferenceNumber()).thenReturn("CRN001");
         when(claimResponseMock.getClientSurname()).thenReturn("Doe");
         when(claimResponseMock.getCaseStartDate()).thenReturn(LocalDate.of(2023, 1, 1).toString());
-        when(claimResponseMock.getScheduleReference()).thenReturn("Account001");
-        when(claimResponseMock.getMatterTypeCode()).thenReturn("MatterType001");
+        when(claimResponseMock.getScheduleReference()).thenReturn("0U733A/2018/02");
         when(claimResponseMock.getFeeCalculationResponse()).thenReturn(feeCalculationPatchMock);
         when(feeCalculationPatchMock.getBoltOnDetails()).thenReturn(boltOnPatchMock);
         when(boltOnPatchMock.getEscapeCaseFlag()).thenReturn(true);
@@ -108,7 +111,6 @@ class ClaimResultMapperTest {
         when(claimResponseMock.getUniqueFileNumber()).thenReturn("UFN456");
         when(claimResponseMock.getCaseStartDate()).thenReturn(null);
         when(claimResponseMock.getScheduleReference()).thenReturn(null);
-        when(claimResponseMock.getMatterTypeCode()).thenReturn(null);
         when(claimResponseMock.getFeeCalculationResponse()).thenReturn(null);
         when(claimResponseMock.getClientSurname()).thenReturn(null);
         when(claimResponseMock.getCaseReferenceNumber()).thenReturn(null);
@@ -124,8 +126,8 @@ class ClaimResultMapperTest {
         Claim resultClaim = claims.get(0);
 
         assertEquals("UFN456", resultClaim.getUniqueFileNumber());
-        assertEquals("Unknown", resultClaim.getCaseReferenceNumber());
-        assertEquals("Unknown", resultClaim.getClientSurname());
+        assertNull(resultClaim.getCaseReferenceNumber());
+        assertNull(resultClaim.getClientSurname());
         assertNull(resultClaim.getDateSubmitted());
         assertNull(resultClaim.getAccount());
         assertNull(resultClaim.getType());
@@ -133,7 +135,7 @@ class ClaimResultMapperTest {
         assertEquals("UFN456", resultClaim.getReferenceNumber());
         assertNull(resultClaim.getDateSubmittedForDisplay());
         assertEquals(0, resultClaim.getDateSubmittedForSorting());
-        assertEquals("index.status.unknown", resultClaim.getStatus());
+        assertEquals(ClaimType.UNKNOWN, resultClaim.getStatus());
     }
 
     @Test
@@ -192,7 +194,7 @@ class ClaimResultMapperTest {
         Claim resultClaim = claims.get(0);
 
         assertEquals(true, resultClaim.getEscaped());
-        assertEquals("index.status.escape", resultClaim.getStatus());
+        assertEquals(ClaimType.ESCAPE, resultClaim.getStatus());
     }
 
     @Test
@@ -223,6 +225,6 @@ class ClaimResultMapperTest {
         Claim resultClaim = claims.get(0);
 
         assertEquals(false, resultClaim.getEscaped());
-        assertEquals("index.status.fixed", resultClaim.getStatus());
+        assertEquals(ClaimType.FIXED, resultClaim.getStatus());
     }
 }
