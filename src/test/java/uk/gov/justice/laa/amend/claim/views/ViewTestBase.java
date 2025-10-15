@@ -127,7 +127,7 @@ public abstract class ViewTestBase {
   }
 
   protected void assertPageHasPagination(Document doc) {
-    Elements elements = doc.getElementsByClass("moj-pagination");
+    Elements elements = doc.getElementsByClass("govuk-pagination");
     Assertions.assertFalse(elements.isEmpty());
   }
 
