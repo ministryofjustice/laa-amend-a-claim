@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import uk.gov.justice.laa.amend.claim.models.Claim;
-import uk.gov.justice.laa.amend.claim.models.ClaimType;
 import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -58,7 +57,6 @@ public interface ClaimResultMapper {
     @Mapping(target = "referenceNumber", ignore = true)
     @Mapping(target = "dateSubmittedForDisplay", ignore = true)
     @Mapping(target = "dateSubmittedForSorting", ignore = true)
-    @Mapping(target = "status", ignore = true)
     Claim mapToClaim(ClaimResponse claimResponse);
 
     @AfterMapping
@@ -72,8 +70,6 @@ public interface ClaimResultMapper {
         target.setDateSubmittedForDisplay(getDateSubmittedForDisplay(target.getDateSubmitted()));
 
         target.setDateSubmittedForSorting(getDateSubmittedForSorting(target.getDateSubmitted()));
-
-        target.setStatus(getStatus(target.getEscaped()));
     }
 
     /**
@@ -106,17 +102,5 @@ public interface ClaimResultMapper {
 
     default long getDateSubmittedForSorting(LocalDate date) {
         return date != null ? date.toEpochDay() : 0;
-    }
-
-    default ClaimType getStatus(Boolean escaped) {
-        if (escaped != null) {
-            if (escaped) {
-                return ClaimType.ESCAPE;
-            } else {
-                return ClaimType.FIXED;
-            }
-        } else {
-            return ClaimType.UNKNOWN;
-        }
     }
 }

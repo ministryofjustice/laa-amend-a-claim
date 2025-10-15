@@ -2,7 +2,6 @@ package uk.gov.justice.laa.amend.claim.mappers;
 
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.Claim;
-import uk.gov.justice.laa.amend.claim.models.ClaimType;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -135,7 +134,6 @@ class ClaimResultMapperTest {
         assertEquals("UFN456", resultClaim.getReferenceNumber());
         assertNull(resultClaim.getDateSubmittedForDisplay());
         assertEquals(0, resultClaim.getDateSubmittedForSorting());
-        assertEquals(ClaimType.UNKNOWN, resultClaim.getStatus());
     }
 
     @Test
@@ -194,7 +192,6 @@ class ClaimResultMapperTest {
         Claim resultClaim = claims.get(0);
 
         assertEquals(true, resultClaim.getEscaped());
-        assertEquals(ClaimType.ESCAPE, resultClaim.getStatus());
     }
 
     @Test
@@ -225,6 +222,5 @@ class ClaimResultMapperTest {
         Claim resultClaim = claims.get(0);
 
         assertEquals(false, resultClaim.getEscaped());
-        assertEquals(ClaimType.FIXED, resultClaim.getStatus());
     }
 }

@@ -14,7 +14,6 @@ import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.HomePageController;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.Claim;
-import uk.gov.justice.laa.amend.claim.models.ClaimType;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
@@ -129,7 +128,6 @@ class IndexViewTest extends ViewTestBase {
         Claim claim = new Claim();
         claim.setAccount(claimResponse.getScheduleReference());
         claim.setType("Unknown");
-        claim.setStatus(ClaimType.FIXED);
         claim.setClientSurname(claimResponse.getClientSurname());
         claim.setCaseReferenceNumber(claimResponse.getCaseReferenceNumber());
         Assertions.assertNotNull(claimResponse.getCaseStartDate());

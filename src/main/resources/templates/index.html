@@ -92,7 +92,7 @@
                                 <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.dateSubmitted}"></th>
                                 <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.account}"></th>
                                 <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.type}"></th>
-                                <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.status}"></th>
+                                <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.escaped}"></th>
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
@@ -105,7 +105,12 @@
                                 <td class="govuk-table__cell" th:text="${claim.account}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.type}"></td>
                                 <td class="govuk-table__cell">
-                                    <strong class="govuk-tag" th:classappend=" ${'govuk-tag--' + claim.status.tag}" th:text="${claim.status.description}"></strong>
+                                    <th:block th:if="${claim.escaped}">
+                                        <strong class="govuk-tag govuk-tag--red" th:text="#{index.results.escaped.yes}"></strong>
+                                    </th:block>
+                                    <th:block th:unless="${claim.escaped}">
+                                        <span th:text="#{index.results.escaped.no}"></span>
+                                    </th:block>
                                 </td>
                             </tr>
                         </tbody>
