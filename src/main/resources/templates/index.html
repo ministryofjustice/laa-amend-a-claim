@@ -102,8 +102,8 @@
                                 </td>
                                 <td class="govuk-table__cell" th:text="${claim.clientSurname}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.submissionPeriodForDisplay}" th:data-sort-value="${claim.submissionPeriodForSorting}"></td>
-                                <td class="govuk-table__cell" th:text="${claim.getAccountNumber()}"></td>
-                                <td class="govuk-table__cell" th:text="${claim.getCategoryOfLaw()}"></td>
+                                <td class="govuk-table__cell" th:text="${claim.accountNumber}"></td>
+                                <td class="govuk-table__cell" th:text="${claim.categoryOfLaw}"></td>
                                 <td class="govuk-table__cell" th:with="value=${claim.escapedForDisplay}">
                                     <th:block th:if="${claim.escaped}">
                                         <strong class="govuk-tag govuk-tag--red" th:text="#{${value}}"></strong>
