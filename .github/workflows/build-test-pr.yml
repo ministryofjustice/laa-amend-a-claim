@@ -125,7 +125,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     container:
-      image: snyk/snyk:gradle-9-jdk21
+      image: snyk/snyk:gradle-9-jdk17
 
     steps:
       - uses: actions/checkout@v5
