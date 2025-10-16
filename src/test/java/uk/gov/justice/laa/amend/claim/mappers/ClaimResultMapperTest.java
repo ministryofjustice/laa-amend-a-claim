@@ -9,6 +9,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,23 +40,32 @@ class ClaimResultMapperTest {
         expectedClaim.setClaimId("claimId");
         expectedClaim.setCaseReferenceNumber("CRN001");
         expectedClaim.setClientSurname("Doe");
-        expectedClaim.setDateSubmitted(LocalDate.of(2023, 1, 1));
-        expectedClaim.setAccount("0U733A");
-        expectedClaim.setType(null);
+        expectedClaim.setClientForename("John");
+        expectedClaim.setSubmissionPeriod(YearMonth.of(2023, 1));
+        expectedClaim.setCaseStartDate(LocalDate.of(2023, 1, 1));
+        expectedClaim.setCaseEndDate(LocalDate.of(2023, 12, 31));
+        expectedClaim.setFeeScheme("fee scheme");
+        expectedClaim.setCategoryOfLaw("category of law");
+        expectedClaim.setMatterTypeCode("matter type code");
+        expectedClaim.setScheduleReference("0U733A/2018/02");
         expectedClaim.setEscaped(true);
-        expectedClaim.setReferenceNumber("UFN123");
-        expectedClaim.setDateSubmittedForDisplay("01 Jan 2023");
-        expectedClaim.setDateSubmittedForSorting(19358);
+        expectedClaim.setProviderAccountNumber("TODO");
 
+        when(claimResponseMock.getFeeCalculationResponse()).thenReturn(feeCalculationPatchMock);
+        when(feeCalculationPatchMock.getBoltOnDetails()).thenReturn(boltOnPatchMock);
         when(claimResponseMock.getUniqueFileNumber()).thenReturn("UFN123");
         when(claimResponseMock.getSubmissionId()).thenReturn("submissionId");
         when(claimResponseMock.getId()).thenReturn("claimId");
         when(claimResponseMock.getCaseReferenceNumber()).thenReturn("CRN001");
         when(claimResponseMock.getClientSurname()).thenReturn("Doe");
-        when(claimResponseMock.getCaseStartDate()).thenReturn(LocalDate.of(2023, 1, 1).toString());
+        when(claimResponseMock.getClientForename()).thenReturn("John");
+        when(claimResponseMock.getSubmissionPeriod()).thenReturn("JAN-2023");
+        when(claimResponseMock.getCaseStartDate()).thenReturn("2023-01-01");
+        when(claimResponseMock.getCaseConcludedDate()).thenReturn("2023-12-31");
+        when(claimResponseMock.getFeeSchemeCode()).thenReturn("fee scheme");
+        when(feeCalculationPatchMock.getCategoryOfLaw()).thenReturn("category of law");
+        when(claimResponseMock.getMatterTypeCode()).thenReturn("matter type code");
         when(claimResponseMock.getScheduleReference()).thenReturn("0U733A/2018/02");
-        when(claimResponseMock.getFeeCalculationResponse()).thenReturn(feeCalculationPatchMock);
-        when(feeCalculationPatchMock.getBoltOnDetails()).thenReturn(boltOnPatchMock);
         when(boltOnPatchMock.getEscapeCaseFlag()).thenReturn(true);
 
         // Act
@@ -70,16 +80,20 @@ class ClaimResultMapperTest {
         Claim resultClaim = claims.getFirst();
 
         assertEquals(expectedClaim.getUniqueFileNumber(), resultClaim.getUniqueFileNumber());
-        assertEquals(expectedClaim.getClaimId(), resultClaim.getClaimId());
         assertEquals(expectedClaim.getSubmissionId(), resultClaim.getSubmissionId());
+        assertEquals(expectedClaim.getClaimId(), resultClaim.getClaimId());
         assertEquals(expectedClaim.getCaseReferenceNumber(), resultClaim.getCaseReferenceNumber());
         assertEquals(expectedClaim.getClientSurname(), resultClaim.getClientSurname());
-        assertEquals(expectedClaim.getDateSubmitted(), resultClaim.getDateSubmitted());
-        assertEquals(expectedClaim.getAccount(), resultClaim.getAccount());
-        assertEquals(expectedClaim.getType(), resultClaim.getType());
+        assertEquals(expectedClaim.getClientForename(), resultClaim.getClientForename());
+        assertEquals(expectedClaim.getSubmissionPeriod(), resultClaim.getSubmissionPeriod());
+        assertEquals(expectedClaim.getCaseStartDate(), resultClaim.getCaseStartDate());
+        assertEquals(expectedClaim.getCaseEndDate(), resultClaim.getCaseEndDate());
+        assertEquals(expectedClaim.getFeeScheme(), resultClaim.getFeeScheme());
+        assertEquals(expectedClaim.getCategoryOfLaw(), resultClaim.getCategoryOfLaw());
+        assertEquals(expectedClaim.getMatterTypeCode(), resultClaim.getMatterTypeCode());
+        assertEquals(expectedClaim.getScheduleReference(), resultClaim.getScheduleReference());
         assertEquals(expectedClaim.getEscaped(), resultClaim.getEscaped());
-        assertEquals(expectedClaim.getDateSubmittedForDisplay(), resultClaim.getDateSubmittedForDisplay());
-        assertEquals(expectedClaim.getDateSubmittedForSorting(), resultClaim.getDateSubmittedForSorting());
+        assertEquals(expectedClaim.getProviderAccountNumber(), resultClaim.getProviderAccountNumber());
     }
 
     @Test
@@ -113,13 +127,6 @@ class ClaimResultMapperTest {
         when(claimResultSet.getSize()).thenReturn(1);
         when(claimResultSet.getNumber()).thenReturn(1);
 
-        when(claimResponseMock.getUniqueFileNumber()).thenReturn("UFN456");
-        when(claimResponseMock.getCaseStartDate()).thenReturn(null);
-        when(claimResponseMock.getScheduleReference()).thenReturn(null);
-        when(claimResponseMock.getFeeCalculationResponse()).thenReturn(null);
-        when(claimResponseMock.getClientSurname()).thenReturn(null);
-        when(claimResponseMock.getCaseReferenceNumber()).thenReturn(null);
-
         ClaimResultMapper mapper = new ClaimResultMapperImpl();
 
         // Act
@@ -130,103 +137,20 @@ class ClaimResultMapperTest {
         assertEquals(1, claims.size());
         Claim resultClaim = claims.get(0);
 
-        assertEquals("UFN456", resultClaim.getUniqueFileNumber());
+        assertNull(resultClaim.getUniqueFileNumber());
+        assertNull(resultClaim.getSubmissionId());
+        assertNull(resultClaim.getClaimId());
         assertNull(resultClaim.getCaseReferenceNumber());
         assertNull(resultClaim.getClientSurname());
-        assertNull(resultClaim.getDateSubmitted());
-        assertNull(resultClaim.getAccount());
-        assertNull(resultClaim.getType());
+        assertNull(resultClaim.getClientForename());
+        assertNull(resultClaim.getSubmissionPeriod());
+        assertNull(resultClaim.getCaseStartDate());
+        assertNull(resultClaim.getCaseEndDate());
+        assertNull(resultClaim.getFeeScheme());
+        assertNull(resultClaim.getCategoryOfLaw());
+        assertNull(resultClaim.getMatterTypeCode());
+        assertNull(resultClaim.getScheduleReference());
         assertNull(resultClaim.getEscaped());
-        assertEquals("UFN456", resultClaim.getReferenceNumber());
-        assertNull(resultClaim.getDateSubmittedForDisplay());
-        assertEquals(0, resultClaim.getDateSubmittedForSorting());
-    }
-
-    @Test
-    void givenClaimResponseWithoutUniqueFileNumber_whenToDtoIsCalled_thenCaseReferenceNumberIsUsed() {
-        // Arrange
-        ClaimResultSet claimResultSetMock = mock(ClaimResultSet.class);
-        ClaimResponse claimResponseMock = mock(ClaimResponse.class);
-
-        when(claimResultSetMock.getContent()).thenReturn(Collections.singletonList(claimResponseMock));
-        when(claimResultSetMock.getTotalElements()).thenReturn(1);
-        when(claimResultSetMock.getSize()).thenReturn(1);
-        when(claimResultSetMock.getNumber()).thenReturn(1);
-
-        when(claimResponseMock.getCaseReferenceNumber()).thenReturn("CRN001");
-
-        ClaimResultMapper mapper = new ClaimResultMapperImpl();
-
-        // Act
-        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSetMock, "/");
-
-        // Assert
-        List<Claim> claims = resultViewModel.getClaims();
-        assertEquals(1, claims.size());
-        Claim resultClaim = claims.get(0);
-
-        assertNull(resultClaim.getUniqueFileNumber());
-        assertEquals("CRN001", resultClaim.getCaseReferenceNumber());
-        assertEquals("CRN001", resultClaim.getReferenceNumber());
-    }
-
-    @Test
-    void givenEscapedClaimThenReturnCorrectStatus() {
-        // Arrange
-        ClaimResultSet claimResultSetMock = mock(ClaimResultSet.class);
-        ClaimResponse claimResponseMock = mock(ClaimResponse.class);
-        FeeCalculationPatch feeCalculationPatchMock = mock(FeeCalculationPatch.class);
-        BoltOnPatch boltOnPatchMock = mock(BoltOnPatch.class);
-
-        when(claimResultSetMock.getContent()).thenReturn(Collections.singletonList(claimResponseMock));
-        when(claimResultSetMock.getTotalElements()).thenReturn(1);
-        when(claimResultSetMock.getSize()).thenReturn(1);
-        when(claimResultSetMock.getNumber()).thenReturn(1);
-
-        when(claimResponseMock.getFeeCalculationResponse()).thenReturn(feeCalculationPatchMock);
-        when(feeCalculationPatchMock.getBoltOnDetails()).thenReturn(boltOnPatchMock);
-        when(boltOnPatchMock.getEscapeCaseFlag()).thenReturn(true);
-
-        ClaimResultMapper mapper = new ClaimResultMapperImpl();
-
-        // Act
-        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSetMock, "/");
-
-        // Assert
-        List<Claim> claims = resultViewModel.getClaims();
-        assertEquals(1, claims.size());
-        Claim resultClaim = claims.get(0);
-
-        assertEquals(true, resultClaim.getEscaped());
-    }
-
-    @Test
-    void givenFixedFeeClaimThenReturnCorrectStatus() {
-        // Arrange
-        ClaimResultSet claimResultSetMock = mock(ClaimResultSet.class);
-        ClaimResponse claimResponseMock = mock(ClaimResponse.class);
-        FeeCalculationPatch feeCalculationPatchMock = mock(FeeCalculationPatch.class);
-        BoltOnPatch boltOnPatchMock = mock(BoltOnPatch.class);
-
-        when(claimResultSetMock.getContent()).thenReturn(Collections.singletonList(claimResponseMock));
-        when(claimResultSetMock.getTotalElements()).thenReturn(1);
-        when(claimResultSetMock.getSize()).thenReturn(1);
-        when(claimResultSetMock.getNumber()).thenReturn(1);
-
-        when(claimResponseMock.getFeeCalculationResponse()).thenReturn(feeCalculationPatchMock);
-        when(feeCalculationPatchMock.getBoltOnDetails()).thenReturn(boltOnPatchMock);
-        when(boltOnPatchMock.getEscapeCaseFlag()).thenReturn(false);
-
-        ClaimResultMapper mapper = new ClaimResultMapperImpl();
-
-        // Act
-        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSetMock, "/");
-
-        // Assert
-        List<Claim> claims = resultViewModel.getClaims();
-        assertEquals(1, claims.size());
-        Claim resultClaim = claims.get(0);
-
-        assertEquals(false, resultClaim.getEscaped());
+        assertEquals("TODO", resultClaim.getProviderAccountNumber());
     }
 }

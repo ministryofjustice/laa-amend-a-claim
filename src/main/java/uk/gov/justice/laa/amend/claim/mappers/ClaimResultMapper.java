@@ -13,12 +13,13 @@ import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
-import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_DATE_FORMAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
 
@@ -53,37 +54,20 @@ public interface ClaimResultMapper {
     @Mapping(target = "caseReferenceNumber", source = "caseReferenceNumber")
     @Mapping(target = "clientSurname", source = "clientSurname")
     @Mapping(target = "clientForename", source = "clientForename")
-    @Mapping(target = "dateSubmitted", source = "caseStartDate")
+    @Mapping(target = "submissionPeriod", ignore = true)
     @Mapping(target = "caseStartDate", source = "caseStartDate")
-    @Mapping(target = "caseStartDateForDisplay", ignore = true)
-    @Mapping(target = "caseEndDateForDisplay", ignore = true)
     @Mapping(target = "caseEndDate", source = "caseConcludedDate")
-    @Mapping(target = "feeScheme", source = "feeCalculationResponse.feeCodeDescription")
-    @Mapping(target = "categoryOfLaw", source = "feeCalculationResponse.categoryOfLaw")
+    @Mapping(target = "feeScheme", source = "feeSchemeCode") // TODO use feeSchemeCodeDescription when available
+    @Mapping(target = "categoryOfLaw", source = "feeCalculationResponse.categoryOfLaw") // TODO use categoryOfLawDescription when available
     @Mapping(target = "matterTypeCode", source = "matterTypeCode")
-    @Mapping(target = "account", ignore = true)
-    @Mapping(target = "type", ignore = true)
+    @Mapping(target = "scheduleReference", source = "scheduleReference")
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
-    @Mapping(target = "referenceNumber", ignore = true)
-    @Mapping(target = "dateSubmittedForDisplay", ignore = true)
-    @Mapping(target = "dateSubmittedForSorting", ignore = true)
+    @Mapping(target = "providerAccountNumber", constant = "TODO")
     Claim mapToClaim(ClaimResponse claimResponse);
 
     @AfterMapping
     default void setExtraFields(ClaimResponse source, @MappingTarget Claim target) {
-        target.setAccount(getAccountNumber(source.getScheduleReference()));
-
-        target.setType(null); // TODO once API exposes this value feeCalculationResponse.categoryOfLawDescription
-
-        target.setReferenceNumber(getReferenceNumber(target.getUniqueFileNumber(), target.getCaseReferenceNumber()));
-
-        target.setDateSubmittedForDisplay(getDateSubmittedForDisplay(target.getDateSubmitted()));
-
-        target.setCaseStartDateForDisplay(getCaseStartDateForDisplay(target.getCaseStartDate()));
-
-        target.setCaseEndDateForDisplay(getCaseEndDateForDisplay(target.getCaseEndDate()));
-
-        target.setDateSubmittedForSorting(getDateSubmittedForSorting(target.getDateSubmitted()));
+        target.setSubmissionPeriod(getSubmissionPeriod(source.getSubmissionPeriod()));
     }
 
     /**
@@ -102,27 +86,16 @@ public interface ClaimResultMapper {
         );
     }
 
-    default String getAccountNumber(String scheduleReference) {
-        return scheduleReference != null ? scheduleReference.split("/")[0] : null;
-    }
-
-    default String getReferenceNumber(String uniqueFileNumber, String caseReferenceNumber) {
-        return uniqueFileNumber != null ? uniqueFileNumber : caseReferenceNumber;
-    }
-
-    default String getDateSubmittedForDisplay(LocalDate date) {
-        return date != null ? date.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
-    }
-
-    default String getCaseStartDateForDisplay(LocalDate date) {
-        return date != null ? date.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
-    }
-
-    default String getCaseEndDateForDisplay(LocalDate date) {
-        return date != null ? date.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
-    }
-
-    default long getDateSubmittedForSorting(LocalDate date) {
-        return date != null ? date.toEpochDay() : 0;
+    default YearMonth getSubmissionPeriod(String submissionPeriod) {
+        if (submissionPeriod != null) {
+            try {
+                DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MMM-yyyy").toFormatter();
+                return YearMonth.parse(submissionPeriod, formatter);
+            } catch (DateTimeParseException e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 }

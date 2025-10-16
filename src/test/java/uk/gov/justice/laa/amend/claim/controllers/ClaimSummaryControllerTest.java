@@ -10,19 +10,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("local")
-@WebMvcTest(ClaimSummaryPageController.class)
+@WebMvcTest(ClaimSummaryController.class)
 @Import({LocalSecurityConfig.class, ThymeleafConfig.class})
-public class ClaimSummaryPageControllerTest {
+public class ClaimSummaryControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,9 +36,13 @@ public class ClaimSummaryPageControllerTest {
 
     @Test
     public void testOnPageLoadReturnsView() throws Exception {
+        when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
+        when(claimResultMapper.mapToClaim(any())).thenReturn(new Claim());
+
         mockMvc.perform(get("/submissions/submissionId/claims/claimId"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("claim-summary"));
+            .andExpect(status().isOk())
+            .andExpect(view().name("claim-summary"))
+            .andExpect(model().attributeExists("claim"));
     }
 
 }

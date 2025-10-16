@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +11,8 @@ import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
 @Controller
-@Slf4j
 @RequiredArgsConstructor
-public class ClaimSummaryPageController {
+public class ClaimSummaryController {
 
     private final ClaimService claimService;
     private final ClaimResultMapper claimResultMapper;
@@ -29,8 +27,6 @@ public class ClaimSummaryPageController {
         Claim claim = claimResultMapper.mapToClaim(claimResponse);
 
         model.addAttribute("claim", claim);
-
-        log.info(claim.toString());
 
         return "claim-summary";
     }
