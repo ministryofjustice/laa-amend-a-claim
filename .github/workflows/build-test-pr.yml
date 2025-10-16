@@ -125,15 +125,19 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     container:
-      image: snyk/snyk:gradle-9-jdk17
+      image: snyk/snyk:gradle-9-jdk21
 
     steps:
       - uses: actions/checkout@v5
 
-      - name: Set up Gradle Java toolchain
+      - name: Check Java and Gradle versions
         run: |
+          java -version
           ./gradlew --version
-          echo "Using Java $(java -version)"
+
+      - name: Verify Gradle toolchain
+        run: |
+          ./gradlew help --console=plain
 
       - name: Run Snyk to check app for vulnerabilities
         uses: snyk/actions/gradle@master
