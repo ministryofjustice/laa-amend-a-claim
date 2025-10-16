@@ -130,14 +130,12 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Check Java and Gradle versions
-        run: |
-          java -version
-          ./gradlew --version
+      - name: Build project
+        run: ./gradlew clean build
 
-      - name: Verify Gradle toolchain
+      - name: Check class file major versions
         run: |
-          ./gradlew help --console=plain
+          find build/classes/java -name "*.class" -exec sh -c 'echo -n "{}: "; javap -verbose {} | grep "major version"' \;
 
       - name: Run Snyk to check app for vulnerabilities
         uses: snyk/actions/gradle@master
