@@ -71,8 +71,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Fee scheme", "CCS");
         assertPageHasSummaryListRow(doc, "Legal matter code", "IMLB:IOUT");
         assertPageHasSummaryListRow(doc, "Provider Account Number", "0P322F");
-        assertPageHasSummaryListRow(doc, "Client forename", "John");
-        assertPageHasSummaryListRow(doc, "Client surname", "Doe");
+        assertPageHasSummaryListRow(doc, "Client name", "John Doe");
         assertPageHasSummaryListRow(doc, "Case start date", "01 Jan 2020");
         assertPageHasSummaryListRow(doc, "Case end date", "31 Dec 2020");
         assertPageHasSummaryListRow(doc, "Date submitted", "Jan 2021");

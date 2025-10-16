@@ -129,4 +129,35 @@ public class ClaimTest {
             Assertions.assertEquals("index.results.escaped.no", claim.getEscapedForDisplay());
         }
     }
+
+    @Nested
+    class getClientNameTests {
+        @Test
+        void getClientNameHandlesNullForenameAndSurname() {
+            Claim claim = new Claim();
+            Assertions.assertNull(claim.getClientName());
+        }
+
+        @Test
+        void getClientNameHandlesNullSurname() {
+            Claim claim = new Claim();
+            claim.setClientForename("John");
+            Assertions.assertEquals("John", claim.getClientName());
+        }
+
+        @Test
+        void getClientNameHandlesNullForename() {
+            Claim claim = new Claim();
+            claim.setClientSurname("Doe");
+            Assertions.assertEquals("Doe", claim.getClientName());
+        }
+
+        @Test
+        void getClientNameHandlesFullName() {
+            Claim claim = new Claim();
+            claim.setClientForename("John");
+            claim.setClientSurname("Doe");
+            Assertions.assertEquals("John Doe", claim.getClientName());
+        }
+    }
 }

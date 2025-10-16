@@ -54,4 +54,16 @@ public class Claim {
     public String getEscapedForDisplay() {
         return (escaped != null && escaped) ? "index.results.escaped.yes" : "index.results.escaped.no";
     }
+
+    public String getClientName() {
+        if (clientForename != null & clientSurname != null) {
+            return String.format("%s %s", clientForename, clientSurname);
+        } else if (clientForename != null) {
+            return clientForename;
+        } else if (clientSurname != null) {
+            return clientSurname;
+        } else {
+            return null;
+        }
+    }
 }
