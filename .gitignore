@@ -21,4 +21,5 @@ out/
 .vscode/
 .env
 
+snyk-app.sarif
 snyk.sarif
