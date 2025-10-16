@@ -75,6 +75,9 @@ jobs:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    container:
+      image: snyk/snyk:gradle-jdk-21
+
     steps:
       - uses: actions/checkout@v5
 
