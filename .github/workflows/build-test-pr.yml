@@ -124,41 +124,16 @@ jobs:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    container:
-      image: snyk/snyk:gradle-9-jdk21
-
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@master
 
-      - name: Build project
-        run: ./gradlew clean build
-
-      - name: Check class file major versions
-        run: |
-          find build/classes/java -name "*.class" -exec sh -c 'echo -n "{}: "; javap -verbose {} | grep "major version"' \;
-
-      - name: Run Snyk to check app for vulnerabilities
+      - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/gradle@master
         continue-on-error: true # To make sure that SARIF upload gets called
         with:
-          command: monitor
-          args: --severity-threshold=high --stacktrace --debug --log-level=trace
-
-
-      - name: Generate sarif Snyk report
-        uses: snyk/actions/gradle@master
-        continue-on-error: true
-        with:
-          command: test
-          args: --sarif-file-output=snyk-app.sarif
-
-      # Fix/hack for Snyk's sarif file to avoid this error uploading to GitHub.
-      # See https://github.com/github/codeql-action/issues/2187 for more context.
-      - name: Fix undefined values
-        run: |
-          sed -i 's/"security-severity": "undefined"/"security-severity": "0"/g' snyk-app.sarif
+          args: --sarif-file-output=snyk.sarif
 
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: snyk-app.sarif
+          sarif_file: snyk.sarif
