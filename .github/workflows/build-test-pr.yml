@@ -130,6 +130,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Set up Gradle Java toolchain
+        run: |
+          ./gradlew --version
+          echo "Using Java $(java -version)"
+
       - name: Run Snyk to check app for vulnerabilities
         uses: snyk/actions/gradle@master
         continue-on-error: true # To make sure that SARIF upload gets called
