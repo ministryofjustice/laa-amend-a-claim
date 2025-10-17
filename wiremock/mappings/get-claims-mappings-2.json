@@ -7,7 +7,7 @@
         "matches": ".*"
       },
       "size": {
-        "equalTo": "3"
+        "equalTo": "10"
       },
       "page": {
         "equalTo": "1"
