@@ -136,7 +136,7 @@ jobs:
 
 
       - name: Generate sarif Snyk report
-        uses: snyk/actions/gradle@master
+        uses: snyk/actions/gradle-8-jdk21@master
         continue-on-error: true
         with:
           command: test
