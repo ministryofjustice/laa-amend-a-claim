@@ -8,6 +8,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
+wrapper {
+    gradleVersion = '8.4'
+}
+
 checkstyle {
     toolVersion = '10.21.2'
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
@@ -64,7 +68,7 @@ dependencies {
 
 
 test {
-        jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
-        useJUnitPlatform()
-        finalizedBy jacocoTestReport
+    jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
