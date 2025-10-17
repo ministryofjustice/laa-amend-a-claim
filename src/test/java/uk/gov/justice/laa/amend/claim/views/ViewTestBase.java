@@ -136,6 +136,11 @@ public abstract class ViewTestBase {
     Assertions.assertFalse(elements.isEmpty());
   }
 
+  protected void assertPageHasNoSummaryList(Document doc) {
+    Elements elements = doc.getElementsByClass("govuk-summary-list");
+    Assertions.assertTrue(elements.isEmpty());
+  }
+
   protected void assertPageHasSummaryListRow(Document doc, String expectedKey, String expectedValue) {
     Elements rows = doc.getElementsByClass("govuk-summary-list__row");
     boolean rowFound = rows.stream().anyMatch(row -> {
@@ -144,6 +149,11 @@ public abstract class ViewTestBase {
       return keyText.equals(expectedKey) && valueText.equals(expectedValue);
     });
     Assertions.assertTrue(rowFound);
+  }
+
+  protected void assertPageHasNoSummaryListRows(Document doc) {
+    Elements elements = doc.getElementsByClass("govuk-summary-list__row");
+    Assertions.assertTrue(elements.isEmpty());
   }
 
   protected void assertPageHasErrorSummary(Document doc, String... errorFields) {

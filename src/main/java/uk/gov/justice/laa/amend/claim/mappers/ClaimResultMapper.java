@@ -62,7 +62,7 @@ public interface ClaimResultMapper {
     @Mapping(target = "matterTypeCode", source = "matterTypeCode")
     @Mapping(target = "scheduleReference", source = "scheduleReference")
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
-    @Mapping(target = "providerAccountNumber", constant = "TODO")
+    @Mapping(target = "providerAccountNumber", constant = "TODO") // TODO use providerAccountNumber when available
     Claim mapToClaim(ClaimResponse claimResponse);
 
     @AfterMapping

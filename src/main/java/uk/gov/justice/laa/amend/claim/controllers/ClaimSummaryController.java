@@ -19,10 +19,10 @@ public class ClaimSummaryController {
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}")
     public String onPageLoad(
-            Model model,
-            @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId) {
-
+        Model model,
+        @PathVariable(value = "submissionId") String submissionId,
+        @PathVariable(value = "claimId") String claimId
+    ) {
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
         Claim claim = claimResultMapper.mapToClaim(claimResponse);
 

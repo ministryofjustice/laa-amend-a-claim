@@ -55,8 +55,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
         when(claimResultMapper.mapToClaim(any())).thenReturn(claim);
 
-        Map<String, Object> variables = Map.of("claim", claim);
-        Document doc = renderDocument(variables);
+        Document doc = renderDocument();
 
         assertPageHasTitle(doc, "Claim summary");
 
@@ -75,5 +74,33 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Case start date", "01 Jan 2020");
         assertPageHasSummaryListRow(doc, "Case end date", "31 Dec 2020");
         assertPageHasSummaryListRow(doc, "Date submitted", "Jan 2021");
+    }
+
+    @Test
+    void testPageWhenNullClaim() throws Exception {
+        when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
+        when(claimResultMapper.mapToClaim(any())).thenReturn(null);
+
+        Document doc = renderDocument();
+
+        assertPageHasTitle(doc, "Claim summary");
+
+        assertPageHasHeading(doc, "Claim summary");
+
+        assertPageHasNoActiveServiceNavigationItems(doc);
+
+        assertPageHasNoSummaryList(doc);
+    }
+
+    @Test
+    void testPageWhenEmptyClaim() throws Exception {
+        when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
+        when(claimResultMapper.mapToClaim(any())).thenReturn(new Claim());
+
+        Document doc = renderDocument();
+
+        assertPageHasSummaryList(doc);
+
+        assertPageHasNoSummaryListRows(doc);
     }
 }

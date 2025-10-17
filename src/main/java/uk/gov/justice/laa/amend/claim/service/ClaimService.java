@@ -30,8 +30,7 @@ public class ClaimService {
 
     public ClaimResponse getClaim(String submissionId, String claimId) {
         try {
-            return claimsApiClient.getClaim(submissionId,
-                    claimId).block();
+            return claimsApiClient.getClaim(submissionId, claimId).block();
         } catch (Exception e) {
             log.error("Error getting claim {}", claimId, e);
             throw new RuntimeException(e);
