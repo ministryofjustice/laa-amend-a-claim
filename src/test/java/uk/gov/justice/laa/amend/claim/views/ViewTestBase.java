@@ -151,11 +151,6 @@ public abstract class ViewTestBase {
     Assertions.assertTrue(rowFound);
   }
 
-  protected void assertPageHasNoSummaryListRows(Document doc) {
-    Elements elements = doc.getElementsByClass("govuk-summary-list__row");
-    Assertions.assertTrue(elements.isEmpty());
-  }
-
   protected void assertPageHasErrorSummary(Document doc, String... errorFields) {
     Element errorSummary = selectFirst(doc, ".govuk-error-summary");
     Element errorSummaryList = selectFirst(errorSummary, ".govuk-error-summary__list");

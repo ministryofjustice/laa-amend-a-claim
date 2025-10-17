@@ -101,6 +101,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         assertPageHasSummaryList(doc);
 
-        assertPageHasNoSummaryListRows(doc);
+        assertPageHasSummaryListRow(doc, "Escape case", "No");
     }
 }
