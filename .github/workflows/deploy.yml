@@ -93,7 +93,6 @@ jobs:
           KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
           NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
-          SPRING_PROFILE: ${{ vars.SPRING_PROFILE }}
           INGRESS_CLASS_NAME: ${{ vars.INGRESS_CLASS_NAME }}
           SENTRY_ENV: ${{ inputs.SENTRY_ENV }}
 
