@@ -131,6 +131,26 @@ public abstract class ViewTestBase {
     Assertions.assertFalse(elements.isEmpty());
   }
 
+  protected void assertPageHasSummaryList(Document doc) {
+    Elements elements = doc.getElementsByClass("govuk-summary-list");
+    Assertions.assertFalse(elements.isEmpty());
+  }
+
+  protected void assertPageHasNoSummaryList(Document doc) {
+    Elements elements = doc.getElementsByClass("govuk-summary-list");
+    Assertions.assertTrue(elements.isEmpty());
+  }
+
+  protected void assertPageHasSummaryListRow(Document doc, String expectedKey, String expectedValue) {
+    Elements rows = doc.getElementsByClass("govuk-summary-list__row");
+    boolean rowFound = rows.stream().anyMatch(row -> {
+      String keyText = row.select(".govuk-summary-list__key").text().trim();
+      String valueText = row.select(".govuk-summary-list__value").text().trim();
+      return keyText.equals(expectedKey) && valueText.equals(expectedValue);
+    });
+    Assertions.assertTrue(rowFound);
+  }
+
   protected void assertPageHasErrorSummary(Document doc, String... errorFields) {
     Element errorSummary = selectFirst(doc, ".govuk-error-summary");
     Element errorSummaryList = selectFirst(errorSummary, ".govuk-error-summary__list");
