@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/api/v0/submissions/(.*)/claims/(.*)"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "get-claim-response.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
