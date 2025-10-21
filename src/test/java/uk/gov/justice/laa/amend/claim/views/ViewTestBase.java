@@ -74,6 +74,11 @@ public abstract class ViewTestBase {
     Assertions.assertEquals(String.format("%s - Amend a claim - GOV.UK", expectedText), title);
   }
 
+  protected void assertPageHasBackLink(Document doc) {
+    Elements elements = doc.getElementsByClass("govuk-back-link");
+    Assertions.assertFalse(elements.isEmpty());
+  }
+
   protected void assertPageHasHint(Document doc, String id, String expectedText) {
     Element hint = getElementById(doc, id);
     Assertions.assertEquals(expectedText, hint.text());

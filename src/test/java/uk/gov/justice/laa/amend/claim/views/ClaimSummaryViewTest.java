@@ -55,11 +55,14 @@ class ClaimSummaryViewTest extends ViewTestBase {
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
         when(claimResultMapper.mapToClaim(any())).thenReturn(claim);
 
-        Document doc = renderDocument();
+        Map<String, Object> variables = Map.of("referer", "/foo");
+        Document doc = renderDocument(variables);
 
         assertPageHasTitle(doc, "Claim summary");
 
         assertPageHasHeading(doc, "Claim summary");
+
+        assertPageHasBackLink(doc);
 
         assertPageHasNoActiveServiceNavigationItems(doc);
 
