@@ -36,10 +36,6 @@ public class SecurityConfig {
                 .successHandler((request, response, authentication) -> {
                     response.sendRedirect("/"); // TODO - Ensure user has correct role(s). See laa-record-link-service for an example.
                 }))
-            .exceptionHandling(ex -> ex
-                .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    response.sendRedirect("/not-authorised");
-                }))
             .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny));
         return http.build();
     }

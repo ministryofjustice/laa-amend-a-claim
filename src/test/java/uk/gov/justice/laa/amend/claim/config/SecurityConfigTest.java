@@ -97,10 +97,9 @@ public class SecurityConfigTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    void incorrectRoleRedirectsToNotAuthorised() throws Exception {
+    void incorrectRoleReturnsForbidden() throws Exception {
         mockMvc.perform(get("/denied"))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/not-authorised"));
+            .andExpect(status().isForbidden());
     }
 
     /**

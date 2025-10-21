@@ -4,7 +4,8 @@
       th:replace="~{layout :: layout(
         title=#{index.title},
         mainContent=~{::#main-content},
-        pageCategory='search'
+        pageCategory='search',
+        showBackLink=${false}
     )}">
     <body>
         <main class="govuk-main-wrapper" id="main-content">
