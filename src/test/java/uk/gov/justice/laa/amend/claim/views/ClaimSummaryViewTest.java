@@ -6,7 +6,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.C;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimSummaryController;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
@@ -16,8 +15,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.Locale;
-import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -55,8 +52,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
         when(claimResultMapper.mapToClaim(any())).thenReturn(claim);
 
-        Map<String, Object> variables = Map.of("referer", "/foo");
-        Document doc = renderDocument(variables);
+        Document doc = renderDocument();
 
         assertPageHasTitle(doc, "Claim summary");
 
