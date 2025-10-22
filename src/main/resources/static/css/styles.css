@@ -2,3 +2,11 @@
     padding: 15px 20px 0px 20px;
     background-color: #f3f2f1;
 }
+
+/* Hide back link unless JS is enabled */
+.govuk-back-link {
+    display: none;
+}
+.js-enabled .govuk-back-link {
+    display: inline-block;
+}
