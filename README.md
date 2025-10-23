@@ -43,12 +43,14 @@ Using the `.env-template` file as a template, copy to a new .env file
 Be sure to fill out all values as they are required for pulling dependencies for the application to run
 
 ### Build And Run Application
-1. Run `docker-compose up` to start wiremock server
-2. Ensure that all environment variables from `.env` are set using:<br>
-`export $(grep -v '^#' .env | xargs)`
-3. Note: to run the application without Silas integration (Silas integration is a work in progress), use the local Spring profile with:<br>
-`./gradlew bootRun --args='--spring.profiles.active=local'`
-4. Navigate to the landing page at [http://localhost:8080/](http://localhost:8080/)
+1. Run:
+   1. `./run.sh` or `./run.sh local` to run the service with:
+      1. WireMock to mock the responses from the claims API
+      2. A minimal security configuration for ease of use with no Entra login and with CSRF disabled
+   2. `./run.sh dev` to run the service with:
+      1. An integration with the claims API in UAT
+      2. A security configuration that enforces Entra login with CSRF enabled (note you will need a test developer account to log in through Entra)
+2. Navigate to the landing page at [http://localhost:8080/](http://localhost:8080/)
 
 ### Build application
 `./gradlew clean build`
