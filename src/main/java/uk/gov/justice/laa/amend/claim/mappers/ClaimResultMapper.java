@@ -63,7 +63,6 @@ public interface ClaimResultMapper {
 
     @AfterMapping
     default void setExtraFields(ClaimResponse source, @MappingTarget Claim target) {
-        System.out.println(source.getSubmissionPeriod());
         target.parseAndSetSubmissionPeriod(source.getSubmissionPeriod());
     }
 
