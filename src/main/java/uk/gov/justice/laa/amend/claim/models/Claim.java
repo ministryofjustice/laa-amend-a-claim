@@ -5,6 +5,9 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_DATE_FORMAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PERIOD_FORMAT;
@@ -64,6 +67,19 @@ public class Claim {
             return clientSurname;
         } else {
             return null;
+        }
+    }
+
+    public void parseAndSetSubmissionPeriod(String submissionPeriod) {
+        if (submissionPeriod != null) {
+            try {
+                DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MMM-yyyy").toFormatter(Locale.ENGLISH);
+                this.submissionPeriod = YearMonth.parse(submissionPeriod, formatter);
+            } catch (DateTimeParseException e) {
+                this.submissionPeriod = null;
+            }
+        } else {
+            this.submissionPeriod = null;
         }
     }
 }
