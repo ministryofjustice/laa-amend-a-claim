@@ -160,4 +160,35 @@ public class ClaimTest {
             Assertions.assertEquals("John Doe", claim.getClientName());
         }
     }
+
+    @Nested
+    class ParseAndSetSubmissionPeriodTests {
+        @Test
+        void parseAndSetSubmissionPeriodWhenNullReturnsNull() {
+            Claim claim = new Claim();
+            claim.setSubmissionPeriod(null);
+            Assertions.assertNull(claim.getSubmissionPeriod());
+        }
+
+        @Test
+        void parseAndSetSubmissionPeriodWhenInvalidReturnsNull() {
+            Claim claim = new Claim();
+            claim.parseAndSetSubmissionPeriod("foo");
+            Assertions.assertNull(claim.getSubmissionPeriod());
+        }
+
+        @Test
+        void parseAndSetSubmissionPeriodWhenJan2023ReturnsYearMonth() {
+            Claim claim = new Claim();
+            claim.parseAndSetSubmissionPeriod("JAN-2023");
+            Assertions.assertEquals(YearMonth.of(2023, 1), claim.getSubmissionPeriod());
+        }
+
+        @Test
+        void parseAndSetSubmissionPeriodWhenSep2025ReturnsYearMonth() {
+            Claim claim = new Claim();
+            claim.parseAndSetSubmissionPeriod("SEP-2025");
+            Assertions.assertEquals(YearMonth.of(2025, 9), claim.getSubmissionPeriod());
+        }
+    }
 }

@@ -13,10 +13,6 @@ import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,7 +63,8 @@ public interface ClaimResultMapper {
 
     @AfterMapping
     default void setExtraFields(ClaimResponse source, @MappingTarget Claim target) {
-        target.setSubmissionPeriod(getSubmissionPeriod(source.getSubmissionPeriod()));
+        System.out.println(source.getSubmissionPeriod());
+        target.parseAndSetSubmissionPeriod(source.getSubmissionPeriod());
     }
 
     /**
@@ -84,18 +81,5 @@ public interface ClaimResultMapper {
                 claimResultSet.getNumber() != null ? claimResultSet.getNumber() + 1 : DEFAULT_PAGE_NUMBER,
                 href
         );
-    }
-
-    default YearMonth getSubmissionPeriod(String submissionPeriod) {
-        if (submissionPeriod != null) {
-            try {
-                DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MMM-yyyy").toFormatter();
-                return YearMonth.parse(submissionPeriod, formatter);
-            } catch (DateTimeParseException e) {
-                return null;
-            }
-        } else {
-            return null;
-        }
     }
 }
