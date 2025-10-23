@@ -76,7 +76,6 @@ public class Claim {
                 DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MMM-yyyy").toFormatter(Locale.ENGLISH);
                 this.submissionPeriod = YearMonth.parse(submissionPeriod, formatter);
             } catch (DateTimeParseException e) {
-                System.out.println(e.getMessage());
                 this.submissionPeriod = null;
             }
         } else {
