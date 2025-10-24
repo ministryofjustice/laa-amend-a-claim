@@ -59,12 +59,20 @@
                             </fieldset>
                         </div>
 
-                        <div class="govuk-form-group" th:classappend="${#fields.hasErrors('referenceNumber') ? ' govuk-form-group--error' : ''}">
-                            <label class="govuk-label govuk-label--s" for="reference-number" th:text="#{index.referenceNumber}"></label>
-                            <p th:if="${#fields.hasErrors('referenceNumber')}" class="govuk-error-message" th:errors="*{referenceNumber}">
+                        <div class="govuk-form-group" th:classappend="${#fields.hasErrors('uniqueFileNumber') ? ' govuk-form-group--error' : ''}">
+                            <label class="govuk-label govuk-label--s" for="unique-file-number" th:text="#{index.uniqueFileNumber}"></label>
+                            <p th:if="${#fields.hasErrors('uniqueFileNumber')}" class="govuk-error-message" th:errors="*{uniqueFileNumber}">
                                 <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
                             </p>
-                            <input class="govuk-input govuk-!-width-one-half" th:classappend="${#fields.hasErrors('referenceNumber') ? ' govuk-input--error' : ''}" id="reference-number" name="referenceNumber" type="text" th:field="*{referenceNumber}">
+                            <input class="govuk-input govuk-!-width-one-half" th:classappend="${#fields.hasErrors('uniqueFileNumber') ? ' govuk-input--error' : ''}" id="unique-file-number" name="uniqueFileNumber" type="text" th:field="*{uniqueFileNumber}">
+                        </div>
+
+                        <div class="govuk-form-group" th:classappend="${#fields.hasErrors('caseReferenceNumber') ? ' govuk-form-group--error' : ''}">
+                            <label class="govuk-label govuk-label--s" for="case-reference-number" th:text="#{index.caseReferenceNumber}"></label>
+                            <p th:if="${#fields.hasErrors('caseReferenceNumber')}" class="govuk-error-message" th:errors="*{caseReferenceNumber}">
+                                <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                            </p>
+                            <input class="govuk-input govuk-!-width-one-half" th:classappend="${#fields.hasErrors('caseReferenceNumber') ? ' govuk-input--error' : ''}" id="case-reference-number" name="caseReferenceNumber" type="text" th:field="*{caseReferenceNumber}">
                         </div>
 
                         <div class="govuk-button-group">
@@ -88,7 +96,8 @@
                     <table class="govuk-table" data-module="moj-sortable-table">
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header" aria-sort="ascending" th:text="#{index.results.referenceNumber}"></th>
+                                <th scope="col" class="govuk-table__header" aria-sort="ascending" th:text="#{index.results.uniqueFileNumber}"></th>
+                                <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.caseReferenceNumber}"></th>
                                 <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.clientSurname}"></th>
                                 <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.dateSubmitted}"></th>
                                 <th scope="col" class="govuk-table__header" aria-sort="none" th:text="#{index.results.account}"></th>
@@ -99,7 +108,10 @@
                         <tbody class="govuk-table__body">
                             <tr class="govuk-table__row" th:each="claim : ${viewModel.claims}">
                                 <td class="govuk-table__cell">
-                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.submissionId}, claimId=${claim.claimId})}" th:text="${claim.referenceNumber}" class="govuk-link--no-visited-state"></a>
+                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.submissionId}, claimId=${claim.claimId})}" th:text="${claim.uniqueFileNumber}" class="govuk-link--no-visited-state"></a>
+                                </td>
+                                <td class="govuk-table__cell">
+                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.submissionId}, claimId=${claim.claimId})}" th:text="${claim.caseReferenceNumber}" class="govuk-link--no-visited-state"></a>
                                 </td>
                                 <td class="govuk-table__cell" th:text="${claim.clientSurname}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.submissionPeriodForDisplay}" th:data-sort-value="${claim.submissionPeriodForSorting}"></td>

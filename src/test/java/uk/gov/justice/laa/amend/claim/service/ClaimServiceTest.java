@@ -11,6 +11,8 @@ import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -33,49 +35,49 @@ class ClaimServiceTest {
         // Arrange
         var mockApiResponse = new ClaimResultSet(); // Replace with appropriate type or mock object
 
-        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10))
+        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10))
                 .thenReturn(Mono.just(mockApiResponse));
 
         // Act
-        ClaimResultSet result = claimService.searchClaims("0P322F", 1, 10);
+        ClaimResultSet result = claimService.searchClaims("0P322F", Optional.empty(), Optional.empty(), 1, 10);
 
         // Assert
         assertNotNull(result);
         assertEquals(mockApiResponse, result);
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10);
+        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, 0, 10);
     }
 
     @Test
     @DisplayName("Should throw RuntimeException when API client throws exception")
     void testSearchClaims_ApiClientThrowsException() {
         // Arrange
-        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10))
+        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10))
                 .thenThrow(new RuntimeException("API Error"));
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                claimService.searchClaims("0P322F", 1, 10)
+                claimService.searchClaims("0P322F", Optional.empty(), Optional.empty(), 1, 10)
         );
         assertTrue(exception.getMessage().contains("API Error"));
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10);
+        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, 0, 10);
     }
 
     @Test
     @DisplayName("Should handle empty API response without exception")
     void testSearchClaims_EmptyResponse() {
         // Arrange
-        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10))
+        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10))
                 .thenReturn(Mono.empty());
 
         // Act
-        ClaimResultSet result = claimService.searchClaims("0P322F", 1, 10);
+        ClaimResultSet result = claimService.searchClaims("0P322F", Optional.empty(), Optional.empty(), 1, 10);
 
         // Assert
         assertNull(result);
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10);
+        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, 0, 10);
     }
 
 

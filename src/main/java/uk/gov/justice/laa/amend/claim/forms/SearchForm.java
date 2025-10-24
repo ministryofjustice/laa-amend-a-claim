@@ -8,11 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_INVALID;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_REQUIRED;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.INDEX_REFERENCE_NUMBER_ERROR_INVALID;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVIDER_ACCOUNT_REGEX;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.REF_NUMBER_REGEX;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.*;
 import static uk.gov.justice.laa.amend.claim.utils.FormUtils.nonEmpty;
 
 @Getter
@@ -22,22 +18,26 @@ import static uk.gov.justice.laa.amend.claim.utils.FormUtils.nonEmpty;
 @ValidSubmissionDate
 public class SearchForm {
 
-    @NotBlank(message = INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_REQUIRED)
-    @Pattern(regexp = PROVIDER_ACCOUNT_REGEX, message = INDEX_PROVIDER_ACCOUNT_NUMBER_ERROR_INVALID)
+    @NotBlank(message = PROVIDER_ACCOUNT_NUMBER_REQUIRED_ERROR)
+    @Pattern(regexp = PROVIDER_ACCOUNT_NUMBER_REGEX, message = PROVIDER_ACCOUNT_NUMBER_INVALID_ERROR)
     private String providerAccountNumber;
 
     private String submissionDateMonth;
 
     private String submissionDateYear;
 
-    @Pattern(regexp = REF_NUMBER_REGEX, message = INDEX_REFERENCE_NUMBER_ERROR_INVALID)
-    private String referenceNumber;
+    @Pattern(regexp = UNIQUE_FILE_NUMBER_REGEX, message = UNIQUE_FILE_NUMBER_INVALID_ERROR)
+    private String uniqueFileNumber;
+
+    @Pattern(regexp = CASE_REFERENCE_NUMBER_REGEX, message = CASE_REFERENCE_NUMBER_INVALID_ERROR)
+    private String caseReferenceNumber;
 
     public boolean anyNonEmpty() {
         return nonEmpty(providerAccountNumber)
             || nonEmpty(submissionDateMonth)
             || nonEmpty(submissionDateYear)
-            || nonEmpty(referenceNumber);
+            || nonEmpty(uniqueFileNumber)
+            || nonEmpty(caseReferenceNumber);
     }
 
     public String getRedirectUrl(int page) {
@@ -51,8 +51,11 @@ public class SearchForm {
         if (nonEmpty(submissionDateYear)) {
             redirectUrl += String.format("&submissionDateYear=%s", submissionDateYear);
         }
-        if (nonEmpty(referenceNumber)) {
-            redirectUrl += String.format("&referenceNumber=%s", referenceNumber);
+        if (nonEmpty(uniqueFileNumber)) {
+            redirectUrl += String.format("&uniqueFileNumber=%s", uniqueFileNumber);
+        }
+        if (nonEmpty(caseReferenceNumber)) {
+            redirectUrl += String.format("&caseReferenceNumber=%s", caseReferenceNumber);
         }
         return redirectUrl;
     }

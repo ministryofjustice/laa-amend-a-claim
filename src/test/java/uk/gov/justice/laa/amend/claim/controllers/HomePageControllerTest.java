@@ -46,13 +46,16 @@ public class HomePageControllerTest {
                 .param("providerAccountNumber", "12345")
                 .param("submissionDateMonth", "3")
                 .param("submissionDateYear", "2007")
-                .param("referenceNumber", "REF001"))
+                .param("uniqueFileNumber", "REF001")
+                .param("caseReferenceNumber", "789")
+            )
             .andExpect(status().isOk())
             .andExpect(view().name("index"))
             .andExpect(model().attribute("searchForm", hasProperty("providerAccountNumber", is("12345"))))
             .andExpect(model().attribute("searchForm", hasProperty("submissionDateMonth", is("3"))))
             .andExpect(model().attribute("searchForm", hasProperty("submissionDateYear", is("2007"))))
-            .andExpect(model().attribute("searchForm", hasProperty("referenceNumber", is("REF001"))));
+            .andExpect(model().attribute("searchForm", hasProperty("uniqueFileNumber", is("REF001"))))
+            .andExpect(model().attribute("searchForm", hasProperty("caseReferenceNumber", is("789"))));
     }
 
     @Test
@@ -60,7 +63,7 @@ public class HomePageControllerTest {
         mockMvc.perform(post("/")
                 .with(csrf())
                 .param("providerAccountNumber", "")
-                .param("referenceNumber", "123")
+                .param("uniqueFileNumber", "123")
             )
             .andExpect(status().isBadRequest())
             .andExpect(view().name("index"));
@@ -83,9 +86,10 @@ public class HomePageControllerTest {
                 .param("providerAccountNumber", "12345")
                 .param("submissionDateMonth", "3")
                 .param("submissionDateYear", "2007")
-                .param("referenceNumber", "REF001")
+                .param("uniqueFileNumber", "456")
+                .param("caseReferenceNumber", "789")
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/?page=1&providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&referenceNumber=REF001"));;
+            .andExpect(redirectedUrl("/?page=1&providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789"));;
     }
 }

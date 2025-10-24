@@ -16,6 +16,8 @@ import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
+import java.util.Optional;
+
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
 
 @Controller
@@ -32,17 +34,25 @@ public class HomePageController {
         @RequestParam(required = false) String providerAccountNumber,
         @RequestParam(required = false) String submissionDateMonth,
         @RequestParam(required = false) String submissionDateYear,
-        @RequestParam(required = false) String referenceNumber
+        @RequestParam(required = false) String uniqueFileNumber,
+        @RequestParam(required = false) String caseReferenceNumber
     ) {
         SearchForm form = new SearchForm();
         form.setProviderAccountNumber(providerAccountNumber);
         form.setSubmissionDateMonth(submissionDateMonth);
         form.setSubmissionDateYear(submissionDateYear);
-        form.setReferenceNumber(referenceNumber);
+        form.setUniqueFileNumber(uniqueFileNumber);
+        form.setCaseReferenceNumber(caseReferenceNumber);
         model.addAttribute("searchForm", form);
 
         if (form.anyNonEmpty()) {
-            ClaimResultSet result = claimService.searchClaims(form.getProviderAccountNumber(), page, DEFAULT_PAGE_SIZE);
+            ClaimResultSet result = claimService.searchClaims(
+                form.getProviderAccountNumber(),
+                Optional.ofNullable(form.getUniqueFileNumber()),
+                Optional.ofNullable(form.getCaseReferenceNumber()),
+                page,
+                DEFAULT_PAGE_SIZE
+            );
             SearchResultViewModel viewModel = claimResultMapper.toDto(result, form.getRedirectUrl(page));
             model.addAttribute("viewModel", viewModel);
         }
