@@ -10,7 +10,7 @@
     <body>
         <main class="govuk-main-wrapper" id="main-content">
             <h1 class="govuk-heading-xl">
-                <span th:text="#{claimSummary.heading}"></span>
+                <span th:text="#{claimSummary.mainHeading}"></span>
             </h1>
 
             <th:block th:if="${claim != null}">
@@ -58,6 +58,29 @@
                     <div class="govuk-summary-list__row" th:if="${claim.submissionPeriod != null}">
                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.dateSubmitted}"></dt>
                         <dd class="govuk-summary-list__value" th:text="${claim.submissionPeriodForDisplay}"></dd>
+                    </div>
+                </dl>
+            </th:block>
+
+            <h2 class="govuk-heading-l">
+                <span th:text="#{claimSummary.totalHeading}"></span>
+            </h2>
+
+            <th:block th:if="${claim != null}">
+                <dl class="govuk-summary-list">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key" th:text="#{claimTotals.rows.initialReported}"></dt>
+                        <dd class="govuk-summary-list__value" th:with="key=#{generic.placeHolder}" th:text="#{generic.placeHolder}"></dd>
+                    </div>
+
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key" th:text="#{claimTotals.rows.initialAuthorised}"></dt>
+                        <dd class="govuk-summary-list__value" th:with="key=#{generic.placeHolder}" th:text="#{generic.placeHolder}"></dd>
+                    </div>
+
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key" th:text="#{claimTotals.rows.assessmentTotal}"></dt>
+                        <dd class="govuk-summary-list__value" th:with="key=#{generic.placeHolder}" th:text="#{generic.placeHolder}"></dd>
                     </div>
                 </dl>
             </th:block>
