@@ -57,6 +57,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasTitle(doc, "Claim summary");
 
         assertPageHasHeading(doc, "Claim summary");
+        assertPageHasH2(doc, "Totals");
 
         assertPageHasBackLink(doc);
 
@@ -73,6 +74,9 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Case start date", "01 Jan 2020");
         assertPageHasSummaryListRow(doc, "Case end date", "31 Dec 2020");
         assertPageHasSummaryListRow(doc, "Date submitted", "Jan 2021");
+        assertPageHasSummaryListRow(doc, "Initial reported total", "TODO");
+        assertPageHasSummaryListRow(doc, "Initial authorised total", "TODO");
+        assertPageHasSummaryListRow(doc, "Assessment total", "TODO");
     }
 
     @Test
