@@ -8,7 +8,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.*;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.CASE_REFERENCE_NUMBER_INVALID_ERROR;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.CASE_REFERENCE_NUMBER_REGEX;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVIDER_ACCOUNT_NUMBER_INVALID_ERROR;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVIDER_ACCOUNT_NUMBER_REGEX;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVIDER_ACCOUNT_NUMBER_REQUIRED_ERROR;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.UNIQUE_FILE_NUMBER_INVALID_ERROR;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.UNIQUE_FILE_NUMBER_REGEX;
 import static uk.gov.justice.laa.amend.claim.utils.FormUtils.nonEmpty;
 
 @Getter
