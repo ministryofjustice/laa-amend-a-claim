@@ -23,10 +23,10 @@ public class ThymeleafUtilsTest {
                     "Submission date year error"
                 ),
                 new DetailedError(
-                    "referenceNumber",
+                    "uniqueFileNumber",
                     null,
                     Stream.empty().toArray(),
-                    "Reference number error"
+                    "Unique file number error"
                 ),
                 new DetailedError(
                     "providerAccountNumber",
@@ -39,6 +39,12 @@ public class ThymeleafUtilsTest {
                     null,
                     Stream.empty().toArray(),
                     "Submission date month error"
+                ),
+                new DetailedError(
+                    "caseReferenceNumber",
+                    null,
+                    Stream.empty().toArray(),
+                    "Case reference number error"
                 )
             );
 
@@ -50,7 +56,8 @@ public class ThymeleafUtilsTest {
                 new SearchFormError("providerAccountNumber", "Provider account number error"),
                 new SearchFormError("submissionDateMonth", "Submission date month error"),
                 new SearchFormError("submissionDateYear", "Submission date year error"),
-                new SearchFormError("referenceNumber", "Reference number error")
+                new SearchFormError("uniqueFileNumber", "Unique file number error"),
+                new SearchFormError("caseReferenceNumber", "Case reference number error")
             );
 
             Assertions.assertEquals(expectedResult, result);
