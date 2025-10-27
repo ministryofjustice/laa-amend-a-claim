@@ -35,7 +35,7 @@ class ClaimServiceTest {
         // Arrange
         var mockApiResponse = new ClaimResultSet(); // Replace with appropriate type or mock object
 
-        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10))
+        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10))
                 .thenReturn(Mono.just(mockApiResponse));
 
         // Act
@@ -45,14 +45,14 @@ class ClaimServiceTest {
         assertNotNull(result);
         assertEquals(mockApiResponse, result);
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, 0, 10);
+        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10);
     }
 
     @Test
     @DisplayName("Should throw RuntimeException when API client throws exception")
     void testSearchClaims_ApiClientThrowsException() {
         // Arrange
-        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10))
+        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10))
                 .thenThrow(new RuntimeException("API Error"));
 
         // Act & Assert
@@ -61,14 +61,14 @@ class ClaimServiceTest {
         );
         assertTrue(exception.getMessage().contains("API Error"));
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, 0, 10);
+        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10);
     }
 
     @Test
     @DisplayName("Should handle empty API response without exception")
     void testSearchClaims_EmptyResponse() {
         // Arrange
-        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10))
+        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10))
                 .thenReturn(Mono.empty());
 
         // Act
@@ -77,7 +77,7 @@ class ClaimServiceTest {
         // Assert
         assertNull(result);
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, 0, 10);
+        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10);
     }
 
 
