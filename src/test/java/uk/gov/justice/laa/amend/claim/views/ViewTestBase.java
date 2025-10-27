@@ -79,6 +79,11 @@ public abstract class ViewTestBase {
     Assertions.assertFalse(elements.isEmpty());
   }
 
+  protected void assertPageHasLink(Document doc, String id, String expectedText) {
+    Element element = getElementById(doc, id);
+    Assertions.assertEquals(expectedText, element.text());
+  }
+
   protected void assertPageHasHint(Document doc, String id, String expectedText) {
     Element hint = getElementById(doc, id);
     Assertions.assertEquals(expectedText, hint.text());
@@ -171,5 +176,10 @@ public abstract class ViewTestBase {
         .toList();
 
     Assertions.assertEquals(expectedErrorHrefs, actualErrorHrefs);
+  }
+
+  protected void assertPageHasPanel(Document doc) {
+    Elements elements = doc.getElementsByClass("govuk-panel");
+    Assertions.assertFalse(elements.isEmpty());
   }
 }
