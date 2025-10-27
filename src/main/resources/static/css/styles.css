@@ -3,6 +3,10 @@
     background-color: #f3f2f1;
 }
 
+.govuk-panel--left {
+    text-align: left;
+}
+
 /* Hide back link unless JS is enabled */
 .govuk-back-link {
     display: none;

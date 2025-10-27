@@ -1,0 +1,29 @@
+<!DOCTYPE html >
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{confirmation.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${false}
+    )}">
+    <body>
+        <main class="govuk-main-wrapper" id="main-content">
+            <div class="govuk-width-container">
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-two-thirds">
+                        <div class="govuk-panel govuk-panel--confirmation govuk-panel--left">
+                            <h1 class="govuk-panel__title" th:text="#{confirmation.heading}"></h1>
+
+                            <div class="govuk-panel__body govuk-!-margin-bottom-6">
+                                <span th:text="#{confirmation.text}"></span>
+                            </div>
+
+                            <a th:href="@{/}" th:text="#{confirmation.link}" role="button" class="govuk-button govuk-button--inverse" data-module="govuk-button" id="go-to-search"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
