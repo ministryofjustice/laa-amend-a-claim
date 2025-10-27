@@ -34,10 +34,6 @@ public class Claim {
         return scheduleReference != null ? scheduleReference.split("/")[0] : null;
     }
 
-    public String getReferenceNumber() {
-        return uniqueFileNumber != null ? uniqueFileNumber : caseReferenceNumber;
-    }
-
     public String getCaseStartDateForDisplay() {
         return caseStartDate != null ? caseStartDate.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
     }

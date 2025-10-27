@@ -27,23 +27,6 @@ public class ClaimTest {
     }
 
     @Nested
-    class GetReferenceNumberTests {
-        @Test
-        void getReferenceNumberReturnsUFN() {
-            Claim claim = new Claim();
-            claim.setUniqueFileNumber("UFN");
-            Assertions.assertEquals("UFN", claim.getReferenceNumber());
-        }
-
-        @Test
-        void getReferenceNumberReturnsCRNIfURNIsNull() {
-            Claim claim = new Claim();
-            claim.setCaseReferenceNumber("CRN");
-            Assertions.assertEquals("CRN", claim.getReferenceNumber());
-        }
-    }
-
-    @Nested
     class GetCaseStartDateForDisplayTests {
         @Test
         void getCaseStartDateForDisplayHandlesNull() {

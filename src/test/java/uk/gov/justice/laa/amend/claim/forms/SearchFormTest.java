@@ -27,6 +27,7 @@ public class SearchFormTest {
             "",
             "",
             "",
+            "",
             ""
         );
 
@@ -46,7 +47,8 @@ public class SearchFormTest {
             "!",
             "5",
             "2025",
-            "ABC 123"
+            "ABC 123",
+            "789"
         );
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
@@ -65,7 +67,8 @@ public class SearchFormTest {
             "ABC 123",
             "!",
             "!",
-            "ABC 123"
+            "ABC 123",
+            "789"
         );
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
@@ -77,19 +80,37 @@ public class SearchFormTest {
     }
 
     @Test
-    void testInvalidReferenceNumber() {
+    void testInvalidUniqueFileNumber() {
         SearchForm form = new SearchForm(
             "ABC 123",
             "5",
             "2025",
+            "!",
+            "789"
+        );
+
+        Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
+        ConstraintViolation<SearchForm> violation = getViolation(violations, "uniqueFileNumber");
+
+        Assertions.assertNotNull(violation);
+        Assertions.assertEquals("{index.uniqueFileNumber.error.invalid}", violation.getMessage());
+    }
+
+    @Test
+    void testInvalidCaseReferenceNumber() {
+        SearchForm form = new SearchForm(
+            "ABC 123",
+            "5",
+            "2025",
+            "456",
             "!"
         );
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
-        ConstraintViolation<SearchForm> violation = getViolation(violations, "referenceNumber");
+        ConstraintViolation<SearchForm> violation = getViolation(violations, "caseReferenceNumber");
 
         Assertions.assertNotNull(violation);
-        Assertions.assertEquals("{index.referenceNumber.error.invalid}", violation.getMessage());
+        Assertions.assertEquals("{index.caseReferenceNumber.error.invalid}", violation.getMessage());
     }
 
     @Nested
@@ -101,6 +122,7 @@ public class SearchFormTest {
                 null,
                 null,
                 null,
+                null,
                 null
             );
             Assertions.assertFalse(form.anyNonEmpty());
@@ -109,6 +131,7 @@ public class SearchFormTest {
         @Test
         void testAllEmptyReturnsFalseWhenAllValuesAreEmpty() {
             SearchForm form = new SearchForm(
+                "",
                 "",
                 "",
                 "",
@@ -124,6 +147,7 @@ public class SearchFormTest {
                 " ",
                 " ",
                 " ",
+                " ",
                 " "
             );
 
@@ -134,6 +158,7 @@ public class SearchFormTest {
         void testAllEmptyReturnsTrueWhenOneValueIsNotNull() {
             SearchForm form = new SearchForm(
                 "123",
+                null,
                 null,
                 null,
                 null
@@ -148,7 +173,8 @@ public class SearchFormTest {
                 "123",
                 "3",
                 "2007",
-                "456"
+                "456",
+                "789"
             );
 
             Assertions.assertTrue(form.anyNonEmpty());
@@ -161,6 +187,7 @@ public class SearchFormTest {
         void createRedirectUrlWhenAccountNumberPresent() {
             SearchForm form = new SearchForm(
                 "123",
+                null,
                 null,
                 null,
                 null
@@ -177,6 +204,7 @@ public class SearchFormTest {
                 "123",
                 "3",
                 "2007",
+                null,
                 null
             );
 
@@ -191,12 +219,13 @@ public class SearchFormTest {
                 "123",
                 "3",
                 "2007",
-                "456"
+                "456",
+                "789"
             );
 
             String result = form.getRedirectUrl(3);
 
-            Assertions.assertEquals("/?page=3&providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&referenceNumber=456", result);
+            Assertions.assertEquals("/?page=3&providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789", result);
         }
     }
 

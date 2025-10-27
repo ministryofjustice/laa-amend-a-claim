@@ -11,6 +11,8 @@ import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -37,7 +39,7 @@ class ClaimServiceTest {
                 .thenReturn(Mono.just(mockApiResponse));
 
         // Act
-        ClaimResultSet result = claimService.searchClaims("0P322F", 1, 10);
+        ClaimResultSet result = claimService.searchClaims("0P322F", Optional.empty(), Optional.empty(), 1, 10);
 
         // Assert
         assertNotNull(result);
@@ -55,7 +57,7 @@ class ClaimServiceTest {
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                claimService.searchClaims("0P322F", 1, 10)
+                claimService.searchClaims("0P322F", Optional.empty(), Optional.empty(), 1, 10)
         );
         assertTrue(exception.getMessage().contains("API Error"));
 
@@ -70,7 +72,7 @@ class ClaimServiceTest {
                 .thenReturn(Mono.empty());
 
         // Act
-        ClaimResultSet result = claimService.searchClaims("0P322F", 1, 10);
+        ClaimResultSet result = claimService.searchClaims("0P322F", Optional.empty(), Optional.empty(), 1, 10);
 
         // Assert
         assertNull(result);
