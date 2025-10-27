@@ -1,36 +1,41 @@
-<nav th:fragment="pagination(pagination)" class="moj-pagination" aria-label="Pagination navigation"
+<nav th:fragment="pagination(pagination)" class="govuk-pagination" aria-label="Pagination"
      xmlns:th="http://www.thymeleaf.org">
-    <ul class="moj-pagination__list">
-        <li th:if="${pagination.previous != null}" class="moj-pagination__item  moj-pagination__item--prev">
-            <a class="moj-pagination__link" th:href="${pagination.previous.href}" th:text="#{pagination.page.previous}"><span class="govuk-visually-hidden" th:text=" #{pagination.page}"></span></a>
-        </li>
 
+    <div th:if="${pagination.previous != null}" class="govuk-pagination__prev">
+        <a class="govuk-link govuk-pagination__link" th:href="${pagination.previous.href}" rel="prev">
+            <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+            </svg>
+            <span class="govuk-pagination__link-title" th:text="#{pagination.page.previous}">
+                <span class="govuk-visually-hidden" th:text=" #{pagination.page}"></span>
+            </span>
+        </a>
+    </div>
+
+    <ul class="govuk-pagination__list">
         <th:block th:each="item : ${pagination.items}">
-            <li th:if="${item.type.name() == 'ACTIVE_PAGE'}"
-                class="moj-pagination__item moj-pagination__item--active"
-                th:aria-label="${item.ariaLabel}"
-                aria-current="page"
-                th:text="${item.text}">
+            <li th:if="${item.type.name() == 'ACTIVE_PAGE'}" class="govuk-pagination__item govuk-pagination__item--current">
+                <a class="govuk-link govuk-pagination__link" th:href="${item.href}" th:text="${item.text}" th:aria-label="${item.ariaLabel}" aria-current="page"></a>
             </li>
 
-            <li th:if="${item.type.name() == 'INACTIVE_PAGE'}"
-                class="moj-pagination__item">
-                <a class="moj-pagination__link"
-                   th:href="${item.href}"
-                   th:aria-label="${item.ariaLabel}"
-                   th:text="${item.text}">
-                </a>
+            <li th:if="${item.type.name() == 'INACTIVE_PAGE'}" class="govuk-pagination__item">
+                <a class="govuk-link govuk-pagination__link" th:href="${item.href}" th:text="${item.text}" th:aria-label="${item.ariaLabel}"></a>
             </li>
 
-            <li th:if="${item.type.name() == 'ELLIPSIS'}"
-                class="moj-pagination__item moj-pagination__item--dots"
-                th:text="${item.text}">
+            <li th:if="${item.type.name() == 'ELLIPSIS'}" class="govuk-pagination__item govuk-pagination__item--ellipsis">
+                &ctdot;
             </li>
         </th:block>
-
-        <li th:if="${pagination.next != null}" class="moj-pagination__item moj-pagination__item--next">
-            <a class="moj-pagination__link" th:href="${pagination.next.href}" th:text="#{pagination.page.next}"><span class="govuk-visually-hidden" th:text=" #{pagination.page}"></span></a>
-        </li>
     </ul>
-    <p class="moj-pagination__results" th:utext="#{pagination.results(${pagination.results.from}, ${pagination.results.to}, ${pagination.results.count}, ${pagination.results.text})}"></p>
+
+    <div th:if="${pagination.next != null}" class="govuk-pagination__next">
+        <a class="govuk-link govuk-pagination__link" href="#" rel="next">
+            <span class="govuk-pagination__link-title" th:text="#{pagination.page.next}">
+                <span class="govuk-visually-hidden" th:text=" #{pagination.page}"></span>
+            </span>
+            <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+            </svg>
+        </a>
+    </div>
 </nav>
