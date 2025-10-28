@@ -23,7 +23,7 @@ public class ClaimService {
                                        int page,
                                        int size) {
         try {
-            return claimsApiClient.searchClaims(officeCode,
+            return claimsApiClient.searchClaims(officeCode.toUpperCase(),
                             uniqueFileNumber.orElse(null),
                             caseReferenceNumber.orElse(null),
                             page - 1,
