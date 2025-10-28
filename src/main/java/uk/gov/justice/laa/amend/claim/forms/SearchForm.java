@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 
+import static org.springframework.util.StringUtils.hasText;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.CASE_REFERENCE_NUMBER_INVALID_ERROR;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.CASE_REFERENCE_NUMBER_REGEX;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVIDER_ACCOUNT_NUMBER_INVALID_ERROR;
@@ -16,7 +17,6 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVI
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVIDER_ACCOUNT_NUMBER_REQUIRED_ERROR;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.UNIQUE_FILE_NUMBER_INVALID_ERROR;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.UNIQUE_FILE_NUMBER_REGEX;
-import static uk.gov.justice.laa.amend.claim.utils.FormUtils.nonEmpty;
 
 @Getter
 @Setter
@@ -40,11 +40,11 @@ public class SearchForm {
     private String caseReferenceNumber;
 
     public boolean anyNonEmpty() {
-        return nonEmpty(providerAccountNumber)
-            || nonEmpty(submissionDateMonth)
-            || nonEmpty(submissionDateYear)
-            || nonEmpty(uniqueFileNumber)
-            || nonEmpty(caseReferenceNumber);
+        return hasText(providerAccountNumber)
+            || hasText(submissionDateMonth)
+            || hasText(submissionDateYear)
+            || hasText(uniqueFileNumber)
+            || hasText(caseReferenceNumber);
     }
 
     public String getRedirectUrl(int page) {
@@ -61,7 +61,7 @@ public class SearchForm {
     }
 
     private void addQueryParam(UriComponentsBuilder builder, String key, String value) {
-        if (nonEmpty(value)) {
+        if (hasText(value)) {
             builder.queryParam(key, value);
         }
     }
