@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 
+import static org.springframework.util.StringUtils.hasText;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.CASE_REFERENCE_NUMBER_INVALID_ERROR;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.CASE_REFERENCE_NUMBER_REGEX;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVIDER_ACCOUNT_NUMBER_INVALID_ERROR;
@@ -15,7 +17,6 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVI
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVIDER_ACCOUNT_NUMBER_REQUIRED_ERROR;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.UNIQUE_FILE_NUMBER_INVALID_ERROR;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.UNIQUE_FILE_NUMBER_REGEX;
-import static uk.gov.justice.laa.amend.claim.utils.FormUtils.nonEmpty;
 
 @Getter
 @Setter
@@ -39,30 +40,29 @@ public class SearchForm {
     private String caseReferenceNumber;
 
     public boolean anyNonEmpty() {
-        return nonEmpty(providerAccountNumber)
-            || nonEmpty(submissionDateMonth)
-            || nonEmpty(submissionDateYear)
-            || nonEmpty(uniqueFileNumber)
-            || nonEmpty(caseReferenceNumber);
+        return hasText(providerAccountNumber)
+            || hasText(submissionDateMonth)
+            || hasText(submissionDateYear)
+            || hasText(uniqueFileNumber)
+            || hasText(caseReferenceNumber);
     }
 
     public String getRedirectUrl(int page) {
-        String redirectUrl = String.format("/?page=%d", page);
-        if (nonEmpty(providerAccountNumber)) {
-            redirectUrl += String.format("&providerAccountNumber=%s", providerAccountNumber);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/");
+
+        addQueryParam(builder, "page", String.valueOf(page));
+        addQueryParam(builder, "providerAccountNumber", providerAccountNumber);
+        addQueryParam(builder, "submissionDateMonth", submissionDateMonth);
+        addQueryParam(builder, "submissionDateYear", submissionDateYear);
+        addQueryParam(builder, "uniqueFileNumber", uniqueFileNumber);
+        addQueryParam(builder, "caseReferenceNumber", caseReferenceNumber);
+
+        return builder.build().toUriString();
+    }
+
+    private void addQueryParam(UriComponentsBuilder builder, String key, String value) {
+        if (hasText(value)) {
+            builder.queryParam(key, value);
         }
-        if (nonEmpty(submissionDateMonth)) {
-            redirectUrl += String.format("&submissionDateMonth=%s", submissionDateMonth);
-        }
-        if (nonEmpty(submissionDateYear)) {
-            redirectUrl += String.format("&submissionDateYear=%s", submissionDateYear);
-        }
-        if (nonEmpty(uniqueFileNumber)) {
-            redirectUrl += String.format("&uniqueFileNumber=%s", uniqueFileNumber);
-        }
-        if (nonEmpty(caseReferenceNumber)) {
-            redirectUrl += String.format("&caseReferenceNumber=%s", caseReferenceNumber);
-        }
-        return redirectUrl;
     }
 }
