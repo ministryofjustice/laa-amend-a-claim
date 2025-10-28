@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.CASE_REFERENCE_NUMBER_INVALID_ERROR;
@@ -47,22 +48,21 @@ public class SearchForm {
     }
 
     public String getRedirectUrl(int page) {
-        String redirectUrl = String.format("/?page=%d", page);
-        if (nonEmpty(providerAccountNumber)) {
-            redirectUrl += String.format("&providerAccountNumber=%s", providerAccountNumber);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/");
+
+        addQueryParam(builder, "page", String.valueOf(page));
+        addQueryParam(builder, "providerAccountNumber", providerAccountNumber);
+        addQueryParam(builder, "submissionDateMonth", submissionDateMonth);
+        addQueryParam(builder, "submissionDateYear", submissionDateYear);
+        addQueryParam(builder, "uniqueFileNumber", uniqueFileNumber);
+        addQueryParam(builder, "caseReferenceNumber", caseReferenceNumber);
+
+        return builder.build().toUriString();
+    }
+
+    private void addQueryParam(UriComponentsBuilder builder, String key, String value) {
+        if (nonEmpty(value)) {
+            builder.queryParam(key, value);
         }
-        if (nonEmpty(submissionDateMonth)) {
-            redirectUrl += String.format("&submissionDateMonth=%s", submissionDateMonth);
-        }
-        if (nonEmpty(submissionDateYear)) {
-            redirectUrl += String.format("&submissionDateYear=%s", submissionDateYear);
-        }
-        if (nonEmpty(uniqueFileNumber)) {
-            redirectUrl += String.format("&uniqueFileNumber=%s", uniqueFileNumber);
-        }
-        if (nonEmpty(caseReferenceNumber)) {
-            redirectUrl += String.format("&caseReferenceNumber=%s", caseReferenceNumber);
-        }
-        return redirectUrl;
     }
 }
