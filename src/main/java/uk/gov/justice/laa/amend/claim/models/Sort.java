@@ -21,8 +21,7 @@ public class Sort {
     }
 
     public Sort() {
-        this.field = DEFAULT_SORT_FIELD;
-        this.direction = DEFAULT_SORT_ORDER;
+        applyDefaults();
     }
 
     public Sort(String str) {
@@ -33,12 +32,15 @@ public class Sort {
                 this.field = matcher.group(1);
                 this.direction = SortDirection.fromValue(matcher.group(2));
             } else {
-                this.field = DEFAULT_SORT_FIELD;
-                this.direction = DEFAULT_SORT_ORDER;
+                applyDefaults();
             }
         } else {
-            this.field = DEFAULT_SORT_FIELD;
-            this.direction = DEFAULT_SORT_ORDER;
+            applyDefaults();
         }
+    }
+
+    private void applyDefaults() {
+        this.field = DEFAULT_SORT_FIELD;
+        this.direction = DEFAULT_SORT_ORDER;
     }
 }
