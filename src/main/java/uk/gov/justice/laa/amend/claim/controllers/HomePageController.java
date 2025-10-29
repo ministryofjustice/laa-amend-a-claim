@@ -15,6 +15,7 @@ import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.amend.claim.models.SortDirection;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
+import uk.gov.justice.laa.amend.claim.utils.RedirectUrlUtils;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
@@ -62,7 +63,8 @@ public class HomePageController {
                 DEFAULT_PAGE_SIZE,
                 sort.toString()
             );
-            SearchResultViewModel viewModel = claimResultMapper.toDto(result, form.getRedirectUrl(page, sort));
+            String redirectUrl = RedirectUrlUtils.getRedirectUrl(form, page, sort);
+            SearchResultViewModel viewModel = claimResultMapper.toDto(result, redirectUrl);
             model.addAttribute("viewModel", viewModel);
         }
 
@@ -80,8 +82,8 @@ public class HomePageController {
             return "index";
         }
 
-        Sort sort = new Sort();
-        return "redirect:" + form.getRedirectUrl(1, sort);
+        String redirectUrl = RedirectUrlUtils.getRedirectUrl(form);
+        return "redirect:" + redirectUrl;
     }
 
     private Map<String, SortDirection> getSorts(Sort currentSort) {

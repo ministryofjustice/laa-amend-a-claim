@@ -72,36 +72,15 @@
                     <table class="govuk-table">
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
-                                <th:block th:with="direction=${sorts.get('uniqueFileNumber')}">
-                                    <th scope="col" class="govuk-table__header" th:aria-sort="${direction.value}">
-                                        <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline govuk-link--sort" th:href="${form.getRedirectUrl('uniqueFileNumber', direction.toggle())}">
-                                            <span th:text="#{index.results.uniqueFileNumber}"></span>
-                                            <th:block th:replace="~{partials/sort-arrow :: sortArrow(${direction})}"></th:block>
-                                        </a>
-                                    </th>
-                                </th:block>
+                                <th:block th:replace="~{partials/sortable-header :: sortableHeader(${form}, ${sorts}, 'uniqueFileNumber', 'index.results.uniqueFileNumber')}"></th:block>
 
-                                <th:block th:with="direction=${sorts.get('caseReferenceNumber')}">
-                                    <th scope="col" class="govuk-table__header" th:aria-sort="${direction.value}">
-                                        <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline govuk-link--sort" th:href="${form.getRedirectUrl('caseReferenceNumber', direction.toggle())}">
-                                            <span th:text="#{index.results.caseReferenceNumber}"></span>
-                                            <th:block th:replace="~{partials/sort-arrow :: sortArrow(${direction})}"></th:block>
-                                        </a>
-                                    </th>
-                                </th:block>
+                                <th:block th:replace="~{partials/sortable-header :: sortableHeader(${form}, ${sorts}, 'caseReferenceNumber', 'index.results.caseReferenceNumber')}"></th:block>
 
                                 <th scope="col" class="govuk-table__header" th:text="#{index.results.clientSurname}"></th>
 
                                 <th scope="col" class="govuk-table__header" th:text="#{index.results.dateSubmitted}"></th>
 
-                                <th:block th:with="direction=${sorts.get('scheduleReference')}">
-                                    <th scope="col" class="govuk-table__header" th:aria-sort="${direction.value}">
-                                        <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline govuk-link--sort" th:href="${form.getRedirectUrl('scheduleReference', direction.toggle())}">
-                                            <span th:text="#{index.results.account}"></span>
-                                            <th:block th:replace="~{partials/sort-arrow :: sortArrow(${direction})}"></th:block>
-                                        </a>
-                                    </th>
-                                </th:block>
+                                <th:block th:replace="~{partials/sortable-header :: sortableHeader(${form}, ${sorts}, 'scheduleReference', 'index.results.account')}"></th:block>
 
                                 <th scope="col" class="govuk-table__header" th:text="#{index.results.type}"></th>
 
