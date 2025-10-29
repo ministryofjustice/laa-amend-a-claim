@@ -39,7 +39,7 @@ class ClaimServiceTest {
                 .thenReturn(Mono.just(mockApiResponse));
 
         // Act
-        ClaimResultSet result = claimService.searchClaims("0P322F", Optional.empty(), Optional.empty(), 1, 10, "uniqueFileNumber,asc");
+        ClaimResultSet result = claimService.searchClaims("0p322f", Optional.empty(), Optional.empty(), 1, 10, "uniqueFileNumber,asc");
 
         // Assert
         assertNotNull(result);

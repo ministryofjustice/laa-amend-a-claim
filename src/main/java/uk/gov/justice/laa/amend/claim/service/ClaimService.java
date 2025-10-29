@@ -27,7 +27,7 @@ public class ClaimService {
     ) {
         try {
             return claimsApiClient.searchClaims(
-                officeCode,
+                officeCode.toUpperCase(),
                 uniqueFileNumber.orElse(null),
                 caseReferenceNumber.orElse(null),
                 page - 1,
