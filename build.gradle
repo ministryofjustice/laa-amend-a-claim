@@ -42,6 +42,9 @@ dependencies {
 
     implementation("io.vavr:vavr:0.10.7")
 
+    // Vulnerability fixes
+    implementation("org.apache.tomcat.embed:tomcat-embed-core:10.1.45")
+
 
     compileOnly 'org.projectlombok:lombok'
 
@@ -64,7 +67,7 @@ dependencies {
 
 
 test {
-        jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
-        useJUnitPlatform()
-        finalizedBy jacocoTestReport
+    jvmArgs "-javaagent:${classpath.find { it.name.contains("jmockit") }.absolutePath}"
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
