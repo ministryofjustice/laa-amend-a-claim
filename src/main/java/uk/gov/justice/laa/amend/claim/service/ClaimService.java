@@ -17,17 +17,23 @@ public class ClaimService {
 
     private final ClaimsApiClient claimsApiClient;
 
-    public ClaimResultSet searchClaims(String officeCode,
-                                       Optional<String> uniqueFileNumber,
-                                       Optional<String> caseReferenceNumber,
-                                       int page,
-                                       int size) {
+    public ClaimResultSet searchClaims(
+        String officeCode,
+       Optional<String> uniqueFileNumber,
+       Optional<String> caseReferenceNumber,
+       int page,
+       int size,
+        String sort
+    ) {
         try {
-            return claimsApiClient.searchClaims(officeCode,
-                            uniqueFileNumber.orElse(null),
-                            caseReferenceNumber.orElse(null),
-                            page - 1,
-                            size).block();
+            return claimsApiClient.searchClaims(
+                officeCode,
+                uniqueFileNumber.orElse(null),
+                caseReferenceNumber.orElse(null),
+                page - 1,
+                size,
+                sort
+            ).block();
         } catch (Exception e) {
             log.error("Error searching claims", e);
             throw new RuntimeException(e);

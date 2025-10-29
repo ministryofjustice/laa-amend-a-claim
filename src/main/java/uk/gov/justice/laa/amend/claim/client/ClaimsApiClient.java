@@ -18,7 +18,9 @@ public interface ClaimsApiClient {
             @RequestParam(value = "unique_file_number", required = false, defaultValue = "") String uniqueFileNumber,
             @RequestParam(value = "case_reference_number", required = false, defaultValue = "") String caseReferenceNumber,
             @RequestParam(value = "page", required = false) int page,
-            @RequestParam(value = "size", required = false) int size);
+            @RequestParam(value = "size", required = false) int size,
+            @RequestParam(value = "sort", required = false) String sort
+    );
 
 
     @GetExchange(url = "/submissions/{submissionId}/claims/{claimId}", accept = MediaType.APPLICATION_JSON_VALUE)

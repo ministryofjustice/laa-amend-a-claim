@@ -51,11 +51,11 @@ public class HomePageControllerTest {
             )
             .andExpect(status().isOk())
             .andExpect(view().name("index"))
-            .andExpect(model().attribute("searchForm", hasProperty("providerAccountNumber", is("12345"))))
-            .andExpect(model().attribute("searchForm", hasProperty("submissionDateMonth", is("3"))))
-            .andExpect(model().attribute("searchForm", hasProperty("submissionDateYear", is("2007"))))
-            .andExpect(model().attribute("searchForm", hasProperty("uniqueFileNumber", is("REF001"))))
-            .andExpect(model().attribute("searchForm", hasProperty("caseReferenceNumber", is("789"))));
+            .andExpect(model().attribute("form", hasProperty("providerAccountNumber", is("12345"))))
+            .andExpect(model().attribute("form", hasProperty("submissionDateMonth", is("3"))))
+            .andExpect(model().attribute("form", hasProperty("submissionDateYear", is("2007"))))
+            .andExpect(model().attribute("form", hasProperty("uniqueFileNumber", is("REF001"))))
+            .andExpect(model().attribute("form", hasProperty("caseReferenceNumber", is("789"))));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class HomePageControllerTest {
                 .param("providerAccountNumber", "12345")
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/?page=1&providerAccountNumber=12345"));
+            .andExpect(redirectedUrl("/?providerAccountNumber=12345&page=1&sort=uniqueFileNumber,asc"));
     }
 
     @Test
@@ -90,6 +90,6 @@ public class HomePageControllerTest {
                 .param("caseReferenceNumber", "789")
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/?page=1&providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789"));;
+            .andExpect(redirectedUrl("/?providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789&page=1&sort=uniqueFileNumber,asc"));;
     }
 }
