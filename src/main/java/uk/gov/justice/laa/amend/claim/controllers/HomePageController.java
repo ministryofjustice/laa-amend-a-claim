@@ -13,14 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.Sort;
-import uk.gov.justice.laa.amend.claim.models.SortDirection;
+import uk.gov.justice.laa.amend.claim.models.Sorts;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.utils.RedirectUrlUtils;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
@@ -51,8 +49,8 @@ public class HomePageController {
         form.setUniqueFileNumber(uniqueFileNumber);
         form.setCaseReferenceNumber(caseReferenceNumber);
 
-        model.addAttribute("sorts", getSorts(sort));
         model.addAttribute("form", form);
+        model.addAttribute("sorts", new Sorts(sort));
 
         if (form.anyNonEmpty()) {
             ClaimResultSet result = claimService.searchClaims(
@@ -84,15 +82,5 @@ public class HomePageController {
 
         String redirectUrl = RedirectUrlUtils.getRedirectUrl(form);
         return "redirect:" + redirectUrl;
-    }
-
-    private Map<String, SortDirection> getSorts(Sort currentSort) {
-        Map<String, SortDirection> sorts = new HashMap<>(Map.of(
-            "uniqueFileNumber", SortDirection.NONE,
-            "caseReferenceNumber", SortDirection.NONE,
-            "scheduleReference", SortDirection.NONE
-        ));
-        sorts.put(currentSort.getField(), currentSort.getDirection());
-        return sorts;
     }
 }
