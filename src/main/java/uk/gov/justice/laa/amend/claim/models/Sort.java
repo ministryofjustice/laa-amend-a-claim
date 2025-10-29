@@ -3,6 +3,9 @@ package uk.gov.justice.laa.amend.claim.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_SORT_FIELD;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_SORT_ORDER;
 
@@ -23,11 +26,17 @@ public class Sort {
     }
 
     public Sort(String str) {
-        try {
-            String[] values = str.split(",");
-            this.field = values[0];
-            this.direction = SortDirection.fromValue(values[1]);
-        } catch (Exception ex) {
+        if (str != null) {
+            Pattern pattern = Pattern.compile("(\\w+),(\\w+)");
+            Matcher matcher = pattern.matcher(str);
+            if (matcher.matches()) {
+                this.field = matcher.group(1);
+                this.direction = SortDirection.fromValue(matcher.group(2));
+            } else {
+                this.field = DEFAULT_SORT_FIELD;
+                this.direction = DEFAULT_SORT_ORDER;
+            }
+        } else {
             this.field = DEFAULT_SORT_FIELD;
             this.direction = DEFAULT_SORT_ORDER;
         }
