@@ -19,10 +19,10 @@ public class ClaimService {
 
     public ClaimResultSet searchClaims(
         String officeCode,
-       Optional<String> uniqueFileNumber,
-       Optional<String> caseReferenceNumber,
-       int page,
-       int size,
+        Optional<String> uniqueFileNumber,
+        Optional<String> caseReferenceNumber,
+        int page,
+        int size,
         String sort
     ) {
         try {
