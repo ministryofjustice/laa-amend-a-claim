@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 
 import static org.springframework.util.StringUtils.hasText;
@@ -45,24 +44,5 @@ public class SearchForm {
             || hasText(submissionDateYear)
             || hasText(uniqueFileNumber)
             || hasText(caseReferenceNumber);
-    }
-
-    public String getRedirectUrl(int page) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/");
-
-        addQueryParam(builder, "page", String.valueOf(page));
-        addQueryParam(builder, "providerAccountNumber", providerAccountNumber);
-        addQueryParam(builder, "submissionDateMonth", submissionDateMonth);
-        addQueryParam(builder, "submissionDateYear", submissionDateYear);
-        addQueryParam(builder, "uniqueFileNumber", uniqueFileNumber);
-        addQueryParam(builder, "caseReferenceNumber", caseReferenceNumber);
-
-        return builder.build().toUriString();
-    }
-
-    private void addQueryParam(UriComponentsBuilder builder, String key, String value) {
-        if (hasText(value)) {
-            builder.queryParam(key, value);
-        }
     }
 }

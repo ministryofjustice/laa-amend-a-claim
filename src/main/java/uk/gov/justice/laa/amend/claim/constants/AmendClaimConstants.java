@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.constants;
 
+import uk.gov.justice.laa.amend.claim.models.SortDirection;
+
 public class AmendClaimConstants {
     public static final String PROVIDER_ACCOUNT_NUMBER_REQUIRED_ERROR = "{index.providerAccountNumber.error.required}";
     public static final String PROVIDER_ACCOUNT_NUMBER_INVALID_ERROR = "{index.providerAccountNumber.error.invalid}";
@@ -16,6 +18,10 @@ public class AmendClaimConstants {
     public static final int DEFAULT_PAGE_SIZE = 10;
     public static final int DEFAULT_PAGE_NUMBER = 0;
 
-    public static final String  DEFAULT_DATE_FORMAT = "dd MMM yyyy";
-    public static final String  DEFAULT_PERIOD_FORMAT = "MMM yyyy";
+    public static final String DEFAULT_DATE_FORMAT = "dd MMM yyyy";
+    public static final String DEFAULT_PERIOD_FORMAT = "MMM yyyy";
+
+    public static final String DEFAULT_SORT = "uniqueFileNumber,asc";
+    public static final String DEFAULT_SORT_FIELD = "uniqueFileNumber";
+    public static final SortDirection DEFAULT_SORT_ORDER = SortDirection.ASCENDING;
 }

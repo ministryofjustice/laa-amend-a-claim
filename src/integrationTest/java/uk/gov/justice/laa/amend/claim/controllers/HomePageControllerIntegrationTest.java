@@ -53,13 +53,13 @@ class HomePageControllerIntegrationTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
-                .andExpect(model().attributeExists("searchForm"));
+                .andExpect(model().attributeExists("form"));
     }
 
     @Test
     void testSearchWithEmptyFormReturnsBadRequest() throws Exception {
         mockMvc.perform(post("/")
-                        .flashAttr("searchForm", new SearchForm("", "", "", "", "")))
+                        .flashAttr("form", new SearchForm("", "", "", "", "")))
                 .andExpect(status().isBadRequest())
             .andExpect(view().name("index"));
     }
@@ -67,7 +67,7 @@ class HomePageControllerIntegrationTest {
     @Test
     void testSearchWithInvalidProviderAccountNumberReturnsBadRequest() throws Exception {
         mockMvc.perform(post("/")
-                        .flashAttr("searchForm", new SearchForm("invalid!", "", "", "", "")))
+                        .flashAttr("form", new SearchForm("invalid!", "", "", "", "")))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("index"));
     }
@@ -75,9 +75,9 @@ class HomePageControllerIntegrationTest {
     @Test
     void testSearchWithValidProviderAccountNumberReturnsResults() throws Exception {
         mockMvc.perform(post("/")
-                        .flashAttr("searchForm", new SearchForm("0P322F", "", "", "", "")))
+                        .flashAttr("form", new SearchForm("0P322F", "", "", "", "")))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/?page=1&providerAccountNumber=0P322F"));
+                .andExpect(redirectedUrl("/?providerAccountNumber=0P322F&page=1&sort=uniqueFileNumber,asc"));
     }
 
     @Test
@@ -93,7 +93,7 @@ class HomePageControllerIntegrationTest {
     @Test
     void testSearchWithInvalidUniqueFileNumber() throws Exception {
         mockMvc.perform(post("/")
-                        .flashAttr("searchForm", new SearchForm("0P322F", "", "", "invalid!", "")))
+                        .flashAttr("form", new SearchForm("0P322F", "", "", "invalid!", "")))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("index"));
     }
@@ -101,9 +101,9 @@ class HomePageControllerIntegrationTest {
     @Test
     void testSearchWithValidSubmissionDate() throws Exception {
         mockMvc.perform(post("/")
-                        .flashAttr("searchForm", new SearchForm("0P322F", "12", "2024", "", "")))
+                        .flashAttr("form", new SearchForm("0P322F", "12", "2024", "", "")))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/?page=1&providerAccountNumber=0P322F&submissionDateMonth=12&submissionDateYear=2024"));
+                .andExpect(redirectedUrl("/?providerAccountNumber=0P322F&submissionDateMonth=12&submissionDateYear=2024&page=1&sort=uniqueFileNumber,asc"));
     }
 
     private void setupClaimsApiStub() {
