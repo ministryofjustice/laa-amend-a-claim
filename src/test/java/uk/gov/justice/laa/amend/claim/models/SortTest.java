@@ -44,8 +44,16 @@ public class SortTest {
         }
 
         @Test
-        void shouldDefaultToAscendingUniqueFileNumberForInvalidInput() {
+        void shouldDefaultToAscendingUniqueFileNumberForNonCommaSeparatedInput() {
             String str = "foo";
+            Sort result = new Sort(str);
+            Assertions.assertEquals("uniqueFileNumber", result.getField());
+            Assertions.assertEquals(SortDirection.ASCENDING, result.getDirection());
+        }
+
+        @Test
+        void shouldDefaultToAscendingUniqueFileNumberForInvalidInput() {
+            String str = "scheduleReference,desc,foo";
             Sort result = new Sort(str);
             Assertions.assertEquals("uniqueFileNumber", result.getField());
             Assertions.assertEquals(SortDirection.ASCENDING, result.getDirection());
