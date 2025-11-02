@@ -23,13 +23,13 @@ public class SearchFormTest {
 
     @Test
     void testMissingProviderAccountNumber() {
-        SearchForm form = new SearchForm(
-            "",
-            "",
-            "",
-            "",
-            ""
-        );
+        SearchForm form = new SearchForm();
+
+        form.setProviderAccountNumber("");
+        form.setSubmissionDateMonth("");
+        form.setSubmissionDateYear("");
+        form.setUniqueFileNumber("");
+        form.setCaseReferenceNumber("");
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
         ConstraintViolation<SearchForm> violation = violations.stream()
@@ -43,13 +43,13 @@ public class SearchFormTest {
 
     @Test
     void testInvalidProviderAccountNumber() {
-        SearchForm form = new SearchForm(
-            "!",
-            "5",
-            "2025",
-            "ABC 123",
-            "789"
-        );
+        SearchForm form = new SearchForm();
+
+        form.setProviderAccountNumber("!");
+        form.setSubmissionDateMonth("5");
+        form.setSubmissionDateYear("2025");
+        form.setUniqueFileNumber("ABC 123");
+        form.setCaseReferenceNumber("789");
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
         ConstraintViolation<SearchForm> violation = violations.stream()
@@ -63,13 +63,13 @@ public class SearchFormTest {
 
     @Test
     void testInvalidMonthAndYear() {
-        SearchForm form = new SearchForm(
-            "ABC 123",
-            "!",
-            "!",
-            "ABC 123",
-            "789"
-        );
+        SearchForm form = new SearchForm();
+
+        form.setProviderAccountNumber("ABC 123");
+        form.setSubmissionDateMonth("!");
+        form.setSubmissionDateYear("!");
+        form.setUniqueFileNumber("ABC 123");
+        form.setCaseReferenceNumber("789");
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
         ConstraintViolation<SearchForm> monthViolation = getViolation(violations, "submissionDateMonth");
@@ -81,13 +81,13 @@ public class SearchFormTest {
 
     @Test
     void testInvalidUniqueFileNumber() {
-        SearchForm form = new SearchForm(
-            "ABC 123",
-            "5",
-            "2025",
-            "!",
-            "789"
-        );
+        SearchForm form = new SearchForm();
+
+        form.setProviderAccountNumber("ABC 123");
+        form.setSubmissionDateMonth("5");
+        form.setSubmissionDateYear("2025");
+        form.setUniqueFileNumber("!");
+        form.setCaseReferenceNumber("789");
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
         ConstraintViolation<SearchForm> violation = getViolation(violations, "uniqueFileNumber");
@@ -98,13 +98,13 @@ public class SearchFormTest {
 
     @Test
     void testInvalidCaseReferenceNumber() {
-        SearchForm form = new SearchForm(
-            "ABC 123",
-            "5",
-            "2025",
-            "456",
-            "!"
-        );
+        SearchForm form = new SearchForm();
+
+        form.setProviderAccountNumber("ABC 123");
+        form.setSubmissionDateMonth("5");
+        form.setSubmissionDateYear("2025");
+        form.setUniqueFileNumber("456");
+        form.setCaseReferenceNumber("!");
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
         ConstraintViolation<SearchForm> violation = getViolation(violations, "caseReferenceNumber");
@@ -118,114 +118,56 @@ public class SearchFormTest {
 
         @Test
         void testAnyNonEmptyReturnsFalseWhenAllValuesAreNull() {
-            SearchForm form = new SearchForm(
-                null,
-                null,
-                null,
-                null,
-                null
-            );
+            SearchForm form = new SearchForm();
             Assertions.assertFalse(form.anyNonEmpty());
         }
 
         @Test
         void testAllEmptyReturnsFalseWhenAllValuesAreEmpty() {
-            SearchForm form = new SearchForm(
-                "",
-                "",
-                "",
-                "",
-                ""
-            );
+            SearchForm form = new SearchForm();
+
+            form.setProviderAccountNumber("");
+            form.setSubmissionDateMonth("");
+            form.setSubmissionDateYear("");
+            form.setUniqueFileNumber("");
+            form.setCaseReferenceNumber("");
 
             Assertions.assertFalse(form.anyNonEmpty());
         }
 
         @Test
         void testAllEmptyReturnsFalseWhenAllValuesAreBlank() {
-            SearchForm form = new SearchForm(
-                " ",
-                " ",
-                " ",
-                " ",
-                " "
-            );
+            SearchForm form = new SearchForm();
+
+            form.setProviderAccountNumber(" ");
+            form.setSubmissionDateMonth(" ");
+            form.setSubmissionDateYear(" ");
+            form.setUniqueFileNumber(" ");
+            form.setCaseReferenceNumber(" ");
 
             Assertions.assertFalse(form.anyNonEmpty());
         }
 
         @Test
         void testAllEmptyReturnsTrueWhenOneValueIsNotNull() {
-            SearchForm form = new SearchForm(
-                "123",
-                null,
-                null,
-                null,
-                null
-            );
+            SearchForm form = new SearchForm();
+
+            form.setProviderAccountNumber("123");
 
             Assertions.assertTrue(form.anyNonEmpty());
         }
 
         @Test
         void testAllEmptyReturnsTrueWhenAllValuesAreNotNull() {
-            SearchForm form = new SearchForm(
-                "123",
-                "3",
-                "2007",
-                "456",
-                "789"
-            );
+            SearchForm form = new SearchForm();
+
+            form.setProviderAccountNumber("123");
+            form.setSubmissionDateMonth("3");
+            form.setSubmissionDateYear("2007");
+            form.setUniqueFileNumber("456");
+            form.setCaseReferenceNumber("789");
 
             Assertions.assertTrue(form.anyNonEmpty());
-        }
-    }
-
-    @Nested
-    class RedirectUrlTests {
-        @Test
-        void createRedirectUrlWhenAccountNumberPresent() {
-            SearchForm form = new SearchForm(
-                "123",
-                null,
-                null,
-                null,
-                null
-            );
-
-            String result = form.getRedirectUrl(1);
-
-            Assertions.assertEquals("/?page=1&providerAccountNumber=123", result);
-        }
-
-        @Test
-        void createRedirectUrlWhenAccountNumberAndDatePresent() {
-            SearchForm form = new SearchForm(
-                "123",
-                "3",
-                "2007",
-                null,
-                null
-            );
-
-            String result = form.getRedirectUrl(2);
-
-            Assertions.assertEquals("/?page=2&providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007", result);
-        }
-
-        @Test
-        void createRedirectUrlWhenAllPresent() {
-            SearchForm form = new SearchForm(
-                "123",
-                "3",
-                "2007",
-                "456",
-                "789"
-            );
-
-            String result = form.getRedirectUrl(3);
-
-            Assertions.assertEquals("/?page=3&providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789", result);
         }
     }
 

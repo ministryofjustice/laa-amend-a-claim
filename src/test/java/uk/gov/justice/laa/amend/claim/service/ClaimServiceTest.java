@@ -35,49 +35,49 @@ class ClaimServiceTest {
         // Arrange
         var mockApiResponse = new ClaimResultSet(); // Replace with appropriate type or mock object
 
-        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10))
+        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc"))
                 .thenReturn(Mono.just(mockApiResponse));
 
         // Act
-        ClaimResultSet result = claimService.searchClaims("0p322f", Optional.empty(), Optional.empty(), 1, 10);
+        ClaimResultSet result = claimService.searchClaims("0p322f", Optional.empty(), Optional.empty(), 1, 10, "uniqueFileNumber,asc");
 
         // Assert
         assertNotNull(result);
         assertEquals(mockApiResponse, result);
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10);
+        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc");
     }
 
     @Test
     @DisplayName("Should throw RuntimeException when API client throws exception")
     void testSearchClaims_ApiClientThrowsException() {
         // Arrange
-        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10))
+        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc"))
                 .thenThrow(new RuntimeException("API Error"));
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                claimService.searchClaims("0P322F", Optional.empty(), Optional.empty(), 1, 10)
+                claimService.searchClaims("0P322F", Optional.empty(), Optional.empty(), 1, 10, "uniqueFileNumber,asc")
         );
         assertTrue(exception.getMessage().contains("API Error"));
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10);
+        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc");
     }
 
     @Test
     @DisplayName("Should handle empty API response without exception")
     void testSearchClaims_EmptyResponse() {
         // Arrange
-        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10))
+        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc"))
                 .thenReturn(Mono.empty());
 
         // Act
-        ClaimResultSet result = claimService.searchClaims("0P322F", Optional.empty(), Optional.empty(), 1, 10);
+        ClaimResultSet result = claimService.searchClaims("0P322F", Optional.empty(), Optional.empty(), 1, 10, "uniqueFileNumber,asc");
 
         // Assert
         assertNull(result);
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10);
+        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc");
     }
 
 
