@@ -2,5 +2,7 @@ spring:
   profiles:
     active: local
 claims-api:
-    url: http://localhost:8089
-    accessToken: ""
+  url: http://localhost:8089
+  access-token: ""
+cache:
+  time-to-live-in-seconds: 5

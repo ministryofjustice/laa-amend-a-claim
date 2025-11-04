@@ -10,6 +10,7 @@ import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimSummaryController;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.service.CacheService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
@@ -30,6 +31,9 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
     @MockitoBean
     private ClaimResultMapper claimResultMapper;
+
+    @MockitoBean
+    private CacheService cacheService;
 
     ClaimSummaryViewTest() {
         super("/submissions/submissionId/claims/claimId");
