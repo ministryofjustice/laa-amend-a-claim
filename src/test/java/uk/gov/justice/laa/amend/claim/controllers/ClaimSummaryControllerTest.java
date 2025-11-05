@@ -11,6 +11,7 @@ import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.repositories.CacheRepository;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
@@ -33,6 +34,9 @@ public class ClaimSummaryControllerTest {
 
     @MockitoBean
     private ClaimResultMapper claimResultMapper;
+
+    @MockitoBean
+    private CacheRepository cacheRepository;
 
     @Test
     public void testOnPageLoadReturnsView() throws Exception {
