@@ -1,9 +1,9 @@
-package uk.gov.justice.laa.amend.claim.client.config;
+package uk.gov.justice.laa.amend.claim.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 @Configuration
-@EnableRedisHttpSession()
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 900)
 public class CacheConfig {
 }
