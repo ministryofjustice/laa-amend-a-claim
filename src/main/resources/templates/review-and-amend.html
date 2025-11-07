@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{claimReview.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${true}
+    )}">
+<body>
+<main class="govuk-main-wrapper" id="main-content">
+    <h1 class="govuk-heading-xl">
+        <span th:text="#{claimReview.mainHeading}"></span>
+    </h1>
+
+    <th:block th:replace="~{partials/govuk-table :: table(${headers}, ${tableRows})}"></th:block>
+</main>
+</body>
+</html>

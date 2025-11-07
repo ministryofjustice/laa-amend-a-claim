@@ -24,4 +24,7 @@ public class AmendClaimConstants {
     public static final String DEFAULT_SORT = "uniqueFileNumber,asc";
     public static final String DEFAULT_SORT_FIELD = "uniqueFileNumber";
     public static final SortDirection DEFAULT_SORT_ORDER = SortDirection.ASCENDING;
+
+    // Change URL placeholder
+    public static final String CHANGE_URL_PLACEHOLDER = "#";
 }
