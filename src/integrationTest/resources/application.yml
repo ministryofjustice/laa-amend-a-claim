@@ -4,7 +4,3 @@ spring:
 claims-api:
   url: http://localhost:8089
   access-token: ""
-management:
-  health:
-    redis:
-      enabled: false
