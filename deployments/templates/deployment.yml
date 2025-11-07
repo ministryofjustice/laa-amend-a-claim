@@ -88,5 +88,5 @@ spec:
             - name: REDIS_HOST
               valueFrom:
                 secretKeyRef:
-                  name: elasticache_redis
+                  name: elasticache-redis
                   key: url
