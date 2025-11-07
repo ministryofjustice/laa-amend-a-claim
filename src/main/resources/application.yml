@@ -20,8 +20,7 @@ spring:
             jwk-set-uri: https://login.microsoftonline.com/${AZURE_TENANT_ID}/discovery/v2.0/keys
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: 6379
+      url: ${REDIS_URL}:6379
   session:
     timeout: 15m
 sentry:
