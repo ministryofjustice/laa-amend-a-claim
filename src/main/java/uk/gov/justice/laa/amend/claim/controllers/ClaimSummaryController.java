@@ -17,10 +17,10 @@ public class ClaimSummaryController {
 
     private final ClaimService claimService;
     private final ClaimResultMapper claimResultMapper;
-    private final HttpSession session;
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}")
     public String onPageLoad(
+        HttpSession session,
         Model model,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId

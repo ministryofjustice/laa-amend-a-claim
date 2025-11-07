@@ -1,10 +1,13 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,9 +40,6 @@ public class ClaimSummaryControllerTest {
     @MockitoBean
     private ClaimResultMapper claimResultMapper;
 
-    @MockitoBean
-    private HttpSession session;
-
     @Test
     public void testOnPageLoadReturnsView() throws Exception {
         String submissionId = UUID.randomUUID().toString();
@@ -47,17 +47,19 @@ public class ClaimSummaryControllerTest {
 
         Claim claim = new Claim();
 
+        MockHttpSession session = new MockHttpSession();
+
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
         when(claimResultMapper.mapToClaim(any())).thenReturn(claim);
 
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 
-        mockMvc.perform(get(path))
+        mockMvc.perform(get(path).session(session))
             .andExpect(status().isOk())
             .andExpect(view().name("claim-summary"))
             .andExpect(model().attributeExists("claim"));
 
-        verify(session).setAttribute(eq(claimId), eq(claim));
+        Assertions.assertEquals(claim, session.getAttribute(claimId));
     }
 
 }

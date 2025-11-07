@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.views;
 
-import jakarta.servlet.http.HttpSession;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,9 +30,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
     @MockitoBean
     private ClaimResultMapper claimResultMapper;
-
-    @MockitoBean
-    private HttpSession session;
 
     ClaimSummaryViewTest() {
         super("/submissions/submissionId/claims/claimId");
