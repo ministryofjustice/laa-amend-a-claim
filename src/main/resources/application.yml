@@ -39,7 +39,7 @@ logging:
     org.springframework.web.client.support: TRACE
     org.apache.http.wire: DEBUG
     org.apache.http.headers: DEBUG
-    org.springframework.session: DEBUG
+    org.springframework.session: INFO
 
 ---
 spring:
