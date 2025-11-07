@@ -22,6 +22,8 @@ spring:
     redis:
       host: localhost
       port: 6379
+  session:
+    timeout: 15m
 sentry:
   dsn: ${SENTRY_DSN}
   environment: ${SENTRY_ENVIRONMENT}
@@ -38,6 +40,7 @@ logging:
     org.springframework.web.client.support: TRACE
     org.apache.http.wire: DEBUG
     org.apache.http.headers: DEBUG
+    org.springframework.session: DEBUG
 
 ---
 spring:
