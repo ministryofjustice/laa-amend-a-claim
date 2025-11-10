@@ -23,6 +23,7 @@ public class ClaimSummaryController {
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}")
     public String onPageLoad(
+        HttpSession session,
         Model model,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId
