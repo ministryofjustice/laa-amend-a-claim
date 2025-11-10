@@ -140,7 +140,7 @@ public class ClaimValuesTableRow {
          *
          * @return this builder
          */
-        public ClaimValuesTableRowBuilder calculatedNA() {
+        public ClaimValuesTableRowBuilder calculatedNotApplicable() {
             this.calculated = NOT_APPLICABLE;
             return this;
         }
@@ -150,7 +150,7 @@ public class ClaimValuesTableRow {
          *
          * @return this builder
          */
-        public ClaimValuesTableRowBuilder submittedNA() {
+        public ClaimValuesTableRowBuilder submittedNotApplicable() {
             this.submitted = NOT_APPLICABLE;
             return this;
         }
@@ -160,7 +160,7 @@ public class ClaimValuesTableRow {
          *
          * @return this builder
          */
-        public ClaimValuesTableRowBuilder assessedNA() {
+        public ClaimValuesTableRowBuilder assessedNotApplicable() {
             this.assessed = NOT_APPLICABLE;
             return this;
         }
