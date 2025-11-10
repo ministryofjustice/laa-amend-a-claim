@@ -19,7 +19,6 @@ public class ClaimSummaryController {
 
     private final ClaimService claimService;
     private final ClaimResultMapper claimResultMapper;
-    private final HttpSession session;
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}")
     public String onPageLoad(
@@ -30,6 +29,8 @@ public class ClaimSummaryController {
     ) {
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
         Claim claim = claimResultMapper.mapToClaim(claimResponse);
+
+        session.setAttribute(claimId, claim);
 
         Assessment assessment = new Assessment();
         assessment.setOutcome(OutcomeType.REDUCED);
