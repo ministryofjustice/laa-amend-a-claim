@@ -1,4 +1,3 @@
-
 package com.example.framework.utils;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -11,10 +10,14 @@ public class EnvConfig {
         return v != null ? v : defaultValue;
     }
 
-    public static String baseUrl() { return getOrDefault("UI_BASE_URL", "http://localhost:8080"); }
+    public static String baseUrl() { return getOrDefault("UI_BASE_URL", "http://localhost:8080/"); }
     public static String username() { return getOrDefault("USERNAME", "standard_user"); }
     public static String password() { return getOrDefault("PASSWORD", "secret_sauce"); }
     public static String browser() { return getOrDefault("BROWSER", "chromium"); }
     public static boolean headless() { return Boolean.parseBoolean(getOrDefault("HEADLESS", "true")); }
     public static String apiBase() { return getOrDefault("API_BASE", "https://reqres.in"); }
+
+    // ✅ Added MFA-related configuration
+    public static String mfaSecret() { return getOrDefault("MFA_SECRET", ""); }
+    public static int mfaMaxAttempts() { return Integer.parseInt(getOrDefault("MFA_MAX_ATTEMPTS", "5")); }
 }
