@@ -1,12 +1,15 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
+import uk.gov.justice.laa.amend.claim.models.Assessment;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
@@ -16,6 +19,7 @@ public class ClaimSummaryController {
 
     private final ClaimService claimService;
     private final ClaimResultMapper claimResultMapper;
+    private final HttpSession session;
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}")
     public String onPageLoad(
@@ -25,6 +29,11 @@ public class ClaimSummaryController {
     ) {
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
         Claim claim = claimResultMapper.mapToClaim(claimResponse);
+
+        Assessment assessment = new Assessment();
+        assessment.setOutcome(OutcomeType.REDUCED);
+
+        session.setAttribute("application", assessment);
 
         model.addAttribute("claim", claim);
 

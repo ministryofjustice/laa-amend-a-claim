@@ -13,7 +13,16 @@
         <span th:text="#{claimReview.mainHeading}"></span>
     </h1>
 
+    <p class="govuk-body">
+        <strong th:text="#{claimReview.assessmentOutcome} "></strong>
+        <span th:text="#{${(assessment.outcome != null) ? assessment.outcome.messageKey : 'claimReview.noData'}}"></span>
+    </p>
+
     <th:block th:replace="~{partials/govuk-table :: table(${headers}, ${tableRows})}"></th:block>
+
+    <a th:href="@{/submisisons/{id}(id=${submissionId})/claims/{id}(id=${claimId})/review}" class="govuk-button govuk-!-margin-right-3" data-module="govuk-button" th:text="#{claimReview.submit}"></a>
+
+    <a th:href="@{/}" class="govuk-button govuk-button--warning" data-module="govuk-button" th:text="#{claimReview.discard}"></a>
 </main>
 </body>
 </html>

@@ -1,19 +1,23 @@
+<!--
+@param headers  java.util.List<String>
+@param rows     java.util.List<uk.gov.justice.laa.amend.claim.viewmodels.TableRow>
+-->
 <th:block th:fragment="table(headers, rows)" xmlns:th="http://www.thymeleaf.org">
     <table class="govuk-table">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th:block th:each="header : ${headers}">
-                    <th scope="col" class="govuk-table__header" th:text="${header}"></th>
+                    <th scope="col" class="govuk-table__header" th:text="#{${header}}"></th>
                 </th:block>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
-            <tr class="govuk-table__row" th:each="row : ${rows}">
+            <tr class="govuk-table__row" th:each="row : ${rows}" th:classappend="${row.isTotalRow} ? 'table-row--total' : ''">
                 <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="${row.item}"></td>
-                <td class="govuk-table__cell" th:text="${row.calculated}"></td>
-                <td class="govuk-table__cell" th:text="${row.submitted}"></td>
-                <td class="govuk-table__cell" th:text="${row.assessed}"></td>
-                <td class="govuk-table__cell">
+                <td class="govuk-table__cell" th:text="${row.calculated} ?: #{claimReview.noData}"></td>
+                <td class="govuk-table__cell" th:text="${row.submitted} ?: #{claimReview.noData}"></td>
+                <td class="govuk-table__cell" th:text="${row.assessed} ?: #{claimReview.noData}"></td>
+                <td class="govuk-table__cell" th:classappend="${row.changeUrl} == null ? 'govuk-summary-list__row--no-actions' : ''">
                     <a th:if="${row.changeUrl != null && !#strings.isEmpty(row.changeUrl)}"
                        th:href="${row.changeUrl}"
                        class="govuk-link govuk-link--no-visited-state">Change</a>
