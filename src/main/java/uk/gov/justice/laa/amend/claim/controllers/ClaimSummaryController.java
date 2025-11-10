@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,12 +20,15 @@ public class ClaimSummaryController {
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}")
     public String onPageLoad(
+        HttpSession session,
         Model model,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId
     ) {
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
         Claim claim = claimResultMapper.mapToClaim(claimResponse);
+
+        session.setAttribute(claimId, claim);
 
         model.addAttribute("claim", claim);
 
