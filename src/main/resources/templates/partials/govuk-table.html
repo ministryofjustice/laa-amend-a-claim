@@ -14,9 +14,9 @@
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row" th:each="row : ${rows}" th:classappend="${row.isTotalRow} ? 'table-row--total' : ''">
                 <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="${row.item}"></td>
-                <td class="govuk-table__cell" th:text="${row.calculated} ?: #{claimReview.noData}"></td>
-                <td class="govuk-table__cell" th:text="${row.submitted} ?: #{claimReview.noData}"></td>
-                <td class="govuk-table__cell" th:text="${row.assessed} ?: #{claimReview.noData}"></td>
+                <td class="govuk-table__cell" th:text="${row.calculated} ?: #{claimValuesTable.noData}"></td>
+                <td class="govuk-table__cell" th:text="${row.submitted} ?: #{claimValuesTable.noData}"></td>
+                <td class="govuk-table__cell" th:text="${row.assessed} ?: #{claimValuesTable.noData}"></td>
                 <td class="govuk-table__cell" th:classappend="${row.changeUrl} == null ? 'govuk-summary-list__row--no-actions' : ''">
                     <a th:if="${row.changeUrl != null && !#strings.isEmpty(row.changeUrl)}"
                        th:href="${row.changeUrl}"

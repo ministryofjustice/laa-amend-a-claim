@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.justice.laa.amend.claim.models.Assessment;
-import uk.gov.justice.laa.amend.claim.viewmodels.TableRow;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimValuesTableRow;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.ClaimTableRowService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -33,7 +33,7 @@ public class ClaimReviewController {
             return "redirect:/submissions/" + submissionId + "/claims/" + claimId;
         }
 
-        model.addAttribute("headers", TableRow.getHeaders());
+        model.addAttribute("headers", ClaimValuesTableRow.getHeaders());
         model.addAttribute("tableRows", claimTableRowService.buildTableRows(claimResponse));
         model.addAttribute("assessment", assessment);
         model.addAttribute("claimId", claimId);

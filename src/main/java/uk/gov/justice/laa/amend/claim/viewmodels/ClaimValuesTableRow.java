@@ -11,7 +11,7 @@ import java.util.List;
 
 @Value
 @Builder
-public class TableRow {
+public class ClaimValuesTableRow {
     String item;
     String calculated;
     String submitted;
@@ -20,7 +20,7 @@ public class TableRow {
     String changeUrl;
     @Builder.Default boolean totalRow = false;
 
-    private static final String NOT_APPLICABLE = "claimReview.notApplicable";
+    private static final String NOT_APPLICABLE = "claimValuesTable.notApplicable";
 
     MessageSource messageSource;
 
@@ -30,19 +30,19 @@ public class TableRow {
      * @return list of header labels in the correct order
      */
     public static List<String> getHeaders() {
-        return List.of("claimReview.item", "claimReview.calculated", "claimReview.submitted", "claimReview.amended", "claimReview.emptyHeader");
+        return List.of("claimValuesTable.item", "claimValuesTable.calculated", "claimValuesTable.submitted", "claimValuesTable.amended", "claimValuesTable.emptyHeader");
     }
 
 
     @SuppressWarnings("unused")
-    public static class TableRowBuilder {
+    public static class ClaimValuesTableRowBuilder {
         /**
          * Sets the calculated field by formatting the BigDecimal amount as currency.
          *
          * @param amount the amount to format
          * @return this builder
          */
-        public TableRowBuilder calculatedAmount(BigDecimal amount) {
+        public ClaimValuesTableRowBuilder calculatedAmount(BigDecimal amount) {
             this.calculated = amount != null ? CurrencyUtils.formatCurrency(amount) : null;
             return this;
         }
@@ -53,7 +53,7 @@ public class TableRow {
          * @param count the count to format
          * @return this builder
          */
-        public TableRowBuilder calculatedCount(Integer count) {
+        public ClaimValuesTableRowBuilder calculatedCount(Integer count) {
             this.calculated = count != null ? count.toString() : null;
             return this;
         }
@@ -64,7 +64,7 @@ public class TableRow {
          * @param amount the amount to format
          * @return this builder
          */
-        public TableRowBuilder submittedAmount(BigDecimal amount) {
+        public ClaimValuesTableRowBuilder submittedAmount(BigDecimal amount) {
             this.submitted = amount != null ? CurrencyUtils.formatCurrency(amount) : null;
             return this;
         }
@@ -75,7 +75,7 @@ public class TableRow {
          * @param count the count to format
          * @return this builder
          */
-        public TableRowBuilder submittedCount(Integer count) {
+        public ClaimValuesTableRowBuilder submittedCount(Integer count) {
             this.submitted = count != null ? count.toString() : null;
             return this;
         }
@@ -86,7 +86,7 @@ public class TableRow {
          * @param amount the amount to format
          * @return this builder
          */
-        public TableRowBuilder assessedAmount(BigDecimal amount) {
+        public ClaimValuesTableRowBuilder assessedAmount(BigDecimal amount) {
             this.assessed = amount != null ? CurrencyUtils.formatCurrency(amount) : null;
             return this;
         }
@@ -97,7 +97,7 @@ public class TableRow {
          * @param count the count to format
          * @return this builder
          */
-        public TableRowBuilder assessedCount(Integer count) {
+        public ClaimValuesTableRowBuilder assessedCount(Integer count) {
             this.assessed = count != null ? count.toString() : null;
             return this;
         }
@@ -108,7 +108,7 @@ public class TableRow {
          * @param value the boolean value
          * @return this builder
          */
-        public TableRowBuilder calculatedYesNo(Boolean value) {
+        public ClaimValuesTableRowBuilder calculatedYesNo(Boolean value) {
             this.calculated = value != null ? (value ? "Yes" : "No") : null;
             return this;
         }
@@ -119,7 +119,7 @@ public class TableRow {
          * @param value the boolean value
          * @return this builder
          */
-        public TableRowBuilder submittedYesNo(Boolean value) {
+        public ClaimValuesTableRowBuilder submittedYesNo(Boolean value) {
             this.submitted = value != null ? (value ? "Yes" : "No") : null;
             return this;
         }
@@ -130,7 +130,7 @@ public class TableRow {
          * @param value the boolean value
          * @return this builder
          */
-        public TableRowBuilder assessedYesNo(Boolean value) {
+        public ClaimValuesTableRowBuilder assessedYesNo(Boolean value) {
             this.assessed = value != null ? (value ? "Yes" : "No") : null;
             return this;
         }
@@ -140,7 +140,7 @@ public class TableRow {
          *
          * @return this builder
          */
-        public TableRowBuilder calculatedNA() {
+        public ClaimValuesTableRowBuilder calculatedNA() {
             this.calculated = NOT_APPLICABLE;
             return this;
         }
@@ -150,7 +150,7 @@ public class TableRow {
          *
          * @return this builder
          */
-        public TableRowBuilder submittedNA() {
+        public ClaimValuesTableRowBuilder submittedNA() {
             this.submitted = NOT_APPLICABLE;
             return this;
         }
@@ -160,7 +160,7 @@ public class TableRow {
          *
          * @return this builder
          */
-        public TableRowBuilder assessedNA() {
+        public ClaimValuesTableRowBuilder assessedNA() {
             this.assessed = NOT_APPLICABLE;
             return this;
         }

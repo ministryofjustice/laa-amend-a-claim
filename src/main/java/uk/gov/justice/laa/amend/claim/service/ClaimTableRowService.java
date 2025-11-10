@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.amend.claim.viewmodels.TableRow;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimValuesTableRow;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
@@ -32,8 +32,8 @@ public class ClaimTableRowService {
      * @param claimResponse the claim response containing fee calculation data
      * @return list of table rows for display
      */
-    public List<TableRow> buildTableRows(ClaimResponse claimResponse) {
-        List<TableRow> rows = new ArrayList<>();
+    public List<ClaimValuesTableRow> buildTableRows(ClaimResponse claimResponse) {
+        List<ClaimValuesTableRow> rows = new ArrayList<>();
 
         if (claimResponse == null) {
             log.warn("Claim response is null, returning empty table rows");
@@ -52,55 +52,55 @@ public class ClaimTableRowService {
         }
 
         // Fixed fee
-        rows.add(TableRow.builder()
-                .item(getMessage("claimReview.rows.fixedFee"))
+        rows.add(ClaimValuesTableRow.builder()
+                .item(getMessage("claimValuesTable.rows.fixedFee"))
                 .submittedAmount(null)
                 .calculatedAmount(feeCalculation.getFixedFeeAmount())
                 .build());
 
         // Profit cost (ex VAT)
-        rows.add(TableRow.builder()
-                .item(getMessage("claimReview.rows.profitCost"))
+        rows.add(ClaimValuesTableRow.builder()
+                .item(getMessage("claimValuesTable.rows.profitCost"))
                 .submittedAmount(claimResponse.getNetProfitCostsAmount())
                 .calculatedAmount(feeCalculation.getNetProfitCostsAmount())
                 .changeUrl(CHANGE_URL_PLACEHOLDER)
                 .build());
 
         // Disbursement (ex VAT)
-        rows.add(TableRow.builder()
-                .item(getMessage("claimReview.rows.disbursement"))
+        rows.add(ClaimValuesTableRow.builder()
+                .item(getMessage("claimValuesTable.rows.disbursement"))
                 .submittedAmount(claimResponse.getNetDisbursementAmount())
                 .calculatedAmount(feeCalculation.getDisbursementAmount())
                 .changeUrl(CHANGE_URL_PLACEHOLDER)
                 .build());
 
         // Disbursement VAT
-        rows.add(TableRow.builder()
-                .item(getMessage("claimReview.rows.disbursementVat"))
+        rows.add(ClaimValuesTableRow.builder()
+                .item(getMessage("claimValuesTable.rows.disbursementVat"))
                 .submittedAmount(claimResponse.getDisbursementsVatAmount())
                 .calculatedAmount(feeCalculation.getDisbursementVatAmount())
                 .changeUrl(CHANGE_URL_PLACEHOLDER)
                 .build());
 
         // Counsel's costs
-        rows.add(TableRow.builder()
-                .item(getMessage("claimReview.rows.counselCosts"))
+        rows.add(ClaimValuesTableRow.builder()
+                .item(getMessage("claimValuesTable.rows.counselCosts"))
                 .submittedAmount(claimResponse.getNetCounselCostsAmount())
                 .calculatedAmount(feeCalculation.getNetCostOfCounselAmount())
                 .changeUrl(CHANGE_URL_PLACEHOLDER)
                 .build());
 
         // Detention travel & waiting costs
-        rows.add(TableRow.builder()
-                .item(getMessage("claimReview.rows.detentionTravelWaiting"))
+        rows.add(ClaimValuesTableRow.builder()
+                .item(getMessage("claimValuesTable.rows.detentionTravelWaiting"))
                 .submittedAmount(claimResponse.getDetentionTravelWaitingCostsAmount())
                 .calculatedAmount(feeCalculation.getDetentionAndWaitingCostsAmount())
                 .changeUrl(CHANGE_URL_PLACEHOLDER)
                 .build());
 
         // JR / form filling
-        rows.add(TableRow.builder()
-                .item(getMessage("claimReview.rows.jrFormFilling"))
+        rows.add(ClaimValuesTableRow.builder()
+                .item(getMessage("claimValuesTable.rows.jrFormFilling"))
                 .submittedAmount(claimResponse.getJrFormFillingAmount())
                 .calculatedAmount(feeCalculation.getJrFormFillingAmount())
                 .changeUrl(CHANGE_URL_PLACEHOLDER)
@@ -110,8 +110,8 @@ public class ClaimTableRowService {
         if (boltOnDetails != null) {
             // Adjourned hearing fee
             if (claimResponse.getAdjournedHearingFeeAmount() != null) {
-                rows.add(TableRow.builder()
-                        .item(getMessage("claimReview.rows.adjournedHearingFee"))
+                rows.add(ClaimValuesTableRow.builder()
+                        .item(getMessage("claimValuesTable.rows.adjournedHearingFee"))
                         .submittedCount(claimResponse.getAdjournedHearingFeeAmount())
                         .calculatedAmount(boltOnDetails.getBoltOnAdjournedHearingFee())
                         .build());
@@ -119,8 +119,8 @@ public class ClaimTableRowService {
 
             // CMRH telephone
             if (claimResponse.getAdjournedHearingFeeAmount() != null) {
-                rows.add(TableRow.builder()
-                        .item(getMessage("claimReview.rows.cmrhTelephone"))
+                rows.add(ClaimValuesTableRow.builder()
+                        .item(getMessage("claimValuesTable.rows.cmrhTelephone"))
                         .submittedCount(claimResponse.getCmrhTelephoneCount())
                         .calculatedAmount(boltOnDetails.getBoltOnCmrhTelephoneFee())
                         .build());
@@ -128,8 +128,8 @@ public class ClaimTableRowService {
 
             // CMRH oral
             if (claimResponse.getCmrhOralCount() != null) {
-                rows.add(TableRow.builder()
-                        .item(getMessage("claimReview.rows.cmrhOral"))
+                rows.add(ClaimValuesTableRow.builder()
+                        .item(getMessage("claimValuesTable.rows.cmrhOral"))
                         .submittedCount(claimResponse.getCmrhOralCount())
                         .calculatedAmount(boltOnDetails.getBoltOnCmrhOralFee())
                         .build());
@@ -137,8 +137,8 @@ public class ClaimTableRowService {
 
             // Home office interview
             if (claimResponse.getHoInterview() != null) {
-                rows.add(TableRow.builder()
-                        .item(getMessage("claimReview.rows.homeOfficeInterview"))
+                rows.add(ClaimValuesTableRow.builder()
+                        .item(getMessage("claimValuesTable.rows.homeOfficeInterview"))
                         .submittedCount(claimResponse.getHoInterview())
                         .calculatedAmount(boltOnDetails.getBoltOnHomeOfficeInterviewFee())
                         .build());
@@ -146,8 +146,8 @@ public class ClaimTableRowService {
 
             // Substantive hearing
             if (claimResponse.getAdjournedHearingFeeAmount() != null) {
-                rows.add(TableRow.builder()
-                        .item(getMessage("claimReview.rows.substantiveHearing"))
+                rows.add(ClaimValuesTableRow.builder()
+                        .item(getMessage("claimValuesTable.rows.substantiveHearing"))
                         .submittedCount(claimResponse.getAdjournedHearingFeeAmount())
                         .calculatedAmount(boltOnDetails.getBoltOnAdjournedHearingFee())
                         .build());
@@ -155,16 +155,16 @@ public class ClaimTableRowService {
         }
 
         // VAT
-        rows.add(TableRow.builder()
-                .item(getMessage("claimReview.rows.vat"))
+        rows.add(ClaimValuesTableRow.builder()
+                .item(getMessage("claimValuesTable.rows.vat"))
                 .submittedYesNo(claimResponse.getIsVatApplicable())
                 .calculatedYesNo(feeCalculation.getVatIndicator())
                 .assessedYesNo(feeCalculation.getVatIndicator())
                 .build());
 
         // Total
-        rows.add(TableRow.builder()
-                .item(getMessage("claimReview.rows.total"))
+        rows.add(ClaimValuesTableRow.builder()
+                .item(getMessage("claimValuesTable.rows.total"))
                 .submittedAmount(feeCalculation.getTotalAmount())
                 .calculatedAmount(feeCalculation.getTotalAmount())
                 .assessedAmount(feeCalculation.getTotalAmount())

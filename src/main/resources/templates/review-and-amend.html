@@ -15,7 +15,7 @@
 
     <p class="govuk-body">
         <strong th:text="#{claimReview.assessmentOutcome} "></strong>
-        <span th:text="#{${(assessment.outcome != null) ? assessment.outcome.messageKey : 'claimReview.noData'}}"></span>
+        <span th:text="#{${(assessment.outcome != null) ? assessment.outcome.messageKey : 'claimValuesTable.noData'}}"></span>
     </p>
 
     <th:block th:replace="~{partials/govuk-table :: table(${headers}, ${tableRows})}"></th:block>
