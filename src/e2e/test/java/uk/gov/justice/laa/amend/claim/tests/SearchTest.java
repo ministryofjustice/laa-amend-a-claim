@@ -1,9 +1,9 @@
 
-package com.example.framework.tests;
+package uk.gov.justice.laa.amend.claim.tests;
 
 import base.BaseTest;
-import com.example.framework.pages.SearchPage;
-import com.example.framework.utils.EnvConfig;
+import uk.gov.justice.laa.amend.claim.pages.SearchPage;
+import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

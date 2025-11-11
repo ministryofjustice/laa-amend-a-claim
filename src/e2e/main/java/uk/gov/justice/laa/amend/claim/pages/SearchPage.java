@@ -1,5 +1,5 @@
 
-package com.example.framework.pages;
+package uk.gov.justice.laa.amend.claim.pages;
 
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Locator;

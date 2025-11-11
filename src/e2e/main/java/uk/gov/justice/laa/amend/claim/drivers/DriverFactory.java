@@ -1,7 +1,7 @@
 
-package com.example.framework.drivers;
+package uk.gov.justice.laa.amend.claim.drivers;
 
-import com.example.framework.utils.EnvConfig;
+import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
 import com.microsoft.playwright.*;
 
 public class DriverFactory {

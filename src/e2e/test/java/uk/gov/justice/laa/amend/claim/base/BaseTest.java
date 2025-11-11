@@ -1,9 +1,9 @@
 
 package base;
 
-import com.example.framework.drivers.DriverFactory;
-import com.example.framework.pages.LoginPage;
-import com.example.framework.utils.EnvConfig;
+import uk.gov.justice.laa.amend.claim.drivers.DriverFactory;
+import uk.gov.justice.laa.amend.claim.pages.LoginPage;
+import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
 import com.microsoft.playwright.*;
 import io.qameta.allure.Allure;
 import org.junit.jupiter.api.AfterEach;

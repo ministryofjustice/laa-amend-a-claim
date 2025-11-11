@@ -1,4 +1,4 @@
-package com.example.framework.utils;
+package uk.gov.justice.laa.amend.claim.utils;
 
 import io.github.cdimascio.dotenv.Dotenv;
 

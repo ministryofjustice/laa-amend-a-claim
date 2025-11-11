@@ -1,6 +1,6 @@
-package com.example.framework.pages;
+package uk.gov.justice.laa.amend.claim.pages;
 
-import com.example.framework.utils.EnvConfig;
+import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
 import com.microsoft.playwright.Page;
 
 import javax.crypto.Mac;

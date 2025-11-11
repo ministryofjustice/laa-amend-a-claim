@@ -1,7 +1,5 @@
-
 plugins {
     id 'java'
-    id 'io.qameta.allure' version '2.12.0'
 }
 
 repositories {
@@ -13,6 +11,17 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+sourceSets {
+    main {
+        java { srcDirs = ['main/java'] }
+        resources { srcDirs = ['main/resources'] }
+    }
+    test {
+        java { srcDirs = ['test/java'] }
+        resources { srcDirs = ['test/resources'] }
+    }
+}
+
 dependencies {
     implementation 'com.microsoft.playwright:playwright:1.48.0'
     implementation 'io.github.cdimascio:dotenv-java:3.0.0'
@@ -21,24 +30,31 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
-
     testImplementation 'io.rest-assured:rest-assured:5.5.0'
 
     testImplementation 'io.qameta.allure:allure-junit5:2.25.0'
     testImplementation 'io.qameta.allure:allure-commandline:2.25.0'
 }
 
-test {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+    }
     systemProperty "allure.results.directory", "$buildDir/allure-results"
     systemProperty "browser", findProperty("browser") ?: System.getenv("BROWSER") ?: "chromium"
     systemProperty "headless", findProperty("headless") ?: System.getenv("HEADLESS") ?: "true"
     systemProperty "baseUrl", findProperty("baseUrl") ?: System.getenv("UI_BASE_URL") ?: ""
     doFirst { delete fileTree("$buildDir/allure-results") }
+    jvmArgs = jvmArgs.findAll { arg -> !(arg?.startsWith("-javaagent:") ?: false) }
 }
 
-allure {
-    version = "2.25.0"
-    autoconfigure = true
-    aspectjweaver = false
+tasks.register('allureReport', Exec) {
+    dependsOn test
+    commandLine 'allure', 'generate', "$buildDir/allure-results", '-o', "$buildDir/allure-report", '--clean'
+}
+
+tasks.register('allureServe', Exec) {
+    commandLine 'allure', 'serve', "$buildDir/allure-results", '--port', '9090'
 }
