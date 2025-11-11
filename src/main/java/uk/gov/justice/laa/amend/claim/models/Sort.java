@@ -17,6 +17,9 @@ public class Sort {
 
     @Override
     public String toString() {
+        if (direction == SortDirection.NONE) {
+            return null;
+        }
         return String.format("%s,%s", field, direction.getValue());
     }
 

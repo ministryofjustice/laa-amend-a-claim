@@ -5,14 +5,16 @@ import lombok.Getter;
 @Getter
 public enum SortDirection {
 
-    ASCENDING("asc"),
-    DESCENDING("desc"),
-    NONE("none");
+    ASCENDING("asc", "ascending"),
+    DESCENDING("desc", "descending"),
+    NONE(null, "none");
 
     private final String value;
+    private final String aria;
 
-    SortDirection(String value) {
+    SortDirection(String value, String aria) {
         this.value = value;
+        this.aria = aria;
     }
 
     public SortDirection toggle() {
