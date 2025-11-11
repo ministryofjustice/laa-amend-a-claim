@@ -13,8 +13,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @AllArgsConstructor
 public class MonetaryValueValidator implements ConstraintValidator<ValidMonetaryValue, MonetaryValueForm> {
 
-    private final BigDecimal MIN = BigDecimal.ZERO;
-    private final BigDecimal MAX = BigDecimal.valueOf(1_000_000);
+    private static final BigDecimal MIN = BigDecimal.ZERO;
+    private static final BigDecimal MAX = BigDecimal.valueOf(1_000_000);
 
     @Override
     public boolean isValid(MonetaryValueForm form, ConstraintValidatorContext context) {

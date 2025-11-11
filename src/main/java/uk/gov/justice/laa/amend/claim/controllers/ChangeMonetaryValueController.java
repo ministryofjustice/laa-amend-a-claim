@@ -7,7 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
@@ -22,6 +26,15 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/")
 public class ChangeMonetaryValueController {
+
+    private static final String PROFIT_COSTS = "profit-costs";
+    private static final String DISBURSEMENTS = "disbursements";
+    private static final String DISBURSEMENTS_VAT = "disbursements-vat";
+    private static final String COUNSEL_COSTS = "counsel-costs";
+    private static final String DETENTION_TRAVEL_AND_WAITING_COSTS = "detention-travel-and-waiting-costs";
+    private static final String JR_FORM_FILLING_COSTS = "jr-form-filling-costs";
+    private static final String TRAVEL_COSTS = "travel-costs";
+    private static final String WAITING_COSTS = "waiting-costs";
 
     @GetMapping("{prefix}")
     public String getProfitCosts(
@@ -86,29 +99,29 @@ public class ChangeMonetaryValueController {
     }
 
     private static final Map<String, Function<ClaimResponse, BigDecimal>> GETTERS = Map.of(
-        "profit-costs", ClaimResponse::getNetProfitCostsAmount,
-        "disbursements", ClaimResponse::getNetDisbursementAmount,
-        "disbursements-vat", ClaimResponse::getDisbursementsVatAmount,
-        "counsel-costs", ClaimResponse::getNetCounselCostsAmount,
-        "detention-travel-and-waiting-costs", ClaimResponse::getDetentionTravelWaitingCostsAmount,
-        "jr-form-filling-costs", ClaimResponse::getJrFormFillingAmount,
-        "travel-costs", claim -> claim.getFeeCalculationResponse() != null ? claim.getFeeCalculationResponse().getNetTravelCostsAmount() : null,
-        "waiting-costs", claim -> claim.getFeeCalculationResponse() != null ? claim.getFeeCalculationResponse().getNetWaitingCostsAmount() : null
+        PROFIT_COSTS, ClaimResponse::getNetProfitCostsAmount,
+        DISBURSEMENTS, ClaimResponse::getNetDisbursementAmount,
+        DISBURSEMENTS_VAT, ClaimResponse::getDisbursementsVatAmount,
+        COUNSEL_COSTS, ClaimResponse::getNetCounselCostsAmount,
+        DETENTION_TRAVEL_AND_WAITING_COSTS, ClaimResponse::getDetentionTravelWaitingCostsAmount,
+        JR_FORM_FILLING_COSTS, ClaimResponse::getJrFormFillingAmount,
+        TRAVEL_COSTS, claim -> claim.getFeeCalculationResponse() != null ? claim.getFeeCalculationResponse().getNetTravelCostsAmount() : null,
+        WAITING_COSTS, claim -> claim.getFeeCalculationResponse() != null ? claim.getFeeCalculationResponse().getNetWaitingCostsAmount() : null
     );
 
     private static final Map<String, BiConsumer<ClaimResponse, BigDecimal>> SETTERS = Map.of(
-        "profit-costs", ClaimResponse::setNetProfitCostsAmount,
-        "disbursements", ClaimResponse::setNetDisbursementAmount,
-        "disbursements-vat", ClaimResponse::setDisbursementsVatAmount,
-        "counsel-costs", ClaimResponse::setNetCounselCostsAmount,
-        "detention-travel-and-waiting-costs", ClaimResponse::setDetentionTravelWaitingCostsAmount,
-        "jr-form-filling-costs", ClaimResponse::setJrFormFillingAmount,
-        "travel-costs", (claim, value) -> {
+        PROFIT_COSTS, ClaimResponse::setNetProfitCostsAmount,
+        DISBURSEMENTS, ClaimResponse::setNetDisbursementAmount,
+        DISBURSEMENTS_VAT, ClaimResponse::setDisbursementsVatAmount,
+        COUNSEL_COSTS, ClaimResponse::setNetCounselCostsAmount,
+        DETENTION_TRAVEL_AND_WAITING_COSTS, ClaimResponse::setDetentionTravelWaitingCostsAmount,
+        JR_FORM_FILLING_COSTS, ClaimResponse::setJrFormFillingAmount,
+        TRAVEL_COSTS, (claim, value) -> {
             if (claim.getFeeCalculationResponse() != null) {
                 claim.getFeeCalculationResponse().setNetTravelCostsAmount(value);
             }
         },
-        "waiting-costs", (claim, value) -> {
+        WAITING_COSTS, (claim, value) -> {
             if (claim.getFeeCalculationResponse() != null) {
                 claim.getFeeCalculationResponse().setNetWaitingCostsAmount(value);
             }
