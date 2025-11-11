@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -117,14 +118,20 @@ public class ChangeMonetaryValueController {
         DETENTION_TRAVEL_AND_WAITING_COSTS, ClaimResponse::setDetentionTravelWaitingCostsAmount,
         JR_FORM_FILLING_COSTS, ClaimResponse::setJrFormFillingAmount,
         TRAVEL_COSTS, (claim, value) -> {
-            if (claim.getFeeCalculationResponse() != null) {
-                claim.getFeeCalculationResponse().setNetTravelCostsAmount(value);
+            FeeCalculationPatch fee = claim.getFeeCalculationResponse();
+            if (fee == null) {
+                fee = new FeeCalculationPatch();
+                claim.setFeeCalculationResponse(fee);
             }
+            fee.setNetTravelCostsAmount(value);
         },
         WAITING_COSTS, (claim, value) -> {
-            if (claim.getFeeCalculationResponse() != null) {
-                claim.getFeeCalculationResponse().setNetWaitingCostsAmount(value);
+            FeeCalculationPatch fee = claim.getFeeCalculationResponse();
+            if (fee == null) {
+                fee = new FeeCalculationPatch();
+                claim.setFeeCalculationResponse(fee);
             }
+            fee.setNetWaitingCostsAmount(value);
         }
     );
 

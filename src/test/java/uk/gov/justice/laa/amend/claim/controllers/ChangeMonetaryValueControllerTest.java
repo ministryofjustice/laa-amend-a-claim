@@ -80,20 +80,19 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testPostSavesValueAndRedirects() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            BigDecimal value = new BigDecimal(100);
-            session.setAttribute(claimId, claim);
+            session.setAttribute(claimId, new ClaimResponse());
 
-           mockMvc.perform(post(path)
+            mockMvc.perform(post(path)
                     .session(session)
                     .with(csrf())
-                    .param("value", value.toString())
+                    .param("value", "100")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl));
 
-            claim.setNetProfitCostsAmount(value);
-            Assertions.assertEquals(claim, session.getAttribute(claimId));
+            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
+            Assertions.assertNotNull(claim);
+            Assertions.assertEquals(new BigDecimal("100.00"), claim.getNetProfitCostsAmount());
         }
 
         @Test
@@ -141,20 +140,19 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testPostSavesValueAndRedirects() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            BigDecimal value = new BigDecimal(100);
-            session.setAttribute(claimId, claim);
+            session.setAttribute(claimId, new ClaimResponse());
 
             mockMvc.perform(post(path)
                     .session(session)
                     .with(csrf())
-                    .param("value", value.toString())
+                    .param("value", "100")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl));
 
-            claim.setNetDisbursementAmount(value);
-            Assertions.assertEquals(claim, session.getAttribute(claimId));
+            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
+            Assertions.assertNotNull(claim);
+            Assertions.assertEquals(new BigDecimal("100.00"), claim.getNetDisbursementAmount());
         }
 
         @Test
@@ -202,20 +200,19 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testPostSavesValueAndRedirects() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            BigDecimal value = new BigDecimal(100);
-            session.setAttribute(claimId, claim);
+            session.setAttribute(claimId, new ClaimResponse());
 
             mockMvc.perform(post(path)
                     .session(session)
                     .with(csrf())
-                    .param("value", value.toString())
+                    .param("value", "100")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl));
 
-            claim.setDisbursementsVatAmount(value);
-            Assertions.assertEquals(claim, session.getAttribute(claimId));
+            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
+            Assertions.assertNotNull(claim);
+            Assertions.assertEquals(new BigDecimal("100.00"), claim.getDisbursementsVatAmount());
         }
 
         @Test
@@ -263,20 +260,19 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testPostSavesValueAndRedirects() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            BigDecimal value = new BigDecimal(100);
-            session.setAttribute(claimId, claim);
+            session.setAttribute(claimId, new ClaimResponse());
 
             mockMvc.perform(post(path)
                     .session(session)
                     .with(csrf())
-                    .param("value", value.toString())
+                    .param("value", "100")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl));
 
-            claim.setNetCounselCostsAmount(value);
-            Assertions.assertEquals(claim, session.getAttribute(claimId));
+            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
+            Assertions.assertNotNull(claim);
+            Assertions.assertEquals(new BigDecimal("100.00"), claim.getNetCounselCostsAmount());
         }
 
         @Test
@@ -324,20 +320,19 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testPostSavesValueAndRedirects() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            BigDecimal value = new BigDecimal(100);
-            session.setAttribute(claimId, claim);
+            session.setAttribute(claimId, new ClaimResponse());
 
             mockMvc.perform(post(path)
                     .session(session)
                     .with(csrf())
-                    .param("value", value.toString())
+                    .param("value", "100")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl));
 
-            claim.setDetentionTravelWaitingCostsAmount(value);
-            Assertions.assertEquals(claim, session.getAttribute(claimId));
+            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
+            Assertions.assertNotNull(claim);
+            Assertions.assertEquals(new BigDecimal("100.00"), claim.getDetentionTravelWaitingCostsAmount());
         }
 
         @Test
@@ -385,20 +380,19 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testPostSavesValueAndRedirects() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            BigDecimal value = new BigDecimal(100);
-            session.setAttribute(claimId, claim);
+            session.setAttribute(claimId, new ClaimResponse());
 
             mockMvc.perform(post(path)
                     .session(session)
                     .with(csrf())
-                    .param("value", value.toString())
+                    .param("value", "100")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl));
 
-            claim.setJrFormFillingAmount(value);
-            Assertions.assertEquals(claim, session.getAttribute(claimId));
+            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
+            Assertions.assertNotNull(claim);
+            Assertions.assertEquals(new BigDecimal("100.00"), claim.getJrFormFillingAmount());
         }
 
         @Test
@@ -447,23 +441,44 @@ public class ChangeMonetaryValueControllerTest {
         }
 
         @Test
-        public void testPostSavesValueAndRedirects() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            BigDecimal value = new BigDecimal(100);
-            session.setAttribute(claimId, claim);
+        public void testPostSavesValueAndRedirectsWhenFeeCalculationResponseIsNull() throws Exception {
+            session.setAttribute(claimId, new ClaimResponse());
 
             mockMvc.perform(post(path)
                     .session(session)
                     .with(csrf())
-                    .param("value", value.toString())
+                    .param("value", "100")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl));
 
+            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
+
+            Assertions.assertNotNull(claim);
+            Assertions.assertNotNull(claim.getFeeCalculationResponse());
+            Assertions.assertEquals(new BigDecimal("100.00"), claim.getFeeCalculationResponse().getNetTravelCostsAmount());
+        }
+
+        @Test
+        public void testPostSavesValueAndRedirectsWhenFeeCalculationResponseIsNotNull() throws Exception {
             FeeCalculationPatch fee = new FeeCalculationPatch();
-            fee.setNetTravelCostsAmount(value);
-            claim.setFeeCalculationResponse(fee);
-            Assertions.assertEquals(claim, session.getAttribute(claimId));
+            ClaimResponse claimResponse = new ClaimResponse();
+            claimResponse.setFeeCalculationResponse(fee);
+            session.setAttribute(claimId, claimResponse);
+
+            mockMvc.perform(post(path)
+                    .session(session)
+                    .with(csrf())
+                    .param("value", "100")
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(redirectUrl));
+
+            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
+
+            Assertions.assertNotNull(claim);
+            Assertions.assertNotNull(claim.getFeeCalculationResponse());
+            Assertions.assertEquals(new BigDecimal("100.00"), claim.getFeeCalculationResponse().getNetTravelCostsAmount());
         }
 
         @Test
@@ -512,23 +527,44 @@ public class ChangeMonetaryValueControllerTest {
         }
 
         @Test
-        public void testPostSavesValueAndRedirects() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            BigDecimal value = new BigDecimal(100);
-            session.setAttribute(claimId, claim);
+        public void testPostSavesValueAndRedirectsWhenFeeCalculationResponseIsNull() throws Exception {
+            session.setAttribute(claimId, new ClaimResponse());
 
             mockMvc.perform(post(path)
                     .session(session)
                     .with(csrf())
-                    .param("value", value.toString())
+                    .param("value", "100")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl));
 
+            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
+
+            Assertions.assertNotNull(claim);
+            Assertions.assertNotNull(claim.getFeeCalculationResponse());
+            Assertions.assertEquals(new BigDecimal("100.00"), claim.getFeeCalculationResponse().getNetWaitingCostsAmount());
+        }
+
+        @Test
+        public void testPostSavesValueAndRedirectsWhenFeeCalculationResponseIsNotNull() throws Exception {
             FeeCalculationPatch fee = new FeeCalculationPatch();
-            fee.setNetWaitingCostsAmount(value);
-            claim.setFeeCalculationResponse(fee);
-            Assertions.assertEquals(claim, session.getAttribute(claimId));
+            ClaimResponse claimResponse = new ClaimResponse();
+            claimResponse.setFeeCalculationResponse(fee);
+            session.setAttribute(claimId, claimResponse);
+
+            mockMvc.perform(post(path)
+                    .session(session)
+                    .with(csrf())
+                    .param("value", "100")
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(redirectUrl));
+
+            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
+
+            Assertions.assertNotNull(claim);
+            Assertions.assertNotNull(claim.getFeeCalculationResponse());
+            Assertions.assertEquals(new BigDecimal("100.00"), claim.getFeeCalculationResponse().getNetWaitingCostsAmount());
         }
 
         @Test
