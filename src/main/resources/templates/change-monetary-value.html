@@ -12,6 +12,8 @@
             <main class="govuk-main-wrapper" id="main-content">
                 <form th:action="@{${action}}" th:object="${form}" method="post">
 
+                    <input type="hidden" name="prefix" th:value="${prefix}">
+
                     <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toMonetaryFormValueErrors(#fields.detailedErrors())})}"></th:block>
 
                     <div class="govuk-form-group">
