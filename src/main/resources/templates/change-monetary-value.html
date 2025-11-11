@@ -12,7 +12,7 @@
             <main class="govuk-main-wrapper" id="main-content">
                 <form th:action="@{${action}}" th:object="${form}" method="post">
 
-                    <input type="hidden" name="prefix" th:value="${prefix}">
+                    <input type="hidden" name="cost" th:value="${prefix}">
 
                     <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toMonetaryFormValueErrors(#fields.detailedErrors())})}"></th:block>
 
@@ -46,7 +46,7 @@
                     <div class="govuk-button-group">
                         <button type="submit" class="govuk-button" data-module="govuk-button" th:text="#{service.saveChanges}"></button>
 
-                        <!-- Point to 'review and amend' page -->
+                        <!-- TODO - Point to 'review and amend' page -->
                         <a th:href="@{/}" th:text="#{service.cancel}" role="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"></a>
                     </div>
                 </form>

@@ -37,21 +37,22 @@ public class ChangeMonetaryValueController {
     private static final String TRAVEL_COSTS = "travel-costs";
     private static final String WAITING_COSTS = "waiting-costs";
 
-    @GetMapping("{prefix}")
-    public String getProfitCosts(
+    @GetMapping("{cost}")
+    public String getMonetaryValue(
         HttpSession session,
         Model model,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId,
-        @PathVariable(value = "prefix") String prefix,
+        @PathVariable(value = "cost") String cost,
         HttpServletResponse response
     ) throws IOException {
-        Function<ClaimResponse, BigDecimal> getter = GETTERS.get(prefix);
+        Function<ClaimResponse, BigDecimal> getter = GETTERS.get(cost);
         if (getter == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
 
+        // TODO - if claim is null, redirect to session expired?
         ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
         BigDecimal value = claim != null ? getter.apply(claim) : null;
         MonetaryValueForm form = new MonetaryValueForm();
@@ -59,42 +60,44 @@ public class ChangeMonetaryValueController {
             form.setValue(setScale(value).toString());
         }
 
-        model.addAttribute("prefix", prefix);
+        model.addAttribute("prefix", cost);
         model.addAttribute("form", form);
-        String action = String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, prefix);
+        String action = String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost);
         model.addAttribute("action", action);
 
         return "change-monetary-value";
     }
 
-    @PostMapping("{prefix}")
-    public String postProfitCosts(
+    @PostMapping("{cost}")
+    public String postMonetaryValue(
         HttpSession session,
         Model model,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId,
-        @PathVariable(value = "prefix") String prefix,
+        @PathVariable(value = "cost") String cost,
         HttpServletResponse response,
         @Valid @ModelAttribute("form") MonetaryValueForm form,
         BindingResult bindingResult
     ) throws IOException {
-        BiConsumer<ClaimResponse, BigDecimal> setter = SETTERS.get(prefix);
+        BiConsumer<ClaimResponse, BigDecimal> setter = SETTERS.get(cost);
         if (setter == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("prefix", prefix);
+            model.addAttribute("prefix", cost);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "change-monetary-value";
         }
 
+        // TODO - if claim is null, redirect to session expired?
         ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
         BigDecimal value = setScale(new BigDecimal(form.getValue()));
         setter.accept(claim, value);
         session.setAttribute(claimId, claim);
 
+        // TODO - Point to 'review and amend' page
         String redirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
         return "redirect:" + redirectUrl;
     }
