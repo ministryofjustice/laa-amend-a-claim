@@ -12,11 +12,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
+import uk.gov.justice.laa.amend.claim.models.Assessment;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -58,52 +59,22 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testGetReturnsView() throws Exception {
-            mockMvc.perform(get(path))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", nullValue())));
+            getReturnsView();
         }
 
         @Test
         public void testGetReturnsViewWhenQuestionAlreadyAnswered() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            claim.setNetProfitCostsAmount(BigDecimal.valueOf(100));
-            session.setAttribute(claimId, claim);
-
-            mockMvc.perform(get(path).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", is("100.00"))));
+            getReturnsViewWhenQuestionAlreadyAnswered(Assessment::setNetProfitCostsAmount);
         }
 
         @Test
         public void testPostSavesValueAndRedirects() throws Exception {
-            session.setAttribute(claimId, new ClaimResponse());
-
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "100")
-                )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl));
-
-            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
-            Assertions.assertNotNull(claim);
-            Assertions.assertEquals(new BigDecimal("100.00"), claim.getNetProfitCostsAmount());
+            postSavesValueAndRedirects(Assessment::getNetProfitCostsAmount);
         }
 
         @Test
         public void testPostReturnsBadRequestForInvalidValue() throws Exception {
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "-1")
-                )
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("change-monetary-value"));
+            postReturnsBadRequestForInvalidValue();
         }
     }
 
@@ -118,52 +89,22 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testGetReturnsView() throws Exception {
-            mockMvc.perform(get(path))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", nullValue())));
+            getReturnsView();
         }
 
         @Test
         public void testGetReturnsViewWhenQuestionAlreadyAnswered() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            claim.setNetDisbursementAmount(BigDecimal.valueOf(100));
-            session.setAttribute(claimId, claim);
-
-            mockMvc.perform(get(path).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", is("100.00"))));
+            getReturnsViewWhenQuestionAlreadyAnswered(Assessment::setDisbursementAmount);
         }
 
         @Test
         public void testPostSavesValueAndRedirects() throws Exception {
-            session.setAttribute(claimId, new ClaimResponse());
-
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "100")
-                )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl));
-
-            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
-            Assertions.assertNotNull(claim);
-            Assertions.assertEquals(new BigDecimal("100.00"), claim.getNetDisbursementAmount());
+            postSavesValueAndRedirects(Assessment::getDisbursementAmount);
         }
 
         @Test
         public void testPostReturnsBadRequestForInvalidValue() throws Exception {
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "-1")
-                )
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("change-monetary-value"));
+            postReturnsBadRequestForInvalidValue();
         }
     }
 
@@ -178,52 +119,22 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testGetReturnsView() throws Exception {
-            mockMvc.perform(get(path))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", nullValue())));
+            getReturnsView();
         }
 
         @Test
         public void testGetReturnsViewWhenQuestionAlreadyAnswered() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            claim.setDisbursementsVatAmount(BigDecimal.valueOf(100));
-            session.setAttribute(claimId, claim);
-
-            mockMvc.perform(get(path).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", is("100.00"))));
+            getReturnsViewWhenQuestionAlreadyAnswered(Assessment::setDisbursementVatAmount);
         }
 
         @Test
         public void testPostSavesValueAndRedirects() throws Exception {
-            session.setAttribute(claimId, new ClaimResponse());
-
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "100")
-                )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl));
-
-            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
-            Assertions.assertNotNull(claim);
-            Assertions.assertEquals(new BigDecimal("100.00"), claim.getDisbursementsVatAmount());
+            postSavesValueAndRedirects(Assessment::getDisbursementVatAmount);
         }
 
         @Test
         public void testPostReturnsBadRequestForInvalidValue() throws Exception {
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "-1")
-                )
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("change-monetary-value"));
+            postReturnsBadRequestForInvalidValue();
         }
     }
 
@@ -238,52 +149,22 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testGetReturnsView() throws Exception {
-            mockMvc.perform(get(path))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", nullValue())));
+            getReturnsView();
         }
 
         @Test
         public void testGetReturnsViewWhenQuestionAlreadyAnswered() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            claim.setNetCounselCostsAmount(BigDecimal.valueOf(100));
-            session.setAttribute(claimId, claim);
-
-            mockMvc.perform(get(path).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", is("100.00"))));
+            getReturnsViewWhenQuestionAlreadyAnswered(Assessment::setNetCostOfCounselAmount);
         }
 
         @Test
         public void testPostSavesValueAndRedirects() throws Exception {
-            session.setAttribute(claimId, new ClaimResponse());
-
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "100")
-                )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl));
-
-            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
-            Assertions.assertNotNull(claim);
-            Assertions.assertEquals(new BigDecimal("100.00"), claim.getNetCounselCostsAmount());
+            postSavesValueAndRedirects(Assessment::getNetCostOfCounselAmount);
         }
 
         @Test
         public void testPostReturnsBadRequestForInvalidValue() throws Exception {
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "-1")
-                )
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("change-monetary-value"));
+            postReturnsBadRequestForInvalidValue();
         }
     }
 
@@ -298,52 +179,22 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testGetReturnsView() throws Exception {
-            mockMvc.perform(get(path))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", nullValue())));
+            getReturnsView();
         }
 
         @Test
         public void testGetReturnsViewWhenQuestionAlreadyAnswered() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            claim.setDetentionTravelWaitingCostsAmount(BigDecimal.valueOf(100));
-            session.setAttribute(claimId, claim);
-
-            mockMvc.perform(get(path).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", is("100.00"))));
+            getReturnsViewWhenQuestionAlreadyAnswered(Assessment::setTravelAndWaitingCostsAmount);
         }
 
         @Test
         public void testPostSavesValueAndRedirects() throws Exception {
-            session.setAttribute(claimId, new ClaimResponse());
-
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "100")
-                )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl));
-
-            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
-            Assertions.assertNotNull(claim);
-            Assertions.assertEquals(new BigDecimal("100.00"), claim.getDetentionTravelWaitingCostsAmount());
+            postSavesValueAndRedirects(Assessment::getTravelAndWaitingCostsAmount);
         }
 
         @Test
         public void testPostReturnsBadRequestForInvalidValue() throws Exception {
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "-1")
-                )
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("change-monetary-value"));
+            postReturnsBadRequestForInvalidValue();
         }
     }
 
@@ -358,52 +209,22 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testGetReturnsView() throws Exception {
-            mockMvc.perform(get(path))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", nullValue())));
+            getReturnsView();
         }
 
         @Test
         public void testGetReturnsViewWhenQuestionAlreadyAnswered() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            claim.setJrFormFillingAmount(BigDecimal.valueOf(100));
-            session.setAttribute(claimId, claim);
-
-            mockMvc.perform(get(path).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", is("100.00"))));
+            getReturnsViewWhenQuestionAlreadyAnswered(Assessment::setJrFormFillingAmount);
         }
 
         @Test
         public void testPostSavesValueAndRedirects() throws Exception {
-            session.setAttribute(claimId, new ClaimResponse());
-
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "100")
-                )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl));
-
-            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
-            Assertions.assertNotNull(claim);
-            Assertions.assertEquals(new BigDecimal("100.00"), claim.getJrFormFillingAmount());
+            postSavesValueAndRedirects(Assessment::getJrFormFillingAmount);
         }
 
         @Test
         public void testPostReturnsBadRequestForInvalidValue() throws Exception {
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "-1")
-                )
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("change-monetary-value"));
+            postReturnsBadRequestForInvalidValue();
         }
     }
 
@@ -418,78 +239,22 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testGetReturnsView() throws Exception {
-            mockMvc.perform(get(path))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", nullValue())));
+            getReturnsView();
         }
 
         @Test
         public void testGetReturnsViewWhenQuestionAlreadyAnswered() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            FeeCalculationPatch fee = new FeeCalculationPatch();
-            fee.setNetTravelCostsAmount(BigDecimal.valueOf(100));
-            claim.setFeeCalculationResponse(fee);
-            session.setAttribute(claimId, claim);
-
-            mockMvc.perform(get(path).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", is("100.00"))));
+            getReturnsViewWhenQuestionAlreadyAnswered(Assessment::setNetTravelCostsAmount);
         }
 
         @Test
-        public void testPostSavesValueAndRedirectsWhenFeeCalculationResponseIsNull() throws Exception {
-            session.setAttribute(claimId, new ClaimResponse());
-
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "100")
-                )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl));
-
-            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
-
-            Assertions.assertNotNull(claim);
-            Assertions.assertNotNull(claim.getFeeCalculationResponse());
-            Assertions.assertEquals(new BigDecimal("100.00"), claim.getFeeCalculationResponse().getNetTravelCostsAmount());
-        }
-
-        @Test
-        public void testPostSavesValueAndRedirectsWhenFeeCalculationResponseIsNotNull() throws Exception {
-            FeeCalculationPatch fee = new FeeCalculationPatch();
-            ClaimResponse claimResponse = new ClaimResponse();
-            claimResponse.setFeeCalculationResponse(fee);
-            session.setAttribute(claimId, claimResponse);
-
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "100")
-                )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl));
-
-            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
-
-            Assertions.assertNotNull(claim);
-            Assertions.assertNotNull(claim.getFeeCalculationResponse());
-            Assertions.assertEquals(new BigDecimal("100.00"), claim.getFeeCalculationResponse().getNetTravelCostsAmount());
+        public void testPostSavesValueAndRedirects() throws Exception {
+            postSavesValueAndRedirects(Assessment::getNetTravelCostsAmount);
         }
 
         @Test
         public void testPostReturnsBadRequestForInvalidValue() throws Exception {
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "-1")
-                )
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("change-monetary-value"));
+            postReturnsBadRequestForInvalidValue();
         }
     }
 
@@ -504,78 +269,22 @@ public class ChangeMonetaryValueControllerTest {
 
         @Test
         public void testGetReturnsView() throws Exception {
-            mockMvc.perform(get(path))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", nullValue())));
+            getReturnsView();
         }
 
         @Test
         public void testGetReturnsViewWhenQuestionAlreadyAnswered() throws Exception {
-            ClaimResponse claim = new ClaimResponse();
-            FeeCalculationPatch fee = new FeeCalculationPatch();
-            fee.setNetWaitingCostsAmount(BigDecimal.valueOf(100));
-            claim.setFeeCalculationResponse(fee);
-            session.setAttribute(claimId, claim);
-
-            mockMvc.perform(get(path).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("prefix", equalTo(prefix)))
-                .andExpect(model().attribute("form", hasProperty("value", is("100.00"))));
+            getReturnsViewWhenQuestionAlreadyAnswered(Assessment::setNetWaitingCostsAmount);
         }
 
         @Test
-        public void testPostSavesValueAndRedirectsWhenFeeCalculationResponseIsNull() throws Exception {
-            session.setAttribute(claimId, new ClaimResponse());
-
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "100")
-                )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl));
-
-            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
-
-            Assertions.assertNotNull(claim);
-            Assertions.assertNotNull(claim.getFeeCalculationResponse());
-            Assertions.assertEquals(new BigDecimal("100.00"), claim.getFeeCalculationResponse().getNetWaitingCostsAmount());
-        }
-
-        @Test
-        public void testPostSavesValueAndRedirectsWhenFeeCalculationResponseIsNotNull() throws Exception {
-            FeeCalculationPatch fee = new FeeCalculationPatch();
-            ClaimResponse claimResponse = new ClaimResponse();
-            claimResponse.setFeeCalculationResponse(fee);
-            session.setAttribute(claimId, claimResponse);
-
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "100")
-                )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl));
-
-            ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
-
-            Assertions.assertNotNull(claim);
-            Assertions.assertNotNull(claim.getFeeCalculationResponse());
-            Assertions.assertEquals(new BigDecimal("100.00"), claim.getFeeCalculationResponse().getNetWaitingCostsAmount());
+        public void testPostSavesValueAndRedirects() throws Exception {
+            postSavesValueAndRedirects(Assessment::getNetWaitingCostsAmount);
         }
 
         @Test
         public void testPostReturnsBadRequestForInvalidValue() throws Exception {
-            mockMvc.perform(post(path)
-                    .session(session)
-                    .with(csrf())
-                    .param("value", "-1")
-                )
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("change-monetary-value"));
+            postReturnsBadRequestForInvalidValue();
         }
     }
 
@@ -597,5 +306,53 @@ public class ChangeMonetaryValueControllerTest {
                 )
                 .andExpect(status().isNotFound());
         }
+    }
+
+    private void getReturnsView() throws Exception {
+        mockMvc.perform(get(path))
+            .andExpect(status().isOk())
+            .andExpect(view().name("change-monetary-value"))
+            .andExpect(model().attribute("prefix", equalTo(prefix)))
+            .andExpect(model().attribute("form", hasProperty("value", nullValue())));
+    }
+
+    private void getReturnsViewWhenQuestionAlreadyAnswered(BiConsumer<Assessment, BigDecimal> f) throws Exception {
+        Assessment assessment = new Assessment();
+        f.accept(assessment, BigDecimal.valueOf(100));
+        session.setAttribute(String.format("%s:assessment", claimId), assessment);
+
+        mockMvc.perform(get(path).session(session))
+            .andExpect(status().isOk())
+            .andExpect(view().name("change-monetary-value"))
+            .andExpect(model().attribute("prefix", equalTo(prefix)))
+            .andExpect(model().attribute("form", hasProperty("value", is("100.00"))));
+    }
+
+    private void postSavesValueAndRedirects(Function<Assessment, BigDecimal> f) throws Exception {
+        session.setAttribute(String.format("%s:assessment", claimId), new Assessment());
+
+        mockMvc.perform(post(path)
+                .session(session)
+                .with(csrf())
+                .param("value", "100")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(redirectUrl));
+
+        Assessment assessment = (Assessment) session.getAttribute(String.format("%s:assessment", claimId));
+
+        Assertions.assertNotNull(assessment);
+        Assertions.assertEquals(new BigDecimal("100.00"), f.apply(assessment));
+    }
+
+    private void postReturnsBadRequestForInvalidValue() throws Exception {
+        mockMvc.perform(
+                post(path)
+                    .session(session)
+                    .with(csrf())
+                    .param("value", "-1")
+            )
+            .andExpect(status().isBadRequest())
+            .andExpect(view().name("change-monetary-value"));
     }
 }

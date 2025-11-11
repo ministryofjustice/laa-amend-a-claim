@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
+import uk.gov.justice.laa.amend.claim.models.Assessment;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -46,15 +45,15 @@ public class ChangeMonetaryValueController {
         @PathVariable(value = "cost") String cost,
         HttpServletResponse response
     ) throws IOException {
-        Function<ClaimResponse, BigDecimal> getter = GETTERS.get(cost);
+        Function<Assessment, BigDecimal> getter = GETTERS.get(cost);
         if (getter == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
 
-        // TODO - if claim is null, redirect to session expired?
-        ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
-        BigDecimal value = claim != null ? getter.apply(claim) : null;
+        // TODO - if retrieval from session returns null, redirect to session expired?
+        Assessment assessment = (Assessment) session.getAttribute(String.format("%s:assessment", claimId));
+        BigDecimal value = assessment != null ? getter.apply(assessment) : null;
         MonetaryValueForm form = new MonetaryValueForm();
         if (value != null) {
             form.setValue(setScale(value).toString());
@@ -79,7 +78,7 @@ public class ChangeMonetaryValueController {
         @Valid @ModelAttribute("form") MonetaryValueForm form,
         BindingResult bindingResult
     ) throws IOException {
-        BiConsumer<ClaimResponse, BigDecimal> setter = SETTERS.get(cost);
+        BiConsumer<Assessment, BigDecimal> setter = SETTERS.get(cost);
         if (setter == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
@@ -91,51 +90,37 @@ public class ChangeMonetaryValueController {
             return "change-monetary-value";
         }
 
-        // TODO - if claim is null, redirect to session expired?
-        ClaimResponse claim = (ClaimResponse) session.getAttribute(claimId);
+        // TODO - if retrieval from session returns null, redirect to session expired?
+        Assessment assessment = (Assessment) session.getAttribute(String.format("%s:assessment", claimId));
         BigDecimal value = setScale(new BigDecimal(form.getValue()));
-        setter.accept(claim, value);
-        session.setAttribute(claimId, claim);
+        setter.accept(assessment, value);
+        session.setAttribute(String.format("%s:assessment", claimId), assessment);
 
         // TODO - Point to 'review and amend' page
         String redirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
         return "redirect:" + redirectUrl;
     }
 
-    private static final Map<String, Function<ClaimResponse, BigDecimal>> GETTERS = Map.of(
-        PROFIT_COSTS, ClaimResponse::getNetProfitCostsAmount,
-        DISBURSEMENTS, ClaimResponse::getNetDisbursementAmount,
-        DISBURSEMENTS_VAT, ClaimResponse::getDisbursementsVatAmount,
-        COUNSEL_COSTS, ClaimResponse::getNetCounselCostsAmount,
-        DETENTION_TRAVEL_AND_WAITING_COSTS, ClaimResponse::getDetentionTravelWaitingCostsAmount,
-        JR_FORM_FILLING_COSTS, ClaimResponse::getJrFormFillingAmount,
-        TRAVEL_COSTS, claim -> claim.getFeeCalculationResponse() != null ? claim.getFeeCalculationResponse().getNetTravelCostsAmount() : null,
-        WAITING_COSTS, claim -> claim.getFeeCalculationResponse() != null ? claim.getFeeCalculationResponse().getNetWaitingCostsAmount() : null
+    private static final Map<String, Function<Assessment, BigDecimal>> GETTERS = Map.of(
+        PROFIT_COSTS, Assessment::getNetProfitCostsAmount,
+        DISBURSEMENTS, Assessment::getDisbursementAmount,
+        DISBURSEMENTS_VAT, Assessment::getDisbursementVatAmount,
+        COUNSEL_COSTS, Assessment::getNetCostOfCounselAmount,
+        DETENTION_TRAVEL_AND_WAITING_COSTS, Assessment::getTravelAndWaitingCostsAmount,
+        JR_FORM_FILLING_COSTS, Assessment::getJrFormFillingAmount,
+        TRAVEL_COSTS, Assessment::getNetTravelCostsAmount,
+        WAITING_COSTS, Assessment::getNetWaitingCostsAmount
     );
 
-    private static final Map<String, BiConsumer<ClaimResponse, BigDecimal>> SETTERS = Map.of(
-        PROFIT_COSTS, ClaimResponse::setNetProfitCostsAmount,
-        DISBURSEMENTS, ClaimResponse::setNetDisbursementAmount,
-        DISBURSEMENTS_VAT, ClaimResponse::setDisbursementsVatAmount,
-        COUNSEL_COSTS, ClaimResponse::setNetCounselCostsAmount,
-        DETENTION_TRAVEL_AND_WAITING_COSTS, ClaimResponse::setDetentionTravelWaitingCostsAmount,
-        JR_FORM_FILLING_COSTS, ClaimResponse::setJrFormFillingAmount,
-        TRAVEL_COSTS, (claim, value) -> {
-            FeeCalculationPatch fee = claim.getFeeCalculationResponse();
-            if (fee == null) {
-                fee = new FeeCalculationPatch();
-                claim.setFeeCalculationResponse(fee);
-            }
-            fee.setNetTravelCostsAmount(value);
-        },
-        WAITING_COSTS, (claim, value) -> {
-            FeeCalculationPatch fee = claim.getFeeCalculationResponse();
-            if (fee == null) {
-                fee = new FeeCalculationPatch();
-                claim.setFeeCalculationResponse(fee);
-            }
-            fee.setNetWaitingCostsAmount(value);
-        }
+    private static final Map<String, BiConsumer<Assessment, BigDecimal>> SETTERS = Map.of(
+        PROFIT_COSTS, Assessment::setNetProfitCostsAmount,
+        DISBURSEMENTS, Assessment::setDisbursementAmount,
+        DISBURSEMENTS_VAT, Assessment::setDisbursementVatAmount,
+        COUNSEL_COSTS, Assessment::setNetCostOfCounselAmount,
+        DETENTION_TRAVEL_AND_WAITING_COSTS, Assessment::setTravelAndWaitingCostsAmount,
+        JR_FORM_FILLING_COSTS, Assessment::setJrFormFillingAmount,
+        TRAVEL_COSTS, Assessment::setNetTravelCostsAmount,
+        WAITING_COSTS, Assessment::setNetWaitingCostsAmount
     );
 
     private BigDecimal setScale(BigDecimal value) {
