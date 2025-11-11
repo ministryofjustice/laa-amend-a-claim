@@ -28,7 +28,7 @@ public class ClaimSummaryController {
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
         Claim claim = claimResultMapper.mapToClaim(claimResponse);
 
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId, claimResponse);
 
         model.addAttribute("claim", claim);
 

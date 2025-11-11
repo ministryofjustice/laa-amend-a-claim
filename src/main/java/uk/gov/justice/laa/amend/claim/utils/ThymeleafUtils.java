@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.utils;
 
 import org.thymeleaf.spring6.util.DetailedError;
+import uk.gov.justice.laa.amend.claim.forms.errors.MonetaryValueFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
 
 import java.util.LinkedHashMap;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class ThymeleafUtils {
 
-    public List<SearchFormError> sortSearchErrors(List<DetailedError> errors) {
+    public List<SearchFormError> toSearchFormErrors(List<DetailedError> errors) {
         return errors
             .stream()
             .map(SearchFormError::new)
@@ -26,5 +27,12 @@ public class ThymeleafUtils {
                     map -> map.values().stream().toList()
                 )
             );
+    }
+
+    public List<MonetaryValueFormError> toMonetaryFormValueErrors(List<DetailedError> errors) {
+        return errors
+            .stream()
+            .map(MonetaryValueFormError::new)
+            .toList();
     }
 }
