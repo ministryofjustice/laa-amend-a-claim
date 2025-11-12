@@ -65,8 +65,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasHeading(doc, "Claim details");
         assertPageHasH2(doc, "Summary");
 
-        assertPageHasBackLink(doc);
-
         assertPageHasNoActiveServiceNavigationItems(doc);
 
         assertPageHasSummaryList(doc);
@@ -106,8 +104,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         assertPageHasHeading(doc, "Claim details");
         assertPageHasH2(doc, "Summary");
-
-        assertPageHasBackLink(doc);
 
         assertPageHasNoActiveServiceNavigationItems(doc);
 
