@@ -13,8 +13,9 @@
                           th:object="${assessmentOutcomeForm}"
                           method="post">
 
-                        <div class="govuk-form-group">
+                        <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.sortAssessmentOutcomeErrors(#fields.detailedErrors())})}"></th:block>
 
+                        <div class="govuk-form-group">
                         <fieldset class="govuk-fieldset">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                                 <h1 class="govuk-heading-xl">
@@ -22,7 +23,13 @@
                                 </h1>
                             </legend>
 
-                        <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios" data-module="govuk-radios"
+                             th:classappend="${#fields.hasErrors('assessmentOutcome')} ? 'govuk-form-group--error'">
+
+                            <p class="govuk-error-message"
+                               th:if="${#fields.hasErrors('assessmentOutcome')}"
+                               th:errors="*{assessmentOutcome}"></p>
+
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="assessmentOutcome" name="assessmentOutcome" type="radio" value="reduced-to-fixed-fee-assessed"
                                        th:checked="${assessmentOutcome == 'reduced-to-fixed-fee-assessed'}">
@@ -52,30 +59,24 @@
                                 </label>
                             </div>
                         </div>
-
-
                         </fieldset>
-
-
                         </div>
 
-
-
                         <div class="govuk-form-group">
-
                             <fieldset class="govuk-fieldset">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                    <h2 class="govuk-label govuk-label--m">
+                                        <span th:text="#{assessmentOutcome.vatLiabilitySubHeading}"></span>
+                                    </h2>
+                                </legend>
+                                <div id="changedName-hint" class="govuk-hint" th:text="#{assessmentOutcome.vatLiabilityHint}"></div>
+                                <div th:classappend="${#fields.hasErrors('liabilityForVAT')} ? 'govuk-form-group--error'">
+                                <p class="govuk-error-message"
+                                   th:if="${#fields.hasErrors('liabilityForVAT')}"
+                                   th:errors="*{liabilityForVAT}"></p>
 
-                                <h1 class="govuk-label-wrapper">
-                                    <label class="govuk-label govuk-label--m" for="liabilityForVAT" th:text="#{assessmentOutcome.vatLiabilitySubHeading}">
-
-                                    </label>
-                                </h1>
-
-                                <div id="changedName-hint" class="govuk-hint" th:text="#{assessmentOutcome.vatLiabilityHint}">
-
-                                </div>
-
-                                <div class="govuk-radios govuk-radios--inline govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios govuk-radios--inline govuk-radios--small" data-module="govuk-radios"
+                                     >
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input" id="liabilityForVAT" name="liabilityForVAT" type="radio" value="yes"
                                                th:checked="${liabilityForVAT == 'yes'}">
@@ -91,22 +92,14 @@
                                         </label>
                                     </div>
                                 </div>
-
-
+                                </div>
                             </fieldset>
-
-
                         </div>
 
-
-
                             <div class="govuk-button-group">
-
                                 <button class="govuk-button" type="submit"> Continue </button>
-
                                 <button class="govuk-button govuk-button--secondary" onclick="window.history.go(-1); return false;" type="button"> Cancel </button>
                             </div>
-
                     </form>
 
         </main>

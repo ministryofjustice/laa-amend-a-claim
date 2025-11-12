@@ -1,9 +1,11 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.forms.AssessmentOutcomeForm;
@@ -29,6 +31,10 @@ public class AssessmentOutcomeController {
     ) {
 
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
+
+        form.setAssessmentOutcome((String) session.getAttribute("assessmentOutcome"));
+        form.setLiabilityForVAT((String) session.getAttribute("liabilityForVAT"));
+
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
         Claim claim = claimResultMapper.mapToClaim(claimResponse);
 
@@ -50,27 +56,23 @@ public class AssessmentOutcomeController {
     public String selectAssessmentOutcome(
             @PathVariable(value = "submissionId") String submissionId,
             @PathVariable(value = "claimId") String claimId,
-            @ModelAttribute AssessmentOutcomeForm assessmentOutcomeForm,
+            @Valid @ModelAttribute AssessmentOutcomeForm assessmentOutcomeForm,
+            BindingResult bindingResult,
             HttpSession session,
             Model model,
             RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("submissionId", submissionId);
+            model.addAttribute("claimId", claimId);
+            return "assessment-outcome";
+        }
 
         session.setAttribute("assessmentOutcome", assessmentOutcomeForm.getAssessmentOutcome());
         session.setAttribute("liabilityForVAT", assessmentOutcomeForm.getLiabilityForVAT());
 
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claimId", claimId);
-
-        System.out.println(assessmentOutcomeForm.getAssessmentOutcome());
-        System.out.println(assessmentOutcomeForm.getAssessmentOutcome());
-        System.out.println(assessmentOutcomeForm.getAssessmentOutcome());
-        System.out.println(assessmentOutcomeForm.getAssessmentOutcome());
-        System.out.println(assessmentOutcomeForm.getAssessmentOutcome());
-
-        System.out.println(assessmentOutcomeForm.getLiabilityForVAT());
-        System.out.println(assessmentOutcomeForm.getLiabilityForVAT());
-        System.out.println(assessmentOutcomeForm.getLiabilityForVAT());
-        System.out.println(assessmentOutcomeForm.getLiabilityForVAT());
 
         redirectAttributes.addFlashAttribute("submissionId", submissionId);
         redirectAttributes.addFlashAttribute("claimId", claimId);

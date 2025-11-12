@@ -24,4 +24,7 @@ public class AmendClaimConstants {
     public static final String DEFAULT_SORT = "uniqueFileNumber,asc";
     public static final String DEFAULT_SORT_FIELD = "uniqueFileNumber";
     public static final SortDirection DEFAULT_SORT_ORDER = SortDirection.ASCENDING;
+
+    public static final String ASSESSMENT_OUTCOME_REQUIRED_ERROR = "{assessmentOutcome.assessmentOutcomeRequiredError}";
+    public static final String LIABILITY_FOR_VAT_REQUIRED_ERROR = "{assessmentOutcome.liabilityForVatRequiredError}";
 }
