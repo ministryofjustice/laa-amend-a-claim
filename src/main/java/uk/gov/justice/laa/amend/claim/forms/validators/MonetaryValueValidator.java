@@ -11,10 +11,11 @@ import java.math.BigDecimal;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @AllArgsConstructor
-public class MonetaryValueValidator implements ConstraintValidator<ValidMonetaryValue, MonetaryValueForm> {
+public class MonetaryValueValidator extends Validator implements ConstraintValidator<ValidMonetaryValue, MonetaryValueForm> {
 
     private static final BigDecimal MIN = BigDecimal.ZERO;
     private static final BigDecimal MAX = BigDecimal.valueOf(1_000_000);
+    private static final String FIELD_NAME = "value";
 
     @Override
     public boolean isValid(MonetaryValueForm form, ConstraintValidatorContext context) {
@@ -46,15 +47,13 @@ public class MonetaryValueValidator implements ConstraintValidator<ValidMonetary
             }
 
             return true;
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             addViolation(context, String.format("{%s.error.invalid}", prefix));
             return false;
         }
     }
 
     private void addViolation(ConstraintValidatorContext context, String message) {
-        context.buildConstraintViolationWithTemplate(message)
-            .addPropertyNode("value")
-            .addConstraintViolation();
+        addViolation(context, FIELD_NAME, message);
     }
 }
