@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{assessmentOutcome.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${false}
+    )}">
+    <body>
+        <main class="govuk-main-wrapper" id="main-content">
+                    <form th:action="@{/submissions/{submissionId}/claims/{claimID}/assessment-outcome(submissionId=${submissionId}, claimID=${claimId})}"
+                          th:object="${assessmentOutcomeForm}"
+                          method="post">
+
+                        <div class="govuk-form-group">
+
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <h1 class="govuk-heading-xl">
+                                    <span th:text="#{assessmentOutcome.mainHeading}"></span>
+                                </h1>
+                            </legend>
+
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="assessmentOutcome" name="assessmentOutcome" type="radio" value="reduced-to-fixed-fee-assessed"
+                                       th:checked="${assessmentOutcome == 'reduced-to-fixed-fee-assessed'}">
+                                <label class="govuk-label govuk-radios__label" for="assessmentOutcome">
+                                    Reduced to fixed fee (assessed)
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="assessmentOutcome-2" name="assessmentOutcome" type="radio" value="reduced-still-escaped"
+                                       th:checked="${assessmentOutcome == 'reduced-still-escaped'}">
+                                <label class="govuk-label govuk-radios__label" for="assessmentOutcome-2">
+                                    Reduced (still escaped)
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="assessmentOutcome-3" name="assessmentOutcome" type="radio" value="nilled"
+                                       th:checked="${assessmentOutcome == 'nilled'}">
+                                <label class="govuk-label govuk-radios__label" for="assessmentOutcome-3">
+                                    Nilled
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="assessmentOutcome-4" name="assessmentOutcome" type="radio" value="paid-in-full"
+                                       th:checked="${assessmentOutcome == 'paid-in-full'}">
+                                <label class="govuk-label govuk-radios__label" for="assessmentOutcome-4">
+                                    Paid in full
+                                </label>
+                            </div>
+                        </div>
+
+
+                        </fieldset>
+
+                        </div>
+
+                            <div class="govuk-button-group">
+
+                                <button class="govuk-button" type="submit"> Continue </button>
+
+                                <button class="govuk-button govuk-button--secondary" onclick="window.history.go(-1); return false;" type="button"> Cancel </button>
+                            </div>
+
+                    </form>
+
+        </main>
+    </body>
+</html>
