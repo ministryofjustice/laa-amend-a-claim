@@ -24,4 +24,23 @@ public class AmendClaimConstants {
     public static final String DEFAULT_SORT = "uniqueFileNumber,asc";
     public static final String DEFAULT_SORT_FIELD = "uniqueFileNumber";
     public static final SortDirection DEFAULT_SORT_ORDER = SortDirection.ASCENDING;
+
+    public static class Label {
+        public static final String FIXED_FEE = "claimSummary.rows.fixedFee";
+        public static final String NET_PROFIT_COST = "claimSummary.rows.profitCost";
+        public static final String DISBURSEMENT_VAT = "claimSummary.rows.disbursementsVat";
+        public static final String NET_DISBURSEMENTS_COST = "claimSummary.rows.disbursements";
+        public static final String COUNSELS_COST = "claimSummary.rows.counselsCost";
+        public static final String DETENTION_TRAVEL_COST = "claimSummary.rows.detentionTravel";
+        public static final String JR_FORM_FILLING = "claimSummary.rows.jrFormFilling";
+        public static final String ADJOURNED_FEE = "claimSummary.rows.adjournedHearingFee";
+        public static final String CMRH_TELEPHONE = "claimSummary.rows.cmrhTelephone";
+        public static final String CMRH_ORAL = "claimSummary.rows.cmrhOral";
+        public static final String HO_INTERVIEW = "claimSummary.rows.homeOffice";
+        public static final String SUBSTANTIVE_HEARING = "claimSummary.rows.substantiveHearing";
+        public static final String VAT = "claimSummary.rows.vat";
+        public static final String TOTAL = "claimSummary.rows.total";
+        public static final String TRAVEL_COSTS = "claimSummary.rows.travel";
+        public static final String WAITING_COSTS = "claimSummary.rows.waiting";
+    }
 }
