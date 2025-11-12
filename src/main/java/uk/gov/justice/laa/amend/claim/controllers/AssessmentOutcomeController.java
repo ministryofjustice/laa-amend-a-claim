@@ -77,6 +77,7 @@ public class AssessmentOutcomeController {
         redirectAttributes.addFlashAttribute("submissionId", submissionId);
         redirectAttributes.addFlashAttribute("claimId", claimId);
 
+        // TODO: below is where we route to the table view
         return "redirect:/submissions/{submissionId}/claims/{claimId}/assessment-outcome";
     }
 }
