@@ -7,8 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimSummaryMapper;
-import uk.gov.justice.laa.amend.claim.models.ClaimSummary;
-import uk.gov.justice.laa.amend.claim.models.Assessment;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
@@ -33,8 +32,8 @@ public class ClaimSummaryController {
         session.setAttribute(claimId, claimSummary);
         // TODO - this is just placeholder code at the moment, and will likely be moved or removed altogether
         // ---
-        session.setAttribute(claimId, claimResponse);
-        session.setAttribute(String.format("%s:assessment", claimId), new Assessment(claimResponse));
+        //session.setAttribute(claimId, claimResponse);
+        //session.setAttribute(String.format("%s:assessment", claimId), new Assessment(claimResponse));
         // ---
 
         model.addAttribute("claim", claimSummary);

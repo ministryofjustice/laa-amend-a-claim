@@ -4,10 +4,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimSummary;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldRow;
-import uk.gov.justice.laa.amend.claim.models.ClaimSummary;
-import uk.gov.justice.laa.amend.claim.models.CrimeClaimSummary;
+import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
+import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimSummary;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
 import java.math.BigDecimal;

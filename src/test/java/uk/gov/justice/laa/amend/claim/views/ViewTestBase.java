@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldRow;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
 import java.util.Arrays;
 import java.util.List;
