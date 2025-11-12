@@ -38,7 +38,10 @@ public class AssessmentOutcomeController {
         model.addAttribute("assessmentOutcomeForm", form);
 
         String assessmentOutcome = (String) session.getAttribute("assessmentOutcome");
+        String liabilityForVAT = (String) session.getAttribute("liabilityForVAT");
+
         model.addAttribute("assessmentOutcome", assessmentOutcome);
+        model.addAttribute("liabilityForVAT", liabilityForVAT);
 
         return "assessment-outcome";
     }
@@ -53,6 +56,7 @@ public class AssessmentOutcomeController {
             RedirectAttributes redirectAttributes) {
 
         session.setAttribute("assessmentOutcome", assessmentOutcomeForm.getAssessmentOutcome());
+        session.setAttribute("liabilityForVAT", assessmentOutcomeForm.getLiabilityForVAT());
 
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claimId", claimId);
@@ -62,6 +66,11 @@ public class AssessmentOutcomeController {
         System.out.println(assessmentOutcomeForm.getAssessmentOutcome());
         System.out.println(assessmentOutcomeForm.getAssessmentOutcome());
         System.out.println(assessmentOutcomeForm.getAssessmentOutcome());
+
+        System.out.println(assessmentOutcomeForm.getLiabilityForVAT());
+        System.out.println(assessmentOutcomeForm.getLiabilityForVAT());
+        System.out.println(assessmentOutcomeForm.getLiabilityForVAT());
+        System.out.println(assessmentOutcomeForm.getLiabilityForVAT());
 
         redirectAttributes.addFlashAttribute("submissionId", submissionId);
         redirectAttributes.addFlashAttribute("claimId", claimId);

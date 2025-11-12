@@ -8,6 +8,6 @@ import lombok.Setter;
 public class AssessmentOutcomeForm {
 
     private String assessmentOutcome;
-    private String eligibleForVAT;
+    private String liabilityForVAT;
 
 }
