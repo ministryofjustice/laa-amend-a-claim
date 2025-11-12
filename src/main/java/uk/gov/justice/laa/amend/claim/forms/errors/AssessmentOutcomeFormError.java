@@ -10,6 +10,10 @@ public class AssessmentOutcomeFormError extends FormError {
         super(error);
     }
 
+    public AssessmentOutcomeFormError(String fieldName, String message) {
+        super(fieldName, message);
+    }
+
     @Override
     protected Map<String, Integer> getFieldOrderMap() {
         return Map.of(

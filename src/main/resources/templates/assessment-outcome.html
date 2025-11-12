@@ -69,7 +69,7 @@
                                         <span th:text="#{assessmentOutcome.vatLiabilitySubHeading}"></span>
                                     </h2>
                                 </legend>
-                                <div id="changedName-hint" class="govuk-hint" th:text="#{assessmentOutcome.vatLiabilityHint}"></div>
+                                <div id="liableForVAT-hint" class="govuk-hint" th:text="#{assessmentOutcome.vatLiabilityHint}"></div>
                                 <div th:classappend="${#fields.hasErrors('liabilityForVAT')} ? 'govuk-form-group--error'">
                                 <p class="govuk-error-message"
                                    th:if="${#fields.hasErrors('liabilityForVAT')}"

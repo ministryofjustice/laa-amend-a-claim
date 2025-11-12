@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public abstract class ViewTestBase {
 
   @Autowired
-  private MockMvc mockMvc;
+  public MockMvc mockMvc;
 
   protected String mapping;
 
@@ -52,6 +52,17 @@ public abstract class ViewTestBase {
     return Jsoup.parse(html);
   }
 
+    protected Document renderRedirect(String pageToRender) throws Exception {
+
+        String html = mockMvc.perform(post(pageToRender))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        return Jsoup.parse(html);
+    }
+
   protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) throws Exception {
     MockHttpServletRequestBuilder requestBuilder = post(mapping);
 
@@ -78,6 +89,11 @@ public abstract class ViewTestBase {
     Elements elements = doc.getElementsByClass("govuk-back-link");
     Assertions.assertFalse(elements.isEmpty());
   }
+
+    protected void assertPageHasSecondaryButton(Document doc) {
+        Elements elements = doc.getElementsByClass("govuk-button govuk-button--secondary");
+        Assertions.assertFalse(elements.isEmpty());
+    }
 
   protected void assertPageHasLink(Document doc, String id, String expectedText) {
     Element element = getElementById(doc, id);
@@ -145,6 +161,16 @@ public abstract class ViewTestBase {
     Elements elements = doc.getElementsByClass("govuk-summary-list");
     Assertions.assertFalse(elements.isEmpty());
   }
+
+    protected void assertPageHasRadioButtons(Document doc) {
+        Elements elements = doc.getElementsByClass("govuk-radios");
+        Assertions.assertFalse(elements.isEmpty());
+    }
+
+    protected void assertPageHasInlineRadioButtons(Document doc) {
+        Elements elements = doc.getElementsByClass("govuk-radios--inline");
+        Assertions.assertFalse(elements.isEmpty());
+    }
 
   protected void assertPageHasNoSummaryList(Document doc) {
     Elements elements = doc.getElementsByClass("govuk-summary-list");
