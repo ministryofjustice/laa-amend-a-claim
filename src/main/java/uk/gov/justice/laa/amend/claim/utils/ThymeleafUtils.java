@@ -50,6 +50,7 @@ public class ThymeleafUtils {
                                 map -> map.values().stream().toList()
                         )
                 );
+    }
       
     public String displayValueForBoolean(Boolean value) {
         return (value != null && value) ? "index.results.escaped.yes" : "index.results.escaped.no";
