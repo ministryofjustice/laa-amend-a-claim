@@ -3,22 +3,18 @@
 <body>
 <div class="govuk-summary-list__row" th:fragment="summaryRow(row)">
     <dt class="govuk-summary-list__key" th:text="#{${row.label}}"></dt>
-    <dd class="govuk-summary-list__value" th:if="${row.calculated != null && row.calculated instanceof T(java.lang.Boolean)}">
-        <span th:with="key=${@ThymeleafUtils.displayValueForBoolean(row.calculated)}" th:text="#{${key}}">
+    <dd class="govuk-summary-list__value" th:if="${row.calculated != null}">
+        <span th:if="${row.calculated instanceof T(java.lang.Boolean)}"
+              th:with="key=${@ThymeleafUtils.displayValueForBoolean(row.calculated)}" th:text="#{${key}}">
         </span>
-    </dd>
-    <dd class="govuk-summary-list__value" th:unless="${row.calculated instanceof T(java.lang.Boolean)}">
-        <span th:text="${row.calculated}">
-        </span>
+        <span th:unless="${row.calculated instanceof T(java.lang.Boolean)}" th:text="${row.calculated}"></span>
     </dd>
 
-    <dd class="govuk-summary-list__value" th:if="${row.submitted != null && row.calculated instanceof T(java.lang.Boolean)}">
-         <span th:with="key=${@ThymeleafUtils.displayValueForBoolean(row.submitted)}" th:text="#{${key}}">
+    <dd class="govuk-summary-list__value">
+        <span th:if="${row.submitted instanceof T(java.lang.Boolean)}"
+              th:with="key=${@ThymeleafUtils.displayValueForBoolean(row.submitted)}" th:text="#{${key}}">
         </span>
-    </dd>
-    <dd class="govuk-summary-list__value" th:unless="${row.submitted instanceof T(java.lang.Boolean)}">
-        <span th:text="${row.submitted}">
-        </span>
+        <span th:unless="${row.submitted instanceof T(java.lang.Boolean)}"  th:text="${row.submitted}"></span>
     </dd>
 </div>
 </body>
