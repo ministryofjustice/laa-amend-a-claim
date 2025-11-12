@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidMonetaryValue;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,5 +14,5 @@ import java.math.BigDecimal;
 public class MonetaryValueForm {
 
     private String value;
-    private String prefix;
+    private String cost;
 }

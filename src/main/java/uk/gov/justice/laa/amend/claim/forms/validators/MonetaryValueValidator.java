@@ -21,7 +21,7 @@ public class MonetaryValueValidator extends Validator implements ConstraintValid
     public boolean isValid(MonetaryValueForm form, ConstraintValidatorContext context) {
         context.disableDefaultConstraintViolation();
 
-        String prefix = form.getPrefix();
+        String prefix = form.getCost();
 
         if (isBlank(form.getValue())) {
             addViolation(context, String.format("{%s.error.required}", prefix));

@@ -4,7 +4,6 @@ import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.Set;
 
 public class MonetaryValueFormTest extends FormTest {
@@ -15,7 +14,7 @@ public class MonetaryValueFormTest extends FormTest {
     void testNullValue() {
         MonetaryValueForm form = new MonetaryValueForm();
         form.setValue(null);
-        form.setPrefix(prefix);
+        form.setCost(prefix);
 
         Set<ConstraintViolation<MonetaryValueForm>> violations = validator.validate(form);
         ConstraintViolation<MonetaryValueForm> violation = getViolation(violations, "value");
@@ -27,7 +26,7 @@ public class MonetaryValueFormTest extends FormTest {
     void testEmptyValue() {
         MonetaryValueForm form = new MonetaryValueForm();
         form.setValue("");
-        form.setPrefix(prefix);
+        form.setCost(prefix);
 
         Set<ConstraintViolation<MonetaryValueForm>> violations = validator.validate(form);
         ConstraintViolation<MonetaryValueForm> violation = getViolation(violations, "value");
@@ -40,7 +39,7 @@ public class MonetaryValueFormTest extends FormTest {
     void testBlankValue() {
         MonetaryValueForm form = new MonetaryValueForm();
         form.setValue(" ");
-        form.setPrefix(prefix);
+        form.setCost(prefix);
 
         Set<ConstraintViolation<MonetaryValueForm>> violations = validator.validate(form);
         ConstraintViolation<MonetaryValueForm> violation = getViolation(violations, "value");
@@ -53,7 +52,7 @@ public class MonetaryValueFormTest extends FormTest {
     void testValueLessThanMin() {
         MonetaryValueForm form = new MonetaryValueForm();
         form.setValue("-0.01");
-        form.setPrefix(prefix);
+        form.setCost(prefix);
 
         Set<ConstraintViolation<MonetaryValueForm>> violations = validator.validate(form);
         ConstraintViolation<MonetaryValueForm> violation = getViolation(violations, "value");
@@ -68,7 +67,7 @@ public class MonetaryValueFormTest extends FormTest {
 
         MonetaryValueForm form = new MonetaryValueForm();
         form.setValue(value);
-        form.setPrefix(prefix);
+        form.setCost(prefix);
 
         Set<ConstraintViolation<MonetaryValueForm>> violations = validator.validate(form);
         Assertions.assertTrue(violations.isEmpty());
@@ -80,7 +79,7 @@ public class MonetaryValueFormTest extends FormTest {
     void testValueEqualToMax() {
         MonetaryValueForm form = new MonetaryValueForm();
         form.setValue("1000000.00");
-        form.setPrefix(prefix);
+        form.setCost(prefix);
 
         Set<ConstraintViolation<MonetaryValueForm>> violations = validator.validate(form);
         ConstraintViolation<MonetaryValueForm> violation = getViolation(violations, "value");
@@ -93,7 +92,7 @@ public class MonetaryValueFormTest extends FormTest {
     void testValueMoreThanMax() {
         MonetaryValueForm form = new MonetaryValueForm();
         form.setValue("1000000.01");
-        form.setPrefix(prefix);
+        form.setCost(prefix);
 
         Set<ConstraintViolation<MonetaryValueForm>> violations = validator.validate(form);
         ConstraintViolation<MonetaryValueForm> violation = getViolation(violations, "value");
@@ -106,7 +105,7 @@ public class MonetaryValueFormTest extends FormTest {
     void testValueWithInvalidCharacters() {
         MonetaryValueForm form = new MonetaryValueForm();
         form.setValue("!");
-        form.setPrefix(prefix);
+        form.setCost(prefix);
 
         Set<ConstraintViolation<MonetaryValueForm>> violations = validator.validate(form);
         ConstraintViolation<MonetaryValueForm> violation = getViolation(violations, "value");
@@ -119,7 +118,7 @@ public class MonetaryValueFormTest extends FormTest {
     void testValueWithMoreThan2DecimalPlaces() {
         MonetaryValueForm form = new MonetaryValueForm();
         form.setValue("1.234");
-        form.setPrefix(prefix);
+        form.setCost(prefix);
 
         Set<ConstraintViolation<MonetaryValueForm>> violations = validator.validate(form);
         ConstraintViolation<MonetaryValueForm> violation = getViolation(violations, "value");

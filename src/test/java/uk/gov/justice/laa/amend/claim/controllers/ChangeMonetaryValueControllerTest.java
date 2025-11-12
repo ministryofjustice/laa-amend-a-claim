@@ -113,7 +113,8 @@ class ChangeMonetaryValueControllerTest {
                 .with(csrf())
                 .param("value", "-1"))
             .andExpect(status().isBadRequest())
-            .andExpect(view().name("change-monetary-value"));
+            .andExpect(view().name("change-monetary-value"))
+            .andExpect(content().string(containsString("must not be negative")));
     }
 
     @Test
