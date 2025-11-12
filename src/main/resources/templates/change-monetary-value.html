@@ -10,46 +10,52 @@
     )}">
         <body>
             <main class="govuk-main-wrapper" id="main-content">
-                <form th:action="@{${action}}" th:object="${form}" method="post">
+                <div class="govuk-width-container">
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-two-thirds">
+                            <form th:action="@{${action}}" th:object="${form}" method="post">
 
-                    <input type="hidden" name="cost" th:value="${prefix}">
+                                <input type="hidden" name="cost" th:value="${prefix}">
 
-                    <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toMonetaryFormValueErrors(#fields.detailedErrors())})}"></th:block>
+                                <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toMonetaryFormValueErrors(#fields.detailedErrors())})}"></th:block>
 
-                    <div class="govuk-form-group">
-                        <h1 class="govuk-label-wrapper">
-                            <label th:with="heading=${#strings.concat(prefix, '.heading')}" class="govuk-label govuk-label--l" for="value" th:text="#{${heading}}"></label>
-                        </h1>
+                                <div class="govuk-form-group">
+                                    <h1 class="govuk-label-wrapper">
+                                        <label th:with="heading=${#strings.concat(prefix, '.heading')}" class="govuk-label govuk-label--xl" for="value" th:text="#{${heading}}"></label>
+                                    </h1>
 
-                        <th:block th:if="${#messages.msgOrNull(prefix + '.hint') != null}">
-                            <div th:with="hint=${#strings.concat(prefix, '.hint')}" id="value-hint" class="govuk-hint" th:text="#{${hint}}"></div>
-                        </th:block>
+                                    <th:block th:if="${#messages.msgOrNull(prefix + '.hint') != null}">
+                                        <div th:with="hint=${#strings.concat(prefix, '.hint')}" id="value-hint" class="govuk-hint" th:text="#{${hint}}"></div>
+                                    </th:block>
 
-                        <p th:if="${#fields.hasErrors('value')}" class="govuk-error-message">
-                            <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
-                            <span th:errors="*{value}"></span>
-                        </p>
+                                    <p th:if="${#fields.hasErrors('value')}" class="govuk-error-message">
+                                        <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                                        <span th:errors="*{value}"></span>
+                                    </p>
 
-                        <div class="govuk-input__wrapper">
-                            <div class="govuk-input__prefix" aria-hidden="true">£</div>
+                                    <div class="govuk-input__wrapper">
+                                        <div class="govuk-input__prefix" aria-hidden="true">£</div>
 
-                            <input class="govuk-input govuk-input--width-5"
-                                   th:classappend="${#fields.hasErrors('value') ? 'govuk-input--error' : ''}"
-                                   id="value"
-                                   name="value"
-                                   type="text"
-                                   spellcheck="false"
-                                   th:field="*{value}">
+                                        <input class="govuk-input govuk-input--width-5"
+                                               th:classappend="${#fields.hasErrors('value') ? 'govuk-input--error' : ''}"
+                                               id="value"
+                                               name="value"
+                                               type="text"
+                                               spellcheck="false"
+                                               th:field="*{value}">
+                                    </div>
+                                </div>
+
+                                <div class="govuk-button-group">
+                                    <button type="submit" class="govuk-button" data-module="govuk-button" th:text="#{service.saveChanges}"></button>
+
+                                    <!-- TODO - Point to 'review and amend' page -->
+                                    <a th:href="@{/}" th:text="#{service.cancel}" role="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"></a>
+                                </div>
+                            </form>
                         </div>
                     </div>
-
-                    <div class="govuk-button-group">
-                        <button type="submit" class="govuk-button" data-module="govuk-button" th:text="#{service.saveChanges}"></button>
-
-                        <!-- TODO - Point to 'review and amend' page -->
-                        <a th:href="@{/}" th:text="#{service.cancel}" role="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"></a>
-                    </div>
-                </form>
+                </div>
             </main>
         </body>
     </html>
