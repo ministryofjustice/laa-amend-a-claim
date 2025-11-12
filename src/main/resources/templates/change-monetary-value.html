@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<th:block th:with="title=${#strings.concat(prefix, '.title')}">
+<th:block th:with="prefix=${cost.prefix}, title=${#strings.concat(prefix, '.title')}">
     <html lang="en"
         xmlns:th="http://www.thymeleaf.org"
         th:replace="~{layout :: layout(
@@ -15,7 +15,7 @@
                         <div class="govuk-grid-column-two-thirds">
                             <form th:action="@{${action}}" th:object="${form}" method="post">
 
-                                <input type="hidden" name="cost" th:value="${prefix}">
+                                <input type="hidden" name="cost" th:value="${cost}">
 
                                 <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toMonetaryFormValueErrors(#fields.detailedErrors())})}"></th:block>
 

@@ -7,13 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
 import uk.gov.justice.laa.amend.claim.models.Assessment;
+import uk.gov.justice.laa.amend.claim.models.Cost;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -27,22 +24,13 @@ import java.util.function.Function;
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/")
 public class ChangeMonetaryValueController {
 
-    private static final String PROFIT_COSTS = "profit-costs";
-    private static final String DISBURSEMENTS = "disbursements";
-    private static final String DISBURSEMENTS_VAT = "disbursements-vat";
-    private static final String COUNSEL_COSTS = "counsel-costs";
-    private static final String DETENTION_TRAVEL_AND_WAITING_COSTS = "detention-travel-and-waiting-costs";
-    private static final String JR_FORM_FILLING_COSTS = "jr-form-filling-costs";
-    private static final String TRAVEL_COSTS = "travel-costs";
-    private static final String WAITING_COSTS = "waiting-costs";
-
     @GetMapping("{cost}")
     public String getMonetaryValue(
         HttpSession session,
         Model model,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId,
-        @PathVariable(value = "cost") String cost,
+        @PathVariable(value = "cost") Cost cost,
         HttpServletResponse response
     ) throws IOException {
         Function<Assessment, BigDecimal> getter = GETTERS.get(cost);
@@ -59,9 +47,9 @@ public class ChangeMonetaryValueController {
             form.setValue(setScale(value).toString());
         }
 
-        model.addAttribute("prefix", cost);
+        model.addAttribute("cost", cost);
         model.addAttribute("form", form);
-        String action = String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost);
+        String action = String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
         model.addAttribute("action", action);
 
         return "change-monetary-value";
@@ -73,7 +61,7 @@ public class ChangeMonetaryValueController {
         Model model,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId,
-        @PathVariable(value = "cost") String cost,
+        @PathVariable(value = "cost") Cost cost,
         HttpServletResponse response,
         @Valid @ModelAttribute("form") MonetaryValueForm form,
         BindingResult bindingResult
@@ -85,7 +73,7 @@ public class ChangeMonetaryValueController {
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("prefix", cost);
+            model.addAttribute("cost", cost);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "change-monetary-value";
         }
@@ -101,26 +89,26 @@ public class ChangeMonetaryValueController {
         return "redirect:" + redirectUrl;
     }
 
-    private static final Map<String, Function<Assessment, BigDecimal>> GETTERS = Map.of(
-        PROFIT_COSTS, Assessment::getNetProfitCostsAmount,
-        DISBURSEMENTS, Assessment::getDisbursementAmount,
-        DISBURSEMENTS_VAT, Assessment::getDisbursementVatAmount,
-        COUNSEL_COSTS, Assessment::getNetCostOfCounselAmount,
-        DETENTION_TRAVEL_AND_WAITING_COSTS, Assessment::getTravelAndWaitingCostsAmount,
-        JR_FORM_FILLING_COSTS, Assessment::getJrFormFillingAmount,
-        TRAVEL_COSTS, Assessment::getNetTravelCostsAmount,
-        WAITING_COSTS, Assessment::getNetWaitingCostsAmount
+    private static final Map<Cost, Function<Assessment, BigDecimal>> GETTERS = Map.of(
+        Cost.PROFIT_COSTS, Assessment::getNetProfitCostsAmount,
+        Cost.DISBURSEMENTS, Assessment::getDisbursementAmount,
+        Cost.DISBURSEMENTS_VAT, Assessment::getDisbursementVatAmount,
+        Cost.COUNSEL_COSTS, Assessment::getNetCostOfCounselAmount,
+        Cost.DETENTION_TRAVEL_AND_WAITING_COSTS, Assessment::getTravelAndWaitingCostsAmount,
+        Cost.JR_FORM_FILLING_COSTS, Assessment::getJrFormFillingAmount,
+        Cost.TRAVEL_COSTS, Assessment::getNetTravelCostsAmount,
+        Cost.WAITING_COSTS, Assessment::getNetWaitingCostsAmount
     );
 
-    private static final Map<String, BiConsumer<Assessment, BigDecimal>> SETTERS = Map.of(
-        PROFIT_COSTS, Assessment::setNetProfitCostsAmount,
-        DISBURSEMENTS, Assessment::setDisbursementAmount,
-        DISBURSEMENTS_VAT, Assessment::setDisbursementVatAmount,
-        COUNSEL_COSTS, Assessment::setNetCostOfCounselAmount,
-        DETENTION_TRAVEL_AND_WAITING_COSTS, Assessment::setTravelAndWaitingCostsAmount,
-        JR_FORM_FILLING_COSTS, Assessment::setJrFormFillingAmount,
-        TRAVEL_COSTS, Assessment::setNetTravelCostsAmount,
-        WAITING_COSTS, Assessment::setNetWaitingCostsAmount
+    private static final Map<Cost, BiConsumer<Assessment, BigDecimal>> SETTERS = Map.of(
+        Cost.PROFIT_COSTS, Assessment::setNetProfitCostsAmount,
+        Cost.DISBURSEMENTS, Assessment::setDisbursementAmount,
+        Cost.DISBURSEMENTS_VAT, Assessment::setDisbursementVatAmount,
+        Cost.COUNSEL_COSTS, Assessment::setNetCostOfCounselAmount,
+        Cost.DETENTION_TRAVEL_AND_WAITING_COSTS, Assessment::setTravelAndWaitingCostsAmount,
+        Cost.JR_FORM_FILLING_COSTS, Assessment::setJrFormFillingAmount,
+        Cost.TRAVEL_COSTS, Assessment::setNetTravelCostsAmount,
+        Cost.WAITING_COSTS, Assessment::setNetWaitingCostsAmount
     );
 
     private BigDecimal setScale(BigDecimal value) {

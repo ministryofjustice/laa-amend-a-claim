@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidMonetaryValue;
+import uk.gov.justice.laa.amend.claim.models.Cost;
 
 @Getter
 @Setter
@@ -14,5 +15,5 @@ import uk.gov.justice.laa.amend.claim.forms.annotations.ValidMonetaryValue;
 public class MonetaryValueForm {
 
     private String value;
-    private String cost;
+    private Cost cost;
 }
