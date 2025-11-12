@@ -33,7 +33,7 @@ public class AssessmentOutcomeController {
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
 
         form.setAssessmentOutcome((String) session.getAttribute("assessmentOutcome"));
-        form.setLiabilityForVAT((String) session.getAttribute("liabilityForVAT"));
+        form.setLiabilityForVat((String) session.getAttribute("liabilityForVat"));
 
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
         Claim claim = claimResultMapper.mapToClaim(claimResponse);
@@ -44,10 +44,10 @@ public class AssessmentOutcomeController {
         model.addAttribute("assessmentOutcomeForm", form);
 
         String assessmentOutcome = (String) session.getAttribute("assessmentOutcome");
-        String liabilityForVAT = (String) session.getAttribute("liabilityForVAT");
+        String liabilityForVat = (String) session.getAttribute("liabilityForVat");
 
         model.addAttribute("assessmentOutcome", assessmentOutcome);
-        model.addAttribute("liabilityForVAT", liabilityForVAT);
+        model.addAttribute("liabilityForVat", liabilityForVat);
 
         return "assessment-outcome";
     }
@@ -69,7 +69,7 @@ public class AssessmentOutcomeController {
         }
 
         session.setAttribute("assessmentOutcome", assessmentOutcomeForm.getAssessmentOutcome());
-        session.setAttribute("liabilityForVAT", assessmentOutcomeForm.getLiabilityForVAT());
+        session.setAttribute("liabilityForVat", assessmentOutcomeForm.getLiabilityForVat());
 
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claimId", claimId);

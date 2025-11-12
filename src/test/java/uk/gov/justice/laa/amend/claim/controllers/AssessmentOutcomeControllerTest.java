@@ -53,7 +53,7 @@ public class AssessmentOutcomeControllerTest {
                 .andExpect(view().name("assessment-outcome"));
 
         Assertions.assertNull(session.getAttribute("assessmentOutcome"));
-        Assertions.assertNull(session.getAttribute("liabilityForVAT"));
+        Assertions.assertNull(session.getAttribute("liabilityForVat"));
     }
 
 }

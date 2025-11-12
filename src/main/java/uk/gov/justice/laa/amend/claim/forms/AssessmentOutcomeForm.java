@@ -15,6 +15,6 @@ public class AssessmentOutcomeForm {
     private String assessmentOutcome;
 
     @NotBlank(message = LIABILITY_FOR_VAT_REQUIRED_ERROR)
-    private String liabilityForVAT;
+    private String liabilityForVat;
 
 }
