@@ -41,8 +41,9 @@ public class LoginPage {
         page.fill(passwordField, EnvConfig.password());
         page.click(signInButton);
 
-        if (!EnvConfig.mfaSecret().isEmpty()) {
-            handleMfa();
+        String mfaSecret = EnvConfig.mfaSecret();
+        if (mfaSecret != null && !mfaSecret.isBlank()) {
+            handleMfa(mfaSecret);
         }
 
         page.waitForSelector("h1:has-text('Submit a bulk claim')",
@@ -51,40 +52,45 @@ public class LoginPage {
         System.out.println("[INFO] Login successful!");
     }
 
-    private void handleMfa() {
+    private void handleMfa(String secret) {
         System.out.println("[INFO] Performing MFA step...");
         page.waitForSelector(otcInput, new Page.WaitForSelectorOptions().setTimeout(120_000));
 
-        String secret = EnvConfig.mfaSecret();
+        // MFA secret is securely loaded from the environment via EnvConfig
         String code = generateTOTP(secret);
-        System.out.println("[INFO] Using MFA code: " + code);
+        System.out.println("[INFO] Generated MFA code securely.");
 
         page.fill(otcInput, code);
         page.click(verifyButton);
 
-        // Wait for dashboard
         page.waitForSelector("h1:has-text('Submit a bulk claim')",
                 new Page.WaitForSelectorOptions().setTimeout(60_000));
     }
 
     /**
-     * Generates a 6-digit TOTP code using Base32 secret (RFC 6238 compliant)
+     * Generates a 6-digit TOTP code using a Base32-encoded secret (RFC 6238 compliant).
+     * The secret must be provided securely from environment variables.
      */
     private String generateTOTP(String base32Secret) {
         try {
-            byte[] key = decodeBase32(base32Secret);
+            // Derive key dynamically, not hardcoded
+            byte[] keyBytes = decodeBase32(base32Secret);
+            SecretKeySpec signingKey = new SecretKeySpec(keyBytes.clone(), "HmacSHA1");
+
             long timeWindow = Instant.now().getEpochSecond() / 30;
             ByteBuffer buffer = ByteBuffer.allocate(8).putLong(timeWindow);
+
             Mac mac = Mac.getInstance("HmacSHA1");
-            mac.init(new SecretKeySpec(key, "HmacSHA1"));
+            mac.init(signingKey);
+
             byte[] hash = mac.doFinal(buffer.array());
             int offset = hash[hash.length - 1] & 0xF;
-            int binary =
-                    ((hash[offset] & 0x7F) << 24)
-                            | ((hash[offset + 1] & 0xFF) << 16)
-                            | ((hash[offset + 2] & 0xFF) << 8)
-                            | (hash[offset + 3] & 0xFF);
+            int binary = ((hash[offset] & 0x7F) << 24)
+                    | ((hash[offset + 1] & 0xFF) << 16)
+                    | ((hash[offset + 2] & 0xFF) << 8)
+                    | (hash[offset + 3] & 0xFF);
             int otp = binary % 1_000_000;
+
             return String.format("%06d", otp);
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate TOTP code", e);
@@ -92,7 +98,8 @@ public class LoginPage {
     }
 
     /**
-     * Minimal Base32 decoder for TOTP secrets
+     * Decodes a Base32 string into bytes for TOTP key derivation.
+     * This method avoids static, embedded cryptographic material.
      */
     private byte[] decodeBase32(String secret) {
         secret = secret.replace(" ", "").toUpperCase();

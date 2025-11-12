@@ -13,12 +13,13 @@ java {
 
 sourceSets {
     main {
-        java { srcDirs = ['main/java'] }
-        resources { srcDirs = ['main/resources'] }
+        java.srcDir 'main/java'
+        resources.srcDir 'main/resources'
     }
     test {
-        java { srcDirs = ['test/java'] }
-        resources { srcDirs = ['test/resources'] }
+        java.srcDir 'test/java'
+        resources.srcDir 'test/resources'
+        output.resourcesDir = "build/resources/test"
     }
 }
 
@@ -30,31 +31,51 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
+
     testImplementation 'io.rest-assured:rest-assured:5.5.0'
 
+    // Allure + JUnit 5
     testImplementation 'io.qameta.allure:allure-junit5:2.25.0'
-    testImplementation 'io.qameta.allure:allure-commandline:2.25.0'
 }
 
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-        exceptionFormat "full"
-    }
+
+    // Ensure test files + Allure always re-run
+    outputs.upToDateWhen { false }
+
+    // Allure auto-activation
+    systemProperty "junit.jupiter.extensions.autodetection.enabled", "true"
+    systemProperty "junit.platform.listeners.autodetection.enabled", "true"
     systemProperty "allure.results.directory", "$buildDir/allure-results"
-    systemProperty "browser", findProperty("browser") ?: System.getenv("BROWSER") ?: "chromium"
-    systemProperty "headless", findProperty("headless") ?: System.getenv("HEADLESS") ?: "true"
-    systemProperty "baseUrl", findProperty("baseUrl") ?: System.getenv("UI_BASE_URL") ?: ""
-    doFirst { delete fileTree("$buildDir/allure-results") }
-    jvmArgs = jvmArgs.findAll { arg -> !(arg?.startsWith("-javaagent:") ?: false) }
+
+    // Playwright settings
+    systemProperty "browser", System.getenv("BROWSER") ?: "chromium"
+    systemProperty "headless", System.getenv("HEADLESS") ?: "true"
+    systemProperty "baseUrl", System.getenv("UI_BASE_URL") ?: ""
+
+    // Enable readable test output in CI
+    testLogging {
+        events "passed", "failed", "skipped"
+        exceptionFormat "full"
+        showStandardStreams = true
+    }
+
+    doFirst {
+        delete fileTree("$buildDir/allure-results")
+    }
 }
 
 tasks.register('allureReport', Exec) {
     dependsOn test
-    commandLine 'allure', 'generate', "$buildDir/allure-results", '-o', "$buildDir/allure-report", '--clean'
+    commandLine 'allure',
+        'generate',
+        "$buildDir/allure-results",
+        '-o', "$buildDir/allure-report",
+        '--clean'
 }
 
 tasks.register('allureServe', Exec) {
-    commandLine 'allure', 'serve', "$buildDir/allure-results", '--port', '9090'
+    dependsOn test
+    commandLine 'allure', 'serve', "$buildDir/allure-results"
 }
