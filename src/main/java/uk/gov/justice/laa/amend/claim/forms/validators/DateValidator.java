@@ -12,7 +12,7 @@ import java.time.YearMonth;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-public class DateValidator implements ConstraintValidator<ValidSubmissionDate, SearchForm> {
+public class DateValidator extends Validator implements ConstraintValidator<ValidSubmissionDate, SearchForm> {
 
     @Override
     public boolean isValid(SearchForm form, ConstraintValidatorContext context) {
@@ -88,12 +88,6 @@ public class DateValidator implements ConstraintValidator<ValidSubmissionDate, S
         } catch (NumberFormatException e) {
             return null;
         }
-    }
-
-    private void addViolation(ConstraintValidatorContext context, String fieldName, String message) {
-        context.buildConstraintViolationWithTemplate(message)
-            .addPropertyNode(fieldName)
-            .addConstraintViolation();
     }
 
     private void addViolations(ConstraintValidatorContext context) {

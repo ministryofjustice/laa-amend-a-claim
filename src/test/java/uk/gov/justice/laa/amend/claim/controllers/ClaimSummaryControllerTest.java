@@ -11,6 +11,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.shaded.org.checkerframework.checker.units.qual.C;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
@@ -45,11 +46,12 @@ public class ClaimSummaryControllerTest {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
 
+        ClaimResponse claimResponse = new ClaimResponse();
         Claim claim = new Claim();
 
         MockHttpSession session = new MockHttpSession();
 
-        when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
+        when(claimService.getClaim(anyString(), anyString())).thenReturn(claimResponse);
         when(claimResultMapper.mapToClaim(any())).thenReturn(claim);
 
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
@@ -59,7 +61,7 @@ public class ClaimSummaryControllerTest {
             .andExpect(view().name("claim-summary"))
             .andExpect(model().attributeExists("claim"));
 
-        Assertions.assertEquals(claim, session.getAttribute(claimId));
+        Assertions.assertEquals(claimResponse, session.getAttribute(claimId));
     }
 
 }
