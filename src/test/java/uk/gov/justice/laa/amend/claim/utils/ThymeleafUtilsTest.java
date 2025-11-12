@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 public class ThymeleafUtilsTest {
 
     @Nested
-    class SortSearchErrorsTests {
+    class toSearchFormErrorsTests {
         @Test
         void sortErrorsByFieldOrder() {
             List<DetailedError> errors = List.of(
@@ -51,7 +51,7 @@ public class ThymeleafUtilsTest {
 
             ThymeleafUtils sut = new ThymeleafUtils();
 
-            List<SearchFormError> result = sut.sortSearchErrors(errors);
+            List<SearchFormError> result = sut.toSearchFormErrors(errors);
 
             List<SearchFormError> expectedResult = List.of(
                 new SearchFormError("providerAccountNumber", "Provider account number error"),
@@ -83,7 +83,7 @@ public class ThymeleafUtilsTest {
 
             ThymeleafUtils sut = new ThymeleafUtils();
 
-            List<SearchFormError> result = sut.sortSearchErrors(errors);
+            List<SearchFormError> result = sut.toSearchFormErrors(errors);
 
             List<SearchFormError> expectedResult = List.of(
                 new SearchFormError("submissionDateMonth", "The submission date must be a real date")

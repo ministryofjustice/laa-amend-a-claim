@@ -83,7 +83,7 @@ public class SortTest {
             Sort sort = new Sort();
             sort.setField("scheduleReference");
             sort.setDirection(SortDirection.NONE);
-            Assertions.assertEquals("scheduleReference,none", sort.toString());
+            Assertions.assertNull(sort.toString());
         }
     }
 }

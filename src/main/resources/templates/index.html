@@ -11,7 +11,7 @@
         <main class="govuk-main-wrapper" id="main-content">
             <form th:action="@{/}" th:object="${form}" method="post">
 
-                <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.sortSearchErrors(#fields.detailedErrors())})}"></th:block>
+                <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toSearchFormErrors(#fields.detailedErrors())})}"></th:block>
 
                 <fieldset class="govuk-fieldset" aria-describedby="search-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">

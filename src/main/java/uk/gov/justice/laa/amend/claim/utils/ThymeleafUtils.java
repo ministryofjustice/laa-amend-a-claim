@@ -2,16 +2,21 @@ package uk.gov.justice.laa.amend.claim.utils;
 
 import org.thymeleaf.spring6.util.DetailedError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessmentOutcomeFormError;
+import uk.gov.justice.laa.amend.claim.forms.errors.MonetaryValueFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_DATE_FORMAT;
+
 public class ThymeleafUtils {
 
-    public List<SearchFormError> sortSearchErrors(List<DetailedError> errors) {
+    public List<SearchFormError> toSearchFormErrors(List<DetailedError> errors) {
         return errors
             .stream()
             .map(SearchFormError::new)
@@ -45,5 +50,19 @@ public class ThymeleafUtils {
                                 map -> map.values().stream().toList()
                         )
                 );
+      
+    public String displayValueForBoolean(Boolean value) {
+        return (value != null && value) ? "index.results.escaped.yes" : "index.results.escaped.no";
+    }
+
+    public String displayDateValue(LocalDate localDate) {
+        return localDate != null ? localDate.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
+    }
+
+    public List<MonetaryValueFormError> toMonetaryFormValueErrors(List<DetailedError> errors) {
+        return errors
+            .stream()
+            .map(MonetaryValueFormError::new)
+            .toList();
     }
 }
