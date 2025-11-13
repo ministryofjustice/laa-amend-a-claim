@@ -36,6 +36,8 @@ public class ClaimSummaryController {
         //session.setAttribute(String.format("%s:assessment", claimId), new Assessment(claimResponse));
         // ---
 
+        model.addAttribute("claimId", claimId);
+        model.addAttribute("submissionId", submissionId);
         model.addAttribute("claim", claimSummary);
         model.addAttribute("isCrimeClaim", isCrimeClaim);
 
