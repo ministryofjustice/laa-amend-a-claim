@@ -58,7 +58,10 @@ class ChangeMonetaryValueControllerTest {
     @ParameterizedTest
     @MethodSource("validCosts")
     void testGetReturnsView(Cost cost) throws Exception {
-        mockMvc.perform(get(buildPath(cost.getPath())))
+        ClaimSummary claim = createClaimSummaryFor(cost);
+        session.setAttribute(claimId, claim);
+
+        mockMvc.perform(get(buildPath(cost.getPath())).session(session))
             .andExpect(status().isOk())
             .andExpect(view().name("change-monetary-value"))
             .andExpect(model().attribute("cost", equalTo(cost)))
@@ -115,8 +118,36 @@ class ChangeMonetaryValueControllerTest {
     }
 
     @Test
-    void testPageNotFound() throws Exception {
+    void testGetReturnsNotFoundWhenInvalidCost() throws Exception {
+        mockMvc.perform(get(buildPath("foo"))
+                .session(session))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testPostReturnsNotFoundWhenInvalidCost() throws Exception {
         mockMvc.perform(post(buildPath("foo"))
+                .session(session)
+                .with(csrf())
+                .param("value", "1"))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testGetReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
+        CivilClaimSummary claim = new CivilClaimSummary();
+        session.setAttribute(claimId, claim);
+
+        mockMvc.perform(get(buildPath("travel-costs")).session(session))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testPostReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
+        CivilClaimSummary claim = new CivilClaimSummary();
+        session.setAttribute(claimId, claim);
+
+        mockMvc.perform(post(buildPath("travel-costs"))
                 .session(session)
                 .with(csrf())
                 .param("value", "1"))
@@ -133,7 +164,7 @@ class ChangeMonetaryValueControllerTest {
         } else {
             claim = new ClaimSummary();
         }
-        cost.getAccessor().set(claim, new ClaimFieldRow("", null, null, BigDecimal.ZERO));
+        cost.getAccessor().set(claim, new ClaimFieldRow("", null, null, null));
         return claim;
     }
 

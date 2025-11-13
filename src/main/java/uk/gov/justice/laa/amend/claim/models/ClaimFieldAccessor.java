@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
 
@@ -11,11 +12,12 @@ public record ClaimFieldAccessor<T extends ClaimSummary>(
     Function<T, ClaimFieldRow> getter,
     BiConsumer<T, ClaimFieldRow> setter
 ) {
-    public ClaimFieldRow get(ClaimSummary summary) {
+    public ClaimFieldRow get(ClaimSummary summary) throws ClaimMismatchException {
         if (type.isInstance(summary)) {
             return getter.apply(type.cast(summary));
+        } else {
+            throw new ClaimMismatchException(String.format("Claim summary object is not of type %s", type.getName()));
         }
-        return null;
     }
 
     public void set(ClaimSummary summary, ClaimFieldRow value) {
