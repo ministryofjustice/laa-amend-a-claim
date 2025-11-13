@@ -47,12 +47,7 @@ public class ChangeMonetaryValueController {
                 form.setValue(setScale(value).toString());
             }
 
-            model.addAttribute("cost", cost);
-            model.addAttribute("form", form);
-            String action = String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
-            model.addAttribute("action", action);
-
-            return "change-monetary-value";
+            return renderView(model, form, cost, submissionId, claimId);
         } catch (ClaimMismatchException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
@@ -75,9 +70,8 @@ public class ChangeMonetaryValueController {
             ClaimSummary claim = (ClaimSummary) session.getAttribute(claimId);
 
             if (bindingResult.hasErrors()) {
-                model.addAttribute("cost", cost);
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return "change-monetary-value";
+                return renderView(model, form, cost, submissionId, claimId);
             }
 
             ClaimFieldRow claimField = cost.getAccessor().get(claim);
@@ -97,6 +91,16 @@ public class ChangeMonetaryValueController {
         }
     }
 
+    private String renderView(Model model, MonetaryValueForm form, Cost cost, String submissionId, String claimId) {
+        model.addAttribute("cost", cost);
+        model.addAttribute("form", form);
+        model.addAttribute("action", getAction(cost, submissionId, claimId));
+        return "change-monetary-value";
+    }
+
+    private String getAction(Cost cost, String submissionId, String claimId) {
+        return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
+    }
 
     private BigDecimal setScale(BigDecimal value) {
         return value.setScale(2, RoundingMode.HALF_UP);
