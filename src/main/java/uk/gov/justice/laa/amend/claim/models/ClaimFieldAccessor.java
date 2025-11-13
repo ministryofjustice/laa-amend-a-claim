@@ -12,9 +12,9 @@ public record ClaimFieldAccessor<T extends ClaimSummary>(
     Function<T, ClaimFieldRow> getter,
     BiConsumer<T, ClaimFieldRow> setter
 ) {
-    public ClaimFieldRow get(ClaimSummary summary) throws ClaimMismatchException {
-        if (type.isInstance(summary)) {
-            return getter.apply(type.cast(summary));
+    public ClaimFieldRow get(ClaimSummary claim) throws ClaimMismatchException {
+        if (type.isInstance(claim)) {
+            return getter.apply(type.cast(claim));
         } else {
             throw new ClaimMismatchException(String.format("Claim summary object is not of type %s", type.getName()));
         }
