@@ -43,11 +43,10 @@ public class AssessmentOutcomeController {
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
         Claim claim = claimResultMapper.mapToClaim(claimResponse);
 
-        session.setAttribute(claimId, claim);
-
         model.addAttribute("claim", claim);
         model.addAttribute("assessmentOutcomeForm", form);
 
+        //TODO: Set this in the claim summary page, taking the appropriate field from the claim response
         String assessmentOutcome = (String) session.getAttribute("assessmentOutcome");
         String liabilityForVat = (String) session.getAttribute("liabilityForVat");
 

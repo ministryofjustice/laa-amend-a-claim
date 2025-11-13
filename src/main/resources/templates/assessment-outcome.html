@@ -31,30 +31,30 @@
                                th:errors="*{assessmentOutcome}"></p>
 
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="assessmentOutcome" name="assessmentOutcome" type="radio" value="reduced-to-fixed-fee-assessed"
+                                <input class="govuk-radios__input" id="assessment-outcome" name="assessmentOutcome" type="radio" value="reduced-to-fixed-fee-assessed"
                                        th:checked="${assessmentOutcome == 'reduced-to-fixed-fee-assessed'}">
-                                <label class="govuk-label govuk-radios__label" for="assessmentOutcome">
+                                <label class="govuk-label govuk-radios__label" for="assessment-outcome">
                                     Reduced to fixed fee (assessed)
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="assessmentOutcome-2" name="assessmentOutcome" type="radio" value="reduced-still-escaped"
+                                <input class="govuk-radios__input" id="assessment-outcome-2" name="assessmentOutcome" type="radio" value="reduced-still-escaped"
                                        th:checked="${assessmentOutcome == 'reduced-still-escaped'}">
-                                <label class="govuk-label govuk-radios__label" for="assessmentOutcome-2">
+                                <label class="govuk-label govuk-radios__label" for="assessment-outcome-2">
                                     Reduced (still escaped)
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="assessmentOutcome-3" name="assessmentOutcome" type="radio" value="nilled"
+                                <input class="govuk-radios__input" id="assessment-outcome-3" name="assessmentOutcome" type="radio" value="nilled"
                                        th:checked="${assessmentOutcome == 'nilled'}">
-                                <label class="govuk-label govuk-radios__label" for="assessmentOutcome-3">
+                                <label class="govuk-label govuk-radios__label" for="assessment-outcome-3">
                                     Nilled
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="assessmentOutcome-4" name="assessmentOutcome" type="radio" value="paid-in-full"
+                                <input class="govuk-radios__input" id="assessment-outcome-4" name="assessmentOutcome" type="radio" value="paid-in-full"
                                        th:checked="${assessmentOutcome == 'paid-in-full'}">
-                                <label class="govuk-label govuk-radios__label" for="assessmentOutcome-4">
+                                <label class="govuk-label govuk-radios__label" for="assessment-outcome-4">
                                     Paid in full
                                 </label>
                             </div>
@@ -78,16 +78,16 @@
                                 <div class="govuk-radios govuk-radios--inline govuk-radios--small" data-module="govuk-radios"
                                      >
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="liabilityForVat" name="liabilityForVat" type="radio" value="yes"
+                                        <input class="govuk-radios__input" id="liability-for-vat" name="liabilityForVat" type="radio" value="yes"
                                                th:checked="${liabilityForVat == 'yes'}">
-                                        <label class="govuk-label govuk-radios__label" for="liabilityForVat">
+                                        <label class="govuk-label govuk-radios__label" for="liability-for-vat">
                                            Yes
                                         </label>
                                     </div>
                                     <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="liabilityForVat-2" name="liabilityForVat" type="radio" value="no"
+                                        <input class="govuk-radios__input" id="liability-for-vat-2" name="liabilityForVat" type="radio" value="no"
                                                th:checked="${liabilityForVat == 'no'}">
-                                        <label class="govuk-label govuk-radios__label" for="liabilityForVat-2">
+                                        <label class="govuk-label govuk-radios__label" for="liability-for-vat-2">
                                             No
                                         </label>
                                     </div>

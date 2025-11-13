@@ -170,13 +170,13 @@
 
                         <div class="govuk-button-group">
                             <a th:href="@{/submissions/{submissionId}/claims/{claimID}/assessment-outcome(submissionId=${submissionId}, claimID=${claimId})}"
-                               class="govuk-button">
-                                Add assessment outcome
+                               th:text="#{claimSummary.assessmentButton}" class="govuk-button">
                             </a>
 
                             <a href="#"
                                onclick="window.history.go(-1); return false;"
-                               role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                               role="button" draggable="false" class="govuk-button govuk-button--secondary"
+                               th:text="#{claimSummary.backToSearch}" data-module="govuk-button">
                                 Back to search
                             </a>
                         </div>

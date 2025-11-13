@@ -60,7 +60,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Claim summary");
+        assertPageHasTitle(doc, "Claim details");
 
         assertPageHasHeading(doc, "Claim details");
         assertPageHasH2(doc, "Summary");
@@ -100,7 +100,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Claim summary");
+        assertPageHasTitle(doc, "Claim details");
 
         assertPageHasHeading(doc, "Claim details");
         assertPageHasH2(doc, "Summary");
@@ -151,7 +151,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Claim summary");
+        assertPageHasTitle(doc, "Claim details");
 
         assertPageHasHeading(doc, "Claim details");
 
@@ -167,7 +167,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Claim summary");
+        assertPageHasTitle(doc, "Claim details");
 
         assertPageHasHeading(doc, "Claim details");
     }
