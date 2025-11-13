@@ -7,20 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
-import uk.gov.justice.laa.amend.claim.models.Assessment;
 import uk.gov.justice.laa.amend.claim.models.Cost;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,18 +27,12 @@ public class ChangeMonetaryValueController {
         Model model,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId,
-        @PathVariable(value = "cost") Cost cost,
-        HttpServletResponse response
-    ) throws IOException {
-        Function<Assessment, BigDecimal> getter = cost.getGetter();
-        if (getter == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
-
+        @PathVariable(value = "cost") Cost cost
+    ) {
         // TODO - if retrieval from session returns null, redirect to session expired?
-        Assessment assessment = (Assessment) session.getAttribute(String.format("%s:assessment", claimId));
-        BigDecimal value = assessment != null ? getter.apply(assessment) : null;
+        ClaimSummary claim = (ClaimSummary) session.getAttribute(claimId);
+        ClaimFieldRow claimField = cost.getAccessor().get(claim);
+        BigDecimal value = claimField != null ? (BigDecimal) claimField.getAmended() : null;
         MonetaryValueForm form = new MonetaryValueForm();
         if (value != null) {
             form.setValue(setScale(value).toString());
@@ -68,12 +56,9 @@ public class ChangeMonetaryValueController {
         HttpServletResponse response,
         @Valid @ModelAttribute("form") MonetaryValueForm form,
         BindingResult bindingResult
-    ) throws IOException {
-        BiConsumer<Assessment, BigDecimal> setter = cost.getSetter();
-        if (setter == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
+    ) {
+        // TODO - if retrieval from session returns null, redirect to session expired?
+        ClaimSummary claim = (ClaimSummary) session.getAttribute(claimId);
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("cost", cost);
@@ -81,16 +66,18 @@ public class ChangeMonetaryValueController {
             return "change-monetary-value";
         }
 
-        // TODO - if retrieval from session returns null, redirect to session expired?
-        Assessment assessment = (Assessment) session.getAttribute(String.format("%s:assessment", claimId));
+        ClaimFieldRow claimField = cost.getAccessor().get(claim);
         BigDecimal value = setScale(new BigDecimal(form.getValue()));
-        setter.accept(assessment, value);
-        session.setAttribute(String.format("%s:assessment", claimId), assessment);
+        if (claimField != null) {
+            claimField.setAmended(value);
+        }
+        session.setAttribute(claimId, claim);
 
         // TODO - Point to 'review and amend' page
         String redirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
         return "redirect:" + redirectUrl;
     }
+
 
     private BigDecimal setScale(BigDecimal value) {
         return value.setScale(2, RoundingMode.HALF_UP);
