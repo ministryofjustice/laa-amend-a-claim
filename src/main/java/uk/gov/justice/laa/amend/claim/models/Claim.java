@@ -19,6 +19,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_DATE_FORMAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PERIOD_FORMAT;
+import static uk.gov.justice.laa.amend.claim.utils.FormUtils.getClientFullName;
 
 @Data
 public class Claim implements Serializable {
@@ -80,15 +81,7 @@ public class Claim implements Serializable {
 
     @JsonIgnore
     public String getClientName() {
-        if (clientForename != null & clientSurname != null) {
-            return String.format("%s %s", clientForename, clientSurname);
-        } else if (clientForename != null) {
-            return clientForename;
-        } else if (clientSurname != null) {
-            return clientSurname;
-        } else {
-            return null;
-        }
+        return getClientFullName(clientForename, clientSurname);
     }
 
     public void parseAndSetSubmissionPeriod(String submissionPeriod) {

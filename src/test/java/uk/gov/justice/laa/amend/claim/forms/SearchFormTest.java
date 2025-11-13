@@ -1,25 +1,13 @@
 package uk.gov.justice.laa.amend.claim.forms;
 
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-public class SearchFormTest {
-
-    private static Validator validator;
-
-    @BeforeAll
-    static void setUpValidator() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
-    }
+public class SearchFormTest extends FormTest {
 
     @Test
     void testMissingProviderAccountNumber() {
@@ -32,10 +20,7 @@ public class SearchFormTest {
         form.setCaseReferenceNumber("");
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
-        ConstraintViolation<SearchForm> violation = violations.stream()
-            .filter(v -> v.getPropertyPath().toString().equals("providerAccountNumber"))
-            .findFirst()
-            .orElse(null);
+        ConstraintViolation<SearchForm> violation = getViolation(violations, "providerAccountNumber");
 
         Assertions.assertNotNull(violation);
         Assertions.assertEquals("{index.providerAccountNumber.error.required}", violation.getMessage());
@@ -52,10 +37,7 @@ public class SearchFormTest {
         form.setCaseReferenceNumber("789");
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
-        ConstraintViolation<SearchForm> violation = violations.stream()
-            .filter(v -> v.getPropertyPath().toString().equals("providerAccountNumber"))
-            .findFirst()
-            .orElse(null);
+        ConstraintViolation<SearchForm> violation = getViolation(violations, "providerAccountNumber");
 
         Assertions.assertNotNull(violation);
         Assertions.assertEquals("{index.providerAccountNumber.error.invalid}", violation.getMessage());
@@ -169,14 +151,5 @@ public class SearchFormTest {
 
             Assertions.assertTrue(form.anyNonEmpty());
         }
-    }
-
-    private ConstraintViolation<SearchForm> getViolation(Set<ConstraintViolation<SearchForm>> violations, String field) {
-        ConstraintViolation<SearchForm> violation = violations.stream()
-            .filter(v -> v.getPropertyPath().toString().equals(field))
-            .findFirst()
-            .orElse(null);
-        Assertions.assertNotNull(violation);
-        return violation;
     }
 }

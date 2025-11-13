@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimValuesTableRow;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -12,8 +13,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.CHANGE_URL_PLACEHOLDER;
 
 /**
  * Service responsible for building table rows for claim review display.
@@ -40,6 +39,9 @@ public class ClaimTableRowService {
             return rows;
         }
 
+        String submissionId = claimResponse.getSubmissionId();
+        String claimId = claimResponse.getId();
+
         FeeCalculationPatch feeCalculation = claimResponse.getFeeCalculationResponse();
         if (feeCalculation == null) {
             log.warn("Fee calculation is null for claim, returning empty table rows");
@@ -63,7 +65,7 @@ public class ClaimTableRowService {
                 .item(getMessage("claimValuesTable.rows.profitCost"))
                 .submittedAmount(claimResponse.getNetProfitCostsAmount())
                 .calculatedAmount(feeCalculation.getNetProfitCostsAmount())
-                .changeUrl(CHANGE_URL_PLACEHOLDER)
+                .changeUrl(getUrl(submissionId, claimId, Cost.PROFIT_COSTS))
                 .build());
 
         // Disbursement (ex VAT)
@@ -71,7 +73,7 @@ public class ClaimTableRowService {
                 .item(getMessage("claimValuesTable.rows.disbursement"))
                 .submittedAmount(claimResponse.getNetDisbursementAmount())
                 .calculatedAmount(feeCalculation.getDisbursementAmount())
-                .changeUrl(CHANGE_URL_PLACEHOLDER)
+                .changeUrl(getUrl(submissionId, claimId, Cost.DISBURSEMENTS))
                 .build());
 
         // Disbursement VAT
@@ -79,7 +81,7 @@ public class ClaimTableRowService {
                 .item(getMessage("claimValuesTable.rows.disbursementVat"))
                 .submittedAmount(claimResponse.getDisbursementsVatAmount())
                 .calculatedAmount(feeCalculation.getDisbursementVatAmount())
-                .changeUrl(CHANGE_URL_PLACEHOLDER)
+                .changeUrl(getUrl(submissionId, claimId, Cost.DISBURSEMENTS_VAT))
                 .build());
 
         // Counsel's costs
@@ -87,7 +89,7 @@ public class ClaimTableRowService {
                 .item(getMessage("claimValuesTable.rows.counselCosts"))
                 .submittedAmount(claimResponse.getNetCounselCostsAmount())
                 .calculatedAmount(feeCalculation.getNetCostOfCounselAmount())
-                .changeUrl(CHANGE_URL_PLACEHOLDER)
+                .changeUrl(getUrl(submissionId, claimId, Cost.COUNSEL_COSTS))
                 .build());
 
         // Detention travel & waiting costs
@@ -95,7 +97,7 @@ public class ClaimTableRowService {
                 .item(getMessage("claimValuesTable.rows.detentionTravelWaiting"))
                 .submittedAmount(claimResponse.getDetentionTravelWaitingCostsAmount())
                 .calculatedAmount(feeCalculation.getDetentionAndWaitingCostsAmount())
-                .changeUrl(CHANGE_URL_PLACEHOLDER)
+                .changeUrl(getUrl(submissionId, claimId, Cost.DETENTION_TRAVEL_AND_WAITING_COSTS))
                 .build());
 
         // JR / form filling
@@ -103,7 +105,7 @@ public class ClaimTableRowService {
                 .item(getMessage("claimValuesTable.rows.jrFormFilling"))
                 .submittedAmount(claimResponse.getJrFormFillingAmount())
                 .calculatedAmount(feeCalculation.getJrFormFillingAmount())
-                .changeUrl(CHANGE_URL_PLACEHOLDER)
+                .changeUrl(getUrl(submissionId, claimId, Cost.JR_FORM_FILLING_COSTS))
                 .build());
 
         // Only add bolt-on rows if bolt-on details exist
@@ -176,5 +178,9 @@ public class ClaimTableRowService {
 
     private String getMessage(String key) {
         return messageSource.getMessage(key, null, locale);
+    }
+
+    private String getUrl(String submissionId, String claimId, Cost cost) {
+        return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
     }
 }
