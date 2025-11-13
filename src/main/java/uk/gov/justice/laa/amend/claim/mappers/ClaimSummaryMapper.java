@@ -106,7 +106,7 @@ public interface ClaimSummaryMapper {
     default ClaimFieldRow mapFixedFee(ClaimResponse claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getFixedFeeAmount() : null;
-        return new ClaimFieldRow(FIXED_FEE, "NA", calculated, null);
+        return new ClaimFieldRow(FIXED_FEE, "NA", calculated, "NA");
     }
 
     default ClaimFieldRow mapNetProfitCost(ClaimResponse claimResponse) {

@@ -7,8 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimSummaryMapper;
-import uk.gov.justice.laa.amend.claim.models.Assessment;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -32,24 +30,12 @@ public class ClaimSummaryController {
 
         ClaimSummary claimSummary = isCrimeClaim ? claimSummaryMapper.mapToCrimeClaimSummary(claimResponse) : claimSummaryMapper.mapToCivilClaimSummary(claimResponse);
         session.setAttribute(claimId, claimSummary);
-        // TODO - this is just placeholder code at the moment, and will likely be moved or removed altogether
-        // ---
-        //session.setAttribute(claimId, claimResponse);
-        //session.setAttribute(String.format("%s:assessment", claimId), new Assessment(claimResponse));
-        // ---
 
         // TODO - when the claim is null/empty we should render an error screen. We can
         //  remove these from the model when those changes are made and amend the tests to reflect it
 
-        Assessment assessment = new Assessment();
-        assessment.setOutcome(OutcomeType.REDUCED);
-
-        session.setAttribute("application", assessment);
-
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
-
-
         model.addAttribute("claim", claimSummary);
         model.addAttribute("isCrimeClaim", isCrimeClaim);
 

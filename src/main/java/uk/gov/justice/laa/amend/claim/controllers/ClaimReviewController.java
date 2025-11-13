@@ -6,18 +6,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import uk.gov.justice.laa.amend.claim.models.Assessment;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimValuesTableRow;
-import uk.gov.justice.laa.amend.claim.service.ClaimService;
-import uk.gov.justice.laa.amend.claim.service.ClaimTableRowService;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import org.springframework.web.bind.annotation.PostMapping;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
 
 @Controller
 @RequiredArgsConstructor
 public class ClaimReviewController {
 
-    private final ClaimService claimService;
-    private final ClaimTableRowService claimTableRowService;
     private final HttpSession session;
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}/review")
@@ -26,19 +21,38 @@ public class ClaimReviewController {
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId
     ) {
-        ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
-        Assessment assessment = (Assessment) session.getAttribute("application");
+        ClaimSummary claimSummary = (ClaimSummary) session.getAttribute(claimId);
 
-        if (assessment == null) {
-            return "redirect:/submissions/" + submissionId + "/claims/" + claimId;
+        if (claimSummary == null) {
+            return String.format("redirect:/submissions/%s/claims/%s", submissionId, claimId);
         }
 
-        model.addAttribute("headers", ClaimValuesTableRow.getHeaders());
-        model.addAttribute("tableRows", claimTableRowService.buildTableRows(claimResponse));
-        model.addAttribute("assessment", assessment);
+        model.addAttribute("claimSummary", claimSummary);
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
+        model.addAttribute("backUrl", String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId));
 
         return "review-and-amend";
+    }
+
+    @PostMapping("/submissions/{submissionId}/claims/{claimId}/review/discard")
+    public String discard(
+        @PathVariable(value = "submissionId") String submissionId,
+        @PathVariable(value = "claimId") String claimId
+    ) {
+        // Clear session data
+        session.removeAttribute(claimId);
+
+        return "redirect:/submissions/" + submissionId + "/claims/" + claimId;
+    }
+
+    @PostMapping("/submissions/{submissionId}/claims/{claimId}/review/submit")
+    public String submit(
+        @PathVariable(value = "submissionId") String submissionId,
+        @PathVariable(value = "claimId") String claimId
+    ) {
+        // TODO: Persist changes to claims data store
+
+        return String.format("redirect:/submissions/%s/claims/%s/confirmation", submissionId, claimId);
     }
 }

@@ -92,7 +92,9 @@
 
                             <div class="govuk-button-group">
                                 <button class="govuk-button" type="submit"> Continue </button>
-                                <button class="govuk-button govuk-button--secondary" onclick="window.history.go(-1); return false;" type="button"> Cancel </button>
+                                <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
+                                   class="govuk-button govuk-button--secondary"
+                                   data-module="govuk-button"> Cancel </a>
                             </div>
                     </form>
 

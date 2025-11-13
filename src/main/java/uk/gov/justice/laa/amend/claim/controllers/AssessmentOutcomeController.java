@@ -16,7 +16,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.forms.AssessmentOutcomeForm;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
 @Controller
@@ -26,6 +29,7 @@ public class AssessmentOutcomeController {
 
     private final ClaimService claimService;
     private final ClaimResultMapper claimResultMapper;
+    private final AssessmentService assessmentService;
 
     @GetMapping("/assessment-outcome")
     public String setAssessmentOutcome(
@@ -37,19 +41,32 @@ public class AssessmentOutcomeController {
 
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
 
-        form.setAssessmentOutcome((String) session.getAttribute("assessmentOutcome"));
-        form.setLiabilityForVat((String) session.getAttribute("liabilityForVat"));
+        // Load values from ClaimSummary if it exists
+        ClaimSummary claimSummary = (ClaimSummary) session.getAttribute(claimId);
+        String assessmentOutcome = null;
+        String liabilityForVat = null;
+
+        if (claimSummary != null) {
+            // Load assessment outcome
+            if (claimSummary.getAssessmentOutcome() != null) {
+                assessmentOutcome = claimSummary.getAssessmentOutcome().getFormValue();
+            }
+
+            // Load VAT liability from vatClaimed
+            if (claimSummary.getVatClaimed() != null && claimSummary.getVatClaimed().getAmended() != null) {
+                Boolean vatAmended = (Boolean) claimSummary.getVatClaimed().getAmended();
+                liabilityForVat = vatAmended ? "yes" : "no";
+            }
+        }
+
+        form.setAssessmentOutcome(assessmentOutcome);
+        form.setLiabilityForVat(liabilityForVat);
 
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
         Claim claim = claimResultMapper.mapToClaim(claimResponse);
 
         model.addAttribute("claim", claim);
         model.addAttribute("assessmentOutcomeForm", form);
-
-        //TODO: Set this in the claim summary page, taking the appropriate field from the claim response
-        String assessmentOutcome = (String) session.getAttribute("assessmentOutcome");
-        String liabilityForVat = (String) session.getAttribute("liabilityForVat");
-
         model.addAttribute("assessmentOutcome", assessmentOutcome);
         model.addAttribute("liabilityForVat", liabilityForVat);
 
@@ -72,8 +89,26 @@ public class AssessmentOutcomeController {
             return "assessment-outcome";
         }
 
-        session.setAttribute("assessmentOutcome", assessmentOutcomeForm.getAssessmentOutcome());
-        session.setAttribute("liabilityForVat", assessmentOutcomeForm.getLiabilityForVat());
+        ClaimSummary claimSummary = (ClaimSummary) session.getAttribute(claimId);
+
+        if (claimSummary != null) {
+            OutcomeType newOutcome = OutcomeType.fromFormValue(assessmentOutcomeForm.getAssessmentOutcome());
+
+            // Apply business logic based on outcome change
+            assessmentService.applyAssessmentOutcome(claimSummary, newOutcome);
+
+            // Set the assessment outcome
+            claimSummary.setAssessmentOutcome(newOutcome);
+
+            // Update VAT liability in vatClaimed ClaimFieldRow
+            if (claimSummary.getVatClaimed() != null) {
+                Boolean vatLiable = "yes".equalsIgnoreCase(assessmentOutcomeForm.getLiabilityForVat());
+                claimSummary.getVatClaimed().setAmended(vatLiable);
+            }
+
+            // Save updated ClaimSummary back to session
+            session.setAttribute(claimId, claimSummary);
+        }
 
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claimId", claimId);
@@ -81,7 +116,6 @@ public class AssessmentOutcomeController {
         redirectAttributes.addFlashAttribute("submissionId", submissionId);
         redirectAttributes.addFlashAttribute("claimId", claimId);
 
-        // TODO: below is where we route to the table view
-        return "redirect:/submissions/{submissionId}/claims/{claimId}/assessment-outcome";
+        return "redirect:/submissions/{submissionId}/claims/{claimId}/review";
     }
 }
