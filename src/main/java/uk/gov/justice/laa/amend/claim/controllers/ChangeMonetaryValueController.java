@@ -12,15 +12,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
-import uk.gov.justice.laa.amend.claim.models.Assessment;
 import uk.gov.justice.laa.amend.claim.models.Cost;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,26 +36,22 @@ public class ChangeMonetaryValueController {
         @PathVariable(value = "cost") Cost cost,
         HttpServletResponse response
     ) throws IOException {
-        Function<Assessment, BigDecimal> getter = cost.getGetter();
-        if (getter == null) {
+        try {
+            // TODO - if retrieval from session returns null, redirect to session expired?
+            ClaimSummary claim = (ClaimSummary) session.getAttribute(claimId);
+            ClaimFieldRow claimField = cost.getAccessor().get(claim);
+            BigDecimal value = claimField != null ? (BigDecimal) claimField.getAmended() : null;
+
+            MonetaryValueForm form = new MonetaryValueForm();
+            if (value != null) {
+                form.setValue(setScale(value).toString());
+            }
+
+            return renderView(model, form, cost, submissionId, claimId);
+        } catch (ClaimMismatchException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
-
-        // TODO - if retrieval from session returns null, redirect to session expired?
-        Assessment assessment = (Assessment) session.getAttribute(String.format("%s:assessment", claimId));
-        BigDecimal value = assessment != null ? getter.apply(assessment) : null;
-        MonetaryValueForm form = new MonetaryValueForm();
-        if (value != null) {
-            form.setValue(setScale(value).toString());
-        }
-
-        model.addAttribute("cost", cost);
-        model.addAttribute("form", form);
-        String action = String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
-        model.addAttribute("action", action);
-
-        return "change-monetary-value";
     }
 
     @PostMapping("{cost}")
@@ -69,27 +65,41 @@ public class ChangeMonetaryValueController {
         @Valid @ModelAttribute("form") MonetaryValueForm form,
         BindingResult bindingResult
     ) throws IOException {
-        BiConsumer<Assessment, BigDecimal> setter = cost.getSetter();
-        if (setter == null) {
+        try {
+            // TODO - if retrieval from session returns null, redirect to session expired?
+            ClaimSummary claim = (ClaimSummary) session.getAttribute(claimId);
+
+            if (bindingResult.hasErrors()) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return renderView(model, form, cost, submissionId, claimId);
+            }
+
+            ClaimFieldRow claimField = cost.getAccessor().get(claim);
+            BigDecimal value = setScale(new BigDecimal(form.getValue()));
+            if (claimField != null) {
+                claimField.setAmended(value);
+                cost.getAccessor().set(claim, claimField);
+            }
+            session.setAttribute(claimId, claim);
+
+            // TODO - Point to 'review and amend' page
+            String redirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+            return "redirect:" + redirectUrl;
+        } catch (ClaimMismatchException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
+    }
 
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("cost", cost);
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return "change-monetary-value";
-        }
+    private String renderView(Model model, MonetaryValueForm form, Cost cost, String submissionId, String claimId) {
+        model.addAttribute("cost", cost);
+        model.addAttribute("form", form);
+        model.addAttribute("action", getAction(cost, submissionId, claimId));
+        return "change-monetary-value";
+    }
 
-        // TODO - if retrieval from session returns null, redirect to session expired?
-        Assessment assessment = (Assessment) session.getAttribute(String.format("%s:assessment", claimId));
-        BigDecimal value = setScale(new BigDecimal(form.getValue()));
-        setter.accept(assessment, value);
-        session.setAttribute(String.format("%s:assessment", claimId), assessment);
-
-        // TODO - Point to 'review and amend' page
-        String redirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
-        return "redirect:" + redirectUrl;
+    private String getAction(Cost cost, String submissionId, String claimId) {
+        return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
     }
 
     private BigDecimal setScale(BigDecimal value) {

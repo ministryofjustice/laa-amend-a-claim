@@ -7,6 +7,7 @@ import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.MultiValueMap;
@@ -29,6 +30,8 @@ public abstract class ViewTestBase {
 
   protected String mapping;
 
+  protected MockHttpSession session = new MockHttpSession();
+
   protected ViewTestBase(String mapping) {
     this.mapping = mapping;
   }
@@ -38,7 +41,7 @@ public abstract class ViewTestBase {
   }
 
   protected Document renderDocument(Map<String, Object> variables) throws Exception {
-    MockHttpServletRequestBuilder requestBuilder = get(mapping);
+    MockHttpServletRequestBuilder requestBuilder = get(mapping).session(session);
 
     for (Map.Entry<String, Object> entry : variables.entrySet()) {
       requestBuilder = requestBuilder.flashAttr(entry.getKey(), entry.getValue());
@@ -65,7 +68,7 @@ public abstract class ViewTestBase {
     }
 
   protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) throws Exception {
-    MockHttpServletRequestBuilder requestBuilder = post(mapping);
+    MockHttpServletRequestBuilder requestBuilder = post(mapping).session(session);
 
     String html = mockMvc.perform(requestBuilder.params(params))
         .andExpect(status().isBadRequest())

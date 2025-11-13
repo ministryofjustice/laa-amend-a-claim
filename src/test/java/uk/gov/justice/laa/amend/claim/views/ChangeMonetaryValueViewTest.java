@@ -10,6 +10,7 @@ import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeMonetaryValueController;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
 import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 
@@ -21,12 +22,16 @@ import java.util.Map;
 @Import(LocalSecurityConfig.class)
 class ChangeMonetaryValueViewTest extends ViewTestBase {
 
+    private String claimId = "claimId";
+
     ChangeMonetaryValueViewTest() {
         super("/submissions/submissionId/claims/claimId/profit-costs");
     }
 
     @Test
     void testPage() throws Exception {
+        ClaimSummary claim = new ClaimSummary();
+        session.setAttribute(claimId, claim);
         Document doc = renderDocument();
 
         assertPageHasTitle(doc, "Amend profit costs");

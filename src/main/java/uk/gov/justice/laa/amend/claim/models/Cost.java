@@ -1,34 +1,71 @@
 package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Getter;
+import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
+import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimSummary;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 @Getter
 public enum Cost {
 
-    PROFIT_COSTS("profit-costs", "profitCosts", Assessment::getNetProfitCostsAmount, Assessment::setNetProfitCostsAmount),
-    DISBURSEMENTS("disbursements", "disbursements", Assessment::getDisbursementAmount, Assessment::setDisbursementAmount),
-    DISBURSEMENTS_VAT("disbursements-vat", "disbursementsVat", Assessment::getDisbursementVatAmount, Assessment::setDisbursementVatAmount),
-    COUNSEL_COSTS("counsel-costs", "counselCosts", Assessment::getNetCostOfCounselAmount, Assessment::setNetCostOfCounselAmount),
-    DETENTION_TRAVEL_AND_WAITING_COSTS("detention-travel-and-waiting-costs", "detentionTravelAndWaitingCosts", Assessment::getTravelAndWaitingCostsAmount, Assessment::setTravelAndWaitingCostsAmount),
-    JR_FORM_FILLING_COSTS("jr-form-filling-costs", "jrFormFillingCosts", Assessment::getJrFormFillingAmount, Assessment::setJrFormFillingAmount),
-    TRAVEL_COSTS("travel-costs", "travelCosts", Assessment::getNetTravelCostsAmount, Assessment::setNetTravelCostsAmount),
-    WAITING_COSTS("waiting-costs", "waitingCosts", Assessment::getNetWaitingCostsAmount, Assessment::setNetWaitingCostsAmount);
+    PROFIT_COSTS(
+        "profit-costs",
+        "profitCosts",
+        new ClaimFieldAccessor<>(ClaimSummary.class, ClaimSummary::getNetProfitCost, ClaimSummary::setNetProfitCost)
+    ),
+
+    DISBURSEMENTS(
+        "disbursements",
+        "disbursements",
+        new ClaimFieldAccessor<>(ClaimSummary.class, ClaimSummary::getNetDisbursementAmount, ClaimSummary::setNetDisbursementAmount)
+    ),
+
+    DISBURSEMENTS_VAT(
+        "disbursements-vat",
+        "disbursementsVat",
+        new ClaimFieldAccessor<>(ClaimSummary.class, ClaimSummary::getDisbursementVatAmount, ClaimSummary::setDisbursementVatAmount)
+    ),
+
+    COUNSEL_COSTS(
+        "counsel-costs",
+        "counselCosts",
+        new ClaimFieldAccessor<>(CivilClaimSummary.class, CivilClaimSummary::getCounselsCost, CivilClaimSummary::setCounselsCost)
+    ),
+
+    DETENTION_TRAVEL_AND_WAITING_COSTS(
+        "detention-travel-and-waiting-costs",
+        "detentionTravelAndWaitingCosts",
+        new ClaimFieldAccessor<>(CivilClaimSummary.class, CivilClaimSummary::getDetentionTravelWaitingCosts, CivilClaimSummary::setDetentionTravelWaitingCosts)
+    ),
+
+    JR_FORM_FILLING_COSTS(
+        "jr-form-filling-costs",
+        "jrFormFillingCosts",
+        new ClaimFieldAccessor<>(CivilClaimSummary.class, CivilClaimSummary::getJrFormFillingCost, CivilClaimSummary::setJrFormFillingCost)
+    ),
+
+    TRAVEL_COSTS(
+        "travel-costs",
+        "travelCosts",
+        new ClaimFieldAccessor<>(CrimeClaimSummary.class, CrimeClaimSummary::getTravelCosts, CrimeClaimSummary::setTravelCosts)
+    ),
+
+    WAITING_COSTS(
+        "waiting-costs",
+        "waitingCosts",
+        new ClaimFieldAccessor<>(CrimeClaimSummary.class, CrimeClaimSummary::getWaitingCosts, CrimeClaimSummary::setWaitingCosts)
+    );
 
     private final String path;
     private final String prefix;
-    private final Function<Assessment, BigDecimal> getter;
-    private final BiConsumer<Assessment, BigDecimal> setter;
+    private final ClaimFieldAccessor<?> accessor;
 
-    Cost(String path, String prefix, Function<Assessment, BigDecimal> getter, BiConsumer<Assessment, BigDecimal> setter) {
+    Cost(String path, String prefix, ClaimFieldAccessor<?> accessor) {
         this.path = path;
         this.prefix = prefix;
-        this.getter = getter;
-        this.setter = setter;
+        this.accessor = accessor;
     }
 
     public static Cost fromPath(String path) {
