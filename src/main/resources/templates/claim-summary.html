@@ -5,7 +5,7 @@
         title=#{claimSummary.title},
         mainContent=~{::#main-content},
         pageCategory=${null},
-        showBackLink=${true}
+        showBackLink=${false}
     )}">
     <body>
         <main class="govuk-main-wrapper" id="main-content">
@@ -169,11 +169,18 @@
                         </div>
 
                         <div class="govuk-button-group">
-                            <a href="/add-outcome" class="govuk-button" data-module="govuk-button" th:text="#{claimSummary.addOutcome}">
+                            <a th:href="@{/submissions/{submissionId}/claims/{claimID}/assessment-outcome(submissionId=${submissionId}, claimID=${claimId})}"
+                               th:text="#{claimSummary.assessmentButton}" class="govuk-button">
                             </a>
-                            <a href="/" class="govuk-button govuk-button--secondary" data-module="govuk-button" th:text="#{claimSummary.back}">
+
+                            <a href="#"
+                               onclick="window.history.go(-1); return false;"
+                               role="button" draggable="false" class="govuk-button govuk-button--secondary"
+                               th:text="#{claimSummary.backToSearch}" data-module="govuk-button">
                             </a>
                         </div>
+
+
                     </div>
                 </div>
             </div>
