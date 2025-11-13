@@ -9,7 +9,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.models.Assessment;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
 
@@ -34,9 +33,6 @@ public class ClaimReviewControllerTest {
         ClaimSummary claimSummary = new ClaimSummary();
         claimSummary.setSubmissionId(submissionId);
         claimSummary.setClaimId(claimId);
-
-        Assessment assessment = new Assessment();
-        assessment.setOutcome(OutcomeType.REDUCED);
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(claimId, claimSummary);
