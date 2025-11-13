@@ -12,7 +12,7 @@ public class CostConverter implements Converter<String, Cost> {
     @Override
     public Cost convert(String source) {
         try {
-            return Cost.fromValue(source);
+            return Cost.fromPath(source);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
