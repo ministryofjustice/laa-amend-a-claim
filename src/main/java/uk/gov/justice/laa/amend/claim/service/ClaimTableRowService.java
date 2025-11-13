@@ -39,9 +39,6 @@ public class ClaimTableRowService {
             return rows;
         }
 
-        String submissionId = claimResponse.getSubmissionId();
-        String claimId = claimResponse.getId();
-
         FeeCalculationPatch feeCalculation = claimResponse.getFeeCalculationResponse();
         if (feeCalculation == null) {
             log.warn("Fee calculation is null for claim, returning empty table rows");
@@ -52,6 +49,9 @@ public class ClaimTableRowService {
         if (boltOnDetails == null) {
             log.warn("Bolt-on details are null for claim, adding only non-bolt-on rows");
         }
+
+        String submissionId = claimResponse.getSubmissionId();
+        String claimId = claimResponse.getId();
 
         // Fixed fee
         rows.add(ClaimValuesTableRow.builder()
