@@ -20,7 +20,8 @@ public class SearchFormError extends FormError {
             "providerAccountNumber", 1,
             "submissionDateMonth", 2,
             "submissionDateYear", 3,
-            "referenceNumber", 4
+            "uniqueFileNumber", 4,
+            "caseReferenceNumber", 5
         );
     }
 }

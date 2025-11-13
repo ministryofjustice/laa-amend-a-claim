@@ -54,7 +54,9 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasTextInput(doc, "submission-date-year", "Year");
 
-        assertPageHasTextInput(doc, "reference-number", "UFN or CRN");
+        assertPageHasTextInput(doc, "unique-file-number", "UFN");
+
+        assertPageHasTextInput(doc, "case-reference-number", "CRN");
 
         assertPageHasActiveServiceNavigationItem(doc, "Search");
     }
@@ -89,14 +91,16 @@ class IndexViewTest extends ViewTestBase {
         params.add("providerAccountNumber", "!");
         params.add("submissionDateMonth", "!");
         params.add("submissionDateYear", "!");
-        params.add("referenceNumber", "!");
+        params.add("uniqueFileNumber", "!");
+        params.add("caseReferenceNumber", "!");
 
         Document doc = renderDocumentWithErrors(params);
 
         assertPageHasErrorSummary(doc,
             "provider-account-number",
             "submission-date-month", // date errors get combined
-            "reference-number"
+            "unique-file-number",
+            "case-reference-number"
         );
     }
 

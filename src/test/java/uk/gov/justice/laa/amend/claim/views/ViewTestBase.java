@@ -7,10 +7,12 @@ import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,9 +26,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public abstract class ViewTestBase {
 
   @Autowired
-  private MockMvc mockMvc;
+  public MockMvc mockMvc;
 
   protected String mapping;
+
+  protected MockHttpSession session = new MockHttpSession();
 
   protected ViewTestBase(String mapping) {
     this.mapping = mapping;
@@ -37,7 +41,7 @@ public abstract class ViewTestBase {
   }
 
   protected Document renderDocument(Map<String, Object> variables) throws Exception {
-    MockHttpServletRequestBuilder requestBuilder = get(mapping);
+    MockHttpServletRequestBuilder requestBuilder = get(mapping).session(session);
 
     for (Map.Entry<String, Object> entry : variables.entrySet()) {
       requestBuilder = requestBuilder.flashAttr(entry.getKey(), entry.getValue());
@@ -52,8 +56,19 @@ public abstract class ViewTestBase {
     return Jsoup.parse(html);
   }
 
+    protected Document renderRedirect(String pageToRender) throws Exception {
+
+        String html = mockMvc.perform(post(pageToRender))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        return Jsoup.parse(html);
+    }
+
   protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) throws Exception {
-    MockHttpServletRequestBuilder requestBuilder = post(mapping);
+    MockHttpServletRequestBuilder requestBuilder = post(mapping).session(session);
 
     String html = mockMvc.perform(requestBuilder.params(params))
         .andExpect(status().isBadRequest())
@@ -77,6 +92,16 @@ public abstract class ViewTestBase {
   protected void assertPageHasBackLink(Document doc) {
     Elements elements = doc.getElementsByClass("govuk-back-link");
     Assertions.assertFalse(elements.isEmpty());
+  }
+
+    protected void assertPageHasSecondaryButton(Document doc) {
+        Elements elements = doc.getElementsByClass("govuk-button govuk-button--secondary");
+        Assertions.assertFalse(elements.isEmpty());
+    }
+
+  protected void assertPageHasLink(Document doc, String id, String expectedText) {
+    Element element = getElementById(doc, id);
+    Assertions.assertEquals(expectedText, element.text());
   }
 
   protected void assertPageHasHint(Document doc, String id, String expectedText) {
@@ -132,7 +157,7 @@ public abstract class ViewTestBase {
   }
 
   protected void assertPageHasPagination(Document doc) {
-    Elements elements = doc.getElementsByClass("moj-pagination");
+    Elements elements = doc.getElementsByClass("govuk-pagination");
     Assertions.assertFalse(elements.isEmpty());
   }
 
@@ -140,6 +165,16 @@ public abstract class ViewTestBase {
     Elements elements = doc.getElementsByClass("govuk-summary-list");
     Assertions.assertFalse(elements.isEmpty());
   }
+
+    protected void assertPageHasRadioButtons(Document doc) {
+        Elements elements = doc.getElementsByClass("govuk-radios");
+        Assertions.assertFalse(elements.isEmpty());
+    }
+
+    protected void assertPageHasInlineRadioButtons(Document doc) {
+        Elements elements = doc.getElementsByClass("govuk-radios--inline");
+        Assertions.assertFalse(elements.isEmpty());
+    }
 
   protected void assertPageHasNoSummaryList(Document doc) {
     Elements elements = doc.getElementsByClass("govuk-summary-list");
@@ -156,6 +191,20 @@ public abstract class ViewTestBase {
     Assertions.assertTrue(rowFound);
   }
 
+  protected void assertPageHasValuesRow(Document doc, String expectedKey, ClaimFieldRow claimFieldRow) {
+    Elements rows = doc.getElementsByClass("govuk-summary-list__row");
+    boolean rowFound = rows.stream().anyMatch(row -> {
+      String keyText = row.select(".govuk-summary-list__key").text().trim();
+      Elements valueElements = row.select(".govuk-summary-list__value");
+      if (valueElements.size() < 2) return false;
+      String calculatedText = valueElements.get(0).text().trim();
+      String submittedText = valueElements.get(1).text().trim();
+      return keyText.equals(expectedKey) && calculatedText.equals(claimFieldRow.getCalculated().toString()) && submittedText.equals(claimFieldRow.getSubmitted().toString());
+    });
+    Assertions.assertTrue(rowFound);
+  }
+
+
   protected void assertPageHasErrorSummary(Document doc, String... errorFields) {
     Element errorSummary = selectFirst(doc, ".govuk-error-summary");
     Element errorSummaryList = selectFirst(errorSummary, ".govuk-error-summary__list");
@@ -171,5 +220,10 @@ public abstract class ViewTestBase {
         .toList();
 
     Assertions.assertEquals(expectedErrorHrefs, actualErrorHrefs);
+  }
+
+  protected void assertPageHasPanel(Document doc) {
+    Elements elements = doc.getElementsByClass("govuk-panel");
+    Assertions.assertFalse(elements.isEmpty());
   }
 }

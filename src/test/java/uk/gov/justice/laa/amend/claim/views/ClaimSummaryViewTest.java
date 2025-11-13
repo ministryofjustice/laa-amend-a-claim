@@ -8,17 +8,21 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimSummaryController;
-import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
-import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimSummaryMapper;
+import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
+import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimSummary;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.*;
 
 @ActiveProfiles("local")
 @WebMvcTest(ClaimSummaryController.class)
@@ -29,36 +33,37 @@ class ClaimSummaryViewTest extends ViewTestBase {
     private ClaimService claimService;
 
     @MockitoBean
-    private ClaimResultMapper claimResultMapper;
+    private ClaimSummaryMapper claimSummaryMapper;
 
     ClaimSummaryViewTest() {
         super("/submissions/submissionId/claims/claimId");
     }
 
     @Test
-    void testPage() throws Exception {
-        Claim claim = new Claim();
-        claim.setEscaped(true);
-        claim.setCategoryOfLaw("AAP");
-        claim.setFeeScheme("CCS");
-        claim.setMatterTypeCode("IMLB:IOUT");
-        claim.setProviderAccountNumber("0P322F");
-        claim.setClientForename("John");
-        claim.setClientSurname("Doe");
-        claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
-        claim.setCaseEndDate(LocalDate.of(2020, 12, 31));
-        claim.setSubmissionPeriod(YearMonth.of(2021, 1));
+    void testCivilClaimPage() throws Exception {
+        CivilClaimSummary claim = new CivilClaimSummary();
+        createClaimSummary(claim);
+        claim.setMatterTypeCodeOne("IMLB");
+        claim.setMatterTypeCodeTwo("AHQS");
+        claim.setDetentionTravelWaitingCosts(new ClaimFieldRow(DETENTION_TRAVEL_COST, 100, 90, 95));
+        claim.setJrFormFillingCost(new ClaimFieldRow(JR_FORM_FILLING, 50, 45, 48));
+        claim.setAdjournedHearing(new ClaimFieldRow(ADJOURNED_FEE, 200, 180, 190));
+        claim.setCmrhTelephone(new ClaimFieldRow(CMRH_TELEPHONE, 75, 70, 72));
+        claim.setCmrhOral(new ClaimFieldRow(CMRH_ORAL, 150, 140, 145));
+        claim.setHoInterview(new ClaimFieldRow(HO_INTERVIEW, 120, 110, 115));
+        claim.setSubstantiveHearing(new ClaimFieldRow(SUBSTANTIVE_HEARING, 300, 280, 290));
+        claim.setCounselsCost(new ClaimFieldRow(COUNSELS_COST, 400, 380, 390));
+
 
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimResultMapper.mapToClaim(any())).thenReturn(claim);
+        when(claimSummaryMapper.mapToCivilClaimSummary(any())).thenReturn(claim);
 
         Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Claim summary");
+        assertPageHasTitle(doc, "Claim details");
 
-        assertPageHasHeading(doc, "Claim summary");
-
-        assertPageHasBackLink(doc);
+        assertPageHasHeading(doc, "Claim details");
+        assertPageHasH2(doc, "Summary");
 
         assertPageHasNoActiveServiceNavigationItems(doc);
 
@@ -67,24 +72,88 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Escape case", "Yes");
         assertPageHasSummaryListRow(doc, "Type", "AAP");
         assertPageHasSummaryListRow(doc, "Fee scheme", "CCS");
-        assertPageHasSummaryListRow(doc, "Legal matter code", "IMLB:IOUT");
+        assertPageHasSummaryListRow(doc, "Matter type 1", "IMLB");
+        assertPageHasSummaryListRow(doc, "Matter type 2", "AHQS");
         assertPageHasSummaryListRow(doc, "Provider Account Number", "0P322F");
         assertPageHasSummaryListRow(doc, "Client name", "John Doe");
         assertPageHasSummaryListRow(doc, "Case start date", "01 Jan 2020");
         assertPageHasSummaryListRow(doc, "Case end date", "31 Dec 2020");
-        assertPageHasSummaryListRow(doc, "Date submitted", "Jan 2021");
+        assertPageHasSummaryListRow(doc, "Date submitted", claim.getSubmittedDate());
+        assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
+        assertPageHasValuesRow(doc, "CMRH oral", claim.getCmrhOral());
+        assertPageHasValuesRow(doc, "CMRH telephone", claim.getCmrhTelephone());
+        assertPageHasValuesRow(doc, "Counsel's Cost(ex VAT)", claim.getCounselsCost());
+    }
+
+    @Test
+    void testCrimeClaimPage() throws Exception {
+        CrimeClaimSummary claim = new CrimeClaimSummary();
+        createClaimSummary(claim);
+        claim.setMatterTypeCode("IMLB");
+        claim.setTravelCosts(new ClaimFieldRow(TRAVEL_COSTS, 100, 90, null));
+        claim.setWaitingCosts(new ClaimFieldRow(WAITING_COSTS, 50, 45, null));
+
+        ClaimResponse claimResponse = new ClaimResponse();
+        claimResponse.feeCalculationResponse(new FeeCalculationPatch().categoryOfLaw("CRIME"));
+        when(claimService.getClaim(anyString(), anyString())).thenReturn(claimResponse);
+        when(claimSummaryMapper.mapToCrimeClaimSummary(any())).thenReturn(claim);
+
+        Document doc = renderDocument();
+
+        assertPageHasTitle(doc, "Claim details");
+
+        assertPageHasHeading(doc, "Claim details");
+        assertPageHasH2(doc, "Summary");
+
+        assertPageHasNoActiveServiceNavigationItems(doc);
+
+        assertPageHasSummaryList(doc);
+
+        assertPageHasSummaryListRow(doc, "Escape case", "Yes");
+        assertPageHasSummaryListRow(doc, "Type", "AAP");
+        assertPageHasSummaryListRow(doc, "Fee scheme", "CCS");
+        assertPageHasSummaryListRow(doc, "Legal matter code", "IMLB");
+        assertPageHasSummaryListRow(doc, "Provider Account Number", "0P322F");
+        assertPageHasSummaryListRow(doc, "Client name", "John Doe");
+        assertPageHasSummaryListRow(doc, "Case start date", "01 Jan 2020");
+        assertPageHasSummaryListRow(doc, "Case end date", "31 Dec 2020");
+        assertPageHasSummaryListRow(doc, "Date submitted", claim.getSubmittedDate());
+        assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
+        assertPageHasValuesRow(doc, "Travel costs", claim.getTravelCosts());
+        assertPageHasValuesRow(doc, "Waiting costs", claim.getWaitingCosts());
+    }
+
+    private static void createClaimSummary(ClaimSummary claim) {
+        claim.setEscaped(true);
+        claim.setCategoryOfLaw("AAP");
+        claim.setFeeScheme("CCS");
+
+        claim.setProviderAccountNumber("0P322F");
+        claim.setClientForename("John");
+        claim.setClientSurname("Doe");
+        claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
+        claim.setCaseEndDate(LocalDate.of(2020, 12, 31));
+        claim.setSubmittedDate("22/10/2025");
+
+        // Set ClaimFieldRow fields
+        claim.setVatClaimed(new ClaimFieldRow(VAT, 80, 75, 78));
+        claim.setFixedFee(new ClaimFieldRow(FIXED_FEE, 500, 480, 490));
+        claim.setNetProfitCost(new ClaimFieldRow(NET_PROFIT_COST, 600, 580, 590));
+        claim.setNetDisbursementAmount(new ClaimFieldRow(NET_DISBURSEMENTS_COST, 200, 190, 195));
+        claim.setTotalAmount(new ClaimFieldRow(TOTAL, 1380, 1325, 1350));
+        claim.setDisbursementVatAmount(new ClaimFieldRow(DISBURSEMENT_VAT, 40, 38, 39));
     }
 
     @Test
     void testPageWhenNullClaim() throws Exception {
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimResultMapper.mapToClaim(any())).thenReturn(null);
+        when(claimSummaryMapper.mapToCivilClaimSummary(any())).thenReturn(null);
 
         Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Claim summary");
+        assertPageHasTitle(doc, "Claim details");
 
-        assertPageHasHeading(doc, "Claim summary");
+        assertPageHasHeading(doc, "Claim details");
 
         assertPageHasNoActiveServiceNavigationItems(doc);
 
@@ -94,12 +163,12 @@ class ClaimSummaryViewTest extends ViewTestBase {
     @Test
     void testPageWhenEmptyClaim() throws Exception {
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimResultMapper.mapToClaim(any())).thenReturn(new Claim());
+        when(claimSummaryMapper.mapToCrimeClaimSummary(any())).thenReturn(new CrimeClaimSummary());
 
         Document doc = renderDocument();
 
-        assertPageHasSummaryList(doc);
+        assertPageHasTitle(doc, "Claim details");
 
-        assertPageHasSummaryListRow(doc, "Escape case", "No");
+        assertPageHasHeading(doc, "Claim details");
     }
 }

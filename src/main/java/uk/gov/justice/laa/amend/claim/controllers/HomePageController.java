@@ -12,11 +12,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
+import uk.gov.justice.laa.amend.claim.models.Sort;
+import uk.gov.justice.laa.amend.claim.models.Sorts;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
+import uk.gov.justice.laa.amend.claim.utils.RedirectUrlUtils;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
+import java.util.Optional;
+
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_SORT;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,21 +35,34 @@ public class HomePageController {
     public String onPageLoad(
         Model model,
         @RequestParam(required = false, defaultValue = "1") int page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SORT) Sort sort,
         @RequestParam(required = false) String providerAccountNumber,
         @RequestParam(required = false) String submissionDateMonth,
         @RequestParam(required = false) String submissionDateYear,
-        @RequestParam(required = false) String referenceNumber
+        @RequestParam(required = false) String uniqueFileNumber,
+        @RequestParam(required = false) String caseReferenceNumber
     ) {
         SearchForm form = new SearchForm();
         form.setProviderAccountNumber(providerAccountNumber);
         form.setSubmissionDateMonth(submissionDateMonth);
         form.setSubmissionDateYear(submissionDateYear);
-        form.setReferenceNumber(referenceNumber);
-        model.addAttribute("searchForm", form);
+        form.setUniqueFileNumber(uniqueFileNumber);
+        form.setCaseReferenceNumber(caseReferenceNumber);
+
+        model.addAttribute("form", form);
+        model.addAttribute("sorts", new Sorts(sort));
 
         if (form.anyNonEmpty()) {
-            ClaimResultSet result = claimService.searchClaims(form.getProviderAccountNumber(), page, DEFAULT_PAGE_SIZE);
-            SearchResultViewModel viewModel = claimResultMapper.toDto(result, form.getRedirectUrl(page));
+            ClaimResultSet result = claimService.searchClaims(
+                form.getProviderAccountNumber(),
+                Optional.ofNullable(form.getUniqueFileNumber()),
+                Optional.ofNullable(form.getCaseReferenceNumber()),
+                page,
+                DEFAULT_PAGE_SIZE,
+                sort.toString()
+            );
+            String redirectUrl = RedirectUrlUtils.getRedirectUrl(form, page, sort);
+            SearchResultViewModel viewModel = claimResultMapper.toDto(result, redirectUrl);
             model.addAttribute("viewModel", viewModel);
         }
 
@@ -52,7 +71,7 @@ public class HomePageController {
 
     @PostMapping("/")
     public String onSubmit(
-        @Valid @ModelAttribute("searchForm") SearchForm form,
+        @Valid @ModelAttribute("form") SearchForm form,
         BindingResult bindingResult,
         HttpServletResponse response
     ) {
@@ -61,6 +80,7 @@ public class HomePageController {
             return "index";
         }
 
-        return "redirect:" + form.getRedirectUrl(1);
+        String redirectUrl = RedirectUrlUtils.getRedirectUrl(form);
+        return "redirect:" + redirectUrl;
     }
 }
