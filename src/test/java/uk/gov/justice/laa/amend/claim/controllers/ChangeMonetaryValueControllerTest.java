@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.Assessment;
+import uk.gov.justice.laa.amend.claim.models.Cost;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -38,15 +39,15 @@ class ChangeMonetaryValueControllerTest {
     private MockHttpSession session;
     private String redirectUrl;
 
-    private static final Map<String, FieldAccessors> COST_MAPPINGS = Map.ofEntries(
-        Map.entry("profit-costs", new FieldAccessors(Assessment::getNetProfitCostsAmount, Assessment::setNetProfitCostsAmount)),
-        Map.entry("disbursements", new FieldAccessors(Assessment::getDisbursementAmount, Assessment::setDisbursementAmount)),
-        Map.entry("disbursements-vat", new FieldAccessors(Assessment::getDisbursementVatAmount, Assessment::setDisbursementVatAmount)),
-        Map.entry("counsel-costs", new FieldAccessors(Assessment::getNetCostOfCounselAmount, Assessment::setNetCostOfCounselAmount)),
-        Map.entry("detention-travel-and-waiting-costs", new FieldAccessors(Assessment::getTravelAndWaitingCostsAmount, Assessment::setTravelAndWaitingCostsAmount)),
-        Map.entry("jr-form-filling-costs", new FieldAccessors(Assessment::getJrFormFillingAmount, Assessment::setJrFormFillingAmount)),
-        Map.entry("travel-costs", new FieldAccessors(Assessment::getNetTravelCostsAmount, Assessment::setNetTravelCostsAmount)),
-        Map.entry("waiting-costs", new FieldAccessors(Assessment::getNetWaitingCostsAmount, Assessment::setNetWaitingCostsAmount))
+    private static final Map<Cost, FieldAccessors> COST_MAPPINGS = Map.ofEntries(
+        Map.entry(Cost.PROFIT_COSTS, new FieldAccessors(Assessment::getNetProfitCostsAmount, Assessment::setNetProfitCostsAmount)),
+        Map.entry(Cost.DISBURSEMENTS, new FieldAccessors(Assessment::getDisbursementAmount, Assessment::setDisbursementAmount)),
+        Map.entry(Cost.DISBURSEMENTS_VAT, new FieldAccessors(Assessment::getDisbursementVatAmount, Assessment::setDisbursementVatAmount)),
+        Map.entry(Cost.COUNSEL_COSTS, new FieldAccessors(Assessment::getNetCostOfCounselAmount, Assessment::setNetCostOfCounselAmount)),
+        Map.entry(Cost.DETENTION_TRAVEL_AND_WAITING_COSTS, new FieldAccessors(Assessment::getTravelAndWaitingCostsAmount, Assessment::setTravelAndWaitingCostsAmount)),
+        Map.entry(Cost.JR_FORM_FILLING_COSTS, new FieldAccessors(Assessment::getJrFormFillingAmount, Assessment::setJrFormFillingAmount)),
+        Map.entry(Cost.TRAVEL_COSTS, new FieldAccessors(Assessment::getNetTravelCostsAmount, Assessment::setNetTravelCostsAmount)),
+        Map.entry(Cost.WAITING_COSTS, new FieldAccessors(Assessment::getNetWaitingCostsAmount, Assessment::setNetWaitingCostsAmount))
     );
 
     @BeforeEach
@@ -57,41 +58,41 @@ class ChangeMonetaryValueControllerTest {
         redirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
     }
 
-    private static Stream<String> validCosts() {
+    private static Stream<Cost> validCosts() {
         return COST_MAPPINGS.keySet().stream();
     }
 
     @ParameterizedTest
     @MethodSource("validCosts")
-    void testGetReturnsView(String cost) throws Exception {
-        mockMvc.perform(get(buildPath(cost)))
+    void testGetReturnsView(Cost cost) throws Exception {
+        mockMvc.perform(get(buildPath(cost.getPath())))
             .andExpect(status().isOk())
             .andExpect(view().name("change-monetary-value"))
-            .andExpect(model().attribute("prefix", equalTo(cost)))
+            .andExpect(model().attribute("cost", equalTo(cost)))
             .andExpect(model().attribute("form", hasProperty("value", nullValue())));
     }
 
     @ParameterizedTest
     @MethodSource("validCosts")
-    void testGetReturnsViewWhenQuestionAlreadyAnswered(String cost) throws Exception {
+    void testGetReturnsViewWhenQuestionAlreadyAnswered(Cost cost) throws Exception {
         FieldAccessors accessors = COST_MAPPINGS.get(cost);
         Assessment assessment = new Assessment();
         accessors.setter.accept(assessment, BigDecimal.valueOf(100));
         session.setAttribute(claimKey(), assessment);
 
-        mockMvc.perform(get(buildPath(cost)).session(session))
+        mockMvc.perform(get(buildPath(cost.getPath())).session(session))
             .andExpect(status().isOk())
             .andExpect(view().name("change-monetary-value"))
-            .andExpect(model().attribute("prefix", equalTo(cost)))
+            .andExpect(model().attribute("cost", equalTo(cost)))
             .andExpect(model().attribute("form", hasProperty("value", is("100.00"))));
     }
 
     @ParameterizedTest
     @MethodSource("validCosts")
-    void testPostSavesValueAndRedirects(String cost) throws Exception {
+    void testPostSavesValueAndRedirects(Cost cost) throws Exception {
         session.setAttribute(claimKey(), new Assessment());
 
-        mockMvc.perform(post(buildPath(cost))
+        mockMvc.perform(post(buildPath(cost.getPath()))
                 .session(session)
                 .with(csrf())
                 .param("value", "100"))
@@ -107,8 +108,8 @@ class ChangeMonetaryValueControllerTest {
 
     @ParameterizedTest
     @MethodSource("validCosts")
-    void testPostReturnsBadRequestForInvalidValue(String cost) throws Exception {
-        mockMvc.perform(post(buildPath(cost))
+    void testPostReturnsBadRequestForInvalidValue(Cost cost) throws Exception {
+        mockMvc.perform(post(buildPath(cost.getPath()))
                 .session(session)
                 .with(csrf())
                 .param("value", "-1"))
