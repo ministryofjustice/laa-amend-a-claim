@@ -36,6 +36,13 @@ public class ClaimSummaryController {
         //session.setAttribute(String.format("%s:assessment", claimId), new Assessment(claimResponse));
         // ---
 
+        // TODO - when the claim is null/empty we should render an error screen. We can
+        //  remove these from the model when those changes are made and amend the tests to reflect it
+
+        model.addAttribute("claimId", claimId);
+        model.addAttribute("submissionId", submissionId);
+
+
         model.addAttribute("claim", claimSummary);
         model.addAttribute("isCrimeClaim", isCrimeClaim);
 
