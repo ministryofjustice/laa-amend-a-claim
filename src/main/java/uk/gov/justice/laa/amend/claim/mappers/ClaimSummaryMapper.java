@@ -57,6 +57,8 @@ public interface ClaimSummaryMapper {
     @Mapping(target = "submissionId", source = "submissionId")
     @Mapping(target = "claimId", source = "id")
     @Mapping(target = "vatApplicable", source = "isVatApplicable")
+    @Mapping(target = "assessmentOutcome", ignore = true)
+    @Mapping(target = "tableRows", ignore = true)
     ClaimSummary mapBaseFields(ClaimResponse claimResponse);
 
     // Civil-specific mapping
@@ -106,7 +108,7 @@ public interface ClaimSummaryMapper {
     default ClaimFieldRow mapFixedFee(ClaimResponse claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getFixedFeeAmount() : null;
-        return new ClaimFieldRow(FIXED_FEE, "NA", calculated, null);
+        return new ClaimFieldRow(FIXED_FEE, "NA", calculated, "NA");
     }
 
     default ClaimFieldRow mapNetProfitCost(ClaimResponse claimResponse) {

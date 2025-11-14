@@ -48,7 +48,7 @@ class ChangeMonetaryValueControllerTest {
         submissionId = UUID.randomUUID().toString();
         claimId = UUID.randomUUID().toString();
         session = new MockHttpSession();
-        redirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+        redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
     }
 
     private static Stream<Cost> validCosts() {

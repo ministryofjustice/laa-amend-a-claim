@@ -82,9 +82,7 @@ public class ChangeMonetaryValueController {
             }
             session.setAttribute(claimId, claim);
 
-            // TODO - Point to 'review and amend' page
-            String redirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
-            return "redirect:" + redirectUrl;
+            return "redirect:" + getRedirectUrl(submissionId, claimId);
         } catch (ClaimMismatchException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
@@ -94,12 +92,17 @@ public class ChangeMonetaryValueController {
     private String renderView(Model model, MonetaryValueForm form, Cost cost, String submissionId, String claimId) {
         model.addAttribute("cost", cost);
         model.addAttribute("form", form);
-        model.addAttribute("action", getAction(cost, submissionId, claimId));
+        model.addAttribute("action", getAction(submissionId, claimId, cost));
+        model.addAttribute("redirectUrl", getRedirectUrl(submissionId, claimId));
         return "change-monetary-value";
     }
 
-    private String getAction(Cost cost, String submissionId, String claimId) {
+    private String getAction(String submissionId, String claimId, Cost cost) {
         return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
+    }
+
+    private String getRedirectUrl(String submissionId, String claimId) {
+        return String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
     }
 
     private BigDecimal setScale(BigDecimal value) {

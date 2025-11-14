@@ -19,3 +19,14 @@
 .js-enabled .govuk-back-link {
     display: inline-block;
 }
+
+/* Total row styling - darker colour */
+.table-row--total td {
+    border-top: 1px solid #0B0C0C;
+    border-bottom: 1px solid #0B0C0C;
+}
+
+/* Target the row immediately before the total */
+.govuk-table__row:has(+ .table-row--total) td {
+    border-bottom: 1px solid #0B0C0C;
+}

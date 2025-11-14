@@ -9,6 +9,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimSummaryController;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimSummaryMapper;
+import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
@@ -34,6 +35,9 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
     @MockitoBean
     private ClaimSummaryMapper claimSummaryMapper;
+
+    @MockitoBean
+    private AssessmentService assessmentService;
 
     ClaimSummaryViewTest() {
         super("/submissions/submissionId/claims/claimId");
@@ -82,7 +86,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
         assertPageHasValuesRow(doc, "CMRH oral", claim.getCmrhOral());
         assertPageHasValuesRow(doc, "CMRH telephone", claim.getCmrhTelephone());
-        assertPageHasValuesRow(doc, "Counsel's Cost(ex VAT)", claim.getCounselsCost());
+        assertPageHasValuesRow(doc, "Counsel's costs (ex VAT)", claim.getCounselsCost());
     }
 
     @Test

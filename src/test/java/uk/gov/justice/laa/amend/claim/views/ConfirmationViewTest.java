@@ -5,16 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ConfirmationController;
-import uk.gov.justice.laa.amend.claim.models.Claim;
-import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
-import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
-
-import java.util.List;
-import java.util.Map;
 
 @ActiveProfiles("local")
 @WebMvcTest(ConfirmationController.class)
@@ -22,7 +14,7 @@ import java.util.Map;
 class ConfirmationViewTest extends ViewTestBase {
 
     ConfirmationViewTest() {
-        super("/confirmation");
+        super("/submissions/submissionId/claims/claimId/confirmation");
     }
 
     @Test

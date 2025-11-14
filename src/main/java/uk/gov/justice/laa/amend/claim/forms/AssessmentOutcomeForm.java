@@ -1,8 +1,9 @@
 package uk.gov.justice.laa.amend.claim.forms;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_OUTCOME_REQUIRED_ERROR;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.LIABILITY_FOR_VAT_REQUIRED_ERROR;
@@ -11,10 +12,10 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.LIABI
 @Getter
 public class AssessmentOutcomeForm {
 
-    @NotBlank(message = ASSESSMENT_OUTCOME_REQUIRED_ERROR)
-    private String assessmentOutcome;
+    @NotNull(message = ASSESSMENT_OUTCOME_REQUIRED_ERROR)
+    private OutcomeType assessmentOutcome;
 
-    @NotBlank(message = LIABILITY_FOR_VAT_REQUIRED_ERROR)
-    private String liabilityForVat;
+    @NotNull(message = LIABILITY_FOR_VAT_REQUIRED_ERROR)
+    private Boolean liabilityForVat;
 
 }
