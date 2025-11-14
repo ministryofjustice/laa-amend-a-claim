@@ -39,6 +39,7 @@ public class AssessmentService {
             case PAID_IN_FULL -> { /* implement business rules */ }
             case REDUCED -> { /* implement business rules */ }
             case REDUCED_TO_FIXED_FEE -> { /* implement business rules */ }
+            default -> log.warn("Unhandled outcome type: {}", newOutcome);
         }
     }
 }

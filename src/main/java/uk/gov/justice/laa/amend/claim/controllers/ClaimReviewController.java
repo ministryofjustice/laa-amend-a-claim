@@ -32,6 +32,9 @@ public class ClaimReviewController {
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("backUrl", String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId));
+        model.addAttribute("canAmendCosts",
+                claim.getAssessmentOutcome() != null && claim.getAssessmentOutcome().getCanAmendCosts()
+        );
 
         return "review-and-amend";
     }
