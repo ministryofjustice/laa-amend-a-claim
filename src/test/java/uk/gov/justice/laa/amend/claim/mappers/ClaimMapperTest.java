@@ -3,17 +3,17 @@ package uk.gov.justice.laa.amend.claim.mappers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
-import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimSummary;
+import uk.gov.justice.laa.amend.claim.models.CivilClaim;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaim;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
 
 class ClaimMapperTest {
@@ -42,14 +42,14 @@ class ClaimMapperTest {
         feeCalc.setTotalAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        ClaimFieldRow row = mapper.mapTotalAmount(response);
-        assertEquals(TOTAL, row.getLabel());
-        assertEquals(BigDecimal.valueOf(100), row.getSubmitted());
-        assertEquals(BigDecimal.valueOf(120), row.getCalculated());
+        ClaimField claimField = mapper.mapTotalAmount(response);
+        assertEquals(TOTAL, claimField.getLabel());
+        assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
+        assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
     }
 
     @Test
-    void testMapBaseFields() {
+    void testMapToCivilClaimSummary() {
         ClaimResponse response = new ClaimResponse();
         response.setUniqueFileNumber("UFN123");
         response.setCaseReferenceNumber("CASE456");
@@ -66,33 +66,49 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(boltOn);
         response.setFeeCalculationResponse(feeCalc);
 
-        ClaimSummary summary = mapper.mapBaseFields(response);
-
-        assertEquals("UFN123", summary.getUniqueFileNumber());
-        assertEquals("CASE456", summary.getCaseReferenceNumber());
-        assertEquals("Doe", summary.getClientSurname());
-        assertEquals("John", summary.getClientForename());
-        assertEquals("FeeSchemeX", summary.getFeeScheme());
-        assertEquals("Civil", summary.getCategoryOfLaw());
-        assertTrue(summary.getEscaped());
-    }
-
-    @Test
-    void testMapToCivilClaimSummary() {
-        ClaimResponse response = new ClaimResponse();
         response.setMatterTypeCode("MT1+MT2");
-        CivilClaimSummary civilSummary = mapper.mapToCivilClaimSummary(response);
 
-        assertEquals("MT1", civilSummary.getMatterTypeCodeOne());
-        assertEquals("MT2", civilSummary.getMatterTypeCodeTwo());
+        CivilClaim claim = mapper.mapToCivilClaim(response);
+
+        assertEquals("UFN123", claim.getUniqueFileNumber());
+        assertEquals("CASE456", claim.getCaseReferenceNumber());
+        assertEquals("Doe", claim.getClientSurname());
+        assertEquals("John", claim.getClientForename());
+        assertEquals("FeeSchemeX", claim.getFeeScheme());
+        assertEquals("Civil", claim.getCategoryOfLaw());
+        assertTrue(claim.getEscaped());
+        assertEquals("MT1", claim.getMatterTypeCodeOne());
+        assertEquals("MT2", claim.getMatterTypeCodeTwo());
     }
 
     @Test
     void testMapToCrimeClaimSummary() {
         ClaimResponse response = new ClaimResponse();
-        response.setCrimeMatterTypeCode("CRIME123");
-        CrimeClaimSummary crimeSummary = mapper.mapToCrimeClaimSummary(response);
+        response.setUniqueFileNumber("UFN123");
+        response.setCaseReferenceNumber("CASE456");
+        response.setClientSurname("Doe");
+        response.setClientForename("John");
+        response.setCaseStartDate("2025-01-01");
+        response.setCaseConcludedDate("2025-02-01");
 
-        assertEquals("CRIME123", crimeSummary.getMatterTypeCode());
+        FeeCalculationPatch feeCalc = new FeeCalculationPatch();
+        feeCalc.setFeeCodeDescription("FeeSchemeX");
+        feeCalc.setCategoryOfLaw("Civil");
+        BoltOnPatch boltOn = new BoltOnPatch();
+        boltOn.setEscapeCaseFlag(true);
+        feeCalc.setBoltOnDetails(boltOn);
+        response.setFeeCalculationResponse(feeCalc);
+
+        response.setCrimeMatterTypeCode("CRIME123");
+        CrimeClaim claim = mapper.mapToCrimeClaim(response);
+
+        assertEquals("UFN123", claim.getUniqueFileNumber());
+        assertEquals("CASE456", claim.getCaseReferenceNumber());
+        assertEquals("Doe", claim.getClientSurname());
+        assertEquals("John", claim.getClientForename());
+        assertEquals("FeeSchemeX", claim.getFeeScheme());
+        assertEquals("Civil", claim.getCategoryOfLaw());
+        assertTrue(claim.getEscaped());
+        assertEquals("CRIME123", claim.getMatterTypeCode());
     }
 }

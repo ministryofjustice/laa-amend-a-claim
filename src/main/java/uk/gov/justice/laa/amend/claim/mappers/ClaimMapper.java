@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import uk.gov.justice.laa.amend.claim.models.CivilClaim;
 import uk.gov.justice.laa.amend.claim.models.Claim2;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
@@ -43,7 +44,7 @@ public interface ClaimMapper {
     @Mapping(target = "claimId", source = "id")
     @Mapping(target = "vatApplicable", source = "isVatApplicable")
     @Mapping(target = "assessmentOutcome", ignore = true)
-    Claim2 mapBaseFields(ClaimResponse claimResponse);
+    void mapBaseFields(ClaimResponse claimResponse, @MappingTarget Claim2 target);
 
     // Civil-specific mapping
     @InheritConfiguration(name = "mapBaseFields")
