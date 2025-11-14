@@ -10,14 +10,17 @@ public record CivilClaimViewModel(CivilClaim claim) implements ClaimViewModel<Ci
 
     @Override
     public void addClaimTypeSpecificRows(List<ClaimField> rows) {
-        if (claim.getCounselsCost() != null) rows.add(claim.getCounselsCost());
-        if (claim.getDetentionTravelWaitingCosts() != null) rows.add(claim.getDetentionTravelWaitingCosts());
-        if (claim.getJrFormFillingCost() != null) rows.add(claim.getJrFormFillingCost());
-        if (claim.getAdjournedHearing() != null) rows.add(claim.getAdjournedHearing());
-        if (claim.getCmrhTelephone() != null) rows.add(claim.getCmrhTelephone());
-        if (claim.getCmrhOral() != null) rows.add(claim.getCmrhOral());
-        if (claim.getHoInterview() != null) rows.add(claim.getHoInterview());
-        if (claim.getSubstantiveHearing() != null) rows.add(claim.getSubstantiveHearing());
+        addRowIfNotNull(
+            rows,
+            claim.getCounselsCost(),
+            claim.getDetentionTravelWaitingCosts(),
+            claim.getJrFormFillingCost(),
+            claim.getAdjournedHearing(),
+            claim.getCmrhTelephone(),
+            claim.getCmrhOral(),
+            claim.getHoInterview(),
+            claim.getSubstantiveHearing()
+        );
     }
 
     @Override

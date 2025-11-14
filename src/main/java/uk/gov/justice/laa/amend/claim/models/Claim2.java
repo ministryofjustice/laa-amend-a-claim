@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Data;
-import net.minidev.json.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimViewModel;
 
 import java.io.Serial;
@@ -50,9 +50,15 @@ public abstract class Claim2 implements Serializable {
     }
 
     public void setNilledValues() {
-        this.netProfitCost.setAmended(BigDecimal.ZERO);
-        this.netDisbursementAmount.setAmended(BigDecimal.ZERO);
-        this.disbursementVatAmount.setAmended(BigDecimal.ZERO);
+        if (netProfitCost != null) {
+            netProfitCost.setAmended(BigDecimal.ZERO);
+        }
+        if (netDisbursementAmount != null) {
+            netDisbursementAmount.setAmended(BigDecimal.ZERO);
+        }
+        if (disbursementVatAmount != null) {
+            disbursementVatAmount.setAmended(BigDecimal.ZERO);
+        }
     }
 
     public abstract ClaimViewModel<? extends Claim2> toViewModel();

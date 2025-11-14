@@ -25,14 +25,30 @@ public class CivilClaim extends Claim2 {
     @Override
     public void setNilledValues() {
         super.setNilledValues();
-        this.counselsCost.setAmended(BigDecimal.ZERO);
-        this.detentionTravelWaitingCosts.setAmended(BigDecimal.ZERO);
-        this.jrFormFillingCost.setAmended(BigDecimal.ZERO);
-        this.adjournedHearing.setAmended(false);
-        this.cmrhTelephone.setAmended(0);
-        this.cmrhOral.setAmended(0);
-        this.hoInterview.setAmended(0);
-        this.substantiveHearing.setAmended(0);
+        if (counselsCost != null) {
+            counselsCost.setAmended(BigDecimal.ZERO);
+        }
+        if (detentionTravelWaitingCosts != null) {
+            detentionTravelWaitingCosts.setAmended(BigDecimal.ZERO);
+        }
+        if (jrFormFillingCost != null) {
+            jrFormFillingCost.setAmended(BigDecimal.ZERO);
+        }
+        if (adjournedHearing != null) {
+            adjournedHearing.setAmended(false);
+        }
+        if (cmrhTelephone != null) {
+            cmrhTelephone.setAmended(0);
+        }
+        if (cmrhOral != null) {
+            cmrhOral.setAmended(0);
+        }
+        if (hoInterview != null) {
+            hoInterview.setAmended(0);
+        }
+        if (substantiveHearing != null) {
+            substantiveHearing.setAmended(0);
+        }
     }
 
     @Override

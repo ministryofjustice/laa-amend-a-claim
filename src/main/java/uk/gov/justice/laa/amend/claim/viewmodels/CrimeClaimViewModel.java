@@ -10,8 +10,11 @@ public record CrimeClaimViewModel(CrimeClaim claim) implements ClaimViewModel<Cr
 
     @Override
     public void addClaimTypeSpecificRows(List<ClaimField> rows) {
-        if (claim.getTravelCosts() != null) rows.add(claim.getTravelCosts());
-        if (claim.getWaitingCosts() != null) rows.add(claim.getWaitingCosts());
+        addRowIfNotNull(
+            rows,
+            claim.getTravelCosts(),
+            claim.getWaitingCosts()
+        );
     }
 
     @Override

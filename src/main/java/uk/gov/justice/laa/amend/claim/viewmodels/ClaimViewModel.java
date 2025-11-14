@@ -23,16 +23,22 @@ public interface ClaimViewModel<T extends Claim2> {
     default List<ClaimField> getTableRows() {
         List<ClaimField> rows = new ArrayList<>();
 
-        if (claim().getFixedFee() != null) rows.add(claim().getFixedFee());
-        if (claim().getNetProfitCost() != null) rows.add(claim().getNetProfitCost());
-        if (claim().getNetDisbursementAmount() != null) rows.add(claim().getNetDisbursementAmount());
-        if (claim().getDisbursementVatAmount() != null) rows.add(claim().getDisbursementVatAmount());
+        addRowIfNotNull(
+            rows,
+            claim().getFixedFee(),
+            claim().getNetProfitCost(),
+            claim().getNetDisbursementAmount(),
+            claim().getDisbursementVatAmount()
+        );
 
         // Subclasses should add their specific rows here
         addClaimTypeSpecificRows(rows);
 
-        if (claim().getVatClaimed() != null) rows.add(claim().getVatClaimed());
-        if (claim().getTotalAmount() != null) rows.add(claim().getTotalAmount());
+        addRowIfNotNull(
+            rows,
+            claim().getVatClaimed(),
+            claim().getTotalAmount()
+        );
 
         return rows;
     }
@@ -95,5 +101,11 @@ public interface ClaimViewModel<T extends Claim2> {
             case String s -> s;
             default -> value.toString();
         };
+    }
+
+    default void addRowIfNotNull(List<ClaimField> list, ClaimField... claimFields) {
+        for (ClaimField claimField : claimFields) {
+            if (claimField != null) list.add(claimField);
+        }
     }
 }

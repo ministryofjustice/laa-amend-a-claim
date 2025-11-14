@@ -85,7 +85,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
         assertPageHasValuesRow(doc, "CMRH oral", claim.getCmrhOral());
         assertPageHasValuesRow(doc, "CMRH telephone", claim.getCmrhTelephone());
-        assertPageHasValuesRow(doc, "Counsel's Cost(ex VAT)", claim.getCounselsCost());
+        assertPageHasValuesRow(doc, "Counsel's costs (ex VAT)", claim.getCounselsCost());
     }
 
     @Test

@@ -80,7 +80,15 @@ public class Claim implements Serializable {
 
     @JsonIgnore
     public String getClientName() {
-        return "";
+        if (clientForename != null & clientSurname != null) {
+            return String.format("%s %s", clientForename, clientSurname);
+        } else if (clientForename != null) {
+            return clientForename;
+        } else if (clientSurname != null) {
+            return clientSurname;
+        } else {
+            return null;
+        }
     }
 
     public void parseAndSetSubmissionPeriod(String submissionPeriod) {
