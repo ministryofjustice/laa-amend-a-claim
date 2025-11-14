@@ -32,8 +32,6 @@ public interface ClaimsApiClient {
             @RequestParam(value = "size", required = false) int size
     );
 
-
-
     @GetExchange(url = "/submissions/{submissionId}/claims/{claimId}", accept = MediaType.APPLICATION_JSON_VALUE)
     Mono<ClaimResponse> getClaim(
             @PathVariable String submissionId,

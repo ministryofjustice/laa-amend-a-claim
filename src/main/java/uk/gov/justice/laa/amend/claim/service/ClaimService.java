@@ -42,12 +42,13 @@ public class ClaimService {
                         sort
                 ).block();
             } else {
-                return claimsApiClient.searchClaims(
+                return claimsApiClient.searchClaimsWithSort(
                         officeCode.toUpperCase(),
                         uniqueFileNumber.orElse(null),
                         caseReferenceNumber.orElse(null),
                         page - 1,
-                        size
+                        size,
+                        null
                 ).block();
             }
         } catch (Exception e) {
