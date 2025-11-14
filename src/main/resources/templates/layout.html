@@ -24,8 +24,8 @@
             </div>
 
             <a th:if="${showBackLink ?: false}"
-               href="#"
-               onclick="window.history.go(-1); return false;"
+               th:href="${(backUrl ?: null) != null ? backUrl : ''}"
+               th:onclick="${(backUrl ?: null) == null ? 'window.history.go(-1); return false;' : null}"
                class="govuk-back-link"
                th:text="#{service.back}">
             </a>

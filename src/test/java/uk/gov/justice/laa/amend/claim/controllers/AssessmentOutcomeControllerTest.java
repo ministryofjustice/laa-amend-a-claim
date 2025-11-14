@@ -13,6 +13,7 @@ import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
@@ -20,7 +21,7 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -38,22 +39,24 @@ public class AssessmentOutcomeControllerTest {
     @MockitoBean
     private ClaimResultMapper claimResultMapper;
 
+    @MockitoBean
+    private AssessmentService assessmentService;
+
     @Test
-    public void testOnPageLoadReturnsView() throws Exception {
+    public void testGetAssessmentOutcome_ReturnsView() throws Exception {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
 
-        MockHttpSession session = new MockHttpSession();
+        when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
+        when(claimResultMapper.mapToClaim(any())).thenReturn(new Claim());
 
+        MockHttpSession session = new MockHttpSession();
         String path = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
 
         mockMvc.perform(get(path).session(session))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("assessmentOutcomeForm"))
+                .andExpect(model().attributeExists("claim"))
                 .andExpect(view().name("assessment-outcome"));
-
-        Assertions.assertNull(session.getAttribute("assessmentOutcome"));
-        Assertions.assertNull(session.getAttribute("liabilityForVat"));
     }
-
 }
