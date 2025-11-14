@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.forms;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +15,7 @@ public class AssessmentOutcomeForm {
     @NotNull(message = ASSESSMENT_OUTCOME_REQUIRED_ERROR)
     private OutcomeType assessmentOutcome;
 
-    @NotBlank(message = LIABILITY_FOR_VAT_REQUIRED_ERROR)
-    private String liabilityForVat;
+    @NotNull(message = LIABILITY_FOR_VAT_REQUIRED_ERROR)
+    private Boolean liabilityForVat;
 
 }

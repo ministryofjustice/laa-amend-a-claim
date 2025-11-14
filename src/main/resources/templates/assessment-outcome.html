@@ -75,13 +75,13 @@
                                      >
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input" id="liability-for-vat" name="liabilityForVat" type="radio" value="yes"
-                                               th:checked="${assessmentOutcomeForm.liabilityForVat == 'yes'}">
+                                               th:checked="${assessmentOutcomeForm.liabilityForVat != null && assessmentOutcomeForm.liabilityForVat}">
                                         <label class="govuk-label govuk-radios__label" for="liability-for-vat" th:text="#{service.yes}">
                                         </label>
                                     </div>
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input" id="liability-for-vat-2" name="liabilityForVat" type="radio" value="no"
-                                               th:checked="${assessmentOutcomeForm.liabilityForVat == 'no'}">
+                                               th:checked="${assessmentOutcomeForm.liabilityForVat != null && !assessmentOutcomeForm.liabilityForVat}">
                                         <label class="govuk-label govuk-radios__label" for="liability-for-vat-2" th:text="#{service.no}">
                                         </label>
                                     </div>
@@ -91,10 +91,11 @@
                         </div>
 
                             <div class="govuk-button-group">
-                                <button class="govuk-button" type="submit"> Continue </button>
+                                <button class="govuk-button" type="submit" th:text="#{assessmentOutcome.continue}"></button>
                                 <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
                                    class="govuk-button govuk-button--secondary"
-                                   data-module="govuk-button"> Cancel </a>
+                                   data-module="govuk-button"
+                                   th:text="#{assessmentOutcome.cancel}"></a>
                             </div>
                     </form>
 

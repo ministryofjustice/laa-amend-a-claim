@@ -50,8 +50,7 @@ public class AssessmentOutcomeController {
 
             // Load VAT liability from vatClaimed
             if (claimSummary.getVatClaimed() != null && claimSummary.getVatClaimed().getAmended() != null) {
-                Boolean vatAmended = (Boolean) claimSummary.getVatClaimed().getAmended();
-                form.setLiabilityForVat(vatAmended ? "yes" : "no");
+                form.setLiabilityForVat((Boolean) claimSummary.getVatClaimed().getAmended());
             }
         }
 
@@ -93,8 +92,7 @@ public class AssessmentOutcomeController {
 
             // Update VAT liability in vatClaimed ClaimField
             if (claimSummary.getVatClaimed() != null) {
-                Boolean vatLiable = "yes".equalsIgnoreCase(assessmentOutcomeForm.getLiabilityForVat());
-                claimSummary.getVatClaimed().setAmended(vatLiable);
+                claimSummary.getVatClaimed().setAmended(assessmentOutcomeForm.getLiabilityForVat());
             }
 
             // Save updated ClaimSummary back to session
