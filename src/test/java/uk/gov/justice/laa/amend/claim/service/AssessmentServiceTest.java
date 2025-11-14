@@ -34,13 +34,12 @@ class AssessmentServiceTest {
         // When: NILLED outcome is applied
         assessmentService.applyAssessmentOutcome(claimSummary, OutcomeType.NILLED);
 
-        // Then: All amended values should be set to 0
-        assertEquals(BigDecimal.ZERO, claimSummary.getFixedFee().getAmended());
+        // Then: Only amendable monetary fields should be set to 0 (not VAT, Total, or Fixed Fee)
+        assertEquals(new BigDecimal("100.00"), claimSummary.getFixedFee().getAmended()); // Fixed Fee unchanged (NA)
         assertEquals(BigDecimal.ZERO, claimSummary.getNetProfitCost().getAmended());
         assertEquals(BigDecimal.ZERO, claimSummary.getNetDisbursementAmount().getAmended());
         assertEquals(BigDecimal.ZERO, claimSummary.getDisbursementVatAmount().getAmended());
-        assertEquals(BigDecimal.ZERO, claimSummary.getVatClaimed().getAmended());
-        assertEquals(BigDecimal.ZERO, claimSummary.getTotalAmount().getAmended());
+        assertEquals(new BigDecimal("133.20"), claimSummary.getVatClaimed().getAmended()); // VAT unchanged (calculated)
     }
 
     @Test

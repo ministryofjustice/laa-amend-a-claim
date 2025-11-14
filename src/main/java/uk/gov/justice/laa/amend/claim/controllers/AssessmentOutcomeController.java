@@ -43,32 +43,23 @@ public class AssessmentOutcomeController {
 
         // Load values from ClaimSummary if it exists
         ClaimSummary claimSummary = (ClaimSummary) session.getAttribute(claimId);
-        String assessmentOutcome = null;
-        String liabilityForVat = null;
 
         if (claimSummary != null) {
             // Load assessment outcome
-            if (claimSummary.getAssessmentOutcome() != null) {
-                assessmentOutcome = claimSummary.getAssessmentOutcome().getFormValue();
-            }
+            form.setAssessmentOutcome(claimSummary.getAssessmentOutcome());
 
             // Load VAT liability from vatClaimed
             if (claimSummary.getVatClaimed() != null && claimSummary.getVatClaimed().getAmended() != null) {
                 Boolean vatAmended = (Boolean) claimSummary.getVatClaimed().getAmended();
-                liabilityForVat = vatAmended ? "yes" : "no";
+                form.setLiabilityForVat(vatAmended ? "yes" : "no");
             }
         }
-
-        form.setAssessmentOutcome(assessmentOutcome);
-        form.setLiabilityForVat(liabilityForVat);
 
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
         Claim claim = claimResultMapper.mapToClaim(claimResponse);
 
         model.addAttribute("claim", claim);
         model.addAttribute("assessmentOutcomeForm", form);
-        model.addAttribute("assessmentOutcome", assessmentOutcome);
-        model.addAttribute("liabilityForVat", liabilityForVat);
 
         return "assessment-outcome";
     }
@@ -92,7 +83,7 @@ public class AssessmentOutcomeController {
         ClaimSummary claimSummary = (ClaimSummary) session.getAttribute(claimId);
 
         if (claimSummary != null) {
-            OutcomeType newOutcome = OutcomeType.fromFormValue(assessmentOutcomeForm.getAssessmentOutcome());
+            OutcomeType newOutcome = assessmentOutcomeForm.getAssessmentOutcome();
 
             // Apply business logic based on outcome change
             assessmentService.applyAssessmentOutcome(claimSummary, newOutcome);
