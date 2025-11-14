@@ -20,10 +20,16 @@ public class CrimeClaimSummary extends ClaimSummary {
 
     @Override
     protected Cost getCostForRow(ClaimFieldRow row) {
-        if (row == null) return null;
+        if (row == null) {
+            return null;
+        }
 
-        if (row.equals(travelCosts)) return Cost.TRAVEL_COSTS;
-        if (row.equals(waitingCosts)) return Cost.WAITING_COSTS;
+        if (row.equals(travelCosts)) {
+            return Cost.TRAVEL_COSTS;
+        }
+        if (row.equals(waitingCosts)) {
+            return Cost.WAITING_COSTS;
+        }
 
         // Fall back to parent implementation
         return super.getCostForRow(row);

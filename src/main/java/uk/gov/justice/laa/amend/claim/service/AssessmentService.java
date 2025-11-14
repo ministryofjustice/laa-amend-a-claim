@@ -44,6 +44,9 @@ public class AssessmentService {
             case PAID_IN_FULL -> applyPaidInFullOutcome(claimSummary);
             case REDUCED -> applyReducedOutcome(claimSummary);
             case REDUCED_TO_FIXED_FEE -> applyReducedToFixedFeeOutcome(claimSummary);
+            default -> {
+                log.warn("Unhandled outcome type: {}", newOutcome);
+            }
         }
     }
 

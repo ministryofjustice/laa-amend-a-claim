@@ -78,10 +78,14 @@ public class ClaimSummary implements Serializable {
      * @return the change URL, or null if not editable
      */
     public String getChangeUrl(ClaimFieldRow row) {
-        if (row == null) return null;
+        if (row == null) {
+            return null;
+        }
 
         Cost cost = getCostForRow(row);
-        if (cost == null) return null;
+        if (cost == null) {
+            return null;
+        }
 
         return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
     }
@@ -103,11 +107,19 @@ public class ClaimSummary implements Serializable {
      * @return the corresponding Cost, or null if not editable
      */
     protected Cost getCostForRow(ClaimFieldRow row) {
-        if (row == null) return null;
+        if (row == null) {
+            return null;
+        }
 
-        if (row.equals(netProfitCost)) return Cost.PROFIT_COSTS;
-        if (row.equals(netDisbursementAmount)) return Cost.DISBURSEMENTS;
-        if (row.equals(disbursementVatAmount)) return Cost.DISBURSEMENTS_VAT;
+        if (row.equals(netProfitCost)) {
+            return Cost.PROFIT_COSTS;
+        }
+        if (row.equals(netDisbursementAmount)) {
+            return Cost.DISBURSEMENTS;
+        }
+        if (row.equals(disbursementVatAmount)) {
+            return Cost.DISBURSEMENTS_VAT;
+        }
 
         // Subclasses should override to add their specific costs
         return null;
@@ -115,7 +127,9 @@ public class ClaimSummary implements Serializable {
 
     protected void addRowIfNotNull(List<ClaimFieldRow> list, ClaimFieldRow... rows) {
         for (ClaimFieldRow row : rows) {
-            if (row != null) list.add(row);
+            if (row != null) {
+                list.add(row);
+            }
         }
     }
 }

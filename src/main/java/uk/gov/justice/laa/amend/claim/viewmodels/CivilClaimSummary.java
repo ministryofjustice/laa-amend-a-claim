@@ -27,11 +27,19 @@ public class CivilClaimSummary extends ClaimSummary {
 
     @Override
     protected Cost getCostForRow(ClaimFieldRow row) {
-        if (row == null) return null;
+        if (row == null) {
+            return null;
+        }
 
-        if (row.equals(counselsCost)) return Cost.COUNSEL_COSTS;
-        if (row.equals(detentionTravelWaitingCosts)) return Cost.DETENTION_TRAVEL_AND_WAITING_COSTS;
-        if (row.equals(jrFormFillingCost)) return Cost.JR_FORM_FILLING_COSTS;
+        if (row.equals(counselsCost)) {
+            return Cost.COUNSEL_COSTS;
+        }
+        if (row.equals(detentionTravelWaitingCosts)) {
+            return Cost.DETENTION_TRAVEL_AND_WAITING_COSTS;
+        }
+        if (row.equals(jrFormFillingCost)) {
+            return Cost.JR_FORM_FILLING_COSTS;
+        }
 
         // Fall back to parent implementation
         return super.getCostForRow(row);
