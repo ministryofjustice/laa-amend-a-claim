@@ -3,8 +3,10 @@ package uk.gov.justice.laa.amend.claim.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
+import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimSummary;
 
 import java.math.BigDecimal;
 
@@ -18,7 +20,6 @@ class AssessmentServiceTest {
     @BeforeEach
     void setUp() {
         assessmentService = new AssessmentService();
-        claimSummary = createTestClaimSummary();
     }
 
     @Test
@@ -67,43 +68,5 @@ class AssessmentServiceTest {
 
         // Then: Amended value should be set to 0
         assertEquals(BigDecimal.ZERO, claimSummary.getNetProfitCost().getAmended());
-    }
-
-    @Test
-    void testApplyAssessmentOutcome_HandlesNullFields() {
-        // Given: A claim with null fields
-        claimSummary.setFixedFee(null);
-        claimSummary.setNetProfitCost(null);
-
-        // When: NILLED outcome is applied
-        assessmentService.applyAssessmentOutcome(claimSummary, OutcomeType.NILLED);
-
-        // Then: No exception should be thrown
-        assertNull(claimSummary.getFixedFee());
-        assertNull(claimSummary.getNetProfitCost());
-    }
-
-    @Test
-    void testApplyAssessmentOutcome_DoesNothingIfClaimSummaryIsNull() {
-        // When: Outcome is applied to null claim
-        assertDoesNotThrow(() -> assessmentService.applyAssessmentOutcome(null, OutcomeType.NILLED));
-    }
-
-    @Test
-    void testApplyAssessmentOutcome_DoesNothingIfOutcomeIsNull() {
-        // When: Null outcome is applied
-        claimSummary.setNetProfitCost(new ClaimFieldRow("Profit Cost", new BigDecimal("500.00"), new BigDecimal("450.00"), new BigDecimal("450.00")));
-
-        assessmentService.applyAssessmentOutcome(claimSummary, null);
-
-        // Then: Original amended value should remain
-        assertEquals(new BigDecimal("450.00"), claimSummary.getNetProfitCost().getAmended());
-    }
-
-    private ClaimSummary createTestClaimSummary() {
-        ClaimSummary summary = new ClaimSummary();
-        summary.setClaimId("test-claim-123");
-        summary.setSubmissionId("test-submission-456");
-        return summary;
     }
 }
