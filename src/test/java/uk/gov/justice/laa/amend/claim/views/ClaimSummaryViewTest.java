@@ -8,7 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimSummaryController;
-import uk.gov.justice.laa.amend.claim.mappers.ClaimSummaryMapper;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
@@ -33,7 +33,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
     private ClaimService claimService;
 
     @MockitoBean
-    private ClaimSummaryMapper claimSummaryMapper;
+    private ClaimMapper claimMapper;
 
     ClaimSummaryViewTest() {
         super("/submissions/submissionId/claims/claimId");
@@ -56,7 +56,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
 
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimSummaryMapper.mapToCivilClaimSummary(any())).thenReturn(claim);
+        when(claimMapper.mapToCivilClaimSummary(any())).thenReturn(claim);
 
         Document doc = renderDocument();
 
@@ -96,7 +96,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         ClaimResponse claimResponse = new ClaimResponse();
         claimResponse.feeCalculationResponse(new FeeCalculationPatch().categoryOfLaw("CRIME"));
         when(claimService.getClaim(anyString(), anyString())).thenReturn(claimResponse);
-        when(claimSummaryMapper.mapToCrimeClaimSummary(any())).thenReturn(claim);
+        when(claimMapper.mapToCrimeClaimSummary(any())).thenReturn(claim);
 
         Document doc = renderDocument();
 
@@ -147,7 +147,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
     @Test
     void testPageWhenNullClaim() throws Exception {
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimSummaryMapper.mapToCivilClaimSummary(any())).thenReturn(null);
+        when(claimMapper.mapToCivilClaimSummary(any())).thenReturn(null);
 
         Document doc = renderDocument();
 
@@ -163,7 +163,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
     @Test
     void testPageWhenEmptyClaim() throws Exception {
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimSummaryMapper.mapToCrimeClaimSummary(any())).thenReturn(new CrimeClaimSummary());
+        when(claimMapper.mapToCrimeClaimSummary(any())).thenReturn(new CrimeClaimSummary());
 
         Document doc = renderDocument();
 

@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
-public abstract class Claim2 implements Serializable {
+public class Claim2 implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     private String submissionId;
@@ -41,5 +41,7 @@ public abstract class Claim2 implements Serializable {
         this.disbursementVatAmount.setAmended(BigDecimal.ZERO);
     }
 
-    public abstract ClaimViewModel<? extends Claim2> toViewModel();
+    public ClaimViewModel<? extends Claim2> toViewModel() {
+        throw new UnsupportedOperationException("toViewModel must be implemented by subclass");
+    }
 }

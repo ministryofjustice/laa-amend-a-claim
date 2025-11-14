@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
+import uk.gov.justice.laa.amend.claim.models.Claim2;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,13 +21,13 @@ public class ClaimReviewController {
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId
     ) {
-        ClaimSummary claimSummary = (ClaimSummary) session.getAttribute(claimId);
+        Claim2 claim = (Claim2) session.getAttribute(claimId);
 
-        if (claimSummary == null) {
+        if (claim == null) {
             return String.format("redirect:/submissions/%s/claims/%s", submissionId, claimId);
         }
 
-        model.addAttribute("claimSummary", claimSummary);
+        model.addAttribute("claimSummary", claim);
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("backUrl", String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId));

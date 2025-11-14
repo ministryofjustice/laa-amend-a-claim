@@ -4,33 +4,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
-import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimSummary;
+import uk.gov.justice.laa.amend.claim.models.CivilClaim;
+import uk.gov.justice.laa.amend.claim.models.Claim2;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaim;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
 import java.math.BigDecimal;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.*;
 
 @Mapper(componentModel = "spring")
-public interface ClaimSummaryMapper {
+public interface ClaimMapper {
 
     // Base mapping
     @Mapping(target = "vatClaimed", expression = "java(mapVatClaimed(claimResponse))")
@@ -57,7 +42,8 @@ public interface ClaimSummaryMapper {
     @Mapping(target = "submissionId", source = "submissionId")
     @Mapping(target = "claimId", source = "id")
     @Mapping(target = "vatApplicable", source = "isVatApplicable")
-    ClaimSummary mapBaseFields(ClaimResponse claimResponse);
+    @Mapping(target = "assessmentOutcome", ignore = true)
+    Claim2 mapBaseFields(ClaimResponse claimResponse);
 
     // Civil-specific mapping
     @InheritConfiguration(name = "mapBaseFields")
@@ -71,14 +57,14 @@ public interface ClaimSummaryMapper {
     @Mapping(target = "counselsCost", expression = "java(mapCounselsCost(claimResponse))")
     @Mapping(target = "matterTypeCodeOne", expression = "java(mapMatterTypeCodeOne(claimResponse))")
     @Mapping(target = "matterTypeCodeTwo", expression = "java(mapMatterTypeCodeTwo(claimResponse))")
-    CivilClaimSummary mapToCivilClaimSummary(ClaimResponse claimResponse);
+    CivilClaim mapToCivilClaim(ClaimResponse claimResponse);
 
     // Crime-specific mapping
     @InheritConfiguration(name = "mapBaseFields")
     @Mapping(target = "matterTypeCode", source = "crimeMatterTypeCode")
     @Mapping(target = "travelCosts", expression = "java(mapTravelCosts(claimResponse))")
     @Mapping(target = "waitingCosts", expression = "java(mapWaitingCosts(claimResponse))")
-    CrimeClaimSummary mapToCrimeClaimSummary(ClaimResponse claimResponse);
+    CrimeClaim mapToCrimeClaim(ClaimResponse claimResponse);
 
     default String mapMatterTypeCodeOne(ClaimResponse claimResponse) {
         if (StringUtils.isNotEmpty(claimResponse.getMatterTypeCode())) {
@@ -96,122 +82,122 @@ public interface ClaimSummaryMapper {
         return null;
     }
 
-    default ClaimFieldRow mapTotalAmount(ClaimResponse claimResponse) {
+    default ClaimField mapTotalAmount(ClaimResponse claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getTotalAmount() : null;
         var submitted = claimResponse.getTotalValue();
-        return new ClaimFieldRow(TOTAL, submitted, calculated, submitted);
+        return new ClaimField(TOTAL, submitted, calculated, submitted);
     }
 
-    default ClaimFieldRow mapFixedFee(ClaimResponse claimResponse) {
+    default ClaimField mapFixedFee(ClaimResponse claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getFixedFeeAmount() : null;
-        return new ClaimFieldRow(FIXED_FEE, "NA", calculated, "NA");
+        return new ClaimField(FIXED_FEE, "NA", calculated, "NA");
     }
 
-    default ClaimFieldRow mapNetProfitCost(ClaimResponse claimResponse) {
+    default ClaimField mapNetProfitCost(ClaimResponse claimResponse) {
         BigDecimal submitted = claimResponse.getNetProfitCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetProfitCostsAmount() : null;
-        return new ClaimFieldRow(NET_PROFIT_COST, submitted, calculated, submitted);
+        return new ClaimField(NET_PROFIT_COST, submitted, calculated, submitted);
     }
 
-    default ClaimFieldRow mapVatClaimed(ClaimResponse claimResponse) {
+    default ClaimField mapVatClaimed(ClaimResponse claimResponse) {
         var submitted = claimResponse.getIsVatApplicable();
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 && Boolean.TRUE.equals(claimResponse.getFeeCalculationResponse().getVatIndicator());
-        return new ClaimFieldRow(VAT, submitted, calculated, submitted);
+        return new ClaimField(VAT, submitted, calculated, submitted);
     }
 
 
-    default ClaimFieldRow mapNetDisbursementAmount(ClaimResponse claimResponse) {
+    default ClaimField mapNetDisbursementAmount(ClaimResponse claimResponse) {
         BigDecimal submitted = claimResponse.getNetDisbursementAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getDisbursementVatAmount() : null;
-        return new ClaimFieldRow(NET_DISBURSEMENTS_COST, submitted, calculated, submitted);
+        return new ClaimField(NET_DISBURSEMENTS_COST, submitted, calculated, submitted);
     }
 
-    default ClaimFieldRow mapDisbursementVatAmount(ClaimResponse claimResponse) {
+    default ClaimField mapDisbursementVatAmount(ClaimResponse claimResponse) {
         BigDecimal submitted = claimResponse.getDisbursementsVatAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getDisbursementVatAmount() : null;
-        return new ClaimFieldRow(DISBURSEMENT_VAT, submitted, calculated, submitted);
+        return new ClaimField(DISBURSEMENT_VAT, submitted, calculated, submitted);
     }
 
-    default ClaimFieldRow mapCounselsCost(ClaimResponse claimResponse) {
+    default ClaimField mapCounselsCost(ClaimResponse claimResponse) {
         BigDecimal submitted = claimResponse.getNetCounselCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetCostOfCounselAmount() : null;
-        return new ClaimFieldRow(COUNSELS_COST, submitted, calculated, submitted);
+        return new ClaimField(COUNSELS_COST, submitted, calculated, submitted);
     }
 
-    default ClaimFieldRow mapDetentionTravelWaitingCosts(ClaimResponse claimResponse) {
+    default ClaimField mapDetentionTravelWaitingCosts(ClaimResponse claimResponse) {
         BigDecimal submitted = claimResponse.getDetentionTravelWaitingCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getDetentionAndWaitingCostsAmount() : null;
-        return new ClaimFieldRow(DETENTION_TRAVEL_COST, submitted, calculated, submitted);
+        return new ClaimField(DETENTION_TRAVEL_COST, submitted, calculated, submitted);
     }
 
-    default ClaimFieldRow mapJrFormFillingCost(ClaimResponse claimResponse) {
+    default ClaimField mapJrFormFillingCost(ClaimResponse claimResponse) {
         BigDecimal submitted = claimResponse.getJrFormFillingAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getJrFormFillingAmount() : null;
-        return new ClaimFieldRow(JR_FORM_FILLING, submitted, calculated, submitted);
+        return new ClaimField(JR_FORM_FILLING, submitted, calculated, submitted);
     }
 
-    default ClaimFieldRow mapAdjournedHearingFee(ClaimResponse claimResponse) {
+    default ClaimField mapAdjournedHearingFee(ClaimResponse claimResponse) {
         var submitted = claimResponse.getAdjournedHearingFeeAmount() != null;
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnAdjournedHearingFee() : null;
-        return new ClaimFieldRow(ADJOURNED_FEE, submitted, calculated, submitted);
+        return new ClaimField(ADJOURNED_FEE, submitted, calculated, submitted);
     }
 
-    default ClaimFieldRow mapCmrhTelephone(ClaimResponse claimResponse) {
+    default ClaimField mapCmrhTelephone(ClaimResponse claimResponse) {
         var submitted = claimResponse.getCmrhTelephoneCount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnCmrhTelephoneFee() : null;
-        return new ClaimFieldRow(CMRH_TELEPHONE, submitted, calculated, submitted);
+        return new ClaimField(CMRH_TELEPHONE, submitted, calculated, submitted);
     }
 
-    default ClaimFieldRow mapCmrhOral(ClaimResponse claimResponse) {
+    default ClaimField mapCmrhOral(ClaimResponse claimResponse) {
         var submitted = claimResponse.getCmrhOralCount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnCmrhOralFee() : null;
-        return new ClaimFieldRow(CMRH_ORAL, submitted, calculated, submitted);
+        return new ClaimField(CMRH_ORAL, submitted, calculated, submitted);
     }
 
-    default ClaimFieldRow mapHoInterview(ClaimResponse claimResponse) {
+    default ClaimField mapHoInterview(ClaimResponse claimResponse) {
         var submitted = claimResponse.getHoInterview();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnHomeOfficeInterviewFee() : null;
-        return new ClaimFieldRow(HO_INTERVIEW, submitted, calculated, submitted);
+        return new ClaimField(HO_INTERVIEW, submitted, calculated, submitted);
     }
 
-    default ClaimFieldRow mapSubstantiveHearing(ClaimResponse claimResponse) {
+    default ClaimField mapSubstantiveHearing(ClaimResponse claimResponse) {
         var submitted = claimResponse.getHoInterview();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnHomeOfficeInterviewFee() : null;
-        return new ClaimFieldRow(SUBSTANTIVE_HEARING, submitted, calculated, submitted);
+        return new ClaimField(SUBSTANTIVE_HEARING, submitted, calculated, submitted);
     }
 
-    default ClaimFieldRow mapTravelCosts(ClaimResponse claimResponse) {
+    default ClaimField mapTravelCosts(ClaimResponse claimResponse) {
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetTravelCostsAmount() : null;
         var submitted = claimResponse.getTravelWaitingCostsAmount() != null
                 ? claimResponse.getTravelWaitingCostsAmount() : null;
-        return new ClaimFieldRow(TRAVEL_COSTS, submitted, calculated, submitted);
+        return new ClaimField(TRAVEL_COSTS, submitted, calculated, submitted);
     }
 
-    default ClaimFieldRow mapWaitingCosts(ClaimResponse claimResponse) {
+    default ClaimField mapWaitingCosts(ClaimResponse claimResponse) {
         var submitted = claimResponse.getNetWaitingCostsAmount() != null
                 ? claimResponse.getNetWaitingCostsAmount() : null;
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetWaitingCostsAmount() : null;
-        return new ClaimFieldRow(WAITING_COSTS, submitted, calculated, submitted);
+        return new ClaimField(WAITING_COSTS, submitted, calculated, submitted);
     }
 }

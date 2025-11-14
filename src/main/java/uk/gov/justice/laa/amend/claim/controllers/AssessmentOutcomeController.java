@@ -16,10 +16,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.forms.AssessmentOutcomeForm;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.Claim2;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
 @Controller
@@ -42,7 +42,7 @@ public class AssessmentOutcomeController {
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
 
         // Load values from ClaimSummary if it exists
-        ClaimSummary claimSummary = (ClaimSummary) session.getAttribute(claimId);
+        Claim2 claimSummary = (Claim2) session.getAttribute(claimId);
 
         if (claimSummary != null) {
             // Load assessment outcome
@@ -80,7 +80,7 @@ public class AssessmentOutcomeController {
             return "assessment-outcome";
         }
 
-        ClaimSummary claimSummary = (ClaimSummary) session.getAttribute(claimId);
+        Claim2 claimSummary = (Claim2) session.getAttribute(claimId);
 
         if (claimSummary != null) {
             OutcomeType newOutcome = assessmentOutcomeForm.getAssessmentOutcome();
@@ -91,7 +91,7 @@ public class AssessmentOutcomeController {
             // Set the assessment outcome
             claimSummary.setAssessmentOutcome(newOutcome);
 
-            // Update VAT liability in vatClaimed ClaimFieldRow
+            // Update VAT liability in vatClaimed ClaimField
             if (claimSummary.getVatClaimed() != null) {
                 Boolean vatLiable = "yes".equalsIgnoreCase(assessmentOutcomeForm.getLiabilityForVat());
                 claimSummary.getVatClaimed().setAmended(vatLiable);

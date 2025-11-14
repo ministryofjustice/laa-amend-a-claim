@@ -16,13 +16,13 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
 
-class ClaimSummaryMapperTest {
+class ClaimMapperTest {
 
-    private ClaimSummaryMapper mapper;
+    private ClaimMapper mapper;
 
     @BeforeEach
     void setUp() {
-        mapper = Mappers.getMapper(ClaimSummaryMapper.class);
+        mapper = Mappers.getMapper(ClaimMapper.class);
     }
 
     @Test

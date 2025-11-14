@@ -1,9 +1,6 @@
 package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Getter;
-import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
-import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimSummary;
 
 import java.util.Arrays;
 
@@ -13,49 +10,49 @@ public enum Cost {
     PROFIT_COSTS(
         "profit-costs",
         "profitCosts",
-        new ClaimFieldAccessor<>(ClaimSummary.class, ClaimSummary::getNetProfitCost, ClaimSummary::setNetProfitCost)
+        new ClaimFieldAccessor<>(Claim2.class, Claim2::getNetProfitCost, Claim2::setNetProfitCost)
     ),
 
     DISBURSEMENTS(
         "disbursements",
         "disbursements",
-        new ClaimFieldAccessor<>(ClaimSummary.class, ClaimSummary::getNetDisbursementAmount, ClaimSummary::setNetDisbursementAmount)
+        new ClaimFieldAccessor<>(Claim2.class, Claim2::getNetDisbursementAmount, Claim2::setNetDisbursementAmount)
     ),
 
     DISBURSEMENTS_VAT(
         "disbursements-vat",
         "disbursementsVat",
-        new ClaimFieldAccessor<>(ClaimSummary.class, ClaimSummary::getDisbursementVatAmount, ClaimSummary::setDisbursementVatAmount)
+        new ClaimFieldAccessor<>(Claim2.class, Claim2::getDisbursementVatAmount, Claim2::setDisbursementVatAmount)
     ),
 
     COUNSEL_COSTS(
         "counsel-costs",
         "counselCosts",
-        new ClaimFieldAccessor<>(CivilClaimSummary.class, CivilClaimSummary::getCounselsCost, CivilClaimSummary::setCounselsCost)
+        new ClaimFieldAccessor<>(CivilClaim.class, CivilClaim::getCounselsCost, CivilClaim::setCounselsCost)
     ),
 
     DETENTION_TRAVEL_AND_WAITING_COSTS(
         "detention-travel-and-waiting-costs",
         "detentionTravelAndWaitingCosts",
-        new ClaimFieldAccessor<>(CivilClaimSummary.class, CivilClaimSummary::getDetentionTravelWaitingCosts, CivilClaimSummary::setDetentionTravelWaitingCosts)
+        new ClaimFieldAccessor<>(CivilClaim.class, CivilClaim::getDetentionTravelWaitingCosts, CivilClaim::setDetentionTravelWaitingCosts)
     ),
 
     JR_FORM_FILLING_COSTS(
         "jr-form-filling-costs",
         "jrFormFillingCosts",
-        new ClaimFieldAccessor<>(CivilClaimSummary.class, CivilClaimSummary::getJrFormFillingCost, CivilClaimSummary::setJrFormFillingCost)
+        new ClaimFieldAccessor<>(CivilClaim.class, CivilClaim::getJrFormFillingCost, CivilClaim::setJrFormFillingCost)
     ),
 
     TRAVEL_COSTS(
         "travel-costs",
         "travelCosts",
-        new ClaimFieldAccessor<>(CrimeClaimSummary.class, CrimeClaimSummary::getTravelCosts, CrimeClaimSummary::setTravelCosts)
+        new ClaimFieldAccessor<>(CrimeClaim.class, CrimeClaim::getTravelCosts, CrimeClaim::setTravelCosts)
     ),
 
     WAITING_COSTS(
         "waiting-costs",
         "waitingCosts",
-        new ClaimFieldAccessor<>(CrimeClaimSummary.class, CrimeClaimSummary::getWaitingCosts, CrimeClaimSummary::setWaitingCosts)
+        new ClaimFieldAccessor<>(CrimeClaim.class, CrimeClaim::getWaitingCosts, CrimeClaim::setWaitingCosts)
     );
 
     private final String path;
