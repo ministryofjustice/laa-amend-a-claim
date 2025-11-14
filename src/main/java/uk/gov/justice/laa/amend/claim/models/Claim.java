@@ -7,7 +7,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.YearMonthDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 import lombok.Data;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimViewModel;
 
 import java.io.Serial;
@@ -42,6 +41,7 @@ public abstract class Claim implements Serializable {
 
     private String feeScheme;
     private String categoryOfLaw;
+    private String matterTypeCode;
     private String scheduleReference;
     private String providerName;
     private Boolean escaped;
@@ -55,19 +55,6 @@ public abstract class Claim implements Serializable {
     private ClaimField disbursementVatAmount;
     private OutcomeType assessmentOutcome;
 
-    @JsonIgnore
-    public String getClientName() {
-        if (clientForename != null & clientSurname != null) {
-            return String.format("%s %s", clientForename, clientSurname);
-        } else if (clientForename != null) {
-            return clientForename;
-        } else if (clientSurname != null) {
-            return clientSurname;
-        } else {
-            return null;
-        }
-    }
-
     public void setNilledValues() {
         if (netProfitCost != null) {
             netProfitCost.setAmended(BigDecimal.ZERO);
@@ -79,6 +66,8 @@ public abstract class Claim implements Serializable {
             disbursementVatAmount.setAmended(BigDecimal.ZERO);
         }
     }
+
+    public abstract boolean getIsCrimeClaim();
 
     public abstract ClaimViewModel<? extends Claim> toViewModel();
 }

@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.views;
 
 import org.jsoup.nodes.Document;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -47,8 +48,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
     void testCivilClaimPage() throws Exception {
         CivilClaim claim = new CivilClaim();
         createClaimSummary(claim);
-        claim.setMatterTypeCodeOne("IMLB");
-        claim.setMatterTypeCodeTwo("AHQS");
+        claim.setMatterTypeCode("IMLB+AHQS");
         claim.setDetentionTravelWaitingCosts(new ClaimField(DETENTION_TRAVEL_COST, 100, 90, 95));
         claim.setJrFormFillingCost(new ClaimField(JR_FORM_FILLING, 50, 45, 48));
         claim.setAdjournedHearing(new ClaimField(ADJOURNED_FEE, 200, 180, 190));
@@ -59,7 +59,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setCounselsCost(new ClaimField(COUNSELS_COST, 400, 380, 390));
 
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimMapper.mapToCivilClaim(any())).thenReturn(claim);
+        when(claimMapper.mapToClaim(any())).thenReturn(claim);
 
         Document doc = renderDocument();
 
@@ -99,7 +99,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         ClaimResponse claimResponse = new ClaimResponse();
         claimResponse.feeCalculationResponse(new FeeCalculationPatch().categoryOfLaw("CRIME"));
         when(claimService.getClaim(anyString(), anyString())).thenReturn(claimResponse);
-        when(claimMapper.mapToCrimeClaim(any())).thenReturn(claim);
+        when(claimMapper.mapToClaim(any())).thenReturn(claim);
 
         Document doc = renderDocument();
 
@@ -150,23 +150,15 @@ class ClaimSummaryViewTest extends ViewTestBase {
     @Test
     void testPageWhenNullClaim() throws Exception {
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimMapper.mapToCivilClaim(any())).thenReturn(null);
+        when(claimMapper.mapToClaim(any())).thenReturn(null);
 
-        Document doc = renderDocument();
-
-        assertPageHasTitle(doc, "Claim details");
-
-        assertPageHasHeading(doc, "Claim details");
-
-        assertPageHasNoActiveServiceNavigationItems(doc);
-
-        assertPageHasNoSummaryList(doc);
+        Assertions.assertThrows(Exception.class, this::renderDocument);
     }
 
     @Test
     void testPageWhenEmptyClaim() throws Exception {
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimMapper.mapToCrimeClaim(any())).thenReturn(new CrimeClaim());
+        when(claimMapper.mapToClaim(any())).thenReturn(new CrimeClaim());
 
         Document doc = renderDocument();
 

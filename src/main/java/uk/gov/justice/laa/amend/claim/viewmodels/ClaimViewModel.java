@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
+import uk.gov.justice.laa.amend.claim.utils.BooleanUtils;
 import uk.gov.justice.laa.amend.claim.utils.CurrencyUtils;
 
 import java.math.BigDecimal;
@@ -115,7 +116,7 @@ public interface ClaimViewModel<T extends Claim> {
             case null -> null;
             case BigDecimal bigDecimal -> CurrencyUtils.formatCurrency(bigDecimal);
             case Integer i -> i.toString();
-            case Boolean b -> b ? "Yes" : "No";
+            case Boolean b -> BooleanUtils.formatBoolean(b);
             case String s -> s;
             default -> value.toString();
         };
@@ -150,7 +151,11 @@ public interface ClaimViewModel<T extends Claim> {
     }
 
     default String getEscapedForDisplay() {
-        return (claim().getEscaped() != null && claim().getEscaped()) ? "index.results.escaped.yes" : "index.results.escaped.no";
+        return BooleanUtils.formatBoolean(claim().getEscaped());
+    }
+
+    default String getVatApplicableForDisplay() {
+        return BooleanUtils.formatBoolean(claim().getVatApplicable());
     }
 
     default String getClientName() {

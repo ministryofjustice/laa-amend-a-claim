@@ -26,9 +26,8 @@ public class ClaimSummaryController {
         @PathVariable(value = "claimId") String claimId
     ) {
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
-        boolean isCrimeClaim = isCrimeClaim(claimResponse);
 
-        Claim claim = isCrimeClaim ? claimMapper.mapToCrimeClaim(claimResponse) : claimMapper.mapToCivilClaim(claimResponse);
+        Claim claim = claimMapper.mapToClaim(claimResponse);
         session.setAttribute(claimId, claim);
 
         // TODO - when the claim is null/empty we should render an error screen. We can
@@ -36,16 +35,8 @@ public class ClaimSummaryController {
 
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
-        model.addAttribute("claim", claim);
-        model.addAttribute("isCrimeClaim", isCrimeClaim);
+        model.addAttribute("claim", claim.toViewModel());
 
         return "claim-summary";
     }
-
-    //TODO: Use areaOfLaw from submission
-    private boolean isCrimeClaim(ClaimResponse claim) {
-        var feeCalculationPatch = claim != null && claim.getFeeCalculationResponse() != null ? claim.getFeeCalculationResponse() : null;
-        return feeCalculationPatch != null && ("CRIME").equals(feeCalculationPatch.getCategoryOfLaw());
-    }
-
 }

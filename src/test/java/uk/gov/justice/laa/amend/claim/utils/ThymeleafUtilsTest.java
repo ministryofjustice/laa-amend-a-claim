@@ -94,7 +94,7 @@ public class ThymeleafUtilsTest {
     }
 
     @Nested
-    class SortAssessmentOutcomeErrorsTests {
+    class toAssessmentOutcomeErrorsTests {
         @Test
         void sortErrorsByFieldOrder() {
             List<DetailedError> errors = List.of(
@@ -114,7 +114,7 @@ public class ThymeleafUtilsTest {
 
             ThymeleafUtils sut = new ThymeleafUtils();
 
-            List<AssessmentOutcomeFormError> result = sut.sortAssessmentOutcomeErrors(errors);
+            List<AssessmentOutcomeFormError> result = sut.toAssessmentOutcomeErrors(errors);
 
             List<AssessmentOutcomeFormError> expectedResult = List.of(
                     new AssessmentOutcomeFormError("assessmentOutcome", "Assessment outcome error"),

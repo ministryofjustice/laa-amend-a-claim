@@ -57,6 +57,7 @@ public interface ClaimMapper {
     // TODO use feeSchemeCodeDescription when available
     @Mapping(target = "categoryOfLaw", source = "feeCalculationResponse.categoryOfLaw")
     // TODO use categoryOfLawDescription when available
+    @Mapping(target = "matterTypeCode", ignore = true)
     @Mapping(target = "scheduleReference", source = "scheduleReference")
     @Mapping(target = "submittedDate", constant = "TODO")
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
@@ -79,8 +80,7 @@ public interface ClaimMapper {
     @Mapping(target = "hoInterview", expression = "java(mapHoInterview(claimResponse))")
     @Mapping(target = "substantiveHearing", expression = "java(mapSubstantiveHearing(claimResponse))")
     @Mapping(target = "counselsCost", expression = "java(mapCounselsCost(claimResponse))")
-    @Mapping(target = "matterTypeCodeOne", expression = "java(mapMatterTypeCodeOne(claimResponse))")
-    @Mapping(target = "matterTypeCodeTwo", expression = "java(mapMatterTypeCodeTwo(claimResponse))")
+    @Mapping(target = "matterTypeCode", source = "matterTypeCode")
     CivilClaim mapToCivilClaim(ClaimResponse claimResponse);
 
     // Crime-specific mapping
@@ -112,22 +112,6 @@ public interface ClaimMapper {
         } else {
             return null;
         }
-    }
-
-    default String mapMatterTypeCodeOne(ClaimResponse claimResponse) {
-        if (StringUtils.isNotEmpty(claimResponse.getMatterTypeCode())) {
-            var matterType = claimResponse.getMatterTypeCode().split("[+:]");
-            return matterType.length > 0 ? matterType[0] : null;
-        }
-        return null;
-    }
-
-    default String mapMatterTypeCodeTwo(ClaimResponse claimResponse) {
-        if (StringUtils.isNotEmpty(claimResponse.getMatterTypeCode())) {
-            var matterType = claimResponse.getMatterTypeCode().split("[+:]");
-            return matterType.length > 1 ? matterType[1] : null;
-        }
-        return null;
     }
 
     default ClaimField mapTotalAmount(ClaimResponse claimResponse) {

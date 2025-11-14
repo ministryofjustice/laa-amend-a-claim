@@ -26,15 +26,6 @@ class ClaimMapperTest {
     }
 
     @Test
-    void testMapMatterTypeCodeOneAndTwo() {
-        ClaimResponse response = new ClaimResponse();
-        response.setMatterTypeCode("ABC+DEF:GHI");
-
-        assertEquals("ABC", mapper.mapMatterTypeCodeOne(response));
-        assertEquals("DEF", mapper.mapMatterTypeCodeTwo(response));
-    }
-
-    @Test
     void testMapTotalAmount() {
         ClaimResponse response = new ClaimResponse();
         response.setTotalValue(BigDecimal.valueOf(100));
@@ -77,8 +68,7 @@ class ClaimMapperTest {
         assertEquals("FeeSchemeX", claim.getFeeScheme());
         assertEquals("Civil", claim.getCategoryOfLaw());
         assertTrue(claim.getEscaped());
-        assertEquals("MT1", claim.getMatterTypeCodeOne());
-        assertEquals("MT2", claim.getMatterTypeCodeTwo());
+        assertEquals("MT1+MT2", claim.getMatterTypeCode());
     }
 
     @Test

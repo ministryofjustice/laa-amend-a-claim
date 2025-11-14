@@ -11,8 +11,6 @@ import java.math.BigDecimal;
 @Data
 public class CivilClaim extends Claim {
 
-    private String matterTypeCodeOne;
-    private String matterTypeCodeTwo;
     private ClaimField detentionTravelWaitingCosts;
     private ClaimField jrFormFillingCost;
     private ClaimField adjournedHearing;
@@ -49,6 +47,11 @@ public class CivilClaim extends Claim {
         if (substantiveHearing != null) {
             substantiveHearing.setAmended(0);
         }
+    }
+
+    @Override
+    public boolean getIsCrimeClaim() {
+        return false;
     }
 
     @Override

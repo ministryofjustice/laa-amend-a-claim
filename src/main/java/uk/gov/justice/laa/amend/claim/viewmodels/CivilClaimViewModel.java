@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import org.apache.commons.lang3.StringUtils;
 import uk.gov.justice.laa.amend.claim.models.CivilClaim;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
@@ -41,5 +42,21 @@ public record CivilClaimViewModel(CivilClaim claim) implements ClaimViewModel<Ci
 
         // Fall back to parent implementation
         return ClaimViewModel.super.getCostForRow(row);
+    }
+
+    public String getMatterTypeCodeOne() {
+        if (StringUtils.isNotEmpty(claim.getMatterTypeCode())) {
+            String[] matterType = claim.getMatterTypeCode().split("[+:]");
+            return matterType.length > 0 ? matterType[0] : null;
+        }
+        return null;
+    }
+
+    public String getMatterTypeCodeTwo() {
+        if (StringUtils.isNotEmpty(claim.getMatterTypeCode())) {
+            String[] matterType = claim.getMatterTypeCode().split("[+:]");
+            return matterType.length > 1 ? matterType[1] : null;
+        }
+        return null;
     }
 }

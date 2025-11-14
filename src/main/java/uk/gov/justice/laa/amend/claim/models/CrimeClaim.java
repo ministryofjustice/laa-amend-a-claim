@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 @Data
 public class CrimeClaim extends Claim {
 
-    private String matterTypeCode;
     private ClaimField travelCosts;
     private ClaimField waitingCosts;
 
@@ -24,6 +23,11 @@ public class CrimeClaim extends Claim {
         if (waitingCosts != null) {
             waitingCosts.setAmended(BigDecimal.ZERO);
         }
+    }
+
+    @Override
+    public boolean getIsCrimeClaim() {
+        return true;
     }
 
     @Override

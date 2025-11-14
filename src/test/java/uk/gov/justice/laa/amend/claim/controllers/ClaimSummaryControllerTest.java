@@ -52,7 +52,7 @@ public class ClaimSummaryControllerTest {
         MockHttpSession session = new MockHttpSession();
 
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimMapper.mapToCivilClaim(any())).thenReturn(claim);
+        when(claimMapper.mapToClaim(any())).thenReturn(claim);
 
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 
@@ -95,8 +95,7 @@ public class ClaimSummaryControllerTest {
         claim.setHoInterview(new ClaimField(HO_INTERVIEW, BigDecimal.valueOf(60), BigDecimal.valueOf(65), null));
         claim.setSubstantiveHearing(new ClaimField(SUBSTANTIVE_HEARING, BigDecimal.valueOf(100), BigDecimal.valueOf(110), null));
         claim.setCounselsCost(new ClaimField(COUNSELS_COST, BigDecimal.valueOf(200), BigDecimal.valueOf(220), null));
-        claim.setMatterTypeCodeOne("IMM");
-        claim.setMatterTypeCodeTwo("DET");
+        claim.setMatterTypeCode("IMM+DET");
 
         return claim;
     }

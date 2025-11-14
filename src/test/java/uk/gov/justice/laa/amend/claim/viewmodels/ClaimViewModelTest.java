@@ -107,7 +107,7 @@ public class ClaimViewModelTest {
         void getEscapedForSortingHandlesNull() {
             CivilClaim claim = new CivilClaim();
             ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
-            Assertions.assertEquals("index.results.escaped.no", viewModel.getEscapedForDisplay());
+            Assertions.assertEquals("service.no", viewModel.getEscapedForDisplay());
         }
 
         @Test
@@ -115,7 +115,7 @@ public class ClaimViewModelTest {
             CivilClaim claim = new CivilClaim();
             claim.setEscaped(true);
             ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
-            Assertions.assertEquals("index.results.escaped.yes", viewModel.getEscapedForDisplay());
+            Assertions.assertEquals("service.yes", viewModel.getEscapedForDisplay());
         }
 
         @Test
@@ -123,7 +123,7 @@ public class ClaimViewModelTest {
             CivilClaim claim = new CivilClaim();
             claim.setEscaped(false);
             ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
-            Assertions.assertEquals("index.results.escaped.no", viewModel.getEscapedForDisplay());
+            Assertions.assertEquals("service.no", viewModel.getEscapedForDisplay());
         }
     }
 
@@ -132,21 +132,24 @@ public class ClaimViewModelTest {
         @Test
         void getClientNameHandlesNullForenameAndSurname() {
             CivilClaim claim = new CivilClaim();
-            Assertions.assertNull(claim.getClientName());
+            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            Assertions.assertNull(viewModel.getClientName());
         }
 
         @Test
         void getClientNameHandlesNullSurname() {
             CivilClaim claim = new CivilClaim();
             claim.setClientForename("John");
-            Assertions.assertEquals("John", claim.getClientName());
+            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            Assertions.assertEquals("John", viewModel.getClientName());
         }
 
         @Test
         void getClientNameHandlesNullForename() {
             CivilClaim claim = new CivilClaim();
             claim.setClientSurname("Doe");
-            Assertions.assertEquals("Doe", claim.getClientName());
+            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            Assertions.assertEquals("Doe", viewModel.getClientName());
         }
 
         @Test
@@ -154,7 +157,8 @@ public class ClaimViewModelTest {
             CivilClaim claim = new CivilClaim();
             claim.setClientForename("John");
             claim.setClientSurname("Doe");
-            Assertions.assertEquals("John Doe", claim.getClientName());
+            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            Assertions.assertEquals("John Doe", viewModel.getClientName());
         }
     }
 }
