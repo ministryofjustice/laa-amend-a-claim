@@ -51,7 +51,7 @@ public class Claim2 implements Serializable {
 
     public void setNilledValues() {
         this.netProfitCost.setAmended(BigDecimal.ZERO);
-        this.disbursementVatAmount.setAmended(BigDecimal.ZERO);
+        this.netDisbursementAmount.setAmended(BigDecimal.ZERO);
         this.disbursementVatAmount.setAmended(BigDecimal.ZERO);
     }
 
