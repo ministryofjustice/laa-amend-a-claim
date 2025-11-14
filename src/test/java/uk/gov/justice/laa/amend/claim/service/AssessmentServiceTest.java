@@ -20,6 +20,28 @@ class AssessmentServiceTest {
     @BeforeEach
     void setUp() {
         assessmentService = new AssessmentService();
+        claimSummary = createTestClaimSummary();
+    }
+
+    private ClaimSummary createTestClaimSummary() {
+        ClaimSummary summary = new ClaimSummary();
+        summary.setClaimId("test-claim-123");
+        summary.setSubmissionId("test-submission-456");
+        return summary;
+    }
+
+    private CivilClaimSummary createTestCivilClaimSummary() {
+        CivilClaimSummary civilClaim = new CivilClaimSummary();
+        civilClaim.setClaimId("test-civil-claim-123");
+        civilClaim.setSubmissionId("test-submission-456");
+        return civilClaim;
+    }
+
+    private CrimeClaimSummary createTestCrimeClaimSummary() {
+        CrimeClaimSummary crimeClaim = new CrimeClaimSummary();
+        crimeClaim.setClaimId("test-crime-claim-123");
+        crimeClaim.setSubmissionId("test-submission-456");
+        return crimeClaim;
     }
 
     @Test
@@ -68,5 +90,66 @@ class AssessmentServiceTest {
 
         // Then: Amended value should be set to 0
         assertEquals(BigDecimal.ZERO, claimSummary.getNetProfitCost().getAmended());
+    }
+
+    @Test
+    void testApplyNilledOutcome_CivilClaimSpecificFields() {
+        // Given: A civil claim with non-zero values
+        CivilClaimSummary civilClaim = createTestCivilClaimSummary();
+        civilClaim.setNetProfitCost(new ClaimFieldRow("Profit Cost", new BigDecimal("500.00"), new BigDecimal("450.00"), new BigDecimal("450.00")));
+        civilClaim.setCounselsCost(new ClaimFieldRow("Counsel Costs", new BigDecimal("200.00"), new BigDecimal("180.00"), new BigDecimal("180.00")));
+        civilClaim.setDetentionTravelWaitingCosts(new ClaimFieldRow("Detention Costs", new BigDecimal("100.00"), new BigDecimal("90.00"), new BigDecimal("90.00")));
+        civilClaim.setJrFormFillingCost(new ClaimFieldRow("JR Form Costs", new BigDecimal("50.00"), new BigDecimal("45.00"), new BigDecimal("45.00")));
+        civilClaim.setAdjournedHearing(new ClaimFieldRow("Adjourned Hearing", "No", "No", true));
+        civilClaim.setCmrhTelephone(new ClaimFieldRow("CMRH Telephone", 0, 0, 3));
+        civilClaim.setCmrhOral(new ClaimFieldRow("CMRH Oral", 0, 0, 2));
+        civilClaim.setHoInterview(new ClaimFieldRow("HO Interview", 0, 0, 1));
+        civilClaim.setSubstantiveHearing(new ClaimFieldRow("Substantive Hearing", 0, 0, 5));
+
+        // When: NILLED outcome is applied
+        assessmentService.applyAssessmentOutcome(civilClaim, OutcomeType.NILLED);
+
+        // Then: All civil-specific fields should be set appropriately
+        assertEquals(BigDecimal.ZERO, civilClaim.getNetProfitCost().getAmended());
+        assertEquals(BigDecimal.ZERO, civilClaim.getCounselsCost().getAmended());
+        assertEquals(BigDecimal.ZERO, civilClaim.getDetentionTravelWaitingCosts().getAmended());
+        assertEquals(BigDecimal.ZERO, civilClaim.getJrFormFillingCost().getAmended());
+        assertEquals(false, civilClaim.getAdjournedHearing().getAmended());
+        assertEquals(0, civilClaim.getCmrhTelephone().getAmended());
+        assertEquals(0, civilClaim.getCmrhOral().getAmended());
+        assertEquals(0, civilClaim.getHoInterview().getAmended());
+        assertEquals(0, civilClaim.getSubstantiveHearing().getAmended());
+    }
+
+    @Test
+    void testApplyNilledOutcome_CrimeClaimSpecificFields() {
+        // Given: A crime claim with non-zero values
+        CrimeClaimSummary crimeClaim = createTestCrimeClaimSummary();
+        crimeClaim.setNetProfitCost(new ClaimFieldRow("Profit Cost", new BigDecimal("500.00"), new BigDecimal("450.00"), new BigDecimal("450.00")));
+        crimeClaim.setTravelCosts(new ClaimFieldRow("Travel Costs", new BigDecimal("150.00"), new BigDecimal("135.00"), new BigDecimal("135.00")));
+        crimeClaim.setWaitingCosts(new ClaimFieldRow("Waiting Costs", new BigDecimal("75.00"), new BigDecimal("67.50"), new BigDecimal("67.50")));
+
+        // When: NILLED outcome is applied
+        assessmentService.applyAssessmentOutcome(crimeClaim, OutcomeType.NILLED);
+
+        // Then: All crime-specific fields should be set to zero
+        assertEquals(BigDecimal.ZERO, crimeClaim.getNetProfitCost().getAmended());
+        assertEquals(BigDecimal.ZERO, crimeClaim.getTravelCosts().getAmended());
+        assertEquals(BigDecimal.ZERO, crimeClaim.getWaitingCosts().getAmended());
+    }
+
+    @Test
+    void testApplyAssessmentOutcome_SwitchingFromReducedToNilled() {
+        // Given: A claim with REDUCED outcome and custom values
+        claimSummary.setAssessmentOutcome(OutcomeType.REDUCED);
+        claimSummary.setNetProfitCost(new ClaimFieldRow("Profit Cost", new BigDecimal("500.00"), new BigDecimal("450.00"), new BigDecimal("300.00")));
+        claimSummary.setNetDisbursementAmount(new ClaimFieldRow("Disbursement", new BigDecimal("200.00"), new BigDecimal("180.00"), new BigDecimal("150.00")));
+
+        // When: Switching to NILLED outcome
+        assessmentService.applyAssessmentOutcome(claimSummary, OutcomeType.NILLED);
+
+        // Then: Should apply NILLED logic and set values to zero
+        assertEquals(BigDecimal.ZERO, claimSummary.getNetProfitCost().getAmended());
+        assertEquals(BigDecimal.ZERO, claimSummary.getNetDisbursementAmount().getAmended());
     }
 }

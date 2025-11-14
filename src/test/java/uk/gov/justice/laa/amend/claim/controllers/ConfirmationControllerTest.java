@@ -23,7 +23,7 @@ public class ConfirmationControllerTest {
 
     @Test
     public void testOnPageLoadReturnsView() throws Exception {
-        mockMvc.perform(get("/confirmation"))
+        mockMvc.perform(get("/submissions/submissionId/claims/claimId/confirmation"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("confirmation"));
     }
