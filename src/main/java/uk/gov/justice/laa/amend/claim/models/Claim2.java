@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Data;
+import net.minidev.json.annotate.JsonIgnore;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimViewModel;
 
 import java.io.Serial;
@@ -34,6 +35,19 @@ public class Claim2 implements Serializable {
     private ClaimField totalAmount;
     private ClaimField disbursementVatAmount;
     private OutcomeType assessmentOutcome;
+
+    @JsonIgnore
+    public String getClientName() {
+        if (clientForename != null & clientSurname != null) {
+            return String.format("%s %s", clientForename, clientSurname);
+        } else if (clientForename != null) {
+            return clientForename;
+        } else if (clientSurname != null) {
+            return clientSurname;
+        } else {
+            return null;
+        }
+    }
 
     public void setNilledValues() {
         this.netProfitCost.setAmended(BigDecimal.ZERO);

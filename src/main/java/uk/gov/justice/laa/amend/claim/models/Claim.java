@@ -1,5 +1,12 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.YearMonthDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -9,17 +16,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.YearMonthDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_DATE_FORMAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PERIOD_FORMAT;
-import static uk.gov.justice.laa.amend.claim.utils.FormUtils.getClientFullName;
 
 @Data
 public class Claim implements Serializable {
@@ -81,7 +80,7 @@ public class Claim implements Serializable {
 
     @JsonIgnore
     public String getClientName() {
-        return getClientFullName(clientForename, clientSurname);
+        return "";
     }
 
     public void parseAndSetSubmissionPeriod(String submissionPeriod) {

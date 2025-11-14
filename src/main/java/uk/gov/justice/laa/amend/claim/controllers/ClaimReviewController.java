@@ -28,6 +28,7 @@ public class ClaimReviewController {
         }
 
         model.addAttribute("claimSummary", claim);
+        model.addAttribute("viewModel", claim.toViewModel());
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("backUrl", String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId));

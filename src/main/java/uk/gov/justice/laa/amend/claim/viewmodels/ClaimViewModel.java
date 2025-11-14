@@ -5,7 +5,9 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import uk.gov.justice.laa.amend.claim.models.Claim2;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
+import uk.gov.justice.laa.amend.claim.utils.CurrencyUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,5 +84,16 @@ public interface ClaimViewModel<T extends Claim2> {
 
         // Subclasses should override to add their specific costs
         return null;
+    }
+
+    default String getFormattedValue(Object value) {
+        return switch (value) {
+            case null -> null;
+            case BigDecimal bigDecimal -> CurrencyUtils.formatCurrency(bigDecimal);
+            case Integer i -> i.toString();
+            case Boolean b -> b ? "Yes" : "No";
+            case String s -> s;
+            default -> value.toString();
+        };
     }
 }
