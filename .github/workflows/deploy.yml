@@ -6,7 +6,7 @@ on:
       branch:
         required: false
         type: string
-        default: 'main'
+        default: 'feature/BCR-258-enrich-claim-response'
       environment:
         required: true
         type: string
@@ -83,8 +83,7 @@ jobs:
       - name: Generate Deployment the Files
         run: |
           cat deployments/templates/deployment.yml | envsubst > deployments/deployment.yml
-          cat deployments/templates/ingress.yml | envsubst > deployments/ingress.yml
-          cat deployments/templates/ingress.yml | envsubst > deployments/ingress-internal.yml
+          cat deployments/templates/ingress.yml | envsubst > deployments/ingress.yml         
           cat deployments/templates/service.yml | envsubst > deployments/service.yml
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}

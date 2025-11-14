@@ -1,21 +1,21 @@
 name: Deploy Development
 
 on:
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to run the workflow on (default: main)'
-        required: false
-        default: 'main'
+#  workflow_dispatch:
+#    inputs:
+#      branch:
+#        description: 'Branch to run the workflow on (default: main)'
+#        required: false
+#        default: 'main'
 
   push:
-    branches: [main]
+    branches: [feature/BCR-258-enrich-claim-response]
 
 jobs:
   call-deploy:
     uses: ./.github/workflows/deploy.yml
     with:
-      branch: ${{ github.event.inputs.branch || github.ref_name }}
+      branch: ${{ github.ref_name }}
       environment: dev
       SENTRY_ENV: development
     secrets:

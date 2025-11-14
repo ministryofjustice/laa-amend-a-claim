@@ -8,12 +8,13 @@ import org.springframework.web.service.annotation.HttpExchange;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 @HttpExchange("/api/v0")
 public interface ClaimsApiClient {
 
     @GetExchange(url = "/claims", accept = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ClaimResultSet> searchClaims(
+    Mono<ClaimResultSet> searchClaimsWithSort(
             @RequestParam(value = "office_code") String officeCode,
             @RequestParam(value = "unique_file_number", required = false, defaultValue = "") String uniqueFileNumber,
             @RequestParam(value = "case_reference_number", required = false, defaultValue = "") String caseReferenceNumber,
@@ -22,9 +23,23 @@ public interface ClaimsApiClient {
             @RequestParam(value = "sort", required = false) String sort
     );
 
+    @GetExchange(url = "/claims", accept = MediaType.APPLICATION_JSON_VALUE)
+    Mono<ClaimResultSet> searchClaims(
+            @RequestParam(value = "office_code") String officeCode,
+            @RequestParam(value = "unique_file_number", required = false, defaultValue = "") String uniqueFileNumber,
+            @RequestParam(value = "case_reference_number", required = false, defaultValue = "") String caseReferenceNumber,
+            @RequestParam(value = "page", required = false) int page,
+            @RequestParam(value = "size", required = false) int size
+    );
+
+
 
     @GetExchange(url = "/submissions/{submissionId}/claims/{claimId}", accept = MediaType.APPLICATION_JSON_VALUE)
     Mono<ClaimResponse> getClaim(
             @PathVariable String submissionId,
             @PathVariable String claimId);
+
+    @GetExchange(url = "/submissions/{id}", accept = MediaType.APPLICATION_JSON_VALUE)
+    Mono<SubmissionResponse> getSubmission(
+            @PathVariable String id);
 }

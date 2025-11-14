@@ -27,12 +27,14 @@ public class ClaimSummary implements Serializable {
     private Boolean escaped;
     private Boolean vatApplicable;
     private String providerAccountNumber;
+    private String areaOfLaw;
     private ClaimFieldRow vatClaimed;
     private ClaimFieldRow fixedFee;
     private ClaimFieldRow netProfitCost;
     private ClaimFieldRow netDisbursementAmount;
     private ClaimFieldRow totalAmount;
     private ClaimFieldRow disbursementVatAmount;
+    private boolean isCrimeClaim;
 
 
     public String getClientName() {

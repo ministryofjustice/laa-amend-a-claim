@@ -5,11 +5,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.ClientCodecConfigurer;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
+import reactor.netty.http.client.HttpClient;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 
 @Slf4j
@@ -39,6 +41,7 @@ public class WebClientConfig {
         return WebClient.builder()
                 .baseUrl(apiProperties.getUrl())
                 .defaultHeader(HttpHeaders.AUTHORIZATION, apiProperties.getAccessToken())
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create().wiretap(true)))
                 .exchangeStrategies(strategies)
                 .build();
     }

@@ -8,6 +8,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.amend.claim.client.config.ClaimsApiProperties;
+import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
@@ -20,6 +22,9 @@ class ClaimServiceTest {
 
     @Mock
     private ClaimsApiClient claimsApiClient;
+
+    @Mock
+    private SearchProperties searchProperties;
 
     @InjectMocks
     private ClaimService claimService;
@@ -35,7 +40,8 @@ class ClaimServiceTest {
         // Arrange
         var mockApiResponse = new ClaimResultSet(); // Replace with appropriate type or mock object
 
-        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc"))
+        when(searchProperties.isSortEnabled()).thenReturn(true);
+        when(claimsApiClient.searchClaimsWithSort("0P322F", null, null, 0, 10, "uniqueFileNumber,asc"))
                 .thenReturn(Mono.just(mockApiResponse));
 
         // Act
@@ -45,14 +51,15 @@ class ClaimServiceTest {
         assertNotNull(result);
         assertEquals(mockApiResponse, result);
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc");
+        verify(claimsApiClient, times(1)).searchClaimsWithSort("0P322F", null, null, 0, 10, "uniqueFileNumber,asc");
     }
 
     @Test
     @DisplayName("Should throw RuntimeException when API client throws exception")
     void testSearchClaims_ApiClientThrowsException() {
         // Arrange
-        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc"))
+        when(searchProperties.isSortEnabled()).thenReturn(true);
+        when(claimsApiClient.searchClaimsWithSort("0P322F", null, null, 0, 10, "uniqueFileNumber,asc"))
                 .thenThrow(new RuntimeException("API Error"));
 
         // Act & Assert
@@ -61,14 +68,15 @@ class ClaimServiceTest {
         );
         assertTrue(exception.getMessage().contains("API Error"));
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc");
+        verify(claimsApiClient, times(1)).searchClaimsWithSort("0P322F", null, null, 0, 10, "uniqueFileNumber,asc");
     }
 
     @Test
     @DisplayName("Should handle empty API response without exception")
     void testSearchClaims_EmptyResponse() {
         // Arrange
-        when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc"))
+        when(searchProperties.isSortEnabled()).thenReturn(true);
+        when(claimsApiClient.searchClaimsWithSort("0P322F", null, null, 0, 10, "uniqueFileNumber,asc"))
                 .thenReturn(Mono.empty());
 
         // Act
@@ -77,7 +85,7 @@ class ClaimServiceTest {
         // Assert
         assertNull(result);
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc");
+        verify(claimsApiClient, times(1)).searchClaimsWithSort("0P322F", null, null, 0, 10, "uniqueFileNumber,asc");
     }
 
 

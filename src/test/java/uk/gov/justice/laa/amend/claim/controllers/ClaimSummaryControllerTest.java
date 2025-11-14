@@ -16,6 +16,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -57,7 +58,8 @@ public class ClaimSummaryControllerTest {
         MockHttpSession session = new MockHttpSession();
 
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimSummaryMapper.mapToCivilClaimSummary(any())).thenReturn(claim);
+        when(claimService.getSubmission(anyString())).thenReturn(new SubmissionResponse());
+        when(claimSummaryMapper.mapToClaimSummary(any(), any())).thenReturn(claim);
 
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 
@@ -83,6 +85,7 @@ public class ClaimSummaryControllerTest {
         claim.setEscaped(true);
         claim.setProviderAccountNumber("ACC123");
         claim.setProviderName("Provider Ltd");
+        claim.setCrimeClaim(false);
 
         claim.setVatClaimed(new ClaimFieldRow(VAT, 80, 75, 78));
         claim.setFixedFee(new ClaimFieldRow(FIXED_FEE, 500, 480, 490));

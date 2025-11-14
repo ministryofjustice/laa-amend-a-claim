@@ -10,6 +10,7 @@ import uk.gov.justice.laa.amend.claim.mappers.ClaimSummaryMapper;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,15 +27,11 @@ public class ClaimSummaryController {
         @PathVariable(value = "claimId") String claimId
     ) {
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
-        boolean isCrimeClaim = isCrimeClaim(claimResponse);
+        SubmissionResponse submissionResponse = claimService.getSubmission(submissionId);
 
-        ClaimSummary claimSummary = isCrimeClaim ? claimSummaryMapper.mapToCrimeClaimSummary(claimResponse) : claimSummaryMapper.mapToCivilClaimSummary(claimResponse);
+
+        ClaimSummary claimSummary = claimSummaryMapper.mapToClaimSummary(claimResponse, submissionResponse);
         session.setAttribute(claimId, claimSummary);
-        // TODO - this is just placeholder code at the moment, and will likely be moved or removed altogether
-        // ---
-        //session.setAttribute(claimId, claimResponse);
-        //session.setAttribute(String.format("%s:assessment", claimId), new Assessment(claimResponse));
-        // ---
 
         // TODO - when the claim is null/empty we should render an error screen. We can
         //  remove these from the model when those changes are made and amend the tests to reflect it
@@ -44,15 +41,7 @@ public class ClaimSummaryController {
 
 
         model.addAttribute("claim", claimSummary);
-        model.addAttribute("isCrimeClaim", isCrimeClaim);
-
+        model.addAttribute("isCrimeClaim", claimSummary.isCrimeClaim());
         return "claim-summary";
     }
-
-    //TODO: Use areaOfLaw from submission
-    private boolean isCrimeClaim(ClaimResponse claim) {
-        var feeCalculationPatch = claim != null && claim.getFeeCalculationResponse() != null ? claim.getFeeCalculationResponse() : null;
-        return feeCalculationPatch != null && ("CRIME").equals(feeCalculationPatch.getCategoryOfLaw());
-    }
-
 }

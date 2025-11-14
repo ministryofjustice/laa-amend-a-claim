@@ -1,8 +1,9 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
@@ -16,22 +17,22 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
 
+
+@SpringJUnitConfig
+@ContextConfiguration(classes = {ClaimSummaryMapperImpl.class, ClaimMapperHelper.class})
 class ClaimSummaryMapperTest {
 
+    @Autowired
     private ClaimSummaryMapper mapper;
-
-    @BeforeEach
-    void setUp() {
-        mapper = Mappers.getMapper(ClaimSummaryMapper.class);
-    }
 
     @Test
     void testMapMatterTypeCodeOneAndTwo() {
         ClaimResponse response = new ClaimResponse();
         response.setMatterTypeCode("ABC+DEF:GHI");
+        var res = mapper.mapToCivilClaimSummary(response);
 
-        assertEquals("ABC", mapper.mapMatterTypeCodeOne(response));
-        assertEquals("DEF", mapper.mapMatterTypeCodeTwo(response));
+        assertEquals("ABC", res.getMatterTypeCodeOne());
+        assertEquals("DEF", res.getMatterTypeCodeTwo());
     }
 
     @Test
@@ -41,8 +42,9 @@ class ClaimSummaryMapperTest {
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setTotalAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
+        var res = mapper.mapBaseFields(response);
 
-        ClaimFieldRow row = mapper.mapTotalAmount(response);
+        ClaimFieldRow row = res.getTotalAmount();
         assertEquals(TOTAL, row.getLabel());
         assertEquals(BigDecimal.valueOf(100), row.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), row.getCalculated());

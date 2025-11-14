@@ -16,6 +16,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimSummary;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.time.LocalDate;
 
@@ -53,10 +54,12 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setHoInterview(new ClaimFieldRow(HO_INTERVIEW, 120, 110, 115));
         claim.setSubstantiveHearing(new ClaimFieldRow(SUBSTANTIVE_HEARING, 300, 280, 290));
         claim.setCounselsCost(new ClaimFieldRow(COUNSELS_COST, 400, 380, 390));
-
+        claim.setCrimeClaim(false);
+        claim.setAreaOfLaw("CIVIL");
 
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimSummaryMapper.mapToCivilClaimSummary(any())).thenReturn(claim);
+        when(claimService.getSubmission(anyString())).thenReturn(new SubmissionResponse());
+        when(claimSummaryMapper.mapToClaimSummary(any(), any())).thenReturn(claim);
 
         Document doc = renderDocument();
 
@@ -93,10 +96,13 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setTravelCosts(new ClaimFieldRow(TRAVEL_COSTS, 100, 90, null));
         claim.setWaitingCosts(new ClaimFieldRow(WAITING_COSTS, 50, 45, null));
 
+        claim.setCrimeClaim(true);
+        claim.setAreaOfLaw("CRIME");
+
         ClaimResponse claimResponse = new ClaimResponse();
         claimResponse.feeCalculationResponse(new FeeCalculationPatch().categoryOfLaw("CRIME"));
         when(claimService.getClaim(anyString(), anyString())).thenReturn(claimResponse);
-        when(claimSummaryMapper.mapToCrimeClaimSummary(any())).thenReturn(claim);
+        when(claimSummaryMapper.mapToClaimSummary(any(), any())).thenReturn(claim);
 
         Document doc = renderDocument();
 
@@ -142,6 +148,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setNetDisbursementAmount(new ClaimFieldRow(NET_DISBURSEMENTS_COST, 200, 190, 195));
         claim.setTotalAmount(new ClaimFieldRow(TOTAL, 1380, 1325, 1350));
         claim.setDisbursementVatAmount(new ClaimFieldRow(DISBURSEMENT_VAT, 40, 38, 39));
+        claim.setCrimeClaim(true);
+        claim.setAreaOfLaw("CRIME");
     }
 
     @Test
