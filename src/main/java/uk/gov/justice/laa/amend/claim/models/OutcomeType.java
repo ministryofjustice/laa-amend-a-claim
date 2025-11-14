@@ -5,17 +5,19 @@ import lombok.Getter;
 
 @Getter
 public enum OutcomeType {
-    PAID_IN_FULL("outcome.paidInFull", "paid-in-full"),
-    REDUCED("outcome.reduced", "reduced-still-escaped"),
-    REDUCED_TO_FIXED_FEE("outcome.reducedToFixedFee", "reduced-to-fixed-fee-assessed"),
-    NILLED("outcome.nilled", "nilled");
+    PAID_IN_FULL("outcome.paidInFull", "paid-in-full", true),
+    REDUCED("outcome.reduced", "reduced-still-escaped", true),
+    REDUCED_TO_FIXED_FEE("outcome.reducedToFixedFee", "reduced-to-fixed-fee-assessed", true),
+    NILLED("outcome.nilled", "nilled", false);
 
     private final String messageKey;
     private final String formValue;
+    private final Boolean canAmendCosts;
 
-    OutcomeType(String messageKey, String formValue) {
+    OutcomeType(String messageKey, String formValue, Boolean canAmendCosts) {
         this.messageKey = messageKey;
         this.formValue = formValue;
+        this.canAmendCosts = canAmendCosts;
     }
 
     /**
