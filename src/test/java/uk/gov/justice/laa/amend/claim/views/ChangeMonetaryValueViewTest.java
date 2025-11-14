@@ -10,7 +10,7 @@ import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeMonetaryValueController;
 import uk.gov.justice.laa.amend.claim.models.CivilClaim;
-import uk.gov.justice.laa.amend.claim.models.Claim2;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 
 @ActiveProfiles("local")
 @WebMvcTest(ChangeMonetaryValueController.class)
@@ -25,7 +25,7 @@ class ChangeMonetaryValueViewTest extends ViewTestBase {
 
     @Test
     void testPage() throws Exception {
-        Claim2 claim = new CivilClaim();
+        Claim claim = new CivilClaim();
         session.setAttribute(claimId, claim);
         Document doc = renderDocument();
 

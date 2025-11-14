@@ -6,14 +6,35 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import uk.gov.justice.laa.amend.claim.models.CivilClaim;
-import uk.gov.justice.laa.amend.claim.models.Claim2;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaim;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
 import java.math.BigDecimal;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.*;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 
 @Mapper(componentModel = "spring")
 public interface ClaimMapper {
@@ -29,12 +50,14 @@ public interface ClaimMapper {
     @Mapping(target = "caseReferenceNumber", source = "caseReferenceNumber")
     @Mapping(target = "clientSurname", source = "clientSurname")
     @Mapping(target = "clientForename", source = "clientForename")
+    @Mapping(target = "submissionPeriod", expression = "java(mapSubmissionPeriod(claimResponse))")
     @Mapping(target = "caseStartDate", source = "caseStartDate")
     @Mapping(target = "caseEndDate", source = "caseConcludedDate")
     @Mapping(target = "feeScheme", source = "feeCalculationResponse.feeCodeDescription")
     // TODO use feeSchemeCodeDescription when available
     @Mapping(target = "categoryOfLaw", source = "feeCalculationResponse.categoryOfLaw")
     // TODO use categoryOfLawDescription when available
+    @Mapping(target = "scheduleReference", source = "scheduleReference")
     @Mapping(target = "submittedDate", constant = "TODO")
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
     @Mapping(target = "providerAccountNumber", constant = "TODO")
@@ -44,7 +67,7 @@ public interface ClaimMapper {
     @Mapping(target = "claimId", source = "id")
     @Mapping(target = "vatApplicable", source = "isVatApplicable")
     @Mapping(target = "assessmentOutcome", ignore = true)
-    void mapBaseFields(ClaimResponse claimResponse, @MappingTarget Claim2 target);
+    void mapBaseFields(ClaimResponse claimResponse, @MappingTarget Claim target);
 
     // Civil-specific mapping
     @InheritConfiguration(name = "mapBaseFields")
@@ -66,6 +89,30 @@ public interface ClaimMapper {
     @Mapping(target = "travelCosts", expression = "java(mapTravelCosts(claimResponse))")
     @Mapping(target = "waitingCosts", expression = "java(mapWaitingCosts(claimResponse))")
     CrimeClaim mapToCrimeClaim(ClaimResponse claimResponse);
+
+    default Claim mapToClaim(ClaimResponse claimResponse) {
+        FeeCalculationPatch feeCalculationPatch = claimResponse != null ? claimResponse.getFeeCalculationResponse() : null;
+        boolean isCrimeClaim = feeCalculationPatch != null && "CRIME".equals(feeCalculationPatch.getCategoryOfLaw());
+
+        if (isCrimeClaim) {
+            return mapToCrimeClaim(claimResponse);
+        } else {
+            return mapToCivilClaim(claimResponse);
+        }
+    }
+
+    default YearMonth mapSubmissionPeriod(ClaimResponse claimResponse) {
+        if (claimResponse.getSubmissionPeriod() != null) {
+            try {
+                DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MMM-yyyy").toFormatter(Locale.ENGLISH);
+                return YearMonth.parse(claimResponse.getSubmissionPeriod(), formatter);
+            } catch (DateTimeParseException e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
 
     default String mapMatterTypeCodeOne(ClaimResponse claimResponse) {
         if (StringUtils.isNotEmpty(claimResponse.getMatterTypeCode())) {

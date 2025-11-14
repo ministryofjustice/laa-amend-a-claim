@@ -10,19 +10,19 @@ public enum Cost {
     PROFIT_COSTS(
         "profit-costs",
         "profitCosts",
-        new ClaimFieldAccessor<>(Claim2.class, Claim2::getNetProfitCost, Claim2::setNetProfitCost)
+        new ClaimFieldAccessor<>(Claim.class, Claim::getNetProfitCost, Claim::setNetProfitCost)
     ),
 
     DISBURSEMENTS(
         "disbursements",
         "disbursements",
-        new ClaimFieldAccessor<>(Claim2.class, Claim2::getNetDisbursementAmount, Claim2::setNetDisbursementAmount)
+        new ClaimFieldAccessor<>(Claim.class, Claim::getNetDisbursementAmount, Claim::setNetDisbursementAmount)
     ),
 
     DISBURSEMENTS_VAT(
         "disbursements-vat",
         "disbursementsVat",
-        new ClaimFieldAccessor<>(Claim2.class, Claim2::getDisbursementVatAmount, Claim2::setDisbursementVatAmount)
+        new ClaimFieldAccessor<>(Claim.class, Claim::getDisbursementVatAmount, Claim::setDisbursementVatAmount)
     ),
 
     COUNSEL_COSTS(

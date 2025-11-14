@@ -54,7 +54,7 @@ class ChangeMonetaryValueControllerTest {
     @ParameterizedTest
     @MethodSource("validCosts")
     void testGetReturnsView(Cost cost) throws Exception {
-        Claim2 claim = CreateClaimFor(cost);
+        Claim claim = CreateClaimFor(cost);
         session.setAttribute(claimId, claim);
 
         mockMvc.perform(get(buildPath(cost.getPath())).session(session))
@@ -67,7 +67,7 @@ class ChangeMonetaryValueControllerTest {
     @ParameterizedTest
     @MethodSource("validCosts")
     void testGetReturnsViewWhenQuestionAlreadyAnswered(Cost cost) throws Exception {
-        Claim2 claim = CreateClaimFor(cost);
+        Claim claim = CreateClaimFor(cost);
         ClaimField claimField = cost.getAccessor().get(claim);
         Assertions.assertNotNull(claimField);
         claimField.setAmended(BigDecimal.valueOf(100));
@@ -83,7 +83,7 @@ class ChangeMonetaryValueControllerTest {
     @ParameterizedTest
     @MethodSource("validCosts")
     void testPostSavesValueAndRedirects(Cost cost) throws Exception {
-        Claim2 claim = CreateClaimFor(cost);
+        Claim claim = CreateClaimFor(cost);
         ClaimField claimField = cost.getAccessor().get(claim);
         Assertions.assertNotNull(claimField);
         session.setAttribute(claimId, claim);
@@ -95,7 +95,7 @@ class ChangeMonetaryValueControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl(redirectUrl));
 
-        Claim2 updated = (Claim2) session.getAttribute(claimId);
+        Claim updated = (Claim) session.getAttribute(claimId);
 
         Assertions.assertNotNull(updated);
         Assertions.assertEquals(new BigDecimal("100.00"), cost.getAccessor().get(updated).getAmended());
@@ -150,9 +150,9 @@ class ChangeMonetaryValueControllerTest {
             .andExpect(status().isNotFound());
     }
 
-    private Claim2 CreateClaimFor(Cost cost) {
+    private Claim CreateClaimFor(Cost cost) {
         Class<?> targetClass = cost.getAccessor().type();
-        Claim2 claim;
+        Claim claim;
         if (CivilClaim.class.equals(targetClass)) {
             claim = new CivilClaim();
         } else {

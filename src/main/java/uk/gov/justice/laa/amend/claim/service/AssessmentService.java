@@ -2,7 +2,7 @@ package uk.gov.justice.laa.amend.claim.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.amend.claim.models.Claim2;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
 /**
@@ -19,7 +19,7 @@ public class AssessmentService {
      * @param claim the claim summary to update
      * @param newOutcome the new assessment outcome
      */
-    public <T extends Claim2> void applyAssessmentOutcome(T claim, OutcomeType newOutcome) {
+    public <T extends Claim> void applyAssessmentOutcome(T claim, OutcomeType newOutcome) {
         if (claim == null || newOutcome == null) {
             return;
         }

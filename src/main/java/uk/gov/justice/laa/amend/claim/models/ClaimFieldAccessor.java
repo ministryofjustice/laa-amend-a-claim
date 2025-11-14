@@ -5,12 +5,12 @@ import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public record ClaimFieldAccessor<T extends Claim2>(
+public record ClaimFieldAccessor<T extends Claim>(
     Class<T> type,
     Function<T, ClaimField> getter,
     BiConsumer<T, ClaimField> setter
 ) {
-    public ClaimField get(Claim2 claim) throws ClaimMismatchException {
+    public ClaimField get(Claim claim) throws ClaimMismatchException {
         if (type.isInstance(claim)) {
             return getter.apply(type.cast(claim));
         } else {
@@ -18,7 +18,7 @@ public record ClaimFieldAccessor<T extends Claim2>(
         }
     }
 
-    public void set(Claim2 summary, ClaimField value) {
+    public void set(Claim summary, ClaimField value) {
         if (type.isInstance(summary)) {
             setter.accept(type.cast(summary), value);
         }

@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -8,26 +7,26 @@ import com.fasterxml.jackson.datatype.jsr310.deser.YearMonthDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimViewModel;
 
+import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.DateTimeParseException;
-import java.util.Locale;
-
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_DATE_FORMAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PERIOD_FORMAT;
 
 @Data
-public class Claim implements Serializable {
-    private String uniqueFileNumber;
+public abstract class Claim implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private String submissionId;
     private String claimId;
+    private String uniqueFileNumber;
     private String caseReferenceNumber;
     private String clientSurname;
     private String clientForename;
+    private String submittedDate;
 
     @JsonSerialize(using = YearMonthSerializer.class)
     @JsonDeserialize(using = YearMonthDeserializer.class)
@@ -43,40 +42,18 @@ public class Claim implements Serializable {
 
     private String feeScheme;
     private String categoryOfLaw;
-    private String matterTypeCode;
     private String scheduleReference;
+    private String providerName;
     private Boolean escaped;
+    private Boolean vatApplicable;
     private String providerAccountNumber;
-
-    @JsonIgnore
-    public String getAccountNumber() {
-        return scheduleReference != null ? scheduleReference.split("/")[0] : null;
-    }
-
-    @JsonIgnore
-    public String getCaseStartDateForDisplay() {
-        return caseStartDate != null ? caseStartDate.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
-    }
-
-    @JsonIgnore
-    public String getCaseEndDateForDisplay() {
-        return caseEndDate != null ? caseEndDate.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
-    }
-
-    @JsonIgnore
-    public String getSubmissionPeriodForDisplay() {
-        return submissionPeriod != null ? submissionPeriod.format(DateTimeFormatter.ofPattern(DEFAULT_PERIOD_FORMAT)) : null;
-    }
-
-    @JsonIgnore
-    public long getSubmissionPeriodForSorting() {
-        return submissionPeriod != null ? submissionPeriod.atDay(1).toEpochDay() : 0;
-    }
-
-    @JsonIgnore
-    public String getEscapedForDisplay() {
-        return (escaped != null && escaped) ? "index.results.escaped.yes" : "index.results.escaped.no";
-    }
+    private ClaimField vatClaimed;
+    private ClaimField fixedFee;
+    private ClaimField netProfitCost;
+    private ClaimField netDisbursementAmount;
+    private ClaimField totalAmount;
+    private ClaimField disbursementVatAmount;
+    private OutcomeType assessmentOutcome;
 
     @JsonIgnore
     public String getClientName() {
@@ -91,16 +68,17 @@ public class Claim implements Serializable {
         }
     }
 
-    public void parseAndSetSubmissionPeriod(String submissionPeriod) {
-        if (submissionPeriod != null) {
-            try {
-                DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MMM-yyyy").toFormatter(Locale.ENGLISH);
-                this.submissionPeriod = YearMonth.parse(submissionPeriod, formatter);
-            } catch (DateTimeParseException e) {
-                this.submissionPeriod = null;
-            }
-        } else {
-            this.submissionPeriod = null;
+    public void setNilledValues() {
+        if (netProfitCost != null) {
+            netProfitCost.setAmended(BigDecimal.ZERO);
+        }
+        if (netDisbursementAmount != null) {
+            netDisbursementAmount.setAmended(BigDecimal.ZERO);
+        }
+        if (disbursementVatAmount != null) {
+            disbursementVatAmount.setAmended(BigDecimal.ZERO);
         }
     }
+
+    public abstract ClaimViewModel<? extends Claim> toViewModel();
 }

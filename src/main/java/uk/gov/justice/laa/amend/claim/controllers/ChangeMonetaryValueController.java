@@ -7,10 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
-import uk.gov.justice.laa.amend.claim.models.Claim2;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 
@@ -34,7 +38,7 @@ public class ChangeMonetaryValueController {
     ) throws IOException {
         try {
             // TODO - if retrieval from session returns null, redirect to session expired?
-            Claim2 claim = (Claim2) session.getAttribute(claimId);
+            Claim claim = (Claim) session.getAttribute(claimId);
             ClaimField claimField = cost.getAccessor().get(claim);
             BigDecimal value = claimField != null ? (BigDecimal) claimField.getAmended() : null;
 
@@ -63,7 +67,7 @@ public class ChangeMonetaryValueController {
     ) throws IOException {
         try {
             // TODO - if retrieval from session returns null, redirect to session expired?
-            Claim2 claim = (Claim2) session.getAttribute(claimId);
+            Claim claim = (Claim) session.getAttribute(claimId);
 
             if (bindingResult.hasErrors()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

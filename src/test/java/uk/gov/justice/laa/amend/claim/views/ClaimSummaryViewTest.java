@@ -10,7 +10,7 @@ import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimSummaryController;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.CivilClaim;
-import uk.gov.justice.laa.amend.claim.models.Claim2;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaim;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
@@ -126,7 +126,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasValuesRow(doc, "Waiting costs", claim.getWaitingCosts());
     }
 
-    private static void createClaimSummary(Claim2 claim) {
+    private static void createClaimSummary(Claim claim) {
         claim.setEscaped(true);
         claim.setCategoryOfLaw("AAP");
         claim.setFeeScheme("CCS");

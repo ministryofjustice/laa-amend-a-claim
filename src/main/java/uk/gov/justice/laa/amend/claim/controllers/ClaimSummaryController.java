@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
-import uk.gov.justice.laa.amend.claim.models.Claim2;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
@@ -28,7 +28,7 @@ public class ClaimSummaryController {
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
         boolean isCrimeClaim = isCrimeClaim(claimResponse);
 
-        Claim2 claim = isCrimeClaim ? claimMapper.mapToCrimeClaim(claimResponse) : claimMapper.mapToCivilClaim(claimResponse);
+        Claim claim = isCrimeClaim ? claimMapper.mapToCrimeClaim(claimResponse) : claimMapper.mapToCivilClaim(claimResponse);
         session.setAttribute(claimId, claim);
 
         // TODO - when the claim is null/empty we should render an error screen. We can

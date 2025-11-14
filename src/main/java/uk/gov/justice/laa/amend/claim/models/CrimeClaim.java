@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class CrimeClaim extends Claim2 {
+public class CrimeClaim extends Claim {
 
     private String matterTypeCode;
     private ClaimField travelCosts;
@@ -27,7 +27,7 @@ public class CrimeClaim extends Claim2 {
     }
 
     @Override
-    public ClaimViewModel<? extends Claim2> toViewModel() {
+    public ClaimViewModel<? extends Claim> toViewModel() {
         return new CrimeClaimViewModel(this);
     }
 }

@@ -25,11 +25,19 @@ public record CivilClaimViewModel(CivilClaim claim) implements ClaimViewModel<Ci
 
     @Override
     public Cost getCostForRow(ClaimField row) {
-        if (row == null) return null;
+        if (row == null) {
+            return null;
+        }
 
-        if (row.equals(claim.getCounselsCost())) return Cost.COUNSEL_COSTS;
-        if (row.equals(claim.getDetentionTravelWaitingCosts())) return Cost.DETENTION_TRAVEL_AND_WAITING_COSTS;
-        if (row.equals(claim.getJrFormFillingCost())) return Cost.JR_FORM_FILLING_COSTS;
+        if (row.equals(claim.getCounselsCost())) {
+            return Cost.COUNSEL_COSTS;
+        }
+        if (row.equals(claim.getDetentionTravelWaitingCosts())) {
+            return Cost.DETENTION_TRAVEL_AND_WAITING_COSTS;
+        }
+        if (row.equals(claim.getJrFormFillingCost())) {
+            return Cost.JR_FORM_FILLING_COSTS;
+        }
 
         // Fall back to parent implementation
         return ClaimViewModel.super.getCostForRow(row);

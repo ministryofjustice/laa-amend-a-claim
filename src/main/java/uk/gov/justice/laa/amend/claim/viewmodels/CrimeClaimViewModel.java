@@ -19,10 +19,16 @@ public record CrimeClaimViewModel(CrimeClaim claim) implements ClaimViewModel<Cr
 
     @Override
     public Cost getCostForRow(ClaimField row) {
-        if (row == null) return null;
+        if (row == null) {
+            return null;
+        }
 
-        if (row.equals(claim.getTravelCosts())) return Cost.TRAVEL_COSTS;
-        if (row.equals(claim.getWaitingCosts())) return Cost.WAITING_COSTS;
+        if (row.equals(claim.getTravelCosts())) {
+            return Cost.TRAVEL_COSTS;
+        }
+        if (row.equals(claim.getWaitingCosts())) {
+            return Cost.WAITING_COSTS;
+        }
 
         // Fall back to parent implementation
         return ClaimViewModel.super.getCostForRow(row);

@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class CivilClaim extends Claim2 {
+public class CivilClaim extends Claim {
 
     private String matterTypeCodeOne;
     private String matterTypeCodeTwo;
@@ -52,7 +52,7 @@ public class CivilClaim extends Claim2 {
     }
 
     @Override
-    public ClaimViewModel<? extends Claim2> toViewModel() {
+    public ClaimViewModel<? extends Claim> toViewModel() {
         return new CivilClaimViewModel(this);
     }
 }

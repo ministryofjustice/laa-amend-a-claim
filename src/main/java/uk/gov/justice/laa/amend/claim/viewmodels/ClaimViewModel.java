@@ -1,19 +1,25 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
-
-
-import uk.gov.justice.laa.amend.claim.models.Claim2;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.utils.CurrencyUtils;
 
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface ClaimViewModel<T extends Claim2> {
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_DATE_FORMAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PERIOD_FORMAT;
+
+public interface ClaimViewModel<T extends Claim> {
 
     T claim();
+
+    default T getClaim() {
+        return claim();
+    }
 
     /**
      * Returns the claim field rows in the order they should be displayed in the table.
@@ -57,10 +63,14 @@ public interface ClaimViewModel<T extends Claim2> {
      * @return the change URL, or null if not editable
      */
     default String getChangeUrl(ClaimField row) {
-        if (row == null) return null;
+        if (row == null) {
+            return null;
+        }
 
         Cost cost = getCostForRow(row);
-        if (cost == null) return null;
+        if (cost == null) {
+            return null;
+        }
 
         return String.format("/submissions/%s/claims/%s/%s", claim().getSubmissionId(), claim().getClaimId(), cost.getPath());
     }
@@ -82,11 +92,19 @@ public interface ClaimViewModel<T extends Claim2> {
      * @return the corresponding Cost, or null if not editable
      */
     default Cost getCostForRow(ClaimField row) {
-        if (row == null) return null;
+        if (row == null) {
+            return null;
+        }
 
-        if (row.equals(claim().getNetProfitCost())) return Cost.PROFIT_COSTS;
-        if (row.equals(claim().getNetDisbursementAmount())) return Cost.DISBURSEMENTS;
-        if (row.equals(claim().getDisbursementVatAmount())) return Cost.DISBURSEMENTS_VAT;
+        if (row.equals(claim().getNetProfitCost())) {
+            return Cost.PROFIT_COSTS;
+        }
+        if (row.equals(claim().getNetDisbursementAmount())) {
+            return Cost.DISBURSEMENTS;
+        }
+        if (row.equals(claim().getDisbursementVatAmount())) {
+            return Cost.DISBURSEMENTS_VAT;
+        }
 
         // Subclasses should override to add their specific costs
         return null;
@@ -105,7 +123,47 @@ public interface ClaimViewModel<T extends Claim2> {
 
     default void addRowIfNotNull(List<ClaimField> list, ClaimField... claimFields) {
         for (ClaimField claimField : claimFields) {
-            if (claimField != null) list.add(claimField);
+            if (claimField != null) {
+                list.add(claimField);
+            }
+        }
+    }
+
+    default String getAccountNumber() {
+        return claim().getScheduleReference() != null ? claim().getScheduleReference().split("/")[0] : null;
+    }
+
+    default String getCaseStartDateForDisplay() {
+        return claim().getCaseStartDate() != null ? claim().getCaseStartDate().format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
+    }
+
+    default String getCaseEndDateForDisplay() {
+        return claim().getCaseEndDate() != null ? claim().getCaseEndDate().format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
+    }
+
+    default String getSubmissionPeriodForDisplay() {
+        return claim().getSubmissionPeriod() != null ? claim().getSubmissionPeriod().format(DateTimeFormatter.ofPattern(DEFAULT_PERIOD_FORMAT)) : null;
+    }
+
+    default long getSubmissionPeriodForSorting() {
+        return claim().getSubmissionPeriod() != null ? claim().getSubmissionPeriod().atDay(1).toEpochDay() : 0;
+    }
+
+    default String getEscapedForDisplay() {
+        return (claim().getEscaped() != null && claim().getEscaped()) ? "index.results.escaped.yes" : "index.results.escaped.no";
+    }
+
+    default String getClientName() {
+        String clientForename = claim().getClientForename();
+        String clientSurname = claim().getClientSurname();
+        if (clientForename != null & clientSurname != null) {
+            return String.format("%s %s", clientForename, clientSurname);
+        } else if (clientForename != null) {
+            return clientForename;
+        } else if (clientSurname != null) {
+            return clientSurname;
+        } else {
+            return null;
         }
     }
 }
