@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
+import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -38,8 +38,8 @@ public class ChangeMonetaryValueController {
     ) throws IOException {
         try {
             // TODO - if retrieval from session returns null, redirect to session expired?
-            ClaimSummary claim = (ClaimSummary) session.getAttribute(claimId);
-            ClaimFieldRow claimField = cost.getAccessor().get(claim);
+            Claim claim = (Claim) session.getAttribute(claimId);
+            ClaimField claimField = cost.getAccessor().get(claim);
             BigDecimal value = claimField != null ? (BigDecimal) claimField.getAmended() : null;
 
             MonetaryValueForm form = new MonetaryValueForm();
@@ -67,14 +67,14 @@ public class ChangeMonetaryValueController {
     ) throws IOException {
         try {
             // TODO - if retrieval from session returns null, redirect to session expired?
-            ClaimSummary claim = (ClaimSummary) session.getAttribute(claimId);
+            Claim claim = (Claim) session.getAttribute(claimId);
 
             if (bindingResult.hasErrors()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return renderView(model, form, cost, submissionId, claimId);
             }
 
-            ClaimFieldRow claimField = cost.getAccessor().get(claim);
+            ClaimField claimField = cost.getAccessor().get(claim);
             BigDecimal value = setScale(new BigDecimal(form.getValue()));
             if (claimField != null) {
                 claimField.setAmended(value);

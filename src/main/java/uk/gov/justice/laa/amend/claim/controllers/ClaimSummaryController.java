@@ -6,9 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import uk.gov.justice.laa.amend.claim.mappers.ClaimSummaryMapper;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
 @Controller
@@ -16,7 +16,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 public class ClaimSummaryController {
 
     private final ClaimService claimService;
-    private final ClaimSummaryMapper claimSummaryMapper;
+    private final ClaimMapper claimMapper;
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}")
     public String onPageLoad(
@@ -26,26 +26,17 @@ public class ClaimSummaryController {
         @PathVariable(value = "claimId") String claimId
     ) {
         ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
-        boolean isCrimeClaim = isCrimeClaim(claimResponse);
 
-        ClaimSummary claimSummary = isCrimeClaim ? claimSummaryMapper.mapToCrimeClaimSummary(claimResponse) : claimSummaryMapper.mapToCivilClaimSummary(claimResponse);
-        session.setAttribute(claimId, claimSummary);
+        Claim claim = claimMapper.mapToClaim(claimResponse);
+        session.setAttribute(claimId, claim);
 
         // TODO - when the claim is null/empty we should render an error screen. We can
         //  remove these from the model when those changes are made and amend the tests to reflect it
 
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
-        model.addAttribute("claim", claimSummary);
-        model.addAttribute("isCrimeClaim", isCrimeClaim);
+        model.addAttribute("claim", claim.toViewModel());
 
         return "claim-summary";
     }
-
-    //TODO: Use areaOfLaw from submission
-    private boolean isCrimeClaim(ClaimResponse claim) {
-        var feeCalculationPatch = claim != null && claim.getFeeCalculationResponse() != null ? claim.getFeeCalculationResponse() : null;
-        return feeCalculationPatch != null && ("CRIME").equals(feeCalculationPatch.getCategoryOfLaw());
-    }
-
 }

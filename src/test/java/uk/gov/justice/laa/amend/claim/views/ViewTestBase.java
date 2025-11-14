@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
 import java.util.Arrays;
 import java.util.List;
@@ -191,7 +191,7 @@ public abstract class ViewTestBase {
     Assertions.assertTrue(rowFound);
   }
 
-  protected void assertPageHasValuesRow(Document doc, String expectedKey, ClaimFieldRow claimFieldRow) {
+  protected void assertPageHasValuesRow(Document doc, String expectedKey, ClaimField claimFieldRow) {
     Elements rows = doc.getElementsByClass("govuk-summary-list__row");
     boolean rowFound = rows.stream().anyMatch(row -> {
       String keyText = row.select(".govuk-summary-list__key").text().trim();

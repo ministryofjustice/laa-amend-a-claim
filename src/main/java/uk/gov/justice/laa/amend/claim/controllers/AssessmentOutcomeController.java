@@ -6,30 +6,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.forms.AssessmentOutcomeForm;
-import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
-import uk.gov.justice.laa.amend.claim.service.ClaimService;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}")
 public class AssessmentOutcomeController {
 
-    private final ClaimService claimService;
-    private final ClaimResultMapper claimResultMapper;
-    private final AssessmentService assessmentService;
+   private final AssessmentService assessmentService;
 
     @GetMapping("/assessment-outcome")
     public String setAssessmentOutcome(
@@ -42,7 +31,7 @@ public class AssessmentOutcomeController {
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
 
         // Load values from ClaimSummary if it exists
-        ClaimSummary claimSummary = (ClaimSummary) session.getAttribute(claimId);
+        Claim claimSummary = (Claim) session.getAttribute(claimId);
 
         if (claimSummary != null) {
             // Load assessment outcome
@@ -54,10 +43,6 @@ public class AssessmentOutcomeController {
             }
         }
 
-        ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
-        Claim claim = claimResultMapper.mapToClaim(claimResponse);
-
-        model.addAttribute("claim", claim);
         model.addAttribute("assessmentOutcomeForm", form);
 
         return "assessment-outcome";
@@ -79,7 +64,7 @@ public class AssessmentOutcomeController {
             return "assessment-outcome";
         }
 
-        ClaimSummary claimSummary = (ClaimSummary) session.getAttribute(claimId);
+        Claim claimSummary = (Claim) session.getAttribute(claimId);
 
         if (claimSummary != null) {
             OutcomeType newOutcome = assessmentOutcomeForm.getAssessmentOutcome();
@@ -90,7 +75,7 @@ public class AssessmentOutcomeController {
             // Set the assessment outcome
             claimSummary.setAssessmentOutcome(newOutcome);
 
-            // Update VAT liability in vatClaimed ClaimFieldRow
+            // Update VAT liability in vatClaimed ClaimField
             if (claimSummary.getVatClaimed() != null) {
                 claimSummary.getVatClaimed().setAmended(assessmentOutcomeForm.getLiabilityForVat());
             }

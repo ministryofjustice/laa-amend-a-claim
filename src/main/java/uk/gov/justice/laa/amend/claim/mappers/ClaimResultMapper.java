@@ -1,13 +1,11 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
-import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimViewModel;
 import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -19,7 +17,7 @@ import java.util.stream.Collectors;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = ClaimMapper.class)
 public interface ClaimResultMapper {
 
     /**
@@ -29,42 +27,8 @@ public interface ClaimResultMapper {
      */
 
     @Mapping(target = "pagination", source = ".", qualifiedByName = "toPagination")
-    @Mapping(target = "claims", source = "content")
-    SearchResultViewModel toDto(ClaimResultSet claimResultSet, @Context String href);
-
-
-    @IterableMapping(elementTargetType = Claim.class)
-    default List<Claim> map(List<ClaimResponse>  claimResponses) {
-        return claimResponses.stream().map(this::mapToClaim).collect(Collectors.toList());
-    }
-
-    /**
-     * Maps ClaimResponse to Claim object.
-     * Provides support for enums and ensures null safety.
-     * @param claimResponse The ClaimResponse input.
-     * @return A fully mapped Claim.
-     */
-    @Mapping(target = "uniqueFileNumber", source = "uniqueFileNumber")
-    @Mapping(target = "submissionId", source = "submissionId")
-    @Mapping(target = "claimId", source = "id")
-    @Mapping(target = "caseReferenceNumber", source = "caseReferenceNumber")
-    @Mapping(target = "clientSurname", source = "clientSurname")
-    @Mapping(target = "clientForename", source = "clientForename")
-    @Mapping(target = "submissionPeriod", ignore = true)
-    @Mapping(target = "caseStartDate", source = "caseStartDate")
-    @Mapping(target = "caseEndDate", source = "caseConcludedDate")
-    @Mapping(target = "feeScheme", source = "feeSchemeCode") // TODO use feeSchemeCodeDescription when available
-    @Mapping(target = "categoryOfLaw", source = "feeCalculationResponse.categoryOfLaw") // TODO use categoryOfLawDescription when available
-    @Mapping(target = "matterTypeCode", source = "matterTypeCode")
-    @Mapping(target = "scheduleReference", source = "scheduleReference")
-    @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
-    @Mapping(target = "providerAccountNumber", constant = "TODO") // TODO use providerAccountNumber when available
-    Claim mapToClaim(ClaimResponse claimResponse);
-
-    @AfterMapping
-    default void setExtraFields(ClaimResponse source, @MappingTarget Claim target) {
-        target.parseAndSetSubmissionPeriod(source.getSubmissionPeriod());
-    }
+    @Mapping(target = "claims", expression = "java(mapClaims(claimResultSet, claimMapper))")
+    SearchResultViewModel toDto(ClaimResultSet claimResultSet, @Context String href, @Context ClaimMapper claimMapper);
 
     /**
      * Converts ClaimResultSet to a Pagination object.
@@ -80,5 +44,14 @@ public interface ClaimResultMapper {
                 claimResultSet.getNumber() != null ? claimResultSet.getNumber() + 1 : DEFAULT_PAGE_NUMBER,
                 href
         );
+    }
+
+    default List<ClaimViewModel<? extends Claim>> mapClaims(ClaimResultSet claimResultSet, @Context ClaimMapper claimMapper) {
+        List<ClaimResponse> claims = claimResultSet.getContent();
+        if (claims == null) {
+            return List.of();
+        } else {
+            return claims.stream().map(claimMapper::mapToClaim).map(Claim::toViewModel).collect(Collectors.toList());
+        }
     }
 }

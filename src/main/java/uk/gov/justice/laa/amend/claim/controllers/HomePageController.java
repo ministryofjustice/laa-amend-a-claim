@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.amend.claim.models.Sorts;
@@ -30,6 +31,7 @@ public class HomePageController {
 
     private final ClaimService claimService;
     private final ClaimResultMapper claimResultMapper;
+    private final ClaimMapper claimMapper;
 
     @GetMapping("/")
     public String onPageLoad(
@@ -62,7 +64,7 @@ public class HomePageController {
                 sort.toString()
             );
             String redirectUrl = RedirectUrlUtils.getRedirectUrl(form, page, sort);
-            SearchResultViewModel viewModel = claimResultMapper.toDto(result, redirectUrl);
+            SearchResultViewModel viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
             model.addAttribute("viewModel", viewModel);
         }
 

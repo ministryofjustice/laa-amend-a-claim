@@ -9,13 +9,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeMonetaryValueController;
+import uk.gov.justice.laa.amend.claim.models.CivilClaim;
 import uk.gov.justice.laa.amend.claim.models.Claim;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
-import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
-import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
-
-import java.util.List;
-import java.util.Map;
 
 @ActiveProfiles("local")
 @WebMvcTest(ChangeMonetaryValueController.class)
@@ -30,7 +25,7 @@ class ChangeMonetaryValueViewTest extends ViewTestBase {
 
     @Test
     void testPage() throws Exception {
-        ClaimSummary claim = new ClaimSummary();
+        Claim claim = new CivilClaim();
         session.setAttribute(claimId, claim);
         Document doc = renderDocument();
 

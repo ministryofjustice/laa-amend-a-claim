@@ -9,6 +9,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
@@ -32,6 +33,9 @@ public class HomePageControllerTest {
 
     @MockitoBean
     private ClaimResultMapper claimResultMapper;
+
+    @MockitoBean
+    private ClaimMapper claimMapper;
 
     @Test
     public void testOnPageLoadReturnsView() throws Exception {

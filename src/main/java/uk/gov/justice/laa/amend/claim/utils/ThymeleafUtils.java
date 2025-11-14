@@ -34,7 +34,7 @@ public class ThymeleafUtils {
             );
     }
 
-    public List<AssessmentOutcomeFormError> sortAssessmentOutcomeErrors(List<DetailedError> errors) {
+    public List<AssessmentOutcomeFormError> toAssessmentOutcomeErrors(List<DetailedError> errors) {
         return errors
                 .stream()
                 .map(AssessmentOutcomeFormError::new)
@@ -51,13 +51,9 @@ public class ThymeleafUtils {
                         )
                 );
     }
-      
-    public String displayValueForBoolean(Boolean value) {
-        return (value != null && value) ? "index.results.escaped.yes" : "index.results.escaped.no";
-    }
 
-    public String displayDateValue(LocalDate localDate) {
-        return localDate != null ? localDate.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
+    public String displayValueForBoolean(Boolean value) {
+        return BooleanUtils.formatBoolean(value);
     }
 
     public List<MonetaryValueFormError> toMonetaryFormValueErrors(List<DetailedError> errors) {

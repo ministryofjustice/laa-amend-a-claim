@@ -8,21 +8,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.AssessmentOutcomeController;
-import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
-import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 
 @ActiveProfiles("local")
 @WebMvcTest(AssessmentOutcomeController.class)
 @Import(LocalSecurityConfig.class)
 class AssessmentOutcomeViewTest extends ViewTestBase {
-
-    @MockitoBean
-    private ClaimService claimService;
-
-    @MockitoBean
-    private ClaimResultMapper claimResultMapper;
 
     @MockitoBean
     private AssessmentService assessmentService;

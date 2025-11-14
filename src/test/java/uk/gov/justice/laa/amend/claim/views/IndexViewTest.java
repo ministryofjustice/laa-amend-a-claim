@@ -10,9 +10,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.HomePageController;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
+import uk.gov.justice.laa.amend.claim.models.CivilClaim;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
+import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimViewModel;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimViewModel;
 import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
 
@@ -29,6 +33,9 @@ class IndexViewTest extends ViewTestBase {
 
     @MockitoBean
     private ClaimResultMapper claimResultMapper;
+
+    @MockitoBean
+    private ClaimMapper claimMapper;
 
     IndexViewTest() {
         super("/");
@@ -64,11 +71,15 @@ class IndexViewTest extends ViewTestBase {
     @Test
     void testPageWithPagination() throws Exception {
         // TODO - tests can be enhanced to test the values being rendered on the page
-        Claim claim1 = new Claim();
-        Claim claim2 = new Claim();
-        Claim claim3 = new Claim();
+        CivilClaim claim1 = new CivilClaim();
+        CivilClaim claim2 = new CivilClaim();
+        CivilClaim claim3 = new CivilClaim();
 
-        List<Claim> claims = List.of(claim1, claim2, claim3);
+        List<ClaimViewModel<? extends Claim>> claims = List.of(
+            new CivilClaimViewModel(claim1),
+            new CivilClaimViewModel(claim2),
+            new CivilClaimViewModel(claim3)
+        );
 
         SearchResultViewModel viewModel = new SearchResultViewModel();
         viewModel.setClaims(claims);
