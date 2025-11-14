@@ -22,14 +22,7 @@ public class CivilClaimSummary extends ClaimSummary {
 
     @Override
     protected void addClaimTypeSpecificRows(List<ClaimFieldRow> rows) {
-        if (counselsCost != null) rows.add(counselsCost);
-        if (detentionTravelWaitingCosts != null) rows.add(detentionTravelWaitingCosts);
-        if (jrFormFillingCost != null) rows.add(jrFormFillingCost);
-        if (adjournedHearing != null) rows.add(adjournedHearing);
-        if (cmrhTelephone != null) rows.add(cmrhTelephone);
-        if (cmrhOral != null) rows.add(cmrhOral);
-        if (hoInterview != null) rows.add(hoInterview);
-        if (substantiveHearing != null) rows.add(substantiveHearing);
+        addRowIfNotNull(rows, counselsCost, detentionTravelWaitingCosts, jrFormFillingCost, adjournedHearing, cmrhTelephone, cmrhOral, hoInterview, substantiveHearing);
     }
 
     @Override

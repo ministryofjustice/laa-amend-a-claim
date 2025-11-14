@@ -52,16 +52,12 @@ public class ClaimSummary implements Serializable {
     public List<ClaimFieldRow> getTableRows() {
         List<ClaimFieldRow> rows = new ArrayList<>();
 
-        if (fixedFee != null) rows.add(fixedFee);
-        if (netProfitCost != null) rows.add(netProfitCost);
-        if (netDisbursementAmount != null) rows.add(netDisbursementAmount);
-        if (disbursementVatAmount != null) rows.add(disbursementVatAmount);
+        addRowIfNotNull(rows, fixedFee, netProfitCost, netDisbursementAmount, disbursementVatAmount);
 
         // Subclasses should add their specific rows here
         addClaimTypeSpecificRows(rows);
 
-        if (vatClaimed != null) rows.add(vatClaimed);
-        if (totalAmount != null) rows.add(totalAmount);
+        addRowIfNotNull(rows, vatClaimed, totalAmount);
 
         return rows;
     }
@@ -115,5 +111,11 @@ public class ClaimSummary implements Serializable {
 
         // Subclasses should override to add their specific costs
         return null;
+    }
+
+    protected void addRowIfNotNull(List<ClaimFieldRow> list, ClaimFieldRow... rows) {
+        for (ClaimFieldRow row : rows) {
+            if (row != null) list.add(row);
+        }
     }
 }

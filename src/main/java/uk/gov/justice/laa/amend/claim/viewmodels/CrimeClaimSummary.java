@@ -15,8 +15,7 @@ public class CrimeClaimSummary extends ClaimSummary {
 
     @Override
     protected void addClaimTypeSpecificRows(List<ClaimFieldRow> rows) {
-        if (travelCosts != null) rows.add(travelCosts);
-        if (waitingCosts != null) rows.add(waitingCosts);
+        addRowIfNotNull(rows, travelCosts, waitingCosts);
     }
 
     @Override
