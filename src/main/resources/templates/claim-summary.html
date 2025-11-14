@@ -132,13 +132,13 @@
                                     </th:block>
                                     <th:block th:unless="${isCrimeClaim}">
                                         <!-- Counsel's cost -->
-                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.counselsCost})" th:if="${!claim.isCrimeClaim}"></div>
+                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.counselsCost})" th:if="${!isCrimeClaim}"></div>
 
                                          <!-- Detention travel -->
-                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.detentionTravelWaitingCosts})" th:if="${!claim.isCrimeClaim}"></div>
+                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.detentionTravelWaitingCosts})" th:if="${!isCrimeClaim}"></div>
 
                                         <!-- JR / Form filling -->
-                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.jrFormFillingCost})" th:if="${!claim.isCrimeClaim}"></div>
+                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.jrFormFillingCost})" th:if="${!isCrimeClaim}"></div>
 
                                         <!-- Adjourned hearing fee -->
                                         <div th:replace="partials/claim-field-row :: summaryRow(${claim.adjournedHearing})"></div>

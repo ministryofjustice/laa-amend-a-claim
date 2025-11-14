@@ -13,6 +13,7 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaim;
 import uk.gov.justice.laa.amend.claim.models.Claim2;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaim;
+import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
@@ -35,6 +36,9 @@ class ClaimSummaryViewTest extends ViewTestBase {
     @MockitoBean
     private ClaimMapper claimMapper;
 
+    @MockitoBean
+    private AssessmentService assessmentService;
+
     ClaimSummaryViewTest() {
         super("/submissions/submissionId/claims/claimId");
     }
@@ -53,7 +57,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setHoInterview(new ClaimField(HO_INTERVIEW, 120, 110, 115));
         claim.setSubstantiveHearing(new ClaimField(SUBSTANTIVE_HEARING, 300, 280, 290));
         claim.setCounselsCost(new ClaimField(COUNSELS_COST, 400, 380, 390));
-
 
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
         when(claimMapper.mapToCivilClaim(any())).thenReturn(claim);
