@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.views;
 
 import org.jsoup.nodes.Document;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -8,11 +9,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimSummaryController;
-import uk.gov.justice.laa.amend.claim.mappers.ClaimSummaryMapper;
-import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
-import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimSummary;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
+import uk.gov.justice.laa.amend.claim.models.CivilClaim;
+import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaim;
+import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
@@ -33,7 +35,10 @@ class ClaimSummaryViewTest extends ViewTestBase {
     private ClaimService claimService;
 
     @MockitoBean
-    private ClaimSummaryMapper claimSummaryMapper;
+    private ClaimMapper claimMapper;
+
+    @MockitoBean
+    private AssessmentService assessmentService;
 
     ClaimSummaryViewTest() {
         super("/submissions/submissionId/claims/claimId");
@@ -41,22 +46,20 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
     @Test
     void testCivilClaimPage() throws Exception {
-        CivilClaimSummary claim = new CivilClaimSummary();
-        createClaimSummary(claim);
-        claim.setMatterTypeCodeOne("IMLB");
-        claim.setMatterTypeCodeTwo("AHQS");
-        claim.setDetentionTravelWaitingCosts(new ClaimFieldRow(DETENTION_TRAVEL_COST, 100, 90, 95));
-        claim.setJrFormFillingCost(new ClaimFieldRow(JR_FORM_FILLING, 50, 45, 48));
-        claim.setAdjournedHearing(new ClaimFieldRow(ADJOURNED_FEE, 200, 180, 190));
-        claim.setCmrhTelephone(new ClaimFieldRow(CMRH_TELEPHONE, 75, 70, 72));
-        claim.setCmrhOral(new ClaimFieldRow(CMRH_ORAL, 150, 140, 145));
-        claim.setHoInterview(new ClaimFieldRow(HO_INTERVIEW, 120, 110, 115));
-        claim.setSubstantiveHearing(new ClaimFieldRow(SUBSTANTIVE_HEARING, 300, 280, 290));
-        claim.setCounselsCost(new ClaimFieldRow(COUNSELS_COST, 400, 380, 390));
-
+        CivilClaim claim = new CivilClaim();
+        createClaim(claim);
+        claim.setMatterTypeCode("IMLB+AHQS");
+        claim.setDetentionTravelWaitingCosts(new ClaimField(DETENTION_TRAVEL_COST, 100, 90, 95));
+        claim.setJrFormFillingCost(new ClaimField(JR_FORM_FILLING, 50, 45, 48));
+        claim.setAdjournedHearing(new ClaimField(ADJOURNED_FEE, 200, 180, 190));
+        claim.setCmrhTelephone(new ClaimField(CMRH_TELEPHONE, 75, 70, 72));
+        claim.setCmrhOral(new ClaimField(CMRH_ORAL, 150, 140, 145));
+        claim.setHoInterview(new ClaimField(HO_INTERVIEW, 120, 110, 115));
+        claim.setSubstantiveHearing(new ClaimField(SUBSTANTIVE_HEARING, 300, 280, 290));
+        claim.setCounselsCost(new ClaimField(COUNSELS_COST, 400, 380, 390));
 
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimSummaryMapper.mapToCivilClaimSummary(any())).thenReturn(claim);
+        when(claimMapper.mapToClaim(any())).thenReturn(claim);
 
         Document doc = renderDocument();
 
@@ -82,21 +85,21 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
         assertPageHasValuesRow(doc, "CMRH oral", claim.getCmrhOral());
         assertPageHasValuesRow(doc, "CMRH telephone", claim.getCmrhTelephone());
-        assertPageHasValuesRow(doc, "Counsel's Cost(ex VAT)", claim.getCounselsCost());
+        assertPageHasValuesRow(doc, "Counsel's costs (ex VAT)", claim.getCounselsCost());
     }
 
     @Test
     void testCrimeClaimPage() throws Exception {
-        CrimeClaimSummary claim = new CrimeClaimSummary();
-        createClaimSummary(claim);
+        CrimeClaim claim = new CrimeClaim();
+        createClaim(claim);
         claim.setMatterTypeCode("IMLB");
-        claim.setTravelCosts(new ClaimFieldRow(TRAVEL_COSTS, 100, 90, null));
-        claim.setWaitingCosts(new ClaimFieldRow(WAITING_COSTS, 50, 45, null));
+        claim.setTravelCosts(new ClaimField(TRAVEL_COSTS, 100, 90, null));
+        claim.setWaitingCosts(new ClaimField(WAITING_COSTS, 50, 45, null));
 
         ClaimResponse claimResponse = new ClaimResponse();
         claimResponse.feeCalculationResponse(new FeeCalculationPatch().categoryOfLaw("CRIME"));
         when(claimService.getClaim(anyString(), anyString())).thenReturn(claimResponse);
-        when(claimSummaryMapper.mapToCrimeClaimSummary(any())).thenReturn(claim);
+        when(claimMapper.mapToClaim(any())).thenReturn(claim);
 
         Document doc = renderDocument();
 
@@ -123,7 +126,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasValuesRow(doc, "Waiting costs", claim.getWaitingCosts());
     }
 
-    private static void createClaimSummary(ClaimSummary claim) {
+    private static void createClaim(Claim claim) {
         claim.setEscaped(true);
         claim.setCategoryOfLaw("AAP");
         claim.setFeeScheme("CCS");
@@ -135,35 +138,27 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setCaseEndDate(LocalDate.of(2020, 12, 31));
         claim.setSubmittedDate("22/10/2025");
 
-        // Set ClaimFieldRow fields
-        claim.setVatClaimed(new ClaimFieldRow(VAT, 80, 75, 78));
-        claim.setFixedFee(new ClaimFieldRow(FIXED_FEE, 500, 480, 490));
-        claim.setNetProfitCost(new ClaimFieldRow(NET_PROFIT_COST, 600, 580, 590));
-        claim.setNetDisbursementAmount(new ClaimFieldRow(NET_DISBURSEMENTS_COST, 200, 190, 195));
-        claim.setTotalAmount(new ClaimFieldRow(TOTAL, 1380, 1325, 1350));
-        claim.setDisbursementVatAmount(new ClaimFieldRow(DISBURSEMENT_VAT, 40, 38, 39));
+        // Set ClaimField fields
+        claim.setVatClaimed(new ClaimField(VAT, 80, 75, 78));
+        claim.setFixedFee(new ClaimField(FIXED_FEE, 500, 480, 490));
+        claim.setNetProfitCost(new ClaimField(NET_PROFIT_COST, 600, 580, 590));
+        claim.setNetDisbursementAmount(new ClaimField(NET_DISBURSEMENTS_COST, 200, 190, 195));
+        claim.setTotalAmount(new ClaimField(TOTAL, 1380, 1325, 1350));
+        claim.setDisbursementVatAmount(new ClaimField(DISBURSEMENT_VAT, 40, 38, 39));
     }
 
     @Test
     void testPageWhenNullClaim() throws Exception {
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimSummaryMapper.mapToCivilClaimSummary(any())).thenReturn(null);
+        when(claimMapper.mapToClaim(any())).thenReturn(null);
 
-        Document doc = renderDocument();
-
-        assertPageHasTitle(doc, "Claim details");
-
-        assertPageHasHeading(doc, "Claim details");
-
-        assertPageHasNoActiveServiceNavigationItems(doc);
-
-        assertPageHasNoSummaryList(doc);
+        Assertions.assertThrows(Exception.class, this::renderDocument);
     }
 
     @Test
     void testPageWhenEmptyClaim() throws Exception {
         when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimSummaryMapper.mapToCrimeClaimSummary(any())).thenReturn(new CrimeClaimSummary());
+        when(claimMapper.mapToClaim(any())).thenReturn(new CrimeClaim());
 
         Document doc = renderDocument();
 

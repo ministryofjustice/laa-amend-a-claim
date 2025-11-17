@@ -23,7 +23,15 @@
                 </p>
             </div>
 
-            <a th:if="${showBackLink ?: false}"
+            <!-- Back link with explicit URL -->
+            <a th:if="${showBackLink and backUrl != null}"
+               th:href="${backUrl}"
+               class="govuk-back-link"
+               th:text="#{service.back}">
+            </a>
+
+            <!-- Fallback: go back in history -->
+            <a th:if="${showBackLink and backUrl == null}"
                href="#"
                onclick="window.history.go(-1); return false;"
                class="govuk-back-link"

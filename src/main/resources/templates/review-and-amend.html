@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{claimReview.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${true},
+        backUrl=${backUrl}
+    )}">
+<body>
+<main class="govuk-main-wrapper" id="main-content">
+    <h1 class="govuk-heading-xl">
+        <span th:text="#{claimReview.mainHeading}"></span>
+    </h1>
+
+    <p class="govuk-body">
+        <strong th:text="#{claimReview.assessmentOutcome} "></strong>
+        <span th:text="#{${(claim.assessmentOutcome != null) ? claim.assessmentOutcome.messageKey : 'claimValuesTable.noData'}}"></span>
+    </p>
+
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header" th:text="#{claimSummary.item}"></th>
+                <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
+                <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
+                <th scope="col" class="govuk-table__header" th:text="#{claimSummary.amended}"></th>
+                <th scope="col" class="govuk-table__header"></th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row"
+                th:each="row : ${viewModel.tableRows}"
+                th:classappend="${viewModel.isTotalRow(row)} ? 'table-row--total' : ''">
+                <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
+                <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
+                <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
+                <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}"></td>
+                <td class="govuk-table__cell" th:if="${canAmendCosts}" th:classappend="${viewModel.getChangeUrl(row)} == null ? 'govuk-summary-list__row--no-actions' : ''">
+                    <a th:if="${viewModel.getChangeUrl(row) != null}"
+                       th:href="${viewModel.getChangeUrl(row)}"
+                       class="govuk-link govuk-link--no-visited-state">Change</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review/submit(submissionId=${submissionId}, claimId=${claimId})}" method="post" style="display: inline;">
+        <button class="govuk-button govuk-!-margin-right-3" type="submit" data-module="govuk-button" th:text="#{claimReview.submit}"></button>
+    </form>
+
+    <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review/discard(submissionId=${submissionId}, claimId=${claimId})}" method="post" style="display: inline;">
+        <button class="govuk-button govuk-button--warning" type="submit" data-module="govuk-button" th:text="#{claimReview.discard}"></button>
+    </form>
+</main>
+</body>
+</html>
