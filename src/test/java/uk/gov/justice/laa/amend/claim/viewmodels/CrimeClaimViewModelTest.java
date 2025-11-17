@@ -4,27 +4,30 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.CivilClaim;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaim;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.List;
 
-public class ClaimViewModelTest {
+public class CrimeClaimViewModelTest {
 
     @Nested
     class GetAccountNumberTests {
         @Test
         void getAccountNumberPicksOutFirstPartOfScheduleReference() {
-            CivilClaim claim = new CivilClaim();
+            CrimeClaim claim = new CrimeClaim();
             claim.setScheduleReference("0U733A/2018/02");
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertEquals("0U733A", viewModel.getAccountNumber());
         }
 
         @Test
         void getAccountNumberReturnsScheduleReferenceIfUnexpectedFormat() {
-            CivilClaim claim = new CivilClaim();
+            CrimeClaim claim = new CrimeClaim();
             claim.setScheduleReference("0U733A201802");
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertEquals("0U733A201802", viewModel.getAccountNumber());
         }
     }
@@ -33,16 +36,16 @@ public class ClaimViewModelTest {
     class GetCaseStartDateForDisplayTests {
         @Test
         void getCaseStartDateForDisplayHandlesNull() {
-            CivilClaim claim = new CivilClaim();
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            CrimeClaim claim = new CrimeClaim();
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertNull(viewModel.getCaseStartDateForDisplay());
         }
 
         @Test
         void getCaseStartDateForDisplayFormatsDate() {
-            CivilClaim claim = new CivilClaim();
+            CrimeClaim claim = new CrimeClaim();
             claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertEquals("01 Jan 2020", viewModel.getCaseStartDateForDisplay());
         }
     }
@@ -51,16 +54,16 @@ public class ClaimViewModelTest {
     class GetCaseEndDateForDisplayTests {
         @Test
         void getCaseEndDateForDisplayHandlesNull() {
-            CivilClaim claim = new CivilClaim();
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            CrimeClaim claim = new CrimeClaim();
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertNull(viewModel.getCaseEndDateForDisplay());
         }
 
         @Test
         void getCaseEndDateForDisplayFormatsDate() {
-            CivilClaim claim = new CivilClaim();
+            CrimeClaim claim = new CrimeClaim();
             claim.setCaseEndDate(LocalDate.of(2020, 1, 1));
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertEquals("01 Jan 2020", viewModel.getCaseEndDateForDisplay());
         }
     }
@@ -69,16 +72,16 @@ public class ClaimViewModelTest {
     class GetSubmissionPeriodForDisplayTests {
         @Test
         void getSubmissionPeriodForDisplayHandlesNull() {
-            CivilClaim claim = new CivilClaim();
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            CrimeClaim claim = new CrimeClaim();
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertNull(viewModel.getSubmissionPeriodForDisplay());
         }
 
         @Test
         void getSubmissionPeriodForDisplayFormatsDate() {
-            CivilClaim claim = new CivilClaim();
+            CrimeClaim claim = new CrimeClaim();
             claim.setSubmissionPeriod(YearMonth.of(2020, 1));
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertEquals("Jan 2020", viewModel.getSubmissionPeriodForDisplay());
         }
     }
@@ -87,16 +90,16 @@ public class ClaimViewModelTest {
     class GetSubmissionPeriodForSortingTests {
         @Test
         void getSubmissionPeriodForSortingHandlesNull() {
-            CivilClaim claim = new CivilClaim();
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            CrimeClaim claim = new CrimeClaim();
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertEquals(0, viewModel.getSubmissionPeriodForSorting());
         }
 
         @Test
         void getSubmissionPeriodForSortingGetsEpochValueOfDate() {
-            CivilClaim claim = new CivilClaim();
+            CrimeClaim claim = new CrimeClaim();
             claim.setSubmissionPeriod(YearMonth.of(2020, 1));
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertEquals(18262, viewModel.getSubmissionPeriodForSorting());
         }
     }
@@ -105,24 +108,24 @@ public class ClaimViewModelTest {
     class GetEscapedForSortingTests {
         @Test
         void getEscapedForSortingHandlesNull() {
-            CivilClaim claim = new CivilClaim();
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            CrimeClaim claim = new CrimeClaim();
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertEquals("service.no", viewModel.getEscapedForDisplay());
         }
 
         @Test
         void getEscapedForDisplayHandlesTrue() {
-            CivilClaim claim = new CivilClaim();
+            CrimeClaim claim = new CrimeClaim();
             claim.setEscaped(true);
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertEquals("service.yes", viewModel.getEscapedForDisplay());
         }
 
         @Test
         void getEscapedForDisplayHandlesFalse() {
-            CivilClaim claim = new CivilClaim();
+            CrimeClaim claim = new CrimeClaim();
             claim.setEscaped(false);
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertEquals("service.no", viewModel.getEscapedForDisplay());
         }
     }
@@ -131,34 +134,72 @@ public class ClaimViewModelTest {
     class getClientNameTests {
         @Test
         void getClientNameHandlesNullForenameAndSurname() {
-            CivilClaim claim = new CivilClaim();
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            CrimeClaim claim = new CrimeClaim();
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertNull(viewModel.getClientName());
         }
 
         @Test
         void getClientNameHandlesNullSurname() {
-            CivilClaim claim = new CivilClaim();
+            CrimeClaim claim = new CrimeClaim();
             claim.setClientForename("John");
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertEquals("John", viewModel.getClientName());
         }
 
         @Test
         void getClientNameHandlesNullForename() {
-            CivilClaim claim = new CivilClaim();
+            CrimeClaim claim = new CrimeClaim();
             claim.setClientSurname("Doe");
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertEquals("Doe", viewModel.getClientName());
         }
 
         @Test
         void getClientNameHandlesFullName() {
-            CivilClaim claim = new CivilClaim();
+            CrimeClaim claim = new CrimeClaim();
             claim.setClientForename("John");
             claim.setClientSurname("Doe");
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
             Assertions.assertEquals("John Doe", viewModel.getClientName());
+        }
+    }
+
+    @Nested
+    class GetTableRowsTests {
+        @Test
+        void rowsRenderedForClaimValues() {
+            ClaimField fixedFee = new ClaimField("1", null, null);
+            ClaimField netProfitCost = new ClaimField("2", null, null);
+            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
+            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
+            ClaimField travel = new ClaimField("5", null, null);
+            ClaimField waiting = new ClaimField("6", null, null);
+            ClaimField vatClaimed = new ClaimField("7", null, null);
+            ClaimField totalAmount = new ClaimField("8", null, null);
+
+            CrimeClaim claim = new CrimeClaim();
+            claim.setFixedFee(fixedFee);
+            claim.setNetProfitCost(netProfitCost);
+            claim.setNetDisbursementAmount(netDisbursementAmount);
+            claim.setDisbursementVatAmount(disbursementVatAmount);
+            claim.setTravelCosts(travel);
+            claim.setWaitingCosts(waiting);
+            claim.setVatClaimed(vatClaimed);
+            claim.setTotalAmount(totalAmount);
+
+            CrimeClaimViewModel viewModel = new CrimeClaimViewModel(claim);
+            List<ClaimField> expectedRows = List.of(
+                fixedFee,
+                netProfitCost,
+                netDisbursementAmount,
+                disbursementVatAmount,
+                travel,
+                waiting,
+                vatClaimed,
+                totalAmount
+            );
+            Assertions.assertEquals(expectedRows, viewModel.getTableRows());
         }
     }
 }

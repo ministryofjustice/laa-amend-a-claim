@@ -56,18 +56,18 @@ public abstract class Claim implements Serializable {
     private OutcomeType assessmentOutcome;
 
     public void setNilledValues() {
-        if (netProfitCost != null) {
-            netProfitCost.setAmended(BigDecimal.ZERO);
-        }
-        if (netDisbursementAmount != null) {
-            netDisbursementAmount.setAmended(BigDecimal.ZERO);
-        }
-        if (disbursementVatAmount != null) {
-            disbursementVatAmount.setAmended(BigDecimal.ZERO);
-        }
+        setAmendedValue(netProfitCost, BigDecimal.ZERO);
+        setAmendedValue(netDisbursementAmount, BigDecimal.ZERO);
+        setAmendedValue(disbursementVatAmount, BigDecimal.ZERO);
     }
 
     public abstract boolean getIsCrimeClaim();
+
+    protected void setAmendedValue(ClaimField claimField, Object value) {
+        if (claimField != null) {
+            claimField.setAmended(value);
+        }
+    }
 
     public abstract ClaimViewModel<? extends Claim> toViewModel();
 }

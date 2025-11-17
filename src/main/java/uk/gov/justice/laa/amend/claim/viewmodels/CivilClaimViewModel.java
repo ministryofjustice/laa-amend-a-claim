@@ -3,7 +3,6 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.justice.laa.amend.claim.models.CivilClaim;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.Cost;
 
 import java.util.List;
 
@@ -22,26 +21,6 @@ public record CivilClaimViewModel(CivilClaim claim) implements ClaimViewModel<Ci
             claim.getHoInterview(),
             claim.getSubstantiveHearing()
         );
-    }
-
-    @Override
-    public Cost getCostForRow(ClaimField row) {
-        if (row == null) {
-            return null;
-        }
-
-        if (row.equals(claim.getCounselsCost())) {
-            return Cost.COUNSEL_COSTS;
-        }
-        if (row.equals(claim.getDetentionTravelWaitingCosts())) {
-            return Cost.DETENTION_TRAVEL_AND_WAITING_COSTS;
-        }
-        if (row.equals(claim.getJrFormFillingCost())) {
-            return Cost.JR_FORM_FILLING_COSTS;
-        }
-
-        // Fall back to parent implementation
-        return ClaimViewModel.super.getCostForRow(row);
     }
 
     public String getMatterTypeCodeOne() {

@@ -68,7 +68,7 @@ public interface ClaimViewModel<T extends Claim> {
             return null;
         }
 
-        Cost cost = getCostForRow(row);
+        Cost cost = row.getCost();
         if (cost == null) {
             return null;
         }
@@ -84,31 +84,6 @@ public interface ClaimViewModel<T extends Claim> {
      */
     default boolean isTotalRow(ClaimField row) {
         return row != null && row.equals(claim().getTotalAmount());
-    }
-
-    /**
-     * Maps a ClaimField to its corresponding Cost enum, or null if the row is not editable.
-     *
-     * @param row the claim field row
-     * @return the corresponding Cost, or null if not editable
-     */
-    default Cost getCostForRow(ClaimField row) {
-        if (row == null) {
-            return null;
-        }
-
-        if (row.equals(claim().getNetProfitCost())) {
-            return Cost.PROFIT_COSTS;
-        }
-        if (row.equals(claim().getNetDisbursementAmount())) {
-            return Cost.DISBURSEMENTS;
-        }
-        if (row.equals(claim().getDisbursementVatAmount())) {
-            return Cost.DISBURSEMENTS_VAT;
-        }
-
-        // Subclasses should override to add their specific costs
-        return null;
     }
 
     default String getFormattedValue(Object value) {
@@ -165,10 +140,6 @@ public interface ClaimViewModel<T extends Claim> {
             return String.format("%s %s", clientForename, clientSurname);
         } else if (clientForename != null) {
             return clientForename;
-        } else if (clientSurname != null) {
-            return clientSurname;
-        } else {
-            return null;
-        }
+        } else return clientSurname;
     }
 }

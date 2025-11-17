@@ -1,14 +1,10 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
-import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import uk.gov.justice.laa.amend.claim.models.CivilClaim;
-import uk.gov.justice.laa.amend.claim.models.Claim;
-import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.CrimeClaim;
+import uk.gov.justice.laa.amend.claim.models.*;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
@@ -118,27 +114,27 @@ public interface ClaimMapper {
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getTotalAmount() : null;
         var submitted = claimResponse.getTotalValue();
-        return new ClaimField(TOTAL, submitted, calculated, submitted);
+        return new ClaimField(TOTAL, submitted, calculated);
     }
 
     default ClaimField mapFixedFee(ClaimResponse claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getFixedFeeAmount() : null;
-        return new ClaimField(FIXED_FEE, "NA", calculated, "NA");
+        return new ClaimField(FIXED_FEE, "NA", calculated);
     }
 
     default ClaimField mapNetProfitCost(ClaimResponse claimResponse) {
         BigDecimal submitted = claimResponse.getNetProfitCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetProfitCostsAmount() : null;
-        return new ClaimField(NET_PROFIT_COST, submitted, calculated, submitted);
+        return new ClaimField(NET_PROFIT_COST, submitted, calculated, Cost.PROFIT_COSTS);
     }
 
     default ClaimField mapVatClaimed(ClaimResponse claimResponse) {
         var submitted = claimResponse.getIsVatApplicable();
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 && Boolean.TRUE.equals(claimResponse.getFeeCalculationResponse().getVatIndicator());
-        return new ClaimField(VAT, submitted, calculated, submitted);
+        return new ClaimField(VAT, submitted, calculated);
     }
 
 
@@ -146,35 +142,35 @@ public interface ClaimMapper {
         BigDecimal submitted = claimResponse.getNetDisbursementAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getDisbursementVatAmount() : null;
-        return new ClaimField(NET_DISBURSEMENTS_COST, submitted, calculated, submitted);
+        return new ClaimField(NET_DISBURSEMENTS_COST, submitted, calculated, Cost.DISBURSEMENTS);
     }
 
     default ClaimField mapDisbursementVatAmount(ClaimResponse claimResponse) {
         BigDecimal submitted = claimResponse.getDisbursementsVatAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getDisbursementVatAmount() : null;
-        return new ClaimField(DISBURSEMENT_VAT, submitted, calculated, submitted);
+        return new ClaimField(DISBURSEMENT_VAT, submitted, calculated, Cost.DISBURSEMENTS_VAT);
     }
 
     default ClaimField mapCounselsCost(ClaimResponse claimResponse) {
         BigDecimal submitted = claimResponse.getNetCounselCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetCostOfCounselAmount() : null;
-        return new ClaimField(COUNSELS_COST, submitted, calculated, submitted);
+        return new ClaimField(COUNSELS_COST, submitted, calculated, Cost.COUNSEL_COSTS);
     }
 
     default ClaimField mapDetentionTravelWaitingCosts(ClaimResponse claimResponse) {
         BigDecimal submitted = claimResponse.getDetentionTravelWaitingCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getDetentionAndWaitingCostsAmount() : null;
-        return new ClaimField(DETENTION_TRAVEL_COST, submitted, calculated, submitted);
+        return new ClaimField(DETENTION_TRAVEL_COST, submitted, calculated, Cost.DETENTION_TRAVEL_AND_WAITING_COSTS);
     }
 
     default ClaimField mapJrFormFillingCost(ClaimResponse claimResponse) {
         BigDecimal submitted = claimResponse.getJrFormFillingAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getJrFormFillingAmount() : null;
-        return new ClaimField(JR_FORM_FILLING, submitted, calculated, submitted);
+        return new ClaimField(JR_FORM_FILLING, submitted, calculated, Cost.JR_FORM_FILLING_COSTS);
     }
 
     default ClaimField mapAdjournedHearingFee(ClaimResponse claimResponse) {
@@ -182,7 +178,7 @@ public interface ClaimMapper {
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnAdjournedHearingFee() : null;
-        return new ClaimField(ADJOURNED_FEE, submitted, calculated, submitted);
+        return new ClaimField(ADJOURNED_FEE, submitted, calculated);
     }
 
     default ClaimField mapCmrhTelephone(ClaimResponse claimResponse) {
@@ -190,7 +186,7 @@ public interface ClaimMapper {
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnCmrhTelephoneFee() : null;
-        return new ClaimField(CMRH_TELEPHONE, submitted, calculated, submitted);
+        return new ClaimField(CMRH_TELEPHONE, submitted, calculated);
     }
 
     default ClaimField mapCmrhOral(ClaimResponse claimResponse) {
@@ -198,7 +194,7 @@ public interface ClaimMapper {
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnCmrhOralFee() : null;
-        return new ClaimField(CMRH_ORAL, submitted, calculated, submitted);
+        return new ClaimField(CMRH_ORAL, submitted, calculated);
     }
 
     default ClaimField mapHoInterview(ClaimResponse claimResponse) {
@@ -206,7 +202,7 @@ public interface ClaimMapper {
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnHomeOfficeInterviewFee() : null;
-        return new ClaimField(HO_INTERVIEW, submitted, calculated, submitted);
+        return new ClaimField(HO_INTERVIEW, submitted, calculated);
     }
 
     default ClaimField mapSubstantiveHearing(ClaimResponse claimResponse) {
@@ -214,7 +210,7 @@ public interface ClaimMapper {
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnHomeOfficeInterviewFee() : null;
-        return new ClaimField(SUBSTANTIVE_HEARING, submitted, calculated, submitted);
+        return new ClaimField(SUBSTANTIVE_HEARING, submitted, calculated);
     }
 
     default ClaimField mapTravelCosts(ClaimResponse claimResponse) {
@@ -222,7 +218,7 @@ public interface ClaimMapper {
                 ? claimResponse.getFeeCalculationResponse().getNetTravelCostsAmount() : null;
         var submitted = claimResponse.getTravelWaitingCostsAmount() != null
                 ? claimResponse.getTravelWaitingCostsAmount() : null;
-        return new ClaimField(TRAVEL_COSTS, submitted, calculated, submitted);
+        return new ClaimField(TRAVEL_COSTS, submitted, calculated, Cost.TRAVEL_COSTS);
     }
 
     default ClaimField mapWaitingCosts(ClaimResponse claimResponse) {
@@ -230,6 +226,6 @@ public interface ClaimMapper {
                 ? claimResponse.getNetWaitingCostsAmount() : null;
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetWaitingCostsAmount() : null;
-        return new ClaimField(WAITING_COSTS, submitted, calculated, submitted);
+        return new ClaimField(WAITING_COSTS, submitted, calculated, Cost.WAITING_COSTS);
     }
 }

@@ -17,12 +17,8 @@ public class CrimeClaim extends Claim {
     @Override
     public void setNilledValues() {
         super.setNilledValues();
-        if (travelCosts != null) {
-            travelCosts.setAmended(BigDecimal.ZERO);
-        }
-        if (waitingCosts != null) {
-            waitingCosts.setAmended(BigDecimal.ZERO);
-        }
+        setAmendedValue(travelCosts, BigDecimal.ZERO);
+        setAmendedValue(waitingCosts, BigDecimal.ZERO);
     }
 
     @Override
