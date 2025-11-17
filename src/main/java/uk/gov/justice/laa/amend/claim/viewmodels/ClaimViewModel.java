@@ -118,6 +118,8 @@ public interface ClaimViewModel<T extends Claim> {
             return String.format("%s %s", clientForename, clientSurname);
         } else if (clientForename != null) {
             return clientForename;
-        } else return clientSurname;
+        } else {
+            return clientSurname;
+        }
     }
 }
