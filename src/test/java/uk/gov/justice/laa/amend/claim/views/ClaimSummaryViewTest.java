@@ -47,7 +47,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
     @Test
     void testCivilClaimPage() throws Exception {
         CivilClaim claim = new CivilClaim();
-        createClaimSummary(claim);
+        createClaim(claim);
         claim.setMatterTypeCode("IMLB+AHQS");
         claim.setDetentionTravelWaitingCosts(new ClaimField(DETENTION_TRAVEL_COST, 100, 90, 95));
         claim.setJrFormFillingCost(new ClaimField(JR_FORM_FILLING, 50, 45, 48));
@@ -91,7 +91,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
     @Test
     void testCrimeClaimPage() throws Exception {
         CrimeClaim claim = new CrimeClaim();
-        createClaimSummary(claim);
+        createClaim(claim);
         claim.setMatterTypeCode("IMLB");
         claim.setTravelCosts(new ClaimField(TRAVEL_COSTS, 100, 90, null));
         claim.setWaitingCosts(new ClaimField(WAITING_COSTS, 50, 45, null));
@@ -126,7 +126,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasValuesRow(doc, "Waiting costs", claim.getWaitingCosts());
     }
 
-    private static void createClaimSummary(Claim claim) {
+    private static void createClaim(Claim claim) {
         claim.setEscaped(true);
         claim.setCategoryOfLaw("AAP");
         claim.setFeeScheme("CCS");

@@ -29,7 +29,7 @@ public class ClaimReviewControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void testOnPageLoadReturnsViewWhenClaimSummaryInSession() throws Exception {
+    public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
 
@@ -45,7 +45,7 @@ public class ClaimReviewControllerTest {
         mockMvc.perform(get(path).session(session))
             .andExpect(status().isOk())
             .andExpect(view().name("review-and-amend"))
-            .andExpect(model().attributeExists("claimSummary"))
+            .andExpect(model().attributeExists("claim"))
             .andExpect(model().attributeExists("backUrl"))
             .andExpect(model().attribute("claimId", claimId))
             .andExpect(model().attribute("submissionId", submissionId));

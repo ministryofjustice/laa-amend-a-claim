@@ -40,7 +40,7 @@ class ClaimMapperTest {
     }
 
     @Test
-    void testMapToCivilClaimSummary() {
+    void testMapToCivilClaim() {
         ClaimResponse response = new ClaimResponse();
         response.setUniqueFileNumber("UFN123");
         response.setCaseReferenceNumber("CASE456");
@@ -72,7 +72,7 @@ class ClaimMapperTest {
     }
 
     @Test
-    void testMapToCrimeClaimSummary() {
+    void testMapToCrimeClaim() {
         ClaimResponse response = new ClaimResponse();
         response.setUniqueFileNumber("UFN123");
         response.setCaseReferenceNumber("CASE456");
