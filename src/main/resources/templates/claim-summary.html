@@ -28,72 +28,72 @@
                                     </div>
                                     <div class="govuk-summary-list__row">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.ufn}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${claim.uniqueFileNumber}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${claim.claim.uniqueFileNumber}"></dd>
                                     </div>
 
-                                    <div class="govuk-summary-list__row" th:if="${!isCrimeClaim && claim.caseReferenceNumber != null}">
+                                    <div class="govuk-summary-list__row" th:if="${!claim.claim.isCrimeClaim && claim.claim.caseReferenceNumber != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.ucn}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${claim.caseReferenceNumber}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${claim.claim.caseReferenceNumber}"></dd>
                                     </div>
 
-                                    <div class="govuk-summary-list__row" th:if="${claim.feeScheme != null}">
+                                    <div class="govuk-summary-list__row" th:if="${claim.claim.feeScheme != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.feeScheme}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${claim.feeScheme}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${claim.claim.feeScheme}"></dd>
                                     </div>
 
-                                    <div class="govuk-summary-list__row" th:if="${claim.providerName != null}">
+                                    <div class="govuk-summary-list__row" th:if="${claim.claim.providerName != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.provider}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${claim.providerName}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${claim.claim.providerName}"></dd>
                                     </div>
 
-                                    <div class="govuk-summary-list__row" th:if="${claim.providerAccountNumber != null}">
+                                    <div class="govuk-summary-list__row" th:if="${claim.claim.providerAccountNumber != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.providerAccountNumber}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${claim.providerAccountNumber}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${claim.claim.providerAccountNumber}"></dd>
                                     </div>
 
-                                    <div class="govuk-summary-list__row" th:if="${claim.submittedDate != null}">
+                                    <div class="govuk-summary-list__row" th:if="${claim.claim.submittedDate != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.dateSubmitted}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${claim.submittedDate}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${claim.claim.submittedDate}"></dd>
                                     </div>
 
-                                    <div class="govuk-summary-list__row" th:if="${claim.categoryOfLaw != null}">
+                                    <div class="govuk-summary-list__row" th:if="${claim.claim.categoryOfLaw != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.type}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${claim.categoryOfLaw}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${claim.claim.categoryOfLaw}"></dd>
                                     </div>
 
-                                    <div class="govuk-summary-list__row" th:if="${isCrimeClaim && claim.matterTypeCode != null}">
+                                    <div class="govuk-summary-list__row" th:if="${claim.claim.isCrimeClaim && claim.claim.matterTypeCode != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.legalMatterCode}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${claim.matterTypeCode}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${claim.claim.matterTypeCode}"></dd>
                                     </div>
 
-                                    <div class="govuk-summary-list__row" th:if="${!isCrimeClaim && claim.matterTypeCodeOne != null}">
+                                    <div class="govuk-summary-list__row" th:if="${!claim.claim.isCrimeClaim && claim.matterTypeCodeOne != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.matterTypeCodeOne}"></dt>
                                         <dd class="govuk-summary-list__value" th:text="${claim.matterTypeCodeOne}"></dd>
                                     </div>
 
-                                    <div class="govuk-summary-list__row" th:if="${!isCrimeClaim && claim.matterTypeCodeTwo != null}">
+                                    <div class="govuk-summary-list__row" th:if="${!claim.claim.isCrimeClaim && claim.matterTypeCodeTwo != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.matterTypeCodeTwo}"></dt>
                                         <dd class="govuk-summary-list__value" th:text="${claim.matterTypeCodeTwo}"></dd>
                                     </div>
 
-                                    <div class="govuk-summary-list__row" th:if="${claim.caseStartDate != null}">
+                                    <div class="govuk-summary-list__row" th:if="${claim.claim.caseStartDate != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.caseStartDate}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.displayDateValue(claim.caseStartDate)}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${claim.caseStartDateForDisplay}"></dd>
                                     </div>
 
-                                    <div class="govuk-summary-list__row" th:if="${claim.caseEndDate != null}">
+                                    <div class="govuk-summary-list__row" th:if="${claim.claim.caseEndDate != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.caseEndDate}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.displayDateValue(claim.caseEndDate)}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${claim.caseEndDateForDisplay}"></dd>
                                     </div>
 
-                                    <div class="govuk-summary-list__row" th:if="${claim.escaped != null}">
+                                    <div class="govuk-summary-list__row" th:if="${claim.claim.escaped != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.escaped}"></dt>
-                                        <dd class="govuk-summary-list__value" th:with="key=${@ThymeleafUtils.displayValueForBoolean(claim.escaped)}" th:text="#{${key}}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped)}"></dd>
                                     </div>
 
-                                    <div class="govuk-summary-list__row" th:if="${claim.vatApplicable != null}">
+                                    <div class="govuk-summary-list__row" th:if="${claim.claim.vatApplicable != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.vatRequested}"></dt>
-                                        <dd class="govuk-summary-list__value" th:with="key=${@ThymeleafUtils.displayValueForBoolean(claim.vatApplicable)}" th:text="#{${key}}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedBoolean(claim.claim.vatApplicable)}"></dd>
                                     </div>
                                 </dl>
                             </div>
@@ -111,58 +111,58 @@
                                         <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimSummary.submitted}"></dd>
                                     </div>
                                     <!-- Fixed Fee -->
-                                    <div th:replace="partials/claim-field-row :: summaryRow(${claim.fixedFee})"></div>
+                                    <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.fixedFee})"></div>
 
                                     <!-- Profit Cost -->
-                                    <div th:replace="partials/claim-field-row :: summaryRow(${claim.netProfitCost})" ></div>
+                                    <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.netProfitCost})" ></div>
 
                                     <!-- Disbursements -->
-                                    <div th:replace="partials/claim-field-row :: summaryRow(${claim.netDisbursementAmount})"></div>
+                                    <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.netDisbursementAmount})"></div>
 
                                     <!-- Disbursement VAT -->
-                                    <div th:replace="partials/claim-field-row :: summaryRow(${claim.disbursementVatAmount})" ></div>
+                                    <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.disbursementVatAmount})" ></div>
 
-                                    <th:block th:if="${isCrimeClaim}">
+                                    <th:block th:if="${claim.claim.isCrimeClaim}">
                                         <!-- Travel Costs -->
-                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.travelCosts})" th:if="${isCrimeClaim}"></div>
+                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.travelCosts})" th:if="${claim.claim.isCrimeClaim}"></div>
 
                                         <!-- Waiting costs -->
-                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.waitingCosts})" th:if="${isCrimeClaim}"></div>
+                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.waitingCosts})" th:if="${claim.claim.isCrimeClaim}"></div>
 
                                     </th:block>
-                                    <th:block th:unless="${isCrimeClaim}">
+                                    <th:block th:unless="${claim.claim.isCrimeClaim}">
                                         <!-- Counsel's cost -->
-                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.counselsCost})" th:if="${!isCrimeClaim}"></div>
+                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.counselsCost})" th:if="${!claim.claim.isCrimeClaim}"></div>
 
                                          <!-- Detention travel -->
-                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.detentionTravelWaitingCosts})" th:if="${!isCrimeClaim}"></div>
+                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.detentionTravelWaitingCosts})" th:if="${!claim.claim.isCrimeClaim}"></div>
 
                                         <!-- JR / Form filling -->
-                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.jrFormFillingCost})" th:if="${!isCrimeClaim}"></div>
+                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.jrFormFillingCost})" th:if="${!claim.claim.isCrimeClaim}"></div>
 
                                         <!-- Adjourned hearing fee -->
-                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.adjournedHearing})"></div>
+                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.adjournedHearing})"></div>
 
                                         <!-- CMRH telephone -->
-                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.cmrhTelephone})"></div>
+                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.cmrhTelephone})"></div>
 
                                         <!-- CMRH oral -->
-                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.cmrhOral})"></div>
+                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.cmrhOral})"></div>
 
                                         <!-- Home office interview -->
-                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.hoInterview})"></div>
+                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.hoInterview})"></div>
 
                                         <!-- Substantive hearing -->
-                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.substantiveHearing})"></div>
+                                        <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.substantiveHearing})"></div>
                                     </th:block>
                                     <!-- VAT -->
-                                    <div th:replace="partials/claim-field-row :: summaryRow(${claim.vatClaimed})"></div>
+                                    <div th:replace="partials/claim-field-row :: summaryRow(${claim.claim.vatClaimed})"></div>
 
                                     <!-- Total -->
-                                    <div class="govuk-summary-list__row">
-                                        <dt class="govuk-summary-list__key govuk-!-font-weight-bold" th:text="#{${claim.totalAmount.label}}"></dt>
-                                        <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="${claim.totalAmount.calculated}"></dd>
-                                        <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="${claim.totalAmount.submitted}"></dd>
+                                    <div class="govuk-summary-list__row" th:if="${claim.claim.totalAmount != null}">
+                                        <dt class="govuk-summary-list__key govuk-!-font-weight-bold" th:text="#{${claim.claim.totalAmount.label}}"></dt>
+                                        <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="${claim.claim.totalAmount.calculated}"></dd>
+                                        <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="${claim.claim.totalAmount.submitted}"></dd>
                                     </div>
                                 </dl>
                             </div>

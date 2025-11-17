@@ -13,7 +13,7 @@
                   th:object="${assessmentOutcomeForm}"
                   method="post">
 
-                <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.sortAssessmentOutcomeErrors(#fields.detailedErrors())})}"></th:block>
+                <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toAssessmentOutcomeErrors(#fields.detailedErrors())})}"></th:block>
 
                 <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">

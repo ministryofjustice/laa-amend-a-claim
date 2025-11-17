@@ -90,21 +90,21 @@
                         <tbody class="govuk-table__body">
                             <tr class="govuk-table__row" th:each="claim : ${viewModel.claims}">
                                 <td class="govuk-table__cell">
-                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.submissionId}, claimId=${claim.claimId})}" th:text="${claim.uniqueFileNumber}" class="govuk-link govuk-link--no-visited-state"></a>
+                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.claim.submissionId}, claimId=${claim.claim.claimId})}" th:text="${claim.claim.uniqueFileNumber}" class="govuk-link govuk-link--no-visited-state"></a>
                                 </td>
                                 <td class="govuk-table__cell">
-                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.submissionId}, claimId=${claim.claimId})}" th:text="${claim.caseReferenceNumber}" class="govuk-link govuk-link--no-visited-state"></a>
+                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.claim.submissionId}, claimId=${claim.claim.claimId})}" th:text="${claim.claim.caseReferenceNumber}" class="govuk-link govuk-link--no-visited-state"></a>
                                 </td>
-                                <td class="govuk-table__cell" th:text="${claim.clientSurname}"></td>
+                                <td class="govuk-table__cell" th:text="${claim.claim.clientSurname}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.submissionPeriodForDisplay}" th:data-sort-value="${claim.submissionPeriodForSorting}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.accountNumber}"></td>
-                                <td class="govuk-table__cell" th:text="${claim.categoryOfLaw}"></td>
-                                <td class="govuk-table__cell" th:with="value=${claim.escapedForDisplay}">
-                                    <th:block th:if="${claim.escaped}">
-                                        <strong class="govuk-tag govuk-tag--red" th:text="#{${value}}"></strong>
+                                <td class="govuk-table__cell" th:text="${claim.claim.categoryOfLaw}"></td>
+                                <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped)}">
+                                    <th:block th:if="${claim.claim.escaped}">
+                                        <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
                                     </th:block>
-                                    <th:block th:unless="${claim.escaped}">
-                                        <span th:text="#{${value}}"></span>
+                                    <th:block th:unless="${claim.claim.escaped}">
+                                        <span th:text="${value}"></span>
                                     </th:block>
                                 </td>
                             </tr>

@@ -1,8 +1,11 @@
 package uk.gov.justice.laa.amend.claim.utils;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.thymeleaf.spring6.util.DetailedError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessmentOutcomeFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
@@ -11,6 +14,16 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class ThymeleafUtilsTest {
+
+    private MessageSource messageSource;
+
+    @BeforeEach
+    void setUp() {
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        messageSource.setBasename("messages");
+        messageSource.setDefaultEncoding("UTF-8");
+        this.messageSource = messageSource;
+    }
 
     @Nested
     class toSearchFormErrorsTests {
@@ -49,7 +62,7 @@ public class ThymeleafUtilsTest {
                 )
             );
 
-            ThymeleafUtils sut = new ThymeleafUtils();
+            ThymeleafUtils sut = new ThymeleafUtils(messageSource);
 
             List<SearchFormError> result = sut.toSearchFormErrors(errors);
 
@@ -81,7 +94,7 @@ public class ThymeleafUtilsTest {
                 )
             );
 
-            ThymeleafUtils sut = new ThymeleafUtils();
+            ThymeleafUtils sut = new ThymeleafUtils(messageSource);
 
             List<SearchFormError> result = sut.toSearchFormErrors(errors);
 
@@ -94,7 +107,7 @@ public class ThymeleafUtilsTest {
     }
 
     @Nested
-    class SortAssessmentOutcomeErrorsTests {
+    class toAssessmentOutcomeErrorsTests {
         @Test
         void sortErrorsByFieldOrder() {
             List<DetailedError> errors = List.of(
@@ -112,9 +125,9 @@ public class ThymeleafUtilsTest {
                     )
             );
 
-            ThymeleafUtils sut = new ThymeleafUtils();
+            ThymeleafUtils sut = new ThymeleafUtils(messageSource);
 
-            List<AssessmentOutcomeFormError> result = sut.sortAssessmentOutcomeErrors(errors);
+            List<AssessmentOutcomeFormError> result = sut.toAssessmentOutcomeErrors(errors);
 
             List<AssessmentOutcomeFormError> expectedResult = List.of(
                     new AssessmentOutcomeFormError("assessmentOutcome", "Assessment outcome error"),

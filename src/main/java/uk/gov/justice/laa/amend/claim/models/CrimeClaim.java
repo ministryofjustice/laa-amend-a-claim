@@ -1,0 +1,33 @@
+package uk.gov.justice.laa.amend.claim.models;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimViewModel;
+import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimViewModel;
+
+import java.math.BigDecimal;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class CrimeClaim extends Claim {
+
+    private ClaimField travelCosts;
+    private ClaimField waitingCosts;
+
+    @Override
+    public void setNilledValues() {
+        super.setNilledValues();
+        setAmendedValue(travelCosts, BigDecimal.ZERO);
+        setAmendedValue(waitingCosts, BigDecimal.ZERO);
+    }
+
+    @Override
+    public boolean getIsCrimeClaim() {
+        return true;
+    }
+
+    @Override
+    public ClaimViewModel<? extends Claim> toViewModel() {
+        return new CrimeClaimViewModel(this);
+    }
+}

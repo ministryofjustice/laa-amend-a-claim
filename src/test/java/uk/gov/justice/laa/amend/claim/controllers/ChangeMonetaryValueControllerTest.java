@@ -13,11 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.models.Cost;
-import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
-import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimSummary;
+import uk.gov.justice.laa.amend.claim.models.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -58,7 +54,7 @@ class ChangeMonetaryValueControllerTest {
     @ParameterizedTest
     @MethodSource("validCosts")
     void testGetReturnsView(Cost cost) throws Exception {
-        ClaimSummary claim = createClaimSummaryFor(cost);
+        Claim claim = CreateClaimFor(cost);
         session.setAttribute(claimId, claim);
 
         mockMvc.perform(get(buildPath(cost.getPath())).session(session))
@@ -71,8 +67,8 @@ class ChangeMonetaryValueControllerTest {
     @ParameterizedTest
     @MethodSource("validCosts")
     void testGetReturnsViewWhenQuestionAlreadyAnswered(Cost cost) throws Exception {
-        ClaimSummary claim = createClaimSummaryFor(cost);
-        ClaimFieldRow claimField = cost.getAccessor().get(claim);
+        Claim claim = CreateClaimFor(cost);
+        ClaimField claimField = cost.getAccessor().get(claim);
         Assertions.assertNotNull(claimField);
         claimField.setAmended(BigDecimal.valueOf(100));
         session.setAttribute(claimId, claim);
@@ -87,8 +83,8 @@ class ChangeMonetaryValueControllerTest {
     @ParameterizedTest
     @MethodSource("validCosts")
     void testPostSavesValueAndRedirects(Cost cost) throws Exception {
-        ClaimSummary claim = createClaimSummaryFor(cost);
-        ClaimFieldRow claimField = cost.getAccessor().get(claim);
+        Claim claim = CreateClaimFor(cost);
+        ClaimField claimField = cost.getAccessor().get(claim);
         Assertions.assertNotNull(claimField);
         session.setAttribute(claimId, claim);
 
@@ -99,7 +95,7 @@ class ChangeMonetaryValueControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl(redirectUrl));
 
-        ClaimSummary updated = (ClaimSummary) session.getAttribute(claimId);
+        Claim updated = (Claim) session.getAttribute(claimId);
 
         Assertions.assertNotNull(updated);
         Assertions.assertEquals(new BigDecimal("100.00"), cost.getAccessor().get(updated).getAmended());
@@ -135,7 +131,7 @@ class ChangeMonetaryValueControllerTest {
 
     @Test
     void testGetReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
-        CivilClaimSummary claim = new CivilClaimSummary();
+        CivilClaim claim = new CivilClaim();
         session.setAttribute(claimId, claim);
 
         mockMvc.perform(get(buildPath("travel-costs")).session(session))
@@ -144,7 +140,7 @@ class ChangeMonetaryValueControllerTest {
 
     @Test
     void testPostReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
-        CivilClaimSummary claim = new CivilClaimSummary();
+        CivilClaim claim = new CivilClaim();
         session.setAttribute(claimId, claim);
 
         mockMvc.perform(post(buildPath("travel-costs"))
@@ -154,17 +150,15 @@ class ChangeMonetaryValueControllerTest {
             .andExpect(status().isNotFound());
     }
 
-    private ClaimSummary createClaimSummaryFor(Cost cost) {
+    private Claim CreateClaimFor(Cost cost) {
         Class<?> targetClass = cost.getAccessor().type();
-        ClaimSummary claim;
-        if (CivilClaimSummary.class.equals(targetClass)) {
-            claim =  new CivilClaimSummary();
-        } else if (CrimeClaimSummary.class.equals(targetClass)) {
-            claim = new CrimeClaimSummary();
+        Claim claim;
+        if (CivilClaim.class.equals(targetClass)) {
+            claim = new CivilClaim();
         } else {
-            claim = new ClaimSummary();
+            claim = new CrimeClaim();
         }
-        cost.getAccessor().set(claim, new ClaimFieldRow("", null, null, null));
+        cost.getAccessor().set(claim, new ClaimField("", null, null, null));
         return claim;
     }
 

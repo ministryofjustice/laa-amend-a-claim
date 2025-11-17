@@ -16,7 +16,7 @@
 
     <p class="govuk-body">
         <strong th:text="#{claimReview.assessmentOutcome} "></strong>
-        <span th:text="#{${(claimSummary.assessmentOutcome != null) ? claimSummary.assessmentOutcome.messageKey : 'claimValuesTable.noData'}}"></span>
+        <span th:text="#{${(claim.assessmentOutcome != null) ? claim.assessmentOutcome.messageKey : 'claimValuesTable.noData'}}"></span>
     </p>
 
     <table class="govuk-table">
@@ -31,15 +31,15 @@
         </thead>
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row"
-                th:each="row : ${claimSummary.tableRows}"
-                th:classappend="${claimSummary.isTotalRow(row)} ? 'table-row--total' : ''">
+                th:each="row : ${viewModel.tableRows}"
+                th:classappend="${viewModel.isTotalRow(row)} ? 'table-row--total' : ''">
                 <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
-                <td class="govuk-table__cell" th:text="${row.formattedCalculated} ?: #{claimValuesTable.noData}"></td>
-                <td class="govuk-table__cell" th:text="${row.formattedSubmitted} ?: #{claimValuesTable.noData}"></td>
-                <td class="govuk-table__cell" th:text="${row.formattedAmended} ?: #{claimValuesTable.noData}"></td>
-                <td class="govuk-table__cell" th:if="${canAmendCosts}" th:classappend="${claimSummary.getChangeUrl(row)} == null ? 'govuk-summary-list__row--no-actions' : ''">
-                    <a th:if="${claimSummary.getChangeUrl(row) != null}"
-                       th:href="${claimSummary.getChangeUrl(row)}"
+                <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
+                <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
+                <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}"></td>
+                <td class="govuk-table__cell" th:if="${canAmendCosts}" th:classappend="${viewModel.getChangeUrl(row)} == null ? 'govuk-summary-list__row--no-actions' : ''">
+                    <a th:if="${viewModel.getChangeUrl(row) != null}"
+                       th:href="${viewModel.getChangeUrl(row)}"
                        class="govuk-link govuk-link--no-visited-state">Change</a>
                 </td>
             </tr>

@@ -6,30 +6,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.forms.AssessmentOutcomeForm;
-import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
-import uk.gov.justice.laa.amend.claim.service.ClaimService;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}")
 public class AssessmentOutcomeController {
 
-    private final ClaimService claimService;
-    private final ClaimResultMapper claimResultMapper;
-    private final AssessmentService assessmentService;
+   private final AssessmentService assessmentService;
 
     @GetMapping("/assessment-outcome")
     public String setAssessmentOutcome(
@@ -41,23 +30,19 @@ public class AssessmentOutcomeController {
 
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
 
-        // Load values from ClaimSummary if it exists
-        ClaimSummary claimSummary = (ClaimSummary) session.getAttribute(claimId);
+        // Load values from Claim if it exists
+        Claim claim = (Claim) session.getAttribute(claimId);
 
-        if (claimSummary != null) {
+        if (claim != null) {
             // Load assessment outcome
-            form.setAssessmentOutcome(claimSummary.getAssessmentOutcome());
+            form.setAssessmentOutcome(claim.getAssessmentOutcome());
 
             // Load VAT liability from vatClaimed
-            if (claimSummary.getVatClaimed() != null && claimSummary.getVatClaimed().getAmended() != null) {
-                form.setLiabilityForVat((Boolean) claimSummary.getVatClaimed().getAmended());
+            if (claim.getVatClaimed() != null && claim.getVatClaimed().getAmended() != null) {
+                form.setLiabilityForVat((Boolean) claim.getVatClaimed().getAmended());
             }
         }
 
-        ClaimResponse claimResponse = claimService.getClaim(submissionId, claimId);
-        Claim claim = claimResultMapper.mapToClaim(claimResponse);
-
-        model.addAttribute("claim", claim);
         model.addAttribute("assessmentOutcomeForm", form);
 
         return "assessment-outcome";
@@ -79,24 +64,24 @@ public class AssessmentOutcomeController {
             return "assessment-outcome";
         }
 
-        ClaimSummary claimSummary = (ClaimSummary) session.getAttribute(claimId);
+        Claim claim = (Claim) session.getAttribute(claimId);
 
-        if (claimSummary != null) {
+        if (claim != null) {
             OutcomeType newOutcome = assessmentOutcomeForm.getAssessmentOutcome();
 
             // Apply business logic based on outcome change
-            assessmentService.applyAssessmentOutcome(claimSummary, newOutcome);
+            assessmentService.applyAssessmentOutcome(claim, newOutcome);
 
             // Set the assessment outcome
-            claimSummary.setAssessmentOutcome(newOutcome);
+            claim.setAssessmentOutcome(newOutcome);
 
-            // Update VAT liability in vatClaimed ClaimFieldRow
-            if (claimSummary.getVatClaimed() != null) {
-                claimSummary.getVatClaimed().setAmended(assessmentOutcomeForm.getLiabilityForVat());
+            // Update VAT liability in vatClaimed ClaimField
+            if (claim.getVatClaimed() != null) {
+                claim.getVatClaimed().setAmended(assessmentOutcomeForm.getLiabilityForVat());
             }
 
-            // Save updated ClaimSummary back to session
-            session.setAttribute(claimId, claimSummary);
+            // Save updated Claim back to session
+            session.setAttribute(claimId, claim);
         }
 
         model.addAttribute("submissionId", submissionId);

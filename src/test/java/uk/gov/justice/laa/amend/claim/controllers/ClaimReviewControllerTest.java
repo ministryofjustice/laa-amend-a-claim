@@ -10,13 +10,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
-import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimSummary;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimSummary;
-import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimSummary;
+import uk.gov.justice.laa.amend.claim.models.CivilClaim;
+import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaim;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -32,23 +29,23 @@ public class ClaimReviewControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void testOnPageLoadReturnsViewWhenClaimSummaryInSession() throws Exception {
+    public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
 
-        ClaimSummary claimSummary = new ClaimSummary();
-        claimSummary.setSubmissionId(submissionId);
-        claimSummary.setClaimId(claimId);
+        Claim claim = new CivilClaim();
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
 
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute(claimId, claimSummary);
+        session.setAttribute(claimId, claim);
 
         String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
 
         mockMvc.perform(get(path).session(session))
             .andExpect(status().isOk())
             .andExpect(view().name("review-and-amend"))
-            .andExpect(model().attributeExists("claimSummary"))
+            .andExpect(model().attributeExists("claim"))
             .andExpect(model().attributeExists("backUrl"))
             .andExpect(model().attribute("claimId", claimId))
             .andExpect(model().attribute("submissionId", submissionId));
@@ -59,12 +56,12 @@ public class ClaimReviewControllerTest {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
 
-        ClaimSummary claimSummary = new ClaimSummary();
-        claimSummary.setSubmissionId(submissionId);
-        claimSummary.setClaimId(claimId);
+        Claim claim = new CivilClaim();
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
 
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute(claimId, claimSummary);
+        session.setAttribute(claimId, claim);
 
         String path = String.format("/submissions/%s/claims/%s/review/discard", submissionId, claimId);
 
@@ -78,12 +75,12 @@ public class ClaimReviewControllerTest {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
 
-        ClaimSummary claimSummary = new ClaimSummary();
-        claimSummary.setSubmissionId(submissionId);
-        claimSummary.setClaimId(claimId);
+        Claim claim = new CivilClaim();
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
 
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute(claimId, claimSummary);
+        session.setAttribute(claimId, claim);
 
         String path = String.format("/submissions/%s/claims/%s/review/submit", submissionId, claimId);
 
@@ -97,12 +94,12 @@ public class ClaimReviewControllerTest {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
 
-        ClaimSummary claimSummary = new ClaimSummary();
-        claimSummary.setSubmissionId(submissionId);
-        claimSummary.setClaimId(claimId);
+        Claim claim = new CivilClaim();
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
 
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute(claimId, claimSummary);
+        session.setAttribute(claimId, claim);
 
         String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
         String expectedBackUrl = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
@@ -118,17 +115,17 @@ public class ClaimReviewControllerTest {
         String claimId1 = UUID.randomUUID().toString();
         String claimId2 = UUID.randomUUID().toString();
 
-        ClaimSummary claimSummary1 = new ClaimSummary();
-        claimSummary1.setSubmissionId(submissionId);
-        claimSummary1.setClaimId(claimId1);
+        Claim claim1 = new CivilClaim();
+        claim1.setSubmissionId(submissionId);
+        claim1.setClaimId(claimId1);
 
-        ClaimSummary claimSummary2 = new ClaimSummary();
-        claimSummary2.setSubmissionId(submissionId);
-        claimSummary2.setClaimId(claimId2);
+        Claim claim2 = new CrimeClaim();
+        claim2.setSubmissionId(submissionId);
+        claim2.setClaimId(claimId2);
 
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute(claimId1, claimSummary1);
-        session.setAttribute(claimId2, claimSummary2);
+        session.setAttribute(claimId1, claim1);
+        session.setAttribute(claimId2, claim2);
 
         // Load first claim
         String path1 = String.format("/submissions/%s/claims/%s/review", submissionId, claimId1);

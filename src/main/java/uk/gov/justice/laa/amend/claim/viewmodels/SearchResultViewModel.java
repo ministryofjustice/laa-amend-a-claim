@@ -7,6 +7,6 @@ import java.util.List;
 
 @Data
 public class SearchResultViewModel {
-    private List<Claim> claims;
+    private List<ClaimViewModel<? extends Claim>> claims;
     private Pagination pagination;
 }
