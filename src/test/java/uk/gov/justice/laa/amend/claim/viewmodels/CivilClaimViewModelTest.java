@@ -109,7 +109,7 @@ public class CivilClaimViewModelTest {
         void getEscapedForSortingHandlesNull() {
             CivilClaim claim = new CivilClaim();
             ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
-            Assertions.assertEquals("service.no", viewModel.getEscapedForDisplay());
+            Assertions.assertEquals("No", viewModel.getEscapedForDisplay());
         }
 
         @Test
@@ -117,7 +117,7 @@ public class CivilClaimViewModelTest {
             CivilClaim claim = new CivilClaim();
             claim.setEscaped(true);
             ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
-            Assertions.assertEquals("service.yes", viewModel.getEscapedForDisplay());
+            Assertions.assertEquals("Yes", viewModel.getEscapedForDisplay());
         }
 
         @Test
@@ -125,7 +125,7 @@ public class CivilClaimViewModelTest {
             CivilClaim claim = new CivilClaim();
             claim.setEscaped(false);
             ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
-            Assertions.assertEquals("service.no", viewModel.getEscapedForDisplay());
+            Assertions.assertEquals("No", viewModel.getEscapedForDisplay());
         }
     }
 

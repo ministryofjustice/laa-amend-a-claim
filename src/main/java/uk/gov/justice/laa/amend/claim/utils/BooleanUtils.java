@@ -6,6 +6,6 @@ import lombok.experimental.UtilityClass;
 public class BooleanUtils {
 
     public static String formatBoolean(Boolean value) {
-        return (value != null && value) ? "service.yes" : "service.no";
+        return (value != null && value) ? "Yes" : "No"; // TODO get from messages
     }
 }

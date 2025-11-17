@@ -88,12 +88,12 @@
 
                                     <div class="govuk-summary-list__row" th:if="${claim.claim.escaped != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.escaped}"></dt>
-                                        <dd class="govuk-summary-list__value" th:with="key=${claim.escapedForDisplay}" th:text="#{${key}}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${claim.escapedForDisplay}"></dd>
                                     </div>
 
                                     <div class="govuk-summary-list__row" th:if="${claim.claim.vatApplicable != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.vatRequested}"></dt>
-                                        <dd class="govuk-summary-list__value" th:with="key=${claim.vatApplicableForDisplay}" th:text="#{${key}}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${claim.vatApplicableForDisplay}"></dd>
                                     </div>
                                 </dl>
                             </div>
