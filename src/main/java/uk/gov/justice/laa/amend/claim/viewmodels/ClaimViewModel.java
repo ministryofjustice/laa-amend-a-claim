@@ -3,10 +3,7 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
-import uk.gov.justice.laa.amend.claim.utils.BooleanUtils;
-import uk.gov.justice.laa.amend.claim.utils.CurrencyUtils;
 
-import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,17 +83,6 @@ public interface ClaimViewModel<T extends Claim> {
         return row != null && row.equals(claim().getTotalAmount());
     }
 
-    default String getFormattedValue(Object value) {
-        return switch (value) {
-            case null -> null;
-            case BigDecimal bigDecimal -> CurrencyUtils.formatCurrency(bigDecimal);
-            case Integer i -> i.toString();
-            case Boolean b -> BooleanUtils.formatBoolean(b);
-            case String s -> s;
-            default -> value.toString();
-        };
-    }
-
     default void addRowIfNotNull(List<ClaimField> list, ClaimField... claimFields) {
         for (ClaimField claimField : claimFields) {
             if (claimField != null) {
@@ -123,14 +109,6 @@ public interface ClaimViewModel<T extends Claim> {
 
     default long getSubmissionPeriodForSorting() {
         return claim().getSubmissionPeriod() != null ? claim().getSubmissionPeriod().atDay(1).toEpochDay() : 0;
-    }
-
-    default String getEscapedForDisplay() {
-        return BooleanUtils.formatBoolean(claim().getEscaped());
-    }
-
-    default String getVatApplicableForDisplay() {
-        return BooleanUtils.formatBoolean(claim().getVatApplicable());
     }
 
     default String getClientName() {

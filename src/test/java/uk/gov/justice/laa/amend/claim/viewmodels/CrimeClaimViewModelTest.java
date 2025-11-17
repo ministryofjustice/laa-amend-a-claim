@@ -105,32 +105,6 @@ public class CrimeClaimViewModelTest {
     }
 
     @Nested
-    class GetEscapedForSortingTests {
-        @Test
-        void getEscapedForSortingHandlesNull() {
-            CrimeClaim claim = new CrimeClaim();
-            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
-            Assertions.assertEquals("No", viewModel.getEscapedForDisplay());
-        }
-
-        @Test
-        void getEscapedForDisplayHandlesTrue() {
-            CrimeClaim claim = new CrimeClaim();
-            claim.setEscaped(true);
-            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
-            Assertions.assertEquals("Yes", viewModel.getEscapedForDisplay());
-        }
-
-        @Test
-        void getEscapedForDisplayHandlesFalse() {
-            CrimeClaim claim = new CrimeClaim();
-            claim.setEscaped(false);
-            ClaimViewModel<CrimeClaim> viewModel = new CrimeClaimViewModel(claim);
-            Assertions.assertEquals("No", viewModel.getEscapedForDisplay());
-        }
-    }
-
-    @Nested
     class getClientNameTests {
         @Test
         void getClientNameHandlesNullForenameAndSurname() {

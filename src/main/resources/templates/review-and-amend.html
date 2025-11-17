@@ -34,9 +34,9 @@
                 th:each="row : ${viewModel.tableRows}"
                 th:classappend="${viewModel.isTotalRow(row)} ? 'table-row--total' : ''">
                 <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
-                <td class="govuk-table__cell" th:text="${viewModel.getFormattedValue(row.calculated)} ?: #{claimValuesTable.noData}"></td>
-                <td class="govuk-table__cell" th:text="${viewModel.getFormattedValue(row.submitted)} ?: #{claimValuesTable.noData}"></td>
-                <td class="govuk-table__cell" th:text="${viewModel.getFormattedValue(row.amended)} ?: #{claimValuesTable.noData}"></td>
+                <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
+                <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
+                <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}"></td>
                 <td class="govuk-table__cell" th:if="${canAmendCosts}" th:classappend="${viewModel.getChangeUrl(row)} == null ? 'govuk-summary-list__row--no-actions' : ''">
                     <a th:if="${viewModel.getChangeUrl(row) != null}"
                        th:href="${viewModel.getChangeUrl(row)}"

@@ -104,32 +104,6 @@ public class CivilClaimViewModelTest {
     }
 
     @Nested
-    class GetEscapedForSortingTests {
-        @Test
-        void getEscapedForSortingHandlesNull() {
-            CivilClaim claim = new CivilClaim();
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
-            Assertions.assertEquals("No", viewModel.getEscapedForDisplay());
-        }
-
-        @Test
-        void getEscapedForDisplayHandlesTrue() {
-            CivilClaim claim = new CivilClaim();
-            claim.setEscaped(true);
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
-            Assertions.assertEquals("Yes", viewModel.getEscapedForDisplay());
-        }
-
-        @Test
-        void getEscapedForDisplayHandlesFalse() {
-            CivilClaim claim = new CivilClaim();
-            claim.setEscaped(false);
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
-            Assertions.assertEquals("No", viewModel.getEscapedForDisplay());
-        }
-    }
-
-    @Nested
     class getClientNameTests {
         @Test
         void getClientNameHandlesNullForenameAndSurname() {

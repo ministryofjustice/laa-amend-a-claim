@@ -88,12 +88,12 @@
 
                                     <div class="govuk-summary-list__row" th:if="${claim.claim.escaped != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.escaped}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${claim.escapedForDisplay}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped)}"></dd>
                                     </div>
 
                                     <div class="govuk-summary-list__row" th:if="${claim.claim.vatApplicable != null}">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.rows.vatRequested}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${claim.vatApplicableForDisplay}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedBoolean(claim.claim.vatApplicable)}"></dd>
                                     </div>
                                 </dl>
                             </div>
