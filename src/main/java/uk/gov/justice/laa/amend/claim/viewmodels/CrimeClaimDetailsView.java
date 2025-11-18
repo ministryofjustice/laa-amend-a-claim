@@ -25,6 +25,6 @@ public record CrimeClaimDetailsView(CrimeClaimDetails claim) implements ClaimDet
 
     @Override
     public void addMatterTypeField(Map<String, Object> summaryRows) {
-        summaryRows.put("legalMatterCode", claim().getMatterTypeCode());
+        summaryRows.put("legalMatterCode", claim.getMatterTypeCode());
     }
 }

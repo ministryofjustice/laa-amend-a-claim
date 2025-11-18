@@ -11,12 +11,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -43,10 +40,6 @@ public class ClaimSummaryControllerTest {
     @MockitoBean
     private ClaimService claimService;
 
-    @MockitoBean
-    private ClaimMapper claimMapper;
-
-
 
     @Test
     public void testOnPageLoadReturnsView() throws Exception {
@@ -57,9 +50,7 @@ public class ClaimSummaryControllerTest {
 
         MockHttpSession session = new MockHttpSession();
 
-        when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimService.getSubmission(anyString())).thenReturn(new SubmissionResponse());
-        when(claimMapper.mapToClaimDetails(any(), any())).thenReturn(claim);
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
 
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 

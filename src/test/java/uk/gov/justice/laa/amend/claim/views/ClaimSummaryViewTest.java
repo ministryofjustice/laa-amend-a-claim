@@ -21,16 +21,13 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.*;
-import static uk.gov.justice.laa.amend.claim.utils.FormUtils.displayDateValue;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateValue;
 
 @ActiveProfiles("local")
 @WebMvcTest(ClaimSummaryController.class)
@@ -67,10 +64,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setAreaOfLaw("CIVIL");
         claim.setCategoryOfLaw("TEST");
 
-        when(claimService.getSubmission(anyString())).thenReturn(new SubmissionResponse());
-        when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse().id(UUID.randomUUID().toString()));
-        when(claimService.getSubmission(any())).thenReturn(new SubmissionResponse().submissionId(UUID.randomUUID()));
-        when(claimMapper.mapToClaimDetails(any(), any())).thenReturn(claim);
+
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
 
         Document doc = renderDocument();
 
@@ -112,9 +107,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         ClaimResponse claimResponse = new ClaimResponse();
         claimResponse.feeCalculationResponse(new FeeCalculationPatch().categoryOfLaw("CRIME"));
-        when(claimService.getClaim(anyString(), anyString())).thenReturn(claimResponse);
-        when(claimService.getSubmission(anyString())).thenReturn(new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw("CRIME"));
-        when(claimMapper.mapToClaimDetails(any(), any())).thenReturn(claim);
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
 
         Document doc = renderDocument();
 
@@ -165,16 +158,13 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
     @Test
     void testPageWhenNullClaim() throws Exception {
-        when(claimService.getClaim(anyString(), anyString())).thenReturn(null);
-        when(claimService.getSubmission(anyString())).thenReturn(new SubmissionResponse());
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(null);
         checkNotFoundStatus();
     }
 
     @Test
     void testPageWhenEmptyClaim() throws Exception {
-        when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimService.getSubmission(anyString())).thenReturn(new SubmissionResponse());
-        when(claimMapper.mapToClaimDetails(any(), any())).thenReturn(new CrimeClaimDetails());
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(new CrimeClaimDetails());
 
         Document doc = renderDocument();
 

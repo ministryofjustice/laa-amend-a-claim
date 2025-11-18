@@ -5,7 +5,7 @@ import uk.gov.justice.laa.amend.claim.models.Claim;
 import java.time.format.DateTimeFormatter;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PERIOD_FORMAT;
-import static uk.gov.justice.laa.amend.claim.utils.FormUtils.displayDateValue;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateValue;
 
 public interface BaseClaimView<T extends Claim> {
     T claim();

@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static uk.gov.justice.laa.amend.claim.utils.FormUtils.displayDateValue;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateValue;
 
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
 

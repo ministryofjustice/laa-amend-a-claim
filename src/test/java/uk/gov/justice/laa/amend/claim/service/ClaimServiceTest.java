@@ -10,10 +10,15 @@ import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.client.config.ClaimsApiProperties;
 import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
+import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -22,6 +27,9 @@ class ClaimServiceTest {
 
     @Mock
     private ClaimsApiClient claimsApiClient;
+
+    @Mock
+    private ClaimMapper claimMapper;
 
     @Mock
     private SearchProperties searchProperties;
@@ -122,5 +130,44 @@ class ClaimServiceTest {
         assertTrue(exception.getMessage().contains("API Error"));
 
         verify(claimsApiClient, times(1)).getClaim("submissionId", "claimId");
+    }
+
+    @Test
+    @DisplayName("Should throw Not Found exception when API client returns null")
+    void testGetClaimDetails_ApiClientThrowsException() {
+        // Arrange
+        when(claimsApiClient.getClaim("submissionId", "claimId"))
+                .thenReturn(Mono.empty());
+
+        when(claimsApiClient.getSubmission("submissionId"))
+                .thenReturn(Mono.just(new SubmissionResponse()));
+
+        // Act & Assert
+        ClaimNotFoundException exception = assertThrows(ClaimNotFoundException.class, () ->
+                claimService.getClaimDetails("submissionId", "claimId")
+        );
+        assertTrue(exception.getMessage().contains("Claim or submission not found"));
+
+        verify(claimsApiClient, times(1)).getClaim("submissionId", "claimId");
+    }
+
+
+    @Test
+    @DisplayName("Should return claim details")
+    void testGetClaimDetails_Success() {
+        // Arrange
+        when(claimsApiClient.getClaim("submissionId", "claimId"))
+                .thenReturn(Mono.just(new ClaimResponse()));
+
+        when(claimsApiClient.getSubmission("submissionId"))
+                .thenReturn(Mono.just(new SubmissionResponse()));
+        when(claimMapper.mapToClaimDetails(any(), any()))
+                .thenReturn(new CivilClaimDetails());
+        // Act & Assert
+        var response = claimService.getClaimDetails("submissionId", "claimId");
+        assertNotNull(response);
+
+        verify(claimsApiClient, times(1)).getClaim("submissionId", "claimId");
+        verify(claimsApiClient, times(1)).getSubmission("submissionId");
     }
 }

@@ -3,15 +3,16 @@ package uk.gov.justice.laa.amend.claim.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
+import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.util.Optional;
-import java.util.UUID;
 
 
 @Service
@@ -21,6 +22,7 @@ public class ClaimService {
 
     private final ClaimsApiClient claimsApiClient;
     private final SearchProperties searchProperties;
+    private final ClaimMapper claimMapper;
 
 
     public ClaimResultSet searchClaims(
@@ -55,6 +57,15 @@ public class ClaimService {
         }
     }
 
+    public ClaimDetails getClaimDetails(String submissionId, String claimId) {
+        var claimResponse = getClaim(submissionId, claimId);
+        var submissionResponse = getSubmission(submissionId);
+        if (claimResponse == null || submissionResponse == null) {
+            throw new ClaimNotFoundException("Claim or submission not found");
+        }
+        return claimMapper.mapToClaimDetails(claimResponse, submissionResponse);
+    }
+
     public SubmissionResponse getSubmission(String submissionId) {
         try {
             return claimsApiClient.getSubmission(submissionId).block();
@@ -63,5 +74,4 @@ public class ClaimService {
             throw new RuntimeException(e);
         }
     }
-
 }
