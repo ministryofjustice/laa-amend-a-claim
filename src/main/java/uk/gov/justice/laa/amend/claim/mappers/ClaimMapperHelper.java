@@ -28,24 +28,6 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 @Component
 public class ClaimMapperHelper {
 
-    @Named("mapMatterTypeCodeOne")
-    public String mapMatterTypeCodeOne(ClaimResponse claimResponse) {
-        if (StringUtils.isNotEmpty(claimResponse.getMatterTypeCode())) {
-            var matterType = claimResponse.getMatterTypeCode().split("[+:]");
-            return matterType.length > 0 ? matterType[0] : null;
-        }
-        return null;
-    }
-
-    @Named("mapMatterTypeCodeTwo")
-    public String mapMatterTypeCodeTwo(ClaimResponse claimResponse) {
-        if (StringUtils.isNotEmpty(claimResponse.getMatterTypeCode())) {
-            var matterType = claimResponse.getMatterTypeCode().split("[+:]");
-            return matterType.length > 1 ? matterType[1] : null;
-        }
-        return null;
-    }
-
     @Named("mapTotalAmount")
     public ClaimField mapTotalAmount(ClaimResponse claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
