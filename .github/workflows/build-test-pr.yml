@@ -2,7 +2,7 @@ name: Build and test PR
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
   contents: read
@@ -11,6 +11,24 @@ permissions:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+
+    env:
+      SPRING_PROFILES_ACTIVE: local
+      UI_BASE_URL: http://localhost:8080
+      HEADLESS: true
+      BROWSER: chromium
+      BASE_URL_HOMEPAGE: http://localhost:8080
+      REDIS_URL: redis://localhost:6379
+      CLAIMS_API: http://localhost:8081
+      SENTRY_ENVIRONMENT: local
+      GITHUB_ACTOR: ${{ github.actor }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      CLAIMS_TOKEN: ${{ secrets.CLAIMS_TOKEN }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+
     steps:
       - uses: actions/checkout@v5
 
@@ -18,7 +36,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           java-version: 21
-          distribution: 'corretto'
+          distribution: corretto
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -63,19 +81,68 @@ jobs:
           path: spring-boot-microservice-service/build/reports/jacoco
           retention-days: 14
 
+      - name: Install Playwright dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwoff1 libvpx9 libevent-2.1-7t64 libopus0 \
+            libgstreamer-plugins-base1.0-0 libgstreamer-gl1.0-0 \
+            libgstreamer-plugins-bad1.0-0 libharfbuzz-icu0 \
+            libsecret-1-0 libhyphen0 libmanette-0.2-0 \
+            libflite1 libgles2 gstreamer1.0-libav
+
+      - name: Start docker dependencies
+        run: docker compose up -d
+
+      - name: Start Spring Boot app
+        run: |
+          nohup ./gradlew bootRun --args="--spring.profiles.active=local" > app.log 2>&1 &
+          sleep 20
+          curl -I http://localhost:8080 || true
+
+      - name: Run E2E Tests
+        working-directory: src/e2e
+        run: ./gradlew clean test
+        env:
+          UI_BASE_URL: http://localhost:8080
+          HEADLESS: true
+          BROWSER: chromium
+
+      - name: Debug Allure results
+        working-directory: src/e2e
+        run: |
+          echo "Listing Allure results..."
+          ls -R build/allure-results || echo "NONE FOUND"
+
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline
+
+      - name: Generate Allure Report
+        working-directory: src/e2e
+        run: allure generate build/allure-results -o build/allure-report --clean
+
+      - name: Upload Allure Report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: src/e2e/build/allure-report
+
+      - name: Cleanup
+        if: always()
+        run: docker compose down
+
   vulnerability-scan-app:
     runs-on: ubuntu-latest
-    needs:
-      - build-test
+    needs: [build-test]
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       SNYK_TEST_EXCLUDE: build,generated
       SNYK_TARGET_REFERENCE: main
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - uses: actions/checkout@v5
-
-      - name: Run Snyk to check app for vulnerabilities
+      - name: Run Snyk app vulnerability scan
         uses: snyk/actions/gradle@master
         with:
           command: code test
@@ -83,11 +150,11 @@ jobs:
 
   vulnerability-scan-docker:
     runs-on: ubuntu-latest
-    needs:
-      - build-test
+    needs: [build-test]
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - uses: actions/checkout@v5
 
@@ -95,18 +162,18 @@ jobs:
         uses: actions/setup-java@v5
         with:
           java-version: 21
-          distribution: 'corretto'
+          distribution: corretto
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build app jar with gradle
+      - name: Build jar
         run: ./gradlew build
 
-      - name: Build a Docker image
+      - name: Build Docker image
         run: docker build -t spring-boot-microservice:scan .
 
-      - name: Run Snyk to check Docker image for vulnerabilities
+      - name: Run Snyk on Docker image
         uses: snyk/actions/docker@master
         with:
           image: spring-boot-microservice:scan
