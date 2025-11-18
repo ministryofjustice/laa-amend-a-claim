@@ -39,7 +39,7 @@ jobs:
           distribution: corretto
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Build and test
         run: ./gradlew build
@@ -59,7 +59,7 @@ jobs:
 
       - name: Upload checkstyle report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: checkstyle-report
           path: spring-boot-microservice-service/build/reports/checkstyle
@@ -67,7 +67,7 @@ jobs:
 
       - name: Upload test report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-report
           path: spring-boot-microservice-service/build/reports/tests
@@ -75,7 +75,7 @@ jobs:
 
       - name: Upload jacoco coverage report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jacoco-coverage-report
           path: spring-boot-microservice-service/build/reports/jacoco
@@ -122,7 +122,7 @@ jobs:
         run: allure generate build/allure-results -o build/allure-report --clean
 
       - name: Upload Allure Report artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: allure-report
           path: src/e2e/build/allure-report
@@ -165,7 +165,7 @@ jobs:
           distribution: corretto
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Build jar
         run: ./gradlew build
