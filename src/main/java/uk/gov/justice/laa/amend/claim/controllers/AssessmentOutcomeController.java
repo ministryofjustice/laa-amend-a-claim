@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.forms.AssessmentOutcomeForm;
-import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
@@ -35,7 +35,7 @@ public class AssessmentOutcomeController {
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
 
         // Load values from Claim if it exists
-        Claim claim = (Claim) session.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
 
         if (claim != null) {
             // Load assessment outcome
@@ -68,7 +68,7 @@ public class AssessmentOutcomeController {
             return "assessment-outcome";
         }
 
-        Claim claim = (Claim) session.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
 
         if (claim != null) {
             OutcomeType newOutcome = assessmentOutcomeForm.getAssessmentOutcome();

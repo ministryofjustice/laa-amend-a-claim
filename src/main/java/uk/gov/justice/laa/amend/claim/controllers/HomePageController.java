@@ -17,7 +17,7 @@ import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.amend.claim.models.Sorts;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.utils.RedirectUrlUtils;
-import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
+import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
 import java.util.Optional;
@@ -64,7 +64,7 @@ public class HomePageController {
                 sort.toString()
             );
             String redirectUrl = RedirectUrlUtils.getRedirectUrl(form, page, sort);
-            SearchResultViewModel viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
+            SearchResultView viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
             model.addAttribute("viewModel", viewModel);
         }
 

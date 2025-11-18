@@ -29,6 +29,8 @@ sentry:
 claims-api:
   url: ${CLAIMS_API}
   access-token: ${CLAIMS_TOKEN}
+search:
+  sort-enabled: false
 
 logging:
   level:

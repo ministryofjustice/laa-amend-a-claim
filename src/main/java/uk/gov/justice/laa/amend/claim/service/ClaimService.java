@@ -3,11 +3,15 @@ package uk.gov.justice.laa.amend.claim.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -16,6 +20,8 @@ import java.util.Optional;
 public class ClaimService {
 
     private final ClaimsApiClient claimsApiClient;
+    private final SearchProperties searchProperties;
+
 
     public ClaimResultSet searchClaims(
         String officeCode,
@@ -27,12 +33,12 @@ public class ClaimService {
     ) {
         try {
             return claimsApiClient.searchClaims(
-                officeCode.toUpperCase(),
-                uniqueFileNumber.orElse(null),
-                caseReferenceNumber.orElse(null),
-                page - 1,
-                size,
-                sort
+                    officeCode.toUpperCase(),
+                    uniqueFileNumber.orElse(null),
+                    caseReferenceNumber.orElse(null),
+                    page - 1,
+                    size,
+                    searchProperties.isSortEnabled() ? sort : null
             ).block();
         } catch (Exception e) {
             log.error("Error searching claims", e);
@@ -48,4 +54,14 @@ public class ClaimService {
             throw new RuntimeException(e);
         }
     }
+
+    public SubmissionResponse getSubmission(String submissionId) {
+        try {
+            return claimsApiClient.getSubmission(submissionId).block();
+        } catch (Exception e) {
+            log.error("Error getting submission {}", submissionId, e);
+            throw new RuntimeException(e);
+        }
+    }
+
 }

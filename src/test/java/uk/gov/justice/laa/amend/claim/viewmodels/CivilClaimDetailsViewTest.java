@@ -3,30 +3,30 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.models.CivilClaim;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
-public class CivilClaimViewModelTest {
+public class CivilClaimDetailsViewTest {
 
     @Nested
     class GetAccountNumberTests {
         @Test
         void getAccountNumberPicksOutFirstPartOfScheduleReference() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setScheduleReference("0U733A/2018/02");
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals("0U733A", viewModel.getAccountNumber());
         }
 
         @Test
         void getAccountNumberReturnsScheduleReferenceIfUnexpectedFormat() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setScheduleReference("0U733A201802");
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals("0U733A201802", viewModel.getAccountNumber());
         }
     }
@@ -35,16 +35,16 @@ public class CivilClaimViewModelTest {
     class GetCaseStartDateForDisplayTests {
         @Test
         void getCaseStartDateForDisplayHandlesNull() {
-            CivilClaim claim = new CivilClaim();
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetails claim = new CivilClaimDetails();
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertNull(viewModel.getCaseStartDateForDisplay());
         }
 
         @Test
         void getCaseStartDateForDisplayFormatsDate() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals("01 Jan 2020", viewModel.getCaseStartDateForDisplay());
         }
     }
@@ -53,16 +53,16 @@ public class CivilClaimViewModelTest {
     class GetCaseEndDateForDisplayTests {
         @Test
         void getCaseEndDateForDisplayHandlesNull() {
-            CivilClaim claim = new CivilClaim();
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetails claim = new CivilClaimDetails();
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertNull(viewModel.getCaseEndDateForDisplay());
         }
 
         @Test
         void getCaseEndDateForDisplayFormatsDate() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setCaseEndDate(LocalDate.of(2020, 1, 1));
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals("01 Jan 2020", viewModel.getCaseEndDateForDisplay());
         }
     }
@@ -71,16 +71,16 @@ public class CivilClaimViewModelTest {
     class GetSubmissionPeriodForDisplayTests {
         @Test
         void getSubmissionPeriodForDisplayHandlesNull() {
-            CivilClaim claim = new CivilClaim();
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetails claim = new CivilClaimDetails();
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertNull(viewModel.getSubmissionPeriodForDisplay());
         }
 
         @Test
         void getSubmissionPeriodForDisplayFormatsDate() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setSubmissionPeriod(YearMonth.of(2020, 1));
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals("Jan 2020", viewModel.getSubmissionPeriodForDisplay());
         }
     }
@@ -89,16 +89,16 @@ public class CivilClaimViewModelTest {
     class GetSubmissionPeriodForSortingTests {
         @Test
         void getSubmissionPeriodForSortingHandlesNull() {
-            CivilClaim claim = new CivilClaim();
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetails claim = new CivilClaimDetails();
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals(0, viewModel.getSubmissionPeriodForSorting());
         }
 
         @Test
         void getSubmissionPeriodForSortingGetsEpochValueOfDate() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setSubmissionPeriod(YearMonth.of(2020, 1));
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals(18262, viewModel.getSubmissionPeriodForSorting());
         }
     }
@@ -107,33 +107,33 @@ public class CivilClaimViewModelTest {
     class getClientNameTests {
         @Test
         void getClientNameHandlesNullForenameAndSurname() {
-            CivilClaim claim = new CivilClaim();
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetails claim = new CivilClaimDetails();
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertNull(viewModel.getClientName());
         }
 
         @Test
         void getClientNameHandlesNullSurname() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setClientForename("John");
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals("John", viewModel.getClientName());
         }
 
         @Test
         void getClientNameHandlesNullForename() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setClientSurname("Doe");
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals("Doe", viewModel.getClientName());
         }
 
         @Test
         void getClientNameHandlesFullName() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setClientForename("John");
             claim.setClientSurname("Doe");
-            ClaimViewModel<CivilClaim> viewModel = new CivilClaimViewModel(claim);
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals("John Doe", viewModel.getClientName());
         }
     }
@@ -142,41 +142,41 @@ public class CivilClaimViewModelTest {
     class GetMatterTypeCodeOneTests {
         @Test
         void getMatterTypeCodeOneWhenInExpectedFormat() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode("IMLB+AHQS");
-            CivilClaimViewModel viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals("IMLB", viewModel.getMatterTypeCodeOne());
         }
 
         @Test
         void getMatterTypeCodeOneWhenInUnexpectedFormat() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode("IMLB");
-            CivilClaimViewModel viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals("IMLB", viewModel.getMatterTypeCodeOne());
         }
 
         @Test
         void getMatterTypeCodeOneWhenNull() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode(null);
-            CivilClaimViewModel viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertNull(null, viewModel.getMatterTypeCodeOne());
         }
 
         @Test
         void getMatterTypeCodeOneWhenEmpty() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode("");
-            CivilClaimViewModel viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertNull(null, viewModel.getMatterTypeCodeOne());
         }
 
         @Test
         void getMatterTypeCodeOneWhenBlank() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode(" ");
-            CivilClaimViewModel viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertNull(null, viewModel.getMatterTypeCodeOne());
         }
     }
@@ -185,41 +185,41 @@ public class CivilClaimViewModelTest {
     class GetMatterTypeCodeTwoTests {
         @Test
         void getMatterTypeCodeTwoWhenInExpectedFormat() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode("IMLB+AHQS");
-            CivilClaimViewModel viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals("AHQS", viewModel.getMatterTypeCodeTwo());
         }
 
         @Test
         void getMatterTypeCodeTwoWhenInUnexpectedFormat() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode("IMLB");
-            CivilClaimViewModel viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertNull(viewModel.getMatterTypeCodeTwo());
         }
 
         @Test
         void getMatterTypeCodeTwoWhenNull() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode(null);
-            CivilClaimViewModel viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertNull(null, viewModel.getMatterTypeCodeTwo());
         }
 
         @Test
         void getMatterTypeCodeTwoWhenEmpty() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode("");
-            CivilClaimViewModel viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertNull(null, viewModel.getMatterTypeCodeTwo());
         }
 
         @Test
         void getMatterTypeCodeTwoWhenBlank() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode(" ");
-            CivilClaimViewModel viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertNull(null, viewModel.getMatterTypeCodeTwo());
         }
     }
@@ -243,7 +243,7 @@ public class CivilClaimViewModelTest {
             ClaimField vatClaimed = new ClaimField("13", null, null);
             ClaimField totalAmount = new ClaimField("14", null, null);
 
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setFixedFee(fixedFee);
             claim.setNetProfitCost(netProfitCost);
             claim.setNetDisbursementAmount(netDisbursementAmount);
@@ -259,7 +259,7 @@ public class CivilClaimViewModelTest {
             claim.setVatClaimed(vatClaimed);
             claim.setTotalAmount(totalAmount);
 
-            CivilClaimViewModel viewModel = new CivilClaimViewModel(claim);
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             List<ClaimField> expectedRows = List.of(
                 fixedFee,
                 netProfitCost,

@@ -12,13 +12,13 @@ import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.HomePageController;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
-import uk.gov.justice.laa.amend.claim.models.CivilClaim;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
-import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimViewModel;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimViewModel;
+import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
-import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
+import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
 
 import java.util.List;
 import java.util.Map;
@@ -71,17 +71,17 @@ class IndexViewTest extends ViewTestBase {
     @Test
     void testPageWithPagination() throws Exception {
         // TODO - tests can be enhanced to test the values being rendered on the page
-        CivilClaim claim1 = new CivilClaim();
-        CivilClaim claim2 = new CivilClaim();
-        CivilClaim claim3 = new CivilClaim();
+        CivilClaimDetails claim1 = new CivilClaimDetails();
+        CivilClaimDetails claim2 = new CivilClaimDetails();
+        CivilClaimDetails claim3 = new CivilClaimDetails();
 
-        List<ClaimViewModel<? extends Claim>> claims = List.of(
-            new CivilClaimViewModel(claim1),
-            new CivilClaimViewModel(claim2),
-            new CivilClaimViewModel(claim3)
+        List<BaseClaimView<Claim>> claims = List.of(
+            new ClaimView(claim1),
+            new ClaimView(claim2),
+            new ClaimView(claim3)
         );
 
-        SearchResultViewModel viewModel = new SearchResultViewModel();
+        SearchResultView viewModel = new SearchResultView();
         viewModel.setClaims(claims);
         Pagination pagination = new Pagination(10, 10, 1, "/");
         viewModel.setPagination(pagination);
@@ -117,7 +117,7 @@ class IndexViewTest extends ViewTestBase {
 
     @Test
     void testPageWithNoResultsFound() throws Exception {
-        SearchResultViewModel viewModel = new SearchResultViewModel();
+        SearchResultView viewModel = new SearchResultView();
         viewModel.setClaims(List.of());
         Pagination pagination = new Pagination(10, 10, 1, "/");
         viewModel.setPagination(pagination);

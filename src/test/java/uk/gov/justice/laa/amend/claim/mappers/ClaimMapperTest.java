@@ -3,27 +3,32 @@ package uk.gov.justice.laa.amend.claim.mappers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-import uk.gov.justice.laa.amend.claim.models.CivilClaim;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.CrimeClaim;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
 
+
+@SpringJUnitConfig
+@ContextConfiguration(classes = {ClaimMapperImpl.class, ClaimMapperHelper.class})
 class ClaimMapperTest {
 
+    @Autowired
     private ClaimMapper mapper;
-
-    @BeforeEach
-    void setUp() {
-        mapper = Mappers.getMapper(ClaimMapper.class);
-    }
 
     @Test
     void testMapTotalAmount() {
@@ -33,7 +38,11 @@ class ClaimMapperTest {
         feeCalc.setTotalAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        ClaimField claimField = mapper.mapTotalAmount(response);
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw("CRIME");
+
+        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getTotalAmount();
         assertEquals(TOTAL, claimField.getLabel());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
@@ -48,6 +57,7 @@ class ClaimMapperTest {
         response.setClientForename("John");
         response.setCaseStartDate("2025-01-01");
         response.setCaseConcludedDate("2025-02-01");
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw("CIVIL");
 
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setFeeCodeDescription("FeeSchemeX");
@@ -59,7 +69,7 @@ class ClaimMapperTest {
 
         response.setMatterTypeCode("MT1+MT2");
 
-        CivilClaim claim = mapper.mapToCivilClaim(response);
+        CivilClaimDetails claim = mapper.mapToCivilClaimDetails(response, submissionResponse);
 
         assertEquals("UFN123", claim.getUniqueFileNumber());
         assertEquals("CASE456", claim.getCaseReferenceNumber());
@@ -80,6 +90,7 @@ class ClaimMapperTest {
         response.setClientForename("John");
         response.setCaseStartDate("2025-01-01");
         response.setCaseConcludedDate("2025-02-01");
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw("CRIME");
 
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setFeeCodeDescription("FeeSchemeX");
@@ -90,7 +101,7 @@ class ClaimMapperTest {
         response.setFeeCalculationResponse(feeCalc);
 
         response.setCrimeMatterTypeCode("CRIME123");
-        CrimeClaim claim = mapper.mapToCrimeClaim(response);
+        CrimeClaimDetails claim = mapper.mapToCrimeClaimDetails(response, submissionResponse);
 
         assertEquals("UFN123", claim.getUniqueFileNumber());
         assertEquals("CASE456", claim.getCaseReferenceNumber());

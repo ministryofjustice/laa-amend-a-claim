@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class ClaimReviewController {
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId
     ) {
-        Claim claim = (Claim) session.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
 
         if (claim == null) {
             return String.format("redirect:/submissions/%s/claims/%s", submissionId, claimId);

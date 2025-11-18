@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-public class CrimeClaimTest {
+public class CrimeClaimDetailsTest {
 
     @Nested
-    class GetIsCrimeClaimTests {
+    class GetIsCrimeClaimDetailsTests {
 
         @Test
         void getIsCrimeClaimReturnsTrue() {
-            CrimeClaim claim = new CrimeClaim();
+            CrimeClaimDetails claim = new CrimeClaimDetails();
             Assertions.assertTrue(claim.getIsCrimeClaim());
         }
     }
@@ -23,7 +23,7 @@ public class CrimeClaimTest {
 
         @Test
         void setsValuesToNilledStatus() {
-            CrimeClaim claim = new CrimeClaim();
+            CrimeClaimDetails claim = new CrimeClaimDetails();
 
             claim.setNetProfitCost(new ClaimField());
             claim.setNetDisbursementAmount(new ClaimField());

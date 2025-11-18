@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
-import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 
@@ -38,7 +38,7 @@ public class ChangeMonetaryValueController {
     ) throws IOException {
         try {
             // TODO - if retrieval from session returns null, redirect to session expired?
-            Claim claim = (Claim) session.getAttribute(claimId);
+            ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
             ClaimField claimField = cost.getAccessor().get(claim);
             BigDecimal value = claimField != null ? (BigDecimal) claimField.getAmended() : null;
 
@@ -67,7 +67,7 @@ public class ChangeMonetaryValueController {
     ) throws IOException {
         try {
             // TODO - if retrieval from session returns null, redirect to session expired?
-            Claim claim = (Claim) session.getAttribute(claimId);
+            ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
 
             if (bindingResult.hasErrors()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

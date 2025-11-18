@@ -1,23 +1,41 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
-import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_DATE_FORMAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PERIOD_FORMAT;
+import static uk.gov.justice.laa.amend.claim.utils.FormUtils.displayDateValue;
 
-public interface ClaimViewModel<T extends Claim> {
+public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
 
-    T claim();
 
-    default T getClaim() {
-        return claim();
+    default Map<String, Object> getSummaryRows() {
+        Map<String, Object> rows = new LinkedHashMap<>();
+        rows.put("clientName", getClientName());
+        rows.put("ufn", claim().getUniqueFileNumber());
+        addUcnSummaryRow(rows);
+        rows.put("submittedDate", displayDateValue(claim().getSubmittedDate()));
+        rows.put("providerAccountNumber", claim().getProviderAccountNumber());
+        rows.put("areaOfLaw", claim().getAreaOfLaw());
+        rows.put("categoryOfLaw", claim().getCategoryOfLaw());
+        rows.put("feeScheme", claim().getFeeScheme());
+        addMatterTypeField(rows);
+        rows.put("caseStartDate", displayDateValue(claim().getCaseStartDate()));
+        rows.put("caseEndDate", displayDateValue(claim().getCaseEndDate()));
+        rows.put("escaped", claim().getEscaped());
+        rows.put("vatRequested", claim().getVatApplicable());
+        return rows;
     }
+
+    void addUcnSummaryRow(Map<String, Object> summaryRows);
+
+    void addMatterTypeField(Map<String, Object> summaryRows);
+
 
     /**
      * Returns the claim field rows in the order they should be displayed in the table.
@@ -88,38 +106,6 @@ public interface ClaimViewModel<T extends Claim> {
             if (claimField != null) {
                 list.add(claimField);
             }
-        }
-    }
-
-    default String getAccountNumber() {
-        return claim().getScheduleReference() != null ? claim().getScheduleReference().split("/")[0] : null;
-    }
-
-    default String getCaseStartDateForDisplay() {
-        return claim().getCaseStartDate() != null ? claim().getCaseStartDate().format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
-    }
-
-    default String getCaseEndDateForDisplay() {
-        return claim().getCaseEndDate() != null ? claim().getCaseEndDate().format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
-    }
-
-    default String getSubmissionPeriodForDisplay() {
-        return claim().getSubmissionPeriod() != null ? claim().getSubmissionPeriod().format(DateTimeFormatter.ofPattern(DEFAULT_PERIOD_FORMAT)) : null;
-    }
-
-    default long getSubmissionPeriodForSorting() {
-        return claim().getSubmissionPeriod() != null ? claim().getSubmissionPeriod().atDay(1).toEpochDay() : 0;
-    }
-
-    default String getClientName() {
-        String clientForename = claim().getClientForename();
-        String clientSurname = claim().getClientSurname();
-        if (clientForename != null & clientSurname != null) {
-            return String.format("%s %s", clientForename, clientSurname);
-        } else if (clientForename != null) {
-            return clientForename;
-        } else {
-            return clientSurname;
         }
     }
 }

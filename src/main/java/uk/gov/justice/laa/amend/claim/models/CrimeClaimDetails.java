@@ -2,14 +2,14 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimViewModel;
-import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimViewModel;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
+import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimDetailsView;
 
 import java.math.BigDecimal;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class CrimeClaim extends Claim {
+public class CrimeClaimDetails extends ClaimDetails {
 
     private ClaimField travelCosts;
     private ClaimField waitingCosts;
@@ -27,7 +27,7 @@ public class CrimeClaim extends Claim {
     }
 
     @Override
-    public ClaimViewModel<? extends Claim> toViewModel() {
-        return new CrimeClaimViewModel(this);
+    public ClaimDetailsView<? extends Claim> toViewModel() {
+        return new CrimeClaimDetailsView(this);
     }
 }

@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 public class CivilClaimTest {
 
     @Nested
-    class GetIsCrimeClaimTests {
+    class GetIsCrimeClaimDetailsTests {
 
         @Test
         void getIsCrimeClaimReturnsFalse() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
             Assertions.assertFalse(claim.getIsCrimeClaim());
         }
     }
@@ -23,7 +23,7 @@ public class CivilClaimTest {
 
         @Test
         void setsValuesToNilledStatus() {
-            CivilClaim claim = new CivilClaim();
+            CivilClaimDetails claim = new CivilClaimDetails();
 
             claim.setNetProfitCost(new ClaimField());
             claim.setNetDisbursementAmount(new ClaimField());
