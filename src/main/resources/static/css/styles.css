@@ -30,3 +30,11 @@
 .govuk-table__row:has(+ .table-row--total) td {
     border-bottom: 1px solid #0B0C0C;
 }
+
+.govuk-summary-highlight-lastrow .govuk-summary-list__row:nth-last-child(2) {
+    border-bottom: 3px solid #0B0C0C !important;
+}
+
+.govuk-summary-highlight-lastrow .govuk-summary-list__row:last-child {
+    border-bottom: 3px solid #0B0C0C !important;
+}

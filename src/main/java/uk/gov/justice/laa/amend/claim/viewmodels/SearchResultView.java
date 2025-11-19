@@ -6,7 +6,7 @@ import uk.gov.justice.laa.amend.claim.models.Claim;
 import java.util.List;
 
 @Data
-public class SearchResultViewModel {
-    private List<ClaimViewModel<? extends Claim>> claims;
+public class SearchResultView {
+    private List<BaseClaimView<Claim>> claims;
     private Pagination pagination;
 }

@@ -5,9 +5,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import uk.gov.justice.laa.amend.claim.models.Claim;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimViewModel;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
+import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
-import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
+import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
@@ -28,7 +29,7 @@ public interface ClaimResultMapper {
 
     @Mapping(target = "pagination", source = ".", qualifiedByName = "toPagination")
     @Mapping(target = "claims", expression = "java(mapClaims(claimResultSet, claimMapper))")
-    SearchResultViewModel toDto(ClaimResultSet claimResultSet, @Context String href, @Context ClaimMapper claimMapper);
+    SearchResultView toDto(ClaimResultSet claimResultSet, @Context String href, @Context ClaimMapper claimMapper);
 
     /**
      * Converts ClaimResultSet to a Pagination object.
@@ -46,12 +47,12 @@ public interface ClaimResultMapper {
         );
     }
 
-    default List<ClaimViewModel<? extends Claim>> mapClaims(ClaimResultSet claimResultSet, @Context ClaimMapper claimMapper) {
+    default List<BaseClaimView<Claim>> mapClaims(ClaimResultSet claimResultSet, @Context ClaimMapper claimMapper) {
         List<ClaimResponse> claims = claimResultSet.getContent();
         if (claims == null) {
             return List.of();
         } else {
-            return claims.stream().map(claimMapper::mapToClaim).map(Claim::toViewModel).collect(Collectors.toList());
+            return claims.stream().map(claimMapper::mapToClaim).map(ClaimView::new).collect(Collectors.toList());
         }
     }
 }

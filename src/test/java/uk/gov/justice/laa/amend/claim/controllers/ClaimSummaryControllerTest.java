@@ -11,22 +11,23 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
-import uk.gov.justice.laa.amend.claim.models.CivilClaim;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.*;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
 
 @ActiveProfiles("local")
 @WebMvcTest(ClaimSummaryController.class)
@@ -39,20 +40,17 @@ public class ClaimSummaryControllerTest {
     @MockitoBean
     private ClaimService claimService;
 
-    @MockitoBean
-    private ClaimMapper claimMapper;
 
     @Test
     public void testOnPageLoadReturnsView() throws Exception {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
 
-        CivilClaim claim = createClaim();
+        CivilClaimDetails claim = createClaim();
 
         MockHttpSession session = new MockHttpSession();
 
-        when(claimService.getClaim(anyString(), anyString())).thenReturn(new ClaimResponse());
-        when(claimMapper.mapToClaim(any())).thenReturn(claim);
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
 
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 
@@ -64,8 +62,8 @@ public class ClaimSummaryControllerTest {
         Assertions.assertEquals(claim, session.getAttribute(claimId));
     }
 
-    private static CivilClaim createClaim() {
-        CivilClaim claim = new CivilClaim();
+    private static CivilClaimDetails createClaim() {
+        CivilClaimDetails claim = new CivilClaimDetails();
         claim.setUniqueFileNumber("UFN12345");
         claim.setCaseReferenceNumber("CASE98765");
         claim.setClientSurname("Doe");
@@ -73,8 +71,8 @@ public class ClaimSummaryControllerTest {
         claim.setCaseStartDate(LocalDate.now().minusDays(2));
         claim.setCaseEndDate(LocalDate.now());
         claim.setFeeScheme("FeeSchemeX");
-        claim.setCategoryOfLaw("Civil");
-        claim.setSubmittedDate("2025-02-20");
+        claim.setAreaOfLaw("Civil");
+        claim.setSubmittedDate(LocalDate.now().minusDays(10));
         claim.setEscaped(true);
         claim.setProviderAccountNumber("ACC123");
         claim.setProviderName("Provider Ltd");
@@ -95,7 +93,7 @@ public class ClaimSummaryControllerTest {
         claim.setHoInterview(new ClaimField(HO_INTERVIEW, BigDecimal.valueOf(60), BigDecimal.valueOf(65), null));
         claim.setSubstantiveHearing(new ClaimField(SUBSTANTIVE_HEARING, BigDecimal.valueOf(100), BigDecimal.valueOf(110), null));
         claim.setCounselsCost(new ClaimField(COUNSELS_COST, BigDecimal.valueOf(200), BigDecimal.valueOf(220), null));
-        claim.setMatterTypeCode("IMM+DET");
+        claim.setMatterTypeCode("IMM:DET");
 
         return claim;
     }

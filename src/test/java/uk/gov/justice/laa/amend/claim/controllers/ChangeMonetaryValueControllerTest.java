@@ -131,7 +131,7 @@ class ChangeMonetaryValueControllerTest {
 
     @Test
     void testGetReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
-        CivilClaim claim = new CivilClaim();
+        CivilClaimDetails claim = new CivilClaimDetails();
         session.setAttribute(claimId, claim);
 
         mockMvc.perform(get(buildPath("travel-costs")).session(session))
@@ -140,7 +140,7 @@ class ChangeMonetaryValueControllerTest {
 
     @Test
     void testPostReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
-        CivilClaim claim = new CivilClaim();
+        CivilClaimDetails claim = new CivilClaimDetails();
         session.setAttribute(claimId, claim);
 
         mockMvc.perform(post(buildPath("travel-costs"))
@@ -153,10 +153,10 @@ class ChangeMonetaryValueControllerTest {
     private Claim CreateClaimFor(Cost cost) {
         Class<?> targetClass = cost.getAccessor().type();
         Claim claim;
-        if (CivilClaim.class.equals(targetClass)) {
-            claim = new CivilClaim();
+        if (CivilClaimDetails.class.equals(targetClass)) {
+            claim = new CivilClaimDetails();
         } else {
-            claim = new CrimeClaim();
+            claim = new CrimeClaimDetails();
         }
         cost.getAccessor().set(claim, new ClaimField("", null, null, null));
         return claim;

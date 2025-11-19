@@ -8,10 +8,17 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.amend.claim.client.config.ClaimsApiProperties;
+import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
+import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -20,6 +27,12 @@ class ClaimServiceTest {
 
     @Mock
     private ClaimsApiClient claimsApiClient;
+
+    @Mock
+    private ClaimMapper claimMapper;
+
+    @Mock
+    private SearchProperties searchProperties;
 
     @InjectMocks
     private ClaimService claimService;
@@ -35,6 +48,7 @@ class ClaimServiceTest {
         // Arrange
         var mockApiResponse = new ClaimResultSet(); // Replace with appropriate type or mock object
 
+        when(searchProperties.isSortEnabled()).thenReturn(true);
         when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc"))
                 .thenReturn(Mono.just(mockApiResponse));
 
@@ -52,6 +66,7 @@ class ClaimServiceTest {
     @DisplayName("Should throw RuntimeException when API client throws exception")
     void testSearchClaims_ApiClientThrowsException() {
         // Arrange
+        when(searchProperties.isSortEnabled()).thenReturn(true);
         when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc"))
                 .thenThrow(new RuntimeException("API Error"));
 
@@ -68,6 +83,7 @@ class ClaimServiceTest {
     @DisplayName("Should handle empty API response without exception")
     void testSearchClaims_EmptyResponse() {
         // Arrange
+        when(searchProperties.isSortEnabled()).thenReturn(true);
         when(claimsApiClient.searchClaims("0P322F", null, null, 0, 10, "uniqueFileNumber,asc"))
                 .thenReturn(Mono.empty());
 
@@ -114,5 +130,44 @@ class ClaimServiceTest {
         assertTrue(exception.getMessage().contains("API Error"));
 
         verify(claimsApiClient, times(1)).getClaim("submissionId", "claimId");
+    }
+
+    @Test
+    @DisplayName("Should throw Not Found exception when API client returns null")
+    void testGetClaimDetails_ApiClientThrowsException() {
+        // Arrange
+        when(claimsApiClient.getClaim("submissionId", "claimId"))
+                .thenReturn(Mono.empty());
+
+        when(claimsApiClient.getSubmission("submissionId"))
+                .thenReturn(Mono.just(new SubmissionResponse()));
+
+        // Act & Assert
+        ClaimNotFoundException exception = assertThrows(ClaimNotFoundException.class, () ->
+                claimService.getClaimDetails("submissionId", "claimId")
+        );
+        assertTrue(exception.getMessage().contains( String.format("Claim with ID %s not found for submission %s", "claimId", "submissionId")));
+
+        verify(claimsApiClient, times(1)).getClaim("submissionId", "claimId");
+    }
+
+
+    @Test
+    @DisplayName("Should return claim details")
+    void testGetClaimDetails_Success() {
+        // Arrange
+        when(claimsApiClient.getClaim("submissionId", "claimId"))
+                .thenReturn(Mono.just(new ClaimResponse()));
+
+        when(claimsApiClient.getSubmission("submissionId"))
+                .thenReturn(Mono.just(new SubmissionResponse()));
+        when(claimMapper.mapToClaimDetails(any(), any()))
+                .thenReturn(new CivilClaimDetails());
+        // Act & Assert
+        var response = claimService.getClaimDetails("submissionId", "claimId");
+        assertNotNull(response);
+
+        verify(claimsApiClient, times(1)).getClaim("submissionId", "claimId");
+        verify(claimsApiClient, times(1)).getSubmission("submissionId");
     }
 }

@@ -56,16 +56,20 @@ public abstract class ViewTestBase {
     return Jsoup.parse(html);
   }
 
-    protected Document renderRedirect(String pageToRender) throws Exception {
+  protected void checkNotFoundStatus() throws Exception {
+    MockHttpServletRequestBuilder requestBuilder = get(mapping).session(session);
+    mockMvc.perform(requestBuilder).andExpect(status().isNotFound());
+  }
 
-        String html = mockMvc.perform(post(pageToRender))
+  protected Document renderRedirect(String pageToRender) throws Exception {
+    String html = mockMvc.perform(post(pageToRender))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
         return Jsoup.parse(html);
-    }
+  }
 
   protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) throws Exception {
     MockHttpServletRequestBuilder requestBuilder = post(mapping).session(session);

@@ -10,9 +10,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.models.CivilClaim;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
-import uk.gov.justice.laa.amend.claim.models.CrimeClaim;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
 import java.util.UUID;
 
@@ -33,7 +33,7 @@ public class ClaimReviewControllerTest {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
 
-        Claim claim = new CivilClaim();
+        Claim claim = new CivilClaimDetails();
         claim.setSubmissionId(submissionId);
         claim.setClaimId(claimId);
 
@@ -56,7 +56,7 @@ public class ClaimReviewControllerTest {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
 
-        Claim claim = new CivilClaim();
+        Claim claim = new CivilClaimDetails();
         claim.setSubmissionId(submissionId);
         claim.setClaimId(claimId);
 
@@ -75,7 +75,7 @@ public class ClaimReviewControllerTest {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
 
-        Claim claim = new CivilClaim();
+        Claim claim = new CivilClaimDetails();
         claim.setSubmissionId(submissionId);
         claim.setClaimId(claimId);
 
@@ -94,7 +94,7 @@ public class ClaimReviewControllerTest {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
 
-        Claim claim = new CivilClaim();
+        Claim claim = new CivilClaimDetails();
         claim.setSubmissionId(submissionId);
         claim.setClaimId(claimId);
 
@@ -115,11 +115,11 @@ public class ClaimReviewControllerTest {
         String claimId1 = UUID.randomUUID().toString();
         String claimId2 = UUID.randomUUID().toString();
 
-        Claim claim1 = new CivilClaim();
+        Claim claim1 = new CivilClaimDetails();
         claim1.setSubmissionId(submissionId);
         claim1.setClaimId(claimId1);
 
-        Claim claim2 = new CrimeClaim();
+        Claim claim2 = new CrimeClaimDetails();
         claim2.setSubmissionId(submissionId);
         claim2.setClaimId(claimId2);
 

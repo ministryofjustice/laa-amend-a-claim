@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultViewModel;
+import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
 import java.util.List;
@@ -26,7 +26,7 @@ class ClaimResultMapperTest {
         ClaimMapper claimMapper = new ClaimMapperImpl();
 
         // Act
-        SearchResultViewModel resultViewModel = mapper.toDto(claimResultSet, "/", claimMapper);
+        SearchResultView resultViewModel = mapper.toDto(claimResultSet, "/", claimMapper);
 
         assertEquals(0, resultViewModel.getPagination().getResults().getCount());
         assertEquals(0, resultViewModel.getPagination().getItems().size());

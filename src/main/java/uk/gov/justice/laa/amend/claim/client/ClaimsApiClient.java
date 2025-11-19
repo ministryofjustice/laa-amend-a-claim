@@ -8,6 +8,9 @@ import org.springframework.web.service.annotation.HttpExchange;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
+
+import java.util.UUID;
 
 @HttpExchange("/api/v0")
 public interface ClaimsApiClient {
@@ -27,4 +30,8 @@ public interface ClaimsApiClient {
     Mono<ClaimResponse> getClaim(
             @PathVariable String submissionId,
             @PathVariable String claimId);
+
+    @GetExchange(url = "/submissions/{id}", accept = MediaType.APPLICATION_JSON_VALUE)
+    Mono<SubmissionResponse> getSubmission(
+            @PathVariable String id);
 }
