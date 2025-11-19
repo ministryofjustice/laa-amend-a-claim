@@ -157,12 +157,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
     }
 
     @Test
-    void testPageWhenNullClaim() throws Exception {
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(null);
-        checkNotFoundStatus();
-    }
-
-    @Test
     void testPageWhenEmptyClaim() throws Exception {
         when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(new CrimeClaimDetails());
 

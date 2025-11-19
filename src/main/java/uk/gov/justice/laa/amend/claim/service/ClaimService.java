@@ -61,7 +61,10 @@ public class ClaimService {
         var claimResponse = getClaim(submissionId, claimId);
         var submissionResponse = getSubmission(submissionId);
         if (claimResponse == null || submissionResponse == null) {
-            throw new ClaimNotFoundException("Claim or submission not found");
+            log.error("Claim or submission not found for submission {} and claim {}", submissionId, claimId);
+            throw new ClaimNotFoundException(
+                    String.format("Claim with ID %s not found for submission %s", claimId, submissionId)
+            );
         }
         return claimMapper.mapToClaimDetails(claimResponse, submissionResponse);
     }

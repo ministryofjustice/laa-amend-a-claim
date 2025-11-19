@@ -25,11 +25,7 @@ public class ClaimSummaryController {
         @PathVariable(value = "claimId") String claimId
     ) {
         var claimDetails = claimService.getClaimDetails(submissionId, claimId);
-        if (claimDetails == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Claim or submission not found");
-        }
         session.setAttribute(claimId, claimDetails);
-
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claim", claimDetails.toViewModel());

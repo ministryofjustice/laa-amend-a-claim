@@ -146,7 +146,7 @@ class ClaimServiceTest {
         ClaimNotFoundException exception = assertThrows(ClaimNotFoundException.class, () ->
                 claimService.getClaimDetails("submissionId", "claimId")
         );
-        assertTrue(exception.getMessage().contains("Claim or submission not found"));
+        assertTrue(exception.getMessage().contains( String.format("Claim with ID %s not found for submission %s", "claimId", "submissionId")));
 
         verify(claimsApiClient, times(1)).getClaim("submissionId", "claimId");
     }
