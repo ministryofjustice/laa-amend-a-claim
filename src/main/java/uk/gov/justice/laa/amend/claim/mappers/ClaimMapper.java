@@ -13,6 +13,7 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
@@ -76,21 +77,23 @@ public interface ClaimMapper {
     CrimeClaimDetails mapToCrimeClaimDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
 
 
-
     @ObjectFactory
     default ClaimDetails createClaimDetails(@Context SubmissionResponse submissionResponse) {
-        if ("CRIME".equalsIgnoreCase(submissionResponse.getAreaOfLaw())) {
-            return new CrimeClaimDetails();
-        } else {
-            return new CivilClaimDetails();
+        if (submissionResponse == null || submissionResponse.getAreaOfLaw() == null) {
+            throw new IllegalArgumentException("SubmissionResponse must not be null");
         }
+        return switch (submissionResponse.getAreaOfLaw()) {
+            case CRIME_LOWER -> new CrimeClaimDetails();
+            case LEGAL_HELP, MEDIATION -> new CivilClaimDetails();
+        };
     }
 
     default ClaimDetails mapToClaimDetails(ClaimResponse claimResponse, SubmissionResponse submissionResponse) {
-        if (claimResponse != null && submissionResponse != null) {
-            ClaimDetails claimDetails = "CRIME".equals(submissionResponse.getAreaOfLaw())
-                    ? mapToCrimeClaimDetails(claimResponse, submissionResponse)
-                    : mapToCivilClaimDetails(claimResponse, submissionResponse);
+        if (claimResponse != null && submissionResponse != null && submissionResponse.getAreaOfLaw() != null) {
+            ClaimDetails claimDetails = switch (submissionResponse.getAreaOfLaw()) {
+                case CRIME_LOWER -> mapToCrimeClaimDetails(claimResponse, submissionResponse);
+                case LEGAL_HELP, MEDIATION -> mapToCivilClaimDetails(claimResponse, submissionResponse);
+            };
             enrichWithSubmission(claimDetails, submissionResponse);
             return claimDetails;
         }
@@ -112,18 +115,10 @@ public interface ClaimMapper {
 
     @AfterMapping
     default void enrichWithSubmission(@MappingTarget ClaimDetails claim, SubmissionResponse submissionResponse) {
-        if (submissionResponse != null) {
+        if (submissionResponse != null && submissionResponse.getAreaOfLaw() != null) {
             claim.setSubmittedDate(submissionResponse.getSubmitted() != null ? submissionResponse.getSubmitted().toLocalDate() : null);
             claim.setProviderAccountNumber(submissionResponse.getOfficeAccountNumber());
-            claim.setAreaOfLaw(submissionResponse.getAreaOfLaw());
-        }
-    }
-
-    default LocalDate mapSubmittedDate(OffsetDateTime submitted) {
-        if (submitted != null) {
-            return submitted.toLocalDate();
-        } else {
-            return null;
+            claim.setAreaOfLaw(submissionResponse.getAreaOfLaw().getValue());
         }
     }
 }
