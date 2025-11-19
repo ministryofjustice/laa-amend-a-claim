@@ -86,7 +86,7 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
-        assertNull(claimField.getCost());
+        assertEquals(Cost.PROFIT_COSTS, claimField.getCost());
     }
 
     @Test

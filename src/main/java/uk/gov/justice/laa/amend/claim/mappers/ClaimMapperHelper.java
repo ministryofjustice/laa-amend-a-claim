@@ -49,7 +49,7 @@ public class ClaimMapperHelper {
         BigDecimal submitted = claimResponse.getNetProfitCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetProfitCostsAmount() : null;
-        return new ClaimField(NET_PROFIT_COST, submitted, calculated);
+        return new ClaimField(NET_PROFIT_COST, submitted, calculated, Cost.PROFIT_COSTS);
     }
 
     @Named("mapVatClaimed")
