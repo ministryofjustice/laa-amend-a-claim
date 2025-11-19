@@ -88,7 +88,7 @@ public class ClaimMapperHelper {
     public ClaimField mapDetentionTravelWaitingCosts(ClaimResponse claimResponse) {
         BigDecimal submitted = claimResponse.getDetentionTravelWaitingCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
-                ? claimResponse.getFeeCalculationResponse().getDetentionAndWaitingCostsAmount() : null;
+                ? claimResponse.getFeeCalculationResponse().getDetentionTravelAndWaitingCostsAmount() : null;
         return new ClaimField(DETENTION_TRAVEL_COST, submitted, calculated, Cost.DETENTION_TRAVEL_AND_WAITING_COSTS);
     }
 
