@@ -3,6 +3,8 @@
 # PROFILE: `local` (default) or `dev`
 PROFILE=${1:-local}
 
+docker-compose down -v
+
 export $(grep -v '^#' .env | xargs)
 
 if [ "$PROFILE" = "local" ]; then
