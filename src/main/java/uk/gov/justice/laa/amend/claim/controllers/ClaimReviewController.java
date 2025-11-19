@@ -33,9 +33,6 @@ public class ClaimReviewController {
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("backUrl", String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId));
-        System.out.println("***");
-        System.out.println(claim.getAssessmentOutcome());
-        System.out.println(claim.getAssessmentOutcome() != null && claim.getAssessmentOutcome().getCanAmendCosts());
         model.addAttribute("canAmendCosts",
                 claim.getAssessmentOutcome() != null && claim.getAssessmentOutcome().getCanAmendCosts()
         );

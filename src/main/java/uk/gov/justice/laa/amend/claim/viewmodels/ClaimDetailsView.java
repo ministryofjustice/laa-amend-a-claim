@@ -79,9 +79,6 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
      * @return the change URL, or null if not editable
      */
     default String getChangeUrl(ClaimField row) {
-        System.out.println("***************");
-        System.out.println(row);
-        System.out.println(row.getCost());
         if (row == null) {
             return null;
         }
