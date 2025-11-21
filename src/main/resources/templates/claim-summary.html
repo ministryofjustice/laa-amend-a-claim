@@ -40,7 +40,7 @@
                                         <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimSummary.calculated}"></dd>
                                         <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimSummary.submitted}"></dd>
                                     </div>
-                                    <div class="govuk-summary-list__row" th:each="row : ${claim.tableRows}">
+                                    <div class="govuk-summary-list__row" th:each="row : ${claim.tableRows}" th:if="${@ThymeleafUtils.displayClaimField(row)}">
                                         <dt class="govuk-summary-list__key govuk-!-font-weight-bold" th:text="#{${row.label}}"></dt>
                                         <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></dd>
                                         <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></dd>
