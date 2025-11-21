@@ -13,21 +13,19 @@ import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldValue;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.*;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @ActiveProfiles("local")
 @WebMvcTest(ClaimSummaryController.class)
@@ -39,7 +37,6 @@ public class ClaimSummaryControllerTest {
 
     @MockitoBean
     private ClaimService claimService;
-
 
     @Test
     public void testOnPageLoadReturnsView() throws Exception {
@@ -77,24 +74,33 @@ public class ClaimSummaryControllerTest {
         claim.setProviderAccountNumber("ACC123");
         claim.setProviderName("Provider Ltd");
 
-        claim.setVatClaimed(new ClaimField(VAT, 80, 75, 78));
-        claim.setFixedFee(new ClaimField(FIXED_FEE, 500, 480, 490));
-        claim.setNetProfitCost(new ClaimField(NET_PROFIT_COST, 600, 580, 590));
-        claim.setNetDisbursementAmount(new ClaimField(NET_DISBURSEMENTS_COST, 200, 190, 195));
-        claim.setTotalAmount(new ClaimField(TOTAL, 1380, 1325, 1350));
-        claim.setDisbursementVatAmount(new ClaimField(DISBURSEMENT_VAT, 40, 38, 39));
+        claim.setVatClaimed(createClaimField());
+        claim.setFixedFee(createClaimField());
+        claim.setNetProfitCost(createClaimField());
+        claim.setNetDisbursementAmount(createClaimField());
+        claim.setTotalAmount(createClaimField());
+        claim.setDisbursementVatAmount(createClaimField());
 
 // Civil-specific fields
-        claim.setDetentionTravelWaitingCosts(new ClaimField(DETENTION_TRAVEL_COST, BigDecimal.valueOf(50), BigDecimal.valueOf(55), null));
-        claim.setJrFormFillingCost(new ClaimField(JR_FORM_FILLING, BigDecimal.valueOf(30), BigDecimal.valueOf(35), null));
-        claim.setAdjournedHearing(new ClaimField(ADJOURNED_FEE, BigDecimal.valueOf(20), BigDecimal.valueOf(25), null));
-        claim.setCmrhTelephone(new ClaimField(CMRH_TELEPHONE, BigDecimal.valueOf(15), BigDecimal.valueOf(18), null));
-        claim.setCmrhOral(new ClaimField(CMRH_ORAL, BigDecimal.valueOf(40), BigDecimal.valueOf(45), null));
-        claim.setHoInterview(new ClaimField(HO_INTERVIEW, BigDecimal.valueOf(60), BigDecimal.valueOf(65), null));
-        claim.setSubstantiveHearing(new ClaimField(SUBSTANTIVE_HEARING, BigDecimal.valueOf(100), BigDecimal.valueOf(110), null));
-        claim.setCounselsCost(new ClaimField(COUNSELS_COST, BigDecimal.valueOf(200), BigDecimal.valueOf(220), null));
+        claim.setDetentionTravelWaitingCosts(createClaimField());
+        claim.setJrFormFillingCost(createClaimField());
+        claim.setAdjournedHearing(createClaimField());
+        claim.setCmrhTelephone(createClaimField());
+        claim.setCmrhOral(createClaimField());
+        claim.setHoInterview(createClaimField());
+        claim.setSubstantiveHearing(createClaimField());
+        claim.setCounselsCost(createClaimField());
         claim.setMatterTypeCode("IMM:DET");
 
         return claim;
+    }
+
+    private static ClaimField createClaimField() {
+        return new ClaimField(
+            "foo",
+            ClaimFieldValue.of(BigDecimal.valueOf(100)),
+            ClaimFieldValue.of(BigDecimal.valueOf(200)),
+            ClaimFieldValue.of(BigDecimal.valueOf(300))
+        );
     }
 }

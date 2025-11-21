@@ -14,12 +14,12 @@ public class ClaimField implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     private String label;
-    private Object submitted;
-    private Object calculated;
-    private Object amended;
+    private ClaimFieldValue submitted;
+    private ClaimFieldValue calculated;
+    private ClaimFieldValue amended;
     private Cost cost;
 
-    public ClaimField(String label, Object submitted, Object calculated) {
+    public ClaimField(String label, ClaimFieldValue submitted, ClaimFieldValue calculated) {
         this.label = label;
         this.submitted = submitted;
         this.calculated = calculated;
@@ -27,7 +27,7 @@ public class ClaimField implements Serializable {
         this.cost = null;
     }
 
-    public ClaimField(String label, Object submitted, Object calculated, Object amended) {
+    public ClaimField(String label, ClaimFieldValue submitted, ClaimFieldValue calculated, ClaimFieldValue amended) {
         this.label = label;
         this.submitted = submitted;
         this.calculated = calculated;
@@ -35,7 +35,7 @@ public class ClaimField implements Serializable {
         this.cost = null;
     }
 
-    public ClaimField(String label, Object submitted, Object calculated, Cost cost) {
+    public ClaimField(String label, ClaimFieldValue submitted, ClaimFieldValue calculated, Cost cost) {
         this.label = label;
         this.submitted = submitted;
         this.calculated = calculated;

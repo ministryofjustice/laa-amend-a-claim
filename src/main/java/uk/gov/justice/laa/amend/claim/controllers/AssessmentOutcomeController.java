@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.forms.AssessmentOutcomeForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldValue;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
@@ -42,8 +43,8 @@ public class AssessmentOutcomeController {
             form.setAssessmentOutcome(claim.getAssessmentOutcome());
 
             // Load VAT liability from vatClaimed
-            if (claim.getVatClaimed() != null && claim.getVatClaimed().getAmended() != null) {
-                form.setLiabilityForVat((Boolean) claim.getVatClaimed().getAmended());
+            if (claim.getVatClaimed() != null && claim.getVatClaimed().getAmended().getValue() != null) {
+                form.setLiabilityForVat((Boolean) claim.getVatClaimed().getAmended().getValue());
             }
         }
 
@@ -81,7 +82,7 @@ public class AssessmentOutcomeController {
 
             // Update VAT liability in vatClaimed ClaimField
             if (claim.getVatClaimed() != null) {
-                claim.getVatClaimed().setAmended(assessmentOutcomeForm.getLiabilityForVat());
+                claim.getVatClaimed().setAmended(ClaimFieldValue.of(assessmentOutcomeForm.getLiabilityForVat()));
             }
 
             // Save updated Claim back to session

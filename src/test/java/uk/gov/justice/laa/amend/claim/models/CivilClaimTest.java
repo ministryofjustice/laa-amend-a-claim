@@ -38,17 +38,17 @@ public class CivilClaimTest {
             claim.setSubstantiveHearing(new ClaimField());
 
             claim.setNilledValues();
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getCounselsCost().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getDetentionTravelWaitingCosts().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getJrFormFillingCost().getAmended());
-            Assertions.assertEquals(false, claim.getAdjournedHearing().getAmended());
-            Assertions.assertEquals(0, claim.getCmrhTelephone().getAmended());
-            Assertions.assertEquals(0, claim.getCmrhOral().getAmended());
-            Assertions.assertEquals(0, claim.getHoInterview().getAmended());
-            Assertions.assertEquals(0, claim.getSubstantiveHearing().getAmended());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended().getValue());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended().getValue());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAmended().getValue());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getCounselsCost().getAmended().getValue());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getDetentionTravelWaitingCosts().getAmended().getValue());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getJrFormFillingCost().getAmended().getValue());
+            Assertions.assertEquals(false, claim.getAdjournedHearing().getAmended().getValue());
+            Assertions.assertEquals(0, claim.getCmrhTelephone().getAmended().getValue());
+            Assertions.assertEquals(0, claim.getCmrhOral().getAmended().getValue());
+            Assertions.assertEquals(0, claim.getHoInterview().getAmended().getValue());
+            Assertions.assertEquals(0, claim.getSubstantiveHearing().getAmended().getValue());
         }
     }
 }
