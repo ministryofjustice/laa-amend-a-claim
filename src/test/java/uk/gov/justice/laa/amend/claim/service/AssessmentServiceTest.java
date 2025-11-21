@@ -10,6 +10,7 @@ import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class AssessmentServiceTest {
 
@@ -145,5 +146,61 @@ class AssessmentServiceTest {
         // Then: Should apply NILLED logic and set values to zero
         assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
         assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
+    }
+
+    @Test
+    void testApplyReducedToFixedFeeOutcome_whenCivilClaim() {
+        CivilClaimDetails claim = createTestCivilClaim();
+        claim.setVatClaimed(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setFixedFee(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setNetProfitCost(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setNetDisbursementAmount(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setDisbursementVatAmount(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setDetentionTravelWaitingCosts(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setJrFormFillingCost(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setAdjournedHearing(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setCmrhTelephone(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setCmrhOral(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setHoInterview(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setSubstantiveHearing(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setCounselsCost(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+
+        assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
+
+        assertEquals(claim.getVatClaimed().getCalculated(), claim.getVatClaimed().getAmended());
+        assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
+        assertNull(claim.getNetProfitCost().getAmended());
+        assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
+        assertEquals(claim.getDisbursementVatAmount().getCalculated(), claim.getDisbursementVatAmount().getAmended());
+        assertEquals(claim.getDetentionTravelWaitingCosts().getCalculated(), claim.getDetentionTravelWaitingCosts().getAmended());
+        assertEquals(claim.getJrFormFillingCost().getCalculated(), claim.getJrFormFillingCost().getAmended());
+        assertEquals(claim.getAdjournedHearing().getCalculated(), claim.getAdjournedHearing().getAmended());
+        assertEquals(claim.getCmrhTelephone().getCalculated(), claim.getCmrhTelephone().getAmended());
+        assertEquals(claim.getCmrhOral().getCalculated(), claim.getCmrhOral().getAmended());
+        assertEquals(claim.getHoInterview().getCalculated(), claim.getHoInterview().getAmended());
+        assertEquals(claim.getSubstantiveHearing().getCalculated(), claim.getSubstantiveHearing().getAmended());
+        assertEquals(claim.getCounselsCost().getCalculated(), claim.getCounselsCost().getAmended());
+    }
+
+    @Test
+    void testApplyReducedToFixedFeeOutcome_whenCrimeClaim() {
+        CrimeClaimDetails claim = createTestCrimeClaim();
+        claim.setVatClaimed(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setFixedFee(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setNetProfitCost(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setNetDisbursementAmount(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setDisbursementVatAmount(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setTravelCosts(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+        claim.setWaitingCosts(new ClaimField("", BigDecimal.valueOf(100), BigDecimal.valueOf(200), BigDecimal.valueOf(300)));
+
+        assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
+
+        assertEquals(claim.getVatClaimed().getCalculated(), claim.getVatClaimed().getAmended());
+        assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
+        assertNull(claim.getNetProfitCost().getAmended());
+        assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
+        assertEquals(claim.getDisbursementVatAmount().getCalculated(), claim.getDisbursementVatAmount().getAmended());
+        assertEquals(claim.getTravelCosts().getCalculated(), claim.getTravelCosts().getAmended());
+        assertEquals(claim.getWaitingCosts().getCalculated(), claim.getWaitingCosts().getAmended());
     }
 }

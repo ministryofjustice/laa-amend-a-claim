@@ -17,8 +17,15 @@ public class CrimeClaimDetails extends ClaimDetails {
     @Override
     public void setNilledValues() {
         super.setNilledValues();
-        setAmendedValue(travelCosts, BigDecimal.ZERO);
-        setAmendedValue(waitingCosts, BigDecimal.ZERO);
+        setAmendedToValue(travelCosts, BigDecimal.ZERO);
+        setAmendedToValue(waitingCosts, BigDecimal.ZERO);
+    }
+
+    @Override
+    public void setReducedToFixedFeeValues() {
+        super.setReducedToFixedFeeValues();
+        setAmendedToCalculated(travelCosts);
+        setAmendedToCalculated(waitingCosts);
     }
 
     @Override

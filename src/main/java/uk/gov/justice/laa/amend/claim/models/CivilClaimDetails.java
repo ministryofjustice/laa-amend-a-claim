@@ -23,14 +23,27 @@ public class CivilClaimDetails extends ClaimDetails {
     @Override
     public void setNilledValues() {
         super.setNilledValues();
-        setAmendedValue(counselsCost, BigDecimal.ZERO);
-        setAmendedValue(detentionTravelWaitingCosts, BigDecimal.ZERO);
-        setAmendedValue(jrFormFillingCost, BigDecimal.ZERO);
-        setAmendedValue(adjournedHearing, false);
-        setAmendedValue(cmrhTelephone, 0);
-        setAmendedValue(cmrhOral, 0);
-        setAmendedValue(hoInterview, 0);
-        setAmendedValue(substantiveHearing, 0);
+        setAmendedToValue(counselsCost, BigDecimal.ZERO);
+        setAmendedToValue(detentionTravelWaitingCosts, BigDecimal.ZERO);
+        setAmendedToValue(jrFormFillingCost, BigDecimal.ZERO);
+        setAmendedToValue(adjournedHearing, false);
+        setAmendedToValue(cmrhTelephone, 0);
+        setAmendedToValue(cmrhOral, 0);
+        setAmendedToValue(hoInterview, 0);
+        setAmendedToValue(substantiveHearing, 0);
+    }
+
+    @Override
+    public void setReducedToFixedFeeValues() {
+        super.setReducedToFixedFeeValues();
+        setAmendedToCalculated(detentionTravelWaitingCosts);
+        setAmendedToCalculated(jrFormFillingCost);
+        setAmendedToCalculated(adjournedHearing);
+        setAmendedToCalculated(cmrhTelephone);
+        setAmendedToCalculated(cmrhOral);
+        setAmendedToCalculated(hoInterview);
+        setAmendedToCalculated(substantiveHearing);
+        setAmendedToCalculated(counselsCost);
     }
 
     @Override
