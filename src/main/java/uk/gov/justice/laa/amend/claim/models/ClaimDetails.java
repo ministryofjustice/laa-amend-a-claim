@@ -30,15 +30,15 @@ public abstract class ClaimDetails extends Claim {
     private LocalDate submittedDate;
 
     public void setNilledValues() {
-        setAmendedToValue(netProfitCost, new ClaimFieldValue.Value(BigDecimal.ZERO));
-        setAmendedToValue(netDisbursementAmount, new ClaimFieldValue.Value(BigDecimal.ZERO));
-        setAmendedToValue(disbursementVatAmount, new ClaimFieldValue.Value(BigDecimal.ZERO));
+        setAmendedToValue(netProfitCost, ClaimFieldValue.of(BigDecimal.ZERO));
+        setAmendedToValue(netDisbursementAmount, ClaimFieldValue.of(BigDecimal.ZERO));
+        setAmendedToValue(disbursementVatAmount, ClaimFieldValue.of(BigDecimal.ZERO));
     }
 
     public void setReducedToFixedFeeValues() {
         setAmendedToCalculated(vatClaimed);
         setAmendedToCalculated(fixedFee);
-        setAmendedToValue(netProfitCost, ClaimFieldValue.of(null, true));
+        setAmendedToValue(netProfitCost, new ClaimFieldValue.NeedsAdding());
         setAmendedToCalculated(netDisbursementAmount);
         setAmendedToCalculated(totalAmount);
         setAmendedToCalculated(disbursementVatAmount);

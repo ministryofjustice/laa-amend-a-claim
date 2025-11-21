@@ -2,32 +2,25 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import java.io.Serializable;
 
-public sealed interface ClaimFieldValue {
+public sealed interface ClaimFieldValue extends Serializable {
 
     Object getValue();
 
-    record Value(Object value) implements ClaimFieldValue, Serializable {
+    record Value(Object value) implements ClaimFieldValue {
         @Override
         public Object getValue() {
             return value;
         }
     }
 
-    record NeedsAdding() implements ClaimFieldValue, Serializable {
+    record NeedsAdding() implements ClaimFieldValue {
         @Override
         public Object getValue() {
             return null;
         }
     }
 
-    static ClaimFieldValue of(Object value, boolean needsAddingIfNull) {
-        if (needsAddingIfNull) {
-            return new NeedsAdding();
-        }
-        return new Value(value);
-    }
-
     static ClaimFieldValue of(Object value) {
-        return of(value, false);
+        return new Value(value);
     }
 }

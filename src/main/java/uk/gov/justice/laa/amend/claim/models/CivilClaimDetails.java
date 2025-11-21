@@ -23,14 +23,14 @@ public class CivilClaimDetails extends ClaimDetails {
     @Override
     public void setNilledValues() {
         super.setNilledValues();
-        setAmendedToValue(counselsCost, new ClaimFieldValue.Value(BigDecimal.ZERO));
-        setAmendedToValue(detentionTravelWaitingCosts, new ClaimFieldValue.Value(BigDecimal.ZERO));
-        setAmendedToValue(jrFormFillingCost, new ClaimFieldValue.Value(BigDecimal.ZERO));
-        setAmendedToValue(adjournedHearing, new ClaimFieldValue.Value(false));
-        setAmendedToValue(cmrhTelephone, new ClaimFieldValue.Value(0));
-        setAmendedToValue(cmrhOral, new ClaimFieldValue.Value(0));
-        setAmendedToValue(hoInterview, new ClaimFieldValue.Value(0));
-        setAmendedToValue(substantiveHearing, new ClaimFieldValue.Value(0));
+        setAmendedToValue(counselsCost, ClaimFieldValue.of(BigDecimal.ZERO));
+        setAmendedToValue(detentionTravelWaitingCosts, ClaimFieldValue.of(BigDecimal.ZERO));
+        setAmendedToValue(jrFormFillingCost, ClaimFieldValue.of(BigDecimal.ZERO));
+        setAmendedToValue(adjournedHearing, ClaimFieldValue.of(false));
+        setAmendedToValue(cmrhTelephone, ClaimFieldValue.of(0));
+        setAmendedToValue(cmrhOral, ClaimFieldValue.of(0));
+        setAmendedToValue(hoInterview, ClaimFieldValue.of(0));
+        setAmendedToValue(substantiveHearing, ClaimFieldValue.of(0));
     }
 
     @Override

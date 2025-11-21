@@ -35,9 +35,9 @@
                 th:classappend="${viewModel.isTotalRow(row)} ? 'table-row--total' : ''"
                 th:with="label=${row.label}">
                 <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${label}}"></td>
-                <th:block th:replace="~{partials/claim-field-value_td :: claimFieldValue(${row}, ${row.calculated})}"></th:block>
-                <th:block th:replace="~{partials/claim-field-value_td :: claimFieldValue(${row}, ${row.submitted})}"></th:block>
-                <th:block th:replace="~{partials/claim-field-value_td :: claimFieldValue(${row}, ${row.amended})}"></th:block>
+                <th:block th:replace="~{partials/claim-field-value :: claimFieldValue(${row}, ${row.calculated})}"></th:block>
+                <th:block th:replace="~{partials/claim-field-value :: claimFieldValue(${row}, ${row.submitted})}"></th:block>
+                <th:block th:replace="~{partials/claim-field-value :: claimFieldValue(${row}, ${row.amended})}"></th:block>
 
                 <td class="govuk-table__cell" th:if="${canAmendCosts}" th:classappend="${viewModel.getChangeUrl(row)} == null ? 'govuk-summary-list__row--no-actions' : ''">
                     <a th:if="${viewModel.getChangeUrl(row) != null && !(row.amended instanceof T(uk.gov.justice.laa.amend.claim.models.ClaimFieldValue.NeedsAdding))}"
