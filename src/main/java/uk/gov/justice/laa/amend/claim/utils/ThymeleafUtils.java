@@ -40,20 +40,20 @@ public class ThymeleafUtils {
 
     public List<AssessmentOutcomeFormError> toAssessmentOutcomeErrors(List<DetailedError> errors) {
         return errors
-                .stream()
-                .map(AssessmentOutcomeFormError::new)
-                .sorted()
-                .collect(
-                        Collectors.collectingAndThen(
-                                Collectors.toMap(
-                                        AssessmentOutcomeFormError::getMessage,
-                                        Function.identity(),
-                                        (e1, e2) -> e1,
-                                        LinkedHashMap::new
-                                ),
-                                map -> map.values().stream().toList()
-                        )
-                );
+            .stream()
+            .map(AssessmentOutcomeFormError::new)
+            .sorted()
+            .collect(
+                Collectors.collectingAndThen(
+                    Collectors.toMap(
+                        AssessmentOutcomeFormError::getMessage,
+                        Function.identity(),
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                    ),
+                    map -> map.values().stream().toList()
+                )
+            );
     }
 
     public List<MonetaryValueFormError> toMonetaryFormValueErrors(List<DetailedError> errors) {
@@ -65,7 +65,7 @@ public class ThymeleafUtils {
 
     public String getFormattedValue(Object value) {
         return switch (value) {
-            case null -> getMessage("service.na");
+            case null -> getMessage("service.noData");
             case BigDecimal bigDecimal -> CurrencyUtils.formatCurrency(bigDecimal);
             case Integer i -> i.toString();
             case Boolean b -> getFormattedBoolean(b);

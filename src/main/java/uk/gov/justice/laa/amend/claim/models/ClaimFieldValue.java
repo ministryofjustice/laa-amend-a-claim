@@ -20,21 +20,11 @@ public sealed interface ClaimFieldValue {
         }
     }
 
-    record Null() implements ClaimFieldValue, Serializable {
-        @Override
-        public Object getValue() {
-            return null;
-        }
-    }
-
     static ClaimFieldValue of(Object value, boolean needsAddingIfNull) {
-        if (value != null) {
-            return new Value(value);
-        }
         if (needsAddingIfNull) {
             return new NeedsAdding();
         }
-        return new Null();
+        return new Value(value);
     }
 
     static ClaimFieldValue of(Object value) {
