@@ -3,10 +3,10 @@ package uk.gov.justice.laa.amend.claim.views;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -22,7 +22,10 @@ import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -165,5 +168,48 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasTitle(doc, "Claim details");
 
         assertPageHasHeading(doc, "Claim details");
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("claimFieldValuesProvider")
+    void testHiddenFieldsAreDisplayed(String fieldLabel, CivilClaimDetails claimDetails, boolean display) throws Exception {
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claimDetails);
+        Document doc = renderDocument();
+        Assertions.assertEquals(pageHasLabel(doc, fieldLabel), display);
+      }
+
+    static Stream<Arguments> claimFieldValuesProvider() {
+        return Stream.of(
+                Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", 0), false),
+                Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", 22), true),
+                Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", null), false),
+                Arguments.of("CMRH telephone", withField(CMRH_TELEPHONE, "setCmrhTelephone",  null), false),
+                Arguments.of("CMRH telephone", withField(CMRH_TELEPHONE, "setCmrhTelephone",  3), true),
+                Arguments.of("CMRH oral", withField(CMRH_ORAL, "setCmrhOral",  0), false),
+                Arguments.of("Home office interview", withField(HO_INTERVIEW, "setHoInterview",  0), false),
+                Arguments.of("Home office interview", withField(HO_INTERVIEW, "setHoInterview",  null), false),
+                Arguments.of("Substantive hearing", withField(SUBSTANTIVE_HEARING, "setSubstantiveHearing", 0), false),
+                Arguments.of("Substantive hearing", withField(SUBSTANTIVE_HEARING, "setSubstantiveHearing", 4), true),
+                Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", BigDecimal.ZERO), false),
+                Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", null), false),
+                Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", new BigDecimal(20)), true)
+        );
+    }
+
+    private static CivilClaimDetails withField(String label, String methodName, Object value) {
+        CivilClaimDetails claimDetails = new CivilClaimDetails();
+        claimDetails.setMatterTypeCode("IMLB:AHQS");
+        claimDetails.setAreaOfLaw("CIVIL");
+        claimDetails.setCategoryOfLaw("TEST");
+        createClaimSummary(claimDetails);
+        try {
+            Method method = CivilClaimDetails.class.getMethod(methodName, ClaimField.class);
+            method.invoke(claimDetails, new ClaimField(label, value, 10, 5));
+            return claimDetails;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to set field: " + methodName, e);
+        }
+
     }
 }
