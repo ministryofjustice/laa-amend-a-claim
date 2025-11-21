@@ -106,9 +106,12 @@ public class ThymeleafUtils {
 
     /**
      * Determines whether a claim field should be displayed, it used only in summary page.
-     * A field is displayed if:
-     *  - It has a non-empty submitted value, OR
-     *  - Its label is not in the list of hidden fields.
+     * A field displayed:
+     * - if field has a non empty submitted value.
+     *
+     * A field is not displayed if:
+     *  - It has a empty submitted value, and
+     *  - Its label is in the list of hidden fields.
      *
      * @param claimField the claim field to check
      * @return true if the field should be displayed, false otherwise
