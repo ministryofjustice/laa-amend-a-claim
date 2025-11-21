@@ -40,7 +40,7 @@ public class ClaimMapperHelper {
     public ClaimField mapFixedFee(ClaimResponse claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getFixedFeeAmount() : null;
-        return new ClaimField(FIXED_FEE, "NA", calculated, null);
+        return new ClaimField(FIXED_FEE, null, calculated, null);
     }
 
     @Named("mapNetProfitCost")
