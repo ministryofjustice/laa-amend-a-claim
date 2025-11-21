@@ -23,14 +23,14 @@ public class CivilClaimDetails extends ClaimDetails {
     @Override
     public void setNilledValues() {
         super.setNilledValues();
-        setAmendedToValue(counselsCost, BigDecimal.ZERO);
-        setAmendedToValue(detentionTravelWaitingCosts, BigDecimal.ZERO);
-        setAmendedToValue(jrFormFillingCost, BigDecimal.ZERO);
-        setAmendedToValue(adjournedHearing, false);
-        setAmendedToValue(cmrhTelephone, 0);
-        setAmendedToValue(cmrhOral, 0);
-        setAmendedToValue(hoInterview, 0);
-        setAmendedToValue(substantiveHearing, 0);
+        setAmendedToValue(counselsCost, new ClaimFieldValue.Value(BigDecimal.ZERO));
+        setAmendedToValue(detentionTravelWaitingCosts, new ClaimFieldValue.Value(BigDecimal.ZERO));
+        setAmendedToValue(jrFormFillingCost, new ClaimFieldValue.Value(BigDecimal.ZERO));
+        setAmendedToValue(adjournedHearing, new ClaimFieldValue.Value(false));
+        setAmendedToValue(cmrhTelephone, new ClaimFieldValue.Value(0));
+        setAmendedToValue(cmrhOral, new ClaimFieldValue.Value(0));
+        setAmendedToValue(hoInterview, new ClaimFieldValue.Value(0));
+        setAmendedToValue(substantiveHearing, new ClaimFieldValue.Value(0));
     }
 
     @Override

@@ -42,8 +42,8 @@
                                     </div>
                                     <div class="govuk-summary-list__row" th:each="row : ${claim.tableRows}">
                                         <dt class="govuk-summary-list__key govuk-!-font-weight-bold" th:text="#{${row.label}}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></dd>
-                                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></dd>
+                                        <th:block th:replace="~{partials/claim-field-value_dd :: claimFieldValue(${row}, ${row.calculated})}"></th:block>
+                                        <th:block th:replace="~{partials/claim-field-value_dd :: claimFieldValue(${row}, ${row.submitted})}"></th:block>
                                     </div>
                                 </dl>
                             </div>

@@ -32,15 +32,18 @@
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row"
                 th:each="row : ${viewModel.tableRows}"
-                th:classappend="${viewModel.isTotalRow(row)} ? 'table-row--total' : ''">
-                <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
-                <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
-                <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
-                <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}"></td>
+                th:classappend="${viewModel.isTotalRow(row)} ? 'table-row--total' : ''"
+                th:with="label=${row.label}">
+                <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${label}}"></td>
+                <th:block th:replace="~{partials/claim-field-value_td :: claimFieldValue(${row}, ${row.calculated})}"></th:block>
+                <th:block th:replace="~{partials/claim-field-value_td :: claimFieldValue(${row}, ${row.submitted})}"></th:block>
+                <th:block th:replace="~{partials/claim-field-value_td :: claimFieldValue(${row}, ${row.amended})}"></th:block>
+
                 <td class="govuk-table__cell" th:if="${canAmendCosts}" th:classappend="${viewModel.getChangeUrl(row)} == null ? 'govuk-summary-list__row--no-actions' : ''">
-                    <a th:if="${viewModel.getChangeUrl(row) != null}"
+                    <a th:if="${viewModel.getChangeUrl(row) != null && !(row.amended instanceof T(uk.gov.justice.laa.amend.claim.models.ClaimFieldValue.NeedsAdding))}"
                        th:href="${viewModel.getChangeUrl(row)}"
-                       class="govuk-link govuk-link--no-visited-state">Change</a>
+                       class="govuk-link govuk-link--no-visited-state"
+                       th:text="#{service.change}"><th:span class="govuk-visually-hidden" th:text=" #{${label}}"></th:span></a>
                 </td>
             </tr>
         </tbody>

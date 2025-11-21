@@ -1,0 +1,18 @@
+<th:block th:fragment="claimFieldValue(row, value)">
+    <dd th:if="${value instanceof T(uk.gov.justice.laa.amend.claim.models.ClaimFieldValue.Value)}"
+        class="govuk-summary-list__value"
+        th:text="${@ThymeleafUtils.getFormattedValue(value.value)}">
+    </dd>
+
+    <dd th:if="${value instanceof T(uk.gov.justice.laa.amend.claim.models.ClaimFieldValue.NeedsAdding)}"
+        class="govuk-summary-list__value">
+        <a th:href="${viewModel.getChangeUrl(row)}"
+           class="govuk-link govuk-link--no-visited-state"
+           th:text="#{service.add}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
+    </dd>
+
+    <dd th:if="${value instanceof T(uk.gov.justice.laa.amend.claim.models.ClaimFieldValue.Null)}"
+        class="govuk-summary-list__value"
+        th:text="#{service.na}">
+    </dd>
+</th:block>

@@ -32,11 +32,11 @@ public class CrimeClaimDetailsTest {
             claim.setWaitingCosts(new ClaimField());
 
             claim.setNilledValues();
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getTravelCosts().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getWaitingCosts().getAmended());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended().getValue());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended().getValue());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAmended().getValue());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getTravelCosts().getAmended().getValue());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getWaitingCosts().getAmended().getValue());
         }
     }
 }

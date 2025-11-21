@@ -30,15 +30,15 @@ public abstract class ClaimDetails extends Claim {
     private LocalDate submittedDate;
 
     public void setNilledValues() {
-        setAmendedToValue(netProfitCost, BigDecimal.ZERO);
-        setAmendedToValue(netDisbursementAmount, BigDecimal.ZERO);
-        setAmendedToValue(disbursementVatAmount, BigDecimal.ZERO);
+        setAmendedToValue(netProfitCost, new ClaimFieldValue.Value(BigDecimal.ZERO));
+        setAmendedToValue(netDisbursementAmount, new ClaimFieldValue.Value(BigDecimal.ZERO));
+        setAmendedToValue(disbursementVatAmount, new ClaimFieldValue.Value(BigDecimal.ZERO));
     }
 
     public void setReducedToFixedFeeValues() {
         setAmendedToCalculated(vatClaimed);
         setAmendedToCalculated(fixedFee);
-        setAmendedToValue(netProfitCost, null);
+        setAmendedToValue(netProfitCost, ClaimFieldValue.of(null, true));
         setAmendedToCalculated(netDisbursementAmount);
         setAmendedToCalculated(totalAmount);
         setAmendedToCalculated(disbursementVatAmount);
@@ -46,7 +46,7 @@ public abstract class ClaimDetails extends Claim {
 
     public abstract boolean getIsCrimeClaim();
 
-    protected void setAmendedToValue(ClaimField claimField, Object value) {
+    protected void setAmendedToValue(ClaimField claimField, ClaimFieldValue value) {
         setAmended(claimField, cf -> value);
     }
 
@@ -54,7 +54,7 @@ public abstract class ClaimDetails extends Claim {
         setAmended(claimField, ClaimField::getCalculated);
     }
 
-    private void setAmended(ClaimField claimField, Function<ClaimField, Object> f) {
+    private void setAmended(ClaimField claimField, Function<ClaimField, ClaimFieldValue> f) {
         if (claimField != null) {
             claimField.setAmended(f.apply(claimField));
         }

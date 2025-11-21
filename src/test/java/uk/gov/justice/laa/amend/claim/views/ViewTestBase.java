@@ -195,7 +195,7 @@ public abstract class ViewTestBase {
     Assertions.assertTrue(rowFound);
   }
 
-  protected void assertPageHasValuesRow(Document doc, String expectedKey, ClaimField claimFieldRow) {
+  protected void assertPageHasValuesRow(Document doc, String expectedKey, ClaimField claimField) {
     Elements rows = doc.getElementsByClass("govuk-summary-list__row");
     boolean rowFound = rows.stream().anyMatch(row -> {
       String keyText = row.select(".govuk-summary-list__key").text().trim();
@@ -203,7 +203,7 @@ public abstract class ViewTestBase {
       if (valueElements.size() < 2) return false;
       String calculatedText = valueElements.get(0).text().trim();
       String submittedText = valueElements.get(1).text().trim();
-      return keyText.equals(expectedKey) && calculatedText.equals(claimFieldRow.getCalculated().toString()) && submittedText.equals(claimFieldRow.getSubmitted().toString());
+      return keyText.equals(expectedKey) && calculatedText.equals(claimField.getCalculated().getValue().toString()) && submittedText.equals(claimField.getSubmitted().getValue().toString());
     });
     Assertions.assertTrue(rowFound);
   }

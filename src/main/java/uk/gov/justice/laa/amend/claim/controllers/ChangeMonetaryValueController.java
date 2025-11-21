@@ -16,6 +16,7 @@ import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldValue;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 
 import java.io.IOException;
@@ -40,7 +41,10 @@ public class ChangeMonetaryValueController {
             // TODO - if retrieval from session returns null, redirect to session expired?
             ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
             ClaimField claimField = cost.getAccessor().get(claim);
-            BigDecimal value = claimField != null ? (BigDecimal) claimField.getAmended() : null;
+            BigDecimal value = null;
+            if (claimField != null && claimField.getAmended() != null) {
+                value = (BigDecimal) claimField.getAmended().getValue();
+            }
 
             MonetaryValueForm form = new MonetaryValueForm();
             if (value != null) {
@@ -77,7 +81,7 @@ public class ChangeMonetaryValueController {
             ClaimField claimField = cost.getAccessor().get(claim);
             BigDecimal value = setScale(new BigDecimal(form.getValue()));
             if (claimField != null) {
-                claimField.setAmended(value);
+                claimField.setAmended(ClaimFieldValue.of(value));
                 cost.getAccessor().set(claim, claimField);
             }
             session.setAttribute(claimId, claim);
