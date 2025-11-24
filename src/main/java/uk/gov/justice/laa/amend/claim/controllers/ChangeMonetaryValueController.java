@@ -78,6 +78,7 @@ public class ChangeMonetaryValueController {
             BigDecimal value = setScale(new BigDecimal(form.getValue()));
             if (claimField != null) {
                 claimField.setAmended(value);
+                claimField.setNeedsAmending(false);
                 cost.getAccessor().set(claim, claimField);
             }
             session.setAttribute(claimId, claim);
