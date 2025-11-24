@@ -23,27 +23,27 @@ public class CivilClaimDetails extends ClaimDetails {
     @Override
     public void setNilledValues() {
         super.setNilledValues();
-        setAmendedToValue(counselsCost, BigDecimal.ZERO);
-        setAmendedToValue(detentionTravelWaitingCosts, BigDecimal.ZERO);
-        setAmendedToValue(jrFormFillingCost, BigDecimal.ZERO);
-        setAmendedToValue(adjournedHearing, false);
-        setAmendedToValue(cmrhTelephone, 0);
-        setAmendedToValue(cmrhOral, 0);
-        setAmendedToValue(hoInterview, 0);
-        setAmendedToValue(substantiveHearing, 0);
+        applyIfNotNull(counselsCost, cf -> cf.setAmendedToValue(BigDecimal.ZERO));
+        applyIfNotNull(detentionTravelWaitingCosts, cf -> cf.setAmendedToValue(BigDecimal.ZERO));
+        applyIfNotNull(jrFormFillingCost, cf -> cf.setAmendedToValue(BigDecimal.ZERO));
+        applyIfNotNull(adjournedHearing, cf -> cf.setAmendedToValue(false));
+        applyIfNotNull(cmrhTelephone, cf -> cf.setAmendedToValue(0));
+        applyIfNotNull(cmrhOral, cf -> cf.setAmendedToValue(0));
+        applyIfNotNull(hoInterview, cf -> cf.setAmendedToValue(0));
+        applyIfNotNull(substantiveHearing, cf -> cf.setAmendedToValue(0));
     }
 
     @Override
     public void setReducedToFixedFeeValues() {
         super.setReducedToFixedFeeValues();
-        setAmendedToCalculated(detentionTravelWaitingCosts);
-        setAmendedToCalculated(jrFormFillingCost);
-        setAmendedToCalculated(adjournedHearing);
-        setAmendedToCalculated(cmrhTelephone);
-        setAmendedToCalculated(cmrhOral);
-        setAmendedToCalculated(hoInterview);
-        setAmendedToCalculated(substantiveHearing);
-        setAmendedToCalculated(counselsCost);
+        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(jrFormFillingCost, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(adjournedHearing, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(cmrhTelephone, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(cmrhOral, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(hoInterview, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(substantiveHearing, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(counselsCost, ClaimField::setAmendedToCalculated);
     }
 
     @Override

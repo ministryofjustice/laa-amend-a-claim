@@ -6,6 +6,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @EqualsAndHashCode(callSuper = true)
@@ -30,44 +31,27 @@ public abstract class ClaimDetails extends Claim {
     private LocalDate submittedDate;
 
     public void setNilledValues() {
-        setAmendedToValue(netProfitCost, BigDecimal.ZERO);
-        setAmendedToValue(netDisbursementAmount, BigDecimal.ZERO);
-        setAmendedToValue(disbursementVatAmount, BigDecimal.ZERO);
+        applyIfNotNull(netProfitCost, cf -> cf.setAmendedToValue(BigDecimal.ZERO));
+        applyIfNotNull(netDisbursementAmount, cf -> cf.setAmendedToValue(BigDecimal.ZERO));
+        applyIfNotNull(disbursementVatAmount, cf -> cf.setAmendedToValue(BigDecimal.ZERO));
     }
 
     public void setReducedToFixedFeeValues() {
-        setAmendedToCalculated(vatClaimed);
-        setAmendedToCalculated(fixedFee);
-        setToNeedsAmending(netProfitCost);
-        setAmendedToCalculated(netDisbursementAmount);
-        setAmendedToCalculated(totalAmount);
-        setAmendedToCalculated(disbursementVatAmount);
+        applyIfNotNull(vatClaimed, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(fixedFee, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(netProfitCost, ClaimField::setToNeedsAmending);
+        applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(totalAmount, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToCalculated);
+    }
+
+    protected void applyIfNotNull(ClaimField field, Consumer<ClaimField> f) {
+        if (field != null) {
+            f.accept(field);
+        }
     }
 
     public abstract boolean getIsCrimeClaim();
-
-    protected void setAmendedToValue(ClaimField claimField, Object value) {
-        setAmended(claimField, cf -> value);
-    }
-
-    protected void setToNeedsAmending(ClaimField claimField) {
-        setAmended(claimField, cf -> null, true);
-    }
-
-    protected void setAmendedToCalculated(ClaimField claimField) {
-        setAmended(claimField, ClaimField::getCalculated);
-    }
-
-    private void setAmended(ClaimField claimField, Function<ClaimField, Object> f) {
-        setAmended(claimField, f, false);
-    }
-
-    private void setAmended(ClaimField claimField, Function<ClaimField, Object> f, boolean needsAmending) {
-        if (claimField != null) {
-            claimField.setAmended(f.apply(claimField));
-            claimField.setNeedsAmending(needsAmending);
-        }
-    }
 
     public abstract ClaimDetailsView<? extends ClaimDetails> toViewModel();
 }

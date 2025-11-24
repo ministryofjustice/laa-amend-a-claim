@@ -58,4 +58,21 @@ public class ClaimField implements Serializable {
 
         return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
     }
+
+    protected void setAmendedToValue(Object value) {
+        setAmended(value, false);
+    }
+
+    protected void setToNeedsAmending() {
+        setAmended(null, true);
+    }
+
+    protected void setAmendedToCalculated() {
+        setAmendedToValue(this.getCalculated());
+    }
+
+    private void setAmended(Object value, boolean needsAmending) {
+        this.setAmended(value);
+        this.setNeedsAmending(needsAmending);
+    }
 }

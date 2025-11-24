@@ -17,15 +17,15 @@ public class CrimeClaimDetails extends ClaimDetails {
     @Override
     public void setNilledValues() {
         super.setNilledValues();
-        setAmendedToValue(travelCosts, BigDecimal.ZERO);
-        setAmendedToValue(waitingCosts, BigDecimal.ZERO);
+        applyIfNotNull(travelCosts, cf -> cf.setAmendedToValue(BigDecimal.ZERO));
+        applyIfNotNull(waitingCosts, cf -> cf.setAmendedToValue(BigDecimal.ZERO));
     }
 
     @Override
     public void setReducedToFixedFeeValues() {
         super.setReducedToFixedFeeValues();
-        setAmendedToCalculated(travelCosts);
-        setAmendedToCalculated(waitingCosts);
+        applyIfNotNull(travelCosts, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(waitingCosts, ClaimField::setAmendedToCalculated);
     }
 
     @Override
