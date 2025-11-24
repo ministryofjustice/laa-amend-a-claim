@@ -47,10 +47,10 @@ public abstract class ClaimDetails extends Claim {
 
     public void setPaidInFullValues() {
         applyIfNotNull(vatClaimed, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(fixedFee, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(netProfitCost, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(fixedFee, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(netProfitCost, ClaimField::setToNeedsAmending);
         applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(totalAmount, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(totalAmount, ClaimField::setAmendedToCalculated);
         applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToSubmitted);
     }
 

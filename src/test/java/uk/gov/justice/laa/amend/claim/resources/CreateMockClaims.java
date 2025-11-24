@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 public class CreateMockClaims {
 
-    public CivilClaimDetails createBaseMockCivilClaim(){
+    public static CivilClaimDetails createBaseMockCivilClaim(){
         CivilClaimDetails claim = new CivilClaimDetails();
         claim.setClaimId("test-civil-claim-123");
         claim.setSubmissionId("test-submission-456");
@@ -16,7 +16,7 @@ public class CreateMockClaims {
         return claim;
     }
 
-    public CivilClaimDetails createMockCivilClaim(){
+    public static CivilClaimDetails createMockCivilClaim(){
         CivilClaimDetails claim = new CivilClaimDetails();
         claim.setClaimId("test-civil-claim-123");
         claim.setSubmissionId("test-submission-456");
@@ -40,7 +40,7 @@ public class CreateMockClaims {
         return claim;
     }
 
-     public CrimeClaimDetails createMockCrimeClaim() {
+     public static CrimeClaimDetails createMockCrimeClaim() {
         CrimeClaimDetails claim = new CrimeClaimDetails();
         claim.setClaimId("test-crime-claim-123");
         claim.setSubmissionId("test-submission-456");
@@ -55,7 +55,9 @@ public class CreateMockClaims {
         return claim;
     }
 
-     public ClaimField createClaimField() {
+
+
+     public static ClaimField createClaimField() {
         return new ClaimField(
                 "foo",
                 BigDecimal.valueOf(100),

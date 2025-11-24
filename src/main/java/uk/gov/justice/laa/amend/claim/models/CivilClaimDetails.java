@@ -51,11 +51,11 @@ public class CivilClaimDetails extends ClaimDetails {
         super.setPaidInFullValues();
         applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(jrFormFillingCost, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(adjournedHearing, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(cmrhTelephone, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(cmrhOral, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(hoInterview, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(substantiveHearing, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(adjournedHearing, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(cmrhTelephone, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(cmrhOral, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(hoInterview, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(substantiveHearing, ClaimField::setAmendedToCalculated);
         applyIfNotNull(counselsCost, ClaimField::setAmendedToSubmitted);
     }
 
