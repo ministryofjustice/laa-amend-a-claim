@@ -45,7 +45,7 @@ public class ClaimField implements Serializable {
     }
 
     /**
-     * Returns the change URL for a given claim field row, or null if the row is not editable.
+     * Returns the change URL for a given submission ID and claim ID
      *
      * @param submissionId the submission ID
      * @param claimId the claim ID
