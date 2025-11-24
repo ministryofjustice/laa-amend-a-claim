@@ -2,11 +2,12 @@ package uk.gov.justice.laa.amend.claim.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Nested;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.resources.CreateMockClaims;
 
 import java.math.BigDecimal;
 
@@ -22,256 +23,377 @@ class AssessmentServiceTest {
         assessmentService = new AssessmentService();
     }
 
-    private ClaimField createClaimField() {
-        return new ClaimField(
-            "foo",
-            BigDecimal.valueOf(100),
-            BigDecimal.valueOf(200),
-            BigDecimal.valueOf(300)
-        );
+    @Nested
+    class NilledOutcome{
+        @Test
+        void testApplyNilledOutcome_SetsAllMonetaryFieldsToZero() {
+            // Given: A claim with non-zero values
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+
+            // When: NILLED outcome is applied
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
+
+            // Then: Only amendable monetary fields should be set to 0 (not VAT, Total, or Fixed Fee)
+            assertEquals(BigDecimal.valueOf(300), claim.getFixedFee().getAmended()); // Fixed Fee unchanged (NA)
+            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
+            assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
+            assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAmended());
+            assertEquals(BigDecimal.valueOf(300), claim.getVatClaimed().getAmended()); // VAT unchanged (calculated)
+        }
+
+        @Test
+        void testApplyNilledOutcome_CrimeClaimSpecificFields() {
+            // Given: A crime claim with non-zero values
+            CrimeClaimDetails claim = CreateMockClaims.createMockCrimeClaim();
+
+            // When: NILLED outcome is applied
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
+
+            // Then: All crime-specific fields should be set to zero
+            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetProfitCost().getStatus());
+
+            assertEquals(BigDecimal.ZERO, claim.getTravelCosts().getAmended());
+            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getTravelCosts().getStatus());
+
+            assertEquals(BigDecimal.ZERO, claim.getWaitingCosts().getAmended());
+            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getWaitingCosts().getStatus());
+        }
+
+        @Test
+        void testApplyAssessmentOutcome_SwitchingFromReducedToNilled() {
+            // Given: A claim with REDUCED outcome and custom values
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setAssessmentOutcome(OutcomeType.REDUCED);
+            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
+
+            // When: Switching to NILLED outcome
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
+
+            // Then: Should apply NILLED logic and set values to zero
+            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetProfitCost().getStatus());
+
+            assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
+            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+        }
+
+        @Test
+        void testApplyAssessmentOutcome_SwitchingFromPaidInFullToNilled() {
+            // Given: A claim with PAID IN FULL outcome and custom values
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
+            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
+
+            // When: Switching to NILLED outcome
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
+
+            // Then: Should apply NILLED logic and set values to zero
+            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetProfitCost().getStatus());
+
+            assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
+            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+        }
+
+        @Test
+        void testApplyNilledOutcome_AppliesWhenOutcomeChanges() {
+            // Given: A claim with no outcome set
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+
+            // When: NILLED outcome is applied
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
+
+            // Then: Amended value should be set to 0
+            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
+        }
+
+        @Test
+        void testApplyNilledAssessmentOutcome_DoesNotApplyIfOutcomeUnchanged() {
+            // Given: A claim with NILLED outcome already set
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setAssessmentOutcome(OutcomeType.NILLED);
+            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+
+            // When: Same outcome is applied again
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
+
+            // Then: Amended value should remain unchanged
+            assertEquals(BigDecimal.valueOf(300), claim.getNetProfitCost().getAmended());
+        }
     }
 
-    private CivilClaimDetails createTestCivilClaim() {
-        CivilClaimDetails civilClaimDetails = new CivilClaimDetails();
-        civilClaimDetails.setClaimId("test-civil-claim-123");
-        civilClaimDetails.setSubmissionId("test-submission-456");
-        return civilClaimDetails;
+    @Nested
+    class ReducedToFixedFeeOutcome{
+        @Test
+        void testApplyReducedToFixedFeeOutcome_whenCrimeClaim() {
+            CrimeClaimDetails claim = CreateMockClaims.createMockCrimeClaim();
+
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
+
+            assertEquals(claim.getVatClaimed().getCalculated(), claim.getVatClaimed().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
+
+            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+
+            assertNull(claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+
+            assertEquals(claim.getDisbursementVatAmount().getCalculated(), claim.getDisbursementVatAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getDisbursementVatAmount().getStatus());
+
+            assertEquals(claim.getTravelCosts().getCalculated(), claim.getTravelCosts().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getTravelCosts().getStatus());
+
+            assertEquals(claim.getWaitingCosts().getCalculated(), claim.getWaitingCosts().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getWaitingCosts().getStatus());
+        }
+
+        @Test
+        void testApplyReducedToFixedFeeOutcome_whenCivilClaim() {
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
+
+            assertEquals(claim.getVatClaimed().getCalculated(), claim.getVatClaimed().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
+
+            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+
+            assertNull(claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+
+            assertEquals(claim.getDisbursementVatAmount().getCalculated(), claim.getDisbursementVatAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getDisbursementVatAmount().getStatus());
+
+            assertEquals(claim.getDetentionTravelWaitingCosts().getCalculated(), claim.getDetentionTravelWaitingCosts().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getDetentionTravelWaitingCosts().getStatus());
+
+            assertEquals(claim.getJrFormFillingCost().getCalculated(), claim.getJrFormFillingCost().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getJrFormFillingCost().getStatus());
+
+            assertEquals(claim.getAdjournedHearing().getCalculated(), claim.getAdjournedHearing().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getAdjournedHearing().getStatus());
+
+            assertEquals(claim.getCmrhTelephone().getCalculated(), claim.getCmrhTelephone().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getCmrhTelephone().getStatus());
+
+            assertEquals(claim.getCmrhOral().getCalculated(), claim.getCmrhOral().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getCmrhOral().getStatus());
+
+            assertEquals(claim.getHoInterview().getCalculated(), claim.getHoInterview().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getHoInterview().getStatus());
+
+            assertEquals(claim.getSubstantiveHearing().getCalculated(), claim.getSubstantiveHearing().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getSubstantiveHearing().getStatus());
+
+            assertEquals(claim.getCounselsCost().getCalculated(), claim.getCounselsCost().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getCounselsCost().getStatus());
+        }
+
+        @Test
+        void testApplyAssessmentOutcome_SwitchingFromPaidInFullToReduced() {
+            // Given: A claim with PAID IN FULL outcome and custom values
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
+            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
+
+            // When: Switching to REDUCED outcome
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
+
+            // Then: Should apply REDUCED and set values to zero
+            assertNull(claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+        }
+
+        @Test
+        void testApplyAssessmentOutcome_SwitchingFromNilledToReduced() {
+            // Given: A claim with NILLED outcome and custom values
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setAssessmentOutcome(OutcomeType.NILLED);
+            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
+
+            // When: Switching to REDUCED outcome
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
+
+            // Then: Should apply REDUCED and set values to zero
+            assertNull(claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+        }
+
+        @Test
+        void testApplyReducedOutcome_AppliesWhenOutcomeChanges() {
+            // Given: A claim with no outcome set
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+
+            // When: NILLED outcome is applied
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
+
+            // Then: Amended value should be set to calculated
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+        }
+
+        @Test
+        void testApplyReducedAssessmentOutcome_DoesNotApplyIfOutcomeUnchanged() {
+            // Given: A claim with NILLED outcome already set
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
+
+            // When: Same outcome is applied again
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
+
+            // Then: Amended value should remain unchanged
+            assertEquals(BigDecimal.valueOf(300), claim.getNetDisbursementAmount().getAmended());
+        }
     }
 
-    private CrimeClaimDetails createTestCrimeClaim() {
-        CrimeClaimDetails crimeClaimDetails = new CrimeClaimDetails();
-        crimeClaimDetails.setClaimId("test-crime-claim-123");
-        crimeClaimDetails.setSubmissionId("test-submission-456");
-        return crimeClaimDetails;
-    }
+    @Nested
+    class PaidInFullOutcome {
+        @Test
+        void testApplyPaidInFullOutcome_whenCrimeClaim() {
+            CrimeClaimDetails claim = CreateMockClaims.createMockCrimeClaim();
 
-    @Test
-    void testApplyNilledOutcome_SetsAllMonetaryFieldsToZero() {
-        // Given: A claim with non-zero values
-        CivilClaimDetails claim = createTestCivilClaim();
-        claim.setFixedFee(createClaimField());
-        claim.setNetProfitCost(createClaimField());
-        claim.setNetDisbursementAmount(createClaimField());
-        claim.setDisbursementVatAmount(createClaimField());
-        claim.setVatClaimed(createClaimField());
-        claim.setTotalAmount(createClaimField());
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
-        // When: NILLED outcome is applied
-        assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
+            assertEquals(claim.getVatClaimed().getSubmitted(), claim.getVatClaimed().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
 
-        // Then: Only amendable monetary fields should be set to 0 (not VAT, Total, or Fixed Fee)
-        assertEquals(BigDecimal.valueOf(300), claim.getFixedFee().getAmended()); // Fixed Fee unchanged (NA)
-        assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
-        assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
-        assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAmended());
-        assertEquals(BigDecimal.valueOf(300), claim.getVatClaimed().getAmended()); // VAT unchanged (calculated)
-    }
+            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
 
-    @Test
-    void testApplyAssessmentOutcome_DoesNotApplyIfOutcomeUnchanged() {
-        // Given: A claim with NILLED outcome already set
-        CivilClaimDetails claim = createTestCivilClaim();
-        claim.setAssessmentOutcome(OutcomeType.NILLED);
-        claim.setNetProfitCost(createClaimField());
+            assertNull(claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
 
-        // When: Same outcome is applied again
-        assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
+            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
 
-        // Then: Amended value should remain unchanged
-        assertEquals(BigDecimal.valueOf(300), claim.getNetProfitCost().getAmended());
-    }
+            assertEquals(claim.getDisbursementVatAmount().getSubmitted(), claim.getDisbursementVatAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getDisbursementVatAmount().getStatus());
 
-    @Test
-    void testApplyAssessmentOutcome_AppliesWhenOutcomeChanges() {
-        // Given: A claim with no outcome set
-        CivilClaimDetails claim = createTestCivilClaim();
-        claim.setNetProfitCost(createClaimField());
+            assertEquals(claim.getTravelCosts().getSubmitted(), claim.getTravelCosts().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getTravelCosts().getStatus());
 
-        // When: NILLED outcome is applied
-        assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
+            assertEquals(claim.getWaitingCosts().getSubmitted(), claim.getWaitingCosts().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getWaitingCosts().getStatus());
+        }
 
-        // Then: Amended value should be set to 0
-        assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
-    }
+        @Test
+        void testApplyPaidInFullOutcome_whenCivilClaim() {
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
 
-    @Test
-    void testApplyNilledOutcome_CivilClaimSpecificFields() {
-        // Given: A civil claim with non-zero values
-        CivilClaimDetails claim = createTestCivilClaim();
-        claim.setNetProfitCost(createClaimField());
-        claim.setCounselsCost(createClaimField());
-        claim.setDetentionTravelWaitingCosts(createClaimField());
-        claim.setJrFormFillingCost(createClaimField());
-        claim.setAdjournedHearing(createClaimField());
-        claim.setCmrhTelephone(createClaimField());
-        claim.setCmrhOral(createClaimField());
-        claim.setHoInterview(createClaimField());
-        claim.setSubstantiveHearing(createClaimField());
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
-        // When: NILLED outcome is applied
-        assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
+            assertEquals(claim.getVatClaimed().getSubmitted(), claim.getVatClaimed().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
 
-        // Then: All civil-specific fields should be set appropriately
-        assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetProfitCost().getStatus());
+            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
 
-        assertEquals(BigDecimal.ZERO, claim.getCounselsCost().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getCounselsCost().getStatus());
+            assertNull(claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
 
-        assertEquals(BigDecimal.ZERO, claim.getDetentionTravelWaitingCosts().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getDetentionTravelWaitingCosts().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
 
-        assertEquals(BigDecimal.ZERO, claim.getJrFormFillingCost().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getJrFormFillingCost().getStatus());
+            assertEquals(claim.getDisbursementVatAmount().getSubmitted(), claim.getDisbursementVatAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getDisbursementVatAmount().getStatus());
 
-        assertEquals(false, claim.getAdjournedHearing().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getAdjournedHearing().getStatus());
+            assertEquals(claim.getDetentionTravelWaitingCosts().getSubmitted(), claim.getDetentionTravelWaitingCosts().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getDetentionTravelWaitingCosts().getStatus());
 
-        assertEquals(0, claim.getCmrhTelephone().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getCmrhTelephone().getStatus());
+            assertEquals(claim.getJrFormFillingCost().getSubmitted(), claim.getJrFormFillingCost().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getJrFormFillingCost().getStatus());
 
-        assertEquals(0, claim.getCmrhOral().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getCmrhOral().getStatus());
+            assertEquals(claim.getAdjournedHearing().getCalculated(), claim.getAdjournedHearing().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getAdjournedHearing().getStatus());
 
-        assertEquals(0, claim.getHoInterview().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getHoInterview().getStatus());
+            assertEquals(claim.getCmrhTelephone().getCalculated(), claim.getCmrhTelephone().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getCmrhTelephone().getStatus());
 
-        assertEquals(0, claim.getSubstantiveHearing().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getSubstantiveHearing().getStatus());
-    }
+            assertEquals(claim.getCmrhOral().getCalculated(), claim.getCmrhOral().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getCmrhOral().getStatus());
 
-    @Test
-    void testApplyNilledOutcome_CrimeClaimSpecificFields() {
-        // Given: A crime claim with non-zero values
-        CrimeClaimDetails claim = createTestCrimeClaim();
-        claim.setNetProfitCost(createClaimField());
-        claim.setTravelCosts(createClaimField());
-        claim.setWaitingCosts(createClaimField());
+            assertEquals(claim.getHoInterview().getCalculated(), claim.getHoInterview().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getHoInterview().getStatus());
 
-        // When: NILLED outcome is applied
-        assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
+            assertEquals(claim.getSubstantiveHearing().getCalculated(), claim.getSubstantiveHearing().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getSubstantiveHearing().getStatus());
 
-        // Then: All crime-specific fields should be set to zero
-        assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetProfitCost().getStatus());
+            assertEquals(claim.getCounselsCost().getSubmitted(), claim.getCounselsCost().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getCounselsCost().getStatus());
+        }
 
-        assertEquals(BigDecimal.ZERO, claim.getTravelCosts().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getTravelCosts().getStatus());
+        @Test
+        void testApplyAssessmentOutcome_SwitchingFromReducedToPaidInFull() {
+            // Given: A claim with REDUCED outcome and custom values
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setAssessmentOutcome(OutcomeType.REDUCED);
+            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
 
-        assertEquals(BigDecimal.ZERO, claim.getWaitingCosts().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getWaitingCosts().getStatus());
-    }
+            // When: Switching to PAID IN FULL outcome
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
-    @Test
-    void testApplyAssessmentOutcome_SwitchingFromReducedToNilled() {
-        // Given: A claim with REDUCED outcome and custom values
-        CivilClaimDetails claim = createTestCivilClaim();
-        claim.setAssessmentOutcome(OutcomeType.REDUCED);
-        claim.setNetProfitCost(createClaimField());
-        claim.setNetDisbursementAmount(createClaimField());
+            // Then: Should apply PAID IN FULL logic and set values to zero
+            assertNull(claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
 
-        // When: Switching to NILLED outcome
-        assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
+            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+        }
 
-        // Then: Should apply NILLED logic and set values to zero
-        assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetProfitCost().getStatus());
+        @Test
+        void testApplyAssessmentOutcome_SwitchingFromNilledToPaidInFull() {
+            // Given: A claim with NILLED outcome and custom values
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setAssessmentOutcome(OutcomeType.NILLED);
+            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
 
-        assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
-        assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetDisbursementAmount().getStatus());
-    }
+            // When: Switching to PAID IN FULL outcome
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
-    @Test
-    void testApplyReducedToFixedFeeOutcome_whenCivilClaim() {
-        CivilClaimDetails claim = createTestCivilClaim();
-        claim.setVatClaimed(createClaimField());
-        claim.setFixedFee(createClaimField());
-        claim.setNetProfitCost(createClaimField());
-        claim.setNetDisbursementAmount(createClaimField());
-        claim.setDisbursementVatAmount(createClaimField());
-        claim.setDetentionTravelWaitingCosts(createClaimField());
-        claim.setJrFormFillingCost(createClaimField());
-        claim.setAdjournedHearing(createClaimField());
-        claim.setCmrhTelephone(createClaimField());
-        claim.setCmrhOral(createClaimField());
-        claim.setHoInterview(createClaimField());
-        claim.setSubstantiveHearing(createClaimField());
-        claim.setCounselsCost(createClaimField());
+            // Then: Should apply PAID IN FULL logic and set values to zero
+            assertNull(claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
 
-        assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
+            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+        }
 
-        assertEquals(claim.getVatClaimed().getCalculated(), claim.getVatClaimed().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
+        @Test
+        void testApplyPaidInFullOutcome_AppliesWhenOutcomeChanges() {
+            // Given: A claim with no outcome set
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setNetProfitCost(CreateMockClaims.createClaimField());
 
-        assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+            // When: PAID IN FULL outcome is applied
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
-        assertNull(claim.getNetProfitCost().getAmended());
-        assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
-
-        assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
-
-        assertEquals(claim.getDisbursementVatAmount().getCalculated(), claim.getDisbursementVatAmount().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getDisbursementVatAmount().getStatus());
-
-        assertEquals(claim.getDetentionTravelWaitingCosts().getCalculated(), claim.getDetentionTravelWaitingCosts().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getDetentionTravelWaitingCosts().getStatus());
-
-        assertEquals(claim.getJrFormFillingCost().getCalculated(), claim.getJrFormFillingCost().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getJrFormFillingCost().getStatus());
-
-        assertEquals(claim.getAdjournedHearing().getCalculated(), claim.getAdjournedHearing().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getAdjournedHearing().getStatus());
-
-        assertEquals(claim.getCmrhTelephone().getCalculated(), claim.getCmrhTelephone().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getCmrhTelephone().getStatus());
-
-        assertEquals(claim.getCmrhOral().getCalculated(), claim.getCmrhOral().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getCmrhOral().getStatus());
-
-        assertEquals(claim.getHoInterview().getCalculated(), claim.getHoInterview().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getHoInterview().getStatus());
-
-        assertEquals(claim.getSubstantiveHearing().getCalculated(), claim.getSubstantiveHearing().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getSubstantiveHearing().getStatus());
-
-        assertEquals(claim.getCounselsCost().getCalculated(), claim.getCounselsCost().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getCounselsCost().getStatus());
-    }
-
-    @Test
-    void testApplyReducedToFixedFeeOutcome_whenCrimeClaim() {
-        CrimeClaimDetails claim = createTestCrimeClaim();
-        claim.setVatClaimed(createClaimField());
-        claim.setFixedFee(createClaimField());
-        claim.setNetProfitCost(createClaimField());
-        claim.setNetDisbursementAmount(createClaimField());
-        claim.setDisbursementVatAmount(createClaimField());
-        claim.setTravelCosts(createClaimField());
-        claim.setWaitingCosts(createClaimField());
-
-        assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
-
-        assertEquals(claim.getVatClaimed().getCalculated(), claim.getVatClaimed().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
-
-        assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
-
-        assertNull(claim.getNetProfitCost().getAmended());
-        assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
-
-        assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
-
-        assertEquals(claim.getDisbursementVatAmount().getCalculated(), claim.getDisbursementVatAmount().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getDisbursementVatAmount().getStatus());
-
-        assertEquals(claim.getTravelCosts().getCalculated(), claim.getTravelCosts().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getTravelCosts().getStatus());
-
-        assertEquals(claim.getWaitingCosts().getCalculated(), claim.getWaitingCosts().getAmended());
-        assertEquals(AmendStatus.AMENDABLE, claim.getWaitingCosts().getStatus());
+            // Then: Amended value should be set to submitted
+            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+        }
     }
 }

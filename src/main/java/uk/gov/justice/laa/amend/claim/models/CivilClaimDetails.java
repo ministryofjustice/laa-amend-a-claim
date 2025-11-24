@@ -47,6 +47,19 @@ public class CivilClaimDetails extends ClaimDetails {
     }
 
     @Override
+    public void setPaidInFullValues() {
+        super.setPaidInFullValues();
+        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(jrFormFillingCost, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(adjournedHearing, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(cmrhTelephone, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(cmrhOral, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(hoInterview, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(substantiveHearing, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(counselsCost, ClaimField::setAmendedToSubmitted);
+    }
+
+    @Override
     public boolean getIsCrimeClaim() {
         return false;
     }
