@@ -18,7 +18,7 @@ public class ClaimField implements Serializable {
     private Object calculated;
     private Object amended;
     private Cost cost;
-    private boolean needsAmending;
+    private AmendStatus status;
 
     public ClaimField(String label, Object submitted, Object calculated) {
         this(label, submitted, calculated, null);
@@ -26,13 +26,13 @@ public class ClaimField implements Serializable {
         this.submitted = submitted;
         this.calculated = calculated;
         this.amended = submitted;
-        this.needsAmending = false;
+        this.status = AmendStatus.AMENDABLE;
     }
 
     public ClaimField(String label, Object submitted, Object calculated, Object amended) {
         this(label, submitted, calculated);
         this.amended = amended;
-        this.needsAmending = false;
+        this.status = AmendStatus.AMENDABLE;
     }
 
     public ClaimField(String label, Object submitted, Object calculated, Cost cost) {
@@ -41,7 +41,7 @@ public class ClaimField implements Serializable {
         this.calculated = calculated;
         this.amended = submitted;
         this.cost = cost;
-        this.needsAmending = false;
+        this.status = AmendStatus.AMENDABLE;
     }
 
     /**
@@ -59,20 +59,24 @@ public class ClaimField implements Serializable {
         return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
     }
 
-    protected void setAmendedToValue(Object value) {
-        setAmended(value, false);
+    protected void setNilled(Object value) {
+        setAmended(value, AmendStatus.NOT_AMENDABLE);
     }
 
     protected void setToNeedsAmending() {
-        setAmended(null, true);
+        setAmended(null, AmendStatus.NEEDS_AMENDING);
     }
 
     protected void setAmendedToCalculated() {
         setAmendedToValue(this.getCalculated());
     }
 
-    private void setAmended(Object value, boolean needsAmending) {
+    private void setAmendedToValue(Object value) {
+        setAmended(value, AmendStatus.AMENDABLE);
+    }
+
+    private void setAmended(Object value, AmendStatus status) {
         this.setAmended(value);
-        this.setNeedsAmending(needsAmending);
+        this.setStatus(status);
     }
 }

@@ -31,9 +31,9 @@ public abstract class ClaimDetails extends Claim {
     private LocalDate submittedDate;
 
     public void setNilledValues() {
-        applyIfNotNull(netProfitCost, cf -> cf.setAmendedToValue(BigDecimal.ZERO));
-        applyIfNotNull(netDisbursementAmount, cf -> cf.setAmendedToValue(BigDecimal.ZERO));
-        applyIfNotNull(disbursementVatAmount, cf -> cf.setAmendedToValue(BigDecimal.ZERO));
+        applyIfNotNull(netProfitCost, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(netDisbursementAmount, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(disbursementVatAmount, cf -> cf.setNilled(BigDecimal.ZERO));
     }
 
     public void setReducedToFixedFeeValues() {

@@ -38,7 +38,7 @@
                 <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
 
                 <!-- Renders 'Add' link in value cell if row is amendable and needs amending -->
-                <th:block th:if="${canAmendCosts && row.needsAmending}">
+                <th:block th:if="${row.status.name() == 'NEEDS_AMENDING'}">
                     <td class="govuk-table__cell">
                         <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                            class="govuk-link govuk-link--no-visited-state"
@@ -49,7 +49,7 @@
                 </th:block>
 
                 <!-- Renders 'Change' link in action cell if row is amendable and row doesn't need amending -->
-                <th:block th:if="${canAmendCosts && !row.needsAmending}">
+                <th:block th:if="${row.status.name() == 'AMENDABLE'}">
                     <td class="govuk-table__cell"
                         th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
                     </td>
@@ -63,7 +63,7 @@
                 </th:block>
 
                 <!-- Renders no action if row is not amendable -->
-                <th:block th:if="${!canAmendCosts}">
+                <th:block th:if="${row.status.name() == 'NOT_AMENDABLE'}">
                     <td class="govuk-table__cell"
                         th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
                     </td>

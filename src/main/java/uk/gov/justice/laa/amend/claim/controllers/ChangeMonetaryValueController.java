@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
+import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
@@ -78,7 +79,7 @@ public class ChangeMonetaryValueController {
             BigDecimal value = setScale(new BigDecimal(form.getValue()));
             if (claimField != null) {
                 claimField.setAmended(value);
-                claimField.setNeedsAmending(false);
+                claimField.setStatus(AmendStatus.AMENDABLE);
                 cost.getAccessor().set(claim, claimField);
             }
             session.setAttribute(claimId, claim);

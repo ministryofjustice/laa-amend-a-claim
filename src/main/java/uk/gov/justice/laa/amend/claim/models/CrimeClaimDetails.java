@@ -17,8 +17,8 @@ public class CrimeClaimDetails extends ClaimDetails {
     @Override
     public void setNilledValues() {
         super.setNilledValues();
-        applyIfNotNull(travelCosts, cf -> cf.setAmendedToValue(BigDecimal.ZERO));
-        applyIfNotNull(waitingCosts, cf -> cf.setAmendedToValue(BigDecimal.ZERO));
+        applyIfNotNull(travelCosts, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(waitingCosts, cf -> cf.setNilled(BigDecimal.ZERO));
     }
 
     @Override
