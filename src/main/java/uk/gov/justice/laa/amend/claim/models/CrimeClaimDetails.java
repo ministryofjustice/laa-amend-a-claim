@@ -29,6 +29,13 @@ public class CrimeClaimDetails extends ClaimDetails {
     }
 
     @Override
+    public void setPaidInFullValues() {
+        super.setPaidInFullValues();
+        applyIfNotNull(travelCosts, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
+    }
+
+    @Override
     public boolean getIsCrimeClaim() {
         return true;
     }
