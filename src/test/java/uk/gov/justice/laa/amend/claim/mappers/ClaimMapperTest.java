@@ -374,7 +374,10 @@ class ClaimMapperTest {
         response.setCaseConcludedDate("2025-02-01");
         SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
+        UUID claimSummaryFeeId = UUID.randomUUID();
+
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
+        feeCalc.setClaimSummaryFeeId(claimSummaryFeeId);
         feeCalc.setFeeCodeDescription("FeeSchemeX");
         feeCalc.setCategoryOfLaw("Civil");
         BoltOnPatch boltOn = new BoltOnPatch();
@@ -394,6 +397,7 @@ class ClaimMapperTest {
         assertEquals("Civil", claim.getCategoryOfLaw());
         assertTrue(claim.getEscaped());
         assertEquals("MT1+MT2", claim.getMatterTypeCode());
+        assertEquals(claimSummaryFeeId.toString(), claim.getClaimSummaryFeeId());
     }
 
     @Test

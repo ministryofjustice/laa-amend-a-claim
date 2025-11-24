@@ -7,7 +7,6 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

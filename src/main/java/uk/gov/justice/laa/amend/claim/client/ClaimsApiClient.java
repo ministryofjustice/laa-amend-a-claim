@@ -1,16 +1,19 @@
 package uk.gov.justice.laa.amend.claim.client;
 
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
+import org.springframework.web.service.annotation.PostExchange;
 import reactor.core.publisher.Mono;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
-
-import java.util.UUID;
 
 @HttpExchange("/api/v0")
 public interface ClaimsApiClient {
@@ -25,7 +28,6 @@ public interface ClaimsApiClient {
             @RequestParam(value = "sort", required = false) String sort
     );
 
-
     @GetExchange(url = "/submissions/{submissionId}/claims/{claimId}", accept = MediaType.APPLICATION_JSON_VALUE)
     Mono<ClaimResponse> getClaim(
             @PathVariable String submissionId,
@@ -34,4 +36,8 @@ public interface ClaimsApiClient {
     @GetExchange(url = "/submissions/{id}", accept = MediaType.APPLICATION_JSON_VALUE)
     Mono<SubmissionResponse> getSubmission(
             @PathVariable String id);
+
+    @PostExchange(value = "/submissions/{submissionId}/claims/{claimId}", contentType = MediaType.APPLICATION_JSON_VALUE)
+    Mono<ResponseEntity<CreateAssessment201Response>> submitAssessment(
+        @RequestBody AssessmentPost body);
 }

@@ -7,17 +7,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 @Controller
 @RequiredArgsConstructor
 public class ClaimReviewController {
 
-    private final HttpSession session;
+    private ClaimService claimService;
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}/review")
     public String onPageLoad(
+        HttpSession session,
         Model model,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId
@@ -39,6 +40,7 @@ public class ClaimReviewController {
 
     @PostMapping("/submissions/{submissionId}/claims/{claimId}/review/discard")
     public String discard(
+        HttpSession session,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId
     ) {
@@ -50,6 +52,7 @@ public class ClaimReviewController {
 
     @PostMapping("/submissions/{submissionId}/claims/{claimId}/review/submit")
     public String submit(
+        HttpSession session,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId
     ) {
