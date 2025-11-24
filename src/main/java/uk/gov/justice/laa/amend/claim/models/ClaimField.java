@@ -18,13 +18,10 @@ public class ClaimField implements Serializable {
     private Object calculated;
     private Object amended;
     private Cost cost;
+    private AmendStatus status;
 
     public ClaimField(String label, Object submitted, Object calculated) {
-        this.label = label;
-        this.submitted = submitted;
-        this.calculated = calculated;
-        this.amended = submitted;
-        this.cost = null;
+        this(label, submitted, calculated, null);
     }
 
     public ClaimField(String label, Object submitted, Object calculated, Object amended) {
@@ -38,5 +35,42 @@ public class ClaimField implements Serializable {
         this.calculated = calculated;
         this.amended = submitted;
         this.cost = cost;
+        this.status = AmendStatus.NOT_AMENDABLE;
+    }
+
+    /**
+     * Returns the change URL for a given submission ID and claim ID
+     *
+     * @param submissionId the submission ID
+     * @param claimId the claim ID
+     * @return the change URL, or null if not editable
+     */
+    public String getChangeUrl(String submissionId, String claimId) {
+        if (cost == null) {
+            return null;
+        }
+
+        return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
+    }
+
+    protected void setNilled(Object value) {
+        setAmended(value, AmendStatus.NOT_AMENDABLE);
+    }
+
+    protected void setToNeedsAmending() {
+        setAmended(null, AmendStatus.NEEDS_AMENDING);
+    }
+
+    protected void setAmendedToCalculated() {
+        setAmendedToValue(this.getCalculated());
+    }
+
+    private void setAmendedToValue(Object value) {
+        setAmended(value, AmendStatus.AMENDABLE);
+    }
+
+    private void setAmended(Object value, AmendStatus status) {
+        this.setAmended(value);
+        this.setStatus(status);
     }
 }

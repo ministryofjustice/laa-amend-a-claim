@@ -6,6 +6,8 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -29,18 +31,27 @@ public abstract class ClaimDetails extends Claim {
     private LocalDate submittedDate;
 
     public void setNilledValues() {
-        setAmendedValue(netProfitCost, BigDecimal.ZERO);
-        setAmendedValue(netDisbursementAmount, BigDecimal.ZERO);
-        setAmendedValue(disbursementVatAmount, BigDecimal.ZERO);
+        applyIfNotNull(netProfitCost, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(netDisbursementAmount, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(disbursementVatAmount, cf -> cf.setNilled(BigDecimal.ZERO));
+    }
+
+    public void setReducedToFixedFeeValues() {
+        applyIfNotNull(vatClaimed, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(fixedFee, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(netProfitCost, ClaimField::setToNeedsAmending);
+        applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(totalAmount, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToCalculated);
+    }
+
+    protected void applyIfNotNull(ClaimField field, Consumer<ClaimField> f) {
+        if (field != null) {
+            f.accept(field);
+        }
     }
 
     public abstract boolean getIsCrimeClaim();
-
-    protected void setAmendedValue(ClaimField claimField, Object value) {
-        if (claimField != null) {
-            claimField.setAmended(value);
-        }
-    }
 
     public abstract ClaimDetailsView<? extends ClaimDetails> toViewModel();
 }
