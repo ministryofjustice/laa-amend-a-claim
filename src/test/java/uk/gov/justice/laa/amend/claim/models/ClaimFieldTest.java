@@ -20,6 +20,13 @@ public class ClaimFieldTest {
         Assertions.assertNull(claimField.getCost());
     }
 
+    @Test
+    void constructorShouldDefaultToNotAmendable() {
+        ClaimField claimField = new ClaimField("label", BigDecimal.ONE, BigDecimal.TWO, Cost.PROFIT_COSTS);
+
+        Assertions.assertEquals(AmendStatus.NOT_AMENDABLE, claimField.getStatus());
+    }
+
     @Nested
     class GetChangeUrlTests {
 

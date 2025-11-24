@@ -22,17 +22,11 @@ public class ClaimField implements Serializable {
 
     public ClaimField(String label, Object submitted, Object calculated) {
         this(label, submitted, calculated, null);
-        this.label = label;
-        this.submitted = submitted;
-        this.calculated = calculated;
-        this.amended = submitted;
-        this.status = AmendStatus.AMENDABLE;
     }
 
     public ClaimField(String label, Object submitted, Object calculated, Object amended) {
         this(label, submitted, calculated);
         this.amended = amended;
-        this.status = AmendStatus.AMENDABLE;
     }
 
     public ClaimField(String label, Object submitted, Object calculated, Cost cost) {
@@ -41,7 +35,7 @@ public class ClaimField implements Serializable {
         this.calculated = calculated;
         this.amended = submitted;
         this.cost = cost;
-        this.status = AmendStatus.AMENDABLE;
+        this.status = AmendStatus.NOT_AMENDABLE;
     }
 
     /**
