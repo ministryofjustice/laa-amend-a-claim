@@ -66,7 +66,7 @@ class ClaimMapperTest {
 
         ClaimField claimField = claim.getFixedFee();
         assertEquals(AmendClaimConstants.Label.FIXED_FEE, claimField.getLabel());
-        assertEquals("NA", claimField.getSubmitted());
+        assertEquals(null, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertNull(claimField.getAmended());
         assertNull(claimField.getCost());

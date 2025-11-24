@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
-import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
@@ -41,7 +40,7 @@ public class ClaimMapperHelper {
     public ClaimField mapFixedFee(ClaimResponse claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getFixedFeeAmount() : null;
-        return new ClaimField(FIXED_FEE, "NA", calculated, null, null);
+        return new ClaimField(FIXED_FEE, null, calculated, null);
     }
 
     @Named("mapNetProfitCost")

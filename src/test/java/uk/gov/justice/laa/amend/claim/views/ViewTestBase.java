@@ -230,4 +230,8 @@ public abstract class ViewTestBase {
     Elements elements = doc.getElementsByClass("govuk-panel");
     Assertions.assertFalse(elements.isEmpty());
   }
+
+  protected boolean pageHasLabel(Document doc, String label) {
+    return !doc.select("dl.govuk-summary-list dt.govuk-summary-list__key:containsOwn(" + label + ")").isEmpty();
+  }
 }

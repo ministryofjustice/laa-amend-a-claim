@@ -38,7 +38,7 @@ class AssessmentServiceTest {
     void testApplyNilledOutcome_SetsAllMonetaryFieldsToZero() {
         // Given: A claim with non-zero values
         CivilClaimDetails claim = createTestCivilClaim();
-        claim.setFixedFee(new ClaimField("Fixed Fee", "NA", new BigDecimal("100.00"), new BigDecimal("100.00")));
+        claim.setFixedFee(new ClaimField("Fixed Fee", null, new BigDecimal("100.00"), new BigDecimal("100.00")));
         claim.setNetProfitCost(new ClaimField("Profit Cost", new BigDecimal("500.00"), new BigDecimal("450.00"), new BigDecimal("450.00")));
         claim.setNetDisbursementAmount(new ClaimField("Disbursement", new BigDecimal("200.00"), new BigDecimal("180.00"), new BigDecimal("180.00")));
         claim.setDisbursementVatAmount(new ClaimField("Disbursement VAT", new BigDecimal("40.00"), new BigDecimal("36.00"), new BigDecimal("36.00")));
