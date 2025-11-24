@@ -36,7 +36,38 @@
                 <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
                 <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
                 <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
-                <th:block th:replace="~{partials/claim-field-amended-value :: claimFieldAmendedValue(${row}, ${canAmendCosts}, ${submissionId}, ${claimId})}"></th:block>
+
+                <!-- Renders 'Add' link in value cell if row is amendable and needs amending -->
+                <th:block th:if="${canAmendCosts && row.needsAmending}">
+                    <td class="govuk-table__cell">
+                        <a th:href="${row.getChangeUrl(submissionId, claimId)}"
+                           class="govuk-link govuk-link--no-visited-state"
+                           th:text="#{service.add}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
+                    </td>
+
+                    <td class="govuk-table__cell"></td>
+                </th:block>
+
+                <!-- Renders 'Change' link in action cell if row is amendable and row doesn't need amending -->
+                <th:block th:if="${canAmendCosts && !row.needsAmending}">
+                    <td class="govuk-table__cell"
+                        th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                    </td>
+
+                    <td class="govuk-table__cell">
+                        <a th:if="${row.getChangeUrl(submissionId,claimId) != null}"
+                           th:href="${row.getChangeUrl(submissionId,claimId)}"
+                           class="govuk-link govuk-link--no-visited-state"
+                           th:text="#{service.change}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
+                    </td>
+                </th:block>
+
+                <!-- Renders no action if row is not amendable -->
+                <th:block th:if="${!canAmendCosts}">
+                    <td class="govuk-table__cell"
+                        th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                    </td>
+                </th:block>
             </tr>
         </tbody>
     </table>
