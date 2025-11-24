@@ -4,9 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.resources.CreateMockClaims;
 
 import java.math.BigDecimal;
 
@@ -16,45 +16,18 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class AssessmentServiceTest {
 
     private AssessmentService assessmentService;
+    private CreateMockClaims mockClaims;
 
     @BeforeEach
     void setUp() {
         assessmentService = new AssessmentService();
-    }
-
-    private ClaimField createClaimField() {
-        return new ClaimField(
-            "foo",
-            BigDecimal.valueOf(100),
-            BigDecimal.valueOf(200),
-            BigDecimal.valueOf(300)
-        );
-    }
-
-    private CivilClaimDetails createTestCivilClaim() {
-        CivilClaimDetails civilClaimDetails = new CivilClaimDetails();
-        civilClaimDetails.setClaimId("test-civil-claim-123");
-        civilClaimDetails.setSubmissionId("test-submission-456");
-        return civilClaimDetails;
-    }
-
-    private CrimeClaimDetails createTestCrimeClaim() {
-        CrimeClaimDetails crimeClaimDetails = new CrimeClaimDetails();
-        crimeClaimDetails.setClaimId("test-crime-claim-123");
-        crimeClaimDetails.setSubmissionId("test-submission-456");
-        return crimeClaimDetails;
+        mockClaims = new CreateMockClaims();
     }
 
     @Test
     void testApplyNilledOutcome_SetsAllMonetaryFieldsToZero() {
         // Given: A claim with non-zero values
-        CivilClaimDetails claim = createTestCivilClaim();
-        claim.setFixedFee(createClaimField());
-        claim.setNetProfitCost(createClaimField());
-        claim.setNetDisbursementAmount(createClaimField());
-        claim.setDisbursementVatAmount(createClaimField());
-        claim.setVatClaimed(createClaimField());
-        claim.setTotalAmount(createClaimField());
+        CivilClaimDetails claim = mockClaims.createMockCivilClaim();
 
         // When: NILLED outcome is applied
         assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
@@ -70,9 +43,9 @@ class AssessmentServiceTest {
     @Test
     void testApplyAssessmentOutcome_DoesNotApplyIfOutcomeUnchanged() {
         // Given: A claim with NILLED outcome already set
-        CivilClaimDetails claim = createTestCivilClaim();
+        CivilClaimDetails claim = mockClaims.createMockCivilClaim();
         claim.setAssessmentOutcome(OutcomeType.NILLED);
-        claim.setNetProfitCost(createClaimField());
+        claim.setNetProfitCost(mockClaims.createClaimField());
 
         // When: Same outcome is applied again
         assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
@@ -84,8 +57,8 @@ class AssessmentServiceTest {
     @Test
     void testApplyAssessmentOutcome_AppliesWhenOutcomeChanges() {
         // Given: A claim with no outcome set
-        CivilClaimDetails claim = createTestCivilClaim();
-        claim.setNetProfitCost(createClaimField());
+        CivilClaimDetails claim = mockClaims.createMockCivilClaim();
+        claim.setNetProfitCost(mockClaims.createClaimField());
 
         // When: NILLED outcome is applied
         assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
@@ -97,16 +70,7 @@ class AssessmentServiceTest {
     @Test
     void testApplyNilledOutcome_CivilClaimSpecificFields() {
         // Given: A civil claim with non-zero values
-        CivilClaimDetails claim = createTestCivilClaim();
-        claim.setNetProfitCost(createClaimField());
-        claim.setCounselsCost(createClaimField());
-        claim.setDetentionTravelWaitingCosts(createClaimField());
-        claim.setJrFormFillingCost(createClaimField());
-        claim.setAdjournedHearing(createClaimField());
-        claim.setCmrhTelephone(createClaimField());
-        claim.setCmrhOral(createClaimField());
-        claim.setHoInterview(createClaimField());
-        claim.setSubstantiveHearing(createClaimField());
+        CivilClaimDetails claim = mockClaims.createMockCivilClaim();
 
         // When: NILLED outcome is applied
         assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
@@ -143,10 +107,7 @@ class AssessmentServiceTest {
     @Test
     void testApplyNilledOutcome_CrimeClaimSpecificFields() {
         // Given: A crime claim with non-zero values
-        CrimeClaimDetails claim = createTestCrimeClaim();
-        claim.setNetProfitCost(createClaimField());
-        claim.setTravelCosts(createClaimField());
-        claim.setWaitingCosts(createClaimField());
+        CrimeClaimDetails claim = mockClaims.createMockCrimeClaim();
 
         // When: NILLED outcome is applied
         assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
@@ -165,10 +126,10 @@ class AssessmentServiceTest {
     @Test
     void testApplyAssessmentOutcome_SwitchingFromReducedToNilled() {
         // Given: A claim with REDUCED outcome and custom values
-        CivilClaimDetails claim = createTestCivilClaim();
+        CivilClaimDetails claim = mockClaims.createMockCivilClaim();
         claim.setAssessmentOutcome(OutcomeType.REDUCED);
-        claim.setNetProfitCost(createClaimField());
-        claim.setNetDisbursementAmount(createClaimField());
+        claim.setNetProfitCost(mockClaims.createClaimField());
+        claim.setNetDisbursementAmount(mockClaims.createClaimField());
 
         // When: Switching to NILLED outcome
         assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
@@ -183,20 +144,7 @@ class AssessmentServiceTest {
 
     @Test
     void testApplyReducedToFixedFeeOutcome_whenCivilClaim() {
-        CivilClaimDetails claim = createTestCivilClaim();
-        claim.setVatClaimed(createClaimField());
-        claim.setFixedFee(createClaimField());
-        claim.setNetProfitCost(createClaimField());
-        claim.setNetDisbursementAmount(createClaimField());
-        claim.setDisbursementVatAmount(createClaimField());
-        claim.setDetentionTravelWaitingCosts(createClaimField());
-        claim.setJrFormFillingCost(createClaimField());
-        claim.setAdjournedHearing(createClaimField());
-        claim.setCmrhTelephone(createClaimField());
-        claim.setCmrhOral(createClaimField());
-        claim.setHoInterview(createClaimField());
-        claim.setSubstantiveHearing(createClaimField());
-        claim.setCounselsCost(createClaimField());
+        CivilClaimDetails claim = mockClaims.createMockCivilClaim();
 
         assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
@@ -242,14 +190,7 @@ class AssessmentServiceTest {
 
     @Test
     void testApplyReducedToFixedFeeOutcome_whenCrimeClaim() {
-        CrimeClaimDetails claim = createTestCrimeClaim();
-        claim.setVatClaimed(createClaimField());
-        claim.setFixedFee(createClaimField());
-        claim.setNetProfitCost(createClaimField());
-        claim.setNetDisbursementAmount(createClaimField());
-        claim.setDisbursementVatAmount(createClaimField());
-        claim.setTravelCosts(createClaimField());
-        claim.setWaitingCosts(createClaimField());
+        CrimeClaimDetails claim = mockClaims.createMockCrimeClaim();
 
         assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
