@@ -6,6 +6,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.function.Function;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -29,16 +30,42 @@ public abstract class ClaimDetails extends Claim {
     private LocalDate submittedDate;
 
     public void setNilledValues() {
-        setAmendedValue(netProfitCost, BigDecimal.ZERO);
-        setAmendedValue(netDisbursementAmount, BigDecimal.ZERO);
-        setAmendedValue(disbursementVatAmount, BigDecimal.ZERO);
+        setAmendedToValue(netProfitCost, BigDecimal.ZERO);
+        setAmendedToValue(netDisbursementAmount, BigDecimal.ZERO);
+        setAmendedToValue(disbursementVatAmount, BigDecimal.ZERO);
+    }
+
+    public void setReducedToFixedFeeValues() {
+        setAmendedToCalculated(vatClaimed);
+        setAmendedToCalculated(fixedFee);
+        setToNeedsAmending(netProfitCost);
+        setAmendedToCalculated(netDisbursementAmount);
+        setAmendedToCalculated(totalAmount);
+        setAmendedToCalculated(disbursementVatAmount);
     }
 
     public abstract boolean getIsCrimeClaim();
 
-    protected void setAmendedValue(ClaimField claimField, Object value) {
+    protected void setAmendedToValue(ClaimField claimField, Object value) {
+        setAmended(claimField, cf -> value);
+    }
+
+    protected void setToNeedsAmending(ClaimField claimField) {
+        setAmended(claimField, cf -> null, true);
+    }
+
+    protected void setAmendedToCalculated(ClaimField claimField) {
+        setAmended(claimField, ClaimField::getCalculated);
+    }
+
+    private void setAmended(ClaimField claimField, Function<ClaimField, Object> f) {
+        setAmended(claimField, f, false);
+    }
+
+    private void setAmended(ClaimField claimField, Function<ClaimField, Object> f, boolean needsAmending) {
         if (claimField != null) {
-            claimField.setAmended(value);
+            claimField.setAmended(f.apply(claimField));
+            claimField.setNeedsAmending(needsAmending);
         }
     }
 

@@ -1,0 +1,30 @@
+<th:block th:fragment="claimFieldAmendedValue(row,canAmendCosts,submissionId,claimId)">
+    <th:block th:if="${canAmendCosts && row.needsAmending}">
+        <td class="govuk-table__cell">
+            <a th:href="${row.getChangeUrl(submissionId, claimId)}"
+               class="govuk-link govuk-link--no-visited-state"
+               th:text="#{service.add}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
+        </td>
+
+        <td class="govuk-table__cell"></td>
+    </th:block>
+
+    <th:block th:if="${canAmendCosts && !row.needsAmending}">
+        <td class="govuk-table__cell"
+            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+        </td>
+
+        <td class="govuk-table__cell">
+            <a th:if="${row.getChangeUrl(submissionId,claimId) != null}"
+               th:href="${row.getChangeUrl(submissionId,claimId)}"
+               class="govuk-link govuk-link--no-visited-state"
+               th:text="#{service.change}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
+        </td>
+    </th:block>
+
+    <th:block th:if="${!canAmendCosts}">
+        <td class="govuk-table__cell"
+            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+        </td>
+    </th:block>
+</th:block>

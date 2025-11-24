@@ -73,25 +73,6 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     void addClaimTypeSpecificRows(List<ClaimField> rows);
 
     /**
-     * Returns the change URL for a given claim field row, or null if the row is not editable.
-     *
-     * @param row the claim field row
-     * @return the change URL, or null if not editable
-     */
-    default String getChangeUrl(ClaimField row) {
-        if (row == null) {
-            return null;
-        }
-
-        Cost cost = row.getCost();
-        if (cost == null) {
-            return null;
-        }
-
-        return String.format("/submissions/%s/claims/%s/%s", claim().getSubmissionId(), claim().getClaimId(), cost.getPath());
-    }
-
-    /**
      * Determines if a given row represents the total row.
      *
      * @param row the claim field row
