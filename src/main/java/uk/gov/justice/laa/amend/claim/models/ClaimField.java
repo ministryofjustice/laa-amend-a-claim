@@ -65,6 +65,10 @@ public class ClaimField implements Serializable {
         setAmendedToValue(this.getCalculated());
     }
 
+    protected void setAmendedToSubmitted() {
+        setAmendedToValue(this.getSubmitted());
+    }
+
     private void setAmendedToValue(Object value) {
         setAmended(value, AmendStatus.AMENDABLE);
     }
