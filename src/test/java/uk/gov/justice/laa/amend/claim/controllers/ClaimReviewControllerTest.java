@@ -10,6 +10,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
@@ -105,7 +106,8 @@ public class ClaimReviewControllerTest {
 
         mockMvc.perform(post(path).session(session))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl(redirectUrl));
+            .andExpect(redirectedUrl(redirectUrl))
+            .andExpect(MockMvcResultMatchers.request().sessionAttributeDoesNotExist(claimId));
 
         verify(assessmentService).submitAssessment(claim, userId);
     }

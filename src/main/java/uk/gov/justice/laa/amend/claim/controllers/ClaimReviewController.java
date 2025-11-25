@@ -61,6 +61,7 @@ public class ClaimReviewController {
         String userId = oidcUser.getClaim("oid");
         try {
             assessmentService.submitAssessment(claim, userId);
+            session.removeAttribute(claimId);
             return String.format("redirect:/submissions/%s/claims/%s/confirmation", submissionId, claimId);
         } catch (WebClientResponseException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
