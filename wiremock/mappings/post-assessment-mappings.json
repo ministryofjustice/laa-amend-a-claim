@@ -4,7 +4,7 @@
     "urlPattern": "/api/v0/claims/(.*)/assessments"
   },
   "response": {
-    "status": 500,
+    "status": 200,
     "bodyFileName": "post-assessment-response.json",
     "headers": {
       "Content-Type": "application/json"
