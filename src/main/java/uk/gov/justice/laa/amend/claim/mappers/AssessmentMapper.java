@@ -25,28 +25,26 @@ public interface AssessmentMapper {
     @Mapping(target = "disbursementAmount", expression = "java(mapDisbursementAmount(claim))")
     @Mapping(target = "disbursementVatAmount", expression = "java(mapDisbursementVatAmount(claim))")
     @Mapping(target = "netCostOfCounselAmount", ignore = true)
-    @Mapping(target = "travelWaitingCostsAmount", ignore = true)
-    @Mapping(target = "travelAndWaitingCostsAmount", ignore = true)
+    @Mapping(target = "detentionTravelAndWaitingCostsAmount", ignore = true)
     @Mapping(target = "isVatApplicable", source = "vatApplicable")
-    @Mapping(target = "adjournedHearingFeeAmount", ignore = true)
+    @Mapping(target = "boltOnAdjournedHearingFee", ignore = true)
     @Mapping(target = "jrFormFillingAmount", ignore = true)
-    @Mapping(target = "cmrhOralCount", ignore = true)
-    @Mapping(target = "cmrhTelephoneCount", ignore = true)
-    @Mapping(target = "isSubstantiveHearing", ignore = true)
-    @Mapping(target = "hoInterview", ignore = true)
+    @Mapping(target = "boltOnCmrhOralFee", ignore = true)
+    @Mapping(target = "boltOnCmrhTelephoneFee", ignore = true)
+    @Mapping(target = "boltOnSubstantiveHearingFee", ignore = true)
+    @Mapping(target = "boltOnHomeOfficeInterviewFee", ignore = true)
     @Mapping(target = "createdByUserId", expression = "java(userId)")
     AssessmentPost mapClaimToAssessment(ClaimDetails claim, @Context String userId);
 
     @InheritConfiguration(name = "mapClaimToAssessment")
     @Mapping(target = "netCostOfCounselAmount", expression = "java(mapNetCostOfCounselAmount(claim))")
-    @Mapping(target = "travelWaitingCostsAmount", ignore = true) // TODO
-    @Mapping(target = "travelAndWaitingCostsAmount", ignore = true) // TODO
-    @Mapping(target = "adjournedHearingFeeAmount", expression = "java(mapAdjournedHearingFeeAmount(claim))")
+    @Mapping(target = "detentionTravelAndWaitingCostsAmount", expression = "java(mapDetentionTravelAndWaitingCostsAmount(claim))") // TODO
+    @Mapping(target = "boltOnAdjournedHearingFee", expression = "java(mapBoltOnAdjournedHearingFee(claim))")
     @Mapping(target = "jrFormFillingAmount", expression = "java(mapJrFormFillingAmount(claim))")
-    @Mapping(target = "cmrhOralCount", expression = "java(mapCmrhOralCount(claim))")
-    @Mapping(target = "cmrhTelephoneCount", expression = "java(mapCmrhTelephoneCount(claim))")
-    @Mapping(target = "isSubstantiveHearing", ignore = true) // TODO
-    @Mapping(target = "hoInterview", expression = "java(mapHoInterview(claim))")
+    @Mapping(target = "boltOnCmrhOralFee", expression = "java(mapBoltOnCmrhOralFee(claim))")
+    @Mapping(target = "boltOnCmrhTelephoneFee", expression = "java(mapBoltOnCmrhTelephoneFee(claim))")
+    @Mapping(target = "boltOnSubstantiveHearingFee", expression = "java(mapBoltOnSubstantiveHearingFee(claim))")
+    @Mapping(target = "boltOnHomeOfficeInterviewFee", expression = "java(mapBoltOnHomeOfficeInterviewFee(claim))")
     AssessmentPost mapCivilClaimToAssessment(CivilClaimDetails claim, @Context String userId);
 
     @InheritConfiguration(name = "mapClaimToAssessment")
@@ -86,24 +84,24 @@ public interface AssessmentMapper {
         return mapToBigDecimal(claim.getCounselsCost());
     }
 
-    default Integer mapAdjournedHearingFeeAmount(CivilClaimDetails claim) {
-        return mapToInteger(claim.getAdjournedHearing());
+    default BigDecimal mapBoltOnAdjournedHearingFee(CivilClaimDetails claim) {
+        return mapToBigDecimal(claim.getAdjournedHearing());
     }
 
     default BigDecimal mapJrFormFillingAmount(CivilClaimDetails claim) {
         return mapToBigDecimal(claim.getJrFormFillingCost());
     }
 
-    default Integer mapCmrhOralCount(CivilClaimDetails claim) {
-        return mapToInteger(claim.getCmrhOral());
+    default BigDecimal mapBoltOnCmrhOralFee(CivilClaimDetails claim) {
+        return mapToBigDecimal(claim.getCmrhOral());
     }
 
-    default Integer mapCmrhTelephoneCount(CivilClaimDetails claim) {
-        return mapToInteger(claim.getCmrhTelephone());
+    default BigDecimal mapBoltOnCmrhTelephoneFee(CivilClaimDetails claim) {
+        return mapToBigDecimal(claim.getCmrhTelephone());
     }
 
-    default Integer mapHoInterview(CivilClaimDetails claim) {
-        return mapToInteger(claim.getHoInterview());
+    default BigDecimal mapBoltOnHomeOfficeInterviewFee(CivilClaimDetails claim) {
+        return mapToBigDecimal(claim.getHoInterview());
     }
 
     default BigDecimal mapNetTravelCostsAmount(CrimeClaimDetails claim) {
@@ -114,15 +112,16 @@ public interface AssessmentMapper {
         return mapToBigDecimal(claim.getWaitingCosts());
     }
 
-    private BigDecimal mapToBigDecimal(ClaimField field) {
-        if (field != null && field.getAmended() instanceof BigDecimal value) {
-            return value;
-        }
-        return null;
+    default BigDecimal mapDetentionTravelAndWaitingCostsAmount(CivilClaimDetails claim) {
+        return mapToBigDecimal(claim.getDetentionTravelWaitingCosts());
     }
 
-    private Integer mapToInteger(ClaimField field) {
-        if (field != null && field.getAmended() instanceof Integer value) {
+    default BigDecimal mapBoltOnSubstantiveHearingFee(CivilClaimDetails claim) {
+        return mapToBigDecimal(claim.getSubstantiveHearing());
+    }
+
+    private BigDecimal mapToBigDecimal(ClaimField field) {
+        if (field != null && field.getAmended() instanceof BigDecimal value) {
             return value;
         }
         return null;
