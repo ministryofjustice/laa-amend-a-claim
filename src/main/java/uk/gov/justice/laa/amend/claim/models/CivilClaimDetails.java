@@ -59,6 +59,7 @@ public class CivilClaimDetails extends ClaimDetails {
         applyIfNotNull(cmrhOral, cf -> cf.setNilled(BigDecimal.ZERO));
         applyIfNotNull(hoInterview, cf -> cf.setNilled(BigDecimal.ZERO));
         applyIfNotNull(substantiveHearing, cf -> cf.setNilled(BigDecimal.ZERO));
+    }
       
     public void setPaidInFullValues() {
         super.setPaidInFullValues();

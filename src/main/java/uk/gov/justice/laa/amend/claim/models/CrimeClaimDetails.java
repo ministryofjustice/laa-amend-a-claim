@@ -31,6 +31,7 @@ public class CrimeClaimDetails extends ClaimDetails {
     @Override
     public void setReducedValues() {
         super.setReducedValues();
+    }
       
     @Override
     public void setPaidInFullValues() {
