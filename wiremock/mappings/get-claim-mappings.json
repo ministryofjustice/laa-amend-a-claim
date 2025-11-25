@@ -6,6 +6,7 @@
   "response": {
     "status": 200,
     "bodyFileName": "get-claim-response.json",
+    "transformers": ["response-template"],
     "headers": {
       "Content-Type": "application/json"
     }

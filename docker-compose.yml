@@ -7,6 +7,8 @@ services:
     volumes:
       - ./wiremock/__files:/home/wiremock/__files
       - ./wiremock/mappings:/home/wiremock/mappings
+    command:
+      - -local-response-templating
   redis:
     image: redis:8-alpine
     container_name: redis

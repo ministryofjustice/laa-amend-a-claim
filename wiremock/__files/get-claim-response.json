@@ -1,6 +1,6 @@
 {
-  "id": "0199c9a4-64ec-79c6-a292-e250278f5f71",
-  "submission_id": "0199c9a4-4f14-7f9f-8070-76160c62e41a",
+  "id": "{{request.path.[5]}}",
+  "submission_id": "{{request.path.[3]}}",
   "status": "VALID",
   "schedule_reference": "0U733A/2018/02",
   "line_number": 1,
