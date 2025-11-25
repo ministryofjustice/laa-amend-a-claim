@@ -59,6 +59,17 @@ public class CivilClaimDetails extends ClaimDetails {
         applyIfNotNull(cmrhOral, cf -> cf.setNilled(BigDecimal.ZERO));
         applyIfNotNull(hoInterview, cf -> cf.setNilled(BigDecimal.ZERO));
         applyIfNotNull(substantiveHearing, cf -> cf.setNilled(BigDecimal.ZERO));
+      
+    public void setPaidInFullValues() {
+        super.setPaidInFullValues();
+        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(jrFormFillingCost, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(adjournedHearing, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(cmrhTelephone, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(cmrhOral, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(hoInterview, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(substantiveHearing, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(counselsCost, ClaimField::setAmendedToSubmitted);
     }
 
     @Override
