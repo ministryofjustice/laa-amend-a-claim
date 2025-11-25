@@ -47,6 +47,21 @@ public class CivilClaimDetails extends ClaimDetails {
     }
 
     @Override
+    public void setReducedValues() {
+        super.setReducedToFixedFeeValues();
+        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(jrFormFillingCost, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(counselsCost, ClaimField::setAmendedToSubmitted);
+
+        // Bolt-ons get set to 0
+        applyIfNotNull(adjournedHearing, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(cmrhTelephone, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(cmrhOral, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(hoInterview, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(substantiveHearing, cf -> cf.setNilled(BigDecimal.ZERO));
+    }
+
+    @Override
     public boolean getIsCrimeClaim() {
         return false;
     }

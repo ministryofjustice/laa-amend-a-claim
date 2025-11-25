@@ -45,6 +45,14 @@ public abstract class ClaimDetails extends Claim {
         applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToCalculated);
     }
 
+    public void setReducedValues() {
+        applyIfNotNull(fixedFee, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(netProfitCost, ClaimField::setToNeedsAmending);
+        applyIfNotNull(vatClaimed, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToSubmitted);
+    }
+
     protected void applyIfNotNull(ClaimField field, Consumer<ClaimField> f) {
         if (field != null) {
             f.accept(field);
