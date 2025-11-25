@@ -39,13 +39,13 @@ public interface AssessmentMapper {
 
     @InheritConfiguration(name = "mapClaimToAssessment")
     @Mapping(target = "netCostOfCounselAmount", expression = "java(mapNetCostOfCounselAmount(claim))")
-    @Mapping(target = "travelWaitingCostsAmount", ignore = true)
-    @Mapping(target = "travelAndWaitingCostsAmount", ignore = true)
+    @Mapping(target = "travelWaitingCostsAmount", ignore = true) // TODO
+    @Mapping(target = "travelAndWaitingCostsAmount", ignore = true) // TODO
     @Mapping(target = "adjournedHearingFeeAmount", expression = "java(mapAdjournedHearingFeeAmount(claim))")
     @Mapping(target = "jrFormFillingAmount", expression = "java(mapJrFormFillingAmount(claim))")
     @Mapping(target = "cmrhOralCount", expression = "java(mapCmrhOralCount(claim))")
     @Mapping(target = "cmrhTelephoneCount", expression = "java(mapCmrhTelephoneCount(claim))")
-    @Mapping(target = "isSubstantiveHearing", ignore = true)
+    @Mapping(target = "isSubstantiveHearing", ignore = true) // TODO
     @Mapping(target = "hoInterview", expression = "java(mapHoInterview(claim))")
     AssessmentPost mapCivilClaimToAssessment(CivilClaimDetails claim, @Context String userId);
 
