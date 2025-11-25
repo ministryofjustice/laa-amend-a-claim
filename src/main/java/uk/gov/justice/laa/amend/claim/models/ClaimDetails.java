@@ -32,9 +32,9 @@ public abstract class ClaimDetails extends Claim {
     private LocalDate submittedDate;
 
     public void setNilledValues() {
-        applyIfNotNull(netProfitCost, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(netDisbursementAmount, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(disbursementVatAmount, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(netProfitCost,  ClaimField::setNilled);
+        applyIfNotNull(netDisbursementAmount,  ClaimField::setNilled);
+        applyIfNotNull(disbursementVatAmount,  ClaimField::setNilled);
     }
 
     public void setReducedToFixedFeeValues() {

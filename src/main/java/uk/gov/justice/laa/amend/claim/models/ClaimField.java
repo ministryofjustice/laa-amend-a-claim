@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -53,8 +54,8 @@ public class ClaimField implements Serializable {
         return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
     }
 
-    protected void setNilled(Object value) {
-        setAmended(value, AmendStatus.NOT_AMENDABLE);
+    protected void setNilled() {
+        setAmended(BigDecimal.ZERO, AmendStatus.NOT_AMENDABLE);
     }
 
     protected void setToNeedsAmending() {

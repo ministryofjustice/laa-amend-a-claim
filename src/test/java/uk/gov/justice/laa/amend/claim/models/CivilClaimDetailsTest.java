@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-public class CivilClaimTest {
+public class CivilClaimDetailsTest {
 
     @Nested
     class GetIsCrimeClaimDetailsTests {
@@ -44,11 +44,11 @@ public class CivilClaimTest {
             Assertions.assertEquals(BigDecimal.ZERO, claim.getCounselsCost().getAmended());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getDetentionTravelWaitingCosts().getAmended());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getJrFormFillingCost().getAmended());
-            Assertions.assertEquals(false, claim.getAdjournedHearing().getAmended());
-            Assertions.assertEquals(0, claim.getCmrhTelephone().getAmended());
-            Assertions.assertEquals(0, claim.getCmrhOral().getAmended());
-            Assertions.assertEquals(0, claim.getHoInterview().getAmended());
-            Assertions.assertEquals(0, claim.getSubstantiveHearing().getAmended());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAdjournedHearing().getAmended());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhTelephone().getAmended());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhOral().getAmended());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getHoInterview().getAmended());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getSubstantiveHearing().getAmended());
         }
     }
 }

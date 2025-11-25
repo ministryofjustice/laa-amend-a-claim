@@ -38,11 +38,13 @@ class AssessmentMapperTest {
         claim.setNetDisbursementAmount(createClaimField(BigDecimal.valueOf(3)));
         claim.setDisbursementVatAmount(createClaimField(BigDecimal.valueOf(4)));
         claim.setCounselsCost(createClaimField(BigDecimal.valueOf(5)));
-        claim.setAdjournedHearing(createClaimField(6));
+        claim.setAdjournedHearing(createClaimField(BigDecimal.valueOf(6)));
         claim.setJrFormFillingCost(createClaimField(BigDecimal.valueOf(7)));
-        claim.setCmrhOral(createClaimField(8));
-        claim.setCmrhTelephone(createClaimField(9));
-        claim.setHoInterview(createClaimField(10));
+        claim.setCmrhOral(createClaimField(BigDecimal.valueOf(8)));
+        claim.setCmrhTelephone(createClaimField(BigDecimal.valueOf(9)));
+        claim.setHoInterview(createClaimField(BigDecimal.valueOf(10)));
+        claim.setDetentionTravelWaitingCosts(createClaimField(BigDecimal.valueOf(11)));
+        claim.setSubstantiveHearing(createClaimField(BigDecimal.valueOf(12)));
         claim.setVatApplicable(true);
 
         AssessmentPost assessment = mapper.mapCivilClaimToAssessment(claim, userId);
@@ -55,11 +57,13 @@ class AssessmentMapperTest {
         assertEquals(BigDecimal.valueOf(3), assessment.getDisbursementAmount());
         assertEquals(BigDecimal.valueOf(4), assessment.getDisbursementVatAmount());
         assertEquals(BigDecimal.valueOf(5), assessment.getNetCostOfCounselAmount());
-        assertEquals(6, assessment.getAdjournedHearingFeeAmount());
+        assertEquals(BigDecimal.valueOf(6), assessment.getBoltOnAdjournedHearingFee());
         assertEquals(BigDecimal.valueOf(7), assessment.getJrFormFillingAmount());
-        assertEquals(8, assessment.getCmrhOralCount());
-        assertEquals(9, assessment.getCmrhTelephoneCount());
-        assertEquals(10, assessment.getHoInterview());
+        assertEquals(BigDecimal.valueOf(8), assessment.getBoltOnCmrhOralFee());
+        assertEquals(BigDecimal.valueOf(9), assessment.getBoltOnCmrhTelephoneFee());
+        assertEquals(BigDecimal.valueOf(10), assessment.getBoltOnHomeOfficeInterviewFee());
+        assertEquals(BigDecimal.valueOf(11), assessment.getDetentionTravelAndWaitingCostsAmount());
+        assertEquals(BigDecimal.valueOf(12), assessment.getBoltOnSubstantiveHearingFee());
         assertEquals(true, assessment.getIsVatApplicable());
         assertEquals(userId, assessment.getCreatedByUserId());
     }
