@@ -32,7 +32,8 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
         assertPageHasTitle(doc, "Assessment Outcome");
 
         assertPageHasHeading(doc, "Assessment Outcome");
-        assertPageHasSecondaryButton(doc);
+        assertPageHasPrimaryButton(doc, "Continue");
+        assertPageHasSecondaryButton(doc, "Cancel");
         assertPageHasNoActiveServiceNavigationItems(doc);
         assertPageHasRadioButtons(doc);
         assertPageHasInlineRadioButtons(doc);
@@ -50,7 +51,8 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
         assertPageHasTitle(doc, "Assessment Outcome");
 
         assertPageHasHeading(doc, "Assessment Outcome");
-        assertPageHasSecondaryButton(doc);
+        assertPageHasPrimaryButton(doc, "Continue");
+        assertPageHasSecondaryButton(doc, "Cancel");
         assertPageHasNoActiveServiceNavigationItems(doc);
         assertPageHasRadioButtons(doc);
         assertPageHasInlineRadioButtons(doc);

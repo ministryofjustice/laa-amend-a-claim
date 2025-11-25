@@ -3,6 +3,8 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
@@ -174,5 +176,54 @@ public class CrimeClaimDetailsViewTest {
             );
             Assertions.assertEquals(expectedRows, viewModel.getTableRows());
         }
+    }
+
+    @Nested
+    class CanSubmitTests {
+
+        @Test
+        void canSubmitIsTrueWhenNoFieldsNeedAmending() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setNetProfitCost(createClaimField(AmendStatus.AMENDABLE));
+            claim.setNetDisbursementAmount(createClaimField(AmendStatus.AMENDABLE));
+            claim.setDisbursementVatAmount(createClaimField(AmendStatus.AMENDABLE));
+            claim.setTravelCosts(createClaimField(AmendStatus.AMENDABLE));
+            claim.setWaitingCosts(createClaimField(AmendStatus.AMENDABLE));
+
+            CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
+            Assertions.assertTrue(viewModel.canSubmit());
+        }
+
+        @Test
+        void canSubmitIsFalseWhenAnyFieldNeedsAmending() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setNetProfitCost(createClaimField(AmendStatus.NEEDS_AMENDING));
+            claim.setNetDisbursementAmount(createClaimField(AmendStatus.AMENDABLE));
+            claim.setDisbursementVatAmount(createClaimField(AmendStatus.AMENDABLE));
+            claim.setTravelCosts(createClaimField(AmendStatus.AMENDABLE));
+            claim.setWaitingCosts(createClaimField(AmendStatus.AMENDABLE));
+
+            CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
+            Assertions.assertFalse(viewModel.canSubmit());
+        }
+
+        @Test
+        void canSubmitIsFalseWhenAllFieldsNeedAmending() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setNetProfitCost(createClaimField(AmendStatus.NEEDS_AMENDING));
+            claim.setNetDisbursementAmount(createClaimField(AmendStatus.NEEDS_AMENDING));
+            claim.setDisbursementVatAmount(createClaimField(AmendStatus.NEEDS_AMENDING));
+            claim.setTravelCosts(createClaimField(AmendStatus.NEEDS_AMENDING));
+            claim.setWaitingCosts(createClaimField(AmendStatus.NEEDS_AMENDING));
+
+            CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
+            Assertions.assertFalse(viewModel.canSubmit());
+        }
+    }
+
+    public static ClaimField createClaimField(AmendStatus status) {
+        ClaimField claimField = new ClaimField();
+        claimField.setStatus(status);
+        return claimField;
     }
 }

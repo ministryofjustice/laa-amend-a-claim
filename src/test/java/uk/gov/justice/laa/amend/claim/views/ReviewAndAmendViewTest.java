@@ -12,8 +12,11 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeMonetaryValueController;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimReviewController;
+import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
@@ -43,6 +46,9 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         assertPageHasTitle(doc, "Review and amend");
 
         assertPageHasHeading(doc, "Review and amend");
+
+        assertPageHasPrimaryButton(doc, "Submit adjustments");
+        assertPageHasSecondaryButton(doc, "Discard changes");
     }
 
     @Test
@@ -58,5 +64,22 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         Document doc = renderDocumentWithErrors(params);
 
         assertPageHasErrorAlert(doc);
+    }
+
+    @Test
+    void testPageWithFieldThatNeedsAmending() throws Exception {
+        ClaimDetails claim = new CivilClaimDetails();
+        ClaimField claimField = new ClaimField();
+        claimField.setLabel("Foo");
+        claimField.setStatus(AmendStatus.NEEDS_AMENDING);
+        claim.setNetProfitCost(claimField);
+        session.setAttribute(claimId, claim);
+        Document doc = renderDocument();
+
+        assertPageHasTitle(doc, "Review and amend");
+
+        assertPageHasHeading(doc, "Review and amend");
+
+        assertPageHasPrimaryButton(doc, "Discard changes");
     }
 }

@@ -78,4 +78,8 @@ public class ClaimField implements Serializable {
         this.setAmended(value);
         this.setStatus(status);
     }
+
+    public boolean needsAmending() {
+        return status == AmendStatus.NEEDS_AMENDING;
+    }
 }

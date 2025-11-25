@@ -77,13 +77,23 @@
         </tbody>
     </table>
 
-    <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review(submissionId=${submissionId}, claimId=${claimId})}" method="post" style="display: inline;">
-        <button class="govuk-button govuk-!-margin-right-3" type="submit" data-module="govuk-button" th:text="#{claimReview.submit}"></button>
-    </form>
+    <th:block th:if="${viewModel.canSubmit()}">
+        <div class="govuk-button-group">
+            <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review(submissionId=${submissionId}, claimId=${claimId})}" method="post">
+                <button class="govuk-button" type="submit" data-module="govuk-button" th:text="#{claimReview.submit}"></button>
+            </form>
 
-    <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review/discard(submissionId=${submissionId}, claimId=${claimId})}" method="post" style="display: inline;">
-        <button class="govuk-button govuk-button--warning" type="submit" data-module="govuk-button" th:text="#{claimReview.discard}"></button>
-    </form>
+            <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review/discard(submissionId=${submissionId}, claimId=${claimId})}" method="post">
+                <button class="govuk-button govuk-button--secondary govuk-button--warning" type="submit" data-module="govuk-button" th:text="#{claimReview.discard}"></button>
+            </form>
+        </div>
+    </th:block>
+
+    <th:block th:unless="${viewModel.canSubmit()}">
+        <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review/discard(submissionId=${submissionId}, claimId=${claimId})}" method="post">
+            <button class="govuk-button govuk-button--warning" type="submit" data-module="govuk-button" th:text="#{claimReview.discard}"></button>
+        </form>
+    </th:block>
 </main>
 </body>
 </html>

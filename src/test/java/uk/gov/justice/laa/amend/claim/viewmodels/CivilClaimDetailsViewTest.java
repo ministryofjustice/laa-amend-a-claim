@@ -3,9 +3,11 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -278,5 +280,57 @@ public class CivilClaimDetailsViewTest {
             );
             Assertions.assertEquals(expectedRows, viewModel.getTableRows());
         }
+    }
+
+    @Nested
+    class CanSubmitTests {
+
+        @Test
+        void canSubmitIsTrueWhenNoFieldsNeedAmending() {
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setNetProfitCost(createClaimField(AmendStatus.AMENDABLE));
+            claim.setNetDisbursementAmount(createClaimField(AmendStatus.AMENDABLE));
+            claim.setDisbursementVatAmount(createClaimField(AmendStatus.AMENDABLE));
+            claim.setCounselsCost(createClaimField(AmendStatus.AMENDABLE));
+            claim.setDetentionTravelWaitingCosts(createClaimField(AmendStatus.AMENDABLE));
+            claim.setJrFormFillingCost(createClaimField(AmendStatus.AMENDABLE));
+
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            Assertions.assertTrue(viewModel.canSubmit());
+        }
+
+        @Test
+        void canSubmitIsFalseWhenAnyFieldNeedsAmending() {
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setNetProfitCost(createClaimField(AmendStatus.NEEDS_AMENDING));
+            claim.setNetDisbursementAmount(createClaimField(AmendStatus.AMENDABLE));
+            claim.setDisbursementVatAmount(createClaimField(AmendStatus.AMENDABLE));
+            claim.setCounselsCost(createClaimField(AmendStatus.AMENDABLE));
+            claim.setDetentionTravelWaitingCosts(createClaimField(AmendStatus.AMENDABLE));
+            claim.setJrFormFillingCost(createClaimField(AmendStatus.AMENDABLE));
+
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            Assertions.assertFalse(viewModel.canSubmit());
+        }
+
+        @Test
+        void canSubmitIsFalseWhenAllFieldsNeedAmending() {
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setNetProfitCost(createClaimField(AmendStatus.NEEDS_AMENDING));
+            claim.setNetDisbursementAmount(createClaimField(AmendStatus.NEEDS_AMENDING));
+            claim.setDisbursementVatAmount(createClaimField(AmendStatus.NEEDS_AMENDING));
+            claim.setCounselsCost(createClaimField(AmendStatus.NEEDS_AMENDING));
+            claim.setDetentionTravelWaitingCosts(createClaimField(AmendStatus.NEEDS_AMENDING));
+            claim.setJrFormFillingCost(createClaimField(AmendStatus.NEEDS_AMENDING));
+
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            Assertions.assertFalse(viewModel.canSubmit());
+        }
+    }
+
+    public static ClaimField createClaimField(AmendStatus status) {
+        ClaimField claimField = new ClaimField();
+        claimField.setStatus(status);
+        return claimField;
     }
 }

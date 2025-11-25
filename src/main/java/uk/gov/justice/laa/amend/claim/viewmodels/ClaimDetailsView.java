@@ -13,7 +13,6 @@ import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateValue;
 
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
 
-
     default Map<String, Object> getSummaryRows() {
         Map<String, Object> rows = new LinkedHashMap<>();
         rows.put("clientName", getClientName());
@@ -43,19 +42,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
      * @return ordered list of claim field rows for display
      */
     default List<ClaimField> getTableRows() {
-        List<ClaimField> rows = new ArrayList<>();
-
-        addRowIfNotNull(
-            rows,
-            claim().getFixedFee(),
-            claim().getNetProfitCost(),
-            claim().getNetDisbursementAmount(),
-            claim().getDisbursementVatAmount()
-        );
-
-        // Subclasses should add their specific rows here
-        addClaimTypeSpecificRows(rows);
-
+        List<ClaimField> rows = claimFields();
         addRowIfNotNull(
             rows,
             claim().getVatClaimed(),
@@ -64,13 +51,6 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
         return rows;
     }
-
-    /**
-     * Override in subclasses to add claim-type specific rows.
-     *
-     * @param rows the list to add rows to
-     */
-    void addClaimTypeSpecificRows(List<ClaimField> rows);
 
     /**
      * Determines if a given row represents the total row.
@@ -88,5 +68,21 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
                 list.add(claimField);
             }
         }
+    }
+
+    default List<ClaimField> claimFields() {
+        List<ClaimField> fields = new ArrayList<>();
+        addRowIfNotNull(
+            fields,
+            claim().getFixedFee(),
+            claim().getNetProfitCost(),
+            claim().getNetDisbursementAmount(),
+            claim().getDisbursementVatAmount()
+        );
+        return fields;
+    }
+
+    default boolean canSubmit() {
+        return claimFields().stream().noneMatch(ClaimField::needsAmending);
     }
 }

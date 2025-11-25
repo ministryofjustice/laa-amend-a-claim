@@ -21,22 +21,6 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
         summaryRows.put("matterTypeCodeTwo", getMatterTypeCodeTwo());
     }
 
-
-    @Override
-    public void addClaimTypeSpecificRows(List<ClaimField> rows) {
-        addRowIfNotNull(
-                rows,
-                claim.getCounselsCost(),
-                claim.getDetentionTravelWaitingCosts(),
-                claim.getJrFormFillingCost(),
-                claim.getAdjournedHearing(),
-                claim.getCmrhTelephone(),
-                claim.getCmrhOral(),
-                claim.getHoInterview(),
-                claim.getSubstantiveHearing()
-        );
-    }
-
     public String getMatterTypeCodeOne() {
         if (StringUtils.isNotEmpty(claim.getMatterTypeCode())) {
             String[] matterType = claim.getMatterTypeCode().split("[+:]");
@@ -51,5 +35,22 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
             return matterType.length > 1 ? matterType[1] : null;
         }
         return null;
+    }
+
+    @Override
+    public List<ClaimField> claimFields() {
+        List<ClaimField> fields = ClaimDetailsView.super.claimFields();
+        addRowIfNotNull(
+            fields,
+            claim.getCounselsCost(),
+            claim.getDetentionTravelWaitingCosts(),
+            claim.getJrFormFillingCost(),
+            claim.getAdjournedHearing(),
+            claim.getCmrhTelephone(),
+            claim.getCmrhOral(),
+            claim.getHoInterview(),
+            claim.getSubstantiveHearing()
+        );
+        return fields;
     }
 }
