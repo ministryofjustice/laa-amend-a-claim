@@ -7,12 +7,9 @@ import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
-import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.util.Optional;
@@ -26,6 +23,7 @@ public class ClaimService {
     private final ClaimsApiClient claimsApiClient;
     private final SearchProperties searchProperties;
     private final ClaimMapper claimMapper;
+
 
     public ClaimResultSet searchClaims(
         String officeCode,
@@ -79,8 +77,4 @@ public class ClaimService {
             throw new RuntimeException(e);
         }
     }
-
-    /*public CreateAssessment201Response submitAssessment(Claim claim) {
-        return claimsApiClient.submitAssessment(assessment).block();
-    }*/
 }

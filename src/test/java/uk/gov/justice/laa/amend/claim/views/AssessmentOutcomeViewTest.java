@@ -6,6 +6,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.AssessmentOutcomeController;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
@@ -39,7 +41,11 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
 
     @Test
     void testPageErrors() throws Exception {
-        Document doc = renderRedirect("/submissions/123/claims/456/assessment-outcome");
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("assessmentOutcome", "");
+        params.add("liabilityForVat", "");
+
+        Document doc = renderDocumentWithErrors(params);
 
         assertPageHasTitle(doc, "Assessment Outcome");
 

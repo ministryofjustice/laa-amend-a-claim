@@ -2,7 +2,9 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -62,4 +64,6 @@ public abstract class ClaimDetails extends Claim {
     public abstract boolean getIsCrimeClaim();
 
     public abstract ClaimDetailsView<? extends ClaimDetails> toViewModel();
+
+    public abstract AssessmentPost toAssessment(AssessmentMapper mapper, String userId);
 }

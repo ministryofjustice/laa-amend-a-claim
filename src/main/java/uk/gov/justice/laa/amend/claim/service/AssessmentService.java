@@ -1,16 +1,28 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
+import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
 /**
  * Service for amending claim values when the assessment outcome change.
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AssessmentService {
+
+    private final ClaimsApiClient claimsApiClient;
+    private final AssessmentMapper assessmentMapper;
 
     /**
      * Applies business logic based on the assessment outcome.
@@ -41,5 +53,10 @@ public class AssessmentService {
             case REDUCED_TO_FIXED_FEE -> claim.setReducedToFixedFeeValues();
             default -> log.warn("Unhandled outcome type: {}", newOutcome);
         }
+    }
+
+    public ResponseEntity<CreateAssessment201Response> submitAssessment(ClaimDetails claim, String userId) {
+        AssessmentPost assessment = claim.toAssessment(assessmentMapper, userId);
+        return claimsApiClient.submitAssessment(claim.getClaimId(), assessment).block();
     }
 }

@@ -37,7 +37,8 @@ public interface ClaimsApiClient {
     Mono<SubmissionResponse> getSubmission(
             @PathVariable String id);
 
-    @PostExchange(value = "/submissions/{submissionId}/claims/{claimId}", contentType = MediaType.APPLICATION_JSON_VALUE)
+    @PostExchange(value = "/claims/{claimId}/assessments", contentType = MediaType.APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<CreateAssessment201Response>> submitAssessment(
+        @PathVariable String claimId,
         @RequestBody AssessmentPost body);
 }

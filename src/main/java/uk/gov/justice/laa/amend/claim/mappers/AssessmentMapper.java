@@ -34,7 +34,7 @@ public interface AssessmentMapper {
     @Mapping(target = "cmrhTelephoneCount", ignore = true)
     @Mapping(target = "isSubstantiveHearing", ignore = true)
     @Mapping(target = "hoInterview", ignore = true)
-    @Mapping(target = "createdByUserId", expression="java(userId)")
+    @Mapping(target = "createdByUserId", expression = "java(userId)")
     AssessmentPost mapClaimToAssessment(ClaimDetails claim, @Context String userId);
 
     @InheritConfiguration(name = "mapClaimToAssessment")
@@ -67,51 +67,51 @@ public interface AssessmentMapper {
     }
 
     default BigDecimal mapFixedFeeAmount(ClaimDetails claim) {
-        return claim != null ? mapToBigDecimal(claim.getFixedFee()) : null;
+        return mapToBigDecimal(claim.getFixedFee());
     }
 
     default BigDecimal mapNetProfitCostsAmount(ClaimDetails claim) {
-        return claim != null ? mapToBigDecimal(claim.getNetProfitCost()) : null;
+        return mapToBigDecimal(claim.getNetProfitCost());
     }
 
     default BigDecimal mapDisbursementAmount(ClaimDetails claim) {
-        return claim != null ? mapToBigDecimal(claim.getNetDisbursementAmount()) : null;
+        return mapToBigDecimal(claim.getNetDisbursementAmount());
     }
 
     default BigDecimal mapDisbursementVatAmount(ClaimDetails claim) {
-        return claim != null ? mapToBigDecimal(claim.getDisbursementVatAmount()) : null;
+        return mapToBigDecimal(claim.getDisbursementVatAmount());
     }
 
     default BigDecimal mapNetCostOfCounselAmount(CivilClaimDetails claim) {
-        return claim != null ? mapToBigDecimal(claim.getCounselsCost()) : null;
+        return mapToBigDecimal(claim.getCounselsCost());
     }
 
     default Integer mapAdjournedHearingFeeAmount(CivilClaimDetails claim) {
-        return claim != null ? mapToInteger(claim.getAdjournedHearing()) : null;
+        return mapToInteger(claim.getAdjournedHearing());
     }
 
     default BigDecimal mapJrFormFillingAmount(CivilClaimDetails claim) {
-        return claim != null ? mapToBigDecimal(claim.getJrFormFillingCost()) : null;
+        return mapToBigDecimal(claim.getJrFormFillingCost());
     }
 
     default Integer mapCmrhOralCount(CivilClaimDetails claim) {
-        return claim != null ? mapToInteger(claim.getCmrhOral()) : null;
+        return mapToInteger(claim.getCmrhOral());
     }
 
     default Integer mapCmrhTelephoneCount(CivilClaimDetails claim) {
-        return claim != null ? mapToInteger(claim.getCmrhTelephone()) : null;
+        return mapToInteger(claim.getCmrhTelephone());
     }
 
     default Integer mapHoInterview(CivilClaimDetails claim) {
-        return claim != null ? mapToInteger(claim.getHoInterview()) : null;
+        return mapToInteger(claim.getHoInterview());
     }
 
     default BigDecimal mapNetTravelCostsAmount(CrimeClaimDetails claim) {
-        return claim != null ? mapToBigDecimal(claim.getTravelCosts()) : null;
+        return mapToBigDecimal(claim.getTravelCosts());
     }
 
     default BigDecimal mapNetWaitingCostsAmount(CrimeClaimDetails claim) {
-        return claim != null ? mapToBigDecimal(claim.getWaitingCosts()) : null;
+        return mapToBigDecimal(claim.getWaitingCosts());
     }
 
     private BigDecimal mapToBigDecimal(ClaimField field) {

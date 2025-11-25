@@ -1,26 +1,45 @@
 package uk.gov.justice.laa.amend.claim.service;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
+import reactor.core.publisher.Mono;
+import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.CreateMockClaims;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class AssessmentServiceTest {
 
+    @Mock
+    private ClaimsApiClient claimsApiClient;
+
+    @Mock
+    private AssessmentMapper assessmentMapper;
+
+    @InjectMocks
     private AssessmentService assessmentService;
 
-    @BeforeEach
-    void setUp() {
-        assessmentService = new AssessmentService();
+    public AssessmentServiceTest() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Nested
@@ -394,6 +413,85 @@ class AssessmentServiceTest {
             // Then: Amended value should be set to submitted
             assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+        }
+    }
+
+    @Nested
+    class SubmitAssessmentTests {
+
+        @Test
+        void testCivilClaimAssessmentSubmittedToApi() {
+            String claimId = UUID.randomUUID().toString();
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setClaimId(claimId);
+            String userId = UUID.randomUUID().toString();
+            AssessmentPost assessment = new AssessmentPost();
+
+            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId))
+                .thenReturn(assessment);
+
+            ResponseEntity<CreateAssessment201Response> response = ResponseEntity.ok(new CreateAssessment201Response());
+
+            when(claimsApiClient.submitAssessment(claimId, assessment))
+                .thenReturn(Mono.just(response));
+
+            ResponseEntity<CreateAssessment201Response> result =
+                assessmentService.submitAssessment(claim, userId);
+
+            Assertions.assertNotNull(result);
+            assertEquals(response, result);
+
+            verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
+            verify(claimsApiClient).submitAssessment(claimId, assessment);
+        }
+
+        @Test
+        void testCrimeClaimAssessmentSubmittedToApi() {
+            String claimId = UUID.randomUUID().toString();
+            CrimeClaimDetails claim = CreateMockClaims.createMockCrimeClaim();
+            claim.setClaimId(claimId);
+            String userId = UUID.randomUUID().toString();
+            AssessmentPost assessment = new AssessmentPost();
+
+            when(assessmentMapper.mapCrimeClaimToAssessment(claim, userId))
+                .thenReturn(assessment);
+
+            ResponseEntity<CreateAssessment201Response> response = ResponseEntity.ok(new CreateAssessment201Response());
+
+            when(claimsApiClient.submitAssessment(claimId, assessment))
+                .thenReturn(Mono.just(response));
+
+            ResponseEntity<CreateAssessment201Response> result =
+                assessmentService.submitAssessment(claim, userId);
+
+            Assertions.assertNotNull(result);
+            assertEquals(response, result);
+
+            verify(assessmentMapper).mapCrimeClaimToAssessment(claim, userId);
+            verify(claimsApiClient).submitAssessment(claimId, assessment);
+        }
+
+        @Test
+        void testWhenApiReturnsEmpty() {
+            String claimId = UUID.randomUUID().toString();
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setClaimId(claimId);
+            String userId = UUID.randomUUID().toString();
+            AssessmentPost assessment = new AssessmentPost();
+
+            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId))
+                .thenReturn(assessment);
+
+            when(claimsApiClient.submitAssessment(claimId, assessment))
+                .thenReturn(Mono.empty());
+
+            ResponseEntity<CreateAssessment201Response> result =
+                assessmentService.submitAssessment(claim, userId);
+
+            assertNull(result);
+
+            verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
+            verify(claimsApiClient).submitAssessment(claimId, assessment);
         }
     }
 }

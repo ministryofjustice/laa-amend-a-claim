@@ -14,7 +14,9 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
 import java.util.UUID;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("local")
@@ -36,9 +38,49 @@ public class AssessmentOutcomeControllerTest {
         MockHttpSession session = new MockHttpSession();
         String path = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
 
-        mockMvc.perform(get(path).session(session))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("assessmentOutcomeForm"))
-                .andExpect(view().name("assessment-outcome"));
+        mockMvc.perform(
+                get(path).session(session)
+            )
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists("assessmentOutcomeForm"))
+            .andExpect(view().name("assessment-outcome"));
+    }
+
+    @Test
+    public void testOnSubmitReturnsBadRequestWithViewForInvalidForm() throws Exception {
+        String submissionId = UUID.randomUUID().toString();
+        String claimId = UUID.randomUUID().toString();
+
+        MockHttpSession session = new MockHttpSession();
+        String path = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
+
+        mockMvc.perform(
+                post(path).session(session)
+                    .with(csrf())
+                    .param("assessmentOutcome", "")
+                    .param("liabilityForVat", "")
+            )
+            .andExpect(status().isBadRequest())
+            .andExpect(view().name("assessment-outcome"));
+    }
+
+    @Test
+    public void testOnSubmitRedirects() throws Exception {
+        String submissionId = UUID.randomUUID().toString();
+        String claimId = UUID.randomUUID().toString();
+
+        MockHttpSession session = new MockHttpSession();
+        String path = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
+
+        String redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+
+        mockMvc.perform(
+                post(path).session(session)
+                    .with(csrf())
+                    .param("assessmentOutcome", "paid-in-full")
+                    .param("liabilityForVat", "true")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(redirectUrl));
     }
 }
