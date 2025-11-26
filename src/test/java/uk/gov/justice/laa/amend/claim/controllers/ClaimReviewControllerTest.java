@@ -5,20 +5,34 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.service.AssessmentService;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @ActiveProfiles("local")
 @WebMvcTest(ClaimReviewController.class)
@@ -27,6 +41,9 @@ public class ClaimReviewControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    private AssessmentService assessmentService;
 
     @Test
     public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
@@ -48,7 +65,9 @@ public class ClaimReviewControllerTest {
             .andExpect(model().attributeExists("claim"))
             .andExpect(model().attributeExists("backUrl"))
             .andExpect(model().attribute("claimId", claimId))
-            .andExpect(model().attribute("submissionId", submissionId));
+            .andExpect(model().attribute("submissionId", submissionId))
+            .andExpect(model().attribute("submissionFailed", false))
+            .andExpect(model().attribute("validationFailed", false));
     }
 
     @Test
@@ -71,22 +90,92 @@ public class ClaimReviewControllerTest {
     }
 
     @Test
-    public void testSubmitRedirectsToConfirmation() throws Exception {
+    public void testSuccessfulSubmitRedirectsToConfirmation() throws Exception {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
+        String userId = LocalSecurityConfig.userId;
 
-        Claim claim = new CivilClaimDetails();
+        CivilClaimDetails claim = new CivilClaimDetails();
         claim.setSubmissionId(submissionId);
         claim.setClaimId(claimId);
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(claimId, claim);
 
-        String path = String.format("/submissions/%s/claims/%s/review/submit", submissionId, claimId);
+        when(assessmentService.submitAssessment(claim, userId))
+            .thenReturn(ResponseEntity.ok(new CreateAssessment201Response()));
+
+        String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+        String redirectUrl = String.format("/submissions/%s/claims/%s/confirmation", submissionId, claimId);
 
         mockMvc.perform(post(path).session(session))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/submissions/" + submissionId + "/claims/" + claimId + "/confirmation"));
+            .andExpect(redirectedUrl(redirectUrl))
+            .andExpect(MockMvcResultMatchers.request().sessionAttributeDoesNotExist(claimId));
+
+        verify(assessmentService).submitAssessment(claim, userId);
+    }
+
+    @Test
+    public void testUnsuccessfulSubmitReloadsPageWithAlert() throws Exception {
+        String submissionId = UUID.randomUUID().toString();
+        String claimId = UUID.randomUUID().toString();
+        String userId = LocalSecurityConfig.userId;
+
+        CivilClaimDetails claim = new CivilClaimDetails();
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(claimId, claim);
+
+        WebClientResponseException exception = WebClientResponseException.create(500, "Something went wrong", null, null, null);
+
+        when(assessmentService.submitAssessment(any(), any()))
+            .thenThrow(exception);
+
+        String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+
+        mockMvc.perform(post(path).session(session))
+            .andExpect(status().isBadRequest())
+            .andExpect(view().name("review-and-amend"))
+            .andExpect(model().attributeExists("claim"))
+            .andExpect(model().attributeExists("backUrl"))
+            .andExpect(model().attribute("claimId", claimId))
+            .andExpect(model().attribute("submissionId", submissionId))
+            .andExpect(model().attribute("submissionFailed", true))
+            .andExpect(model().attribute("validationFailed", false));
+
+        verify(assessmentService).submitAssessment(claim, userId);
+    }
+
+    @Test
+    public void testUnsuccessfulValidationReloadsPageWithErrorSummary() throws Exception {
+        String submissionId = UUID.randomUUID().toString();
+        String claimId = UUID.randomUUID().toString();
+
+        CivilClaimDetails claim = new CivilClaimDetails();
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
+        ClaimField claimField = new ClaimField();
+        claimField.setKey("foo");
+        claimField.setStatus(AmendStatus.NEEDS_AMENDING);
+        claim.setNetProfitCost(claimField);
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(claimId, claim);
+
+        String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+
+        mockMvc.perform(post(path).session(session))
+            .andExpect(status().isBadRequest())
+            .andExpect(view().name("review-and-amend"))
+            .andExpect(model().attributeExists("claim"))
+            .andExpect(model().attributeExists("backUrl"))
+            .andExpect(model().attribute("claimId", claimId))
+            .andExpect(model().attribute("submissionId", submissionId))
+            .andExpect(model().attribute("submissionFailed", false))
+            .andExpect(model().attribute("validationFailed", true));
     }
 
     @Test

@@ -29,21 +29,21 @@ public class AmendClaimConstants {
     public static final String LIABILITY_FOR_VAT_REQUIRED_ERROR = "{assessmentOutcome.liabilityForVatRequiredError}";
     
     public static class Label {
-        public static final String FIXED_FEE = "claimSummary.rows.fixedFee";
-        public static final String NET_PROFIT_COST = "claimSummary.rows.profitCost";
-        public static final String DISBURSEMENT_VAT = "claimSummary.rows.disbursementsVat";
-        public static final String NET_DISBURSEMENTS_COST = "claimSummary.rows.disbursements";
-        public static final String COUNSELS_COST = "claimSummary.rows.counselsCost";
-        public static final String DETENTION_TRAVEL_COST = "claimSummary.rows.detentionTravel";
-        public static final String JR_FORM_FILLING = "claimSummary.rows.jrFormFilling";
-        public static final String ADJOURNED_FEE = "claimSummary.rows.adjournedHearingFee";
-        public static final String CMRH_TELEPHONE = "claimSummary.rows.cmrhTelephone";
-        public static final String CMRH_ORAL = "claimSummary.rows.cmrhOral";
-        public static final String HO_INTERVIEW = "claimSummary.rows.homeOffice";
-        public static final String SUBSTANTIVE_HEARING = "claimSummary.rows.substantiveHearing";
-        public static final String VAT = "claimSummary.rows.vat";
-        public static final String TOTAL = "claimSummary.rows.total";
-        public static final String TRAVEL_COSTS = "claimSummary.rows.travel";
-        public static final String WAITING_COSTS = "claimSummary.rows.waiting";
+        public static final String FIXED_FEE = "fixedFee";
+        public static final String NET_PROFIT_COST = "profitCost";
+        public static final String DISBURSEMENT_VAT = "disbursementsVat";
+        public static final String NET_DISBURSEMENTS_COST = "disbursements";
+        public static final String COUNSELS_COST = "counselsCost";
+        public static final String DETENTION_TRAVEL_COST = "detentionTravel";
+        public static final String JR_FORM_FILLING = "jrFormFilling";
+        public static final String ADJOURNED_FEE = "adjournedHearingFee";
+        public static final String CMRH_TELEPHONE = "cmrhTelephone";
+        public static final String CMRH_ORAL = "cmrhOral";
+        public static final String HO_INTERVIEW = "homeOffice";
+        public static final String SUBSTANTIVE_HEARING = "substantiveHearing";
+        public static final String VAT = "vat";
+        public static final String TOTAL = "total";
+        public static final String TRAVEL_COSTS = "travel";
+        public static final String WAITING_COSTS = "waiting";
     }
 }

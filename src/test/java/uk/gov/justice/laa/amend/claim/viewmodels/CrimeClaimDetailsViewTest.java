@@ -3,6 +3,8 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
+import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
@@ -174,5 +176,32 @@ public class CrimeClaimDetailsViewTest {
             );
             Assertions.assertEquals(expectedRows, viewModel.getTableRows());
         }
+    }
+
+    @Nested
+    class GetErrorTests {
+
+        @Test
+        void convertFieldsThatNeedAmendingIntoErrors() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setNetProfitCost(createClaimField("profitCost", AmendStatus.NEEDS_AMENDING));
+            claim.setTravelCosts(createClaimField("travel", AmendStatus.NEEDS_AMENDING));
+            claim.setWaitingCosts(createClaimField("waiting", AmendStatus.AMENDABLE));
+            CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
+
+            List<ReviewAndAmendFormError> expectedErrors = List.of(
+                new ReviewAndAmendFormError("profit-cost", "claimSummary.rows.profitCost.error"),
+                new ReviewAndAmendFormError("travel", "claimSummary.rows.travel.error")
+            );
+
+            Assertions.assertEquals(expectedErrors, viewModel.getErrors());
+        }
+    }
+
+    public static ClaimField createClaimField(String key, AmendStatus status) {
+        ClaimField claimField = new ClaimField();
+        claimField.setKey(key);
+        claimField.setStatus(status);
+        return claimField;
     }
 }

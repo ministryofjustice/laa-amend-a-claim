@@ -56,21 +56,6 @@ public abstract class ViewTestBase {
     return Jsoup.parse(html);
   }
 
-  protected void checkNotFoundStatus() throws Exception {
-    MockHttpServletRequestBuilder requestBuilder = get(mapping).session(session);
-    mockMvc.perform(requestBuilder).andExpect(status().isNotFound());
-  }
-
-  protected Document renderRedirect(String pageToRender) throws Exception {
-    String html = mockMvc.perform(post(pageToRender))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        return Jsoup.parse(html);
-  }
-
   protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) throws Exception {
     MockHttpServletRequestBuilder requestBuilder = post(mapping).session(session);
 
@@ -98,10 +83,17 @@ public abstract class ViewTestBase {
     Assertions.assertFalse(elements.isEmpty());
   }
 
-    protected void assertPageHasSecondaryButton(Document doc) {
-        Elements elements = doc.getElementsByClass("govuk-button govuk-button--secondary");
-        Assertions.assertFalse(elements.isEmpty());
-    }
+  protected void assertPageHasPrimaryButton(Document doc, String expectedText) {
+    Elements elements = doc.getElementsByClass("govuk-button");
+    Assertions.assertFalse(elements.isEmpty());
+    Assertions.assertEquals(expectedText, elements.getFirst().text());
+  }
+
+  protected void assertPageHasSecondaryButton(Document doc, String expectedText) {
+    Elements elements = doc.getElementsByClass("govuk-button--secondary");
+    Assertions.assertFalse(elements.isEmpty());
+    Assertions.assertEquals(expectedText, elements.getFirst().text());
+  }
 
   protected void assertPageHasLink(Document doc, String id, String expectedText) {
     Element element = getElementById(doc, id);
@@ -224,6 +216,11 @@ public abstract class ViewTestBase {
         .toList();
 
     Assertions.assertEquals(expectedErrorHrefs, actualErrorHrefs);
+  }
+
+  protected void assertPageHasErrorAlert(Document doc) {
+    Elements elements = doc.getElementsByClass("moj-alert moj-alert--error");
+    Assertions.assertFalse(elements.isEmpty());
   }
 
   protected void assertPageHasPanel(Document doc) {

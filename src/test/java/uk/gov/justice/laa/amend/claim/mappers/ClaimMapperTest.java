@@ -46,7 +46,7 @@ class ClaimMapperTest {
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getTotalAmount();
-        assertEquals(AmendClaimConstants.Label.TOTAL, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.TOTAL, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
@@ -65,7 +65,7 @@ class ClaimMapperTest {
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getFixedFee();
-        assertEquals(AmendClaimConstants.Label.FIXED_FEE, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.FIXED_FEE, claimField.getKey());
         assertEquals(null, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertNull(claimField.getAmended());
@@ -85,7 +85,7 @@ class ClaimMapperTest {
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getNetProfitCost();
-        assertEquals(AmendClaimConstants.Label.NET_PROFIT_COST, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.NET_PROFIT_COST, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
@@ -105,7 +105,7 @@ class ClaimMapperTest {
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getVatClaimed();
-        assertEquals(AmendClaimConstants.Label.VAT, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
         assertEquals(true, claimField.getSubmitted());
         assertEquals(false, claimField.getCalculated());
         assertEquals(true, claimField.getAmended());
@@ -125,7 +125,7 @@ class ClaimMapperTest {
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getNetDisbursementAmount();
-        assertEquals(AmendClaimConstants.Label.NET_DISBURSEMENTS_COST, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.NET_DISBURSEMENTS_COST, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
@@ -145,7 +145,7 @@ class ClaimMapperTest {
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getDisbursementVatAmount();
-        assertEquals(AmendClaimConstants.Label.DISBURSEMENT_VAT, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.DISBURSEMENT_VAT, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
@@ -165,7 +165,7 @@ class ClaimMapperTest {
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getCounselsCost();
-        assertEquals(AmendClaimConstants.Label.COUNSELS_COST, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.COUNSELS_COST, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
@@ -185,7 +185,7 @@ class ClaimMapperTest {
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getDetentionTravelWaitingCosts();
-        assertEquals(AmendClaimConstants.Label.DETENTION_TRAVEL_COST, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.DETENTION_TRAVEL_COST, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
@@ -205,7 +205,7 @@ class ClaimMapperTest {
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getJrFormFillingCost();
-        assertEquals(AmendClaimConstants.Label.JR_FORM_FILLING, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.JR_FORM_FILLING, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
@@ -227,7 +227,7 @@ class ClaimMapperTest {
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getAdjournedHearing();
-        assertEquals(AmendClaimConstants.Label.ADJOURNED_FEE, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.ADJOURNED_FEE, claimField.getKey());
         assertEquals(100, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(100, claimField.getAmended());
@@ -249,7 +249,7 @@ class ClaimMapperTest {
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getCmrhTelephone();
-        assertEquals(AmendClaimConstants.Label.CMRH_TELEPHONE, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.CMRH_TELEPHONE, claimField.getKey());
         assertEquals(100, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(100, claimField.getAmended());
@@ -271,7 +271,7 @@ class ClaimMapperTest {
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getCmrhOral();
-        assertEquals(AmendClaimConstants.Label.CMRH_ORAL, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.CMRH_ORAL, claimField.getKey());
         assertEquals(100, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(100, claimField.getAmended());
@@ -293,7 +293,7 @@ class ClaimMapperTest {
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getHoInterview();
-        assertEquals(AmendClaimConstants.Label.HO_INTERVIEW, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.HO_INTERVIEW, claimField.getKey());
         assertEquals(100, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(100, claimField.getAmended());
@@ -315,7 +315,7 @@ class ClaimMapperTest {
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getSubstantiveHearing();
-        assertEquals(AmendClaimConstants.Label.SUBSTANTIVE_HEARING, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.SUBSTANTIVE_HEARING, claimField.getKey());
         assertEquals(100, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(100, claimField.getAmended());
@@ -335,7 +335,7 @@ class ClaimMapperTest {
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getTravelCosts();
-        assertEquals(AmendClaimConstants.Label.TRAVEL_COSTS, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.TRAVEL_COSTS, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
@@ -355,7 +355,7 @@ class ClaimMapperTest {
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
         ClaimField claimField = claim.getWaitingCosts();
-        assertEquals(AmendClaimConstants.Label.WAITING_COSTS, claimField.getLabel());
+        assertEquals(AmendClaimConstants.Label.WAITING_COSTS, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
@@ -374,7 +374,10 @@ class ClaimMapperTest {
         response.setCaseConcludedDate("2025-02-01");
         SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
+        UUID claimSummaryFeeId = UUID.randomUUID();
+
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
+        feeCalc.setClaimSummaryFeeId(claimSummaryFeeId);
         feeCalc.setFeeCodeDescription("FeeSchemeX");
         feeCalc.setCategoryOfLaw("Civil");
         BoltOnPatch boltOn = new BoltOnPatch();
@@ -394,6 +397,7 @@ class ClaimMapperTest {
         assertEquals("Civil", claim.getCategoryOfLaw());
         assertTrue(claim.getEscaped());
         assertEquals("MT1+MT2", claim.getMatterTypeCode());
+        assertEquals(claimSummaryFeeId.toString(), claim.getClaimSummaryFeeId());
     }
 
     @Test

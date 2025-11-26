@@ -29,7 +29,7 @@
     </ul>
 
     <div th:if="${pagination.next != null}" class="govuk-pagination__next">
-        <a class="govuk-link govuk-pagination__link" href="#" rel="next">
+        <a class="govuk-link govuk-pagination__link" th:href="${pagination.next.href}" rel="next">
             <span class="govuk-pagination__link-title" th:text="#{pagination.page.next}">
                 <span class="govuk-visually-hidden" th:text=" #{pagination.page}"></span>
             </span>

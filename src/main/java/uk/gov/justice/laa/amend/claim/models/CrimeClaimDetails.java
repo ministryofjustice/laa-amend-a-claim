@@ -2,8 +2,10 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimDetailsView;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 import java.math.BigDecimal;
 
@@ -17,8 +19,8 @@ public class CrimeClaimDetails extends ClaimDetails {
     @Override
     public void setNilledValues() {
         super.setNilledValues();
-        applyIfNotNull(travelCosts, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(waitingCosts, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(travelCosts, ClaimField::setNilled);
+        applyIfNotNull(waitingCosts, ClaimField::setNilled);
     }
 
     @Override
@@ -50,5 +52,10 @@ public class CrimeClaimDetails extends ClaimDetails {
     @Override
     public ClaimDetailsView<? extends Claim> toViewModel() {
         return new CrimeClaimDetailsView(this);
+    }
+
+    @Override
+    public AssessmentPost toAssessment(AssessmentMapper mapper, String userId) {
+        return mapper.mapCrimeClaimToAssessment(this, userId);
     }
 }

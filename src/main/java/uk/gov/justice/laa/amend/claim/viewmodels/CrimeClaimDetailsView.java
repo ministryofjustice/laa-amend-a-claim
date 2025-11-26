@@ -10,21 +10,21 @@ import java.util.Map;
 public record CrimeClaimDetailsView(CrimeClaimDetails claim) implements ClaimDetailsView<CrimeClaimDetails> {
 
     @Override
-    public void addClaimTypeSpecificRows(List<ClaimField> rows) {
-        addRowIfNotNull(
-            rows,
-            claim.getTravelCosts(),
-            claim.getWaitingCosts()
-        );
-    }
-
-    @Override
-    public void addUcnSummaryRow(Map<String, Object> summaryRows) {
-
-    }
+    public void addUcnSummaryRow(Map<String, Object> summaryRows) {}
 
     @Override
     public void addMatterTypeField(Map<String, Object> summaryRows) {
         summaryRows.put("legalMatterCode", claim.getMatterTypeCode());
+    }
+
+    @Override
+    public List<ClaimField> claimFields() {
+        List<ClaimField> fields = ClaimDetailsView.super.claimFields();
+        addRowIfNotNull(
+            fields,
+            claim.getTravelCosts(),
+            claim.getWaitingCosts()
+        );
+        return fields;
     }
 }

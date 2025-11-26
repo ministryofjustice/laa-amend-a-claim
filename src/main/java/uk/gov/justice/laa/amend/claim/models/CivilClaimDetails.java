@@ -2,10 +2,10 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
-
-import java.math.BigDecimal;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -23,14 +23,14 @@ public class CivilClaimDetails extends ClaimDetails {
     @Override
     public void setNilledValues() {
         super.setNilledValues();
-        applyIfNotNull(counselsCost, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(detentionTravelWaitingCosts, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(jrFormFillingCost, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(adjournedHearing, cf -> cf.setNilled(false));
-        applyIfNotNull(cmrhTelephone, cf -> cf.setNilled(0));
-        applyIfNotNull(cmrhOral, cf -> cf.setNilled(0));
-        applyIfNotNull(hoInterview, cf -> cf.setNilled(0));
-        applyIfNotNull(substantiveHearing, cf -> cf.setNilled(0));
+        applyIfNotNull(counselsCost, ClaimField::setNilled);
+        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setNilled);
+        applyIfNotNull(jrFormFillingCost, ClaimField::setNilled);
+        applyIfNotNull(adjournedHearing, ClaimField::setNilled);
+        applyIfNotNull(cmrhTelephone, ClaimField::setNilled);
+        applyIfNotNull(cmrhOral, ClaimField::setNilled);
+        applyIfNotNull(hoInterview, ClaimField::setNilled);
+        applyIfNotNull(substantiveHearing, ClaimField::setNilled);
     }
 
     @Override
@@ -54,11 +54,11 @@ public class CivilClaimDetails extends ClaimDetails {
         applyIfNotNull(counselsCost, ClaimField::setAmendedToSubmitted);
 
         // Bolt-ons get set to 0
-        applyIfNotNull(adjournedHearing, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(cmrhTelephone, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(cmrhOral, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(hoInterview, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(substantiveHearing, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(adjournedHearing, ClaimField::setNilled);
+        applyIfNotNull(cmrhTelephone, ClaimField::setNilled);
+        applyIfNotNull(cmrhOral, ClaimField::setNilled);
+        applyIfNotNull(hoInterview, ClaimField::setNilled);
+        applyIfNotNull(substantiveHearing, ClaimField::setNilled);
     }
       
     public void setPaidInFullValues() {
@@ -83,5 +83,10 @@ public class CivilClaimDetails extends ClaimDetails {
     @Override
     public ClaimDetailsView<? extends Claim> toViewModel() {
         return new CivilClaimDetailsView(this);
+    }
+
+    @Override
+    public AssessmentPost toAssessment(AssessmentMapper mapper, String userId) {
+        return mapper.mapCivilClaimToAssessment(this, userId);
     }
 }

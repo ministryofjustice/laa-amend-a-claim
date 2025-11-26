@@ -6,20 +6,14 @@ import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-
 import org.mapstruct.ObjectFactory;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
-
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -28,7 +22,6 @@ import java.util.Locale;
 
 @Mapper(componentModel = "spring", uses = {ClaimMapperHelper.class})
 public interface ClaimMapper {
-
 
     @InheritConfiguration(name = "mapToClaim")
     @Mapping(target = "vatClaimed", source = ".", qualifiedByName = "mapVatClaimed")
@@ -44,6 +37,7 @@ public interface ClaimMapper {
 
     @Mapping(target = "submissionId", source = "submissionId")
     @Mapping(target = "claimId", source = "id")
+    @Mapping(target = "claimSummaryFeeId", source = "feeCalculationResponse.claimSummaryFeeId")
     @Mapping(target = "vatApplicable", source = "isVatApplicable")
     @Mapping(target = "uniqueFileNumber", source = "uniqueFileNumber")
     @Mapping(target = "caseReferenceNumber", source = "caseReferenceNumber")
@@ -56,7 +50,6 @@ public interface ClaimMapper {
     @Mapping(target = "categoryOfLaw", source = "feeCalculationResponse.categoryOfLaw")
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
     Claim mapToClaim(ClaimResponse claimResponse);
-
 
     @InheritConfiguration(name = "mapToCommonDetails")
     @Mapping(target = "detentionTravelWaitingCosts", source = "claimResponse", qualifiedByName = "mapDetentionTravelWaitingCosts")
@@ -75,7 +68,6 @@ public interface ClaimMapper {
     @Mapping(target = "travelCosts", source = "claimResponse", qualifiedByName = "mapTravelCosts")
     @Mapping(target = "waitingCosts", source = "claimResponse", qualifiedByName = "mapWaitingCosts")
     CrimeClaimDetails mapToCrimeClaimDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
-
 
     @ObjectFactory
     default ClaimDetails createClaimDetails(@Context SubmissionResponse submissionResponse) {

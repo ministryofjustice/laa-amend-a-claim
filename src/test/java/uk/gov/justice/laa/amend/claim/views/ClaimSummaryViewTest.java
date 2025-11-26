@@ -177,23 +177,23 @@ class ClaimSummaryViewTest extends ViewTestBase {
         when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claimDetails);
         Document doc = renderDocument();
         Assertions.assertEquals(pageHasLabel(doc, fieldLabel), display);
-      }
+    }
 
     static Stream<Arguments> claimFieldValuesProvider() {
         return Stream.of(
-                Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", 0), false),
-                Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", 22), true),
-                Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", null), false),
-                Arguments.of("CMRH telephone", withField(CMRH_TELEPHONE, "setCmrhTelephone",  null), false),
-                Arguments.of("CMRH telephone", withField(CMRH_TELEPHONE, "setCmrhTelephone",  3), true),
-                Arguments.of("CMRH oral", withField(CMRH_ORAL, "setCmrhOral",  0), false),
-                Arguments.of("Home office interview", withField(HO_INTERVIEW, "setHoInterview",  0), false),
-                Arguments.of("Home office interview", withField(HO_INTERVIEW, "setHoInterview",  null), false),
-                Arguments.of("Substantive hearing", withField(SUBSTANTIVE_HEARING, "setSubstantiveHearing", 0), false),
-                Arguments.of("Substantive hearing", withField(SUBSTANTIVE_HEARING, "setSubstantiveHearing", 4), true),
-                Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", BigDecimal.ZERO), false),
-                Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", null), false),
-                Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", new BigDecimal(20)), true)
+            Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", 0), false),
+            Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", 22), true),
+            Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", null), false),
+            Arguments.of("CMRH telephone", withField(CMRH_TELEPHONE, "setCmrhTelephone",  null), false),
+            Arguments.of("CMRH telephone", withField(CMRH_TELEPHONE, "setCmrhTelephone",  3), true),
+            Arguments.of("CMRH oral", withField(CMRH_ORAL, "setCmrhOral",  0), false),
+            Arguments.of("Home office interview", withField(HO_INTERVIEW, "setHoInterview",  0), false),
+            Arguments.of("Home office interview", withField(HO_INTERVIEW, "setHoInterview",  null), false),
+            Arguments.of("Substantive hearing", withField(SUBSTANTIVE_HEARING, "setSubstantiveHearing", 0), false),
+            Arguments.of("Substantive hearing", withField(SUBSTANTIVE_HEARING, "setSubstantiveHearing", 4), true),
+            Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", BigDecimal.ZERO), false),
+            Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", null), false),
+            Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", new BigDecimal(20)), true)
         );
     }
 

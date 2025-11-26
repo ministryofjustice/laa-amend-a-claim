@@ -2,12 +2,13 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -31,9 +32,9 @@ public abstract class ClaimDetails extends Claim {
     private LocalDate submittedDate;
 
     public void setNilledValues() {
-        applyIfNotNull(netProfitCost, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(netDisbursementAmount, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(disbursementVatAmount, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(netProfitCost, ClaimField::setNilled);
+        applyIfNotNull(netDisbursementAmount, ClaimField::setNilled);
+        applyIfNotNull(disbursementVatAmount, ClaimField::setNilled);
     }
 
     public void setReducedToFixedFeeValues() {
@@ -69,4 +70,6 @@ public abstract class ClaimDetails extends Claim {
     public abstract boolean getIsCrimeClaim();
 
     public abstract ClaimDetailsView<? extends ClaimDetails> toViewModel();
+
+    public abstract AssessmentPost toAssessment(AssessmentMapper mapper, String userId);
 }

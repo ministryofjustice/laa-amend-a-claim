@@ -6,7 +6,8 @@
                 <ul class="govuk-list govuk-error-summary__list">
                     <li th:each="error : ${errors}"
                         th:with="id=${error.fieldId}">
-                        <a th:href="'#' + ${id}" th:text="${error.message}"></a>
+                        <a th:if="${#messages.msgOrNull(error.message) == null}" th:href="'#' + ${id}" th:text="${error.message}"></a>
+                        <a th:unless="${#messages.msgOrNull(error.message) == null}" th:href="'#' + ${id}" th:text="#{${error.message}}"></a>
                     </li>
                 </ul>
             </div>

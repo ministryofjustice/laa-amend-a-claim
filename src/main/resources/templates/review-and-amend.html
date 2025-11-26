@@ -10,6 +10,15 @@
     )}">
 <body>
 <main class="govuk-main-wrapper" id="main-content">
+
+    <th:block th:if="${validationFailed}">
+        <th:block th:replace="~{partials/error-summary :: error-summary(${viewModel.errors})}"></th:block>
+    </th:block>
+
+    <th:block th:if="${submissionFailed}">
+        <th:block th:replace="~{partials/error-alert :: errorAlert('claimReview')}"></th:block>
+    </th:block>
+
     <h1 class="govuk-heading-xl">
         <span th:text="#{claimReview.mainHeading}"></span>
     </h1>
@@ -41,6 +50,7 @@
                 <th:block th:if="${row.status.name() == 'NEEDS_AMENDING'}">
                     <td class="govuk-table__cell">
                         <a th:href="${row.getChangeUrl(submissionId, claimId)}"
+                           th:id="${row.id}"
                            class="govuk-link govuk-link--no-visited-state"
                            th:text="#{service.add}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
                     </td>
@@ -72,13 +82,15 @@
         </tbody>
     </table>
 
-    <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review/submit(submissionId=${submissionId}, claimId=${claimId})}" method="post" style="display: inline;">
-        <button class="govuk-button govuk-!-margin-right-3" type="submit" data-module="govuk-button" th:text="#{claimReview.submit}"></button>
-    </form>
+    <div class="govuk-button-group">
+        <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review(submissionId=${submissionId}, claimId=${claimId})}" method="post">
+            <button class="govuk-button" type="submit" data-module="govuk-button" th:text="#{claimReview.submit}"></button>
+        </form>
 
-    <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review/discard(submissionId=${submissionId}, claimId=${claimId})}" method="post" style="display: inline;">
-        <button class="govuk-button govuk-button--warning" type="submit" data-module="govuk-button" th:text="#{claimReview.discard}"></button>
-    </form>
+        <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review/discard(submissionId=${submissionId}, claimId=${claimId})}" method="post">
+            <button class="govuk-button govuk-button--secondary govuk-button--warning" type="submit" data-module="govuk-button" th:text="#{claimReview.discard}"></button>
+        </form>
+    </div>
 </main>
 </body>
 </html>
