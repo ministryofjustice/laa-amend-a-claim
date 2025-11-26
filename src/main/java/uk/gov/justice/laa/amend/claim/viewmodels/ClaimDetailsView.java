@@ -83,10 +83,6 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return fields;
     }
 
-    default boolean canSubmit() {
-        return claimFields().stream().noneMatch(ClaimField::needsAmending);
-    }
-
     default List<ReviewAndAmendFormError> getErrors() {
         return claimFields()
             .stream()
