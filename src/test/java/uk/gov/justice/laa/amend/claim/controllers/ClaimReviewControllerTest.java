@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,8 +21,10 @@ import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
@@ -125,8 +128,10 @@ public class ClaimReviewControllerTest {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(claimId, claim);
 
-        when(assessmentService.submitAssessment(claim, userId))
-            .thenThrow(WebClientResponseException.InternalServerError.class);
+        WebClientResponseException exception = WebClientResponseException.create(500, "Something went wrong", null, null, null);
+
+        when(assessmentService.submitAssessment(any(), any()))
+            .thenThrow(exception);
 
         String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
 

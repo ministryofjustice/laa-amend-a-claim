@@ -3,6 +3,8 @@ package uk.gov.justice.laa.amend.claim.controllers;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,7 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 @RequiredArgsConstructor
 public class ClaimReviewController {
 
+    private static final Logger log = LoggerFactory.getLogger(ClaimReviewController.class);
     private final AssessmentService assessmentService;
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}/review")
@@ -63,7 +66,8 @@ public class ClaimReviewController {
             assessmentService.submitAssessment(claim, userId);
             session.removeAttribute(claimId);
             return String.format("redirect:/submissions/%s/claims/%s/confirmation", submissionId, claimId);
-        } catch (WebClientResponseException e) {
+        } catch (Exception e) {
+            log.error("Failed to submit assessment for claim ID: {}", claimId, e);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return renderView(model, claim, submissionId, claimId, true);
         }
