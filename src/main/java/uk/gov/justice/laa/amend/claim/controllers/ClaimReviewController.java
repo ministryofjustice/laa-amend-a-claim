@@ -3,8 +3,7 @@ package uk.gov.justice.laa.amend.claim.controllers;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
@@ -18,9 +17,9 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class ClaimReviewController {
 
-    private static final Logger log = LoggerFactory.getLogger(ClaimReviewController.class);
     private final AssessmentService assessmentService;
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}/review")
