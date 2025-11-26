@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,19 +14,19 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -66,7 +65,9 @@ public class ClaimReviewControllerTest {
             .andExpect(model().attributeExists("claim"))
             .andExpect(model().attributeExists("backUrl"))
             .andExpect(model().attribute("claimId", claimId))
-            .andExpect(model().attribute("submissionId", submissionId));
+            .andExpect(model().attribute("submissionId", submissionId))
+            .andExpect(model().attribute("submissionFailed", false))
+            .andExpect(model().attribute("validationFailed", false));
     }
 
     @Test
@@ -142,9 +143,39 @@ public class ClaimReviewControllerTest {
             .andExpect(model().attributeExists("backUrl"))
             .andExpect(model().attribute("claimId", claimId))
             .andExpect(model().attribute("submissionId", submissionId))
-            .andExpect(model().attribute("submissionFailed", true));
+            .andExpect(model().attribute("submissionFailed", true))
+            .andExpect(model().attribute("validationFailed", false));
 
         verify(assessmentService).submitAssessment(claim, userId);
+    }
+
+    @Test
+    public void testUnsuccessfulValidationReloadsPageWithErrorSummary() throws Exception {
+        String submissionId = UUID.randomUUID().toString();
+        String claimId = UUID.randomUUID().toString();
+
+        CivilClaimDetails claim = new CivilClaimDetails();
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
+        ClaimField claimField = new ClaimField();
+        claimField.setKey("foo");
+        claimField.setStatus(AmendStatus.NEEDS_AMENDING);
+        claim.setNetProfitCost(claimField);
+
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(claimId, claim);
+
+        String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+
+        mockMvc.perform(post(path).session(session))
+            .andExpect(status().isBadRequest())
+            .andExpect(view().name("review-and-amend"))
+            .andExpect(model().attributeExists("claim"))
+            .andExpect(model().attributeExists("backUrl"))
+            .andExpect(model().attribute("claimId", claimId))
+            .andExpect(model().attribute("submissionId", submissionId))
+            .andExpect(model().attribute("submissionFailed", false))
+            .andExpect(model().attribute("validationFailed", true));
     }
 
     @Test

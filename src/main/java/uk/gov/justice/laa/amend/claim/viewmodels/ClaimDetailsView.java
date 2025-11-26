@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
@@ -84,5 +85,13 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     default boolean canSubmit() {
         return claimFields().stream().noneMatch(ClaimField::needsAmending);
+    }
+
+    default List<ReviewAndAmendFormError> getErrors() {
+        return claimFields()
+            .stream()
+            .filter(ClaimField::needsAmending)
+            .map(x -> new ReviewAndAmendFormError(x.getId(), x.getErrorKey()))
+            .toList();
     }
 }

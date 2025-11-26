@@ -51,7 +51,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     }
 
     @Test
-    void testPageWithErrors() throws Exception {
+    void testPageWithSubmissionError() throws Exception {
         Claim claim = new CivilClaimDetails();
         session.setAttribute(claimId, claim);
 
@@ -68,19 +68,25 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     }
 
     @Test
-    void testPageWithFieldThatNeedsAmending() throws Exception {
+    void testPageWithValidationError() throws Exception {
         ClaimDetails claim = new CivilClaimDetails();
         ClaimField claimField = new ClaimField();
-        claimField.setLabel("Foo");
+        claimField.setKey("profitCosts");
         claimField.setStatus(AmendStatus.NEEDS_AMENDING);
         claim.setNetProfitCost(claimField);
         session.setAttribute(claimId, claim);
-        Document doc = renderDocument();
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+
+        Document doc = renderDocumentWithErrors(params);
+
+        System.out.println("***");
+        System.out.println(doc.html());
 
         assertPageHasTitle(doc, "Review and amend");
 
         assertPageHasHeading(doc, "Review and amend");
 
-        assertPageHasPrimaryButton(doc, "Discard changes");
+        assertPageHasErrorSummary(doc, "profit-costs");
     }
 }

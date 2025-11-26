@@ -120,6 +120,6 @@ public class ThymeleafUtils {
         if (!isEmptyValue(claimField.getSubmitted())) {
             return true;
         }
-        return !hiddenFields.contains(claimField.getLabel());
+        return !hiddenFields.contains(claimField.getKey());
     }
 }

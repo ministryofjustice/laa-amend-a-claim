@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.justice.laa.amend.claim.utils.FormUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -14,29 +15,41 @@ import java.math.BigDecimal;
 public class ClaimField implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private String label;
+    private String key;
     private Object submitted;
     private Object calculated;
     private Object amended;
     private Cost cost;
     private AmendStatus status;
 
-    public ClaimField(String label, Object submitted, Object calculated) {
-        this(label, submitted, calculated, null);
+    public ClaimField(String key, Object submitted, Object calculated) {
+        this(key, submitted, calculated, null);
     }
 
-    public ClaimField(String label, Object submitted, Object calculated, Object amended) {
-        this(label, submitted, calculated);
+    public ClaimField(String key, Object submitted, Object calculated, Object amended) {
+        this(key, submitted, calculated);
         this.amended = amended;
     }
 
-    public ClaimField(String label, Object submitted, Object calculated, Cost cost) {
-        this.label = label;
+    public ClaimField(String key, Object submitted, Object calculated, Cost cost) {
+        this.key = key;
         this.submitted = submitted;
         this.calculated = calculated;
         this.amended = submitted;
         this.cost = cost;
         this.status = AmendStatus.NOT_AMENDABLE;
+    }
+
+    public String getLabel() {
+        return String.format("claimSummary.rows.%s", key);
+    }
+
+    public String getId() {
+        return FormUtils.toFieldId(key);
+    }
+
+    public String getErrorKey() {
+        return String.format("claimSummary.rows.%s.error", key);
     }
 
     /**

@@ -12,9 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,7 +36,7 @@ public class ClaimReviewController {
             return String.format("redirect:/submissions/%s/claims/%s", submissionId, claimId);
         }
 
-        return renderView(model, claim, submissionId, claimId, false);
+        return renderView(model, claim, submissionId, claimId);
     }
 
     @PostMapping("/submissions/{submissionId}/claims/{claimId}/review/discard")
@@ -61,25 +61,49 @@ public class ClaimReviewController {
         HttpServletResponse response
     ) {
         ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
-        String userId = oidcUser.getClaim("oid");
-        try {
-            assessmentService.submitAssessment(claim, userId);
-            session.removeAttribute(claimId);
-            return String.format("redirect:/submissions/%s/claims/%s/confirmation", submissionId, claimId);
-        } catch (Exception e) {
-            log.error("Failed to submit assessment for claim ID: {}", claimId, e);
+        ClaimDetailsView<? extends ClaimDetails> viewModel = claim.toViewModel();
+        if (viewModel.getErrors().isEmpty()) {
+            String userId = oidcUser.getClaim("oid");
+            try {
+                assessmentService.submitAssessment(claim, userId);
+                session.removeAttribute(claimId);
+                return String.format("redirect:/submissions/%s/claims/%s/confirmation", submissionId, claimId);
+            } catch (Exception e) {
+                log.error("Failed to submit assessment for claim ID: {}", claimId, e);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return renderView(model, claim, viewModel, submissionId, claimId, true, false);
+            }
+        } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return renderView(model, claim, submissionId, claimId, true);
+            return renderView(model, claim, viewModel, submissionId, claimId, false, true);
         }
     }
 
-    private String renderView(Model model, ClaimDetails claim, String submissionId, String claimId, boolean submissionFailed) {
+    private String renderView(
+        Model model,
+        ClaimDetails claim,
+        String submissionId,
+        String claimId
+    ) {
+        return renderView(model, claim, claim.toViewModel(), submissionId, claimId, false, false);
+    }
+
+    private String renderView(
+        Model model,
+        ClaimDetails claim,
+        ClaimDetailsView<? extends ClaimDetails> viewModel,
+        String submissionId,
+        String claimId,
+        boolean submissionFailed,
+        boolean validationFailed
+    ) {
         model.addAttribute("claim", claim);
-        model.addAttribute("viewModel", claim.toViewModel());
+        model.addAttribute("viewModel", viewModel);
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("backUrl", String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId));
         model.addAttribute("submissionFailed", submissionFailed);
+        model.addAttribute("validationFailed", validationFailed);
 
         return "review-and-amend";
     }

@@ -3,7 +3,6 @@ package uk.gov.justice.laa.amend.claim.models;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimDetailsView;
 
 import java.math.BigDecimal;
 
@@ -11,9 +10,12 @@ public class ClaimFieldTest {
 
     @Test
     void constructorWithoutAmendedValueShouldUseSubmittedValue() {
-        ClaimField claimField = new ClaimField("label", BigDecimal.ONE, BigDecimal.TWO);
+        ClaimField claimField = new ClaimField("fooBar", BigDecimal.ONE, BigDecimal.TWO);
 
-        Assertions.assertEquals("label", claimField.getLabel());
+        Assertions.assertEquals("fooBar", claimField.getKey());
+        Assertions.assertEquals("claimSummary.rows.fooBar", claimField.getLabel());
+        Assertions.assertEquals("claimSummary.rows.fooBar.error", claimField.getErrorKey());
+        Assertions.assertEquals("foo-bar", claimField.getId());
         Assertions.assertEquals(BigDecimal.ONE, claimField.getSubmitted());
         Assertions.assertEquals(BigDecimal.TWO, claimField.getCalculated());
         Assertions.assertEquals(BigDecimal.ONE, claimField.getAmended());
