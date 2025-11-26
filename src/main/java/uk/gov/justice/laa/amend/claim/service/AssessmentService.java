@@ -36,8 +36,8 @@ public class AssessmentService {
 
         switch (newOutcome) {
             case NILLED -> claim.setNilledValues();
+            case REDUCED -> claim.setReducedValues();
             case PAID_IN_FULL -> claim.setPaidInFullValues();
-            case REDUCED -> { /* implement business rules */ }
             case REDUCED_TO_FIXED_FEE -> claim.setReducedToFixedFeeValues();
             default -> log.warn("Unhandled outcome type: {}", newOutcome);
         }
