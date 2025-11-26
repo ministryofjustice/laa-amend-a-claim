@@ -41,7 +41,6 @@ public abstract class ClaimDetails extends Claim {
         applyIfNotNull(fixedFee, ClaimField::setAmendedToCalculated);
         applyIfNotNull(netProfitCost, ClaimField::setToNeedsAmending);
         applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(totalAmount, ClaimField::setAmendedToCalculated);
         applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToCalculated);
     }
 
@@ -50,14 +49,14 @@ public abstract class ClaimDetails extends Claim {
         applyIfNotNull(netProfitCost, ClaimField::setToNeedsAmending);
         applyIfNotNull(vatClaimed, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToSubmitted);
     }
       
     public void setPaidInFullValues() {
-        applyIfNotNull(vatClaimed, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(fixedFee, ClaimField::setAmendedToCalculated);
         applyIfNotNull(netProfitCost, ClaimField::setToNeedsAmending);
+        applyIfNotNull(vatClaimed, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(totalAmount, ClaimField::setAmendedToCalculated);
         applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToSubmitted);
     }
 
