@@ -105,7 +105,7 @@
   "created_by_user_id": "todo",
   "fee_calculation_response": {
     "calculated_fee_detail_id": null,
-    "claim_summary_fee_id": null,
+    "claim_summary_fee_id": "7db1e7e9-55f4-4240-bbe2-7a9ad8c105d3",
     "claim_id": "0199c9a4-64ec-79c6-a292-e250278f5f71",
     "fee_code": "CAPA",
     "fee_code_description": "Claims Against Public Authorities Legal Help Fixed Fee",

@@ -7,8 +7,6 @@ import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
-import java.math.BigDecimal;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CivilClaimDetails extends ClaimDetails {
@@ -28,11 +26,11 @@ public class CivilClaimDetails extends ClaimDetails {
         applyIfNotNull(counselsCost, ClaimField::setNilled);
         applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setNilled);
         applyIfNotNull(jrFormFillingCost, ClaimField::setNilled);
-        applyIfNotNull(adjournedHearing,  ClaimField::setNilled);
-        applyIfNotNull(cmrhTelephone,  ClaimField::setNilled);
-        applyIfNotNull(cmrhOral,  ClaimField::setNilled);
-        applyIfNotNull(hoInterview,  ClaimField::setNilled);
-        applyIfNotNull(substantiveHearing,  ClaimField::setNilled);
+        applyIfNotNull(adjournedHearing, ClaimField::setNilled);
+        applyIfNotNull(cmrhTelephone, ClaimField::setNilled);
+        applyIfNotNull(cmrhOral, ClaimField::setNilled);
+        applyIfNotNull(hoInterview, ClaimField::setNilled);
+        applyIfNotNull(substantiveHearing, ClaimField::setNilled);
     }
 
     @Override
@@ -56,11 +54,11 @@ public class CivilClaimDetails extends ClaimDetails {
         applyIfNotNull(counselsCost, ClaimField::setAmendedToSubmitted);
 
         // Bolt-ons get set to 0
-        applyIfNotNull(adjournedHearing, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(cmrhTelephone, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(cmrhOral, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(hoInterview, cf -> cf.setNilled(BigDecimal.ZERO));
-        applyIfNotNull(substantiveHearing, cf -> cf.setNilled(BigDecimal.ZERO));
+        applyIfNotNull(adjournedHearing, ClaimField::setNilled);
+        applyIfNotNull(cmrhTelephone, ClaimField::setNilled);
+        applyIfNotNull(cmrhOral, ClaimField::setNilled);
+        applyIfNotNull(hoInterview, ClaimField::setNilled);
+        applyIfNotNull(substantiveHearing, ClaimField::setNilled);
     }
       
     public void setPaidInFullValues() {

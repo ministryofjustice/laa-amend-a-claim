@@ -19,8 +19,8 @@ public class CrimeClaimDetails extends ClaimDetails {
     @Override
     public void setNilledValues() {
         super.setNilledValues();
-        applyIfNotNull(travelCosts,  ClaimField::setNilled);
-        applyIfNotNull(waitingCosts,  ClaimField::setNilled);
+        applyIfNotNull(travelCosts, ClaimField::setNilled);
+        applyIfNotNull(waitingCosts, ClaimField::setNilled);
     }
 
     @Override
