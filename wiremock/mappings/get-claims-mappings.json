@@ -5,12 +5,19 @@
     "queryParameters": {
       "office_code": {
         "matches": ".*"
+      },
+      "size": {
+        "equalTo": "10"
+      },
+      "page": {
+        "matches": ".*"
       }
     }
   },
   "response": {
     "status": 200,
     "bodyFileName": "get-claims-response.json",
+    "transformers": ["response-template"],
     "headers": {
       "Content-Type": "application/json"
     }

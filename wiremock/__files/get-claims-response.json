@@ -1148,7 +1148,7 @@
     }
   ],
   "total_pages": 12,
-  "total_elements": 112,
-  "number": 0,
-  "size": 10
+  "total_elements": 120,
+  "number": {{request.query.page}},
+  "size": {{request.query.size}}
 }
