@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 
 public class CrimeClaimDetailsViewTest {
 
@@ -30,6 +32,32 @@ public class CrimeClaimDetailsViewTest {
             claim.setScheduleReference("0U733A201802");
             ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
             Assertions.assertEquals("0U733A201802", viewModel.getAccountNumber());
+        }
+    }
+
+    @Nested
+    class GetAllowedTotalsTests {
+        @Test
+        void getAllowedTotalsHandlesNull() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAllowedTotals();
+
+            Assertions.assertEquals(List.of(), result);
+        }
+
+        @Test
+        void getAllowedTotalsHandlesValid() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", AmendStatus.NEEDS_AMENDING));
+            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAllowedTotals();
+
+            Assertions.assertEquals(claim.getAllowedTotalVat(), result.get(0));
+            Assertions.assertEquals(claim.getAllowedTotalInclVat(), result.get(1));
         }
     }
 

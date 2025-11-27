@@ -32,15 +32,6 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return rows;
     }
 
-    default Map<String, Object> getAllowedTotals() {
-        Map<String, Object> allowTotalRows = new LinkedHashMap<>();
-
-        allowTotalRows.put("allowedTotalVat", claim().getAllowedTotalVat());
-        allowTotalRows.put("allowedTotalInclVat", claim().getAllowedTotalInclVat());
-
-        return allowTotalRows;
-    }
-
     void addUcnSummaryRow(Map<String, Object> summaryRows);
 
     void addMatterTypeField(Map<String, Object> summaryRows);
@@ -57,6 +48,17 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
             rows,
             claim().getVatClaimed(),
             claim().getTotalAmount()
+        );
+
+        return rows;
+    }
+
+    default List<ClaimField> getAllowedTotals() {
+        List<ClaimField> rows = new ArrayList<>();
+        addRowIfNotNull(
+                rows,
+                claim().getAllowedTotalVat(),
+                claim().getAllowedTotalInclVat()
         );
 
         return rows;
@@ -91,6 +93,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         );
         return fields;
     }
+
 
     default List<ReviewAndAmendFormError> getErrors() {
         return claimFields()

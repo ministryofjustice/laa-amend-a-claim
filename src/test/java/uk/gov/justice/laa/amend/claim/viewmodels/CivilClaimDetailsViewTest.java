@@ -10,7 +10,9 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CivilClaimDetailsViewTest {
 
@@ -84,6 +86,34 @@ public class CivilClaimDetailsViewTest {
             claim.setSubmissionPeriod(YearMonth.of(2020, 1));
             ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
             Assertions.assertEquals("Jan 2020", viewModel.getSubmissionPeriodForDisplay());
+        }
+    }
+
+
+    @Nested
+    class GetAllowedTotalsTests {
+        @Test
+        void getAllowedTotalsHandlesNull() {
+            CivilClaimDetails claim = new CivilClaimDetails();
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAllowedTotals();
+
+            Assertions.assertEquals(List.of(), result);
+        }
+
+        @Test
+        void getAllowedTotalsHandlesValid() {
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", AmendStatus.NEEDS_AMENDING));
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAllowedTotals();
+
+            Assertions.assertEquals(claim.getAllowedTotalVat(), result.get(0));
+            Assertions.assertEquals(claim.getAllowedTotalInclVat(), result.get(1));
+
         }
     }
 
