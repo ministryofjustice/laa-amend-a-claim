@@ -5,7 +5,7 @@
         title=#{assessmentOutcome.title},
         mainContent=~{::#main-content},
         pageCategory=${null},
-        showBackLink=${false}
+        showBackLink=${true}
     )}">
     <body>
         <main class="govuk-main-wrapper" id="main-content">
@@ -15,80 +15,80 @@
 
                 <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toAssessmentOutcomeErrors(#fields.detailedErrors())})}"></th:block>
 
-                <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-heading-xl">
+                        <h1 class="govuk-fieldset__heading">
                             <span th:text="#{assessmentOutcome.mainHeading}"></span>
                         </h1>
                     </legend>
 
-                <div class="govuk-radios" data-module="govuk-radios"
-                     th:classappend="${#fields.hasErrors('assessmentOutcome')} ? 'govuk-form-group--error'">
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset">
+                            <div class="govuk-radios" data-module="govuk-radios"
+                                 th:classappend="${#fields.hasErrors('assessmentOutcome')} ? 'govuk-form-group--error'">
 
-                    <p class="govuk-error-message"
-                       th:if="${#fields.hasErrors('assessmentOutcome')}"
-                       th:errors="*{assessmentOutcome}"></p>
+                                <p class="govuk-error-message"
+                                   th:if="${#fields.hasErrors('assessmentOutcome')}"
+                                   th:errors="*{assessmentOutcome}"></p>
 
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="assessment-outcome" name="assessmentOutcome" type="radio" value="reduced-to-fixed-fee-assessed"
-                               th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'reduced-to-fixed-fee-assessed'}">
-                        <label class="govuk-label govuk-radios__label" for="assessment-outcome" th:text="#{assessmentOutcome.reducedAssessed}">
-                        </label>
-                    </div>
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="assessment-outcome-2" name="assessmentOutcome" type="radio" value="reduced-still-escaped"
-                               th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'reduced-still-escaped'}">
-                        <label class="govuk-label govuk-radios__label" for="assessment-outcome-2" th:text="#{assessmentOutcome.reducedStillEscaped}">
-                        </label>
-                    </div>
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="assessment-outcome-3" name="assessmentOutcome" type="radio" value="nilled"
-                               th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'nilled'}">
-                        <label class="govuk-label govuk-radios__label" for="assessment-outcome-3" th:text="#{assessmentOutcome.nilled}">
-                        </label>
-                    </div>
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="assessment-outcome-4" name="assessmentOutcome" type="radio" value="paid-in-full"
-                               th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'paid-in-full'}">
-                        <label class="govuk-label govuk-radios__label" for="assessment-outcome-4" th:text="#{assessmentOutcome.paidInFull}">
-                        </label>
-                    </div>
-                </div>
-                </fieldset>
-                </div>
-
-                <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <h2 class="govuk-label govuk-label--m">
-                                <span th:text="#{assessmentOutcome.vatLiabilitySubHeading}"></span>
-                            </h2>
-                        </legend>
-                        <div id="liabilityForVat-hint" class="govuk-hint" th:text="#{assessmentOutcome.vatLiabilityHint}"></div>
-                        <div th:classappend="${#fields.hasErrors('liabilityForVat')} ? 'govuk-form-group--error'">
-                        <p class="govuk-error-message"
-                           th:if="${#fields.hasErrors('liabilityForVat')}"
-                           th:errors="*{liabilityForVat}"></p>
-
-                        <div class="govuk-radios govuk-radios--inline govuk-radios--small" data-module="govuk-radios"
-                             >
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="liability-for-vat" name="liabilityForVat" type="radio" value="yes"
-                                       th:checked="${assessmentOutcomeForm.liabilityForVat != null && assessmentOutcomeForm.liabilityForVat}">
-                                <label class="govuk-label govuk-radios__label" for="liability-for-vat" th:text="#{service.yes}">
-                                </label>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="assessment-outcome" name="assessmentOutcome" type="radio" value="reduced-to-fixed-fee-assessed"
+                                           th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'reduced-to-fixed-fee-assessed'}">
+                                    <label class="govuk-label govuk-radios__label" for="assessment-outcome" th:text="#{assessmentOutcome.reducedAssessed}">
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="assessment-outcome-2" name="assessmentOutcome" type="radio" value="reduced-still-escaped"
+                                           th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'reduced-still-escaped'}">
+                                    <label class="govuk-label govuk-radios__label" for="assessment-outcome-2" th:text="#{assessmentOutcome.reducedStillEscaped}">
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="assessment-outcome-3" name="assessmentOutcome" type="radio" value="nilled"
+                                           th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'nilled'}">
+                                    <label class="govuk-label govuk-radios__label" for="assessment-outcome-3" th:text="#{assessmentOutcome.nilled}">
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="assessment-outcome-4" name="assessmentOutcome" type="radio" value="paid-in-full"
+                                           th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'paid-in-full'}">
+                                    <label class="govuk-label govuk-radios__label" for="assessment-outcome-4" th:text="#{assessmentOutcome.paidInFull}">
+                                    </label>
+                                </div>
                             </div>
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="liability-for-vat-2" name="liabilityForVat" type="radio" value="no"
-                                       th:checked="${assessmentOutcomeForm.liabilityForVat != null && !assessmentOutcomeForm.liabilityForVat}">
-                                <label class="govuk-label govuk-radios__label" for="liability-for-vat-2" th:text="#{service.no}">
-                                </label>
+                        </fieldset>
+                    </div>
+
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset" aria-describedby="liabilityForVat-hint">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                <h2 class="govuk-label govuk-label--m">
+                                    <span th:text="#{assessmentOutcome.vatLiabilitySubHeading}"></span>
+                                </h2>
+                            </legend>
+                            <div id="liabilityForVat-hint" class="govuk-hint" th:text="#{assessmentOutcome.vatLiabilityHint}"></div>
+                            <div th:classappend="${#fields.hasErrors('liabilityForVat')} ? 'govuk-form-group--error'">
+                            <p class="govuk-error-message"
+                               th:if="${#fields.hasErrors('liabilityForVat')}"
+                               th:errors="*{liabilityForVat}"></p>
+
+                            <div class="govuk-radios govuk-radios--inline govuk-radios--small" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="liability-for-vat" name="liabilityForVat" type="radio" value="yes"
+                                           th:checked="${assessmentOutcomeForm.liabilityForVat != null && assessmentOutcomeForm.liabilityForVat}">
+                                    <label class="govuk-label govuk-radios__label" for="liability-for-vat" th:text="#{service.yes}">
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="liability-for-vat-2" name="liabilityForVat" type="radio" value="no"
+                                           th:checked="${assessmentOutcomeForm.liabilityForVat != null && !assessmentOutcomeForm.liabilityForVat}">
+                                    <label class="govuk-label govuk-radios__label" for="liability-for-vat-2" th:text="#{service.no}">
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        </div>
-                    </fieldset>
-                </div>
+                            </div>
+                        </fieldset>
+                    </div>
 
                     <div class="govuk-button-group">
                         <button class="govuk-button" type="submit" th:text="#{assessmentOutcome.continue}"></button>
@@ -97,6 +97,7 @@
                            data-module="govuk-button"
                            th:text="#{assessmentOutcome.cancel}"></a>
                     </div>
+                </fieldset>
             </form>
         </main>
     </body>

@@ -38,3 +38,7 @@
 .govuk-summary-highlight-lastrow .govuk-summary-list__row:last-child {
     border-bottom: 1px solid #0B0C0C;
 }
+
+.moj-header__navigation-item-bold {
+    font-weight: bold;
+}

@@ -29,15 +29,15 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
     void testPage() throws Exception {
         Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Assessment Outcome");
+        assertPageHasTitle(doc, "Assessment outcome");
 
-        assertPageHasHeading(doc, "Assessment Outcome");
+        assertPageHasHeading(doc, "Assessment outcome");
         assertPageHasPrimaryButton(doc, "Continue");
         assertPageHasSecondaryButton(doc, "Cancel");
         assertPageHasNoActiveServiceNavigationItems(doc);
         assertPageHasRadioButtons(doc);
         assertPageHasInlineRadioButtons(doc);
-
+        assertPageHasBackLink(doc);
     }
 
     @Test
@@ -48,9 +48,9 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
 
         Document doc = renderDocumentWithErrors(params);
 
-        assertPageHasTitle(doc, "Assessment Outcome");
+        assertPageHasTitle(doc, "Assessment outcome");
 
-        assertPageHasHeading(doc, "Assessment Outcome");
+        assertPageHasHeading(doc, "Assessment outcome");
         assertPageHasPrimaryButton(doc, "Continue");
         assertPageHasSecondaryButton(doc, "Cancel");
         assertPageHasNoActiveServiceNavigationItems(doc);

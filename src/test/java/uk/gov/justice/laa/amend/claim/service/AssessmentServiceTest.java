@@ -442,8 +442,8 @@ class AssessmentServiceTest {
             assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
 
-            assertNull(claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+            assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetProfitCost().getStatus());
 
             assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
@@ -470,8 +470,8 @@ class AssessmentServiceTest {
             assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
 
-            assertNull(claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+            assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetProfitCost().getStatus());
 
             assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
@@ -516,8 +516,8 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
             // Then: Should apply PAID IN FULL logic and set values to zero
-            assertNull(claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+            assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetProfitCost().getStatus());
 
             assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
@@ -535,8 +535,8 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
             // Then: Should apply PAID IN FULL logic and set values to zero
-            assertNull(claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+            assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAmended());
+            assertEquals(AmendStatus.AMENDABLE, claim.getNetProfitCost().getStatus());
 
             assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
