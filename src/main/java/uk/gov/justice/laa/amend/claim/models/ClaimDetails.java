@@ -28,6 +28,10 @@ public abstract class ClaimDetails extends Claim {
     private ClaimField netDisbursementAmount;
     private ClaimField totalAmount;
     private ClaimField disbursementVatAmount;
+
+    private ClaimField allowedTotalVat;
+    private ClaimField allowedTotalInclVat;
+    
     private OutcomeType assessmentOutcome;
     private LocalDate submittedDate;
 

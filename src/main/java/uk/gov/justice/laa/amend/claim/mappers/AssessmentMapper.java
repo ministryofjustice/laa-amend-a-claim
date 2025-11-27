@@ -34,6 +34,8 @@ public interface AssessmentMapper {
     @Mapping(target = "boltOnSubstantiveHearingFee", ignore = true)
     @Mapping(target = "boltOnHomeOfficeInterviewFee", ignore = true)
     @Mapping(target = "createdByUserId", expression = "java(userId)")
+    @Mapping(target = "allowedTotalVat", expression = "java(mapAllowedTotalVat(claim))")
+    @Mapping(target = "allowedTotalInclVat", expression = "java(mapAllowedTotalInclVat(claim))")
     AssessmentPost mapClaimToAssessment(ClaimDetails claim, @Context String userId);
 
     @InheritConfiguration(name = "mapClaimToAssessment")
@@ -118,6 +120,14 @@ public interface AssessmentMapper {
 
     default BigDecimal mapBoltOnSubstantiveHearingFee(CivilClaimDetails claim) {
         return mapToBigDecimal(claim.getSubstantiveHearing());
+    }
+
+    default BigDecimal mapAllowedTotalVat(ClaimDetails claim) {
+        return mapToBigDecimal(claim.getAllowedTotalVat());
+    }
+
+    default BigDecimal mapAllowedTotalInclVat(ClaimDetails claim) {
+        return mapToBigDecimal(claim.getAllowedTotalInclVat());
     }
 
     private BigDecimal mapToBigDecimal(ClaimField field) {

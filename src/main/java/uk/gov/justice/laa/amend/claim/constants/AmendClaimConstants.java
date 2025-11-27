@@ -45,5 +45,8 @@ public class AmendClaimConstants {
         public static final String TOTAL = "total";
         public static final String TRAVEL_COSTS = "travel";
         public static final String WAITING_COSTS = "waiting";
+        public static final String ALLOWED_TOTAL_VAT = "allowedTotalVat";
+        public static final String ALLOWED_TOTAL_INCL_VAT = "allowedTotalInclVat";
+
     }
 }

@@ -33,6 +33,8 @@ public interface ClaimMapper {
     @Mapping(target = "feeScheme", source = "feeCalculationResponse.feeCodeDescription")
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
     @Mapping(target = "providerName", constant = "TODO")
+    @Mapping(target = "allowedTotalInclVat", source = ".", qualifiedByName = "mapAllowedTotalInclVat")
+    @Mapping(target = "allowedTotalVat", source = ".", qualifiedByName = "mapAllowedTotalVat")
     ClaimDetails mapToCommonDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
 
     @Mapping(target = "submissionId", source = "submissionId")

@@ -32,6 +32,15 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return rows;
     }
 
+    default Map<String, Object> getAllowedTotals() {
+        Map<String, Object> allowTotalRows = new LinkedHashMap<>();
+
+        allowTotalRows.put("allowedTotalVat", claim().getAllowedTotalVat());
+        allowTotalRows.put("allowedTotalInclVat", claim().getAllowedTotalInclVat());
+
+        return allowTotalRows;
+    }
+
     void addUcnSummaryRow(Map<String, Object> summaryRows);
 
     void addMatterTypeField(Map<String, Object> summaryRows);
