@@ -53,7 +53,7 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasTextInput(doc, "provider-account-number", "Provider account number");
 
-        assertPageHasDateInput(doc, "Submission date");
+        assertPageHasDateInput(doc, "Submission period");
 
         assertPageHasHint(doc, "submission-date-hint", "For example, 3 2007");
 
