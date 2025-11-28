@@ -39,6 +39,9 @@ public abstract class ClaimDetails extends Claim {
         applyIfNotNull(netProfitCost, ClaimField::setNilled);
         applyIfNotNull(netDisbursementAmount, ClaimField::setNilled);
         applyIfNotNull(disbursementVatAmount, ClaimField::setNilled);
+
+        applyIfNotNull(allowedTotalInclVat, ClaimField::setNilled);
+        applyIfNotNull(allowedTotalVat, ClaimField::setNilled);
     }
 
     public void setReducedToFixedFeeValues() {
