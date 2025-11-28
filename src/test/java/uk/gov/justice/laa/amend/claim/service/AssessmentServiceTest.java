@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -595,11 +596,11 @@ class AssessmentServiceTest {
             when(claimsApiClient.submitAssessment(claimId, assessment))
                 .thenReturn(Mono.just(response));
 
-            ResponseEntity<CreateAssessment201Response> result =
+            CreateAssessment201Response result =
                 assessmentService.submitAssessment(claim, userId);
 
             Assertions.assertNotNull(result);
-            assertEquals(response, result);
+            assertEquals(response.getBody(), result);
 
             verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
             verify(claimsApiClient).submitAssessment(claimId, assessment);
@@ -621,11 +622,11 @@ class AssessmentServiceTest {
             when(claimsApiClient.submitAssessment(claimId, assessment))
                 .thenReturn(Mono.just(response));
 
-            ResponseEntity<CreateAssessment201Response> result =
+            CreateAssessment201Response result =
                 assessmentService.submitAssessment(claim, userId);
 
             Assertions.assertNotNull(result);
-            assertEquals(response, result);
+            assertEquals(response.getBody(), result);
 
             verify(assessmentMapper).mapCrimeClaimToAssessment(claim, userId);
             verify(claimsApiClient).submitAssessment(claimId, assessment);
@@ -645,10 +646,33 @@ class AssessmentServiceTest {
             when(claimsApiClient.submitAssessment(claimId, assessment))
                 .thenReturn(Mono.empty());
 
-            ResponseEntity<CreateAssessment201Response> result =
-                assessmentService.submitAssessment(claim, userId);
+            assertThrows(
+                RuntimeException.class,
+                () -> assessmentService.submitAssessment(claim, userId)
+            );
 
-            assertNull(result);
+            verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
+            verify(claimsApiClient).submitAssessment(claimId, assessment);
+        }
+
+        @Test
+        void testWhenApiReturnsNullBody() {
+            String claimId = UUID.randomUUID().toString();
+            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            claim.setClaimId(claimId);
+            String userId = UUID.randomUUID().toString();
+            AssessmentPost assessment = new AssessmentPost();
+
+            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId))
+                .thenReturn(assessment);
+
+            when(claimsApiClient.submitAssessment(claimId, assessment))
+                .thenReturn(Mono.just(ResponseEntity.ok(null)));
+
+            assertThrows(
+                RuntimeException.class,
+                () -> assessmentService.submitAssessment(claim, userId)
+            );
 
             verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
             verify(claimsApiClient).submitAssessment(claimId, assessment);
