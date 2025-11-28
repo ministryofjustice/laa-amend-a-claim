@@ -63,20 +63,6 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return rows;
     }
 
-    /**
-     * Determines if a given row represents the total row.
-     *
-     * @param row the claim field row
-     * @return true if this is the total row
-     */
-    default boolean isVatRow(ClaimField row) {
-        return row != null && row.equals(claim().getVatClaimed());
-    }
-
-    default boolean isTotalInclVatRow(ClaimField row) {
-        return row != null && row.equals(claim().getAllowedTotalInclVat());
-    }
-
     default void addRowIfNotNull(List<ClaimField> list, ClaimField... claimFields) {
         for (ClaimField claimField : claimFields) {
             if (claimField != null) {
