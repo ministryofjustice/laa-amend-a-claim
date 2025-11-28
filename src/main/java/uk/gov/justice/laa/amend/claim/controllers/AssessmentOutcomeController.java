@@ -75,7 +75,7 @@ public class AssessmentOutcomeController {
             // Set the assessment outcome
             claim.setAssessmentOutcome(newOutcome);
 
-            // Update VAT liability in vatClaimed ClaimField
+            // Update VAT liability in vatClaimed
             if (claim.getVatClaimed() != null) {
                 claim.getVatClaimed().setAmended(form.getLiabilityForVat());
             }

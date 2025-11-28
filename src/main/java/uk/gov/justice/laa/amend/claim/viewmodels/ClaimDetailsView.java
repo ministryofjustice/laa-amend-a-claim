@@ -84,16 +84,11 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default List<ReviewAndAmendFormError> getErrors() {
-        return Stream.concat(
-                claimFields()
-                        .stream()
-                        .filter(ClaimField::needsAmending)
-                        .map(x -> new ReviewAndAmendFormError(x.getId(), x.getErrorKey())),
-                getAllowedTotals()
-                        .stream()
-                        .filter(ClaimField::needsAmending)
-                        .map(x -> new ReviewAndAmendFormError(x.getId(), x.getErrorKey()))
-        ).toList();
-
+        return Stream.of(
+                claimFields(), getAllowedTotals())
+                .flatMap(List::stream)
+                .filter(ClaimField::needsAmending)
+                .map(f -> new ReviewAndAmendFormError(f.getId(), f.getErrorKey()))
+                .toList();
     }
 }
