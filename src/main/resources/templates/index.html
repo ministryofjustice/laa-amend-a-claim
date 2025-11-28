@@ -72,6 +72,8 @@
                     <table class="govuk-table">
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header" th:text="#{index.results.claim}"></th>
+
                                 <th:block th:replace="~{partials/sortable-header :: sortableHeader(${form}, ${sorts}, 'uniqueFileNumber', 'index.results.uniqueFileNumber')}"></th:block>
 
                                 <th:block th:replace="~{partials/sortable-header :: sortableHeader(${form}, ${sorts}, 'caseReferenceNumber', 'index.results.caseReferenceNumber')}"></th:block>
@@ -90,11 +92,10 @@
                         <tbody class="govuk-table__body">
                             <tr class="govuk-table__row" th:each="claim : ${viewModel.claims}">
                                 <td class="govuk-table__cell">
-                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.claim.submissionId}, claimId=${claim.claim.claimId})}" th:text="${claim.claim.uniqueFileNumber}" class="govuk-link govuk-link--no-visited-state"></a>
+                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.claim.submissionId}, claimId=${claim.claim.claimId})}" th:text="#{service.view}" class="govuk-link govuk-link--no-visited-state"></a>
                                 </td>
-                                <td class="govuk-table__cell">
-                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.claim.submissionId}, claimId=${claim.claim.claimId})}" th:text="${claim.claim.caseReferenceNumber}" class="govuk-link govuk-link--no-visited-state"></a>
-                                </td>
+                                <td class="govuk-table__cell" th:text="${claim.claim.uniqueFileNumber}"></td>
+                                <td class="govuk-table__cell" th:text="${claim.claim.caseReferenceNumber}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.claim.clientSurname}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.submissionPeriodForDisplay}" th:data-sort-value="${claim.submissionPeriodForSorting}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.accountNumber}"></td>
