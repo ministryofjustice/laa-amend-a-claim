@@ -179,7 +179,6 @@ public class CrimeClaimDetailsViewTest {
             ClaimField travel = new ClaimField("5", null, null);
             ClaimField waiting = new ClaimField("6", null, null);
             ClaimField vatClaimed = new ClaimField("7", null, null);
-            ClaimField totalAmount = new ClaimField("8", null, null);
 
             CrimeClaimDetails claim = new CrimeClaimDetails();
             claim.setFixedFee(fixedFee);
@@ -189,7 +188,6 @@ public class CrimeClaimDetailsViewTest {
             claim.setTravelCosts(travel);
             claim.setWaitingCosts(waiting);
             claim.setVatClaimed(vatClaimed);
-            claim.setTotalAmount(totalAmount);
 
             CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
             List<ClaimField> expectedRows = List.of(
@@ -199,8 +197,7 @@ public class CrimeClaimDetailsViewTest {
                 disbursementVatAmount,
                 travel,
                 waiting,
-                vatClaimed,
-                totalAmount
+                vatClaimed
             );
             Assertions.assertEquals(expectedRows, viewModel.getTableRows());
         }
