@@ -2,8 +2,9 @@
     <div class="govuk-form-group" th:classappend="${#fields.hasErrors(name) ? 'govuk-form-group--error' : ''}">
         <label th:class="'govuk-label ' + ${labelClass}" th:for="${id}" th:text="#{${messageKey}}"></label>
         <th:block th:if="${showErrorMessage}">
-            <p th:if="${#fields.hasErrors(name)}" class="govuk-error-message" th:errors="*{__${name}__}">
+            <p th:if="${#fields.hasErrors(name)}" class="govuk-error-message">
                 <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                <th:block th:errors=" *{__${name}__}"></th:block>
             </p>
         </th:block>
         <input th:class="'govuk-input ' + ${inputWidth}"

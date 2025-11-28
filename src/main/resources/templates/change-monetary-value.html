@@ -30,7 +30,7 @@
 
                                     <p th:if="${#fields.hasErrors('value')}" class="govuk-error-message">
                                         <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
-                                        <span th:errors="*{value}"></span>
+                                        <th:block th:errors=" *{value}"></th:block>
                                     </p>
 
                                     <div class="govuk-input__wrapper">
