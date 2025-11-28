@@ -658,7 +658,7 @@ class AssessmentServiceTest {
         @Test
         void testWhenApiReturnsNullBody() {
             String claimId = UUID.randomUUID().toString();
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
             String userId = UUID.randomUUID().toString();
             AssessmentPost assessment = new AssessmentPost();
