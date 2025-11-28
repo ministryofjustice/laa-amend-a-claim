@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -93,6 +92,7 @@ public class ClaimReviewControllerTest {
     public void testSuccessfulSubmitRedirectsToConfirmation() throws Exception {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
+        UUID assessmentId = UUID.randomUUID();
         String userId = LocalSecurityConfig.userId;
 
         CivilClaimDetails claim = new CivilClaimDetails();
@@ -102,11 +102,14 @@ public class ClaimReviewControllerTest {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(claimId, claim);
 
+        CreateAssessment201Response response = new CreateAssessment201Response();
+        response.setId(assessmentId);
+
         when(assessmentService.submitAssessment(claim, userId))
-            .thenReturn(ResponseEntity.ok(new CreateAssessment201Response()));
+            .thenReturn(response);
 
         String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
-        String redirectUrl = String.format("/submissions/%s/claims/%s/confirmation", submissionId, claimId);
+        String redirectUrl = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
 
         mockMvc.perform(post(path).session(session))
             .andExpect(status().is3xxRedirection())

@@ -9,7 +9,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -23,8 +26,16 @@ public class ConfirmationControllerTest {
 
     @Test
     public void testOnPageLoadReturnsView() throws Exception {
-        mockMvc.perform(get("/submissions/submissionId/claims/claimId/confirmation"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("confirmation"));
+        String submissionId = UUID.randomUUID().toString();
+        String claimId = UUID.randomUUID().toString();
+        String assessmentId = UUID.randomUUID().toString();
+
+        String uri = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
+
+        mockMvc.perform(get(uri))
+            .andExpect(status().isOk())
+            .andExpect(view().name("confirmation"))
+            .andExpect(model().attribute("submissionId", submissionId))
+            .andExpect(model().attribute("claimId", claimId));
     }
 }

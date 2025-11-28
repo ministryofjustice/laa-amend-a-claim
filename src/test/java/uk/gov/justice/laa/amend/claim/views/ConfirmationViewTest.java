@@ -14,21 +14,23 @@ import uk.gov.justice.laa.amend.claim.controllers.ConfirmationController;
 class ConfirmationViewTest extends ViewTestBase {
 
     ConfirmationViewTest() {
-        super("/submissions/submissionId/claims/claimId/confirmation");
+        super("/submissions/submissionId/claims/claimId/assessments/assessmentId");
     }
 
     @Test
     void testPage() throws Exception {
         Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Adjustments submitted");
+        assertPageHasTitle(doc, "Assessment complete");
 
-        assertPageHasHeading(doc, "Adjustments submitted");
+        assertPageHasHeading(doc, "Assessment complete");
 
         assertPageHasPanel(doc);
 
-        assertPageHasContent(doc, "Your changes may take a few minutes to take effect");
+        assertPageHasContent(doc, "Your changes have been submitted");
 
         assertPageHasLink(doc, "go-to-search", "Go to search");
+
+        assertPageHasLink(doc, "view-assessed-claim", "View assessed claim");
     }
 }
