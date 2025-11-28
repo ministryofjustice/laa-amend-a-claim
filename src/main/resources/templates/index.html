@@ -27,14 +27,17 @@
                             <fieldset class="govuk-fieldset" role="group" aria-describedby="submission-date-hint">
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--s" th:text="#{index.submissionDate}"></legend>
                                 <div id="submission-date-hint" class="govuk-hint" th:text="#{index.submissionDate.hint}"></div>
-                                <p th:if="${#fields.hasErrors('submissionDateMonth') && #fields.hasErrors('submissionDateYear')}" class="govuk-error-message" th:errors="*{submissionDateMonth}">
+                                <p th:if="${#fields.hasErrors('submissionDateMonth') && #fields.hasErrors('submissionDateYear')}" class="govuk-error-message">
                                     <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                                    <th:block th:errors=" *{submissionDateMonth}"></th:block>
                                 </p>
-                                <p th:if="${#fields.hasErrors('submissionDateMonth') && !#fields.hasErrors('submissionDateYear')}" class="govuk-error-message" th:errors="*{submissionDateMonth}">
+                                <p th:if="${#fields.hasErrors('submissionDateMonth') && !#fields.hasErrors('submissionDateYear')}" class="govuk-error-message">
                                     <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                                    <th:block th:errors=" *{submissionDateMonth}"></th:block>
                                 </p>
-                                <p th:if="${!#fields.hasErrors('submissionDateMonth') && #fields.hasErrors('submissionDateYear')}" class="govuk-error-message" th:errors="*{submissionDateYear}">
+                                <p th:if="${!#fields.hasErrors('submissionDateMonth') && #fields.hasErrors('submissionDateYear')}" class="govuk-error-message">
                                     <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                                    <th:block th:errors=" *{submissionDateYear}"></th:block>
                                 </p>
                                 <div class="govuk-date-input">
                                     <div class="govuk-date-input__item">
@@ -72,6 +75,8 @@
                     <table class="govuk-table">
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header" th:text="#{index.results.claim}"></th>
+
                                 <th:block th:replace="~{partials/sortable-header :: sortableHeader(${form}, ${sorts}, 'uniqueFileNumber', 'index.results.uniqueFileNumber')}"></th:block>
 
                                 <th:block th:replace="~{partials/sortable-header :: sortableHeader(${form}, ${sorts}, 'caseReferenceNumber', 'index.results.caseReferenceNumber')}"></th:block>
@@ -90,11 +95,13 @@
                         <tbody class="govuk-table__body">
                             <tr class="govuk-table__row" th:each="claim : ${viewModel.claims}">
                                 <td class="govuk-table__cell">
-                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.claim.submissionId}, claimId=${claim.claim.claimId})}" th:text="${claim.claim.uniqueFileNumber}" class="govuk-link govuk-link--no-visited-state"></a>
+                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.claim.submissionId}, claimId=${claim.claim.claimId})}" class="govuk-link govuk-link--no-visited-state">
+                                        <th:block th:text="#{index.view}"></th:block>
+                                        <span class="govuk-visually-hidden" th:text=" #{index.view.hidden(${claim.clientName})}"></span>
+                                    </a>
                                 </td>
-                                <td class="govuk-table__cell">
-                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.claim.submissionId}, claimId=${claim.claim.claimId})}" th:text="${claim.claim.caseReferenceNumber}" class="govuk-link govuk-link--no-visited-state"></a>
-                                </td>
+                                <td class="govuk-table__cell" th:text="${claim.claim.uniqueFileNumber}"></td>
+                                <td class="govuk-table__cell" th:text="${claim.claim.caseReferenceNumber}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.claim.clientSurname}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.submissionPeriodForDisplay}" th:data-sort-value="${claim.submissionPeriodForSorting}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.accountNumber}"></td>
