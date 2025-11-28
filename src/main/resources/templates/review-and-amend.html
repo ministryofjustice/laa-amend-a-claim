@@ -50,8 +50,10 @@
                     <td class="govuk-table__cell">
                         <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                            th:id="${row.id}"
-                           class="govuk-link govuk-link--no-visited-state"
-                           th:text="#{service.add}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
+                           class="govuk-link govuk-link--no-visited-state">
+                            <th:block th:text="#{service.add}"></th:block>
+                            <span class="govuk-visually-hidden" th:text=" #{${row.label}}"></span>
+                        </a>
                     </td>
 
                     <td class="govuk-table__cell"></td>
@@ -65,8 +67,10 @@
                     <td class="govuk-table__cell">
                         <a th:if="${row.getChangeUrl(submissionId,claimId) != null}"
                            th:href="${row.getChangeUrl(submissionId,claimId)}"
-                           class="govuk-link govuk-link--no-visited-state"
-                           th:text="#{service.change}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
+                           class="govuk-link govuk-link--no-visited-state">
+                            <th:block th:text="#{service.change}"></th:block>
+                            <span class="govuk-visually-hidden" th:text=" #{${row.label}}"></span>
+                        </a>
                     </td>
                 </th:block>
 
