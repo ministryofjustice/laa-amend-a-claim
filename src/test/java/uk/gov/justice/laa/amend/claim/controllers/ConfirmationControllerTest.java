@@ -36,6 +36,6 @@ public class ConfirmationControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("confirmation"))
             .andExpect(model().attribute("submissionId", submissionId))
-            .andExpect(model().attribute("submissionId", submissionId));
+            .andExpect(model().attribute("claimId", claimId));
     }
 }
