@@ -20,11 +20,6 @@
     display: inline-block;
 }
 
-/* Total row styling - darker colour */
-.table-row--final-row td {
-    border-bottom: none;
-}
-
 .govuk-table__body .govuk-table__row:last-child > * {
     border-bottom: none !important;
 }

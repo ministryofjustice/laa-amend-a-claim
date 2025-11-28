@@ -36,6 +36,8 @@ public class CivilClaimDetailsTest {
             claim.setCmrhOral(new ClaimField());
             claim.setHoInterview(new ClaimField());
             claim.setSubstantiveHearing(new ClaimField());
+            claim.setAllowedTotalInclVat(new ClaimField());
+            claim.setAllowedTotalVat(new ClaimField());
 
             claim.setNilledValues();
             Assertions.assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
@@ -49,6 +51,8 @@ public class CivilClaimDetailsTest {
             Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhOral().getAmended());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getHoInterview().getAmended());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getSubstantiveHearing().getAmended());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalVat().getAmended());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalInclVat().getAmended());
         }
     }
 }

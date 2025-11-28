@@ -30,6 +30,8 @@ public class CrimeClaimDetailsTest {
             claim.setDisbursementVatAmount(new ClaimField());
             claim.setTravelCosts(new ClaimField());
             claim.setWaitingCosts(new ClaimField());
+            claim.setAllowedTotalInclVat(new ClaimField());
+            claim.setAllowedTotalVat(new ClaimField());
 
             claim.setNilledValues();
             Assertions.assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
@@ -37,6 +39,8 @@ public class CrimeClaimDetailsTest {
             Assertions.assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAmended());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getTravelCosts().getAmended());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getWaitingCosts().getAmended());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalInclVat().getAmended());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalVat().getAmended());
         }
     }
 }
