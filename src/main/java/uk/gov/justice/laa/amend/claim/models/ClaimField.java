@@ -67,6 +67,10 @@ public class ClaimField implements Serializable {
         return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
     }
 
+    public String getChangeUrlAllowedTotal(String submissionId, String claimId) {
+        return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, "allowed-totals");
+    }
+
     protected void setNilled() {
         setAmended(BigDecimal.ZERO, AmendStatus.NOT_AMENDABLE);
     }

@@ -118,7 +118,7 @@
 
                     <th:block th:if="${row.status.name() == 'NEEDS_AMENDING'}">
                         <td class="govuk-table__cell">
-                            <a href="#"
+                            <a th:href="${row.getChangeUrlAllowedTotal(submissionId, claimId)}"
                                th:id="${row.id}"
                                class="govuk-link govuk-link--no-visited-state"
                                th:text="#{service.add}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
@@ -133,7 +133,7 @@
                         </td>
 
                         <td class="govuk-table__cell">
-                            <a href="#"
+                            <a th:href="${row.getChangeUrlAllowedTotal(submissionId, claimId)}"
                                class="govuk-link govuk-link--no-visited-state"
                                th:text="#{service.change}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
                         </td>
