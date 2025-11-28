@@ -46,8 +46,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         List<ClaimField> rows = claimFields();
         addRowIfNotNull(
             rows,
-            claim().getVatClaimed(),
-            claim().getTotalAmount()
+            claim().getVatClaimed()
         );
 
         return rows;
@@ -70,8 +69,12 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
      * @param row the claim field row
      * @return true if this is the total row
      */
-    default boolean isTotalRow(ClaimField row) {
-        return row != null && row.equals(claim().getTotalAmount());
+    default boolean isVatRow(ClaimField row) {
+        return row != null && row.equals(claim().getVatClaimed());
+    }
+
+    default boolean isTotalInclVatRow(ClaimField row) {
+        return row != null && row.equals(claim().getAllowedTotalInclVat());
     }
 
     default void addRowIfNotNull(List<ClaimField> list, ClaimField... claimFields) {
