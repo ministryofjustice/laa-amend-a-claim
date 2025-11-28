@@ -5,9 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
-import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
-import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
@@ -55,8 +53,12 @@ public class AssessmentService {
         }
     }
 
-    public ResponseEntity<CreateAssessment201Response> submitAssessment(ClaimDetails claim, String userId) {
+    public CreateAssessment201Response submitAssessment(ClaimDetails claim, String userId) {
         AssessmentPost assessment = claim.toAssessment(assessmentMapper, userId);
-        return claimsApiClient.submitAssessment(claim.getClaimId(), assessment).block();
+        ResponseEntity<CreateAssessment201Response> response = claimsApiClient.submitAssessment(claim.getClaimId(), assessment).block();
+        if (response == null || response.getBody() == null) {
+            throw new RuntimeException(String.format("Failed to submit assessment for claim ID: %s", claim.getClaimId()));
+        }
+        return response.getBody();
     }
 }

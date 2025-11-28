@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
 @Controller
 @RequiredArgsConstructor
@@ -64,9 +65,9 @@ public class ClaimReviewController {
         if (viewModel.getErrors().isEmpty()) {
             String userId = oidcUser.getClaim("oid");
             try {
-                assessmentService.submitAssessment(claim, userId);
+                CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
                 session.removeAttribute(claimId);
-                return String.format("redirect:/submissions/%s/claims/%s/confirmation", submissionId, claimId);
+                return String.format("redirect:/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, result.getId());
             } catch (Exception e) {
                 log.error("Failed to submit assessment for claim ID: {}", claimId, e);
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

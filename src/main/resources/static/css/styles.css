@@ -3,10 +3,6 @@
     background-color: #f3f2f1;
 }
 
-.govuk-panel--left {
-    text-align: left;
-}
-
 .govuk-link--sort {
     display: inline-flex;
     align-items: center;
