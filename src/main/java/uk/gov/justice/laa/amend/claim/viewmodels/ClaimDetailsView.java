@@ -3,12 +3,12 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.Cost;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateValue;
 
@@ -83,12 +83,17 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return fields;
     }
 
-
     default List<ReviewAndAmendFormError> getErrors() {
-        return claimFields()
-            .stream()
-            .filter(ClaimField::needsAmending)
-            .map(x -> new ReviewAndAmendFormError(x.getId(), x.getErrorKey()))
-            .toList();
+        return Stream.concat(
+                claimFields()
+                        .stream()
+                        .filter(ClaimField::needsAmending)
+                        .map(x -> new ReviewAndAmendFormError(x.getId(), x.getErrorKey())),
+                getAllowedTotals()
+                        .stream()
+                        .filter(ClaimField::needsAmending)
+                        .map(x -> new ReviewAndAmendFormError(x.getId(), x.getErrorKey()))
+        ).toList();
+
     }
 }
