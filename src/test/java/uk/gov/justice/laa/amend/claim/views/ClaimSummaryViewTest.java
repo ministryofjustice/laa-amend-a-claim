@@ -103,8 +103,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
         CrimeClaimDetails claim = new CrimeClaimDetails();
         createClaimSummary(claim);
         claim.setMatterTypeCode("IMLB");
-        claim.setTravelCosts(new ClaimField(TRAVEL_COSTS, 100, 90, null));
-        claim.setWaitingCosts(new ClaimField(WAITING_COSTS, 50, 45, null));
+        claim.setTravelCosts(new ClaimField(TRAVEL_COSTS, 100, 90));
+        claim.setWaitingCosts(new ClaimField(WAITING_COSTS, 50, 45));
 
         claim.setAreaOfLaw("CRIME");
 

@@ -84,15 +84,15 @@ public class ClaimSummaryControllerTest {
         claim.setTotalAmount(new ClaimField(TOTAL, 1380, 1325, 1350));
         claim.setDisbursementVatAmount(new ClaimField(DISBURSEMENT_VAT, 40, 38, 39));
 
-// Civil-specific fields
-        claim.setDetentionTravelWaitingCosts(new ClaimField(DETENTION_TRAVEL_COST, BigDecimal.valueOf(50), BigDecimal.valueOf(55), null));
-        claim.setJrFormFillingCost(new ClaimField(JR_FORM_FILLING, BigDecimal.valueOf(30), BigDecimal.valueOf(35), null));
-        claim.setAdjournedHearing(new ClaimField(ADJOURNED_FEE, BigDecimal.valueOf(20), BigDecimal.valueOf(25), null));
-        claim.setCmrhTelephone(new ClaimField(CMRH_TELEPHONE, BigDecimal.valueOf(15), BigDecimal.valueOf(18), null));
-        claim.setCmrhOral(new ClaimField(CMRH_ORAL, BigDecimal.valueOf(40), BigDecimal.valueOf(45), null));
-        claim.setHoInterview(new ClaimField(HO_INTERVIEW, BigDecimal.valueOf(60), BigDecimal.valueOf(65), null));
-        claim.setSubstantiveHearing(new ClaimField(SUBSTANTIVE_HEARING, BigDecimal.valueOf(100), BigDecimal.valueOf(110), null));
-        claim.setCounselsCost(new ClaimField(COUNSELS_COST, BigDecimal.valueOf(200), BigDecimal.valueOf(220), null));
+        // Civil-specific fields
+        claim.setDetentionTravelWaitingCosts(new ClaimField(DETENTION_TRAVEL_COST, BigDecimal.valueOf(50), BigDecimal.valueOf(55)));
+        claim.setJrFormFillingCost(new ClaimField(JR_FORM_FILLING, BigDecimal.valueOf(30), BigDecimal.valueOf(35)));
+        claim.setAdjournedHearing(new ClaimField(ADJOURNED_FEE, BigDecimal.valueOf(20), BigDecimal.valueOf(25)));
+        claim.setCmrhTelephone(new ClaimField(CMRH_TELEPHONE, BigDecimal.valueOf(15), BigDecimal.valueOf(18)));
+        claim.setCmrhOral(new ClaimField(CMRH_ORAL, BigDecimal.valueOf(40), BigDecimal.valueOf(45)));
+        claim.setHoInterview(new ClaimField(HO_INTERVIEW, BigDecimal.valueOf(60), BigDecimal.valueOf(65)));
+        claim.setSubstantiveHearing(new ClaimField(SUBSTANTIVE_HEARING, BigDecimal.valueOf(100), BigDecimal.valueOf(110)));
+        claim.setCounselsCost(new ClaimField(COUNSELS_COST, BigDecimal.valueOf(200), BigDecimal.valueOf(220)));
         claim.setMatterTypeCode("IMM:DET");
 
         return claim;
