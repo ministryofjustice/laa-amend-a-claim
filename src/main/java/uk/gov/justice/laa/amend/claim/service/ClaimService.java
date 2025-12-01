@@ -14,7 +14,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.util.Optional;
 
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -29,18 +28,20 @@ public class ClaimService {
         String officeCode,
         Optional<String> uniqueFileNumber,
         Optional<String> caseReferenceNumber,
+        Optional<String> submissionPeriod,
         int page,
         int size,
         String sort
     ) {
         try {
             return claimsApiClient.searchClaims(
-                    officeCode.toUpperCase(),
-                    uniqueFileNumber.orElse(null),
-                    caseReferenceNumber.orElse(null),
-                    page - 1,
-                    size,
-                    searchProperties.isSortEnabled() ? sort : null
+                officeCode.toUpperCase(),
+                uniqueFileNumber.orElse(null),
+                caseReferenceNumber.orElse(null),
+                submissionPeriod.orElse(null),
+                page - 1,
+                size,
+                searchProperties.isSortEnabled() ? sort : null
             ).block();
         } catch (Exception e) {
             log.error("Error searching claims", e);
@@ -63,7 +64,7 @@ public class ClaimService {
         if (claimResponse == null || submissionResponse == null) {
             log.error("Claim or submission not found for submission {} and claim {}", submissionId, claimId);
             throw new ClaimNotFoundException(
-                    String.format("Claim with ID %s not found for submission %s", claimId, submissionId)
+                String.format("Claim with ID %s not found for submission %s", claimId, submissionId)
             );
         }
         return claimMapper.mapToClaimDetails(claimResponse, submissionResponse);
