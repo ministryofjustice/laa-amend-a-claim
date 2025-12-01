@@ -101,7 +101,6 @@ public class ClaimReviewController {
         model.addAttribute("viewModel", viewModel);
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
-        model.addAttribute("backUrl", String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId));
         model.addAttribute("submissionFailed", submissionFailed);
         model.addAttribute("validationFailed", validationFailed);
 
