@@ -29,13 +29,13 @@ class ChangeMonetaryValueViewTest extends ViewTestBase {
         session.setAttribute(claimId, claim);
         Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Amend profit costs");
+        assertPageHasTitle(doc, "Assess profit costs");
 
-        assertPageHasHeading(doc, "Amend profit costs");
+        assertPageHasHeading(doc, "Assess profit costs");
 
-        assertPageHasHint(doc, "value-hint", "Enter the amended value for the providers' profit costs, excluding VAT.");
+        assertPageHasHint(doc, "value-hint", "Enter the assessed value for the providers' profit costs, excluding VAT.");
 
-        assertPageHasTextInput(doc, "value", "Amend profit costs");
+        assertPageHasTextInput(doc, "value", "Assess profit costs");
     }
 
     @Test

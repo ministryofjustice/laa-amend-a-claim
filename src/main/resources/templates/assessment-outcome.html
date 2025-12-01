@@ -17,9 +17,7 @@
 
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">
-                            <span th:text="#{assessmentOutcome.mainHeading}"></span>
-                        </h1>
+                        <h1 class="govuk-fieldset__heading" th:text="#{assessmentOutcome.mainHeading}"></h1>
                     </legend>
 
                     <div class="govuk-form-group">
@@ -33,9 +31,9 @@
                                 </p>
 
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="assessment-outcome" name="assessmentOutcome" type="radio" value="reduced-to-fixed-fee-assessed"
-                                           th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'reduced-to-fixed-fee-assessed'}">
-                                    <label class="govuk-label govuk-radios__label" for="assessment-outcome" th:text="#{assessmentOutcome.reducedAssessed}">
+                                    <input class="govuk-radios__input" id="assessment-outcome" name="assessmentOutcome" type="radio" value="paid-in-full"
+                                           th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'paid-in-full'}">
+                                    <label class="govuk-label govuk-radios__label" for="assessment-outcome" th:text="#{assessmentOutcome.paidInFull}">
                                     </label>
                                 </div>
                                 <div class="govuk-radios__item">
@@ -45,15 +43,15 @@
                                     </label>
                                 </div>
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="assessment-outcome-3" name="assessmentOutcome" type="radio" value="nilled"
-                                           th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'nilled'}">
-                                    <label class="govuk-label govuk-radios__label" for="assessment-outcome-3" th:text="#{assessmentOutcome.nilled}">
+                                    <input class="govuk-radios__input" id="assessment-outcome-3" name="assessmentOutcome" type="radio" value="reduced-to-fixed-fee-assessed"
+                                           th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'reduced-to-fixed-fee-assessed'}">
+                                    <label class="govuk-label govuk-radios__label" for="assessment-outcome-3" th:text="#{assessmentOutcome.reducedAssessed}">
                                     </label>
                                 </div>
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="assessment-outcome-4" name="assessmentOutcome" type="radio" value="paid-in-full"
-                                           th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'paid-in-full'}">
-                                    <label class="govuk-label govuk-radios__label" for="assessment-outcome-4" th:text="#{assessmentOutcome.paidInFull}">
+                                    <input class="govuk-radios__input" id="assessment-outcome-4" name="assessmentOutcome" type="radio" value="nilled"
+                                           th:checked="${assessmentOutcomeForm.assessmentOutcome != null && assessmentOutcomeForm.assessmentOutcome.formValue == 'nilled'}">
+                                    <label class="govuk-label govuk-radios__label" for="assessment-outcome-4" th:text="#{assessmentOutcome.nilled}">
                                     </label>
                                 </div>
                             </div>
@@ -61,13 +59,9 @@
                     </div>
 
                     <div class="govuk-form-group">
-                        <fieldset class="govuk-fieldset" aria-describedby="liabilityForVat-hint">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                <h2 class="govuk-label govuk-label--m">
-                                    <span th:text="#{assessmentOutcome.vatLiabilitySubHeading}"></span>
-                                </h2>
-                            </legend>
-                            <div id="liabilityForVat-hint" class="govuk-hint" th:text="#{assessmentOutcome.vatLiabilityHint}"></div>
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m" th:text="#{assessmentOutcome.vatLiabilitySubHeading}"></legend>
+
                             <div th:classappend="${#fields.hasErrors('liabilityForVat')} ? 'govuk-form-group--error'">
                                 <p th:if="${#fields.hasErrors('liabilityForVat')}" class="govuk-error-message">
                                     <span class="govuk-visually-hidden" th:text="#{form.error}"></span>

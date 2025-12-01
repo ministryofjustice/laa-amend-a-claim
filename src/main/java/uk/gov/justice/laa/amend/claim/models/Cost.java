@@ -65,6 +65,10 @@ public enum Cost {
         this.accessor = accessor;
     }
 
+    public String getChangeUrl() {
+        return "/submissions/%s/claims/%s/" + path;
+    }
+
     public static Cost fromPath(String path) {
         return Arrays
             .stream(values())

@@ -40,7 +40,7 @@ public class ClaimMapperHelper {
     public ClaimField mapFixedFee(ClaimResponse claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getFixedFeeAmount() : null;
-        return new ClaimField(FIXED_FEE, null, calculated, null);
+        return new ClaimField(FIXED_FEE, null, calculated, (Object) null);
     }
 
     @Named("mapNetProfitCost")
@@ -56,7 +56,7 @@ public class ClaimMapperHelper {
         var submitted = claimResponse.getIsVatApplicable();
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 && Boolean.TRUE.equals(claimResponse.getFeeCalculationResponse().getVatIndicator());
-        return new ClaimField(VAT, submitted, calculated);
+        return new ClaimField(VAT, submitted, calculated, "/submissions/%s/claims/%s/assessment-outcome");
     }
 
     @Named("mapNetDisbursementAmount")
@@ -105,7 +105,7 @@ public class ClaimMapperHelper {
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnAdjournedHearingFee() : null;
-        return new ClaimField(ADJOURNED_FEE, submitted, calculated, null);
+        return new ClaimField(ADJOURNED_FEE, submitted, calculated);
     }
 
     @Named("mapCmrhTelephone")
@@ -141,7 +141,7 @@ public class ClaimMapperHelper {
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnHomeOfficeInterviewFee() : null;
-        return new ClaimField(SUBSTANTIVE_HEARING, submitted, calculated, submitted);
+        return new ClaimField(SUBSTANTIVE_HEARING, submitted, calculated);
     }
 
     @Named("mapTravelCosts")

@@ -3,14 +3,13 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.Cost;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateValue;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayFullDateValue;
 
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
 
@@ -19,14 +18,14 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("clientName", getClientName());
         rows.put("ufn", claim().getUniqueFileNumber());
         addUcnSummaryRow(rows);
-        rows.put("submittedDate", displayDateValue(claim().getSubmittedDate()));
+        rows.put("submittedDate", getDateSubmittedForDisplay());
         rows.put("providerAccountNumber", claim().getProviderAccountNumber());
         rows.put("areaOfLaw", claim().getAreaOfLaw());
         rows.put("categoryOfLaw", claim().getCategoryOfLaw());
         rows.put("feeScheme", claim().getFeeScheme());
         addMatterTypeField(rows);
-        rows.put("caseStartDate", displayDateValue(claim().getCaseStartDate()));
-        rows.put("caseEndDate", displayDateValue(claim().getCaseEndDate()));
+        rows.put("caseStartDate", getCaseStartDateForDisplay());
+        rows.put("caseEndDate", getCaseEndDateForDisplay());
         rows.put("escaped", claim().getEscaped());
         rows.put("vatRequested", claim().getVatApplicable());
         return rows;
@@ -89,5 +88,19 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
             .filter(ClaimField::needsAmending)
             .map(x -> new ReviewAndAmendFormError(x.getId(), x.getErrorKey()))
             .toList();
+    }
+
+    @Override
+    default String getCaseStartDateForDisplay() {
+        return displayFullDateValue(claim().getCaseStartDate());
+    }
+
+    @Override
+    default String getCaseEndDateForDisplay() {
+        return displayFullDateValue(claim().getCaseEndDate());
+    }
+
+    default String getDateSubmittedForDisplay() {
+        return displayFullDateValue(claim().getSubmittedDate());
     }
 }

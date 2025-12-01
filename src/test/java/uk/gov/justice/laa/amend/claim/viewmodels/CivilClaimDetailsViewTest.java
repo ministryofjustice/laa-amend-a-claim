@@ -47,7 +47,7 @@ public class CivilClaimDetailsViewTest {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
             ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals("01 Jan 2020", viewModel.getCaseStartDateForDisplay());
+            Assertions.assertEquals("01 January 2020", viewModel.getCaseStartDateForDisplay());
         }
     }
 
@@ -65,7 +65,7 @@ public class CivilClaimDetailsViewTest {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setCaseEndDate(LocalDate.of(2020, 1, 1));
             ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals("01 Jan 2020", viewModel.getCaseEndDateForDisplay());
+            Assertions.assertEquals("01 January 2020", viewModel.getCaseEndDateForDisplay());
         }
     }
 
@@ -267,14 +267,14 @@ public class CivilClaimDetailsViewTest {
                 netProfitCost,
                 netDisbursementAmount,
                 disbursementVatAmount,
-                counselCost,
                 detention,
                 jrFormFilling,
-                adjournedHearing,
-                cmrhTelephone,
+                counselCost,
                 cmrhOral,
+                cmrhTelephone,
                 hoInterview,
                 substantiveHearing,
+                adjournedHearing,
                 vatClaimed,
                 totalAmount
             );

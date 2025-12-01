@@ -19,7 +19,7 @@ public class ClaimFieldTest {
         Assertions.assertEquals(BigDecimal.ONE, claimField.getSubmitted());
         Assertions.assertEquals(BigDecimal.TWO, claimField.getCalculated());
         Assertions.assertEquals(BigDecimal.ONE, claimField.getAmended());
-        Assertions.assertNull(claimField.getCost());
+        Assertions.assertNull(claimField.getChangeUrl());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class ClaimFieldTest {
         @Test
         void returnUrlWhenRowCostIsNotNull() {
             ClaimField claimField = new ClaimField();
-            claimField.setCost(Cost.PROFIT_COSTS);
+            claimField.setChangeUrl(Cost.PROFIT_COSTS.getChangeUrl());
             String expectedResult = "/submissions/foo/claims/bar/profit-costs";
             Assertions.assertEquals(expectedResult, claimField.getChangeUrl(submissionId, claimId));
         }
