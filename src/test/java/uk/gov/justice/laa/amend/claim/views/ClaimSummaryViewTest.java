@@ -87,15 +87,15 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Fee scheme", "CCS");
         assertPageHasSummaryListRow(doc, "Matter type 1", "IMLB");
         assertPageHasSummaryListRow(doc, "Matter type 2", "AHQS");
-        assertPageHasSummaryListRow(doc, "Provider Account Number", "0P322F");
+        assertPageHasSummaryListRow(doc, "Provider account number", "0P322F");
         assertPageHasSummaryListRow(doc, "Client name", "John Doe");
         assertPageHasSummaryListRow(doc, "Case start date", "01 Jan 2020");
         assertPageHasSummaryListRow(doc, "Case end date", "31 Dec 2020");
         assertPageHasSummaryListRow(doc, "Date submitted", displayDateValue(claim.getSubmittedDate()));
         assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
-        assertPageHasValuesRow(doc, "CMRH oral", claim.getCmrhOral());
-        assertPageHasValuesRow(doc, "CMRH telephone", claim.getCmrhTelephone());
-        assertPageHasValuesRow(doc, "Counsel's costs (ex VAT)", claim.getCounselsCost());
+        assertPageHasValuesRow(doc, "Oral CMRH", claim.getCmrhOral());
+        assertPageHasValuesRow(doc, "Telephone CMRH", claim.getCmrhTelephone());
+        assertPageHasValuesRow(doc, "Counsel costs", claim.getCounselsCost());
     }
 
     @Test
@@ -127,7 +127,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Area of law", "CRIME");
         assertPageHasSummaryListRow(doc, "Fee scheme", "CCS");
         assertPageHasSummaryListRow(doc, "Matter type", "IMLB");
-        assertPageHasSummaryListRow(doc, "Provider Account Number", "0P322F");
+        assertPageHasSummaryListRow(doc, "Provider account number", "0P322F");
         assertPageHasSummaryListRow(doc, "Client name", "John Doe");
         assertPageHasSummaryListRow(doc, "Case start date", "01 Jan 2020");
         assertPageHasSummaryListRow(doc, "Case end date", "31 Dec 2020");
@@ -184,16 +184,16 @@ class ClaimSummaryViewTest extends ViewTestBase {
             Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", 0), false),
             Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", 22), true),
             Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", null), false),
-            Arguments.of("CMRH telephone", withField(CMRH_TELEPHONE, "setCmrhTelephone",  null), false),
-            Arguments.of("CMRH telephone", withField(CMRH_TELEPHONE, "setCmrhTelephone",  3), true),
-            Arguments.of("CMRH oral", withField(CMRH_ORAL, "setCmrhOral",  0), false),
+            Arguments.of("Telephone CMRH", withField(CMRH_TELEPHONE, "setCmrhTelephone",  null), false),
+            Arguments.of("Telephone CMRH", withField(CMRH_TELEPHONE, "setCmrhTelephone",  3), true),
+            Arguments.of("Oral CMRH", withField(CMRH_ORAL, "setCmrhOral",  0), false),
             Arguments.of("Home office interview", withField(HO_INTERVIEW, "setHoInterview",  0), false),
             Arguments.of("Home office interview", withField(HO_INTERVIEW, "setHoInterview",  null), false),
             Arguments.of("Substantive hearing", withField(SUBSTANTIVE_HEARING, "setSubstantiveHearing", 0), false),
             Arguments.of("Substantive hearing", withField(SUBSTANTIVE_HEARING, "setSubstantiveHearing", 4), true),
-            Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", BigDecimal.ZERO), false),
-            Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", null), false),
-            Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", new BigDecimal(20)), true)
+            Arguments.of("JR and form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", BigDecimal.ZERO), false),
+            Arguments.of("JR and form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", null), false),
+            Arguments.of("JR and form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", new BigDecimal(20)), true)
         );
     }
 

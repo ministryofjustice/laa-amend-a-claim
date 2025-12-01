@@ -267,14 +267,14 @@ public class CivilClaimDetailsViewTest {
                 netProfitCost,
                 netDisbursementAmount,
                 disbursementVatAmount,
-                counselCost,
                 detention,
                 jrFormFilling,
-                adjournedHearing,
-                cmrhTelephone,
+                counselCost,
                 cmrhOral,
+                cmrhTelephone,
                 hoInterview,
                 substantiveHearing,
+                adjournedHearing,
                 vatClaimed,
                 totalAmount
             );

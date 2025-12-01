@@ -42,14 +42,14 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
         List<ClaimField> fields = ClaimDetailsView.super.claimFields();
         addRowIfNotNull(
             fields,
-            claim.getCounselsCost(),
             claim.getDetentionTravelWaitingCosts(),
             claim.getJrFormFillingCost(),
-            claim.getAdjournedHearing(),
-            claim.getCmrhTelephone(),
+            claim.getCounselsCost(),
             claim.getCmrhOral(),
+            claim.getCmrhTelephone(),
             claim.getHoInterview(),
-            claim.getSubstantiveHearing()
+            claim.getSubstantiveHearing(),
+            claim.getAdjournedHearing()
         );
         return fields;
     }
