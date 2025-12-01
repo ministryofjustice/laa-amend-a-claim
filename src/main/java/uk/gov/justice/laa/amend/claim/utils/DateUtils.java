@@ -7,15 +7,15 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAU
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.FULL_DATE_FORMAT;
 
 public class DateUtils {
+    private static String displayDateValue(LocalDate localDate, String format) {
+        return localDate != null ? localDate.format(DateTimeFormatter.ofPattern(format)) : null;
+    }
+
     public static String displayDateValue(LocalDate localDate) {
         return displayDateValue(localDate, DEFAULT_DATE_FORMAT);
     }
 
     public static String displayFullDateValue(LocalDate localDate) {
         return displayDateValue(localDate, FULL_DATE_FORMAT);
-    }
-
-    private static String displayDateValue(LocalDate localDate, String format) {
-        return localDate != null ? localDate.format(DateTimeFormatter.ofPattern(format)) : null;
     }
 }
