@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uk.gov.justice.laa.amend.claim.forms.annotations.ValidMonetaryValue;
-import uk.gov.justice.laa.amend.claim.models.Cost;
+import uk.gov.justice.laa.amend.claim.forms.annotations.ValidAllowedTotal;
 
 import java.math.BigDecimal;
 
@@ -13,6 +12,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ValidAllowedTotal
 public class AllowedTotalForm {
 
     private String allowedTotalVat;

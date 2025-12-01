@@ -5,11 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
+import uk.gov.justice.laa.amend.claim.forms.AllowedTotalForm;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
+import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldAccessor;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * Service for amending claim values when the assessment outcome change.
@@ -53,6 +61,20 @@ public class AssessmentService {
         }
     }
 
+    public void applyAllowedTotals(ClaimDetails claim, AllowedTotalForm form) {
+        ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
+        ClaimField allowedTotalInclVatField = claim.getAllowedTotalInclVat();
+
+        BigDecimal allowedTotalInclVat = setScale(new BigDecimal(form.getAllowedTotalInclVat()));
+        BigDecimal allowedTotalVat = setScale(new BigDecimal(form.getAllowedTotalVat()));
+
+        allowedTotalInclVatField.setAmended(allowedTotalInclVat);
+        allowedTotalVatField.setAmended(allowedTotalVat);
+
+        allowedTotalVatField.setStatus(AmendStatus.AMENDABLE);
+        allowedTotalInclVatField.setStatus(AmendStatus.AMENDABLE);
+    }
+
     public CreateAssessment201Response submitAssessment(ClaimDetails claim, String userId) {
         AssessmentPost assessment = claim.toAssessment(assessmentMapper, userId);
         ResponseEntity<CreateAssessment201Response> response = claimsApiClient.submitAssessment(claim.getClaimId(), assessment).block();
@@ -60,5 +82,9 @@ public class AssessmentService {
             throw new RuntimeException(String.format("Failed to submit assessment for claim ID: %s", claim.getClaimId()));
         }
         return response.getBody();
+    }
+
+    private BigDecimal setScale(BigDecimal value) {
+        return value.setScale(2, RoundingMode.HALF_UP);
     }
 }
