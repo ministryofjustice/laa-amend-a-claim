@@ -23,6 +23,7 @@ public interface ClaimsApiClient {
             @RequestParam(value = "office_code") String officeCode,
             @RequestParam(value = "unique_file_number", required = false, defaultValue = "") String uniqueFileNumber,
             @RequestParam(value = "case_reference_number", required = false, defaultValue = "") String caseReferenceNumber,
+            @RequestParam(value = "submission_period", required = false, defaultValue = "") String submissionPeriod,
             @RequestParam(value = "page", required = false) int page,
             @RequestParam(value = "size", required = false) int size,
             @RequestParam(value = "sort", required = false) String sort
