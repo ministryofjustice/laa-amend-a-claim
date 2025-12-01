@@ -29,8 +29,22 @@ import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.*;
-import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateValue;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 
 @ActiveProfiles("local")
 @WebMvcTest(ClaimSummaryController.class)
@@ -89,9 +103,9 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Matter type 2", "AHQS");
         assertPageHasSummaryListRow(doc, "Provider account number", "0P322F");
         assertPageHasSummaryListRow(doc, "Client name", "John Doe");
-        assertPageHasSummaryListRow(doc, "Case start date", "01 Jan 2020");
-        assertPageHasSummaryListRow(doc, "Case end date", "31 Dec 2020");
-        assertPageHasSummaryListRow(doc, "Date submitted", displayDateValue(claim.getSubmittedDate()));
+        assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
+        assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
+        assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020");
         assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
         assertPageHasValuesRow(doc, "Oral CMRH", claim.getCmrhOral());
         assertPageHasValuesRow(doc, "Telephone CMRH", claim.getCmrhTelephone());
@@ -129,9 +143,9 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Matter type", "IMLB");
         assertPageHasSummaryListRow(doc, "Provider account number", "0P322F");
         assertPageHasSummaryListRow(doc, "Client name", "John Doe");
-        assertPageHasSummaryListRow(doc, "Case start date", "01 Jan 2020");
-        assertPageHasSummaryListRow(doc, "Case end date", "31 Dec 2020");
-        assertPageHasSummaryListRow(doc, "Date submitted",displayDateValue(claim.getSubmittedDate()));
+        assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
+        assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
+        assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020");
         assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
         assertPageHasValuesRow(doc, "Travel costs", claim.getTravelCosts());
         assertPageHasValuesRow(doc, "Waiting costs", claim.getWaitingCosts());
@@ -147,7 +161,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setClientSurname("Doe");
         claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
         claim.setCaseEndDate(LocalDate.of(2020, 12, 31));
-        claim.setSubmittedDate(LocalDate.now());
+        claim.setSubmittedDate(LocalDate.of(2020, 6, 15));
 
         // Set ClaimFieldRow fields
         claim.setVatClaimed(new ClaimField(VAT, 80, 75, 78));

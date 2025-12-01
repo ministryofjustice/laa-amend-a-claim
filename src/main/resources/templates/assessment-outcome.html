@@ -17,9 +17,7 @@
 
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">
-                            <span th:text="#{assessmentOutcome.mainHeading}"></span>
-                        </h1>
+                        <h1 class="govuk-fieldset__heading" th:text="#{assessmentOutcome.mainHeading}"></h1>
                     </legend>
 
                     <div class="govuk-form-group">
@@ -62,11 +60,7 @@
 
                     <div class="govuk-form-group">
                         <fieldset class="govuk-fieldset">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                <h2 class="govuk-label govuk-label--m">
-                                    <span th:text="#{assessmentOutcome.vatLiabilitySubHeading}"></span>
-                                </h2>
-                            </legend>
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m" th:text="#{assessmentOutcome.vatLiabilitySubHeading}"></legend>
 
                             <div th:classappend="${#fields.hasErrors('liabilityForVat')} ? 'govuk-form-group--error'">
                                 <p th:if="${#fields.hasErrors('liabilityForVat')}" class="govuk-error-message">
