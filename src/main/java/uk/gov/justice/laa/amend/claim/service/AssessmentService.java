@@ -5,13 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
-import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
-import uk.gov.justice.laa.amend.claim.forms.AllowedTotalForm;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldAccessor;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
@@ -59,20 +54,6 @@ public class AssessmentService {
             case REDUCED_TO_FIXED_FEE -> claim.setReducedToFixedFeeValues();
             default -> log.warn("Unhandled outcome type: {}", newOutcome);
         }
-    }
-
-    public void applyAllowedTotals(ClaimDetails claim, AllowedTotalForm form) {
-        ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
-        ClaimField allowedTotalInclVatField = claim.getAllowedTotalInclVat();
-
-        BigDecimal allowedTotalInclVat = setScale(new BigDecimal(form.getAllowedTotalInclVat()));
-        BigDecimal allowedTotalVat = setScale(new BigDecimal(form.getAllowedTotalVat()));
-
-        allowedTotalInclVatField.setAmended(allowedTotalInclVat);
-        allowedTotalVatField.setAmended(allowedTotalVat);
-
-        allowedTotalVatField.setStatus(AmendStatus.AMENDABLE);
-        allowedTotalInclVatField.setStatus(AmendStatus.AMENDABLE);
     }
 
     public CreateAssessment201Response submitAssessment(ClaimDetails claim, String userId) {

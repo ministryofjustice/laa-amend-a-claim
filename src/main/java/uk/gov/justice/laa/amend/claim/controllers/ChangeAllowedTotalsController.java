@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.forms.AllowedTotalForm;
-import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldAccessor;
-import uk.gov.justice.laa.amend.claim.service.AssessmentService;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 
 @Controller
@@ -27,16 +26,31 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/allowed-totals")
 public class ChangeAllowedTotalsController {
 
-    private final AssessmentService assessmentService;
-
     @GetMapping()
     public String loadPage(@PathVariable String claimId,
                            @PathVariable String submissionId,
                            Model model,
-                           HttpServletResponse response) {
+                           HttpSession session) {
 
+        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
         model.addAttribute("redirectUrl", getRedirectUrl(submissionId, claimId));
         AllowedTotalForm allowedTotalForm = new AllowedTotalForm();
+
+        if (claim != null) {
+            ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
+            ClaimField allowedTotalInclVatField = claim.getAllowedTotalInclVat();
+
+            BigDecimal allowedTotalVat = allowedTotalVatField != null ? (BigDecimal) allowedTotalVatField.getAmended() : null;
+            BigDecimal allowedTotalInclVat = allowedTotalInclVatField != null ? (BigDecimal) allowedTotalInclVatField.getAmended() : null;
+
+            if (allowedTotalVat != null) {
+                allowedTotalForm.setAllowedTotalVat(setScale(allowedTotalVat).toString());
+            }
+
+            if (allowedTotalInclVat != null) {
+                allowedTotalForm.setAllowedTotalInclVat(setScale(allowedTotalInclVat).toString());
+            }
+        }
 
         return renderView(model, allowedTotalForm, submissionId, claimId);
     }
@@ -60,7 +74,17 @@ public class ChangeAllowedTotalsController {
 
 
         if (claim != null) {
-            assessmentService.applyAllowedTotals(claim, allowedTotalForm);
+            ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
+            ClaimField allowedTotalInclVatField = claim.getAllowedTotalInclVat();
+
+            BigDecimal allowedTotalInclVat = setScale(new BigDecimal(allowedTotalForm.getAllowedTotalInclVat()));
+            BigDecimal allowedTotalVat = setScale(new BigDecimal(allowedTotalForm.getAllowedTotalVat()));
+
+            allowedTotalInclVatField.setAmended(allowedTotalInclVat);
+            allowedTotalVatField.setAmended(allowedTotalVat);
+
+            allowedTotalVatField.setStatus(AmendStatus.AMENDABLE);
+            allowedTotalInclVatField.setStatus(AmendStatus.AMENDABLE);
 
             // Save updated Claim back to session
             session.setAttribute(claimId, claim);
@@ -69,6 +93,10 @@ public class ChangeAllowedTotalsController {
         return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
     }
 
+    // TODO: Pull this into a util or something - being reused in various places
+    private BigDecimal setScale(BigDecimal value) {
+        return value.setScale(2, RoundingMode.HALF_UP);
+    }
 
     private String renderView(Model model, AllowedTotalForm form, String submissionId, String claimId) {
         model.addAttribute("allowedTotalForm", form);
