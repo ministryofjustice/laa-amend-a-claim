@@ -62,7 +62,6 @@ public class ClaimReviewControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("review-and-amend"))
             .andExpect(model().attributeExists("claim"))
-            .andExpect(model().attributeExists("backUrl"))
             .andExpect(model().attribute("claimId", claimId))
             .andExpect(model().attribute("submissionId", submissionId))
             .andExpect(model().attribute("submissionFailed", false))
@@ -143,7 +142,6 @@ public class ClaimReviewControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(view().name("review-and-amend"))
             .andExpect(model().attributeExists("claim"))
-            .andExpect(model().attributeExists("backUrl"))
             .andExpect(model().attribute("claimId", claimId))
             .andExpect(model().attribute("submissionId", submissionId))
             .andExpect(model().attribute("submissionFailed", true))
@@ -174,31 +172,10 @@ public class ClaimReviewControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(view().name("review-and-amend"))
             .andExpect(model().attributeExists("claim"))
-            .andExpect(model().attributeExists("backUrl"))
             .andExpect(model().attribute("claimId", claimId))
             .andExpect(model().attribute("submissionId", submissionId))
             .andExpect(model().attribute("submissionFailed", false))
             .andExpect(model().attribute("validationFailed", true));
-    }
-
-    @Test
-    public void testOnPageLoadBackUrlIsCorrectlySet() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
-
-        Claim claim = new CivilClaimDetails();
-        claim.setSubmissionId(submissionId);
-        claim.setClaimId(claimId);
-
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(claimId, claim);
-
-        String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
-        String expectedBackUrl = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
-
-        mockMvc.perform(get(path).session(session))
-            .andExpect(status().isOk())
-            .andExpect(model().attribute("backUrl", expectedBackUrl));
     }
 
     @Test

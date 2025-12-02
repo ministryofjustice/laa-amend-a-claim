@@ -159,7 +159,9 @@ class ChangeMonetaryValueControllerTest {
         } else {
             claim = new CrimeClaimDetails();
         }
-        cost.getAccessor().set(claim, new ClaimField("", null, null, null));
+        ClaimField claimField = new ClaimField();
+        claimField.setKey("");
+        cost.getAccessor().set(claim, claimField);
         return claim;
     }
 

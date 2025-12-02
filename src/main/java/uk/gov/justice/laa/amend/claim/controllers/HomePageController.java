@@ -59,6 +59,7 @@ public class HomePageController {
                 form.getProviderAccountNumber(),
                 Optional.ofNullable(form.getUniqueFileNumber()),
                 Optional.ofNullable(form.getCaseReferenceNumber()),
+                Optional.ofNullable(form.getSubmissionPeriod()),
                 page,
                 DEFAULT_PAGE_SIZE,
                 sort.toString()

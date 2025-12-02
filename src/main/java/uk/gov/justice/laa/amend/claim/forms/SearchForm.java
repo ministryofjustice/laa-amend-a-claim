@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
+import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
 import static org.springframework.util.StringUtils.hasText;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.CASE_REFERENCE_NUMBER_INVALID_ERROR;
@@ -44,5 +45,9 @@ public class SearchForm {
             || hasText(submissionDateYear)
             || hasText(uniqueFileNumber)
             || hasText(caseReferenceNumber);
+    }
+
+    public String getSubmissionPeriod() {
+        return DateUtils.toSubmissionPeriod(submissionDateMonth, submissionDateYear);
     }
 }

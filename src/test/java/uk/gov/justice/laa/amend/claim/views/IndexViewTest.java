@@ -61,9 +61,9 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasTextInput(doc, "submission-date-year", "Year");
 
-        assertPageHasTextInput(doc, "unique-file-number", "UFN");
+        assertPageHasTextInput(doc, "unique-file-number", "Unique file number (UFN)");
 
-        assertPageHasTextInput(doc, "case-reference-number", "CRN");
+        assertPageHasTextInput(doc, "case-reference-number", "Case reference number (CRN)");
 
         assertPageHasActiveServiceNavigationItem(doc, "Search");
     }

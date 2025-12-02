@@ -10,9 +10,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CivilClaimDetailsViewTest {
 
@@ -49,7 +47,7 @@ public class CivilClaimDetailsViewTest {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
             ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals("01 Jan 2020", viewModel.getCaseStartDateForDisplay());
+            Assertions.assertEquals("01 January 2020", viewModel.getCaseStartDateForDisplay());
         }
     }
 
@@ -67,7 +65,7 @@ public class CivilClaimDetailsViewTest {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setCaseEndDate(LocalDate.of(2020, 1, 1));
             ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals("01 Jan 2020", viewModel.getCaseEndDateForDisplay());
+            Assertions.assertEquals("01 January 2020", viewModel.getCaseEndDateForDisplay());
         }
     }
 
@@ -273,6 +271,7 @@ public class CivilClaimDetailsViewTest {
             ClaimField hoInterview = new ClaimField("11", null, null);
             ClaimField substantiveHearing = new ClaimField("12", null, null);
             ClaimField vatClaimed = new ClaimField("13", null, null);
+            ClaimField totalAmount = new ClaimField("14", null, null);
 
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setFixedFee(fixedFee);
@@ -288,6 +287,7 @@ public class CivilClaimDetailsViewTest {
             claim.setHoInterview(hoInterview);
             claim.setSubstantiveHearing(substantiveHearing);
             claim.setVatClaimed(vatClaimed);
+            claim.setTotalAmount(totalAmount);
 
             CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             List<ClaimField> expectedRows = List.of(
@@ -295,14 +295,16 @@ public class CivilClaimDetailsViewTest {
                 netProfitCost,
                 netDisbursementAmount,
                 disbursementVatAmount,
-                counselCost,
                 detention,
                 jrFormFilling,
-                adjournedHearing,
-                cmrhTelephone,
+                counselCost,
                 cmrhOral,
+                cmrhTelephone,
                 hoInterview,
                 substantiveHearing,
+                adjournedHearing,
+                vatClaimed,
+                totalAmount,
                 vatClaimed
             );
             Assertions.assertEquals(expectedRows, viewModel.getTableRows());

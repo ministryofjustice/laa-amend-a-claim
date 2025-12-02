@@ -75,7 +75,7 @@ public class CrimeClaimDetailsViewTest {
             CrimeClaimDetails claim = new CrimeClaimDetails();
             claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
             ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-            Assertions.assertEquals("01 Jan 2020", viewModel.getCaseStartDateForDisplay());
+            Assertions.assertEquals("01 January 2020", viewModel.getCaseStartDateForDisplay());
         }
     }
 
@@ -93,7 +93,7 @@ public class CrimeClaimDetailsViewTest {
             CrimeClaimDetails claim = new CrimeClaimDetails();
             claim.setCaseEndDate(LocalDate.of(2020, 1, 1));
             ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-            Assertions.assertEquals("01 Jan 2020", viewModel.getCaseEndDateForDisplay());
+            Assertions.assertEquals("01 January 2020", viewModel.getCaseEndDateForDisplay());
         }
     }
 

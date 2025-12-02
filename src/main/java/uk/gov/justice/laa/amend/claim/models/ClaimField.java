@@ -19,11 +19,11 @@ public class ClaimField implements Serializable {
     private Object submitted;
     private Object calculated;
     private Object amended;
-    private Cost cost;
+    private String changeUrl;
     private AmendStatus status;
 
     public ClaimField(String key, Object submitted, Object calculated) {
-        this(key, submitted, calculated, null);
+        this(key, submitted, calculated, (String) null);
     }
 
     public ClaimField(String key, Object submitted, Object calculated, Object amended) {
@@ -32,11 +32,15 @@ public class ClaimField implements Serializable {
     }
 
     public ClaimField(String key, Object submitted, Object calculated, Cost cost) {
+        this(key, submitted, calculated, cost.getChangeUrl());
+    }
+
+    public ClaimField(String key, Object submitted, Object calculated, String changeUrl) {
         this.key = key;
         this.submitted = submitted;
         this.calculated = calculated;
         this.amended = submitted;
-        this.cost = cost;
+        this.changeUrl = changeUrl;
         this.status = AmendStatus.NOT_AMENDABLE;
     }
 
@@ -60,11 +64,11 @@ public class ClaimField implements Serializable {
      * @return the change URL, or null if not editable
      */
     public String getChangeUrl(String submissionId, String claimId) {
-        if (cost == null) {
+        if (changeUrl == null) {
             return null;
         }
 
-        return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
+        return String.format(changeUrl, submissionId, claimId);
     }
 
     public String getChangeUrlAllowedTotal(String submissionId, String claimId) {

@@ -29,8 +29,22 @@ import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.*;
-import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateValue;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 
 @ActiveProfiles("local")
 @WebMvcTest(ClaimSummaryController.class)
@@ -87,14 +101,15 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Fee scheme", "CCS");
         assertPageHasSummaryListRow(doc, "Matter type 1", "IMLB");
         assertPageHasSummaryListRow(doc, "Matter type 2", "AHQS");
-        assertPageHasSummaryListRow(doc, "Provider Account Number", "0P322F");
+        assertPageHasSummaryListRow(doc, "Provider account number", "0P322F");
         assertPageHasSummaryListRow(doc, "Client name", "John Doe");
-        assertPageHasSummaryListRow(doc, "Case start date", "01 Jan 2020");
-        assertPageHasSummaryListRow(doc, "Case end date", "31 Dec 2020");
-        assertPageHasSummaryListRow(doc, "Date submitted", displayDateValue(claim.getSubmittedDate()));
-        assertPageHasValuesRow(doc, "CMRH oral", claim.getCmrhOral());
-        assertPageHasValuesRow(doc, "CMRH telephone", claim.getCmrhTelephone());
-        assertPageHasValuesRow(doc, "Counsel's costs (ex VAT)", claim.getCounselsCost());
+        assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
+        assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
+        assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020");
+        assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
+        assertPageHasValuesRow(doc, "Oral CMRH", claim.getCmrhOral());
+        assertPageHasValuesRow(doc, "Telephone CMRH", claim.getCmrhTelephone());
+        assertPageHasValuesRow(doc, "Counsel costs", claim.getCounselsCost());
     }
 
     @Test
@@ -102,8 +117,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
         CrimeClaimDetails claim = new CrimeClaimDetails();
         createClaimSummary(claim);
         claim.setMatterTypeCode("IMLB");
-        claim.setTravelCosts(new ClaimField(TRAVEL_COSTS, 100, 90, null));
-        claim.setWaitingCosts(new ClaimField(WAITING_COSTS, 50, 45, null));
+        claim.setTravelCosts(new ClaimField(TRAVEL_COSTS, 100, 90));
+        claim.setWaitingCosts(new ClaimField(WAITING_COSTS, 50, 45));
 
         claim.setAreaOfLaw("CRIME");
 
@@ -126,11 +141,12 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Area of law", "CRIME");
         assertPageHasSummaryListRow(doc, "Fee scheme", "CCS");
         assertPageHasSummaryListRow(doc, "Matter type", "IMLB");
-        assertPageHasSummaryListRow(doc, "Provider Account Number", "0P322F");
+        assertPageHasSummaryListRow(doc, "Provider account number", "0P322F");
         assertPageHasSummaryListRow(doc, "Client name", "John Doe");
-        assertPageHasSummaryListRow(doc, "Case start date", "01 Jan 2020");
-        assertPageHasSummaryListRow(doc, "Case end date", "31 Dec 2020");
-        assertPageHasSummaryListRow(doc, "Date submitted",displayDateValue(claim.getSubmittedDate()));
+        assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
+        assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
+        assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020");
+        assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
         assertPageHasValuesRow(doc, "Travel costs", claim.getTravelCosts());
         assertPageHasValuesRow(doc, "Waiting costs", claim.getWaitingCosts());
     }
@@ -145,7 +161,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setClientSurname("Doe");
         claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
         claim.setCaseEndDate(LocalDate.of(2020, 12, 31));
-        claim.setSubmittedDate(LocalDate.now());
+        claim.setSubmittedDate(LocalDate.of(2020, 6, 15));
 
         // Set ClaimFieldRow fields
         claim.setVatClaimed(new ClaimField(VAT, 80, 75, 78));
@@ -182,16 +198,16 @@ class ClaimSummaryViewTest extends ViewTestBase {
             Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", 0), false),
             Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", 22), true),
             Arguments.of("Adjourned hearing fee", withField(ADJOURNED_FEE, "setAdjournedHearing", null), false),
-            Arguments.of("CMRH telephone", withField(CMRH_TELEPHONE, "setCmrhTelephone",  null), false),
-            Arguments.of("CMRH telephone", withField(CMRH_TELEPHONE, "setCmrhTelephone",  3), true),
-            Arguments.of("CMRH oral", withField(CMRH_ORAL, "setCmrhOral",  0), false),
+            Arguments.of("Telephone CMRH", withField(CMRH_TELEPHONE, "setCmrhTelephone",  null), false),
+            Arguments.of("Telephone CMRH", withField(CMRH_TELEPHONE, "setCmrhTelephone",  3), true),
+            Arguments.of("Oral CMRH", withField(CMRH_ORAL, "setCmrhOral",  0), false),
             Arguments.of("Home office interview", withField(HO_INTERVIEW, "setHoInterview",  0), false),
             Arguments.of("Home office interview", withField(HO_INTERVIEW, "setHoInterview",  null), false),
             Arguments.of("Substantive hearing", withField(SUBSTANTIVE_HEARING, "setSubstantiveHearing", 0), false),
             Arguments.of("Substantive hearing", withField(SUBSTANTIVE_HEARING, "setSubstantiveHearing", 4), true),
-            Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", BigDecimal.ZERO), false),
-            Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", null), false),
-            Arguments.of("JR/Form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", new BigDecimal(20)), true)
+            Arguments.of("JR and form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", BigDecimal.ZERO), false),
+            Arguments.of("JR and form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", null), false),
+            Arguments.of("JR and form filling", withField(JR_FORM_FILLING, "setJrFormFillingCost", new BigDecimal(20)), true)
         );
     }
 
