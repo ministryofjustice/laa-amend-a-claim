@@ -58,7 +58,7 @@ public class AllowedTotalsValueValidator extends Validator implements Constraint
     public boolean isValid(AllowedTotalForm form, ConstraintValidatorContext context) {
         context.disableDefaultConstraintViolation();
 
-        return isValid(form.getAllowedTotalVat(), context, "allowedTotalVat") &
-                isValid(form.getAllowedTotalInclVat(), context, "allowedTotalInclVat");
+        return isValid(form.getAllowedTotalVat(), context, "allowedTotalVat")
+                & isValid(form.getAllowedTotalInclVat(), context, "allowedTotalInclVat");
     }
 }
