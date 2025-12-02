@@ -17,6 +17,7 @@ import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -73,7 +74,7 @@ public class ClaimSummaryControllerTest {
         claim.setFeeCode("FeeCode");
         claim.setFeeCodeDescription("FeeCodeDesc");
         claim.setAreaOfLaw("Civil");
-        claim.setSubmittedDate(LocalDate.now().minusDays(10));
+        claim.setSubmittedDate(LocalDateTime.now().minusDays(10));
         claim.setEscaped(true);
         claim.setProviderAccountNumber("ACC123");
         claim.setProviderName("Provider Ltd");

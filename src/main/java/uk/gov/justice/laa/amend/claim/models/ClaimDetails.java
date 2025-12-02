@@ -6,7 +6,7 @@ import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.function.Consumer;
 
 @EqualsAndHashCode(callSuper = true)
@@ -27,7 +27,7 @@ public abstract class ClaimDetails extends Claim {
     private ClaimField totalAmount;
     private ClaimField disbursementVatAmount;
     private OutcomeType assessmentOutcome;
-    private LocalDate submittedDate;
+    private LocalDateTime submittedDate;
     private String feeCode;
     private String feeCodeDescription;
 

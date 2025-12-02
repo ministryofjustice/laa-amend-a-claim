@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateTimeValue;
 import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayFullDateValue;
 
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
@@ -103,6 +104,6 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default String getDateSubmittedForDisplay() {
-        return displayFullDateValue(claim().getSubmittedDate());
+        return displayDateTimeValue(claim().getSubmittedDate());
     }
 }

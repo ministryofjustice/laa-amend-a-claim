@@ -25,6 +25,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -106,7 +107,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Client name", "John Doe");
         assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
         assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
-        assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020");
+        assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020 at 09:30:00");
         assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
         assertPageHasValuesRow(doc, "Oral CMRH", claim.getCmrhOral());
         assertPageHasValuesRow(doc, "Telephone CMRH", claim.getCmrhTelephone());
@@ -147,7 +148,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Client name", "John Doe");
         assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
         assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
-        assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020");
+        assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020 at 09:30:00");
         assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
         assertPageHasValuesRow(doc, "Travel costs", claim.getTravelCosts());
         assertPageHasValuesRow(doc, "Waiting costs", claim.getWaitingCosts());
@@ -164,7 +165,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setClientSurname("Doe");
         claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
         claim.setCaseEndDate(LocalDate.of(2020, 12, 31));
-        claim.setSubmittedDate(LocalDate.of(2020, 6, 15));
+        claim.setSubmittedDate(LocalDateTime.of(2020, 6, 15, 9, 30, 0));
 
         // Set ClaimFieldRow fields
         claim.setVatClaimed(new ClaimField(VAT, 80, 75, 78));

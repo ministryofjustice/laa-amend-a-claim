@@ -118,7 +118,7 @@ public interface ClaimMapper {
             claim.setAreaOfLaw(submissionResponse.getAreaOfLaw().getValue());
             claim.setProviderAccountNumber(submissionResponse.getOfficeAccountNumber());
             claim.setProviderName(submissionResponse.getProviderUserId());
-            claim.setSubmittedDate(submissionResponse.getSubmitted() != null ? submissionResponse.getSubmitted().toLocalDate() : null);
+            claim.setSubmittedDate(submissionResponse.getSubmitted() != null ? submissionResponse.getSubmitted().toLocalDateTime() : null);
         }
     }
 }

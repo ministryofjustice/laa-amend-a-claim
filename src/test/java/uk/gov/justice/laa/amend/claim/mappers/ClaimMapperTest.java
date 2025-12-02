@@ -20,6 +20,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -413,7 +414,7 @@ class ClaimMapperTest {
         assertEquals(claimSummaryFeeId.toString(), claim.getClaimSummaryFeeId());
         assertEquals("LEGAL HELP", claim.getAreaOfLaw());
         assertEquals("User ID", claim.getProviderName());
-        assertEquals(LocalDate.of(2025, 1, 10), claim.getSubmittedDate());
+        assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }
 
     @Test
@@ -455,6 +456,6 @@ class ClaimMapperTest {
         assertEquals("CRIME123", claim.getMatterTypeCode());
         assertEquals("CRIME LOWER", claim.getAreaOfLaw());
         assertEquals("User ID", claim.getProviderName());
-        assertEquals(LocalDate.of(2025, 1, 10), claim.getSubmittedDate());
+        assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }
 }
