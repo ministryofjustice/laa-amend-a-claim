@@ -6,7 +6,6 @@ import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.function.Consumer;
 
@@ -14,7 +13,6 @@ import java.util.function.Consumer;
 @Data
 public abstract class ClaimDetails extends Claim {
     private String areaOfLaw;
-    private String feeScheme;
     private String categoryOfLaw;
     private String matterTypeCode;
     private String scheduleReference;
@@ -30,6 +28,8 @@ public abstract class ClaimDetails extends Claim {
     private ClaimField disbursementVatAmount;
     private OutcomeType assessmentOutcome;
     private LocalDate submittedDate;
+    private String feeCode;
+    private String feeCodeDescription;
 
     public void setNilledValues() {
         applyIfNotNull(netProfitCost, ClaimField::setNilled);

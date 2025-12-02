@@ -98,7 +98,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Escape case", "Yes");
         assertPageHasSummaryListRow(doc, "Area of law", "CIVIL");
         assertPageHasSummaryListRow(doc, "Category of law", "TEST");
-        assertPageHasSummaryListRow(doc, "Fee scheme", "CCS");
+        assertPageHasSummaryListRow(doc, "Fee code", "FC");
+        assertPageHasSummaryListRow(doc, "Fee code description", "FCD");
         assertPageHasSummaryListRow(doc, "Matter type 1", "IMLB");
         assertPageHasSummaryListRow(doc, "Matter type 2", "AHQS");
         assertPageHasSummaryListRow(doc, "Provider account number", "0P322F");
@@ -139,7 +140,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         assertPageHasSummaryListRow(doc, "Escape case", "Yes");
         assertPageHasSummaryListRow(doc, "Area of law", "CRIME");
-        assertPageHasSummaryListRow(doc, "Fee scheme", "CCS");
+        assertPageHasSummaryListRow(doc, "Fee code", "FC");
+        assertPageHasSummaryListRow(doc, "Fee code description", "FCD");
         assertPageHasSummaryListRow(doc, "Matter type", "IMLB");
         assertPageHasSummaryListRow(doc, "Provider account number", "0P322F");
         assertPageHasSummaryListRow(doc, "Client name", "John Doe");
@@ -154,7 +156,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
     private static void createClaimSummary(ClaimDetails claim) {
         claim.setEscaped(true);
         claim.setAreaOfLaw("AAP");
-        claim.setFeeScheme("CCS");
+        claim.setFeeCode("FC");
+        claim.setFeeCodeDescription("FCD");
 
         claim.setProviderAccountNumber("0P322F");
         claim.setClientForename("John");

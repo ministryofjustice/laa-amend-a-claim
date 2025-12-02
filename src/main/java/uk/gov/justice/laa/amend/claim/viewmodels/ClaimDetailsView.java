@@ -18,11 +18,13 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("clientName", getClientName());
         rows.put("ufn", claim().getUniqueFileNumber());
         addUcnSummaryRow(rows);
-        rows.put("submittedDate", getDateSubmittedForDisplay());
+        rows.put("providerName", claim().getProviderName());
         rows.put("providerAccountNumber", claim().getProviderAccountNumber());
+        rows.put("submittedDate", getDateSubmittedForDisplay());
         rows.put("areaOfLaw", claim().getAreaOfLaw());
         rows.put("categoryOfLaw", claim().getCategoryOfLaw());
-        rows.put("feeScheme", claim().getFeeScheme());
+        rows.put("feeCode", claim().getFeeCode());
+        rows.put("feeCodeDescription", claim().getFeeCodeDescription());
         addMatterTypeField(rows);
         rows.put("caseStartDate", getCaseStartDateForDisplay());
         rows.put("caseEndDate", getCaseEndDateForDisplay());

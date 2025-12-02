@@ -70,7 +70,8 @@ public class ClaimSummaryControllerTest {
         claim.setClientForename("Jane");
         claim.setCaseStartDate(LocalDate.now().minusDays(2));
         claim.setCaseEndDate(LocalDate.now());
-        claim.setFeeScheme("FeeSchemeX");
+        claim.setFeeCode("FeeCode");
+        claim.setFeeCodeDescription("FeeCodeDesc");
         claim.setAreaOfLaw("Civil");
         claim.setSubmittedDate(LocalDate.now().minusDays(10));
         claim.setEscaped(true);
