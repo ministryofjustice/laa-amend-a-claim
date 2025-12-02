@@ -81,7 +81,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setAreaOfLaw("CIVIL");
         claim.setCategoryOfLaw("TEST");
 
-
         when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
 
         Document doc = renderDocument();
@@ -92,6 +91,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasH2(doc, "Summary");
 
         assertPageHasNoActiveServiceNavigationItems(doc);
+
+        assertPageHasBackLink(doc);
 
         assertPageHasSummaryList(doc);
 
@@ -134,6 +135,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasH2(doc, "Summary");
 
         assertPageHasNoActiveServiceNavigationItems(doc);
+
+        assertPageHasBackLink(doc);
 
         assertPageHasSummaryList(doc);
 
