@@ -380,7 +380,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAmended());
-        assertNull(claimField.getCost());
         assertEquals(AmendStatus.NEEDS_AMENDING, claimField.getStatus());
     }
 
@@ -397,7 +396,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAmended());
-        assertNull(claimField.getCost());
         assertEquals(AmendStatus.NEEDS_AMENDING, claimField.getStatus());
     }
 

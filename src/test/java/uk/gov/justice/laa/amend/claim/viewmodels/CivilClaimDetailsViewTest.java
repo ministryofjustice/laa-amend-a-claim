@@ -271,7 +271,6 @@ public class CivilClaimDetailsViewTest {
             ClaimField hoInterview = new ClaimField("11", null, null);
             ClaimField substantiveHearing = new ClaimField("12", null, null);
             ClaimField vatClaimed = new ClaimField("13", null, null);
-            ClaimField totalAmount = new ClaimField("14", null, null);
 
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setFixedFee(fixedFee);
@@ -287,7 +286,6 @@ public class CivilClaimDetailsViewTest {
             claim.setHoInterview(hoInterview);
             claim.setSubstantiveHearing(substantiveHearing);
             claim.setVatClaimed(vatClaimed);
-            claim.setTotalAmount(totalAmount);
 
             CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             List<ClaimField> expectedRows = List.of(
@@ -304,7 +302,6 @@ public class CivilClaimDetailsViewTest {
                 substantiveHearing,
                 adjournedHearing,
                 vatClaimed,
-                totalAmount,
                 vatClaimed
             );
             Assertions.assertEquals(expectedRows, viewModel.getTableRows());
