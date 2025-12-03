@@ -191,7 +191,7 @@ class AssessmentMapperTest {
         assertEquals(BigDecimal.valueOf(200), result.getWaitingCosts().getAssessed());
         assertEquals(OutcomeType.REDUCED_TO_FIXED_FEE, result.getLastAssessment().getLastAssessmentOutcome());
     }
-private ClaimField createClaimField(Object value) {
+    private ClaimField createClaimField(Object value) {
         ClaimField claimField = new ClaimField();
         claimField.setAmended(value);
         return claimField;
