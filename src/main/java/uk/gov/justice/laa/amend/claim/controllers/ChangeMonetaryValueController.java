@@ -21,7 +21,8 @@ import uk.gov.justice.laa.amend.claim.models.Cost;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+
+import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
 
 @Controller
 @RequiredArgsConstructor
@@ -76,7 +77,7 @@ public class ChangeMonetaryValueController {
             }
 
             ClaimField claimField = cost.getAccessor().get(claim);
-            BigDecimal value = setScale(new BigDecimal(form.getValue()));
+            BigDecimal value = setScale(form.getValue());
             if (claimField != null) {
                 claimField.setAmended(value);
                 claimField.setStatus(AmendStatus.AMENDABLE);
@@ -105,9 +106,5 @@ public class ChangeMonetaryValueController {
 
     private String getRedirectUrl(String submissionId, String claimId) {
         return String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
-    }
-
-    private BigDecimal setScale(BigDecimal value) {
-        return value.setScale(2, RoundingMode.HALF_UP);
     }
 }

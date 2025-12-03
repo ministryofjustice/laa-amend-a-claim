@@ -18,7 +18,8 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+
+import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
 
 
 @Controller
@@ -77,8 +78,8 @@ public class ChangeAllowedTotalsController {
             ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
             ClaimField allowedTotalInclVatField = claim.getAllowedTotalInclVat();
 
-            BigDecimal allowedTotalInclVat = setScale(new BigDecimal(allowedTotalForm.getAllowedTotalInclVat()));
-            BigDecimal allowedTotalVat = setScale(new BigDecimal(allowedTotalForm.getAllowedTotalVat()));
+            BigDecimal allowedTotalInclVat = setScale(allowedTotalForm.getAllowedTotalInclVat());
+            BigDecimal allowedTotalVat = setScale(allowedTotalForm.getAllowedTotalVat());
 
             allowedTotalInclVatField.setAmended(allowedTotalInclVat);
             allowedTotalVatField.setAmended(allowedTotalVat);
@@ -91,11 +92,6 @@ public class ChangeAllowedTotalsController {
         }
 
         return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
-    }
-
-    // TODO: Pull this into a util or something - being reused in various places
-    private BigDecimal setScale(BigDecimal value) {
-        return value.setScale(2, RoundingMode.HALF_UP);
     }
 
     private String renderView(Model model, AllowedTotalForm form, String submissionId, String claimId) {

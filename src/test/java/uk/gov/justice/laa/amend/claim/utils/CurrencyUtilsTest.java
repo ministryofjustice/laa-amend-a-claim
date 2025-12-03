@@ -61,4 +61,25 @@ class CurrencyUtilsTest {
         String result = CurrencyUtils.formatCurrency(amount, "N/A");
         assertThat(result).isEqualTo("£10.00");
     }
+
+    @Test
+    void setScaleWhenNoDecimalPlaces() {
+        BigDecimal amount = new BigDecimal("5");
+        BigDecimal result = CurrencyUtils.setScale(amount);
+        assertThat(result).isEqualTo(new BigDecimal("5.00"));
+    }
+
+    @Test
+    void setScaleWhenOneDecimalPlace() {
+        BigDecimal amount = new BigDecimal("5.1");
+        BigDecimal result = CurrencyUtils.setScale(amount);
+        assertThat(result).isEqualTo(new BigDecimal("5.10"));
+    }
+
+    @Test
+    void setScaleWhenMoreThan2DecimalPlaces() {
+        BigDecimal amount = new BigDecimal("5.123");
+        BigDecimal result = CurrencyUtils.setScale(amount);
+        assertThat(result).isEqualTo(new BigDecimal("5.12"));
+    }
 }
