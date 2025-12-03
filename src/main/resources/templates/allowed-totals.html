@@ -1,0 +1,88 @@
+<!DOCTYPE html >
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{allowedTotals.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${false}
+    )}">
+        <body>
+            <main class="govuk-main-wrapper" id="main-content">
+                <div class="govuk-width-container">
+
+                    <h1 class="govuk-heading-l" th:text="#{allowedTotals.title}"/>
+
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-two-thirds">
+
+
+                            <form th:action="@{/submissions/{submissionId}/claims/{claimID}/allowed-totals(submissionId=${submissionId}, claimID=${claimId})}"
+                                  th:object="${allowedTotalForm}"
+                                  method="post">
+
+                                <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toAllowedTotalFormErrors(#fields.detailedErrors())})}"></th:block>
+
+
+                                    <div class="govuk-form-group"
+                                         th:classappend="${#fields.hasErrors('allowedTotalVat')} ? 'govuk-form-group--error'">
+                                        <label class="govuk-label govuk-label--s" for="allowed-total-vat" th:text="#{allowedTotals.totalVat.subHeading}"></label>
+
+                                        <div id="allowed-total-vat-hint" class="govuk-hint" th:text="#{allowedTotals.totalVat.hint}"></div>
+
+                                        <p th:if="${#fields.hasErrors('allowedTotalVat')}" class="govuk-error-message">
+                                            <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                                            <th:block th:errors=" *{allowedTotalVat}"></th:block>
+                                        </p>
+
+                                        <div class="govuk-input__wrapper">
+
+                                            <div class="govuk-input__prefix" aria-hidden="true">£</div>
+
+                                            <input class="govuk-input govuk-input--width-5"
+                                                   th:classappend="${#fields.hasErrors('allowedTotalVat') ? 'govuk-input--error' : ''}"
+                                                   id="allowed-total-vat"
+                                                   name="allowedTotalVat"
+                                                   type="text"
+                                                   spellcheck="false"
+                                                   th:field="*{allowedTotalVat}"
+                                            >
+                                        </div>
+                                    </div>
+
+                                        <div class="govuk-form-group"
+                                             th:classappend="${#fields.hasErrors('allowedTotalInclVat')} ? 'govuk-form-group--error'">
+                                            <label class="govuk-label govuk-label--s" for="allowed-total-incl-vat" th:text="#{allowedTotals.totalInclVat.subHeading}"></label>
+                                            <div id="allowed-total-incl-vat-hint" class="govuk-hint" th:text="#{allowedTotals.totalInclVat.hint}"></div>
+
+                                            <p th:if="${#fields.hasErrors('allowedTotalInclVat')}" class="govuk-error-message">
+                                                <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                                                <th:block th:errors=" *{allowedTotalInclVat}"></th:block>
+                                            </p>
+
+                                            <div class="govuk-input__wrapper">
+                                                <div class="govuk-input__prefix" aria-hidden="true">£</div>
+
+                                                <input class="govuk-input govuk-input--width-5"
+                                                       th:classappend="${#fields.hasErrors('allowedTotalInclVat') ? 'govuk-input--error' : ''}"
+                                                       id="allowed-total-incl-vat"
+                                                       name="allowedTotalInclVat"
+                                                       type="text"
+                                                       spellcheck="false"
+                                                       th:field="*{allowedTotalInclVat}"
+                                                >
+                                            </div>
+                                    </div>
+                                <div class="govuk-button-group">
+                                    <button type="submit" class="govuk-button" data-module="govuk-button" th:text="#{service.saveChanges}"></button>
+
+                                    <a th:href="@{${redirectUrl}}" th:text="#{service.cancel}" role="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"></a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </body>
+    </html>
+

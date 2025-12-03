@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.mappers;
 
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -9,6 +10,8 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import java.math.BigDecimal;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
@@ -158,5 +161,15 @@ public class ClaimMapperHelper {
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetWaitingCostsAmount() : null;
         return new ClaimField(WAITING_COSTS, submitted, calculated, Cost.WAITING_COSTS);
+    }
+
+    @Named("mapAllowedTotalInclVat")
+    public ClaimField mapAllowedTotalInclVat(ClaimResponse claimResponse) {
+        return new ClaimField(ALLOWED_TOTAL_INCL_VAT, null, null, null, null, AmendStatus.NEEDS_AMENDING);
+    }
+
+    @Named("mapAllowedTotalVat")
+    public ClaimField mapAllowedTotalVat(ClaimResponse claimResponse) {
+        return new ClaimField(ALLOWED_TOTAL_VAT, null, null, null, null, AmendStatus.NEEDS_AMENDING);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants;
+import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
@@ -364,6 +365,38 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
         assertEquals("/submissions/foo/claims/bar/waiting-costs", claimField.getChangeUrl(submissionId, claimId));
+    }
+
+    @Test
+    void mapAllowedTotalInclVat() {
+        ClaimResponse response = new ClaimResponse();
+
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getAllowedTotalInclVat();
+        assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT, claimField.getKey());
+        assertNull(claimField.getSubmitted());
+        assertNull(claimField.getCalculated());
+        assertNull(claimField.getAmended());
+        assertEquals(AmendStatus.NEEDS_AMENDING, claimField.getStatus());
+    }
+
+    @Test
+    void mapAllowedTotalVat() {
+        ClaimResponse response = new ClaimResponse();
+
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getAllowedTotalVat();
+        assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
+        assertNull(claimField.getSubmitted());
+        assertNull(claimField.getCalculated());
+        assertNull(claimField.getAmended());
+        assertEquals(AmendStatus.NEEDS_AMENDING, claimField.getStatus());
     }
 
     @ParameterizedTest(name = "Map to Civil Claim when Area of Law: {0}")

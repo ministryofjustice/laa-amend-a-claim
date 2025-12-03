@@ -106,7 +106,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
         assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
         assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020");
-        assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
         assertPageHasValuesRow(doc, "Oral CMRH", claim.getCmrhOral());
         assertPageHasValuesRow(doc, "Telephone CMRH", claim.getCmrhTelephone());
         assertPageHasValuesRow(doc, "Counsel costs", claim.getCounselsCost());
@@ -146,7 +145,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
         assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
         assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020");
-        assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
         assertPageHasValuesRow(doc, "Travel costs", claim.getTravelCosts());
         assertPageHasValuesRow(doc, "Waiting costs", claim.getWaitingCosts());
     }

@@ -46,6 +46,8 @@ class AssessmentMapperTest {
         claim.setDetentionTravelWaitingCosts(createClaimField(BigDecimal.valueOf(11)));
         claim.setSubstantiveHearing(createClaimField(BigDecimal.valueOf(12)));
         claim.setVatApplicable(true);
+        claim.setAllowedTotalVat(createClaimField(BigDecimal.valueOf(13)));
+        claim.setAllowedTotalInclVat(createClaimField(BigDecimal.valueOf(14)));
 
         AssessmentPost assessment = mapper.mapCivilClaimToAssessment(claim, userId);
 
@@ -64,6 +66,8 @@ class AssessmentMapperTest {
         assertEquals(BigDecimal.valueOf(10), assessment.getBoltOnHomeOfficeInterviewFee());
         assertEquals(BigDecimal.valueOf(11), assessment.getDetentionTravelAndWaitingCostsAmount());
         assertEquals(BigDecimal.valueOf(12), assessment.getBoltOnSubstantiveHearingFee());
+        assertEquals(BigDecimal.valueOf(13), assessment.getAllowedTotalVat());
+        assertEquals(BigDecimal.valueOf(14), assessment.getAllowedTotalInclVat());
         assertEquals(true, assessment.getIsVatApplicable());
         assertEquals(userId, assessment.getCreatedByUserId());
     }
@@ -85,6 +89,8 @@ class AssessmentMapperTest {
         claim.setTravelCosts(createClaimField(BigDecimal.valueOf(5)));
         claim.setWaitingCosts(createClaimField(BigDecimal.valueOf(6)));
         claim.setVatApplicable(true);
+        claim.setAllowedTotalVat(createClaimField(BigDecimal.valueOf(13)));
+        claim.setAllowedTotalInclVat(createClaimField(BigDecimal.valueOf(14)));
 
         AssessmentPost assessment = mapper.mapCrimeClaimToAssessment(claim, userId);
 
@@ -97,6 +103,8 @@ class AssessmentMapperTest {
         assertEquals(BigDecimal.valueOf(4), assessment.getDisbursementVatAmount());
         assertEquals(BigDecimal.valueOf(5), assessment.getNetTravelCostsAmount());
         assertEquals(BigDecimal.valueOf(6), assessment.getNetWaitingCostsAmount());
+        assertEquals(BigDecimal.valueOf(13), assessment.getAllowedTotalVat());
+        assertEquals(BigDecimal.valueOf(14), assessment.getAllowedTotalInclVat());
         assertEquals(true, assessment.getIsVatApplicable());
         assertEquals(userId, assessment.getCreatedByUserId());
     }
