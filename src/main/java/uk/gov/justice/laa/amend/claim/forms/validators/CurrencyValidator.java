@@ -8,37 +8,38 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class CurrencyValidator extends Validator {
 
-    private static final BigDecimal MIN = BigDecimal.ZERO;
-    private static final BigDecimal MAX = BigDecimal.valueOf(1_000_000);
+    private final BigDecimal MIN = BigDecimal.ZERO;
+    private final BigDecimal MAX = BigDecimal.valueOf(1_000_000);
 
-    public boolean isValid(String field, ConstraintValidatorContext context, String fieldName) {
+    public boolean isValid(String value, ConstraintValidatorContext context, String fieldName, String prefix) {
+        context.disableDefaultConstraintViolation();
 
-        if (isBlank(field)) {
-            addViolation(context, fieldName, String.format("{allowedTotals.%s.error.required}", fieldName));
+        if (isBlank(value)) {
+            addViolation(context, fieldName, String.format("{%s.error.required}", prefix));
             return false;
         }
 
         try {
-            BigDecimal value = BigDecimal.valueOf(Long.parseLong(field));
+            BigDecimal amount = new BigDecimal(value);
 
-            if (value.scale() > 2) {
-                addViolation(context, fieldName, String.format("{allowedTotals.%s.error.invalid}", fieldName));
+            if (amount.scale() > 2) {
+                addViolation(context, fieldName, String.format("{%s.error.invalid}", prefix));
                 return false;
             }
 
-            if (value.compareTo(MIN) < 0) {
-                addViolation(context, fieldName, String.format("{allowedTotals.%s.error.min}", fieldName));
+            if (amount.compareTo(MIN) < 0) {
+                addViolation(context, fieldName, String.format("{%s.error.min}", prefix));
                 return false;
             }
 
-            if (value.compareTo(MAX) >= 0) {
-                addViolation(context, fieldName, String.format("{allowedTotals.%s.error.max}", fieldName));
+            if (amount.compareTo(MAX) >= 0) {
+                addViolation(context, fieldName, String.format("{%s.error.max}", prefix));
                 return false;
             }
 
             return true;
         } catch (NumberFormatException e) {
-            addViolation(context, fieldName, String.format("{allowedTotals.%s.error.invalid}", fieldName));
+            addViolation(context, fieldName, String.format("{%s.error.invalid}", prefix));
             return false;
         }
     }

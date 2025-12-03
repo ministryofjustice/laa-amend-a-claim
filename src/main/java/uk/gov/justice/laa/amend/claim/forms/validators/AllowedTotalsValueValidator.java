@@ -11,9 +11,7 @@ public class AllowedTotalsValueValidator extends CurrencyValidator implements Co
 
     @Override
     public boolean isValid(AllowedTotalForm form, ConstraintValidatorContext context) {
-        context.disableDefaultConstraintViolation();
-
-        return isValid(form.getAllowedTotalVat(), context, "allowedTotalVat")
-                & isValid(form.getAllowedTotalInclVat(), context, "allowedTotalInclVat");
+        return isValid(form.getAllowedTotalVat(), context, "allowedTotalVat", "allowedTotals.allowedTotalVat")
+                & isValid(form.getAllowedTotalInclVat(), context, "allowedTotalInclVat", "allowedTotals.allowedTotalInclVat");
     }
 }

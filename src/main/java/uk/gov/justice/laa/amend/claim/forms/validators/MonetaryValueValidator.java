@@ -11,8 +11,6 @@ public class MonetaryValueValidator extends CurrencyValidator implements Constra
 
     @Override
     public boolean isValid(MonetaryValueForm form, ConstraintValidatorContext context) {
-        context.disableDefaultConstraintViolation();
-
-        return isValid(form.getValue(), context, "value");
+        return isValid(form.getValue(), context, "value", form.getCost().getPrefix());
     }
 }

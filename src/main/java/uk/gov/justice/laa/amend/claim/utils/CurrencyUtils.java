@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.utils;
 import lombok.experimental.UtilityClass;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Objects;
@@ -38,5 +39,13 @@ public class CurrencyUtils {
             return nullValue;
         }
         return CURRENCY_FORMATTER.format(amount);
+    }
+
+    public static BigDecimal setScale(BigDecimal value) {
+        return value.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public static BigDecimal setScale(String value) {
+        return setScale(new BigDecimal(value));
     }
 }
