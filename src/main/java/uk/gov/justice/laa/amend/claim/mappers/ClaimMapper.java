@@ -35,6 +35,7 @@ public interface ClaimMapper {
     @Mapping(target = "feeCodeDescription", source = "feeCalculationResponse.feeCodeDescription")
     @Mapping(target = "allowedTotalInclVat", source = ".", qualifiedByName = "mapAllowedTotalInclVat")
     @Mapping(target = "allowedTotalVat", source = ".", qualifiedByName = "mapAllowedTotalVat")
+    @Mapping(target = "hasAssessment", source = "hasAssessment")
     // See @AfterMapping
     @Mapping(target = "areaOfLaw", ignore = true)
     @Mapping(target = "providerAccountNumber", ignore = true)

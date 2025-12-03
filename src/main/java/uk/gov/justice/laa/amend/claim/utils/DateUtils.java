@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.utils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_DATE_FORMAT;
@@ -10,6 +11,8 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAU
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.FULL_DATE_FORMAT;
 
 public class DateUtils {
+    public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
+
     private static String displayDateValue(LocalDate localDate, String format) {
         return localDate != null ? localDate.format(DateTimeFormatter.ofPattern(format)) : null;
     }
@@ -35,5 +38,13 @@ public class DateUtils {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static String getDateValue(OffsetDateTime localDate) {
+        return localDate != null ? localDate.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
+    }
+
+    public static String getTimeValue(OffsetDateTime localDate) {
+        return localDate != null ? localDate.format(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)) : null;
     }
 }

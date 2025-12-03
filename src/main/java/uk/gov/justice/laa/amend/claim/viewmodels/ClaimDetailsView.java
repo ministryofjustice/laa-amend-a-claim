@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.getDateValue;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.getTimeValue;
 import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateTimeValue;
 import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayFullDateValue;
 
@@ -108,5 +110,21 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     default String getDateSubmittedForDisplay() {
         return displayDateTimeValue(claim().getSubmittedDate());
+    }
+
+    default boolean hasAssessment() {
+        return claim().getLastAssessment() != null && claim().isHasAssessment();
+    }
+
+    default String lastAssessedDate() {
+        return getDateValue(claim().getLastAssessment().getLastAssessmentDate());
+    }
+
+    default String lastAssessedTime() {
+        return getTimeValue(claim().getLastAssessment().getLastAssessmentDate());
+    }
+
+    default String lastAssessmentOutcomeKey() {
+        return claim().getLastAssessment().getLastAssessmentOutcome() != null ? claim().getLastAssessment().getLastAssessmentOutcome().getMessageKey() : null;
     }
 }

@@ -23,3 +23,18 @@
 .moj-header__navigation-item-bold {
     font-weight: bold;
 }
+
+.claim-details-icon-info {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #1d70b8; /* GOV.UK blue */
+    color: #fff;
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+}
+

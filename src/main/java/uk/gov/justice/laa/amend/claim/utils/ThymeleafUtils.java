@@ -12,6 +12,7 @@ import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -103,6 +104,12 @@ public class ThymeleafUtils {
             default -> value.toString();
         };
     }
+
+    public String getAssessedValue(ClaimField value) {
+        return (value != null && value.getAssessed() != null)
+                ? getFormattedValue(value.getAssessed()) : getMessage("service.noData");
+    }
+
 
     public String getFormattedBoolean(Boolean value) {
         String key = (value != null && value) ? "service.yes" : "service.no";

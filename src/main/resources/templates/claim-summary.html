@@ -12,6 +12,24 @@
             <div class="govuk-width-container">
                 <div class="govuk-grid-row">
                     <div class="govuk-grid-column-two-thirds">
+                        <div aria-labelledby="govuk-notification-banner-title" class="govuk-notification-banner"
+                             data-module="govuk-notification-banner" role="region" th:if="${claim.hasAssessment}">
+                            <div class="govuk-notification-banner__content"
+                                 style="display:flex; align-items:flex-start; gap:12px;">
+                                <!-- Notification text -->
+                                <span class="claim-details-icon-info">i</span>
+                                <div>
+                                    <h3 class="govuk-notification-banner__heading">
+                                        This claim has been assessed
+                                    </h3>
+                                    <p class="govuk-body"
+                                       th:text="#{claimSummary.lastAssessmentText(${user?.displayName}, ${claim.lastAssessedDate}, ${claim.lastAssessedTime})}">
+                                    </p>
+                                    <p th:if="${claim.lastAssessmentOutcomeKey}" th:text="#{${'claimSummary.' + claim.lastAssessmentOutcomeKey}}"></p>
+                                </div>
+                            </div>
+                        </div>
+
                         <h1 class="govuk-heading-l">
                             <span th:text="#{claimSummary.mainHeading}"></span>
                         </h1>
@@ -39,13 +57,20 @@
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.item}"></dt>
                                         <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimSummary.calculated}"></dd>
                                         <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimSummary.submitted}"></dd>
+                                        <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:if="${claim.hasAssessment}" th:text="#{claimSummary.assessed}"></dd>
                                     </div>
                                     <div class="govuk-summary-list__row" th:each="row : ${claim.tableRows}" th:if="${@ThymeleafUtils.displayClaimField(row)}">
                                         <dt class="govuk-summary-list__key govuk-!-font-weight-bold" th:text="#{${row.label}}"></dt>
                                         <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></dd>
                                         <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></dd>
+                                        <dd class="govuk-summary-list__value" th:if="${claim.hasAssessment}"
+                                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}"></dd>
                                     </div>
                                 </dl>
+                                <div class="govuk-inset-text" th:if="${claim.hasAssessment}">
+                                    <th:text
+                                            th:text="#{claimSummary.totalAssessmentText(${@ThymeleafUtils.getAssessedValue(claim.claim().allowedTotalInclVat)})}"></th:text>
+                                </div>
                             </div>
                         </div>
 
