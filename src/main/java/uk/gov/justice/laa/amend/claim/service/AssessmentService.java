@@ -64,8 +64,4 @@ public class AssessmentService {
         }
         return response.getBody();
     }
-
-    private BigDecimal setScale(BigDecimal value) {
-        return value.setScale(2, RoundingMode.HALF_UP);
-    }
 }

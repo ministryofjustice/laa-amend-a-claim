@@ -46,8 +46,8 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         List<ClaimField> rows = claimFields();
         addRowIfNotNull(
             rows,
-                claim().getVatClaimed(),
-                claim().getTotalAmount()
+            claim().getVatClaimed(),
+            claim().getTotalAmount()
         );
 
         return rows;
