@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.thymeleaf.spring6.util.DetailedError;
+import uk.gov.justice.laa.amend.claim.forms.AllowedTotalForm;
+import uk.gov.justice.laa.amend.claim.forms.errors.AllowedTotalFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessmentOutcomeFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.MonetaryValueFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
@@ -71,6 +73,24 @@ public class ThymeleafUtils {
             .stream()
             .map(MonetaryValueFormError::new)
             .toList();
+    }
+
+    public List<AllowedTotalFormError> toAllowedTotalFormErrors(List<DetailedError> errors) {
+        return errors
+                .stream()
+                .map(AllowedTotalFormError::new)
+                .sorted()
+                .collect(
+                        Collectors.collectingAndThen(
+                                Collectors.toMap(
+                                        AllowedTotalFormError::getMessage,
+                                        Function.identity(),
+                                        (e1, e2) -> e1,
+                                        LinkedHashMap::new
+                                ),
+                                map -> map.values().stream().toList()
+                        )
+                );
     }
 
     public String getFormattedValue(Object value) {

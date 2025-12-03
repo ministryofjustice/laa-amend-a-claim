@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateTimeValue;
 import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayFullDateValue;
@@ -55,14 +56,15 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return rows;
     }
 
-    /**
-     * Determines if a given row represents the total row.
-     *
-     * @param row the claim field row
-     * @return true if this is the total row
-     */
-    default boolean isTotalRow(ClaimField row) {
-        return row != null && row.equals(claim().getTotalAmount());
+    default List<ClaimField> getAllowedTotals() {
+        List<ClaimField> rows = new ArrayList<>();
+        addRowIfNotNull(
+                rows,
+                claim().getAllowedTotalVat(),
+                claim().getAllowedTotalInclVat()
+        );
+
+        return rows;
     }
 
     default void addRowIfNotNull(List<ClaimField> list, ClaimField... claimFields) {
@@ -86,11 +88,12 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default List<ReviewAndAmendFormError> getErrors() {
-        return claimFields()
-            .stream()
-            .filter(ClaimField::needsAmending)
-            .map(x -> new ReviewAndAmendFormError(x.getId(), x.getErrorKey()))
-            .toList();
+        return Stream.of(
+                claimFields(), getAllowedTotals())
+                .flatMap(List::stream)
+                .filter(ClaimField::needsAmending)
+                .map(f -> new ReviewAndAmendFormError(f.getId(), f.getErrorKey()))
+                .toList();
     }
 
     @Override

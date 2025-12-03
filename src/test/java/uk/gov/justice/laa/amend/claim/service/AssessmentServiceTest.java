@@ -14,7 +14,7 @@ import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
-import uk.gov.justice.laa.amend.claim.resources.CreateMockClaims;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
@@ -47,7 +47,7 @@ class AssessmentServiceTest {
         @Test
         void testApplyNilledOutcome_SetsAllMonetaryFieldsToZero() {
             // Given: A claim with non-zero values
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
             // When: NILLED outcome is applied
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
@@ -63,7 +63,7 @@ class AssessmentServiceTest {
         @Test
         void testApplyNilledOutcome_CrimeClaimSpecificFields() {
             // Given: A crime claim with non-zero values
-            CrimeClaimDetails claim = CreateMockClaims.createMockCrimeClaim();
+            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
 
             // When: NILLED outcome is applied
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
@@ -82,10 +82,10 @@ class AssessmentServiceTest {
         @Test
         void testApplyAssessmentOutcome_SwitchingFromReducedToNilled() {
             // Given: A claim with REDUCED outcome and custom values
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setAssessmentOutcome(OutcomeType.REDUCED);
-            claim.setNetProfitCost(CreateMockClaims.createClaimField());
-            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
+            claim.setNetProfitCost(MockClaimsFunctions.createClaimField());
+            claim.setNetDisbursementAmount(MockClaimsFunctions.createClaimField());
 
             // When: Switching to NILLED outcome
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
@@ -101,10 +101,10 @@ class AssessmentServiceTest {
         @Test
         void testApplyAssessmentOutcome_SwitchingFromPaidInFullToNilled() {
             // Given: A claim with PAID IN FULL outcome and custom values
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
-            claim.setNetProfitCost(CreateMockClaims.createClaimField());
-            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
+            claim.setNetProfitCost(MockClaimsFunctions.createClaimField());
+            claim.setNetDisbursementAmount(MockClaimsFunctions.createClaimField());
 
             // When: Switching to NILLED outcome
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
@@ -120,8 +120,8 @@ class AssessmentServiceTest {
         @Test
         void testApplyNilledOutcome_AppliesWhenOutcomeChanges() {
             // Given: A claim with no outcome set
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
-            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            claim.setNetProfitCost(MockClaimsFunctions.createClaimField());
 
             // When: NILLED outcome is applied
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
@@ -133,9 +133,9 @@ class AssessmentServiceTest {
         @Test
         void testApplyNilledAssessmentOutcome_DoesNotApplyIfOutcomeUnchanged() {
             // Given: A claim with NILLED outcome already set
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setAssessmentOutcome(OutcomeType.NILLED);
-            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+            claim.setNetProfitCost(MockClaimsFunctions.createClaimField());
 
             // When: Same outcome is applied again
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
@@ -149,7 +149,7 @@ class AssessmentServiceTest {
     class ReducedToFixedFeeOutcome{
         @Test
         void testApplyReducedToFixedFeeOutcome_whenCrimeClaim() {
-            CrimeClaimDetails claim = CreateMockClaims.createMockCrimeClaim();
+            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
@@ -177,7 +177,7 @@ class AssessmentServiceTest {
 
         @Test
         void testApplyReducedToFixedFeeOutcome_whenCivilClaim() {
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
@@ -224,10 +224,10 @@ class AssessmentServiceTest {
         @Test
         void testApplyAssessmentOutcome_SwitchingFromPaidInFullToReduced() {
             // Given: A claim with PAID IN FULL outcome and custom values
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
-            claim.setNetProfitCost(CreateMockClaims.createClaimField());
-            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
+            claim.setNetProfitCost(MockClaimsFunctions.createClaimField());
+            claim.setNetDisbursementAmount(MockClaimsFunctions.createClaimField());
 
             // When: Switching to REDUCED outcome
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
@@ -243,10 +243,10 @@ class AssessmentServiceTest {
         @Test
         void testApplyAssessmentOutcome_SwitchingFromNilledToReduced() {
             // Given: A claim with NILLED outcome and custom values
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setAssessmentOutcome(OutcomeType.NILLED);
-            claim.setNetProfitCost(CreateMockClaims.createClaimField());
-            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
+            claim.setNetProfitCost(MockClaimsFunctions.createClaimField());
+            claim.setNetDisbursementAmount(MockClaimsFunctions.createClaimField());
 
             // When: Switching to REDUCED outcome
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
@@ -262,8 +262,8 @@ class AssessmentServiceTest {
         @Test
         void testApplyReducedOutcome_AppliesWhenOutcomeChanges() {
             // Given: A claim with no outcome set
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
-            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            claim.setNetProfitCost(MockClaimsFunctions.createClaimField());
 
             // When: NILLED outcome is applied
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
@@ -276,7 +276,7 @@ class AssessmentServiceTest {
         @Test
         void testApplyReducedAssessmentOutcome_DoesNotApplyIfOutcomeUnchanged() {
             // Given: A claim with NILLED outcome already set
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
 
             // When: Same outcome is applied again
@@ -291,7 +291,7 @@ class AssessmentServiceTest {
     class ReducedOutcome{
         @Test
         void testApplyReducedOutcome_whenCrimeClaim() {
-            CrimeClaimDetails claim = CreateMockClaims.createMockCrimeClaim();
+            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
 
@@ -313,13 +313,12 @@ class AssessmentServiceTest {
             assertEquals(claim.getTravelCosts().getSubmitted(), claim.getTravelCosts().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getTravelCosts().getStatus());
 
-            assertEquals(claim.getWaitingCosts().getSubmitted(), claim.getWaitingCosts().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getWaitingCosts().getStatus());
+            MockClaimsFunctions.assertCrimeAllowedTotalsAreCorrect(claim);
         }
 
         @Test
         void testApplyReducedFeeOutcome_whenCivilClaim() {
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
 
@@ -361,15 +360,17 @@ class AssessmentServiceTest {
 
             assertEquals(claim.getCounselsCost().getSubmitted(), claim.getCounselsCost().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getCounselsCost().getStatus());
+
+            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
         }
 
         @Test
         void testApplyAssessmentOutcome_SwitchingFromPaidInFullToReduced() {
             // Given: A claim with PAID IN FULL outcome and custom values
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
-            claim.setNetProfitCost(CreateMockClaims.createClaimField());
-            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
+            claim.setNetProfitCost(MockClaimsFunctions.createClaimField());
+            claim.setNetDisbursementAmount(MockClaimsFunctions.createClaimField());
 
             // When: Switching to REDUCED outcome
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
@@ -380,15 +381,17 @@ class AssessmentServiceTest {
 
             assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+
+            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
         }
 
         @Test
         void testApplyAssessmentOutcome_SwitchingFromNilledToReduced() {
             // Given: A claim with NILLED outcome and custom values
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setAssessmentOutcome(OutcomeType.NILLED);
-            claim.setNetProfitCost(CreateMockClaims.createClaimField());
-            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
+            claim.setNetProfitCost(MockClaimsFunctions.createClaimField());
+            claim.setNetDisbursementAmount(MockClaimsFunctions.createClaimField());
 
             // When: Switching to REDUCED outcome
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
@@ -399,13 +402,15 @@ class AssessmentServiceTest {
 
             assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+
+            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
         }
 
         @Test
         void testApplyReducedOutcome_AppliesWhenOutcomeChanges() {
             // Given: A claim with no outcome set
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
-            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            claim.setNetProfitCost(MockClaimsFunctions.createClaimField());
 
             // When: NILLED outcome is applied
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
@@ -413,12 +418,14 @@ class AssessmentServiceTest {
             // Then: Amended value should be set to calculated
             assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+
+            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
         }
 
         @Test
         void testApplyReducedAssessmentOutcome_DoesNotApplyIfOutcomeUnchanged() {
             // Given: A claim with NILLED outcome already set
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setAssessmentOutcome(OutcomeType.REDUCED);
 
             // When: Same outcome is applied again
@@ -426,6 +433,8 @@ class AssessmentServiceTest {
 
             // Then: Amended value should remain unchanged
             assertEquals(BigDecimal.valueOf(200), claim.getNetDisbursementAmount().getAmended());
+
+            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
         }
     }
 
@@ -433,7 +442,7 @@ class AssessmentServiceTest {
     class PaidInFullOutcome {
         @Test
         void testApplyPaidInFullOutcome_whenCrimeClaim() {
-            CrimeClaimDetails claim = CreateMockClaims.createMockCrimeClaim();
+            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
@@ -457,11 +466,13 @@ class AssessmentServiceTest {
 
             assertEquals(claim.getWaitingCosts().getSubmitted(), claim.getWaitingCosts().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getWaitingCosts().getStatus());
+
+            MockClaimsFunctions.assertCrimeAllowedTotalsAreCorrect(claim);
         }
 
         @Test
         void testApplyPaidInFullOutcome_whenCivilClaim() {
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
@@ -503,15 +514,17 @@ class AssessmentServiceTest {
 
             assertEquals(claim.getCounselsCost().getSubmitted(), claim.getCounselsCost().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getCounselsCost().getStatus());
+
+            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
         }
 
         @Test
         void testApplyAssessmentOutcome_SwitchingFromReducedToPaidInFull() {
             // Given: A claim with REDUCED outcome and custom values
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setAssessmentOutcome(OutcomeType.REDUCED);
-            claim.setNetProfitCost(CreateMockClaims.createClaimField());
-            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
+            claim.setNetProfitCost(MockClaimsFunctions.createClaimField());
+            claim.setNetDisbursementAmount(MockClaimsFunctions.createClaimField());
 
             // When: Switching to PAID IN FULL outcome
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
@@ -522,15 +535,17 @@ class AssessmentServiceTest {
 
             assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+
+            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
         }
 
         @Test
         void testApplyAssessmentOutcome_SwitchingFromNilledToPaidInFull() {
             // Given: A claim with NILLED outcome and custom values
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setAssessmentOutcome(OutcomeType.NILLED);
-            claim.setNetProfitCost(CreateMockClaims.createClaimField());
-            claim.setNetDisbursementAmount(CreateMockClaims.createClaimField());
+            claim.setNetProfitCost(MockClaimsFunctions.createClaimField());
+            claim.setNetDisbursementAmount(MockClaimsFunctions.createClaimField());
 
             // When: Switching to PAID IN FULL outcome
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
@@ -541,13 +556,15 @@ class AssessmentServiceTest {
 
             assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+
+            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
         }
 
         @Test
         void testApplyPaidInFullOutcome_AppliesWhenOutcomeChanges() {
             // Given: A claim with no outcome set
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
-            claim.setNetProfitCost(CreateMockClaims.createClaimField());
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            claim.setNetProfitCost(MockClaimsFunctions.createClaimField());
 
             // When: PAID IN FULL outcome is applied
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
@@ -555,6 +572,8 @@ class AssessmentServiceTest {
             // Then: Amended value should be set to submitted
             assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+
+            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
         }
     }
 
@@ -564,7 +583,7 @@ class AssessmentServiceTest {
         @Test
         void testCivilClaimAssessmentSubmittedToApi() {
             String claimId = UUID.randomUUID().toString();
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
             String userId = UUID.randomUUID().toString();
             AssessmentPost assessment = new AssessmentPost();
@@ -590,7 +609,7 @@ class AssessmentServiceTest {
         @Test
         void testCrimeClaimAssessmentSubmittedToApi() {
             String claimId = UUID.randomUUID().toString();
-            CrimeClaimDetails claim = CreateMockClaims.createMockCrimeClaim();
+            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
             claim.setClaimId(claimId);
             String userId = UUID.randomUUID().toString();
             AssessmentPost assessment = new AssessmentPost();
@@ -616,7 +635,7 @@ class AssessmentServiceTest {
         @Test
         void testWhenApiReturnsEmpty() {
             String claimId = UUID.randomUUID().toString();
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
             String userId = UUID.randomUUID().toString();
             AssessmentPost assessment = new AssessmentPost();
@@ -639,7 +658,7 @@ class AssessmentServiceTest {
         @Test
         void testWhenApiReturnsNullBody() {
             String claimId = UUID.randomUUID().toString();
-            CivilClaimDetails claim = CreateMockClaims.createMockCivilClaim();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
             String userId = UUID.randomUUID().toString();
             AssessmentPost assessment = new AssessmentPost();

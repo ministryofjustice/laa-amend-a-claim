@@ -11,6 +11,9 @@ import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * Service for amending claim values when the assessment outcome change.
  */

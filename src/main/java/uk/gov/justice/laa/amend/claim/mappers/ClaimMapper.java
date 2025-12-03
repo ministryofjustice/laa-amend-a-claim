@@ -33,6 +33,8 @@ public interface ClaimMapper {
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
     @Mapping(target = "feeCode", source = "feeCalculationResponse.feeCode")
     @Mapping(target = "feeCodeDescription", source = "feeCalculationResponse.feeCodeDescription")
+    @Mapping(target = "allowedTotalInclVat", source = ".", qualifiedByName = "mapAllowedTotalInclVat")
+    @Mapping(target = "allowedTotalVat", source = ".", qualifiedByName = "mapAllowedTotalVat")
     // See @AfterMapping
     @Mapping(target = "areaOfLaw", ignore = true)
     @Mapping(target = "providerAccountNumber", ignore = true)
