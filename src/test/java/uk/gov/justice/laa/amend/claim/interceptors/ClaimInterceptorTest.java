@@ -57,7 +57,7 @@ class ClaimInterceptorTest {
 
         assertFalse(interceptor.preHandle(request, response, handler));
 
-        verify(response).sendError(eq(404), contains("session not found"));
+        verify(response).sendError(eq(404), contains("Session not found"));
     }
 
     @Test
@@ -71,7 +71,7 @@ class ClaimInterceptorTest {
 
         assertFalse(interceptor.preHandle(request, response, handler));
 
-        verify(response).sendError(eq(404), contains("claim ID path variable not found"));
+        verify(response).sendError(eq(404), contains("Claim ID path variable not found"));
     }
 
     @Test
@@ -86,13 +86,44 @@ class ClaimInterceptorTest {
 
         assertFalse(interceptor.preHandle(request, response, handler));
 
-        verify(response).sendError(eq(404), contains("claim not found"));
+        verify(response).sendError(eq(404), contains("Claim not found"));
     }
 
     @Test
-    void preHandle_shouldReturnTrue_whenCivilClaimFound() throws Exception {
+    void preHandle_shouldReturn404_whenEscapedFlagIsNull() throws Exception {
         Map<String, String> vars = Map.of("claimId", claimId.toString());
         ClaimDetails claim = new CivilClaimDetails();
+        claim.setEscaped(null);
+
+        when(request.getSession(false)).thenReturn(session);
+        when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn(vars);
+        when(session.getAttribute(claimId.toString())).thenReturn(claim);
+
+        assertFalse(interceptor.preHandle(request, response, handler));
+
+        verify(response).sendError(eq(404), contains("Claim is not an escape case"));
+    }
+
+    @Test
+    void preHandle_shouldReturn404_whenEscapedFlagIsFalse() throws Exception {
+        Map<String, String> vars = Map.of("claimId", claimId.toString());
+        ClaimDetails claim = new CivilClaimDetails();
+        claim.setEscaped(false);
+
+        when(request.getSession(false)).thenReturn(session);
+        when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn(vars);
+        when(session.getAttribute(claimId.toString())).thenReturn(claim);
+
+        assertFalse(interceptor.preHandle(request, response, handler));
+
+        verify(response).sendError(eq(404), contains("Claim is not an escape case"));
+    }
+
+    @Test
+    void preHandle_shouldReturnTrue_whenEscapedCivilClaimFound() throws Exception {
+        Map<String, String> vars = Map.of("claimId", claimId.toString());
+        ClaimDetails claim = new CivilClaimDetails();
+        claim.setEscaped(true);
 
         when(request.getSession(false)).thenReturn(session);
         when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn(vars);
@@ -104,9 +135,10 @@ class ClaimInterceptorTest {
     }
 
     @Test
-    void preHandle_shouldReturnTrue_whenCrimeClaimFound() throws Exception {
+    void preHandle_shouldReturnTrue_whenEscapedCrimeClaimFound() throws Exception {
         Map<String, String> vars = Map.of("claimId", claimId.toString());
         ClaimDetails claim = new CivilClaimDetails();
+        claim.setEscaped(true);
 
         when(request.getSession(false)).thenReturn(session);
         when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn(vars);

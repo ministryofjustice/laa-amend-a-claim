@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.*;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -158,9 +159,9 @@ class ChangeMonetaryValueControllerTest {
         Class<?> targetClass = cost.getAccessor().type();
         Claim claim;
         if (CivilClaimDetails.class.equals(targetClass)) {
-            claim = new CivilClaimDetails();
+            claim = MockClaimsFunctions.createMockCivilClaim();
         } else {
-            claim = new CrimeClaimDetails();
+            claim = MockClaimsFunctions.createMockCrimeClaim();
         }
         ClaimField claimField = new ClaimField();
         claimField.setKey("");

@@ -8,27 +8,21 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.forms.AllowedTotalForm;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -62,7 +56,9 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsView_CivilClaim() throws Exception {
-        session.setAttribute(claimId, new CivilClaimDetails());
+        civilClaim.setAllowedTotalVat(null);
+        civilClaim.setAllowedTotalInclVat(null);
+        session.setAttribute(claimId, civilClaim);
 
         mockMvc.perform(get(buildPath())
                 .session(session))
@@ -74,7 +70,9 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsView_CrimeClaim() throws Exception {
-        session.setAttribute(claimId, new CrimeClaimDetails());
+        crimeClaim.setAllowedTotalVat(null);
+        crimeClaim.setAllowedTotalInclVat(null);
+        session.setAttribute(claimId, crimeClaim);
 
         mockMvc.perform(get(buildPath())
                 .session(session))
@@ -86,8 +84,8 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsViewWhenQuestionAlreadyAnswered_CivilClaim() throws Exception {
-        civilClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimFieldWithStatus(AmendStatus.AMENDABLE));
-        civilClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimFieldWithStatus(AmendStatus.AMENDABLE));
+        civilClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
+        civilClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
 
         session.setAttribute(claimId, civilClaim);
 
@@ -101,8 +99,8 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsViewWhenQuestionAlreadyAnswered_CrimeClaim() throws Exception {
-        crimeClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimFieldWithStatus(AmendStatus.AMENDABLE));
-        crimeClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimFieldWithStatus(AmendStatus.AMENDABLE));
+        crimeClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
+        crimeClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
 
         session.setAttribute(claimId, crimeClaim);
 

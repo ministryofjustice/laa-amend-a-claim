@@ -8,6 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Component
@@ -21,25 +22,28 @@ public class ClaimInterceptor implements HandlerInterceptor {
     ) throws Exception {
         HttpSession session = request.getSession(false);
         if (session == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, String.format("%s: session not found", request.getRequestURI()));
-            return false;
+            return error(response, request, "Session not found");
         }
 
         Map<String, String> pathVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
         String claimId = pathVariables.get("claimId");
         if (claimId == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, String.format("%s: claim ID path variable not found", request.getRequestURI()));
-            return false;
+            return error(response, request, "Claim ID path variable not found");
         }
 
         ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
-
-        // TODO - see if claim is not escaped
         if (claim == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, String.format("%s: claim not found", request.getRequestURI()));
-            return false;
+            return error(response, request, "Claim not found");
+        }
+        if (claim.getEscaped() == null || !claim.getEscaped()) {
+            return error(response, request, "Claim is not an escape case");
         }
 
         return true;
+    }
+
+    private boolean error(HttpServletResponse response, HttpServletRequest request, String message) throws IOException {
+        response.sendError(HttpServletResponse.SC_NOT_FOUND, String.format("%s: %s", request.getRequestURI(), message));
+        return false;
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
 import java.util.UUID;
@@ -44,7 +44,7 @@ public class AssessmentOutcomeControllerTest {
         submissionId = UUID.randomUUID();
         claimId = UUID.randomUUID();
         session = new MockHttpSession();
-        session.setAttribute(claimId.toString(), new CivilClaimDetails());
+        session.setAttribute(claimId.toString(), MockClaimsFunctions.createMockCivilClaim());
     }
 
     @Test

@@ -46,7 +46,8 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     void testPageWithSubmissionError() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
-        WebClientResponseException exception = WebClientResponseException.create(500, "Something went wrong", null, null, null);
+        WebClientResponseException exception = WebClientResponseException
+            .create(500, "Something went wrong", null, null, null);
 
         when(assessmentService.submitAssessment(any(), any()))
             .thenThrow(exception);

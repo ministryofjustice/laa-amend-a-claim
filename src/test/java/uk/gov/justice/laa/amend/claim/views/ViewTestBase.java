@@ -13,9 +13,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +34,7 @@ public abstract class ViewTestBase {
   @BeforeEach
   public void setup() {
     session = new MockHttpSession();
-    claim = new CivilClaimDetails();
+    claim = MockClaimsFunctions.createMockCivilClaim();
   }
 
   protected String mapping;

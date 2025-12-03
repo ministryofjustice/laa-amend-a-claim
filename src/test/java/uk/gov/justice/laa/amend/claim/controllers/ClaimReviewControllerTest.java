@@ -15,11 +15,10 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
@@ -56,7 +55,7 @@ public class ClaimReviewControllerTest {
         submissionId = UUID.randomUUID();
         claimId = UUID.randomUUID();
         session = new MockHttpSession();
-        claim = new CivilClaimDetails();
+        claim = MockClaimsFunctions.createMockCivilClaim();
         claim.setSubmissionId(submissionId.toString());
         claim.setClaimId(claimId.toString());
         session.setAttribute(claimId.toString(), claim);
@@ -156,11 +155,11 @@ public class ClaimReviewControllerTest {
         String claimId1 = UUID.randomUUID().toString();
         String claimId2 = UUID.randomUUID().toString();
 
-        Claim claim1 = new CivilClaimDetails();
+        Claim claim1 = MockClaimsFunctions.createMockCivilClaim();
         claim1.setSubmissionId(submissionId.toString());
         claim1.setClaimId(claimId1);
 
-        Claim claim2 = new CrimeClaimDetails();
+        Claim claim2 = MockClaimsFunctions.createMockCrimeClaim();
         claim2.setSubmissionId(submissionId.toString());
         claim2.setClaimId(claimId2);
 
