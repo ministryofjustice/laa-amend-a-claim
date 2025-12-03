@@ -54,7 +54,7 @@ class ChangeMonetaryValueControllerTest {
     @ParameterizedTest
     @MethodSource("validCosts")
     void testGetReturnsView(Cost cost) throws Exception {
-        Claim claim = CreateClaimFor(cost);
+        Claim claim = createClaimFor(cost);
         session.setAttribute(claimId, claim);
 
         mockMvc.perform(get(buildPath(cost.getPath())).session(session))
@@ -67,7 +67,7 @@ class ChangeMonetaryValueControllerTest {
     @ParameterizedTest
     @MethodSource("validCosts")
     void testGetReturnsViewWhenQuestionAlreadyAnswered(Cost cost) throws Exception {
-        Claim claim = CreateClaimFor(cost);
+        Claim claim = createClaimFor(cost);
         ClaimField claimField = cost.getAccessor().get(claim);
         Assertions.assertNotNull(claimField);
         claimField.setAmended(BigDecimal.valueOf(100));
@@ -83,7 +83,7 @@ class ChangeMonetaryValueControllerTest {
     @ParameterizedTest
     @MethodSource("validCosts")
     void testPostSavesValueAndRedirects(Cost cost) throws Exception {
-        Claim claim = CreateClaimFor(cost);
+        Claim claim = createClaimFor(cost);
         ClaimField claimField = cost.getAccessor().get(claim);
         Assertions.assertNotNull(claimField);
         session.setAttribute(claimId, claim);
@@ -105,6 +105,9 @@ class ChangeMonetaryValueControllerTest {
     @ParameterizedTest
     @MethodSource("validCosts")
     void testPostReturnsBadRequestForInvalidValue(Cost cost) throws Exception {
+        Claim claim = createClaimFor(cost);
+        session.setAttribute(claimId, claim);
+
         mockMvc.perform(post(buildPath(cost.getPath()))
                 .session(session)
                 .with(csrf())
@@ -151,7 +154,7 @@ class ChangeMonetaryValueControllerTest {
             .andExpect(status().isNotFound());
     }
 
-    private Claim CreateClaimFor(Cost cost) {
+    private Claim createClaimFor(Cost cost) {
         Class<?> targetClass = cost.getAccessor().type();
         Claim claim;
         if (CivilClaimDetails.class.equals(targetClass)) {

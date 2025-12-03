@@ -39,7 +39,6 @@ public class ChangeMonetaryValueController {
         HttpServletResponse response
     ) throws IOException {
         try {
-            // TODO - if retrieval from session returns null, redirect to session expired?
             ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
             ClaimField claimField = cost.getAccessor().get(claim);
             BigDecimal value = claimField != null ? (BigDecimal) claimField.getAmended() : null;
@@ -68,7 +67,6 @@ public class ChangeMonetaryValueController {
         BindingResult bindingResult
     ) throws IOException {
         try {
-            // TODO - if retrieval from session returns null, redirect to session expired?
             ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
 
             if (bindingResult.hasErrors()) {

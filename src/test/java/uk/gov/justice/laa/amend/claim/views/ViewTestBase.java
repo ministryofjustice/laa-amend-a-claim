@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
@@ -12,6 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
 import java.util.Arrays;
@@ -28,9 +31,18 @@ public abstract class ViewTestBase {
   @Autowired
   public MockMvc mockMvc;
 
+  @BeforeEach
+  public void setup() {
+    session = new MockHttpSession();
+    claim = new CivilClaimDetails();
+  }
+
   protected String mapping;
 
-  protected MockHttpSession session = new MockHttpSession();
+  protected MockHttpSession session;
+  protected ClaimDetails claim;
+
+  protected final String claimId = "claimId";
 
   protected ViewTestBase(String mapping) {
     this.mapping = mapping;
@@ -41,6 +53,7 @@ public abstract class ViewTestBase {
   }
 
   protected Document renderDocument(Map<String, Object> variables) throws Exception {
+    session.setAttribute("claimId", claim);
     MockHttpServletRequestBuilder requestBuilder = get(mapping).session(session);
 
     for (Map.Entry<String, Object> entry : variables.entrySet()) {
@@ -57,6 +70,7 @@ public abstract class ViewTestBase {
   }
 
   protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) throws Exception {
+    session.setAttribute("claimId", claim);
     MockHttpServletRequestBuilder requestBuilder = post(mapping).session(session);
 
     String html = mockMvc.perform(requestBuilder.params(params))

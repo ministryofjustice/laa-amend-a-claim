@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +32,6 @@ public class ClaimReviewController {
         @PathVariable(value = "claimId") String claimId
     ) {
         ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
-
-        if (claim == null) {
-            return String.format("redirect:/submissions/%s/claims/%s", submissionId, claimId);
-        }
-
         return renderView(model, claim, submissionId, claimId);
     }
 
@@ -53,6 +49,7 @@ public class ClaimReviewController {
 
     @PostMapping("/submissions/{submissionId}/claims/{claimId}/review")
     public String submit(
+        HttpServletRequest request,
         HttpSession session,
         Model model,
         @AuthenticationPrincipal OidcUser oidcUser,

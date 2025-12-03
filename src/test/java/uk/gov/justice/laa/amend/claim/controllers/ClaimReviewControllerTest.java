@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,6 +17,7 @@ import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
@@ -44,42 +46,38 @@ public class ClaimReviewControllerTest {
     @MockitoBean
     private AssessmentService assessmentService;
 
+    private UUID submissionId;
+    private UUID claimId;
+    private MockHttpSession session;
+    private ClaimDetails claim;
+
+    @BeforeEach
+    void setup() {
+        submissionId = UUID.randomUUID();
+        claimId = UUID.randomUUID();
+        session = new MockHttpSession();
+        claim = new CivilClaimDetails();
+        claim.setSubmissionId(submissionId.toString());
+        claim.setClaimId(claimId.toString());
+        session.setAttribute(claimId.toString(), claim);
+    }
+
     @Test
     public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
-
-        Claim claim = new CivilClaimDetails();
-        claim.setSubmissionId(submissionId);
-        claim.setClaimId(claimId);
-
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(claimId, claim);
-
         String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
 
         mockMvc.perform(get(path).session(session))
             .andExpect(status().isOk())
             .andExpect(view().name("review-and-amend"))
             .andExpect(model().attributeExists("claim"))
-            .andExpect(model().attribute("claimId", claimId))
-            .andExpect(model().attribute("submissionId", submissionId))
+            .andExpect(model().attribute("claimId", claimId.toString()))
+            .andExpect(model().attribute("submissionId", submissionId.toString()))
             .andExpect(model().attribute("submissionFailed", false))
             .andExpect(model().attribute("validationFailed", false));
     }
 
     @Test
     public void testDiscardRemovesClaimFromSessionAndRedirects() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
-
-        Claim claim = new CivilClaimDetails();
-        claim.setSubmissionId(submissionId);
-        claim.setClaimId(claimId);
-
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(claimId, claim);
-
         String path = String.format("/submissions/%s/claims/%s/review/discard", submissionId, claimId);
 
         mockMvc.perform(post(path).session(session))
@@ -89,17 +87,8 @@ public class ClaimReviewControllerTest {
 
     @Test
     public void testSuccessfulSubmitRedirectsToConfirmation() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
         UUID assessmentId = UUID.randomUUID();
         String userId = LocalSecurityConfig.userId;
-
-        CivilClaimDetails claim = new CivilClaimDetails();
-        claim.setSubmissionId(submissionId);
-        claim.setClaimId(claimId);
-
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(claimId, claim);
 
         CreateAssessment201Response response = new CreateAssessment201Response();
         response.setId(assessmentId);
@@ -113,23 +102,14 @@ public class ClaimReviewControllerTest {
         mockMvc.perform(post(path).session(session))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl(redirectUrl))
-            .andExpect(MockMvcResultMatchers.request().sessionAttributeDoesNotExist(claimId));
+            .andExpect(MockMvcResultMatchers.request().sessionAttributeDoesNotExist(claimId.toString()));
 
         verify(assessmentService).submitAssessment(claim, userId);
     }
 
     @Test
     public void testUnsuccessfulSubmitReloadsPageWithAlert() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
         String userId = LocalSecurityConfig.userId;
-
-        CivilClaimDetails claim = new CivilClaimDetails();
-        claim.setSubmissionId(submissionId);
-        claim.setClaimId(claimId);
-
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(claimId, claim);
 
         WebClientResponseException exception = WebClientResponseException.create(500, "Something went wrong", null, null, null);
 
@@ -142,8 +122,8 @@ public class ClaimReviewControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(view().name("review-and-amend"))
             .andExpect(model().attributeExists("claim"))
-            .andExpect(model().attribute("claimId", claimId))
-            .andExpect(model().attribute("submissionId", submissionId))
+            .andExpect(model().attribute("claimId", claimId.toString()))
+            .andExpect(model().attribute("submissionId", submissionId.toString()))
             .andExpect(model().attribute("submissionFailed", true))
             .andExpect(model().attribute("validationFailed", false));
 
@@ -152,19 +132,12 @@ public class ClaimReviewControllerTest {
 
     @Test
     public void testUnsuccessfulValidationReloadsPageWithErrorSummary() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
-
-        CivilClaimDetails claim = new CivilClaimDetails();
-        claim.setSubmissionId(submissionId);
-        claim.setClaimId(claimId);
         ClaimField claimField = new ClaimField();
         claimField.setKey("foo");
         claimField.setStatus(AmendStatus.NEEDS_AMENDING);
         claim.setNetProfitCost(claimField);
 
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
 
@@ -172,27 +145,25 @@ public class ClaimReviewControllerTest {
             .andExpect(status().isBadRequest())
             .andExpect(view().name("review-and-amend"))
             .andExpect(model().attributeExists("claim"))
-            .andExpect(model().attribute("claimId", claimId))
-            .andExpect(model().attribute("submissionId", submissionId))
+            .andExpect(model().attribute("claimId", claimId.toString()))
+            .andExpect(model().attribute("submissionId", submissionId.toString()))
             .andExpect(model().attribute("submissionFailed", false))
             .andExpect(model().attribute("validationFailed", true));
     }
 
     @Test
     public void testOnPageLoadWithMultipleClaimsInSession() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
         String claimId1 = UUID.randomUUID().toString();
         String claimId2 = UUID.randomUUID().toString();
 
         Claim claim1 = new CivilClaimDetails();
-        claim1.setSubmissionId(submissionId);
+        claim1.setSubmissionId(submissionId.toString());
         claim1.setClaimId(claimId1);
 
         Claim claim2 = new CrimeClaimDetails();
-        claim2.setSubmissionId(submissionId);
+        claim2.setSubmissionId(submissionId.toString());
         claim2.setClaimId(claimId2);
 
-        MockHttpSession session = new MockHttpSession();
         session.setAttribute(claimId1, claim1);
         session.setAttribute(claimId2, claim2);
 

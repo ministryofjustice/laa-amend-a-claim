@@ -62,10 +62,10 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsView_CivilClaim() throws Exception {
-        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId, new CivilClaimDetails());
 
-        mockMvc.perform(get(buildPath()))
+        mockMvc.perform(get(buildPath())
+                .session(session))
             .andExpect(status().isOk())
             .andExpect(view().name("allowed-totals"))
             .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", nullValue())))
@@ -74,27 +74,25 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsView_CrimeClaim() throws Exception {
-        ClaimDetails claim = crimeClaim;
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId, new CrimeClaimDetails());
 
-        mockMvc.perform(get(buildPath()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("allowed-totals"))
-                .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", nullValue())))
-                .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalInclVat", nullValue())));
+        mockMvc.perform(get(buildPath())
+                .session(session))
+            .andExpect(status().isOk())
+            .andExpect(view().name("allowed-totals"))
+            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", nullValue())))
+            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalInclVat", nullValue())));
     }
 
     @Test
     void testGetReturnsViewWhenQuestionAlreadyAnswered_CivilClaim() throws Exception {
-        ClaimDetails claim = civilClaim;
-
         civilClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimFieldWithStatus(AmendStatus.AMENDABLE));
         civilClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimFieldWithStatus(AmendStatus.AMENDABLE));
 
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId, civilClaim);
 
         mockMvc.perform(get(buildPath())
-            .session(session))
+                .session(session))
             .andExpect(status().isOk())
             .andExpect(view().name("allowed-totals"))
             .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", is("300.00"))))
@@ -103,19 +101,17 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsViewWhenQuestionAlreadyAnswered_CrimeClaim() throws Exception {
-        ClaimDetails claim = crimeClaim;
-
         crimeClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimFieldWithStatus(AmendStatus.AMENDABLE));
         crimeClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimFieldWithStatus(AmendStatus.AMENDABLE));
 
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId, crimeClaim);
 
         mockMvc.perform(get(buildPath())
-                        .session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("allowed-totals"))
-                .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", is("300.00"))))
-                .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalInclVat", is("300.00"))));
+                .session(session))
+            .andExpect(status().isOk())
+            .andExpect(view().name("allowed-totals"))
+            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", is("300.00"))))
+            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalInclVat", is("300.00"))));
     }
 
     @Test
@@ -128,14 +124,14 @@ class ChangeAllowedTotalsControllerTest {
         session.setAttribute(claimId, claim);
 
         mockMvc.perform(
-                        post(buildPath())
-                                .session(session)
-                                .with(csrf())
-                                .param("allowedTotalVat", "700")
-                                .param("allowedTotalInclVat", "700")
-                )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(buildRedirectPath()));
+                post(buildPath())
+                    .session(session)
+                    .with(csrf())
+                    .param("allowedTotalVat", "700")
+                    .param("allowedTotalInclVat", "700")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(buildRedirectPath()));
 
         ClaimDetails updated = (ClaimDetails) session.getAttribute(claimId);
 
@@ -146,30 +142,32 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testPostReturnsBadRequestForNegativeValue() throws Exception {
-        mockMvc.perform(
-                        post(buildPath())
-                                .session(session)
-                                .with(csrf())
-                                .param("allowedTotalVat", "-1")
-                                .param("allowedTotalInclVat", "-1"))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("allowed-totals"))
-                .andExpect(model().hasErrors());
+        session.setAttribute(claimId, civilClaim);
 
+        mockMvc.perform(
+                post(buildPath())
+                    .session(session)
+                    .with(csrf())
+                    .param("allowedTotalVat", "-1")
+                    .param("allowedTotalInclVat", "-1"))
+            .andExpect(status().isBadRequest())
+            .andExpect(view().name("allowed-totals"))
+            .andExpect(model().hasErrors());
     }
 
     @Test
     void testPostReturnsBadRequestFor3DecimalPlacesValue() throws Exception {
-        mockMvc.perform(
-                        post(buildPath())
-                                .session(session)
-                                .with(csrf())
-                                .param("allowedTotalVat", "100.000")
-                                .param("allowedTotalInclVat", "100.000"))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("allowed-totals"))
-                .andExpect(model().hasErrors());
+        session.setAttribute(claimId, civilClaim);
 
+        mockMvc.perform(
+                post(buildPath())
+                    .session(session)
+                    .with(csrf())
+                    .param("allowedTotalVat", "100.000")
+                    .param("allowedTotalInclVat", "100.000"))
+            .andExpect(status().isBadRequest())
+            .andExpect(view().name("allowed-totals"))
+            .andExpect(model().hasErrors());
     }
 
     private String buildPath() {

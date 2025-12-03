@@ -31,19 +31,14 @@ public class AssessmentOutcomeController {
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId
     ) {
-        AssessmentOutcomeForm form = new AssessmentOutcomeForm();
-
-        // Load values from Claim if it exists
         ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
 
-        if (claim != null) {
-            // Load assessment outcome
-            form.setAssessmentOutcome(claim.getAssessmentOutcome());
+        AssessmentOutcomeForm form = new AssessmentOutcomeForm();
+        form.setAssessmentOutcome(claim.getAssessmentOutcome());
 
-            // Load VAT liability from vatClaimed
-            if (claim.getVatClaimed() != null && claim.getVatClaimed().getAmended() != null) {
-                form.setLiabilityForVat((Boolean) claim.getVatClaimed().getAmended());
-            }
+        // Load VAT liability from vatClaimed
+        if (claim.getVatClaimed() != null && claim.getVatClaimed().getAmended() != null) {
+            form.setLiabilityForVat((Boolean) claim.getVatClaimed().getAmended());
         }
 
         return renderView(model, form, submissionId, claimId);
@@ -66,23 +61,21 @@ public class AssessmentOutcomeController {
 
         ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
 
-        if (claim != null) {
-            OutcomeType newOutcome = form.getAssessmentOutcome();
+        OutcomeType newOutcome = form.getAssessmentOutcome();
 
-            // Apply business logic based on outcome change
-            assessmentService.applyAssessmentOutcome(claim, newOutcome);
+        // Apply business logic based on outcome change
+        assessmentService.applyAssessmentOutcome(claim, newOutcome);
 
-            // Set the assessment outcome
-            claim.setAssessmentOutcome(newOutcome);
+        // Set the assessment outcome
+        claim.setAssessmentOutcome(newOutcome);
 
-            // Update VAT liability in vatClaimed
-            if (claim.getVatClaimed() != null) {
-                claim.getVatClaimed().setAmended(form.getLiabilityForVat());
-            }
-
-            // Save updated Claim back to session
-            session.setAttribute(claimId, claim);
+        // Update VAT liability in vatClaimed
+        if (claim.getVatClaimed() != null) {
+            claim.getVatClaimed().setAmended(form.getLiabilityForVat());
         }
+
+        // Save updated Claim back to session
+        session.setAttribute(claimId, claim);
 
         return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
     }
