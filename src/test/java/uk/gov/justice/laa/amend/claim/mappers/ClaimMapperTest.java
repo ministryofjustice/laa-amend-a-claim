@@ -20,6 +20,9 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -409,13 +412,19 @@ class ClaimMapperTest {
         response.setClientForename("John");
         response.setCaseStartDate("2025-01-01");
         response.setCaseConcludedDate("2025-02-01");
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+
+        SubmissionResponse submissionResponse = new SubmissionResponse();
+        submissionResponse.setSubmissionId(UUID.randomUUID());
+        submissionResponse.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
+        submissionResponse.setProviderUserId("User ID");
+        submissionResponse.setSubmitted(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"));
 
         UUID claimSummaryFeeId = UUID.randomUUID();
 
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setClaimSummaryFeeId(claimSummaryFeeId);
-        feeCalc.setFeeCodeDescription("FeeSchemeX");
+        feeCalc.setFeeCode("FeeCode");
+        feeCalc.setFeeCodeDescription("FeeCodeDesc");
         feeCalc.setCategoryOfLaw("Civil");
         BoltOnPatch boltOn = new BoltOnPatch();
         boltOn.setEscapeCaseFlag(true);
@@ -424,17 +433,21 @@ class ClaimMapperTest {
 
         response.setMatterTypeCode("MT1+MT2");
 
-        CivilClaimDetails claim = mapper.mapToCivilClaimDetails(response, submissionResponse);
+        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
         assertEquals("UFN123", claim.getUniqueFileNumber());
         assertEquals("CASE456", claim.getCaseReferenceNumber());
         assertEquals("Doe", claim.getClientSurname());
         assertEquals("John", claim.getClientForename());
-        assertEquals("FeeSchemeX", claim.getFeeScheme());
+        assertEquals("FeeCode", claim.getFeeCode());
+        assertEquals("FeeCodeDesc", claim.getFeeCodeDescription());
         assertEquals("Civil", claim.getCategoryOfLaw());
         assertTrue(claim.getEscaped());
         assertEquals("MT1+MT2", claim.getMatterTypeCode());
         assertEquals(claimSummaryFeeId.toString(), claim.getClaimSummaryFeeId());
+        assertEquals("LEGAL HELP", claim.getAreaOfLaw());
+        assertEquals("User ID", claim.getProviderName());
+        assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }
 
     @Test
@@ -446,10 +459,16 @@ class ClaimMapperTest {
         response.setClientForename("John");
         response.setCaseStartDate("2025-01-01");
         response.setCaseConcludedDate("2025-02-01");
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+
+        SubmissionResponse submissionResponse = new SubmissionResponse();
+        submissionResponse.setSubmissionId(UUID.randomUUID());
+        submissionResponse.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+        submissionResponse.setProviderUserId("User ID");
+        submissionResponse.setSubmitted(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"));
 
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
-        feeCalc.setFeeCodeDescription("FeeSchemeX");
+        feeCalc.setFeeCode("FeeCode");
+        feeCalc.setFeeCodeDescription("FeeCodeDesc");
         feeCalc.setCategoryOfLaw("Civil");
         BoltOnPatch boltOn = new BoltOnPatch();
         boltOn.setEscapeCaseFlag(true);
@@ -457,15 +476,19 @@ class ClaimMapperTest {
         response.setFeeCalculationResponse(feeCalc);
 
         response.setCrimeMatterTypeCode("CRIME123");
-        CrimeClaimDetails claim = mapper.mapToCrimeClaimDetails(response, submissionResponse);
+        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
         assertEquals("UFN123", claim.getUniqueFileNumber());
         assertEquals("CASE456", claim.getCaseReferenceNumber());
         assertEquals("Doe", claim.getClientSurname());
         assertEquals("John", claim.getClientForename());
-        assertEquals("FeeSchemeX", claim.getFeeScheme());
+        assertEquals("FeeCode", claim.getFeeCode());
+        assertEquals("FeeCodeDesc", claim.getFeeCodeDescription());
         assertEquals("Civil", claim.getCategoryOfLaw());
         assertTrue(claim.getEscaped());
         assertEquals("CRIME123", claim.getMatterTypeCode());
+        assertEquals("CRIME LOWER", claim.getAreaOfLaw());
+        assertEquals("User ID", claim.getProviderName());
+        assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }
 }
