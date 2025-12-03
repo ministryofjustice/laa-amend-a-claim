@@ -17,6 +17,7 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -155,6 +156,17 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasValuesRow(doc, "Total", claim.getTotalAmount());
         assertPageHasValuesRow(doc, "Travel costs", claim.getTravelCosts());
         assertPageHasValuesRow(doc, "Waiting costs", claim.getWaitingCosts());
+    }
+
+    @Test
+    void testNonEscapedClaimPage() throws Exception {
+        claim.setEscaped(false);
+
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+
+        Document doc = renderDocument();
+
+        assertPageHasPrimaryButtonDisabled(doc, "Add assessment outcome");
     }
 
     private static void createClaimSummary(ClaimDetails claim) {

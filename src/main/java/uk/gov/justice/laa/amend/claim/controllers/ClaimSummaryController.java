@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
@@ -15,7 +16,6 @@ import uk.gov.justice.laa.amend.claim.service.ClaimService;
 public class ClaimSummaryController {
 
     private final ClaimService claimService;
-
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}")
     public String onPageLoad(
@@ -30,5 +30,13 @@ public class ClaimSummaryController {
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claim", claimDetails.toViewModel());
         return "claim-summary";
+    }
+
+    @PostMapping("/submissions/{submissionId}/claims/{claimId}")
+    public String onSubmit(
+        @PathVariable(value = "submissionId") String submissionId,
+        @PathVariable(value = "claimId") String claimId
+    ) {
+        return String.format("redirect:/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
     }
 }

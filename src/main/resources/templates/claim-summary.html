@@ -15,49 +15,61 @@
                         <h1 class="govuk-heading-l">
                             <span th:text="#{claimSummary.mainHeading}"></span>
                         </h1>
-                        <div class="govuk-summary-card" th:if="${claim != null}">
-                            <div class="govuk-summary-card__title-wrapper">
-                                <h2 class="govuk-summary-card__title" th:text="#{claimSummary.summary}"></h2>
-                            </div>
-                            <div class="govuk-summary-card__content">
-                                <dl class="govuk-summary-list">
-                                    <div class="govuk-summary-list__row" th:each="entry : ${claim.summaryRows}">
-                                        <dt class="govuk-summary-list__key" th:text="#{${'claimSummary.rows.' + entry.key}}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value)}"></dd>
-                                    </div>
-                                </dl>
-                            </div>
-                        </div>
 
-                        <div class="govuk-summary-card" th:if="${claim != null}">
-                            <div class="govuk-summary-card__title-wrapper">
-                                <h2 class="govuk-summary-card__title" th:text="#{claimSummary.values}"></h2>
+                        <th:block th:if="${claim != null}">
+                            <div class="govuk-summary-card">
+                                <div class="govuk-summary-card__title-wrapper">
+                                    <h2 class="govuk-summary-card__title" th:text="#{claimSummary.summary}"></h2>
+                                </div>
+                                <div class="govuk-summary-card__content">
+                                    <dl class="govuk-summary-list">
+                                        <div class="govuk-summary-list__row" th:each="entry : ${claim.summaryRows}">
+                                            <dt class="govuk-summary-list__key" th:text="#{${'claimSummary.rows.' + entry.key}}"></dt>
+                                            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value)}"></dd>
+                                        </div>
+                                    </dl>
+                                </div>
                             </div>
-                            <div class="govuk-summary-card__content">
-                                <dl class="govuk-summary-list">
-                                    <div class="govuk-summary-list__row">
-                                        <dt class="govuk-summary-list__key" th:text="#{claimSummary.item}"></dt>
-                                        <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimSummary.calculated}"></dd>
-                                        <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimSummary.submitted}"></dd>
-                                    </div>
-                                    <div class="govuk-summary-list__row" th:each="row : ${claim.tableRows}" th:if="${@ThymeleafUtils.displayClaimField(row)}">
-                                        <dt class="govuk-summary-list__key govuk-!-font-weight-bold" th:text="#{${row.label}}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></dd>
-                                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></dd>
-                                    </div>
-                                </dl>
-                            </div>
-                        </div>
 
-                        <div class="govuk-button-group">
-                            <a th:href="@{/submissions/{submissionId}/claims/{claimID}/assessment-outcome(submissionId=${submissionId}, claimID=${claimId})}"
-                               th:text="#{claimSummary.assessmentButton}" class="govuk-button">
-                            </a>
-                            <a th:href="@{/}"
-                               role="button" draggable="false" class="govuk-button govuk-button--secondary"
-                               th:text="#{claimSummary.backToSearch}" data-module="govuk-button">
-                            </a>
-                        </div>
+                            <div class="govuk-summary-card">
+                                <div class="govuk-summary-card__title-wrapper">
+                                    <h2 class="govuk-summary-card__title" th:text="#{claimSummary.values}"></h2>
+                                </div>
+                                <div class="govuk-summary-card__content">
+                                    <dl class="govuk-summary-list">
+                                        <div class="govuk-summary-list__row">
+                                            <dt class="govuk-summary-list__key" th:text="#{claimSummary.item}"></dt>
+                                            <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimSummary.calculated}"></dd>
+                                            <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimSummary.submitted}"></dd>
+                                        </div>
+                                        <div class="govuk-summary-list__row" th:each="row : ${claim.tableRows}" th:if="${@ThymeleafUtils.displayClaimField(row)}">
+                                            <dt class="govuk-summary-list__key govuk-!-font-weight-bold" th:text="#{${row.label}}"></dt>
+                                            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></dd>
+                                            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></dd>
+                                        </div>
+                                    </dl>
+                                </div>
+                            </div>
+
+                            <form th:action="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}" method="post">
+                                <div class="govuk-button-group">
+                                    <th:block th:with="disabled=${!(claim.claim.escaped ?: false)}">
+                                        <button type="submit"
+                                                class="govuk-button"
+                                                data-module="govuk-button"
+                                                th:text="#{claimSummary.assessmentButton}"
+                                                th:disabled="${disabled}"
+                                                th:attr="aria-disabled=${disabled}">
+                                        </button>
+                                    </th:block>
+
+                                    <a th:href="@{/}"
+                                       role="button" draggable="false" class="govuk-button govuk-button--secondary"
+                                       th:text="#{claimSummary.backToSearch}" data-module="govuk-button">
+                                    </a>
+                                </div>
+                            </form>
+                        </th:block>
                     </div>
                 </div>
             </div>
