@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateTimeValue;
 import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayFullDateValue;
 
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
@@ -19,11 +20,13 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("clientName", getClientName());
         rows.put("ufn", claim().getUniqueFileNumber());
         addUcnSummaryRow(rows);
-        rows.put("submittedDate", getDateSubmittedForDisplay());
+        rows.put("providerName", claim().getProviderName());
         rows.put("providerAccountNumber", claim().getProviderAccountNumber());
+        rows.put("submittedDate", getDateSubmittedForDisplay());
         rows.put("areaOfLaw", claim().getAreaOfLaw());
         rows.put("categoryOfLaw", claim().getCategoryOfLaw());
-        rows.put("feeScheme", claim().getFeeScheme());
+        rows.put("feeCode", claim().getFeeCode());
+        rows.put("feeCodeDescription", claim().getFeeCodeDescription());
         addMatterTypeField(rows);
         rows.put("caseStartDate", getCaseStartDateForDisplay());
         rows.put("caseEndDate", getCaseEndDateForDisplay());
@@ -104,6 +107,6 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default String getDateSubmittedForDisplay() {
-        return displayFullDateValue(claim().getSubmittedDate());
+        return displayDateTimeValue(claim().getSubmittedDate());
     }
 }

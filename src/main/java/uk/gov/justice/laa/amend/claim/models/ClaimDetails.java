@@ -7,15 +7,13 @@ import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.function.Consumer;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class ClaimDetails extends Claim {
     private String areaOfLaw;
-    private String feeScheme;
     private String categoryOfLaw;
     private String matterTypeCode;
     private String scheduleReference;
@@ -34,7 +32,9 @@ public abstract class ClaimDetails extends Claim {
     private ClaimField allowedTotalInclVat;
     
     private OutcomeType assessmentOutcome;
-    private LocalDate submittedDate;
+    private LocalDateTime submittedDate;
+    private String feeCode;
+    private String feeCodeDescription;
 
     public void setNilledValues() {
         // Costs Table

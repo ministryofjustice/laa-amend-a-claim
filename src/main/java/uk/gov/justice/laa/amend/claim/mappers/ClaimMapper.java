@@ -30,11 +30,18 @@ public interface ClaimMapper {
     @Mapping(target = "netDisbursementAmount", source = ".", qualifiedByName = "mapNetDisbursementAmount")
     @Mapping(target = "totalAmount", source = ".", qualifiedByName = "mapTotalAmount")
     @Mapping(target = "disbursementVatAmount", source = ".", qualifiedByName = "mapDisbursementVatAmount")
-    @Mapping(target = "feeScheme", source = "feeCalculationResponse.feeCodeDescription")
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
-    @Mapping(target = "providerName", constant = "TODO")
+    @Mapping(target = "feeCode", source = "feeCalculationResponse.feeCode")
+    @Mapping(target = "feeCodeDescription", source = "feeCalculationResponse.feeCodeDescription")
     @Mapping(target = "allowedTotalInclVat", source = ".", qualifiedByName = "mapAllowedTotalInclVat")
     @Mapping(target = "allowedTotalVat", source = ".", qualifiedByName = "mapAllowedTotalVat")
+    // See @AfterMapping
+    @Mapping(target = "areaOfLaw", ignore = true)
+    @Mapping(target = "providerAccountNumber", ignore = true)
+    @Mapping(target = "providerName", ignore = true)
+    @Mapping(target = "submittedDate", ignore = true)
+    // Ignored
+    @Mapping(target = "assessmentOutcome", ignore = true)
     ClaimDetails mapToCommonDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
 
     @Mapping(target = "submissionId", source = "submissionId")
@@ -110,9 +117,10 @@ public interface ClaimMapper {
     @AfterMapping
     default void enrichWithSubmission(@MappingTarget ClaimDetails claim, SubmissionResponse submissionResponse) {
         if (submissionResponse != null && submissionResponse.getAreaOfLaw() != null) {
-            claim.setSubmittedDate(submissionResponse.getSubmitted() != null ? submissionResponse.getSubmitted().toLocalDate() : null);
-            claim.setProviderAccountNumber(submissionResponse.getOfficeAccountNumber());
             claim.setAreaOfLaw(submissionResponse.getAreaOfLaw().getValue());
+            claim.setProviderAccountNumber(submissionResponse.getOfficeAccountNumber());
+            claim.setProviderName(submissionResponse.getProviderUserId());
+            claim.setSubmittedDate(submissionResponse.getSubmitted() != null ? submissionResponse.getSubmitted().toLocalDateTime() : null);
         }
     }
 }
