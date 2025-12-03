@@ -8,8 +8,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class CurrencyValidator extends Validator {
 
-    private final BigDecimal MIN = BigDecimal.ZERO;
-    private final BigDecimal MAX = BigDecimal.valueOf(1_000_000);
+    private static final BigDecimal MIN = BigDecimal.ZERO;
+    private static final BigDecimal MAX = BigDecimal.valueOf(1_000_000);
 
     public boolean isValid(String value, ConstraintValidatorContext context, String fieldName, String prefix) {
         context.disableDefaultConstraintViolation();
