@@ -95,9 +95,11 @@ public interface AssessmentMapper {
         if (assessmentGet == null || claimDetails == null || claimDetails.getAreaOfLaw() == null) {
             throw new IllegalArgumentException("AssessmentGet and ClaimDetails must be non-null");
         }
-        return switch (AreaOfLaw.fromValue(claimDetails.getAreaOfLaw().toUpperCase())) {
-            case CRIME_LOWER -> mapToCrimeClaim(assessmentGet, (CrimeClaimDetails) claimDetails);
-            case LEGAL_HELP, MEDIATION -> mapToCivilClaim(assessmentGet, (CivilClaimDetails) claimDetails);
+
+        return switch (claimDetails) {
+            case CrimeClaimDetails crime -> mapToCrimeClaim(assessmentGet, crime);
+            case CivilClaimDetails civil -> mapToCivilClaim(assessmentGet, civil);
+            default -> throw new IllegalArgumentException("Unsupported Claim details");
         };
     }
 

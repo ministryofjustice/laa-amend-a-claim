@@ -169,13 +169,13 @@ class AssessmentMapperTest {
         assessmentGet.setNetTravelCostsAmount(BigDecimal.valueOf(100));
         assessmentGet.setNetWaitingCostsAmount(BigDecimal.valueOf(200));
 
-        CrimeClaimDetails claimDetails = new CrimeClaimDetails();
+        ClaimDetails claimDetails = new CrimeClaimDetails();
         claimDetails.setAreaOfLaw("CRIME_LOWER");
         claimDetails.setAllowedTotalInclVat(new ClaimField(ALLOWED_TOTAL_VAT, BigDecimal.valueOf(345), BigDecimal.valueOf(345), null, null, null, null));
         claimDetails.setAllowedTotalInclVat(new ClaimField(ALLOWED_TOTAL_INCL_VAT, BigDecimal.valueOf(348), BigDecimal.valueOf(348), null, null, null, null));
 
         // Act
-        CrimeClaimDetails result = mapper.mapToCrimeClaim(assessmentGet, claimDetails);
+        ClaimDetails result = mapper.mapAssessmentToClaimDetails(assessmentGet, claimDetails);
 
         // Assert
         assertNotNull(result.getVatClaimed().getAssessed());
@@ -187,8 +187,8 @@ class AssessmentMapperTest {
         assertEquals("user123",result.getLastAssessment().getLastAssessedBy());
         assertEquals(BigDecimal.valueOf(300), result.getAllowedTotalInclVat().getAssessed());
         assertEquals(BigDecimal.valueOf(20), result.getAllowedTotalVat().getAssessed());
-        assertEquals(BigDecimal.valueOf(100), result.getTravelCosts().getAssessed());
-        assertEquals(BigDecimal.valueOf(200), result.getWaitingCosts().getAssessed());
+        assertEquals(BigDecimal.valueOf(100), ((CrimeClaimDetails)result).getTravelCosts().getAssessed());
+        assertEquals(BigDecimal.valueOf(200), ((CrimeClaimDetails)result).getWaitingCosts().getAssessed());
         assertEquals(OutcomeType.REDUCED_TO_FIXED_FEE, result.getLastAssessment().getLastAssessmentOutcome());
     }
     private ClaimField createClaimField(Object value) {
