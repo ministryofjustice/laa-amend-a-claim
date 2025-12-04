@@ -1,13 +1,12 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.justice.laa.amend.claim.utils.FormUtils;
-
-import java.io.Serial;
-import java.io.Serializable;
-import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -21,6 +20,7 @@ public class ClaimField implements Serializable {
     private Object amended;
     private String changeUrl;
     private AmendStatus status;
+    private Object assessed;
 
     public ClaimField(String key, Object submitted, Object calculated) {
         this(key, submitted, calculated, (String) null);
@@ -42,6 +42,11 @@ public class ClaimField implements Serializable {
         this.amended = submitted;
         this.changeUrl = changeUrl;
         this.status = AmendStatus.NOT_AMENDABLE;
+    }
+
+    public ClaimField(String key, Object submitted, Object calculated, Object amended, Object assessed) {
+        this(key, submitted, calculated, amended);
+        this.assessed = assessed;
     }
 
     public String getLabel() {

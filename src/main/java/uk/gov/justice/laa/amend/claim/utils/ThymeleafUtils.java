@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.thymeleaf.spring6.util.DetailedError;
-import uk.gov.justice.laa.amend.claim.forms.AllowedTotalForm;
 import uk.gov.justice.laa.amend.claim.forms.errors.AllowedTotalFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessmentOutcomeFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.MonetaryValueFormError;
@@ -12,6 +11,10 @@ import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -24,6 +27,9 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayFullDateValue;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.getDateValue;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.getTimeValue;
 
 @AllArgsConstructor
 public class ThymeleafUtils {
@@ -100,9 +106,18 @@ public class ThymeleafUtils {
             case Integer i -> i.toString();
             case Boolean b -> getFormattedBoolean(b);
             case String s -> s;
+            case OffsetDateTime o -> displayFormattedFullDateValue(o.toLocalDateTime());
+            case LocalDate d -> displayFullDateValue(d);
+            case LocalDateTime d -> displayFormattedFullDateValue(d);
             default -> value.toString();
         };
     }
+
+    public String getAssessedValue(ClaimField value) {
+        return (value != null && value.getAssessed() != null)
+                ? getFormattedValue(value.getAssessed()) : getMessage("service.noData");
+    }
+
 
     public String getFormattedBoolean(Boolean value) {
         String key = (value != null && value) ? "service.yes" : "service.no";
@@ -141,5 +156,16 @@ public class ThymeleafUtils {
             return true;
         }
         return !hiddenFields.contains(claimField.getKey());
+    }
+
+    public String getLastAssessmentAlertMessage(OffsetDateTime value, String user) {
+        if (value == null || user == null) {
+            return getMessage("service.noData");
+        }
+        return getMessage("claimSummary.lastAssessmentText", user, displayFormattedFullDateValue(value.toLocalDateTime()));
+    }
+
+    public String displayFormattedFullDateValue(LocalDateTime value) {
+        return getMessage("fulldate.format", getDateValue(value), getTimeValue(value));
     }
 }

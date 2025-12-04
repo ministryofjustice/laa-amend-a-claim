@@ -8,12 +8,11 @@ import lombok.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
@@ -70,13 +69,13 @@ public class LocalSecurityConfig {
                     "email"
                 );
 
-                Authentication auth = new UsernamePasswordAuthenticationToken(
-                    oidcUser,
-                    null,
-                    oidcUser.getAuthorities()
+                OAuth2AuthenticationToken oauthToken = new OAuth2AuthenticationToken(
+                        oidcUser,
+                        oidcUser.getAuthorities(),
+                        "test" // registrationId
                 );
 
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                SecurityContextHolder.getContext().setAuthentication(oauthToken);
 
                 filterChain.doFilter(request, response);
             }

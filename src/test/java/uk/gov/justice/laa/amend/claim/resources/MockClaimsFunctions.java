@@ -7,9 +7,6 @@ import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 public class MockClaimsFunctions {
 
     public static CivilClaimDetails createMockCivilClaim(){
@@ -66,7 +63,8 @@ public class MockClaimsFunctions {
             BigDecimal.valueOf(200),
             BigDecimal.valueOf(300),
             null,
-            status
+            status,
+            null
         );
     }
 

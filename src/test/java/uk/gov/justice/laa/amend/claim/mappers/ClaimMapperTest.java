@@ -312,9 +312,11 @@ class ClaimMapperTest {
     void mapSubstantiveHearing() {
         ClaimResponse response = new ClaimResponse();
         response.setHoInterview(100);
+        response.setIsSubstantiveHearing(true);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         BoltOnPatch bolt = new BoltOnPatch();
         bolt.setBoltOnHomeOfficeInterviewFee(BigDecimal.valueOf(120));
+        bolt.setBoltOnSubstantiveHearingFee(BigDecimal.valueOf(120));
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
@@ -324,9 +326,9 @@ class ClaimMapperTest {
 
         ClaimField claimField = claim.getSubstantiveHearing();
         assertEquals(AmendClaimConstants.Label.SUBSTANTIVE_HEARING, claimField.getKey());
-        assertEquals(100, claimField.getSubmitted());
+        assertEquals(true, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(100, claimField.getAmended());
+        assertEquals(true, claimField.getAmended());
         assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 

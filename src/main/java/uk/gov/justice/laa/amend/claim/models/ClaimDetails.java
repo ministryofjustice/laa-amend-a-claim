@@ -34,6 +34,9 @@ public abstract class ClaimDetails extends Claim {
     private LocalDateTime submittedDate;
     private String feeCode;
     private String feeCodeDescription;
+    private boolean hasAssessment;
+    private AssessmentInfo lastAssessment;
+
 
     public void setNilledValues() {
         // Costs Table
@@ -71,7 +74,7 @@ public abstract class ClaimDetails extends Claim {
         applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAmending);
         applyIfNotNull(allowedTotalVat, ClaimField::setToNeedsAmending);
     }
-      
+
     public void setPaidInFullValues() {
         // Costs Table
         applyIfNotNull(fixedFee, ClaimField::setAmendedToCalculated);

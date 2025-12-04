@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern":  "/api/v0/claims/(.*)/assessments"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "get-assessments-response.json",
+    "transformers": ["response-template"],
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

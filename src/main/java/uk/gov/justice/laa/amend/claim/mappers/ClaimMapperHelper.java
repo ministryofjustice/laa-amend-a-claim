@@ -140,7 +140,7 @@ public class ClaimMapperHelper {
 
     @Named("mapSubstantiveHearing")
     public ClaimField mapSubstantiveHearing(ClaimResponse claimResponse) {
-        var submitted = claimResponse.getHoInterview();
+        var submitted = claimResponse.getIsSubstantiveHearing();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnHomeOfficeInterviewFee() : null;
@@ -165,11 +165,11 @@ public class ClaimMapperHelper {
 
     @Named("mapAllowedTotalInclVat")
     public ClaimField mapAllowedTotalInclVat(ClaimResponse claimResponse) {
-        return new ClaimField(ALLOWED_TOTAL_INCL_VAT, null, null, null, null, AmendStatus.NEEDS_AMENDING);
+        return new ClaimField(ALLOWED_TOTAL_INCL_VAT, null, null, null, null, AmendStatus.NEEDS_AMENDING, null);
     }
 
     @Named("mapAllowedTotalVat")
     public ClaimField mapAllowedTotalVat(ClaimResponse claimResponse) {
-        return new ClaimField(ALLOWED_TOTAL_VAT, null, null, null, null, AmendStatus.NEEDS_AMENDING);
+        return new ClaimField(ALLOWED_TOTAL_VAT, null, null, null, null, AmendStatus.NEEDS_AMENDING, null);
     }
 }

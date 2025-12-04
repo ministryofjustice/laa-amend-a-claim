@@ -12,15 +12,21 @@ import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentGet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -719,6 +725,66 @@ class AssessmentServiceTest {
 
             verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
             verify(claimsApiClient).submitAssessment(claimId, assessment);
+        }
+    }
+
+    @Nested
+    class GetAssessmentsTest {
+        @Test
+        void shouldReturnMappedClaimDetailsWhenAssessmentExists() {
+
+            var claimDetails = new CivilClaimDetails();
+            claimDetails.setClaimId(UUID.randomUUID().toString());
+
+            // Arrange
+            AssessmentGet assessment = new AssessmentGet(); // dummy assessment
+            AssessmentResultSet resultSet = new AssessmentResultSet();
+            resultSet.setAssessments(List.of(assessment));
+            when(claimsApiClient.getAssessments(UUID.fromString(claimDetails.getClaimId())))
+                    .thenReturn(Mono.just(resultSet));
+
+            ClaimDetails mappedDetails = new CivilClaimDetails();
+            when(assessmentMapper.mapAssessmentToClaimDetails(assessment, claimDetails))
+                    .thenReturn(mappedDetails);
+            // Act
+            ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claimDetails);
+            // Assert
+            assertThat(result).isEqualTo(mappedDetails);
+            verify(claimsApiClient).getAssessments(UUID.fromString(claimDetails.getClaimId()));
+            verify(assessmentMapper).mapAssessmentToClaimDetails(assessment, claimDetails);
+        }
+
+        @Test
+        void shouldThrowExceptionWhenAssessmentsAreEmpty() {
+            var claimDetails = new CivilClaimDetails();
+            claimDetails.setClaimId(UUID.randomUUID().toString());
+            // Arrange
+            AssessmentResultSet emptyResultSet = new AssessmentResultSet();
+            emptyResultSet.setAssessments(List.of());
+            when(claimsApiClient.getAssessments(UUID.fromString(claimDetails.getClaimId())))
+                    .thenReturn(Mono.just(emptyResultSet));
+
+            // Act & Assert
+            RuntimeException ex = assertThrows(RuntimeException.class,
+                    () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
+
+            assertThat(ex.getMessage()).contains("Failed to get assessments");
+        }
+
+
+        @Test
+        void shouldThrowExceptionWhenResultIsNull() {
+            var claimDetails = new CivilClaimDetails();
+            claimDetails.setClaimId(UUID.randomUUID().toString());
+            // Arrange
+            when(claimsApiClient.getAssessments(UUID.fromString(claimDetails.getClaimId())))
+                    .thenReturn(Mono.empty());
+
+            // Act & Assert
+            RuntimeException ex = assertThrows(RuntimeException.class,
+                    () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
+
+            assertThat(ex.getMessage()).contains("Failed to get assessments");
         }
     }
 }
