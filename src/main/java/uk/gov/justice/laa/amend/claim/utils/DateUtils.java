@@ -25,10 +25,6 @@ public class DateUtils {
         return displayDateValue(localDate, FULL_DATE_FORMAT);
     }
 
-    public static String displayDateTimeValue(LocalDateTime localDateTime) {
-        return localDateTime != null ? localDateTime.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)) : null;
-    }
-
     public static String toSubmissionPeriod(String month, String year) {
         try {
             return YearMonth
@@ -40,11 +36,11 @@ public class DateUtils {
         }
     }
 
-    public static String getDateValue(OffsetDateTime localDate) {
-        return localDate != null ? localDate.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
+    public static String getDateValue(LocalDateTime localDate) {
+        return localDate != null ? localDate.format(DateTimeFormatter.ofPattern(FULL_DATE_FORMAT)) : null;
     }
 
-    public static String getTimeValue(OffsetDateTime localDate) {
+    public static String getTimeValue(LocalDateTime localDate) {
         return localDate != null ? localDate.format(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)) : null;
     }
 }

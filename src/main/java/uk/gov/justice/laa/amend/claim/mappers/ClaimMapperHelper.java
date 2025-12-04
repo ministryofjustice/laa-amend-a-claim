@@ -140,7 +140,7 @@ public class ClaimMapperHelper {
 
     @Named("mapSubstantiveHearing")
     public ClaimField mapSubstantiveHearing(ClaimResponse claimResponse) {
-        var submitted = claimResponse.getHoInterview();
+        var submitted = claimResponse.getIsSubstantiveHearing();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
                 ? claimResponse.getFeeCalculationResponse().getBoltOnDetails().getBoltOnHomeOfficeInterviewFee() : null;
