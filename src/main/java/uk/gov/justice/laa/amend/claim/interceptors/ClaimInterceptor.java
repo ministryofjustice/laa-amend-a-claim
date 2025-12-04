@@ -22,15 +22,18 @@ public class ClaimInterceptor implements HandlerInterceptor {
         HttpServletResponse response,
         Object handler
     ) throws Exception {
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            return error(response, request, "Session not found");
+        Map<String, String> pathVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+        String submissionId = pathVariables.get("submissionId");
+        String claimId = pathVariables.get("claimId");
+        if (submissionId == null || claimId == null) {
+            return error(response, request, "Expected path variables not found");
         }
 
-        Map<String, String> pathVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        String claimId = pathVariables.get("claimId");
-        if (claimId == null) {
-            return error(response, request, "Claim ID path variable not found");
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            String redirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+            response.sendRedirect(redirectUrl);
+            return false;
         }
 
         ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);

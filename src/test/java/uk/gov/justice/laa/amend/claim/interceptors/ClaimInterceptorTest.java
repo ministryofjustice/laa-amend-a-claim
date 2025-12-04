@@ -9,17 +9,13 @@ import org.springframework.web.servlet.HandlerMapping;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -49,10 +45,13 @@ class ClaimInterceptorTest {
     }
 
     @Test
-    void preHandle_shouldReturn404_whenSessionMissing() throws Exception {
+    void preHandle_shouldReturn404_whenSubmissionIdMissing() throws Exception {
         String uri = String.format("/submission/%s/claims/%s", submissionId, claimId);
+        Map<String, String> vars = Map.of(
+            "claimId", claimId.toString()
+        );
 
-        when(request.getSession(false)).thenReturn(null);
+        when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn(vars);
         when(request.getRequestURI()).thenReturn(uri);
 
         assertFalse(interceptor.preHandle(request, response, handler));
@@ -63,9 +62,10 @@ class ClaimInterceptorTest {
     @Test
     void preHandle_shouldReturn404_whenClaimIdMissing() throws Exception {
         String uri = String.format("/submission/%s/claims/%s", submissionId, claimId);
-        Map<String, String> vars = new HashMap<>();
+        Map<String, String> vars = Map.of(
+            "submissionId", submissionId.toString()
+        );
 
-        when(request.getSession(false)).thenReturn(session);
         when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn(vars);
         when(request.getRequestURI()).thenReturn(uri);
 
@@ -75,12 +75,32 @@ class ClaimInterceptorTest {
     }
 
     @Test
+    void preHandle_shouldReturn404_whenSessionMissing() throws Exception {
+        String uri = String.format("/submission/%s/claims/%s", submissionId, claimId);
+        Map<String, String> vars = Map.of(
+            "submissionId", submissionId.toString(),
+            "claimId", claimId.toString()
+        );
+
+        when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn(vars);
+        when(request.getSession(false)).thenReturn(null);
+        when(request.getRequestURI()).thenReturn(uri);
+
+        assertFalse(interceptor.preHandle(request, response, handler));
+
+        verify(response).sendRedirect(eq(String.format("/submissions/%s/claims/%s", submissionId, claimId)));
+    }
+
+    @Test
     void preHandle_shouldReturn404_whenClaimNotFoundInSession() throws Exception {
         String uri = String.format("/submission/%s/claims/%s", submissionId, claimId);
-        Map<String, String> vars = Map.of("claimId", claimId.toString());
+        Map<String, String> vars = Map.of(
+            "submissionId", submissionId.toString(),
+            "claimId", claimId.toString()
+        );
 
-        when(request.getSession(false)).thenReturn(session);
         when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn(vars);
+        when(request.getSession(false)).thenReturn(session);
         when(request.getRequestURI()).thenReturn(uri);
         when(session.getAttribute(claimId.toString())).thenReturn(null);
 
@@ -91,12 +111,15 @@ class ClaimInterceptorTest {
 
     @Test
     void preHandle_shouldReturn404_whenEscapedFlagIsNull() throws Exception {
-        Map<String, String> vars = Map.of("claimId", claimId.toString());
+        Map<String, String> vars = Map.of(
+            "submissionId", submissionId.toString(),
+            "claimId", claimId.toString()
+        );
         ClaimDetails claim = new CivilClaimDetails();
         claim.setEscaped(null);
 
-        when(request.getSession(false)).thenReturn(session);
         when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn(vars);
+        when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(claimId.toString())).thenReturn(claim);
 
         assertFalse(interceptor.preHandle(request, response, handler));
@@ -106,12 +129,15 @@ class ClaimInterceptorTest {
 
     @Test
     void preHandle_shouldReturn404_whenEscapedFlagIsFalse() throws Exception {
-        Map<String, String> vars = Map.of("claimId", claimId.toString());
+        Map<String, String> vars = Map.of(
+            "submissionId", submissionId.toString(),
+            "claimId", claimId.toString()
+        );
         ClaimDetails claim = new CivilClaimDetails();
         claim.setEscaped(false);
 
-        when(request.getSession(false)).thenReturn(session);
         when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn(vars);
+        when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(claimId.toString())).thenReturn(claim);
 
         assertFalse(interceptor.preHandle(request, response, handler));
@@ -121,12 +147,15 @@ class ClaimInterceptorTest {
 
     @Test
     void preHandle_shouldReturnTrue_whenEscapedCivilClaimFound() throws Exception {
-        Map<String, String> vars = Map.of("claimId", claimId.toString());
+        Map<String, String> vars = Map.of(
+            "submissionId", submissionId.toString(),
+            "claimId", claimId.toString()
+        );
         ClaimDetails claim = new CivilClaimDetails();
         claim.setEscaped(true);
 
-        when(request.getSession(false)).thenReturn(session);
         when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn(vars);
+        when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(claimId.toString())).thenReturn(claim);
 
         assertTrue(interceptor.preHandle(request, response, handler));
@@ -136,12 +165,15 @@ class ClaimInterceptorTest {
 
     @Test
     void preHandle_shouldReturnTrue_whenEscapedCrimeClaimFound() throws Exception {
-        Map<String, String> vars = Map.of("claimId", claimId.toString());
+        Map<String, String> vars = Map.of(
+            "submissionId", submissionId.toString(),
+            "claimId", claimId.toString()
+        );
         ClaimDetails claim = new CivilClaimDetails();
         claim.setEscaped(true);
 
-        when(request.getSession(false)).thenReturn(session);
         when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn(vars);
+        when(request.getSession(false)).thenReturn(session);
         when(session.getAttribute(claimId.toString())).thenReturn(claim);
 
         assertTrue(interceptor.preHandle(request, response, handler));
