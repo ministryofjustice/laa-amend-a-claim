@@ -21,7 +21,7 @@ public class AmendClaimConstants {
     public static final String DEFAULT_DATE_FORMAT = "dd MMM yyyy";
     public static final String FULL_DATE_FORMAT = "dd MMMM yyyy";
     public static final String DEFAULT_PERIOD_FORMAT = "MMM yyyy";
-    public static final String DEFAULT_DATE_TIME_FORMAT = "dd MMMM yyyy 'at' hh:mm:ss";
+    public static final String DEFAULT_DATE_TIME_FORMAT = "dd MMMM yyyy 'at' HH:mm:ss";
 
     public static final String DEFAULT_SORT = "uniqueFileNumber,asc";
     public static final String DEFAULT_SORT_FIELD = "uniqueFileNumber";

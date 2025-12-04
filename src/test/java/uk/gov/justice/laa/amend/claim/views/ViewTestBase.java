@@ -187,7 +187,7 @@ public abstract class ViewTestBase {
     Assertions.assertTrue(rowFound);
   }
 
-  protected void assertPageHasValuesRow(Document doc, String expectedKey, ClaimField claimFieldRow) {
+  protected void assertPageHasValuesRow(Document doc, String expectedKey, ClaimField claimFieldRow, boolean checkAssessed) {
     Elements rows = doc.getElementsByClass("govuk-summary-list__row");
     boolean rowFound = rows.stream().anyMatch(row -> {
       String keyText = row.select(".govuk-summary-list__key").text().trim();
@@ -195,7 +195,16 @@ public abstract class ViewTestBase {
       if (valueElements.size() < 2) return false;
       String calculatedText = valueElements.get(0).text().trim();
       String submittedText = valueElements.get(1).text().trim();
-      return keyText.equals(expectedKey) && calculatedText.equals(claimFieldRow.getCalculated().toString()) && submittedText.equals(claimFieldRow.getSubmitted().toString());
+
+      boolean value = keyText.equals(expectedKey) && calculatedText.equals(claimFieldRow.getCalculated().toString()) && submittedText.equals(claimFieldRow.getSubmitted().toString());
+      if (checkAssessed) {
+          Object expectedAssessedValue = claimFieldRow.getAssessed();
+          if (expectedAssessedValue == null) {
+            expectedAssessedValue = "Not applicable";
+          }
+          return value && expectedAssessedValue.toString().equals(valueElements.get(2).text().trim());
+      }
+      return value;
     });
     Assertions.assertTrue(rowFound);
   }
@@ -230,5 +239,15 @@ public abstract class ViewTestBase {
 
   protected boolean pageHasLabel(Document doc, String label) {
     return !doc.select("dl.govuk-summary-list dt.govuk-summary-list__key:containsOwn(" + label + ")").isEmpty();
+  }
+
+  protected void assertPageHasInfoBanner(Document doc) {
+    Elements elements = doc.getElementsByClass("moj-alert__content");
+    Assertions.assertFalse(elements.isEmpty(), "Expected info banner but none found");
+
+    String bannerText = elements.text();
+    Assertions.assertTrue(bannerText.contains("Last edited by"),
+            "Info banner does not contain expected text. Actual: " + bannerText);
+
   }
 }

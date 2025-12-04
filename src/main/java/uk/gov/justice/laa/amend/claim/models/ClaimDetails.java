@@ -2,7 +2,6 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import uk.gov.justice.laa.amend.claim.forms.AllowedTotalForm;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
@@ -35,6 +34,9 @@ public abstract class ClaimDetails extends Claim {
     private LocalDateTime submittedDate;
     private String feeCode;
     private String feeCodeDescription;
+    private boolean hasAssessment;
+    private AssessmentInfo lastAssessment;
+
 
     public void setNilledValues() {
         // Costs Table
@@ -72,7 +74,7 @@ public abstract class ClaimDetails extends Claim {
         applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAmending);
         applyIfNotNull(allowedTotalVat, ClaimField::setToNeedsAmending);
     }
-      
+
     public void setPaidInFullValues() {
         // Costs Table
         applyIfNotNull(fixedFee, ClaimField::setAmendedToCalculated);

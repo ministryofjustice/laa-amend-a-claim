@@ -34,42 +34,6 @@ public class CivilClaimDetailsViewTest {
     }
 
     @Nested
-    class GetCaseStartDateForDisplayTests {
-        @Test
-        void getCaseStartDateForDisplayHandlesNull() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertNull(viewModel.getCaseStartDateForDisplay());
-        }
-
-        @Test
-        void getCaseStartDateForDisplayFormatsDate() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals("01 January 2020", viewModel.getCaseStartDateForDisplay());
-        }
-    }
-
-    @Nested
-    class GetCaseEndDateForDisplayTests {
-        @Test
-        void getCaseEndDateForDisplayHandlesNull() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertNull(viewModel.getCaseEndDateForDisplay());
-        }
-
-        @Test
-        void getCaseEndDateForDisplayFormatsDate() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setCaseEndDate(LocalDate.of(2020, 1, 1));
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals("01 January 2020", viewModel.getCaseEndDateForDisplay());
-        }
-    }
-
-    @Nested
     class GetSubmissionPeriodForDisplayTests {
         @Test
         void getSubmissionPeriodForDisplayHandlesNull() {

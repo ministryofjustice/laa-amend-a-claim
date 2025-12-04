@@ -1,6 +1,24 @@
 spring:
   profiles:
     active: local
+  security:
+    oauth2:
+      client:
+        registration:
+          my-client:
+            client-id: your-client-id
+            client-secret: your-client-secret
+            scope: openid, profile, email
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+        provider:
+          my-client:
+            authorization-uri: https://example.com/oauth2/authorize
+            token-uri: https://example.com/oauth2/token
+            user-info-uri: https://example.com/oauth2/userinfo
+            jwk-set-uri: https://example.com/oauth2/jwks
+
 claims-api:
   url: http://localhost:8089
   access-token: ""
+

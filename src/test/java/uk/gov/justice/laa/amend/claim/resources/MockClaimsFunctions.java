@@ -96,7 +96,8 @@ public class MockClaimsFunctions {
                 BigDecimal.valueOf(200),
                 BigDecimal.valueOf(300),
                 null,
-                status
+                status,
+                null
 
         );
     }

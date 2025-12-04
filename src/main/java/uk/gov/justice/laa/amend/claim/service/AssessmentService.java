@@ -9,10 +9,10 @@ import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.UUID;
 
 /**
  * Service for amending claim values when the assessment outcome change.
@@ -63,5 +63,13 @@ public class AssessmentService {
             throw new RuntimeException(String.format("Failed to submit assessment for claim ID: %s", claim.getClaimId()));
         }
         return response.getBody();
+    }
+
+    public ClaimDetails getLatestAssessmentByClaim(ClaimDetails claimDetails) {
+        AssessmentResultSet assessmentResults = claimsApiClient.getAssessments(UUID.fromString(claimDetails.getClaimId())).block();
+        if (assessmentResults == null || assessmentResults.getAssessments().isEmpty()) {
+            throw new RuntimeException(String.format("Failed to get assessments for claim ID: %s", claimDetails.getClaimId()));
+        }
+        return assessmentMapper.mapAssessmentToClaimDetails(assessmentResults.getAssessments().getFirst(), claimDetails);
     }
 }
