@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -31,15 +32,15 @@ public class ChangeMonetaryValueController {
 
     @GetMapping("{cost}")
     public String getMonetaryValue(
-        HttpSession session,
         Model model,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId,
         @PathVariable(value = "cost") Cost cost,
+        HttpServletRequest request,
         HttpServletResponse response
     ) throws IOException {
         try {
-            ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
+            ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
             ClaimField claimField = cost.getAccessor().get(claim);
             BigDecimal value = claimField != null ? (BigDecimal) claimField.getAmended() : null;
 
@@ -62,12 +63,13 @@ public class ChangeMonetaryValueController {
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId,
         @PathVariable(value = "cost") Cost cost,
+        HttpServletRequest request,
         HttpServletResponse response,
         @Valid @ModelAttribute("form") MonetaryValueForm form,
         BindingResult bindingResult
     ) throws IOException {
         try {
-            ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
+            ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
             if (bindingResult.hasErrors()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

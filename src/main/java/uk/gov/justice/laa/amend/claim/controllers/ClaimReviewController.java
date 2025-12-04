@@ -26,12 +26,12 @@ public class ClaimReviewController {
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}/review")
     public String onPageLoad(
-        HttpSession session,
+        HttpServletRequest request,
         Model model,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId
     ) {
-        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
         return renderView(model, claim, submissionId, claimId);
     }
 
@@ -57,7 +57,7 @@ public class ClaimReviewController {
         @PathVariable(value = "claimId") String claimId,
         HttpServletResponse response
     ) {
-        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
         ClaimDetailsView<? extends ClaimDetails> viewModel = claim.toViewModel();
         if (viewModel.getErrors().isEmpty()) {
             String userId = oidcUser.getClaim("oid");

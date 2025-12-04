@@ -41,6 +41,8 @@ public class ClaimInterceptor implements HandlerInterceptor {
             return error(response, request, "Claim is not an escape case");
         }
 
+        request.setAttribute(claimId, claim);
+
         return true;
     }
 

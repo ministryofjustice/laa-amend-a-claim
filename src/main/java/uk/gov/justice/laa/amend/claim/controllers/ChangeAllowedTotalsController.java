@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -27,12 +28,14 @@ import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
 public class ChangeAllowedTotalsController {
 
     @GetMapping()
-    public String loadPage(@PathVariable String claimId,
-                           @PathVariable String submissionId,
-                           Model model,
-                           HttpSession session) {
+    public String loadPage(
+        @PathVariable String claimId,
+        @PathVariable String submissionId,
+        Model model,
+        HttpServletRequest request
+    ) {
 
-        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
         AllowedTotalForm allowedTotalForm = new AllowedTotalForm();
 
         ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
@@ -60,6 +63,7 @@ public class ChangeAllowedTotalsController {
         BindingResult bindingResult,
         HttpSession session,
         Model model,
+        HttpServletRequest request,
         HttpServletResponse response
     ) {
         if (bindingResult.hasErrors()) {
@@ -67,7 +71,7 @@ public class ChangeAllowedTotalsController {
             return renderView(model, allowedTotalForm, submissionId, claimId);
         }
 
-        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
         ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
         ClaimField allowedTotalInclVatField = claim.getAllowedTotalInclVat();

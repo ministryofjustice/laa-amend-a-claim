@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -26,12 +27,12 @@ public class AssessmentOutcomeController {
 
     @GetMapping("/assessment-outcome")
     public String setAssessmentOutcome(
-        HttpSession session,
+        HttpServletRequest request,
         Model model,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId
     ) {
-        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
         form.setAssessmentOutcome(claim.getAssessmentOutcome());
@@ -52,6 +53,7 @@ public class AssessmentOutcomeController {
         BindingResult bindingResult,
         HttpSession session,
         Model model,
+        HttpServletRequest request,
         HttpServletResponse response
     ) {
         if (bindingResult.hasErrors()) {
@@ -59,7 +61,7 @@ public class AssessmentOutcomeController {
             return renderView(model, form, submissionId, claimId);
         }
 
-        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
         OutcomeType newOutcome = form.getAssessmentOutcome();
 
