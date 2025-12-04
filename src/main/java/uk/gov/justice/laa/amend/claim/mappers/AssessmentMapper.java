@@ -18,6 +18,10 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 import java.math.BigDecimal;
 
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw.CRIME_LOWER;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw.LEGAL_HELP;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw.MEDIATION;
+
 @Mapper(componentModel = "spring")
 public interface AssessmentMapper {
 
@@ -91,12 +95,14 @@ public interface AssessmentMapper {
     CrimeClaimDetails mapToCrimeClaim(AssessmentGet assessmentGet, @MappingTarget CrimeClaimDetails claimDetails);
 
     default ClaimDetails mapAssessmentToClaimDetails(AssessmentGet assessmentGet, @MappingTarget ClaimDetails claimDetails) {
-        if (assessmentGet == null || claimDetails == null) {
+        if (assessmentGet == null || claimDetails == null || claimDetails.getAreaOfLaw() == null) {
             throw new IllegalArgumentException("AssessmentGet and ClaimDetails must be non-null");
         }
-        return claimDetails instanceof CrimeClaimDetails
-                ? mapToCrimeClaim(assessmentGet, (CrimeClaimDetails) claimDetails)
-                : mapToCivilClaim(assessmentGet, (CivilClaimDetails) claimDetails);
+        return switch (claimDetails.getAreaOfLaw()) {
+            case "CRIME_LOWER" -> mapToCrimeClaim(assessmentGet, (CrimeClaimDetails) claimDetails);
+            case "LEGAL_HELP", "MEDIATION" -> mapToCivilClaim(assessmentGet, (CivilClaimDetails) claimDetails);
+            default -> throw new IllegalStateException("Unexpected value: " + claimDetails.getAreaOfLaw());
+        };
     }
 
     default AssessmentOutcome mapAssessmentOutcome(ClaimDetails claim) {

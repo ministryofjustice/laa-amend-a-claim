@@ -242,7 +242,12 @@ public abstract class ViewTestBase {
   }
 
   protected void assertPageHasInfoBanner(Document doc) {
-    Elements elements = doc.getElementsByClass("govuk-notification-banner__content");
-    Assertions.assertFalse(elements.isEmpty());
+    Elements elements = doc.getElementsByClass("moj-alert__content");
+    Assertions.assertFalse(elements.isEmpty(), "Expected info banner but none found");
+
+    String bannerText = elements.text();
+    Assertions.assertTrue(bannerText.contains("Last edited by"),
+            "Info banner does not contain expected text. Actual: " + bannerText);
+
   }
 }

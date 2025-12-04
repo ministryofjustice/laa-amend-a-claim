@@ -22,7 +22,7 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.User;
+import uk.gov.justice.laa.amend.claim.models.GraphApiUser;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
@@ -100,7 +100,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setHoInterview(new ClaimField(HO_INTERVIEW, 120, 110, 115, 120));
         claim.setSubstantiveHearing(new ClaimField(SUBSTANTIVE_HEARING, 300, 280, 290, 300));
         claim.setCounselsCost(new ClaimField(COUNSELS_COST, 400, 380, 390, 400));
-        claim.setAreaOfLaw("CIVIL");
+        claim.setAreaOfLaw("LEGAL_HELP");
         claim.setCategoryOfLaw("TEST");
 
         OAuth2AuthorizedClient mockClient = mock(OAuth2AuthorizedClient.class);
@@ -115,7 +115,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         lastAssessment.setLastAssessmentDate(OffsetDateTime.now());
         claim.setLastAssessment(lastAssessment);
         when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
-        when(userRetrievalService.getGraphUser(any(), any())).thenReturn(new User("test","test", "email"));
+        when(userRetrievalService.getGraphUser(any(), any())).thenReturn(new GraphApiUser("test","test"));
 
         Document doc = renderDocument();
 
@@ -132,7 +132,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         assertPageHasInfoBanner(doc);
         assertPageHasSummaryListRow(doc, "Escape case", "Yes");
-        assertPageHasSummaryListRow(doc, "Area of law", "CIVIL");
+        assertPageHasSummaryListRow(doc, "Area of law", "LEGAL_HELP");
         assertPageHasSummaryListRow(doc, "Category of law", "TEST");
         assertPageHasSummaryListRow(doc, "Fee code", "FC");
         assertPageHasSummaryListRow(doc, "Fee code description", "FCD");

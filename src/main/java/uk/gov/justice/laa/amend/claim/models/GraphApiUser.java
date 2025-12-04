@@ -5,8 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class User {
+public class GraphApiUser {
     private String id;
     private String displayName;
-    private String mail;
 }

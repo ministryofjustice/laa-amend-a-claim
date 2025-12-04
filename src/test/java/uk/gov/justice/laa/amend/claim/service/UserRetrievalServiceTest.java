@@ -15,7 +15,7 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import uk.gov.justice.laa.amend.claim.models.User;
+import uk.gov.justice.laa.amend.claim.models.GraphApiUser;
 
 import java.time.Instant;
 
@@ -85,12 +85,12 @@ public class UserRetrievalServiceTest {
         when(headersSpec.header(eq(HttpHeaders.AUTHORIZATION), anyString())).thenReturn(headersSpec);
         when(headersSpec.retrieve()).thenReturn(responseSpec);
 
-        User expectedUser = new User("test-user","Dummy User","");
+        GraphApiUser expectedUser = new GraphApiUser("test-user","Dummy User");
 
-        when(responseSpec.bodyToMono(User.class)).thenReturn(Mono.just(expectedUser));
+        when(responseSpec.bodyToMono(GraphApiUser.class)).thenReturn(Mono.just(expectedUser));
 
         // Act
-        User result = userRetrievalService.getGraphUser(authentication, userId);
+        GraphApiUser result = userRetrievalService.getGraphUser(authentication, userId);
 
         // Assert
         assertNotNull(result);
@@ -106,7 +106,7 @@ public class UserRetrievalServiceTest {
         when(authorizedClientManager.authorize(any())).thenReturn(null);
 
         // Act
-        User result = userRetrievalService.getGraphUser(authentication, "test-user");
+        GraphApiUser result = userRetrievalService.getGraphUser(authentication, "test-user");
 
         // Assert
         assertNull(result);

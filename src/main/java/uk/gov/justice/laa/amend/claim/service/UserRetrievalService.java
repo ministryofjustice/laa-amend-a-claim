@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import uk.gov.justice.laa.amend.claim.models.User;
+import uk.gov.justice.laa.amend.claim.models.GraphApiUser;
 
 
 @RequiredArgsConstructor
@@ -23,17 +23,17 @@ public class UserRetrievalService {
 
     private final OAuth2AuthorizedClientManager authorizedClientManager;
 
-    private Mono<User> callGraphApi(String upn, String token) {
+    private Mono<GraphApiUser> callGraphApi(String upn, String token) {
         return webClientBuilder.baseUrl("https://graph.microsoft.com/v1.0")
                 .build()
                 .get()
                 .uri("/users/{upn}", upn)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(User.class);
+                .bodyToMono(GraphApiUser.class);
     }
 
-    public User getGraphUser(Authentication authentication, String userId) {
+    public GraphApiUser getGraphUser(Authentication authentication, String userId) {
         if (authentication instanceof OAuth2AuthenticationToken oauthToken && userId != null) {
 
             OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId(oauthToken.getAuthorizedClientRegistrationId())
