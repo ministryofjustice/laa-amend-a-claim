@@ -43,6 +43,7 @@ public interface ClaimMapper {
     @Mapping(target = "submittedDate", ignore = true)
     // Ignored
     @Mapping(target = "assessmentOutcome", ignore = true)
+    @Mapping(target = "lastAssessment", ignore = true)
     ClaimDetails mapToCommonDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
 
     @Mapping(target = "submissionId", source = "submissionId")
