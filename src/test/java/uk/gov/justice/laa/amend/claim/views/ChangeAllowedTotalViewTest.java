@@ -9,16 +9,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeAllowedTotalsController;
-import uk.gov.justice.laa.amend.claim.controllers.ChangeMonetaryValueController;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.Claim;
 
 @ActiveProfiles("local")
 @WebMvcTest(ChangeAllowedTotalsController.class)
 @Import(LocalSecurityConfig.class)
 class ChangeAllowedTotalViewTest extends ViewTestBase {
-
-    private String claimId = "claimId";
 
     ChangeAllowedTotalViewTest() {
         super("/submissions/submissionId/claims/claimId/allowed-totals");
@@ -26,8 +21,6 @@ class ChangeAllowedTotalViewTest extends ViewTestBase {
 
     @Test
     void testPage() throws Exception {
-        Claim claim = new CivilClaimDetails();
-        session.setAttribute(claimId, claim);
         Document doc = renderDocument();
 
         assertPageHasTitle(doc, "Assess total allowed value");

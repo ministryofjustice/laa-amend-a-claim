@@ -63,7 +63,6 @@ class AssessmentServiceTest {
             assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
             assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
             assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAmended());
-            assertEquals(BigDecimal.valueOf(300), claim.getVatClaimed().getAmended()); // VAT unchanged (calculated)
         }
 
         @Test
@@ -319,7 +318,11 @@ class AssessmentServiceTest {
             assertEquals(claim.getTravelCosts().getSubmitted(), claim.getTravelCosts().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getTravelCosts().getStatus());
 
-            MockClaimsFunctions.assertCrimeAllowedTotalsAreCorrect(claim);
+            assertNull(claim.getAllowedTotalInclVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+
+            assertNull(claim.getAllowedTotalVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -367,7 +370,11 @@ class AssessmentServiceTest {
             assertEquals(claim.getCounselsCost().getSubmitted(), claim.getCounselsCost().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getCounselsCost().getStatus());
 
-            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
+            assertNull(claim.getAllowedTotalInclVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+
+            assertNull(claim.getAllowedTotalVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -388,7 +395,11 @@ class AssessmentServiceTest {
             assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
 
-            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
+            assertNull(claim.getAllowedTotalInclVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+
+            assertNull(claim.getAllowedTotalVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -409,7 +420,11 @@ class AssessmentServiceTest {
             assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
 
-            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
+            assertNull(claim.getAllowedTotalInclVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+
+            assertNull(claim.getAllowedTotalVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -425,7 +440,11 @@ class AssessmentServiceTest {
             assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
 
-            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
+            assertNull(claim.getAllowedTotalInclVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+
+            assertNull(claim.getAllowedTotalVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -440,7 +459,11 @@ class AssessmentServiceTest {
             // Then: Amended value should remain unchanged
             assertEquals(BigDecimal.valueOf(200), claim.getNetDisbursementAmount().getAmended());
 
-            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
+            assertNull(claim.getAllowedTotalInclVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+
+            assertNull(claim.getAllowedTotalVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
         }
     }
 
@@ -473,7 +496,11 @@ class AssessmentServiceTest {
             assertEquals(claim.getWaitingCosts().getSubmitted(), claim.getWaitingCosts().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getWaitingCosts().getStatus());
 
-            MockClaimsFunctions.assertCrimeAllowedTotalsAreCorrect(claim);
+            assertNull(claim.getAllowedTotalInclVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+
+            assertNull(claim.getAllowedTotalVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -521,7 +548,11 @@ class AssessmentServiceTest {
             assertEquals(claim.getCounselsCost().getSubmitted(), claim.getCounselsCost().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getCounselsCost().getStatus());
 
-            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
+            assertNull(claim.getAllowedTotalInclVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+
+            assertNull(claim.getAllowedTotalVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -542,7 +573,11 @@ class AssessmentServiceTest {
             assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
 
-            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
+            assertNull(claim.getAllowedTotalInclVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+
+            assertNull(claim.getAllowedTotalVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -563,7 +598,11 @@ class AssessmentServiceTest {
             assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
 
-            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
+            assertNull(claim.getAllowedTotalInclVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+
+            assertNull(claim.getAllowedTotalVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -579,7 +618,11 @@ class AssessmentServiceTest {
             assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
 
-            MockClaimsFunctions.assertCivilAllowedTotalsAreCorrect(claim);
+            assertNull(claim.getAllowedTotalInclVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+
+            assertNull(claim.getAllowedTotalVat().getAmended());
+            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
         }
     }
 

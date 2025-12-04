@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -25,17 +26,12 @@ public class ClaimReviewController {
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}/review")
     public String onPageLoad(
-        HttpSession session,
+        HttpServletRequest request,
         Model model,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId
     ) {
-        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
-
-        if (claim == null) {
-            return String.format("redirect:/submissions/%s/claims/%s", submissionId, claimId);
-        }
-
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
         return renderView(model, claim, submissionId, claimId);
     }
 
@@ -53,6 +49,7 @@ public class ClaimReviewController {
 
     @PostMapping("/submissions/{submissionId}/claims/{claimId}/review")
     public String submit(
+        HttpServletRequest request,
         HttpSession session,
         Model model,
         @AuthenticationPrincipal OidcUser oidcUser,
@@ -60,7 +57,7 @@ public class ClaimReviewController {
         @PathVariable(value = "claimId") String claimId,
         HttpServletResponse response
     ) {
-        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
         ClaimDetailsView<? extends ClaimDetails> viewModel = claim.toViewModel();
         if (viewModel.getErrors().isEmpty()) {
             String userId = oidcUser.getClaim("oid");

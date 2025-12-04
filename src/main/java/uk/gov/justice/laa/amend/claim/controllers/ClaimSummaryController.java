@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
@@ -20,14 +22,13 @@ public class ClaimSummaryController {
     private final AssessmentService assessmentService;
     private final UserRetrievalService userRetrievalService;
 
-
     @GetMapping("/submissions/{submissionId}/claims/{claimId}")
     public String onPageLoad(
-            HttpSession session,
-            Model model,
-            Authentication authentication,
-            @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId
+        HttpSession session,
+        Model model,
+        Authentication authentication,
+        @PathVariable(value = "submissionId") String submissionId,
+        @PathVariable(value = "claimId") String claimId
     ) {
         var claimDetails = claimService.getClaimDetails(submissionId, claimId);
         if (claimDetails.isHasAssessment()) {
@@ -42,5 +43,13 @@ public class ClaimSummaryController {
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claim", claimDetails.toViewModel());
         return "claim-summary";
+    }
+
+    @PostMapping("/submissions/{submissionId}/claims/{claimId}")
+    public String onSubmit(
+        @PathVariable(value = "submissionId") String submissionId,
+        @PathVariable(value = "claimId") String claimId
+    ) {
+        return String.format("redirect:/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
     }
 }

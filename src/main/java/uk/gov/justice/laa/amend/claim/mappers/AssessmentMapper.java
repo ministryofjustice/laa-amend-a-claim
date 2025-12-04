@@ -45,7 +45,7 @@ public interface AssessmentMapper {
 
     @InheritConfiguration(name = "mapClaimToAssessment")
     @Mapping(target = "netCostOfCounselAmount", expression = "java(mapNetCostOfCounselAmount(claim))")
-    @Mapping(target = "detentionTravelAndWaitingCostsAmount", expression = "java(mapDetentionTravelAndWaitingCostsAmount(claim))") // TODO
+    @Mapping(target = "detentionTravelAndWaitingCostsAmount", expression = "java(mapDetentionTravelAndWaitingCostsAmount(claim))")
     @Mapping(target = "boltOnAdjournedHearingFee", expression = "java(mapBoltOnAdjournedHearingFee(claim))")
     @Mapping(target = "jrFormFillingAmount", expression = "java(mapJrFormFillingAmount(claim))")
     @Mapping(target = "boltOnCmrhOralFee", expression = "java(mapBoltOnCmrhOralFee(claim))")
@@ -91,7 +91,7 @@ public interface AssessmentMapper {
     CrimeClaimDetails mapToCrimeClaim(AssessmentGet assessmentGet, @MappingTarget CrimeClaimDetails claimDetails);
 
     default ClaimDetails mapAssessmentToClaimDetails(AssessmentGet assessmentGet, @MappingTarget ClaimDetails claimDetails) {
-        if (assessmentGet == null || claimDetails == null || claimDetails.getAreaOfLaw() == null) {
+        if (assessmentGet == null || claimDetails == null) {
             throw new IllegalArgumentException("AssessmentGet and ClaimDetails must be non-null");
         }
 

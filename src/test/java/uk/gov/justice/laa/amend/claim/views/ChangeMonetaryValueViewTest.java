@@ -9,15 +9,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeMonetaryValueController;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.Claim;
 
 @ActiveProfiles("local")
 @WebMvcTest(ChangeMonetaryValueController.class)
 @Import(LocalSecurityConfig.class)
 class ChangeMonetaryValueViewTest extends ViewTestBase {
-
-    private String claimId = "claimId";
 
     ChangeMonetaryValueViewTest() {
         super("/submissions/submissionId/claims/claimId/profit-costs");
@@ -25,8 +21,6 @@ class ChangeMonetaryValueViewTest extends ViewTestBase {
 
     @Test
     void testPage() throws Exception {
-        Claim claim = new CivilClaimDetails();
-        session.setAttribute(claimId, claim);
         Document doc = renderDocument();
 
         assertPageHasTitle(doc, "Assess profit costs");

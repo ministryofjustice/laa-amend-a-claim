@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -189,6 +188,17 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasValuesRow(doc, "Total", claim.getTotalAmount(), false);
         assertPageHasValuesRow(doc, "Travel costs", claim.getTravelCosts(), false);
         assertPageHasValuesRow(doc, "Waiting costs", claim.getWaitingCosts(), false);
+    }
+
+    @Test
+    void testNonEscapedClaimPage() throws Exception {
+        claim.setEscaped(false);
+
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+
+        Document doc = renderDocument();
+
+        assertPageHasPrimaryButtonDisabled(doc, "Add assessment outcome");
     }
 
     private static void createClaimSummary(ClaimDetails claim) {

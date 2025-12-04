@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -10,6 +11,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
 import java.util.UUID;
@@ -17,7 +19,10 @@ import java.util.UUID;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @ActiveProfiles("local")
 @WebMvcTest(AssessmentOutcomeController.class)
@@ -30,12 +35,20 @@ public class AssessmentOutcomeControllerTest {
     @MockitoBean
     private AssessmentService assessmentService;
 
+    private UUID submissionId;
+    private UUID claimId;
+    private MockHttpSession session;
+
+    @BeforeEach
+    void setup() {
+        submissionId = UUID.randomUUID();
+        claimId = UUID.randomUUID();
+        session = new MockHttpSession();
+        session.setAttribute(claimId.toString(), MockClaimsFunctions.createMockCivilClaim());
+    }
+
     @Test
     public void testGetAssessmentOutcome_ReturnsView() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
-
-        MockHttpSession session = new MockHttpSession();
         String path = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
 
         mockMvc.perform(
@@ -48,10 +61,6 @@ public class AssessmentOutcomeControllerTest {
 
     @Test
     public void testOnSubmitReturnsBadRequestWithViewForInvalidForm() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
-
-        MockHttpSession session = new MockHttpSession();
         String path = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
 
         mockMvc.perform(
@@ -66,10 +75,6 @@ public class AssessmentOutcomeControllerTest {
 
     @Test
     public void testOnSubmitRedirects() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
-
-        MockHttpSession session = new MockHttpSession();
         String path = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
 
         String redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
