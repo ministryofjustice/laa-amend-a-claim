@@ -166,7 +166,6 @@ public class ThymeleafUtils {
     }
 
     public String displayFormattedFullDateValue(LocalDateTime value) {
-        return MessageFormat.format("{0} {1} {2}", getDateValue(value), getMessage("time.at"), getTimeValue(value));
+        return getMessage("fulldate.format", getDateValue(value), getTimeValue(value));
     }
-
 }
