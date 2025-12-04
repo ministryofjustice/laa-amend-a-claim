@@ -17,11 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.contains;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 class ClaimInterceptorTest {
@@ -57,7 +57,7 @@ class ClaimInterceptorTest {
 
         assertFalse(interceptor.preHandle(request, response, handler));
 
-        verify(response).sendError(eq(404), contains("Session not found"));
+        verify(response).sendError(eq(404));
     }
 
     @Test
@@ -71,7 +71,7 @@ class ClaimInterceptorTest {
 
         assertFalse(interceptor.preHandle(request, response, handler));
 
-        verify(response).sendError(eq(404), contains("Claim ID path variable not found"));
+        verify(response).sendError(eq(404));
     }
 
     @Test
@@ -86,7 +86,7 @@ class ClaimInterceptorTest {
 
         assertFalse(interceptor.preHandle(request, response, handler));
 
-        verify(response).sendError(eq(404), contains("Claim not found"));
+        verify(response).sendError(eq(404));
     }
 
     @Test
@@ -101,7 +101,7 @@ class ClaimInterceptorTest {
 
         assertFalse(interceptor.preHandle(request, response, handler));
 
-        verify(response).sendError(eq(404), contains("Claim is not an escape case"));
+        verify(response).sendError(eq(404));
     }
 
     @Test
@@ -116,7 +116,7 @@ class ClaimInterceptorTest {
 
         assertFalse(interceptor.preHandle(request, response, handler));
 
-        verify(response).sendError(eq(404), contains("Claim is not an escape case"));
+        verify(response).sendError(eq(404));
     }
 
     @Test
@@ -131,7 +131,7 @@ class ClaimInterceptorTest {
 
         assertTrue(interceptor.preHandle(request, response, handler));
 
-        verify(response, never()).sendError(anyInt(), anyString());
+        verifyNoInteractions(response);
     }
 
     @Test
@@ -146,6 +146,6 @@ class ClaimInterceptorTest {
 
         assertTrue(interceptor.preHandle(request, response, handler));
 
-        verify(response, never()).sendError(anyInt(), anyString());
+        verifyNoInteractions(response);
     }
 }
