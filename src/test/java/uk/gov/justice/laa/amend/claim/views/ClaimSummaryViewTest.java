@@ -21,7 +21,7 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.GraphApiUser;
+import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
@@ -114,7 +114,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         lastAssessment.setLastAssessmentDate(OffsetDateTime.now());
         claim.setLastAssessment(lastAssessment);
         when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
-        when(userRetrievalService.getGraphUser(any(), any())).thenReturn(new GraphApiUser("test","test"));
+        when(userRetrievalService.getMicrosoftApiUser(any(), any())).thenReturn(new MicrosoftApiUser("test","test"));
 
         Document doc = renderDocument();
 
