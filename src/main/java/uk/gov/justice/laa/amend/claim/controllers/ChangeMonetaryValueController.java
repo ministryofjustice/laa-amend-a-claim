@@ -42,7 +42,12 @@ public class ChangeMonetaryValueController {
         try {
             ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
             ClaimField claimField = cost.getAccessor().get(claim);
-            BigDecimal value = claimField != null ? (BigDecimal) claimField.getAmended() : null;
+
+            if (claimField == null) {
+                return String.format("redirect:/submissions/%s/claims/%s", submissionId, claimId);
+            }
+
+            BigDecimal value = (BigDecimal) claimField.getAmended();
 
             MonetaryValueForm form = new MonetaryValueForm();
             if (value != null) {
@@ -78,11 +83,9 @@ public class ChangeMonetaryValueController {
 
             ClaimField claimField = cost.getAccessor().get(claim);
             BigDecimal value = setScale(form.getValue());
-            if (claimField != null) {
-                claimField.setAmended(value);
-                claimField.setStatus(AmendStatus.AMENDABLE);
-                cost.getAccessor().set(claim, claimField);
-            }
+            claimField.setAmended(value);
+            claimField.setStatus(AmendStatus.AMENDABLE);
+            cost.getAccessor().set(claim, claimField);
             session.setAttribute(claimId, claim);
 
             return "redirect:" + getRedirectUrl(submissionId, claimId);
