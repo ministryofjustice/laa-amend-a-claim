@@ -67,6 +67,19 @@ class ChangeMonetaryValueControllerTest {
 
     @ParameterizedTest
     @MethodSource("validCosts")
+    void testGetRedirects_whenFieldIsNull(Cost cost) throws Exception {
+        Claim claim = createClaimWithNullFieldFor(cost);
+        session.setAttribute(claimId, claim);
+
+        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+
+        mockMvc.perform(get(buildPath(cost.getPath())).session(session))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(expectedRedirectUrl));
+    }
+
+    @ParameterizedTest
+    @MethodSource("validCosts")
     void testGetReturnsViewWhenQuestionAlreadyAnswered(Cost cost) throws Exception {
         Claim claim = createClaimFor(cost);
         ClaimField claimField = cost.getAccessor().get(claim);
@@ -166,6 +179,18 @@ class ChangeMonetaryValueControllerTest {
         ClaimField claimField = new ClaimField();
         claimField.setKey("");
         cost.getAccessor().set(claim, claimField);
+        return claim;
+    }
+
+    private Claim createClaimWithNullFieldFor(Cost cost) {
+        Class<?> targetClass = cost.getAccessor().type();
+        Claim claim;
+        if (CivilClaimDetails.class.equals(targetClass)) {
+            claim = MockClaimsFunctions.createMockCivilClaim();
+        } else {
+            claim = MockClaimsFunctions.createMockCrimeClaim();
+        }
+        cost.getAccessor().set(claim, null);
         return claim;
     }
 
