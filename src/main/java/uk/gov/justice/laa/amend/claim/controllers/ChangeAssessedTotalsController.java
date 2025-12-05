@@ -35,20 +35,22 @@ public class ChangeAssessedTotalsController {
     ) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
+        if (claim.getAssessedTotalVat() == null || claim.getAssessedTotalInclVat() == null) {
+            return String.format("redirect:/submissions/%s/claims/%s", submissionId, claimId);
+        }
+
         if (claim.getAssessedTotalVat().getStatus() == null || claim.getAssessedTotalInclVat().getStatus() == null) {
             return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
         }
 
         AssessedTotalForm form = new AssessedTotalForm();
 
-        ClaimField totalVatField = claim.getAssessedTotalVat();
-        BigDecimal totalVat = totalVatField != null ? (BigDecimal) totalVatField.getAmended() : null;
+        BigDecimal totalVat = (BigDecimal) claim.getAssessedTotalVat().getAmended();
         if (totalVat != null) {
             form.setAssessedTotalVat(setScale(totalVat).toString());
         }
 
-        ClaimField totalInclVatField = claim.getAssessedTotalInclVat();
-        BigDecimal totalInclVat = totalInclVatField != null ? (BigDecimal) totalInclVatField.getAmended() : null;
+        BigDecimal totalInclVat = (BigDecimal) claim.getAssessedTotalInclVat().getAmended();
         if (totalInclVat != null) {
             form.setAssessedTotalInclVat(setScale(totalInclVat).toString());
         }

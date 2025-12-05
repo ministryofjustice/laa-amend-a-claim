@@ -83,7 +83,35 @@ class ChangeAssessedTotalsControllerTest {
     }
 
     @Test
-    void testGetRedirectWhenStatusIsNull_CivilClaim() throws Exception {
+    void testGetRedirectsWhenFieldIsNull_CivilClaim() throws Exception {
+        civilClaim.setAssessedTotalVat(null);
+        civilClaim.setAssessedTotalInclVat(null);
+        session.setAttribute(claimId, civilClaim);
+
+        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+
+        mockMvc.perform(get(buildPath())
+                .session(session))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(expectedRedirectUrl));
+    }
+
+    @Test
+    void testGetRedirectsWhenFieldIsNull_CrimeClaim() throws Exception {
+        crimeClaim.setAssessedTotalVat(null);
+        crimeClaim.setAssessedTotalInclVat(null);
+        session.setAttribute(claimId, crimeClaim);
+
+        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+
+        mockMvc.perform(get(buildPath())
+                .session(session))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(expectedRedirectUrl));
+    }
+
+    @Test
+    void testGetRedirectsWhenStatusIsNull_CivilClaim() throws Exception {
         civilClaim.setAssessedTotalVat(ClaimField.builder().build());
         civilClaim.setAssessedTotalInclVat(ClaimField.builder().build());
         session.setAttribute(claimId, civilClaim);
@@ -97,7 +125,7 @@ class ChangeAssessedTotalsControllerTest {
     }
 
     @Test
-    void testGetRedirectWhenStatusIsNull_CrimeClaim() throws Exception {
+    void testGetRedirectsWhenStatusIsNull_CrimeClaim() throws Exception {
         crimeClaim.setAssessedTotalVat(ClaimField.builder().build());
         crimeClaim.setAssessedTotalInclVat(ClaimField.builder().build());
         session.setAttribute(claimId, crimeClaim);

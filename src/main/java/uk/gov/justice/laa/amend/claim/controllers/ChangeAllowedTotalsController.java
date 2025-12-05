@@ -34,16 +34,19 @@ public class ChangeAllowedTotalsController {
         HttpServletRequest request
     ) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
+
+        if (claim.getAllowedTotalVat() == null || claim.getAllowedTotalInclVat() == null) {
+            return String.format("redirect:/submissions/%s/claims/%s", submissionId, claimId);
+        }
+
         AllowedTotalForm allowedTotalForm = new AllowedTotalForm();
 
-        ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
-        BigDecimal allowedTotalVat = allowedTotalVatField != null ? (BigDecimal) allowedTotalVatField.getAmended() : null;
+        BigDecimal allowedTotalVat = (BigDecimal) claim.getAllowedTotalVat().getAmended();
         if (allowedTotalVat != null) {
             allowedTotalForm.setAllowedTotalVat(setScale(allowedTotalVat).toString());
         }
 
-        ClaimField allowedTotalInclVatField = claim.getAllowedTotalInclVat();
-        BigDecimal allowedTotalInclVat = allowedTotalInclVatField != null ? (BigDecimal) allowedTotalInclVatField.getAmended() : null;
+        BigDecimal allowedTotalInclVat = (BigDecimal) claim.getAllowedTotalInclVat().getAmended();
         if (allowedTotalInclVat != null) {
             allowedTotalForm.setAllowedTotalInclVat(setScale(allowedTotalInclVat).toString());
         }

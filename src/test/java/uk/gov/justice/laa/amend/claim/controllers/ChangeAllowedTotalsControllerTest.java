@@ -14,6 +14,7 @@ import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
@@ -22,7 +23,6 @@ import java.math.BigDecimal;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -56,8 +56,8 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsView_CivilClaim() throws Exception {
-        civilClaim.setAllowedTotalVat(null);
-        civilClaim.setAllowedTotalInclVat(null);
+        civilClaim.setAllowedTotalVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
+        civilClaim.setAllowedTotalInclVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
         session.setAttribute(claimId, civilClaim);
 
         mockMvc.perform(get(buildPath())
@@ -70,8 +70,8 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsView_CrimeClaim() throws Exception {
-        crimeClaim.setAllowedTotalVat(null);
-        crimeClaim.setAllowedTotalInclVat(null);
+        crimeClaim.setAllowedTotalVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
+        crimeClaim.setAllowedTotalInclVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
         session.setAttribute(claimId, crimeClaim);
 
         mockMvc.perform(get(buildPath())
@@ -80,6 +80,34 @@ class ChangeAllowedTotalsControllerTest {
             .andExpect(view().name("allowed-totals"))
             .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", nullValue())))
             .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalInclVat", nullValue())));
+    }
+
+    @Test
+    void testGetRedirectsWhenFieldIsNull_CivilClaim() throws Exception {
+        civilClaim.setAllowedTotalVat(null);
+        civilClaim.setAllowedTotalInclVat(null);
+        session.setAttribute(claimId, civilClaim);
+
+        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+
+        mockMvc.perform(get(buildPath())
+                .session(session))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(expectedRedirectUrl));
+    }
+
+    @Test
+    void testGetRedirectsWhenFieldIsNull_CrimeClaim() throws Exception {
+        crimeClaim.setAllowedTotalVat(null);
+        crimeClaim.setAllowedTotalInclVat(null);
+        session.setAttribute(claimId, crimeClaim);
+
+        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+
+        mockMvc.perform(get(buildPath())
+                .session(session))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(expectedRedirectUrl));
     }
 
     @Test
