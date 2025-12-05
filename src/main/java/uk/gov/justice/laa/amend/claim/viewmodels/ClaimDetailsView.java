@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
+import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
@@ -54,12 +55,23 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return rows;
     }
 
+    default List<ClaimField> getAssessedTotals() {
+        List<ClaimField> rows = new ArrayList<>();
+        addRowIfNotNull(
+            rows,
+            claim().getAssessedTotalVat(),
+            claim().getAssessedTotalInclVat()
+        );
+
+        return rows;
+    }
+
     default List<ClaimField> getAllowedTotals() {
         List<ClaimField> rows = new ArrayList<>();
         addRowIfNotNull(
-                rows,
-                claim().getAllowedTotalVat(),
-                claim().getAllowedTotalInclVat()
+            rows,
+            claim().getAllowedTotalVat(),
+            claim().getAllowedTotalInclVat()
         );
 
         return rows;
@@ -67,7 +79,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     default void addRowIfNotNull(List<ClaimField> list, ClaimField... claimFields) {
         for (ClaimField claimField : claimFields) {
-            if (claimField != null) {
+            if (claimField != null && claimField.getStatus() != AmendStatus.DO_NOT_DISPLAY) {
                 list.add(claimField);
             }
         }
@@ -86,12 +98,11 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default List<ReviewAndAmendFormError> getErrors() {
-        return Stream.of(
-                claimFields(), getAllowedTotals())
-                .flatMap(List::stream)
-                .filter(ClaimField::needsAmending)
-                .map(f -> new ReviewAndAmendFormError(f.getId(), f.getErrorKey()))
-                .toList();
+        return Stream.of(claimFields(), getAssessedTotals(), getAllowedTotals())
+            .flatMap(List::stream)
+            .filter(ClaimField::needsAmending)
+            .map(f -> new ReviewAndAmendFormError(f.getId(), f.getErrorKey()))
+            .toList();
     }
 
     default boolean hasAssessment() {

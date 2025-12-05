@@ -5,13 +5,13 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.thymeleaf.spring6.util.DetailedError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AllowedTotalFormError;
+import uk.gov.justice.laa.amend.claim.forms.errors.AssessedTotalFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessmentOutcomeFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.MonetaryValueFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
 import java.math.BigDecimal;
-import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -39,14 +39,38 @@ public class ThymeleafUtils {
     private static final List<String> hiddenFields = List.of(CMRH_TELEPHONE, CMRH_ORAL, JR_FORM_FILLING, ADJOURNED_FEE, HO_INTERVIEW, SUBSTANTIVE_HEARING);
 
     public List<SearchFormError> toSearchFormErrors(List<DetailedError> errors) {
+        return mapErrors(errors, SearchFormError::new, SearchFormError::getMessage);
+    }
+
+    public List<AssessmentOutcomeFormError> toAssessmentOutcomeErrors(List<DetailedError> errors) {
+        return mapErrors(errors, AssessmentOutcomeFormError::new, AssessmentOutcomeFormError::getMessage);
+    }
+
+    public List<MonetaryValueFormError> toMonetaryFormValueErrors(List<DetailedError> errors) {
+        return mapErrors(errors, MonetaryValueFormError::new, MonetaryValueFormError::getMessage);
+    }
+
+    public List<AssessedTotalFormError> toAssessedTotalFormErrors(List<DetailedError> errors) {
+        return mapErrors(errors, AssessedTotalFormError::new, AssessedTotalFormError::getMessage);
+    }
+
+    public List<AllowedTotalFormError> toAllowedTotalFormErrors(List<DetailedError> errors) {
+        return mapErrors(errors, AllowedTotalFormError::new, AllowedTotalFormError::getMessage);
+    }
+
+    private <T> List<T> mapErrors(
+        List<DetailedError> errors,
+        Function<DetailedError, T> mapper,
+        Function<T, String> keyExtractor
+    ) {
         return errors
             .stream()
-            .map(SearchFormError::new)
+            .map(mapper)
             .sorted()
             .collect(
                 Collectors.collectingAndThen(
                     Collectors.toMap(
-                        SearchFormError::getMessage,
+                        keyExtractor,
                         Function.identity(),
                         (e1, e2) -> e1,
                         LinkedHashMap::new
@@ -54,49 +78,6 @@ public class ThymeleafUtils {
                     map -> map.values().stream().toList()
                 )
             );
-    }
-
-    public List<AssessmentOutcomeFormError> toAssessmentOutcomeErrors(List<DetailedError> errors) {
-        return errors
-                .stream()
-                .map(AssessmentOutcomeFormError::new)
-                .sorted()
-                .collect(
-                        Collectors.collectingAndThen(
-                                Collectors.toMap(
-                                        AssessmentOutcomeFormError::getMessage,
-                                        Function.identity(),
-                                        (e1, e2) -> e1,
-                                        LinkedHashMap::new
-                                ),
-                                map -> map.values().stream().toList()
-                        )
-                );
-    }
-
-    public List<MonetaryValueFormError> toMonetaryFormValueErrors(List<DetailedError> errors) {
-        return errors
-            .stream()
-            .map(MonetaryValueFormError::new)
-            .toList();
-    }
-
-    public List<AllowedTotalFormError> toAllowedTotalFormErrors(List<DetailedError> errors) {
-        return errors
-                .stream()
-                .map(AllowedTotalFormError::new)
-                .sorted()
-                .collect(
-                        Collectors.collectingAndThen(
-                                Collectors.toMap(
-                                        AllowedTotalFormError::getMessage,
-                                        Function.identity(),
-                                        (e1, e2) -> e1,
-                                        LinkedHashMap::new
-                                ),
-                                map -> map.values().stream().toList()
-                        )
-                );
     }
 
     public String getFormattedValue(Object value) {
@@ -115,7 +96,7 @@ public class ThymeleafUtils {
 
     public String getAssessedValue(ClaimField value) {
         return (value != null && value.getAssessed() != null)
-                ? getFormattedValue(value.getAssessed()) : getMessage("service.noData");
+            ? getFormattedValue(value.getAssessed()) : getMessage("service.noData");
     }
 
 

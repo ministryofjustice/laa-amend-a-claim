@@ -2,7 +2,7 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout :: layout(
-        title=#{allowedTotals.title},
+        title=#{assessedTotals.title},
         mainContent=~{::#main-content},
         pageCategory=${null},
         showBackLink=${false}
@@ -13,27 +13,27 @@
                 <div class="govuk-grid-row">
                     <div class="govuk-grid-column-two-thirds">
 
-                        <form th:action="@{/submissions/{submissionId}/claims/{claimId}/allowed-totals(submissionId=${submissionId}, claimId=${claimId})}"
-                              th:object="${allowedTotalForm}"
+                        <form th:action="@{/submissions/{submissionId}/claims/{claimId}/assessed-totals(submissionId=${submissionId}, claimId=${claimId})}"
+                              th:object="${form}"
                               method="post">
 
-                            <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toAllowedTotalFormErrors(#fields.detailedErrors())})}"></th:block>
+                            <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toAssessedTotalFormErrors(#fields.detailedErrors())})}"></th:block>
 
                             <fieldset class="govuk-fieldset">
 
                                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-                                    <h1 class="govuk-fieldset__heading" th:text="#{allowedTotals.heading}"></h1>
+                                    <h1 class="govuk-fieldset__heading" th:text="#{assessedTotals.heading}"></h1>
                                 </legend>
 
                                 <div class="govuk-form-group"
-                                     th:classappend="${#fields.hasErrors('allowedTotalVat')} ? 'govuk-form-group--error'">
-                                    <label class="govuk-label govuk-label--s" for="allowed-total-vat" th:text="#{allowedTotals.totalVat.subHeading}"></label>
+                                     th:classappend="${#fields.hasErrors('assessedTotalVat')} ? 'govuk-form-group--error'">
+                                    <label class="govuk-label govuk-label--s" for="assessed-total-vat" th:text="#{assessedTotals.totalVat.subHeading}"></label>
 
-                                    <div id="allowed-total-vat-hint" class="govuk-hint" th:text="#{allowedTotals.totalVat.hint}"></div>
+                                    <div id="assessed-total-vat-hint" class="govuk-hint" th:text="#{assessedTotals.totalVat.hint}"></div>
 
-                                    <p th:if="${#fields.hasErrors('allowedTotalVat')}" class="govuk-error-message">
+                                    <p th:if="${#fields.hasErrors('assessedTotalVat')}" class="govuk-error-message">
                                         <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
-                                        <th:block th:errors=" *{allowedTotalVat}"></th:block>
+                                        <th:block th:errors=" *{assessedTotalVat}"></th:block>
                                     </p>
 
                                     <div class="govuk-input__wrapper">
@@ -41,36 +41,36 @@
                                         <div class="govuk-input__prefix" aria-hidden="true">£</div>
 
                                         <input class="govuk-input govuk-input--width-5"
-                                               th:classappend="${#fields.hasErrors('allowedTotalVat') ? 'govuk-input--error' : ''}"
-                                               id="allowed-total-vat"
-                                               name="allowedTotalVat"
+                                               th:classappend="${#fields.hasErrors('assessedTotalVat') ? 'govuk-input--error' : ''}"
+                                               id="assessed-total-vat"
+                                               name="assessedTotalVat"
                                                type="text"
                                                spellcheck="false"
-                                               th:field="*{allowedTotalVat}"
+                                               th:field="*{assessedTotalVat}"
                                         >
                                     </div>
                                 </div>
 
                                 <div class="govuk-form-group"
-                                     th:classappend="${#fields.hasErrors('allowedTotalInclVat')} ? 'govuk-form-group--error'">
-                                    <label class="govuk-label govuk-label--s" for="allowed-total-incl-vat" th:text="#{allowedTotals.totalInclVat.subHeading}"></label>
-                                    <div id="allowed-total-incl-vat-hint" class="govuk-hint" th:text="#{allowedTotals.totalInclVat.hint}"></div>
+                                     th:classappend="${#fields.hasErrors('assessedTotalInclVat')} ? 'govuk-form-group--error'">
+                                    <label class="govuk-label govuk-label--s" for="assessed-total-incl-vat" th:text="#{assessedTotals.totalInclVat.subHeading}"></label>
+                                    <div id="assessed-total-incl-vat-hint" class="govuk-hint" th:text="#{assessedTotals.totalInclVat.hint}"></div>
 
-                                    <p th:if="${#fields.hasErrors('allowedTotalInclVat')}" class="govuk-error-message">
+                                    <p th:if="${#fields.hasErrors('assessedTotalInclVat')}" class="govuk-error-message">
                                         <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
-                                        <th:block th:errors=" *{allowedTotalInclVat}"></th:block>
+                                        <th:block th:errors=" *{assessedTotalInclVat}"></th:block>
                                     </p>
 
                                     <div class="govuk-input__wrapper">
                                         <div class="govuk-input__prefix" aria-hidden="true">£</div>
 
                                         <input class="govuk-input govuk-input--width-5"
-                                               th:classappend="${#fields.hasErrors('allowedTotalInclVat') ? 'govuk-input--error' : ''}"
-                                               id="allowed-total-incl-vat"
-                                               name="allowedTotalInclVat"
+                                               th:classappend="${#fields.hasErrors('assessedTotalInclVat') ? 'govuk-input--error' : ''}"
+                                               id="assessed-total-incl-vat"
+                                               name="assessedTotalInclVat"
                                                type="text"
                                                spellcheck="false"
-                                               th:field="*{allowedTotalInclVat}"
+                                               th:field="*{assessedTotalInclVat}"
                                         >
                                     </div>
                                 </div>

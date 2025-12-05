@@ -18,6 +18,7 @@ import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
@@ -64,6 +65,8 @@ public class ClaimReviewControllerTest {
     @Test
     public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
         String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+        claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
+        session.setAttribute(claimId.toString(), claim);
 
         mockMvc.perform(get(path).session(session))
             .andExpect(status().isOk())
@@ -73,6 +76,19 @@ public class ClaimReviewControllerTest {
             .andExpect(model().attribute("submissionId", submissionId.toString()))
             .andExpect(model().attribute("submissionFailed", false))
             .andExpect(model().attribute("validationFailed", false));
+    }
+
+    @Test
+    public void testOnPageLoadRedirectsToAssessmentOutcomeWhenNotPresent() throws Exception {
+        String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+        claim.setAssessmentOutcome(null);
+        session.setAttribute(claimId.toString(), claim);
+
+        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
+
+        mockMvc.perform(get(path).session(session))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(expectedRedirectUrl));
     }
 
     @Test
@@ -155,11 +171,12 @@ public class ClaimReviewControllerTest {
         String claimId1 = UUID.randomUUID().toString();
         String claimId2 = UUID.randomUUID().toString();
 
-        Claim claim1 = MockClaimsFunctions.createMockCivilClaim();
+        ClaimDetails claim1 = MockClaimsFunctions.createMockCivilClaim();
         claim1.setSubmissionId(submissionId.toString());
         claim1.setClaimId(claimId1);
+        claim1.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
 
-        Claim claim2 = MockClaimsFunctions.createMockCrimeClaim();
+        ClaimDetails claim2 = MockClaimsFunctions.createMockCrimeClaim();
         claim2.setSubmissionId(submissionId.toString());
         claim2.setClaimId(claimId2);
 

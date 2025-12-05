@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-public class AllowedValuesFormTest extends FormTest {
+public class AllowedTotalFormTest extends FormTest {
 
     private AllowedTotalForm form;
 

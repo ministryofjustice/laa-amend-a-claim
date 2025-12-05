@@ -32,6 +32,9 @@ public class ClaimReviewController {
         @PathVariable(value = "claimId") String claimId
     ) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
+        if (claim.getAssessmentOutcome() == null) {
+            return String.format("redirect:/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
+        }
         return renderView(model, claim, submissionId, claimId);
     }
 

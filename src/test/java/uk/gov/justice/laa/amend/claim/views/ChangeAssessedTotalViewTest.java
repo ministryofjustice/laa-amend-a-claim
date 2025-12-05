@@ -1,0 +1,46 @@
+package uk.gov.justice.laa.amend.claim.views;
+
+import org.jsoup.nodes.Document;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
+import uk.gov.justice.laa.amend.claim.controllers.ChangeAssessedTotalsController;
+
+@ActiveProfiles("local")
+@WebMvcTest(ChangeAssessedTotalsController.class)
+@Import(LocalSecurityConfig.class)
+class ChangeAssessedTotalViewTest extends ViewTestBase {
+
+    ChangeAssessedTotalViewTest() {
+        super("/submissions/submissionId/claims/claimId/assessed-totals");
+    }
+
+    @Test
+    void testPage() throws Exception {
+        Document doc = renderDocument();
+
+        assertPageHasTitle(doc, "Assess total claim value");
+
+        assertPageHasHeading(doc, "Assess total claim value");
+
+        assertPageHasHint(doc, "assessed-total-vat-hint", "Enter the amount of assessed VAT for the claim");
+        assertPageHasHint(doc, "assessed-total-incl-vat-hint", "Enter the total assessed value of the claim");
+
+        assertPageHasTextInput(doc, "assessed-total-vat", "Assessed total VAT");
+        assertPageHasTextInput(doc, "assessed-total-incl-vat", "Assessed total including VAT");
+    }
+
+    @Test
+    void testPageWithErrors() throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("value", "-1");
+
+        Document doc = renderDocumentWithErrors(params);
+
+        assertPageHasErrorSummary(doc, "assessed-total-vat", "assessed-total-incl-vat");
+    }
+}

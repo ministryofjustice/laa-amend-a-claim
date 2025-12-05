@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
@@ -163,13 +165,31 @@ public class ClaimMapperHelper {
         return new ClaimField(WAITING_COSTS, submitted, calculated, Cost.WAITING_COSTS);
     }
 
-    @Named("mapAllowedTotalInclVat")
-    public ClaimField mapAllowedTotalInclVat(ClaimResponse claimResponse) {
-        return new ClaimField(ALLOWED_TOTAL_INCL_VAT, null, null, null, null, AmendStatus.NEEDS_AMENDING, null);
+    @Named("mapAssessedTotalVat")
+    public ClaimField mapAssessedTotalVat() {
+        ClaimField claimField = new ClaimField();
+        claimField.setKey(ASSESSED_TOTAL_VAT);
+        return claimField;
+    }
+
+    @Named("mapAssessedTotalInclVat")
+    public ClaimField mapAssessedTotalInclVat() {
+        ClaimField claimField = new ClaimField();
+        claimField.setKey(ASSESSED_TOTAL_INCL_VAT);
+        return claimField;
     }
 
     @Named("mapAllowedTotalVat")
-    public ClaimField mapAllowedTotalVat(ClaimResponse claimResponse) {
-        return new ClaimField(ALLOWED_TOTAL_VAT, null, null, null, null, AmendStatus.NEEDS_AMENDING, null);
+    public ClaimField mapAllowedTotalVat() {
+        ClaimField claimField = new ClaimField();
+        claimField.setKey(ALLOWED_TOTAL_VAT);
+        return claimField;
+    }
+
+    @Named("mapAllowedTotalInclVat")
+    public ClaimField mapAllowedTotalInclVat() {
+        ClaimField claimField = new ClaimField();
+        claimField.setKey(ALLOWED_TOTAL_INCL_VAT);
+        return claimField;
     }
 }

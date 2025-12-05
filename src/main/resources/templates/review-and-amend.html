@@ -91,6 +91,64 @@
         </div>
     </div>
 
+    <div class="govuk-summary-card" th:unless="${viewModel.assessedTotals.isEmpty()}">
+        <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title" th:text="#{claimSummary.assessedTotalsTableTitle}"/>
+        </div>
+        <div class="govuk-summary-card__content">
+            <table class="govuk-table govuk-!-margin-bottom-0">
+                <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.item}"></th>
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.assessed}"></th>
+                    <th scope="col" class="govuk-table__header"></th>
+                </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                <tr class="govuk-table__row"
+                    th:each="row : ${viewModel.assessedTotals}"
+                >
+                    <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
+                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
+                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
+
+                    <th:block th:if="${row.status.name() == 'NEEDS_AMENDING'}">
+                        <td class="govuk-table__cell">
+                            <a th:href="${row.getChangeAssessedTotalUrl(submissionId, claimId)}"
+                               th:id="${row.id}"
+                               class="govuk-link govuk-link--no-visited-state"
+                               th:text="#{service.add}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
+                        </td>
+
+                        <td class="govuk-table__cell"></td>
+                    </th:block>
+
+                    <th:block th:if="${row.status.name() == 'AMENDABLE'}">
+                        <td class="govuk-table__cell"
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                        </td>
+
+                        <td class="govuk-table__cell">
+                            <a th:href="${row.getChangeAssessedTotalUrl(submissionId, claimId)}"
+                               class="govuk-link govuk-link--no-visited-state"
+                               th:text="#{service.change}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
+                        </td>
+                    </th:block>
+
+                    <th:block th:if="${row.status.name() == 'NOT_AMENDABLE'}">
+                        <td class="govuk-table__cell"
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                        </td>
+
+                        <td class="govuk-table__cell"></td>
+                    </th:block>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
@@ -117,7 +175,7 @@
 
                     <th:block th:if="${row.status.name() == 'NEEDS_AMENDING'}">
                         <td class="govuk-table__cell">
-                            <a th:href="${row.getChangeUrlAllowedTotal(submissionId, claimId)}"
+                            <a th:href="${row.getChangeAllowedTotalUrl(submissionId, claimId)}"
                                th:id="${row.id}"
                                class="govuk-link govuk-link--no-visited-state"
                                th:text="#{service.add}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
@@ -132,7 +190,7 @@
                         </td>
 
                         <td class="govuk-table__cell">
-                            <a th:href="${row.getChangeUrlAllowedTotal(submissionId, claimId)}"
+                            <a th:href="${row.getChangeAllowedTotalUrl(submissionId, claimId)}"
                                class="govuk-link govuk-link--no-visited-state"
                                th:text="#{service.change}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
                         </td>

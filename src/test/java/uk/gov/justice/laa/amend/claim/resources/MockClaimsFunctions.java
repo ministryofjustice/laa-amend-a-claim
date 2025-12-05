@@ -30,6 +30,9 @@ public class MockClaimsFunctions {
         claim.setSubstantiveHearing(createClaimField());
         claim.setVatClaimed(createBooleanClaimField());
 
+        claim.setAssessedTotalVat(createClaimField());
+        claim.setAssessedTotalInclVat(createClaimField());
+
         claim.setAllowedTotalInclVat(createClaimField());
         claim.setAllowedTotalVat(createClaimField());
 
@@ -49,6 +52,9 @@ public class MockClaimsFunctions {
         claim.setNetDisbursementAmount(createClaimField());
         claim.setDisbursementVatAmount(createClaimField());
         claim.setVatClaimed(createBooleanClaimField());
+
+        claim.setAssessedTotalVat(createClaimField());
+        claim.setAssessedTotalInclVat(createClaimField());
 
         claim.setAllowedTotalInclVat(createClaimField());
         claim.setAllowedTotalVat(createClaimField());

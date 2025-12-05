@@ -29,7 +29,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.12'
-    implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:342ec18-SNAPSHOT'
+    implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:b3044a5-SNAPSHOT'
 
     implementation 'org.apache.commons:commons-lang3:3.18.0'
     implementation 'org.mapstruct:mapstruct:1.6.3'
@@ -46,7 +46,8 @@ dependencies {
     implementation("io.vavr:vavr:0.10.7")
 
     // Vulnerability fixes
-    implementation("org.apache.tomcat.embed:tomcat-embed-core:10.1.45")
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.12'
+    implementation 'org.springframework:spring-core:6.2.11'
 
 
     compileOnly 'org.projectlombok:lombok'
