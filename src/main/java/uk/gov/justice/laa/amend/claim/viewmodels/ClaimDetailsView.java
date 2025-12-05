@@ -78,7 +78,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     default void addRowIfNotNull(List<ClaimField> list, ClaimField... claimFields) {
         for (ClaimField claimField : claimFields) {
-            if (claimField != null) {
+            if (claimField != null && claimField.getStatus() != null) {
                 list.add(claimField);
             }
         }

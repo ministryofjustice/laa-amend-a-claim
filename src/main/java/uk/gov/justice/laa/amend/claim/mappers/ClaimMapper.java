@@ -1,11 +1,9 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.ObjectFactory;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
@@ -32,17 +30,16 @@ public interface ClaimMapper {
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
     @Mapping(target = "feeCode", source = "feeCalculationResponse.feeCode")
     @Mapping(target = "feeCodeDescription", source = "feeCalculationResponse.feeCodeDescription")
-    @Mapping(target = "assessedTotalVat", source = ".", qualifiedByName = "mapAssessedTotalVat")
-    @Mapping(target = "assessedTotalInclVat", source = ".", qualifiedByName = "mapAssessedTotalInclVat")
-    @Mapping(target = "allowedTotalVat", source = ".", qualifiedByName = "mapAllowedTotalVat")
-    @Mapping(target = "allowedTotalInclVat", source = ".", qualifiedByName = "mapAllowedTotalInclVat")
+    @Mapping(target = "assessedTotalVat", expression = "java(claimMapperHelper.mapAssessedTotalVat())")
+    @Mapping(target = "assessedTotalInclVat", expression = "java(claimMapperHelper.mapAssessedTotalInclVat())")
+    @Mapping(target = "allowedTotalVat", expression = "java(claimMapperHelper.mapAllowedTotalVat())")
+    @Mapping(target = "allowedTotalInclVat", expression = "java(claimMapperHelper.mapAllowedTotalInclVat())")
     @Mapping(target = "hasAssessment", source = "hasAssessment")
-    // See @AfterMapping
+    // Ignored and set later
     @Mapping(target = "areaOfLaw", ignore = true)
     @Mapping(target = "providerAccountNumber", ignore = true)
     @Mapping(target = "providerName", ignore = true)
     @Mapping(target = "submittedDate", ignore = true)
-    // Ignored
     @Mapping(target = "assessmentOutcome", ignore = true)
     @Mapping(target = "lastAssessment", ignore = true)
     ClaimDetails mapToCommonDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
@@ -118,13 +115,16 @@ public interface ClaimMapper {
         }
     }
 
-    @AfterMapping
-    default void enrichWithSubmission(@MappingTarget ClaimDetails claim, SubmissionResponse submissionResponse) {
+    private void enrichWithSubmission(ClaimDetails claim, SubmissionResponse submissionResponse) {
         if (submissionResponse != null && submissionResponse.getAreaOfLaw() != null) {
             claim.setAreaOfLaw(submissionResponse.getAreaOfLaw().getValue());
             claim.setProviderAccountNumber(submissionResponse.getOfficeAccountNumber());
             claim.setProviderName(submissionResponse.getProviderUserId());
             claim.setSubmittedDate(submissionResponse.getSubmitted() != null ? submissionResponse.getSubmitted().toLocalDateTime() : null);
         }
+    }
+
+    private void setAssessedTotalValues() {
+        return;
     }
 }

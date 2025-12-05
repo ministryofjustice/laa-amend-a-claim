@@ -39,12 +39,15 @@ public abstract class ClaimDetails extends Claim {
     private boolean hasAssessment;
     private AssessmentInfo lastAssessment;
 
-
     public void setNilledValues() {
         // Costs Table
         applyIfNotNull(netProfitCost, ClaimField::setNilled);
         applyIfNotNull(netDisbursementAmount, ClaimField::setNilled);
         applyIfNotNull(disbursementVatAmount, ClaimField::setNilled);
+
+        // Assessed Totals Table
+        applyIfNotNull(getAssessedTotalVat(), ClaimField::setToNull);
+        applyIfNotNull(getAssessedTotalInclVat(), ClaimField::setToNull);
 
         // Allowed Totals Table
         applyIfNotNull(allowedTotalInclVat, ClaimField::setNilled);
@@ -59,6 +62,10 @@ public abstract class ClaimDetails extends Claim {
         applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToCalculated);
         applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToCalculated);
 
+        // Assessed Totals Table
+        applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAmending);
+        applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAmending);
+
         // Allowed Totals Table
         applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAmending);
         applyIfNotNull(allowedTotalVat, ClaimField::setToNeedsAmending);
@@ -72,6 +79,10 @@ public abstract class ClaimDetails extends Claim {
         applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToSubmitted);
 
+        // Assessed Totals Table
+        applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAmending);
+        applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAmending);
+
         // Allowed Totals Table
         applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAmending);
         applyIfNotNull(allowedTotalVat, ClaimField::setToNeedsAmending);
@@ -84,6 +95,10 @@ public abstract class ClaimDetails extends Claim {
         applyIfNotNull(vatClaimed, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToSubmitted);
+
+        // Assessed Totals Table
+        applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAmending);
+        applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAmending);
 
         // Allowed Totals Table
         applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAmending);

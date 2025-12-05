@@ -20,7 +20,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -385,7 +384,7 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAmended());
-        assertEquals(AmendStatus.NEEDS_AMENDING, claimField.getStatus());
+        assertNull(claimField.getStatus());
     }
 
     @Test
@@ -401,7 +400,7 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAmended());
-        assertEquals(AmendStatus.NEEDS_AMENDING, claimField.getStatus());
+        assertNull(claimField.getStatus());
     }
 
     @Test
@@ -417,7 +416,7 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAmended());
-        assertEquals(AmendStatus.NEEDS_AMENDING, claimField.getStatus());
+        assertNull(claimField.getStatus());
     }
 
     @Test
@@ -433,7 +432,7 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAmended());
-        assertEquals(AmendStatus.NEEDS_AMENDING, claimField.getStatus());
+        assertNull(claimField.getStatus());
     }
 
     @ParameterizedTest(name = "Map to Civil Claim when Area of Law: {0}")
@@ -467,7 +466,7 @@ class ClaimMapperTest {
 
         response.setMatterTypeCode("MT1+MT2");
 
-        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+        CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
         assertEquals("UFN123", claim.getUniqueFileNumber());
         assertEquals("CASE456", claim.getCaseReferenceNumber());
@@ -493,6 +492,7 @@ class ClaimMapperTest {
         response.setClientForename("John");
         response.setCaseStartDate("2025-01-01");
         response.setCaseConcludedDate("2025-02-01");
+        response.setPoliceStationCourtPrisonId("Police");
 
         SubmissionResponse submissionResponse = new SubmissionResponse();
         submissionResponse.setSubmissionId(UUID.randomUUID());
@@ -510,7 +510,7 @@ class ClaimMapperTest {
         response.setFeeCalculationResponse(feeCalc);
 
         response.setCrimeMatterTypeCode("CRIME123");
-        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
         assertEquals("UFN123", claim.getUniqueFileNumber());
         assertEquals("CASE456", claim.getCaseReferenceNumber());
@@ -524,5 +524,6 @@ class ClaimMapperTest {
         assertEquals("CRIME LOWER", claim.getAreaOfLaw());
         assertEquals("User ID", claim.getProviderName());
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
+        assertEquals("Police", claim.getPoliceStationCourtPrisonId());
     }
 }

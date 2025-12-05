@@ -48,7 +48,7 @@ public class CivilClaimDetails extends ClaimDetails {
 
     @Override
     public void setReducedValues() {
-        super.setReducedToFixedFeeValues();
+        super.setReducedValues();
         applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(jrFormFillingCost, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(counselsCost, ClaimField::setAmendedToSubmitted);
@@ -66,12 +66,11 @@ public class CivilClaimDetails extends ClaimDetails {
         applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(jrFormFillingCost, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(counselsCost, ClaimField::setAmendedToSubmitted);
-
-        applyIfNotNull(adjournedHearing, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(cmrhTelephone, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(cmrhOral, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(hoInterview, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(substantiveHearing, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(adjournedHearing, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(cmrhTelephone, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(cmrhOral, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(hoInterview, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(substantiveHearing, ClaimField::setAmendedToSubmitted);
 
     }
 

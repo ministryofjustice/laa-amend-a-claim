@@ -5,14 +5,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Map;
 
 public class CrimeClaimDetailsViewTest {
 
@@ -38,7 +35,7 @@ public class CrimeClaimDetailsViewTest {
     @Nested
     class GetAssessedTotalsTests {
         @Test
-        void getAssessedTotalsHandlesNull() {
+        void getAssessedTotalsHandlesNullFields() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
             ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
 
@@ -48,7 +45,7 @@ public class CrimeClaimDetailsViewTest {
         }
 
         @Test
-        void getAssessedTotalsHandlesValid() {
+        void getAssessedTotalsHandlesValidFields() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
             claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AmendStatus.NEEDS_AMENDING));
             claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AmendStatus.NEEDS_AMENDING));
@@ -58,6 +55,18 @@ public class CrimeClaimDetailsViewTest {
 
             Assertions.assertEquals(claim.getAssessedTotalVat(), result.get(0));
             Assertions.assertEquals(claim.getAssessedTotalInclVat(), result.get(1));
+        }
+
+        @Test
+        void getAssessedTotalsHandlesValidFieldsWithNullStatus() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", null));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", null));
+            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAssessedTotals();
+
+            Assertions.assertEquals(List.of(), result);
         }
     }
 

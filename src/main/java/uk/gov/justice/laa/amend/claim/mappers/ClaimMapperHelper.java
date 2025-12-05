@@ -166,34 +166,30 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapAssessedTotalVat")
-    public ClaimField mapAssessedTotalVat(ClaimResponse claimResponse) {
+    public ClaimField mapAssessedTotalVat() {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ASSESSED_TOTAL_VAT);
-        claimField.setStatus(AmendStatus.NEEDS_AMENDING);
         return claimField;
     }
 
     @Named("mapAssessedTotalInclVat")
-    public ClaimField mapAssessedTotalInclVat(ClaimResponse claimResponse) {
+    public ClaimField mapAssessedTotalInclVat() {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ASSESSED_TOTAL_INCL_VAT);
-        claimField.setStatus(AmendStatus.NEEDS_AMENDING);
         return claimField;
     }
 
     @Named("mapAllowedTotalVat")
-    public ClaimField mapAllowedTotalVat(ClaimResponse claimResponse) {
+    public ClaimField mapAllowedTotalVat() {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ALLOWED_TOTAL_VAT);
-        claimField.setStatus(AmendStatus.NEEDS_AMENDING);
         return claimField;
     }
 
     @Named("mapAllowedTotalInclVat")
-    public ClaimField mapAllowedTotalInclVat(ClaimResponse claimResponse) {
+    public ClaimField mapAllowedTotalInclVat() {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ALLOWED_TOTAL_INCL_VAT);
-        claimField.setStatus(AmendStatus.NEEDS_AMENDING);
         return claimField;
     }
 }

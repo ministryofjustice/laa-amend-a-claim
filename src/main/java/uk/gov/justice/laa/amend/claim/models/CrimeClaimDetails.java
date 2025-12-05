@@ -7,12 +7,11 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
-import java.math.BigDecimal;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CrimeClaimDetails extends ClaimDetails {
 
+    private String policeStationCourtPrisonId;
     private ClaimField travelCosts;
     private ClaimField waitingCosts;
 
@@ -33,15 +32,26 @@ public class CrimeClaimDetails extends ClaimDetails {
     @Override
     public void setReducedValues() {
         super.setReducedValues();
-        applyIfNotNull(travelCosts, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
+        setPaidInFullOrReduced();
     }
       
     @Override
     public void setPaidInFullValues() {
         super.setPaidInFullValues();
+        setPaidInFullOrReduced();
+    }
+
+    private void setPaidInFullOrReduced() {
         applyIfNotNull(travelCosts, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
+
+        if (getPoliceStationCourtPrisonId() != null) {
+            applyIfNotNull(getAssessedTotalVat(), ClaimField::setToNeedsAmending);
+            applyIfNotNull(getAssessedTotalInclVat(), ClaimField::setToNeedsAmending);
+        } else {
+            applyIfNotNull(getAssessedTotalVat(), ClaimField::setToNull);
+            applyIfNotNull(getAssessedTotalInclVat(), ClaimField::setToNull);
+        }
     }
 
     @Override

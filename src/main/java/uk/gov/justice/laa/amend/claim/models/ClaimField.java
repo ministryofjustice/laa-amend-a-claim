@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.justice.laa.amend.claim.utils.FormUtils;
@@ -11,6 +12,7 @@ import uk.gov.justice.laa.amend.claim.utils.FormUtils;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ClaimField implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -98,6 +100,10 @@ public class ClaimField implements Serializable {
 
     protected void setAmendedToSubmitted() {
         setAmendedToValue(this.getSubmitted());
+    }
+
+    protected void setToNull() {
+        setAmended(null, null);
     }
 
     public void setAmendedToValue(Object value) {

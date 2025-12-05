@@ -53,7 +53,7 @@ public class CivilClaimDetailsViewTest {
     @Nested
     class GetAssessedTotalsTests {
         @Test
-        void getAssessedTotalsHandlesNull() {
+        void getAssessedTotalsHandlesNullFields() {
             CivilClaimDetails claim = new CivilClaimDetails();
             ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
 
@@ -63,7 +63,7 @@ public class CivilClaimDetailsViewTest {
         }
 
         @Test
-        void getAssessedTotalsHandlesValid() {
+        void getAssessedTotalsHandlesValidFields() {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AmendStatus.NEEDS_AMENDING));
             claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AmendStatus.NEEDS_AMENDING));
@@ -73,6 +73,18 @@ public class CivilClaimDetailsViewTest {
 
             Assertions.assertEquals(claim.getAssessedTotalVat(), result.get(0));
             Assertions.assertEquals(claim.getAssessedTotalInclVat(), result.get(1));
+        }
+
+        @Test
+        void getAssessedTotalsHandlesValidFieldsWithNullStatus() {
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", null));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", null));
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAssessedTotals();
+
+            Assertions.assertEquals(List.of(), result);
         }
     }
 
