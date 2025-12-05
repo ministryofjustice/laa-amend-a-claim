@@ -46,7 +46,8 @@ dependencies {
     implementation("io.vavr:vavr:0.10.7")
 
     // Vulnerability fixes
-    implementation("org.apache.tomcat.embed:tomcat-embed-core:10.1.45")
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.12'
+    implementation 'org.springframework:spring-core:6.2.11'
 
 
     compileOnly 'org.projectlombok:lombok'
