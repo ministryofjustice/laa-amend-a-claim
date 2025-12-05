@@ -11,7 +11,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimReviewController;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.models.AssessedStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
@@ -61,7 +61,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     void testPageWithValidationError() throws Exception {
         ClaimField claimField = new ClaimField();
         claimField.setKey("profitCosts");
-        claimField.setStatus(AmendStatus.NEEDS_AMENDING);
+        claimField.setStatus(AssessedStatus.NEEDS_ASSESSING);
         claim.setNetProfitCost(claimField);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();

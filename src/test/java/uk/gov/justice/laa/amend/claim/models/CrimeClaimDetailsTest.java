@@ -34,13 +34,13 @@ public class CrimeClaimDetailsTest {
             claim.setAllowedTotalVat(new ClaimField());
 
             claim.setNilledValues();
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getTravelCosts().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getWaitingCosts().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalInclVat().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalVat().getAmended());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getTravelCosts().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getWaitingCosts().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalInclVat().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalVat().getAssessed());
         }
     }
 }

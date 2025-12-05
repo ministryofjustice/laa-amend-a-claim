@@ -36,22 +36,22 @@ public class CivilClaimDetails extends ClaimDetails {
     @Override
     public void setReducedToFixedFeeValues() {
         super.setReducedToFixedFeeValues();
-        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(jrFormFillingCost, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(adjournedHearing, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(cmrhTelephone, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(cmrhOral, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(hoInterview, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(substantiveHearing, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(counselsCost, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(jrFormFillingCost, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(adjournedHearing, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(cmrhTelephone, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(cmrhOral, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(hoInterview, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(substantiveHearing, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(counselsCost, ClaimField::setAssessedToCalculated);
     }
 
     @Override
     public void setReducedValues() {
         super.setReducedToFixedFeeValues();
-        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(jrFormFillingCost, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(counselsCost, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(jrFormFillingCost, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(counselsCost, ClaimField::setAssessedToSubmitted);
 
         // Bolt-ons get set to 0
         applyIfNotNull(adjournedHearing, ClaimField::setNilled);
@@ -63,15 +63,15 @@ public class CivilClaimDetails extends ClaimDetails {
       
     public void setPaidInFullValues() {
         super.setPaidInFullValues();
-        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(jrFormFillingCost, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(counselsCost, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(jrFormFillingCost, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(counselsCost, ClaimField::setAssessedToSubmitted);
 
-        applyIfNotNull(adjournedHearing, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(cmrhTelephone, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(cmrhOral, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(hoInterview, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(substantiveHearing, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(adjournedHearing, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(cmrhTelephone, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(cmrhOral, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(hoInterview, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(substantiveHearing, ClaimField::setAssessedToCalculated);
 
     }
 

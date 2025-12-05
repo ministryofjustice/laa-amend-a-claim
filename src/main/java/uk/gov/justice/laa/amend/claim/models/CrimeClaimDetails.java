@@ -7,8 +7,6 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
-import java.math.BigDecimal;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CrimeClaimDetails extends ClaimDetails {
@@ -26,22 +24,22 @@ public class CrimeClaimDetails extends ClaimDetails {
     @Override
     public void setReducedToFixedFeeValues() {
         super.setReducedToFixedFeeValues();
-        applyIfNotNull(travelCosts, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(waitingCosts, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(travelCosts, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(waitingCosts, ClaimField::setAssessedToCalculated);
     }
 
     @Override
     public void setReducedValues() {
         super.setReducedValues();
-        applyIfNotNull(travelCosts, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(travelCosts, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(waitingCosts, ClaimField::setAssessedToSubmitted);
     }
       
     @Override
     public void setPaidInFullValues() {
         super.setPaidInFullValues();
-        applyIfNotNull(travelCosts, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(travelCosts, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(waitingCosts, ClaimField::setAssessedToSubmitted);
     }
 
     @Override

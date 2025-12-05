@@ -51,11 +51,11 @@ public abstract class ClaimDetails extends Claim {
 
     public void setReducedToFixedFeeValues() {
         // Costs Table
-        applyIfNotNull(vatClaimed, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(fixedFee, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(vatClaimed, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(fixedFee, ClaimField::setAssessedToCalculated);
         applyIfNotNull(netProfitCost, ClaimField::setToNeedsAmending);
-        applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(netDisbursementAmount, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(disbursementVatAmount, ClaimField::setAssessedToCalculated);
 
         // Allowed Totals Table
         applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAmending);
@@ -64,11 +64,11 @@ public abstract class ClaimDetails extends Claim {
 
     public void setReducedValues() {
         // Costs Table
-        applyIfNotNull(fixedFee, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(fixedFee, ClaimField::setAssessedToSubmitted);
         applyIfNotNull(netProfitCost, ClaimField::setToNeedsAmending);
-        applyIfNotNull(vatClaimed, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(vatClaimed, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(netDisbursementAmount, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(disbursementVatAmount, ClaimField::setAssessedToSubmitted);
 
         // Allowed Totals Table
         applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAmending);
@@ -77,11 +77,11 @@ public abstract class ClaimDetails extends Claim {
 
     public void setPaidInFullValues() {
         // Costs Table
-        applyIfNotNull(fixedFee, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(netProfitCost, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(vatClaimed, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(fixedFee, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(netProfitCost, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(vatClaimed, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(netDisbursementAmount, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(disbursementVatAmount, ClaimField::setAssessedToSubmitted);
 
         // Allowed Totals Table
         applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAmending);

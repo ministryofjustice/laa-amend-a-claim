@@ -40,19 +40,19 @@ public class CivilClaimDetailsTest {
             claim.setAllowedTotalVat(new ClaimField());
 
             claim.setNilledValues();
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getCounselsCost().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getDetentionTravelWaitingCosts().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getJrFormFillingCost().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getAdjournedHearing().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhTelephone().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhOral().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getHoInterview().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getSubstantiveHearing().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalVat().getAmended());
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalInclVat().getAmended());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getCounselsCost().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getDetentionTravelWaitingCosts().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getJrFormFillingCost().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAdjournedHearing().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhTelephone().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhOral().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getHoInterview().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getSubstantiveHearing().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalVat().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalInclVat().getAssessed());
         }
     }
 }

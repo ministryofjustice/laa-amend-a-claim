@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.amend.claim.resources;
 
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.models.AssessedStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
@@ -56,15 +56,14 @@ public class MockClaimsFunctions {
         return claim;
     }
 
-    public static ClaimField createClaimField(AmendStatus status) {
+    public static ClaimField createClaimField(AssessedStatus status) {
         return new ClaimField(
             "foo",
             BigDecimal.valueOf(100),
             BigDecimal.valueOf(200),
             BigDecimal.valueOf(300),
             null,
-            status,
-            null
+            status
         );
     }
 

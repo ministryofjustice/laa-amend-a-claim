@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.models.AssessedStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
@@ -42,7 +42,7 @@ public class ChangeMonetaryValueController {
         try {
             ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
             ClaimField claimField = cost.getAccessor().get(claim);
-            BigDecimal value = claimField != null ? (BigDecimal) claimField.getAmended() : null;
+            BigDecimal value = claimField != null ? (BigDecimal) claimField.getAssessed() : null;
 
             MonetaryValueForm form = new MonetaryValueForm();
             if (value != null) {
@@ -79,8 +79,8 @@ public class ChangeMonetaryValueController {
             ClaimField claimField = cost.getAccessor().get(claim);
             BigDecimal value = setScale(form.getValue());
             if (claimField != null) {
-                claimField.setAmended(value);
-                claimField.setStatus(AmendStatus.AMENDABLE);
+                claimField.setAssessed(value);
+                claimField.setStatus(AssessedStatus.ASSESSABLE);
                 cost.getAccessor().set(claim, claimField);
             }
             session.setAttribute(claimId, claim);

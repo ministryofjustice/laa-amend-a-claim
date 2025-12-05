@@ -189,7 +189,7 @@ public interface AssessmentMapper {
     }
 
     private BigDecimal mapToBigDecimal(ClaimField field) {
-        if (field != null && field.getAmended() instanceof BigDecimal value) {
+        if (field != null && field.getAssessed() instanceof BigDecimal value) {
             return value;
         }
         return null;

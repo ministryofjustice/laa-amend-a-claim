@@ -38,7 +38,7 @@
                     <th scope="col" class="govuk-table__header" th:text="#{claimSummary.item}"></th>
                     <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
                     <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
-                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.amended}"></th>
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.assessed}"></th>
                     <th scope="col" class="govuk-table__header"></th>
                 </tr>
                 </thead>
@@ -50,7 +50,7 @@
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
 
-                <th:block th:if="${row.status.name() == 'NEEDS_AMENDING'}">
+                <th:block th:if="${row.status.name() == 'NEEDS_ASSESSING'}">
                     <td class="govuk-table__cell">
                         <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                            th:id="${row.id}"
@@ -63,9 +63,9 @@
                         <td class="govuk-table__cell"></td>
                     </th:block>
 
-                    <th:block th:if="${row.status.name() == 'AMENDABLE'}">
+                    <th:block th:if="${row.status.name() == 'ASSESSABLE'}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
                         </td>
 
                     <td class="govuk-table__cell">
@@ -78,9 +78,9 @@
                     </td>
                 </th:block>
 
-                    <th:block th:if="${row.status.name() == 'NOT_AMENDABLE'}">
+                    <th:block th:if="${row.status.name() == 'NOT_ASSESSABLE'}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
                         </td>
 
                         <td class="govuk-table__cell"></td>
@@ -115,7 +115,7 @@
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
 
-                    <th:block th:if="${row.status.name() == 'NEEDS_AMENDING'}">
+                    <th:block th:if="${row.status.name() == 'NEEDS_ASSESSING'}">
                         <td class="govuk-table__cell">
                             <a th:href="${row.getChangeUrlAllowedTotal(submissionId, claimId)}"
                                th:id="${row.id}"
@@ -126,9 +126,9 @@
                         <td class="govuk-table__cell"></td>
                     </th:block>
 
-                    <th:block th:if="${row.status.name() == 'AMENDABLE'}">
+                    <th:block th:if="${row.status.name() == 'ASSESSABLE'}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
                         </td>
 
                         <td class="govuk-table__cell">
@@ -138,9 +138,9 @@
                         </td>
                     </th:block>
 
-                    <th:block th:if="${row.status.name() == 'NOT_AMENDABLE'}">
+                    <th:block th:if="${row.status.name() == 'NOT_ASSESSABLE'}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
                         </td>
 
                         <td class="govuk-table__cell"></td>

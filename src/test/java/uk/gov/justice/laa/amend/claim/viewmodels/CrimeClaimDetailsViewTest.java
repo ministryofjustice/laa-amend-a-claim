@@ -4,15 +4,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.AssessedStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Map;
 
 public class CrimeClaimDetailsViewTest {
 
@@ -50,8 +47,8 @@ public class CrimeClaimDetailsViewTest {
         @Test
         void getAllowedTotalsHandlesValid() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", AmendStatus.NEEDS_AMENDING));
-            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", AssessedStatus.NEEDS_ASSESSING));
+            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", AssessedStatus.NEEDS_ASSESSING));
             ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
 
             List<ClaimField> result = viewModel.getAllowedTotals();
@@ -170,9 +167,9 @@ public class CrimeClaimDetailsViewTest {
         @Test
         void convertFieldsThatNeedAmendingIntoErrors() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setNetProfitCost(createClaimField("profitCost", AmendStatus.NEEDS_AMENDING));
-            claim.setTravelCosts(createClaimField("travel", AmendStatus.NEEDS_AMENDING));
-            claim.setWaitingCosts(createClaimField("waiting", AmendStatus.AMENDABLE));
+            claim.setNetProfitCost(createClaimField("profitCost", AssessedStatus.NEEDS_ASSESSING));
+            claim.setTravelCosts(createClaimField("travel", AssessedStatus.NEEDS_ASSESSING));
+            claim.setWaitingCosts(createClaimField("waiting", AssessedStatus.ASSESSABLE));
             CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
 
             List<ReviewAndAmendFormError> expectedErrors = List.of(
@@ -184,7 +181,7 @@ public class CrimeClaimDetailsViewTest {
         }
     }
 
-    public static ClaimField createClaimField(String key, AmendStatus status) {
+    public static ClaimField createClaimField(String key, AssessedStatus status) {
         ClaimField claimField = new ClaimField();
         claimField.setKey(key);
         claimField.setStatus(status);

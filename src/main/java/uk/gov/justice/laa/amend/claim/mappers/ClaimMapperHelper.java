@@ -2,7 +2,7 @@ package uk.gov.justice.laa.amend.claim.mappers;
 
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.models.AssessedStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -165,11 +165,11 @@ public class ClaimMapperHelper {
 
     @Named("mapAllowedTotalInclVat")
     public ClaimField mapAllowedTotalInclVat(ClaimResponse claimResponse) {
-        return new ClaimField(ALLOWED_TOTAL_INCL_VAT, null, null, null, null, AmendStatus.NEEDS_AMENDING, null);
+        return new ClaimField(ALLOWED_TOTAL_INCL_VAT, null, null, null, null, AssessedStatus.NEEDS_ASSESSING);
     }
 
     @Named("mapAllowedTotalVat")
     public ClaimField mapAllowedTotalVat(ClaimResponse claimResponse) {
-        return new ClaimField(ALLOWED_TOTAL_VAT, null, null, null, null, AmendStatus.NEEDS_AMENDING, null);
+        return new ClaimField(ALLOWED_TOTAL_VAT, null, null, null, null, AssessedStatus.NEEDS_ASSESSING);
     }
 }

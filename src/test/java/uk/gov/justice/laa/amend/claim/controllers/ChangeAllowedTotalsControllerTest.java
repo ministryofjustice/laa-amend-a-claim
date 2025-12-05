@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.models.AssessedStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
@@ -84,8 +84,8 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsViewWhenQuestionAlreadyAnswered_CivilClaim() throws Exception {
-        civilClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
-        civilClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
+        civilClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimField(AssessedStatus.ASSESSABLE));
+        civilClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimField(AssessedStatus.ASSESSABLE));
 
         session.setAttribute(claimId, civilClaim);
 
@@ -99,8 +99,8 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsViewWhenQuestionAlreadyAnswered_CrimeClaim() throws Exception {
-        crimeClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
-        crimeClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
+        crimeClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimField(AssessedStatus.ASSESSABLE));
+        crimeClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimField(AssessedStatus.ASSESSABLE));
 
         session.setAttribute(claimId, crimeClaim);
 
@@ -134,8 +134,8 @@ class ChangeAllowedTotalsControllerTest {
         ClaimDetails updated = (ClaimDetails) session.getAttribute(claimId);
 
         Assertions.assertNotNull(updated);
-        Assertions.assertEquals(new BigDecimal("700.00"), updated.getAllowedTotalVat().getAmended());
-        Assertions.assertEquals(AmendStatus.AMENDABLE, updated.getAllowedTotalVat().getStatus());
+        Assertions.assertEquals(new BigDecimal("700.00"), updated.getAllowedTotalVat().getAssessed());
+        Assertions.assertEquals(AssessedStatus.ASSESSABLE, updated.getAllowedTotalVat().getStatus());
     }
 
     @Test

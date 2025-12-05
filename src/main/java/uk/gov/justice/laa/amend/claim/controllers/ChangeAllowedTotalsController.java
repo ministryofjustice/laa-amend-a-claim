@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.forms.AllowedTotalForm;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.models.AssessedStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
@@ -41,8 +41,8 @@ public class ChangeAllowedTotalsController {
         ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
         ClaimField allowedTotalInclVatField = claim.getAllowedTotalInclVat();
 
-        BigDecimal allowedTotalVat = allowedTotalVatField != null ? (BigDecimal) allowedTotalVatField.getAmended() : null;
-        BigDecimal allowedTotalInclVat = allowedTotalInclVatField != null ? (BigDecimal) allowedTotalInclVatField.getAmended() : null;
+        BigDecimal allowedTotalVat = allowedTotalVatField != null ? (BigDecimal) allowedTotalVatField.getAssessed() : null;
+        BigDecimal allowedTotalInclVat = allowedTotalInclVatField != null ? (BigDecimal) allowedTotalInclVatField.getAssessed() : null;
 
         if (allowedTotalVat != null) {
             allowedTotalForm.setAllowedTotalVat(setScale(allowedTotalVat).toString());
@@ -79,11 +79,11 @@ public class ChangeAllowedTotalsController {
         BigDecimal allowedTotalInclVat = setScale(allowedTotalForm.getAllowedTotalInclVat());
         BigDecimal allowedTotalVat = setScale(allowedTotalForm.getAllowedTotalVat());
 
-        allowedTotalInclVatField.setAmended(allowedTotalInclVat);
-        allowedTotalVatField.setAmended(allowedTotalVat);
+        allowedTotalInclVatField.setAssessed(allowedTotalInclVat);
+        allowedTotalVatField.setAssessed(allowedTotalVat);
 
-        allowedTotalVatField.setStatus(AmendStatus.AMENDABLE);
-        allowedTotalInclVatField.setStatus(AmendStatus.AMENDABLE);
+        allowedTotalVatField.setStatus(AssessedStatus.ASSESSABLE);
+        allowedTotalInclVatField.setStatus(AssessedStatus.ASSESSABLE);
 
         // Save updated Claim back to session
         session.setAttribute(claimId, claim);

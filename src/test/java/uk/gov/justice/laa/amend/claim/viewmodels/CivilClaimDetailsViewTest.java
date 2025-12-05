@@ -4,11 +4,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.models.AssessedStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
@@ -67,8 +66,8 @@ public class CivilClaimDetailsViewTest {
         @Test
         void getAllowedTotalsHandlesValid() {
             CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", AmendStatus.NEEDS_AMENDING));
-            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", AssessedStatus.NEEDS_ASSESSING));
+            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", AssessedStatus.NEEDS_ASSESSING));
             ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
 
             List<ClaimField> result = viewModel.getAllowedTotals();
@@ -280,9 +279,9 @@ public class CivilClaimDetailsViewTest {
         @Test
         void convertFieldsThatNeedAmendingIntoErrors() {
             CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setNetProfitCost(createClaimField("profitCost", AmendStatus.NEEDS_AMENDING));
-            claim.setCounselsCost(createClaimField("counselsCost", AmendStatus.NEEDS_AMENDING));
-            claim.setJrFormFillingCost(createClaimField("jrFormFilling", AmendStatus.AMENDABLE));
+            claim.setNetProfitCost(createClaimField("profitCost", AssessedStatus.NEEDS_ASSESSING));
+            claim.setCounselsCost(createClaimField("counselsCost", AssessedStatus.NEEDS_ASSESSING));
+            claim.setJrFormFillingCost(createClaimField("jrFormFilling", AssessedStatus.ASSESSABLE));
             CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
 
             List<ReviewAndAmendFormError> expectedErrors = List.of(
@@ -294,7 +293,7 @@ public class CivilClaimDetailsViewTest {
         }
     }
 
-    public static ClaimField createClaimField(String key, AmendStatus status) {
+    public static ClaimField createClaimField(String key, AssessedStatus status) {
         ClaimField claimField = new ClaimField();
         claimField.setKey(key);
         claimField.setStatus(status);

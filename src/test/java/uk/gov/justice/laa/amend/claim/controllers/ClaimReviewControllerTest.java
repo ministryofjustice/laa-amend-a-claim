@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.models.AssessedStatus;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
@@ -133,7 +133,7 @@ public class ClaimReviewControllerTest {
     public void testUnsuccessfulValidationReloadsPageWithErrorSummary() throws Exception {
         ClaimField claimField = new ClaimField();
         claimField.setKey("foo");
-        claimField.setStatus(AmendStatus.NEEDS_AMENDING);
+        claimField.setStatus(AssessedStatus.NEEDS_ASSESSING);
         claim.setNetProfitCost(claimField);
 
         session.setAttribute(claimId.toString(), claim);

@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.models.AssessedStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
@@ -22,7 +22,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,10 +58,10 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
 
             // Then: Only amendable monetary fields should be set to 0 (not VAT, Total, or Fixed Fee)
-            assertEquals(BigDecimal.valueOf(300), claim.getFixedFee().getAmended()); // Fixed Fee unchanged (NA)
-            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
-            assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
-            assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAmended());
+            assertEquals(BigDecimal.valueOf(300), claim.getFixedFee().getAssessed()); // Fixed Fee unchanged (NA)
+            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAssessed());
+            assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAssessed());
         }
 
         @Test
@@ -74,14 +73,14 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
 
             // Then: All crime-specific fields should be set to zero
-            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetProfitCost().getStatus());
+            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.NOT_ASSESSABLE, claim.getNetProfitCost().getStatus());
 
-            assertEquals(BigDecimal.ZERO, claim.getTravelCosts().getAmended());
-            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getTravelCosts().getStatus());
+            assertEquals(BigDecimal.ZERO, claim.getTravelCosts().getAssessed());
+            assertEquals(AssessedStatus.NOT_ASSESSABLE, claim.getTravelCosts().getStatus());
 
-            assertEquals(BigDecimal.ZERO, claim.getWaitingCosts().getAmended());
-            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getWaitingCosts().getStatus());
+            assertEquals(BigDecimal.ZERO, claim.getWaitingCosts().getAssessed());
+            assertEquals(AssessedStatus.NOT_ASSESSABLE, claim.getWaitingCosts().getStatus());
         }
 
         @Test
@@ -96,11 +95,11 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
 
             // Then: Should apply NILLED logic and set values to zero
-            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetProfitCost().getStatus());
+            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.NOT_ASSESSABLE, claim.getNetProfitCost().getStatus());
 
-            assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.NOT_ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
         }
 
         @Test
@@ -115,11 +114,11 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
 
             // Then: Should apply NILLED logic and set values to zero
-            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetProfitCost().getStatus());
+            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.NOT_ASSESSABLE, claim.getNetProfitCost().getStatus());
 
-            assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.NOT_ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
         }
 
         @Test
@@ -132,7 +131,7 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
 
             // Then: Amended value should be set to 0
-            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
+            assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAssessed());
         }
 
         @Test
@@ -146,7 +145,7 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
 
             // Then: Amended value should remain unchanged
-            assertEquals(BigDecimal.valueOf(300), claim.getNetProfitCost().getAmended());
+            assertEquals(BigDecimal.valueOf(300), claim.getNetProfitCost().getAssessed());
         }
     }
 
@@ -158,26 +157,26 @@ class AssessmentServiceTest {
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
-            assertEquals(claim.getVatClaimed().getCalculated(), claim.getVatClaimed().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
+            assertEquals(claim.getVatClaimed().getCalculated(), claim.getVatClaimed().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getVatClaimed().getStatus());
 
-            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getFixedFee().getStatus());
 
-            assertNull(claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+            assertNull(claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getNetProfitCost().getStatus());
 
-            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
-            assertEquals(claim.getDisbursementVatAmount().getCalculated(), claim.getDisbursementVatAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getDisbursementVatAmount().getStatus());
+            assertEquals(claim.getDisbursementVatAmount().getCalculated(), claim.getDisbursementVatAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
 
-            assertEquals(claim.getTravelCosts().getCalculated(), claim.getTravelCosts().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getTravelCosts().getStatus());
+            assertEquals(claim.getTravelCosts().getCalculated(), claim.getTravelCosts().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getTravelCosts().getStatus());
 
-            assertEquals(claim.getWaitingCosts().getCalculated(), claim.getWaitingCosts().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getWaitingCosts().getStatus());
+            assertEquals(claim.getWaitingCosts().getCalculated(), claim.getWaitingCosts().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getWaitingCosts().getStatus());
         }
 
         @Test
@@ -186,44 +185,44 @@ class AssessmentServiceTest {
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
-            assertEquals(claim.getVatClaimed().getCalculated(), claim.getVatClaimed().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
+            assertEquals(claim.getVatClaimed().getCalculated(), claim.getVatClaimed().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getVatClaimed().getStatus());
 
-            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getFixedFee().getStatus());
 
-            assertNull(claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+            assertNull(claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getNetProfitCost().getStatus());
 
-            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
-            assertEquals(claim.getDisbursementVatAmount().getCalculated(), claim.getDisbursementVatAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getDisbursementVatAmount().getStatus());
+            assertEquals(claim.getDisbursementVatAmount().getCalculated(), claim.getDisbursementVatAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
 
-            assertEquals(claim.getDetentionTravelWaitingCosts().getCalculated(), claim.getDetentionTravelWaitingCosts().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getDetentionTravelWaitingCosts().getStatus());
+            assertEquals(claim.getDetentionTravelWaitingCosts().getCalculated(), claim.getDetentionTravelWaitingCosts().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getDetentionTravelWaitingCosts().getStatus());
 
-            assertEquals(claim.getJrFormFillingCost().getCalculated(), claim.getJrFormFillingCost().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getJrFormFillingCost().getStatus());
+            assertEquals(claim.getJrFormFillingCost().getCalculated(), claim.getJrFormFillingCost().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getJrFormFillingCost().getStatus());
 
-            assertEquals(claim.getAdjournedHearing().getCalculated(), claim.getAdjournedHearing().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getAdjournedHearing().getStatus());
+            assertEquals(claim.getAdjournedHearing().getCalculated(), claim.getAdjournedHearing().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getAdjournedHearing().getStatus());
 
-            assertEquals(claim.getCmrhTelephone().getCalculated(), claim.getCmrhTelephone().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getCmrhTelephone().getStatus());
+            assertEquals(claim.getCmrhTelephone().getCalculated(), claim.getCmrhTelephone().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getCmrhTelephone().getStatus());
 
-            assertEquals(claim.getCmrhOral().getCalculated(), claim.getCmrhOral().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getCmrhOral().getStatus());
+            assertEquals(claim.getCmrhOral().getCalculated(), claim.getCmrhOral().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getCmrhOral().getStatus());
 
-            assertEquals(claim.getHoInterview().getCalculated(), claim.getHoInterview().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getHoInterview().getStatus());
+            assertEquals(claim.getHoInterview().getCalculated(), claim.getHoInterview().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getHoInterview().getStatus());
 
-            assertEquals(claim.getSubstantiveHearing().getCalculated(), claim.getSubstantiveHearing().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getSubstantiveHearing().getStatus());
+            assertEquals(claim.getSubstantiveHearing().getCalculated(), claim.getSubstantiveHearing().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getSubstantiveHearing().getStatus());
 
-            assertEquals(claim.getCounselsCost().getCalculated(), claim.getCounselsCost().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getCounselsCost().getStatus());
+            assertEquals(claim.getCounselsCost().getCalculated(), claim.getCounselsCost().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getCounselsCost().getStatus());
         }
 
         @Test
@@ -238,11 +237,11 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
             // Then: Should apply REDUCED and set values to zero
-            assertNull(claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+            assertNull(claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getNetProfitCost().getStatus());
 
-            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
         }
 
         @Test
@@ -257,11 +256,11 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
             // Then: Should apply REDUCED and set values to zero
-            assertNull(claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+            assertNull(claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getNetProfitCost().getStatus());
 
-            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
         }
 
         @Test
@@ -274,8 +273,8 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
             // Then: Amended value should be set to calculated
-            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
         }
 
         @Test
@@ -288,7 +287,7 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
             // Then: Amended value should remain unchanged
-            assertEquals(BigDecimal.valueOf(300), claim.getNetDisbursementAmount().getAmended());
+            assertEquals(BigDecimal.valueOf(300), claim.getNetDisbursementAmount().getAssessed());
         }
     }
 
@@ -300,29 +299,29 @@ class AssessmentServiceTest {
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
 
-            assertEquals(claim.getVatClaimed().getSubmitted(), claim.getVatClaimed().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
+            assertEquals(claim.getVatClaimed().getSubmitted(), claim.getVatClaimed().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getVatClaimed().getStatus());
 
-            assertEquals(claim.getFixedFee().getSubmitted(), claim.getFixedFee().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+            assertEquals(claim.getFixedFee().getSubmitted(), claim.getFixedFee().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getFixedFee().getStatus());
 
-            assertNull(claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+            assertNull(claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getNetProfitCost().getStatus());
 
-            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
-            assertEquals(claim.getDisbursementVatAmount().getSubmitted(), claim.getDisbursementVatAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getDisbursementVatAmount().getStatus());
+            assertEquals(claim.getDisbursementVatAmount().getSubmitted(), claim.getDisbursementVatAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
 
-            assertEquals(claim.getTravelCosts().getSubmitted(), claim.getTravelCosts().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getTravelCosts().getStatus());
+            assertEquals(claim.getTravelCosts().getSubmitted(), claim.getTravelCosts().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getTravelCosts().getStatus());
 
-            assertNull(claim.getAllowedTotalInclVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+            assertNull(claim.getAllowedTotalInclVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
 
-            assertNull(claim.getAllowedTotalVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
+            assertNull(claim.getAllowedTotalVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -331,50 +330,50 @@ class AssessmentServiceTest {
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
 
-            assertEquals(claim.getVatClaimed().getCalculated(), claim.getVatClaimed().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
+            assertEquals(claim.getVatClaimed().getCalculated(), claim.getVatClaimed().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getVatClaimed().getStatus());
 
-            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getFixedFee().getStatus());
 
-            assertNull(claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+            assertNull(claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getNetProfitCost().getStatus());
 
-            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
-            assertEquals(claim.getDisbursementVatAmount().getCalculated(), claim.getDisbursementVatAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getDisbursementVatAmount().getStatus());
+            assertEquals(claim.getDisbursementVatAmount().getCalculated(), claim.getDisbursementVatAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
 
-            assertEquals(claim.getDetentionTravelWaitingCosts().getSubmitted(), claim.getDetentionTravelWaitingCosts().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getDetentionTravelWaitingCosts().getStatus());
+            assertEquals(claim.getDetentionTravelWaitingCosts().getSubmitted(), claim.getDetentionTravelWaitingCosts().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getDetentionTravelWaitingCosts().getStatus());
 
-            assertEquals(claim.getJrFormFillingCost().getSubmitted(), claim.getJrFormFillingCost().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getJrFormFillingCost().getStatus());
+            assertEquals(claim.getJrFormFillingCost().getSubmitted(), claim.getJrFormFillingCost().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getJrFormFillingCost().getStatus());
 
-            assertEquals(BigDecimal.ZERO, claim.getAdjournedHearing().getAmended());
-            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getAdjournedHearing().getStatus());
+            assertEquals(BigDecimal.ZERO, claim.getAdjournedHearing().getAssessed());
+            assertEquals(AssessedStatus.NOT_ASSESSABLE, claim.getAdjournedHearing().getStatus());
 
-            assertEquals(BigDecimal.ZERO, claim.getCmrhTelephone().getAmended());
-            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getCmrhTelephone().getStatus());
+            assertEquals(BigDecimal.ZERO, claim.getCmrhTelephone().getAssessed());
+            assertEquals(AssessedStatus.NOT_ASSESSABLE, claim.getCmrhTelephone().getStatus());
 
-            assertEquals(BigDecimal.ZERO, claim.getCmrhOral().getAmended());
-            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getCmrhOral().getStatus());
+            assertEquals(BigDecimal.ZERO, claim.getCmrhOral().getAssessed());
+            assertEquals(AssessedStatus.NOT_ASSESSABLE, claim.getCmrhOral().getStatus());
 
-            assertEquals(BigDecimal.ZERO, claim.getHoInterview().getAmended());
-            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getHoInterview().getStatus());
+            assertEquals(BigDecimal.ZERO, claim.getHoInterview().getAssessed());
+            assertEquals(AssessedStatus.NOT_ASSESSABLE, claim.getHoInterview().getStatus());
 
-            assertEquals(BigDecimal.ZERO, claim.getSubstantiveHearing().getAmended());
-            assertEquals(AmendStatus.NOT_AMENDABLE, claim.getSubstantiveHearing().getStatus());
+            assertEquals(BigDecimal.ZERO, claim.getSubstantiveHearing().getAssessed());
+            assertEquals(AssessedStatus.NOT_ASSESSABLE, claim.getSubstantiveHearing().getStatus());
 
-            assertEquals(claim.getCounselsCost().getSubmitted(), claim.getCounselsCost().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getCounselsCost().getStatus());
+            assertEquals(claim.getCounselsCost().getSubmitted(), claim.getCounselsCost().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getCounselsCost().getStatus());
 
-            assertNull(claim.getAllowedTotalInclVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+            assertNull(claim.getAllowedTotalInclVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
 
-            assertNull(claim.getAllowedTotalVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
+            assertNull(claim.getAllowedTotalVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -389,17 +388,17 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
 
             // Then: Should apply REDUCED and set values to zero
-            assertNull(claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+            assertNull(claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getNetProfitCost().getStatus());
 
-            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
-            assertNull(claim.getAllowedTotalInclVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+            assertNull(claim.getAllowedTotalInclVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
 
-            assertNull(claim.getAllowedTotalVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
+            assertNull(claim.getAllowedTotalVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -414,17 +413,17 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
 
             // Then: Should apply REDUCED and set values to zero
-            assertNull(claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
+            assertNull(claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getNetProfitCost().getStatus());
 
-            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
-            assertNull(claim.getAllowedTotalInclVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+            assertNull(claim.getAllowedTotalInclVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
 
-            assertNull(claim.getAllowedTotalVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
+            assertNull(claim.getAllowedTotalVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -437,14 +436,14 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
 
             // Then: Amended value should be set to calculated
-            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getCalculated(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
-            assertNull(claim.getAllowedTotalInclVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+            assertNull(claim.getAllowedTotalInclVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
 
-            assertNull(claim.getAllowedTotalVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
+            assertNull(claim.getAllowedTotalVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -457,13 +456,13 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
             // Then: Amended value should remain unchanged
-            assertEquals(BigDecimal.valueOf(200), claim.getNetDisbursementAmount().getAmended());
+            assertEquals(BigDecimal.valueOf(200), claim.getNetDisbursementAmount().getAssessed());
 
-            assertNull(claim.getAllowedTotalInclVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+            assertNull(claim.getAllowedTotalInclVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
 
-            assertNull(claim.getAllowedTotalVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
+            assertNull(claim.getAllowedTotalVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
         }
     }
 
@@ -475,32 +474,32 @@ class AssessmentServiceTest {
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
-            assertEquals(claim.getVatClaimed().getSubmitted(), claim.getVatClaimed().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
+            assertEquals(claim.getVatClaimed().getSubmitted(), claim.getVatClaimed().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getVatClaimed().getStatus());
 
-            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getFixedFee().getStatus());
 
-            assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetProfitCost().getStatus());
+            assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetProfitCost().getStatus());
 
-            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
-            assertEquals(claim.getDisbursementVatAmount().getSubmitted(), claim.getDisbursementVatAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getDisbursementVatAmount().getStatus());
+            assertEquals(claim.getDisbursementVatAmount().getSubmitted(), claim.getDisbursementVatAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
 
-            assertEquals(claim.getTravelCosts().getSubmitted(), claim.getTravelCosts().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getTravelCosts().getStatus());
+            assertEquals(claim.getTravelCosts().getSubmitted(), claim.getTravelCosts().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getTravelCosts().getStatus());
 
-            assertEquals(claim.getWaitingCosts().getSubmitted(), claim.getWaitingCosts().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getWaitingCosts().getStatus());
+            assertEquals(claim.getWaitingCosts().getSubmitted(), claim.getWaitingCosts().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getWaitingCosts().getStatus());
 
-            assertNull(claim.getAllowedTotalInclVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+            assertNull(claim.getAllowedTotalInclVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
 
-            assertNull(claim.getAllowedTotalVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
+            assertNull(claim.getAllowedTotalVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -509,50 +508,50 @@ class AssessmentServiceTest {
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
-            assertEquals(claim.getVatClaimed().getSubmitted(), claim.getVatClaimed().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
+            assertEquals(claim.getVatClaimed().getSubmitted(), claim.getVatClaimed().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getVatClaimed().getStatus());
 
-            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getFixedFee().getStatus());
 
-            assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetProfitCost().getStatus());
+            assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetProfitCost().getStatus());
 
-            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
-            assertEquals(claim.getDisbursementVatAmount().getSubmitted(), claim.getDisbursementVatAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getDisbursementVatAmount().getStatus());
+            assertEquals(claim.getDisbursementVatAmount().getSubmitted(), claim.getDisbursementVatAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
 
-            assertEquals(claim.getDetentionTravelWaitingCosts().getSubmitted(), claim.getDetentionTravelWaitingCosts().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getDetentionTravelWaitingCosts().getStatus());
+            assertEquals(claim.getDetentionTravelWaitingCosts().getSubmitted(), claim.getDetentionTravelWaitingCosts().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getDetentionTravelWaitingCosts().getStatus());
 
-            assertEquals(claim.getJrFormFillingCost().getSubmitted(), claim.getJrFormFillingCost().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getJrFormFillingCost().getStatus());
+            assertEquals(claim.getJrFormFillingCost().getSubmitted(), claim.getJrFormFillingCost().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getJrFormFillingCost().getStatus());
 
-            assertEquals(claim.getAdjournedHearing().getCalculated(), claim.getAdjournedHearing().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getAdjournedHearing().getStatus());
+            assertEquals(claim.getAdjournedHearing().getCalculated(), claim.getAdjournedHearing().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getAdjournedHearing().getStatus());
 
-            assertEquals(claim.getCmrhTelephone().getCalculated(), claim.getCmrhTelephone().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getCmrhTelephone().getStatus());
+            assertEquals(claim.getCmrhTelephone().getCalculated(), claim.getCmrhTelephone().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getCmrhTelephone().getStatus());
 
-            assertEquals(claim.getCmrhOral().getCalculated(), claim.getCmrhOral().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getCmrhOral().getStatus());
+            assertEquals(claim.getCmrhOral().getCalculated(), claim.getCmrhOral().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getCmrhOral().getStatus());
 
-            assertEquals(claim.getHoInterview().getCalculated(), claim.getHoInterview().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getHoInterview().getStatus());
+            assertEquals(claim.getHoInterview().getCalculated(), claim.getHoInterview().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getHoInterview().getStatus());
 
-            assertEquals(claim.getSubstantiveHearing().getCalculated(), claim.getSubstantiveHearing().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getSubstantiveHearing().getStatus());
+            assertEquals(claim.getSubstantiveHearing().getCalculated(), claim.getSubstantiveHearing().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getSubstantiveHearing().getStatus());
 
-            assertEquals(claim.getCounselsCost().getSubmitted(), claim.getCounselsCost().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getCounselsCost().getStatus());
+            assertEquals(claim.getCounselsCost().getSubmitted(), claim.getCounselsCost().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getCounselsCost().getStatus());
 
-            assertNull(claim.getAllowedTotalInclVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+            assertNull(claim.getAllowedTotalInclVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
 
-            assertNull(claim.getAllowedTotalVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
+            assertNull(claim.getAllowedTotalVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -567,17 +566,17 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
             // Then: Should apply PAID IN FULL logic and set values to zero
-            assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetProfitCost().getStatus());
+            assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetProfitCost().getStatus());
 
-            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
-            assertNull(claim.getAllowedTotalInclVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+            assertNull(claim.getAllowedTotalInclVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
 
-            assertNull(claim.getAllowedTotalVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
+            assertNull(claim.getAllowedTotalVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -592,17 +591,17 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
             // Then: Should apply PAID IN FULL logic and set values to zero
-            assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetProfitCost().getStatus());
+            assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetProfitCost().getStatus());
 
-            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
-            assertNull(claim.getAllowedTotalInclVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+            assertNull(claim.getAllowedTotalInclVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
 
-            assertNull(claim.getAllowedTotalVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
+            assertNull(claim.getAllowedTotalVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
         }
 
         @Test
@@ -615,14 +614,14 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
             // Then: Amended value should be set to submitted
-            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getNetDisbursementAmount().getStatus());
+            assertEquals(claim.getNetDisbursementAmount().getSubmitted(), claim.getNetDisbursementAmount().getAssessed());
+            assertEquals(AssessedStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
-            assertNull(claim.getAllowedTotalInclVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalInclVat().getStatus());
+            assertNull(claim.getAllowedTotalInclVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
 
-            assertNull(claim.getAllowedTotalVat().getAmended());
-            assertEquals(AmendStatus.NEEDS_AMENDING, claim.getAllowedTotalVat().getStatus());
+            assertNull(claim.getAllowedTotalVat().getAssessed());
+            assertEquals(AssessedStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
         }
     }
 
