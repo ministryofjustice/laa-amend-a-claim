@@ -39,75 +39,38 @@ public class ThymeleafUtils {
     private static final List<String> hiddenFields = List.of(CMRH_TELEPHONE, CMRH_ORAL, JR_FORM_FILLING, ADJOURNED_FEE, HO_INTERVIEW, SUBSTANTIVE_HEARING);
 
     public List<SearchFormError> toSearchFormErrors(List<DetailedError> errors) {
-        return errors
-            .stream()
-            .map(SearchFormError::new)
-            .sorted()
-            .collect(
-                Collectors.collectingAndThen(
-                    Collectors.toMap(
-                        SearchFormError::getMessage,
-                        Function.identity(),
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                    ),
-                    map -> map.values().stream().toList()
-                )
-            );
+        return mapErrors(errors, SearchFormError::new, SearchFormError::getMessage);
     }
 
     public List<AssessmentOutcomeFormError> toAssessmentOutcomeErrors(List<DetailedError> errors) {
-        return errors
-            .stream()
-            .map(AssessmentOutcomeFormError::new)
-            .sorted()
-            .collect(
-                Collectors.collectingAndThen(
-                    Collectors.toMap(
-                        AssessmentOutcomeFormError::getMessage,
-                        Function.identity(),
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                    ),
-                    map -> map.values().stream().toList()
-                )
-            );
+        return mapErrors(errors, AssessmentOutcomeFormError::new, AssessmentOutcomeFormError::getMessage);
     }
 
     public List<MonetaryValueFormError> toMonetaryFormValueErrors(List<DetailedError> errors) {
-        return errors
-            .stream()
-            .map(MonetaryValueFormError::new)
-            .toList();
+        return mapErrors(errors, MonetaryValueFormError::new, MonetaryValueFormError::getMessage);
     }
 
     public List<AssessedTotalFormError> toAssessedTotalFormErrors(List<DetailedError> errors) {
-        return errors
-            .stream()
-            .map(AssessedTotalFormError::new)
-            .sorted()
-            .collect(
-                Collectors.collectingAndThen(
-                    Collectors.toMap(
-                        AssessedTotalFormError::getMessage,
-                        Function.identity(),
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                    ),
-                    map -> map.values().stream().toList()
-                )
-            );
+        return mapErrors(errors, AssessedTotalFormError::new, AssessedTotalFormError::getMessage);
     }
 
     public List<AllowedTotalFormError> toAllowedTotalFormErrors(List<DetailedError> errors) {
+        return mapErrors(errors, AllowedTotalFormError::new, AllowedTotalFormError::getMessage);
+    }
+
+    private <T> List<T> mapErrors(
+        List<DetailedError> errors,
+        Function<DetailedError, T> mapper,
+        Function<T, String> keyExtractor
+    ) {
         return errors
             .stream()
-            .map(AllowedTotalFormError::new)
+            .map(mapper)
             .sorted()
             .collect(
                 Collectors.collectingAndThen(
                     Collectors.toMap(
-                        AllowedTotalFormError::getMessage,
+                        keyExtractor,
                         Function.identity(),
                         (e1, e2) -> e1,
                         LinkedHashMap::new
