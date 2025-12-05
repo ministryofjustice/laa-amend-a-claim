@@ -102,8 +102,8 @@ public class ClaimField implements Serializable {
         setAmendedToValue(this.getSubmitted());
     }
 
-    protected void setToNull() {
-        setAmended(null, null);
+    protected void setToDoNotDisplay() {
+        setAmended(null, AmendStatus.DO_NOT_DISPLAY);
     }
 
     public void setAmendedToValue(Object value) {

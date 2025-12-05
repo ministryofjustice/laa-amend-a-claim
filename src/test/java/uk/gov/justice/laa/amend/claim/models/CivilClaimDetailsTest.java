@@ -77,10 +77,10 @@ public class CivilClaimDetailsTest {
             Assertions.assertEquals(AmendStatus.NOT_AMENDABLE, claim.getSubstantiveHearing().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAmended());
-            Assertions.assertNull(claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(AmendStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAmended());
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(AmendStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalVat().getAmended());
             Assertions.assertEquals(AmendStatus.NOT_AMENDABLE, claim.getAllowedTotalVat().getStatus());

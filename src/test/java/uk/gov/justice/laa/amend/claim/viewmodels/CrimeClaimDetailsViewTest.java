@@ -58,10 +58,10 @@ public class CrimeClaimDetailsViewTest {
         }
 
         @Test
-        void getAssessedTotalsHandlesValidFieldsWithNullStatus() {
+        void getAssessedTotalsHandlesValidFieldsWithDoNotDisplayStatus() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", null));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", null));
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AmendStatus.DO_NOT_DISPLAY));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AmendStatus.DO_NOT_DISPLAY));
             ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
 
             List<ClaimField> result = viewModel.getAssessedTotals();

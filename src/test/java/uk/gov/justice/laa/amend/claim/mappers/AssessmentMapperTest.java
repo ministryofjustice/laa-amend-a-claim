@@ -125,6 +125,33 @@ class AssessmentMapperTest {
         assertEquals(userId, assessment.getCreatedByUserId());
     }
 
+    @Test
+    void testMapAssessedTotalVat_whenAmendedValueIsNull() {
+        CivilClaimDetails claim = new CivilClaimDetails();
+        claim.setAssessedTotalVat(ClaimField.builder().build());
+        assertEquals(BigDecimal.ZERO, mapper.mapAssessedTotalVat(claim));
+    }
+
+    @Test
+    void testMapAssessedTotalVat_whenAmendedValueIsNotNull() {
+        CivilClaimDetails claim = new CivilClaimDetails();
+        claim.setAssessedTotalVat(ClaimField.builder().amended(BigDecimal.ONE).build());
+        assertEquals(BigDecimal.ONE, mapper.mapAssessedTotalVat(claim));
+    }
+
+    @Test
+    void testMapAssessedTotalInclVat_whenAmendedValueIsNull() {
+        CivilClaimDetails claim = new CivilClaimDetails();
+        claim.setAssessedTotalInclVat(ClaimField.builder().build());
+        assertEquals(BigDecimal.ZERO, mapper.mapAssessedTotalInclVat(claim));
+    }
+
+    @Test
+    void testMapAssessedTotalInclVat_whenAmendedValueIsNotNull() {
+        CivilClaimDetails claim = new CivilClaimDetails();
+        claim.setAssessedTotalInclVat(ClaimField.builder().amended(BigDecimal.ONE).build());
+        assertEquals(BigDecimal.ONE, mapper.mapAssessedTotalInclVat(claim));
+    }
 
     @Test
     void shouldMapAssessmentToCivilClaimDetails() {

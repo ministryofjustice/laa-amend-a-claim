@@ -76,10 +76,10 @@ public class CivilClaimDetailsViewTest {
         }
 
         @Test
-        void getAssessedTotalsHandlesValidFieldsWithNullStatus() {
+        void getAssessedTotalsHandlesValidFieldsWithDoNotDisplayStatus() {
             CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", null));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", null));
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AmendStatus.DO_NOT_DISPLAY));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AmendStatus.DO_NOT_DISPLAY));
             ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
 
             List<ClaimField> result = viewModel.getAssessedTotals();

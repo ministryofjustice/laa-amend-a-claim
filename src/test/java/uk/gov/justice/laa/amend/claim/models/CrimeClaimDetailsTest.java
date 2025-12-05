@@ -53,10 +53,10 @@ public class CrimeClaimDetailsTest {
             Assertions.assertEquals(AmendStatus.NOT_AMENDABLE, claim.getWaitingCosts().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAmended());
-            Assertions.assertNull(claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(AmendStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAmended());
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(AmendStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalInclVat().getAmended());
             Assertions.assertEquals(AmendStatus.NOT_AMENDABLE, claim.getAllowedTotalInclVat().getStatus());
@@ -117,7 +117,7 @@ public class CrimeClaimDetailsTest {
         @Test
         void paidInFull_whenPoliceSchemeIsPresent() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setPoliceStationCourtPrisonId("Police");
+            claim.setSchemeId("Police");
             claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
             claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
 
@@ -133,17 +133,17 @@ public class CrimeClaimDetailsTest {
         @Test
         void paidInFull_whenPoliceSchemeIsNotPresent() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setPoliceStationCourtPrisonId(null);
+            claim.setSchemeId(null);
             claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
             claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
 
             claim.setPaidInFullValues();
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAmended());
-            Assertions.assertNull(claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(AmendStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAmended());
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(AmendStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
         }
     }
 
@@ -198,7 +198,7 @@ public class CrimeClaimDetailsTest {
         @Test
         void reduced_whenPoliceSchemeIsPresent() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setPoliceStationCourtPrisonId("Police");
+            claim.setSchemeId("Police");
             claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
             claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
 
@@ -214,17 +214,17 @@ public class CrimeClaimDetailsTest {
         @Test
         void reduced_whenPoliceSchemeIsNotPresent() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setPoliceStationCourtPrisonId(null);
+            claim.setSchemeId(null);
             claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
             claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
 
             claim.setReducedValues();
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAmended());
-            Assertions.assertNull(claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(AmendStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAmended());
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(AmendStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
         }
     }
 

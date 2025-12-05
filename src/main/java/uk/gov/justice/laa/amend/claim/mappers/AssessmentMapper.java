@@ -185,11 +185,13 @@ public interface AssessmentMapper {
     }
 
     default BigDecimal mapAssessedTotalVat(ClaimDetails claim) {
-        return mapToBigDecimal(claim.getAssessedTotalVat());
+        BigDecimal value = mapToBigDecimal(claim.getAssessedTotalVat());
+        return value == null ? BigDecimal.ZERO : value;
     }
 
     default BigDecimal mapAssessedTotalInclVat(ClaimDetails claim) {
-        return mapToBigDecimal(claim.getAssessedTotalInclVat());
+        BigDecimal value = mapToBigDecimal(claim.getAssessedTotalInclVat());
+        return value == null ? BigDecimal.ZERO : value;
     }
 
     default BigDecimal mapAllowedTotalVat(ClaimDetails claim) {
@@ -201,7 +203,14 @@ public interface AssessmentMapper {
     }
 
     private BigDecimal mapToBigDecimal(ClaimField field) {
-        if (field != null && field.getAmended() instanceof BigDecimal value) {
+        if (field != null) {
+            return mapToBigDecimal(field.getAmended());
+        }
+        return null;
+    }
+
+    private BigDecimal mapToBigDecimal(Object amended) {
+        if (amended instanceof BigDecimal value) {
             return value;
         }
         return null;

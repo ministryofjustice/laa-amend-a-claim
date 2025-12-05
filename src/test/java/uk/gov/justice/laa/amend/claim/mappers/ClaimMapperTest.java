@@ -492,7 +492,7 @@ class ClaimMapperTest {
         response.setClientForename("John");
         response.setCaseStartDate("2025-01-01");
         response.setCaseConcludedDate("2025-02-01");
-        response.setPoliceStationCourtPrisonId("Police");
+        response.setSchemeId("Police");
 
         SubmissionResponse submissionResponse = new SubmissionResponse();
         submissionResponse.setSubmissionId(UUID.randomUUID());
@@ -524,6 +524,6 @@ class ClaimMapperTest {
         assertEquals("CRIME LOWER", claim.getAreaOfLaw());
         assertEquals("User ID", claim.getProviderName());
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
-        assertEquals("Police", claim.getPoliceStationCourtPrisonId());
+        assertEquals("Police", claim.getSchemeId());
     }
 }

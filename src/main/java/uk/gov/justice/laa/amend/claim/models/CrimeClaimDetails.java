@@ -11,7 +11,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 @Data
 public class CrimeClaimDetails extends ClaimDetails {
 
-    private String policeStationCourtPrisonId;
+    private String schemeId;
     private ClaimField travelCosts;
     private ClaimField waitingCosts;
 
@@ -42,15 +42,18 @@ public class CrimeClaimDetails extends ClaimDetails {
     }
 
     private void setPaidInFullOrReduced() {
+        ClaimField assessedTotalVat = getAssessedTotalVat();
+        ClaimField assessedTotalInclVat = getAssessedTotalInclVat();
+
         applyIfNotNull(travelCosts, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
 
-        if (getPoliceStationCourtPrisonId() != null) {
-            applyIfNotNull(getAssessedTotalVat(), ClaimField::setToNeedsAmending);
-            applyIfNotNull(getAssessedTotalInclVat(), ClaimField::setToNeedsAmending);
+        if (schemeId != null) {
+            applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAmending);
+            applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAmending);
         } else {
-            applyIfNotNull(getAssessedTotalVat(), ClaimField::setToNull);
-            applyIfNotNull(getAssessedTotalInclVat(), ClaimField::setToNull);
+            applyIfNotNull(assessedTotalVat, ClaimField::setToDoNotDisplay);
+            applyIfNotNull(assessedTotalInclVat, ClaimField::setToDoNotDisplay);
         }
     }
 
