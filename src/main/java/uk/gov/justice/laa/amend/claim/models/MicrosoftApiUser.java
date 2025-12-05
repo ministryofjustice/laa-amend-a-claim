@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class GraphApiUser {
+public class MicrosoftApiUser {
     private String id;
     private String displayName;
 }

@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import uk.gov.justice.laa.amend.claim.models.GraphApiUser;
+import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 
 
 @RequiredArgsConstructor
@@ -23,17 +23,30 @@ public class UserRetrievalService {
 
     private final OAuth2AuthorizedClientManager authorizedClientManager;
 
-    private Mono<GraphApiUser> callGraphApi(String upn, String token) {
+    private Mono<MicrosoftApiUser> callMicrosoftGraphApi(String upn, String token) {
         return webClientBuilder.baseUrl("https://graph.microsoft.com/v1.0")
                 .build()
                 .get()
                 .uri("/users/{upn}", upn)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .retrieve()
-                .bodyToMono(GraphApiUser.class);
+                .exchangeToMono(response -> {
+                    if (response.statusCode().is2xxSuccessful()) {
+                        return response.bodyToMono(MicrosoftApiUser.class);
+                    } else if (response.statusCode().value() == 403) {
+                        return Mono.just(
+                                buildDummyUser(upn));
+                    } else {
+                        return response.createException().flatMap(Mono::error);
+                    }
+                });
+
     }
 
-    public GraphApiUser getGraphUser(Authentication authentication, String userId) {
+    private MicrosoftApiUser buildDummyUser(String upn) {
+        return new MicrosoftApiUser(upn, "TODO");
+    }
+
+    public MicrosoftApiUser getMicrosoftApiUser(Authentication authentication, String userId) {
         if (authentication instanceof OAuth2AuthenticationToken oauthToken && userId != null) {
 
             OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId(oauthToken.getAuthorizedClientRegistrationId())
@@ -44,7 +57,7 @@ public class UserRetrievalService {
 
             if (authorizedClient != null) {
                 String accessToken = authorizedClient.getAccessToken().getTokenValue();
-                return callGraphApi(userId, accessToken).block();
+                return callMicrosoftGraphApi(userId, accessToken).block();
             }
         }
         return null;
