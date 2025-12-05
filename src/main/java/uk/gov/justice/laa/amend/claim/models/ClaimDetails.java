@@ -27,6 +27,8 @@ public abstract class ClaimDetails extends Claim {
     private ClaimField totalAmount;
     private ClaimField disbursementVatAmount;
 
+    private ClaimField assessedTotalVat;
+    private ClaimField assessedTotalInclVat;
     private ClaimField allowedTotalVat;
     private ClaimField allowedTotalInclVat;
     
