@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
@@ -34,7 +33,7 @@ public class ClaimSummaryController {
         if (claimDetails.isHasAssessment()) {
             claimDetails = assessmentService.getLatestAssessmentByClaim(claimDetails);
             if (claimDetails.getLastAssessment() != null) {
-                var user = userRetrievalService.getGraphUser(authentication, claimDetails.getLastAssessment().getLastAssessedBy());
+                var user = userRetrievalService.getMicrosoftApiUser(authentication, claimDetails.getLastAssessment().getLastAssessedBy());
                 model.addAttribute("user", user);
             }
         }
