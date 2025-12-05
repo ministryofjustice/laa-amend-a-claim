@@ -8,7 +8,6 @@ import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
@@ -51,6 +50,31 @@ public class CivilClaimDetailsViewTest {
         }
     }
 
+    @Nested
+    class GetAssessedTotalsTests {
+        @Test
+        void getAssessedTotalsHandlesNull() {
+            CivilClaimDetails claim = new CivilClaimDetails();
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAssessedTotals();
+
+            Assertions.assertEquals(List.of(), result);
+        }
+
+        @Test
+        void getAssessedTotalsHandlesValid() {
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AmendStatus.NEEDS_AMENDING));
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAssessedTotals();
+
+            Assertions.assertEquals(claim.getAssessedTotalVat(), result.get(0));
+            Assertions.assertEquals(claim.getAssessedTotalInclVat(), result.get(1));
+        }
+    }
 
     @Nested
     class GetAllowedTotalsTests {
@@ -75,7 +99,6 @@ public class CivilClaimDetailsViewTest {
 
             Assertions.assertEquals(claim.getAllowedTotalVat(), result.get(0));
             Assertions.assertEquals(claim.getAllowedTotalInclVat(), result.get(1));
-
         }
     }
 

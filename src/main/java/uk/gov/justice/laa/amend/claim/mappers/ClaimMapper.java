@@ -22,7 +22,6 @@ import java.util.Locale;
 
 @Mapper(componentModel = "spring", uses = {ClaimMapperHelper.class})
 public interface ClaimMapper {
-
     @InheritConfiguration(name = "mapToClaim")
     @Mapping(target = "vatClaimed", source = ".", qualifiedByName = "mapVatClaimed")
     @Mapping(target = "fixedFee", source = ".", qualifiedByName = "mapFixedFee")
@@ -33,8 +32,10 @@ public interface ClaimMapper {
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
     @Mapping(target = "feeCode", source = "feeCalculationResponse.feeCode")
     @Mapping(target = "feeCodeDescription", source = "feeCalculationResponse.feeCodeDescription")
-    @Mapping(target = "allowedTotalInclVat", source = ".", qualifiedByName = "mapAllowedTotalInclVat")
+    @Mapping(target = "assessedTotalVat", source = ".", qualifiedByName = "mapAssessedTotalVat")
+    @Mapping(target = "assessedTotalInclVat", source = ".", qualifiedByName = "mapAssessedTotalInclVat")
     @Mapping(target = "allowedTotalVat", source = ".", qualifiedByName = "mapAllowedTotalVat")
+    @Mapping(target = "allowedTotalInclVat", source = ".", qualifiedByName = "mapAllowedTotalInclVat")
     @Mapping(target = "hasAssessment", source = "hasAssessment")
     // See @AfterMapping
     @Mapping(target = "areaOfLaw", ignore = true)
@@ -45,6 +46,7 @@ public interface ClaimMapper {
     @Mapping(target = "assessmentOutcome", ignore = true)
     @Mapping(target = "lastAssessment", ignore = true)
     ClaimDetails mapToCommonDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
+
 
     @Mapping(target = "submissionId", source = "submissionId")
     @Mapping(target = "claimId", source = "id")

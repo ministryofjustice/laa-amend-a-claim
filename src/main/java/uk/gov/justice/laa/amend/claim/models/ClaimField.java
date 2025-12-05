@@ -76,8 +76,12 @@ public class ClaimField implements Serializable {
         return String.format(changeUrl, submissionId, claimId);
     }
 
-    public String getChangeUrlAllowedTotal(String submissionId, String claimId) {
+    public String getChangeAllowedTotalUrl(String submissionId, String claimId) {
         return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, "allowed-totals");
+    }
+
+    public String getChangeAssessedTotalUrl(String submissionId, String claimId) {
+        return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, "assessed-totals");
     }
 
     protected void setNilled() {
@@ -96,7 +100,7 @@ public class ClaimField implements Serializable {
         setAmendedToValue(this.getSubmitted());
     }
 
-    private void setAmendedToValue(Object value) {
+    public void setAmendedToValue(Object value) {
         setAmended(value, AmendStatus.AMENDABLE);
     }
 

@@ -373,15 +373,31 @@ class ClaimMapperTest {
     }
 
     @Test
-    void mapAllowedTotalInclVat() {
+    void mapAssessedTotalVat() {
         ClaimResponse response = new ClaimResponse();
 
         SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
-        ClaimField claimField = claim.getAllowedTotalInclVat();
-        assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT, claimField.getKey());
+        ClaimField claimField = claim.getAssessedTotalVat();
+        assertEquals(AmendClaimConstants.Label.ASSESSED_TOTAL_VAT, claimField.getKey());
+        assertNull(claimField.getSubmitted());
+        assertNull(claimField.getCalculated());
+        assertNull(claimField.getAmended());
+        assertEquals(AmendStatus.NEEDS_AMENDING, claimField.getStatus());
+    }
+
+    @Test
+    void mapAssessedTotalInclVat() {
+        ClaimResponse response = new ClaimResponse();
+
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getAssessedTotalInclVat();
+        assertEquals(AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT, claimField.getKey());
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAmended());
@@ -398,6 +414,22 @@ class ClaimMapperTest {
 
         ClaimField claimField = claim.getAllowedTotalVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
+        assertNull(claimField.getSubmitted());
+        assertNull(claimField.getCalculated());
+        assertNull(claimField.getAmended());
+        assertEquals(AmendStatus.NEEDS_AMENDING, claimField.getStatus());
+    }
+
+    @Test
+    void mapAllowedTotalInclVat() {
+        ClaimResponse response = new ClaimResponse();
+
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getAllowedTotalInclVat();
+        assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT, claimField.getKey());
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAmended());

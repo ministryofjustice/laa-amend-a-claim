@@ -36,6 +36,32 @@ public class CrimeClaimDetailsViewTest {
     }
 
     @Nested
+    class GetAssessedTotalsTests {
+        @Test
+        void getAssessedTotalsHandlesNull() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAssessedTotals();
+
+            Assertions.assertEquals(List.of(), result);
+        }
+
+        @Test
+        void getAssessedTotalsHandlesValid() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AmendStatus.NEEDS_AMENDING));
+            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAssessedTotals();
+
+            Assertions.assertEquals(claim.getAssessedTotalVat(), result.get(0));
+            Assertions.assertEquals(claim.getAssessedTotalInclVat(), result.get(1));
+        }
+    }
+
+    @Nested
     class GetAllowedTotalsTests {
         @Test
         void getAllowedTotalsHandlesNull() {

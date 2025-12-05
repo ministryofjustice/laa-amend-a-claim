@@ -54,12 +54,23 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return rows;
     }
 
+    default List<ClaimField> getAssessedTotals() {
+        List<ClaimField> rows = new ArrayList<>();
+        addRowIfNotNull(
+            rows,
+            claim().getAssessedTotalVat(),
+            claim().getAssessedTotalInclVat()
+        );
+
+        return rows;
+    }
+
     default List<ClaimField> getAllowedTotals() {
         List<ClaimField> rows = new ArrayList<>();
         addRowIfNotNull(
-                rows,
-                claim().getAllowedTotalVat(),
-                claim().getAllowedTotalInclVat()
+            rows,
+            claim().getAllowedTotalVat(),
+            claim().getAllowedTotalInclVat()
         );
 
         return rows;
