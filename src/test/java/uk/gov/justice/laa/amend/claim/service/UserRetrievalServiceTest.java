@@ -185,8 +185,5 @@ public class UserRetrievalServiceTest {
         assertNotNull(result);
         assertEquals("TODO", result.getDisplayName());
     }
-
-
-
 }
 
