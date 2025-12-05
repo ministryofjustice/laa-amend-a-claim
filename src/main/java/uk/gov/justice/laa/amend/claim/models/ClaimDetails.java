@@ -46,8 +46,8 @@ public abstract class ClaimDetails extends Claim {
         applyIfNotNull(disbursementVatAmount, ClaimField::setNilled);
 
         // Assessed Totals Table
-        applyIfNotNull(getAssessedTotalVat(), ClaimField::setToNull);
-        applyIfNotNull(getAssessedTotalInclVat(), ClaimField::setToNull);
+        applyIfNotNull(assessedTotalVat, ClaimField::setToNull);
+        applyIfNotNull(assessedTotalInclVat, ClaimField::setToNull);
 
         // Allowed Totals Table
         applyIfNotNull(allowedTotalInclVat, ClaimField::setNilled);
