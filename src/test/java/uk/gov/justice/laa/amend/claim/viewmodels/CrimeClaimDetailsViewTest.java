@@ -208,11 +208,19 @@ public class CrimeClaimDetailsViewTest {
             claim.setNetProfitCost(createClaimField("profitCost", AmendStatus.NEEDS_AMENDING));
             claim.setTravelCosts(createClaimField("travel", AmendStatus.NEEDS_AMENDING));
             claim.setWaitingCosts(createClaimField("waiting", AmendStatus.AMENDABLE));
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", AmendStatus.NEEDS_AMENDING));
             CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
 
             List<ReviewAndAmendFormError> expectedErrors = List.of(
                 new ReviewAndAmendFormError("profit-cost", "claimSummary.rows.profitCost.error"),
-                new ReviewAndAmendFormError("travel", "claimSummary.rows.travel.error")
+                new ReviewAndAmendFormError("travel", "claimSummary.rows.travel.error"),
+                new ReviewAndAmendFormError("assessed-total-vat", "claimSummary.rows.assessedTotalVat.error"),
+                new ReviewAndAmendFormError("assessed-total-incl-vat", "claimSummary.rows.assessedTotalInclVat.error"),
+                new ReviewAndAmendFormError("allowed-total-vat", "claimSummary.rows.allowedTotalVat.error"),
+                new ReviewAndAmendFormError("allowed-total-incl-vat", "claimSummary.rows.allowedTotalInclVat.error")
             );
 
             Assertions.assertEquals(expectedErrors, viewModel.getErrors());

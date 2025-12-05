@@ -97,12 +97,11 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default List<ReviewAndAmendFormError> getErrors() {
-        return Stream.of(
-                claimFields(), getAllowedTotals())
-                .flatMap(List::stream)
-                .filter(ClaimField::needsAmending)
-                .map(f -> new ReviewAndAmendFormError(f.getId(), f.getErrorKey()))
-                .toList();
+        return Stream.of(claimFields(), getAssessedTotals(), getAllowedTotals())
+            .flatMap(List::stream)
+            .filter(ClaimField::needsAmending)
+            .map(f -> new ReviewAndAmendFormError(f.getId(), f.getErrorKey()))
+            .toList();
     }
 
     default boolean hasAssessment() {
