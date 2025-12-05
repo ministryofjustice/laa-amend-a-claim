@@ -14,6 +14,7 @@ import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
@@ -55,8 +56,8 @@ class ChangeAssessedTotalsControllerTest {
 
     @Test
     void testGetReturnsView_CivilClaim() throws Exception {
-        civilClaim.setAssessedTotalVat(null);
-        civilClaim.setAssessedTotalInclVat(null);
+        civilClaim.setAssessedTotalVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
+        civilClaim.setAssessedTotalInclVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
         session.setAttribute(claimId, civilClaim);
 
         mockMvc.perform(get(buildPath())
@@ -69,8 +70,8 @@ class ChangeAssessedTotalsControllerTest {
 
     @Test
     void testGetReturnsView_CrimeClaim() throws Exception {
-        crimeClaim.setAssessedTotalVat(null);
-        crimeClaim.setAssessedTotalInclVat(null);
+        crimeClaim.setAssessedTotalVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
+        crimeClaim.setAssessedTotalInclVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
         session.setAttribute(claimId, crimeClaim);
 
         mockMvc.perform(get(buildPath())
@@ -79,6 +80,34 @@ class ChangeAssessedTotalsControllerTest {
             .andExpect(view().name("assessed-totals"))
             .andExpect(model().attribute("form", hasProperty("assessedTotalVat", nullValue())))
             .andExpect(model().attribute("form", hasProperty("assessedTotalInclVat", nullValue())));
+    }
+
+    @Test
+    void testGetRedirectWhenStatusIsNull_CivilClaim() throws Exception {
+        civilClaim.setAssessedTotalVat(ClaimField.builder().build());
+        civilClaim.setAssessedTotalInclVat(ClaimField.builder().build());
+        session.setAttribute(claimId, civilClaim);
+
+        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+
+        mockMvc.perform(get(buildPath())
+                .session(session))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(expectedRedirectUrl));
+    }
+
+    @Test
+    void testGetRedirectWhenStatusIsNull_CrimeClaim() throws Exception {
+        crimeClaim.setAssessedTotalVat(ClaimField.builder().build());
+        crimeClaim.setAssessedTotalInclVat(ClaimField.builder().build());
+        session.setAttribute(claimId, crimeClaim);
+
+        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+
+        mockMvc.perform(get(buildPath())
+                .session(session))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(expectedRedirectUrl));
     }
 
     @Test

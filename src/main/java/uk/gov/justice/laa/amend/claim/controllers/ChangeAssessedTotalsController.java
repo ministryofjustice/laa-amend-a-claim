@@ -33,8 +33,12 @@ public class ChangeAssessedTotalsController {
         Model model,
         HttpServletRequest request
     ) {
-        // TODO - check if they're allowed to be here
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
+
+        if (claim.getAssessedTotalVat().getStatus() == null || claim.getAssessedTotalInclVat().getStatus() == null) {
+            return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
+        }
+
         AssessedTotalForm form = new AssessedTotalForm();
 
         ClaimField totalVatField = claim.getAssessedTotalVat();
@@ -63,7 +67,6 @@ public class ChangeAssessedTotalsController {
         HttpServletRequest request,
         HttpServletResponse response
     ) {
-        // TODO - check if they're allowed to be here
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return renderView(model, form, submissionId, claimId);
