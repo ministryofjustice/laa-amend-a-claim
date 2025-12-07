@@ -35,3 +35,5 @@ public class SearchTest extends BaseTest {
         Assertions.assertTrue(hasResults, "Expected results table to be visible after search.");
     }
 }
+
+
