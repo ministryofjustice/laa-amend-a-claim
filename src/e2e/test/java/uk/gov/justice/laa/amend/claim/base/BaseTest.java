@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package uk.gov.justice.laa.amend.claim.base;
 
 
@@ -12,11 +13,18 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import uk.gov.justice.laa.amend.claim.pages.LoginPage;
 import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
+=======
+package base;
+
+import com.microsoft.playwright.*;
+import org.junit.jupiter.api.*;
+>>>>>>> 43d9a35 (E2E Journey)
 
 public abstract class BaseTest {
 
     protected static Playwright playwright;
     protected static Browser browser;
+<<<<<<< HEAD
     protected static BrowserContext context;
 
     protected Page page;
@@ -36,20 +44,46 @@ public abstract class BaseTest {
     @AfterAll
     static void closeBrowser() {
         if (context != null) context.close();
+=======
+
+    protected BrowserContext context;
+    protected Page page;
+
+    @BeforeAll
+    static void launchBrowser() {
+        playwright = Playwright.create();
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions()
+                .setHeadless(Boolean.parseBoolean(System.getProperty("headless", "true"))));
+    }
+
+    @AfterAll
+    static void closeBrowser() {
+>>>>>>> 43d9a35 (E2E Journey)
         if (browser != null) browser.close();
         if (playwright != null) playwright.close();
     }
 
     @BeforeEach
+<<<<<<< HEAD
     void createPage() {
+=======
+    void createContext() {
+        context = browser.newContext();
+>>>>>>> 43d9a35 (E2E Journey)
         page = context.newPage();
     }
 
     @AfterEach
     void cleanUp() {
+<<<<<<< HEAD
         if (page != null) {
             try {
                 page.close();
+=======
+        if (context != null) {
+            try {
+                context.close();
+>>>>>>> 43d9a35 (E2E Journey)
             } catch (Exception ignored) {}
         }
     }

@@ -19,10 +19,13 @@ public class SearchPage {
     private final Locator resultsHeading;
     private final Locator resultsTable;
     private final Locator resultRows;
-    private final Locator noResultsMessage;
 
     public SearchPage(Page page) {
         this.page = page;
+
+        this.heading = page.getByRole(AriaRole.HEADING,
+                new Page.GetByRoleOptions().setName("Search for a claim"));
+
 
         this.heading = page.getByRole(AriaRole.HEADING,
                 new Page.GetByRoleOptions().setName("Search for a claim"));
@@ -37,12 +40,9 @@ public class SearchPage {
         this.clearAllLink = page.getByRole(AriaRole.LINK,
                 new Page.GetByRoleOptions().setName("Clear all"));
 
-
-
         this.resultsHeading = page.locator("h2.govuk-heading-m:has-text('search results')");
         this.resultsTable = page.locator("table.govuk-table");
         this.resultRows = resultsTable.locator("tbody tr.govuk-table__row");
-        this.noResultsMessage = page.locator("h2.govuk-heading-m:has-text('There are no results that match the search criteria')");
     }
 
     public void waitForPage() { heading.waitFor(); }
@@ -51,6 +51,10 @@ public class SearchPage {
         page.navigate(baseUrl);
         waitForPage();
         return this;
+    }
+
+    public void enterProviderAccountNumber(String number) {
+        providerAccountNumberInput.fill(number);
     }
 
     public void enterProviderAccountNumber(String number) {
@@ -70,22 +74,21 @@ public class SearchPage {
         if (crn != null && !crn.isEmpty()) crnInput.fill(crn);
     }
 
+
+    public void enterUFN(String ufn) {
+        if (ufn != null && !ufn.isEmpty()) ufnInput.fill(ufn);
+    }
+
+    public void enterCRN(String crn) {
+        if (crn != null && !crn.isEmpty()) crnInput.fill(crn);
+    }
+
     public void clickSearch() { searchButton.click(); }
+
 
     public void clickClearAll() { clearAllLink.click(); }
 
     // ---- COMBINED SEARCH + WAIT FOR RESULTS ----
-    public void searchForClaim(String providerAccount, String month, String year,
-                               String ufn, String crn, boolean expectResults) {
-        waitForPage();
-        enterProviderAccountNumber(providerAccount);
-        enterSubmissionDate(month, year);
-        enterUFN(ufn);
-        enterCRN(crn);
-        clickSearch();
-        waitForResults(expectResults);
-    }
-
     public void searchForClaim(String providerAccount, String month, String year,
                                String ufn, String crn) {
         waitForPage();
@@ -95,19 +98,11 @@ public class SearchPage {
         enterCRN(crn);
         clickSearch();
         waitForResults();
+        waitForResults();
     }
 
     public String getHeadingText() {
         return heading.textContent().trim();
-    }
-
-    public void waitForResults(boolean expectResults) {
-        if (expectResults) {
-            resultsHeading.waitFor();
-            resultsTable.waitFor();
-        } else  {
-            noResultsMessage.waitFor();
-        }
     }
 
     public void waitForResults() {
@@ -117,7 +112,8 @@ public class SearchPage {
 
     /** Returns true if ≥1 result row is present */
     public boolean hasResults() {
-        return resultsTable.isVisible() && resultRows.count() > 0;
+        waitForResults();
+        return resultRows.count() > 0;
     }
 
     /** Clicks "View" on the first result row */

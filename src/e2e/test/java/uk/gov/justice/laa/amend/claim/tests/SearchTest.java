@@ -60,3 +60,5 @@ public class SearchTest extends BaseTest {
         Assertions.assertEquals(config.isExpectedResults(), hasResults, "Results presence should match expected.");
     }
 }
+
+
