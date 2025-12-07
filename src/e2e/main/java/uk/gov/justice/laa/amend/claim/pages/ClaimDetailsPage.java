@@ -31,9 +31,12 @@ public class ClaimDetailsPage {
     public void clickAddAssessmentOutcome() {
         addAssessmentOutcomeButton.click();
     }
+<<<<<<< HEAD
 
         public boolean isAddAssessmentOutcomeDisabled() {
         return addAssessmentOutcomeButton.isDisabled();
     }
 
+=======
+>>>>>>> ef7f4cd (E2E Journey)
 }
