@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.thymeleaf.spring6.util.DetailedError;
+import uk.gov.justice.laa.amend.claim.forms.errors.AssessedTotalFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessmentOutcomeFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
 
@@ -132,6 +133,38 @@ public class ThymeleafUtilsTest {
             List<AssessmentOutcomeFormError> expectedResult = List.of(
                     new AssessmentOutcomeFormError("assessmentOutcome", "Assessment outcome error"),
                     new AssessmentOutcomeFormError("liabilityForVat", "liability for VAT number error")
+            );
+
+            Assertions.assertEquals(expectedResult, result);
+        }
+    }
+
+    @Nested
+    class ToAssessedTotalFormErrorsTests {
+        @Test
+        void sortErrorsByFieldOrder() {
+            List<DetailedError> errors = List.of(
+                new DetailedError(
+                    "assessedTotalInclVat",
+                    null,
+                    Stream.empty().toArray(),
+                    "foo"
+                ),
+                new DetailedError(
+                    "assessedTotalVat",
+                    null,
+                    Stream.empty().toArray(),
+                    "bar"
+                )
+            );
+
+            ThymeleafUtils sut = new ThymeleafUtils(messageSource);
+
+            List<AssessedTotalFormError> result = sut.toAssessedTotalFormErrors(errors);
+
+            List<AssessedTotalFormError> expectedResult = List.of(
+                new AssessedTotalFormError("assessedTotalVat", "bar"),
+                new AssessedTotalFormError("assessedTotalInclVat", "foo")
             );
 
             Assertions.assertEquals(expectedResult, result);

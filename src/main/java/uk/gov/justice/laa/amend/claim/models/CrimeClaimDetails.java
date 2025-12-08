@@ -7,12 +7,11 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
-import java.math.BigDecimal;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CrimeClaimDetails extends ClaimDetails {
 
+    private String dsccNumber;
     private ClaimField travelCosts;
     private ClaimField waitingCosts;
 
@@ -33,15 +32,30 @@ public class CrimeClaimDetails extends ClaimDetails {
     @Override
     public void setReducedValues() {
         super.setReducedValues();
-        applyIfNotNull(travelCosts, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
+        setPaidInFullOrReduced();
     }
       
     @Override
     public void setPaidInFullValues() {
         super.setPaidInFullValues();
+        setPaidInFullOrReduced();
+    }
+
+    private void setPaidInFullOrReduced() {
+        ClaimField assessedTotalVat = getAssessedTotalVat();
+        ClaimField assessedTotalInclVat = getAssessedTotalInclVat();
+
         applyIfNotNull(travelCosts, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
+
+        // assessed total fields are only shown on crime claims if the claim has a Defence Solicitor Call Centre number
+        if (dsccNumber != null) {
+            applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAmending);
+            applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAmending);
+        } else {
+            applyIfNotNull(assessedTotalVat, ClaimField::setToDoNotDisplay);
+            applyIfNotNull(assessedTotalInclVat, ClaimField::setToDoNotDisplay);
+        }
     }
 
     @Override

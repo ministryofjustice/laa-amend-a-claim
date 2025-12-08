@@ -13,6 +13,7 @@ import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimReviewController;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -32,6 +33,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
     @Test
     void testPage() throws Exception {
+        claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
         Document doc = renderDocument();
 
         assertPageHasTitle(doc, "Review and amend");
@@ -44,6 +46,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
     @Test
     void testPageWithSubmissionError() throws Exception {
+        claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
         WebClientResponseException exception = WebClientResponseException
@@ -59,6 +62,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
     @Test
     void testPageWithValidationError() throws Exception {
+        claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
         ClaimField claimField = new ClaimField();
         claimField.setKey("profitCosts");
         claimField.setStatus(AmendStatus.NEEDS_AMENDING);

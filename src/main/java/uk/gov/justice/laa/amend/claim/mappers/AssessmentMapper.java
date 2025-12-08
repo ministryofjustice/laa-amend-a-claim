@@ -39,6 +39,8 @@ public interface AssessmentMapper {
     @Mapping(target = "boltOnSubstantiveHearingFee", ignore = true)
     @Mapping(target = "boltOnHomeOfficeInterviewFee", ignore = true)
     @Mapping(target = "createdByUserId", expression = "java(userId)")
+    @Mapping(target = "assessedTotalVat", expression = "java(mapAssessedTotalVat(claim))")
+    @Mapping(target = "assessedTotalInclVat", expression = "java(mapAssessedTotalInclVat(claim))")
     @Mapping(target = "allowedTotalVat", expression = "java(mapAllowedTotalVat(claim))")
     @Mapping(target = "allowedTotalInclVat", expression = "java(mapAllowedTotalInclVat(claim))")
     AssessmentPost mapClaimToAssessment(ClaimDetails claim, @Context String userId);
@@ -67,6 +69,8 @@ public interface AssessmentMapper {
     @Mapping(target = "disbursementVatAmount.assessed", source = "disbursementVatAmount")
     @Mapping(target = "netProfitCost.assessed", source = "netProfitCostsAmount")
     @Mapping(target = "assessmentOutcome", ignore = true)
+    @Mapping(target = "assessedTotalVat.assessed", source = "assessedTotalVat")
+    @Mapping(target = "assessedTotalInclVat.assessed", source = "assessedTotalInclVat")
     @Mapping(target = "allowedTotalVat.assessed", source = "allowedTotalVat")
     @Mapping(target = "allowedTotalInclVat.assessed", source = "allowedTotalInclVat")
     @Mapping(target = "lastAssessment.lastAssessedBy", source = "createdByUserId")
@@ -180,6 +184,26 @@ public interface AssessmentMapper {
         return mapToBigDecimal(claim.getSubstantiveHearing());
     }
 
+    /**
+     *
+     * @param claim the claim being mapped to an Assessment
+     * @return the assessed total VAT, unless this is not modifiable in the UI (i.e. null) in which case we return the allowed total VAT
+     */
+    default BigDecimal mapAssessedTotalVat(ClaimDetails claim) {
+        BigDecimal assessedValue = mapToBigDecimal(claim.getAssessedTotalVat());
+        return assessedValue != null ? assessedValue : mapToBigDecimal(claim.getAllowedTotalVat());
+    }
+
+    /**
+     *
+     * @param claim the claim being mapped to an Assessment
+     * @return the assessed total (including VAT), unless this is not modifiable in the UI (i.e. null) in which case we return the allowed total (including VAT)
+     */
+    default BigDecimal mapAssessedTotalInclVat(ClaimDetails claim) {
+        BigDecimal assessedValue = mapToBigDecimal(claim.getAssessedTotalInclVat());
+        return assessedValue != null ? assessedValue : mapToBigDecimal(claim.getAllowedTotalInclVat());
+    }
+
     default BigDecimal mapAllowedTotalVat(ClaimDetails claim) {
         return mapToBigDecimal(claim.getAllowedTotalVat());
     }
@@ -189,7 +213,14 @@ public interface AssessmentMapper {
     }
 
     private BigDecimal mapToBigDecimal(ClaimField field) {
-        if (field != null && field.getAmended() instanceof BigDecimal value) {
+        if (field != null) {
+            return mapToBigDecimal(field.getAmended());
+        }
+        return null;
+    }
+
+    private BigDecimal mapToBigDecimal(Object amended) {
+        if (amended instanceof BigDecimal value) {
             return value;
         }
         return null;

@@ -6,5 +6,6 @@ import lombok.Getter;
 public enum AmendStatus {
     AMENDABLE,
     NOT_AMENDABLE,
-    NEEDS_AMENDING
+    NEEDS_AMENDING,
+    DO_NOT_DISPLAY
 }
