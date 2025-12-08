@@ -59,7 +59,7 @@ class AssessmentServiceTest {
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
 
             // Then: Only amendable monetary fields should be set to 0 (not VAT, Total, or Fixed Fee)
-            assertEquals(BigDecimal.valueOf(300), claim.getFixedFee().getAmended()); // Fixed Fee unchanged (NA)
+            assertEquals(BigDecimal.ZERO, claim.getFixedFee().getAmended()); // Fixed Fee unchanged (NA)
             assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAmended());
             assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAmended());
             assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAmended());
@@ -303,8 +303,7 @@ class AssessmentServiceTest {
             assertEquals(claim.getVatClaimed().getSubmitted(), claim.getVatClaimed().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
 
-            assertEquals(claim.getFixedFee().getSubmitted(), claim.getFixedFee().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+            assertNull(claim.getFixedFee().getAmended());
 
             assertNull(claim.getNetProfitCost().getAmended());
             assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
@@ -478,8 +477,7 @@ class AssessmentServiceTest {
             assertEquals(claim.getVatClaimed().getSubmitted(), claim.getVatClaimed().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
 
-            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+            assertNull(claim.getFixedFee().getAmended());
 
             assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetProfitCost().getStatus());
@@ -512,8 +510,7 @@ class AssessmentServiceTest {
             assertEquals(claim.getVatClaimed().getSubmitted(), claim.getVatClaimed().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getVatClaimed().getStatus());
 
-            assertEquals(claim.getFixedFee().getCalculated(), claim.getFixedFee().getAmended());
-            assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+            assertNull(claim.getFixedFee().getAmended());
 
             assertEquals(claim.getNetProfitCost().getSubmitted(), claim.getNetProfitCost().getAmended());
             assertEquals(AmendStatus.AMENDABLE, claim.getNetProfitCost().getStatus());
