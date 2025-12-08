@@ -83,45 +83,14 @@ class ChangeAssessedTotalsControllerTest {
     }
 
     @Test
-    void testGetRedirectsWhenFieldIsNull_CivilClaim() throws Exception {
-        civilClaim.setAssessedTotalVat(null);
-        civilClaim.setAssessedTotalInclVat(null);
-        session.setAttribute(claimId, civilClaim);
-
-        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
-
-        mockMvc.perform(get(buildPath())
-                .session(session))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl(expectedRedirectUrl));
-    }
-
-    @Test
-    void testGetRedirectsWhenFieldIsNull_CrimeClaim() throws Exception {
-        crimeClaim.setAssessedTotalVat(null);
-        crimeClaim.setAssessedTotalInclVat(null);
-        session.setAttribute(claimId, crimeClaim);
-
-        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
-
-        mockMvc.perform(get(buildPath())
-                .session(session))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl(expectedRedirectUrl));
-    }
-
-    @Test
     void testGetRedirectsWhenStatusIsDoNotDisplay_CivilClaim() throws Exception {
         civilClaim.setAssessedTotalVat(ClaimField.builder().status(AmendStatus.DO_NOT_DISPLAY).build());
         civilClaim.setAssessedTotalInclVat(ClaimField.builder().status(AmendStatus.DO_NOT_DISPLAY).build());
         session.setAttribute(claimId, civilClaim);
 
-        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
-
         mockMvc.perform(get(buildPath())
                 .session(session))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl(expectedRedirectUrl));
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -130,12 +99,9 @@ class ChangeAssessedTotalsControllerTest {
         crimeClaim.setAssessedTotalInclVat(ClaimField.builder().status(AmendStatus.DO_NOT_DISPLAY).build());
         session.setAttribute(claimId, crimeClaim);
 
-        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
-
         mockMvc.perform(get(buildPath())
                 .session(session))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl(expectedRedirectUrl));
+            .andExpect(status().isNotFound());
     }
 
     @Test

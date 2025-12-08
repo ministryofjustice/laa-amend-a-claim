@@ -48,6 +48,7 @@ public class CrimeClaimDetails extends ClaimDetails {
         applyIfNotNull(travelCosts, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
 
+        // assessed total fields are only shown on crime claims if the claim has a police station scheme
         if (schemeId != null) {
             applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAmending);
             applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAmending);

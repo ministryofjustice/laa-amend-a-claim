@@ -35,10 +35,6 @@ public class ChangeAllowedTotalsController {
     ) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
-        if (claim.getAllowedTotalVat() == null || claim.getAllowedTotalInclVat() == null) {
-            return String.format("redirect:/submissions/%s/claims/%s", submissionId, claimId);
-        }
-
         AllowedTotalForm allowedTotalForm = new AllowedTotalForm();
 
         BigDecimal allowedTotalVat = (BigDecimal) claim.getAllowedTotalVat().getAmended();

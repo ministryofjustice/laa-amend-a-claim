@@ -83,34 +83,6 @@ class ChangeAllowedTotalsControllerTest {
     }
 
     @Test
-    void testGetRedirectsWhenFieldIsNull_CivilClaim() throws Exception {
-        civilClaim.setAllowedTotalVat(null);
-        civilClaim.setAllowedTotalInclVat(null);
-        session.setAttribute(claimId, civilClaim);
-
-        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
-
-        mockMvc.perform(get(buildPath())
-                .session(session))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl(expectedRedirectUrl));
-    }
-
-    @Test
-    void testGetRedirectsWhenFieldIsNull_CrimeClaim() throws Exception {
-        crimeClaim.setAllowedTotalVat(null);
-        crimeClaim.setAllowedTotalInclVat(null);
-        session.setAttribute(claimId, crimeClaim);
-
-        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
-
-        mockMvc.perform(get(buildPath())
-                .session(session))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl(expectedRedirectUrl));
-    }
-
-    @Test
     void testGetReturnsViewWhenQuestionAlreadyAnswered_CivilClaim() throws Exception {
         civilClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
         civilClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));

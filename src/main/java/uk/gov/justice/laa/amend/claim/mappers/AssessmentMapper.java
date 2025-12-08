@@ -185,13 +185,13 @@ public interface AssessmentMapper {
     }
 
     default BigDecimal mapAssessedTotalVat(ClaimDetails claim) {
-        BigDecimal value = mapToBigDecimal(claim.getAssessedTotalVat());
-        return value == null ? BigDecimal.ZERO : value;
+        BigDecimal assessedValue = mapToBigDecimal(claim.getAssessedTotalVat());
+        return assessedValue != null ? assessedValue : mapToBigDecimal(claim.getAllowedTotalVat());
     }
 
     default BigDecimal mapAssessedTotalInclVat(ClaimDetails claim) {
-        BigDecimal value = mapToBigDecimal(claim.getAssessedTotalInclVat());
-        return value == null ? BigDecimal.ZERO : value;
+        BigDecimal assessedValue = mapToBigDecimal(claim.getAssessedTotalInclVat());
+        return assessedValue != null ? assessedValue : mapToBigDecimal(claim.getAllowedTotalInclVat());
     }
 
     default BigDecimal mapAllowedTotalVat(ClaimDetails claim) {

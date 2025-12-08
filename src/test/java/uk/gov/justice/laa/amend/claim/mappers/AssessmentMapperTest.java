@@ -14,13 +14,11 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentOutcome;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
 
@@ -129,13 +127,15 @@ class AssessmentMapperTest {
     void testMapAssessedTotalVat_whenAmendedValueIsNull() {
         CivilClaimDetails claim = new CivilClaimDetails();
         claim.setAssessedTotalVat(ClaimField.builder().build());
-        assertEquals(BigDecimal.ZERO, mapper.mapAssessedTotalVat(claim));
+        claim.setAllowedTotalVat(ClaimField.builder().amended(BigDecimal.TWO).build());
+        assertEquals(BigDecimal.TWO, mapper.mapAssessedTotalVat(claim));
     }
 
     @Test
     void testMapAssessedTotalVat_whenAmendedValueIsNotNull() {
         CivilClaimDetails claim = new CivilClaimDetails();
         claim.setAssessedTotalVat(ClaimField.builder().amended(BigDecimal.ONE).build());
+        claim.setAllowedTotalVat(ClaimField.builder().amended(BigDecimal.TWO).build());
         assertEquals(BigDecimal.ONE, mapper.mapAssessedTotalVat(claim));
     }
 
@@ -143,13 +143,15 @@ class AssessmentMapperTest {
     void testMapAssessedTotalInclVat_whenAmendedValueIsNull() {
         CivilClaimDetails claim = new CivilClaimDetails();
         claim.setAssessedTotalInclVat(ClaimField.builder().build());
-        assertEquals(BigDecimal.ZERO, mapper.mapAssessedTotalInclVat(claim));
+        claim.setAllowedTotalInclVat(ClaimField.builder().amended(BigDecimal.TWO).build());
+        assertEquals(BigDecimal.TWO, mapper.mapAssessedTotalInclVat(claim));
     }
 
     @Test
     void testMapAssessedTotalInclVat_whenAmendedValueIsNotNull() {
         CivilClaimDetails claim = new CivilClaimDetails();
         claim.setAssessedTotalInclVat(ClaimField.builder().amended(BigDecimal.ONE).build());
+        claim.setAllowedTotalInclVat(ClaimField.builder().amended(BigDecimal.TWO).build());
         assertEquals(BigDecimal.ONE, mapper.mapAssessedTotalInclVat(claim));
     }
 

@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.forms.AssessedTotalForm;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -36,12 +38,8 @@ public class ChangeAssessedTotalsController {
     ) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
-        if (claim.getAssessedTotalVat() == null || claim.getAssessedTotalInclVat() == null) {
-            return String.format("redirect:/submissions/%s/claims/%s", submissionId, claimId);
-        }
-
         if (claim.getAssessedTotalVat().getStatus() == AmendStatus.DO_NOT_DISPLAY || claim.getAssessedTotalInclVat().getStatus() == AmendStatus.DO_NOT_DISPLAY) {
-            return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
         AssessedTotalForm form = new AssessedTotalForm();
