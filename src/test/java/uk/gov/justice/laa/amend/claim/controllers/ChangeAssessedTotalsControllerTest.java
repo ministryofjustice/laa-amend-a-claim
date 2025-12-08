@@ -111,9 +111,9 @@ class ChangeAssessedTotalsControllerTest {
     }
 
     @Test
-    void testGetRedirectsWhenStatusIsNull_CivilClaim() throws Exception {
-        civilClaim.setAssessedTotalVat(ClaimField.builder().build());
-        civilClaim.setAssessedTotalInclVat(ClaimField.builder().build());
+    void testGetRedirectsWhenStatusIsDoNotDisplay_CivilClaim() throws Exception {
+        civilClaim.setAssessedTotalVat(ClaimField.builder().status(AmendStatus.DO_NOT_DISPLAY).build());
+        civilClaim.setAssessedTotalInclVat(ClaimField.builder().status(AmendStatus.DO_NOT_DISPLAY).build());
         session.setAttribute(claimId, civilClaim);
 
         String expectedRedirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
@@ -125,9 +125,9 @@ class ChangeAssessedTotalsControllerTest {
     }
 
     @Test
-    void testGetRedirectsWhenStatusIsNull_CrimeClaim() throws Exception {
-        crimeClaim.setAssessedTotalVat(ClaimField.builder().build());
-        crimeClaim.setAssessedTotalInclVat(ClaimField.builder().build());
+    void testGetRedirectsWhenStatusIsDoNotDisplay_CrimeClaim() throws Exception {
+        crimeClaim.setAssessedTotalVat(ClaimField.builder().status(AmendStatus.DO_NOT_DISPLAY).build());
+        crimeClaim.setAssessedTotalInclVat(ClaimField.builder().status(AmendStatus.DO_NOT_DISPLAY).build());
         session.setAttribute(claimId, crimeClaim);
 
         String expectedRedirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);

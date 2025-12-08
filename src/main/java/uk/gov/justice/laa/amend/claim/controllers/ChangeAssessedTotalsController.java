@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.forms.AssessedTotalForm;
+import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
@@ -39,7 +40,7 @@ public class ChangeAssessedTotalsController {
             return String.format("redirect:/submissions/%s/claims/%s", submissionId, claimId);
         }
 
-        if (claim.getAssessedTotalVat().getStatus() == null || claim.getAssessedTotalInclVat().getStatus() == null) {
+        if (claim.getAssessedTotalVat().getStatus() == AmendStatus.DO_NOT_DISPLAY || claim.getAssessedTotalInclVat().getStatus() == AmendStatus.DO_NOT_DISPLAY) {
             return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
         }
 
