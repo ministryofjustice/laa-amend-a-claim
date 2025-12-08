@@ -123,8 +123,4 @@ public interface ClaimMapper {
             claim.setSubmittedDate(submissionResponse.getSubmitted() != null ? submissionResponse.getSubmitted().toLocalDateTime() : null);
         }
     }
-
-    private void setAssessedTotalValues() {
-        return;
-    }
 }
