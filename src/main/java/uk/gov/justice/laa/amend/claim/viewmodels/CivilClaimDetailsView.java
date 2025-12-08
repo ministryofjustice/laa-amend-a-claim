@@ -45,11 +45,11 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
             claim.getDetentionTravelWaitingCosts(),
             claim.getJrFormFillingCost(),
             claim.getCounselsCost(),
-            claim.getCmrhOral(),
-            claim.getCmrhTelephone(),
-            claim.getHoInterview(),
-            claim.getSubstantiveHearing(),
-            claim.getAdjournedHearing()
+            checkSubmittedValue(claim.getCmrhOral()),
+            checkSubmittedValue(claim.getCmrhTelephone()),
+            checkSubmittedValue(claim.getHoInterview()),
+            checkSubmittedValue(claim.getSubstantiveHearing()),
+            checkSubmittedValue(claim.getAdjournedHearing())
         );
         return fields;
     }

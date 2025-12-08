@@ -73,6 +73,13 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         }
     }
 
+    default ClaimField checkSubmittedValue(ClaimField field) {
+        if (field != null && field.getSubmitted() != null) {
+            return field;
+        }
+        return null;
+    }
+
     default List<ClaimField> claimFields() {
         List<ClaimField> fields = new ArrayList<>();
         addRowIfNotNull(
