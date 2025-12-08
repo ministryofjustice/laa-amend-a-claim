@@ -7,11 +7,6 @@ on:
         required: false
         type: string
         default: 'main'
-      aws_region:
-        required: false
-        type: string
-        default: 'eu-west-2'
-        description: 'AWS region for ECR'
     secrets:
       ECR_ROLE_TO_ASSUME:
         required: true
@@ -23,6 +18,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: dev
     outputs:
       image_tag: ${{ steps.get_sha.outputs.sha }}
     permissions:
@@ -70,7 +66,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-          aws-region: ${{ inputs.aws_region }}
+          aws-region: ${{ vars.ECR_REGION }}
 
       - name: Authenticate to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
