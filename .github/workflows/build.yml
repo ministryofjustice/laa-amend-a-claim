@@ -10,8 +10,6 @@ on:
     secrets:
       ECR_ROLE_TO_ASSUME:
         required: true
-      GITHUB_TOKEN:
-        required: true
     outputs:
       image_tag:
         description: "The Docker image tag (commit SHA)"
