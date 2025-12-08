@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
@@ -492,7 +491,7 @@ class ClaimMapperTest {
         response.setClientForename("John");
         response.setCaseStartDate("2025-01-01");
         response.setCaseConcludedDate("2025-02-01");
-        response.setSchemeId("Police");
+        response.setDsccNumber("Police");
 
         SubmissionResponse submissionResponse = new SubmissionResponse();
         submissionResponse.setSubmissionId(UUID.randomUUID());
@@ -524,6 +523,6 @@ class ClaimMapperTest {
         assertEquals("CRIME LOWER", claim.getAreaOfLaw());
         assertEquals("User ID", claim.getProviderName());
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
-        assertEquals("Police", claim.getSchemeId());
+        assertEquals("Police", claim.getDsccNumber());
     }
 }

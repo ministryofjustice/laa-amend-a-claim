@@ -117,7 +117,7 @@ public class CrimeClaimDetailsTest {
         @Test
         void paidInFull_whenPoliceSchemeIsPresent() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setSchemeId("Police");
+            claim.setDsccNumber("Police");
             claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
             claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
 
@@ -133,7 +133,7 @@ public class CrimeClaimDetailsTest {
         @Test
         void paidInFull_whenPoliceSchemeIsNotPresent() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setSchemeId(null);
+            claim.setDsccNumber(null);
             claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
             claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
 
@@ -198,7 +198,7 @@ public class CrimeClaimDetailsTest {
         @Test
         void reduced_whenPoliceSchemeIsPresent() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setSchemeId("Police");
+            claim.setDsccNumber("Police");
             claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
             claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
 
@@ -214,7 +214,7 @@ public class CrimeClaimDetailsTest {
         @Test
         void reduced_whenPoliceSchemeIsNotPresent() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setSchemeId(null);
+            claim.setDsccNumber(null);
             claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
             claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
 

@@ -11,7 +11,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 @Data
 public class CrimeClaimDetails extends ClaimDetails {
 
-    private String schemeId;
+    private String dsccNumber;
     private ClaimField travelCosts;
     private ClaimField waitingCosts;
 
@@ -49,7 +49,7 @@ public class CrimeClaimDetails extends ClaimDetails {
         applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
 
         // assessed total fields are only shown on crime claims if the claim has a police station scheme
-        if (schemeId != null) {
+        if (dsccNumber != null) {
             applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAmending);
             applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAmending);
         } else {
