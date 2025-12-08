@@ -41,6 +41,7 @@ public abstract class ClaimDetails extends Claim {
     public void setNilledValues() {
         // Costs Table
         applyIfNotNull(netProfitCost, ClaimField::setNilled);
+        applyIfNotNull(fixedFee, ClaimField::setNilled);
         applyIfNotNull(netDisbursementAmount, ClaimField::setNilled);
         applyIfNotNull(disbursementVatAmount, ClaimField::setNilled);
 
@@ -64,7 +65,7 @@ public abstract class ClaimDetails extends Claim {
 
     public void setReducedValues() {
         // Costs Table
-        applyIfNotNull(fixedFee, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(fixedFee, ClaimField::setToNotApplicable);
         applyIfNotNull(netProfitCost, ClaimField::setToNeedsAmending);
         applyIfNotNull(vatClaimed, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToSubmitted);
@@ -77,7 +78,7 @@ public abstract class ClaimDetails extends Claim {
 
     public void setPaidInFullValues() {
         // Costs Table
-        applyIfNotNull(fixedFee, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(fixedFee, ClaimField::setToNotApplicable);
         applyIfNotNull(netProfitCost, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(vatClaimed, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToSubmitted);
