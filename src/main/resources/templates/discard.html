@@ -20,7 +20,7 @@
                             <div class="govuk-button-group">
                                 <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button" th:text="#{discard.discard}"></button>
 
-                                <a class="govuk-link" id="return-to-claim" th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}" th:text="#{discard.return}"></a>
+                                <a class="govuk-link" id="return-to-claim" th:href="@{/submissions/{submissionId}/claims/{claimId}/review(submissionId=${submissionId}, claimId=${claimId})}" th:text="#{discard.return}"></a>
                             </div>
                         </form>
                     </div>
