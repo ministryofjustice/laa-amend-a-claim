@@ -15,7 +15,6 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       branch: ${{ github.ref_name }}
-      aws_region: ${{ vars.ECR_REGION }}
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
 
