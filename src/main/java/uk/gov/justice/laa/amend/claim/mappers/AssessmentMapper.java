@@ -184,11 +184,21 @@ public interface AssessmentMapper {
         return mapToBigDecimal(claim.getSubstantiveHearing());
     }
 
+    /**
+     *
+     * @param claim the claim being mapped to an Assessment
+     * @return the assessed total VAT, unless this is not modifiable in the UI (i.e. null) in which case we return the allowed total VAT
+     */
     default BigDecimal mapAssessedTotalVat(ClaimDetails claim) {
         BigDecimal assessedValue = mapToBigDecimal(claim.getAssessedTotalVat());
         return assessedValue != null ? assessedValue : mapToBigDecimal(claim.getAllowedTotalVat());
     }
 
+    /**
+     *
+     * @param claim the claim being mapped to an Assessment
+     * @return the assessed total (including VAT), unless this is not modifiable in the UI (i.e. null) in which case we return the allowed total (including VAT)
+     */
     default BigDecimal mapAssessedTotalInclVat(ClaimDetails claim) {
         BigDecimal assessedValue = mapToBigDecimal(claim.getAssessedTotalInclVat());
         return assessedValue != null ? assessedValue : mapToBigDecimal(claim.getAllowedTotalInclVat());

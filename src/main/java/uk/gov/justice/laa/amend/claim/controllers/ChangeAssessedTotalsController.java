@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +28,7 @@ import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/assessed-totals")
+@Slf4j
 public class ChangeAssessedTotalsController {
 
     @GetMapping()
@@ -39,6 +41,7 @@ public class ChangeAssessedTotalsController {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
         if (claim.getAssessedTotalVat().getStatus() == AmendStatus.DO_NOT_DISPLAY || claim.getAssessedTotalInclVat().getStatus() == AmendStatus.DO_NOT_DISPLAY) {
+            log.warn("The assessed totals are not modifiable for claim {}. Returning 404.", claimId);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 

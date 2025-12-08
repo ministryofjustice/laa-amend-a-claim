@@ -67,15 +67,14 @@ class ChangeMonetaryValueControllerTest {
 
     @ParameterizedTest
     @MethodSource("validCosts")
-    void testGetRedirects_whenFieldIsNull(Cost cost) throws Exception {
+    void testGetReturns404_whenFieldIsNull(Cost cost) throws Exception {
         Claim claim = createClaimWithNullFieldFor(cost);
         session.setAttribute(claimId, claim);
 
         String expectedRedirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 
         mockMvc.perform(get(buildPath(cost.getPath())).session(session))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl(expectedRedirectUrl));
+            .andExpect(status().isNotFound());
     }
 
     @ParameterizedTest
