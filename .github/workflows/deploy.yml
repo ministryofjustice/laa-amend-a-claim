@@ -17,6 +17,11 @@ on:
         required: true
         type: string
         description: "The Docker image tag to deploy"
+      aws_region:
+        required: false
+        type: string
+        default: 'eu-west-2'
+        description: 'AWS region for the ECR'
     secrets:
       ECR_ROLE_TO_ASSUME:
         required: true
@@ -47,7 +52,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-          aws-region: ${{ vars.ECR_REGION }}
+          aws-region: ${{ inputs.aws_region }}
 
       - name: Authenticate to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2

@@ -7,6 +7,11 @@ on:
         required: false
         type: string
         default: 'main'
+      aws_region:
+        required: false
+        type: string
+        default: 'eu-west-2'
+        description: 'AWS region for ECR'
     secrets:
       ECR_ROLE_TO_ASSUME:
         required: true
