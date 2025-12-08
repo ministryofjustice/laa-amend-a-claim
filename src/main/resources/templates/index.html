@@ -13,6 +13,10 @@
 
                 <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toSearchFormErrors(#fields.detailedErrors())})}"></th:block>
 
+                <th:block th:if="${discarded}">
+                    <th:block th:replace="~{partials/success-alert :: successAlert('index')}"></th:block>
+                </th:block>
+
                 <fieldset class="govuk-fieldset" aria-describedby="search-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h1 class="govuk-fieldset__heading" th:text="#{index.heading}"></h1>

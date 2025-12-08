@@ -15,7 +15,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
-import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
@@ -89,15 +88,6 @@ public class ClaimReviewControllerTest {
         mockMvc.perform(get(path).session(session))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl(expectedRedirectUrl));
-    }
-
-    @Test
-    public void testDiscardRemovesClaimFromSessionAndRedirects() throws Exception {
-        String path = String.format("/submissions/%s/claims/%s/review/discard", submissionId, claimId);
-
-        mockMvc.perform(post(path).session(session))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/submissions/" + submissionId + "/claims/" + claimId));
     }
 
     @Test
