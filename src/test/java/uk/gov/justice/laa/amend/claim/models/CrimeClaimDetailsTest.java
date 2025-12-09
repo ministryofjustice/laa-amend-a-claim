@@ -115,9 +115,9 @@ public class CrimeClaimDetailsTest {
         }
 
         @Test
-        void paidInFull_whenPoliceSchemeIsPresent() {
+        void paidInFull_whenFeeCodeIsInListOfAssessedValueFeeCodes() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setDsccNumber("Police");
+            claim.setFeeCode("INVC");
             claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
             claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
 
@@ -131,9 +131,25 @@ public class CrimeClaimDetailsTest {
         }
 
         @Test
-        void paidInFull_whenPoliceSchemeIsNotPresent() {
+        void paidInFull_whenFeeCodeIsNotInListOfAssessedValueFeeCodes() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setDsccNumber(null);
+            claim.setFeeCode("ABCD");
+            claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
+            claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
+
+            claim.setPaidInFullValues();
+
+            Assertions.assertNull(claim.getAssessedTotalVat().getAmended());
+            Assertions.assertEquals(AmendStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
+
+            Assertions.assertNull(claim.getAssessedTotalInclVat().getAmended());
+            Assertions.assertEquals(AmendStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
+        }
+
+        @Test
+        void paidInFull_whenFeeCodeIsNull() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setFeeCode(null);
             claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
             claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
 
@@ -196,9 +212,9 @@ public class CrimeClaimDetailsTest {
         }
 
         @Test
-        void reduced_whenPoliceSchemeIsPresent() {
+        void reduced_whenFeeCodeIsInListOfAssessedValueFeeCodes() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setDsccNumber("Police");
+            claim.setFeeCode("INVC");
             claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
             claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
 
@@ -212,9 +228,25 @@ public class CrimeClaimDetailsTest {
         }
 
         @Test
-        void reduced_whenPoliceSchemeIsNotPresent() {
+        void reduced_whenFeeCodeIsNotInListOfAssessedValueFeeCodes() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setDsccNumber(null);
+            claim.setFeeCode("ABCD");
+            claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
+            claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
+
+            claim.setReducedValues();
+
+            Assertions.assertNull(claim.getAssessedTotalVat().getAmended());
+            Assertions.assertEquals(AmendStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
+
+            Assertions.assertNull(claim.getAssessedTotalInclVat().getAmended());
+            Assertions.assertEquals(AmendStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
+        }
+
+        @Test
+        void reduced_whenFeeCodeIsNull() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setFeeCode(null);
             claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
             claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
 
