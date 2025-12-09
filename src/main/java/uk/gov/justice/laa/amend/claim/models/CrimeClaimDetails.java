@@ -7,11 +7,12 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CrimeClaimDetails extends ClaimDetails {
 
-    private String dsccNumber;
     private ClaimField travelCosts;
     private ClaimField waitingCosts;
 
@@ -48,8 +49,11 @@ public class CrimeClaimDetails extends ClaimDetails {
         applyIfNotNull(travelCosts, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
 
-        // assessed total fields are only shown on crime claims if the claim has a Defence Solicitor Call Centre number
-        if (dsccNumber != null) {
+        List<String> feeCodes = List.of("INVC");
+        String feeCode = getFeeCode();
+
+        // assessed total fields are only shown on crime claims if the claim has a certain fee code (e.g. INVC)
+        if (feeCode != null && feeCodes.contains(feeCode)) {
             applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAmending);
             applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAmending);
         } else {
