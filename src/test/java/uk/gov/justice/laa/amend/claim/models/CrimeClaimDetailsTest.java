@@ -86,8 +86,8 @@ public class CrimeClaimDetailsTest {
 
             claim.setPaidInFullValues();
 
-            Assertions.assertEquals(BigDecimal.ONE, claim.getFixedFee().getAmended());
-            Assertions.assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+            Assertions.assertNull(claim.getFixedFee().getAmended());
+            Assertions.assertEquals(AmendStatus.NOT_AMENDABLE, claim.getFixedFee().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getNetProfitCost().getAmended());
             Assertions.assertEquals(AmendStatus.AMENDABLE, claim.getNetProfitCost().getStatus());
@@ -183,8 +183,8 @@ public class CrimeClaimDetailsTest {
 
             claim.setReducedValues();
 
-            Assertions.assertEquals(BigDecimal.ONE, claim.getFixedFee().getAmended());
-            Assertions.assertEquals(AmendStatus.AMENDABLE, claim.getFixedFee().getStatus());
+            Assertions.assertNull(claim.getFixedFee().getAmended());
+            Assertions.assertEquals(AmendStatus.NOT_AMENDABLE, claim.getFixedFee().getStatus());
 
             Assertions.assertNull(claim.getNetProfitCost().getAmended());
             Assertions.assertEquals(AmendStatus.NEEDS_AMENDING, claim.getNetProfitCost().getStatus());
