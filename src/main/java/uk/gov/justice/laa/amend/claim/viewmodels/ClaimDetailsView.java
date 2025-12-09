@@ -6,6 +6,7 @@ import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -90,6 +91,14 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
             return field;
         }
         return null;
+    }
+
+    default ClaimField setCalculatedForNullSubmittedValue(ClaimField field) {
+        if (field != null && field.getSubmitted() == null) {
+            field.setCalculated(BigDecimal.ZERO);
+            return field;
+        }
+        return field;
     }
 
     default List<ClaimField> claimFields() {
