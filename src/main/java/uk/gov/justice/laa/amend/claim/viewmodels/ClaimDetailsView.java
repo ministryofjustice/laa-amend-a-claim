@@ -93,10 +93,12 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return null;
     }
 
-    default ClaimField setCalculatedForNullSubmittedValue(ClaimField field) {
+    default ClaimField setDisplayForNulls(ClaimField field) {
         if (field != null && field.getSubmitted() == null) {
+            field.setSubmitted(BigDecimal.ZERO);
+        }
+        if (field != null && field.getCalculated() == null) {
             field.setCalculated(BigDecimal.ZERO);
-            return field;
         }
         return field;
     }

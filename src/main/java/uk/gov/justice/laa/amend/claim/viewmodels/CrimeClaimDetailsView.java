@@ -22,8 +22,8 @@ public record CrimeClaimDetailsView(CrimeClaimDetails claim) implements ClaimDet
         List<ClaimField> fields = ClaimDetailsView.super.claimFields();
         addRowIfNotNull(
             fields,
-            setCalculatedForNullSubmittedValue(claim.getTravelCosts()),
-            setCalculatedForNullSubmittedValue(claim.getWaitingCosts())
+            setDisplayForNulls(claim.getTravelCosts()),
+            setDisplayForNulls(claim.getWaitingCosts())
         );
         return fields;
     }

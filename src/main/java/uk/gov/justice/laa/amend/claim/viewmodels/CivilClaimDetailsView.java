@@ -42,9 +42,9 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
         List<ClaimField> fields = ClaimDetailsView.super.claimFields();
         addRowIfNotNull(
             fields,
-                setCalculatedForNullSubmittedValue(claim.getDetentionTravelWaitingCosts()),
-                setCalculatedForNullSubmittedValue(claim.getJrFormFillingCost()),
-                setCalculatedForNullSubmittedValue(claim.getCounselsCost()),
+            setDisplayForNulls(claim.getDetentionTravelWaitingCosts()),
+            setDisplayForNulls(claim.getJrFormFillingCost()),
+            setDisplayForNulls(claim.getCounselsCost()),
             checkSubmittedValue(claim.getCmrhOral()),
             checkSubmittedValue(claim.getCmrhTelephone()),
             checkSubmittedValue(claim.getHoInterview()),
