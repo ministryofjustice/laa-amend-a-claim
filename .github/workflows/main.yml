@@ -1,7 +1,9 @@
-name: CI/CD Pipeline
+name: Main Branch Pipeline
 
 on:
-  - push
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -45,31 +47,12 @@ jobs:
 
   deploy-uat:
     name: Deploy to UAT
-    if: github.ref_name == 'main'
-    needs: [build, test]
+    needs: [build, test, security]
     uses: ./.github/workflows/deploy.yml
     with:
       branch: ${{ github.ref_name }}
       environment: test
       SENTRY_ENV: test
-      image_tag: ${{ needs.build.outputs.image_tag }}
-      aws_region: ${{ vars.ECR_REGION }}
-    secrets:
-      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
-      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
-      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
-      KUBE_CERT: ${{ secrets.KUBE_CERT }}
-
-  deploy-dev:
-    name: Deploy to Dev
-    if: github.ref_name != 'main'
-    needs: [build]
-    uses: ./.github/workflows/deploy.yml
-    with:
-      branch: ${{ github.ref_name }}
-      environment: dev
-      SENTRY_ENV: development
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
     secrets:
