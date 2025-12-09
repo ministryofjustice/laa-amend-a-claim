@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.justice.laa.amend.claim.utils.FormUtils;
@@ -11,6 +12,7 @@ import uk.gov.justice.laa.amend.claim.utils.FormUtils;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ClaimField implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -76,8 +78,12 @@ public class ClaimField implements Serializable {
         return String.format(changeUrl, submissionId, claimId);
     }
 
-    public String getChangeUrlAllowedTotal(String submissionId, String claimId) {
+    public String getChangeAllowedTotalUrl(String submissionId, String claimId) {
         return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, "allowed-totals");
+    }
+
+    public String getChangeAssessedTotalUrl(String submissionId, String claimId) {
+        return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, "assessed-totals");
     }
 
     protected void setNilled() {
@@ -100,7 +106,11 @@ public class ClaimField implements Serializable {
         setAmendedToValue(this.getSubmitted());
     }
 
-    private void setAmendedToValue(Object value) {
+    protected void setToDoNotDisplay() {
+        setAmended(null, AmendStatus.DO_NOT_DISPLAY);
+    }
+
+    public void setAmendedToValue(Object value) {
         setAmended(value, AmendStatus.AMENDABLE);
     }
 

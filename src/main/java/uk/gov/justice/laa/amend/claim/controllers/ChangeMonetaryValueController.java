@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
@@ -28,6 +31,7 @@ import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/")
+@Slf4j
 public class ChangeMonetaryValueController {
 
     @GetMapping("{cost}")
@@ -42,7 +46,13 @@ public class ChangeMonetaryValueController {
         try {
             ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
             ClaimField claimField = cost.getAccessor().get(claim);
-            BigDecimal value = claimField != null ? (BigDecimal) claimField.getAmended() : null;
+
+            if (claimField == null) {
+                log.warn("Could not find claim field {} in claim {}. Returning 404.", cost.getPath(), claimId);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+
+            BigDecimal value = (BigDecimal) claimField.getAmended();
 
             MonetaryValueForm form = new MonetaryValueForm();
             if (value != null) {
@@ -78,11 +88,9 @@ public class ChangeMonetaryValueController {
 
             ClaimField claimField = cost.getAccessor().get(claim);
             BigDecimal value = setScale(form.getValue());
-            if (claimField != null) {
-                claimField.setAmended(value);
-                claimField.setStatus(AmendStatus.AMENDABLE);
-                cost.getAccessor().set(claim, claimField);
-            }
+            claimField.setAmended(value);
+            claimField.setStatus(AmendStatus.AMENDABLE);
+            cost.getAccessor().set(claim, claimField);
             session.setAttribute(claimId, claim);
 
             return "redirect:" + getRedirectUrl(submissionId, claimId);

@@ -5,14 +5,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.AmendStatus;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Map;
 
 public class CrimeClaimDetailsViewTest {
 
@@ -32,6 +29,44 @@ public class CrimeClaimDetailsViewTest {
             claim.setScheduleReference("0U733A201802");
             ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
             Assertions.assertEquals("0U733A201802", viewModel.getAccountNumber());
+        }
+    }
+
+    @Nested
+    class GetAssessedTotalsTests {
+        @Test
+        void getAssessedTotalsHandlesNullFields() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAssessedTotals();
+
+            Assertions.assertEquals(List.of(), result);
+        }
+
+        @Test
+        void getAssessedTotalsHandlesValidFields() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AmendStatus.NEEDS_AMENDING));
+            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAssessedTotals();
+
+            Assertions.assertEquals(claim.getAssessedTotalVat(), result.get(0));
+            Assertions.assertEquals(claim.getAssessedTotalInclVat(), result.get(1));
+        }
+
+        @Test
+        void getAssessedTotalsHandlesValidFieldsWithDoNotDisplayStatus() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AmendStatus.DO_NOT_DISPLAY));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AmendStatus.DO_NOT_DISPLAY));
+            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAssessedTotals();
+
+            Assertions.assertEquals(List.of(), result);
         }
     }
 
@@ -173,11 +208,19 @@ public class CrimeClaimDetailsViewTest {
             claim.setNetProfitCost(createClaimField("profitCost", AmendStatus.NEEDS_AMENDING));
             claim.setTravelCosts(createClaimField("travel", AmendStatus.NEEDS_AMENDING));
             claim.setWaitingCosts(createClaimField("waiting", AmendStatus.AMENDABLE));
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", AmendStatus.NEEDS_AMENDING));
             CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
 
             List<ReviewAndAmendFormError> expectedErrors = List.of(
                 new ReviewAndAmendFormError("profit-cost", "claimSummary.rows.profitCost.error"),
-                new ReviewAndAmendFormError("travel", "claimSummary.rows.travel.error")
+                new ReviewAndAmendFormError("travel", "claimSummary.rows.travel.error"),
+                new ReviewAndAmendFormError("assessed-total-vat", "claimSummary.rows.assessedTotalVat.error"),
+                new ReviewAndAmendFormError("assessed-total-incl-vat", "claimSummary.rows.assessedTotalInclVat.error"),
+                new ReviewAndAmendFormError("allowed-total-vat", "claimSummary.rows.allowedTotalVat.error"),
+                new ReviewAndAmendFormError("allowed-total-incl-vat", "claimSummary.rows.allowedTotalInclVat.error")
             );
 
             Assertions.assertEquals(expectedErrors, viewModel.getErrors());

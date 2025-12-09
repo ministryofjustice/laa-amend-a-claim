@@ -8,7 +8,6 @@ import uk.gov.justice.laa.amend.claim.models.AmendStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
@@ -51,6 +50,43 @@ public class CivilClaimDetailsViewTest {
         }
     }
 
+    @Nested
+    class GetAssessedTotalsTests {
+        @Test
+        void getAssessedTotalsHandlesNullFields() {
+            CivilClaimDetails claim = new CivilClaimDetails();
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAssessedTotals();
+
+            Assertions.assertEquals(List.of(), result);
+        }
+
+        @Test
+        void getAssessedTotalsHandlesValidFields() {
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AmendStatus.NEEDS_AMENDING));
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAssessedTotals();
+
+            Assertions.assertEquals(claim.getAssessedTotalVat(), result.get(0));
+            Assertions.assertEquals(claim.getAssessedTotalInclVat(), result.get(1));
+        }
+
+        @Test
+        void getAssessedTotalsHandlesValidFieldsWithDoNotDisplayStatus() {
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AmendStatus.DO_NOT_DISPLAY));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AmendStatus.DO_NOT_DISPLAY));
+            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
+
+            List<ClaimField> result = viewModel.getAssessedTotals();
+
+            Assertions.assertEquals(List.of(), result);
+        }
+    }
 
     @Nested
     class GetAllowedTotalsTests {
@@ -75,7 +111,6 @@ public class CivilClaimDetailsViewTest {
 
             Assertions.assertEquals(claim.getAllowedTotalVat(), result.get(0));
             Assertions.assertEquals(claim.getAllowedTotalInclVat(), result.get(1));
-
         }
     }
 
@@ -364,11 +399,19 @@ public class CivilClaimDetailsViewTest {
             claim.setNetProfitCost(createClaimField("profitCost", AmendStatus.NEEDS_AMENDING));
             claim.setCounselsCost(createClaimField("counselsCost", AmendStatus.NEEDS_AMENDING));
             claim.setJrFormFillingCost(createClaimField("jrFormFilling", AmendStatus.AMENDABLE));
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", AmendStatus.NEEDS_AMENDING));
+            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", AmendStatus.NEEDS_AMENDING));
             CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
 
             List<ReviewAndAmendFormError> expectedErrors = List.of(
                 new ReviewAndAmendFormError("profit-cost", "claimSummary.rows.profitCost.error"),
-                new ReviewAndAmendFormError("counsels-cost", "claimSummary.rows.counselsCost.error")
+                new ReviewAndAmendFormError("counsels-cost", "claimSummary.rows.counselsCost.error"),
+                new ReviewAndAmendFormError("assessed-total-vat", "claimSummary.rows.assessedTotalVat.error"),
+                new ReviewAndAmendFormError("assessed-total-incl-vat", "claimSummary.rows.assessedTotalInclVat.error"),
+                new ReviewAndAmendFormError("allowed-total-vat", "claimSummary.rows.allowedTotalVat.error"),
+                new ReviewAndAmendFormError("allowed-total-incl-vat", "claimSummary.rows.allowedTotalInclVat.error")
             );
 
             Assertions.assertEquals(expectedErrors, viewModel.getErrors());

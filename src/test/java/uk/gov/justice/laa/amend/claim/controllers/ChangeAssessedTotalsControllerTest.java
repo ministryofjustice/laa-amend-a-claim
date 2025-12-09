@@ -32,9 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @ActiveProfiles("local")
-@WebMvcTest(ChangeAllowedTotalsController.class)
+@WebMvcTest(ChangeAssessedTotalsController.class)
 @Import({LocalSecurityConfig.class, ThymeleafConfig.class})
-class ChangeAllowedTotalsControllerTest {
+class ChangeAssessedTotalsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,68 +56,90 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsView_CivilClaim() throws Exception {
-        civilClaim.setAllowedTotalVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
-        civilClaim.setAllowedTotalInclVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
+        civilClaim.setAssessedTotalVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
+        civilClaim.setAssessedTotalInclVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
         session.setAttribute(claimId, civilClaim);
 
         mockMvc.perform(get(buildPath())
                 .session(session))
             .andExpect(status().isOk())
-            .andExpect(view().name("allowed-totals"))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", nullValue())))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalInclVat", nullValue())));
+            .andExpect(view().name("assessed-totals"))
+            .andExpect(model().attribute("form", hasProperty("assessedTotalVat", nullValue())))
+            .andExpect(model().attribute("form", hasProperty("assessedTotalInclVat", nullValue())));
     }
 
     @Test
     void testGetReturnsView_CrimeClaim() throws Exception {
-        crimeClaim.setAllowedTotalVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
-        crimeClaim.setAllowedTotalInclVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
+        crimeClaim.setAssessedTotalVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
+        crimeClaim.setAssessedTotalInclVat(ClaimField.builder().status(AmendStatus.AMENDABLE).build());
         session.setAttribute(claimId, crimeClaim);
 
         mockMvc.perform(get(buildPath())
                 .session(session))
             .andExpect(status().isOk())
-            .andExpect(view().name("allowed-totals"))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", nullValue())))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalInclVat", nullValue())));
+            .andExpect(view().name("assessed-totals"))
+            .andExpect(model().attribute("form", hasProperty("assessedTotalVat", nullValue())))
+            .andExpect(model().attribute("form", hasProperty("assessedTotalInclVat", nullValue())));
+    }
+
+    @Test
+    void testGetRedirectsWhenStatusIsDoNotDisplay_CivilClaim() throws Exception {
+        civilClaim.setAssessedTotalVat(ClaimField.builder().status(AmendStatus.DO_NOT_DISPLAY).build());
+        civilClaim.setAssessedTotalInclVat(ClaimField.builder().status(AmendStatus.DO_NOT_DISPLAY).build());
+        session.setAttribute(claimId, civilClaim);
+
+        mockMvc.perform(get(buildPath())
+                .session(session))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testGetRedirectsWhenStatusIsDoNotDisplay_CrimeClaim() throws Exception {
+        crimeClaim.setAssessedTotalVat(ClaimField.builder().status(AmendStatus.DO_NOT_DISPLAY).build());
+        crimeClaim.setAssessedTotalInclVat(ClaimField.builder().status(AmendStatus.DO_NOT_DISPLAY).build());
+        session.setAttribute(claimId, crimeClaim);
+
+        mockMvc.perform(get(buildPath())
+                .session(session))
+            .andExpect(status().isNotFound());
     }
 
     @Test
     void testGetReturnsViewWhenQuestionAlreadyAnswered_CivilClaim() throws Exception {
-        civilClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
-        civilClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
+        civilClaim.setAssessedTotalInclVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
+        civilClaim.setAssessedTotalVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
 
         session.setAttribute(claimId, civilClaim);
 
         mockMvc.perform(get(buildPath())
                 .session(session))
             .andExpect(status().isOk())
-            .andExpect(view().name("allowed-totals"))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", is("300.00"))))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalInclVat", is("300.00"))));
+            .andExpect(view().name("assessed-totals"))
+            .andExpect(model().attribute("form", hasProperty("assessedTotalVat", is("300.00"))))
+            .andExpect(model().attribute("form", hasProperty("assessedTotalInclVat", is("300.00"))));
     }
 
     @Test
     void testGetReturnsViewWhenQuestionAlreadyAnswered_CrimeClaim() throws Exception {
-        crimeClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
-        crimeClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
+        crimeClaim.setAssessedTotalInclVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
+        crimeClaim.setAssessedTotalVat(MockClaimsFunctions.createClaimField(AmendStatus.AMENDABLE));
 
         session.setAttribute(claimId, crimeClaim);
 
         mockMvc.perform(get(buildPath())
                 .session(session))
             .andExpect(status().isOk())
-            .andExpect(view().name("allowed-totals"))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", is("300.00"))))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalInclVat", is("300.00"))));
+            .andExpect(view().name("assessed-totals"))
+            .andExpect(model().attribute("form", hasProperty("assessedTotalVat", is("300.00"))))
+            .andExpect(model().attribute("form", hasProperty("assessedTotalInclVat", is("300.00"))));
     }
 
     @Test
     void testPostSavesValueAndRedirects() throws Exception {
         ClaimDetails claim = crimeClaim;
 
-        Assertions.assertNotNull(crimeClaim.getAllowedTotalVat());
-        Assertions.assertNotNull(crimeClaim.getAllowedTotalInclVat());
+        Assertions.assertNotNull(crimeClaim.getAssessedTotalVat());
+        Assertions.assertNotNull(crimeClaim.getAssessedTotalInclVat());
 
         session.setAttribute(claimId, claim);
 
@@ -125,8 +147,8 @@ class ChangeAllowedTotalsControllerTest {
                 post(buildPath())
                     .session(session)
                     .with(csrf())
-                    .param("allowedTotalVat", "700")
-                    .param("allowedTotalInclVat", "800")
+                    .param("assessedTotalVat", "700")
+                    .param("assessedTotalInclVat", "800")
             )
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl(buildRedirectPath()));
@@ -135,11 +157,11 @@ class ChangeAllowedTotalsControllerTest {
 
         Assertions.assertNotNull(updated);
 
-        Assertions.assertEquals(new BigDecimal("700.00"), updated.getAllowedTotalVat().getAmended());
-        Assertions.assertEquals(AmendStatus.AMENDABLE, updated.getAllowedTotalVat().getStatus());
+        Assertions.assertEquals(new BigDecimal("700.00"), updated.getAssessedTotalVat().getAmended());
+        Assertions.assertEquals(AmendStatus.AMENDABLE, updated.getAssessedTotalVat().getStatus());
 
-        Assertions.assertEquals(new BigDecimal("800.00"), updated.getAllowedTotalInclVat().getAmended());
-        Assertions.assertEquals(AmendStatus.AMENDABLE, updated.getAllowedTotalInclVat().getStatus());
+        Assertions.assertEquals(new BigDecimal("800.00"), updated.getAssessedTotalInclVat().getAmended());
+        Assertions.assertEquals(AmendStatus.AMENDABLE, updated.getAssessedTotalInclVat().getStatus());
     }
 
     @Test
@@ -150,10 +172,10 @@ class ChangeAllowedTotalsControllerTest {
                 post(buildPath())
                     .session(session)
                     .with(csrf())
-                    .param("allowedTotalVat", "-1")
-                    .param("allowedTotalInclVat", "-1"))
+                    .param("assessedTotalVat", "-1")
+                    .param("assessedTotalInclVat", "-1"))
             .andExpect(status().isBadRequest())
-            .andExpect(view().name("allowed-totals"))
+            .andExpect(view().name("assessed-totals"))
             .andExpect(model().hasErrors());
     }
 
@@ -165,15 +187,15 @@ class ChangeAllowedTotalsControllerTest {
                 post(buildPath())
                     .session(session)
                     .with(csrf())
-                    .param("allowedTotalVat", "100.000")
-                    .param("allowedTotalInclVat", "100.000"))
+                    .param("assessedTotalVat", "100.000")
+                    .param("assessedTotalInclVat", "100.000"))
             .andExpect(status().isBadRequest())
-            .andExpect(view().name("allowed-totals"))
+            .andExpect(view().name("assessed-totals"))
             .andExpect(model().hasErrors());
     }
 
     private String buildPath() {
-        return String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId);
+        return String.format("/submissions/%s/claims/%s/assessed-totals", submissionId, claimId);
     }
 
     private String buildRedirectPath() {

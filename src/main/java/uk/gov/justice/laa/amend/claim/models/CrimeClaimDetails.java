@@ -7,7 +7,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -33,15 +33,33 @@ public class CrimeClaimDetails extends ClaimDetails {
     @Override
     public void setReducedValues() {
         super.setReducedValues();
-        applyIfNotNull(travelCosts, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
+        setPaidInFullOrReduced();
     }
       
     @Override
     public void setPaidInFullValues() {
         super.setPaidInFullValues();
+        setPaidInFullOrReduced();
+    }
+
+    private void setPaidInFullOrReduced() {
+        ClaimField assessedTotalVat = getAssessedTotalVat();
+        ClaimField assessedTotalInclVat = getAssessedTotalInclVat();
+
         applyIfNotNull(travelCosts, ClaimField::setAmendedToSubmitted);
         applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
+
+        List<String> feeCodes = List.of("INVC");
+        String feeCode = getFeeCode();
+
+        // assessed total fields are only shown on crime claims if the claim has a certain fee code (e.g. INVC)
+        if (feeCode != null && feeCodes.contains(feeCode)) {
+            applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAmending);
+            applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAmending);
+        } else {
+            applyIfNotNull(assessedTotalVat, ClaimField::setToDoNotDisplay);
+            applyIfNotNull(assessedTotalInclVat, ClaimField::setToDoNotDisplay);
+        }
     }
 
     @Override
