@@ -31,4 +31,9 @@ public class ClaimDetailsPage {
     public void clickAddAssessmentOutcome() {
         addAssessmentOutcomeButton.click();
     }
+
+        public boolean isAddAssessmentOutcomeDisabled() {
+        return addAssessmentOutcomeButton.isDisabled();
+    }
+
 }
