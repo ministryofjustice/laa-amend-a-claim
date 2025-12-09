@@ -209,15 +209,17 @@
         </div>
     </div>
 
-    <div class="govuk-button-group">
-        <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review(submissionId=${submissionId}, claimId=${claimId})}" method="post">
+    <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review(submissionId=${submissionId}, claimId=${claimId})}" method="post">
+        <div class="govuk-button-group">
             <button class="govuk-button" type="submit" data-module="govuk-button" th:text="#{claimReview.submit}"></button>
-        </form>
 
-        <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review/discard(submissionId=${submissionId}, claimId=${claimId})}" method="post">
-            <button class="govuk-button govuk-button--secondary govuk-button--warning" type="submit" data-module="govuk-button" th:text="#{claimReview.discard}"></button>
-        </form>
-    </div>
+            <a th:href="@{/submissions/{submissionId}/claims/{claimId}/discard(submissionId=${submissionId}, claimId=${claimId})}"
+               id="discard"
+               class="govuk-button govuk-button--secondary govuk-button--warning"
+               data-module="govuk-button"
+               th:text="#{claimReview.discard}"></a>
+        </div>
+    </form>
 </main>
 </body>
 </html>

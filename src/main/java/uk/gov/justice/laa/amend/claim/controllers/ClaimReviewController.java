@@ -38,18 +38,6 @@ public class ClaimReviewController {
         return renderView(model, claim, submissionId, claimId);
     }
 
-    @PostMapping("/submissions/{submissionId}/claims/{claimId}/review/discard")
-    public String discard(
-        HttpSession session,
-        @PathVariable(value = "submissionId") String submissionId,
-        @PathVariable(value = "claimId") String claimId
-    ) {
-        // Clear session data
-        session.removeAttribute(claimId);
-
-        return String.format("redirect:/submissions/%s/claims/%s", submissionId, claimId);
-    }
-
     @PostMapping("/submissions/{submissionId}/claims/{claimId}/review")
     public String submit(
         HttpServletRequest request,

@@ -130,4 +130,13 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasContent(doc, "Check you've entered the correct details");
     }
+
+    @Test
+    void testPageAfterDiscard() throws Exception {
+        Map<String, Object> variables = Map.of("discarded", true);
+
+        Document doc = renderDocument(variables);
+
+        assertPageHasSuccessBanner(doc, "You discarded the assessment");
+    }
 }

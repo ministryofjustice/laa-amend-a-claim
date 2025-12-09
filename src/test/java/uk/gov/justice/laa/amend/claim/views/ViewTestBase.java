@@ -179,20 +179,28 @@ public abstract class ViewTestBase {
     Assertions.assertFalse(elements.isEmpty());
   }
 
+  protected void assertPageHasSuccessBanner(Document doc, String expectedText) {
+    Element banner = selectFirst(doc, ".govuk-notification-banner--success");
+    Element title = selectFirst(banner, ".govuk-notification-banner__title");
+    Assertions.assertEquals("Success", title.text());
+    Element content = selectFirst(banner, ".govuk-notification-banner__content");
+    Assertions.assertEquals(expectedText, content.text());
+  }
+
   protected void assertPageHasSummaryList(Document doc) {
     Elements elements = doc.getElementsByClass("govuk-summary-list");
     Assertions.assertFalse(elements.isEmpty());
   }
 
-    protected void assertPageHasRadioButtons(Document doc) {
-        Elements elements = doc.getElementsByClass("govuk-radios");
-        Assertions.assertFalse(elements.isEmpty());
-    }
+  protected void assertPageHasRadioButtons(Document doc) {
+    Elements elements = doc.getElementsByClass("govuk-radios");
+    Assertions.assertFalse(elements.isEmpty());
+  }
 
-    protected void assertPageHasInlineRadioButtons(Document doc) {
-        Elements elements = doc.getElementsByClass("govuk-radios--inline");
-        Assertions.assertFalse(elements.isEmpty());
-    }
+  protected void assertPageHasInlineRadioButtons(Document doc) {
+    Elements elements = doc.getElementsByClass("govuk-radios--inline");
+    Assertions.assertFalse(elements.isEmpty());
+  }
 
   protected void assertPageHasNoSummaryList(Document doc) {
     Elements elements = doc.getElementsByClass("govuk-summary-list");
@@ -220,11 +228,11 @@ public abstract class ViewTestBase {
 
       boolean value = keyText.equals(expectedKey) && calculatedText.equals(claimFieldRow.getCalculated().toString()) && submittedText.equals(claimFieldRow.getSubmitted().toString());
       if (checkAssessed) {
-          Object expectedAssessedValue = claimFieldRow.getAssessed();
-          if (expectedAssessedValue == null) {
-            expectedAssessedValue = "Not applicable";
-          }
-          return value && expectedAssessedValue.toString().equals(valueElements.get(2).text().trim());
+        Object expectedAssessedValue = claimFieldRow.getAssessed();
+        if (expectedAssessedValue == null) {
+          expectedAssessedValue = "Not applicable";
+        }
+        return value && expectedAssessedValue.toString().equals(valueElements.get(2).text().trim());
       }
       return value;
     });
@@ -269,7 +277,7 @@ public abstract class ViewTestBase {
 
     String bannerText = elements.text();
     Assertions.assertTrue(bannerText.contains("Last edited by"),
-            "Info banner does not contain expected text. Actual: " + bannerText);
+        "Info banner does not contain expected text. Actual: " + bannerText);
 
   }
 }
