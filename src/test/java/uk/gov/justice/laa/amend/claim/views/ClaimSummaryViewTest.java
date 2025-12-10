@@ -235,7 +235,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasHeading(doc, "Claim details");
     }
 
-
     @ParameterizedTest
     @MethodSource("claimFieldValuesProvider")
     void testHiddenFieldsAreDisplayed(String fieldLabel, CivilClaimDetails claimDetails, boolean display) throws Exception {
