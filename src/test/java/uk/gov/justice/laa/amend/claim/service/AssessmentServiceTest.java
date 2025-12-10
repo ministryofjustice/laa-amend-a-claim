@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
+import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
@@ -34,6 +35,9 @@ class AssessmentServiceTest {
 
     @Mock
     private ClaimsApiClient claimsApiClient;
+
+    @Mock
+    private ClaimStatusHandler claimStatusHandler;
 
     @Mock
     private AssessmentMapper assessmentMapper;

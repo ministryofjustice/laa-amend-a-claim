@@ -280,4 +280,14 @@ public abstract class ViewTestBase {
         "Info banner does not contain expected text. Actual: " + bannerText);
 
   }
+
+  protected void assertPageHasUpdateAssessmentButton(Document doc) {
+    Elements elements = doc.select("div.govuk-button-group button.govuk-button");
+
+    Assertions.assertFalse(elements.isEmpty(), "Expected Button not found");
+
+    String buttonText = elements.text();
+    Assertions.assertTrue(buttonText.contains("Update assessment outcome"),
+            "Button does not contain expected label. Actual: " + buttonText);
+  }
 }

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
@@ -14,7 +15,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
+import uk.gov.justice.laa.amend.claim.models.AssessStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
@@ -49,6 +51,9 @@ public class ClaimReviewControllerTest {
     private UUID claimId;
     private MockHttpSession session;
     private ClaimDetails claim;
+    @MockitoBean
+    private ClaimStatusHandler claimStatusHandler;
+
 
     @BeforeEach
     void setup() {
@@ -58,13 +63,17 @@ public class ClaimReviewControllerTest {
         claim = MockClaimsFunctions.createMockCivilClaim();
         claim.setSubmissionId(submissionId.toString());
         claim.setClaimId(claimId.toString());
+        MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
         session.setAttribute(claimId.toString(), claim);
     }
 
     @Test
     public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
         String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+        //Given outcome for claim has been selected
         claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
+        MockClaimsFunctions.updateStatus(claim, OutcomeType.PAID_IN_FULL);
+
         session.setAttribute(claimId.toString(), claim);
 
         mockMvc.perform(get(path).session(session))
@@ -139,7 +148,7 @@ public class ClaimReviewControllerTest {
     public void testUnsuccessfulValidationReloadsPageWithErrorSummary() throws Exception {
         ClaimField claimField = new ClaimField();
         claimField.setKey("foo");
-        claimField.setStatus(AmendStatus.NEEDS_AMENDING);
+        claimField.setStatus(AssessStatus.NEEDS_ASSESSING);
         claim.setNetProfitCost(claimField);
 
         session.setAttribute(claimId.toString(), claim);
@@ -160,15 +169,18 @@ public class ClaimReviewControllerTest {
     public void testOnPageLoadWithMultipleClaimsInSession() throws Exception {
         String claimId1 = UUID.randomUUID().toString();
         String claimId2 = UUID.randomUUID().toString();
-
+        session.clearAttributes();
         ClaimDetails claim1 = MockClaimsFunctions.createMockCivilClaim();
         claim1.setSubmissionId(submissionId.toString());
         claim1.setClaimId(claimId1);
         claim1.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
+        MockClaimsFunctions.updateStatus(claim1, OutcomeType.PAID_IN_FULL);
 
         ClaimDetails claim2 = MockClaimsFunctions.createMockCrimeClaim();
         claim2.setSubmissionId(submissionId.toString());
         claim2.setClaimId(claimId2);
+        claim2.setAssessmentOutcome(OutcomeType.NILLED);
+        MockClaimsFunctions.updateStatus(claim2, claim2.getAssessmentOutcome());
 
         session.setAttribute(claimId1, claim1);
         session.setAttribute(claimId2, claim2);

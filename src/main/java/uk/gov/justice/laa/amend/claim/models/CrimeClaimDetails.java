@@ -9,6 +9,8 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 import java.util.List;
 
+import static uk.gov.justice.laa.amend.claim.validators.FeeCodeValidator.isNotValidFeeCode;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CrimeClaimDetails extends ClaimDetails {
@@ -26,8 +28,8 @@ public class CrimeClaimDetails extends ClaimDetails {
     @Override
     public void setReducedToFixedFeeValues() {
         super.setReducedToFixedFeeValues();
-        applyIfNotNull(travelCosts, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(waitingCosts, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(travelCosts, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(waitingCosts, ClaimField::setAssessedToCalculated);
     }
 
     @Override
@@ -46,16 +48,13 @@ public class CrimeClaimDetails extends ClaimDetails {
         ClaimField assessedTotalVat = getAssessedTotalVat();
         ClaimField assessedTotalInclVat = getAssessedTotalInclVat();
 
-        applyIfNotNull(travelCosts, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(waitingCosts, ClaimField::setAmendedToSubmitted);
-
-        List<String> feeCodes = List.of("INVC");
-        String feeCode = getFeeCode();
+        applyIfNotNull(travelCosts, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(waitingCosts, ClaimField::setAssessedToSubmitted);
 
         // assessed total fields are only shown on crime claims if the claim has a certain fee code (e.g. INVC)
-        if (feeCode != null && feeCodes.contains(feeCode)) {
-            applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAmending);
-            applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAmending);
+        if (isNotValidFeeCode(this)) {
+            applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAssessing);
+            applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAssessing);
         } else {
             applyIfNotNull(assessedTotalVat, ClaimField::setToDoNotDisplay);
             applyIfNotNull(assessedTotalInclVat, ClaimField::setToDoNotDisplay);

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.forms.AssessedTotalForm;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.models.AssessStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
@@ -40,19 +40,19 @@ public class ChangeAssessedTotalsController {
     ) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
-        if (claim.getAssessedTotalVat().getStatus() == AmendStatus.DO_NOT_DISPLAY || claim.getAssessedTotalInclVat().getStatus() == AmendStatus.DO_NOT_DISPLAY) {
+        if (claim.getAssessedTotalVat().getStatus() == AssessStatus.DO_NOT_DISPLAY || claim.getAssessedTotalInclVat().getStatus() == AssessStatus.DO_NOT_DISPLAY) {
             log.warn("The assessed totals are not modifiable for claim {}. Returning 404.", claimId);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
         AssessedTotalForm form = new AssessedTotalForm();
 
-        BigDecimal totalVat = (BigDecimal) claim.getAssessedTotalVat().getAmended();
+        BigDecimal totalVat = (BigDecimal) claim.getAssessedTotalVat().getAssessed();
         if (totalVat != null) {
             form.setAssessedTotalVat(setScale(totalVat).toString());
         }
 
-        BigDecimal totalInclVat = (BigDecimal) claim.getAssessedTotalInclVat().getAmended();
+        BigDecimal totalInclVat = (BigDecimal) claim.getAssessedTotalInclVat().getAssessed();
         if (totalInclVat != null) {
             form.setAssessedTotalInclVat(setScale(totalInclVat).toString());
         }
@@ -80,11 +80,11 @@ public class ChangeAssessedTotalsController {
 
         ClaimField totalVatField = claim.getAssessedTotalVat();
         BigDecimal totalVat = setScale(form.getAssessedTotalVat());
-        totalVatField.setAmendedToValue(totalVat);
+        totalVatField.setAssessedToValue(totalVat);
 
         ClaimField totalInclVatField = claim.getAssessedTotalInclVat();
         BigDecimal totalInclVat = setScale(form.getAssessedTotalInclVat());
-        totalInclVatField.setAmendedToValue(totalInclVat);
+        totalInclVatField.setAssessedToValue(totalInclVat);
 
         // Save updated Claim back to session
         session.setAttribute(claimId, claim);

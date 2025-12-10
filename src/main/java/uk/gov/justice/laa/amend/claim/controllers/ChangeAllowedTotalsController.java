@@ -37,12 +37,12 @@ public class ChangeAllowedTotalsController {
 
         AllowedTotalForm allowedTotalForm = new AllowedTotalForm();
 
-        BigDecimal allowedTotalVat = (BigDecimal) claim.getAllowedTotalVat().getAmended();
+        BigDecimal allowedTotalVat = (BigDecimal) claim.getAllowedTotalVat().getAssessed();
         if (allowedTotalVat != null) {
             allowedTotalForm.setAllowedTotalVat(setScale(allowedTotalVat).toString());
         }
 
-        BigDecimal allowedTotalInclVat = (BigDecimal) claim.getAllowedTotalInclVat().getAmended();
+        BigDecimal allowedTotalInclVat = (BigDecimal) claim.getAllowedTotalInclVat().getAssessed();
         if (allowedTotalInclVat != null) {
             allowedTotalForm.setAllowedTotalInclVat(setScale(allowedTotalInclVat).toString());
         }
@@ -70,11 +70,11 @@ public class ChangeAllowedTotalsController {
 
         ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
         BigDecimal allowedTotalVat = setScale(allowedTotalForm.getAllowedTotalVat());
-        allowedTotalVatField.setAmendedToValue(allowedTotalVat);
+        allowedTotalVatField.setAssessedToValue(allowedTotalVat);
 
         ClaimField allowedTotalInclVatField = claim.getAllowedTotalInclVat();
         BigDecimal allowedTotalInclVat = setScale(allowedTotalForm.getAllowedTotalInclVat());
-        allowedTotalInclVatField.setAmendedToValue(allowedTotalInclVat);
+        allowedTotalInclVatField.setAssessedToValue(allowedTotalInclVat);
 
         // Save updated Claim back to session
         session.setAttribute(claimId, claim);

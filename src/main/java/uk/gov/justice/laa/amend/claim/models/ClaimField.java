@@ -19,18 +19,17 @@ public class ClaimField implements Serializable {
     private String key;
     private Object submitted;
     private Object calculated;
-    private Object amended;
-    private String changeUrl;
-    private AmendStatus status;
     private Object assessed;
+    private String changeUrl;
+    private AssessStatus status;
 
     public ClaimField(String key, Object submitted, Object calculated) {
         this(key, submitted, calculated, (String) null);
     }
 
-    public ClaimField(String key, Object submitted, Object calculated, Object amended) {
+    public ClaimField(String key, Object submitted, Object calculated, Object assessed) {
         this(key, submitted, calculated);
-        this.amended = amended;
+        this.assessed = assessed;
     }
 
     public ClaimField(String key, Object submitted, Object calculated, Cost cost) {
@@ -41,9 +40,8 @@ public class ClaimField implements Serializable {
         this.key = key;
         this.submitted = submitted;
         this.calculated = calculated;
-        this.amended = submitted;
+        this.assessed = submitted;
         this.changeUrl = changeUrl;
-        this.status = AmendStatus.NOT_AMENDABLE;
     }
 
     public ClaimField(String key, Object submitted, Object calculated, Object amended, Object assessed) {
@@ -87,39 +85,35 @@ public class ClaimField implements Serializable {
     }
 
     protected void setNilled() {
-        setAmended(BigDecimal.ZERO, AmendStatus.NOT_AMENDABLE);
+        setAssessed(BigDecimal.ZERO);
     }
 
-    protected void setToNeedsAmending() {
-        setAmended(null, AmendStatus.NEEDS_AMENDING);
+    protected void setToNeedsAssessing() {
+        setAssessed(null);
     }
 
-    protected void setAmendedToCalculated() {
-        setAmendedToValue(this.getCalculated());
+    protected void setAssessedToCalculated() {
+        setAssessedToValue(this.getCalculated());
+    }
+
+    protected void setAssessedToSubmitted() {
+        setAssessedToValue(this.getSubmitted());
     }
 
     protected void setToNotApplicable() {
-        setAmended(null, AmendStatus.NOT_AMENDABLE);
+        setAssessed(null);
     }
 
-    protected void setAmendedToSubmitted() {
-        setAmendedToValue(this.getSubmitted());
-    }
 
     protected void setToDoNotDisplay() {
-        setAmended(null, AmendStatus.DO_NOT_DISPLAY);
+        setAssessed(null);
     }
 
-    public void setAmendedToValue(Object value) {
-        setAmended(value, AmendStatus.AMENDABLE);
+    public void setAssessedToValue(Object value) {
+        setAssessed(value);
     }
 
-    private void setAmended(Object value, AmendStatus status) {
-        this.setAmended(value);
-        this.setStatus(status);
-    }
-
-    public boolean needsAmending() {
-        return status == AmendStatus.NEEDS_AMENDING;
+    public boolean needsAssessing() {
+        return status == AssessStatus.NEEDS_ASSESSING;
     }
 }

@@ -127,15 +127,15 @@ class AssessmentMapperTest {
     void testMapAssessedTotalVat_whenAmendedValueIsNull() {
         CivilClaimDetails claim = new CivilClaimDetails();
         claim.setAssessedTotalVat(ClaimField.builder().build());
-        claim.setAllowedTotalVat(ClaimField.builder().amended(BigDecimal.TWO).build());
+        claim.setAllowedTotalVat(ClaimField.builder().assessed(BigDecimal.TWO).build());
         assertEquals(BigDecimal.TWO, mapper.mapAssessedTotalVat(claim));
     }
 
     @Test
     void testMapAssessedTotalVat_whenAmendedValueIsNotNull() {
         CivilClaimDetails claim = new CivilClaimDetails();
-        claim.setAssessedTotalVat(ClaimField.builder().amended(BigDecimal.ONE).build());
-        claim.setAllowedTotalVat(ClaimField.builder().amended(BigDecimal.TWO).build());
+        claim.setAssessedTotalVat(ClaimField.builder().assessed(BigDecimal.ONE).build());
+        claim.setAllowedTotalVat(ClaimField.builder().assessed(BigDecimal.TWO).build());
         assertEquals(BigDecimal.ONE, mapper.mapAssessedTotalVat(claim));
     }
 
@@ -143,15 +143,15 @@ class AssessmentMapperTest {
     void testMapAssessedTotalInclVat_whenAmendedValueIsNull() {
         CivilClaimDetails claim = new CivilClaimDetails();
         claim.setAssessedTotalInclVat(ClaimField.builder().build());
-        claim.setAllowedTotalInclVat(ClaimField.builder().amended(BigDecimal.TWO).build());
+        claim.setAllowedTotalInclVat(ClaimField.builder().assessed(BigDecimal.TWO).build());
         assertEquals(BigDecimal.TWO, mapper.mapAssessedTotalInclVat(claim));
     }
 
     @Test
     void testMapAssessedTotalInclVat_whenAmendedValueIsNotNull() {
         CivilClaimDetails claim = new CivilClaimDetails();
-        claim.setAssessedTotalInclVat(ClaimField.builder().amended(BigDecimal.ONE).build());
-        claim.setAllowedTotalInclVat(ClaimField.builder().amended(BigDecimal.TWO).build());
+        claim.setAssessedTotalInclVat(ClaimField.builder().assessed(BigDecimal.ONE).build());
+        claim.setAllowedTotalInclVat(ClaimField.builder().assessed(BigDecimal.TWO).build());
         assertEquals(BigDecimal.ONE, mapper.mapAssessedTotalInclVat(claim));
     }
 
@@ -214,8 +214,8 @@ class AssessmentMapperTest {
 
         ClaimDetails claimDetails = new CrimeClaimDetails();
         claimDetails.setAreaOfLaw("CRIME_LOWER");
-        claimDetails.setAllowedTotalInclVat(new ClaimField(ALLOWED_TOTAL_VAT, BigDecimal.valueOf(345), BigDecimal.valueOf(345), null, null, null, null));
-        claimDetails.setAllowedTotalInclVat(new ClaimField(ALLOWED_TOTAL_INCL_VAT, BigDecimal.valueOf(348), BigDecimal.valueOf(348), null, null, null, null));
+        claimDetails.setAllowedTotalInclVat(new ClaimField(ALLOWED_TOTAL_VAT, BigDecimal.valueOf(345), BigDecimal.valueOf(345), null, null, null));
+        claimDetails.setAllowedTotalInclVat(new ClaimField(ALLOWED_TOTAL_INCL_VAT, BigDecimal.valueOf(348), BigDecimal.valueOf(348), null, null, null));
 
         // Act
         ClaimDetails result = mapper.mapAssessmentToClaimDetails(assessmentGet, claimDetails);
@@ -238,7 +238,7 @@ class AssessmentMapperTest {
     }
     private ClaimField createClaimField(Object value) {
         ClaimField claimField = new ClaimField();
-        claimField.setAmended(value);
+        claimField.setAssessed(value);
         return claimField;
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
+import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
@@ -24,6 +25,7 @@ public class AssessmentService {
 
     private final ClaimsApiClient claimsApiClient;
     private final AssessmentMapper assessmentMapper;
+    private final ClaimStatusHandler claimStatusHandler;
 
     /**
      * Applies business logic based on the assessment outcome.
@@ -40,20 +42,20 @@ public class AssessmentService {
         OutcomeType previousOutcome = claim.getAssessmentOutcome();
 
         // Only apply logic if outcome has changed
-        if (previousOutcome == newOutcome) {
-            return;
-        }
+        if (previousOutcome != newOutcome) {
+            log.info("Applying assessment outcome logic: {} -> {} for claim {}",
+                    previousOutcome, newOutcome, claim.getClaimId());
 
-        log.info("Applying assessment outcome logic: {} -> {} for claim {}",
-            previousOutcome, newOutcome, claim.getClaimId());
-
-        switch (newOutcome) {
-            case NILLED -> claim.setNilledValues();
-            case REDUCED -> claim.setReducedValues();
-            case PAID_IN_FULL -> claim.setPaidInFullValues();
-            case REDUCED_TO_FIXED_FEE -> claim.setReducedToFixedFeeValues();
-            default -> log.warn("Unhandled outcome type: {}", newOutcome);
+            switch (newOutcome) {
+                case NILLED -> claim.setNilledValues();
+                case REDUCED -> claim.setReducedValues();
+                case PAID_IN_FULL -> claim.setPaidInFullValues();
+                case REDUCED_TO_FIXED_FEE -> claim.setReducedToFixedFeeValues();
+                default -> log.warn("Unhandled outcome type: {}", newOutcome);
+            }
         }
+        //Update AssessedStatus values for each based on OutcomeType
+        claimStatusHandler.updateFieldStatuses(claim, newOutcome);
     }
 
     public CreateAssessment201Response submitAssessment(ClaimDetails claim, String userId) {

@@ -79,7 +79,7 @@
                                         <button type="submit"
                                                 class="govuk-button"
                                                 data-module="govuk-button"
-                                                th:text="#{claimSummary.assessmentButton}"
+                                                th:text="${claim.hasAssessment} ? #{claimSummary.update.assessmentButton} : #{claimSummary.assessmentButton}"
                                                 th:disabled="${disabled}"
                                                 th:attr="aria-disabled=${disabled}">
                                         </button>

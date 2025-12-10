@@ -68,7 +68,7 @@ public interface AssessmentMapper {
     @Mapping(target = "netDisbursementAmount.assessed", source = "disbursementAmount")
     @Mapping(target = "disbursementVatAmount.assessed", source = "disbursementVatAmount")
     @Mapping(target = "netProfitCost.assessed", source = "netProfitCostsAmount")
-    @Mapping(target = "assessmentOutcome", ignore = true)
+    @Mapping(target = "assessmentOutcome", source = "assessmentOutcome")
     @Mapping(target = "assessedTotalVat.assessed", source = "assessedTotalVat")
     @Mapping(target = "assessedTotalInclVat.assessed", source = "assessedTotalInclVat")
     @Mapping(target = "allowedTotalVat.assessed", source = "allowedTotalVat")
@@ -214,7 +214,7 @@ public interface AssessmentMapper {
 
     private BigDecimal mapToBigDecimal(ClaimField field) {
         if (field != null) {
-            return mapToBigDecimal(field.getAmended());
+            return mapToBigDecimal(field.getAssessed());
         }
         return null;
     }

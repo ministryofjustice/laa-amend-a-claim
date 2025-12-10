@@ -54,7 +54,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.TOTAL, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
+        assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
         assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -73,7 +73,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.FIXED_FEE, claimField.getKey());
         assertNull(claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertNull(claimField.getAmended());
+        assertNull(claimField.getAssessed());
         assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -93,7 +93,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.NET_PROFIT_COST, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
+        assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
         assertEquals("/submissions/foo/claims/bar/profit-costs", claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -113,7 +113,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
         assertEquals(true, claimField.getSubmitted());
         assertEquals(false, claimField.getCalculated());
-        assertEquals(true, claimField.getAmended());
+        assertEquals(true, claimField.getAssessed());
         assertEquals("/submissions/foo/claims/bar/assessment-outcome", claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -133,7 +133,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.NET_DISBURSEMENTS_COST, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
+        assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
         assertEquals("/submissions/foo/claims/bar/disbursements", claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -153,7 +153,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.DISBURSEMENT_VAT, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
+        assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
         assertEquals("/submissions/foo/claims/bar/disbursements-vat", claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -173,7 +173,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.COUNSELS_COST, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
+        assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
         assertEquals("/submissions/foo/claims/bar/counsel-costs", claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -193,7 +193,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.DETENTION_TRAVEL_COST, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
+        assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
         assertEquals("/submissions/foo/claims/bar/detention-travel-and-waiting-costs", claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -213,7 +213,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.JR_FORM_FILLING, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
+        assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
         assertEquals(Cost.JR_FORM_FILLING_COSTS.getChangeUrl(), claimField.getChangeUrl());
         assertEquals("/submissions/foo/claims/bar/jr-form-filling-costs", claimField.getChangeUrl(submissionId, claimId));
     }
@@ -236,7 +236,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.ADJOURNED_FEE, claimField.getKey());
         assertEquals(100, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(100, claimField.getAmended());
+        assertEquals(100, claimField.getAssessed());
         assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -258,7 +258,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.CMRH_TELEPHONE, claimField.getKey());
         assertEquals(100, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(100, claimField.getAmended());
+        assertEquals(100, claimField.getAssessed());
         assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -280,7 +280,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.CMRH_ORAL, claimField.getKey());
         assertEquals(100, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(100, claimField.getAmended());
+        assertEquals(100, claimField.getAssessed());
         assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -302,7 +302,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.HO_INTERVIEW, claimField.getKey());
         assertEquals(100, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(100, claimField.getAmended());
+        assertEquals(100, claimField.getAssessed());
         assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -326,7 +326,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.SUBSTANTIVE_HEARING, claimField.getKey());
         assertEquals(true, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(true, claimField.getAmended());
+        assertEquals(true, claimField.getAssessed());
         assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -346,7 +346,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.TRAVEL_COSTS, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
+        assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
         assertEquals("/submissions/foo/claims/bar/travel-costs", claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -366,7 +366,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.WAITING_COSTS, claimField.getKey());
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(BigDecimal.valueOf(100), claimField.getAmended());
+        assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
         assertEquals("/submissions/foo/claims/bar/waiting-costs", claimField.getChangeUrl(submissionId, claimId));
     }
 
@@ -382,7 +382,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.ASSESSED_TOTAL_VAT, claimField.getKey());
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
-        assertNull(claimField.getAmended());
+        assertNull(claimField.getAssessed());
         assertNull(claimField.getStatus());
     }
 
@@ -398,7 +398,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT, claimField.getKey());
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
-        assertNull(claimField.getAmended());
+        assertNull(claimField.getAssessed());
         assertNull(claimField.getStatus());
     }
 
@@ -414,7 +414,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
-        assertNull(claimField.getAmended());
+        assertNull(claimField.getAssessed());
         assertNull(claimField.getStatus());
     }
 
@@ -430,7 +430,7 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT, claimField.getKey());
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
-        assertNull(claimField.getAmended());
+        assertNull(claimField.getAssessed());
         assertNull(claimField.getStatus());
     }
 

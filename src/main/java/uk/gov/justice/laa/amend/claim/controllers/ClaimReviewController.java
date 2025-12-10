@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
@@ -23,6 +24,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Res
 public class ClaimReviewController {
 
     private final AssessmentService assessmentService;
+    private final ClaimStatusHandler claimStatusHandler;
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}/review")
     public String onPageLoad(
@@ -32,6 +34,7 @@ public class ClaimReviewController {
         @PathVariable(value = "claimId") String claimId
     ) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
+
         if (claim.getAssessmentOutcome() == null) {
             return String.format("redirect:/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
         }
@@ -85,6 +88,7 @@ public class ClaimReviewController {
         boolean submissionFailed,
         boolean validationFailed
     ) {
+        claimStatusHandler.updateFieldStatuses(claim, claim.getAssessmentOutcome());
         model.addAttribute("claim", claim);
         model.addAttribute("viewModel", viewModel);
         model.addAttribute("claimId", claimId);
