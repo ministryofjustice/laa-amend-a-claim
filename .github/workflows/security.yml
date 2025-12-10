@@ -49,6 +49,9 @@ jobs:
           java-version: 21
           distribution: corretto
 
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Run Snyk app vulnerability scan
         uses: snyk/actions/gradle@master
         continue-on-error: true
