@@ -8,6 +8,8 @@ import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import static uk.gov.justice.laa.amend.claim.validators.FeeCodeValidator.isNotValidFeeCode;
 
@@ -74,5 +76,22 @@ public class CrimeClaimDetails extends ClaimDetails {
     @Override
     public AssessmentPost toAssessment(AssessmentMapper mapper, String userId) {
         return mapper.mapCrimeClaimToAssessment(this, userId);
+    }
+
+    @Override
+    public List<ClaimField> getClaimFields() {
+        return Stream.concat(
+                        super.commonClaimFieldsStream(),
+                        crimeSpecificFieldsStream()
+                )
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    protected Stream<ClaimField> crimeSpecificFieldsStream() {
+        return Stream.of(
+                getTravelCosts(),
+                getWaitingCosts()
+        );
     }
 }

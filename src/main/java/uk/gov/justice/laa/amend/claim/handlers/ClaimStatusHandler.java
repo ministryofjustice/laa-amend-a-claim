@@ -36,7 +36,7 @@ public class ClaimStatusHandler {
      * @param outcome Outcome type determining the status changes
      */
     public void updateFieldStatuses(ClaimDetails claim, OutcomeType outcome) {
-        List<ClaimField> fields = extractClaimFields(claim);
+        List<ClaimField> fields = claim.getClaimFields();
         fields.stream()
                 .filter(Objects::nonNull)
                 .forEach(field -> updateFieldStatus(field, outcome, claim));
@@ -122,43 +122,5 @@ public class ClaimStatusHandler {
 
     private boolean isTotalFields(ClaimField field, ClaimDetails claim) {
         return field == claim.getAssessedTotalVat() || field == claim.getAssessedTotalInclVat() || field == claim.getAllowedTotalVat() || field == claim.getAllowedTotalInclVat();
-    }
-
-    private List<ClaimField> getCivilFields(CivilClaimDetails civil) {
-        return Arrays.asList(
-                civil.getHoInterview(),
-                civil.getSubstantiveHearing(),
-                civil.getCounselsCost(),
-                civil.getJrFormFillingCost(),
-                civil.getAdjournedHearing(),
-                civil.getCmrhOral(),
-                civil.getCmrhTelephone(),
-                civil.getDetentionTravelWaitingCosts()
-        );
-    }
-
-    private List<ClaimField> getCrimeFields(CrimeClaimDetails crime) {
-        return Arrays.asList(crime.getTravelCosts(), crime.getWaitingCosts());
-    }
-
-    private List<ClaimField> extractClaimFields(ClaimDetails claim) {
-        List<ClaimField> commonFields = Arrays.asList(
-                claim.getVatClaimed(), claim.getFixedFee(),
-                claim.getNetProfitCost(),
-                claim.getNetDisbursementAmount(),
-                claim.getDisbursementVatAmount(),
-                claim.getTotalAmount(),
-                claim.getAssessedTotalVat(),
-                claim.getAssessedTotalInclVat(),
-                claim.getAllowedTotalVat(),
-                claim.getAllowedTotalInclVat()
-        );
-
-        List<ClaimField> specificFields = switch (claim) {
-            case CivilClaimDetails civil -> getCivilFields(civil);
-            case CrimeClaimDetails crime -> getCrimeFields(crime);
-            default -> List.of();
-        };
-        return Stream.concat(commonFields.stream(), specificFields.stream()).filter(Objects::nonNull).toList();
     }
 }

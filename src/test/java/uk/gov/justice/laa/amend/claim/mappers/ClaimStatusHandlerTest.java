@@ -14,10 +14,9 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
 
@@ -41,20 +40,20 @@ class ClaimStatusHandlerTest {
     class NilledStatusTests {
         @Test
         void shouldSetDoNotDisplayForTotalFields() {
-            when(mockClaim.getAssessedTotalVat()).thenReturn(mockField);
-            when(mockClaim.getVatClaimed()).thenReturn(null);
-
-            claimStatusHandler.updateFieldStatuses(mockClaim, OutcomeType.NILLED);
-
-            verify(mockField).setStatus(AssessStatus.DO_NOT_DISPLAY);
+            ClaimField assessedTotal = new ClaimField();
+            ClaimDetails claimDetails = new CrimeClaimDetails();
+            claimDetails.setAssessedTotalVat(assessedTotal);
+            claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.NILLED);
+            assertThat(assessedTotal.getStatus()).isEqualTo(AssessStatus.DO_NOT_DISPLAY);
         }
 
         @Test
         void shouldSetAssessableForVatClaimed() {
             ClaimField vatField = new ClaimField();
-            when(mockClaim.getVatClaimed()).thenReturn(vatField);
+            ClaimDetails civilClaimDetails = new CivilClaimDetails();
+            civilClaimDetails.setVatClaimed(vatField);
 
-            claimStatusHandler.updateFieldStatuses(mockClaim, OutcomeType.NILLED);
+            claimStatusHandler.updateFieldStatuses(civilClaimDetails, OutcomeType.NILLED);
 
             assertThat(vatField.getStatus()).isEqualTo(AssessStatus.ASSESSABLE);
         }
@@ -62,7 +61,7 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetNotAssessableForOtherFields() {
             ClaimField otherField = new ClaimField();
-            when(mockClaim.getFixedFee()).thenReturn(otherField);
+            when(mockClaim.getClaimFields()).thenReturn(List.of(otherField));
 
             claimStatusHandler.updateFieldStatuses(mockClaim, OutcomeType.NILLED);
 
@@ -75,20 +74,21 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetNeedsAssessingForNetProfitCost() {
             ClaimField profitCostField = new ClaimField();
-            when(mockClaim.getNetProfitCost()).thenReturn(profitCostField);
+            ClaimDetails claimDetails = new CivilClaimDetails();
+            claimDetails.setNetProfitCost(profitCostField);
 
-            claimStatusHandler.updateFieldStatuses(mockClaim, OutcomeType.REDUCED);
+            claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.REDUCED);
 
             assertThat(profitCostField.getStatus()).isEqualTo(AssessStatus.NEEDS_ASSESSING);
         }
 
         @Test
         void shouldSetNotAssessableForBoltOnFields() {
-            ClaimField boltOnField = new ClaimField();
-            boltOnField.setKey(ADJOURNED_FEE);
-            when(mockClaim.getFixedFee()).thenReturn(boltOnField);
+            ClaimField boltOnField = ClaimField.builder().key(ADJOURNED_FEE).build();
+            CivilClaimDetails claimDetails = new CivilClaimDetails();
+            claimDetails.setAdjournedHearing(boltOnField);
 
-            claimStatusHandler.updateFieldStatuses(mockClaim, OutcomeType.REDUCED);
+            claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.REDUCED);
 
             assertThat(boltOnField.getStatus()).isEqualTo(AssessStatus.NOT_ASSESSABLE);
         }
@@ -97,9 +97,11 @@ class ClaimStatusHandlerTest {
         void shouldSetAssessableForOtherFields() {
             ClaimField otherField = new ClaimField();
             otherField.setKey("OTHER_FIELD");
-            when(mockClaim.getFixedFee()).thenReturn(otherField);
+            CivilClaimDetails claimDetails = new CivilClaimDetails();
+            claimDetails.setFixedFee(otherField);
 
-            claimStatusHandler.updateFieldStatuses(mockClaim, OutcomeType.REDUCED);
+
+            claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.REDUCED);
 
             assertThat(otherField.getStatus()).isEqualTo(AssessStatus.ASSESSABLE);
         }
@@ -109,10 +111,10 @@ class ClaimStatusHandlerTest {
     class PaidInFullStatusTests {
         @Test
         void shouldSetDoNotDisplayForCrimeClaim() {
-            CrimeClaimDetails crimeClaim = mock(CrimeClaimDetails.class);
+            CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
             ClaimField totalField = new ClaimField();
-            when(crimeClaim.getAssessedTotalVat()).thenReturn(totalField);
-            when(crimeClaim.getFeeCode()).thenReturn(null);
+            crimeClaim.setAssessedTotalVat(totalField);
+            crimeClaim.setFeeCode(null);
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 
@@ -122,9 +124,11 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetNeedsAssessingForUnassessedFields() {
             ClaimField unassessedField = new ClaimField();
-            when(mockClaim.getNetProfitCost()).thenReturn(unassessedField);
+            CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
+            crimeClaim.setNetProfitCost(unassessedField);
 
-            claimStatusHandler.updateFieldStatuses(mockClaim, OutcomeType.PAID_IN_FULL);
+
+            claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 
             assertThat(unassessedField.getStatus()).isEqualTo(AssessStatus.NEEDS_ASSESSING);
         }
@@ -135,9 +139,10 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetNeedsAssessingForUnassessedFields() {
             ClaimField unassessedField = new ClaimField();
-            when(mockClaim.getNetProfitCost()).thenReturn(unassessedField);
+            CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
+            crimeClaim.setNetProfitCost(unassessedField);
 
-            claimStatusHandler.updateFieldStatuses(mockClaim, OutcomeType.REDUCED_TO_FIXED_FEE);
+            claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
             assertThat(unassessedField.getStatus()).isEqualTo(AssessStatus.NEEDS_ASSESSING);
         }
@@ -146,47 +151,13 @@ class ClaimStatusHandlerTest {
         void shouldSetAssessableForAssessedFields() {
             ClaimField assessedField = new ClaimField();
             assessedField.setAssessed("100");
-            when(mockClaim.getFixedFee()).thenReturn(assessedField);
+            CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
+            crimeClaim.setFixedFee(assessedField);
 
-            claimStatusHandler.updateFieldStatuses(mockClaim, OutcomeType.REDUCED_TO_FIXED_FEE);
+            claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
             assertThat(assessedField.getStatus()).isEqualTo(AssessStatus.ASSESSABLE);
         }
-    }
-
-    @Nested
-    class ExtractClaimFieldsTests {
-        @Test
-        void shouldExtractCivilClaimFields() {
-            CivilClaimDetails civilClaim = mock(CivilClaimDetails.class);
-            ClaimField hoInterview = new ClaimField();
-            when(civilClaim.getHoInterview()).thenReturn(hoInterview);
-
-            claimStatusHandler.updateFieldStatuses(civilClaim, OutcomeType.NILLED);
-
-            verify(civilClaim).getHoInterview();
-        }
-
-        @Test
-        void shouldExtractCrimeClaimFields() {
-            CrimeClaimDetails crimeClaim = mock(CrimeClaimDetails.class);
-            ClaimField travelCosts = new ClaimField();
-            when(crimeClaim.getTravelCosts()).thenReturn(travelCosts);
-
-            claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.NILLED);
-
-            verify(crimeClaim).getTravelCosts();
-        }
-    }
-
-    @Test
-    void shouldHandleNullFields() {
-        when(mockClaim.getVatClaimed()).thenReturn(null);
-        when(mockClaim.getFixedFee()).thenReturn(null);
-
-        claimStatusHandler.updateFieldStatuses(mockClaim, OutcomeType.NILLED);
-
-        verifyNoInteractions(mockField);
     }
 
     @Test
@@ -194,8 +165,7 @@ class ClaimStatusHandlerTest {
         ClaimField field1 = new ClaimField();
         ClaimField field2 = new ClaimField();
 
-        when(mockClaim.getVatClaimed()).thenReturn(field1);
-        when(mockClaim.getFixedFee()).thenReturn(field2);
+        when(mockClaim.getClaimFields()).thenReturn(List.of(field1, field2));
 
         claimStatusHandler.updateFieldStatuses(mockClaim, OutcomeType.NILLED);
 

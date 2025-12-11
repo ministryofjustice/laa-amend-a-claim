@@ -7,7 +7,10 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -117,4 +120,26 @@ public abstract class ClaimDetails extends Claim {
     public abstract ClaimDetailsView<? extends ClaimDetails> toViewModel();
 
     public abstract AssessmentPost toAssessment(AssessmentMapper mapper, String userId);
+
+
+    public List<ClaimField> getClaimFields() {
+        return commonClaimFieldsStream()
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    protected Stream<ClaimField> commonClaimFieldsStream() {
+        return Stream.of(
+                getVatClaimed(),
+                getFixedFee(),
+                getNetProfitCost(),
+                getNetDisbursementAmount(),
+                getDisbursementVatAmount(),
+                getTotalAmount(),
+                getAssessedTotalVat(),
+                getAssessedTotalInclVat(),
+                getAllowedTotalVat(),
+                getAllowedTotalInclVat()
+        );
+    }
 }

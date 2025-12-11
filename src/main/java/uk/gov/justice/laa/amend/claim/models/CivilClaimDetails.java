@@ -7,6 +7,10 @@ import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CivilClaimDetails extends ClaimDetails {
@@ -87,5 +91,28 @@ public class CivilClaimDetails extends ClaimDetails {
     @Override
     public AssessmentPost toAssessment(AssessmentMapper mapper, String userId) {
         return mapper.mapCivilClaimToAssessment(this, userId);
+    }
+
+    @Override
+    public List<ClaimField> getClaimFields() {
+        return Stream.concat(
+                        super.commonClaimFieldsStream(),
+                        civilSpecificFieldsStream()
+                )
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    protected Stream<ClaimField> civilSpecificFieldsStream() {
+        return Stream.of(
+                getHoInterview(),
+                getSubstantiveHearing(),
+                getCounselsCost(),
+                getJrFormFillingCost(),
+                getAdjournedHearing(),
+                getCmrhOral(),
+                getCmrhTelephone(),
+                getDetentionTravelWaitingCosts()
+        );
     }
 }
