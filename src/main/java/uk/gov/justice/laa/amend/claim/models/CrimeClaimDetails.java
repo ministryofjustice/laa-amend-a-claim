@@ -15,6 +15,8 @@ public class CrimeClaimDetails extends ClaimDetails {
 
     private ClaimField travelCosts;
     private ClaimField waitingCosts;
+    private String policeStationCourtPrisonId;
+    private String schemeId;
 
     @Override
     public void setNilledValues() {

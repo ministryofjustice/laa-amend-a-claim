@@ -27,6 +27,8 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("categoryOfLaw", claim().getCategoryOfLaw());
         rows.put("feeCode", claim().getFeeCode());
         rows.put("feeCodeDescription", claim().getFeeCodeDescription());
+        addPoliceStationCourtPrisonId(rows);
+        addSchemeId(rows);
         addMatterTypeField(rows);
         rows.put("caseStartDate", claim().getCaseStartDate());
         rows.put("caseEndDate", claim().getCaseEndDate());
@@ -36,6 +38,10 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     void addUcnSummaryRow(Map<String, Object> summaryRows);
+
+    void addPoliceStationCourtPrisonId(Map<String, Object> summaryRows);
+
+    void addSchemeId(Map<String, Object> summaryRows);
 
     void addMatterTypeField(Map<String, Object> summaryRows);
 

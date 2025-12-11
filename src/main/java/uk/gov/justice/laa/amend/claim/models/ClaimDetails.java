@@ -17,6 +17,7 @@ public abstract class ClaimDetails extends Claim {
     private String matterTypeCode;
     private String scheduleReference;
     private String providerName;
+    private String schemeId;
     private Boolean escaped;
     private Boolean vatApplicable;
     private String providerAccountNumber;
