@@ -13,6 +13,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -54,6 +55,9 @@ public class AssessmentService {
                 default -> log.warn("Unhandled outcome type: {}", newOutcome);
             }
         }
+        if (shouldReapplyAssessment(claim, newOutcome)) {
+            assessmentMapper.mapAssessmentToClaimDetails(claim);
+        }
         //Update AssessedStatus values for each based on OutcomeType
         claimStatusHandler.updateFieldStatuses(claim, newOutcome);
     }
@@ -72,6 +76,19 @@ public class AssessmentService {
         if (assessmentResults == null || assessmentResults.getAssessments().isEmpty()) {
             throw new RuntimeException(String.format("Failed to get assessments for claim ID: %s", claimDetails.getClaimId()));
         }
-        return assessmentMapper.mapAssessmentToClaimDetails(assessmentResults.getAssessments().getFirst(), claimDetails);
+        return assessmentMapper.updateClaim(assessmentResults.getAssessments().getFirst(), claimDetails);
     }
+
+
+    private boolean shouldReapplyAssessment(ClaimDetails claim, OutcomeType newOutcome) {
+        if (claim == null || !claim.isHasAssessment()) {
+            return false;
+        }
+        var last = claim.getLastAssessment();
+        if (last == null) {
+            return false;
+        }
+        return Objects.equals(newOutcome, last.getLastAssessmentOutcome());
+    }
+
 }

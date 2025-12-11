@@ -6,7 +6,9 @@ import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
+import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
@@ -68,15 +70,12 @@ public interface AssessmentMapper {
     @Mapping(target = "netDisbursementAmount.assessed", source = "disbursementAmount")
     @Mapping(target = "disbursementVatAmount.assessed", source = "disbursementVatAmount")
     @Mapping(target = "netProfitCost.assessed", source = "netProfitCostsAmount")
-    @Mapping(target = "assessmentOutcome", source = "assessmentOutcome")
+    @Mapping(target = "assessmentOutcome", source = "lastAssessmentOutcome")
     @Mapping(target = "assessedTotalVat.assessed", source = "assessedTotalVat")
     @Mapping(target = "assessedTotalInclVat.assessed", source = "assessedTotalInclVat")
     @Mapping(target = "allowedTotalVat.assessed", source = "allowedTotalVat")
     @Mapping(target = "allowedTotalInclVat.assessed", source = "allowedTotalInclVat")
-    @Mapping(target = "lastAssessment.lastAssessedBy", source = "createdByUserId")
-    @Mapping(target = "lastAssessment.lastAssessmentDate", source = "createdOn")
-    @Mapping(target = "lastAssessment.lastAssessmentOutcome", source = "assessmentOutcome")
-    ClaimDetails mapToClaim(AssessmentGet assessmentGet, @MappingTarget ClaimDetails claimDetails);
+    ClaimDetails mapToClaim(AssessmentInfo assessmentInfo, @MappingTarget ClaimDetails claimDetails);
 
     @InheritConfiguration(name = "mapToClaim")
     @Mapping(target = "hoInterview.assessed", source = "boltOnHomeOfficeInterviewFee")
@@ -87,21 +86,41 @@ public interface AssessmentMapper {
     @Mapping(target = "adjournedHearing.assessed", source = "boltOnAdjournedHearingFee")
     @Mapping(target = "substantiveHearing.assessed", source = "boltOnSubstantiveHearingFee")
     @Mapping(target = "counselsCost.assessed", source = "netCostOfCounselAmount")
-    CivilClaimDetails mapToCivilClaim(AssessmentGet assessmentGet, @MappingTarget CivilClaimDetails claimDetails);
+    CivilClaimDetails mapToCivilClaim(AssessmentInfo assessmentInfo, @MappingTarget CivilClaimDetails claimDetails);
 
     @InheritConfiguration(name = "mapToClaim")
     @Mapping(target = "travelCosts.assessed", source = "netTravelCostsAmount")
     @Mapping(target = "waitingCosts.assessed", source = "netWaitingCostsAmount")
-    CrimeClaimDetails mapToCrimeClaim(AssessmentGet assessmentGet, @MappingTarget CrimeClaimDetails claimDetails);
+    CrimeClaimDetails mapToCrimeClaim(AssessmentInfo assessmentInfo, @MappingTarget CrimeClaimDetails claimDetails);
 
-    default ClaimDetails mapAssessmentToClaimDetails(AssessmentGet assessmentGet, @MappingTarget ClaimDetails claimDetails) {
-        if (assessmentGet == null || claimDetails == null) {
+    /**
+     * Maps AssessmentGet response object into AssessmentInfo
+     */
+    @Named("toAssessmentInfo")
+    @Mapping(target = "lastAssessedBy", source = "createdByUserId")
+    @Mapping(target = "lastAssessmentDate", source = "createdOn")
+    @Mapping(target = "lastAssessmentOutcome", source = "assessmentOutcome", qualifiedByName = "mapToOutcome")
+    AssessmentInfo mapAssessment(AssessmentGet source);
+
+    /**
+     * Updates ClaimDetails with the last assessment response object as AssessmentInfo object.
+     */
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "assessmentOutcome", source = "assessmentOutcome", qualifiedByName = "mapToOutcome")
+    @Mapping(target = "lastAssessment", source = "assessmentGet", qualifiedByName = "toAssessmentInfo")
+    ClaimDetails updateClaim(AssessmentGet assessmentGet, @MappingTarget ClaimDetails claimDetails);
+
+
+    /**
+     * Maps existing lastAssessment Details into the ClaimDetails object as assessed values.
+     */
+    default ClaimDetails mapAssessmentToClaimDetails(@MappingTarget ClaimDetails claimDetails) {
+        if (claimDetails == null || claimDetails.getLastAssessment() == null) {
             throw new IllegalArgumentException("AssessmentGet and ClaimDetails must be non-null");
         }
-
         return switch (claimDetails) {
-            case CrimeClaimDetails crime -> mapToCrimeClaim(assessmentGet, crime);
-            case CivilClaimDetails civil -> mapToCivilClaim(assessmentGet, civil);
+            case CrimeClaimDetails crime -> mapToCrimeClaim(claimDetails.getLastAssessment(), crime);
+            case CivilClaimDetails civil -> mapToCivilClaim(claimDetails.getLastAssessment(), civil);
             default -> throw new IllegalArgumentException("Unsupported Claim details");
         };
     }
@@ -118,15 +137,19 @@ public interface AssessmentMapper {
         return null;
     }
 
-    default OutcomeType mapAssessmentOutcome(AssessmentOutcome outcome) {
+    @Named("mapToOutcome")
+    default OutcomeType mapToOutcome(AssessmentOutcome outcome) {
+        if (outcome == null) {
+            return null;
+        }
         return switch (outcome) {
-            case PAID_IN_FULL -> OutcomeType.PAID_IN_FULL;
-            case REDUCED_STILL_ESCAPED -> OutcomeType.REDUCED;
-            case REDUCED_TO_FIXED_FEE -> OutcomeType.REDUCED_TO_FIXED_FEE;
-            case NILLED -> OutcomeType.NILLED;
-            case null -> null;
+            case PAID_IN_FULL           -> OutcomeType.PAID_IN_FULL;
+            case REDUCED_STILL_ESCAPED  -> OutcomeType.REDUCED;
+            case REDUCED_TO_FIXED_FEE   -> OutcomeType.REDUCED_TO_FIXED_FEE;
+            case NILLED                 -> OutcomeType.NILLED;
         };
     }
+
 
     default BigDecimal mapFixedFeeAmount(ClaimDetails claim) {
         return mapToBigDecimal(claim.getFixedFee());

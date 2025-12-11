@@ -88,6 +88,7 @@ public class ClaimReviewController {
         boolean submissionFailed,
         boolean validationFailed
     ) {
+        //Populate with the right status of Claim fields based on outcome status and assessed values
         claimStatusHandler.updateFieldStatuses(claim, claim.getAssessmentOutcome());
         model.addAttribute("claim", claim);
         model.addAttribute("viewModel", viewModel);

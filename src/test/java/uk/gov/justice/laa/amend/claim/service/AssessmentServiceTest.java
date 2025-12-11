@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
+import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
@@ -28,7 +29,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 class AssessmentServiceTest {
@@ -73,6 +76,7 @@ class AssessmentServiceTest {
         @Test
         void testReducedOutcome() {
             ClaimDetails claim = mock(ClaimDetails.class);
+            when(claim.getLastAssessment()).thenReturn(null);
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
 
@@ -87,6 +91,24 @@ class AssessmentServiceTest {
 
             verify(claim).setPaidInFullValues();
         }
+
+        @Test
+        void whenLastAssessmentExistsShouldInvokeMapper() {
+            // Given
+            AssessmentInfo info = new AssessmentInfo();
+            info.setLastAssessmentOutcome(OutcomeType.PAID_IN_FULL);
+            ClaimDetails claim = new CivilClaimDetails();
+            claim.setLastAssessment(info);
+            claim.setHasAssessment(Boolean.TRUE);
+
+            // When
+            assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
+
+            // Then
+            verify(assessmentMapper, times(1)).mapAssessmentToClaimDetails(claim);
+            verifyNoMoreInteractions(assessmentMapper);
+        }
+
     }
 
     @Nested
@@ -207,14 +229,15 @@ class AssessmentServiceTest {
                     .thenReturn(Mono.just(resultSet));
 
             ClaimDetails mappedDetails = new CivilClaimDetails();
-            when(assessmentMapper.mapAssessmentToClaimDetails(assessment, claimDetails))
+            mappedDetails.setLastAssessment(new AssessmentInfo());
+            when(assessmentMapper.updateClaim(resultSet.getAssessments().getFirst(), claimDetails))
                     .thenReturn(mappedDetails);
             // Act
             ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claimDetails);
             // Assert
             assertThat(result).isEqualTo(mappedDetails);
             verify(claimsApiClient).getAssessments(UUID.fromString(claimDetails.getClaimId()));
-            verify(assessmentMapper).mapAssessmentToClaimDetails(assessment, claimDetails);
+            verify(assessmentMapper).updateClaim(assessment, claimDetails);
         }
 
         @Test
