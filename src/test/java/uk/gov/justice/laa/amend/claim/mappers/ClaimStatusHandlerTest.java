@@ -19,6 +19,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
 
 @ExtendWith(MockitoExtension.class)
@@ -158,6 +159,7 @@ class ClaimStatusHandlerTest {
         void shouldSetAssessableForAssessedFields() {
             ClaimField assessedField = new ClaimField();
             assessedField.setAssessed("100");
+            assessedField.setKey(FIXED_FEE);
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
             crimeClaim.setFixedFee(assessedField);
 

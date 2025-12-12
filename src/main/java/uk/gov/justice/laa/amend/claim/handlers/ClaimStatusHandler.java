@@ -9,6 +9,7 @@ import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
@@ -25,6 +26,12 @@ import static uk.gov.justice.laa.amend.claim.validators.FeeCodeValidator.isNotVa
 @Component
 @RequiredArgsConstructor
 public class ClaimStatusHandler {
+
+
+    private static final Set<String> NON_ASSESSABLE_KEYS = Set.of(
+            ADJOURNED_FEE, CMRH_ORAL, CMRH_TELEPHONE,
+            HO_INTERVIEW, SUBSTANTIVE_HEARING, FIXED_FEE, TOTAL
+    );
 
     /**
      * Updates all claim field statuses based on the outcome type
@@ -49,7 +56,7 @@ public class ClaimStatusHandler {
             case NILLED -> handleNilledStatus(field, claim);
             case PAID_IN_FULL -> handleAssessmentInFull(field, claim);
             case REDUCED -> handleReducedStatus(field, claim);
-            case REDUCED_TO_FIXED_FEE -> handleReducedToFixedFeeStatus(field, claim);
+            case REDUCED_TO_FIXED_FEE -> handleReducedToFixedFeeStatus(field);
         };
     }
 
@@ -69,22 +76,20 @@ public class ClaimStatusHandler {
         if (isAssessedTotalFields(field, claim) && isNotValidFeeCode(claim)) {
             return AssessmentStatus.DO_NOT_DISPLAY;
         }
-        return switch (field.getKey()) {
-            // Bolt-ons are set to not Assessable
-            case ADJOURNED_FEE, CMRH_ORAL, CMRH_TELEPHONE,
-                 HO_INTERVIEW, SUBSTANTIVE_HEARING, FIXED_FEE, TOTAL -> AssessmentStatus.NOT_ASSESSABLE;
-            default -> AssessmentStatus.ASSESSABLE;
-        };
+        return checkAssessableFields(field);
+    }
+
+    private AssessmentStatus checkAssessableFields(ClaimField field) {
+        return NON_ASSESSABLE_KEYS.contains(field.getKey())
+                ? AssessmentStatus.NOT_ASSESSABLE
+                : AssessmentStatus.ASSESSABLE;
     }
 
     /**
      * Set the field status for REDUCED_TO_FIXED_FEE outcome status.
      */
-    private AssessmentStatus handleReducedToFixedFeeStatus(ClaimField field, ClaimDetails claim) {
-        if (field == claim.getTotalAmount() || field == claim.getFixedFee()) {
-            return AssessmentStatus.NOT_ASSESSABLE;
-        }
-        return AssessmentStatus.ASSESSABLE;
+    private AssessmentStatus handleReducedToFixedFeeStatus(ClaimField field) {
+        return checkAssessableFields(field);
     }
 
     /**

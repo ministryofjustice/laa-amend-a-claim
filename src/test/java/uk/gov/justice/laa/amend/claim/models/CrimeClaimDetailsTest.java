@@ -288,17 +288,18 @@ public class CrimeClaimDetailsTest {
         @Test
         void reducedToFixedFee() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFixedFee(ClaimField.builder().calculated(BigDecimal.ONE).build());
-            claim.setNetProfitCost(ClaimField.builder().calculated(BigDecimal.ONE).build());
-            claim.setVatClaimed(ClaimField.builder().calculated(true).build());
-            claim.setNetDisbursementAmount(ClaimField.builder().calculated(BigDecimal.ONE).build());
-            claim.setDisbursementVatAmount(ClaimField.builder().calculated(BigDecimal.ONE).build());
-            claim.setTravelCosts(ClaimField.builder().calculated(BigDecimal.ONE).build());
-            claim.setWaitingCosts(ClaimField.builder().calculated(BigDecimal.ONE).build());
-            claim.setAssessedTotalVat(ClaimField.builder().calculated(BigDecimal.ONE).build());
-            claim.setAssessedTotalInclVat(ClaimField.builder().calculated(BigDecimal.ONE).build());
-            claim.setAllowedTotalVat(ClaimField.builder().calculated(BigDecimal.ONE).build());
-            claim.setAllowedTotalInclVat(ClaimField.builder().calculated(BigDecimal.ONE).build());
+            claim.setFixedFee(ClaimField.builder().key(FIXED_FEE).calculated(BigDecimal.ONE).build());
+            claim.setNetProfitCost(ClaimField.builder().key(NET_PROFIT_COST).calculated(BigDecimal.ONE).build());
+            claim.setVatClaimed(ClaimField.builder().key(VAT).calculated(true).build());
+            claim.setNetDisbursementAmount(ClaimField.builder().key(NET_DISBURSEMENTS_COST).calculated(BigDecimal.ONE).build());
+            claim.setDisbursementVatAmount(ClaimField.builder().key(DISBURSEMENT_VAT).calculated(BigDecimal.ONE).build());
+            claim.setTravelCosts(ClaimField.builder().key(TRAVEL_COSTS).calculated(BigDecimal.ONE).build());
+            claim.setWaitingCosts(ClaimField.builder().key(WAITING_COSTS).calculated(BigDecimal.ONE).build());
+            claim.setAssessedTotalVat(ClaimField.builder().key(ASSESSED_TOTAL_VAT).calculated(BigDecimal.ONE).build());
+            claim.setAssessedTotalInclVat(ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).calculated(BigDecimal.ONE).build());
+            claim.setAllowedTotalVat(ClaimField.builder().key(ALLOWED_TOTAL_VAT).calculated(BigDecimal.ONE).build());
+            claim.setAllowedTotalInclVat(ClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).calculated(BigDecimal.ONE).build());
+
 
             claim.setReducedToFixedFeeValues();
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.REDUCED_TO_FIXED_FEE);

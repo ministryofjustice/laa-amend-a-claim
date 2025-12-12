@@ -4,13 +4,13 @@ import lombok.Getter;
 
 
 /**
- * Represents the assessment status of a claim.
+ * Represents the assessment status of a claim field.
  * <p>
- * This enum defines the possible states for claim assessment:
+ * This enum defines the possible states for claim field assessment:
  * <ul>
- *   <li>{@link #ASSESSABLE} - The claim can be assessed. Status helps to display a Change link on UI.</li>
- *   <li>{@link #NEEDS_ASSESSING} - The claim requires assessment. Helps to display an Add link on UI</li>
- *   <li>{@link #DO_NOT_DISPLAY} - The status should not be shown in the UI.</li>
+ *   <li>{@link #ASSESSABLE} - The claim field with status can be assessed.</li>
+ *   <li>{@link #NOT_ASSESSABLE} - The claim field with status cannot be assessed.</li>
+ *   <li>{@link #DO_NOT_DISPLAY} - The claim field with status should not be shown in the UI.</li>
  * </ul>
  */
 
@@ -18,6 +18,5 @@ import lombok.Getter;
 public enum AssessmentStatus {
     ASSESSABLE,
     NOT_ASSESSABLE,
-    NEEDS_ASSESSING,
     DO_NOT_DISPLAY
 }
