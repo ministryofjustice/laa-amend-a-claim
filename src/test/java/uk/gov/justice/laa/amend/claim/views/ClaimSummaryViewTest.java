@@ -157,6 +157,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setWaitingCosts(new ClaimField(WAITING_COSTS, 50, 45));
 
         claim.setAreaOfLaw("CRIME");
+        claim.setSchemeId("SCHEME");
+        claim.setPoliceStationCourtPrisonId("POLICE_STATION_COURT_PRISON");
 
         ClaimResponse claimResponse = new ClaimResponse();
         claimResponse.feeCalculationResponse(new FeeCalculationPatch().categoryOfLaw("CRIME"));
@@ -178,6 +180,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Escape case", "Yes");
         assertPageHasSummaryListRow(doc, "Area of law", "CRIME");
         assertPageHasSummaryListRow(doc, "Fee code", "FC");
+        assertPageHasSummaryListRow(doc, "Scheme ID", "SCHEME");
+        assertPageHasSummaryListRow(doc, "Police Station / Court / Prison ID", "POLICE_STATION_COURT_PRISON");
         assertPageHasSummaryListRow(doc, "Fee code description", "FCD");
         assertPageHasSummaryListRow(doc, "Matter type", "IMLB");
         assertPageHasSummaryListRow(doc, "Provider account number", "0P322F");

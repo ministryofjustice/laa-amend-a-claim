@@ -508,6 +508,8 @@ class ClaimMapperTest {
         response.setFeeCalculationResponse(feeCalc);
 
         response.setCrimeMatterTypeCode("CRIME123");
+        response.setPoliceStationCourtPrisonId("PrisonCode");
+        response.setSchemeId("SchemeId");
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
         assertEquals("UFN123", claim.getUniqueFileNumber());
@@ -519,7 +521,10 @@ class ClaimMapperTest {
         assertEquals("Civil", claim.getCategoryOfLaw());
         assertTrue(claim.getEscaped());
         assertEquals("CRIME123", claim.getMatterTypeCode());
-        assertEquals("CRIME LOWER", claim.getAreaOfLaw());
+        assertEquals("CRIME123", claim.getMatterTypeCode());
+        assertEquals("PrisonCode", claim.getPoliceStationCourtPrisonId());
+        assertEquals("SchemeId", claim.getSchemeId());
+
         assertEquals("User ID", claim.getProviderName());
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }

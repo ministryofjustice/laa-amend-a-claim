@@ -16,6 +16,12 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
     }
 
     @Override
+    public void addPoliceStationCourtPrisonId(Map<String, Object> summaryRows) {}
+
+    @Override
+    public void addSchemeId(Map<String, Object> summaryRows) {}
+
+    @Override
     public void addMatterTypeField(Map<String, Object> summaryRows) {
         summaryRows.put("matterTypeCodeOne", getMatterTypeCodeOne());
         summaryRows.put("matterTypeCodeTwo", getMatterTypeCodeTwo());
