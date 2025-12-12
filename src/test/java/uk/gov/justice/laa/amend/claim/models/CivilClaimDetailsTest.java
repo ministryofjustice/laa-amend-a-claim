@@ -65,49 +65,49 @@ public class CivilClaimDetailsTest {
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.NILLED);
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getNetProfitCost().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getNetProfitCost().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getCounselsCost().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getCounselsCost().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getCounselsCost().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getDetentionTravelWaitingCosts().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getDetentionTravelWaitingCosts().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getDetentionTravelWaitingCosts().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getJrFormFillingCost().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getJrFormFillingCost().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getJrFormFillingCost().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAdjournedHearing().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getAdjournedHearing().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getAdjournedHearing().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhTelephone().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getCmrhTelephone().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getCmrhTelephone().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhOral().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getCmrhOral().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getCmrhOral().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getHoInterview().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getHoInterview().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getHoInterview().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getSubstantiveHearing().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getSubstantiveHearing().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getSubstantiveHearing().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getAllowedTotalVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getAllowedTotalVat().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalInclVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getAllowedTotalInclVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getAllowedTotalInclVat().getStatus());
         }
     }
 
@@ -116,10 +116,10 @@ public class CivilClaimDetailsTest {
         @Test
         void setsValuesToReducedToFixedFee() {
             CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(ClaimField.builder().calculated(BigDecimal.ONE).build());
-            claim.setNetProfitCost(ClaimField.builder().calculated(BigDecimal.ONE).build());
-            claim.setVatClaimed(ClaimField.builder().calculated(true).build());
-            claim.setNetDisbursementAmount(ClaimField.builder().calculated(BigDecimal.ONE).build());
+            claim.setFixedFee(ClaimField.builder().key(FIXED_FEE).calculated(BigDecimal.ONE).build());
+            claim.setNetProfitCost(ClaimField.builder().key(NET_PROFIT_COST).calculated(BigDecimal.ONE).build());
+            claim.setVatClaimed(ClaimField.builder().key(VAT).calculated(true).build());
+            claim.setNetDisbursementAmount(ClaimField.builder().key(NET_DISBURSEMENTS_COST).calculated(BigDecimal.ONE).build());
             claim.setDisbursementVatAmount(ClaimField.builder().calculated(BigDecimal.ONE).build());
             claim.setCounselsCost(ClaimField.builder().calculated(BigDecimal.ONE).build());
             claim.setDetentionTravelWaitingCosts(ClaimField.builder().calculated(BigDecimal.ONE).build());
@@ -138,55 +138,55 @@ public class CivilClaimDetailsTest {
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getFixedFee().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getFixedFee().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getFixedFee().getStatus());
 
             Assertions.assertNull(claim.getNetProfitCost().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getNetProfitCost().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getNetProfitCost().getStatus());
 
             Assertions.assertEquals(true, claim.getVatClaimed().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getVatClaimed().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getVatClaimed().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getNetDisbursementAmount().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getDisbursementVatAmount().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getCounselsCost().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getCounselsCost().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getCounselsCost().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getDetentionTravelWaitingCosts().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getDetentionTravelWaitingCosts().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getDetentionTravelWaitingCosts().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getJrFormFillingCost().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getJrFormFillingCost().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getJrFormFillingCost().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getAdjournedHearing().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getAdjournedHearing().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAdjournedHearing().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getCmrhTelephone().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getCmrhTelephone().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getCmrhTelephone().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getCmrhOral().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getCmrhOral().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getCmrhOral().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getHoInterview().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getHoInterview().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getHoInterview().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getSubstantiveHearing().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getSubstantiveHearing().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getSubstantiveHearing().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAssessedTotalInclVat().getStatus());
 
             Assertions.assertNull(claim.getAllowedTotalVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAllowedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAllowedTotalInclVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAllowedTotalInclVat().getStatus());
         }
     }
 
@@ -217,55 +217,55 @@ public class CivilClaimDetailsTest {
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.PAID_IN_FULL);
 
             Assertions.assertNull(claim.getFixedFee().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getFixedFee().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getFixedFee().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getNetProfitCost().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getNetProfitCost().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getNetProfitCost().getStatus());
 
             Assertions.assertEquals(true, claim.getVatClaimed().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getVatClaimed().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getVatClaimed().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getNetDisbursementAmount().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getDisbursementVatAmount().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getCounselsCost().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getCounselsCost().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getCounselsCost().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getDetentionTravelWaitingCosts().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getDetentionTravelWaitingCosts().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getDetentionTravelWaitingCosts().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getJrFormFillingCost().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getJrFormFillingCost().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getJrFormFillingCost().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getAdjournedHearing().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getAdjournedHearing().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAdjournedHearing().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getCmrhTelephone().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getCmrhTelephone().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getCmrhTelephone().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getCmrhOral().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getCmrhOral().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getCmrhOral().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getHoInterview().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getHoInterview().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getHoInterview().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getSubstantiveHearing().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getSubstantiveHearing().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getSubstantiveHearing().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAssessedTotalInclVat().getStatus());
 
             Assertions.assertNull(claim.getAllowedTotalVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAllowedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAllowedTotalInclVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAllowedTotalInclVat().getStatus());
         }
     }
 
@@ -296,55 +296,55 @@ public class CivilClaimDetailsTest {
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.REDUCED);
 
             Assertions.assertNull(claim.getFixedFee().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getFixedFee().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getFixedFee().getStatus());
 
             Assertions.assertNull(claim.getNetProfitCost().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getNetProfitCost().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getNetProfitCost().getStatus());
 
             Assertions.assertEquals(true, claim.getVatClaimed().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getVatClaimed().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getVatClaimed().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getNetDisbursementAmount().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getNetDisbursementAmount().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getDisbursementVatAmount().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getDisbursementVatAmount().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getCounselsCost().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getCounselsCost().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getCounselsCost().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getDetentionTravelWaitingCosts().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getDetentionTravelWaitingCosts().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getDetentionTravelWaitingCosts().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getJrFormFillingCost().getAssessed());
-            Assertions.assertEquals(AssessStatus.ASSESSABLE, claim.getJrFormFillingCost().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getJrFormFillingCost().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAdjournedHearing().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getAdjournedHearing().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getAdjournedHearing().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhTelephone().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getCmrhTelephone().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getCmrhTelephone().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhOral().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getCmrhOral().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getCmrhOral().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getHoInterview().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getHoInterview().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getHoInterview().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getSubstantiveHearing().getAssessed());
-            Assertions.assertEquals(AssessStatus.NOT_ASSESSABLE, claim.getSubstantiveHearing().getStatus());
+            Assertions.assertEquals(AssessmentStatus.NOT_ASSESSABLE, claim.getSubstantiveHearing().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAssessedTotalInclVat().getStatus());
 
             Assertions.assertNull(claim.getAllowedTotalVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getAllowedTotalVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAllowedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAllowedTotalInclVat().getAssessed());
-            Assertions.assertEquals(AssessStatus.NEEDS_ASSESSING, claim.getAllowedTotalInclVat().getStatus());
+            Assertions.assertEquals(AssessmentStatus.ASSESSABLE, claim.getAllowedTotalInclVat().getStatus());
         }
     }
 }

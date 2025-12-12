@@ -112,7 +112,7 @@ class ChangeMonetaryValueControllerTest {
 
         Assertions.assertNotNull(updated);
         Assertions.assertEquals(new BigDecimal("100.00"), cost.getAccessor().get(updated).getAssessed());
-        Assertions.assertEquals(AssessStatus.ASSESSABLE, cost.getAccessor().get(updated).getStatus());
+        Assertions.assertEquals(AssessmentStatus.ASSESSABLE, cost.getAccessor().get(updated).getStatus());
     }
 
     @ParameterizedTest

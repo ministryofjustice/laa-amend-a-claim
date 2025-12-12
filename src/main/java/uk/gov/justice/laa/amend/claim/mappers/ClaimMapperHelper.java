@@ -32,6 +32,9 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 @Component
 public class ClaimMapperHelper {
 
+    public static final String ALLOWED_TOTALS_URL = "/submissions/%s/claims/%s/allowed-totals";
+    public static final String ASSESSED_TOTALS_URL = "/submissions/%s/claims/%s/assessed-totals";
+
     @Named("mapTotalAmount")
     public ClaimField mapTotalAmount(ClaimResponse claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
@@ -189,6 +192,7 @@ public class ClaimMapperHelper {
     public ClaimField mapAssessedTotalVat() {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ASSESSED_TOTAL_VAT);
+        claimField.setChangeUrl(ASSESSED_TOTALS_URL);
         return claimField;
     }
 
@@ -196,6 +200,7 @@ public class ClaimMapperHelper {
     public ClaimField mapAssessedTotalInclVat() {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ASSESSED_TOTAL_INCL_VAT);
+        claimField.setChangeUrl(ASSESSED_TOTALS_URL);
         return claimField;
     }
 
@@ -203,6 +208,7 @@ public class ClaimMapperHelper {
     public ClaimField mapAllowedTotalVat() {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ALLOWED_TOTAL_VAT);
+        claimField.setChangeUrl(ALLOWED_TOTALS_URL);
         return claimField;
     }
 
@@ -210,6 +216,7 @@ public class ClaimMapperHelper {
     public ClaimField mapAllowedTotalInclVat() {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ALLOWED_TOTAL_INCL_VAT);
+        claimField.setChangeUrl(ALLOWED_TOTALS_URL);
         return claimField;
     }
 }

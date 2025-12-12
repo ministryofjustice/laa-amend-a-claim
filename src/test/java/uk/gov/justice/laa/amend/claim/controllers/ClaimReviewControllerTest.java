@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
@@ -16,7 +15,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
-import uk.gov.justice.laa.amend.claim.models.AssessStatus;
+import uk.gov.justice.laa.amend.claim.models.AssessmentStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
@@ -148,7 +147,8 @@ public class ClaimReviewControllerTest {
     public void testUnsuccessfulValidationReloadsPageWithErrorSummary() throws Exception {
         ClaimField claimField = new ClaimField();
         claimField.setKey("foo");
-        claimField.setStatus(AssessStatus.NEEDS_ASSESSING);
+        claimField.setStatus(AssessmentStatus.ASSESSABLE);
+        claimField.setAssessed(null);
         claim.setNetProfitCost(claimField);
 
         session.setAttribute(claimId.toString(), claim);

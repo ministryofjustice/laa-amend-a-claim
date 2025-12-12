@@ -21,7 +21,7 @@ public class ClaimField implements Serializable {
     private Object calculated;
     private Object assessed;
     private String changeUrl;
-    private AssessStatus status;
+    private AssessmentStatus status;
 
     public ClaimField(String key, Object submitted, Object calculated) {
         this(key, submitted, calculated, (String) null);
@@ -76,14 +76,6 @@ public class ClaimField implements Serializable {
         return String.format(changeUrl, submissionId, claimId);
     }
 
-    public String getChangeAllowedTotalUrl(String submissionId, String claimId) {
-        return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, "allowed-totals");
-    }
-
-    public String getChangeAssessedTotalUrl(String submissionId, String claimId) {
-        return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, "assessed-totals");
-    }
-
     protected void setNilled() {
         setAssessed(BigDecimal.ZERO);
     }
@@ -113,7 +105,11 @@ public class ClaimField implements Serializable {
         setAssessed(value);
     }
 
-    public boolean needsAssessing() {
-        return status == AssessStatus.NEEDS_ASSESSING;
+    public boolean isAssessableAndUnassessed() {
+        return status == AssessmentStatus.ASSESSABLE && assessed == null;
+    }
+
+    public boolean isAssessableAndAssessed() {
+        return status == AssessmentStatus.ASSESSABLE && assessed != null;
     }
 }

@@ -76,7 +76,8 @@ public class AssessmentService {
         if (assessmentResults == null || assessmentResults.getAssessments().isEmpty()) {
             throw new RuntimeException(String.format("Failed to get assessments for claim ID: %s", claimDetails.getClaimId()));
         }
-        return assessmentMapper.updateClaim(assessmentResults.getAssessments().getFirst(), claimDetails);
+        var assessment = assessmentResults.getAssessments().getFirst();
+        return assessmentMapper.mapAssessmentToClaimDetails(assessmentMapper.updateClaim(assessment, claimDetails));
     }
 
 
