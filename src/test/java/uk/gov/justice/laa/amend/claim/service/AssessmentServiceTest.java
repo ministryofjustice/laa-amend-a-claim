@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
+import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
+import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
@@ -34,6 +36,9 @@ class AssessmentServiceTest {
 
     @Mock
     private ClaimsApiClient claimsApiClient;
+
+    @Mock
+    private ClaimStatusHandler claimStatusHandler;
 
     @Mock
     private AssessmentMapper assessmentMapper;
@@ -203,14 +208,18 @@ class AssessmentServiceTest {
                     .thenReturn(Mono.just(resultSet));
 
             ClaimDetails mappedDetails = new CivilClaimDetails();
-            when(assessmentMapper.mapAssessmentToClaimDetails(assessment, claimDetails))
+            AssessmentInfo assessmentInfo = new AssessmentInfo();
+            mappedDetails.setLastAssessment(assessmentInfo);
+            when(assessmentMapper.updateClaim(assessment, claimDetails))
+                    .thenReturn(mappedDetails);
+            when(assessmentMapper.mapAssessmentToClaimDetails(mappedDetails))
                     .thenReturn(mappedDetails);
             // Act
             ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claimDetails);
             // Assert
             assertThat(result).isEqualTo(mappedDetails);
             verify(claimsApiClient).getAssessments(UUID.fromString(claimDetails.getClaimId()));
-            verify(assessmentMapper).mapAssessmentToClaimDetails(assessment, claimDetails);
+            verify(assessmentMapper).mapAssessmentToClaimDetails(mappedDetails);
         }
 
         @Test

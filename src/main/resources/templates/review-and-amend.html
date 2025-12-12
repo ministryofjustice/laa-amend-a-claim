@@ -38,7 +38,7 @@
                     <th scope="col" class="govuk-table__header" th:text="#{claimSummary.item}"></th>
                     <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
                     <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
-                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.amended}"></th>
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.assessed}"></th>
                     <th scope="col" class="govuk-table__header"></th>
                 </tr>
                 </thead>
@@ -50,7 +50,7 @@
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
 
-                <th:block th:if="${row.status.name() == 'NEEDS_AMENDING'}">
+                <th:block th:if="${row.isAssessableAndUnassessed}">
                     <td class="govuk-table__cell">
                         <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                            th:id="${row.id}"
@@ -62,27 +62,25 @@
 
                         <td class="govuk-table__cell"></td>
                     </th:block>
-
-                    <th:block th:if="${row.status.name() == 'AMENDABLE'}">
+                    <th:block th:if="${row.isAssessableAndAssessed}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
                         </td>
 
-                    <td class="govuk-table__cell">
-                        <a th:if="${row.getChangeUrl(submissionId,claimId) != null}"
-                           th:href="${row.getChangeUrl(submissionId,claimId)}"
-                           class="govuk-link govuk-link--no-visited-state">
-                            <th:block th:text="#{service.change}"></th:block>
-                            <span class="govuk-visually-hidden" th:text=" #{${row.label}}"></span>
-                        </a>
-                    </td>
-                </th:block>
-
-                    <th:block th:if="${row.status.name() == 'NOT_AMENDABLE'}">
-                        <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                        <td class="govuk-table__cell">
+                            <a th:if="${row.getChangeUrl(submissionId,claimId) != null}"
+                               th:href="${row.getChangeUrl(submissionId,claimId)}"
+                               class="govuk-link govuk-link--no-visited-state">
+                                <th:block th:text="#{service.change}"></th:block>
+                                <span class="govuk-visually-hidden" th:text=" #{${row.label}}"></span>
+                            </a>
                         </td>
+                    </th:block>
 
+                    <th:block th:if="${row.status.name() == 'NOT_ASSESSABLE'}">
+                        <td class="govuk-table__cell"
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
+                        </td>
                         <td class="govuk-table__cell"></td>
                     </th:block>
                 </tr>
@@ -114,9 +112,9 @@
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
 
-                    <th:block th:if="${row.status.name() == 'NEEDS_AMENDING'}">
+                    <th:block th:if="${row.isAssessableAndUnassessed}">
                         <td class="govuk-table__cell">
-                            <a th:href="${row.getChangeAssessedTotalUrl(submissionId, claimId)}"
+                            <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                                th:id="${row.id}"
                                class="govuk-link govuk-link--no-visited-state"
                                th:text="#{service.add}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
@@ -125,21 +123,21 @@
                         <td class="govuk-table__cell"></td>
                     </th:block>
 
-                    <th:block th:if="${row.status.name() == 'AMENDABLE'}">
+                    <th:block th:if="${row.isAssessableAndAssessed}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
                         </td>
 
                         <td class="govuk-table__cell">
-                            <a th:href="${row.getChangeAssessedTotalUrl(submissionId, claimId)}"
+                            <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                                class="govuk-link govuk-link--no-visited-state"
                                th:text="#{service.change}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
                         </td>
                     </th:block>
 
-                    <th:block th:if="${row.status.name() == 'NOT_AMENDABLE'}">
+                    <th:block th:if="${row.status.name() == 'NOT_ASSESSABLE'}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
                         </td>
 
                         <td class="govuk-table__cell"></td>
@@ -173,9 +171,9 @@
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
 
-                    <th:block th:if="${row.status.name() == 'NEEDS_AMENDING'}">
+                    <th:block th:if="${row.isAssessableAndUnassessed}">
                         <td class="govuk-table__cell">
-                            <a th:href="${row.getChangeAllowedTotalUrl(submissionId, claimId)}"
+                            <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                                th:id="${row.id}"
                                class="govuk-link govuk-link--no-visited-state"
                                th:text="#{service.add}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
@@ -184,21 +182,21 @@
                         <td class="govuk-table__cell"></td>
                     </th:block>
 
-                    <th:block th:if="${row.status.name() == 'AMENDABLE'}">
+                    <th:block th:if="${row.isAssessableAndAssessed}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
                         </td>
 
                         <td class="govuk-table__cell">
-                            <a th:href="${row.getChangeAllowedTotalUrl(submissionId, claimId)}"
+                            <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                                class="govuk-link govuk-link--no-visited-state"
                                th:text="#{service.change}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
                         </td>
                     </th:block>
 
-                    <th:block th:if="${row.status.name() == 'NOT_AMENDABLE'}">
+                    <th:block th:if="${row.status.name() == 'NOT_ASSESSABLE'}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.amended)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
                         </td>
 
                         <td class="govuk-table__cell"></td>

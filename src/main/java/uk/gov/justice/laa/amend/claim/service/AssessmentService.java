@@ -6,12 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
+import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -24,6 +26,7 @@ public class AssessmentService {
 
     private final ClaimsApiClient claimsApiClient;
     private final AssessmentMapper assessmentMapper;
+    private final ClaimStatusHandler claimStatusHandler;
 
     /**
      * Applies business logic based on the assessment outcome.
@@ -40,20 +43,23 @@ public class AssessmentService {
         OutcomeType previousOutcome = claim.getAssessmentOutcome();
 
         // Only apply logic if outcome has changed
-        if (previousOutcome == newOutcome) {
-            return;
-        }
+        if (previousOutcome != newOutcome) {
+            log.info("Applying assessment outcome logic: {} -> {} for claim {}",
+                    previousOutcome, newOutcome, claim.getClaimId());
 
-        log.info("Applying assessment outcome logic: {} -> {} for claim {}",
-            previousOutcome, newOutcome, claim.getClaimId());
-
-        switch (newOutcome) {
-            case NILLED -> claim.setNilledValues();
-            case REDUCED -> claim.setReducedValues();
-            case PAID_IN_FULL -> claim.setPaidInFullValues();
-            case REDUCED_TO_FIXED_FEE -> claim.setReducedToFixedFeeValues();
-            default -> log.warn("Unhandled outcome type: {}", newOutcome);
+            switch (newOutcome) {
+                case NILLED -> claim.setNilledValues();
+                case REDUCED -> claim.setReducedValues();
+                case PAID_IN_FULL -> claim.setPaidInFullValues();
+                case REDUCED_TO_FIXED_FEE -> claim.setReducedToFixedFeeValues();
+                default -> log.warn("Unhandled outcome type: {}", newOutcome);
+            }
         }
+        if (shouldReapplyAssessment(claim, newOutcome)) {
+            assessmentMapper.mapAssessmentToClaimDetails(claim);
+        }
+        //Update AssessedStatus values for each based on OutcomeType
+        claimStatusHandler.updateFieldStatuses(claim, newOutcome);
     }
 
     public CreateAssessment201Response submitAssessment(ClaimDetails claim, String userId) {
@@ -70,6 +76,20 @@ public class AssessmentService {
         if (assessmentResults == null || assessmentResults.getAssessments().isEmpty()) {
             throw new RuntimeException(String.format("Failed to get assessments for claim ID: %s", claimDetails.getClaimId()));
         }
-        return assessmentMapper.mapAssessmentToClaimDetails(assessmentResults.getAssessments().getFirst(), claimDetails);
+        var assessment = assessmentResults.getAssessments().getFirst();
+        return assessmentMapper.mapAssessmentToClaimDetails(assessmentMapper.updateClaim(assessment, claimDetails));
     }
+
+
+    private boolean shouldReapplyAssessment(ClaimDetails claim, OutcomeType newOutcome) {
+        if (claim == null || !claim.isHasAssessment()) {
+            return false;
+        }
+        var last = claim.getLastAssessment();
+        if (last == null) {
+            return false;
+        }
+        return Objects.equals(newOutcome, last.getLastAssessmentOutcome());
+    }
+
 }

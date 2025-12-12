@@ -18,16 +18,10 @@ public class ClaimFieldTest {
         Assertions.assertEquals("foo-bar", claimField.getId());
         Assertions.assertEquals(BigDecimal.ONE, claimField.getSubmitted());
         Assertions.assertEquals(BigDecimal.TWO, claimField.getCalculated());
-        Assertions.assertEquals(BigDecimal.ONE, claimField.getAmended());
+        Assertions.assertEquals(BigDecimal.ONE, claimField.getAssessed());
         Assertions.assertNull(claimField.getChangeUrl());
     }
 
-    @Test
-    void constructorShouldDefaultToNotAmendable() {
-        ClaimField claimField = new ClaimField("label", BigDecimal.ONE, BigDecimal.TWO, Cost.PROFIT_COSTS);
-
-        Assertions.assertEquals(AmendStatus.NOT_AMENDABLE, claimField.getStatus());
-    }
 
     @Nested
     class GetChangeUrlTests {

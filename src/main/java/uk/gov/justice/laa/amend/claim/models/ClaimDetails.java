@@ -7,7 +7,10 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -57,53 +60,53 @@ public abstract class ClaimDetails extends Claim {
 
     public void setReducedToFixedFeeValues() {
         // Costs Table
-        applyIfNotNull(vatClaimed, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(fixedFee, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(netProfitCost, ClaimField::setToNeedsAmending);
-        applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(vatClaimed, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(fixedFee, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(netProfitCost, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(netDisbursementAmount, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(disbursementVatAmount, ClaimField::setAssessedToCalculated);
 
         // Assessed Totals Table
-        applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAmending);
-        applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAmending);
+        applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAssessing);
 
         // Allowed Totals Table
-        applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAmending);
-        applyIfNotNull(allowedTotalVat, ClaimField::setToNeedsAmending);
+        applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(allowedTotalVat, ClaimField::setToNeedsAssessing);
     }
 
     public void setReducedValues() {
         // Costs Table
         applyIfNotNull(fixedFee, ClaimField::setToNotApplicable);
-        applyIfNotNull(netProfitCost, ClaimField::setToNeedsAmending);
-        applyIfNotNull(vatClaimed, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(netProfitCost, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(vatClaimed, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(netDisbursementAmount, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(disbursementVatAmount, ClaimField::setAssessedToSubmitted);
 
         // Assessed Totals Table
-        applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAmending);
-        applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAmending);
+        applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAssessing);
 
         // Allowed Totals Table
-        applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAmending);
-        applyIfNotNull(allowedTotalVat, ClaimField::setToNeedsAmending);
+        applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(allowedTotalVat, ClaimField::setToNeedsAssessing);
     }
 
     public void setPaidInFullValues() {
         // Costs Table
         applyIfNotNull(fixedFee, ClaimField::setToNotApplicable);
-        applyIfNotNull(netProfitCost, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(vatClaimed, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(netDisbursementAmount, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(disbursementVatAmount, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(netProfitCost, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(vatClaimed, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(netDisbursementAmount, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(disbursementVatAmount, ClaimField::setAssessedToSubmitted);
 
         // Assessed Totals Table
-        applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAmending);
-        applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAmending);
+        applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAssessing);
 
         // Allowed Totals Table
-        applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAmending);
-        applyIfNotNull(allowedTotalVat, ClaimField::setToNeedsAmending);
+        applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(allowedTotalVat, ClaimField::setToNeedsAssessing);
     }
 
     protected void applyIfNotNull(ClaimField field, Consumer<ClaimField> f) {
@@ -117,4 +120,26 @@ public abstract class ClaimDetails extends Claim {
     public abstract ClaimDetailsView<? extends ClaimDetails> toViewModel();
 
     public abstract AssessmentPost toAssessment(AssessmentMapper mapper, String userId);
+
+
+    public List<ClaimField> getClaimFields() {
+        return commonClaimFieldsStream()
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    protected Stream<ClaimField> commonClaimFieldsStream() {
+        return Stream.of(
+                getVatClaimed(),
+                getFixedFee(),
+                getNetProfitCost(),
+                getNetDisbursementAmount(),
+                getDisbursementVatAmount(),
+                getTotalAmount(),
+                getAssessedTotalVat(),
+                getAssessedTotalInclVat(),
+                getAllowedTotalVat(),
+                getAllowedTotalInclVat()
+        );
+    }
 }

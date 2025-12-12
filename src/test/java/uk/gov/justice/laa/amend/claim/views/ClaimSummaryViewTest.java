@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -87,26 +88,50 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
     @Test
     void testCivilClaimPage() throws Exception {
-        CivilClaimDetails claim = new CivilClaimDetails();
-        createClaimSummary(claim);
+        CivilClaimDetails claim = getCivilClaimDetails();
+
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+
+        Document doc = renderDocument();
+
+        assertPageHasTitle(doc, "Claim details");
+
+        assertPageHasHeading(doc, "Claim details");
+        assertPageHasH2(doc, "Summary");
+
+        assertPageHasNoActiveServiceNavigationItems(doc);
+
+        assertPageHasBackLink(doc);
+
+        assertPageHasSummaryList(doc);
+
+        assertPageHasSummaryListRow(doc, "Escape case", "Yes");
+        assertPageHasSummaryListRow(doc, "Area of law", "LEGAL_HELP");
+        assertPageHasSummaryListRow(doc, "Category of law", "TEST");
+        assertPageHasSummaryListRow(doc, "Fee code", "FC");
+        assertPageHasSummaryListRow(doc, "Fee code description", "FCD");
+        assertPageHasSummaryListRow(doc, "Matter type 1", "IMLB");
+        assertPageHasSummaryListRow(doc, "Matter type 2", "AHQS");
+        assertPageHasSummaryListRow(doc, "Provider account number", "0P322F");
+        assertPageHasSummaryListRow(doc, "Client name", "John Doe");
+        assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
+        assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
+        assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020 at 09:30:00");
+        assertPageHasValuesRow(doc, "Total", claim.getTotalAmount(), false);
+        assertPageHasValuesRow(doc, "Oral CMRH", claim.getCmrhOral(), false);
+        assertPageHasValuesRow(doc, "Telephone CMRH", claim.getCmrhTelephone(), false);
+        assertPageHasValuesRow(doc, "Counsel costs", claim.getCounselsCost(), false);
+    }
+
+    @Test
+    void testAssessedClaimPage() throws Exception {
+        CivilClaimDetails claim = getCivilClaimDetails();
         claim.setHasAssessment(true);
-        claim.setMatterTypeCode("IMLB:AHQS");
-        claim.setDetentionTravelWaitingCosts(new ClaimField(DETENTION_TRAVEL_COST, 100, 90, 95, 90));
-        claim.setJrFormFillingCost(new ClaimField(JR_FORM_FILLING, 50, 45, 48, 45));
-        claim.setAdjournedHearing(new ClaimField(ADJOURNED_FEE, 200, 180, 190, 180));
-        claim.setCmrhTelephone(new ClaimField(CMRH_TELEPHONE, 75, 70, 72));
-        claim.setCmrhOral(new ClaimField(CMRH_ORAL, 150, 140, 145, 140));
-        claim.setHoInterview(new ClaimField(HO_INTERVIEW, 120, 110, 115, 120));
-        claim.setSubstantiveHearing(new ClaimField(SUBSTANTIVE_HEARING, 300, 280, 290, 300));
-        claim.setCounselsCost(new ClaimField(COUNSELS_COST, 400, 380, 390, 400));
-        claim.setAreaOfLaw("LEGAL_HELP");
-        claim.setCategoryOfLaw("TEST");
 
         OAuth2AuthorizedClient mockClient = mock(OAuth2AuthorizedClient.class);
         when(mockClient.getAccessToken()).thenReturn(new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "mock-token", Instant.now(), Instant.now().plusSeconds(3600)));
         when(authorizedClientService.loadAuthorizedClient(eq("entra"), anyString()))
                 .thenReturn(mockClient);
-
 
         when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
         var lastAssessment = new AssessmentInfo();
@@ -128,24 +153,27 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasBackLink(doc);
 
         assertPageHasSummaryList(doc);
-
-        assertPageHasInfoBanner(doc);
-        assertPageHasSummaryListRow(doc, "Escape case", "Yes");
-        assertPageHasSummaryListRow(doc, "Area of law", "LEGAL_HELP");
-        assertPageHasSummaryListRow(doc, "Category of law", "TEST");
-        assertPageHasSummaryListRow(doc, "Fee code", "FC");
-        assertPageHasSummaryListRow(doc, "Fee code description", "FCD");
-        assertPageHasSummaryListRow(doc, "Matter type 1", "IMLB");
-        assertPageHasSummaryListRow(doc, "Matter type 2", "AHQS");
-        assertPageHasSummaryListRow(doc, "Provider account number", "0P322F");
-        assertPageHasSummaryListRow(doc, "Client name", "John Doe");
-        assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
-        assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
-        assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020 at 09:30:00");
-        assertPageHasValuesRow(doc, "Total", claim.getTotalAmount(), false);
+        assertPageHasUpdateAssessmentButton(doc);
         assertPageHasValuesRow(doc, "Oral CMRH", claim.getCmrhOral(), true);
         assertPageHasValuesRow(doc, "Telephone CMRH", claim.getCmrhTelephone(), true);
         assertPageHasValuesRow(doc, "Counsel costs", claim.getCounselsCost(), true);
+    }
+
+    private static @NotNull CivilClaimDetails getCivilClaimDetails() {
+        CivilClaimDetails claim = new CivilClaimDetails();
+        createClaimSummary(claim);
+        claim.setMatterTypeCode("IMLB:AHQS");
+        claim.setDetentionTravelWaitingCosts(new ClaimField(DETENTION_TRAVEL_COST, 100, 90, 95, 90));
+        claim.setJrFormFillingCost(new ClaimField(JR_FORM_FILLING, 50, 45, 48, 45));
+        claim.setAdjournedHearing(new ClaimField(ADJOURNED_FEE, 200, 180, 190, 180));
+        claim.setCmrhTelephone(new ClaimField(CMRH_TELEPHONE, 75, 70, 72));
+        claim.setCmrhOral(new ClaimField(CMRH_ORAL, 150, 140, 145, 140));
+        claim.setHoInterview(new ClaimField(HO_INTERVIEW, 120, 110, 115, 120));
+        claim.setSubstantiveHearing(new ClaimField(SUBSTANTIVE_HEARING, 300, 280, 290, 300));
+        claim.setCounselsCost(new ClaimField(COUNSELS_COST, 400, 380, 390, 400));
+        claim.setAreaOfLaw("LEGAL_HELP");
+        claim.setCategoryOfLaw("TEST");
+        return claim;
     }
 
     @Test
