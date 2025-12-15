@@ -35,7 +35,7 @@ jobs:
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     permissions:
-      id-token: write # This is required for requesting the JWT
+      # id-token: write # This is required for requesting the JWT
       contents: read  # This is required for actions/checkout
       # pull-requests: write  # This is required to post the PR comment
     steps:
