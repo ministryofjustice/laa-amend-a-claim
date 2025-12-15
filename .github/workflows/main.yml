@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/BC-307-UAT-Pipeline
 
 permissions:
   contents: read
