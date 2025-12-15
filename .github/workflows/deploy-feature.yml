@@ -67,7 +67,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           REGISTRY: ${{ secrets.ECR_REGISTRY_URL }}
           REPOSITORY: ${{ inputs.ECR_REPOSITORY }}
-          HELM_DIR: "deployments"
+          HELM_DIR: "deployments/templates"
           SHARED_IP_RANGES_LAA: ${{ env.SHARED_IP_RANGES_LAA }}
           DEV_HOST: "laa-amend-a-claim-dev.apps.live.cloud-platform.service.justice.gov.uk"
           # head_ref is set if the workflow was triggered by a PR, ref_name is used if the workflow was trigged by a push.
@@ -81,7 +81,7 @@ jobs:
           helm upgrade ${CLEANED_BRANCH_NAME} \
           ${HELM_DIR} \
           --namespace=${{ secrets.KUBE_NAMESPACE }} \
-          --values ${HELM_DIR}/templates/deployment.yaml \
+          --values ${HELM_DIR}/deployment.yml \
           --set image.repository=${REGISTRY}/${REPOSITORY} \
           --set image.tag=${IMAGE_TAG} \
           --set fullnameOverride=${CLEANED_BRANCH_NAME} \
