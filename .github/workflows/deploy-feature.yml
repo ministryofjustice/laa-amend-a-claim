@@ -37,7 +37,7 @@ jobs:
     permissions:
       id-token: write # This is required for requesting the JWT
       contents: read  # This is required for actions/checkout
-      pull-requests: write  # This is required to post the PR comment
+      # pull-requests: write  # This is required to post the PR comment
     steps:
       - name: Checkout GitHub repository
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
@@ -92,22 +92,22 @@ jobs:
           --force \
           --install
 
-      - name: Post deployment comment
-        run: |
-          # Get short commit SHA
-          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-          
-          # Get commit message
-          COMMIT_MSG=$(git log -1 --pretty=format:"%s" ${{ github.sha }} 2>/dev/null || echo "Latest changes")
-          
-          # Create comment
-          gh pr comment ${{ github.event.number }} --body "## 🚀 Ephemeral Deployment Successful
-          
-          **Build:** [\`${SHORT_SHA}\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) • ${COMMIT_MSG}
-          
-          **View live site:** ${{ env.DEPLOYMENT_URL }}
-          
-          ---
-          *Deployed to ${{ inputs.environment }} by ${{ github.actor }} • [View Workflow](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Post deployment comment
+#        run: |
+#          # Get short commit SHA
+#          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+#
+#          # Get commit message
+#          COMMIT_MSG=$(git log -1 --pretty=format:"%s" ${{ github.sha }} 2>/dev/null || echo "Latest changes")
+#
+#          # Create comment
+#          gh pr comment ${{ github.event.number }} --body "## 🚀 Ephemeral Deployment Successful
+#
+#          **Build:** [\`${SHORT_SHA}\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) • ${COMMIT_MSG}
+#
+#          **View live site:** ${{ env.DEPLOYMENT_URL }}
+#
+#          ---
+#          *Deployed to ${{ inputs.environment }} by ${{ github.actor }} • [View Workflow](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*"
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
