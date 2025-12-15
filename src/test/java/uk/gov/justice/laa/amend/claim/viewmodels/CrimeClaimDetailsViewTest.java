@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
-import uk.gov.justice.laa.amend.claim.models.AssessmentStatus;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
@@ -47,8 +47,8 @@ public class CrimeClaimDetailsViewTest {
         @Test
         void getAssessedTotalsHandlesValidFields() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AssessmentStatus.ASSESSABLE));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AssessmentStatus.ASSESSABLE));
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.MODIFIABLE));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
             ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
 
             List<ClaimField> result = viewModel.getAssessedTotals();
@@ -60,8 +60,8 @@ public class CrimeClaimDetailsViewTest {
         @Test
         void getAssessedTotalsHandlesValidFieldsWithDoNotDisplayStatus() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AssessmentStatus.DO_NOT_DISPLAY));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AssessmentStatus.DO_NOT_DISPLAY));
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.DO_NOT_DISPLAY));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.DO_NOT_DISPLAY));
             ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
 
             List<ClaimField> result = viewModel.getAssessedTotals();
@@ -85,8 +85,8 @@ public class CrimeClaimDetailsViewTest {
         @Test
         void getAllowedTotalsHandlesValid() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", AssessmentStatus.ASSESSABLE));
-            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", AssessmentStatus.ASSESSABLE));
+            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE));
+            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
             ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
 
             List<ClaimField> result = viewModel.getAllowedTotals();
@@ -205,13 +205,13 @@ public class CrimeClaimDetailsViewTest {
         @Test
         void convertFieldsThatNeedAmendingIntoErrors() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setNetProfitCost(createClaimField("profitCost", AssessmentStatus.ASSESSABLE));
-            claim.setTravelCosts(createClaimField("travel", AssessmentStatus.ASSESSABLE));
-            claim.setWaitingCosts(createClaimField("waiting", AssessmentStatus.ASSESSABLE));
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", AssessmentStatus.ASSESSABLE));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", AssessmentStatus.ASSESSABLE));
-            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", AssessmentStatus.ASSESSABLE));
-            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", AssessmentStatus.ASSESSABLE));
+            claim.setNetProfitCost(createClaimField("profitCost", ClaimFieldStatus.MODIFIABLE));
+            claim.setTravelCosts(createClaimField("travel", ClaimFieldStatus.MODIFIABLE));
+            claim.setWaitingCosts(createClaimField("waiting", ClaimFieldStatus.MODIFIABLE));
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.MODIFIABLE));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
+            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE));
+            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
             CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
 
             List<ReviewAndAmendFormError> expectedErrors = List.of(
@@ -226,7 +226,7 @@ public class CrimeClaimDetailsViewTest {
         }
     }
 
-    public static ClaimField createClaimField(String key, AssessmentStatus status) {
+    public static ClaimField createClaimField(String key, ClaimFieldStatus status) {
         ClaimField claimField = new ClaimField();
         claimField.setKey(key);
         claimField.setStatus(status);

@@ -8,15 +8,15 @@ import lombok.Getter;
  * <p>
  * This enum defines the possible states for claim field assessment:
  * <ul>
- *   <li>{@link #ASSESSABLE} - The claim field with status can be assessed.</li>
- *   <li>{@link #NOT_ASSESSABLE} - The claim field with status cannot be assessed.</li>
+ *   <li>{@link #MODIFIABLE} - The claim field with status can be modified.</li>
+ *   <li>{@link #NOT_MODIFIABLE} - The claim field with status cannot be modified.</li>
  *   <li>{@link #DO_NOT_DISPLAY} - The claim field with status should not be shown in the UI.</li>
  * </ul>
  */
 
 @Getter
-public enum AssessmentStatus {
-    ASSESSABLE,
-    NOT_ASSESSABLE,
+public enum ClaimFieldStatus {
+    MODIFIABLE,
+    NOT_MODIFIABLE,
     DO_NOT_DISPLAY
 }

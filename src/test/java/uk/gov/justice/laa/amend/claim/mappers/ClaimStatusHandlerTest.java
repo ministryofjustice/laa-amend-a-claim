@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
-import uk.gov.justice.laa.amend.claim.models.AssessmentStatus;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
@@ -46,7 +46,7 @@ class ClaimStatusHandlerTest {
             ClaimDetails claimDetails = new CrimeClaimDetails();
             claimDetails.setAssessedTotalVat(assessedTotal);
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.NILLED);
-            assertThat(assessedTotal.getStatus()).isEqualTo(AssessmentStatus.DO_NOT_DISPLAY);
+            assertThat(assessedTotal.getStatus()).isEqualTo(ClaimFieldStatus.DO_NOT_DISPLAY);
         }
 
         @Test
@@ -57,7 +57,7 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(civilClaimDetails, OutcomeType.NILLED);
 
-            assertThat(vatField.getStatus()).isEqualTo(AssessmentStatus.ASSESSABLE);
+            assertThat(vatField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
         }
 
         @Test
@@ -67,7 +67,7 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(mockClaim, OutcomeType.NILLED);
 
-            assertThat(otherField.getStatus()).isEqualTo(AssessmentStatus.NOT_ASSESSABLE);
+            assertThat(otherField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
         }
     }
 
@@ -83,7 +83,7 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.REDUCED);
 
-            assertThat(profitCostField.getStatus()).isEqualTo(AssessmentStatus.ASSESSABLE);
+            assertThat(profitCostField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
         }
 
         @Test
@@ -94,7 +94,7 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.REDUCED);
 
-            assertThat(boltOnField.getStatus()).isEqualTo(AssessmentStatus.NOT_ASSESSABLE);
+            assertThat(boltOnField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
         }
 
         @Test
@@ -107,7 +107,7 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.REDUCED);
 
-            assertThat(otherField.getStatus()).isEqualTo(AssessmentStatus.ASSESSABLE);
+            assertThat(otherField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
         }
     }
 
@@ -122,7 +122,7 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 
-            assertThat(totalField.getStatus()).isEqualTo(AssessmentStatus.DO_NOT_DISPLAY);
+            assertThat(totalField.getStatus()).isEqualTo(ClaimFieldStatus.DO_NOT_DISPLAY);
         }
 
         @Test
@@ -136,7 +136,7 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 
-            assertThat(unassessedField.getStatus()).isEqualTo(AssessmentStatus.ASSESSABLE);
+            assertThat(unassessedField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
         }
     }
 
@@ -152,7 +152,7 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
-            assertThat(unassessedField.getStatus()).isEqualTo(AssessmentStatus.ASSESSABLE);
+            assertThat(unassessedField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
         }
 
         @Test
@@ -165,7 +165,7 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
-            assertThat(assessedField.getStatus()).isEqualTo(AssessmentStatus.NOT_ASSESSABLE);
+            assertThat(assessedField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
         }
     }
 

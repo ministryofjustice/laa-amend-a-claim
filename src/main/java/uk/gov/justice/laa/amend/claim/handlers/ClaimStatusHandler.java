@@ -2,7 +2,7 @@ package uk.gov.justice.laa.amend.claim.handlers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.amend.claim.models.AssessmentStatus;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
@@ -47,11 +47,11 @@ public class ClaimStatusHandler {
     }
 
     private void updateFieldStatus(ClaimField field, OutcomeType outcome, ClaimDetails claim) {
-        AssessmentStatus status = determineFieldStatus(field, outcome, claim);
+        ClaimFieldStatus status = determineFieldStatus(field, outcome, claim);
         field.setStatus(status);
     }
 
-    private AssessmentStatus determineFieldStatus(ClaimField field, OutcomeType outcome, ClaimDetails claim) {
+    private ClaimFieldStatus determineFieldStatus(ClaimField field, OutcomeType outcome, ClaimDetails claim) {
         return switch (outcome) {
             case NILLED -> handleNilledStatus(field, claim);
             case PAID_IN_FULL -> handleAssessmentInFull(field, claim);
@@ -60,48 +60,48 @@ public class ClaimStatusHandler {
         };
     }
 
-    private AssessmentStatus handleNilledStatus(ClaimField field, ClaimDetails claim) {
+    private ClaimFieldStatus handleNilledStatus(ClaimField field, ClaimDetails claim) {
         if (isAssessedTotalFields(field, claim)) {
-            return AssessmentStatus.DO_NOT_DISPLAY;
+            return ClaimFieldStatus.DO_NOT_DISPLAY;
         } else if (field == claim.getVatClaimed()) {
-            return AssessmentStatus.ASSESSABLE;
+            return ClaimFieldStatus.MODIFIABLE;
         }
-        return AssessmentStatus.NOT_ASSESSABLE;
+        return ClaimFieldStatus.NOT_MODIFIABLE;
     }
 
     /**
      * Set the field status for REDUCED outcome status.
      */
-    private AssessmentStatus handleReducedStatus(ClaimField field, ClaimDetails claim) {
+    private ClaimFieldStatus handleReducedStatus(ClaimField field, ClaimDetails claim) {
         if (isAssessedTotalFields(field, claim) && isNotValidFeeCode(claim)) {
-            return AssessmentStatus.DO_NOT_DISPLAY;
+            return ClaimFieldStatus.DO_NOT_DISPLAY;
         }
         return checkAssessableFields(field);
     }
 
-    private AssessmentStatus checkAssessableFields(ClaimField field) {
+    private ClaimFieldStatus checkAssessableFields(ClaimField field) {
         return NON_ASSESSABLE_KEYS.contains(field.getKey())
-                ? AssessmentStatus.NOT_ASSESSABLE
-                : AssessmentStatus.ASSESSABLE;
+                ? ClaimFieldStatus.NOT_MODIFIABLE
+                : ClaimFieldStatus.MODIFIABLE;
     }
 
     /**
      * Set the field status for REDUCED_TO_FIXED_FEE outcome status.
      */
-    private AssessmentStatus handleReducedToFixedFeeStatus(ClaimField field) {
+    private ClaimFieldStatus handleReducedToFixedFeeStatus(ClaimField field) {
         return checkAssessableFields(field);
     }
 
     /**
      * Set the field status for PAID_IN_FULL outcome status.
      */
-    private AssessmentStatus handleAssessmentInFull(ClaimField field, ClaimDetails claim) {
+    private ClaimFieldStatus handleAssessmentInFull(ClaimField field, ClaimDetails claim) {
         if (isAssessedTotalFields(field, claim) && isNotValidFeeCode(claim)) {
-            return AssessmentStatus.DO_NOT_DISPLAY;
+            return ClaimFieldStatus.DO_NOT_DISPLAY;
         } else if (field == claim.getFixedFee() || field == claim.getTotalAmount()) {
-            return  AssessmentStatus.NOT_ASSESSABLE;
+            return  ClaimFieldStatus.NOT_MODIFIABLE;
         }
-        return AssessmentStatus.ASSESSABLE;
+        return ClaimFieldStatus.MODIFIABLE;
     }
 
     /**

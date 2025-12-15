@@ -15,7 +15,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
-import uk.gov.justice.laa.amend.claim.models.AssessmentStatus;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
@@ -147,7 +147,7 @@ public class ClaimReviewControllerTest {
     public void testUnsuccessfulValidationReloadsPageWithErrorSummary() throws Exception {
         ClaimField claimField = new ClaimField();
         claimField.setKey("foo");
-        claimField.setStatus(AssessmentStatus.ASSESSABLE);
+        claimField.setStatus(ClaimFieldStatus.MODIFIABLE);
         claimField.setAssessed(null);
         claim.setNetProfitCost(claimField);
 

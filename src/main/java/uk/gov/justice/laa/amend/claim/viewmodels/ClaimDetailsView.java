@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
-import uk.gov.justice.laa.amend.claim.models.AssessmentStatus;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
@@ -80,7 +80,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     default void addRowIfNotNull(List<ClaimField> list, ClaimField... claimFields) {
         for (ClaimField claimField : claimFields) {
-            if (claimField != null && claimField.getStatus() != AssessmentStatus.DO_NOT_DISPLAY) {
+            if (claimField != null && claimField.getStatus() != ClaimFieldStatus.DO_NOT_DISPLAY) {
                 list.add(claimField);
             }
         }

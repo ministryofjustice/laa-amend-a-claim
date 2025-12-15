@@ -21,7 +21,7 @@ public class ClaimField implements Serializable {
     private Object calculated;
     private Object assessed;
     private String changeUrl;
-    private AssessmentStatus status;
+    private ClaimFieldStatus status;
 
     public ClaimField(String key, Object submitted, Object calculated) {
         this(key, submitted, calculated, (String) null);
@@ -106,10 +106,10 @@ public class ClaimField implements Serializable {
     }
 
     public boolean isAssessableAndUnassessed() {
-        return status == AssessmentStatus.ASSESSABLE && assessed == null;
+        return status == ClaimFieldStatus.MODIFIABLE && assessed == null;
     }
 
     public boolean isAssessableAndAssessed() {
-        return status == AssessmentStatus.ASSESSABLE && assessed != null;
+        return status == ClaimFieldStatus.MODIFIABLE && assessed != null;
     }
 }

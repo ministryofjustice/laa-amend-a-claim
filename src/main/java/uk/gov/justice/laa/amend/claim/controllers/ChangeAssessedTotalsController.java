@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.forms.AssessedTotalForm;
-import uk.gov.justice.laa.amend.claim.models.AssessmentStatus;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
@@ -40,7 +40,7 @@ public class ChangeAssessedTotalsController {
     ) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
-        if (claim.getAssessedTotalVat().getStatus() == AssessmentStatus.DO_NOT_DISPLAY || claim.getAssessedTotalInclVat().getStatus() == AssessmentStatus.DO_NOT_DISPLAY) {
+        if (claim.getAssessedTotalVat().getStatus() == ClaimFieldStatus.DO_NOT_DISPLAY || claim.getAssessedTotalInclVat().getStatus() == ClaimFieldStatus.DO_NOT_DISPLAY) {
             log.warn("The assessed totals are not modifiable for claim {}. Returning 404.", claimId);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
