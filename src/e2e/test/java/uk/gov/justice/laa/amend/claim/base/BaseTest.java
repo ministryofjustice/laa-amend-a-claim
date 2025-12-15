@@ -22,13 +22,13 @@ public abstract class BaseTest {
         page = context.newPage();
 
         String baseUrl = EnvConfig.baseUrl();
-        if (baseUrl.contains("localhost") || baseUrl.contains("127.0.0.1")) {
-            System.out.println("[INFO] Local environment detected. Skipping login steps.");
-            page.navigate(baseUrl);
-        } else {
+//        if (baseUrl.contains("localhost") || baseUrl.contains("127.0.0.1")) {
+//            System.out.println("[INFO] Local environment detected. Skipping login steps.");
+//            page.navigate(baseUrl);
+//        } else {
             System.out.println("[INFO] Non-local environment detected. Running login steps.");
             new LoginPage(page).navigate().login();
-        }
+
     }
 
     @AfterEach

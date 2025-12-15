@@ -7,7 +7,6 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
 import java.time.Instant;
-import java.util.Base64;
 
 public class LoginPage {
     private final Page page;
@@ -33,20 +32,21 @@ public class LoginPage {
     public void login() {
         System.out.println("[INFO] Starting login flow...");
 
-        page.waitForSelector(userField, new Page.WaitForSelectorOptions().setTimeout(120_000));
-        page.fill(userField, EnvConfig.username());
-        page.click(nextButton);
-
+        AadLoginHelper.selectAccountOrUseAnother(page);
+        System.out.println("[INFO] Starting login flow 2...");
         page.waitForSelector(passwordField, new Page.WaitForSelectorOptions().setTimeout(120_000));
         page.fill(passwordField, EnvConfig.password());
-        page.click(signInButton);
+        page.locator("input[type='submit'], button[type='submit'], button:has-text('Next'), button:has-text('Continue'), button:has-text('Sign in')").first().click();
+
+       // page.click(signInButton);
+        System.out.println("[INFO] Starting login flow 3...");
 
         String mfaSecret = EnvConfig.mfaSecret();
         if (mfaSecret != null && !mfaSecret.isBlank()) {
             handleMfa(mfaSecret);
         }
-
-        page.waitForSelector("h1:has-text('Submit a bulk claim')",
+        System.out.println("[INFO] Starting login flow 4...");
+        page.waitForSelector("h1:has-text('Search for a claim')",
                 new Page.WaitForSelectorOptions().setTimeout(60_000));
 
         System.out.println("[INFO] Login successful!");
@@ -120,5 +120,32 @@ public class LoginPage {
         byte[] out = new byte[buffer.remaining()];
         buffer.get(out);
         return out;
+    }
+
+    static class AadLoginHelper {
+        public static void selectAccountOrUseAnother(Page page) {
+            // Wait for the page to load and check if account selection is needed
+            page.waitForLoadState();
+            if (page.locator("div:has-text('Pick an account')").isVisible() ||
+                    page.locator("button:has-text('Use another account')").isVisible()) {
+                // Click "Use another account" if available
+                if (page.locator("button:has-text('Use another account')").isVisible()) {
+                    page.click("button:has-text('Use another account')");
+                }
+            }
+            // Then fill the username
+            // Then fill the username
+            page.waitForSelector("input[name='loginfmt'], input[type='email']", new Page.WaitForSelectorOptions().setTimeout(120_000));
+            page.fill("input[name='loginfmt'], input[type='email']", EnvConfig.username());
+            System.out.println(page.locator("input[name='loginfmt'], input[type='email']").isVisible());
+            System.out.println(page.locator("input[name='loginfmt'], input[type='email']").textContent());
+            System.out.println(page.locator("input[type='submit'], button[type='submit'], button:has-text('Next'), button:has-text('Continue'), button:has-text('Sign in')").isVisible());
+            page.waitForSelector("input[type='submit'], button[type='submit'], button:has-text('Next'), button:has-text('Continue'), button:has-text('Sign in')", new Page.WaitForSelectorOptions().setTimeout(120_000));
+            page.locator("input[type='submit'], button[type='submit'], button:has-text('Next'), button:has-text('Continue'), button:has-text('Sign in')").first().click();
+
+//            page.waitForSelector("input[name='loginfmt'], input[type='email']", new Page.WaitForSelectorOptions().setTimeout(120_000));
+//            page.fill("input[name='loginfmt'], input[type='email']", EnvConfig.username());
+//            page.locator("input[type='submit'], button[type='submit'], button:has-text('Next'), button:has-text('Continue'), button:has-text('Sign in')").first().click();
+        }
     }
 }
