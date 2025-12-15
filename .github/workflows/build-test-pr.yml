@@ -188,6 +188,7 @@ jobs:
       ECR_REPOSITORY: ${{vars.ECR_REPOSITORY}}
       SENTRY_ENV: ${{vars.SENTRY_ENV}}
     secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       ECR_REGISTRY_URL: ${{ secrets.ECR_REGISTRY_URL }}
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
