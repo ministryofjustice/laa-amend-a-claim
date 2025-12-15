@@ -12,7 +12,7 @@ on:
         required: true
     outputs:
       image_tag:
-        description: "The Docker image tag (commit SHA)"
+        description: "The Docker image tag (commit SHA) - Cache test"
         value: ${{ jobs.build.outputs.image_tag }}
 
 jobs:
