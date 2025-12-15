@@ -7,6 +7,10 @@ import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CivilClaimDetails extends ClaimDetails {
@@ -36,22 +40,22 @@ public class CivilClaimDetails extends ClaimDetails {
     @Override
     public void setReducedToFixedFeeValues() {
         super.setReducedToFixedFeeValues();
-        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(jrFormFillingCost, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(adjournedHearing, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(cmrhTelephone, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(cmrhOral, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(hoInterview, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(substantiveHearing, ClaimField::setAmendedToCalculated);
-        applyIfNotNull(counselsCost, ClaimField::setAmendedToCalculated);
+        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(jrFormFillingCost, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(adjournedHearing, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(cmrhTelephone, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(cmrhOral, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(hoInterview, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(substantiveHearing, ClaimField::setAssessedToCalculated);
+        applyIfNotNull(counselsCost, ClaimField::setAssessedToCalculated);
     }
 
     @Override
     public void setReducedValues() {
         super.setReducedValues();
-        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(jrFormFillingCost, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(counselsCost, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(jrFormFillingCost, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(counselsCost, ClaimField::setAssessedToSubmitted);
 
         // Bolt-ons get set to 0
         applyIfNotNull(adjournedHearing, ClaimField::setNilled);
@@ -63,14 +67,14 @@ public class CivilClaimDetails extends ClaimDetails {
       
     public void setPaidInFullValues() {
         super.setPaidInFullValues();
-        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(jrFormFillingCost, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(counselsCost, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(adjournedHearing, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(cmrhTelephone, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(cmrhOral, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(hoInterview, ClaimField::setAmendedToSubmitted);
-        applyIfNotNull(substantiveHearing, ClaimField::setAmendedToSubmitted);
+        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(jrFormFillingCost, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(counselsCost, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(adjournedHearing, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(cmrhTelephone, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(cmrhOral, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(hoInterview, ClaimField::setAssessedToSubmitted);
+        applyIfNotNull(substantiveHearing, ClaimField::setAssessedToSubmitted);
 
     }
 
@@ -87,5 +91,28 @@ public class CivilClaimDetails extends ClaimDetails {
     @Override
     public AssessmentPost toAssessment(AssessmentMapper mapper, String userId) {
         return mapper.mapCivilClaimToAssessment(this, userId);
+    }
+
+    @Override
+    public List<ClaimField> getClaimFields() {
+        return Stream.concat(
+                        super.commonClaimFieldsStream(),
+                        civilSpecificFieldsStream()
+                )
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    protected Stream<ClaimField> civilSpecificFieldsStream() {
+        return Stream.of(
+                getHoInterview(),
+                getSubstantiveHearing(),
+                getCounselsCost(),
+                getJrFormFillingCost(),
+                getAdjournedHearing(),
+                getCmrhOral(),
+                getCmrhTelephone(),
+                getDetentionTravelWaitingCosts()
+        );
     }
 }

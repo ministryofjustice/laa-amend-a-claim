@@ -11,9 +11,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimReviewController;
-import uk.gov.justice.laa.amend.claim.models.AmendStatus;
+import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -27,6 +29,9 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     @MockitoBean
     private AssessmentService assessmentService;
 
+    @MockitoBean
+    ClaimStatusHandler statusHandler;
+
     ReviewAndAmendViewTest() {
         super("/submissions/submissionId/claims/claimId/review");
     }
@@ -34,6 +39,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     @Test
     void testPage() throws Exception {
         claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
+        MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
         Document doc = renderDocument();
 
         assertPageHasTitle(doc, "Review and amend");
@@ -47,6 +53,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     @Test
     void testPageWithSubmissionError() throws Exception {
         claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
+        MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
         WebClientResponseException exception = WebClientResponseException
@@ -63,9 +70,10 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     @Test
     void testPageWithValidationError() throws Exception {
         claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
+        MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
         ClaimField claimField = new ClaimField();
         claimField.setKey("profitCosts");
-        claimField.setStatus(AmendStatus.NEEDS_AMENDING);
+        claimField.setStatus(ClaimFieldStatus.MODIFIABLE);
         claim.setNetProfitCost(claimField);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();

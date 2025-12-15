@@ -83,7 +83,7 @@ class ChangeMonetaryValueControllerTest {
         Claim claim = createClaimFor(cost);
         ClaimField claimField = cost.getAccessor().get(claim);
         Assertions.assertNotNull(claimField);
-        claimField.setAmended(BigDecimal.valueOf(100));
+        claimField.setAssessed(BigDecimal.valueOf(100));
         session.setAttribute(claimId, claim);
 
         mockMvc.perform(get(buildPath(cost.getPath())).session(session))
@@ -111,8 +111,8 @@ class ChangeMonetaryValueControllerTest {
         Claim updated = (Claim) session.getAttribute(claimId);
 
         Assertions.assertNotNull(updated);
-        Assertions.assertEquals(new BigDecimal("100.00"), cost.getAccessor().get(updated).getAmended());
-        Assertions.assertEquals(AmendStatus.AMENDABLE, cost.getAccessor().get(updated).getStatus());
+        Assertions.assertEquals(new BigDecimal("100.00"), cost.getAccessor().get(updated).getAssessed());
+        Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, cost.getAccessor().get(updated).getStatus());
     }
 
     @ParameterizedTest
