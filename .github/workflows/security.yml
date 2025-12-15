@@ -49,11 +49,6 @@ jobs:
         with:
           args: --severity-threshold=high --sarif-file-output=snyk-app.sarif
 
-      - name: Fix undefined values in SARIF
-        if: always()
-        run: |
-          sed -i 's/"security-severity": "undefined"/"security-severity": "0"/g' snyk-app.sarif
-
       - name: Upload result to GitHub Code Scanning
         if: always()
         uses: github/codeql-action/upload-sarif@v3
@@ -63,6 +58,10 @@ jobs:
   vulnerability-scan-docker:
     name: Vulnerability Scan - Docker
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      id-token: write
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
