@@ -58,6 +58,7 @@ jobs:
   vulnerability-scan-docker:
     name: Vulnerability Scan - Docker
     runs-on: ubuntu-latest
+    environment: dev
     permissions:
       contents: read
       security-events: write
