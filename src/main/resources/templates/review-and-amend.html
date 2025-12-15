@@ -77,7 +77,7 @@
                         </td>
                     </th:block>
 
-                    <th:block th:if="${row.status.name() == 'NOT_ASSESSABLE'}">
+                    <th:block th:if="${row.isNotAssessable()}">
                         <td class="govuk-table__cell"
                             th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
                         </td>
@@ -135,7 +135,7 @@
                         </td>
                     </th:block>
 
-                    <th:block th:if="${row.status.name() == 'NOT_ASSESSABLE'}">
+                    <th:block th:if="${row.isNotAssessable()}">
                         <td class="govuk-table__cell"
                             th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
                         </td>
@@ -194,7 +194,7 @@
                         </td>
                     </th:block>
 
-                    <th:block th:if="${row.status.name() == 'NOT_ASSESSABLE'}">
+                    <th:block th:if="${row.isNotAssessable()}">
                         <td class="govuk-table__cell"
                             th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
                         </td>

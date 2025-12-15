@@ -34,7 +34,7 @@ public abstract class ClaimDetails extends Claim {
     private ClaimField assessedTotalInclVat;
     private ClaimField allowedTotalVat;
     private ClaimField allowedTotalInclVat;
-    
+
     private OutcomeType assessmentOutcome;
     private LocalDateTime submittedDate;
     private String feeCode;
@@ -123,23 +123,28 @@ public abstract class ClaimDetails extends Claim {
 
 
     public List<ClaimField> getClaimFields() {
-        return commonClaimFieldsStream()
-                .filter(Objects::nonNull)
-                .toList();
+        return Stream.concat(
+                commonClaimFields(),
+                specificClaimFields()
+            )
+            .filter(Objects::nonNull)
+            .toList();
     }
 
-    protected Stream<ClaimField> commonClaimFieldsStream() {
+    protected Stream<ClaimField> commonClaimFields() {
         return Stream.of(
-                getVatClaimed(),
-                getFixedFee(),
-                getNetProfitCost(),
-                getNetDisbursementAmount(),
-                getDisbursementVatAmount(),
-                getTotalAmount(),
-                getAssessedTotalVat(),
-                getAssessedTotalInclVat(),
-                getAllowedTotalVat(),
-                getAllowedTotalInclVat()
+            getVatClaimed(),
+            getFixedFee(),
+            getNetProfitCost(),
+            getNetDisbursementAmount(),
+            getDisbursementVatAmount(),
+            getTotalAmount(),
+            getAssessedTotalVat(),
+            getAssessedTotalInclVat(),
+            getAllowedTotalVat(),
+            getAllowedTotalInclVat()
         );
     }
+
+    protected abstract Stream<ClaimField> specificClaimFields();
 }

@@ -7,8 +7,6 @@ import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 @EqualsAndHashCode(callSuper = true)
@@ -64,7 +62,7 @@ public class CivilClaimDetails extends ClaimDetails {
         applyIfNotNull(hoInterview, ClaimField::setNilled);
         applyIfNotNull(substantiveHearing, ClaimField::setNilled);
     }
-      
+
     public void setPaidInFullValues() {
         super.setPaidInFullValues();
         applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAssessedToSubmitted);
@@ -94,25 +92,16 @@ public class CivilClaimDetails extends ClaimDetails {
     }
 
     @Override
-    public List<ClaimField> getClaimFields() {
-        return Stream.concat(
-                        super.commonClaimFieldsStream(),
-                        civilSpecificFieldsStream()
-                )
-                .filter(Objects::nonNull)
-                .toList();
-    }
-
-    protected Stream<ClaimField> civilSpecificFieldsStream() {
+    protected Stream<ClaimField> specificClaimFields() {
         return Stream.of(
-                getHoInterview(),
-                getSubstantiveHearing(),
-                getCounselsCost(),
-                getJrFormFillingCost(),
-                getAdjournedHearing(),
-                getCmrhOral(),
-                getCmrhTelephone(),
-                getDetentionTravelWaitingCosts()
+            getHoInterview(),
+            getSubstantiveHearing(),
+            getCounselsCost(),
+            getJrFormFillingCost(),
+            getAdjournedHearing(),
+            getCmrhOral(),
+            getCmrhTelephone(),
+            getDetentionTravelWaitingCosts()
         );
     }
 }

@@ -7,8 +7,6 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.CrimeClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import static uk.gov.justice.laa.amend.claim.validators.FeeCodeValidator.isNotValidFeeCode;
@@ -41,7 +39,7 @@ public class CrimeClaimDetails extends ClaimDetails {
         super.setReducedValues();
         setPaidInFullOrReduced();
     }
-      
+
     @Override
     public void setPaidInFullValues() {
         super.setPaidInFullValues();
@@ -81,19 +79,10 @@ public class CrimeClaimDetails extends ClaimDetails {
     }
 
     @Override
-    public List<ClaimField> getClaimFields() {
-        return Stream.concat(
-                        super.commonClaimFieldsStream(),
-                        crimeSpecificFieldsStream()
-                )
-                .filter(Objects::nonNull)
-                .toList();
-    }
-
-    protected Stream<ClaimField> crimeSpecificFieldsStream() {
+    protected Stream<ClaimField> specificClaimFields() {
         return Stream.of(
-                getTravelCosts(),
-                getWaitingCosts()
+            getTravelCosts(),
+            getWaitingCosts()
         );
     }
 }

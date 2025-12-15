@@ -112,4 +112,8 @@ public class ClaimField implements Serializable {
     public boolean isAssessableAndAssessed() {
         return status == ClaimFieldStatus.MODIFIABLE && assessed != null;
     }
+
+    public boolean isNotAssessable() {
+        return status != ClaimFieldStatus.MODIFIABLE;
+    }
 }
