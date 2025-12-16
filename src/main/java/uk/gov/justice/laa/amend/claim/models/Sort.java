@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.regex.Matcher;
@@ -11,6 +12,7 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAU
 
 @Data
 @AllArgsConstructor
+@Builder
 public class Sort {
     private String field;
     private SortDirection direction;
@@ -20,8 +22,10 @@ public class Sort {
         return direction.getValue() != null ? String.format("%s,%s", field, direction.getValue()) : null;
     }
 
-    public Sort() {
-        applyDefaults();
+    public static Sort defaults() {
+        Sort sort = Sort.builder().build();
+        sort.applyDefaults();
+        return sort;
     }
 
     public Sort(String str) {

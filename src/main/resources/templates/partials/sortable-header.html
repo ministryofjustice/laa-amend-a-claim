@@ -1,8 +1,13 @@
-<th:block th:fragment="sortableHeader(form,sorts,field,messageKey)" th:with="direction=${sorts.getDirection(field)}">
-    <th scope="col" class="govuk-table__header" th:aria-sort="${direction.aria}">
-        <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline govuk-link--sort" th:href="${@RedirectUrlUtils.getRedirectUrl(form, field, direction.toggle())}">
-            <span th:text="#{${messageKey}}"></span>
-            <th:block th:replace="~{partials/sort-arrow :: sortArrow(${direction})}"></th:block>
-        </a>
-    </th>
+<th:block th:fragment="sortableHeader(form,sorts,field,messageKey)">
+    <th:block th:if="${sorts.enabled}" th:with="direction=${sorts.getDirection(field)}">
+        <th scope="col" class="govuk-table__header" th:aria-sort="${direction.aria}">
+            <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline govuk-link--sort" th:href="${@RedirectUrlUtils.getRedirectUrl(form, field, direction.toggle())}">
+                <span th:text="#{${messageKey}}"></span>
+                <th:block th:replace="~{partials/sort-arrow :: sortArrow(${direction})}"></th:block>
+            </a>
+        </th>
+    </th:block>
+    <th:block th:unless="${sorts.enabled}">
+        <th scope="col" class="govuk-table__header" th:text="#{${messageKey}}"></th>
+    </th:block>
 </th:block>

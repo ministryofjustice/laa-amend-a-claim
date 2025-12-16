@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
@@ -20,6 +21,7 @@ import uk.gov.justice.laa.amend.claim.utils.RedirectUrlUtils;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
@@ -32,12 +34,13 @@ public class HomePageController {
     private final ClaimService claimService;
     private final ClaimResultMapper claimResultMapper;
     private final ClaimMapper claimMapper;
+    private final SearchProperties searchProperties;
 
     @GetMapping("/")
     public String onPageLoad(
         Model model,
         @RequestParam(required = false, defaultValue = "1") int page,
-        @RequestParam(required = false, defaultValue = DEFAULT_SORT) Sort sort,
+        @RequestParam(required = false) Sort sort,
         @RequestParam(required = false) String providerAccountNumber,
         @RequestParam(required = false) String submissionDateMonth,
         @RequestParam(required = false) String submissionDateYear,
@@ -52,7 +55,16 @@ public class HomePageController {
         form.setCaseReferenceNumber(caseReferenceNumber);
 
         model.addAttribute("form", form);
-        model.addAttribute("sorts", new Sorts(sort));
+
+        if (searchProperties.isSortEnabled()) {
+            if (sort == null) {
+                sort = Sort.defaults();
+            }
+            model.addAttribute("sorts", new Sorts(sort));
+        } else {
+            sort = null;
+            model.addAttribute("sorts", Sorts.disabled());
+        }
 
         if (form.anyNonEmpty()) {
             ClaimResultSet result = claimService.searchClaims(
@@ -62,7 +74,7 @@ public class HomePageController {
                 Optional.ofNullable(form.getSubmissionPeriod()),
                 page,
                 DEFAULT_PAGE_SIZE,
-                sort.toString()
+                sort
             );
             String redirectUrl = RedirectUrlUtils.getRedirectUrl(form, page, sort);
             SearchResultView viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
@@ -83,7 +95,8 @@ public class HomePageController {
             return "index";
         }
 
-        String redirectUrl = RedirectUrlUtils.getRedirectUrl(form);
+        Sort sort = searchProperties.isSortEnabled() ? Sort.defaults() : null;
+        String redirectUrl = RedirectUrlUtils.getRedirectUrl(form, sort);
         return "redirect:" + redirectUrl;
     }
 }

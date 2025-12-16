@@ -4,14 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
-import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -20,7 +21,6 @@ import java.util.Optional;
 public class ClaimService {
 
     private final ClaimsApiClient claimsApiClient;
-    private final SearchProperties searchProperties;
     private final ClaimMapper claimMapper;
 
 
@@ -31,7 +31,7 @@ public class ClaimService {
         Optional<String> submissionPeriod,
         int page,
         int size,
-        String sort
+        Sort sort
     ) {
         try {
             return claimsApiClient.searchClaims(
@@ -41,7 +41,7 @@ public class ClaimService {
                 submissionPeriod.orElse(null),
                 page - 1,
                 size,
-                searchProperties.isSortEnabled() ? sort : null
+                Objects.toString(sort, null)
             ).block();
         } catch (Exception e) {
             log.error("Error searching claims", e);

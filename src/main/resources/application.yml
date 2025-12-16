@@ -30,7 +30,7 @@ claims-api:
   url: ${CLAIMS_API}
   access-token: ${CLAIMS_TOKEN}
 search:
-  sort-enabled: false
+  sort-enabled: true
 
 logging:
   level:

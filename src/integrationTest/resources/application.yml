@@ -21,4 +21,5 @@ spring:
 claims-api:
   url: http://localhost:8089
   access-token: ""
-
+search:
+  sort-enabled: true
