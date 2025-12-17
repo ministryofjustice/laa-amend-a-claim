@@ -1,0 +1,9 @@
+environment: "dev"
+replicaCount: 1
+
+ingress:
+  enabled: true
+  host: "laa-amend-a-claim-dev.internal-non-prod.cloud-platform.service.justice.gov.uk"
+
+whitelist:
+  enabled: true
