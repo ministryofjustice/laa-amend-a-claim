@@ -83,7 +83,7 @@ jobs:
           --values ${HELM_DIR}/values/values-ephemeral.yaml \
           --set image.repository=${REGISTRY}/${REPOSITORY} \
           --set image.tag=${IMAGE_TAG} \
-          --set fullnameOverride=${BRANCH_NAME} \
+          --set fullnameOverride=${HOST_NAME} \
           --set ingress.host=${HOST_NAME} \
           --set sharedIPRangesLAA=$SHARED_IP_RANGES_LAA \
           --set pingdomIPs=$PINGDOM_IPS \
