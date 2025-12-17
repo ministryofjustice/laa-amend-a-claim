@@ -59,7 +59,7 @@ tolerations: []
 
 affinity: {}
 
-envVars:
+env:
   AZURE_CLIENT_ID:
     secret:
       name: laa-amend-a-claim-azure-client-id
