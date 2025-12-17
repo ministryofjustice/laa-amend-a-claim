@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: laa-amend-a-claim-deployment
+  name: {{- include "laa-amend-a-claim.fullname" . | nindent 4 }}
   labels:
-    app: laa-amend-a-claim
+    {{- include "laa-manage-a-providers-data.labels" . | nindent 4 }}
 spec:
   replicas: 3
   selector: {{- include "laa-amend-a-claim.selectorLabels" . | nindent 4 }}
