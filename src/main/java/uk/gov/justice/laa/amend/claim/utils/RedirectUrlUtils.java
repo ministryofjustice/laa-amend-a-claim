@@ -5,6 +5,8 @@ import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.amend.claim.models.SortDirection;
 
+import java.util.Objects;
+
 import static org.springframework.util.StringUtils.hasText;
 
 public class RedirectUrlUtils {
@@ -19,7 +21,7 @@ public class RedirectUrlUtils {
         addQueryParam(builder, "caseReferenceNumber", form.getCaseReferenceNumber());
 
         addQueryParam(builder, "page", String.valueOf(page));
-        addQueryParam(builder, "sort", sort.toString());
+        addQueryParam(builder, "sort", Objects.toString(sort, null));
 
         return builder.build().toUriString();
     }
@@ -30,10 +32,6 @@ public class RedirectUrlUtils {
 
     public static String getRedirectUrl(SearchForm form, Sort sort) {
         return getRedirectUrl(form, 1, sort);
-    }
-
-    public static String getRedirectUrl(SearchForm form) {
-        return getRedirectUrl(form, new Sort());
     }
 
     private static void addQueryParam(UriComponentsBuilder builder, String key, String value) {

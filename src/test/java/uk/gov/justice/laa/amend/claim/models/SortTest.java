@@ -64,25 +64,19 @@ public class SortTest {
     class ToStringTests {
         @Test
         void shouldConvertSortToStringWhenAscendingOrder() {
-            Sort sort = new Sort();
-            sort.setField("uniqueFileNumber");
-            sort.setDirection(SortDirection.ASCENDING);
+            Sort sort = Sort.builder().field("uniqueFileNumber").direction(SortDirection.ASCENDING).build();
             Assertions.assertEquals("uniqueFileNumber,asc", sort.toString());
         }
 
         @Test
         void shouldConvertSortToStringWhenDescendingOrder() {
-            Sort sort = new Sort();
-            sort.setField("caseReferenceNumber");
-            sort.setDirection(SortDirection.DESCENDING);
+            Sort sort = Sort.builder().field("caseReferenceNumber").direction(SortDirection.DESCENDING).build();
             Assertions.assertEquals("caseReferenceNumber,desc", sort.toString());
         }
 
         @Test
         void shouldConvertSortToStringWhenNoOrder() {
-            Sort sort = new Sort();
-            sort.setField("scheduleReference");
-            sort.setDirection(SortDirection.NONE);
+            Sort sort = Sort.builder().field("scheduleReference").direction(SortDirection.NONE).build();
             Assertions.assertNull(sort.toString());
         }
     }
