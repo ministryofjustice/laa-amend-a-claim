@@ -3,10 +3,10 @@ kind: Deployment
 metadata:
   name: {{- include "laa-amend-a-claim.fullname" . | nindent 4 }}
   labels:
-    {{- include "laa-manage-a-providers-data.labels" . | nindent 4 }}
+    {{ include "laa-amend-a-claim.labels" . | nindent 4 }}
 spec:
   replicas: 3
-  selector: {{- include "laa-amend-a-claim.selectorLabels" . | nindent 4 }}
+  selector: {{ include "laa-amend-a-claim.selectorLabels" . | nindent 4 }}
   template:
     metadata:
       labels: {{- include "laa-amend-a-claim.labels" . | nindent 4 }}
