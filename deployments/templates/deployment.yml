@@ -6,13 +6,10 @@ metadata:
     app: laa-amend-a-claim
 spec:
   replicas: 3
-  selector:
-    matchLabels:
-      app: laa-amend-a-claim # this should match the selector in service.yml
+  selector: {{- include "laa-amend-a-claim.selectorLabels" . | nindent 4 }}
   template:
     metadata:
-      labels:
-        app: laa-amend-a-claim # this should match the selector in service.yml
+      labels: {{- include "laa-amend-a-claim.labels" . | nindent 4 }}
     spec:
       containers:
         - name: laa-amend-a-claim
