@@ -45,8 +45,8 @@ class ClaimServiceTest {
 
 
     @Test
-    @DisplayName("Should return valid ClaimResultSet when API client provides valid response")
-    void testSearchClaims_ValidResponse() {
+    @DisplayName("Should return sorted valid ClaimResultSet when API client provides valid response")
+    void testSortedSearchClaims_ValidResponse() {
         // Arrange
         var mockApiResponse = new ClaimResultSet(); // Replace with appropriate type or mock object
 
@@ -62,6 +62,25 @@ class ClaimServiceTest {
         assertEquals(mockApiResponse, result);
 
         verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc");
+    }
+
+    @Test
+    @DisplayName("Should return valid unsorted ClaimResultSet when API client provides valid response")
+    void testUnsortedSearchClaims_ValidResponse() {
+        // Arrange
+        var mockApiResponse = new ClaimResultSet(); // Replace with appropriate type or mock object
+
+        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, null))
+            .thenReturn(Mono.just(mockApiResponse));
+
+        // Act
+        ClaimResultSet result = claimService.searchClaims("0p322f", Optional.empty(), Optional.empty(), Optional.empty(), 1, 10, null);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(mockApiResponse, result);
+
+        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, 0, 10, null);
     }
 
     @Test

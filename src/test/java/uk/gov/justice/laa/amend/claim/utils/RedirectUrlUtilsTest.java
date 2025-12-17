@@ -1,18 +1,21 @@
 package uk.gov.justice.laa.amend.claim.utils;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.thymeleaf.spring6.util.DetailedError;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
-import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
 import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.amend.claim.models.SortDirection;
 
-import java.util.List;
-import java.util.stream.Stream;
-
 public class RedirectUrlUtilsTest {
+
+    @Test
+    void createRedirectUrlWhenUnsorted() {
+        SearchForm form = new SearchForm();
+
+        String result = RedirectUrlUtils.getRedirectUrl(form, 1, null);
+
+        Assertions.assertEquals("/?page=1", result);
+    }
 
     @Test
     void createRedirectUrlWhenAccountNumberPresent() {
