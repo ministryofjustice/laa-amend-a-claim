@@ -13,6 +13,15 @@ on:
       SENTRY_ENV:
         required: true
         type: string
+      image_tag:
+        required: true
+        type: string
+        description: "The Docker image tag to deploy"
+      aws_region:
+        required: false
+        type: string
+        default: 'eu-west-2'
+        description: 'AWS region for the ECR'
     secrets:
       ECR_ROLE_TO_ASSUME:
         required: true
@@ -24,17 +33,11 @@ on:
         required: true
       KUBE_CERT:
         required: true
-    outputs:
-      image_tag:
-        description: "The image tag used for deployment"
-        value: ${{ jobs.deploy.outputs.image_tag }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    outputs:
-      image_tag: ${{ steps.get_sha.outputs.sha }}
     permissions:
       id-token: write
       contents: read
@@ -45,42 +48,17 @@ jobs:
         with:
           ref: ${{ inputs.branch }}
 
-      - name: Get latest commit SHA
-        id: get_sha
-        run: echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-          aws-region: ${{ vars.ECR_REGION }}
+          aws-region: ${{ inputs.aws_region }}
 
       - name: Authenticate to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
         id: login-ecr
 
-      - name: Set up JDK
-        uses: actions/setup-java@v5
-        with:
-          distribution: 'corretto'
-          java-version: '21'
-
-      - name: Build JAR
-        run: ./gradlew build
-        env:
-          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and Push Docker Image
-        run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ steps.get_sha.outputs.sha }}
-
-      - name: Generate Deployment the Files
+      - name: Generate Deployment Files
         run: |
           cat deployments/templates/deployment.yml | envsubst > deployments/deployment.yml
           cat deployments/templates/ingress.yml | envsubst > deployments/ingress.yml
@@ -89,7 +67,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ steps.get_sha.outputs.sha }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
           KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
           NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}

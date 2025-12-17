@@ -1,0 +1,100 @@
+name: Security
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: 'main'
+      image_tag:
+        required: true
+        type: string
+        description: "The Docker image tag to scan"
+      aws_region:
+        required: false
+        type: string
+        default: 'eu-west-2'
+        description: 'AWS region for the ECR'
+    secrets:
+      SNYK_TOKEN:
+        required: true
+      ECR_ROLE_TO_ASSUME:
+        required: true
+
+permissions:
+  contents: read
+  security-events: write
+  id-token: write
+
+jobs:
+  vulnerability-scan-app:
+    name: Vulnerability Scan - Application
+    runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      SNYK_TEST_EXCLUDE: build,generated
+      SNYK_TARGET_REFERENCE: main
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Run Snyk app vulnerability scan
+        uses: snyk/actions/gradle-9-jdk21@master
+        continue-on-error: true
+        with:
+          args: --severity-threshold=high --sarif-file-output=snyk-app.sarif
+
+      - name: Upload result to GitHub Code Scanning
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-app.sarif
+
+  vulnerability-scan-docker:
+    name: Vulnerability Scan - Docker
+    runs-on: ubuntu-latest
+    environment: dev
+    permissions:
+      contents: read
+      security-events: write
+      id-token: write
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+          aws-region: ${{ inputs.aws_region }}
+
+      - name: Authenticate to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+        id: login-ecr
+
+      - name: Pull Docker image from ECR
+        run: |
+          docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG spring-boot-microservice:scan
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+
+      - name: Run Snyk on Docker image
+        uses: snyk/actions/docker@master
+        continue-on-error: true
+        with:
+          image: spring-boot-microservice:scan
+          args: --file=Dockerfile --severity-threshold=high
