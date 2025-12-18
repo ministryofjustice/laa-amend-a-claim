@@ -30,7 +30,7 @@
                                     <dl class="govuk-summary-list">
                                         <div class="govuk-summary-list__row" th:each="entry : ${claim.summaryRows}">
                                             <dt class="govuk-summary-list__key" th:text="#{${'claimSummary.rows.' + entry.key}}"></dt>
-                                            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value)}"></dd>
+                                            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
                                         </div>
                                     </dl>
                                 </div>
@@ -48,18 +48,18 @@
                                             <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimSummary.submitted}"></dd>
                                             <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:if="${claim.hasAssessment}" th:text="#{claimSummary.assessed}"></dd>
                                         </div>
-                                        <div class="govuk-summary-list__row" th:each="row : ${claim.tableRows}" th:if="${@ThymeleafUtils.displayClaimField(row)}">
+                                        <div class="govuk-summary-list__row" th:each="row : ${claim.tableRows}" th:if="${row.display()}">
                                             <dt class="govuk-summary-list__key govuk-!-font-weight-bold" th:text="#{${row.label}}"></dt>
-                                            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></dd>
-                                            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></dd>
+                                            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
+                                            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></dd>
                                             <dd class="govuk-summary-list__value" th:if="${claim.hasAssessment}"
-                                                th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}"></dd>
+                                                th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></dd>
                                         </div>
                                     </dl>
 
                                     <th:block th:if="${claim.hasAssessment}">
                                         <div class="govuk-inset-text"
-                                             th:text="#{claimSummary.totalAssessmentText(${@ThymeleafUtils.getAssessedValue(claim.claim().allowedTotalInclVat)})}">
+                                             th:text="#{claimSummary.totalAssessmentText(${@ThymeleafUtils.getAssessedValue(claim.claim().allowedTotalInclVat).resolve(#messages)})}">
                                         </div>
                                     </th:block>
                                 </div>

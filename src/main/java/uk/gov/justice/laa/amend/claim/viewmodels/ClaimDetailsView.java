@@ -145,12 +145,12 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return claim().getLastAssessment();
     }
 
-    default MessageWithParams lastEditedBy(MicrosoftApiUser user) {
+    default ThymeleafMessage lastEditedBy(MicrosoftApiUser user) {
         LocalDateTime dateTime = lastAssessment().getLastAssessmentDate().toLocalDateTime();
         String date = DateUtils.displayDateTimeDateValue(dateTime);
         String time = DateUtils.displayDateTimeTimeValue(dateTime);
-        MessageWithParams outcome = new MessageWithParams(lastAssessment().getLastAssessmentOutcome().getMessageKey());
+        ThymeleafMessage outcome = new ThymeleafMessage(lastAssessment().getLastAssessmentOutcome().getMessageKey());
         Object[] params = new Object[]{user.getDisplayName(), date, time, outcome};
-        return new MessageWithParams("claimSummary.lastAssessmentText", params);
+        return new ThymeleafMessage("claimSummary.lastAssessmentText", params);
     }
 }

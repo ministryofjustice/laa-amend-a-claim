@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 
 import java.time.YearMonth;
 import java.util.List;
@@ -414,15 +414,6 @@ public class CivilClaimDetailsViewTest {
             );
 
             Assertions.assertEquals(expectedErrors, viewModel.getErrors());
-        }
-    }
-
-    @Nested
-    class LastEditedByTests {
-        @Test
-        void displayLastEditedTextWhenEverythingNonNull() {
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(new CivilClaimDetails());
-
         }
     }
 

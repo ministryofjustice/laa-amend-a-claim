@@ -1,13 +1,22 @@
 package uk.gov.justice.laa.amend.claim.models;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.justice.laa.amend.claim.utils.FormUtils;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.List;
+
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
 
 @Data
 @AllArgsConstructor
@@ -115,5 +124,30 @@ public class ClaimField implements Serializable {
 
     public boolean isNotAssessable() {
         return status != ClaimFieldStatus.MODIFIABLE;
+    }
+
+    private static final List<String> HIDDEN_FIELDS = List.of(
+        CMRH_TELEPHONE,
+        CMRH_ORAL,
+        JR_FORM_FILLING,
+        ADJOURNED_FEE,
+        HO_INTERVIEW,
+        SUBSTANTIVE_HEARING
+    );
+
+    public boolean display() {
+        if (!isEmptyValue(this.getSubmitted())) {
+            return true;
+        }
+        return !HIDDEN_FIELDS.contains(this.getKey());
+    }
+
+    private boolean isEmptyValue(Object value) {
+        return switch (value) {
+            case null -> true;
+            case BigDecimal bigDecimal -> BigDecimal.ZERO.compareTo(bigDecimal) == 0;
+            case Integer i -> i == 0;
+            default -> false;
+        };
     }
 }

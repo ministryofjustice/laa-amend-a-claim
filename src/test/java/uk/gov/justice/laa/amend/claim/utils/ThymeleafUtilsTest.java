@@ -1,11 +1,8 @@
 package uk.gov.justice.laa.amend.claim.utils;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.thymeleaf.spring6.util.DetailedError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessedTotalFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessmentOutcomeFormError;
@@ -15,16 +12,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class ThymeleafUtilsTest {
-
-    private MessageSource messageSource;
-
-    @BeforeEach
-    void setUp() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("messages");
-        messageSource.setDefaultEncoding("UTF-8");
-        this.messageSource = messageSource;
-    }
 
     @Nested
     class toSearchFormErrorsTests {
@@ -63,7 +50,7 @@ public class ThymeleafUtilsTest {
                 )
             );
 
-            ThymeleafUtils sut = new ThymeleafUtils(messageSource);
+            ThymeleafUtils sut = new ThymeleafUtils();
 
             List<SearchFormError> result = sut.toSearchFormErrors(errors);
 
@@ -95,7 +82,7 @@ public class ThymeleafUtilsTest {
                 )
             );
 
-            ThymeleafUtils sut = new ThymeleafUtils(messageSource);
+            ThymeleafUtils sut = new ThymeleafUtils();
 
             List<SearchFormError> result = sut.toSearchFormErrors(errors);
 
@@ -112,27 +99,27 @@ public class ThymeleafUtilsTest {
         @Test
         void sortErrorsByFieldOrder() {
             List<DetailedError> errors = List.of(
-                    new DetailedError(
-                            "assessmentOutcome",
-                            null,
-                            Stream.empty().toArray(),
-                            "Assessment outcome error"
-                    ),
-                    new DetailedError(
-                            "liabilityForVat",
-                            null,
-                            Stream.empty().toArray(),
-                            "liability for VAT number error"
-                    )
+                new DetailedError(
+                    "assessmentOutcome",
+                    null,
+                    Stream.empty().toArray(),
+                    "Assessment outcome error"
+                ),
+                new DetailedError(
+                    "liabilityForVat",
+                    null,
+                    Stream.empty().toArray(),
+                    "liability for VAT number error"
+                )
             );
 
-            ThymeleafUtils sut = new ThymeleafUtils(messageSource);
+            ThymeleafUtils sut = new ThymeleafUtils();
 
             List<AssessmentOutcomeFormError> result = sut.toAssessmentOutcomeErrors(errors);
 
             List<AssessmentOutcomeFormError> expectedResult = List.of(
-                    new AssessmentOutcomeFormError("assessmentOutcome", "Assessment outcome error"),
-                    new AssessmentOutcomeFormError("liabilityForVat", "liability for VAT number error")
+                new AssessmentOutcomeFormError("assessmentOutcome", "Assessment outcome error"),
+                new AssessmentOutcomeFormError("liabilityForVat", "liability for VAT number error")
             );
 
             Assertions.assertEquals(expectedResult, result);
@@ -158,7 +145,7 @@ public class ThymeleafUtilsTest {
                 )
             );
 
-            ThymeleafUtils sut = new ThymeleafUtils(messageSource);
+            ThymeleafUtils sut = new ThymeleafUtils();
 
             List<AssessedTotalFormError> result = sut.toAssessedTotalFormErrors(errors);
 
