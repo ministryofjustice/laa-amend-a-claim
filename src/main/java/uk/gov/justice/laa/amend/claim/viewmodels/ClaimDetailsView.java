@@ -1,12 +1,15 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
+import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
+import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -140,5 +143,14 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     default AssessmentInfo lastAssessment() {
         return claim().getLastAssessment();
+    }
+
+    default MessageWithParams lastEditedBy(MicrosoftApiUser user) {
+        LocalDateTime dateTime = lastAssessment().getLastAssessmentDate().toLocalDateTime();
+        String date = DateUtils.displayDateTimeDateValue(dateTime);
+        String time = DateUtils.displayDateTimeTimeValue(dateTime);
+        MessageWithParams outcome = new MessageWithParams(lastAssessment().getLastAssessmentOutcome().getMessageKey());
+        Object[] params = new Object[]{user.getDisplayName(), date, time, outcome};
+        return new MessageWithParams("claimSummary.lastAssessmentText", params);
     }
 }

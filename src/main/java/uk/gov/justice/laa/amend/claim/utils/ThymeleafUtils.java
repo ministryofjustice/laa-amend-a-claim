@@ -27,9 +27,9 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
-import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayFullDateValue;
-import static uk.gov.justice.laa.amend.claim.utils.DateUtils.getDateValue;
-import static uk.gov.justice.laa.amend.claim.utils.DateUtils.getTimeValue;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateTimeDateValue;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateTimeTimeValue;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateValue;
 
 @AllArgsConstructor
 public class ThymeleafUtils {
@@ -87,9 +87,9 @@ public class ThymeleafUtils {
             case Integer i -> i.toString();
             case Boolean b -> getFormattedBoolean(b);
             case String s -> s;
-            case OffsetDateTime o -> displayFormattedFullDateValue(o.toLocalDateTime());
-            case LocalDate d -> displayFullDateValue(d);
-            case LocalDateTime d -> displayFormattedFullDateValue(d);
+            case OffsetDateTime o -> displayDateTimeValue(o.toLocalDateTime());
+            case LocalDate d -> displayDateValue(d);
+            case LocalDateTime d -> displayDateTimeValue(d);
             default -> value.toString();
         };
     }
@@ -139,14 +139,7 @@ public class ThymeleafUtils {
         return !hiddenFields.contains(claimField.getKey());
     }
 
-    public String getLastAssessmentAlertMessage(OffsetDateTime value, String user) {
-        if (value == null || user == null) {
-            return getMessage("service.noData");
-        }
-        return getMessage("claimSummary.lastAssessmentText", user, displayFormattedFullDateValue(value.toLocalDateTime()));
-    }
-
-    public String displayFormattedFullDateValue(LocalDateTime value) {
-        return getMessage("fulldate.format", getDateValue(value), getTimeValue(value));
+    private String displayDateTimeValue(LocalDateTime value) {
+        return getMessage("fulldate.format", displayDateTimeDateValue(value), displayDateTimeTimeValue(value));
     }
 }

@@ -5,7 +5,6 @@ import uk.gov.justice.laa.amend.claim.models.Claim;
 import java.time.format.DateTimeFormatter;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PERIOD_FORMAT;
-import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateValue;
 
 public interface BaseClaimView<T extends Claim> {
     T claim();
@@ -29,14 +28,6 @@ public interface BaseClaimView<T extends Claim> {
 
     default String getAccountNumber() {
         return claim().getScheduleReference() != null ? claim().getScheduleReference().split("/")[0] : null;
-    }
-
-    default String getCaseStartDateForDisplay() {
-        return displayDateValue(claim().getCaseStartDate());
-    }
-
-    default String getCaseEndDateForDisplay() {
-        return displayDateValue(claim().getCaseEndDate());
     }
 
     default String getSubmissionPeriodForDisplay() {

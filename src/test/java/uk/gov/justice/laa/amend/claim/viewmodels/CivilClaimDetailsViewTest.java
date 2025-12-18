@@ -417,6 +417,15 @@ public class CivilClaimDetailsViewTest {
         }
     }
 
+    @Nested
+    class LastEditedByTests {
+        @Test
+        void displayLastEditedTextWhenEverythingNonNull() {
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(new CivilClaimDetails());
+
+        }
+    }
+
     public static ClaimField createClaimField(String key, ClaimFieldStatus status) {
         ClaimField claimField = new ClaimField();
         claimField.setKey(key);
