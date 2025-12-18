@@ -8,163 +8,18 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 
-import java.time.YearMonth;
 import java.util.List;
 
-public class CivilClaimDetailsViewTest {
+public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDetails, CivilClaimDetailsView> {
 
-    @Nested
-    class GetAccountNumberTests {
-        @Test
-        void getAccountNumberPicksOutFirstPartOfScheduleReference() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setScheduleReference("0U733A/2018/02");
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals("0U733A", viewModel.getAccountNumber());
-        }
-
-        @Test
-        void getAccountNumberReturnsScheduleReferenceIfUnexpectedFormat() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setScheduleReference("0U733A201802");
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals("0U733A201802", viewModel.getAccountNumber());
-        }
+    @Override
+    protected CivilClaimDetails createClaim() {
+        return new CivilClaimDetails();
     }
 
-    @Nested
-    class GetSubmissionPeriodForDisplayTests {
-        @Test
-        void getSubmissionPeriodForDisplayHandlesNull() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertNull(viewModel.getSubmissionPeriodForDisplay());
-        }
-
-        @Test
-        void getSubmissionPeriodForDisplayFormatsDate() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setSubmissionPeriod(YearMonth.of(2020, 1));
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals("Jan 2020", viewModel.getSubmissionPeriodForDisplay());
-        }
-    }
-
-    @Nested
-    class GetAssessedTotalsTests {
-        @Test
-        void getAssessedTotalsHandlesNullFields() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-
-            List<ClaimField> result = viewModel.getAssessedTotals();
-
-            Assertions.assertEquals(List.of(), result);
-        }
-
-        @Test
-        void getAssessedTotalsHandlesValidFields() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.MODIFIABLE));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-
-            List<ClaimField> result = viewModel.getAssessedTotals();
-
-            Assertions.assertEquals(claim.getAssessedTotalVat(), result.get(0));
-            Assertions.assertEquals(claim.getAssessedTotalInclVat(), result.get(1));
-        }
-
-        @Test
-        void getAssessedTotalsHandlesValidFieldsWithDoNotDisplayStatus() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.DO_NOT_DISPLAY));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.DO_NOT_DISPLAY));
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-
-            List<ClaimField> result = viewModel.getAssessedTotals();
-
-            Assertions.assertEquals(List.of(), result);
-        }
-    }
-
-    @Nested
-    class GetAllowedTotalsTests {
-        @Test
-        void getAllowedTotalsHandlesNull() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-
-            List<ClaimField> result = viewModel.getAllowedTotals();
-
-            Assertions.assertEquals(List.of(), result);
-        }
-
-        @Test
-        void getAllowedTotalsHandlesValid() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE));
-            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-
-            List<ClaimField> result = viewModel.getAllowedTotals();
-
-            Assertions.assertEquals(claim.getAllowedTotalVat(), result.get(0));
-            Assertions.assertEquals(claim.getAllowedTotalInclVat(), result.get(1));
-        }
-    }
-
-    @Nested
-    class GetSubmissionPeriodForSortingTests {
-        @Test
-        void getSubmissionPeriodForSortingHandlesNull() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals(0, viewModel.getSubmissionPeriodForSorting());
-        }
-
-        @Test
-        void getSubmissionPeriodForSortingGetsEpochValueOfDate() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setSubmissionPeriod(YearMonth.of(2020, 1));
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals(18262, viewModel.getSubmissionPeriodForSorting());
-        }
-    }
-
-    @Nested
-    class getClientNameTests {
-        @Test
-        void getClientNameHandlesNullForenameAndSurname() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertNull(viewModel.getClientName());
-        }
-
-        @Test
-        void getClientNameHandlesNullSurname() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setClientForename("John");
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals("John", viewModel.getClientName());
-        }
-
-        @Test
-        void getClientNameHandlesNullForename() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setClientSurname("Doe");
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals("Doe", viewModel.getClientName());
-        }
-
-        @Test
-        void getClientNameHandlesFullName() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setClientForename("John");
-            claim.setClientSurname("Doe");
-            ClaimDetailsView<CivilClaimDetails> viewModel = new CivilClaimDetailsView(claim);
-            Assertions.assertEquals("John Doe", viewModel.getClientName());
-        }
+    @Override
+    protected CivilClaimDetailsView createView(CivilClaimDetails claim) {
+        return new CivilClaimDetailsView(claim);
     }
 
     @Nested
@@ -290,20 +145,20 @@ public class CivilClaimDetailsViewTest {
 
             CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             List<ClaimField> expectedRows = List.of(
-                    fixedFee,
-                    netProfitCost,
-                    netDisbursementAmount,
-                    disbursementVatAmount,
-                    detention,
-                    jrFormFilling,
-                    counselCost,
-                    cmrhOral,
-                    cmrhTelephone,
-                    hoInterview,
-                    substantiveHearing,
-                    adjournedHearing,
-                    vatClaimed,
-                    totalAmount
+                fixedFee,
+                netProfitCost,
+                netDisbursementAmount,
+                disbursementVatAmount,
+                detention,
+                jrFormFilling,
+                counselCost,
+                cmrhOral,
+                cmrhTelephone,
+                hoInterview,
+                substantiveHearing,
+                adjournedHearing,
+                vatClaimed,
+                totalAmount
             );
             Assertions.assertEquals(expectedRows, viewModel.getTableRows());
         }
@@ -343,16 +198,16 @@ public class CivilClaimDetailsViewTest {
 
             CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             List<ClaimField> expectedRows = List.of(
-                    fixedFee,
-                    netProfitCost,
-                    netDisbursementAmount,
-                    disbursementVatAmount,
-                    detention,
-                    jrFormFilling,
-                    counselCost,
-                    adjournedHearing,
-                    vatClaimed,
-                    totalAmount
+                fixedFee,
+                netProfitCost,
+                netDisbursementAmount,
+                disbursementVatAmount,
+                detention,
+                jrFormFilling,
+                counselCost,
+                adjournedHearing,
+                vatClaimed,
+                totalAmount
             );
             Assertions.assertEquals(expectedRows, viewModel.getTableRows());
         }
@@ -378,13 +233,13 @@ public class CivilClaimDetailsViewTest {
 
             CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             List<ClaimField> expectedRows = List.of(
-                    fixedFee,
-                    netProfitCost,
-                    netDisbursementAmount,
-                    disbursementVatAmount,
-                    detention,
-                    jrFormFilling,
-                    counselCost
+                fixedFee,
+                netProfitCost,
+                netDisbursementAmount,
+                disbursementVatAmount,
+                detention,
+                jrFormFilling,
+                counselCost
             );
             Assertions.assertEquals(expectedRows, viewModel.getTableRows());
         }
@@ -415,12 +270,5 @@ public class CivilClaimDetailsViewTest {
 
             Assertions.assertEquals(expectedErrors, viewModel.getErrors());
         }
-    }
-
-    public static ClaimField createClaimField(String key, ClaimFieldStatus status) {
-        ClaimField claimField = new ClaimField();
-        claimField.setKey(key);
-        claimField.setStatus(status);
-        return claimField;
     }
 }

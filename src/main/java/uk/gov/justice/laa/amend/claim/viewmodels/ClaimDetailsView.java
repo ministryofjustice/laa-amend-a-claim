@@ -138,7 +138,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default boolean hasAssessment() {
-        return claim().getLastAssessment() != null && claim().isHasAssessment();
+        return claim().isHasAssessment() && lastAssessment() != null;
     }
 
     default AssessmentInfo lastAssessment() {
@@ -150,7 +150,10 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         String date = DateUtils.displayDateTimeDateValue(dateTime);
         String time = DateUtils.displayDateTimeTimeValue(dateTime);
         ThymeleafMessage outcome = new ThymeleafMessage(lastAssessment().getLastAssessmentOutcome().getMessageKey());
-        Object[] params = new Object[]{user.getDisplayName(), date, time, outcome};
-        return new ThymeleafMessage("claimSummary.lastAssessmentText", params);
+        if (user != null) {
+            return new ThymeleafMessage("claimSummary.lastAssessmentText", user.getDisplayName(), date, time, outcome);
+        } else {
+            return new ThymeleafMessage("claimSummary.lastAssessmentText.noUser", date, time, outcome);
+        }
     }
 }

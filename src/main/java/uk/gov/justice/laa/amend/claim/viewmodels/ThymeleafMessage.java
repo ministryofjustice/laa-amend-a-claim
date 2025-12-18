@@ -1,9 +1,11 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import lombok.Getter;
 import org.thymeleaf.expression.Messages;
 
 import java.util.Arrays;
 
+@Getter
 public class ThymeleafMessage extends ThymeleafString {
 
     private final String key;
