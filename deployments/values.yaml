@@ -60,6 +60,14 @@ tolerations: []
 affinity: {}
 
 envVars:
+  CLAIMS_API:
+    secret:
+      name: api-url
+      key: api-url
+  CLAIMS_TOKEN:
+    secret:
+      name: api-token
+      key: api-token
   SENTRY_DSN:
     secret:
       name: sentry
