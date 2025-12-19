@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.thymeleaf.expression.Messages;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 @Getter
 public class ThymeleafMessage extends ThymeleafString {
@@ -18,14 +19,18 @@ public class ThymeleafMessage extends ThymeleafString {
 
     @Override
     public String resolve(Messages messages) {
-        return messages.msgWithParams(key, Arrays.stream(params).map(param -> resolve(param, messages)).toArray());
+        Object[] resolvedParams = Arrays.stream(params)
+            .map(param -> resolveParam(param, messages))
+            .toArray();
+        return messages.msgWithParams(key, resolvedParams);
     }
 
-    private String resolve(Object value, Messages messages) {
+    private String resolveParam(Object value, Messages messages) {
         return switch (value) {
-            case ThymeleafMessage mwp -> mwp.resolve(messages);
+            case null -> "";
+            case ThymeleafMessage tm -> tm.resolve(messages);
             case String s -> s;
-            default -> "";
+            default -> String.valueOf(value);
         };
     }
 }
