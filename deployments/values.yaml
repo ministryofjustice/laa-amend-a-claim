@@ -1,0 +1,88 @@
+# Default values for laa-amend-a-claim.
+# These can be overwritten by values defined in environment specific values files.
+replicaCount: 1
+
+image:
+  repository: laa-amend-a-claim
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+  containerPort: 8000
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: false
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  allowPrivilegeEscalation: false
+  seccompProfile:
+    type: RuntimeDefault
+  capabilities:
+    drop: ["ALL"]
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: "modsec"
+  cluster:
+    name: green
+    weight: '100'
+  tls: {}
+
+whitelist:
+  enabled: true
+
+resources: {}
+
+autoscaling:
+  enabled: false
+
+volumes: []
+
+volumeMounts: []
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+envVars:
+  SENTRY_DSN:
+    secret:
+      name: sentry
+      key: dsn
+  SENTRY_ENVIRONMENT:
+    secret:
+      name: sentry
+      key: dsn
+  BASE_URL_HOMEPAGE:
+    secret:
+      name: check
+      key: check
+  REDIS_URL:
+    secret:
+      name: elasticache-redis
+      key: url
+  ENTRA_ID_SKIP_AUTH:
+    value: "False"
+  ENTRA_ID_CLIENT_ID:
+    secret:
+      name: entra-id
+      key: client_id
+  ENTRA_ID_CLIENT_SECRET:
+    secret:
+      name: entra-id
+      key: client_secret
