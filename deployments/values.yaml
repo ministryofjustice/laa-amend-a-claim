@@ -59,33 +59,44 @@ tolerations: []
 
 affinity: {}
 
-envVars:
-  CLAIMS_API:
+env:
+  AZURE_CLIENT_ID:
     secret:
-      name: api-url
-      key: api-url
-  CLAIMS_TOKEN:
+      name: laa-amend-a-claim-azure-client-id
+      key: AZURE_CLIENT_ID
+      optional: false
+  AZURE_CLIENT_SECRET:
     secret:
-      name: api-token
-      key: api-token
+      name: laa-amend-a-claim-azure-client-secret
+      key: AZURE_CLIENT_SECRET
+  AZURE_TENANT_ID:
+    secret:
+      name: laa-amend-a-claim-azure-tenant
+      key: AZURE_TENANT_ID
   SENTRY_DSN:
     secret:
-      name: sentry
-      key: dsn
-  SENTRY_ENVIRONMENT:
-    secret:
-      name: sentry
-      key: dsn
+      name: laa-amend-a-claim-sentry-dsn
+      key: SENTRY_DSN
   BASE_URL_HOMEPAGE:
     secret:
-      name: check
-      key: check
+      name: laa-amend-a-claim-base-url
+      key: BASE_URL_HOMEPAGE
+  SENTRY_ENVIRONMENT:
+    value: ${SENTRY_ENV}
   REDIS_URL:
     secret:
       name: elasticache-redis
       key: url
   ENTRA_ID_SKIP_AUTH:
     value: "False"
+  CLAIMS_API:
+    secret:
+      name: laa-amend-a-claim-claims-api-url
+      key: CLAIMS_API
+  CLAIMS_TOKEN:
+    secret:
+      name: laa-amend-a-claim-claims-api-token
+      key: CLAIMS_TOKEN
   ENTRA_ID_CLIENT_ID:
     secret:
       name: entra-id
@@ -94,3 +105,15 @@ envVars:
     secret:
       name: entra-id
       key: client_secret
+  ENTRA_ID_CLIENT_SECRET_THUMBPRINT:
+    secret:
+      name: entra-id
+      key: client_secret_thumbprint
+  ENTRA_ID_AUTHORITY:
+    secret:
+      name: entra-id
+      key: authority
+  ENTRA_ID_REDIRECT_URI:
+    secret:
+      name: entra-id
+      key: redirect_uri
