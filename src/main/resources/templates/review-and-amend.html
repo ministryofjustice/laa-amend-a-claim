@@ -47,8 +47,8 @@
                     th:each="row : ${viewModel.tableRows}"
                     >
                     <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
-                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
-                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
+                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
+                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
 
                 <th:block th:if="${row.isAssessableAndUnassessed}">
                     <td class="govuk-table__cell">
@@ -64,7 +64,7 @@
                     </th:block>
                     <th:block th:if="${row.isAssessableAndAssessed}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}">
                         </td>
 
                         <td class="govuk-table__cell">
@@ -79,7 +79,7 @@
 
                     <th:block th:if="${row.isNotAssessable()}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}">
                         </td>
                         <td class="govuk-table__cell"></td>
                     </th:block>
@@ -109,8 +109,8 @@
                     th:each="row : ${viewModel.assessedTotals}"
                 >
                     <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
-                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
-                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
+                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
+                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
 
                     <th:block th:if="${row.isAssessableAndUnassessed}">
                         <td class="govuk-table__cell">
@@ -125,7 +125,7 @@
 
                     <th:block th:if="${row.isAssessableAndAssessed}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}">
                         </td>
 
                         <td class="govuk-table__cell">
@@ -137,7 +137,7 @@
 
                     <th:block th:if="${row.isNotAssessable()}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}">
                         </td>
 
                         <td class="govuk-table__cell"></td>
@@ -168,8 +168,8 @@
                     th:each="row : ${viewModel.allowedTotals}"
                     >
                     <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
-                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated)}"></td>
-                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted)}"></td>
+                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
+                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
 
                     <th:block th:if="${row.isAssessableAndUnassessed}">
                         <td class="govuk-table__cell">
@@ -184,7 +184,7 @@
 
                     <th:block th:if="${row.isAssessableAndAssessed}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}">
                         </td>
 
                         <td class="govuk-table__cell">
@@ -196,7 +196,7 @@
 
                     <th:block th:if="${row.isNotAssessable()}">
                         <td class="govuk-table__cell"
-                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed)}">
+                            th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}">
                         </td>
 
                         <td class="govuk-table__cell"></td>

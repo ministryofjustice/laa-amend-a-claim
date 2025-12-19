@@ -1,12 +1,15 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
+import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
+import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -135,10 +138,22 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default boolean hasAssessment() {
-        return claim().getLastAssessment() != null && claim().isHasAssessment();
+        return claim().isHasAssessment() && lastAssessment() != null;
     }
 
     default AssessmentInfo lastAssessment() {
         return claim().getLastAssessment();
+    }
+
+    default ThymeleafMessage lastEditedBy(MicrosoftApiUser user) {
+        LocalDateTime dateTime = lastAssessment().getLastAssessmentDate().toLocalDateTime();
+        String date = DateUtils.displayDateTimeDateValue(dateTime);
+        String time = DateUtils.displayDateTimeTimeValue(dateTime);
+        ThymeleafMessage outcome = new ThymeleafMessage(lastAssessment().getLastAssessmentOutcome().getMessageKey());
+        if (user != null) {
+            return new ThymeleafMessage("claimSummary.lastAssessmentText", user.getDisplayName(), date, time, outcome);
+        } else {
+            return new ThymeleafMessage("claimSummary.lastAssessmentText.noUser", date, time, outcome);
+        }
     }
 }

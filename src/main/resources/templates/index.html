@@ -110,7 +110,7 @@
                                 <td class="govuk-table__cell" th:text="${claim.submissionPeriodForDisplay}" th:data-sort-value="${claim.submissionPeriodForSorting}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.accountNumber}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.claim.categoryOfLaw}"></td>
-                                <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped)}">
+                                <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped).resolve(#messages)}">
                                     <th:block th:if="${claim.claim.escaped}">
                                         <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
                                     </th:block>

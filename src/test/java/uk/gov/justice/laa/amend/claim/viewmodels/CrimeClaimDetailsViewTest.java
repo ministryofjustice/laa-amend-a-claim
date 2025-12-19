@@ -4,167 +4,22 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
-import java.time.YearMonth;
 import java.util.List;
 
-public class CrimeClaimDetailsViewTest {
+public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDetails, CrimeClaimDetailsView> {
 
-    @Nested
-    class GetAccountNumberTests {
-        @Test
-        void getAccountNumberPicksOutFirstPartOfScheduleReference() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setScheduleReference("0U733A/2018/02");
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-            Assertions.assertEquals("0U733A", viewModel.getAccountNumber());
-        }
-
-        @Test
-        void getAccountNumberReturnsScheduleReferenceIfUnexpectedFormat() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setScheduleReference("0U733A201802");
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-            Assertions.assertEquals("0U733A201802", viewModel.getAccountNumber());
-        }
+    @Override
+    protected CrimeClaimDetails createClaim() {
+        return new CrimeClaimDetails();
     }
 
-    @Nested
-    class GetAssessedTotalsTests {
-        @Test
-        void getAssessedTotalsHandlesNullFields() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-
-            List<ClaimField> result = viewModel.getAssessedTotals();
-
-            Assertions.assertEquals(List.of(), result);
-        }
-
-        @Test
-        void getAssessedTotalsHandlesValidFields() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.MODIFIABLE));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-
-            List<ClaimField> result = viewModel.getAssessedTotals();
-
-            Assertions.assertEquals(claim.getAssessedTotalVat(), result.get(0));
-            Assertions.assertEquals(claim.getAssessedTotalInclVat(), result.get(1));
-        }
-
-        @Test
-        void getAssessedTotalsHandlesValidFieldsWithDoNotDisplayStatus() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.DO_NOT_DISPLAY));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.DO_NOT_DISPLAY));
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-
-            List<ClaimField> result = viewModel.getAssessedTotals();
-
-            Assertions.assertEquals(List.of(), result);
-        }
-    }
-
-    @Nested
-    class GetAllowedTotalsTests {
-        @Test
-        void getAllowedTotalsHandlesNull() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-
-            List<ClaimField> result = viewModel.getAllowedTotals();
-
-            Assertions.assertEquals(List.of(), result);
-        }
-
-        @Test
-        void getAllowedTotalsHandlesValid() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE));
-            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-
-            List<ClaimField> result = viewModel.getAllowedTotals();
-
-            Assertions.assertEquals(claim.getAllowedTotalVat(), result.get(0));
-            Assertions.assertEquals(claim.getAllowedTotalInclVat(), result.get(1));
-        }
-    }
-
-    @Nested
-    class GetSubmissionPeriodForDisplayTests {
-        @Test
-        void getSubmissionPeriodForDisplayHandlesNull() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-            Assertions.assertNull(viewModel.getSubmissionPeriodForDisplay());
-        }
-
-        @Test
-        void getSubmissionPeriodForDisplayFormatsDate() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setSubmissionPeriod(YearMonth.of(2020, 1));
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-            Assertions.assertEquals("Jan 2020", viewModel.getSubmissionPeriodForDisplay());
-        }
-    }
-
-    @Nested
-    class GetSubmissionPeriodForSortingTests {
-        @Test
-        void getSubmissionPeriodForSortingHandlesNull() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-            Assertions.assertEquals(0, viewModel.getSubmissionPeriodForSorting());
-        }
-
-        @Test
-        void getSubmissionPeriodForSortingGetsEpochValueOfDate() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setSubmissionPeriod(YearMonth.of(2020, 1));
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-            Assertions.assertEquals(18262, viewModel.getSubmissionPeriodForSorting());
-        }
-    }
-
-    @Nested
-    class getClientNameTests {
-        @Test
-        void getClientNameHandlesNullForenameAndSurname() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-            Assertions.assertNull(viewModel.getClientName());
-        }
-
-        @Test
-        void getClientNameHandlesNullSurname() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setClientForename("John");
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-            Assertions.assertEquals("John", viewModel.getClientName());
-        }
-
-        @Test
-        void getClientNameHandlesNullForename() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setClientSurname("Doe");
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-            Assertions.assertEquals("Doe", viewModel.getClientName());
-        }
-
-        @Test
-        void getClientNameHandlesFullName() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setClientForename("John");
-            claim.setClientSurname("Doe");
-            ClaimDetailsView<CrimeClaimDetails> viewModel = new CrimeClaimDetailsView(claim);
-            Assertions.assertEquals("John Doe", viewModel.getClientName());
-        }
+    @Override
+    protected CrimeClaimDetailsView createView(CrimeClaimDetails claim) {
+        return new CrimeClaimDetailsView(claim);
     }
 
     @Nested
@@ -224,12 +79,5 @@ public class CrimeClaimDetailsViewTest {
 
             Assertions.assertEquals(expectedErrors, viewModel.getErrors());
         }
-    }
-
-    public static ClaimField createClaimField(String key, ClaimFieldStatus status) {
-        ClaimField claimField = new ClaimField();
-        claimField.setKey(key);
-        claimField.setStatus(status);
-        return claimField;
     }
 }

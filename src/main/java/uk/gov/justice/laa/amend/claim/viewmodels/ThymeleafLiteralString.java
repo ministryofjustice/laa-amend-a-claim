@@ -1,0 +1,15 @@
+package uk.gov.justice.laa.amend.claim.viewmodels;
+
+import lombok.AllArgsConstructor;
+import org.thymeleaf.expression.Messages;
+
+@AllArgsConstructor
+public class ThymeleafLiteralString extends ThymeleafString {
+
+    private final String value;
+
+    @Override
+    public String resolve(Messages messages) {
+        return value;
+    }
+}

@@ -18,10 +18,9 @@ public class AmendClaimConstants {
     public static final int DEFAULT_PAGE_SIZE = 10;
     public static final int DEFAULT_PAGE_NUMBER = 0;
 
-    public static final String DEFAULT_DATE_FORMAT = "dd MMM yyyy";
-    public static final String FULL_DATE_FORMAT = "dd MMMM yyyy";
+    public static final String DEFAULT_DATE_FORMAT = "dd MMMM yyyy";
     public static final String DEFAULT_PERIOD_FORMAT = "MMM yyyy";
-    public static final String DEFAULT_DATE_TIME_FORMAT = "dd MMMM yyyy 'at' HH:mm:ss";
+    public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 
     public static final String DEFAULT_SORT = "uniqueFileNumber,asc";
     public static final String DEFAULT_SORT_FIELD = "uniqueFileNumber";

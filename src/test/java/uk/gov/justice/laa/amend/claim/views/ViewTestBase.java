@@ -165,6 +165,17 @@ public abstract class ViewTestBase {
     Assertions.assertEquals(expectedText, heading.text());
   }
 
+  protected void assertPageHasSummaryCard(Document doc, String expectedText) {
+    Elements cards = doc.getElementsByClass("govuk-summary-card");
+
+    boolean cardFound = cards.stream().anyMatch(card -> {
+      String text = card.select(".govuk-summary-card__title").text().trim();
+      return text.equals(expectedText);
+    });
+
+    Assertions.assertTrue(cardFound);
+  }
+
   protected void assertPageHasContent(Document doc, String expectedText) {
     Assertions.assertTrue(doc.text().contains(expectedText));
   }
@@ -262,6 +273,16 @@ public abstract class ViewTestBase {
     Assertions.assertFalse(elements.isEmpty());
   }
 
+  protected void assertPageHasInformationAlert(Document doc, String expectedTitle, String expectedText) {
+    Element element = selectFirst(doc, ".moj-alert--information");
+
+    Element title = selectFirst(element, ".moj-alert__heading");
+    Assertions.assertEquals(expectedTitle, title.text());
+
+    Element content = selectFirst(element, ".moj-alert__content > span");
+    Assertions.assertEquals(expectedText, content.text());
+  }
+
   protected void assertPageHasPanel(Document doc) {
     Elements elements = doc.getElementsByClass("govuk-panel");
     Assertions.assertFalse(elements.isEmpty());
@@ -269,16 +290,6 @@ public abstract class ViewTestBase {
 
   protected boolean pageHasLabel(Document doc, String label) {
     return !doc.select("dl.govuk-summary-list dt.govuk-summary-list__key:containsOwn(" + label + ")").isEmpty();
-  }
-
-  protected void assertPageHasInfoBanner(Document doc) {
-    Elements elements = doc.getElementsByClass("moj-alert__content");
-    Assertions.assertFalse(elements.isEmpty(), "Expected info banner but none found");
-
-    String bannerText = elements.text();
-    Assertions.assertTrue(bannerText.contains("Last edited by"),
-        "Info banner does not contain expected text. Actual: " + bannerText);
-
   }
 
   protected void assertPageHasUpdateAssessmentButton(Document doc) {

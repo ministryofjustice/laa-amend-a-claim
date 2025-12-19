@@ -23,6 +23,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
@@ -35,6 +36,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -136,7 +138,9 @@ class ClaimSummaryViewTest extends ViewTestBase {
         when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
         var lastAssessment = new AssessmentInfo();
         lastAssessment.setLastAssessedBy("test");
-        lastAssessment.setLastAssessmentDate(OffsetDateTime.now());
+        LocalDateTime localDateTime = LocalDateTime.of(2025, 12, 18, 16, 11, 27);
+        lastAssessment.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
+        lastAssessment.setLastAssessmentOutcome(OutcomeType.NILLED);
         claim.setLastAssessment(lastAssessment);
         when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
         when(userRetrievalService.getMicrosoftApiUser(any(), any())).thenReturn(new MicrosoftApiUser("test","test"));
@@ -146,7 +150,15 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasTitle(doc, "Claim details");
 
         assertPageHasHeading(doc, "Claim details");
-        assertPageHasH2(doc, "Summary");
+
+        assertPageHasInformationAlert(
+            doc,
+            "This claim has been assessed",
+            "Last edited by test on 18 December 2025 at 16:11:27 Nilled."
+        );
+
+        assertPageHasSummaryCard(doc, "Summary");
+        assertPageHasSummaryCard(doc, "Values");
 
         assertPageHasNoActiveServiceNavigationItems(doc);
 
