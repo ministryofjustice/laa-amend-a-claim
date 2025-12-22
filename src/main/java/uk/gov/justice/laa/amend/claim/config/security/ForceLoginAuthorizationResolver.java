@@ -12,8 +12,15 @@ import java.util.Map;
 import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.AUTHENTICATED;
 
 /**
+ * <p>
+ * Entra has no mechanism to clear the upstream session for application (or it is intentionally constrained to preserve SSO, device trust, conditional access, etc.).
+ * Even when we call the Entra logout endpoint, the residual SSO state may keep the user silently logged in.
+ * To address silent login after logout/timeout from the application, introduced the Custom Resolver to reliably check the session attribute and force re authentication.
+ * </p>
+ * <p>
  * Wraps Spring's DefaultOAuth2AuthorizationRequestResolver and conditionally injects "prompt=login"
  * (or "select_account") into the authorization request based on the current HttpServletRequest.
+ * </p>
  */
 public class ForceLoginAuthorizationResolver implements OAuth2AuthorizationRequestResolver {
 
@@ -38,16 +45,16 @@ public class ForceLoginAuthorizationResolver implements OAuth2AuthorizationReque
     @Override
     public OAuth2AuthorizationRequest resolve(HttpServletRequest request) {
         OAuth2AuthorizationRequest base = clientRegistrationRepository.resolve(request);
-        return maybeAddPrompt(request, base);
+        return addPromptIfNeeded(request, base);
     }
 
     @Override
     public OAuth2AuthorizationRequest resolve(HttpServletRequest request, String clientRegistrationId) {
         OAuth2AuthorizationRequest base = clientRegistrationRepository.resolve(request, clientRegistrationId);
-        return maybeAddPrompt(request, base);
+        return addPromptIfNeeded(request, base);
     }
 
-    private OAuth2AuthorizationRequest maybeAddPrompt(HttpServletRequest request, OAuth2AuthorizationRequest base) {
+    private OAuth2AuthorizationRequest addPromptIfNeeded(HttpServletRequest request, OAuth2AuthorizationRequest base) {
         if (base == null) {
             return null;
         }
@@ -71,7 +78,7 @@ public class ForceLoginAuthorizationResolver implements OAuth2AuthorizationReque
     }
 
     /**
-     * Core policy for forcing prompt
+     * Check for session and authenticated attribute for forcing prompt
      */
     private boolean shouldForcePrompt(HttpServletRequest request) {
         var session = request.getSession(false);
