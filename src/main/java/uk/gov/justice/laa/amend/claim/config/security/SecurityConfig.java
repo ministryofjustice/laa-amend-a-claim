@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.config;
+package uk.gov.justice.laa.amend.claim.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,24 +25,50 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.AUTHENTICATED;
+import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PUBLIC_PATHS;
+
 @Profile("!local")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, ClientRegistrationRepository repository) throws Exception {
+
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/actuator/**").permitAll()
+                    .requestMatchers(PUBLIC_PATHS).permitAll()
                 .anyRequest().authenticated())
-            .oauth2Login(oauth2 -> oauth2
-                .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
-                .successHandler((request, response, authentication) -> {
-                    response.sendRedirect("/"); // TODO - Ensure user has correct role(s). See laa-record-link-service for an example.
-                }))
-            .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny));
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(ae -> ae.authorizationRequestResolver(forceLoginAuthorizationResolver(repository)))
+                        .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
+                        .successHandler((request, response, authentication) -> {
+                            request.getSession(true).setAttribute(AUTHENTICATED, true);
+                            response.sendRedirect("/");
+                        }))
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/logout-success")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("SESSION")
+                )
+                .sessionManagement(session -> session
+                        .invalidSessionUrl("/logout-success?message=expired")
+                        .maximumSessions(1)
+                        .expiredUrl("/logout-success?message=expired")
+                )
+
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny));
+
         return http.build();
+    }
+
+    @Bean
+    public ForceLoginAuthorizationResolver forceLoginAuthorizationResolver(ClientRegistrationRepository repository) {
+        return new ForceLoginAuthorizationResolver(repository, "/oauth2/authorization", "login");
     }
 
     @Bean
