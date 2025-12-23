@@ -8,7 +8,7 @@ metadata:
   labels:
     {{- include "laa-amend-a-claim.labels" . | nindent 4 }}
   annotations:
-    external-dns.alpha.kubernetes.io/set-identifier: {{ $fullName }}-ingress-{{ .Values.namespace }}-{{ .Values.ingress.cluster.name }}
+    external-dns.alpha.kubernetes.io/set-identifier: {{ $fullName }}-{{ .Values.namespace }}-{{ .Values.ingress.cluster.name }}
     external-dns.alpha.kubernetes.io/aws-weight: {{ .Values.ingress.cluster.weight | quote }}
     {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
