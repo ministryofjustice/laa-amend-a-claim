@@ -50,6 +50,7 @@ namespace: ""  # Override at deploy time
 ingress:
   enabled: true
   className: "modsec"
+  host: ""  # Override at deploy time
   cluster:
     name: green
     weight: "100"
@@ -64,14 +65,6 @@ ingress:
       SecAuditEngine On
       SecDefaultAction "phase:2,pass,log,tag:github_team=laa-amend-a-claim"
       SecDebugLogLevel 1
-  hosts:
-    - host: ""  # Override at deploy time
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - hosts:
-        - ""  # Override at deploy time
 
 resources:
   requests:

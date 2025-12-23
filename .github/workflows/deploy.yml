@@ -78,8 +78,7 @@ jobs:
             --set image.repository=${REGISTRY}/${REPOSITORY} \
             --set image.tag=${IMAGE_TAG} \
             --set namespace=${KUBE_NAMESPACE} \
-            --set ingress.hosts[0].host=${KUBE_NAMESPACE}.apps.live.cloud-platform.service.justice.gov.uk \
-            --set ingress.tls[0].hosts[0]=${KUBE_NAMESPACE}.apps.live.cloud-platform.service.justice.gov.uk \
+            --set ingress.host=${KUBE_NAMESPACE}.apps.live.cloud-platform.service.justice.gov.uk \
             --wait \
             --timeout 5m
         env:
