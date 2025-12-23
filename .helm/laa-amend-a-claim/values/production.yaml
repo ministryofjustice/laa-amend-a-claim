@@ -1,0 +1,57 @@
+# Environment-specific values for Production
+# These values override the defaults in values.yaml
+
+replicaCount: 5  # Higher replica count for production
+
+resources:
+  requests:
+    memory: "1500Mi"
+    cpu: "500m"
+  limits:
+    memory: "4000Mi"
+    cpu: "2"
+
+# SENTRY_ENVIRONMENT will be set via --set in the deployment workflow
+env:
+  - name: AZURE_CLIENT_ID
+    valueFrom:
+      secretKeyRef:
+        name: laa-amend-a-claim-azure-client-id
+        key: AZURE_CLIENT_ID
+  - name: AZURE_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: laa-amend-a-claim-azure-client-secret
+        key: AZURE_CLIENT_SECRET
+  - name: AZURE_TENANT_ID
+    valueFrom:
+      secretKeyRef:
+        name: laa-amend-a-claim-azure-tenant
+        key: AZURE_TENANT_ID
+  - name: BASE_URL_HOMEPAGE
+    valueFrom:
+      secretKeyRef:
+        name: laa-amend-a-claim-base-url
+        key: BASE_URL_HOMEPAGE
+  - name: SENTRY_DSN
+    valueFrom:
+      secretKeyRef:
+        name: laa-amend-a-claim-sentry-dsn
+        key: SENTRY_DSN
+  - name: SENTRY_ENVIRONMENT
+    value: "production"
+  - name: CLAIMS_API
+    valueFrom:
+      secretKeyRef:
+        name: laa-amend-a-claim-claims-api-url
+        key: CLAIMS_API
+  - name: CLAIMS_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: laa-amend-a-claim-claims-api-token
+        key: CLAIMS_TOKEN
+  - name: REDIS_URL
+    valueFrom:
+      secretKeyRef:
+        name: elasticache-redis
+        key: url
