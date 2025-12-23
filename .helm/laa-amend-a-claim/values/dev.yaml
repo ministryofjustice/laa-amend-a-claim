@@ -1,5 +1,5 @@
-# Environment-specific values for Ephemeral/Dev environments
-# These values override the defaults in values.yaml
+# Environment-specific values for Static Dev environment
+# This is for the persistent dev deployment (not ephemeral feature branches)
 
 replicaCount: 1
 

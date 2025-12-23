@@ -1,0 +1,57 @@
+on:
+  pull_request:
+    types: [closed]
+  delete:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  cleanup:
+    name: Remove Ephemeral Environment
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Get Branch Name
+        id: get-branch
+        run: |
+          # Get branch name - either from PR or deleted branch
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          else
+            BRANCH_NAME="${{ github.event.ref }}"
+          fi
+          echo "branch_name=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Sanitize Branch Name
+        id: sanitize
+        uses: ./.github/actions/sanitize-branch-name
+        with:
+          branch_name: ${{ steps.get-branch.outputs.branch_name }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+
+      - name: Authenticate to Kubernetes Cluster
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@main
+        with:
+          kube-cert: ${{ secrets.KUBE_CERT }}
+          kube-token: ${{ secrets.KUBE_TOKEN }}
+          kube-cluster: ${{ secrets.KUBE_CLUSTER }}
+          kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
+          kube-sa: deploy-user
+
+      - name: Delete Helm Release
+        run: |
+          if helm list -n ${{ secrets.KUBE_NAMESPACE }} | grep -q "${{ steps.sanitize.outputs.release_name }}"; then
+            echo "Deleting release: ${{ steps.sanitize.outputs.release_name }}"
+            helm uninstall ${{ steps.sanitize.outputs.release_name }} -n ${{ secrets.KUBE_NAMESPACE }}
+            echo "Ephemeral environment cleaned up successfully"
+          else
+            echo "Release ${{ steps.sanitize.outputs.release_name }} not found, nothing to clean up"
+          fi

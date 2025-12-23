@@ -1,32 +1,18 @@
-name: Deploy
+name: Deploy Ephemeral Environment
 
 on:
   workflow_call:
     inputs:
       branch:
-        required: false
-        type: string
-        default: 'main'
-      environment:
-        required: true
-        type: string
-      SENTRY_ENV:
         required: true
         type: string
       image_tag:
         required: true
         type: string
-        description: "The Docker image tag to deploy"
       aws_region:
         required: false
         type: string
         default: 'eu-west-2'
-        description: 'AWS region for the ECR'
-      values_file:
-        required: false
-        type: string
-        default: 'values.yaml'
-        description: 'Environment-specific values file (e.g., values/staging.yaml)'
     secrets:
       ECR_ROLE_TO_ASSUME:
         required: true
@@ -42,10 +28,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: dev
     permissions:
       id-token: write
       contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout Source Code
@@ -53,13 +40,20 @@ jobs:
         with:
           ref: ${{ inputs.branch }}
 
+      - name: Sanitize Branch Name
+        id: sanitize
+        uses: ./.github/actions/sanitize-branch-name
+        with:
+          branch_name: ${{ inputs.branch }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+
       - name: Authenticate to ECR
         id: ecr-auth
         uses: ministryofjustice/laa-reusable-github-actions/.github/actions/ecr-auth@main
         with:
           ecr_region: ${{ inputs.aws_region }}
           ecr_role: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-          role-session-name: ${{ github.run_id }}-deploy
+          role-session-name: ${{ github.run_id }}-deploy-ephemeral
 
       - name: Authenticate to Kubernetes Cluster
         uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@main
@@ -70,16 +64,16 @@ jobs:
           kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
           kube-sa: deploy-user
 
-      - name: Deploy to Cloud Platform with Helm
+      - name: Deploy Ephemeral Environment with Helm
         run: |
-          helm upgrade --install laa-amend-a-claim .helm/laa-amend-a-claim \
+          helm upgrade --install ${{ steps.sanitize.outputs.release_name }} .helm/laa-amend-a-claim \
             --namespace ${KUBE_NAMESPACE} \
-            --values .helm/laa-amend-a-claim/${{ inputs.values_file }} \
+            --values .helm/laa-amend-a-claim/values/ephemeral.yaml \
             --set image.repository=${REGISTRY}/${REPOSITORY} \
             --set image.tag=${IMAGE_TAG} \
             --set namespace=${KUBE_NAMESPACE} \
-            --set ingress.host=${KUBE_NAMESPACE}.apps.live.cloud-platform.service.justice.gov.uk \
-            --set sentryEnvironment=${SENTRY_ENV} \
+            --set ingress.host=${{ steps.sanitize.outputs.hostname }} \
+            --set sentryEnvironment=ephemeral-${{ steps.sanitize.outputs.sanitized }} \
             --wait \
             --timeout 5m
         env:
@@ -88,3 +82,18 @@ jobs:
           IMAGE_TAG: ${{ inputs.image_tag }}
           KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+
+      - name: Comment on PR with Environment URL
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const hostname = '${{ steps.sanitize.outputs.hostname }}';
+            const releaseName = '${{ steps.sanitize.outputs.release_name }}';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Ephemeral Environment Deployed\n\n**URL:** https://${hostname}\n\n**Release:** \`${releaseName}\`\n\n**Image Tag:** \`${{ inputs.image_tag }}\``
+            });
