@@ -1,8 +1,11 @@
 
 package uk.gov.justice.laa.amend.claim.drivers;
 
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Playwright;
 import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
-import com.microsoft.playwright.*;
 
 public class DriverFactory {
     private static Playwright playwright;
