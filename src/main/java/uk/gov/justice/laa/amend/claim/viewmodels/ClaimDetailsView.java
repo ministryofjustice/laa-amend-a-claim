@@ -59,9 +59,8 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         addRowIfNotNull(
             rows,
             claim().getVatClaimed(),
-            claim().getTotalAmount()
+            claim().isHasAssessment() ? null : claim().getTotalAmount()
         );
-
         return rows;
     }
 
@@ -155,5 +154,15 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         } else {
             return new ThymeleafMessage("claimSummary.lastAssessmentText.noUser", date, time, outcome);
         }
+    }
+
+    /**
+     * Determines if a given row represents the total row.
+     *
+     * @param row the claim field row
+     * @return true if this is the total row
+     */
+    default boolean isTotalRow(ClaimField row) {
+        return row != null && row.equals(claim().getTotalAmount());
     }
 }

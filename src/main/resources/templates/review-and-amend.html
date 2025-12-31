@@ -44,8 +44,9 @@
                 </thead>
                 <tbody class="govuk-table__body">
                 <tr class="govuk-table__row"
-                    th:each="row : ${viewModel.tableRows}"
+                    th:each="row : ${viewModel.tableRows}" th:if="${!viewModel.isTotalRow(row)}"
                     >
+
                     <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
