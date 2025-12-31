@@ -56,7 +56,7 @@ jobs:
     steps:
       # Checkout and setup
       - name: Checkout Source Code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
 
@@ -67,7 +67,7 @@ jobs:
           distribution: corretto
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       # Run tests
       - name: Run unit tests
@@ -84,7 +84,7 @@ jobs:
       # Upload artifacts
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: test-results
           path: build/test-results
@@ -92,7 +92,7 @@ jobs:
 
       - name: Upload checkstyle report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: checkstyle-report
           path: build/reports/checkstyle
@@ -100,7 +100,7 @@ jobs:
 
       - name: Upload test report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: test-report
           path: build/reports/tests
@@ -108,7 +108,7 @@ jobs:
 
       - name: Upload jacoco coverage report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: jacoco-coverage-report
           path: build/reports/jacoco
@@ -150,7 +150,7 @@ jobs:
 
       # Checkout and setup
       - name: Checkout Source Code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
 
@@ -161,7 +161,7 @@ jobs:
           distribution: corretto
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       # BUILD JAR
       - name: Build JAR
@@ -227,7 +227,7 @@ jobs:
 
       - name: Upload Allure Report artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: allure-report
           path: src/e2e/build/allure-report
