@@ -7,15 +7,14 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
 import java.time.Instant;
-import java.util.Base64;
 
 public class LoginPage {
     private final Page page;
 
-    private final String userField = "input[name='loginfmt']";
-    private final String nextButton = "button:has-text('Next')";
+    private final String userField = "input[name='loginfmt'], input[type='email']";
+    private final String nextButton = "input[type='submit'], button[type='submit'], button:has-text('Next'), button:has-text('Continue'), button:has-text('Sign in')";
     private final String passwordField = "input[name='passwd']";
-    private final String signInButton = "button:has-text('Sign in')";
+    private final String signInButton = "input[type='submit'], button:has-text('Sign in')";
     private final String otcInput = "input[name='otc']";
     private final String verifyButton = "input[id='idSubmit_SAOTCC_Continue']";
 
@@ -46,7 +45,7 @@ public class LoginPage {
             handleMfa(mfaSecret);
         }
 
-        page.waitForSelector("h1:has-text('Submit a bulk claim')",
+        page.waitForSelector("h1:has-text('Search for a claim')",
                 new Page.WaitForSelectorOptions().setTimeout(60_000));
 
         System.out.println("[INFO] Login successful!");
@@ -63,7 +62,7 @@ public class LoginPage {
         page.fill(otcInput, code);
         page.click(verifyButton);
 
-        page.waitForSelector("h1:has-text('Submit a bulk claim')",
+        page.waitForSelector("h1:has-text('Search for a claim')",
                 new Page.WaitForSelectorOptions().setTimeout(60_000));
     }
 

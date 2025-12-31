@@ -1,46 +1,56 @@
+package uk.gov.justice.laa.amend.claim.base;
 
-package base;
 
-import uk.gov.justice.laa.amend.claim.drivers.DriverFactory;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import uk.gov.justice.laa.amend.claim.pages.LoginPage;
 import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
-import com.microsoft.playwright.*;
-import io.qameta.allure.Allure;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
-
-import java.io.ByteArrayInputStream;
 
 public abstract class BaseTest {
-    protected BrowserContext context;
+
+    protected static Playwright playwright;
+    protected static Browser browser;
+    protected static BrowserContext context;
+
     protected Page page;
 
-    @BeforeEach
-    public void setUp() {
-        context = DriverFactory.createContext();
-        page = context.newPage();
 
-        String baseUrl = EnvConfig.baseUrl();
-        if (baseUrl.contains("localhost") || baseUrl.contains("127.0.0.1")) {
-            System.out.println("[INFO] Local environment detected. Skipping login steps.");
-            page.navigate(baseUrl);
-        } else {
-            System.out.println("[INFO] Non-local environment detected. Running login steps.");
-            new LoginPage(page).navigate().login();
-        }
+    @BeforeAll
+    static void launchBrowserAndLogin() {
+        playwright = Playwright.create();
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions()
+                .setHeadless(EnvConfig.headless()));
+        context = browser.newContext();
+        Page loginPage = context.newPage();
+        new LoginPage(loginPage).navigate().login();
+        loginPage.close(); // Close the login page, but context keeps the session
+    }
+
+    @AfterAll
+    static void closeBrowser() {
+        if (context != null) context.close();
+        if (browser != null) browser.close();
+        if (playwright != null) playwright.close();
+    }
+
+    @BeforeEach
+    void createPage() {
+        page = context.newPage();
     }
 
     @AfterEach
-    public void tearDown(TestInfo testInfo) {
-        try {
-            byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
-            Allure.addAttachment(testInfo.getDisplayName() + " - Screenshot", "image/png",
-                    new ByteArrayInputStream(screenshot), "png");
-        } catch (Throwable t) {
-            System.out.println("[WARN] Could not capture screenshot: " + t.getMessage());
+    void cleanUp() {
+        if (page != null) {
+            try {
+                page.close();
+            } catch (Exception ignored) {}
         }
-        if (context != null) context.close();
-        DriverFactory.close();
     }
 }
