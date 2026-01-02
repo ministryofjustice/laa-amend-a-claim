@@ -123,7 +123,7 @@ public class ClaimField implements Serializable {
     }
 
     public boolean isNotAssessable() {
-        return status != ClaimFieldStatus.MODIFIABLE;
+        return status == ClaimFieldStatus.NOT_MODIFIABLE;
     }
 
     private static final List<String> HIDDEN_FIELDS = List.of(
