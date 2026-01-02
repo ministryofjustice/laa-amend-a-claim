@@ -11,12 +11,13 @@ public class EnvConfig {
     }
 
     public static String baseUrl() { return getOrDefault("UI_BASE_URL", "http://localhost:8080/"); }
-    public static String username() { return getOrDefault("USERNAME", "standard_user"); }
-    public static String password() { return getOrDefault("PASSWORD", "secret_sauce"); }
+    public static String username() { return getOrDefault("P_USERNAME", "standard_user"); }
+    public static String password() { return getOrDefault("P_PASSWORD", "secret_sauce"); }
     public static String browser() { return getOrDefault("BROWSER", "chromium"); }
+
     public static boolean headless() { return Boolean.parseBoolean(getOrDefault("HEADLESS", "true")); }
     public static String apiBase() { return getOrDefault("API_BASE", "https://reqres.in"); }
-    public static String mfaSecret() { return getOrDefault("MFA_SECRET", ""); }
+    public static String mfaSecret() { return getOrDefault("P_MFA_SECRET", ""); }
 
     
     public static int mfaMaxAttempts() { return Integer.parseInt(getOrDefault("MFA_MAX_ATTEMPTS", "5")); }

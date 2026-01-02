@@ -1,0 +1,18 @@
+[
+  {
+    "providerAccountNumber": "2N199K",
+    "submissionMonth": "",
+    "submissionYear": "",
+    "ufn": "131019/002",
+    "crn": "",
+    "expectedResults": true
+  },
+  {
+    "providerAccountNumber": "123456",
+    "submissionMonth": "05",
+    "submissionYear": "2024",
+    "ufn": "456",
+    "crn": "CRN003",
+    "expectedResults": false
+  }
+]
