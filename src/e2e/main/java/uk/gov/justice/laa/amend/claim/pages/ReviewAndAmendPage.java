@@ -33,7 +33,6 @@ public class ReviewAndAmendPage {
         return heading.textContent().trim();
     }
 
-    // ---------- helpers for the “Change” links in Claim costs table ----------
 
     private Locator rowByItemName(String itemName) {
         return claimCostsTable.locator("tbody tr").filter(
@@ -54,7 +53,6 @@ public class ReviewAndAmendPage {
     public void clickChangeWaitingCosts()      { clickChangeInRow("Waiting costs"); }
     public void clickChangeVat()               { clickChangeInRow("VAT"); }
 
-    // ---------- “Add” links in Total allowed values table ----------
 
     public void clickAddAllowedTotalVat() {
         allowedTotalsTable.locator("a#allowed-total-vat").click();
@@ -64,7 +62,6 @@ public class ReviewAndAmendPage {
         allowedTotalsTable.locator("a#allowed-total-incl-vat").click();
     }
 
-    // ---------- Buttons ----------
 
     public void submitAdjustments() {
         submitAdjustmentsButton.click();
@@ -73,4 +70,8 @@ public class ReviewAndAmendPage {
     public void discardChanges() {
         discardChangesButton.click();
     }
+
+    public void clickDiscardChanges() {
+    page.locator("a#discard").click();
+}
 }

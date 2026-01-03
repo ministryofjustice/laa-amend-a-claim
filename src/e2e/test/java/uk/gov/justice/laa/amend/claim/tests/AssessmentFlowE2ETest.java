@@ -19,10 +19,10 @@ public class AssessmentFlowE2ETest extends BaseTest {
 
         SearchPage search = new SearchPage(page).navigateTo(baseUrl);
         search.searchForClaim(
-                "123456",     // Provider account
-                "10", "2025", // Month/year
-                UFN,          // UFN
-                ""            // CRN
+                "123456",     
+                "10", "2025", 
+                UFN,          
+                ""            
         );
 
         search.clickViewForUfn(UFN);
