@@ -23,6 +23,13 @@ public class SearchPage {
     private final Locator successBanner;
     private final Locator successBannerHeading;
 
+    private final Locator resultsHeading;
+    private final Locator resultsTable;
+    private final Locator resultRows;
+
+    private final Locator successBanner;
+    private final Locator successBannerHeading;
+
     public SearchPage(Page page) {
         this.page = page;
 
@@ -58,11 +65,18 @@ public class SearchPage {
     public void waitForPage() {
         heading.waitFor();
     }
+    public void waitForPage() {
+        heading.waitFor();
+    }
 
     public SearchPage navigateTo(String baseUrl) {
         page.navigate(baseUrl);
         waitForPage();
         return this;
+    }
+
+    public void enterProviderAccountNumber(String number) {
+        providerAccountNumberInput.fill(number);
     }
 
     public void enterProviderAccountNumber(String number) {
@@ -90,13 +104,31 @@ public class SearchPage {
         clearAllLink.click();
     }
 
-    public void searchForClaim(String providerAccount, String month, String year, String ufn, String crn) {
+    public void enterUFN(String ufn) {
+        if (ufn != null && !ufn.isEmpty()) ufnInput.fill(ufn);
+    }
+
+    public void enterCRN(String crn) {
+        if (crn != null && !crn.isEmpty()) crnInput.fill(crn);
+    }
+
+    public void clickSearch() {
+        searchButton.click();
+    }
+
+    public void clickClearAll() {
+        clearAllLink.click();
+    }
+
+    public void searchForClaim(String providerAccount, String month, String year,
+                               String ufn, String crn) {
         waitForPage();
         enterProviderAccountNumber(providerAccount);
         enterSubmissionDate(month, year);
         enterUFN(ufn);
         enterCRN(crn);
         clickSearch();
+        waitForResults();
         waitForResults();
     }
 
