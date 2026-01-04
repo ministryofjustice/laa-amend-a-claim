@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.pages;
 
-import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 
 public class SearchPage {
@@ -15,13 +15,6 @@ public class SearchPage {
     private final Locator crnInput;
     private final Locator searchButton;
     private final Locator clearAllLink;
-
-    private final Locator resultsHeading;
-    private final Locator resultsTable;
-    private final Locator resultRows;
-
-    private final Locator successBanner;
-    private final Locator successBannerHeading;
 
     private final Locator resultsHeading;
     private final Locator resultsTable;
@@ -65,18 +58,11 @@ public class SearchPage {
     public void waitForPage() {
         heading.waitFor();
     }
-    public void waitForPage() {
-        heading.waitFor();
-    }
 
     public SearchPage navigateTo(String baseUrl) {
         page.navigate(baseUrl);
         waitForPage();
         return this;
-    }
-
-    public void enterProviderAccountNumber(String number) {
-        providerAccountNumberInput.fill(number);
     }
 
     public void enterProviderAccountNumber(String number) {
@@ -104,22 +90,6 @@ public class SearchPage {
         clearAllLink.click();
     }
 
-    public void enterUFN(String ufn) {
-        if (ufn != null && !ufn.isEmpty()) ufnInput.fill(ufn);
-    }
-
-    public void enterCRN(String crn) {
-        if (crn != null && !crn.isEmpty()) crnInput.fill(crn);
-    }
-
-    public void clickSearch() {
-        searchButton.click();
-    }
-
-    public void clickClearAll() {
-        clearAllLink.click();
-    }
-
     public void searchForClaim(String providerAccount, String month, String year,
                                String ufn, String crn) {
         waitForPage();
@@ -128,7 +98,6 @@ public class SearchPage {
         enterUFN(ufn);
         enterCRN(crn);
         clickSearch();
-        waitForResults();
         waitForResults();
     }
 
