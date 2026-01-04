@@ -2,8 +2,9 @@ package uk.gov.justice.laa.amend.claim.tests;
 
 import base.BaseTest;
 import io.qameta.allure.*;
-import org.junit.jupiter.api.*;
-
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.pages.*;
 import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
 
@@ -11,7 +12,13 @@ import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
 @Feature("Discard Assessment Confirmation & Behaviour")
 public class DiscardAssessmentTest extends BaseTest {
 
-    private static final String ESCAPE_UFN = "290419/711";
+
+    private static final EscapeClaim ESCAPE_CLAIM = new EscapeClaim(
+            "2R223X",       
+            "04",           
+            "2025",         
+            "031222/002"    
+    );
 
     @Test
     @Story("AC 1 - Screen display")
@@ -19,35 +26,25 @@ public class DiscardAssessmentTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     void discardAssessmentScreenDisplaysCorrectly() {
 
-        String baseUrl = EnvConfig.baseUrl();
-
-        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
-        search.searchForClaim("123456", "10", "2025", ESCAPE_UFN, "");
-        search.clickViewForUfn(ESCAPE_UFN);
-
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
-        details.clickAddAssessmentOutcome();
-
-        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
-        outcome.completeAssessment("assessed in full", true);
-
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
-        review.discardChanges();
+        goToDiscardAssessmentScreen();
 
         DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
         discard.waitForPage();
 
-        Assertions.assertEquals("Confirm you want to discard this assessment",
-                discard.getHeadingText());
+        Assertions.assertEquals(
+                "Confirm you want to discard this assessment",
+                discard.getHeadingText()
+        );
 
-        Assertions.assertTrue(discard.isDiscardAssessmentButtonVisible(),
-                "Discard Assessment button must be visible");
+        Assertions.assertTrue(
+                discard.isDiscardAssessmentButtonVisible(),
+                "Discard Assessment button must be visible"
+        );
 
-        Assertions.assertTrue(discard.isReturnToClaimLinkVisible(),
-                "Return to Claim link must be visible");
+        Assertions.assertTrue(
+                discard.isReturnToClaimLinkVisible(),
+                "Return to Claim link must be visible"
+        );
     }
 
     @Test
@@ -56,34 +53,19 @@ public class DiscardAssessmentTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     void discardAssessmentRedirectsToSearchWithBanner() {
 
-        String baseUrl = EnvConfig.baseUrl();
-
-        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
-        search.searchForClaim("123456", "10", "2025", ESCAPE_UFN, "");
-        search.clickViewForUfn(ESCAPE_UFN);
-
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
-        details.clickAddAssessmentOutcome();
-
-        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
-        outcome.completeAssessment("assessed in full", true);
-
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
-        review.discardChanges();
+        goToDiscardAssessmentScreen();
 
         DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
         discard.waitForPage();
-
         discard.clickDiscardAssessment();
 
         SearchPage searchAfterDiscard = new SearchPage(page);
         searchAfterDiscard.waitForPage();
 
-        Assertions.assertTrue(searchAfterDiscard.isSuccessBannerVisible(),
-                "Success notification banner should appear after discarding");
+        Assertions.assertTrue(
+                searchAfterDiscard.isSuccessBannerVisible(),
+                "Success notification banner should appear after discarding"
+        );
 
         Assertions.assertEquals(
                 "You discarded the assessment",
@@ -98,27 +80,10 @@ public class DiscardAssessmentTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     void returnToClaimNavigatesBackToReviewScreen() {
 
-        String baseUrl = EnvConfig.baseUrl();
-
-        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
-        search.searchForClaim("123456", "10", "2025", ESCAPE_UFN, "");
-        search.clickViewForUfn(ESCAPE_UFN);
-
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
-        details.clickAddAssessmentOutcome();
-
-        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
-        outcome.completeAssessment("assessed in full", true);
-
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
-        review.discardChanges();
+        goToDiscardAssessmentScreen();
 
         DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
         discard.waitForPage();
-
         discard.clickReturnToClaim();
 
         ReviewAndAmendPage reviewBack = new ReviewAndAmendPage(page);
@@ -137,23 +102,10 @@ public class DiscardAssessmentTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     void reviewAndAmendDiscardNavigatesToDiscardScreen() {
 
-        String baseUrl = EnvConfig.baseUrl();
-
-        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
-        search.searchForClaim("123456", "10", "2025", ESCAPE_UFN, "");
-        search.clickViewForUfn(ESCAPE_UFN);
-
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
-        details.clickAddAssessmentOutcome();
-
-        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
-        outcome.completeAssessment("assessed in full", true);
+        goToReviewAndAmendPage();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.waitForPage();
-
         review.discardChanges();
 
         DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
@@ -164,5 +116,63 @@ public class DiscardAssessmentTest extends BaseTest {
                 discard.getHeadingText(),
                 "Should land on discard confirmation screen"
         );
+    }
+
+    private void goToDiscardAssessmentScreen() {
+        goToReviewAndAmendPage();
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+        review.waitForPage();
+        review.discardChanges();
+
+        DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
+        discard.waitForPage();
+    }
+
+    private void goToReviewAndAmendPage() {
+        String baseUrl = EnvConfig.baseUrl();
+
+        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
+
+        search.searchForClaim(
+                ESCAPE_CLAIM.providerAccount,
+                ESCAPE_CLAIM.month,
+                ESCAPE_CLAIM.year,
+                ESCAPE_CLAIM.ufn,
+                ""
+        );
+
+        search.clickViewForUfn(ESCAPE_CLAIM.ufn);
+
+        ClaimDetailsPage details = new ClaimDetailsPage(page);
+        details.waitForPage();
+
+        Assertions.assertFalse(
+                details.isAddAssessmentOutcomeDisabled(),
+                "Test data issue: expected escape claim (Add assessment outcome enabled) but it was disabled"
+        );
+
+        details.clickAddAssessmentOutcome();
+
+        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
+        outcome.waitForPage();
+        outcome.completeAssessment("assessed in full", true);
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+        review.waitForPage();
+    }
+
+    private static class EscapeClaim {
+        final String providerAccount;
+        final String month;
+        final String year;
+        final String ufn;
+
+        EscapeClaim(String providerAccount, String month, String year, String ufn) {
+            this.providerAccount = providerAccount;
+            this.month = month;
+            this.year = year;
+            this.ufn = ufn;
+        }
     }
 }

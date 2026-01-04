@@ -6,29 +6,29 @@ import com.microsoft.playwright.options.AriaRole;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class AssessAllowedTotalsPage {
+public class AssessTotalClaimValuePage {
 
     private final Page page;
 
     private final Locator heading;
-    private final Locator allowedTotalVatInput;
-    private final Locator allowedTotalInclVatInput;
+    private final Locator assessedTotalVatInput;
+    private final Locator assessedTotalInclVatInput;
     private final Locator saveButton;
     private final Locator cancelLink;
 
     private final Locator errorSummary;
     private final Locator inlineErrors;
 
-    public AssessAllowedTotalsPage(Page page) {
+    public AssessTotalClaimValuePage(Page page) {
         this.page = page;
 
         this.heading = page.getByRole(
                 AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Assess total allowed value")
+                new Page.GetByRoleOptions().setName("Assess total claim value")
         );
 
-        this.allowedTotalVatInput = page.locator("#allowed-total-vat");
-        this.allowedTotalInclVatInput = page.locator("#allowed-total-incl-vat");
+        this.assessedTotalVatInput = page.locator("#assessed-total-vat");
+        this.assessedTotalInclVatInput = page.locator("#assessed-total-incl-vat");
 
         this.saveButton = page.getByRole(
                 AriaRole.BUTTON,
@@ -46,9 +46,9 @@ public class AssessAllowedTotalsPage {
 
     public void waitForPage() { heading.waitFor(); }
 
-    public void setAllowedTotalVat(String amount) { allowedTotalVatInput.fill(amount); }
+    public void setAssessedTotalVat(String amount) { assessedTotalVatInput.fill(amount); }
 
-    public void setAllowedTotalInclVat(String amount) { allowedTotalInclVatInput.fill(amount); }
+    public void setAssessedTotalInclVat(String amount) { assessedTotalInclVatInput.fill(amount); }
 
     public void saveChanges() { saveButton.click(); }
 
@@ -57,17 +57,17 @@ public class AssessAllowedTotalsPage {
     public void assertRequiredErrorsShown() {
         assertThat(errorSummary).isVisible();
 
-        assertThat(errorSummary).containsText("Enter the total allowed VAT");
-        assertThat(errorSummary).containsText("Enter the total allowed value of the claim");
+        assertThat(errorSummary).containsText("Enter the total assessed VAT");
+        assertThat(errorSummary).containsText("Enter the total assessed value of the claim");
 
         assertThat(inlineErrors.first()).isVisible();
 
         assertThat(
-                inlineErrors.filter(new Locator.FilterOptions().setHasText("Enter the total allowed VAT")).first()
+                inlineErrors.filter(new Locator.FilterOptions().setHasText("Enter the total assessed VAT")).first()
         ).isVisible();
 
         assertThat(
-                inlineErrors.filter(new Locator.FilterOptions().setHasText("Enter the total allowed value of the claim")).first()
+                inlineErrors.filter(new Locator.FilterOptions().setHasText("Enter the total assessed value of the claim")).first()
         ).isVisible();
     }
 

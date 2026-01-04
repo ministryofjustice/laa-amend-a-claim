@@ -6,7 +6,7 @@ import com.microsoft.playwright.options.AriaRole;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class AssessDisbursementsPage {
+public class AssessCounselCostsPage {
     private final Page page;
 
     private final Locator heading;
@@ -17,12 +17,12 @@ public class AssessDisbursementsPage {
     private final Locator errorSummary;
     private final Locator inlineError;
 
-    public AssessDisbursementsPage(Page page) {
+    public AssessCounselCostsPage(Page page) {
         this.page = page;
 
         this.heading = page.getByRole(
                 AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Assess disbursements")
+                new Page.GetByRoleOptions().setName("Assess counsel costs")
         );
 
         this.valueInput = page.locator("input#value");
@@ -52,7 +52,6 @@ public class AssessDisbursementsPage {
     public void assertMustBeNumberWithUpTo2DpError() {
         assertThat(errorSummary).isVisible();
         assertThat(inlineError).isVisible();
-
         assertThat(errorSummary).containsText("must be a number with up to 2 decimal places");
         assertThat(inlineError).containsText("must be a number with up to 2 decimal places");
     }

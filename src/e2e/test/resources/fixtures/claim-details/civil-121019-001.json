@@ -1,0 +1,13 @@
+{
+  "addAssessmentOutcomeDisabled": false,
+  "values": {
+    "Fixed fee": ["£132.00", "Not applicable"],
+    "Profit costs": ["Not applicable", "£350.00"],
+    "Disbursements": ["£0.00", "£0.00"],
+    "Disbursement VAT": ["£0.00", "£0.00"],
+    "Detention travel and waiting costs": ["£0.00", "£0.00"],
+    "Counsel costs": ["£0.00", "£0.00"],
+    "VAT": ["No", "No"],
+    "Total": ["£132.00", "Not applicable"]
+  }
+}
