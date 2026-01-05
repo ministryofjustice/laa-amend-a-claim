@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
 import java.math.BigDecimal;
 
@@ -205,18 +206,30 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapAllowedTotalVat")
-    public ClaimField mapAllowedTotalVat() {
+    public ClaimField mapAllowedTotalVat(ClaimResponse claimResponse) {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ALLOWED_TOTAL_VAT);
         claimField.setChangeUrl(ALLOWED_TOTALS_URL);
+        FeeCalculationPatch fee = claimResponse.getFeeCalculationResponse();
+        if (fee != null) {
+            if (fee.getCalculatedVatAmount() != null || fee.getDisbursementVatAmount() != null) {
+                BigDecimal calculatedVatAmount = fee.getCalculatedVatAmount() != null ? fee.getCalculatedVatAmount() : BigDecimal.ZERO;
+                BigDecimal disbursementVatAmount = fee.getDisbursementVatAmount() != null ? fee.getDisbursementVatAmount() : BigDecimal.ZERO;
+                claimField.setCalculated(calculatedVatAmount.add(disbursementVatAmount));
+            }
+        }
         return claimField;
     }
 
     @Named("mapAllowedTotalInclVat")
-    public ClaimField mapAllowedTotalInclVat() {
+    public ClaimField mapAllowedTotalInclVat(ClaimResponse claimResponse) {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ALLOWED_TOTAL_INCL_VAT);
         claimField.setChangeUrl(ALLOWED_TOTALS_URL);
+        FeeCalculationPatch fee = claimResponse.getFeeCalculationResponse();
+        if (fee != null) {
+            claimField.setCalculated(fee.getTotalAmount() != null ? fee.getTotalAmount() : null);
+        }
         return claimField;
     }
 }
