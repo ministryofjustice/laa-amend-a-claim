@@ -153,14 +153,14 @@ public class ClaimField implements Serializable {
     }
 
     public void setSubmittedForDisplay() {
-        this.submitted = getOrElseZero(submitted);
+        setSubmitted(getOrElseZero(submitted));
     }
 
     public void setCalculatedForDisplay() {
-        this.calculated = getOrElseZero(calculated);
+        setCalculated(getOrElseZero(calculated));
     }
 
     public void setAssessedForDisplay() {
-        this.assessed = getOrElseZero(assessed);
+        setAssessed(getOrElseZero(assessed));
     }
 }
