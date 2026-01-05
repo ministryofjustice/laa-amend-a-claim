@@ -1,40 +1,53 @@
 package base;
 
-import com.microsoft.playwright.*;
-import org.junit.jupiter.api.*;
+import com.microsoft.playwright.Page;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import uk.gov.justice.laa.amend.claim.base.BrowserSession;
+import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
 
+/**
+ * The {@code BaseTest} class provides a foundation for UI tests using the
+ * Playwright library. It handles common setup and cleanup tasks, such as
+ * initializing a new browser page and navigating to the application's base URL
+ * before each test, and ensuring the page is closed after the test is executed.
+ *
+ * Subclasses of {@code BaseTest} inherit this functionality to streamline test
+ * development, focusing only on the test logic rather than boilerplate setup
+ * and teardown.
+ *
+ * This class is abstract and not meant to be instantiated directly. It is
+ * designed to be extended by specific test classes that implement particular
+ * test scenarios.
+ *
+ * Features:
+ * - Automatically initializes a browser page and navigates to the base URL before each test.
+ * - Safely closes the browser page after each test execution.
+ * - Leverages the {@code BrowserSession} and {@code EnvConfig} classes for
+ *   session management and configuration.
+ *
+ * Structure:
+ * - {@code createPage()}: A method annotated with {@code @BeforeEach} to set up the testing
+ *   environment. It creates a new browser page and navigates to the configured
+ *   base URL.
+ * - {@code cleanUp()}: A method annotated with {@code @AfterEach} to ensure that
+ *   resources are properly released by closing the browser page after the test
+ *   completes.
+ */
 public abstract class BaseTest {
-
-    protected static Playwright playwright;
-    protected static Browser browser;
-
-    protected BrowserContext context;
     protected Page page;
 
-    @BeforeAll
-    static void launchBrowser() {
-        playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions()
-                .setHeadless(Boolean.parseBoolean(System.getProperty("headless", "true"))));
-    }
-
-    @AfterAll
-    static void closeBrowser() {
-        if (browser != null) browser.close();
-        if (playwright != null) playwright.close();
-    }
-
     @BeforeEach
-    void createContext() {
-        context = browser.newContext();
-        page = context.newPage();
+    void createPage() {
+        page = BrowserSession.getContext().newPage();
+        page.navigate(EnvConfig.baseUrl());
     }
 
     @AfterEach
     void cleanUp() {
-        if (context != null) {
+        if (page != null) {
             try {
-                context.close();
+                page.close();
             } catch (Exception ignored) {}
         }
     }

@@ -75,3 +75,14 @@ test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
+
+// Skip e2e tasks during regular build/test
+gradle.taskGraph.whenReady { graph ->
+    if (graph.hasTask(':build') || graph.hasTask(':test')) {
+        graph.allTasks.each { task ->
+            if (task.path.contains(':e2e:')) {
+                task.enabled = false
+            }
+        }
+    }
+}

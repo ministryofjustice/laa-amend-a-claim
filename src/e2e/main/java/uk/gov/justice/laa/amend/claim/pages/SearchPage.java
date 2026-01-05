@@ -22,6 +22,7 @@ public class SearchPage {
 
     private final Locator successBanner;
     private final Locator successBannerHeading;
+    private final Locator noResultsMessage;
 
     public SearchPage(Page page) {
         this.page = page;
@@ -53,6 +54,8 @@ public class SearchPage {
 
         this.successBanner = page.locator(".govuk-notification-banner--success");
         this.successBannerHeading = successBanner.locator(".govuk-notification-banner__heading");
+
+        this.noResultsMessage = page.locator("h2.govuk-heading-m:has-text('no results')");
     }
 
     public void waitForPage() {
@@ -90,6 +93,18 @@ public class SearchPage {
         clearAllLink.click();
     }
 
+    // ---- COMBINED SEARCH + WAIT FOR RESULTS ----
+    public void searchForClaim(String providerAccount, String month, String year,
+                               String ufn, String crn, boolean expectResults) {
+        waitForPage();
+        enterProviderAccountNumber(providerAccount);
+        enterSubmissionDate(month, year);
+        enterUFN(ufn);
+        enterCRN(crn);
+        clickSearch();
+        waitForResults(expectResults);
+    }
+
     public void searchForClaim(String providerAccount, String month, String year,
                                String ufn, String crn) {
         waitForPage();
@@ -98,11 +113,20 @@ public class SearchPage {
         enterUFN(ufn);
         enterCRN(crn);
         clickSearch();
-        waitForResults();
+        waitForResults(true);
     }
 
     public String getHeadingText() {
         return heading.textContent().trim();
+    }
+
+    public void waitForResults(boolean expectResults) {
+        if (expectResults) {
+            resultsHeading.waitFor();
+            resultsTable.waitFor();
+        } else  {
+            noResultsMessage.waitFor();
+        }
     }
 
     public void waitForResults() {
@@ -111,6 +135,9 @@ public class SearchPage {
     }
 
     public boolean hasResults() {
+        if (noResultsMessage.isVisible()) {
+            return false;
+        }
         waitForResults();
         return resultRows.count() > 0;
     }

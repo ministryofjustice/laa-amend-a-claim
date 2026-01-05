@@ -8,10 +8,10 @@
     "expectedResults": true
   },
   {
-    "providerAccountNumber": "123456",
+    "providerAccountNumber": "1P111P",
     "submissionMonth": "10",
     "submissionYear": "2025",
-    "ufn": "DOES-NOT-EXIST",
+    "ufn": "",
     "crn": "",
     "expectedResults": false
   }

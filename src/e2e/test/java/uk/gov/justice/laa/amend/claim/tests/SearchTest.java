@@ -58,7 +58,8 @@ public class SearchTest extends BaseTest {
                 config.getSubmissionMonth(),
                 config.getSubmissionYear(),
                 config.getUfn(),
-                config.getCrn()
+                config.getCrn(),
+                config.isExpectedResults()
         );
 
         boolean hasResults = searchPage.hasResults();
