@@ -4,7 +4,7 @@
     "urlPath": "/api/v0/claims",
     "queryParameters": {
       "office_code": {
-        "equalTo": "123456"
+        "equalTo": "1P111P"
       },
       "size": {
         "matches": ".*"
