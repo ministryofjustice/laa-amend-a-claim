@@ -12,6 +12,7 @@ public class ClaimDetailsPage {
 
     private final Locator heading;
     private final Locator addAssessmentOutcomeButton;
+    private final Locator updateAssessmentOutcomeButton;
 
     public ClaimDetailsPage(Page page) {
         this.page = page;
@@ -25,6 +26,11 @@ public class ClaimDetailsPage {
                 AriaRole.BUTTON,
                 new Page.GetByRoleOptions().setName("Add assessment outcome")
         );
+
+        this.updateAssessmentOutcomeButton = page.getByRole(
+            AriaRole.BUTTON,
+            new Page.GetByRoleOptions().setName("Update assessment outcome")
+        );
     }
 
     public void waitForPage() {
@@ -36,6 +42,10 @@ public class ClaimDetailsPage {
     }
 
     public void clickAddAssessmentOutcome() {
+        addAssessmentOutcomeButton.click();
+    }
+
+    public void clickUpdateAssessmentOutcome() {
         addAssessmentOutcomeButton.click();
     }
 

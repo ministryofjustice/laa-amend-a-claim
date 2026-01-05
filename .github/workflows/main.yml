@@ -27,7 +27,7 @@ jobs:
     with:
       branch: ${{ github.ref_name }}
       environment: dev
-      use_mocks: true
+      use_mocks: false
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}

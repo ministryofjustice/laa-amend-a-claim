@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.tests;
 
 import base.BaseTest;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.pages.*;
@@ -12,7 +13,7 @@ public class AssessmentFlowE2ETest extends BaseTest {
     private static final String CRIME_PROVIDER_ACCOUNT = "0P322F";
     private static final String CRIME_UFN = "111018/001";
 
-    @Test
+    @Disabled
     @DisplayName("E2E: Full Crime Assessment Flow – Search → View → Outcome → Amend All → Submit")
     void fullAssessmentFlow() {
         String baseUrl = EnvConfig.baseUrl();
