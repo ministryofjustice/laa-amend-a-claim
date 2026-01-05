@@ -104,24 +104,16 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     default ClaimField setDisplayForNulls(ClaimField field) {
         if (field != null) {
-            if (field.getSubmitted() == null) {
-                field.setSubmitted(BigDecimal.ZERO);
-            }
-            if (field.getCalculated() == null) {
-                field.setCalculated(BigDecimal.ZERO);
-            }
-            if (field.getAssessed() == null) {
-                field.setAssessed(BigDecimal.ZERO);
-            }
+            field.setSubmittedForDisplay();
+            field.setCalculatedForDisplay();
+            field.setAssessedForDisplay();
         }
         return field;
     }
 
     private ClaimField setCalculatedDisplayForNulls(ClaimField field) {
         if (field != null) {
-            if (field.getCalculated() == null) {
-                field.setCalculated(BigDecimal.ZERO);
-            }
+            field.setCalculatedForDisplay();
         }
         return field;
     }

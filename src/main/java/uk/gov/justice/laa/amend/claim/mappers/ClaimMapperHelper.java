@@ -29,6 +29,7 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
+import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.add;
 
 @Component
 public class ClaimMapperHelper {
@@ -211,13 +212,8 @@ public class ClaimMapperHelper {
         claimField.setKey(ALLOWED_TOTAL_VAT);
         claimField.setChangeUrl(ALLOWED_TOTALS_URL);
         FeeCalculationPatch fee = claimResponse.getFeeCalculationResponse();
-        if (fee != null) {
-            if (fee.getCalculatedVatAmount() != null || fee.getDisbursementVatAmount() != null) {
-                BigDecimal calculatedVatAmount = fee.getCalculatedVatAmount() != null ? fee.getCalculatedVatAmount() : BigDecimal.ZERO;
-                BigDecimal disbursementVatAmount = fee.getDisbursementVatAmount() != null ? fee.getDisbursementVatAmount() : BigDecimal.ZERO;
-                claimField.setCalculated(calculatedVatAmount.add(disbursementVatAmount));
-            }
-        }
+        BigDecimal calculated = fee != null ? add(fee.getCalculatedVatAmount(), fee.getDisbursementVatAmount()) : null;
+        claimField.setCalculated(calculated);
         return claimField;
     }
 
@@ -227,9 +223,8 @@ public class ClaimMapperHelper {
         claimField.setKey(ALLOWED_TOTAL_INCL_VAT);
         claimField.setChangeUrl(ALLOWED_TOTALS_URL);
         FeeCalculationPatch fee = claimResponse.getFeeCalculationResponse();
-        if (fee != null) {
-            claimField.setCalculated(fee.getTotalAmount() != null ? fee.getTotalAmount() : null);
-        }
+        BigDecimal calculated = fee != null ? fee.getTotalAmount() : null;
+        claimField.setCalculated(calculated);
         return claimField;
     }
 }

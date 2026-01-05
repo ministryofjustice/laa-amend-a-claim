@@ -150,4 +150,22 @@ public class ClaimField implements Serializable {
             default -> false;
         };
     }
+
+    public void setSubmittedForDisplay() {
+        if (submitted == null) {
+            this.submitted = BigDecimal.ZERO;
+        }
+    }
+
+    public void setCalculatedForDisplay() {
+        if (calculated == null) {
+            this.calculated = BigDecimal.ZERO;
+        }
+    }
+
+    public void setAssessedForDisplay() {
+        if (assessed == null) {
+            this.assessed = BigDecimal.ZERO;
+        }
+    }
 }
