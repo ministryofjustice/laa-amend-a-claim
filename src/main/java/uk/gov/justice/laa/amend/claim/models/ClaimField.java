@@ -17,6 +17,7 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
+import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
 
 @Data
 @AllArgsConstructor
@@ -152,20 +153,14 @@ public class ClaimField implements Serializable {
     }
 
     public void setSubmittedForDisplay() {
-        if (submitted == null) {
-            this.submitted = BigDecimal.ZERO;
-        }
+        this.submitted = getOrElseZero(submitted);
     }
 
     public void setCalculatedForDisplay() {
-        if (calculated == null) {
-            this.calculated = BigDecimal.ZERO;
-        }
+        this.calculated = getOrElseZero(calculated);
     }
 
     public void setAssessedForDisplay() {
-        if (assessed == null) {
-            this.assessed = BigDecimal.ZERO;
-        }
+        this.assessed = getOrElseZero(assessed);
     }
 }

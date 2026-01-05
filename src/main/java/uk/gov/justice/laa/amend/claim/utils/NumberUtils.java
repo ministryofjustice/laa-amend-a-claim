@@ -7,14 +7,14 @@ import java.math.BigDecimal;
 @UtilityClass
 public class NumberUtils {
 
-    public static BigDecimal getOrElseZero(BigDecimal value) {
+    public static Object getOrElseZero(Object value) {
         return value != null ? value : BigDecimal.ZERO;
     }
 
     public static BigDecimal add(BigDecimal... values) {
         BigDecimal sum = null;
         for (BigDecimal value : values) {
-            sum = sum == null ? value : sum.add(getOrElseZero(value));
+            sum = sum == null ? value : sum.add((BigDecimal) getOrElseZero(value));
         }
         return sum;
     }
