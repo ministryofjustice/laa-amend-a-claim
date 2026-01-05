@@ -6,7 +6,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.Objects;
+
+import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
 
 /**
  * Utility class for formatting currency.
@@ -24,7 +25,7 @@ public class CurrencyUtils {
      * @return formatted currency string, or "£0.00" if amount is null
      */
     public static String formatCurrency(BigDecimal amount) {
-        return CURRENCY_FORMATTER.format(Objects.requireNonNullElse(amount, BigDecimal.ZERO));
+        return CURRENCY_FORMATTER.format(getOrElseZero(amount));
     }
 
     /**

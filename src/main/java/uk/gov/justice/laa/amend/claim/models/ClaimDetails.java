@@ -121,7 +121,6 @@ public abstract class ClaimDetails extends Claim {
 
     public abstract AssessmentPost toAssessment(AssessmentMapper mapper, String userId);
 
-
     public List<ClaimField> getClaimFields() {
         return Stream.concat(
                 commonClaimFields(),

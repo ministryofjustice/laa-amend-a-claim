@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
 import java.math.BigDecimal;
 
@@ -28,6 +29,7 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
+import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.add;
 
 @Component
 public class ClaimMapperHelper {
@@ -205,18 +207,24 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapAllowedTotalVat")
-    public ClaimField mapAllowedTotalVat() {
+    public ClaimField mapAllowedTotalVat(ClaimResponse claimResponse) {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ALLOWED_TOTAL_VAT);
         claimField.setChangeUrl(ALLOWED_TOTALS_URL);
+        FeeCalculationPatch fee = claimResponse.getFeeCalculationResponse();
+        BigDecimal calculated = fee != null ? add(fee.getCalculatedVatAmount(), fee.getDisbursementVatAmount()) : null;
+        claimField.setCalculated(calculated);
         return claimField;
     }
 
     @Named("mapAllowedTotalInclVat")
-    public ClaimField mapAllowedTotalInclVat() {
+    public ClaimField mapAllowedTotalInclVat(ClaimResponse claimResponse) {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ALLOWED_TOTAL_INCL_VAT);
         claimField.setChangeUrl(ALLOWED_TOTALS_URL);
+        FeeCalculationPatch fee = claimResponse.getFeeCalculationResponse();
+        BigDecimal calculated = fee != null ? fee.getTotalAmount() : null;
+        claimField.setCalculated(calculated);
         return claimField;
     }
 }
