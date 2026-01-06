@@ -54,9 +54,13 @@ jobs:
           curl -s https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/main/cidrs.txt -o cidrs.txt
 
           # Convert newline-separated CIDRs to comma-separated format for nginx annotation
-          # Filter out empty lines, then join with commas
+          # Filter out empty/whitespace-only lines, join with commas, remove any trailing comma
           # e.g., "10.0.0.0/8\n192.168.0.0/16" becomes "10.0.0.0/8,192.168.0.0/16"
-          CIDRS=$(grep -v '^$' cidrs.txt | paste -sd ',' -)
+          CIDRS=$(grep -v '^\s*$' cidrs.txt | paste -sd ',' - | sed 's/,$//')
+
+          # Debug output
+          echo "IP Allowlist: ${CIDRS}"
+          echo "Last character: ${CIDRS: -1}"
 
           # Output for use in helm command
           echo "cidrs=${CIDRS}" >> $GITHUB_OUTPUT
