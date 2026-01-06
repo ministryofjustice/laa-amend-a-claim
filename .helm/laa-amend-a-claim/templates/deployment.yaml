@@ -56,6 +56,10 @@ spec:
                 {{- toYaml .valueFrom | nindent 16 }}
               {{- end }}
             {{- end }}
+            {{- if .Values.springProfile }}
+            - name: SPRING_PROFILES_ACTIVE
+              value: {{ .Values.springProfile | quote }}
+            {{- end }}
             {{- if .Values.sentryEnvironment }}
             - name: SENTRY_ENVIRONMENT
               value: {{ .Values.sentryEnvironment | quote }}

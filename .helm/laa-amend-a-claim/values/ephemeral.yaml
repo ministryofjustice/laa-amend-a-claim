@@ -13,8 +13,3 @@ resources:
   limits:
     memory: "1024Mi"
     cpu: "500m"
-
-# Use ephemeral profile which disables authentication
-env:
-  - name: SPRING_PROFILES_ACTIVE
-    value: "ephemeral"
