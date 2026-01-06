@@ -24,7 +24,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 
-@Profile("local", "ephemeral")
+@Profile({"local", "ephemeral"})
 @Configuration
 @EnableWebSecurity
 public class LocalSecurityConfig {
