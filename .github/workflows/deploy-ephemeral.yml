@@ -88,7 +88,7 @@ jobs:
             --set namespace=${KUBE_NAMESPACE} \
             --set fullnameOverride=${{ steps.sanitize.outputs.sanitized }} \
             --set ingress.host=${{ steps.sanitize.outputs.hostname }} \
-            --set ipAllowlist=${{ steps.ip-allowlist.outputs.cidrs }} \
+            --set "ipAllowlist=${{ steps.ip-allowlist.outputs.cidrs }}" \
             --set sentryEnvironment=ephemeral-${{ steps.sanitize.outputs.sanitized }} \
             --wait \
             --timeout 5m
