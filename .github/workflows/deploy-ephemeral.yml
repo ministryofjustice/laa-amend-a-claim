@@ -126,15 +126,41 @@ jobs:
               }
             }
 
-            // Only comment if we found a PR
-            if (prNumber) {
+            if (!prNumber) {
+              console.log('No PR found for this branch, skipping comment');
+              return;
+            }
+
+            // Check if comment already exists
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+
+            const commentBody = `## Ephemeral Environment Deployed\n\n**URL:** https://${hostname}\n\n**Release:** \`${releaseName}\`\n\n**Image Tag:** \`${imageTag}\``;
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('## Ephemeral Environment Deployed') &&
+              comment.body.includes(hostname)
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+              console.log(`Updated existing comment #${botComment.id} on PR #${prNumber}`);
+            } else {
+              // Create new comment
               await github.rest.issues.createComment({
                 issue_number: prNumber,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: `## Ephemeral Environment Deployed\n\n**URL:** https://${hostname}\n\n**Release:** \`${releaseName}\`\n\n**Image Tag:** \`${imageTag}\``
+                body: commentBody
               });
-              console.log(`Posted comment to PR #${prNumber}`);
-            } else {
-              console.log('No PR found for this branch, skipping comment');
+              console.log(`Posted new comment to PR #${prNumber}`);
             }
