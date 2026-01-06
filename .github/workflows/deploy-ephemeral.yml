@@ -101,16 +101,40 @@ jobs:
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
 
       - name: Comment on PR with Environment URL
-        if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
             const hostname = '${{ steps.sanitize.outputs.hostname }}';
             const releaseName = '${{ steps.sanitize.outputs.release_name }}';
+            const imageTag = '${{ inputs.image_tag }}';
+            const branch = '${{ inputs.branch }}';
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `## Ephemeral Environment Deployed\n\n**URL:** https://${hostname}\n\n**Release:** \`${releaseName}\`\n\n**Image Tag:** \`${{ inputs.image_tag }}\``
-            });
+            // Get PR number from event context or find it by branch name
+            let prNumber = context.issue.number;
+
+            if (!prNumber) {
+              // Find PR associated with this branch
+              const { data: pulls } = await github.rest.pulls.list({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                head: `${context.repo.owner}:${branch}`,
+                state: 'open'
+              });
+
+              if (pulls.length > 0) {
+                prNumber = pulls[0].number;
+              }
+            }
+
+            // Only comment if we found a PR
+            if (prNumber) {
+              await github.rest.issues.createComment({
+                issue_number: prNumber,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `## Ephemeral Environment Deployed\n\n**URL:** https://${hostname}\n\n**Release:** \`${releaseName}\`\n\n**Image Tag:** \`${imageTag}\``
+              });
+              console.log(`Posted comment to PR #${prNumber}`);
+            } else {
+              console.log('No PR found for this branch, skipping comment');
+            }
