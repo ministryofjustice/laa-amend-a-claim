@@ -47,6 +47,19 @@ jobs:
           branch_name: ${{ inputs.branch }}
           namespace: ${{ secrets.KUBE_NAMESPACE }}
 
+      - name: Fetch IP Allowlist
+        id: ip-allowlist
+        run: |
+          # Download the IP allowlist from GitHub
+          curl -s https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/main/cidrs.txt -o cidrs.txt
+
+          # Convert newline-separated CIDRs to comma-separated format for nginx annotation
+          # e.g., "10.0.0.0/8\n192.168.0.0/16" becomes "10.0.0.0/8,192.168.0.0/16"
+          CIDRS=$(cat cidrs.txt | tr '\n' ',' | sed 's/,$//')
+
+          # Output for use in helm command
+          echo "cidrs=${CIDRS}" >> $GITHUB_OUTPUT
+
       - name: Authenticate to ECR
         id: ecr-auth
         uses: ministryofjustice/laa-reusable-github-actions/.github/actions/ecr-auth@main
@@ -74,6 +87,7 @@ jobs:
             --set namespace=${KUBE_NAMESPACE} \
             --set fullnameOverride=${{ steps.sanitize.outputs.sanitized }} \
             --set ingress.host=${{ steps.sanitize.outputs.hostname }} \
+            --set ingress.annotations."nginx\.ingress\.kubernetes\.io/whitelist-source-range"="${{ steps.ip-allowlist.outputs.cidrs }}" \
             --set sentryEnvironment=ephemeral-${{ steps.sanitize.outputs.sanitized }} \
             --wait \
             --timeout 5m
