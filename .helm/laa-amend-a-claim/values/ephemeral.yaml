@@ -14,7 +14,7 @@ resources:
     memory: "1024Mi"
     cpu: "500m"
 
-# Disable authentication for ephemeral environments by activating 'local' profile
+# Use ephemeral profile which disables authentication
 env:
   - name: SPRING_PROFILES_ACTIVE
-    value: "local"
+    value: "ephemeral"

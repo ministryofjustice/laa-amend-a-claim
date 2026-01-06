@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Profile("!local")
+@Profile("!local & !ephemeral")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
