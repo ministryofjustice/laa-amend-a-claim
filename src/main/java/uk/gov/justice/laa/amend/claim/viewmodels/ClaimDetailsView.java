@@ -60,13 +60,17 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
             rows,
             claim().getVatClaimed()
         );
-        if (PageType.CLAIM_DETAILS.equals(page)) {
+        addTotalRow(page, rows);
+        return rows;
+    }
+
+    private void addTotalRow(PageType page, List<ClaimField> rows) {
+        if (PageType.CLAIM_DETAILS.equals(page) && !claim().isHasAssessment()) {
             addRowIfNotNull(
                 rows,
-                claim().isHasAssessment() ? null : claim().getTotalAmount()
+                claim().getTotalAmount()
             );
         }
-        return rows;
     }
 
     default List<ClaimField> getAssessedTotals() {

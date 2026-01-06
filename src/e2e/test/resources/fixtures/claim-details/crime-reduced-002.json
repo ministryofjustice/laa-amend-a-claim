@@ -14,8 +14,8 @@
     "VAT": ["Yes", "Yes"]
   },
   "allowedTotals": {
-    "Allowed total VAT": ["Not applicable", "Not applicable", "£321.00"],
-    "Allowed total incl VAT": ["Not applicable", "Not applicable", "£321.00"]
+    "Allowed total VAT": ["£129.11", "Not applicable", "£321.00"],
+    "Allowed total incl VAT": ["£774.68", "Not applicable", "£321.00"]
   },
   "assessedTotals": {
     "Assessed total VAT": ["Not applicable", "Not applicable", "£321.00"],
