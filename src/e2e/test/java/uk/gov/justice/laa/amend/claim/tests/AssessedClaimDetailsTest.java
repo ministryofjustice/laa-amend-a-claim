@@ -25,7 +25,7 @@ import static uk.gov.justice.laa.amend.claim.base.E2ETestHelper.normalizeMoneyFo
 @Feature("Assessment Totals")
 public class AssessedClaimDetailsTest extends BaseTest {
 
-    @Test
+    @Disabled("Disabled this until we have test data for INVC fee codes")
     @DisplayName("E2E: Assessed ClaimDetails - Reduced (still escaped) - Show claim Assessed/Allowed totals")
     void showClaimTotals() {
         ClaimDetailsFixture claimDetailsFixture = loadFixture("fixtures/claim-details/crime-reduced-002.json");
