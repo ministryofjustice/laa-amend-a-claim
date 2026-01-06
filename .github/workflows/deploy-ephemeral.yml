@@ -72,6 +72,7 @@ jobs:
             --set image.repository=${REGISTRY}/${REPOSITORY} \
             --set image.tag=${IMAGE_TAG} \
             --set namespace=${KUBE_NAMESPACE} \
+            --set fullnameOverride=${{ steps.sanitize.outputs.sanitized }} \
             --set ingress.host=${{ steps.sanitize.outputs.hostname }} \
             --set sentryEnvironment=ephemeral-${{ steps.sanitize.outputs.sanitized }} \
             --wait \
