@@ -52,7 +52,7 @@ runs:
         RELEASE_NAME="ephemeral-${SANITIZED}"
 
         # Create hostname for ingress
-        HOSTNAME="${SANITIZED}-${{ inputs.namespace }}.apps.live.cloud-platform.service.justice.gov.uk"
+        HOSTNAME="${SANITIZED}-laa-amend-a-claim.apps.live.cloud-platform.service.justice.gov.uk"
 
         # Output values
         echo "sanitized=${SANITIZED}" >> $GITHUB_OUTPUT
