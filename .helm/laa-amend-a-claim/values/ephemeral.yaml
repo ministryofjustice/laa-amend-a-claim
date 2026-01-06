@@ -1,6 +1,9 @@
 # Environment-specific values for Ephemeral/Dev environments
 # These values override the defaults in values.yaml
 
+# Unset fullnameOverride to allow unique resource names per ephemeral release
+fullnameOverride: ""
+
 replicaCount: 1
 
 ingress:
