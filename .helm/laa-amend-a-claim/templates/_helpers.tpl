@@ -60,3 +60,12 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+IP Whitelist for ingress
+*/}}
+{{- define "laa-amend-a-claim.whitelist" -}}
+{{- if .Values.ipAllowlist -}}
+{{ join "," .Values.ipAllowlist }}
+{{- end -}}
+{{- end -}}

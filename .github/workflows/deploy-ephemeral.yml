@@ -50,20 +50,16 @@ jobs:
       - name: Fetch IP Allowlist
         id: ip-allowlist
         run: |
-          # Download the IP allowlist from GitHub
-          curl -s https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/main/cidrs.txt -o cidrs.txt
-
-          # Convert newline-separated CIDRs to comma-separated format for nginx annotation
-          # Filter out empty/whitespace-only lines, join with commas, remove any trailing comma
-          # e.g., "10.0.0.0/8\n192.168.0.0/16" becomes "10.0.0.0/8,192.168.0.0/16"
-          CIDRS=$(grep -v '^\s*$' cidrs.txt | paste -sd ',' - | sed 's/,$//')
-
-          # Debug output
-          echo "IP Allowlist: ${CIDRS}"
-          echo "Last character: ${CIDRS: -1}"
+          # Download the IP allowlist and format as Helm array syntax
+          # 1. Convert newlines to commas: "10.0.0.0/8\n192.168.0.0/16" → "10.0.0.0/8,192.168.0.0/16"
+          # 2. Wrap in braces for Helm array syntax: → "{10.0.0.0/8,192.168.0.0/16}"
+          # 3. Helm parses as array: ["10.0.0.0/8", "192.168.0.0/16"]
+          # 4. Template helper joins array back to comma-separated string for nginx annotation
+          CIDRS=$(curl -s https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/main/cidrs.txt | tr -d ' ' | tr '\n' ',' | sed 's/,$//')
+          CIDRS_ARRAY="{${CIDRS}}"
 
           # Output for use in helm command
-          echo "cidrs=${CIDRS}" >> $GITHUB_OUTPUT
+          echo "cidrs=${CIDRS_ARRAY}" >> $GITHUB_OUTPUT
 
       - name: Authenticate to ECR
         id: ecr-auth
@@ -92,7 +88,7 @@ jobs:
             --set namespace=${KUBE_NAMESPACE} \
             --set fullnameOverride=${{ steps.sanitize.outputs.sanitized }} \
             --set ingress.host=${{ steps.sanitize.outputs.hostname }} \
-            --set-string ingress.annotations."nginx\.ingress\.kubernetes\.io/whitelist-source-range"="${{ steps.ip-allowlist.outputs.cidrs }}" \
+            --set ipAllowlist=${{ steps.ip-allowlist.outputs.cidrs }} \
             --set sentryEnvironment=ephemeral-${{ steps.sanitize.outputs.sanitized }} \
             --wait \
             --timeout 5m

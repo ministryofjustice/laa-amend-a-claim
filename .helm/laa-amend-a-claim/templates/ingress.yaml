@@ -10,6 +10,9 @@ metadata:
   annotations:
     external-dns.alpha.kubernetes.io/set-identifier: {{ $fullName }}-{{ .Values.namespace }}-{{ .Values.ingress.cluster.name }}
     external-dns.alpha.kubernetes.io/aws-weight: {{ .Values.ingress.cluster.weight | quote }}
+    {{- if .Values.ipAllowlist }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ include "laa-amend-a-claim.whitelist" . | quote }}
+    {{- end }}
     {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
