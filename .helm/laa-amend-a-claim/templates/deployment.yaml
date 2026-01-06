@@ -48,6 +48,9 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
             {{- range .Values.env }}
+            {{- if and (eq .name "REDIS_URL") $.Values.redis.enabled }}
+            {{- /* Skip REDIS_URL from env array if redis.enabled - we'll set it below */ -}}
+            {{- else }}
             - name: {{ .name }}
               {{- if .value }}
               value: {{ .value | quote }}
@@ -55,6 +58,11 @@ spec:
               valueFrom:
                 {{- toYaml .valueFrom | nindent 16 }}
               {{- end }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.redis.enabled }}
+            - name: REDIS_URL
+              value: redis://{{ include "laa-amend-a-claim.fullname" . }}-redis:6379
             {{- end }}
             {{- if .Values.springProfile }}
             - name: SPRING_PROFILES_ACTIVE
