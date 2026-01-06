@@ -19,22 +19,11 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Get Branch Name
-        id: get-branch
-        run: |
-          # Get branch name - either from PR or deleted branch
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
-          else
-            BRANCH_NAME="${{ github.event.ref }}"
-          fi
-          echo "branch_name=${BRANCH_NAME}" >> $GITHUB_OUTPUT
-
       - name: Sanitize Branch Name
         id: sanitize
         uses: ./.github/actions/sanitize-branch-name
         with:
-          branch_name: ${{ steps.get-branch.outputs.branch_name }}
+          branch_name: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.event.ref }}
           namespace: ${{ secrets.KUBE_NAMESPACE }}
 
       - name: Authenticate to Kubernetes Cluster
