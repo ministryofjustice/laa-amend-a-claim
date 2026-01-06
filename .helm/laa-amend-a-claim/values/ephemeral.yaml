@@ -13,3 +13,7 @@ resources:
   limits:
     memory: "1024Mi"
     cpu: "500m"
+
+# Enable ephemeral Redis instance for session storage
+redis:
+  enabled: true

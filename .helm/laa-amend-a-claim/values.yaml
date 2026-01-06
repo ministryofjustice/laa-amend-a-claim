@@ -146,6 +146,10 @@ volumeMounts: []
 
 nodeSelector: {}
 
+# Do not create a new redis pod (We use AWS ElastiCache for Redis for all non-ephemeral environments)
+redis:
+  enabled: false
+
 tolerations: []
 
 affinity: {}
