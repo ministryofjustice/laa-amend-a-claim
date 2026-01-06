@@ -15,8 +15,15 @@ echo "[INFO] Starting application..."
 BOOTRUN_PID=$!
 sleep 10
 
-echo "[INFO] Starting tests..."
-(cd src/e2e/ && ./gradlew test)
+TEST_CLASS="${1:-}"
+if [[ -n "$TEST_CLASS" ]]; then
+  TEST_CLASS_PATH="uk.gov.justice.laa.amend.claim.tests.$TEST_CLASS"
+  echo "[INFO] Running test: $TEST_CLASS"
+  (cd src/e2e/ && ./gradlew test --tests "$TEST_CLASS_PATH")
+else
+  echo "[INFO] Running tests"
+  (cd src/e2e/ && ./gradlew test)
+fi
 
 echo "[INFO] Cleaning up..."
 kill "$BOOTRUN_PID" "$PORT_FORWARD_PID" 2>/dev/null || true
