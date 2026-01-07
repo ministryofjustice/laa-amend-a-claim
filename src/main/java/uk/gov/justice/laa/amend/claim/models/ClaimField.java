@@ -90,7 +90,7 @@ public class ClaimField implements Serializable {
         setAssessed(BigDecimal.ZERO);
     }
 
-    protected void setToNeedsAssessing() {
+    protected void setAssessedToNull() {
         setAssessed(null);
     }
 
@@ -100,15 +100,6 @@ public class ClaimField implements Serializable {
 
     protected void setAssessedToSubmitted() {
         setAssessedToValue(this.getSubmitted());
-    }
-
-    protected void setToNotApplicable() {
-        setAssessed(null);
-    }
-
-
-    protected void setToDoNotDisplay() {
-        setAssessed(null);
     }
 
     public void setAssessedToValue(Object value) {

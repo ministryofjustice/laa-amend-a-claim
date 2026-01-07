@@ -77,11 +77,19 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         List<ClaimField> rows = new ArrayList<>();
         addRowIfNotNull(
             rows,
-            claim().getAssessedTotalVat(),
-            claim().getAssessedTotalInclVat()
+            resolveValue(claim().getAssessedTotalVat(), claim().getAllowedTotalVat()),
+            resolveValue(claim().getAssessedTotalInclVat(), claim().getAllowedTotalInclVat())
         );
 
         return rows;
+    }
+
+    private ClaimField resolveValue(ClaimField assessed, ClaimField allowed) {
+        if (assessed.getStatus() == ClaimFieldStatus.NOT_MODIFIABLE) {
+            assessed.setAssessed(allowed.getAssessed());
+            return assessed;
+        }
+        return assessed;
     }
 
     default List<ClaimField> getAllowedTotals() {

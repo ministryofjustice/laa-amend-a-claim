@@ -61,9 +61,7 @@ public class ClaimStatusHandler {
     }
 
     private ClaimFieldStatus handleNilledStatus(ClaimField field, ClaimDetails claim) {
-        if (isAssessedTotalFields(field, claim)) {
-            return ClaimFieldStatus.DO_NOT_DISPLAY;
-        } else if (field == claim.getVatClaimed()) {
+        if (field == claim.getVatClaimed()) {
             return ClaimFieldStatus.MODIFIABLE;
         }
         return ClaimFieldStatus.NOT_MODIFIABLE;
@@ -74,7 +72,7 @@ public class ClaimStatusHandler {
      */
     private ClaimFieldStatus handleReducedStatus(ClaimField field, ClaimDetails claim) {
         if (isAssessedTotalFields(field, claim) && isNotValidFeeCode(claim)) {
-            return ClaimFieldStatus.DO_NOT_DISPLAY;
+            return ClaimFieldStatus.NOT_MODIFIABLE;
         }
         return checkAssessableFields(field);
     }
@@ -97,11 +95,11 @@ public class ClaimStatusHandler {
      */
     private ClaimFieldStatus handleAssessmentInFull(ClaimField field, ClaimDetails claim) {
         if (isAssessedTotalFields(field, claim) && isNotValidFeeCode(claim)) {
-            return ClaimFieldStatus.DO_NOT_DISPLAY;
+            return ClaimFieldStatus.NOT_MODIFIABLE;
         } else if (field == claim.getFixedFee() || field == claim.getTotalAmount()) {
             return  ClaimFieldStatus.NOT_MODIFIABLE;
         }
-        return ClaimFieldStatus.MODIFIABLE;
+        return checkAssessableFields(field);
     }
 
     /**

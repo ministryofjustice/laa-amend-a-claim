@@ -21,7 +21,7 @@ public final class FeeCodeValidator {
      */
     public static boolean isNotValidFeeCode(ClaimDetails claimDetails) {
         if (!(claimDetails instanceof CrimeClaimDetails)) {
-            return false;
+            return true;
         }
 
         String feeCode = claimDetails.getFeeCode();

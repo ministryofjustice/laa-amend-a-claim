@@ -50,8 +50,8 @@ public abstract class ClaimDetails extends Claim {
         applyIfNotNull(disbursementVatAmount, ClaimField::setNilled);
 
         // Assessed Totals Table
-        applyIfNotNull(assessedTotalVat, ClaimField::setToDoNotDisplay);
-        applyIfNotNull(assessedTotalInclVat, ClaimField::setToDoNotDisplay);
+        applyIfNotNull(assessedTotalVat, ClaimField::setAssessedToNull);
+        applyIfNotNull(assessedTotalInclVat, ClaimField::setAssessedToNull);
 
         // Allowed Totals Table
         applyIfNotNull(allowedTotalInclVat, ClaimField::setNilled);
@@ -62,51 +62,51 @@ public abstract class ClaimDetails extends Claim {
         // Costs Table
         applyIfNotNull(vatClaimed, ClaimField::setAssessedToCalculated);
         applyIfNotNull(fixedFee, ClaimField::setAssessedToCalculated);
-        applyIfNotNull(netProfitCost, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(netProfitCost, ClaimField::setAssessedToNull);
         applyIfNotNull(netDisbursementAmount, ClaimField::setAssessedToCalculated);
         applyIfNotNull(disbursementVatAmount, ClaimField::setAssessedToCalculated);
 
         // Assessed Totals Table
-        applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAssessing);
-        applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(assessedTotalVat, ClaimField::setAssessedToNull);
+        applyIfNotNull(assessedTotalInclVat, ClaimField::setAssessedToNull);
 
         // Allowed Totals Table
-        applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAssessing);
-        applyIfNotNull(allowedTotalVat, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(allowedTotalInclVat, ClaimField::setAssessedToNull);
+        applyIfNotNull(allowedTotalVat, ClaimField::setAssessedToNull);
     }
 
     public void setReducedValues() {
         // Costs Table
-        applyIfNotNull(fixedFee, ClaimField::setToNotApplicable);
-        applyIfNotNull(netProfitCost, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(fixedFee, ClaimField::setAssessedToNull);
+        applyIfNotNull(netProfitCost, ClaimField::setAssessedToNull);
         applyIfNotNull(vatClaimed, ClaimField::setAssessedToSubmitted);
         applyIfNotNull(netDisbursementAmount, ClaimField::setAssessedToSubmitted);
         applyIfNotNull(disbursementVatAmount, ClaimField::setAssessedToSubmitted);
 
         // Assessed Totals Table
-        applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAssessing);
-        applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(assessedTotalVat, ClaimField::setAssessedToNull);
+        applyIfNotNull(assessedTotalInclVat, ClaimField::setAssessedToNull);
 
         // Allowed Totals Table
-        applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAssessing);
-        applyIfNotNull(allowedTotalVat, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(allowedTotalInclVat, ClaimField::setAssessedToNull);
+        applyIfNotNull(allowedTotalVat, ClaimField::setAssessedToNull);
     }
 
     public void setPaidInFullValues() {
         // Costs Table
-        applyIfNotNull(fixedFee, ClaimField::setToNotApplicable);
+        applyIfNotNull(fixedFee, ClaimField::setAssessedToNull);
         applyIfNotNull(netProfitCost, ClaimField::setAssessedToSubmitted);
         applyIfNotNull(vatClaimed, ClaimField::setAssessedToSubmitted);
         applyIfNotNull(netDisbursementAmount, ClaimField::setAssessedToSubmitted);
         applyIfNotNull(disbursementVatAmount, ClaimField::setAssessedToSubmitted);
 
         // Assessed Totals Table
-        applyIfNotNull(assessedTotalVat, ClaimField::setToNeedsAssessing);
-        applyIfNotNull(assessedTotalInclVat, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(assessedTotalVat, ClaimField::setAssessedToNull);
+        applyIfNotNull(assessedTotalInclVat, ClaimField::setAssessedToNull);
 
         // Allowed Totals Table
-        applyIfNotNull(allowedTotalInclVat, ClaimField::setToNeedsAssessing);
-        applyIfNotNull(allowedTotalVat, ClaimField::setToNeedsAssessing);
+        applyIfNotNull(allowedTotalInclVat, ClaimField::setAssessedToNull);
+        applyIfNotNull(allowedTotalVat, ClaimField::setAssessedToNull);
     }
 
     protected void applyIfNotNull(ClaimField field, Consumer<ClaimField> f) {
