@@ -18,7 +18,7 @@
                         Alpha
                     </strong>
                     <span class="govuk-phase-banner__text">
-                        This is a new service. Your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+                        This is a new service. Your <a class="govuk-link" th:href="${@environment.getProperty('app.feedback-url')}">feedback</a> will help us to improve it.
                     </span>
                 </p>
             </div>

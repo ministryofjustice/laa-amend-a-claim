@@ -30,6 +30,8 @@ jobs:
       SENTRY_ENV: development
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
+      FEEDBACK_URL: https://www.smartsurvey.co.uk/s/AaBC_Beta_DevTest
+      LAA_URL: https://dev.your-legal-aid-services.service.justice.gov.uk
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}

@@ -31,6 +31,9 @@ claims-api:
   access-token: ${CLAIMS_TOKEN}
 search:
   sort-enabled: true
+app:
+  feedback-url: ${FEEDBACK_URL}
+  laa-url: ${LAA_URL}
 
 logging:
   level:
