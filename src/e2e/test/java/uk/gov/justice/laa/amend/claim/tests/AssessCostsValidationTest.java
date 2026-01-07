@@ -31,7 +31,7 @@ public class AssessCostsValidationTest extends BaseTest {
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
         details.waitForPage();
-        details.clickAddAssessmentOutcome();
+        details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
         outcome.waitForPage();

@@ -45,7 +45,7 @@ public class AssessedClaimDetailsTest extends BaseTest {
         details.waitForPage();
 
 
-        details.clickAddAssessmentOutcome();
+        details.clickAddUpdateAssessmentOutcome();
 
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);

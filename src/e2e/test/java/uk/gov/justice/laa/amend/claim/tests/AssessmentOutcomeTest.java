@@ -32,7 +32,7 @@ public class AssessmentOutcomeTest extends BaseTest {
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
         details.waitForPage();
-        details.clickAddAssessmentOutcome();
+        details.clickAddUpdateAssessmentOutcome();
     }
 
     @Test
