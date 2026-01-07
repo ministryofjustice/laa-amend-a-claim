@@ -137,6 +137,8 @@ jobs:
       HEADLESS: true
       BROWSER: chromium
       API_BASE: ${{ secrets.API_BASE }}
+      FEEDBACK_URL: https://www.smartsurvey.co.uk/s/AaBC_Beta_DevTest
+      LAA_URL: https://dev.your-legal-aid-services.service.justice.gov.uk
 
     steps:
       # Set CLAIMS_API based on use_mocks
