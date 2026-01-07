@@ -7,7 +7,11 @@ docker-compose down -v
 
 export $(grep -v '^#' .env | xargs)
 
-export CLAIMS_API="https://amend-laa-data-claims-api-uat.cloud-platform.service.justice.gov.uk/"
+if [ "$PROFILE" = "local" ]; then
+  export CLAIMS_API="http://localhost:8081"
+else
+  export CLAIMS_API="https://amend-laa-data-claims-api-uat.cloud-platform.service.justice.gov.uk/"
+fi
 
 docker-compose up -d
 
