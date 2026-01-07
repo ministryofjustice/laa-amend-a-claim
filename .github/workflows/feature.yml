@@ -10,6 +10,7 @@ permissions:
   packages: write
   id-token: write
   security-events: write
+  pull-requests: write
 
 jobs:
   build:
@@ -20,14 +21,12 @@ jobs:
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
 
-  deploy-dev:
-    name: Deploy to Dev
+  deploy-ephemeral:
+    name: Deploy Ephemeral Environment
     needs: build
-    uses: ./.github/workflows/deploy.yml
+    uses: ./.github/workflows/deploy-ephemeral.yml
     with:
       branch: ${{ github.ref_name }}
-      environment: dev
-      SENTRY_ENV: development
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
     secrets:
@@ -70,3 +69,21 @@ jobs:
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+
+  deploy-dev:
+    name: Deploy to Dev
+    needs: [ build, test ]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      branch: ${{ github.ref_name }}
+      environment: dev
+      SENTRY_ENV: development
+      image_tag: ${{ needs.build.outputs.image_tag }}
+      aws_region: ${{ vars.ECR_REGION }}
+      values_file: values/dev.yaml
+    secrets:
+      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CERT: ${{ secrets.KUBE_CERT }}

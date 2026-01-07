@@ -1,0 +1,19 @@
+{{- if .Values.redis.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "laa-amend-a-claim.fullname" . }}-redis
+  labels:
+    {{- include "laa-amend-a-claim.labels" . | nindent 4 }}
+    app.kubernetes.io/component: redis
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: redis
+      protocol: TCP
+      name: redis
+  selector:
+    {{- include "laa-amend-a-claim.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: redis
+{{- end }}

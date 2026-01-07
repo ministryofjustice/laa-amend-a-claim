@@ -1,0 +1,12 @@
+# Environment-specific values for Production
+# These values override the defaults in values.yaml
+
+replicaCount: 4
+
+resources:
+  requests:
+    memory: "1500Mi"
+    cpu: "500m"
+  limits:
+    memory: "4000Mi"
+    cpu: "2"

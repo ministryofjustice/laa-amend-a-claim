@@ -63,15 +63,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Authenticate to ECR
+        id: ecr-auth
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/ecr-auth@main
         with:
-          role-to-assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-          aws-region: ${{ vars.ECR_REGION }}
-
-      - name: Authenticate to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
-        id: login-ecr
+          ecr_region: ${{ vars.ECR_REGION }}
+          ecr_role: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+          role-session-name: ${{ github.run_id }}-build
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -81,6 +79,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ steps.get_sha.outputs.sha }}
-          cache-from: type=registry,ref=${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:buildcache
-          cache-to: type=registry,ref=${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:buildcache,mode=max
+          tags: ${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:${{ steps.get_sha.outputs.sha }}
+          cache-from: type=registry,ref=${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:buildcache
+          cache-to: type=registry,ref=${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:buildcache,mode=max

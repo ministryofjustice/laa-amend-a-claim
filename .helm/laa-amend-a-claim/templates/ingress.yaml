@@ -1,0 +1,39 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "laa-amend-a-claim.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "laa-amend-a-claim.labels" . | nindent 4 }}
+  annotations:
+    external-dns.alpha.kubernetes.io/set-identifier: {{ $fullName }}-{{ .Values.namespace }}-{{ .Values.ingress.cluster.name }}
+    external-dns.alpha.kubernetes.io/aws-weight: {{ .Values.ingress.cluster.weight | quote }}
+    {{- if .Values.ipAllowlist }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ include "laa-amend-a-claim.whitelist" . | quote }}
+    {{- end }}
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.ingress.host }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+  {{- end }}
+  rules:
+    {{- if .Values.ingress.host }}
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+    {{- end }}
+{{- end }}

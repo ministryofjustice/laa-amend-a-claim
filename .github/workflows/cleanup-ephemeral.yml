@@ -1,0 +1,46 @@
+on:
+  pull_request:
+    types: [closed]
+  delete:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  cleanup:
+    name: Remove Ephemeral Environment
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Sanitize Branch Name
+        id: sanitize
+        uses: ./.github/actions/sanitize-branch-name
+        with:
+          branch_name: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.event.ref }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+
+      - name: Authenticate to Kubernetes Cluster
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@main
+        with:
+          kube-cert: ${{ secrets.KUBE_CERT }}
+          kube-token: ${{ secrets.KUBE_TOKEN }}
+          kube-cluster: ${{ secrets.KUBE_CLUSTER }}
+          kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
+          kube-sa: deploy-user
+
+      - name: Delete Helm Release
+        run: |
+          if helm list -n ${{ secrets.KUBE_NAMESPACE }} | grep -q "${{ steps.sanitize.outputs.release_name }}"; then
+            echo "Deleting release: ${{ steps.sanitize.outputs.release_name }}"
+            helm uninstall ${{ steps.sanitize.outputs.release_name }} -n ${{ secrets.KUBE_NAMESPACE }}
+            echo "Ephemeral environment cleaned up successfully"
+          else
+            echo "Release ${{ steps.sanitize.outputs.release_name }} not found, nothing to clean up"
+          fi

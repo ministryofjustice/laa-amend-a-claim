@@ -1,0 +1,7 @@
+# Environment-specific values for Staging
+# These values override the defaults in values.yaml
+
+replicaCount: 4
+
+ingress:
+  className: "modsec-non-prod"

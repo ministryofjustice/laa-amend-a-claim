@@ -1,0 +1,15 @@
+# Environment-specific values for Static Dev environment
+# This is for the persistent dev deployment (not ephemeral feature branches)
+
+replicaCount: 1
+
+ingress:
+  className: "modsec-non-prod"
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "100m"
+  limits:
+    memory: "1024Mi"
+    cpu: "500m"

@@ -1,0 +1,66 @@
+name: 'Sanitize Branch Name for Kubernetes'
+description: 'Converts a Git branch name to a valid truncated Kubernetes resource name'
+inputs:
+  branch_name:
+    description: 'The branch name to sanitize'
+    required: true
+  namespace:
+    description: 'The Kubernetes namespace (used for hostname generation)'
+    required: true
+outputs:
+  sanitized:
+    description: 'Sanitized branch name'
+    value: ${{ steps.sanitize.outputs.sanitized }}
+  release_name:
+    description: 'Helm release name (ephemeral-<sanitized>)'
+    value: ${{ steps.sanitize.outputs.release_name }}
+  hostname:
+    description: 'Generated hostname for ingress'
+    value: ${{ steps.sanitize.outputs.hostname }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Sanitize Branch Name
+      id: sanitize
+      shell: bash
+      run: |
+        BRANCH_NAME="${{ inputs.branch_name }}"
+
+        # Remove everything before and including the first slash (feature/, bugfix/, etc.)
+        # If no slash exists, use the whole branch name
+        if [[ "$BRANCH_NAME" == *"/"* ]]; then
+          BRANCH_NAME="${BRANCH_NAME#*/}"
+        fi
+
+        # Convert to valid Kubernetes resource name:
+        # - Lowercase
+        # - Replace / and _ with -
+        # - Remove special characters (keep only alphanumeric and hyphens)
+        # - Replace multiple consecutive hyphens with single hyphen
+        # - Remove leading/trailing hyphens
+        # - Truncate to 20 characters
+        SANITIZED=$(echo "$BRANCH_NAME" \
+          | tr '[:upper:]' '[:lower:]' \
+          | sed 's/[^a-z0-9-]/-/g' \
+          | sed 's/--*/-/g' \
+          | sed 's/^-//' \
+          | sed 's/-$//' \
+          | cut -c1-20)
+
+        # Create release name (prepend 'ephemeral-' to distinguish from static deployments)
+        RELEASE_NAME="ephemeral-${SANITIZED}"
+
+        # Create hostname for ingress
+        HOSTNAME="${SANITIZED}-laa-amend-a-claim.apps.live.cloud-platform.service.justice.gov.uk"
+
+        # Output values
+        echo "sanitized=${SANITIZED}" >> $GITHUB_OUTPUT
+        echo "release_name=${RELEASE_NAME}" >> $GITHUB_OUTPUT
+        echo "hostname=${HOSTNAME}" >> $GITHUB_OUTPUT
+
+        # Log for debugging
+        echo "Original branch: ${{ inputs.branch_name }}"
+        echo "Sanitized: ${SANITIZED}"
+        echo "Release name: ${RELEASE_NAME}"
+        echo "Hostname: ${HOSTNAME}"

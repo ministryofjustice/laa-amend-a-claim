@@ -129,6 +129,21 @@ public class UserRetrievalServiceTest {
     }
 
     @Test
+    void testGetMicrosoftApiUserThrowsException() {
+        // Arrange
+        OAuth2AuthenticationToken authentication = mock(OAuth2AuthenticationToken.class);
+        when(authentication.getAuthorizedClientRegistrationId()).thenReturn("test");
+
+        when(authorizedClientManager.authorize(any())).thenThrow(new IllegalArgumentException("Could not find ClientRegistration with id 'test'"));
+
+        // Act
+        MicrosoftApiUser result = userRetrievalService.getMicrosoftApiUser(authentication, "test-user");
+
+        // Assert
+        assertNull(result);
+    }
+
+    @Test
     void testGetMicrosoftApiUserReturnsUserFor403StatusCode() {
         // Arrange
         String userId = "test-user";
@@ -160,17 +175,9 @@ public class UserRetrievalServiceTest {
         when(uriSpec.uri(anyString(), eq(userId))).thenReturn(headersSpec);
         when(headersSpec.header(eq(HttpHeaders.AUTHORIZATION), anyString())).thenReturn(headersSpec);
 
-        String json = """
-            {
-              "id": "test-user",
-              "displayName": "TODO",
-            }
-            """;
-
         ClientResponse forbiddenResponse = ClientResponse
                 .create(HttpStatus.FORBIDDEN)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(json)
                 .build();
 
         when(headersSpec.exchangeToMono(any())).thenAnswer(invocation -> {
@@ -182,8 +189,7 @@ public class UserRetrievalServiceTest {
         MicrosoftApiUser result = userRetrievalService.getMicrosoftApiUser(authentication, userId);
 
         // Assert
-        assertNotNull(result);
-        assertEquals("TODO", result.getDisplayName());
+        assertNull(result);
     }
 }
 

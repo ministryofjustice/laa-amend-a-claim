@@ -22,6 +22,11 @@ on:
         type: string
         default: 'eu-west-2'
         description: 'AWS region for the ECR'
+      values_file:
+        required: false
+        type: string
+        default: 'values.yaml'
+        description: 'Environment-specific values file (e.g., values/staging.yaml)'
     secrets:
       ECR_ROLE_TO_ASSUME:
         required: true
@@ -48,45 +53,38 @@ jobs:
         with:
           ref: ${{ inputs.branch }}
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Authenticate to ECR
+        id: ecr-auth
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/ecr-auth@main
         with:
-          role-to-assume: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-          aws-region: ${{ inputs.aws_region }}
+          ecr_region: ${{ inputs.aws_region }}
+          ecr_role: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+          role-session-name: ${{ github.run_id }}-deploy
 
-      - name: Authenticate to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
-        id: login-ecr
+      - name: Authenticate to Kubernetes Cluster
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@main
+        with:
+          kube-cert: ${{ secrets.KUBE_CERT }}
+          kube-token: ${{ secrets.KUBE_TOKEN }}
+          kube-cluster: ${{ secrets.KUBE_CLUSTER }}
+          kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
+          kube-sa: deploy-user
 
-      - name: Generate Deployment Files
+      - name: Deploy to Cloud Platform with Helm
         run: |
-          cat deployments/templates/deployment.yml | envsubst > deployments/deployment.yml
-          cat deployments/templates/ingress.yml | envsubst > deployments/ingress.yml
-          cat deployments/templates/ingress.yml | envsubst > deployments/ingress-internal.yml
-          cat deployments/templates/service.yml | envsubst > deployments/service.yml
+          helm upgrade --install laa-amend-a-claim .helm/laa-amend-a-claim \
+            --namespace ${KUBE_NAMESPACE} \
+            --values .helm/laa-amend-a-claim/${{ inputs.values_file }} \
+            --set image.repository=${REGISTRY}/${REPOSITORY} \
+            --set image.tag=${IMAGE_TAG} \
+            --set namespace=${KUBE_NAMESPACE} \
+            --set ingress.host=${KUBE_NAMESPACE}.apps.live.cloud-platform.service.justice.gov.uk \
+            --set sentryEnvironment=${SENTRY_ENV} \
+            --wait \
+            --timeout 5m
         env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REGISTRY: ${{ steps.ecr-auth.outputs.image_registry }}
           REPOSITORY: ${{ vars.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ inputs.image_tag }}
           KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
-          NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
-          INGRESS_CLASS_NAME: ${{ vars.INGRESS_CLASS_NAME }}
-          SENTRY_ENV: ${{ inputs.SENTRY_ENV }}
-
-      - name: Configure kubectl
-        run: |
-          echo "${{ secrets.KUBE_CERT }}" > ca.crt
-          kubectl config set-cluster ${KUBE_CLUSTER} --certificate-authority=./ca.crt --server=https://${KUBE_CLUSTER}
-          kubectl config set-credentials deploy-user --token=${{ secrets.KUBE_TOKEN }}
-          kubectl config set-context ${KUBE_CLUSTER} --cluster=${KUBE_CLUSTER} --user=deploy-user --namespace=${KUBE_NAMESPACE}
-          kubectl config use-context ${KUBE_CLUSTER}
-        env:
-          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
-          KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
-
-      - name: Deploy to Cloud Platform
-        run: |
-          kubectl -n ${KUBE_NAMESPACE} apply -f deployments/
-        env:
-          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
