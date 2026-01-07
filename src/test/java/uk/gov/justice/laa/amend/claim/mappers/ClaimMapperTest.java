@@ -405,6 +405,26 @@ class ClaimMapperTest {
     @Test
     void mapAllowedTotalVat() {
         ClaimResponse response = new ClaimResponse();
+        FeeCalculationPatch feeCalculationPatch = new FeeCalculationPatch();
+        feeCalculationPatch.setCalculatedVatAmount(BigDecimal.valueOf(100));
+        feeCalculationPatch.setDisbursementVatAmount(BigDecimal.valueOf(200));
+        response.setFeeCalculationResponse(feeCalculationPatch);
+
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getAllowedTotalVat();
+        assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
+        assertNull(claimField.getSubmitted());
+        assertEquals(BigDecimal.valueOf(300), claimField.getCalculated());
+        assertNull(claimField.getAssessed());
+        assertNull(claimField.getStatus());
+    }
+
+    @Test
+    void mapAllowedTotalVatWhenFeeCalculationIsNull() {
+        ClaimResponse response = new ClaimResponse();
 
         SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
@@ -419,7 +439,98 @@ class ClaimMapperTest {
     }
 
     @Test
+    void mapAllowedTotalVatWhenCalculatedVatAmountAndDisbursementVatAmountAreNull() {
+        ClaimResponse response = new ClaimResponse();
+        FeeCalculationPatch feeCalculationPatch = new FeeCalculationPatch();
+        response.setFeeCalculationResponse(feeCalculationPatch);
+
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getAllowedTotalVat();
+        assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
+        assertNull(claimField.getSubmitted());
+        assertNull(claimField.getCalculated());
+        assertNull(claimField.getAssessed());
+        assertNull(claimField.getStatus());
+    }
+
+    @Test
+    void mapAllowedTotalVatWhenCalculatedVatAmountIsNull() {
+        ClaimResponse response = new ClaimResponse();
+        FeeCalculationPatch feeCalculationPatch = new FeeCalculationPatch();
+        feeCalculationPatch.setCalculatedVatAmount(BigDecimal.valueOf(100));
+        response.setFeeCalculationResponse(feeCalculationPatch);
+
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getAllowedTotalVat();
+        assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
+        assertNull(claimField.getSubmitted());
+        assertEquals(BigDecimal.valueOf(100), claimField.getCalculated());
+        assertNull(claimField.getAssessed());
+        assertNull(claimField.getStatus());
+    }
+
+    @Test
+    void mapAllowedTotalVatWhenDisbursementVatAmountIsNull() {
+        ClaimResponse response = new ClaimResponse();
+        FeeCalculationPatch feeCalculationPatch = new FeeCalculationPatch();
+        feeCalculationPatch.setDisbursementVatAmount(BigDecimal.valueOf(100));
+        response.setFeeCalculationResponse(feeCalculationPatch);
+
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getAllowedTotalVat();
+        assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
+        assertNull(claimField.getSubmitted());
+        assertEquals(BigDecimal.valueOf(100), claimField.getCalculated());
+        assertNull(claimField.getAssessed());
+        assertNull(claimField.getStatus());
+    }
+
+    @Test
     void mapAllowedTotalInclVat() {
+        ClaimResponse response = new ClaimResponse();
+        FeeCalculationPatch feeCalculationPatch = new FeeCalculationPatch();
+        feeCalculationPatch.setTotalAmount(BigDecimal.valueOf(100));
+        response.setFeeCalculationResponse(feeCalculationPatch);
+
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getAllowedTotalInclVat();
+        assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT, claimField.getKey());
+        assertNull(claimField.getSubmitted());
+        assertEquals(BigDecimal.valueOf(100), claimField.getCalculated());
+        assertNull(claimField.getAssessed());
+        assertNull(claimField.getStatus());
+    }
+
+    @Test
+    void mapAllowedTotalInclVatWhenFeeCalculationIsNull() {
+        ClaimResponse response = new ClaimResponse();
+
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getAllowedTotalInclVat();
+        assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT, claimField.getKey());
+        assertNull(claimField.getSubmitted());
+        assertNull(claimField.getCalculated());
+        assertNull(claimField.getAssessed());
+        assertNull(claimField.getStatus());
+    }
+
+    @Test
+    void mapAllowedTotalInclVatWhenTotalAmountIsNull() {
         ClaimResponse response = new ClaimResponse();
 
         SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);

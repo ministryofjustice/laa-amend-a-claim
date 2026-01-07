@@ -1,46 +1,54 @@
-
 package base;
 
-import uk.gov.justice.laa.amend.claim.drivers.DriverFactory;
-import uk.gov.justice.laa.amend.claim.pages.LoginPage;
-import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
-import com.microsoft.playwright.*;
-import io.qameta.allure.Allure;
+import com.microsoft.playwright.Page;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
+import uk.gov.justice.laa.amend.claim.base.BrowserSession;
+import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
 
-import java.io.ByteArrayInputStream;
-
+/**
+ * The {@code BaseTest} class provides a foundation for UI tests using the
+ * Playwright library. It handles common setup and cleanup tasks, such as
+ * initializing a new browser page and navigating to the application's base URL
+ * before each test, and ensuring the page is closed after the test is executed.
+ *
+ * Subclasses of {@code BaseTest} inherit this functionality to streamline test
+ * development, focusing only on the test logic rather than boilerplate setup
+ * and teardown.
+ *
+ * This class is abstract and not meant to be instantiated directly. It is
+ * designed to be extended by specific test classes that implement particular
+ * test scenarios.
+ *
+ * Features:
+ * - Automatically initializes a browser page and navigates to the base URL before each test.
+ * - Safely closes the browser page after each test execution.
+ * - Leverages the {@code BrowserSession} and {@code EnvConfig} classes for
+ *   session management and configuration.
+ *
+ * Structure:
+ * - {@code createPage()}: A method annotated with {@code @BeforeEach} to set up the testing
+ *   environment. It creates a new browser page and navigates to the configured
+ *   base URL.
+ * - {@code cleanUp()}: A method annotated with {@code @AfterEach} to ensure that
+ *   resources are properly released by closing the browser page after the test
+ *   completes.
+ */
 public abstract class BaseTest {
-    protected BrowserContext context;
     protected Page page;
 
     @BeforeEach
-    public void setUp() {
-        context = DriverFactory.createContext();
-        page = context.newPage();
-
-        String baseUrl = EnvConfig.baseUrl();
-        if (baseUrl.contains("localhost") || baseUrl.contains("127.0.0.1")) {
-            System.out.println("[INFO] Local environment detected. Skipping login steps.");
-            page.navigate(baseUrl);
-        } else {
-            System.out.println("[INFO] Non-local environment detected. Running login steps.");
-            new LoginPage(page).navigate().login();
-        }
+    void createPage() {
+        page = BrowserSession.getContext().newPage();
+        page.navigate(EnvConfig.baseUrl());
     }
 
     @AfterEach
-    public void tearDown(TestInfo testInfo) {
-        try {
-            byte[] screenshot = page.screenshot(new Page.ScreenshotOptions().setFullPage(true));
-            Allure.addAttachment(testInfo.getDisplayName() + " - Screenshot", "image/png",
-                    new ByteArrayInputStream(screenshot), "png");
-        } catch (Throwable t) {
-            System.out.println("[WARN] Could not capture screenshot: " + t.getMessage());
+    void cleanUp() {
+        if (page != null) {
+            try {
+                page.close();
+            } catch (Exception ignored) {}
         }
-        if (context != null) context.close();
-        DriverFactory.close();
     }
 }

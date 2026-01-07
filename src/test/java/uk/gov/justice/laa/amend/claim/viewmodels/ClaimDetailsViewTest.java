@@ -10,6 +10,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.YearMonth;
@@ -25,6 +26,14 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         ClaimField claimField = new ClaimField();
         claimField.setKey(key);
         claimField.setStatus(status);
+        return claimField;
+    }
+
+    public static ClaimField createClaimField(String key, ClaimFieldStatus status, BigDecimal calculated) {
+        ClaimField claimField = new ClaimField();
+        claimField.setKey(key);
+        claimField.setStatus(status);
+        claimField.setCalculated(calculated);
         return claimField;
     }
 
@@ -126,10 +135,23 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         }
 
         @Test
-        void getAllowedTotalsHandlesValid() {
+        void getAllowedTotalsHandlesNullCalculatedValues() {
             C claim = createClaim();
             claim.setAllowedTotalVat(createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE));
             claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
+            V viewModel = createView(claim);
+
+            List<ClaimField> result = viewModel.getAllowedTotals();
+
+            Assertions.assertEquals(BigDecimal.ZERO, result.get(0).getCalculated());
+            Assertions.assertEquals(BigDecimal.ZERO, result.get(1).getCalculated());
+        }
+
+        @Test
+        void getAllowedTotalsHandlesValid() {
+            C claim = createClaim();
+            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE, BigDecimal.valueOf(100)));
+            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE, BigDecimal.valueOf(100)));
             V viewModel = createView(claim);
 
             List<ClaimField> result = viewModel.getAllowedTotals();

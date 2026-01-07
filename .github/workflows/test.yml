@@ -6,7 +6,14 @@ on:
       branch:
         required: false
         type: string
-        default: 'main'
+        default: main
+      use_mocks:
+        required: false
+        type: boolean
+        default: false
+      environment:
+        required: true
+        type: string
     secrets:
       AZURE_CLIENT_ID:
         required: true
@@ -18,6 +25,20 @@ on:
         required: true
       SENTRY_DSN:
         required: true
+      P_USERNAME:
+        required: true
+      P_PASSWORD:
+        required: true
+      P_MFA_SECRET:
+        required: true
+      KUBE_NAMESPACE:
+        required: true
+      KUBE_CLUSTER:
+        required: true
+      KUBE_TOKEN:
+        required: true
+      KUBE_CERT:
+        required: true
 
 permissions:
   contents: read
@@ -27,11 +48,13 @@ jobs:
   unit-and-integration-tests:
     name: Unit & Integration Tests
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
+      # Checkout and setup
       - name: Checkout Source Code
         uses: actions/checkout@v5
         with:
@@ -46,6 +69,7 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      # Run tests
       - name: Run unit tests
         run: ./gradlew test
         env:
@@ -57,6 +81,7 @@ jobs:
       - name: Integration test
         run: ./gradlew integrationTest --tests '*IntegrationTest'
 
+      # Upload artifacts
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -93,15 +118,11 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: unit-and-integration-tests
+    environment: ${{ inputs.environment }}
 
     env:
-      SPRING_PROFILES_ACTIVE: local
-      UI_BASE_URL: http://localhost:8080
-      HEADLESS: true
-      BROWSER: chromium
       BASE_URL_HOMEPAGE: http://localhost:8080
       REDIS_URL: redis://localhost:6379
-      CLAIMS_API: http://localhost:8081
       SENTRY_ENVIRONMENT: local
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -109,8 +130,25 @@ jobs:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       CLAIMS_TOKEN: ${{ secrets.CLAIMS_TOKEN }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      UI_BASE_URL: http://localhost:8080
+      P_USERNAME: ${{ secrets.P_USERNAME }}
+      P_PASSWORD: ${{ secrets.P_PASSWORD }}
+      P_MFA_SECRET: ${{ secrets.P_MFA_SECRET }}
+      HEADLESS: true
+      BROWSER: chromium
+      API_BASE: ${{ secrets.API_BASE }}
 
     steps:
+      # Set CLAIMS_API based on use_mocks
+      - name: Set CLAIMS_API
+        run: |
+          if [ "${{ inputs.use_mocks }}" = "true" ]; then
+            echo "CLAIMS_API=http://localhost:8081" >> $GITHUB_ENV
+          else
+            echo "CLAIMS_API=http://localhost:8082" >> $GITHUB_ENV
+          fi
+
+      # Checkout and setup
       - name: Checkout Source Code
         uses: actions/checkout@v5
         with:
@@ -125,12 +163,11 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Download JAR artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: application-jar
-          path: build/libs
+      # BUILD JAR
+      - name: Build JAR
+        run: ./gradlew build -x test -x integrationTest
 
+      # Install dependencies
       - name: Install Playwright dependencies
         run: |
           sudo apt-get update
@@ -141,15 +178,40 @@ jobs:
             libsecret-1-0 libhyphen0 libmanette-0.2-0 \
             libflite1 libgles2 gstreamer1.0-libav
 
+      # Kubernetes setup (only if not using mocks)
+      - name: Set up kubectl
+        if: ${{ inputs.use_mocks == false }}
+        uses: azure/setup-kubectl@v4
+        with:
+          version: v1.28.0
+
+      - name: Configure kubectl
+        if: ${{ inputs.use_mocks == false }}
+        run: |
+          echo "${{ secrets.KUBE_CERT }}" > ca.crt
+          kubectl config set-cluster ${{ secrets.KUBE_CLUSTER }} --certificate-authority=./ca.crt --server=https://${{ secrets.KUBE_CLUSTER }}
+          kubectl config set-credentials deploy-user --token=${{ secrets.KUBE_TOKEN }}
+          kubectl config set-context ${{ secrets.KUBE_CLUSTER }} --cluster=${{ secrets.KUBE_CLUSTER }} --user=deploy-user --namespace=${{ secrets.KUBE_NAMESPACE }}
+          kubectl config use-context ${{ secrets.KUBE_CLUSTER }}
+
+      - name: Port forward Claims data API
+        if: ${{ inputs.use_mocks == false }}
+        run: |
+          kubectl port-forward amend-api-port-forward-pod 8082:8080 -n ${{ secrets.KUBE_NAMESPACE }} &
+          sleep 10
+          curl -I http://localhost:8082 || true
+
+      # Start services
       - name: Start docker dependencies
         run: docker compose up -d
 
       - name: Start Spring Boot app
         run: |
-          nohup ./gradlew bootRun --args="--spring.profiles.active=local" > app.log 2>&1 &
+          nohup ./gradlew bootRun > app.log 2>&1 &
           sleep 20
           curl -I http://localhost:8080 || true
 
+      # Run E2E tests
       - name: Run E2E Tests
         working-directory: src/e2e
         run: ./gradlew clean test
@@ -170,6 +232,7 @@ jobs:
           name: allure-report
           path: src/e2e/build/allure-report
 
+      # Cleanup
       - name: Cleanup
         if: always()
         run: docker compose down

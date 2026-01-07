@@ -32,8 +32,8 @@ public interface ClaimMapper {
     @Mapping(target = "feeCodeDescription", source = "feeCalculationResponse.feeCodeDescription")
     @Mapping(target = "assessedTotalVat", expression = "java(claimMapperHelper.mapAssessedTotalVat())")
     @Mapping(target = "assessedTotalInclVat", expression = "java(claimMapperHelper.mapAssessedTotalInclVat())")
-    @Mapping(target = "allowedTotalVat", expression = "java(claimMapperHelper.mapAllowedTotalVat())")
-    @Mapping(target = "allowedTotalInclVat", expression = "java(claimMapperHelper.mapAllowedTotalInclVat())")
+    @Mapping(target = "allowedTotalVat", source = ".", qualifiedByName = "mapAllowedTotalVat")
+    @Mapping(target = "allowedTotalInclVat", source = ".", qualifiedByName = "mapAllowedTotalInclVat")
     @Mapping(target = "hasAssessment", source = "hasAssessment")
     // Ignored and set later
     @Mapping(target = "areaOfLaw", ignore = true)
@@ -42,6 +42,7 @@ public interface ClaimMapper {
     @Mapping(target = "submittedDate", ignore = true)
     @Mapping(target = "assessmentOutcome", ignore = true)
     @Mapping(target = "lastAssessment", ignore = true)
+    @Mapping(target = "claimFields", ignore = true)
     ClaimDetails mapToCommonDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
 
 

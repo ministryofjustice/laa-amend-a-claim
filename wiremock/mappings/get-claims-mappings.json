@@ -4,10 +4,10 @@
     "urlPath": "/api/v0/claims",
     "queryParameters": {
       "office_code": {
-        "matches": ".*"
+        "matches": "^(?!1P111P$).*"
       },
       "size": {
-        "equalTo": "10"
+        "matches": ".*"
       },
       "page": {
         "matches": ".*"

@@ -13,4 +13,8 @@ pluginManagement {
     }
 }
 
+
 rootProject.name = 'laa-amend-a-claim'
+
+include(':e2e')
+project(':e2e').projectDir = file('src/e2e')

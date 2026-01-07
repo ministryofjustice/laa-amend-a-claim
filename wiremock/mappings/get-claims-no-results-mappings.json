@@ -1,0 +1,25 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/api/v0/claims",
+    "queryParameters": {
+      "office_code": {
+        "equalTo": "1P111P"
+      },
+      "size": {
+        "matches": ".*"
+      },
+      "page": {
+        "matches": ".*"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "get-claims-no-results-response.json",
+    "transformers": ["response-template"],
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

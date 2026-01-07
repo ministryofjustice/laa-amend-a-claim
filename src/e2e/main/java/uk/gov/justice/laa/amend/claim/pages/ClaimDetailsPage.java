@@ -1,0 +1,178 @@
+package uk.gov.justice.laa.amend.claim.pages;
+
+import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.AriaRole;
+
+import java.util.Map;
+
+public class ClaimDetailsPage {
+
+    private final Page page;
+
+    private final Locator heading;
+    private final Locator addAssessmentOutcomeButton;
+    private final Locator updateAssessmentOutcomeButton;
+
+    public ClaimDetailsPage(Page page) {
+        this.page = page;
+
+        this.heading = page.getByRole(
+                AriaRole.HEADING,
+                new Page.GetByRoleOptions().setName("Claim details")
+        );
+
+        this.addAssessmentOutcomeButton = page.getByRole(
+                AriaRole.BUTTON,
+                new Page.GetByRoleOptions().setName("Add assessment outcome")
+        );
+
+        this.updateAssessmentOutcomeButton = page.getByRole(
+            AriaRole.BUTTON,
+            new Page.GetByRoleOptions().setName("Update assessment outcome")
+        );
+    }
+
+    public void waitForPage() {
+        heading.waitFor();
+    }
+
+    public String getHeadingText() {
+        return heading.textContent().trim();
+    }
+
+    public void clickAddAssessmentOutcome() {
+        addAssessmentOutcomeButton.click();
+    }
+
+    public void clickUpdateAssessmentOutcome() {
+        addAssessmentOutcomeButton.click();
+    }
+
+    public boolean isAddAssessmentOutcomeDisabled() {
+        String ariaDisabled = addAssessmentOutcomeButton.getAttribute("aria-disabled");
+        boolean aria = "true".equalsIgnoreCase(ariaDisabled);
+        boolean disabledAttr = addAssessmentOutcomeButton.isDisabled();
+        return aria || disabledAttr;
+    }
+
+    private Locator valuesCard() {
+        return page.locator(".govuk-summary-card:has(h2.govuk-summary-card__title:has-text('Values'))").first();
+    }
+
+    public boolean hasValuesCard() {
+        return valuesCard().count() > 0 && valuesCard().isVisible();
+    }
+
+    private Locator valuesRows() {
+        return valuesCard().locator(".govuk-summary-list__row");
+    }
+
+    private Locator valuesRowByItem(String itemName) {
+        if (!hasValuesCard()) return page.locator("non-existent-selector");
+
+        Locator rows = valuesRows();
+        int count = rows.count();
+
+        for (int i = 0; i < count; i++) {
+            Locator row = rows.nth(i);
+
+            Locator dt = row.locator("dt.govuk-summary-list__key");
+            if (dt.count() == 0) continue;
+
+            String keyText = dt.first().textContent();
+            if (keyText == null) continue;
+
+            String normalized = keyText.trim();
+            if (normalized.equals(itemName)) {
+                return row;
+            }
+        }
+
+        return page.locator("non-existent-selector");
+    }
+
+    public boolean valuesHasItem(String itemName) {
+        return valuesRowByItem(itemName).count() > 0;
+    }
+
+    public String getCalculatedValue(String itemName) {
+        Locator row = valuesRowByItem(itemName);
+        if (row.count() == 0) {
+            throw new AssertionError("Missing Values row for item: " + itemName);
+        }
+
+        Locator dds = row.locator("dd.govuk-summary-list__value");
+        if (dds.count() < 2) {
+            throw new AssertionError("Expected 2 values (Calculated + Requested) for item: " + itemName);
+        }
+
+        return dds.nth(0).textContent().trim();
+    }
+
+    public String getRequestedValue(String itemName) {
+        Locator row = valuesRowByItem(itemName);
+        if (row.count() == 0) {
+            throw new AssertionError("Missing Values row for item: " + itemName);
+        }
+
+        Locator dds = row.locator("dd.govuk-summary-list__value");
+        if (dds.count() < 2) {
+            throw new AssertionError("Expected 2 values (Calculated + Requested) for item: " + itemName);
+        }
+
+        return dds.nth(1).textContent().trim();
+    }
+
+    public void assertAllValues(Map<String, String[]> expected) {
+        if (!hasValuesCard()) {
+            throw new AssertionError("Expected Values card to be visible, but it was not.");
+        }
+
+        for (Map.Entry<String, String[]> entry : expected.entrySet()) {
+            String item = entry.getKey();
+            String[] pair = entry.getValue();
+
+            if (pair == null || pair.length != 2) {
+                throw new AssertionError("Invalid expected pair for item '" + item + "'. Must be [calculated, requested].");
+            }
+
+            if (!valuesHasItem(item)) {
+                throw new AssertionError("Missing Values row for item: " + item);
+            }
+
+            String expectedCalculated = pair[0];
+            String expectedRequested = pair[1];
+
+            String actualCalculated = getCalculatedValue(item);
+            String actualRequested = getRequestedValue(item);
+
+            if (!actualCalculated.equals(expectedCalculated)) {
+                throw new AssertionError("Calculated mismatch for '" + item + "'. Expected: "
+                        + expectedCalculated + " but was: " + actualCalculated);
+            }
+
+            if (!actualRequested.equals(expectedRequested)) {
+                throw new AssertionError("Requested mismatch for '" + item + "'. Expected: "
+                        + expectedRequested + " but was: " + actualRequested);
+            }
+        }
+    }
+
+    public String dumpValuesKeys() {
+        if (!hasValuesCard()) return "Values card not present.";
+
+        StringBuilder sb = new StringBuilder("Values keys found:\n");
+        Locator rows = valuesRows();
+        int count = rows.count();
+
+        for (int i = 0; i < count; i++) {
+            Locator dt = rows.nth(i).locator("dt.govuk-summary-list__key").first();
+            if (dt.count() == 0) continue;
+            String key = dt.textContent();
+            if (key != null) sb.append("- ").append(key.trim()).append("\n");
+        }
+
+        return sb.toString();
+    }
+}

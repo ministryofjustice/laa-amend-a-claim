@@ -42,12 +42,21 @@ jobs:
     uses: ./.github/workflows/test.yml
     with:
       branch: ${{ github.ref_name }}
+      environment: dev
+      use_mocks: false
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       CLAIMS_TOKEN: ${{ secrets.CLAIMS_TOKEN }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      P_USERNAME: ${{ secrets.P_USERNAME }}
+      P_PASSWORD: ${{ secrets.P_PASSWORD }}
+      P_MFA_SECRET: ${{ secrets.P_MFA_SECRET }}
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CERT: ${{ secrets.KUBE_CERT }}
 
   security:
     name: Security
