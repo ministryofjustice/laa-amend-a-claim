@@ -101,4 +101,15 @@ public class AssessTotalsValidationTest extends BaseTest {
 
         allowed.assertNumericErrorsShown();
     }
+
+    @Test
+    @DisplayName("Assess total allowed value: allowed totals are correct")
+    void allowedTotalsAreCorrect() {
+        navigateToReviewAndAmend();
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+        review.waitForPage();
+
+        review.assertAllowedTotalsAreCorrect("£0.00", "£132.00");
+    }
 }

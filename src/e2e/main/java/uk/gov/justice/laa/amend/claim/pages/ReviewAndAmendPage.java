@@ -4,6 +4,8 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 
+import java.util.List;
+
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class ReviewAndAmendPage {
@@ -203,5 +205,17 @@ public class ReviewAndAmendPage {
         for (String item : itemNames) {
             assertThat(claimCostsTable).containsText(item);
         }
+    }
+
+    public void assertAllowedTotalsAreCorrect(String allowedTotalVat, String allowedTotalInclVat) {
+        assertThat(totalAllowedValueTable).isVisible();
+
+        List<Locator> rows = totalAllowedValueTable.locator("tbody tr").all();
+
+        List<Locator> allowedTotalVatRow = rows.get(0).locator("td").all();
+        assertThat(allowedTotalVatRow.get(1)).containsText(allowedTotalVat);
+
+        List<Locator> allowedTotalInclVatRow = rows.get(1).locator("td").all();
+        assertThat(allowedTotalInclVatRow.get(1)).containsText(allowedTotalInclVat);
     }
 }
