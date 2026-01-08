@@ -37,7 +37,7 @@ public class ClaimDetailsPage {
             new Page.GetByRoleOptions().setName("Update assessment outcome")
         );
 
-        this.addUpdateAssessmentOutcomeButton = page.getByTestId("claimDetailsAssessmentButton");
+        this.addUpdateAssessmentOutcomeButton = page.getByTestId("claim-details-assessment-button");
 
     }
 
