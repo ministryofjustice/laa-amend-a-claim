@@ -91,7 +91,7 @@ public class ThymeleafUtils {
     }
 
     public ThymeleafString getChangeLinkText(ClaimField value) {
-        var val = value != null && value.getAssessed() == null ? "service.add" : "service.change";
+        var val = value != null && value.isAssessed() ? "service.change" : "service.add";
         return new ThymeleafMessage(val);
     }
 
