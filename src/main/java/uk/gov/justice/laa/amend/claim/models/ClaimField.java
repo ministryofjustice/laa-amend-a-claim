@@ -118,21 +118,20 @@ public class ClaimField implements Serializable {
         return status == ClaimFieldStatus.NOT_MODIFIABLE;
     }
 
-    // TODO - Revise the logic around the hidden fields
     private static final List<String> HIDDEN_FIELDS = List.of(
         CMRH_TELEPHONE,
         CMRH_ORAL,
-        JR_FORM_FILLING,
+        JR_FORM_FILLING, // all of these are bolt ons except this one - should this be here?
         ADJOURNED_FEE,
         HO_INTERVIEW,
         SUBSTANTIVE_HEARING
     );
 
     public boolean display() {
-        if (!isEmptyValue(this.getSubmitted())) {
-            return true;
+        if (isEmptyValue(this.getSubmitted())) {
+            return !HIDDEN_FIELDS.contains(this.getKey());
         }
-        return !HIDDEN_FIELDS.contains(this.getKey());
+        return true;
     }
 
     private boolean isEmptyValue(Object value) {

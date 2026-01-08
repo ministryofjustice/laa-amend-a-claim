@@ -10,13 +10,11 @@ import lombok.Getter;
  * <ul>
  *   <li>{@link #MODIFIABLE} - The claim field with status can be modified.</li>
  *   <li>{@link #NOT_MODIFIABLE} - The claim field with status cannot be modified.</li>
- *   <li>{@link #DO_NOT_DISPLAY} - The claim field with status should not be shown in the UI.</li>
  * </ul>
  */
 
 @Getter
 public enum ClaimFieldStatus {
     MODIFIABLE,
-    NOT_MODIFIABLE,
-    DO_NOT_DISPLAY
+    NOT_MODIFIABLE
 }
