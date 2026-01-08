@@ -112,16 +112,6 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             Assertions.assertEquals(claim.getAssessedTotalVat(), result.get(0));
             Assertions.assertEquals(claim.getAssessedTotalInclVat(), result.get(1));
         }
-
-        @Test
-        void getAssessedTotalsHandlesDoNotDisplayFields() {
-            C claim = createClaim();
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.DO_NOT_DISPLAY));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.DO_NOT_DISPLAY));
-            V viewModel = createView(claim);
-
-            Assertions.assertEquals(List.of(), viewModel.getAssessedTotals());
-        }
     }
 
     @Nested

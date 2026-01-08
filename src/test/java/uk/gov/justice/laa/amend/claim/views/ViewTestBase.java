@@ -37,9 +37,7 @@ public abstract class ViewTestBase {
   public void setup() {
     session = new MockHttpSession();
     claim = MockClaimsFunctions.createMockCivilClaim();
-    customiseClaim(claim);
   }
-  protected void customiseClaim(ClaimDetails claim) {}
 
   protected String mapping;
 

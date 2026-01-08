@@ -104,7 +104,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     default void addRowIfNotNull(List<ClaimField> list, ClaimField... claimFields) {
         for (ClaimField claimField : claimFields) {
-            if (claimField != null && claimField.getStatus() != ClaimFieldStatus.DO_NOT_DISPLAY) {
+            if (claimField != null) {
                 list.add(claimField);
             }
         }
