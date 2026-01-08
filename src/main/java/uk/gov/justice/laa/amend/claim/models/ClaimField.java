@@ -9,14 +9,7 @@ import uk.gov.justice.laa.amend.claim.utils.FormUtils;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
 import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
 
 @Data
@@ -107,40 +100,36 @@ public class ClaimField implements Serializable {
     }
 
     public boolean isAssessableAndUnassessed() {
-        return status == ClaimFieldStatus.MODIFIABLE && !isAssessed();
+        return isAssessable() && !isAssessed();
     }
 
     public boolean isAssessableAndAssessed() {
-        return status == ClaimFieldStatus.MODIFIABLE && isAssessed();
+        return isAssessable() && isAssessed();
+    }
+
+    public boolean isAssessable() {
+        return status == ClaimFieldStatus.MODIFIABLE;
     }
 
     public boolean isNotAssessable() {
-        return status == ClaimFieldStatus.NOT_MODIFIABLE;
+        return !isAssessable();
     }
 
-    private static final List<String> HIDDEN_FIELDS = List.of(
-        CMRH_TELEPHONE,
-        CMRH_ORAL,
-        JR_FORM_FILLING, // all of these are bolt ons except this one - should this be here?
-        ADJOURNED_FEE,
-        HO_INTERVIEW,
-        SUBSTANTIVE_HEARING
-    );
-
-    public boolean display() {
-        if (isEmptyValue(this.getSubmitted())) {
-            return !HIDDEN_FIELDS.contains(this.getKey());
-        }
-        return true;
+    public boolean isAssessed() {
+        return assessed != null;
     }
 
-    private boolean isEmptyValue(Object value) {
-        return switch (value) {
+    private boolean hasNoSubmittedValue() {
+        return switch (this.getSubmitted()) {
             case null -> true;
             case BigDecimal bigDecimal -> BigDecimal.ZERO.compareTo(bigDecimal) == 0;
             case Integer i -> i == 0;
             default -> false;
         };
+    }
+
+    public boolean hasSubmittedValue() {
+        return !hasNoSubmittedValue();
     }
 
     public void setSubmittedForDisplay() {
@@ -153,9 +142,5 @@ public class ClaimField implements Serializable {
 
     public void setAssessedForDisplay() {
         setAssessed(getOrElseZero(assessed));
-    }
-
-    public boolean isAssessed() {
-        return assessed != null;
     }
 }

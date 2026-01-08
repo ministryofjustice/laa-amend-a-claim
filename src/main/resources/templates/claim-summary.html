@@ -48,7 +48,7 @@
                                             <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimSummary.submitted}"></dd>
                                             <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:if="${claim.hasAssessment}" th:text="#{claimSummary.assessed}"></dd>
                                         </div>
-                                        <div class="govuk-summary-list__row" th:each="row : ${claim.getTableRows(pageType)}" th:if="${row.display()}">
+                                        <div class="govuk-summary-list__row" th:each="row : ${claim.summaryClaimFieldRows}">
                                             <dt class="govuk-summary-list__key govuk-!-font-weight-bold" th:text="#{${row.label}}"></dt>
                                             <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
                                             <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></dd>
@@ -58,13 +58,14 @@
                                 </div>
                             </div>
 
-                            <div class="govuk-summary-card" th:if="${claim.hasAssessment and !claim.assessedTotals.isEmpty()}">
-                                <div class="govuk-summary-card__title-wrapper">
-                                    <h2 class="govuk-summary-card__title" th:text="#{claimSummary.assessedTotalsTableTitle}"/>
-                                </div>
-                                <div class="govuk-summary-card__content">
-                                    <table class="govuk-table govuk-!-margin-bottom-0">
-                                        <thead class="govuk-table__head">
+                            <th:block th:if="${claim.hasAssessment()}">
+                                <div class="govuk-summary-card" th:if="${!claim.assessedTotals.isEmpty()}">
+                                    <div class="govuk-summary-card__title-wrapper">
+                                        <h2 class="govuk-summary-card__title" th:text="#{claimSummary.assessedTotalsTableTitle}"/>
+                                    </div>
+                                    <div class="govuk-summary-card__content">
+                                        <table class="govuk-table govuk-!-margin-bottom-0">
+                                            <thead class="govuk-table__head">
                                             <tr class="govuk-table__row">
                                                 <th class="govuk-table__header" scope="col" th:text="#{claimSummary.item}"></th>
                                                 <th class="govuk-table__header" scope="col" th:text="#{claimSummary.calculated}"></th>
@@ -72,26 +73,26 @@
                                                 <th class="govuk-table__header" scope="col" th:text="#{claimSummary.assessed}"></th>
                                                 <th class="govuk-table__header" scope="col"></th>
                                             </tr>
-                                        </thead>
-                                        <tbody class="govuk-table__body">
+                                            </thead>
+                                            <tbody class="govuk-table__body">
                                             <tr class="govuk-table__row" th:each="row : ${claim.assessedTotals}">
                                                 <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
                                                 <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
                                                 <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
                                                 <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></td>
                                             </tr>
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="govuk-summary-card" th:if="${claim.hasAssessment and !claim.allowedTotals.isEmpty()}">
-                                <div class="govuk-summary-card__title-wrapper">
-                                    <h2 class="govuk-summary-card__title" th:text="#{claimSummary.allowedTotalsTableTitle}"/>
-                                </div>
-                                <div class="govuk-summary-card__content">
-                                    <table class="govuk-table govuk-!-margin-bottom-0">
-                                        <thead class="govuk-table__head">
+                                <div class="govuk-summary-card" th:if="${!claim.allowedTotals.isEmpty()}">
+                                    <div class="govuk-summary-card__title-wrapper">
+                                        <h2 class="govuk-summary-card__title" th:text="#{claimSummary.allowedTotalsTableTitle}"/>
+                                    </div>
+                                    <div class="govuk-summary-card__content">
+                                        <table class="govuk-table govuk-!-margin-bottom-0">
+                                            <thead class="govuk-table__head">
                                             <tr class="govuk-table__row">
                                                 <th class="govuk-table__header" scope="col" th:text="#{claimSummary.item}"></th>
                                                 <th class="govuk-table__header" scope="col" th:text="#{claimSummary.calculated}"></th>
@@ -99,8 +100,8 @@
                                                 <th class="govuk-table__header" scope="col" th:text="#{claimSummary.allowed}"></th>
                                                 <th class="govuk-table__header" scope="col"></th>
                                             </tr>
-                                        </thead>
-                                        <tbody class="govuk-table__body">
+                                            </thead>
+                                            <tbody class="govuk-table__body">
                                             <tr class="govuk-table__row" th:each="row : ${claim.allowedTotals}">
                                                 <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
                                                 <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
@@ -108,10 +109,12 @@
                                                 <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}">
                                                 </td>
                                             </tr>
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                            </th:block>
+
                             <form method="post"
                                   th:action="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}">
                                 <div class="govuk-button-group">

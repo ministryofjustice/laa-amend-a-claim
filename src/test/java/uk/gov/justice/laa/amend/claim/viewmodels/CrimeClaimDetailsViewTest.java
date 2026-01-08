@@ -23,15 +23,16 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
     }
 
     @Nested
-    class GetTableRowsTests {
+    class GetSummaryClaimFieldRowsTests {
         @Test
-        void rowsRenderedForClaimValues() {
+        void rowsRenderedForClaimValuesWhenClaimHasAnAssessment() {
             ClaimField fixedFee = new ClaimField("1", null, null);
             ClaimField netProfitCost = new ClaimField("2", null, null);
             ClaimField netDisbursementAmount = new ClaimField("3", null, null);
             ClaimField disbursementVatAmount = new ClaimField("4", null, null);
             ClaimField travel = new ClaimField("5", null, null);
             ClaimField waiting = new ClaimField("6", null, null);
+            ClaimField totalAmount = new ClaimField("7", null, null);
 
             CrimeClaimDetails claim = new CrimeClaimDetails();
             claim.setFixedFee(fixedFee);
@@ -40,6 +41,8 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
             claim.setDisbursementVatAmount(disbursementVatAmount);
             claim.setTravelCosts(travel);
             claim.setWaitingCosts(waiting);
+            claim.setTotalAmount(totalAmount);
+            claim.setHasAssessment(true);
 
             CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
             List<ClaimField> expectedRows = List.of(
@@ -50,7 +53,77 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
                 travel,
                 waiting
             );
-            Assertions.assertEquals(expectedRows, viewModel.getTableRows(PageType.CLAIM_DETAILS));
+
+            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
+        }
+
+        @Test
+        void rowsRenderedForClaimValuesWhenClaimDoesNotHaveAnAssessment() {
+            ClaimField fixedFee = new ClaimField("1", null, null);
+            ClaimField netProfitCost = new ClaimField("2", null, null);
+            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
+            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
+            ClaimField travel = new ClaimField("5", null, null);
+            ClaimField waiting = new ClaimField("6", null, null);
+            ClaimField totalAmount = new ClaimField("7", null, null);
+
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setFixedFee(fixedFee);
+            claim.setNetProfitCost(netProfitCost);
+            claim.setNetDisbursementAmount(netDisbursementAmount);
+            claim.setDisbursementVatAmount(disbursementVatAmount);
+            claim.setTravelCosts(travel);
+            claim.setWaitingCosts(waiting);
+            claim.setTotalAmount(totalAmount);
+            claim.setHasAssessment(false);
+
+            CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
+            List<ClaimField> expectedRows = List.of(
+                fixedFee,
+                netProfitCost,
+                netDisbursementAmount,
+                disbursementVatAmount,
+                travel,
+                waiting,
+                totalAmount
+            );
+
+            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
+        }
+    }
+
+    @Nested
+    class GetReviewClaimFieldRowsTests {
+        @Test
+        void rowsRenderedForClaimValues() {
+            ClaimField fixedFee = new ClaimField("1", null, null);
+            ClaimField netProfitCost = new ClaimField("2", null, null);
+            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
+            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
+            ClaimField travel = new ClaimField("5", null, null);
+            ClaimField waiting = new ClaimField("6", null, null);
+            ClaimField totalAmount = new ClaimField("7", null, null);
+
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setFixedFee(fixedFee);
+            claim.setNetProfitCost(netProfitCost);
+            claim.setNetDisbursementAmount(netDisbursementAmount);
+            claim.setDisbursementVatAmount(disbursementVatAmount);
+            claim.setTravelCosts(travel);
+            claim.setWaitingCosts(waiting);
+            claim.setTotalAmount(totalAmount);
+
+            CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
+            List<ClaimField> expectedRows = List.of(
+                fixedFee,
+                netProfitCost,
+                netDisbursementAmount,
+                disbursementVatAmount,
+                travel,
+                waiting
+            );
+
+            Assertions.assertEquals(expectedRows, viewModel.getReviewClaimFieldRows());
         }
     }
 

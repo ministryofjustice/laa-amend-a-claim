@@ -8,7 +8,6 @@ import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -30,9 +29,9 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("categoryOfLaw", claim().getCategoryOfLaw());
         rows.put("feeCode", claim().getFeeCode());
         rows.put("feeCodeDescription", claim().getFeeCodeDescription());
-        addPoliceStationCourtPrisonId(rows);
-        addSchemeId(rows);
-        addMatterTypeField(rows);
+        addPoliceStationCourtPrisonIdRow(rows);
+        addSchemeIdRow(rows);
+        addMatterTypeRow(rows);
         rows.put("caseStartDate", claim().getCaseStartDate());
         rows.put("caseEndDate", claim().getCaseEndDate());
         rows.put("escaped", claim().getEscaped());
@@ -42,35 +41,29 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     void addUcnSummaryRow(Map<String, Object> summaryRows);
 
-    void addPoliceStationCourtPrisonId(Map<String, Object> summaryRows);
+    void addPoliceStationCourtPrisonIdRow(Map<String, Object> summaryRows);
 
-    void addSchemeId(Map<String, Object> summaryRows);
+    void addSchemeIdRow(Map<String, Object> summaryRows);
 
-    void addMatterTypeField(Map<String, Object> summaryRows);
+    void addMatterTypeRow(Map<String, Object> summaryRows);
 
+    default List<ClaimField> getSummaryClaimFieldRows() {
+        List<ClaimField> rows = summaryClaimFields();
+        addRowIfNotNull(
+            rows,
+            claim().getVatClaimed(),
+            claim().isHasAssessment() ? null : claim().getTotalAmount()
+        );
+        return rows;
+    }
 
-    /**
-     * Returns the claim field rows in the order they should be displayed in the table.
-     *
-     * @return ordered list of claim field rows for display
-     */
-    default List<ClaimField> getTableRows(PageType page) {
-        List<ClaimField> rows = claimFields();
+    default List<ClaimField> getReviewClaimFieldRows() {
+        List<ClaimField> rows = reviewClaimFields();
         addRowIfNotNull(
             rows,
             claim().getVatClaimed()
         );
-        addTotalRow(page, rows);
         return rows;
-    }
-
-    private void addTotalRow(PageType page, List<ClaimField> rows) {
-        if (PageType.CLAIM_DETAILS.equals(page) && !claim().isHasAssessment()) {
-            addRowIfNotNull(
-                rows,
-                claim().getTotalAmount()
-            );
-        }
     }
 
     default List<ClaimField> getAssessedTotals() {
@@ -85,7 +78,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     private ClaimField resolveValue(ClaimField assessed, ClaimField allowed) {
-        if (assessed != null && allowed != null && assessed.getStatus() == ClaimFieldStatus.NOT_MODIFIABLE) {
+        if (assessed != null && allowed != null && assessed.isNotAssessable()) {
             assessed.setAssessed(allowed.getAssessed());
         }
         return assessed;
@@ -111,7 +104,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default ClaimField checkSubmittedValue(ClaimField field) {
-        if (field != null && field.getSubmitted() != null) {
+        if (field != null && field.hasSubmittedValue()) {
             return field;
         }
         return null;
@@ -144,6 +137,10 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         );
         return fields;
     }
+
+    List<ClaimField> summaryClaimFields();
+
+    List<ClaimField> reviewClaimFields();
 
     default List<ReviewAndAmendFormError> getErrors() {
         return Stream.of(claimFields(), getAssessedTotals(), getAllowedTotals())

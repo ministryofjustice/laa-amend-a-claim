@@ -16,13 +16,13 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
     }
 
     @Override
-    public void addPoliceStationCourtPrisonId(Map<String, Object> summaryRows) {}
+    public void addPoliceStationCourtPrisonIdRow(Map<String, Object> summaryRows) {}
 
     @Override
-    public void addSchemeId(Map<String, Object> summaryRows) {}
+    public void addSchemeIdRow(Map<String, Object> summaryRows) {}
 
     @Override
-    public void addMatterTypeField(Map<String, Object> summaryRows) {
+    public void addMatterTypeRow(Map<String, Object> summaryRows) {
         summaryRows.put("matterTypeCodeOne", getMatterTypeCodeOne());
         summaryRows.put("matterTypeCodeTwo", getMatterTypeCodeTwo());
     }
@@ -50,12 +50,35 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
             fields,
             setDisplayForNulls(claim.getDetentionTravelWaitingCosts()),
             setDisplayForNulls(claim.getJrFormFillingCost()),
-            setDisplayForNulls(claim.getCounselsCost()),
+            setDisplayForNulls(claim.getCounselsCost())
+        );
+        return fields;
+    }
+
+    @Override
+    public List<ClaimField> summaryClaimFields() {
+        List<ClaimField> fields = claimFields();
+        addRowIfNotNull(
+            fields,
             checkSubmittedValue(claim.getCmrhOral()),
             checkSubmittedValue(claim.getCmrhTelephone()),
             checkSubmittedValue(claim.getHoInterview()),
             checkSubmittedValue(claim.getSubstantiveHearing()),
             checkSubmittedValue(claim.getAdjournedHearing())
+        );
+        return fields;
+    }
+
+    @Override
+    public List<ClaimField> reviewClaimFields() {
+        List<ClaimField> fields = claimFields();
+        addRowIfNotNull(
+            fields,
+            claim.getCmrhOral(),
+            claim.getCmrhTelephone(),
+            claim.getHoInterview(),
+            claim.getSubstantiveHearing(),
+            claim.getAdjournedHearing()
         );
         return fields;
     }
