@@ -1,0 +1,19 @@
+# Environment-specific values for Ephemeral/Dev environments
+# These values override the defaults in values.yaml
+
+replicaCount: 1
+
+ingress:
+  className: "modsec-non-prod"
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "100m"
+  limits:
+    memory: "1024Mi"
+    cpu: "500m"
+
+# Enable ephemeral Redis instance for session storage
+redis:
+  enabled: true

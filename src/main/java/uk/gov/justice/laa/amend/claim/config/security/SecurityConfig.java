@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.AUTHENTICATED;
 import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PUBLIC_PATHS;
 
-@Profile("!local")
+@Profile("!local & !ephemeral")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {

@@ -54,9 +54,29 @@ jobs:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
 
+  deploy-dev:
+    name: Deploy to Dev
+    needs: [build, test, security]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      branch: ${{ github.ref_name }}
+      environment: dev
+      SENTRY_ENV: development
+      image_tag: ${{ needs.build.outputs.image_tag }}
+      aws_region: ${{ vars.ECR_REGION }}
+      FEEDBACK_URL: https://www.smartsurvey.co.uk/s/AaBC_Beta_DevTest
+      LAA_URL: https://dev.your-legal-aid-services.service.justice.gov.uk
+      values_file: values/dev.yaml
+    secrets:
+      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CERT: ${{ secrets.KUBE_CERT }}
+
   deploy-uat:
     name: Deploy to UAT
-    needs: [build, test, security]
+    needs: [build, test, security, deploy-dev]
     uses: ./.github/workflows/deploy.yml
     with:
       branch: ${{ github.ref_name }}
@@ -66,6 +86,7 @@ jobs:
       aws_region: ${{ vars.ECR_REGION }}
       FEEDBACK_URL: https://www.smartsurvey.co.uk/s/AaBC_Beta_DevTest
       LAA_URL: https://test.your-legal-aid-services.service.justice.gov.uk
+      values_file: values/uat.yaml
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
@@ -85,6 +106,7 @@ jobs:
       aws_region: ${{ vars.ECR_REGION }}
       FEEDBACK_URL: https://www.smartsurvey.co.uk/s/AaBC_Beta_DevTest
       LAA_URL: https://test.your-legal-aid-services.service.justice.gov.uk
+      values_file: values/staging.yaml
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}

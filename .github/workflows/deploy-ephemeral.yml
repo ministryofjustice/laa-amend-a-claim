@@ -1,0 +1,166 @@
+name: Deploy Ephemeral Environment
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: true
+        type: string
+      image_tag:
+        required: true
+        type: string
+      aws_region:
+        required: false
+        type: string
+        default: 'eu-west-2'
+    secrets:
+      ECR_ROLE_TO_ASSUME:
+        required: true
+      KUBE_NAMESPACE:
+        required: true
+      KUBE_CLUSTER:
+        required: true
+      KUBE_TOKEN:
+        required: true
+      KUBE_CERT:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Sanitize Branch Name
+        id: sanitize
+        uses: ./.github/actions/sanitize-branch-name
+        with:
+          branch_name: ${{ inputs.branch }}
+          namespace: ${{ secrets.KUBE_NAMESPACE }}
+
+      - name: Fetch IP Allowlist
+        id: ip-allowlist
+        run: |
+          # Download the IP allowlist and format as Helm array syntax
+          # 1. Convert newlines to commas: "10.0.0.0/8\n192.168.0.0/16" → "10.0.0.0/8,192.168.0.0/16"
+          # 2. Wrap in braces for Helm array syntax: → "{10.0.0.0/8,192.168.0.0/16}"
+          # 3. Helm parses as array: ["10.0.0.0/8", "192.168.0.0/16"]
+          # 4. Template helper joins array back to comma-separated string for nginx annotation
+          CIDRS=$(curl -s https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/main/cidrs.txt | tr -d ' ' | tr '\n' ',' | sed 's/,$//')
+          CIDRS_ARRAY="{${CIDRS}}"
+
+          # Output for use in helm command
+          echo "cidrs=${CIDRS_ARRAY}" >> $GITHUB_OUTPUT
+
+      - name: Authenticate to ECR
+        id: ecr-auth
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/ecr-auth@main
+        with:
+          ecr_region: ${{ inputs.aws_region }}
+          ecr_role: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+          role-session-name: ${{ github.run_id }}-deploy-ephemeral
+
+      - name: Authenticate to Kubernetes Cluster
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@main
+        with:
+          kube-cert: ${{ secrets.KUBE_CERT }}
+          kube-token: ${{ secrets.KUBE_TOKEN }}
+          kube-cluster: ${{ secrets.KUBE_CLUSTER }}
+          kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
+          kube-sa: deploy-user
+
+      - name: Deploy Ephemeral Environment with Helm
+        run: |
+          helm upgrade --install ${{ steps.sanitize.outputs.release_name }} .helm/laa-amend-a-claim \
+            --namespace ${KUBE_NAMESPACE} \
+            --values .helm/laa-amend-a-claim/values/ephemeral.yaml \
+            --set image.repository=${REGISTRY}/${REPOSITORY} \
+            --set image.tag=${IMAGE_TAG} \
+            --set namespace=${KUBE_NAMESPACE} \
+            --set fullnameOverride=${{ steps.sanitize.outputs.sanitized }} \
+            --set ingress.host=${{ steps.sanitize.outputs.hostname }} \
+            --set "ipAllowlist=${{ steps.ip-allowlist.outputs.cidrs }}" \
+            --set springProfile=ephemeral \
+            --set sentryEnvironment=ephemeral-${{ steps.sanitize.outputs.sanitized }} \
+            --wait \
+            --timeout 5m
+        env:
+          REGISTRY: ${{ steps.ecr-auth.outputs.image_registry }}
+          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+
+      - name: Comment on PR with Environment URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const hostname = '${{ steps.sanitize.outputs.hostname }}';
+            const releaseName = '${{ steps.sanitize.outputs.release_name }}';
+            const imageTag = '${{ inputs.image_tag }}';
+            const branch = '${{ inputs.branch }}';
+
+            // Get PR number from event context or find it by branch name
+            let prNumber = context.issue.number;
+
+            if (!prNumber) {
+              // Find PR associated with this branch
+              const { data: pulls } = await github.rest.pulls.list({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                head: `${context.repo.owner}:${branch}`,
+                state: 'open'
+              });
+
+              if (pulls.length > 0) {
+                prNumber = pulls[0].number;
+              }
+            }
+
+            if (!prNumber) {
+              console.log('No PR found for this branch, skipping comment');
+              return;
+            }
+
+            // Check if comment already exists
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+
+            const commentBody = `## Ephemeral Environment Deployed\n\n**URL:** https://${hostname}\n\n**Release:** \`${releaseName}\`\n\n**Image Tag:** \`${imageTag}\``;
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('## Ephemeral Environment Deployed') &&
+              comment.body.includes(hostname)
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+              console.log(`Updated existing comment #${botComment.id} on PR #${prNumber}`);
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                issue_number: prNumber,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: commentBody
+              });
+              console.log(`Posted new comment to PR #${prNumber}`);
+            }

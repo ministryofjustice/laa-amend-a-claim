@@ -1,0 +1,7 @@
+# Environment-specific values for UAT
+# These values override the defaults in values.yaml
+
+replicaCount: 2
+
+ingress:
+  className: "modsec-non-prod"
