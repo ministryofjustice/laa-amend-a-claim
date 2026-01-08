@@ -87,7 +87,6 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     private ClaimField resolveValue(ClaimField assessed, ClaimField allowed) {
         if (assessed != null && allowed != null && assessed.getStatus() == ClaimFieldStatus.NOT_MODIFIABLE) {
             assessed.setAssessed(allowed.getAssessed());
-            return assessed;
         }
         return assessed;
     }
