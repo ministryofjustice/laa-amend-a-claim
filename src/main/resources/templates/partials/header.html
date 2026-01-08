@@ -36,7 +36,7 @@
 
             </svg>
 
-            <a class="moj-header__link moj-header__link--organisation-name" th:href="@{/}" th:text="#{service.provider}"></a>
+            <a class="moj-header__link moj-header__link--organisation-name" th:href="${@environment.getProperty('app.laa-url')}" th:text="#{service.provider}"></a>
         </div>
 
         <th:block sec:authorize="isAuthenticated()">
