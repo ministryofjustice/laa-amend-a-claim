@@ -3,13 +3,12 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,10 +111,10 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
     }
 
     @Nested
-    class GetTableRowsTests {
-        @ParameterizedTest
-        @EnumSource(PageType.class)
-        void rowsRenderedForClaimValues(PageType pageType) {
+    class GetSummaryClaimFieldRowsTests {
+
+        @Test
+        void rowsRenderedForClaimValuesWhenClaimHasAnAssessment() {
             ClaimField fixedFee = new ClaimField("1", null, null);
             ClaimField netProfitCost = new ClaimField("2", null, null);
             ClaimField netDisbursementAmount = new ClaimField("3", null, null);
@@ -150,29 +149,80 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
 
             CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
             ArrayList<ClaimField> expectedRows = new ArrayList<>(List.of(
-                    fixedFee,
-                    netProfitCost,
-                    netDisbursementAmount,
-                    disbursementVatAmount,
-                    detention,
-                    jrFormFilling,
-                    counselCost,
-                    cmrhOral,
-                    cmrhTelephone,
-                    hoInterview,
-                    substantiveHearing,
-                    adjournedHearing,
-                    vatClaimed
+                fixedFee,
+                netProfitCost,
+                netDisbursementAmount,
+                disbursementVatAmount,
+                detention,
+                jrFormFilling,
+                counselCost,
+                cmrhOral,
+                cmrhTelephone,
+                hoInterview,
+                substantiveHearing,
+                adjournedHearing,
+                vatClaimed
             ));
-            if (PageType.CLAIM_DETAILS.equals(pageType) && !claim.isHasAssessment()) {
-                expectedRows.add(totalAmount);
-            }
-            Assertions.assertEquals(expectedRows, viewModel.getTableRows(pageType));
+
+            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
         }
 
-        @ParameterizedTest
-        @EnumSource(PageType.class)
-        void onlyRowsWithValuesRendered(PageType pageType) {
+        @Test
+        void rowsRenderedForClaimValuesWhenClaimDoesNotHaveAnAssessment() {
+            ClaimField fixedFee = new ClaimField("1", null, null);
+            ClaimField netProfitCost = new ClaimField("2", null, null);
+            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
+            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
+            ClaimField counselCost = new ClaimField("5", null, null);
+            ClaimField detention = new ClaimField("6", null, null);
+            ClaimField jrFormFilling = new ClaimField("7", null, null);
+            ClaimField adjournedHearing = new ClaimField("8", 100, 100);
+            ClaimField cmrhTelephone = new ClaimField("9", 100, 100);
+            ClaimField cmrhOral = new ClaimField("10", 100, 100);
+            ClaimField hoInterview = new ClaimField("11", 100, 100);
+            ClaimField substantiveHearing = new ClaimField("12", 100, 100);
+            ClaimField vatClaimed = new ClaimField("13", 100, 100);
+            ClaimField totalAmount = new ClaimField("14", 100, 100);
+
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setFixedFee(fixedFee);
+            claim.setNetProfitCost(netProfitCost);
+            claim.setNetDisbursementAmount(netDisbursementAmount);
+            claim.setDisbursementVatAmount(disbursementVatAmount);
+            claim.setCounselsCost(counselCost);
+            claim.setDetentionTravelWaitingCosts(detention);
+            claim.setJrFormFillingCost(jrFormFilling);
+            claim.setAdjournedHearing(adjournedHearing);
+            claim.setCmrhTelephone(cmrhTelephone);
+            claim.setCmrhOral(cmrhOral);
+            claim.setHoInterview(hoInterview);
+            claim.setSubstantiveHearing(substantiveHearing);
+            claim.setVatClaimed(vatClaimed);
+            claim.setTotalAmount(totalAmount);
+            claim.setHasAssessment(false);
+
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            ArrayList<ClaimField> expectedRows = new ArrayList<>(List.of(
+                fixedFee,
+                netProfitCost,
+                netDisbursementAmount,
+                disbursementVatAmount,
+                detention,
+                jrFormFilling,
+                counselCost,
+                cmrhOral,
+                cmrhTelephone,
+                hoInterview,
+                substantiveHearing,
+                adjournedHearing,
+                vatClaimed,
+                totalAmount
+            ));
+
+            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
+        }
+
+        @Test void onlyRowsWithValuesRendered() {
             ClaimField fixedFee = new ClaimField("1", null, null);
             ClaimField netProfitCost = new ClaimField("2", null, null);
             ClaimField netDisbursementAmount = new ClaimField("3", null, null);
@@ -214,13 +264,11 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
                 jrFormFilling,
                 counselCost,
                 adjournedHearing,
-                vatClaimed
+                vatClaimed,
+                totalAmount
             ));
 
-            if (PageType.CLAIM_DETAILS.equals(pageType) && !claim.isHasAssessment()) {
-                expectedRows.add(totalAmount);
-            }
-            Assertions.assertEquals(expectedRows, viewModel.getTableRows(pageType));
+            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
         }
 
         @Test
@@ -252,7 +300,242 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
                 jrFormFilling,
                 counselCost
             );
-            Assertions.assertEquals(expectedRows, viewModel.getTableRows(PageType.CLAIM_DETAILS));
+
+            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
+        }
+
+        @Test
+        void rowsRenderedForZeroBoltOnClaimValues() {
+            ClaimField fixedFee = new ClaimField("1", null, null);
+            ClaimField netProfitCost = new ClaimField("2", null, null);
+            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
+            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
+            ClaimField counselCost = new ClaimField("5", null, null);
+            ClaimField detention = new ClaimField("6", null, null);
+            ClaimField jrFormFilling = new ClaimField("7", null, null);
+            ClaimField adjournedHearing = new ClaimField("8", BigDecimal.ZERO, 100);
+            ClaimField cmrhTelephone = new ClaimField("9", 0, null);
+            ClaimField cmrhOral = new ClaimField("10", 0, null);
+            ClaimField hoInterview = new ClaimField("11", 0, null);
+            ClaimField substantiveHearing = new ClaimField("12", BigDecimal.ZERO, null);
+
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setFixedFee(fixedFee);
+            claim.setNetProfitCost(netProfitCost);
+            claim.setNetDisbursementAmount(netDisbursementAmount);
+            claim.setDisbursementVatAmount(disbursementVatAmount);
+            claim.setCounselsCost(counselCost);
+            claim.setDetentionTravelWaitingCosts(detention);
+            claim.setJrFormFillingCost(jrFormFilling);
+            claim.setAdjournedHearing(adjournedHearing);
+            claim.setCmrhTelephone(cmrhTelephone);
+            claim.setCmrhOral(cmrhOral);
+            claim.setHoInterview(hoInterview);
+            claim.setSubstantiveHearing(substantiveHearing);
+
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            List<ClaimField> expectedRows = List.of(
+                fixedFee,
+                netProfitCost,
+                netDisbursementAmount,
+                disbursementVatAmount,
+                detention,
+                jrFormFilling,
+                counselCost
+            );
+
+            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
+        }
+    }
+
+    @Nested
+    class GetReviewClaimFieldRowsTests {
+
+        @Test
+        void rowsRenderedForClaimValues() {
+            ClaimField fixedFee = new ClaimField("1", null, null);
+            ClaimField netProfitCost = new ClaimField("2", null, null);
+            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
+            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
+            ClaimField counselCost = new ClaimField("5", null, null);
+            ClaimField detention = new ClaimField("6", null, null);
+            ClaimField jrFormFilling = new ClaimField("7", null, null);
+            ClaimField adjournedHearing = new ClaimField("8", 100, 100);
+            ClaimField cmrhTelephone = new ClaimField("9", 100, 100);
+            ClaimField cmrhOral = new ClaimField("10", 100, 100);
+            ClaimField hoInterview = new ClaimField("11", 100, 100);
+            ClaimField substantiveHearing = new ClaimField("12", 100, 100);
+            ClaimField vatClaimed = new ClaimField("13", 100, 100);
+            ClaimField totalAmount = new ClaimField("14", 100, 100);
+
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setFixedFee(fixedFee);
+            claim.setNetProfitCost(netProfitCost);
+            claim.setNetDisbursementAmount(netDisbursementAmount);
+            claim.setDisbursementVatAmount(disbursementVatAmount);
+            claim.setCounselsCost(counselCost);
+            claim.setDetentionTravelWaitingCosts(detention);
+            claim.setJrFormFillingCost(jrFormFilling);
+            claim.setAdjournedHearing(adjournedHearing);
+            claim.setCmrhTelephone(cmrhTelephone);
+            claim.setCmrhOral(cmrhOral);
+            claim.setHoInterview(hoInterview);
+            claim.setSubstantiveHearing(substantiveHearing);
+            claim.setVatClaimed(vatClaimed);
+            claim.setTotalAmount(totalAmount);
+            claim.setHasAssessment(true);
+
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            ArrayList<ClaimField> expectedRows = new ArrayList<>(List.of(
+                fixedFee,
+                netProfitCost,
+                netDisbursementAmount,
+                disbursementVatAmount,
+                detention,
+                jrFormFilling,
+                counselCost,
+                cmrhOral,
+                cmrhTelephone,
+                hoInterview,
+                substantiveHearing,
+                adjournedHearing,
+                vatClaimed
+            ));
+
+            Assertions.assertEquals(expectedRows, viewModel.getReviewClaimFieldRows());
+        }
+
+        @Test void nullBoltOnRowsRenderedForClaimValues() {
+            ClaimField fixedFee = new ClaimField("1", null, null);
+            ClaimField netProfitCost = new ClaimField("2", null, null);
+            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
+            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
+            ClaimField counselCost = new ClaimField("5", null, null);
+            ClaimField detention = new ClaimField("6", null, null);
+            ClaimField jrFormFilling = new ClaimField("7", null, null);
+            ClaimField adjournedHearing = new ClaimField("8", null, 100);
+            ClaimField cmrhTelephone = new ClaimField("9", null, null);
+            ClaimField cmrhOral = new ClaimField("10", null, null);
+            ClaimField hoInterview = new ClaimField("11", null, null);
+            ClaimField substantiveHearing = new ClaimField("12", null, null);
+            ClaimField vatClaimed = new ClaimField("13", null, 100);
+            ClaimField totalAmount = new ClaimField("14", 100, null);
+
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setFixedFee(fixedFee);
+            claim.setNetProfitCost(netProfitCost);
+            claim.setNetDisbursementAmount(netDisbursementAmount);
+            claim.setDisbursementVatAmount(disbursementVatAmount);
+            claim.setCounselsCost(counselCost);
+            claim.setDetentionTravelWaitingCosts(detention);
+            claim.setJrFormFillingCost(jrFormFilling);
+            claim.setAdjournedHearing(adjournedHearing);
+            claim.setCmrhTelephone(cmrhTelephone);
+            claim.setCmrhOral(cmrhOral);
+            claim.setHoInterview(hoInterview);
+            claim.setSubstantiveHearing(substantiveHearing);
+            claim.setVatClaimed(vatClaimed);
+            claim.setTotalAmount(totalAmount);
+
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            List<ClaimField> expectedRows = new ArrayList<>(List.of(
+                fixedFee,
+                netProfitCost,
+                netDisbursementAmount,
+                disbursementVatAmount,
+                detention,
+                jrFormFilling,
+                counselCost,
+                cmrhOral,
+                cmrhTelephone,
+                hoInterview,
+                substantiveHearing,
+                adjournedHearing,
+                vatClaimed
+            ));
+
+            Assertions.assertEquals(expectedRows, viewModel.getReviewClaimFieldRows());
+        }
+
+        @Test
+        void rowsRenderedForNullBoltOnClaimValues() {
+            ClaimField fixedFee = new ClaimField("1", null, null);
+            ClaimField netProfitCost = new ClaimField("2", null, null);
+            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
+            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
+            ClaimField counselCost = new ClaimField("5", null, null);
+            ClaimField detention = new ClaimField("6", null, null);
+            ClaimField jrFormFilling = new ClaimField("7", null, null);
+
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setFixedFee(fixedFee);
+            claim.setNetProfitCost(netProfitCost);
+            claim.setNetDisbursementAmount(netDisbursementAmount);
+            claim.setDisbursementVatAmount(disbursementVatAmount);
+            claim.setCounselsCost(counselCost);
+            claim.setDetentionTravelWaitingCosts(detention);
+            claim.setJrFormFillingCost(jrFormFilling);
+
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            List<ClaimField> expectedRows = List.of(
+                fixedFee,
+                netProfitCost,
+                netDisbursementAmount,
+                disbursementVatAmount,
+                detention,
+                jrFormFilling,
+                counselCost
+            );
+
+            Assertions.assertEquals(expectedRows, viewModel.getReviewClaimFieldRows());
+        }
+
+        @Test
+        void rowsRenderedForZeroBoltOnClaimValues() {
+            ClaimField fixedFee = new ClaimField("1", null, null);
+            ClaimField netProfitCost = new ClaimField("2", null, null);
+            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
+            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
+            ClaimField counselCost = new ClaimField("5", null, null);
+            ClaimField detention = new ClaimField("6", null, null);
+            ClaimField jrFormFilling = new ClaimField("7", null, null);
+            ClaimField adjournedHearing = new ClaimField("8", BigDecimal.ZERO, 100);
+            ClaimField cmrhTelephone = new ClaimField("9", 0, null);
+            ClaimField cmrhOral = new ClaimField("10", 0, null);
+            ClaimField hoInterview = new ClaimField("11", 0, null);
+            ClaimField substantiveHearing = new ClaimField("12", BigDecimal.ZERO, null);
+
+            CivilClaimDetails claim = new CivilClaimDetails();
+            claim.setFixedFee(fixedFee);
+            claim.setNetProfitCost(netProfitCost);
+            claim.setNetDisbursementAmount(netDisbursementAmount);
+            claim.setDisbursementVatAmount(disbursementVatAmount);
+            claim.setCounselsCost(counselCost);
+            claim.setDetentionTravelWaitingCosts(detention);
+            claim.setJrFormFillingCost(jrFormFilling);
+            claim.setAdjournedHearing(adjournedHearing);
+            claim.setCmrhTelephone(cmrhTelephone);
+            claim.setCmrhOral(cmrhOral);
+            claim.setHoInterview(hoInterview);
+            claim.setSubstantiveHearing(substantiveHearing);
+
+            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            List<ClaimField> expectedRows = List.of(
+                fixedFee,
+                netProfitCost,
+                netDisbursementAmount,
+                disbursementVatAmount,
+                detention,
+                jrFormFilling,
+                counselCost,
+                cmrhOral,
+                cmrhTelephone,
+                hoInterview,
+                substantiveHearing,
+                adjournedHearing
+            );
+
+            Assertions.assertEquals(expectedRows, viewModel.getReviewClaimFieldRows());
         }
     }
 

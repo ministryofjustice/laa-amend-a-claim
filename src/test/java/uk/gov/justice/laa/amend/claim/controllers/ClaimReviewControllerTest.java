@@ -15,13 +15,12 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
-import uk.gov.justice.laa.amend.claim.viewmodels.PageType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
 import java.util.UUID;
@@ -83,7 +82,6 @@ public class ClaimReviewControllerTest {
             .andExpect(model().attribute("claimId", claimId.toString()))
             .andExpect(model().attribute("submissionId", submissionId.toString()))
             .andExpect(model().attribute("submissionFailed", false))
-            .andExpect(model().attribute("pageType", PageType.REVIEW))
             .andExpect(model().attribute("validationFailed", false));
     }
 
@@ -192,8 +190,7 @@ public class ClaimReviewControllerTest {
 
         mockMvc.perform(get(path1).session(session))
             .andExpect(status().isOk())
-            .andExpect(model().attribute("claimId", claimId1))
-            .andExpect(model().attribute("pageType", PageType.REVIEW));
+            .andExpect(model().attribute("claimId", claimId1));
 
         // Verify both claims still in session
         Assertions.assertNotNull(session.getAttribute(claimId1));

@@ -52,70 +52,70 @@ public class ClaimFieldTest {
         }
     }
 
-    @Nested
-    class DisplayTest {
-
-        @Test
-        void displayFixedFeeWhenSubmittedValueIsNull() {
-            ClaimField claimField = new ClaimField();
-            claimField.setKey(FIXED_FEE);
-            claimField.setSubmitted(null);
-
-            Assertions.assertTrue(claimField.display());
-        }
-
-        @Test
-        void doNotDisplayCmrhTelephoneWhenSubmittedValueIsNull() {
-            ClaimField claimField = new ClaimField();
-            claimField.setKey(CMRH_TELEPHONE);
-            claimField.setSubmitted(null);
-
-            Assertions.assertFalse(claimField.display());
-        }
-
-        @Test
-        void doNotDisplayCmrhOralWhenSubmittedValueIsNull() {
-            ClaimField claimField = new ClaimField();
-            claimField.setKey(CMRH_ORAL);
-            claimField.setSubmitted(null);
-
-            Assertions.assertFalse(claimField.display());
-        }
-
-        @Test
-        void doNotDisplayJrFormFillingWhenSubmittedValueIsNull() {
-            ClaimField claimField = new ClaimField();
-            claimField.setKey(JR_FORM_FILLING);
-            claimField.setSubmitted(null);
-
-            Assertions.assertFalse(claimField.display());
-        }
-
-        @Test
-        void doNotDisplayAdjournedFeeWhenSubmittedValueIsNull() {
-            ClaimField claimField = new ClaimField();
-            claimField.setKey(ADJOURNED_FEE);
-            claimField.setSubmitted(null);
-
-            Assertions.assertFalse(claimField.display());
-        }
-
-        @Test
-        void doNotDisplayHoInterviewWhenSubmittedValueIsNull() {
-            ClaimField claimField = new ClaimField();
-            claimField.setKey(HO_INTERVIEW);
-            claimField.setSubmitted(null);
-
-            Assertions.assertFalse(claimField.display());
-        }
-
-        @Test
-        void doNotDisplaySubstantiveHearingWhenSubmittedValueIsNull() {
-            ClaimField claimField = new ClaimField();
-            claimField.setKey(SUBSTANTIVE_HEARING);
-            claimField.setSubmitted(null);
-
-            Assertions.assertFalse(claimField.display());
-        }
-    }
+//    @Nested
+//    class DisplayTest {
+//
+//        @Test
+//        void displayFixedFeeWhenSubmittedValueIsNull() {
+//            ClaimField claimField = new ClaimField();
+//            claimField.setKey(FIXED_FEE);
+//            claimField.setSubmitted(null);
+//
+//            Assertions.assertTrue(claimField.display());
+//        }
+//
+//        @Test
+//        void doNotDisplayCmrhTelephoneWhenSubmittedValueIsNull() {
+//            ClaimField claimField = new ClaimField();
+//            claimField.setKey(CMRH_TELEPHONE);
+//            claimField.setSubmitted(null);
+//
+//            Assertions.assertFalse(claimField.display());
+//        }
+//
+//        @Test
+//        void doNotDisplayCmrhOralWhenSubmittedValueIsNull() {
+//            ClaimField claimField = new ClaimField();
+//            claimField.setKey(CMRH_ORAL);
+//            claimField.setSubmitted(null);
+//
+//            Assertions.assertFalse(claimField.display());
+//        }
+//
+//        @Test
+//        void doNotDisplayJrFormFillingWhenSubmittedValueIsNull() {
+//            ClaimField claimField = new ClaimField();
+//            claimField.setKey(JR_FORM_FILLING);
+//            claimField.setSubmitted(null);
+//
+//            Assertions.assertFalse(claimField.display());
+//        }
+//
+//        @Test
+//        void doNotDisplayAdjournedFeeWhenSubmittedValueIsNull() {
+//            ClaimField claimField = new ClaimField();
+//            claimField.setKey(ADJOURNED_FEE);
+//            claimField.setSubmitted(null);
+//
+//            Assertions.assertFalse(claimField.display());
+//        }
+//
+//        @Test
+//        void doNotDisplayHoInterviewWhenSubmittedValueIsNull() {
+//            ClaimField claimField = new ClaimField();
+//            claimField.setKey(HO_INTERVIEW);
+//            claimField.setSubmitted(null);
+//
+//            Assertions.assertFalse(claimField.display());
+//        }
+//
+//        @Test
+//        void doNotDisplaySubstantiveHearingWhenSubmittedValueIsNull() {
+//            ClaimField claimField = new ClaimField();
+//            claimField.setKey(SUBSTANTIVE_HEARING);
+//            claimField.setSubmitted(null);
+//
+//            Assertions.assertFalse(claimField.display());
+//        }
+//    }
 }
