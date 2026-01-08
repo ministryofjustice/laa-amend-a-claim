@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/api/v0/submissions/(.*)"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "get-submission-response.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

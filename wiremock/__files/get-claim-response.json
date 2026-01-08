@@ -139,7 +139,7 @@
       "bolt_on_cmrh_oral_fee": null,
       "bolt_on_home_office_interview_count": null,
       "bolt_on_home_office_interview_fee": null,
-      "escape_case_flag": false,
+      "escape_case_flag": true,
       "scheme_id": "CAPA_FS2013"
     }
   }
