@@ -3,8 +3,12 @@ package uk.gov.justice.laa.amend.claim.pages;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.Map;
+
+import static uk.gov.justice.laa.amend.claim.pages.PageHelper.cardByTitle;
+import static uk.gov.justice.laa.amend.claim.pages.PageHelper.rowByLabel;
 
 public class ClaimDetailsPage {
 
@@ -13,6 +17,7 @@ public class ClaimDetailsPage {
     private final Locator heading;
     private final Locator addAssessmentOutcomeButton;
     private final Locator updateAssessmentOutcomeButton;
+    private final Locator addUpdateAssessmentOutcomeButton;
 
     public ClaimDetailsPage(Page page) {
         this.page = page;
@@ -31,6 +36,9 @@ public class ClaimDetailsPage {
             AriaRole.BUTTON,
             new Page.GetByRoleOptions().setName("Update assessment outcome")
         );
+
+        this.addUpdateAssessmentOutcomeButton = page.getByTestId("claim-details-assessment-button");
+
     }
 
     public void waitForPage() {
@@ -41,6 +49,12 @@ public class ClaimDetailsPage {
         return heading.textContent().trim();
     }
 
+    public void clickAddUpdateAssessmentOutcome() {
+        if (addUpdateAssessmentOutcomeButton.isVisible()) {
+            addUpdateAssessmentOutcomeButton.click();
+        }
+    }
+
     public void clickAddAssessmentOutcome() {
         addAssessmentOutcomeButton.click();
     }
@@ -48,6 +62,7 @@ public class ClaimDetailsPage {
     public void clickUpdateAssessmentOutcome() {
         addAssessmentOutcomeButton.click();
     }
+
 
     public boolean isAddAssessmentOutcomeDisabled() {
         String ariaDisabled = addAssessmentOutcomeButton.getAttribute("aria-disabled");
@@ -175,4 +190,46 @@ public class ClaimDetailsPage {
 
         return sb.toString();
     }
+
+    public void assertAssessedTotals(Map<String, String[]> expectedTotals) {
+        Locator totalAssessedValuesCard = cardByTitle("Total claim value", page);
+        for (Map.Entry<String, String[]> entry : expectedTotals.entrySet()) {
+
+            Locator row = rowByLabel(totalAssessedValuesCard, entry.getKey());
+            String[] values = entry.getValue();
+
+            // Check calculated value
+            assertCellValue(row, 1, values[0]);
+            // Check submitted value
+            assertCellValue(row, 2, values[1]);
+            // Check assessed value
+            assertCellValue(row, 3, values[2]);
+        }
+    }
+
+    public void assertAllowedTotals(Map<String, String[]> expectedTotals) {
+        Locator totalAllowedValuesCard = cardByTitle("Total allowed value", page);
+        for (Map.Entry<String, String[]> entry : expectedTotals.entrySet()) {
+            Locator row = rowByLabel(totalAllowedValuesCard, entry.getKey());
+            String[] values = entry.getValue();
+
+            // Check calculated value
+            assertCellValue(row, 1, values[0]);
+            // Check submitted value
+            assertCellValue(row, 2, values[1]);
+            // Check allowed value
+            assertCellValue(row, 3, values[2]);
+        }
+    }
+
+    private void assertCellValue(Locator rowSelector, int columnIndex, String expectedValue) {
+        String actualValue = rowSelector.locator("td").nth(columnIndex).textContent().trim();
+        Assertions.assertEquals(expectedValue, actualValue,
+            String.format("Value mismatch in column %d", columnIndex));
+    }
+
+    public void assertButtonLabel(String expectedLabel) {
+        Assertions.assertEquals(expectedLabel, addAssessmentOutcomeButton.textContent().trim(), "Button label should be " + expectedLabel);
+    }
+
 }

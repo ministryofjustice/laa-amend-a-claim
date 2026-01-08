@@ -20,12 +20,11 @@ public final class FeeCodeValidator {
      * @return true if the fee code is invalid or null for crime claims, false otherwise
      */
     public static boolean isNotValidFeeCode(ClaimDetails claimDetails) {
-        if (!(claimDetails instanceof CrimeClaimDetails)) {
-            return false;
+        if (claimDetails instanceof CrimeClaimDetails) {
+            String feeCode = claimDetails.getFeeCode();
+            return feeCode == null || !VALID_FEE_CODES.contains(feeCode);
         }
-
-        String feeCode = claimDetails.getFeeCode();
-        return feeCode == null || !VALID_FEE_CODES.contains(feeCode);
+        return true;
     }
 
 }

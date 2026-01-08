@@ -90,7 +90,7 @@ public class ClaimField implements Serializable {
         setAssessed(BigDecimal.ZERO);
     }
 
-    protected void setToNeedsAssessing() {
+    protected void setAssessedToNull() {
         setAssessed(null);
     }
 
@@ -100,15 +100,6 @@ public class ClaimField implements Serializable {
 
     protected void setAssessedToSubmitted() {
         setAssessedToValue(this.getSubmitted());
-    }
-
-    protected void setToNotApplicable() {
-        setAssessed(null);
-    }
-
-
-    protected void setToDoNotDisplay() {
-        setAssessed(null);
     }
 
     public void setAssessedToValue(Object value) {
@@ -124,7 +115,7 @@ public class ClaimField implements Serializable {
     }
 
     public boolean isNotAssessable() {
-        return status != ClaimFieldStatus.MODIFIABLE;
+        return status == ClaimFieldStatus.NOT_MODIFIABLE;
     }
 
     private static final List<String> HIDDEN_FIELDS = List.of(
@@ -162,5 +153,9 @@ public class ClaimField implements Serializable {
 
     public void setAssessedForDisplay() {
         setAssessed(getOrElseZero(assessed));
+    }
+
+    public boolean isAssessed() {
+        return assessed != null;
     }
 }

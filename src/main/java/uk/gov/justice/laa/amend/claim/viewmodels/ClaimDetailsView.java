@@ -54,26 +54,41 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
      *
      * @return ordered list of claim field rows for display
      */
-    default List<ClaimField> getTableRows() {
+    default List<ClaimField> getTableRows(PageType page) {
         List<ClaimField> rows = claimFields();
         addRowIfNotNull(
             rows,
-            claim().getVatClaimed(),
-            claim().getTotalAmount()
+            claim().getVatClaimed()
         );
-
+        addTotalRow(page, rows);
         return rows;
+    }
+
+    private void addTotalRow(PageType page, List<ClaimField> rows) {
+        if (PageType.CLAIM_DETAILS.equals(page) && !claim().isHasAssessment()) {
+            addRowIfNotNull(
+                rows,
+                claim().getTotalAmount()
+            );
+        }
     }
 
     default List<ClaimField> getAssessedTotals() {
         List<ClaimField> rows = new ArrayList<>();
         addRowIfNotNull(
             rows,
-            claim().getAssessedTotalVat(),
-            claim().getAssessedTotalInclVat()
+            resolveValue(claim().getAssessedTotalVat(), claim().getAllowedTotalVat()),
+            resolveValue(claim().getAssessedTotalInclVat(), claim().getAllowedTotalInclVat())
         );
 
         return rows;
+    }
+
+    private ClaimField resolveValue(ClaimField assessed, ClaimField allowed) {
+        if (assessed != null && allowed != null && assessed.getStatus() == ClaimFieldStatus.NOT_MODIFIABLE) {
+            assessed.setAssessed(allowed.getAssessed());
+        }
+        return assessed;
     }
 
     default List<ClaimField> getAllowedTotals() {

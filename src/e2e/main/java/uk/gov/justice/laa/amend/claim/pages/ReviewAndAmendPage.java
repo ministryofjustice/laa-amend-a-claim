@@ -7,6 +7,8 @@ import com.microsoft.playwright.options.AriaRole;
 import java.util.List;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static uk.gov.justice.laa.amend.claim.pages.PageHelper.cardByTitle;
+import static uk.gov.justice.laa.amend.claim.pages.PageHelper.tableByCard;
 
 public class ReviewAndAmendPage {
     private final Page page;
@@ -34,13 +36,13 @@ public class ReviewAndAmendPage {
                 new Page.GetByRoleOptions().setName("Review and amend")
         );
 
-        this.claimCostsCard = cardByTitle("Claim costs");
-        this.totalClaimValueCard = cardByTitle("Total claim value");
-        this.totalAllowedValueCard = cardByTitle("Total allowed value");
+        this.claimCostsCard = cardByTitle("Claim costs", page);
+        this.totalClaimValueCard = cardByTitle("Total claim value", page);
+        this.totalAllowedValueCard = cardByTitle("Total allowed value", page);
 
-        this.claimCostsTable = claimCostsCard.locator("table.govuk-table");
-        this.totalClaimValueTable = totalClaimValueCard.locator("table.govuk-table");
-        this.totalAllowedValueTable = totalAllowedValueCard.locator("table.govuk-table");
+        this.claimCostsTable = tableByCard(claimCostsCard);
+        this.totalClaimValueTable = tableByCard(totalClaimValueCard);
+        this.totalAllowedValueTable = tableByCard(totalAllowedValueCard);
 
         this.submitAdjustmentsButton = page.getByRole(
                 AriaRole.BUTTON,
@@ -55,7 +57,9 @@ public class ReviewAndAmendPage {
     public void waitForPage() {
         heading.waitFor();
         claimCostsCard.waitFor();
-        totalClaimValueCard.waitFor();
+        if (totalClaimValueCard.isVisible()) {
+            totalClaimValueCard.waitFor();
+        }
         totalAllowedValueCard.waitFor();
     }
 
@@ -63,14 +67,6 @@ public class ReviewAndAmendPage {
         return heading.textContent().trim();
     }
 
-    private Locator cardByTitle(String title) {
-        return page.locator(".govuk-summary-card")
-                .filter(new Locator.FilterOptions().setHas(
-                        page.locator("h2.govuk-summary-card__title")
-                                .filter(new Locator.FilterOptions().setHasText(title))
-                ))
-                .first();
-    }
 
 
     private Locator rowByItemName(String itemName) {
@@ -79,13 +75,18 @@ public class ReviewAndAmendPage {
         ).first();
     }
 
-    private void clickChangeInRow(String itemName) {
-        rowByItemName(itemName)
-                .locator("a.govuk-link:has-text('Change')")
+    private void clickAddChangeRow(String itemName) {
+        rowByItemName(itemName).getByTestId("claim-field-profitCost")
                 .click();
     }
 
-    public void clickChangeProfitCosts()      { clickChangeInRow("Profit costs"); }
+    private void clickChangeInRow(String itemName) {
+        rowByItemName(itemName)
+            .locator("a.govuk-link:has-text('Change')")
+            .click();
+    }
+
+    public void clickChangeProfitCosts()      { clickAddChangeRow("Profit costs"); }
     public void clickChangeDisbursements()    { clickChangeInRow("Disbursements"); }
     public void clickChangeDisbursementsVat() { clickChangeInRow("Disbursement VAT"); }
     public void clickChangeTravelCosts()      { clickChangeInRow("Travel costs"); }
@@ -106,20 +107,20 @@ public class ReviewAndAmendPage {
 
 
     public void clickAddAssessedTotalVat() {
-        totalClaimValueTable.locator("#assessed-total-vat").click();
+        totalClaimValueTable.getByTestId("totals-assessedTotalVat").click();
     }
 
     public void clickAddAssessedTotalInclVat() {
-        totalClaimValueTable.locator("#assessed-total-incl-vat").click();
+        totalClaimValueTable.getByTestId("totals-assessedTotalInclVat").click();
     }
 
 
     public void clickAddAllowedTotalVat() {
-        totalAllowedValueTable.locator("#allowed-total-vat").click();
+        totalAllowedValueTable.getByTestId("totals-allowedTotalVat").click();
     }
 
     public void clickAddAllowedTotalInclVat() {
-        totalAllowedValueTable.locator("#allowed-total-incl-vat").click();
+        totalAllowedValueTable.getByTestId("totals-allowedTotalInclVat").click();
     }
 
 
@@ -131,6 +132,9 @@ public class ReviewAndAmendPage {
         discardChangesLink.click();
     }
 
+    public boolean isAssessClaimValuesVisible() {
+        return totalClaimValueCard.isVisible();
+    }
 
     public void assertCrimePageLoadedHeadersAndItems() {
         waitForPage();
@@ -146,10 +150,9 @@ public class ReviewAndAmendPage {
                 "Disbursement VAT",
                 "Travel costs",
                 "Waiting costs",
-                "VAT",
-                "Total"
+                "VAT"
         );
-
+        assertClaimCostsNotHasItems("Total");
         assertThat(submitAdjustmentsButton).isVisible();
         assertThat(discardChangesLink).isVisible();
     }
@@ -169,9 +172,9 @@ public class ReviewAndAmendPage {
                 "Detention travel and waiting costs",
                 "JR and form filling",
                 "Counsel costs",
-                "VAT",
-                "Total"
+                "VAT"
         );
+        assertClaimCostsNotHasItems("Total");
 
         assertThat(submitAdjustmentsButton).isVisible();
         assertThat(discardChangesLink).isVisible();
@@ -204,6 +207,17 @@ public class ReviewAndAmendPage {
 
         for (String item : itemNames) {
             assertThat(claimCostsTable).containsText(item);
+        }
+    }
+
+    private void assertClaimCostsNotHasItems(String... itemNames) {
+        assertThat(claimCostsTable).isVisible();
+
+        Locator rows = claimCostsTable.locator("tbody tr");
+        assertThat(rows.first()).isVisible(); // strict-safe
+
+        for (String item : itemNames) {
+            assertThat(claimCostsTable).not().containsText(item);
         }
     }
 

@@ -90,6 +90,12 @@ public class ThymeleafUtils {
         return getFormattedValue(obj);
     }
 
+    public ThymeleafString getChangeLinkText(ClaimField value) {
+        var val = value != null && value.isAssessed() ? "service.change" : "service.add";
+        return new ThymeleafMessage(val);
+    }
+
+
     public ThymeleafString getFormattedBoolean(Boolean value) {
         String key = (value != null && value) ? "service.yes" : "service.no";
         return new ThymeleafMessage(key);

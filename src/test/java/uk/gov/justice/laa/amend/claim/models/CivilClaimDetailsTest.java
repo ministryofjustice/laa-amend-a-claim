@@ -98,10 +98,10 @@ public class CivilClaimDetailsTest {
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getSubstantiveHearing().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalVat().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAllowedTotalVat().getStatus());
@@ -116,23 +116,7 @@ public class CivilClaimDetailsTest {
         @Test
         void setsValuesToReducedToFixedFee() {
             CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key(FIXED_FEE).calculated(BigDecimal.ONE).build());
-            claim.setNetProfitCost(ClaimField.builder().key(NET_PROFIT_COST).calculated(BigDecimal.ONE).build());
-            claim.setVatClaimed(ClaimField.builder().key(VAT).calculated(true).build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key(NET_DISBURSEMENTS_COST).calculated(BigDecimal.ONE).build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key(DISBURSEMENT_VAT).calculated(BigDecimal.ONE).build());
-            claim.setCounselsCost(ClaimField.builder().key(COUNSELS_COST).calculated(BigDecimal.ONE).build());
-            claim.setDetentionTravelWaitingCosts(ClaimField.builder().key(DETENTION_TRAVEL_COST).calculated(BigDecimal.ONE).build());
-            claim.setJrFormFillingCost(ClaimField.builder().key(JR_FORM_FILLING).calculated(BigDecimal.ONE).build());
-            claim.setAdjournedHearing(ClaimField.builder().key(ADJOURNED_FEE).calculated(BigDecimal.ONE).build());
-            claim.setCmrhTelephone(ClaimField.builder().key(CMRH_TELEPHONE).calculated(BigDecimal.ONE).build());
-            claim.setCmrhOral(ClaimField.builder().key(CMRH_ORAL).calculated(BigDecimal.ONE).build());
-            claim.setHoInterview(ClaimField.builder().key(HO_INTERVIEW).calculated(BigDecimal.ONE).build());
-            claim.setSubstantiveHearing(ClaimField.builder().key(SUBSTANTIVE_HEARING).calculated(BigDecimal.ONE).build());
-            claim.setAssessedTotalVat(ClaimField.builder().key(ASSESSED_TOTAL_VAT).calculated(BigDecimal.ONE).build());
-            claim.setAssessedTotalInclVat(ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).calculated(BigDecimal.ONE).build());
-            claim.setAllowedTotalVat(ClaimField.builder().key(ALLOWED_TOTAL_VAT).calculated(BigDecimal.ONE).build());
-            claim.setAllowedTotalInclVat(ClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).calculated(BigDecimal.ONE).build());
+            buildCivilClaim(claim);
 
             claim.setReducedToFixedFeeValues();
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
@@ -190,28 +174,48 @@ public class CivilClaimDetailsTest {
         }
     }
 
+    private static void buildCivilClaim(CivilClaimDetails claim) {
+        claim.setFixedFee(ClaimField.builder().key(FIXED_FEE).calculated(BigDecimal.ONE).build());
+        claim.setNetProfitCost(ClaimField.builder().key(NET_PROFIT_COST).calculated(BigDecimal.ONE).build());
+        claim.setVatClaimed(ClaimField.builder().key(VAT).calculated(true).build());
+        claim.setNetDisbursementAmount(ClaimField.builder().key(NET_DISBURSEMENTS_COST).calculated(BigDecimal.ONE).build());
+        claim.setDisbursementVatAmount(ClaimField.builder().key(DISBURSEMENT_VAT).calculated(BigDecimal.ONE).build());
+        claim.setCounselsCost(ClaimField.builder().key(COUNSELS_COST).calculated(BigDecimal.ONE).build());
+        claim.setDetentionTravelWaitingCosts(ClaimField.builder().key(DETENTION_TRAVEL_COST).calculated(BigDecimal.ONE).build());
+        claim.setJrFormFillingCost(ClaimField.builder().key(JR_FORM_FILLING).calculated(BigDecimal.ONE).build());
+        claim.setAdjournedHearing(ClaimField.builder().key(ADJOURNED_FEE).calculated(BigDecimal.ONE).build());
+        claim.setCmrhTelephone(ClaimField.builder().key(CMRH_TELEPHONE).calculated(BigDecimal.ONE).build());
+        claim.setCmrhOral(ClaimField.builder().key(CMRH_ORAL).calculated(BigDecimal.ONE).build());
+        claim.setHoInterview(ClaimField.builder().key(HO_INTERVIEW).calculated(BigDecimal.ONE).build());
+        claim.setSubstantiveHearing(ClaimField.builder().key(SUBSTANTIVE_HEARING).calculated(BigDecimal.ONE).build());
+        claim.setAssessedTotalVat(ClaimField.builder().key(ASSESSED_TOTAL_VAT).calculated(BigDecimal.ONE).build());
+        claim.setAssessedTotalInclVat(ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).calculated(BigDecimal.ONE).build());
+        claim.setAllowedTotalVat(ClaimField.builder().key(ALLOWED_TOTAL_VAT).calculated(BigDecimal.ONE).build());
+        claim.setAllowedTotalInclVat(ClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).calculated(BigDecimal.ONE).build());
+    }
+
     @Nested
     class SetPaidInFullValuesTests {
         @Test
         void paidInFull() {
             CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(ClaimField.builder().calculated(BigDecimal.ONE).build());
-            claim.setNetProfitCost(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setVatClaimed(ClaimField.builder().submitted(true).build());
-            claim.setNetDisbursementAmount(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setDisbursementVatAmount(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setCounselsCost(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setDetentionTravelWaitingCosts(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setJrFormFillingCost(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setAdjournedHearing(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setCmrhTelephone(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setCmrhOral(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setHoInterview(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setSubstantiveHearing(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setAllowedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setAllowedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
+            claim.setFixedFee(ClaimField.builder().calculated(BigDecimal.ONE).key(FIXED_FEE).build());
+            claim.setNetProfitCost(ClaimField.builder().submitted(BigDecimal.ONE).key(NET_PROFIT_COST).build());
+            claim.setVatClaimed(ClaimField.builder().submitted(true).key(VAT).build());
+            claim.setNetDisbursementAmount(ClaimField.builder().submitted(BigDecimal.ONE).key(NET_DISBURSEMENTS_COST).build());
+            claim.setDisbursementVatAmount(ClaimField.builder().submitted(BigDecimal.ONE).key(DISBURSEMENT_VAT).build());
+            claim.setCounselsCost(ClaimField.builder().submitted(BigDecimal.ONE).key(COUNSELS_COST).build());
+            claim.setDetentionTravelWaitingCosts(ClaimField.builder().submitted(BigDecimal.ONE).key(DETENTION_TRAVEL_COST).build());
+            claim.setJrFormFillingCost(ClaimField.builder().submitted(BigDecimal.ONE).key(JR_FORM_FILLING).build());
+            claim.setAdjournedHearing(ClaimField.builder().submitted(BigDecimal.ONE).key(ADJOURNED_FEE).build());
+            claim.setCmrhTelephone(ClaimField.builder().submitted(BigDecimal.ONE).key(CMRH_TELEPHONE).build());
+            claim.setCmrhOral(ClaimField.builder().submitted(BigDecimal.ONE).key(CMRH_ORAL).build());
+            claim.setHoInterview(ClaimField.builder().submitted(BigDecimal.ONE).key(HO_INTERVIEW).build());
+            claim.setSubstantiveHearing(ClaimField.builder().submitted(BigDecimal.ONE).key(SUBSTANTIVE_HEARING).build());
+            claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ASSESSED_TOTAL_VAT).build());
+            claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ASSESSED_TOTAL_INCL_VAT).build());
+            claim.setAllowedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ALLOWED_TOTAL_VAT).build());
+            claim.setAllowedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ALLOWED_TOTAL_INCL_VAT).build());
 
             claim.setPaidInFullValues();
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.PAID_IN_FULL);
@@ -241,25 +245,25 @@ public class CivilClaimDetailsTest {
             Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getJrFormFillingCost().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getAdjournedHearing().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAdjournedHearing().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAdjournedHearing().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getCmrhTelephone().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getCmrhTelephone().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getCmrhTelephone().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getCmrhOral().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getCmrhOral().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getCmrhOral().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getHoInterview().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getHoInterview().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getHoInterview().getStatus());
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getSubstantiveHearing().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getSubstantiveHearing().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getSubstantiveHearing().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
 
             Assertions.assertNull(claim.getAllowedTotalVat().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAllowedTotalVat().getStatus());
@@ -335,10 +339,10 @@ public class CivilClaimDetailsTest {
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getSubstantiveHearing().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
 
             Assertions.assertNull(claim.getAllowedTotalVat().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAllowedTotalVat().getStatus());

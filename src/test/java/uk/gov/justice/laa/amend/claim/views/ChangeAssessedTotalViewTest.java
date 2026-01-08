@@ -9,6 +9,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeAssessedTotalsController;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
 @ActiveProfiles("local")
 @WebMvcTest(ChangeAssessedTotalsController.class)
@@ -17,6 +20,13 @@ class ChangeAssessedTotalViewTest extends ViewTestBase {
 
     ChangeAssessedTotalViewTest() {
         super("/submissions/submissionId/claims/claimId/assessed-totals");
+    }
+
+    @Override
+    protected void customiseClaim(ClaimDetails claim) {
+        claim.setAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
+        claim.getAssessedTotalVat().setStatus(ClaimFieldStatus.MODIFIABLE);
+        claim.getAssessedTotalInclVat().setStatus(ClaimFieldStatus.MODIFIABLE);
     }
 
     @Test

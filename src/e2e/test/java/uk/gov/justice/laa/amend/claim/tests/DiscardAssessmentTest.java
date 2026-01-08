@@ -152,7 +152,7 @@ public class DiscardAssessmentTest extends BaseTest {
                 "Test data issue: expected escape claim (Add assessment outcome enabled) but it was disabled"
         );
 
-        details.clickAddAssessmentOutcome();
+        details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
         outcome.waitForPage();

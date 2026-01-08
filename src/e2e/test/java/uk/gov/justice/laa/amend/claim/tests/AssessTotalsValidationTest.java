@@ -24,11 +24,11 @@ public class AssessTotalsValidationTest extends BaseTest {
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
         details.waitForPage();
-        details.clickAddAssessmentOutcome();
+        details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
         outcome.waitForPage();
-        outcome.selectAssessmentOutcome("assessed in full");
+        outcome.selectAssessmentOutcome("reduced-to-fixed-fee-assessed");
         outcome.clickContinue();
 
         assertTrue(page.url().contains("/review"));

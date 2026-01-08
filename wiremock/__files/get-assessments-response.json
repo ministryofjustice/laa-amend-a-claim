@@ -23,7 +23,7 @@
     "created_by_user_id" : "09d3db7b-0f48-41eb-a8f5-bd8fcb7c57da",
     "allowed_total_vat" : 3456,
     "allowed_total_incl_vat" : 3500,
-    "assesses_total_vat" : 3456,
+    "assessed_total_vat" : 3456,
     "assessed_total_incl_vat" : 3500
   } ]
 }

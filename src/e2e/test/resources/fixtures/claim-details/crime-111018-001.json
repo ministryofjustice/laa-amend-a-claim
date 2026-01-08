@@ -1,12 +1,15 @@
 {
   "addAssessmentOutcomeDisabled": false,
-"values": {
-  "Fixed fee": ["£239.35", "Not applicable"],
-  "Profit costs": ["Not applicable", "£750.00"],
-  "Disbursements": ["£400.00", "£400.00"],
-  "Disbursement VAT": ["£80.00", "£80.00"],
-  "Travel costs": ["£0.00", "£0.00"],
-  "Waiting costs": ["£0.00", "£0.00"],
-  "VAT": ["Yes", "Yes"],
-  "Total": ["£767.22", "Not applicable"]
-}}
+  "claimType": "Crime",
+  "providerAccount": "2R223X",
+  "ufn": "031222/002",
+  "values": {
+    "Fixed fee": ["£239.35", "Not applicable"],
+    "Profit costs": ["Not applicable", "£750.00"],
+    "Disbursements": ["£400.00", "£400.00"],
+    "Disbursement VAT": ["£80.00", "£80.00"],
+    "Travel costs": ["£0.00", "£0.00"],
+    "Waiting costs": ["£0.00", "£0.00"],
+    "VAT": ["Yes", "Yes"]
+  }
+}

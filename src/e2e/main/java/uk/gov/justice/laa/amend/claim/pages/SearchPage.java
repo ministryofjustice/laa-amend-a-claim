@@ -122,8 +122,7 @@ public class SearchPage {
 
     public void waitForResults(boolean expectResults) {
         if (expectResults) {
-            resultsHeading.waitFor();
-            resultsTable.waitFor();
+            waitForResults();
         } else  {
             noResultsMessage.waitFor();
         }

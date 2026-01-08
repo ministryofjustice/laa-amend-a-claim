@@ -40,7 +40,7 @@ public class ChangeAssessedTotalsController {
     ) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
-        if (claim.getAssessedTotalVat().getStatus() == ClaimFieldStatus.DO_NOT_DISPLAY || claim.getAssessedTotalInclVat().getStatus() == ClaimFieldStatus.DO_NOT_DISPLAY) {
+        if (ClaimFieldStatus.MODIFIABLE != claim.getAssessedTotalVat().getStatus() || ClaimFieldStatus.MODIFIABLE != claim.getAssessedTotalInclVat().getStatus()) {
             log.warn("The assessed totals are not modifiable for claim {}. Returning 404.", claimId);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

@@ -20,5 +20,5 @@ public class EnvConfig {
     public static String mfaSecret() { return getOrDefault("P_MFA_SECRET", ""); }
 
     
-    public static int mfaMaxAttempts() { return Integer.parseInt(getOrDefault("MFA_MAX_ATTEMPTS", "5")); }
+    public static boolean useMocks() { return Boolean.parseBoolean(getOrDefault("USE_MOCKS", "false")); }
 }

@@ -86,8 +86,8 @@ class ChangeAssessedTotalsControllerTest {
 
     @Test
     void testGetRedirectsWhenStatusIsDoNotDisplay_CivilClaim() throws Exception {
-        civilClaim.setAssessedTotalVat(ClaimField.builder().status(ClaimFieldStatus.DO_NOT_DISPLAY).build());
-        civilClaim.setAssessedTotalInclVat(ClaimField.builder().status(ClaimFieldStatus.DO_NOT_DISPLAY).build());
+        civilClaim.setAssessedTotalVat(ClaimField.builder().status(ClaimFieldStatus.NOT_MODIFIABLE).build());
+        civilClaim.setAssessedTotalInclVat(ClaimField.builder().status(ClaimFieldStatus.NOT_MODIFIABLE).build());
         session.setAttribute(claimId, civilClaim);
 
         mockMvc.perform(get(buildPath())
@@ -97,8 +97,8 @@ class ChangeAssessedTotalsControllerTest {
 
     @Test
     void testGetRedirectsWhenStatusIsDoNotDisplay_CrimeClaim() throws Exception {
-        crimeClaim.setAssessedTotalVat(ClaimField.builder().status(ClaimFieldStatus.DO_NOT_DISPLAY).build());
-        crimeClaim.setAssessedTotalInclVat(ClaimField.builder().status(ClaimFieldStatus.DO_NOT_DISPLAY).build());
+        crimeClaim.setAssessedTotalVat(ClaimField.builder().status(ClaimFieldStatus.NOT_MODIFIABLE).build());
+        crimeClaim.setAssessedTotalInclVat(ClaimField.builder().status(ClaimFieldStatus.NOT_MODIFIABLE).build());
         session.setAttribute(claimId, crimeClaim);
 
         mockMvc.perform(get(buildPath())
