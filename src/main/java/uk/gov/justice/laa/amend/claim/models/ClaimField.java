@@ -107,17 +107,18 @@ public class ClaimField implements Serializable {
     }
 
     public boolean isAssessableAndUnassessed() {
-        return status == ClaimFieldStatus.MODIFIABLE && assessed == null;
+        return status == ClaimFieldStatus.MODIFIABLE && !isAssessed();
     }
 
     public boolean isAssessableAndAssessed() {
-        return status == ClaimFieldStatus.MODIFIABLE && assessed != null;
+        return status == ClaimFieldStatus.MODIFIABLE && isAssessed();
     }
 
     public boolean isNotAssessable() {
         return status == ClaimFieldStatus.NOT_MODIFIABLE;
     }
 
+    // TODO - Revise the logic around the hidden fields
     private static final List<String> HIDDEN_FIELDS = List.of(
         CMRH_TELEPHONE,
         CMRH_ORAL,

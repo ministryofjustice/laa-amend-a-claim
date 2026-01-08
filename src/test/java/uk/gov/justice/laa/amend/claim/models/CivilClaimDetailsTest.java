@@ -244,19 +244,19 @@ public class CivilClaimDetailsTest {
             Assertions.assertEquals(BigDecimal.ONE, claim.getJrFormFillingCost().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getJrFormFillingCost().getStatus());
 
-            Assertions.assertEquals(BigDecimal.ONE, claim.getAdjournedHearing().getAssessed());
+            Assertions.assertNull(claim.getAdjournedHearing().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAdjournedHearing().getStatus());
 
-            Assertions.assertEquals(BigDecimal.ONE, claim.getCmrhTelephone().getAssessed());
+            Assertions.assertNull(claim.getCmrhTelephone().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getCmrhTelephone().getStatus());
 
-            Assertions.assertEquals(BigDecimal.ONE, claim.getCmrhOral().getAssessed());
+            Assertions.assertNull(claim.getCmrhOral().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getCmrhOral().getStatus());
 
-            Assertions.assertEquals(BigDecimal.ONE, claim.getHoInterview().getAssessed());
+            Assertions.assertNull(claim.getHoInterview().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getHoInterview().getStatus());
 
-            Assertions.assertEquals(BigDecimal.ONE, claim.getSubstantiveHearing().getAssessed());
+            Assertions.assertNull(claim.getSubstantiveHearing().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getSubstantiveHearing().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
@@ -323,19 +323,19 @@ public class CivilClaimDetailsTest {
             Assertions.assertEquals(BigDecimal.ONE, claim.getJrFormFillingCost().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getJrFormFillingCost().getStatus());
 
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getAdjournedHearing().getAssessed());
+            Assertions.assertNull(claim.getAdjournedHearing().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAdjournedHearing().getStatus());
 
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhTelephone().getAssessed());
+            Assertions.assertNull(claim.getCmrhTelephone().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getCmrhTelephone().getStatus());
 
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhOral().getAssessed());
+            Assertions.assertNull(claim.getCmrhOral().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getCmrhOral().getStatus());
 
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getHoInterview().getAssessed());
+            Assertions.assertNull(claim.getHoInterview().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getHoInterview().getStatus());
 
-            Assertions.assertEquals(BigDecimal.ZERO, claim.getSubstantiveHearing().getAssessed());
+            Assertions.assertNull(claim.getSubstantiveHearing().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getSubstantiveHearing().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
