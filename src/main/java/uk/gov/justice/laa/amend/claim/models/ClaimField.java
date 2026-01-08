@@ -154,4 +154,8 @@ public class ClaimField implements Serializable {
     public void setAssessedForDisplay() {
         setAssessed(getOrElseZero(assessed));
     }
+
+    public boolean isAssessed() {
+        return assessed != null;
+    }
 }
