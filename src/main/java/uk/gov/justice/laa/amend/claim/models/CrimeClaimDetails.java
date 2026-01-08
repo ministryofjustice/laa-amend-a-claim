@@ -47,11 +47,11 @@ public class CrimeClaimDetails extends ClaimDetails {
     }
 
     private void setPaidInFullOrReduced() {
-        ClaimField assessedTotalVat = getAssessedTotalVat();
-        ClaimField assessedTotalInclVat = getAssessedTotalInclVat();
-
         applyIfNotNull(travelCosts, ClaimField::setAssessedToSubmitted);
         applyIfNotNull(waitingCosts, ClaimField::setAssessedToSubmitted);
+
+        ClaimField assessedTotalVat = getAssessedTotalVat();
+        ClaimField assessedTotalInclVat = getAssessedTotalInclVat();
 
         // assessed total fields are only shown on crime claims if the claim has a certain fee code (e.g. INVC)
         applyIfNotNull(assessedTotalVat, ClaimField::setAssessedToNull);

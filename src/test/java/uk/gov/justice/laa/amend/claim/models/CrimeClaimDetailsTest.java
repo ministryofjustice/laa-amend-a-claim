@@ -68,10 +68,10 @@ public class CrimeClaimDetailsTest {
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getWaitingCosts().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalInclVat().getAssessed());
             Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAllowedTotalInclVat().getStatus());
@@ -87,17 +87,7 @@ public class CrimeClaimDetailsTest {
         @Test
         void paidInFull() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFixedFee(ClaimField.builder().calculated(BigDecimal.ONE).build());
-            claim.setNetProfitCost(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setVatClaimed(ClaimField.builder().submitted(true).build());
-            claim.setNetDisbursementAmount(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setDisbursementVatAmount(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setTravelCosts(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setWaitingCosts(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setAllowedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setAllowedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
+            buildCrimeDetails(claim);
 
             claim.setPaidInFullValues();
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.PAID_IN_FULL);
@@ -134,8 +124,7 @@ public class CrimeClaimDetailsTest {
         void paidInFull_whenFeeCodeIsInListOfAssessedValueFeeCodes() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
             claim.setFeeCode("INVC");
-            claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
+            updateClaimAssessmentTotals(claim);
 
             claim.setPaidInFullValues();
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.PAID_IN_FULL);
@@ -151,34 +140,39 @@ public class CrimeClaimDetailsTest {
         void paidInFull_whenFeeCodeIsNotInListOfAssessedValueFeeCodes() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
             claim.setFeeCode("ABCD");
-            claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
+            updateClaimAssessmentTotals(claim);
+
 
             claim.setPaidInFullValues();
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.PAID_IN_FULL);
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
         }
 
         @Test
         void paidInFull_whenFeeCodeIsNull() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
             claim.setFeeCode(null);
-            claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
+            updateClaimAssessmentTotals(claim);
+
 
             claim.setPaidInFullValues();
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.PAID_IN_FULL);
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
         }
+    }
+
+    private static void updateClaimAssessmentTotals(CrimeClaimDetails claim) {
+        claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ALLOWED_TOTAL_VAT).build());
+        claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ALLOWED_TOTAL_INCL_VAT).build());
     }
 
     @Nested
@@ -187,17 +181,8 @@ public class CrimeClaimDetailsTest {
         @Test
         void reduced() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key(FIXED_FEE).submitted(BigDecimal.ONE).build());
-            claim.setNetProfitCost(ClaimField.builder().key(NET_PROFIT_COST).submitted(BigDecimal.ONE).build());
-            claim.setVatClaimed(ClaimField.builder().key(VAT).submitted(true).build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key(NET_DISBURSEMENTS_COST).submitted(BigDecimal.ONE).build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key(DISBURSEMENT_VAT).submitted(BigDecimal.ONE).build());
-            claim.setTravelCosts(ClaimField.builder().key(TRAVEL_COSTS).submitted(BigDecimal.ONE).build());
-            claim.setWaitingCosts(ClaimField.builder().key(WAITING_COSTS).submitted(BigDecimal.ONE).build());
-            claim.setAssessedTotalVat(ClaimField.builder().key(ASSESSED_TOTAL_VAT).submitted(BigDecimal.ONE).build());
-            claim.setAssessedTotalInclVat(ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).submitted(BigDecimal.ONE).build());
-            claim.setAllowedTotalVat(ClaimField.builder().key(ALLOWED_TOTAL_VAT).submitted(BigDecimal.ONE).build());
-            claim.setAllowedTotalInclVat(ClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).submitted(BigDecimal.ONE).build());
+
+            buildCrimeDetails(claim);
 
             claim.setReducedValues();
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.REDUCED);
@@ -258,28 +243,41 @@ public class CrimeClaimDetailsTest {
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.REDUCED);
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
         }
 
         @Test
         void reduced_whenFeeCodeIsNull() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
             claim.setFeeCode(null);
-            claim.setAssessedTotalVat(ClaimField.builder().key(ASSESSED_TOTAL_VAT).submitted(BigDecimal.ONE).build());
-            claim.setAssessedTotalInclVat(ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).submitted(BigDecimal.ONE).build());
+            updateClaimAssessmentTotals(claim);
 
             claim.setReducedValues();
             claimStatusHandler.updateFieldStatuses(claim, OutcomeType.REDUCED);
 
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.DO_NOT_DISPLAY, claim.getAssessedTotalVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalVat().getStatus());
 
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.DO_NOT_DISPLAY, claim.getAssessedTotalInclVat().getStatus());
+            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
         }
+    }
+
+    private static void buildCrimeDetails(CrimeClaimDetails claim) {
+        claim.setFixedFee(ClaimField.builder().calculated(BigDecimal.ONE).key(FIXED_FEE).build());
+        claim.setNetProfitCost(ClaimField.builder().submitted(BigDecimal.ONE).key(NET_PROFIT_COST).build());
+        claim.setVatClaimed(ClaimField.builder().submitted(true).key(VAT).build());
+        claim.setNetDisbursementAmount(ClaimField.builder().submitted(BigDecimal.ONE).key(NET_DISBURSEMENTS_COST).build());
+        claim.setDisbursementVatAmount(ClaimField.builder().submitted(BigDecimal.ONE).key(DISBURSEMENT_VAT).build());
+        claim.setTravelCosts(ClaimField.builder().submitted(BigDecimal.ONE).key(TRAVEL_COSTS).build());
+        claim.setWaitingCosts(ClaimField.builder().submitted(BigDecimal.ONE).key(WAITING_COSTS).build());
+        claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ASSESSED_TOTAL_VAT).build());
+        claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ASSESSED_TOTAL_INCL_VAT).build());
+        claim.setAllowedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ALLOWED_TOTAL_VAT).build());
+        claim.setAllowedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ALLOWED_TOTAL_INCL_VAT).build());
     }
 
     @Nested

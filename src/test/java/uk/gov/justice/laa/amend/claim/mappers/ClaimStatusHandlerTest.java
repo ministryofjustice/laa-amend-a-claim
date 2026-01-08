@@ -46,7 +46,7 @@ class ClaimStatusHandlerTest {
             ClaimDetails claimDetails = new CrimeClaimDetails();
             claimDetails.setAssessedTotalVat(assessedTotal);
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.NILLED);
-            assertThat(assessedTotal.getStatus()).isEqualTo(ClaimFieldStatus.DO_NOT_DISPLAY);
+            assertThat(assessedTotal.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
         }
 
         @Test
@@ -122,7 +122,7 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 
-            assertThat(totalField.getStatus()).isEqualTo(ClaimFieldStatus.DO_NOT_DISPLAY);
+            assertThat(totalField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
         }
 
         @Test
