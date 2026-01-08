@@ -133,9 +133,15 @@ env:
         name: elasticache-redis
         key: url
   - name: FEEDBACK_URL
-    value: ${FEEDBACK_URL}
+    valueFrom:
+      configMapKeyRef:
+        name: urls
+        key: feedback
   - name: LAA_URL
-    value: ${LAA_URL}
+    valueFrom:
+      configMapKeyRef:
+        name: urls
+        key: laa
 
 autoscaling:
   enabled: false

@@ -22,12 +22,6 @@ on:
         type: string
         default: 'eu-west-2'
         description: 'AWS region for the ECR'
-      FEEDBACK_URL:
-        required: true
-        type: string
-      LAA_URL:
-        required: true
-        type: string
       values_file:
         required: false
         type: string
