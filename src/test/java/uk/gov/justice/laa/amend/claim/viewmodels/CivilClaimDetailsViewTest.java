@@ -3,11 +3,14 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDetails, CivilClaimDetailsView> {
@@ -110,8 +113,9 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
 
     @Nested
     class GetTableRowsTests {
-        @Test
-        void rowsRenderedForClaimValues() {
+        @ParameterizedTest
+        @EnumSource(PageType.class)
+        void rowsRenderedForClaimValues(PageType pageType) {
             ClaimField fixedFee = new ClaimField("1", null, null);
             ClaimField netProfitCost = new ClaimField("2", null, null);
             ClaimField netDisbursementAmount = new ClaimField("3", null, null);
@@ -142,29 +146,33 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setSubstantiveHearing(substantiveHearing);
             claim.setVatClaimed(vatClaimed);
             claim.setTotalAmount(totalAmount);
+            claim.setHasAssessment(true);
 
             CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
-            List<ClaimField> expectedRows = List.of(
-                fixedFee,
-                netProfitCost,
-                netDisbursementAmount,
-                disbursementVatAmount,
-                detention,
-                jrFormFilling,
-                counselCost,
-                cmrhOral,
-                cmrhTelephone,
-                hoInterview,
-                substantiveHearing,
-                adjournedHearing,
-                vatClaimed,
-                totalAmount
-            );
-            Assertions.assertEquals(expectedRows, viewModel.getTableRows());
+            ArrayList<ClaimField> expectedRows = new ArrayList<>(List.of(
+                    fixedFee,
+                    netProfitCost,
+                    netDisbursementAmount,
+                    disbursementVatAmount,
+                    detention,
+                    jrFormFilling,
+                    counselCost,
+                    cmrhOral,
+                    cmrhTelephone,
+                    hoInterview,
+                    substantiveHearing,
+                    adjournedHearing,
+                    vatClaimed
+            ));
+            if (PageType.CLAIM_DETAILS.equals(pageType) && !claim.isHasAssessment()) {
+                expectedRows.add(totalAmount);
+            }
+            Assertions.assertEquals(expectedRows, viewModel.getTableRows(pageType));
         }
 
-        @Test
-        void onlyRowsWithValuesRendered() {
+        @ParameterizedTest
+        @EnumSource(PageType.class)
+        void onlyRowsWithValuesRendered(PageType pageType) {
             ClaimField fixedFee = new ClaimField("1", null, null);
             ClaimField netProfitCost = new ClaimField("2", null, null);
             ClaimField netDisbursementAmount = new ClaimField("3", null, null);
@@ -197,7 +205,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setTotalAmount(totalAmount);
 
             CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
-            List<ClaimField> expectedRows = List.of(
+            List<ClaimField> expectedRows = new ArrayList<>(List.of(
                 fixedFee,
                 netProfitCost,
                 netDisbursementAmount,
@@ -206,10 +214,13 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
                 jrFormFilling,
                 counselCost,
                 adjournedHearing,
-                vatClaimed,
-                totalAmount
-            );
-            Assertions.assertEquals(expectedRows, viewModel.getTableRows());
+                vatClaimed
+            ));
+
+            if (PageType.CLAIM_DETAILS.equals(pageType) && !claim.isHasAssessment()) {
+                expectedRows.add(totalAmount);
+            }
+            Assertions.assertEquals(expectedRows, viewModel.getTableRows(pageType));
         }
 
         @Test
@@ -241,7 +252,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
                 jrFormFilling,
                 counselCost
             );
-            Assertions.assertEquals(expectedRows, viewModel.getTableRows());
+            Assertions.assertEquals(expectedRows, viewModel.getTableRows(PageType.CLAIM_DETAILS));
         }
     }
 

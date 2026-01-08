@@ -44,8 +44,8 @@
                 </thead>
                 <tbody class="govuk-table__body">
                 <tr class="govuk-table__row"
-                    th:each="row : ${viewModel.tableRows}"
-                    >
+                    th:each="row : ${viewModel.getTableRows(pageType)}">
+
                     <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
@@ -54,6 +54,7 @@
                     <td class="govuk-table__cell">
                         <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                            th:id="${row.id}"
+                           th:data-testid="${'claim-field-' + row.key}"
                            class="govuk-link govuk-link--no-visited-state">
                             <th:block th:text="#{service.add}"></th:block>
                             <span class="govuk-visually-hidden" th:text=" #{${row.label}}"></span>
@@ -70,6 +71,7 @@
                         <td class="govuk-table__cell">
                             <a th:if="${row.getChangeUrl(submissionId,claimId) != null}"
                                th:href="${row.getChangeUrl(submissionId,claimId)}"
+                               th:data-testid="${'claim-field-' + row.key}"
                                class="govuk-link govuk-link--no-visited-state">
                                 <th:block th:text="#{service.change}"></th:block>
                                 <span class="govuk-visually-hidden" th:text=" #{${row.label}}"></span>
@@ -115,7 +117,7 @@
                     <th:block th:if="${row.isAssessableAndUnassessed}">
                         <td class="govuk-table__cell">
                             <a th:href="${row.getChangeUrl(submissionId, claimId)}"
-                               th:id="${row.id}"
+                               th:id="${row.id}" th:data-testid="${'totals-' + row.key}"
                                class="govuk-link govuk-link--no-visited-state"
                                th:text="#{service.add}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
                         </td>
@@ -131,6 +133,7 @@
                         <td class="govuk-table__cell">
                             <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                                class="govuk-link govuk-link--no-visited-state"
+                               th:data-testid="${'totals-' + row.key}"
                                th:text="#{service.change}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
                         </td>
                     </th:block>
@@ -175,6 +178,7 @@
                         <td class="govuk-table__cell">
                             <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                                th:id="${row.id}"
+                               th:data-testid="${'totals-' + row.key}"
                                class="govuk-link govuk-link--no-visited-state"
                                th:text="#{service.add}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
                         </td>
@@ -190,6 +194,7 @@
                         <td class="govuk-table__cell">
                             <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                                class="govuk-link govuk-link--no-visited-state"
+                               th:data-testid="${'totals-' + row.key}"
                                th:text="#{service.change}"><th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span></a>
                         </td>
                     </th:block>

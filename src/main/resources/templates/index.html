@@ -98,13 +98,14 @@
                         </thead>
                         <tbody class="govuk-table__body">
                             <tr class="govuk-table__row" th:each="claim : ${viewModel.claims}">
-                                <td class="govuk-table__cell">
+                                <td class="govuk-table__cell" th:data-submission-id="${claim.claim.submissionId}"
+                                    th:data-claim-id="${claim.claim.claimId}">
                                     <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.claim.submissionId}, claimId=${claim.claim.claimId})}" class="govuk-link govuk-link--no-visited-state">
                                         <th:block th:text="#{index.view}"></th:block>
                                         <span class="govuk-visually-hidden" th:text=" #{index.view.hidden(${claim.clientName})}"></span>
                                     </a>
                                 </td>
-                                <td class="govuk-table__cell" th:text="${claim.claim.uniqueFileNumber}"></td>
+                                <td class="govuk-table__cell" th:data-ufn="${claim.claim.uniqueFileNumber}" th:text="${claim.claim.uniqueFileNumber}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.claim.caseReferenceNumber}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.claim.clientSurname}"></td>
                                 <td class="govuk-table__cell" th:text="${claim.submissionPeriodForDisplay}" th:data-sort-value="${claim.submissionPeriodForSorting}"></td>

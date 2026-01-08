@@ -137,6 +137,7 @@ jobs:
       HEADLESS: true
       BROWSER: chromium
       API_BASE: ${{ secrets.API_BASE }}
+      USE_MOCKS: ${{ inputs.use_mocks }}
       FEEDBACK_URL: https://www.smartsurvey.co.uk/s/AaBC_Beta_DevTest
       LAA_URL: https://dev.your-legal-aid-services.service.justice.gov.uk
 

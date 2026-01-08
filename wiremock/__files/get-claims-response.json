@@ -2,7 +2,7 @@
   "content": [
     {
       "id": "0199c9a4-64ec-79c6-a292-e250278f5f71",
-      "submission_id": "0199c9a4-4f14-7f9f-8070-76160c62e41a",
+      "submission_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
       "status": "VALID",
       "schedule_reference": "0U733A/2018/02",
       "line_number": 1,
@@ -55,6 +55,7 @@
       "client_2_disability_code": null,
       "client_2_is_legally_aided": null,
       "case_id": "711",
+      "has_assessment": true,
       "unique_case_id": null,
       "case_stage_code": null,
       "stage_reached_code": null,
@@ -147,7 +148,7 @@
     },
     {
       "id": "0199a474-65d5-7f95-a1f3-290976326ecd",
-      "submission_id": "0199a474-518d-7794-97e0-65ccabfe692f",
+      "submission_id": "ddc07f4f-563d-434d-bc6e-8e07577c7811",
       "status": "READY_TO_PROCESS",
       "schedule_reference": "0U733A/2018/02",
       "line_number": 2,
@@ -285,7 +286,7 @@
           "bolt_on_cmrh_oral_fee": null,
           "bolt_on_home_office_interview_count": null,
           "bolt_on_home_office_interview_fee": null,
-          "escape_case_flag": false,
+          "escape_case_flag": true,
           "scheme_id": "CAPA_FS2013"
         }
       }

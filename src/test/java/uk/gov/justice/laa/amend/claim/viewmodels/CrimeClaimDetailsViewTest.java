@@ -50,7 +50,7 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
                 travel,
                 waiting
             );
-            Assertions.assertEquals(expectedRows, viewModel.getTableRows());
+            Assertions.assertEquals(expectedRows, viewModel.getTableRows(PageType.CLAIM_DETAILS));
         }
     }
 

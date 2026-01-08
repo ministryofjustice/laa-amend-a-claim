@@ -16,6 +16,7 @@ import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
+import uk.gov.justice.laa.amend.claim.viewmodels.PageType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
 @Controller
@@ -96,6 +97,7 @@ public class ClaimReviewController {
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("submissionFailed", submissionFailed);
         model.addAttribute("validationFailed", validationFailed);
+        model.addAttribute("pageType", PageType.REVIEW);
 
         return "review-and-amend";
     }

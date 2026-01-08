@@ -1,34 +1,45 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
 import base.BaseTest;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.qameta.allure.*;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import uk.gov.justice.laa.amend.claim.utils.ClaimDetailsFixture;
 import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
 
-import java.io.InputStream;
+import java.util.stream.Stream;
+
+import static uk.gov.justice.laa.amend.claim.base.E2ETestHelper.loadFixture;
 
 @Epic("Claim Details")
 @Feature("Assessment Outcome Button State")
 public class ClaimDetailsTest extends BaseTest {
 
-
     private static final String NON_ESCAPE_UFN = "021123/005";
-    private static final String ESCAPE_UFN = "031222/002";
 
     private static final String CRIME_PROVIDER_ACCOUNT = "2R223X";
-    private static final String CRIME_UFN = "031222/002";
-    private static final String CRIME_FIXTURE_PATH = "fixtures/claim-details/crime-111018-001.json";
 
-    // Civil claim data (your new case)
-    private static final String CIVIL_PROVIDER_ACCOUNT = "2N199K";
-    private static final String CIVIL_UFN = "121019/001";
-    private static final String CIVIL_FIXTURE_PATH = "fixtures/claim-details/civil-121019-001.json";
+    static Stream<ClaimDetailsFixture> detailsCases() {
+        return Stream.of(
+            // crime
+            loadFixture(
+                "fixtures/claim-details/crime-111018-001.json"
+            ),
+            // civil
+            loadFixture(
+                "fixtures/claim-details/civil-121019-001.json"
+            )
+        );
+    }
 
     @Test
     @Story("Non-escape claim")
@@ -41,8 +52,8 @@ public class ClaimDetailsTest extends BaseTest {
 
         search.searchForClaim(
                 CRIME_PROVIDER_ACCOUNT,
-            "11",           
-            "2025",         
+            "11",
+            "2025",
                 NON_ESCAPE_UFN,
                 ""
         );
@@ -58,111 +69,44 @@ public class ClaimDetailsTest extends BaseTest {
         );
     }
 
-    @Test
-    @Story("Escape claim")
-    @DisplayName("Claim Details: Add assessment outcome is enabled for escape claims")
+    /**
+     * Verifying Totals has been removed from test data, until we fix test data
+     *
+     * @param claimDetailsFixture
+     */
+    @ParameterizedTest(name = "[{index}] {0} Claim: Values match fixture")
+    @MethodSource("detailsCases")
+    @DisplayName("Claim Details: Values match fixture")
     @Severity(SeverityLevel.CRITICAL)
-    void addAssessmentOutcomeIsEnabledForEscapeClaim() {
+    void crimeClaimValuesMatchFixture(ClaimDetailsFixture claimDetailsFixture) {
         String baseUrl = EnvConfig.baseUrl();
 
         SearchPage search = new SearchPage(page).navigateTo(baseUrl);
 
         search.searchForClaim(
-                CRIME_PROVIDER_ACCOUNT,
-            "04",           
-            "2025",         
-                ESCAPE_UFN,
-                ""
+            claimDetailsFixture.getProviderAccount(),
+            "",
+            "",
+            claimDetailsFixture.getUfn(),
+            ""
         );
 
-        search.clickViewForUfn(ESCAPE_UFN);
+        search.clickViewForUfn(claimDetailsFixture.getUfn());
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
         details.waitForPage();
 
         Assertions.assertFalse(
-                details.isAddAssessmentOutcomeDisabled(),
-                "Expected Add assessment outcome button to be enabled for escape claim"
+            details.isAddAssessmentOutcomeDisabled(),
+            "Expected Add assessment outcome button to be enabled for escape claim"
         );
-    }
-
-    @Test
-    @Story("Crime claim")
-    @DisplayName("Claim Details (Crime): Values match fixture")
-    @Severity(SeverityLevel.CRITICAL)
-    void crimeClaimValuesMatchFixture() {
-        String baseUrl = EnvConfig.baseUrl();
-
-        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
-
-        search.searchForClaim(
-                CRIME_PROVIDER_ACCOUNT,
-                "",
-                "",
-                CRIME_UFN,
-                ""
-        );
-
-        search.clickViewForUfn(CRIME_UFN);
-
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
-
-        ClaimDetailsFixture fixture = loadFixture(CRIME_FIXTURE_PATH);
 
         Assertions.assertEquals(
-                fixture.isAddAssessmentOutcomeDisabled(),
-                details.isAddAssessmentOutcomeDisabled(),
-                "Add assessment outcome enabled/disabled state mismatch"
+            claimDetailsFixture.isAddAssessmentOutcomeDisabled(),
+            details.isAddAssessmentOutcomeDisabled(),
+            "Add assessment outcome enabled/disabled state mismatch"
         );
 
-        details.assertAllValues(fixture.getValues());
-    }
-
-    @Test
-    @Story("Civil claim")
-    @DisplayName("Claim Details (Civil): Values match fixture")
-    @Severity(SeverityLevel.CRITICAL)
-    void civilClaimValuesMatchFixture() {
-        String baseUrl = EnvConfig.baseUrl();
-
-        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
-
-        // Civil claim search (provider account + UFN)
-        search.searchForClaim(
-                CIVIL_PROVIDER_ACCOUNT,
-                "",
-                "",
-                CIVIL_UFN,
-                ""
-        );
-
-        search.clickViewForUfn(CIVIL_UFN);
-
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
-
-        ClaimDetailsFixture fixture = loadFixture(CIVIL_FIXTURE_PATH);
-
-        Assertions.assertEquals(
-                fixture.isAddAssessmentOutcomeDisabled(),
-                details.isAddAssessmentOutcomeDisabled(),
-                "Add assessment outcome enabled/disabled state mismatch"
-        );
-
-        details.assertAllValues(fixture.getValues());
-    }
-
-    private static ClaimDetailsFixture loadFixture(String resourcePath) {
-        ObjectMapper mapper = new ObjectMapper();
-
-        try (InputStream is = ClaimDetailsTest.class.getClassLoader().getResourceAsStream(resourcePath)) {
-            if (is == null) {
-                throw new RuntimeException("Fixture not found: " + resourcePath);
-            }
-            return mapper.readValue(is, ClaimDetailsFixture.class);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load fixture: " + resourcePath, e);
-        }
+        details.assertAllValues(claimDetailsFixture.getValues());
     }
 }

@@ -103,7 +103,7 @@
   "local_authority_number": null,
   "submission_period": "MAR-2020",
   "created_by_user_id": "todo",
-  "has_assessment": true,
+  "has_assessment": false,
   "fee_calculation_response": {
     "calculated_fee_detail_id": null,
     "claim_summary_fee_id": "7db1e7e9-55f4-4240-bbe2-7a9ad8c105d3",
@@ -139,7 +139,7 @@
       "bolt_on_cmrh_oral_fee": null,
       "bolt_on_home_office_interview_count": null,
       "bolt_on_home_office_interview_fee": null,
-      "escape_case_flag": true,
+      "escape_case_flag": false,
       "scheme_id": "CAPA_FS2013"
     }
   }

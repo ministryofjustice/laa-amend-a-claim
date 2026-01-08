@@ -1,5 +1,8 @@
 {
   "addAssessmentOutcomeDisabled": false,
+  "claimType": "Civil",
+  "providerAccount": "2N199K",
+  "ufn": "121019/001",
   "values": {
     "Fixed fee": ["£132.00", "Not applicable"],
     "Profit costs": ["Not applicable", "£350.00"],
@@ -7,7 +10,6 @@
     "Disbursement VAT": ["£0.00", "£0.00"],
     "Detention travel and waiting costs": ["£0.00", "£0.00"],
     "Counsel costs": ["£0.00", "£0.00"],
-    "VAT": ["No", "No"],
-    "Total": ["£132.00", "Not applicable"]
+    "VAT": ["No", "No"]
   }
 }

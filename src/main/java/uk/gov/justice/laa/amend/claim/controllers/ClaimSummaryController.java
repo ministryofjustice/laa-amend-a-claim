@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
+import uk.gov.justice.laa.amend.claim.viewmodels.PageType;
 
 
 @Controller
@@ -41,6 +42,7 @@ public class ClaimSummaryController {
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claim", claimDetails.toViewModel());
+        model.addAttribute("pageType", PageType.CLAIM_DETAILS);
         return "claim-summary";
     }
 

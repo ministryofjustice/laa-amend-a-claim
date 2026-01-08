@@ -54,14 +54,18 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
      *
      * @return ordered list of claim field rows for display
      */
-    default List<ClaimField> getTableRows() {
+    default List<ClaimField> getTableRows(PageType page) {
         List<ClaimField> rows = claimFields();
         addRowIfNotNull(
             rows,
-            claim().getVatClaimed(),
-            claim().getTotalAmount()
+            claim().getVatClaimed()
         );
-
+        if (PageType.CLAIM_DETAILS.equals(page)) {
+            addRowIfNotNull(
+                rows,
+                claim().isHasAssessment() ? null : claim().getTotalAmount()
+            );
+        }
         return rows;
     }
 
