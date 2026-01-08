@@ -15,6 +15,8 @@ import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 import java.util.Arrays;
@@ -53,6 +55,10 @@ public abstract class ViewTestBase {
   }
 
   protected Document renderDocument(Map<String, Object> variables) throws Exception {
+    claim.setAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
+    claim.getAssessedTotalVat().setStatus(ClaimFieldStatus.MODIFIABLE);
+    claim.getAssessedTotalInclVat().setStatus(ClaimFieldStatus.MODIFIABLE);
+
     session.setAttribute("claimId", claim);
     MockHttpServletRequestBuilder requestBuilder = get(mapping).session(session);
 
