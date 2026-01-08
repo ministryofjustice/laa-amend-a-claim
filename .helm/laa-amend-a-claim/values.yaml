@@ -132,6 +132,10 @@ env:
       secretKeyRef:
         name: elasticache-redis
         key: url
+  - name: FEEDBACK_URL
+    value: ${FEEDBACK_URL}
+  - name: LAA_URL
+    value: ${LAA_URL}
 
 autoscaling:
   enabled: false
