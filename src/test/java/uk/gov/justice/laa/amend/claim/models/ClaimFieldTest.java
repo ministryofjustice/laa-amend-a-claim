@@ -6,14 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
-
 public class ClaimFieldTest {
 
     @Test
@@ -51,71 +43,4 @@ public class ClaimFieldTest {
             Assertions.assertEquals(expectedResult, claimField.getChangeUrl(submissionId, claimId));
         }
     }
-
-//    @Nested
-//    class DisplayTest {
-//
-//        @Test
-//        void displayFixedFeeWhenSubmittedValueIsNull() {
-//            ClaimField claimField = new ClaimField();
-//            claimField.setKey(FIXED_FEE);
-//            claimField.setSubmitted(null);
-//
-//            Assertions.assertTrue(claimField.display());
-//        }
-//
-//        @Test
-//        void doNotDisplayCmrhTelephoneWhenSubmittedValueIsNull() {
-//            ClaimField claimField = new ClaimField();
-//            claimField.setKey(CMRH_TELEPHONE);
-//            claimField.setSubmitted(null);
-//
-//            Assertions.assertFalse(claimField.display());
-//        }
-//
-//        @Test
-//        void doNotDisplayCmrhOralWhenSubmittedValueIsNull() {
-//            ClaimField claimField = new ClaimField();
-//            claimField.setKey(CMRH_ORAL);
-//            claimField.setSubmitted(null);
-//
-//            Assertions.assertFalse(claimField.display());
-//        }
-//
-//        @Test
-//        void doNotDisplayJrFormFillingWhenSubmittedValueIsNull() {
-//            ClaimField claimField = new ClaimField();
-//            claimField.setKey(JR_FORM_FILLING);
-//            claimField.setSubmitted(null);
-//
-//            Assertions.assertFalse(claimField.display());
-//        }
-//
-//        @Test
-//        void doNotDisplayAdjournedFeeWhenSubmittedValueIsNull() {
-//            ClaimField claimField = new ClaimField();
-//            claimField.setKey(ADJOURNED_FEE);
-//            claimField.setSubmitted(null);
-//
-//            Assertions.assertFalse(claimField.display());
-//        }
-//
-//        @Test
-//        void doNotDisplayHoInterviewWhenSubmittedValueIsNull() {
-//            ClaimField claimField = new ClaimField();
-//            claimField.setKey(HO_INTERVIEW);
-//            claimField.setSubmitted(null);
-//
-//            Assertions.assertFalse(claimField.display());
-//        }
-//
-//        @Test
-//        void doNotDisplaySubstantiveHearingWhenSubmittedValueIsNull() {
-//            ClaimField claimField = new ClaimField();
-//            claimField.setKey(SUBSTANTIVE_HEARING);
-//            claimField.setSubmitted(null);
-//
-//            Assertions.assertFalse(claimField.display());
-//        }
-//    }
 }

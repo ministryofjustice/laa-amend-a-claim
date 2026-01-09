@@ -23,7 +23,7 @@ public record CrimeClaimDetailsView(CrimeClaimDetails claim) implements ClaimDet
     }
 
     @Override
-    public void addMatterTypeRow(Map<String, Object> summaryRows) {
+    public void addMatterTypeCodeRow(Map<String, Object> summaryRows) {
         summaryRows.put("legalMatterCode", claim.getMatterTypeCode());
     }
 

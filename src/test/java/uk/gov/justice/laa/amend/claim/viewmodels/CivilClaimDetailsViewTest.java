@@ -9,8 +9,12 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDetails, CivilClaimDetailsView> {
 
@@ -30,7 +34,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
         void getMatterTypeCodeOneWhenInExpectedFormat() {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode("IMLB+AHQS");
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             Assertions.assertEquals("IMLB", viewModel.getMatterTypeCodeOne());
         }
 
@@ -38,7 +42,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
         void getMatterTypeCodeOneWhenInUnexpectedFormat() {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode("IMLB");
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             Assertions.assertEquals("IMLB", viewModel.getMatterTypeCodeOne());
         }
 
@@ -46,7 +50,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
         void getMatterTypeCodeOneWhenNull() {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode(null);
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             Assertions.assertNull(null, viewModel.getMatterTypeCodeOne());
         }
 
@@ -54,7 +58,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
         void getMatterTypeCodeOneWhenEmpty() {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode("");
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             Assertions.assertNull(null, viewModel.getMatterTypeCodeOne());
         }
 
@@ -62,7 +66,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
         void getMatterTypeCodeOneWhenBlank() {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode(" ");
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             Assertions.assertNull(null, viewModel.getMatterTypeCodeOne());
         }
     }
@@ -73,7 +77,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
         void getMatterTypeCodeTwoWhenInExpectedFormat() {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode("IMLB+AHQS");
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             Assertions.assertEquals("AHQS", viewModel.getMatterTypeCodeTwo());
         }
 
@@ -81,7 +85,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
         void getMatterTypeCodeTwoWhenInUnexpectedFormat() {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode("IMLB");
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             Assertions.assertNull(viewModel.getMatterTypeCodeTwo());
         }
 
@@ -89,7 +93,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
         void getMatterTypeCodeTwoWhenNull() {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode(null);
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             Assertions.assertNull(null, viewModel.getMatterTypeCodeTwo());
         }
 
@@ -97,7 +101,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
         void getMatterTypeCodeTwoWhenEmpty() {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode("");
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             Assertions.assertNull(null, viewModel.getMatterTypeCodeTwo());
         }
 
@@ -105,8 +109,60 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
         void getMatterTypeCodeTwoWhenBlank() {
             CivilClaimDetails claim = new CivilClaimDetails();
             claim.setMatterTypeCode(" ");
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             Assertions.assertNull(null, viewModel.getMatterTypeCodeTwo());
+        }
+    }
+
+    @Nested
+    class GetSummaryRowsTests {
+        @Test
+        void createMapOfKeyValuePairs() {
+            LocalDateTime submittedDate = LocalDateTime.of(2000, 1, 1, 0, 0, 0);
+            LocalDate caseStartDate = LocalDate.of(2001, 1, 1);
+            LocalDate caseEndDate = LocalDate.of(2002, 1, 1);
+
+            CivilClaimDetails claim = createClaim();
+            claim.setClientForename("John");
+            claim.setClientSurname("Smith");
+            claim.setUniqueFileNumber("unique file number");
+            claim.setCaseReferenceNumber("case reference number");
+            claim.setProviderName("provider name");
+            claim.setProviderAccountNumber("provider account number");
+            claim.setSubmittedDate(submittedDate);
+            claim.setAreaOfLaw("area of law");
+            claim.setCategoryOfLaw("category of law");
+            claim.setFeeCode("fee code");
+            claim.setFeeCodeDescription("fee code description");
+            claim.setMatterTypeCode("IMLB+AHQS");
+            claim.setCaseStartDate(caseStartDate);
+            claim.setCaseEndDate(caseEndDate);
+            claim.setEscaped(true);
+            claim.setVatApplicable(false);
+
+            CivilClaimDetailsView viewModel = createView(claim);
+
+            Map<String, Object> result = viewModel.getSummaryRows();
+
+            Map<String, Object> expectedResult = new LinkedHashMap<>();
+            expectedResult.put("clientName", "John Smith");
+            expectedResult.put("ufn", "unique file number");
+            expectedResult.put("ucn", "case reference number");
+            expectedResult.put("providerName", "provider name");
+            expectedResult.put("providerAccountNumber", "provider account number");
+            expectedResult.put("submittedDate", submittedDate);
+            expectedResult.put("areaOfLaw", "area of law");
+            expectedResult.put("categoryOfLaw", "category of law");
+            expectedResult.put("feeCode", "fee code");
+            expectedResult.put("feeCodeDescription", "fee code description");
+            expectedResult.put("matterTypeCodeOne", "IMLB");
+            expectedResult.put("matterTypeCodeTwo", "AHQS");
+            expectedResult.put("caseStartDate", caseStartDate);
+            expectedResult.put("caseEndDate", caseEndDate);
+            expectedResult.put("escaped", true);
+            expectedResult.put("vatRequested", false);
+
+            Assertions.assertEquals(expectedResult, result);
         }
     }
 
@@ -147,7 +203,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setTotalAmount(totalAmount);
             claim.setHasAssessment(true);
 
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             ArrayList<ClaimField> expectedRows = new ArrayList<>(List.of(
                 fixedFee,
                 netProfitCost,
@@ -201,7 +257,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setTotalAmount(totalAmount);
             claim.setHasAssessment(false);
 
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             ArrayList<ClaimField> expectedRows = new ArrayList<>(List.of(
                 fixedFee,
                 netProfitCost,
@@ -254,7 +310,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setVatClaimed(vatClaimed);
             claim.setTotalAmount(totalAmount);
 
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimField> expectedRows = new ArrayList<>(List.of(
                 fixedFee,
                 netProfitCost,
@@ -290,7 +346,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setDetentionTravelWaitingCosts(detention);
             claim.setJrFormFillingCost(jrFormFilling);
 
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimField> expectedRows = List.of(
                 fixedFee,
                 netProfitCost,
@@ -333,7 +389,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setHoInterview(hoInterview);
             claim.setSubstantiveHearing(substantiveHearing);
 
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimField> expectedRows = List.of(
                 fixedFee,
                 netProfitCost,
@@ -385,7 +441,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setTotalAmount(totalAmount);
             claim.setHasAssessment(true);
 
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             ArrayList<ClaimField> expectedRows = new ArrayList<>(List.of(
                 fixedFee,
                 netProfitCost,
@@ -437,7 +493,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setVatClaimed(vatClaimed);
             claim.setTotalAmount(totalAmount);
 
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimField> expectedRows = new ArrayList<>(List.of(
                 fixedFee,
                 netProfitCost,
@@ -476,7 +532,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setDetentionTravelWaitingCosts(detention);
             claim.setJrFormFillingCost(jrFormFilling);
 
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimField> expectedRows = List.of(
                 fixedFee,
                 netProfitCost,
@@ -519,7 +575,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setHoInterview(hoInterview);
             claim.setSubstantiveHearing(substantiveHearing);
 
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimField> expectedRows = List.of(
                 fixedFee,
                 netProfitCost,
@@ -552,7 +608,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
             claim.setAllowedTotalVat(createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE));
             claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
-            CivilClaimDetailsView viewModel = new CivilClaimDetailsView(claim);
+            CivilClaimDetailsView viewModel = createView(claim);
 
             List<ReviewAndAmendFormError> expectedErrors = List.of(
                 new ReviewAndAmendFormError("profit-cost", "claimSummary.rows.profitCost.error"),

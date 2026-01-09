@@ -22,7 +22,7 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
     public void addSchemeIdRow(Map<String, Object> summaryRows) {}
 
     @Override
-    public void addMatterTypeRow(Map<String, Object> summaryRows) {
+    public void addMatterTypeCodeRow(Map<String, Object> summaryRows) {
         summaryRows.put("matterTypeCodeOne", getMatterTypeCodeOne());
         summaryRows.put("matterTypeCodeTwo", getMatterTypeCodeTwo());
     }

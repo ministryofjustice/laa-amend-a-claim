@@ -4,7 +4,6 @@ import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
@@ -31,7 +30,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("feeCodeDescription", claim().getFeeCodeDescription());
         addPoliceStationCourtPrisonIdRow(rows);
         addSchemeIdRow(rows);
-        addMatterTypeRow(rows);
+        addMatterTypeCodeRow(rows);
         rows.put("caseStartDate", claim().getCaseStartDate());
         rows.put("caseEndDate", claim().getCaseEndDate());
         rows.put("escaped", claim().getEscaped());
@@ -45,7 +44,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     void addSchemeIdRow(Map<String, Object> summaryRows);
 
-    void addMatterTypeRow(Map<String, Object> summaryRows);
+    void addMatterTypeCodeRow(Map<String, Object> summaryRows);
 
     default List<ClaimField> getSummaryClaimFieldRows() {
         List<ClaimField> rows = summaryClaimFields();
