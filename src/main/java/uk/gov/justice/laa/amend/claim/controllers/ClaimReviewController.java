@@ -60,8 +60,9 @@ public class ClaimReviewController {
             try {
                 CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
                 session.removeAttribute(claimId);
-                session.setAttribute(ASSESSMENT_ID, result.getId().toString());
-                return String.format("redirect:/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, result.getId());
+                String assessmentId = result.getId().toString();
+                session.setAttribute(ASSESSMENT_ID, assessmentId);
+                return String.format("redirect:/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
             } catch (Exception e) {
                 log.error("Failed to submit assessment for claim ID: {}", claimId, e);
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

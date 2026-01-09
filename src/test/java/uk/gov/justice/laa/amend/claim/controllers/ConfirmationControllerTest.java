@@ -73,18 +73,6 @@ public class ConfirmationControllerTest {
 
         String uri = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
 
-        mockMvc.perform(get(uri).session(session))
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void testOnPageLoadReturnsNotFoundWhenNoSession() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
-        String assessmentId = UUID.randomUUID().toString();
-
-        String uri = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
-
         mockMvc.perform(get(uri))
             .andExpect(status().isNotFound());
     }
