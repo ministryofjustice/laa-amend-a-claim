@@ -8,17 +8,20 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ConfirmationController;
 
+import java.util.Map;
+
 @ActiveProfiles("local")
 @WebMvcTest(ConfirmationController.class)
 @Import(LocalSecurityConfig.class)
 class ConfirmationViewTest extends ViewTestBase {
 
     ConfirmationViewTest() {
-        super("/submissions/submissionId/claims/claimId/assessments/assessmentId");
+        super("/submissions/123/claims/456/assessments/789");
     }
 
     @Test
     void testPage() throws Exception {
+        session.setAttribute("assessmentId", "789");
         Document doc = renderDocument();
 
         assertPageHasTitle(doc, "Assessment complete");

@@ -18,6 +18,8 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_ID;
+
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -58,7 +60,9 @@ public class ClaimReviewController {
             try {
                 CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
                 session.removeAttribute(claimId);
-                return String.format("redirect:/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, result.getId());
+                String assessmentId = result.getId().toString();
+                session.setAttribute(ASSESSMENT_ID, assessmentId);
+                return String.format("redirect:/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
             } catch (Exception e) {
                 log.error("Failed to submit assessment for claim ID: {}", claimId, e);
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

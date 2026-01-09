@@ -1,9 +1,11 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
@@ -24,8 +26,47 @@ public class ConfirmationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private MockHttpSession session;
+
+    @BeforeEach
+    public void setup() {
+        session = new MockHttpSession();
+    }
+
     @Test
-    public void testOnPageLoadReturnsView() throws Exception {
+    public void testOnPageLoadReturnsViewWhenStoredAssessmentIdMatches() throws Exception {
+        String submissionId = UUID.randomUUID().toString();
+        String claimId = UUID.randomUUID().toString();
+        String assessmentId = UUID.randomUUID().toString();
+
+        session.setAttribute("assessmentId", assessmentId);
+
+        String uri = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
+
+        mockMvc.perform(get(uri).session(session))
+            .andExpect(status().isOk())
+            .andExpect(view().name("confirmation"))
+            .andExpect(model().attribute("submissionId", submissionId))
+            .andExpect(model().attribute("claimId", claimId));
+    }
+
+    @Test
+    public void testOnPageLoadReturnsNotFoundWhenStoredAssessmentIdDoesNotMatch() throws Exception {
+        String submissionId = UUID.randomUUID().toString();
+        String claimId = UUID.randomUUID().toString();
+        String assessmentId1 = UUID.randomUUID().toString();
+        String assessmentId2 = UUID.randomUUID().toString();
+
+        session.setAttribute("assessmentId", assessmentId1);
+
+        String uri = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId2);
+
+        mockMvc.perform(get(uri).session(session))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testOnPageLoadReturnsNotFoundWhenNoStoredAssessmentId() throws Exception {
         String submissionId = UUID.randomUUID().toString();
         String claimId = UUID.randomUUID().toString();
         String assessmentId = UUID.randomUUID().toString();
@@ -33,9 +74,6 @@ public class ConfirmationControllerTest {
         String uri = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
 
         mockMvc.perform(get(uri))
-            .andExpect(status().isOk())
-            .andExpect(view().name("confirmation"))
-            .andExpect(model().attribute("submissionId", submissionId))
-            .andExpect(model().attribute("claimId", claimId));
+            .andExpect(status().isNotFound());
     }
 }
