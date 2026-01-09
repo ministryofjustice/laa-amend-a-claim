@@ -20,6 +20,7 @@ jobs:
       branch: ${{ github.ref_name }}
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+      API_ECR_REGISTRY: ${{ secrets.API_ECR_REGISTRY }}
 #
 #  deploy-ephemeral:
 #    name: Deploy Ephemeral Environment
