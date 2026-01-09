@@ -1,24 +1,8 @@
-secrets:
-  github_actor:
-    environment: GITHUB_ACTOR
-  github_token:
-    environment: GITHUB_TOKEN
-
 services:
   claims-api:
     container_name: data-claims-api-app
     image:
       claims-data-service:latest
-#    profiles:
-#      - application
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#      args:
-#        - BUILD_SOURCE=internal
-#      secrets:
-#        - github_actor
-#        - github_token
     ports:
       - "8084:8080"
       - "8183:8083"
@@ -43,17 +27,5 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
-#  local AWS cloud stack for dev
-#  localstack:
-#    image: localstack/localstack:latest
-#    ports:
-#      - "4566:4566"
-#    environment:
-#      - SERVICES=sqs
-#      - DEBUG=1
-#      - LOCALSTACK_INIT_SCRIPTS=/etc/localstack/init/ready.d
-#    volumes:
-#      - "/var/run/docker.sock:/var/run/docker.sock"
-#      - "./localstack-init:/etc/localstack/init/ready.d"
 volumes:
   postgres-data:
