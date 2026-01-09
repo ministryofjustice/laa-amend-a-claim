@@ -76,12 +76,12 @@ jobs:
 
       - name: Pull from ECR
         run: |
-          docker pull "${{ secrets.API_ECR_REGISTRY }}"
+          docker pull ${{ secrets.API_ECR_REGISTRY }}
 
       - name: Save image as tar file
         run: |
-          IMAGE_URI="${{ secrets.API_ECR_REGISTRY }}"
-          docker save "$IMAGE_URI" -o downloadable-image.tar
+          IMAGE_URI=${{ secrets.API_ECR_REGISTRY }}
+          docker save "${{ IMAGE_URI }}" -o downloadable-image.tar
 
       - name: Upload Docker image as artifact
         uses: actions/upload-artifact@v4
