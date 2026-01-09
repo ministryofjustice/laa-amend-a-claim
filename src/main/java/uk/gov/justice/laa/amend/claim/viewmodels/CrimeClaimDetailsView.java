@@ -13,17 +13,17 @@ public record CrimeClaimDetailsView(CrimeClaimDetails claim) implements ClaimDet
     public void addUcnSummaryRow(Map<String, Object> summaryRows) {}
 
     @Override
-    public void addPoliceStationCourtPrisonId(Map<String, Object> summaryRows) {
+    public void addPoliceStationCourtPrisonIdRow(Map<String, Object> summaryRows) {
         summaryRows.put("policeStationCourtPrisonId", claim.getPoliceStationCourtPrisonId());
     }
 
     @Override
-    public void addSchemeId(Map<String, Object> summaryRows) {
+    public void addSchemeIdRow(Map<String, Object> summaryRows) {
         summaryRows.put("schemeId", claim.getSchemeId());
     }
 
     @Override
-    public void addMatterTypeField(Map<String, Object> summaryRows) {
+    public void addMatterTypeCodeRow(Map<String, Object> summaryRows) {
         summaryRows.put("legalMatterCode", claim.getMatterTypeCode());
     }
 
@@ -36,5 +36,15 @@ public record CrimeClaimDetailsView(CrimeClaimDetails claim) implements ClaimDet
             setDisplayForNulls(claim.getWaitingCosts())
         );
         return fields;
+    }
+
+    @Override
+    public List<ClaimField> summaryClaimFields() {
+        return claimFields();
+    }
+
+    @Override
+    public List<ClaimField> reviewClaimFields() {
+        return claimFields();
     }
 }

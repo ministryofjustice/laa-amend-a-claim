@@ -4,11 +4,9 @@ import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -18,6 +16,7 @@ import java.util.stream.Stream;
 
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
 
+    // 'Summary' rows for the 'Claim details' page
     default Map<String, Object> getSummaryRows() {
         Map<String, Object> rows = new LinkedHashMap<>();
         rows.put("clientName", getClientName());
@@ -30,9 +29,9 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("categoryOfLaw", claim().getCategoryOfLaw());
         rows.put("feeCode", claim().getFeeCode());
         rows.put("feeCodeDescription", claim().getFeeCodeDescription());
-        addPoliceStationCourtPrisonId(rows);
-        addSchemeId(rows);
-        addMatterTypeField(rows);
+        addPoliceStationCourtPrisonIdRow(rows);
+        addSchemeIdRow(rows);
+        addMatterTypeCodeRow(rows);
         rows.put("caseStartDate", claim().getCaseStartDate());
         rows.put("caseEndDate", claim().getCaseEndDate());
         rows.put("escaped", claim().getEscaped());
@@ -42,37 +41,34 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     void addUcnSummaryRow(Map<String, Object> summaryRows);
 
-    void addPoliceStationCourtPrisonId(Map<String, Object> summaryRows);
+    void addPoliceStationCourtPrisonIdRow(Map<String, Object> summaryRows);
 
-    void addSchemeId(Map<String, Object> summaryRows);
+    void addSchemeIdRow(Map<String, Object> summaryRows);
 
-    void addMatterTypeField(Map<String, Object> summaryRows);
+    void addMatterTypeCodeRow(Map<String, Object> summaryRows);
 
+    // 'Values' rows for the 'Claim details' page
+    default List<ClaimField> getSummaryClaimFieldRows() {
+        List<ClaimField> rows = summaryClaimFields();
+        addRowIfNotNull(
+            rows,
+            claim().getVatClaimed(),
+            claim().isHasAssessment() ? null : claim().getTotalAmount()
+        );
+        return rows;
+    }
 
-    /**
-     * Returns the claim field rows in the order they should be displayed in the table.
-     *
-     * @return ordered list of claim field rows for display
-     */
-    default List<ClaimField> getTableRows(PageType page) {
-        List<ClaimField> rows = claimFields();
+    // 'Claim costs' rows for the 'Review and amend' page
+    default List<ClaimField> getReviewClaimFieldRows() {
+        List<ClaimField> rows = reviewClaimFields();
         addRowIfNotNull(
             rows,
             claim().getVatClaimed()
         );
-        addTotalRow(page, rows);
         return rows;
     }
 
-    private void addTotalRow(PageType page, List<ClaimField> rows) {
-        if (PageType.CLAIM_DETAILS.equals(page) && !claim().isHasAssessment()) {
-            addRowIfNotNull(
-                rows,
-                claim().getTotalAmount()
-            );
-        }
-    }
-
+    // 'Total claim value' rows for the 'Review and amend' page
     default List<ClaimField> getAssessedTotals() {
         List<ClaimField> rows = new ArrayList<>();
         addRowIfNotNull(
@@ -85,12 +81,13 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     private ClaimField resolveValue(ClaimField assessed, ClaimField allowed) {
-        if (assessed != null && allowed != null && assessed.getStatus() == ClaimFieldStatus.NOT_MODIFIABLE) {
+        if (assessed != null && allowed != null && assessed.isNotAssessable()) {
             assessed.setAssessed(allowed.getAssessed());
         }
         return assessed;
     }
 
+    // 'Total allowed value' rows for the 'Review and amend' page
     default List<ClaimField> getAllowedTotals() {
         List<ClaimField> rows = new ArrayList<>();
         addRowIfNotNull(
@@ -104,14 +101,14 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     default void addRowIfNotNull(List<ClaimField> list, ClaimField... claimFields) {
         for (ClaimField claimField : claimFields) {
-            if (claimField != null && claimField.getStatus() != ClaimFieldStatus.DO_NOT_DISPLAY) {
+            if (claimField != null) {
                 list.add(claimField);
             }
         }
     }
 
     default ClaimField checkSubmittedValue(ClaimField field) {
-        if (field != null && field.getSubmitted() != null) {
+        if (field != null && field.hasSubmittedValue()) {
             return field;
         }
         return null;
@@ -144,6 +141,10 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         );
         return fields;
     }
+
+    List<ClaimField> summaryClaimFields();
+
+    List<ClaimField> reviewClaimFields();
 
     default List<ReviewAndAmendFormError> getErrors() {
         return Stream.of(claimFields(), getAssessedTotals(), getAllowedTotals())

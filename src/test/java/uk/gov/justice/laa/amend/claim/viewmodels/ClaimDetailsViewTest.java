@@ -29,14 +29,6 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         return claimField;
     }
 
-    public static ClaimField createClaimField(String key, ClaimFieldStatus status, BigDecimal calculated) {
-        ClaimField claimField = new ClaimField();
-        claimField.setKey(key);
-        claimField.setStatus(status);
-        claimField.setCalculated(calculated);
-        return claimField;
-    }
-
     @Nested
     class GetAccountNumberTests {
         @Test
@@ -114,13 +106,31 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         }
 
         @Test
-        void getAssessedTotalsHandlesDoNotDisplayFields() {
+        void getAssessedTotalsHandlesNonAssessableFields() {
             C claim = createClaim();
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.DO_NOT_DISPLAY));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.DO_NOT_DISPLAY));
+            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.NOT_MODIFIABLE));
+            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.NOT_MODIFIABLE));
+
+            ClaimField allowedTotal = createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE);
+            ClaimField allowedTotalInclVat = createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE);
+
+            allowedTotal.setAssessed(BigDecimal.valueOf(100));
+            allowedTotalInclVat.setAssessed(BigDecimal.valueOf(100));
+
+            claim.setAllowedTotalVat(allowedTotal);
+            claim.setAllowedTotalInclVat(allowedTotalInclVat);
+
+            Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
+            Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
+
             V viewModel = createView(claim);
 
-            Assertions.assertEquals(List.of(), viewModel.getAssessedTotals());
+            List<ClaimField> result = viewModel.getAssessedTotals();
+
+            Assertions.assertEquals(2, result.size());
+
+            Assertions.assertEquals(BigDecimal.valueOf(100), claim.getAssessedTotalVat().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(100), claim.getAssessedTotalInclVat().getAssessed());
         }
     }
 
@@ -150,8 +160,16 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         @Test
         void getAllowedTotalsHandlesValid() {
             C claim = createClaim();
-            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE, BigDecimal.valueOf(100)));
-            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE, BigDecimal.valueOf(100)));
+
+            ClaimField allowedTotal = createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE);
+            ClaimField allowedTotalInclVat = createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE);
+
+            allowedTotal.setAssessed(BigDecimal.valueOf(100));
+            allowedTotalInclVat.setAssessed(BigDecimal.valueOf(100));
+
+            claim.setAllowedTotalVat(allowedTotal);
+            claim.setAllowedTotalInclVat(allowedTotalInclVat);
+
             V viewModel = createView(claim);
 
             List<ClaimField> result = viewModel.getAllowedTotals();

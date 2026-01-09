@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.views;
 
 import org.jsoup.nodes.Document;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -9,7 +10,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeAssessedTotalsController;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
@@ -23,7 +23,9 @@ class ChangeAssessedTotalViewTest extends ViewTestBase {
     }
 
     @Override
-    protected void customiseClaim(ClaimDetails claim) {
+    @BeforeEach
+    public void setup() {
+        super.setup();
         claim.setAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
         claim.getAssessedTotalVat().setStatus(ClaimFieldStatus.MODIFIABLE);
         claim.getAssessedTotalInclVat().setStatus(ClaimFieldStatus.MODIFIABLE);
