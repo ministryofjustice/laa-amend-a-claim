@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
 
+    // 'Summary' rows for the 'Claim details' page
     default Map<String, Object> getSummaryRows() {
         Map<String, Object> rows = new LinkedHashMap<>();
         rows.put("clientName", getClientName());
@@ -46,6 +47,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     void addMatterTypeCodeRow(Map<String, Object> summaryRows);
 
+    // 'Values' rows for the 'Claim details' page
     default List<ClaimField> getSummaryClaimFieldRows() {
         List<ClaimField> rows = summaryClaimFields();
         addRowIfNotNull(
@@ -56,6 +58,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return rows;
     }
 
+    // 'Claim costs' rows for the 'Review and amend' page
     default List<ClaimField> getReviewClaimFieldRows() {
         List<ClaimField> rows = reviewClaimFields();
         addRowIfNotNull(
@@ -65,6 +68,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return rows;
     }
 
+    // 'Total claim value' rows for the 'Review and amend' page
     default List<ClaimField> getAssessedTotals() {
         List<ClaimField> rows = new ArrayList<>();
         addRowIfNotNull(
@@ -83,6 +87,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return assessed;
     }
 
+    // 'Total allowed value' rows for the 'Review and amend' page
     default List<ClaimField> getAllowedTotals() {
         List<ClaimField> rows = new ArrayList<>();
         addRowIfNotNull(
