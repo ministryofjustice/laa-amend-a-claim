@@ -147,11 +147,12 @@ class ClaimSummaryViewTest extends ViewTestBase {
     @Test
     void testCivilClaimPageWithZeroSubmittedValueBoltOns() throws Exception {
         CivilClaimDetails claim = getCivilClaimDetails();
-        claim.setCmrhOral(new ClaimField(CMRH_ORAL, 0, 100));
-        claim.setCmrhTelephone(new ClaimField(CMRH_TELEPHONE, 0, 100));
-        claim.setHoInterview(new ClaimField(HO_INTERVIEW, 0, 100));
-        claim.setSubstantiveHearing(new ClaimField(SUBSTANTIVE_HEARING, 0, 100));
-        claim.setAdjournedHearing(new ClaimField(ADJOURNED_FEE, 0, 100));
+        claim.setCmrhOral(ClaimField.builder().key(CMRH_ORAL).submitted(0).build());
+        claim.setCmrhOral(ClaimField.builder().key(CMRH_ORAL).submitted(0).build());
+        claim.setCmrhTelephone(ClaimField.builder().key(CMRH_TELEPHONE).submitted(0).build());
+        claim.setHoInterview(ClaimField.builder().key(HO_INTERVIEW).submitted(0).build());
+        claim.setSubstantiveHearing(ClaimField.builder().key(SUBSTANTIVE_HEARING).submitted(0).build());
+        claim.setAdjournedHearing(ClaimField.builder().key(ADJOURNED_FEE).submitted(0).build());
 
         when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
 
