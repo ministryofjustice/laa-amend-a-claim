@@ -502,11 +502,6 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
                 detention,
                 jrFormFilling,
                 counselCost,
-                cmrhOral,
-                cmrhTelephone,
-                hoInterview,
-                substantiveHearing,
-                adjournedHearing,
                 vatClaimed
             ));
 
@@ -583,12 +578,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
                 disbursementVatAmount,
                 detention,
                 jrFormFilling,
-                counselCost,
-                cmrhOral,
-                cmrhTelephone,
-                hoInterview,
-                substantiveHearing,
-                adjournedHearing
+                counselCost
             );
 
             Assertions.assertEquals(expectedRows, viewModel.getReviewClaimFieldRows());

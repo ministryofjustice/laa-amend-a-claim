@@ -39,12 +39,7 @@ public record CrimeClaimDetailsView(CrimeClaimDetails claim) implements ClaimDet
     }
 
     @Override
-    public List<ClaimField> summaryClaimFields() {
-        return claimFields();
-    }
-
-    @Override
-    public List<ClaimField> reviewClaimFields() {
+    public List<ClaimField> claimFieldsWithBoltOns() {
         return claimFields();
     }
 }
