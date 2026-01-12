@@ -116,6 +116,52 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasValuesRow(doc, "Oral CMRH", claim.getCmrhOral(), false);
         assertPageHasValuesRow(doc, "Telephone CMRH", claim.getCmrhTelephone(), false);
         assertPageHasValuesRow(doc, "Counsel costs", claim.getCounselsCost(), false);
+
+        assertPageHasValuesRow(doc, "Oral CMRH", claim.getCmrhOral(), false);
+        assertPageHasValuesRow(doc, "Telephone CMRH", claim.getCmrhTelephone(), false);
+        assertPageHasValuesRow(doc, "Home office interview", claim.getHoInterview(), false);
+        assertPageHasValuesRow(doc, "Substantive hearing", claim.getSubstantiveHearing(), false);
+        assertPageHasValuesRow(doc, "Adjourned hearing fee", claim.getAdjournedHearing(), false);
+    }
+
+    @Test
+    void testCivilClaimPageWithNullBoltOns() throws Exception {
+        CivilClaimDetails claim = getCivilClaimDetails();
+        claim.setCmrhOral(null);
+        claim.setCmrhTelephone(null);
+        claim.setHoInterview(null);
+        claim.setSubstantiveHearing(null);
+        claim.setAdjournedHearing(null);
+
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+
+        Document doc = renderDocument();
+
+        assertPageDoesNotHaveValuesRow(doc, "Oral CMRH");
+        assertPageDoesNotHaveValuesRow(doc, "Telephone CMRH");
+        assertPageDoesNotHaveValuesRow(doc, "Home office interview");
+        assertPageDoesNotHaveValuesRow(doc, "Substantive hearing");
+        assertPageDoesNotHaveValuesRow(doc, "Adjourned hearing fee");
+    }
+
+    @Test
+    void testCivilClaimPageWithZeroSubmittedValueBoltOns() throws Exception {
+        CivilClaimDetails claim = getCivilClaimDetails();
+        claim.setCmrhOral(new ClaimField(CMRH_ORAL, 0, 100));
+        claim.setCmrhTelephone(new ClaimField(CMRH_TELEPHONE, 0, 100));
+        claim.setHoInterview(new ClaimField(HO_INTERVIEW, 0, 100));
+        claim.setSubstantiveHearing(new ClaimField(SUBSTANTIVE_HEARING, 0, 100));
+        claim.setAdjournedHearing(new ClaimField(ADJOURNED_FEE, 0, 100));
+
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+
+        Document doc = renderDocument();
+
+        assertPageDoesNotHaveValuesRow(doc, "Oral CMRH");
+        assertPageDoesNotHaveValuesRow(doc, "Telephone CMRH");
+        assertPageDoesNotHaveValuesRow(doc, "Home office interview");
+        assertPageDoesNotHaveValuesRow(doc, "Substantive hearing");
+        assertPageDoesNotHaveValuesRow(doc, "Adjourned hearing fee");
     }
 
     @Test
