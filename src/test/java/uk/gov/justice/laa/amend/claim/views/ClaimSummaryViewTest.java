@@ -112,16 +112,16 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
         assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
         assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020 at 09:30:00");
-        assertPageHasValuesRow(doc, "Total", claim.getTotalAmount(), false);
-        assertPageHasValuesRow(doc, "Oral CMRH", claim.getCmrhOral(), false);
-        assertPageHasValuesRow(doc, "Telephone CMRH", claim.getCmrhTelephone(), false);
-        assertPageHasValuesRow(doc, "Counsel costs", claim.getCounselsCost(), false);
+        assertPageHasSummaryListRow(doc, "Total", claim.getTotalAmount(), false);
+        assertPageHasSummaryListRow(doc, "Oral CMRH", claim.getCmrhOral(), false);
+        assertPageHasSummaryListRow(doc, "Telephone CMRH", claim.getCmrhTelephone(), false);
+        assertPageHasSummaryListRow(doc, "Counsel costs", claim.getCounselsCost(), false);
 
-        assertPageHasValuesRow(doc, "Oral CMRH", claim.getCmrhOral(), false);
-        assertPageHasValuesRow(doc, "Telephone CMRH", claim.getCmrhTelephone(), false);
-        assertPageHasValuesRow(doc, "Home office interview", claim.getHoInterview(), false);
-        assertPageHasValuesRow(doc, "Substantive hearing", claim.getSubstantiveHearing(), false);
-        assertPageHasValuesRow(doc, "Adjourned hearing fee", claim.getAdjournedHearing(), false);
+        assertPageHasSummaryListRow(doc, "Oral CMRH", claim.getCmrhOral(), false);
+        assertPageHasSummaryListRow(doc, "Telephone CMRH", claim.getCmrhTelephone(), false);
+        assertPageHasSummaryListRow(doc, "Home office interview", claim.getHoInterview(), false);
+        assertPageHasSummaryListRow(doc, "Substantive hearing", claim.getSubstantiveHearing(), false);
+        assertPageHasSummaryListRow(doc, "Adjourned hearing fee", claim.getAdjournedHearing(), false);
     }
 
     @Test
@@ -137,11 +137,11 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         Document doc = renderDocument();
 
-        assertPageDoesNotHaveValuesRow(doc, "Oral CMRH");
-        assertPageDoesNotHaveValuesRow(doc, "Telephone CMRH");
-        assertPageDoesNotHaveValuesRow(doc, "Home office interview");
-        assertPageDoesNotHaveValuesRow(doc, "Substantive hearing");
-        assertPageDoesNotHaveValuesRow(doc, "Adjourned hearing fee");
+        assertSummaryListRowIsHidden(doc, "Oral CMRH");
+        assertSummaryListRowIsHidden(doc, "Telephone CMRH");
+        assertSummaryListRowIsHidden(doc, "Home office interview");
+        assertSummaryListRowIsHidden(doc, "Substantive hearing");
+        assertSummaryListRowIsHidden(doc, "Adjourned hearing fee");
     }
 
     @Test
@@ -158,11 +158,11 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         Document doc = renderDocument();
 
-        assertPageDoesNotHaveValuesRow(doc, "Oral CMRH");
-        assertPageDoesNotHaveValuesRow(doc, "Telephone CMRH");
-        assertPageDoesNotHaveValuesRow(doc, "Home office interview");
-        assertPageDoesNotHaveValuesRow(doc, "Substantive hearing");
-        assertPageDoesNotHaveValuesRow(doc, "Adjourned hearing fee");
+        assertSummaryListRowIsHidden(doc, "Oral CMRH");
+        assertSummaryListRowIsHidden(doc, "Telephone CMRH");
+        assertSummaryListRowIsHidden(doc, "Home office interview");
+        assertSummaryListRowIsHidden(doc, "Substantive hearing");
+        assertSummaryListRowIsHidden(doc, "Adjourned hearing fee");
     }
 
     @Test
@@ -206,9 +206,9 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         assertPageHasSummaryList(doc);
         assertPageHasUpdateAssessmentButton(doc);
-        assertPageHasValuesRow(doc, "Oral CMRH", claim.getCmrhOral(), true);
-        assertPageHasValuesRow(doc, "Telephone CMRH", claim.getCmrhTelephone(), true);
-        assertPageHasValuesRow(doc, "Counsel costs", claim.getCounselsCost(), true);
+        assertPageHasSummaryListRow(doc, "Oral CMRH", claim.getCmrhOral(), true);
+        assertPageHasSummaryListRow(doc, "Telephone CMRH", claim.getCmrhTelephone(), true);
+        assertPageHasSummaryListRow(doc, "Counsel costs", claim.getCounselsCost(), true);
     }
 
     private static @NotNull CivilClaimDetails getCivilClaimDetails() {
@@ -269,9 +269,9 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
         assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
         assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020 at 09:30:00");
-        assertPageHasValuesRow(doc, "Total", claim.getTotalAmount(), false);
-        assertPageHasValuesRow(doc, "Travel costs", claim.getTravelCosts(), false);
-        assertPageHasValuesRow(doc, "Waiting costs", claim.getWaitingCosts(), false);
+        assertPageHasSummaryListRow(doc, "Total", claim.getTotalAmount(), false);
+        assertPageHasSummaryListRow(doc, "Travel costs", claim.getTravelCosts(), false);
+        assertPageHasSummaryListRow(doc, "Waiting costs", claim.getWaitingCosts(), false);
     }
 
     @Test

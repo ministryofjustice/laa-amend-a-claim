@@ -228,7 +228,7 @@ public abstract class ViewTestBase {
     Assertions.assertTrue(rowFound);
   }
 
-  protected void assertPageHasValuesRow(Document doc, String expectedKey, ClaimField claimFieldRow, boolean checkAssessed) {
+  protected void assertPageHasSummaryListRow(Document doc, String expectedKey, ClaimField claimFieldRow, boolean checkAssessed) {
     Elements rows = doc.getElementsByClass("govuk-summary-list__row");
     boolean rowFound = rows.stream().anyMatch(row -> {
       String keyText = row.select(".govuk-summary-list__key").text().trim();
@@ -250,7 +250,7 @@ public abstract class ViewTestBase {
     Assertions.assertTrue(rowFound);
   }
 
-  protected void assertPageDoesNotHaveValuesRow(Document doc, String expectedKey) {
+  protected void assertSummaryListRowIsHidden(Document doc, String expectedKey) {
     Elements rows = doc.getElementsByClass("govuk-summary-list__row");
     boolean rowFound = rows.stream().anyMatch(row -> {
       String keyText = row.select(".govuk-summary-list__key").text().trim();
