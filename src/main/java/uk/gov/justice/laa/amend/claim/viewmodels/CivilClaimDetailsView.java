@@ -56,7 +56,7 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
     }
 
     @Override
-    public List<ClaimField> summaryClaimFields() {
+    public List<ClaimField> claimFieldsWithBoltOns() {
         List<ClaimField> fields = claimFields();
         addRowIfNotNull(
             fields,
@@ -65,20 +65,6 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
             checkSubmittedValue(claim.getHoInterview()),
             checkSubmittedValue(claim.getSubstantiveHearing()),
             checkSubmittedValue(claim.getAdjournedHearing())
-        );
-        return fields;
-    }
-
-    @Override
-    public List<ClaimField> reviewClaimFields() {
-        List<ClaimField> fields = claimFields();
-        addRowIfNotNull(
-            fields,
-            claim.getCmrhOral(),
-            claim.getCmrhTelephone(),
-            claim.getHoInterview(),
-            claim.getSubstantiveHearing(),
-            claim.getAdjournedHearing()
         );
         return fields;
     }

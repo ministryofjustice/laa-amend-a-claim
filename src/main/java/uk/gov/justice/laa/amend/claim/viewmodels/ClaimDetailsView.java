@@ -49,7 +49,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     // 'Values' rows for the 'Claim details' page
     default List<ClaimField> getSummaryClaimFieldRows() {
-        List<ClaimField> rows = summaryClaimFields();
+        List<ClaimField> rows = claimFieldsWithBoltOns();
         addRowIfNotNull(
             rows,
             claim().getVatClaimed(),
@@ -60,7 +60,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     // 'Claim costs' rows for the 'Review and amend' page
     default List<ClaimField> getReviewClaimFieldRows() {
-        List<ClaimField> rows = reviewClaimFields();
+        List<ClaimField> rows = claimFieldsWithBoltOns();
         addRowIfNotNull(
             rows,
             claim().getVatClaimed()
@@ -142,9 +142,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         return fields;
     }
 
-    List<ClaimField> summaryClaimFields();
-
-    List<ClaimField> reviewClaimFields();
+    List<ClaimField> claimFieldsWithBoltOns();
 
     default List<ReviewAndAmendFormError> getErrors() {
         return Stream.of(claimFields(), getAssessedTotals(), getAllowedTotals())
