@@ -72,7 +72,11 @@ public class AssessmentService {
     }
 
     public ClaimDetails getLatestAssessmentByClaim(ClaimDetails claimDetails) {
-        AssessmentResultSet assessmentResults = claimsApiClient.getAssessments(UUID.fromString(claimDetails.getClaimId())).block();
+        UUID claimId = UUID.fromString(claimDetails.getClaimId());
+        int page = 0;
+        int size = 1;
+        String sort = "createdOn,desc";
+        AssessmentResultSet assessmentResults = claimsApiClient.getAssessments(claimId, page, size, sort).block();
         if (assessmentResults == null || assessmentResults.getAssessments().isEmpty()) {
             throw new RuntimeException(String.format("Failed to get assessments for claim ID: %s", claimDetails.getClaimId()));
         }
