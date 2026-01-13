@@ -2,6 +2,8 @@ package uk.gov.justice.laa.amend.claim.views;
 
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -31,6 +33,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -92,77 +95,46 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasTitle(doc, "Claim details");
 
         assertPageHasHeading(doc, "Claim details");
-        assertPageHasH2(doc, "Summary");
 
         assertPageHasNoActiveServiceNavigationItems(doc);
 
         assertPageHasBackLink(doc);
 
-        assertPageHasSummaryList(doc);
+        List<List<Element>> summaryList1 = getSummaryList(doc, "Summary");
+        Assertions.assertEquals(16, summaryList1.size());
+        assertSummaryListRowContainsKeyAndValues(summaryList1.getFirst(), "Client name", "John Doe");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(1), "Unique file number (UFN)", "Not applicable");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(2), "Unique client number (UCN)", "Not applicable");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(3), "Provider name", "Not applicable");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(4), "Provider account number", "0P322F");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(5), "Date submitted", "15 June 2020 at 09:30:00");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(6), "Area of law", "LEGAL_HELP");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(7), "Category of law", "TEST");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(8), "Fee code", "FC");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(9), "Fee code description", "FCD");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(10), "Matter type 1", "IMLB");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(11), "Matter type 2", "AHQS");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(12), "Case start date", "01 January 2020");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(13), "Case end date", "31 December 2020");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(14), "Escape case", "Yes");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(15), "VAT requested", "Not applicable");
 
-        assertPageHasSummaryListRow(doc, "Escape case", "Yes");
-        assertPageHasSummaryListRow(doc, "Area of law", "LEGAL_HELP");
-        assertPageHasSummaryListRow(doc, "Category of law", "TEST");
-        assertPageHasSummaryListRow(doc, "Fee code", "FC");
-        assertPageHasSummaryListRow(doc, "Fee code description", "FCD");
-        assertPageHasSummaryListRow(doc, "Matter type 1", "IMLB");
-        assertPageHasSummaryListRow(doc, "Matter type 2", "AHQS");
-        assertPageHasSummaryListRow(doc, "Provider account number", "0P322F");
-        assertPageHasSummaryListRow(doc, "Client name", "John Doe");
-        assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
-        assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
-        assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020 at 09:30:00");
-        assertPageHasSummaryListRow(doc, "Total", claim.getTotalAmount(), false);
-        assertPageHasSummaryListRow(doc, "Oral CMRH", claim.getCmrhOral(), false);
-        assertPageHasSummaryListRow(doc, "Telephone CMRH", claim.getCmrhTelephone(), false);
-        assertPageHasSummaryListRow(doc, "Counsel costs", claim.getCounselsCost(), false);
-
-        assertPageHasSummaryListRow(doc, "Oral CMRH", claim.getCmrhOral(), false);
-        assertPageHasSummaryListRow(doc, "Telephone CMRH", claim.getCmrhTelephone(), false);
-        assertPageHasSummaryListRow(doc, "Home office interview", claim.getHoInterview(), false);
-        assertPageHasSummaryListRow(doc, "Substantive hearing", claim.getSubstantiveHearing(), false);
-        assertPageHasSummaryListRow(doc, "Adjourned hearing fee", claim.getAdjournedHearing(), false);
-    }
-
-    @Test
-    void testCivilClaimPageWithNullBoltOns() throws Exception {
-        CivilClaimDetails claim = getCivilClaimDetails();
-        claim.setCmrhOral(null);
-        claim.setCmrhTelephone(null);
-        claim.setHoInterview(null);
-        claim.setSubstantiveHearing(null);
-        claim.setAdjournedHearing(null);
-
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
-
-        Document doc = renderDocument();
-
-        assertSummaryListRowIsHidden(doc, "Oral CMRH");
-        assertSummaryListRowIsHidden(doc, "Telephone CMRH");
-        assertSummaryListRowIsHidden(doc, "Home office interview");
-        assertSummaryListRowIsHidden(doc, "Substantive hearing");
-        assertSummaryListRowIsHidden(doc, "Adjourned hearing fee");
-    }
-
-    @Test
-    void testCivilClaimPageWithZeroSubmittedValueBoltOns() throws Exception {
-        CivilClaimDetails claim = getCivilClaimDetails();
-        claim.setCmrhOral(ClaimField.builder().key(CMRH_ORAL).submitted(0).build());
-        claim.setCmrhOral(ClaimField.builder().key(CMRH_ORAL).submitted(0).build());
-        claim.setCmrhTelephone(ClaimField.builder().key(CMRH_TELEPHONE).submitted(0).build());
-        claim.setHoInterview(ClaimField.builder().key(HO_INTERVIEW).submitted(0).build());
-        claim.setSubstantiveHearing(ClaimField.builder().key(SUBSTANTIVE_HEARING).submitted(0).build());
-        claim.setAdjournedHearing(ClaimField.builder().key(ADJOURNED_FEE).submitted(0).build());
-
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
-
-        Document doc = renderDocument();
-
-        assertSummaryListRowIsHidden(doc, "Oral CMRH");
-        assertSummaryListRowIsHidden(doc, "Telephone CMRH");
-        assertSummaryListRowIsHidden(doc, "Home office interview");
-        assertSummaryListRowIsHidden(doc, "Substantive hearing");
-        assertSummaryListRowIsHidden(doc, "Adjourned hearing fee");
+        List<List<Element>> summaryList2 = getSummaryList(doc, "Values");
+        Assertions.assertEquals(15, summaryList2.size());
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(1), "Fixed fee", "480", "500");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(2), "Profit costs", "580", "600");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(3), "Disbursements", "190", "200");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(4), "Disbursement VAT", "38", "40");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(5), "Detention travel and waiting costs", "90", "100");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(6), "JR and form filling", "45", "50");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(7), "Counsel costs", "380", "400");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(8), "Oral CMRH", "140", "150");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(9), "Telephone CMRH", "70", "75");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(10), "Home office interview", "110", "120");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(11), "Substantive hearing", "280", "300");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(12), "Adjourned hearing fee", "180", "200");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(13), "VAT", "75", "80");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(14), "Total", "1325", "1380");
     }
 
     @Test
@@ -197,18 +169,27 @@ class ClaimSummaryViewTest extends ViewTestBase {
             "Last edited by test on 18 December 2025 at 16:11:27 Nilled."
         );
 
-        assertPageHasSummaryCard(doc, "Summary");
-        assertPageHasSummaryCard(doc, "Values");
-
         assertPageHasNoActiveServiceNavigationItems(doc);
 
         assertPageHasBackLink(doc);
 
-        assertPageHasSummaryList(doc);
-        assertPageHasUpdateAssessmentButton(doc);
-        assertPageHasSummaryListRow(doc, "Oral CMRH", claim.getCmrhOral(), true);
-        assertPageHasSummaryListRow(doc, "Telephone CMRH", claim.getCmrhTelephone(), true);
-        assertPageHasSummaryListRow(doc, "Counsel costs", claim.getCounselsCost(), true);
+        assertPageHasSummaryCard(doc, "Summary");
+
+        List<List<Element>> summaryList2 = getSummaryList(doc, "Values");
+        Assertions.assertEquals(14, summaryList2.size());
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(1), "Fixed fee", "480", "500", "500");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(2), "Profit costs", "580", "600", "600");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(3), "Disbursements", "190", "200", "200");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(4), "Disbursement VAT", "38", "40", "40");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(5), "Detention travel and waiting costs", "90", "100", "90");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(6), "JR and form filling", "45", "50", "45");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(7), "Counsel costs", "380", "400", "400");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(8), "Oral CMRH", "140", "150", "140");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(9), "Telephone CMRH", "70", "75", "72");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(10), "Home office interview", "110", "120", "120");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(11), "Substantive hearing", "280", "300", "300");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(12), "Adjourned hearing fee", "180", "200", "180");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(13), "VAT", "75", "80", "75");
     }
 
     private static @NotNull CivilClaimDetails getCivilClaimDetails() {
@@ -249,29 +230,40 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasTitle(doc, "Claim details");
 
         assertPageHasHeading(doc, "Claim details");
-        assertPageHasH2(doc, "Summary");
 
         assertPageHasNoActiveServiceNavigationItems(doc);
 
         assertPageHasBackLink(doc);
 
-        assertPageHasSummaryList(doc);
+        List<List<Element>> summaryList1 = getSummaryList(doc, "Summary");
+        Assertions.assertEquals(16, summaryList1.size());
+        assertSummaryListRowContainsKeyAndValues(summaryList1.getFirst(), "Client name", "John Doe");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(1), "Unique file number (UFN)", "Not applicable");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(2), "Provider name", "Not applicable");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(3), "Provider account number", "0P322F");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(4), "Date submitted", "15 June 2020 at 09:30:00");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(5), "Area of law", "CRIME");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(6), "Category of law", "Not applicable");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(7), "Fee code", "FC");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(8), "Fee code description", "FCD");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(9), "Police Station / Court / Prison ID", "POLICE_STATION_COURT_PRISON");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(10), "Scheme ID", "SCHEME");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(11), "Matter type", "IMLB");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(12), "Case start date", "01 January 2020");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(13), "Case end date", "31 December 2020");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(14), "Escape case", "Yes");
+        assertSummaryListRowContainsKeyAndValues(summaryList1.get(15), "VAT requested", "Not applicable");
 
-        assertPageHasSummaryListRow(doc, "Escape case", "Yes");
-        assertPageHasSummaryListRow(doc, "Area of law", "CRIME");
-        assertPageHasSummaryListRow(doc, "Fee code", "FC");
-        assertPageHasSummaryListRow(doc, "Scheme ID", "SCHEME");
-        assertPageHasSummaryListRow(doc, "Police Station / Court / Prison ID", "POLICE_STATION_COURT_PRISON");
-        assertPageHasSummaryListRow(doc, "Fee code description", "FCD");
-        assertPageHasSummaryListRow(doc, "Matter type", "IMLB");
-        assertPageHasSummaryListRow(doc, "Provider account number", "0P322F");
-        assertPageHasSummaryListRow(doc, "Client name", "John Doe");
-        assertPageHasSummaryListRow(doc, "Case start date", "01 January 2020");
-        assertPageHasSummaryListRow(doc, "Case end date", "31 December 2020");
-        assertPageHasSummaryListRow(doc, "Date submitted", "15 June 2020 at 09:30:00");
-        assertPageHasSummaryListRow(doc, "Total", claim.getTotalAmount(), false);
-        assertPageHasSummaryListRow(doc, "Travel costs", claim.getTravelCosts(), false);
-        assertPageHasSummaryListRow(doc, "Waiting costs", claim.getWaitingCosts(), false);
+        List<List<Element>> summaryList2 = getSummaryList(doc, "Values");
+        Assertions.assertEquals(9, summaryList2.size());
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(1), "Fixed fee", "480", "500");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(2), "Profit costs", "580", "600");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(3), "Disbursements", "190", "200");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(4), "Disbursement VAT", "38", "40");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(5), "Travel costs", "90", "100");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(6), "Waiting costs", "45", "50");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(7), "VAT", "75", "80");
+        assertSummaryListRowContainsKeyAndValues(summaryList2.get(8), "Total", "1325", "1380");
     }
 
     @Test

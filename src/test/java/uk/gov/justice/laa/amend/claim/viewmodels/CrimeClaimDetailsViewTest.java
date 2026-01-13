@@ -85,69 +85,74 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
     class GetSummaryClaimFieldRowsTests {
         @Test
         void rowsRenderedForClaimValuesWhenClaimHasAnAssessment() {
-            ClaimField fixedFee = new ClaimField("1", null, null);
-            ClaimField netProfitCost = new ClaimField("2", null, null);
-            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
-            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
-            ClaimField travel = new ClaimField("5", null, null);
-            ClaimField waiting = new ClaimField("6", null, null);
-            ClaimField totalAmount = new ClaimField("7", null, null);
-
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFixedFee(fixedFee);
-            claim.setNetProfitCost(netProfitCost);
-            claim.setNetDisbursementAmount(netDisbursementAmount);
-            claim.setDisbursementVatAmount(disbursementVatAmount);
-            claim.setTravelCosts(travel);
-            claim.setWaitingCosts(waiting);
-            claim.setTotalAmount(totalAmount);
+            claim.setFixedFee(ClaimField.builder().key("ff").build());
+            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
+            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
+            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
+            claim.setTravelCosts(ClaimField.builder().key("tc").build());
+            claim.setWaitingCosts(ClaimField.builder().key("wc").build());
+            claim.setTotalAmount(ClaimField.builder().key("ta").build());
             claim.setHasAssessment(true);
 
-            CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
-            List<ClaimField> expectedRows = List.of(
-                fixedFee,
-                netProfitCost,
-                netDisbursementAmount,
-                disbursementVatAmount,
-                travel,
-                waiting
-            );
+            CrimeClaimDetailsView viewModel = createView(claim);
+            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
 
-            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
+            Assertions.assertEquals(6, result.size());
+
+            Assertions.assertEquals("ff", result.get(0).getKey());
+
+            Assertions.assertEquals("npc", result.get(1).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+
+            Assertions.assertEquals("nda", result.get(2).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+
+            Assertions.assertEquals("dva", result.get(3).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+
+            Assertions.assertEquals("tc", result.get(4).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
+
+            Assertions.assertEquals("wc", result.get(5).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
         }
 
         @Test
         void rowsRenderedForClaimValuesWhenClaimDoesNotHaveAnAssessment() {
-            ClaimField fixedFee = new ClaimField("1", null, null);
-            ClaimField netProfitCost = new ClaimField("2", null, null);
-            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
-            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
-            ClaimField travel = new ClaimField("5", null, null);
-            ClaimField waiting = new ClaimField("6", null, null);
-            ClaimField totalAmount = new ClaimField("7", null, null);
-
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFixedFee(fixedFee);
-            claim.setNetProfitCost(netProfitCost);
-            claim.setNetDisbursementAmount(netDisbursementAmount);
-            claim.setDisbursementVatAmount(disbursementVatAmount);
-            claim.setTravelCosts(travel);
-            claim.setWaitingCosts(waiting);
-            claim.setTotalAmount(totalAmount);
+            claim.setFixedFee(ClaimField.builder().key("ff").build());
+            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
+            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
+            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
+            claim.setTravelCosts(ClaimField.builder().key("tc").build());
+            claim.setWaitingCosts(ClaimField.builder().key("wc").build());
+            claim.setTotalAmount(ClaimField.builder().key("ta").build());
             claim.setHasAssessment(false);
 
-            CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
-            List<ClaimField> expectedRows = List.of(
-                fixedFee,
-                netProfitCost,
-                netDisbursementAmount,
-                disbursementVatAmount,
-                travel,
-                waiting,
-                totalAmount
-            );
+            CrimeClaimDetailsView viewModel = createView(claim);
+            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
 
-            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
+            Assertions.assertEquals(7, result.size());
+
+            Assertions.assertEquals("ff", result.get(0).getKey());
+
+            Assertions.assertEquals("npc", result.get(1).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+
+            Assertions.assertEquals("nda", result.get(2).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+
+            Assertions.assertEquals("dva", result.get(3).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+
+            Assertions.assertEquals("tc", result.get(4).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
+
+            Assertions.assertEquals("wc", result.get(5).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
+
+            Assertions.assertEquals("ta", result.get(6).getKey());
         }
     }
 
@@ -155,34 +160,36 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
     class GetReviewClaimFieldRowsTests {
         @Test
         void rowsRenderedForClaimValues() {
-            ClaimField fixedFee = new ClaimField("1", null, null);
-            ClaimField netProfitCost = new ClaimField("2", null, null);
-            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
-            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
-            ClaimField travel = new ClaimField("5", null, null);
-            ClaimField waiting = new ClaimField("6", null, null);
-            ClaimField totalAmount = new ClaimField("7", null, null);
-
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFixedFee(fixedFee);
-            claim.setNetProfitCost(netProfitCost);
-            claim.setNetDisbursementAmount(netDisbursementAmount);
-            claim.setDisbursementVatAmount(disbursementVatAmount);
-            claim.setTravelCosts(travel);
-            claim.setWaitingCosts(waiting);
-            claim.setTotalAmount(totalAmount);
+            claim.setFixedFee(ClaimField.builder().key("ff").build());
+            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
+            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
+            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
+            claim.setTravelCosts(ClaimField.builder().key("tc").build());
+            claim.setWaitingCosts(ClaimField.builder().key("wc").build());
+            claim.setTotalAmount(ClaimField.builder().key("ta").build());
 
-            CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
-            List<ClaimField> expectedRows = List.of(
-                fixedFee,
-                netProfitCost,
-                netDisbursementAmount,
-                disbursementVatAmount,
-                travel,
-                waiting
-            );
+            CrimeClaimDetailsView viewModel = createView(claim);
+            List<ClaimField> result = viewModel.getReviewClaimFieldRows();
 
-            Assertions.assertEquals(expectedRows, viewModel.getReviewClaimFieldRows());
+            Assertions.assertEquals(6, result.size());
+
+            Assertions.assertEquals("ff", result.get(0).getKey());
+
+            Assertions.assertEquals("npc", result.get(1).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+
+            Assertions.assertEquals("nda", result.get(2).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+
+            Assertions.assertEquals("dva", result.get(3).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+
+            Assertions.assertEquals("tc", result.get(4).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
+
+            Assertions.assertEquals("wc", result.get(5).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
         }
     }
 

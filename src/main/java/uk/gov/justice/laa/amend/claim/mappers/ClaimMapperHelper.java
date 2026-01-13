@@ -3,7 +3,6 @@ package uk.gov.justice.laa.amend.claim.mappers;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
@@ -34,9 +33,6 @@ import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.add;
 @Component
 public class ClaimMapperHelper {
 
-    public static final String ALLOWED_TOTALS_URL = "/submissions/%s/claims/%s/allowed-totals";
-    public static final String ASSESSED_TOTALS_URL = "/submissions/%s/claims/%s/assessed-totals";
-
     @Named("mapTotalAmount")
     public ClaimField mapTotalAmount(ClaimResponse claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
@@ -57,20 +53,8 @@ public class ClaimMapperHelper {
         BigDecimal submitted = claimResponse.getNetProfitCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetProfitCostsAmount() : null;
-        return mapToAssessableClaimField(submitted, calculated, NET_PROFIT_COST, Cost.PROFIT_COSTS.getChangeUrl());
+        return mapToClaimField(submitted, calculated, NET_PROFIT_COST);
     }
-
-
-    private ClaimField mapToAssessableClaimField(Object submitted, Object calculated, String key, String changeUrl) {
-        return ClaimField.builder()
-                .key(key)
-                .submitted(submitted)
-                .calculated(calculated)
-                .assessed(submitted)
-                .changeUrl(changeUrl)
-                .build();
-    }
-
 
     private ClaimField mapToClaimField(Object submitted, Object calculated, String key) {
         return ClaimField.builder()
@@ -86,7 +70,7 @@ public class ClaimMapperHelper {
         var submitted = claimResponse.getIsVatApplicable();
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 && Boolean.TRUE.equals(claimResponse.getFeeCalculationResponse().getVatIndicator());
-        return mapToAssessableClaimField(submitted, calculated, VAT, "/submissions/%s/claims/%s/assessment-outcome");
+        return mapToClaimField(submitted, calculated, VAT);
     }
 
     @Named("mapNetDisbursementAmount")
@@ -94,7 +78,7 @@ public class ClaimMapperHelper {
         BigDecimal submitted = claimResponse.getNetDisbursementAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getDisbursementAmount() : null;
-        return mapToAssessableClaimField(submitted, calculated, NET_DISBURSEMENTS_COST, Cost.DISBURSEMENTS.getChangeUrl());
+        return mapToClaimField(submitted, calculated, NET_DISBURSEMENTS_COST);
     }
 
     @Named("mapDisbursementVatAmount")
@@ -102,7 +86,7 @@ public class ClaimMapperHelper {
         BigDecimal submitted = claimResponse.getDisbursementsVatAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getDisbursementVatAmount() : null;
-        return mapToAssessableClaimField(submitted, calculated, DISBURSEMENT_VAT, Cost.DISBURSEMENTS_VAT.getChangeUrl());
+        return mapToClaimField(submitted, calculated, DISBURSEMENT_VAT);
     }
 
     @Named("mapCounselsCost")
@@ -110,7 +94,7 @@ public class ClaimMapperHelper {
         BigDecimal submitted = claimResponse.getNetCounselCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetCostOfCounselAmount() : null;
-        return mapToAssessableClaimField(submitted, calculated, COUNSELS_COST, Cost.COUNSEL_COSTS.getChangeUrl());
+        return mapToClaimField(submitted, calculated, COUNSELS_COST);
     }
 
     @Named("mapDetentionTravelWaitingCosts")
@@ -118,7 +102,7 @@ public class ClaimMapperHelper {
         BigDecimal submitted = claimResponse.getDetentionTravelWaitingCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getDetentionTravelAndWaitingCostsAmount() : null;
-        return mapToAssessableClaimField(submitted, calculated, DETENTION_TRAVEL_COST, Cost.DETENTION_TRAVEL_AND_WAITING_COSTS.getChangeUrl());
+        return mapToClaimField(submitted, calculated, DETENTION_TRAVEL_COST);
     }
 
     @Named("mapJrFormFillingCost")
@@ -126,7 +110,7 @@ public class ClaimMapperHelper {
         BigDecimal submitted = claimResponse.getJrFormFillingAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getJrFormFillingAmount() : null;
-        return mapToAssessableClaimField(submitted, calculated, JR_FORM_FILLING, Cost.JR_FORM_FILLING_COSTS.getChangeUrl());
+        return mapToClaimField(submitted, calculated, JR_FORM_FILLING);
     }
 
     @Named("mapAdjournedHearingFee")
@@ -179,7 +163,7 @@ public class ClaimMapperHelper {
         var submitted = claimResponse.getTravelWaitingCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetTravelCostsAmount() : null;
-        return mapToAssessableClaimField(submitted, calculated, TRAVEL_COSTS, Cost.TRAVEL_COSTS.getChangeUrl());
+        return mapToClaimField(submitted, calculated, TRAVEL_COSTS);
     }
 
     @Named("mapWaitingCosts")
@@ -187,14 +171,13 @@ public class ClaimMapperHelper {
         var submitted = claimResponse.getNetWaitingCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetWaitingCostsAmount() : null;
-        return mapToAssessableClaimField(submitted, calculated, WAITING_COSTS, Cost.WAITING_COSTS.getChangeUrl());
+        return mapToClaimField(submitted, calculated, WAITING_COSTS);
     }
 
     @Named("mapAssessedTotalVat")
     public ClaimField mapAssessedTotalVat() {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ASSESSED_TOTAL_VAT);
-        claimField.setChangeUrl(ASSESSED_TOTALS_URL);
         return claimField;
     }
 
@@ -202,7 +185,6 @@ public class ClaimMapperHelper {
     public ClaimField mapAssessedTotalInclVat() {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ASSESSED_TOTAL_INCL_VAT);
-        claimField.setChangeUrl(ASSESSED_TOTALS_URL);
         return claimField;
     }
 
@@ -210,7 +192,6 @@ public class ClaimMapperHelper {
     public ClaimField mapAllowedTotalVat(ClaimResponse claimResponse) {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ALLOWED_TOTAL_VAT);
-        claimField.setChangeUrl(ALLOWED_TOTALS_URL);
         FeeCalculationPatch fee = claimResponse.getFeeCalculationResponse();
         BigDecimal calculated = fee != null ? add(fee.getCalculatedVatAmount(), fee.getDisbursementVatAmount()) : null;
         claimField.setCalculated(calculated);
@@ -221,7 +202,6 @@ public class ClaimMapperHelper {
     public ClaimField mapAllowedTotalInclVat(ClaimResponse claimResponse) {
         ClaimField claimField = new ClaimField();
         claimField.setKey(ALLOWED_TOTAL_INCL_VAT);
-        claimField.setChangeUrl(ALLOWED_TOTALS_URL);
         FeeCalculationPatch fee = claimResponse.getFeeCalculationResponse();
         BigDecimal calculated = fee != null ? fee.getTotalAmount() : null;
         claimField.setCalculated(calculated);

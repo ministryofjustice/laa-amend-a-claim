@@ -94,7 +94,7 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertEquals("/submissions/foo/claims/bar/profit-costs", claimField.getChangeUrl(submissionId, claimId));
+        assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
     @Test
@@ -114,7 +114,7 @@ class ClaimMapperTest {
         assertEquals(true, claimField.getSubmitted());
         assertEquals(false, claimField.getCalculated());
         assertEquals(true, claimField.getAssessed());
-        assertEquals("/submissions/foo/claims/bar/assessment-outcome", claimField.getChangeUrl(submissionId, claimId));
+        assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
     @Test
@@ -134,7 +134,7 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertEquals("/submissions/foo/claims/bar/disbursements", claimField.getChangeUrl(submissionId, claimId));
+        assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
     @Test
@@ -154,7 +154,7 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertEquals("/submissions/foo/claims/bar/disbursements-vat", claimField.getChangeUrl(submissionId, claimId));
+        assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
     @Test
@@ -174,7 +174,7 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertEquals("/submissions/foo/claims/bar/counsel-costs", claimField.getChangeUrl(submissionId, claimId));
+        assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
     @Test
@@ -194,7 +194,7 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertEquals("/submissions/foo/claims/bar/detention-travel-and-waiting-costs", claimField.getChangeUrl(submissionId, claimId));
+        assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
     @Test
@@ -214,8 +214,7 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertEquals(Cost.JR_FORM_FILLING_COSTS.getChangeUrl(), claimField.getChangeUrl());
-        assertEquals("/submissions/foo/claims/bar/jr-form-filling-costs", claimField.getChangeUrl(submissionId, claimId));
+        assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
     @Test
@@ -347,7 +346,7 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertEquals("/submissions/foo/claims/bar/travel-costs", claimField.getChangeUrl(submissionId, claimId));
+        assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
     @Test
@@ -367,7 +366,7 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertEquals("/submissions/foo/claims/bar/waiting-costs", claimField.getChangeUrl(submissionId, claimId));
+        assertNull(claimField.getChangeUrl(submissionId, claimId));
     }
 
     @Test

@@ -90,7 +90,8 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         void getAssessedTotalsHandlesNullFields() {
             C claim = createClaim();
             V viewModel = createView(claim);
-            Assertions.assertEquals(List.of(), viewModel.getAssessedTotals());
+            List<ClaimField> result = viewModel.getAssessedTotals();
+            Assertions.assertEquals(0, result.size());
         }
 
         @Test
@@ -101,8 +102,14 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             V viewModel = createView(claim);
 
             List<ClaimField> result = viewModel.getAssessedTotals();
-            Assertions.assertEquals(claim.getAssessedTotalVat(), result.get(0));
-            Assertions.assertEquals(claim.getAssessedTotalInclVat(), result.get(1));
+
+            Assertions.assertEquals(2, result.size());
+
+            Assertions.assertNull(result.get(0).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(0).getChangeUrl());
+
+            Assertions.assertNull(result.get(1).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(1).getChangeUrl());
         }
 
         @Test
@@ -129,8 +136,11 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
 
             Assertions.assertEquals(2, result.size());
 
-            Assertions.assertEquals(BigDecimal.valueOf(100), claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(BigDecimal.valueOf(100), claim.getAssessedTotalInclVat().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(0).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(0).getChangeUrl());
+
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(1).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(1).getChangeUrl());
         }
     }
 
@@ -154,7 +164,11 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             List<ClaimField> result = viewModel.getAllowedTotals();
 
             Assertions.assertEquals(BigDecimal.ZERO, result.get(0).getCalculated());
+            Assertions.assertEquals("/submissions/%s/claims/%s/allowed-totals", result.get(0).getChangeUrl());
+
             Assertions.assertEquals(BigDecimal.ZERO, result.get(1).getCalculated());
+            Assertions.assertEquals("/submissions/%s/claims/%s/allowed-totals", result.get(1).getChangeUrl());
+
         }
 
         @Test
@@ -175,7 +189,10 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             List<ClaimField> result = viewModel.getAllowedTotals();
 
             Assertions.assertEquals(claim.getAllowedTotalVat(), result.get(0));
+            Assertions.assertEquals("/submissions/%s/claims/%s/allowed-totals", result.get(0).getChangeUrl());
+
             Assertions.assertEquals(claim.getAllowedTotalInclVat(), result.get(1));
+            Assertions.assertEquals("/submissions/%s/claims/%s/allowed-totals", result.get(1).getChangeUrl());
         }
     }
 

@@ -4,6 +4,7 @@ import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
@@ -63,7 +64,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         List<ClaimField> rows = claimFieldsWithBoltOns();
         addRowIfNotNull(
             rows,
-            claim().getVatClaimed()
+            setChangeUrl(claim().getVatClaimed(), "/submissions/%s/claims/%s/assessment-outcome")
         );
         return rows;
     }
@@ -71,10 +72,11 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     // 'Total claim value' rows for the 'Review and amend' page
     default List<ClaimField> getAssessedTotals() {
         List<ClaimField> rows = new ArrayList<>();
+        String changeUrl = "/submissions/%s/claims/%s/assessed-totals";
         addRowIfNotNull(
             rows,
-            resolveValue(claim().getAssessedTotalVat(), claim().getAllowedTotalVat()),
-            resolveValue(claim().getAssessedTotalInclVat(), claim().getAllowedTotalInclVat())
+            setChangeUrl(resolveValue(claim().getAssessedTotalVat(), claim().getAllowedTotalVat()), changeUrl),
+            setChangeUrl(resolveValue(claim().getAssessedTotalInclVat(), claim().getAllowedTotalInclVat()), changeUrl)
         );
 
         return rows;
@@ -90,10 +92,11 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     // 'Total allowed value' rows for the 'Review and amend' page
     default List<ClaimField> getAllowedTotals() {
         List<ClaimField> rows = new ArrayList<>();
+        String changeUrl = "/submissions/%s/claims/%s/allowed-totals";
         addRowIfNotNull(
             rows,
-            setCalculatedDisplayForNulls(claim().getAllowedTotalVat()),
-            setCalculatedDisplayForNulls(claim().getAllowedTotalInclVat())
+            setChangeUrl(setCalculatedDisplayForNulls(claim().getAllowedTotalVat()), changeUrl),
+            setChangeUrl(setCalculatedDisplayForNulls(claim().getAllowedTotalInclVat()), changeUrl)
         );
 
         return rows;
@@ -135,9 +138,9 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         addRowIfNotNull(
             fields,
             claim().getFixedFee(),
-            claim().getNetProfitCost(),
-            claim().getNetDisbursementAmount(),
-            claim().getDisbursementVatAmount()
+            setChangeUrl(claim().getNetProfitCost(), Cost.PROFIT_COSTS),
+            setChangeUrl(claim().getNetDisbursementAmount(), Cost.DISBURSEMENTS),
+            setChangeUrl(claim().getDisbursementVatAmount(), Cost.DISBURSEMENTS_VAT)
         );
         return fields;
     }
@@ -170,5 +173,16 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         } else {
             return new ThymeleafMessage("claimSummary.lastAssessmentText.noUser", date, time, outcome);
         }
+    }
+
+    default ClaimField setChangeUrl(ClaimField field, Cost cost) {
+        return setChangeUrl(field, cost.getChangeUrl());
+    }
+
+    default ClaimField setChangeUrl(ClaimField field, String path) {
+        if (field != null) {
+            field.setChangeUrl(path);
+        }
+        return field;
     }
 }

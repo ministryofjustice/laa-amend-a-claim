@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
 import java.util.List;
@@ -32,8 +33,8 @@ public record CrimeClaimDetailsView(CrimeClaimDetails claim) implements ClaimDet
         List<ClaimField> fields = ClaimDetailsView.super.claimFields();
         addRowIfNotNull(
             fields,
-            setDisplayForNulls(claim.getTravelCosts()),
-            setDisplayForNulls(claim.getWaitingCosts())
+            setChangeUrl(setDisplayForNulls(claim.getTravelCosts()), Cost.TRAVEL_COSTS),
+            setChangeUrl(setDisplayForNulls(claim.getWaitingCosts()), Cost.WAITING_COSTS)
         );
         return fields;
     }
