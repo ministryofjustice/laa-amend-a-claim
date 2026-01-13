@@ -100,4 +100,9 @@ public class MockClaimsFunctions {
     public static void updateStatus(ClaimDetails claim, OutcomeType outcome) {
         claimStatusHandler.updateFieldStatuses(claim, outcome);
     }
+
+    public static ClaimField updateClaimFieldSubmittedValue(ClaimField claimField, Object submitted) {
+        claimField.setSubmitted(BigDecimal.ZERO);
+        return claimField;
+    }
 }
