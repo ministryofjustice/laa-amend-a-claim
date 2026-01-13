@@ -321,7 +321,7 @@ public abstract class ViewTestBase {
     assertCellContainsChangeLink(row.get(4), changeUrl);
   }
 
-  protected void assertSummaryListRowContainsKeyAndValues(
+  protected void assertSummaryListRowContainsValues(
       List<Element> row,
       String label,
       String... values
