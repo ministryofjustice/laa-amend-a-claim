@@ -7,14 +7,30 @@ import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
+import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.updateClaimFieldSubmittedValue;
 
 public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDetails, CivilClaimDetailsView> {
 
@@ -171,21 +187,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
 
         @Test
         void rowsRenderedForClaimValuesWhenClaimHasAnAssessment() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key("ff").build());
-            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
-            claim.setCounselsCost(ClaimField.builder().key("cc").build());
-            claim.setDetentionTravelWaitingCosts(ClaimField.builder().key("dtwc").build());
-            claim.setJrFormFillingCost(ClaimField.builder().key("jffc").build());
-            claim.setAdjournedHearing(ClaimField.builder().key("ah").submitted(100).calculated(100).build());
-            claim.setCmrhTelephone(ClaimField.builder().key("ct").submitted(100).calculated(100).build());
-            claim.setCmrhOral(ClaimField.builder().key("co").submitted(100).calculated(100).build());
-            claim.setHoInterview(ClaimField.builder().key("hi").submitted(100).calculated(100).build());
-            claim.setSubstantiveHearing(ClaimField.builder().key("sh").submitted(100).calculated(100).build());
-            claim.setVatClaimed(ClaimField.builder().key("vc").submitted(100).calculated(100).build());
-            claim.setTotalAmount(ClaimField.builder().key("ta").submitted(100).calculated(100).build());
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setHasAssessment(true);
 
             CivilClaimDetailsView viewModel = createView(claim);
@@ -193,77 +195,63 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
 
             Assertions.assertEquals(13, result.size());
 
-            Assertions.assertEquals("ff", result.get(0).getKey());
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
-            Assertions.assertEquals("npc", result.get(1).getKey());
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
-            Assertions.assertEquals("nda", result.get(2).getKey());
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
-            Assertions.assertEquals("dva", result.get(3).getKey());
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
 
-            Assertions.assertEquals("dtwc", result.get(4).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getAssessed());
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
 
-            Assertions.assertEquals("jffc", result.get(5).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getAssessed());
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
 
-            Assertions.assertEquals("cc", result.get(6).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getAssessed());
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
 
-            Assertions.assertEquals("co", result.get(7).getKey());
-            Assertions.assertEquals(100, result.get(7).getSubmitted());
-            Assertions.assertEquals(100, result.get(7).getCalculated());
+            Assertions.assertEquals(CMRH_ORAL, result.get(7).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(7).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(7).getCalculated());
 
-            Assertions.assertEquals("ct", result.get(8).getKey());
-            Assertions.assertEquals(100, result.get(8).getSubmitted());
-            Assertions.assertEquals(100, result.get(8).getCalculated());
+            Assertions.assertEquals(CMRH_TELEPHONE, result.get(8).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).getCalculated());
 
-            Assertions.assertEquals("hi", result.get(9).getKey());
-            Assertions.assertEquals(100, result.get(9).getSubmitted());
-            Assertions.assertEquals(100, result.get(9).getCalculated());
+            Assertions.assertEquals(HO_INTERVIEW, result.get(9).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(9).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(9).getCalculated());
 
-            Assertions.assertEquals("sh", result.get(10).getKey());
-            Assertions.assertEquals(100, result.get(10).getSubmitted());
-            Assertions.assertEquals(100, result.get(10).getCalculated());
+            Assertions.assertEquals(SUBSTANTIVE_HEARING, result.get(10).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(10).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(10).getCalculated());
 
-            Assertions.assertEquals("ah", result.get(11).getKey());
-            Assertions.assertEquals(100, result.get(11).getSubmitted());
-            Assertions.assertEquals(100, result.get(11).getCalculated());
+            Assertions.assertEquals(ADJOURNED_FEE, result.get(11).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(11).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(11).getCalculated());
 
-            Assertions.assertEquals("vc", result.get(12).getKey());
-            Assertions.assertEquals(100, result.get(12).getSubmitted());
-            Assertions.assertEquals(100, result.get(12).getCalculated());
+            Assertions.assertEquals(VAT, result.get(12).getKey());
+            Assertions.assertEquals(true, result.get(12).getSubmitted());
+            Assertions.assertEquals(false, result.get(12).getCalculated());
         }
 
         @Test
         void rowsRenderedForClaimValuesWhenClaimDoesNotHaveAnAssessment() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key("ff").build());
-            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
-            claim.setCounselsCost(ClaimField.builder().key("cc").build());
-            claim.setDetentionTravelWaitingCosts(ClaimField.builder().key("dtwc").build());
-            claim.setJrFormFillingCost(ClaimField.builder().key("jffc").build());
-            claim.setAdjournedHearing(ClaimField.builder().key("ah").submitted(100).calculated(100).build());
-            claim.setCmrhTelephone(ClaimField.builder().key("ct").submitted(100).calculated(100).build());
-            claim.setCmrhOral(ClaimField.builder().key("co").submitted(100).calculated(100).build());
-            claim.setHoInterview(ClaimField.builder().key("hi").submitted(100).calculated(100).build());
-            claim.setSubstantiveHearing(ClaimField.builder().key("sh").submitted(100).calculated(100).build());
-            claim.setVatClaimed(ClaimField.builder().key("vc").submitted(100).calculated(100).build());
-            claim.setTotalAmount(ClaimField.builder().key("ta").submitted(100).calculated(100).build());
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setHasAssessment(false);
 
             CivilClaimDetailsView viewModel = createView(claim);
@@ -271,221 +259,166 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
 
             Assertions.assertEquals(14, result.size());
 
-            Assertions.assertEquals("ff", result.get(0).getKey());
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
-            Assertions.assertEquals("npc", result.get(1).getKey());
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
-            Assertions.assertEquals("nda", result.get(2).getKey());
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
-            Assertions.assertEquals("dva", result.get(3).getKey());
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
 
-            Assertions.assertEquals("dtwc", result.get(4).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getAssessed());
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
 
-            Assertions.assertEquals("jffc", result.get(5).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getAssessed());
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
 
-            Assertions.assertEquals("cc", result.get(6).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getAssessed());
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
 
-            Assertions.assertEquals("co", result.get(7).getKey());
-            Assertions.assertEquals(100, result.get(7).getSubmitted());
-            Assertions.assertEquals(100, result.get(7).getCalculated());
+            Assertions.assertEquals(CMRH_ORAL, result.get(7).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(7).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(7).getCalculated());
 
-            Assertions.assertEquals("ct", result.get(8).getKey());
-            Assertions.assertEquals(100, result.get(8).getSubmitted());
-            Assertions.assertEquals(100, result.get(8).getCalculated());
+            Assertions.assertEquals(CMRH_TELEPHONE, result.get(8).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).getCalculated());
 
-            Assertions.assertEquals("hi", result.get(9).getKey());
-            Assertions.assertEquals(100, result.get(9).getSubmitted());
-            Assertions.assertEquals(100, result.get(9).getCalculated());
+            Assertions.assertEquals(HO_INTERVIEW, result.get(9).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(9).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(9).getCalculated());
 
-            Assertions.assertEquals("sh", result.get(10).getKey());
-            Assertions.assertEquals(100, result.get(10).getSubmitted());
-            Assertions.assertEquals(100, result.get(10).getCalculated());
+            Assertions.assertEquals(SUBSTANTIVE_HEARING, result.get(10).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(10).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(10).getCalculated());
 
-            Assertions.assertEquals("ah", result.get(11).getKey());
-            Assertions.assertEquals(100, result.get(11).getSubmitted());
-            Assertions.assertEquals(100, result.get(11).getCalculated());
+            Assertions.assertEquals(ADJOURNED_FEE, result.get(11).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(11).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(11).getCalculated());
 
-            Assertions.assertEquals("vc", result.get(12).getKey());
-            Assertions.assertEquals(100, result.get(12).getSubmitted());
-            Assertions.assertEquals(100, result.get(12).getCalculated());
+            Assertions.assertEquals(VAT, result.get(12).getKey());
+            Assertions.assertEquals(true, result.get(12).getSubmitted());
+            Assertions.assertEquals(false, result.get(12).getCalculated());
 
-            Assertions.assertEquals("ta", result.get(13).getKey());
-            Assertions.assertEquals(100, result.get(13).getSubmitted());
-            Assertions.assertEquals(100, result.get(13).getCalculated());
-        }
-
-        @Test void onlyRowsWithValuesRendered() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key("ff").build());
-            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
-            claim.setCounselsCost(ClaimField.builder().key("cc").build());
-            claim.setDetentionTravelWaitingCosts(ClaimField.builder().key("dtwc").build());
-            claim.setJrFormFillingCost(ClaimField.builder().key("jffc").build());
-            claim.setAdjournedHearing(ClaimField.builder().key("ah").submitted(100).calculated(100).build());
-            claim.setCmrhTelephone(ClaimField.builder().key("ct").build());
-            claim.setCmrhOral(ClaimField.builder().key("co").build());
-            claim.setHoInterview(ClaimField.builder().key("hi").build());
-            claim.setSubstantiveHearing(ClaimField.builder().key("sh").build());
-            claim.setVatClaimed(ClaimField.builder().key("vc").calculated(100).build());
-            claim.setTotalAmount(ClaimField.builder().key("ta").submitted(100).build());
-
-            CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
-
-            Assertions.assertEquals(10, result.size());
-
-            Assertions.assertEquals("ff", result.get(0).getKey());
-
-            Assertions.assertEquals("npc", result.get(1).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
-
-            Assertions.assertEquals("nda", result.get(2).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
-
-            Assertions.assertEquals("dva", result.get(3).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
-
-            Assertions.assertEquals("dtwc", result.get(4).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
-
-            Assertions.assertEquals("jffc", result.get(5).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
-
-            Assertions.assertEquals("cc", result.get(6).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
-
-            Assertions.assertEquals("ah", result.get(7).getKey());
-            Assertions.assertEquals(100, result.get(7).getSubmitted());
-            Assertions.assertEquals(100, result.get(7).getCalculated());
-
-            Assertions.assertEquals("vc", result.get(8).getKey());
-            Assertions.assertEquals(100, result.get(8).getCalculated());
-
-            Assertions.assertEquals("ta", result.get(9).getKey());
-            Assertions.assertEquals(100, result.get(9).getSubmitted());
+            Assertions.assertEquals(TOTAL, result.get(13).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(13).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(13).getCalculated());
         }
 
         @Test
         void rowsRenderedForNullBoltOnClaimValues() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key("ff").build());
-            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
-            claim.setCounselsCost(ClaimField.builder().key("cc").build());
-            claim.setDetentionTravelWaitingCosts(ClaimField.builder().key("dtwc").build());
-            claim.setJrFormFillingCost(ClaimField.builder().key("jffc").build());
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            claim.setAdjournedHearing(null);
+            claim.setCmrhTelephone(null);
+            claim.setCmrhOral(null);
+            claim.setHoInterview(null);
+            claim.setSubstantiveHearing(null);
 
             CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
 
-            Assertions.assertEquals(7, result.size());
+            Assertions.assertEquals(9, result.size());
 
-            Assertions.assertEquals("ff", result.get(0).getKey());
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
-            Assertions.assertEquals("npc", result.get(1).getKey());
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
-            Assertions.assertEquals("nda", result.get(2).getKey());
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
-            Assertions.assertEquals("dva", result.get(3).getKey());
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
 
-            Assertions.assertEquals("dtwc", result.get(4).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getAssessed());
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
 
-            Assertions.assertEquals("jffc", result.get(5).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getAssessed());
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
 
-            Assertions.assertEquals("cc", result.get(6).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getAssessed());
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
+
+            Assertions.assertEquals(VAT, result.get(7).getKey());
+            Assertions.assertEquals(true, result.get(7).getSubmitted());
+            Assertions.assertEquals(false, result.get(7).getCalculated());
+
+            Assertions.assertEquals(TOTAL, result.get(8).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).getCalculated());
         }
 
         @Test
         void rowsRenderedForZeroBoltOnClaimValues() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key("ff").build());
-            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
-            claim.setCounselsCost(ClaimField.builder().key("cc").build());
-            claim.setDetentionTravelWaitingCosts(ClaimField.builder().key("dtwc").build());
-            claim.setJrFormFillingCost(ClaimField.builder().key("jffc").build());
-            claim.setAdjournedHearing(ClaimField.builder().key("ah").submitted(BigDecimal.ZERO).build());
-            claim.setCmrhTelephone(ClaimField.builder().key("ct").submitted(0).build());
-            claim.setCmrhOral(ClaimField.builder().key("co").submitted(0).build());
-            claim.setHoInterview(ClaimField.builder().key("hi").submitted(0).build());
-            claim.setSubstantiveHearing(ClaimField.builder().key("sh").submitted(BigDecimal.ZERO).build());
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            claim.setAdjournedHearing(updateClaimFieldSubmittedValue(claim.getAdjournedHearing(), BigDecimal.ZERO));
+            claim.setCmrhTelephone(updateClaimFieldSubmittedValue(claim.getCmrhTelephone(), 0));
+            claim.setCmrhOral(updateClaimFieldSubmittedValue(claim.getCmrhOral(), 0));
+            claim.setHoInterview(updateClaimFieldSubmittedValue(claim.getHoInterview(), 0));
+            claim.setSubstantiveHearing(updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), BigDecimal.ZERO));
 
             CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
 
-            Assertions.assertEquals(7, result.size());
+            Assertions.assertEquals(9, result.size());
 
-            Assertions.assertEquals("ff", result.get(0).getKey());
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
-            Assertions.assertEquals("npc", result.get(1).getKey());
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
-            Assertions.assertEquals("nda", result.get(2).getKey());
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
-            Assertions.assertEquals("dva", result.get(3).getKey());
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
 
-            Assertions.assertEquals("dtwc", result.get(4).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getAssessed());
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
 
-            Assertions.assertEquals("jffc", result.get(5).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getAssessed());
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
 
-            Assertions.assertEquals("cc", result.get(6).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getAssessed());
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
+
+            Assertions.assertEquals(VAT, result.get(7).getKey());
+            Assertions.assertEquals(true, result.get(7).getSubmitted());
+            Assertions.assertEquals(false, result.get(7).getCalculated());
+
+            Assertions.assertEquals(TOTAL, result.get(8).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).getCalculated());
         }
     }
 
@@ -494,237 +427,163 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
 
         @Test
         void rowsRenderedForClaimValues() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key("ff").build());
-            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
-            claim.setCounselsCost(ClaimField.builder().key("cc").build());
-            claim.setDetentionTravelWaitingCosts(ClaimField.builder().key("dtwc").build());
-            claim.setJrFormFillingCost(ClaimField.builder().key("jffc").build());
-            claim.setAdjournedHearing(ClaimField.builder().key("ah").submitted(100).calculated(100).build());
-            claim.setCmrhTelephone(ClaimField.builder().key("ct").submitted(100).calculated(100).build());
-            claim.setCmrhOral(ClaimField.builder().key("co").submitted(100).calculated(100).build());
-            claim.setHoInterview(ClaimField.builder().key("hi").submitted(100).calculated(100).build());
-            claim.setSubstantiveHearing(ClaimField.builder().key("sh").submitted(100).calculated(100).build());
-            claim.setVatClaimed(ClaimField.builder().key("vc").submitted(100).calculated(100).build());
-            claim.setTotalAmount(ClaimField.builder().key("ta").submitted(100).calculated(100).build());
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
             CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimField> result = viewModel.getReviewClaimFieldRows();
 
             Assertions.assertEquals(13, result.size());
 
-            Assertions.assertEquals("ff", result.get(0).getKey());
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
-            Assertions.assertEquals("npc", result.get(1).getKey());
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
-            Assertions.assertEquals("nda", result.get(2).getKey());
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
-            Assertions.assertEquals("dva", result.get(3).getKey());
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
 
-            Assertions.assertEquals("dtwc", result.get(4).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getAssessed());
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
 
-            Assertions.assertEquals("jffc", result.get(5).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getAssessed());
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
 
-            Assertions.assertEquals("cc", result.get(6).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getAssessed());
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
 
-            Assertions.assertEquals("co", result.get(7).getKey());
-            Assertions.assertEquals(100, result.get(7).getSubmitted());
-            Assertions.assertEquals(100, result.get(7).getCalculated());
+            Assertions.assertEquals(CMRH_ORAL, result.get(7).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(7).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(7).getCalculated());
 
-            Assertions.assertEquals("ct", result.get(8).getKey());
-            Assertions.assertEquals(100, result.get(8).getSubmitted());
-            Assertions.assertEquals(100, result.get(8).getCalculated());
+            Assertions.assertEquals(CMRH_TELEPHONE, result.get(8).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).getCalculated());
 
-            Assertions.assertEquals("hi", result.get(9).getKey());
-            Assertions.assertEquals(100, result.get(9).getSubmitted());
-            Assertions.assertEquals(100, result.get(9).getCalculated());
+            Assertions.assertEquals(HO_INTERVIEW, result.get(9).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(9).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(9).getCalculated());
 
-            Assertions.assertEquals("sh", result.get(10).getKey());
-            Assertions.assertEquals(100, result.get(10).getSubmitted());
-            Assertions.assertEquals(100, result.get(10).getCalculated());
+            Assertions.assertEquals(SUBSTANTIVE_HEARING, result.get(10).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(10).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(10).getCalculated());
 
-            Assertions.assertEquals("ah", result.get(11).getKey());
-            Assertions.assertEquals(100, result.get(11).getSubmitted());
-            Assertions.assertEquals(100, result.get(11).getCalculated());
+            Assertions.assertEquals(ADJOURNED_FEE, result.get(11).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(11).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(11).getCalculated());
 
-            Assertions.assertEquals("vc", result.get(12).getKey());
-            Assertions.assertEquals(100, result.get(12).getSubmitted());
-            Assertions.assertEquals(100, result.get(12).getCalculated());
+            Assertions.assertEquals(VAT, result.get(12).getKey());
+            Assertions.assertEquals(true, result.get(12).getSubmitted());
+            Assertions.assertEquals(false, result.get(12).getCalculated());
             Assertions.assertEquals("/submissions/%s/claims/%s/assessment-outcome", result.get(12).getChangeUrl());
-        }
-
-        @Test void onlyRowsWithValuesRendered() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key("ff").build());
-            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
-            claim.setCounselsCost(ClaimField.builder().key("cc").build());
-            claim.setDetentionTravelWaitingCosts(ClaimField.builder().key("dtwc").build());
-            claim.setJrFormFillingCost(ClaimField.builder().key("jffc").build());
-            claim.setAdjournedHearing(ClaimField.builder().key("ah").submitted(100).calculated(100).build());
-            claim.setCmrhTelephone(ClaimField.builder().key("ct").build());
-            claim.setCmrhOral(ClaimField.builder().key("co").build());
-            claim.setHoInterview(ClaimField.builder().key("hi").build());
-            claim.setSubstantiveHearing(ClaimField.builder().key("sh").build());
-            claim.setVatClaimed(ClaimField.builder().key("vc").calculated(100).build());
-            claim.setTotalAmount(ClaimField.builder().key("ta").submitted(100).build());
-
-            CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getReviewClaimFieldRows();
-
-            Assertions.assertEquals(9, result.size());
-
-            Assertions.assertEquals("ff", result.get(0).getKey());
-
-            Assertions.assertEquals("npc", result.get(1).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
-
-            Assertions.assertEquals("nda", result.get(2).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
-
-            Assertions.assertEquals("dva", result.get(3).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
-
-            Assertions.assertEquals("dtwc", result.get(4).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
-
-            Assertions.assertEquals("jffc", result.get(5).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
-
-            Assertions.assertEquals("cc", result.get(6).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
-
-            Assertions.assertEquals("ah", result.get(7).getKey());
-            Assertions.assertEquals(100, result.get(7).getSubmitted());
-            Assertions.assertEquals(100, result.get(7).getCalculated());
-
-            Assertions.assertEquals("vc", result.get(8).getKey());
-            Assertions.assertEquals(100, result.get(8).getCalculated());
-            Assertions.assertEquals("/submissions/%s/claims/%s/assessment-outcome", result.get(8).getChangeUrl());
         }
 
         @Test
         void rowsRenderedForNullBoltOnClaimValues() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key("ff").build());
-            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
-            claim.setCounselsCost(ClaimField.builder().key("cc").build());
-            claim.setDetentionTravelWaitingCosts(ClaimField.builder().key("dtwc").build());
-            claim.setJrFormFillingCost(ClaimField.builder().key("jffc").build());
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            claim.setAdjournedHearing(null);
+            claim.setCmrhTelephone(null);
+            claim.setCmrhOral(null);
+            claim.setHoInterview(null);
+            claim.setSubstantiveHearing(null);
 
             CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimField> result = viewModel.getReviewClaimFieldRows();
 
-            Assertions.assertEquals(7, result.size());
+            Assertions.assertEquals(8, result.size());
 
-            Assertions.assertEquals("ff", result.get(0).getKey());
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
-            Assertions.assertEquals("npc", result.get(1).getKey());
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
-            Assertions.assertEquals("nda", result.get(2).getKey());
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
-            Assertions.assertEquals("dva", result.get(3).getKey());
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
 
-            Assertions.assertEquals("dtwc", result.get(4).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getAssessed());
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
 
-            Assertions.assertEquals("jffc", result.get(5).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getAssessed());
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
 
-            Assertions.assertEquals("cc", result.get(6).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getAssessed());
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
+
+            Assertions.assertEquals(VAT, result.get(7).getKey());
+            Assertions.assertEquals(true, result.get(7).getSubmitted());
+            Assertions.assertEquals(false, result.get(7).getCalculated());
+            Assertions.assertEquals("/submissions/%s/claims/%s/assessment-outcome", result.get(7).getChangeUrl());
         }
 
         @Test
         void rowsRenderedForZeroBoltOnClaimValues() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key("ff").build());
-            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
-            claim.setCounselsCost(ClaimField.builder().key("cc").build());
-            claim.setDetentionTravelWaitingCosts(ClaimField.builder().key("dtwc").build());
-            claim.setJrFormFillingCost(ClaimField.builder().key("jffc").build());
-            claim.setAdjournedHearing(ClaimField.builder().key("ah").submitted(BigDecimal.ZERO).build());
-            claim.setCmrhTelephone(ClaimField.builder().key("ct").submitted(0).build());
-            claim.setCmrhOral(ClaimField.builder().key("co").submitted(0).build());
-            claim.setHoInterview(ClaimField.builder().key("hi").submitted(0).build());
-            claim.setSubstantiveHearing(ClaimField.builder().key("sh").submitted(BigDecimal.ZERO).build());
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            claim.setAdjournedHearing(updateClaimFieldSubmittedValue(claim.getAdjournedHearing(), BigDecimal.ZERO));
+            claim.setCmrhTelephone(updateClaimFieldSubmittedValue(claim.getCmrhTelephone(), 0));
+            claim.setCmrhOral(updateClaimFieldSubmittedValue(claim.getCmrhOral(), 0));
+            claim.setHoInterview(updateClaimFieldSubmittedValue(claim.getHoInterview(), 0));
+            claim.setSubstantiveHearing(updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), BigDecimal.ZERO));
 
             CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimField> result = viewModel.getReviewClaimFieldRows();
 
-            Assertions.assertEquals(7, result.size());
+            Assertions.assertEquals(8, result.size());
 
-            Assertions.assertEquals("ff", result.get(0).getKey());
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
-            Assertions.assertEquals("npc", result.get(1).getKey());
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
-            Assertions.assertEquals("nda", result.get(2).getKey());
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
-            Assertions.assertEquals("dva", result.get(3).getKey());
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
 
-            Assertions.assertEquals("dtwc", result.get(4).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(4).getAssessed());
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
 
-            Assertions.assertEquals("jffc", result.get(5).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(5).getAssessed());
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
 
-            Assertions.assertEquals("cc", result.get(6).getKey());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getSubmitted());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getCalculated());
-            Assertions.assertEquals(BigDecimal.ZERO, result.get(6).getAssessed());
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
+
+            Assertions.assertEquals(VAT, result.get(7).getKey());
+            Assertions.assertEquals(true, result.get(7).getSubmitted());
+            Assertions.assertEquals(false, result.get(7).getCalculated());
         }
     }
 

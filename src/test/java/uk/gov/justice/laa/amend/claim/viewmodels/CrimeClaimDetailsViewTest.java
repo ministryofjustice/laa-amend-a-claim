@@ -4,16 +4,25 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 
 public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDetails, CrimeClaimDetailsView> {
 
@@ -85,74 +94,65 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
     class GetSummaryClaimFieldRowsTests {
         @Test
         void rowsRenderedForClaimValuesWhenClaimHasAnAssessment() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key("ff").build());
-            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
-            claim.setTravelCosts(ClaimField.builder().key("tc").build());
-            claim.setWaitingCosts(ClaimField.builder().key("wc").build());
-            claim.setTotalAmount(ClaimField.builder().key("ta").build());
+            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
             claim.setHasAssessment(true);
-
-            CrimeClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
-
-            Assertions.assertEquals(6, result.size());
-
-            Assertions.assertEquals("ff", result.get(0).getKey());
-
-            Assertions.assertEquals("npc", result.get(1).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
-
-            Assertions.assertEquals("nda", result.get(2).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
-
-            Assertions.assertEquals("dva", result.get(3).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
-
-            Assertions.assertEquals("tc", result.get(4).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
-
-            Assertions.assertEquals("wc", result.get(5).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
-        }
-
-        @Test
-        void rowsRenderedForClaimValuesWhenClaimDoesNotHaveAnAssessment() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key("ff").build());
-            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
-            claim.setTravelCosts(ClaimField.builder().key("tc").build());
-            claim.setWaitingCosts(ClaimField.builder().key("wc").build());
-            claim.setTotalAmount(ClaimField.builder().key("ta").build());
-            claim.setHasAssessment(false);
 
             CrimeClaimDetailsView viewModel = createView(claim);
             List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
 
             Assertions.assertEquals(7, result.size());
 
-            Assertions.assertEquals("ff", result.get(0).getKey());
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
-            Assertions.assertEquals("npc", result.get(1).getKey());
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
-            Assertions.assertEquals("nda", result.get(2).getKey());
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
-            Assertions.assertEquals("dva", result.get(3).getKey());
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
 
-            Assertions.assertEquals("tc", result.get(4).getKey());
+            Assertions.assertEquals(TRAVEL_COSTS, result.get(4).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
 
-            Assertions.assertEquals("wc", result.get(5).getKey());
+            Assertions.assertEquals(WAITING_COSTS, result.get(5).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
 
-            Assertions.assertEquals("ta", result.get(6).getKey());
+            Assertions.assertEquals(VAT, result.get(6).getKey());
+        }
+
+        @Test
+        void rowsRenderedForClaimValuesWhenClaimDoesNotHaveAnAssessment() {
+            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
+            claim.setTotalAmount(MockClaimsFunctions.createClaimField(TOTAL));
+            claim.setHasAssessment(false);
+
+            CrimeClaimDetailsView viewModel = createView(claim);
+            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
+
+            Assertions.assertEquals(8, result.size());
+
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
+
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+
+            Assertions.assertEquals(TRAVEL_COSTS, result.get(4).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
+
+            Assertions.assertEquals(WAITING_COSTS, result.get(5).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
+
+            Assertions.assertEquals(VAT, result.get(6).getKey());
+
+            Assertions.assertEquals(TOTAL, result.get(7).getKey());
         }
     }
 
@@ -160,36 +160,31 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
     class GetReviewClaimFieldRowsTests {
         @Test
         void rowsRenderedForClaimValues() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key("ff").build());
-            claim.setNetProfitCost(ClaimField.builder().key("npc").build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key("nda").build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key("dva").build());
-            claim.setTravelCosts(ClaimField.builder().key("tc").build());
-            claim.setWaitingCosts(ClaimField.builder().key("wc").build());
-            claim.setTotalAmount(ClaimField.builder().key("ta").build());
+            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
 
             CrimeClaimDetailsView viewModel = createView(claim);
             List<ClaimField> result = viewModel.getReviewClaimFieldRows();
 
-            Assertions.assertEquals(6, result.size());
+            Assertions.assertEquals(7, result.size());
 
-            Assertions.assertEquals("ff", result.get(0).getKey());
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
-            Assertions.assertEquals("npc", result.get(1).getKey());
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
-            Assertions.assertEquals("nda", result.get(2).getKey());
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
-            Assertions.assertEquals("dva", result.get(3).getKey());
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
 
-            Assertions.assertEquals("tc", result.get(4).getKey());
+            Assertions.assertEquals(TRAVEL_COSTS, result.get(4).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
 
-            Assertions.assertEquals("wc", result.get(5).getKey());
+            Assertions.assertEquals(WAITING_COSTS, result.get(5).getKey());
             Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
+
+            Assertions.assertEquals(VAT, result.get(6).getKey());
         }
     }
 
