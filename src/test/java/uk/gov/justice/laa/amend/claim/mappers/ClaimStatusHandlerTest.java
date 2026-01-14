@@ -10,6 +10,7 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldType;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
@@ -45,8 +46,8 @@ class ClaimStatusHandlerTest {
     class NilledStatusTests {
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiable() {
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).build();
+            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED).build();
+            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED).build();
             ClaimDetails claimDetails = new CrimeClaimDetails();
             claimDetails.setAssessedTotalVat(assessedTotalVatField);
             claimDetails.setAssessedTotalInclVat(assessedTotalInclVatField);
@@ -59,8 +60,8 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetAssessableCrimeFieldsToNotModifiable() {
-            ClaimField travelCostsField = ClaimField.builder().key(TRAVEL_COSTS).build();
-            ClaimField waitingCostsField = ClaimField.builder().key(WAITING_COSTS).build();
+            ClaimField travelCostsField = ClaimField.builder().key(TRAVEL_COSTS).type(ClaimFieldType.NORMAL).build();
+            ClaimField waitingCostsField = ClaimField.builder().key(WAITING_COSTS).type(ClaimFieldType.NORMAL).build();
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
             crimeClaim.setTravelCosts(travelCostsField);
             crimeClaim.setWaitingCosts(waitingCostsField);
@@ -73,9 +74,9 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetAssessableCivilFieldsToNotModifiable() {
-            ClaimField detentionTravelWaitingCostsField = ClaimField.builder().key(DETENTION_TRAVEL_COST).build();
-            ClaimField jrFormFillingCostField = ClaimField.builder().key(JR_FORM_FILLING).build();
-            ClaimField counselsCostField = ClaimField.builder().key(COUNSELS_COST).build();
+            ClaimField detentionTravelWaitingCostsField = ClaimField.builder().key(DETENTION_TRAVEL_COST).type(ClaimFieldType.NORMAL).build();
+            ClaimField jrFormFillingCostField = ClaimField.builder().key(JR_FORM_FILLING).type(ClaimFieldType.NORMAL).build();
+            ClaimField counselsCostField = ClaimField.builder().key(COUNSELS_COST).type(ClaimFieldType.NORMAL).build();
             CivilClaimDetails crimeClaim = new CivilClaimDetails();
             crimeClaim.setDetentionTravelWaitingCosts(detentionTravelWaitingCostsField);
             crimeClaim.setJrFormFillingCost(jrFormFillingCostField);
@@ -90,11 +91,11 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetBoltOnFieldsToNotModifiable() {
-            ClaimField adjournedHearingField = ClaimField.builder().key(ADJOURNED_FEE).build();
-            ClaimField cmrhTelephoneField = ClaimField.builder().key(CMRH_TELEPHONE).build();
-            ClaimField cmrhOralField = ClaimField.builder().key(CMRH_ORAL).build();
-            ClaimField hoInterviewField = ClaimField.builder().key(HO_INTERVIEW).build();
-            ClaimField substantiveHearingField = ClaimField.builder().key(SUBSTANTIVE_HEARING).build();
+            ClaimField adjournedHearingField = ClaimField.builder().key(ADJOURNED_FEE).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField cmrhTelephoneField = ClaimField.builder().key(CMRH_TELEPHONE).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField cmrhOralField = ClaimField.builder().key(CMRH_ORAL).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField hoInterviewField = ClaimField.builder().key(HO_INTERVIEW).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField substantiveHearingField = ClaimField.builder().key(SUBSTANTIVE_HEARING).type(ClaimFieldType.BOLT_ON).build();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setAdjournedHearing(adjournedHearingField);
             claimDetails.setCmrhTelephone(cmrhTelephoneField);
@@ -113,7 +114,7 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetFixedFeeFieldToNotModifiable() {
-            ClaimField fixedFeeField = ClaimField.builder().key(FIXED_FEE).build();
+            ClaimField fixedFeeField = ClaimField.builder().key(FIXED_FEE).type(ClaimFieldType.FIXED_FEE).build();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setFixedFee(fixedFeeField);
 
@@ -124,7 +125,7 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetTotalAmountFieldToNotModifiable() {
-            ClaimField totalAmountField = ClaimField.builder().key(TOTAL).build();
+            ClaimField totalAmountField = ClaimField.builder().key(TOTAL).type(ClaimFieldType.TOTAL).build();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setTotalAmount(totalAmountField);
 
@@ -135,7 +136,7 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetVatClaimedFieldToModifiable() {
-            ClaimField vatClaimedField = ClaimField.builder().key(VAT).build();
+            ClaimField vatClaimedField = ClaimField.builder().key(VAT).type(ClaimFieldType.NORMAL).build();
             ClaimDetails civilClaimDetails = new CivilClaimDetails();
             civilClaimDetails.setVatClaimed(vatClaimedField);
 
@@ -150,8 +151,8 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiableForCrimeClaimWithNoFeeCode() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).build();
+            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED).build();
+            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED).build();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
             crimeClaim.setFeeCode(null);
@@ -165,8 +166,8 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiableForCrimeClaimWithInvalidFeeCode() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).build();
+            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED).build();
+            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED).build();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
             crimeClaim.setFeeCode("ABCD");
@@ -180,8 +181,8 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetAssessedTotalFieldsToModifiableForCrimeClaimWithValidFeeCode() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).build();
+            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED).build();
+            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED).build();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
             crimeClaim.setFeeCode("INVC");
@@ -195,8 +196,8 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiableForCivilClaim() {
             CivilClaimDetails crimeClaim = new CivilClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).build();
+            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED).build();
+            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED).build();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
 
@@ -208,7 +209,7 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetNetProfitCostFieldToModifiable() {
-            ClaimField netProfitCostField = ClaimField.builder().key(NET_PROFIT_COST).build();
+            ClaimField netProfitCostField = ClaimField.builder().key(NET_PROFIT_COST).type(ClaimFieldType.NORMAL).build();
             ClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setNetProfitCost(netProfitCostField);
 
@@ -219,11 +220,11 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetBoltOnFieldsToNotModifiable() {
-            ClaimField adjournedHearingField = ClaimField.builder().key(ADJOURNED_FEE).build();
-            ClaimField cmrhTelephoneField = ClaimField.builder().key(CMRH_TELEPHONE).build();
-            ClaimField cmrhOralField = ClaimField.builder().key(CMRH_ORAL).build();
-            ClaimField hoInterviewField = ClaimField.builder().key(HO_INTERVIEW).build();
-            ClaimField substantiveHearingField = ClaimField.builder().key(SUBSTANTIVE_HEARING).build();
+            ClaimField adjournedHearingField = ClaimField.builder().key(ADJOURNED_FEE).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField cmrhTelephoneField = ClaimField.builder().key(CMRH_TELEPHONE).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField cmrhOralField = ClaimField.builder().key(CMRH_ORAL).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField hoInterviewField = ClaimField.builder().key(HO_INTERVIEW).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField substantiveHearingField = ClaimField.builder().key(SUBSTANTIVE_HEARING).type(ClaimFieldType.BOLT_ON).build();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setAdjournedHearing(adjournedHearingField);
             claimDetails.setCmrhTelephone(cmrhTelephoneField);
@@ -242,7 +243,7 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetFixedFeeFieldToNotModifiable() {
-            ClaimField fixedFeeField = ClaimField.builder().key(FIXED_FEE).build();
+            ClaimField fixedFeeField = ClaimField.builder().key(FIXED_FEE).type(ClaimFieldType.FIXED_FEE).build();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setFixedFee(fixedFeeField);
 
@@ -253,7 +254,7 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetTotalAmountFieldToNotModifiable() {
-            ClaimField totalAmountField = ClaimField.builder().key(TOTAL).build();
+            ClaimField totalAmountField = ClaimField.builder().key(TOTAL).type(ClaimFieldType.TOTAL).build();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setTotalAmount(totalAmountField);
 
@@ -264,8 +265,8 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetAssessableCrimeFieldsToModifiable() {
-            ClaimField travelCostsField = ClaimField.builder().key(TRAVEL_COSTS).build();
-            ClaimField waitingCostsField = ClaimField.builder().key(WAITING_COSTS).build();
+            ClaimField travelCostsField = ClaimField.builder().key(TRAVEL_COSTS).type(ClaimFieldType.NORMAL).build();
+            ClaimField waitingCostsField = ClaimField.builder().key(WAITING_COSTS).type(ClaimFieldType.NORMAL).build();
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
             crimeClaim.setTravelCosts(travelCostsField);
             crimeClaim.setWaitingCosts(waitingCostsField);
@@ -278,9 +279,9 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetAssessableCivilFieldsToModifiable() {
-            ClaimField detentionTravelWaitingCostsField = ClaimField.builder().key(DETENTION_TRAVEL_COST).build();
-            ClaimField jrFormFillingCostField = ClaimField.builder().key(JR_FORM_FILLING).build();
-            ClaimField counselsCostField = ClaimField.builder().key(COUNSELS_COST).build();
+            ClaimField detentionTravelWaitingCostsField = ClaimField.builder().key(DETENTION_TRAVEL_COST).type(ClaimFieldType.NORMAL).build();
+            ClaimField jrFormFillingCostField = ClaimField.builder().key(JR_FORM_FILLING).type(ClaimFieldType.NORMAL).build();
+            ClaimField counselsCostField = ClaimField.builder().key(COUNSELS_COST).type(ClaimFieldType.NORMAL).build();
             CivilClaimDetails crimeClaim = new CivilClaimDetails();
             crimeClaim.setDetentionTravelWaitingCosts(detentionTravelWaitingCostsField);
             crimeClaim.setJrFormFillingCost(jrFormFillingCostField);
@@ -299,8 +300,8 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiableForCrimeClaimWithNoFeeCode() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).build();
+            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED).build();
+            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED).build();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
             crimeClaim.setFeeCode(null);
@@ -315,8 +316,8 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiableForCrimeClaimWithInvalidFeeCode() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).build();
+            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED).build();
+            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED).build();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
             crimeClaim.setFeeCode("ABCD");
@@ -330,8 +331,8 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetAssessedTotalFieldsToModifiableForCrimeClaimWithValidFeeCode() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).build();
+            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED).build();
+            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED).build();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
             crimeClaim.setFeeCode("INVC");
@@ -345,8 +346,8 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiableForCivilClaim() {
             CivilClaimDetails crimeClaim = new CivilClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).build();
+            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED).build();
+            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED).build();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
 
@@ -359,8 +360,7 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetFixedFeeFieldToNotModifiable() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField field = new ClaimField();
-            field.setKey(FIXED_FEE);
+            ClaimField field = ClaimField.builder().key(FIXED_FEE).type(ClaimFieldType.FIXED_FEE).build();
             crimeClaim.setFixedFee(field);
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
@@ -371,8 +371,7 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetTotalAmountFieldToNotModifiable() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField field = new ClaimField();
-            field.setKey(TOTAL);
+            ClaimField field = ClaimField.builder().key(TOTAL).type(ClaimFieldType.TOTAL).build();
             crimeClaim.setTotalAmount(field);
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
@@ -382,11 +381,11 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetBoltOnFieldsToNotModifiable() {
-            ClaimField adjournedHearingField = ClaimField.builder().key(ADJOURNED_FEE).build();
-            ClaimField cmrhTelephoneField = ClaimField.builder().key(CMRH_TELEPHONE).build();
-            ClaimField cmrhOralField = ClaimField.builder().key(CMRH_ORAL).build();
-            ClaimField hoInterviewField = ClaimField.builder().key(HO_INTERVIEW).build();
-            ClaimField substantiveHearingField = ClaimField.builder().key(SUBSTANTIVE_HEARING).build();
+            ClaimField adjournedHearingField = ClaimField.builder().key(ADJOURNED_FEE).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField cmrhTelephoneField = ClaimField.builder().key(CMRH_TELEPHONE).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField cmrhOralField = ClaimField.builder().key(CMRH_ORAL).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField hoInterviewField = ClaimField.builder().key(HO_INTERVIEW).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField substantiveHearingField = ClaimField.builder().key(SUBSTANTIVE_HEARING).type(ClaimFieldType.BOLT_ON).build();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setAdjournedHearing(adjournedHearingField);
             claimDetails.setCmrhTelephone(cmrhTelephoneField);
@@ -405,8 +404,8 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetAssessableCrimeFieldsToModifiable() {
-            ClaimField travelCostsField = ClaimField.builder().key(TRAVEL_COSTS).build();
-            ClaimField waitingCostsField = ClaimField.builder().key(WAITING_COSTS).build();
+            ClaimField travelCostsField = ClaimField.builder().key(TRAVEL_COSTS).type(ClaimFieldType.NORMAL).build();
+            ClaimField waitingCostsField = ClaimField.builder().key(WAITING_COSTS).type(ClaimFieldType.NORMAL).build();
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
             crimeClaim.setTravelCosts(travelCostsField);
             crimeClaim.setWaitingCosts(waitingCostsField);
@@ -419,9 +418,9 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetAssessableCivilFieldsToModifiable() {
-            ClaimField detentionTravelWaitingCostsField = ClaimField.builder().key(DETENTION_TRAVEL_COST).build();
-            ClaimField jrFormFillingCostField = ClaimField.builder().key(JR_FORM_FILLING).build();
-            ClaimField counselsCostField = ClaimField.builder().key(COUNSELS_COST).build();
+            ClaimField detentionTravelWaitingCostsField = ClaimField.builder().key(DETENTION_TRAVEL_COST).type(ClaimFieldType.NORMAL).build();
+            ClaimField jrFormFillingCostField = ClaimField.builder().key(JR_FORM_FILLING).type(ClaimFieldType.NORMAL).build();
+            ClaimField counselsCostField = ClaimField.builder().key(COUNSELS_COST).type(ClaimFieldType.NORMAL).build();
             CivilClaimDetails crimeClaim = new CivilClaimDetails();
             crimeClaim.setDetentionTravelWaitingCosts(detentionTravelWaitingCostsField);
             crimeClaim.setJrFormFillingCost(jrFormFillingCostField);
@@ -439,8 +438,8 @@ class ClaimStatusHandlerTest {
     class ReducedToFixedFeeStatusTests {
         @Test
         void shouldSetAssessableCrimeFieldsToModifiable() {
-            ClaimField travelCostsField = ClaimField.builder().key(TRAVEL_COSTS).build();
-            ClaimField waitingCostsField = ClaimField.builder().key(WAITING_COSTS).build();
+            ClaimField travelCostsField = ClaimField.builder().key(TRAVEL_COSTS).type(ClaimFieldType.NORMAL).build();
+            ClaimField waitingCostsField = ClaimField.builder().key(WAITING_COSTS).type(ClaimFieldType.NORMAL).build();
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
             crimeClaim.setTravelCosts(travelCostsField);
             crimeClaim.setWaitingCosts(waitingCostsField);
@@ -453,9 +452,9 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetAssessableCivilFieldsToModifiable() {
-            ClaimField detentionTravelWaitingCostsField = ClaimField.builder().key(DETENTION_TRAVEL_COST).build();
-            ClaimField jrFormFillingCostField = ClaimField.builder().key(JR_FORM_FILLING).build();
-            ClaimField counselsCostField = ClaimField.builder().key(COUNSELS_COST).build();
+            ClaimField detentionTravelWaitingCostsField = ClaimField.builder().key(DETENTION_TRAVEL_COST).type(ClaimFieldType.NORMAL).build();
+            ClaimField jrFormFillingCostField = ClaimField.builder().key(JR_FORM_FILLING).type(ClaimFieldType.NORMAL).build();
+            ClaimField counselsCostField = ClaimField.builder().key(COUNSELS_COST).type(ClaimFieldType.NORMAL).build();
             CivilClaimDetails crimeClaim = new CivilClaimDetails();
             crimeClaim.setDetentionTravelWaitingCosts(detentionTravelWaitingCostsField);
             crimeClaim.setJrFormFillingCost(jrFormFillingCostField);
@@ -470,11 +469,11 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetBoltOnFieldsToNotModifiable() {
-            ClaimField adjournedHearingField = ClaimField.builder().key(ADJOURNED_FEE).build();
-            ClaimField cmrhTelephoneField = ClaimField.builder().key(CMRH_TELEPHONE).build();
-            ClaimField cmrhOralField = ClaimField.builder().key(CMRH_ORAL).build();
-            ClaimField hoInterviewField = ClaimField.builder().key(HO_INTERVIEW).build();
-            ClaimField substantiveHearingField = ClaimField.builder().key(SUBSTANTIVE_HEARING).build();
+            ClaimField adjournedHearingField = ClaimField.builder().key(ADJOURNED_FEE).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField cmrhTelephoneField = ClaimField.builder().key(CMRH_TELEPHONE).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField cmrhOralField = ClaimField.builder().key(CMRH_ORAL).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField hoInterviewField = ClaimField.builder().key(HO_INTERVIEW).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField substantiveHearingField = ClaimField.builder().key(SUBSTANTIVE_HEARING).type(ClaimFieldType.BOLT_ON).build();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setAdjournedHearing(adjournedHearingField);
             claimDetails.setCmrhTelephone(cmrhTelephoneField);
@@ -493,7 +492,7 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetFixedFeeFieldToNotModifiable() {
-            ClaimField fixedFeeField = ClaimField.builder().key(FIXED_FEE).build();
+            ClaimField fixedFeeField = ClaimField.builder().key(FIXED_FEE).type(ClaimFieldType.FIXED_FEE).build();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setFixedFee(fixedFeeField);
 
@@ -504,7 +503,7 @@ class ClaimStatusHandlerTest {
 
         @Test
         void shouldSetTotalAmountFieldToNotModifiable() {
-            ClaimField totalAmountField = ClaimField.builder().key(TOTAL).build();
+            ClaimField totalAmountField = ClaimField.builder().key(TOTAL).type(ClaimFieldType.TOTAL).build();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setTotalAmount(totalAmountField);
 

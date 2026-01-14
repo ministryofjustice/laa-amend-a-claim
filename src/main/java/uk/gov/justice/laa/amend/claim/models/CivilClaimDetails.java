@@ -87,15 +87,6 @@ public class CivilClaimDetails extends ClaimDetails {
     }
 
     @Override
-    public boolean isBoltOnField(ClaimField field) {
-        return field == this.getAdjournedHearing()
-            || field == this.getCmrhTelephone()
-            || field == this.getCmrhOral()
-            || field == this.getHoInterview()
-            || field == this.getSubstantiveHearing();
-    }
-
-    @Override
     public ClaimDetailsView<? extends Claim> toViewModel() {
         return new CivilClaimDetailsView(this);
     }

@@ -117,8 +117,6 @@ public abstract class ClaimDetails extends Claim {
 
     public abstract boolean isAssessedTotalFieldModifiable();
 
-    public abstract boolean isBoltOnField(ClaimField field);
-
     public abstract ClaimDetailsView<? extends ClaimDetails> toViewModel();
 
     public abstract AssessmentPost toAssessment(AssessmentMapper mapper, String userId);

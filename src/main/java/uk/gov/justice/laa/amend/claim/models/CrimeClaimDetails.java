@@ -64,11 +64,6 @@ public class CrimeClaimDetails extends ClaimDetails {
     }
 
     @Override
-    public boolean isBoltOnField(ClaimField field) {
-        return false;
-    }
-
-    @Override
     public ClaimDetailsView<? extends Claim> toViewModel() {
         return new CrimeClaimDetailsView(this);
     }

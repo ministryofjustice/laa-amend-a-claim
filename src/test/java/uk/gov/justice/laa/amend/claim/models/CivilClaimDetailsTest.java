@@ -37,58 +37,6 @@ public class CivilClaimDetailsTest {
     }
 
     @Nested
-    class IsBoltOnFieldTests {
-
-        @Test
-        void returnsTrueWhenAdjournedHearing() {
-            ClaimField field = ClaimField.builder().key(ADJOURNED_FEE).build();
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setAdjournedHearing(field);
-            Assertions.assertTrue(claim.isBoltOnField(field));
-        }
-
-        @Test
-        void returnsTrueWhenCmrhTelephone() {
-            ClaimField field = ClaimField.builder().key(CMRH_TELEPHONE).build();
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setCmrhTelephone(field);
-            Assertions.assertTrue(claim.isBoltOnField(field));
-        }
-
-        @Test
-        void returnsTrueWhenCmrhOral() {
-            ClaimField field = ClaimField.builder().key(CMRH_ORAL).build();
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setCmrhOral(field);
-            Assertions.assertTrue(claim.isBoltOnField(field));
-        }
-
-        @Test
-        void returnsTrueWhenHoInterview() {
-            ClaimField field = ClaimField.builder().key(HO_INTERVIEW).build();
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setHoInterview(field);
-            Assertions.assertTrue(claim.isBoltOnField(field));
-        }
-
-        @Test
-        void returnsTrueWhenSubstantiveHearing() {
-            ClaimField field = ClaimField.builder().key(SUBSTANTIVE_HEARING).build();
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setSubstantiveHearing(field);
-            Assertions.assertTrue(claim.isBoltOnField(field));
-        }
-
-        @Test
-        void returnsFalseWhenNotABoltOnField() {
-            ClaimField field = ClaimField.builder().key(DETENTION_TRAVEL_COST).build();
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setDetentionTravelWaitingCosts(field);
-            Assertions.assertFalse(claim.isBoltOnField(field));
-        }
-    }
-
-    @Nested
     class SetNilledValuesTests {
 
         @Test

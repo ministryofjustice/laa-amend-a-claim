@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldType;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class ClaimStatusHandler {
             case NILLED -> handleNilledStatus(field, claim);
             case PAID_IN_FULL -> handleAssessmentInFullStatus(field, claim);
             case REDUCED -> handleReducedStatus(field, claim);
-            case REDUCED_TO_FIXED_FEE -> handleReducedToFixedFeeStatus(field, claim);
+            case REDUCED_TO_FIXED_FEE -> handleReducedToFixedFeeStatus(field);
         };
     }
 
@@ -52,40 +53,37 @@ public class ClaimStatusHandler {
      * Set the field status for REDUCED outcome status.
      */
     private ClaimFieldStatus handleReducedStatus(ClaimField field, ClaimDetails claim) {
-        if (isAssessedTotalField(field, claim)) {
+        if (isAssessedTotalField(field)) {
             return claim.isAssessedTotalFieldModifiable() ? ClaimFieldStatus.MODIFIABLE : ClaimFieldStatus.NOT_MODIFIABLE;
         }
-        return isFieldModifiable(field, claim);
+        return isFieldModifiable(field);
     }
 
     /**
      * Set the field status for REDUCED_TO_FIXED_FEE outcome status.
      */
-    private ClaimFieldStatus handleReducedToFixedFeeStatus(ClaimField field, ClaimDetails claim) {
-        return isFieldModifiable(field, claim);
+    private ClaimFieldStatus handleReducedToFixedFeeStatus(ClaimField field) {
+        return isFieldModifiable(field);
     }
 
     /**
      * Set the field status for PAID_IN_FULL outcome status.
      */
     private ClaimFieldStatus handleAssessmentInFullStatus(ClaimField field, ClaimDetails claim) {
-        if (isAssessedTotalField(field, claim)) {
+        if (isAssessedTotalField(field)) {
             return claim.isAssessedTotalFieldModifiable() ? ClaimFieldStatus.MODIFIABLE : ClaimFieldStatus.NOT_MODIFIABLE;
         }
-        return isFieldModifiable(field, claim);
+        return isFieldModifiable(field);
     }
 
     /**
      * Check if the field is Assessed Total
      */
-    private boolean isAssessedTotalField(ClaimField field, ClaimDetails claim) {
-        return field == claim.getAssessedTotalVat() || field == claim.getAssessedTotalInclVat();
+    private boolean isAssessedTotalField(ClaimField field) {
+        return field.getType() == ClaimFieldType.ASSESSED;
     }
 
-    private ClaimFieldStatus isFieldModifiable(ClaimField field, ClaimDetails claim) {
-        boolean isNotModifiable = claim.isBoltOnField(field)
-            || field == claim.getFixedFee()
-            || field == claim.getTotalAmount();
-        return isNotModifiable ? ClaimFieldStatus.NOT_MODIFIABLE : ClaimFieldStatus.MODIFIABLE;
+    private ClaimFieldStatus isFieldModifiable(ClaimField field) {
+        return field.getType().isNotAssessable() ? ClaimFieldStatus.NOT_MODIFIABLE : ClaimFieldStatus.MODIFIABLE;
     }
 }

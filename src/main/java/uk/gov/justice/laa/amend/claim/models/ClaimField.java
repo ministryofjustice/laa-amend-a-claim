@@ -25,6 +25,7 @@ public class ClaimField implements Serializable {
     private Object assessed;
     private String changeUrl;
     private ClaimFieldStatus status;
+    private ClaimFieldType type;
 
     public ClaimField(String key, Object submitted, Object calculated) {
         this(key, submitted, calculated, (String) null);

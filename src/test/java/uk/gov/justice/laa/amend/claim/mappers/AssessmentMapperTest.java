@@ -238,8 +238,10 @@ class AssessmentMapperTest {
 
         ClaimDetails claimDetails = new CrimeClaimDetails();
         claimDetails.setAreaOfLaw("CRIME_LOWER");
-        claimDetails.setAllowedTotalInclVat(new ClaimField(ALLOWED_TOTAL_VAT, BigDecimal.valueOf(345), BigDecimal.valueOf(345), null, null, null));
-        claimDetails.setAllowedTotalInclVat(new ClaimField(ALLOWED_TOTAL_INCL_VAT, BigDecimal.valueOf(348), BigDecimal.valueOf(348), null, null, null));
+        ClaimField allowedTotalVatField = ClaimField.builder().key(ALLOWED_TOTAL_VAT).submitted(345).calculated(345).build();
+        ClaimField allowedTotalInclVatField = ClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).submitted(348).calculated(348).build();
+        claimDetails.setAllowedTotalVat(allowedTotalVatField);
+        claimDetails.setAllowedTotalInclVat(allowedTotalInclVatField);
         claimDetails.setLastAssessment(assessmentGet);
         // Act
         ClaimDetails result = mapper.mapAssessmentToClaimDetails(claimDetails);

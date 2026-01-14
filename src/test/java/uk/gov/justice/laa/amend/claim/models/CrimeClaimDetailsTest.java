@@ -45,18 +45,6 @@ public class CrimeClaimDetailsTest {
     }
 
     @Nested
-    class IsBoltOnFieldTests {
-
-        @Test
-        void returnsFalse() {
-            ClaimField field = ClaimField.builder().key(TRAVEL_COSTS).build();
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setTravelCosts(field);
-            Assertions.assertFalse(claim.isBoltOnField(field));
-        }
-    }
-
-    @Nested
     class SetNilledValuesTests {
 
         @Test
