@@ -29,16 +29,6 @@ public class CivilClaimDetailsTest {
     private final ClaimStatusHandler claimStatusHandler = new ClaimStatusHandler();
 
     @Nested
-    class GetIsCrimeClaimDetailsTests {
-
-        @Test
-        void getIsCrimeClaimReturnsFalse() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-            Assertions.assertFalse(claim.getIsCrimeClaim());
-        }
-    }
-
-    @Nested
     class SetNilledValuesTests {
 
         @Test

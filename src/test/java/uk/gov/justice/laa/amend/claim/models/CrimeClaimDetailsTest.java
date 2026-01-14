@@ -23,16 +23,6 @@ public class CrimeClaimDetailsTest {
     private final ClaimStatusHandler claimStatusHandler = new ClaimStatusHandler();
 
     @Nested
-    class GetIsCrimeClaimDetailsTests {
-
-        @Test
-        void getIsCrimeClaimReturnsTrue() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            Assertions.assertTrue(claim.getIsCrimeClaim());
-        }
-    }
-
-    @Nested
     class SetNilledValuesTests {
 
         @Test

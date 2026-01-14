@@ -71,16 +71,10 @@ public class ClaimStatusHandler {
      * Set the field status for REDUCED outcome status.
      */
     private ClaimFieldStatus handleReducedStatus(ClaimField field, ClaimDetails claim) {
-        if (isAssessedTotalFields(field, claim) && isNotValidFeeCode(claim)) {
+        if (isAssessedTotalField(field, claim) && isNotValidFeeCode(claim)) {
             return ClaimFieldStatus.NOT_MODIFIABLE;
         }
         return checkAssessableFields(field);
-    }
-
-    private ClaimFieldStatus checkAssessableFields(ClaimField field) {
-        return NON_ASSESSABLE_KEYS.contains(field.getKey())
-                ? ClaimFieldStatus.NOT_MODIFIABLE
-                : ClaimFieldStatus.MODIFIABLE;
     }
 
     /**
@@ -94,7 +88,7 @@ public class ClaimStatusHandler {
      * Set the field status for PAID_IN_FULL outcome status.
      */
     private ClaimFieldStatus handleAssessmentInFull(ClaimField field, ClaimDetails claim) {
-        if (isAssessedTotalFields(field, claim) && isNotValidFeeCode(claim)) {
+        if (isAssessedTotalField(field, claim) && isNotValidFeeCode(claim)) {
             return ClaimFieldStatus.NOT_MODIFIABLE;
         } else if (field == claim.getFixedFee() || field == claim.getTotalAmount()) {
             return  ClaimFieldStatus.NOT_MODIFIABLE;
@@ -105,7 +99,13 @@ public class ClaimStatusHandler {
     /**
      * Check if the field is Assessed Total
      */
-    private boolean isAssessedTotalFields(ClaimField field, ClaimDetails claim) {
+    private boolean isAssessedTotalField(ClaimField field, ClaimDetails claim) {
         return field == claim.getAssessedTotalVat() || field == claim.getAssessedTotalInclVat();
+    }
+
+    private ClaimFieldStatus checkAssessableFields(ClaimField field) {
+        return NON_ASSESSABLE_KEYS.contains(field.getKey())
+            ? ClaimFieldStatus.NOT_MODIFIABLE
+            : ClaimFieldStatus.MODIFIABLE;
     }
 }
