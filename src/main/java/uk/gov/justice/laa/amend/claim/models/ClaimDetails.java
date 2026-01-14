@@ -115,7 +115,9 @@ public abstract class ClaimDetails extends Claim {
         }
     }
 
-    public abstract boolean getIsCrimeClaim();
+    public abstract boolean isAssessedTotalFieldModifiable();
+
+    public abstract boolean isBoltOnField(ClaimField field);
 
     public abstract ClaimDetailsView<? extends ClaimDetails> toViewModel();
 

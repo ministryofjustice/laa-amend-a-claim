@@ -82,8 +82,17 @@ public class CivilClaimDetails extends ClaimDetails {
     }
 
     @Override
-    public boolean getIsCrimeClaim() {
+    public boolean isAssessedTotalFieldModifiable() {
         return false;
+    }
+
+    @Override
+    public boolean isBoltOnField(ClaimField field) {
+        return field == this.getAdjournedHearing()
+            || field == this.getCmrhTelephone()
+            || field == this.getCmrhOral()
+            || field == this.getHoInterview()
+            || field == this.getSubstantiveHearing();
     }
 
     @Override

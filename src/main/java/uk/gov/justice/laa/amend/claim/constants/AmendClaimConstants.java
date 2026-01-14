@@ -2,6 +2,8 @@ package uk.gov.justice.laa.amend.claim.constants;
 
 import uk.gov.justice.laa.amend.claim.models.SortDirection;
 
+import java.util.Set;
+
 public class AmendClaimConstants {
     public static final String PROVIDER_ACCOUNT_NUMBER_REQUIRED_ERROR = "{index.providerAccountNumber.error.required}";
     public static final String PROVIDER_ACCOUNT_NUMBER_INVALID_ERROR = "{index.providerAccountNumber.error.invalid}";
@@ -53,4 +55,6 @@ public class AmendClaimConstants {
     }
 
     public static final String ASSESSMENT_ID = "assessmentId";
+
+    public static final Set<String> VALID_POLICE_STATION_FEE_CODES = Set.of("INVC");
 }
