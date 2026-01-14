@@ -55,14 +55,14 @@ public class ClaimStatusHandler {
         if (isAssessedTotalField(field, claim)) {
             return claim.isAssessedTotalFieldModifiable() ? ClaimFieldStatus.MODIFIABLE : ClaimFieldStatus.NOT_MODIFIABLE;
         }
-        return checkAssessableFields(field, claim);
+        return isFieldModifiable(field, claim);
     }
 
     /**
      * Set the field status for REDUCED_TO_FIXED_FEE outcome status.
      */
     private ClaimFieldStatus handleReducedToFixedFeeStatus(ClaimField field, ClaimDetails claim) {
-        return checkAssessableFields(field, claim);
+        return isFieldModifiable(field, claim);
     }
 
     /**
@@ -72,7 +72,7 @@ public class ClaimStatusHandler {
         if (isAssessedTotalField(field, claim)) {
             return claim.isAssessedTotalFieldModifiable() ? ClaimFieldStatus.MODIFIABLE : ClaimFieldStatus.NOT_MODIFIABLE;
         }
-        return checkAssessableFields(field, claim);
+        return isFieldModifiable(field, claim);
     }
 
     /**
@@ -82,7 +82,7 @@ public class ClaimStatusHandler {
         return field == claim.getAssessedTotalVat() || field == claim.getAssessedTotalInclVat();
     }
 
-    private ClaimFieldStatus checkAssessableFields(ClaimField field, ClaimDetails claim) {
+    private ClaimFieldStatus isFieldModifiable(ClaimField field, ClaimDetails claim) {
         boolean isNotModifiable = claim.isBoltOnField(field)
             || field == claim.getFixedFee()
             || field == claim.getTotalAmount();

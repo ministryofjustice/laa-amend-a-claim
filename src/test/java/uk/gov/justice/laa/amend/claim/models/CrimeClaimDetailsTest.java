@@ -3,7 +3,6 @@ package uk.gov.justice.laa.amend.claim.models;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 
 import java.math.BigDecimal;
 
@@ -20,7 +19,42 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 
 public class CrimeClaimDetailsTest {
-    private final ClaimStatusHandler claimStatusHandler = new ClaimStatusHandler();
+
+    @Nested
+    class IsAssessedTotalFieldModifiableTests {
+
+        @Test
+        void returnsFalseWhenFeeCodeIsNull() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            Assertions.assertFalse(claim.isAssessedTotalFieldModifiable());
+        }
+
+        @Test
+        void returnsTrueWhenFeeCodeIsINVC() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setFeeCode("INVC");
+            Assertions.assertTrue(claim.isAssessedTotalFieldModifiable());
+        }
+
+        @Test
+        void returnsFalseWhenFeeCodeIsSomethingElse() {
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setFeeCode("ABCD");
+            Assertions.assertFalse(claim.isAssessedTotalFieldModifiable());
+        }
+    }
+
+    @Nested
+    class IsBoltOnFieldTests {
+
+        @Test
+        void returnsFalse() {
+            ClaimField field = ClaimField.builder().key(TRAVEL_COSTS).build();
+            CrimeClaimDetails claim = new CrimeClaimDetails();
+            claim.setTravelCosts(field);
+            Assertions.assertFalse(claim.isBoltOnField(field));
+        }
+    }
 
     @Nested
     class SetNilledValuesTests {
@@ -40,34 +74,16 @@ public class CrimeClaimDetailsTest {
             claim.setAllowedTotalVat(ClaimField.builder().build());
 
             claim.setNilledValues();
-            claimStatusHandler.updateFieldStatuses(claim, OutcomeType.NILLED);
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getNetProfitCost().getStatus());
-
             Assertions.assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getNetDisbursementAmount().getStatus());
-
             Assertions.assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getDisbursementVatAmount().getStatus());
-
             Assertions.assertEquals(BigDecimal.ZERO, claim.getTravelCosts().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getTravelCosts().getStatus());
-
             Assertions.assertEquals(BigDecimal.ZERO, claim.getWaitingCosts().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getWaitingCosts().getStatus());
-
             Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalVat().getStatus());
-
             Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
-
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAllowedTotalInclVat().getStatus());
-
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAllowedTotalVat().getStatus());
         }
     }
 
@@ -80,89 +96,17 @@ public class CrimeClaimDetailsTest {
             buildCrimeDetails(claim);
 
             claim.setPaidInFullValues();
-            claimStatusHandler.updateFieldStatuses(claim, OutcomeType.PAID_IN_FULL);
 
             Assertions.assertNull(claim.getFixedFee().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getFixedFee().getStatus());
-
             Assertions.assertEquals(BigDecimal.ONE, claim.getNetProfitCost().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getNetProfitCost().getStatus());
-
             Assertions.assertEquals(true, claim.getVatClaimed().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getVatClaimed().getStatus());
-
             Assertions.assertEquals(BigDecimal.ONE, claim.getNetDisbursementAmount().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getNetDisbursementAmount().getStatus());
-
             Assertions.assertEquals(BigDecimal.ONE, claim.getDisbursementVatAmount().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getDisbursementVatAmount().getStatus());
-
             Assertions.assertEquals(BigDecimal.ONE, claim.getTravelCosts().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getTravelCosts().getStatus());
-
             Assertions.assertEquals(BigDecimal.ONE, claim.getWaitingCosts().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getWaitingCosts().getStatus());
-
             Assertions.assertNull(claim.getAllowedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAllowedTotalVat().getStatus());
-
             Assertions.assertNull(claim.getAllowedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAllowedTotalInclVat().getStatus());
         }
-
-        @Test
-        void paidInFull_whenFeeCodeIsInListOfAssessedValueFeeCodes() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFeeCode("INVC");
-            updateClaimAssessmentTotals(claim);
-
-            claim.setPaidInFullValues();
-            claimStatusHandler.updateFieldStatuses(claim, OutcomeType.PAID_IN_FULL);
-
-            Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAssessedTotalVat().getStatus());
-
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
-        }
-
-        @Test
-        void paidInFull_whenFeeCodeIsNotInListOfAssessedValueFeeCodes() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFeeCode("ABCD");
-            updateClaimAssessmentTotals(claim);
-
-
-            claim.setPaidInFullValues();
-            claimStatusHandler.updateFieldStatuses(claim, OutcomeType.PAID_IN_FULL);
-
-            Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalVat().getStatus());
-
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
-        }
-
-        @Test
-        void paidInFull_whenFeeCodeIsNull() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFeeCode(null);
-            updateClaimAssessmentTotals(claim);
-
-
-            claim.setPaidInFullValues();
-            claimStatusHandler.updateFieldStatuses(claim, OutcomeType.PAID_IN_FULL);
-            Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalVat().getStatus());
-
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
-        }
-    }
-
-    private static void updateClaimAssessmentTotals(CrimeClaimDetails claim) {
-        claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ALLOWED_TOTAL_VAT).build());
-        claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ALLOWED_TOTAL_INCL_VAT).build());
     }
 
     @Nested
@@ -175,84 +119,16 @@ public class CrimeClaimDetailsTest {
             buildCrimeDetails(claim);
 
             claim.setReducedValues();
-            claimStatusHandler.updateFieldStatuses(claim, OutcomeType.REDUCED);
 
             Assertions.assertNull(claim.getFixedFee().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getFixedFee().getStatus());
-
             Assertions.assertNull(claim.getNetProfitCost().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getNetProfitCost().getStatus());
-
             Assertions.assertEquals(true, claim.getVatClaimed().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getVatClaimed().getStatus());
-
             Assertions.assertEquals(BigDecimal.ONE, claim.getNetDisbursementAmount().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getNetDisbursementAmount().getStatus());
-
             Assertions.assertEquals(BigDecimal.ONE, claim.getDisbursementVatAmount().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getDisbursementVatAmount().getStatus());
-
             Assertions.assertEquals(BigDecimal.ONE, claim.getTravelCosts().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getTravelCosts().getStatus());
-
             Assertions.assertEquals(BigDecimal.ONE, claim.getWaitingCosts().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getWaitingCosts().getStatus());
-
             Assertions.assertNull(claim.getAllowedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAllowedTotalVat().getStatus());
-
             Assertions.assertNull(claim.getAllowedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAllowedTotalInclVat().getStatus());
-        }
-
-        @Test
-        void reduced_whenFeeCodeIsInListOfAssessedValueFeeCodes() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFeeCode("INVC");
-            claim.setAssessedTotalVat(ClaimField.builder().key(ASSESSED_TOTAL_VAT).submitted(BigDecimal.ONE).build());
-            claim.setAssessedTotalInclVat(ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).submitted(BigDecimal.ONE).build());
-
-            claim.setReducedValues();
-            claimStatusHandler.updateFieldStatuses(claim, OutcomeType.REDUCED);
-
-            Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAssessedTotalVat().getStatus());
-
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
-        }
-
-        @Test
-        void reduced_whenFeeCodeIsNotInListOfAssessedValueFeeCodes() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFeeCode("ABCD");
-            claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
-            claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).build());
-
-            claim.setReducedValues();
-            claimStatusHandler.updateFieldStatuses(claim, OutcomeType.REDUCED);
-
-            Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalVat().getStatus());
-
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
-        }
-
-        @Test
-        void reduced_whenFeeCodeIsNull() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFeeCode(null);
-            updateClaimAssessmentTotals(claim);
-
-            claim.setReducedValues();
-            claimStatusHandler.updateFieldStatuses(claim, OutcomeType.REDUCED);
-
-            Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalVat().getStatus());
-
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getAssessedTotalInclVat().getStatus());
         }
     }
 
@@ -290,34 +166,16 @@ public class CrimeClaimDetailsTest {
 
 
             claim.setReducedToFixedFeeValues();
-            claimStatusHandler.updateFieldStatuses(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
             Assertions.assertEquals(BigDecimal.ONE, claim.getFixedFee().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.NOT_MODIFIABLE, claim.getFixedFee().getStatus());
-
             Assertions.assertNull(claim.getNetProfitCost().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getNetProfitCost().getStatus());
-
             Assertions.assertEquals(true, claim.getVatClaimed().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getVatClaimed().getStatus());
-
             Assertions.assertEquals(BigDecimal.ONE, claim.getNetDisbursementAmount().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getNetDisbursementAmount().getStatus());
-
             Assertions.assertEquals(BigDecimal.ONE, claim.getDisbursementVatAmount().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getDisbursementVatAmount().getStatus());
-
             Assertions.assertEquals(BigDecimal.ONE, claim.getTravelCosts().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getTravelCosts().getStatus());
-
             Assertions.assertEquals(BigDecimal.ONE, claim.getWaitingCosts().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getWaitingCosts().getStatus());
-
             Assertions.assertNull(claim.getAllowedTotalVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAllowedTotalVat().getStatus());
-
             Assertions.assertNull(claim.getAllowedTotalInclVat().getAssessed());
-            Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, claim.getAllowedTotalInclVat().getStatus());
         }
     }
 }
