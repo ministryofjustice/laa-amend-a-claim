@@ -266,8 +266,6 @@ class AssessmentMapperTest {
 
 
     private ClaimField createClaimField(Object value) {
-        ClaimField claimField = new ClaimField();
-        claimField.setAssessed(value);
-        return claimField;
+        return ClaimField.builder().assessed(value).build();
     }
 }

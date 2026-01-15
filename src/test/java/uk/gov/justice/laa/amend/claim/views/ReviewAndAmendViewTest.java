@@ -130,9 +130,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
     @Test
     void testPageWithValidationError() throws Exception {
-        ClaimField claimField = new ClaimField();
-        claimField.setKey("profitCosts");
-        claimField.setStatus(ClaimFieldStatus.MODIFIABLE);
+        ClaimField claimField = ClaimField.builder().key("profitCosts").status(ClaimFieldStatus.MODIFIABLE).build();
         claim.setNetProfitCost(claimField);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();

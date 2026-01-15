@@ -10,7 +10,7 @@ public class ClaimFieldTest {
 
     @Test
     void constructorWithoutAmendedValueShouldUseSubmittedValue() {
-        ClaimField claimField = new ClaimField("fooBar", BigDecimal.ONE, BigDecimal.TWO);
+        ClaimField claimField = new ClaimField("fooBar", BigDecimal.ONE, BigDecimal.TWO, ClaimFieldType.NORMAL);
 
         Assertions.assertEquals("fooBar", claimField.getKey());
         Assertions.assertEquals("claimSummary.rows.fooBar", claimField.getLabel());
@@ -20,6 +20,7 @@ public class ClaimFieldTest {
         Assertions.assertEquals(BigDecimal.TWO, claimField.getCalculated());
         Assertions.assertEquals(BigDecimal.ONE, claimField.getAssessed());
         Assertions.assertNull(claimField.getChangeUrl());
+        Assertions.assertEquals(ClaimFieldType.NORMAL, claimField.getType());
     }
 
 
@@ -31,13 +32,13 @@ public class ClaimFieldTest {
 
         @Test
         void returnNullWhenCostIsNull() {
-            ClaimField claimField = new ClaimField();
+            ClaimField claimField = ClaimField.builder().build();
             Assertions.assertNull(claimField.getChangeUrl(submissionId, claimId));
         }
 
         @Test
         void returnUrlWhenRowCostIsNotNull() {
-            ClaimField claimField = new ClaimField();
+            ClaimField claimField = ClaimField.builder().build();
             claimField.setChangeUrl(Cost.PROFIT_COSTS.getChangeUrl());
             String expectedResult = "/submissions/foo/claims/bar/profit-costs";
             Assertions.assertEquals(expectedResult, claimField.getChangeUrl(submissionId, claimId));

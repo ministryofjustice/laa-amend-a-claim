@@ -101,7 +101,45 @@ class ClaimMapperTest {
     }
 
     @Test
-    void mapVatClaimed() {
+    void mapVatClaimedWhenFeeCalculationResponseIsNull() {
+        ClaimResponse response = new ClaimResponse();
+        response.setIsVatApplicable(false);
+
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+
+        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getVatClaimed();
+        assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
+        assertEquals(false, claimField.getSubmitted());
+        assertEquals(false, claimField.getCalculated());
+        assertEquals(false, claimField.getAssessed());
+        assertNull(claimField.getChangeUrl(submissionId, claimId));
+        assertEquals(ClaimFieldType.NORMAL, claimField.getType());
+    }
+
+    @Test
+    void mapVatClaimedWhenVatIndicatorIsNull() {
+        ClaimResponse response = new ClaimResponse();
+        response.setIsVatApplicable(true);
+        FeeCalculationPatch feeCalc = new FeeCalculationPatch();
+        response.setFeeCalculationResponse(feeCalc);
+
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+
+        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getVatClaimed();
+        assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
+        assertEquals(true, claimField.getSubmitted());
+        assertEquals(false, claimField.getCalculated());
+        assertEquals(true, claimField.getAssessed());
+        assertNull(claimField.getChangeUrl(submissionId, claimId));
+        assertEquals(ClaimFieldType.NORMAL, claimField.getType());
+    }
+
+    @Test
+    void mapVatClaimedWhenVatIndicatorIsFalse() {
         ClaimResponse response = new ClaimResponse();
         response.setIsVatApplicable(true);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
@@ -116,6 +154,27 @@ class ClaimMapperTest {
         assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
         assertEquals(true, claimField.getSubmitted());
         assertEquals(false, claimField.getCalculated());
+        assertEquals(true, claimField.getAssessed());
+        assertNull(claimField.getChangeUrl(submissionId, claimId));
+        assertEquals(ClaimFieldType.NORMAL, claimField.getType());
+    }
+
+    @Test
+    void mapVatClaimedWhenVatIndicatorIsTrue() {
+        ClaimResponse response = new ClaimResponse();
+        response.setIsVatApplicable(true);
+        FeeCalculationPatch feeCalc = new FeeCalculationPatch();
+        feeCalc.setVatIndicator(true);
+        response.setFeeCalculationResponse(feeCalc);
+
+        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+
+        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+
+        ClaimField claimField = claim.getVatClaimed();
+        assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
+        assertEquals(true, claimField.getSubmitted());
+        assertEquals(true, claimField.getCalculated());
         assertEquals(true, claimField.getAssessed());
         assertNull(claimField.getChangeUrl(submissionId, claimId));
         assertEquals(ClaimFieldType.NORMAL, claimField.getType());

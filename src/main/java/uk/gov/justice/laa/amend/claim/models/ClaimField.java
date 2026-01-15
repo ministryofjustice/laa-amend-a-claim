@@ -3,7 +3,6 @@ package uk.gov.justice.laa.amend.claim.models;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import uk.gov.justice.laa.amend.claim.utils.FormUtils;
 
 import java.io.Serial;
@@ -14,42 +13,42 @@ import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class ClaimField implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private String key;
+    private final String key;
     private Object submitted;
     private Object calculated;
     private Object assessed;
     private String changeUrl;
     private ClaimFieldStatus status;
-    private ClaimFieldType type;
+    private final ClaimFieldType type;
 
-    public ClaimField(String key, Object submitted, Object calculated) {
-        this(key, submitted, calculated, (String) null);
+    public ClaimField(String key, Object submitted, Object calculated, ClaimFieldType type) {
+        this(key, submitted, calculated, (String) null, type);
     }
 
-    public ClaimField(String key, Object submitted, Object calculated, Object assessed) {
-        this(key, submitted, calculated);
+    public ClaimField(String key, Object submitted, Object calculated, Object assessed, ClaimFieldType type) {
+        this(key, submitted, calculated, type);
         this.assessed = assessed;
     }
 
-    public ClaimField(String key, Object submitted, Object calculated, Cost cost) {
-        this(key, submitted, calculated, cost.getChangeUrl());
+    public ClaimField(String key, Object submitted, Object calculated, Cost cost, ClaimFieldType type) {
+        this(key, submitted, calculated, cost.getChangeUrl(), type);
     }
 
-    public ClaimField(String key, Object submitted, Object calculated, String changeUrl) {
+    public ClaimField(String key, Object submitted, Object calculated, String changeUrl, ClaimFieldType type) {
         this.key = key;
         this.submitted = submitted;
         this.calculated = calculated;
         this.assessed = submitted;
         this.changeUrl = changeUrl;
+        this.type = type;
     }
 
-    public ClaimField(String key, Object submitted, Object calculated, Object amended, Object assessed) {
-        this(key, submitted, calculated, amended);
+    public ClaimField(String key, Object submitted, Object calculated, Object amended, Object assessed, ClaimFieldType type) {
+        this(key, submitted, calculated, amended, type);
         this.assessed = assessed;
     }
 

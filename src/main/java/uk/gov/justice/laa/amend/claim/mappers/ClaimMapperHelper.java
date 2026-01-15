@@ -178,39 +178,29 @@ public class ClaimMapperHelper {
 
     @Named("mapAssessedTotalVat")
     public ClaimField mapAssessedTotalVat() {
-        ClaimField claimField = new ClaimField();
-        claimField.setKey(ASSESSED_TOTAL_VAT);
-        claimField.setType(ClaimFieldType.ASSESSED);
-        return claimField;
+        return ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED).build();
     }
 
     @Named("mapAssessedTotalInclVat")
     public ClaimField mapAssessedTotalInclVat() {
-        ClaimField claimField = new ClaimField();
-        claimField.setKey(ASSESSED_TOTAL_INCL_VAT);
-        claimField.setType(ClaimFieldType.ASSESSED);
-        return claimField;
+        return ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED).build();
     }
 
     @Named("mapAllowedTotalVat")
     public ClaimField mapAllowedTotalVat(ClaimResponse claimResponse) {
-        ClaimField claimField = new ClaimField();
-        claimField.setKey(ALLOWED_TOTAL_VAT);
+        ClaimField claimField = ClaimField.builder().key(ALLOWED_TOTAL_VAT).type(ClaimFieldType.ALLOWED).build();
         FeeCalculationPatch fee = claimResponse.getFeeCalculationResponse();
         BigDecimal calculated = fee != null ? add(fee.getCalculatedVatAmount(), fee.getDisbursementVatAmount()) : null;
         claimField.setCalculated(calculated);
-        claimField.setType(ClaimFieldType.ALLOWED);
         return claimField;
     }
 
     @Named("mapAllowedTotalInclVat")
     public ClaimField mapAllowedTotalInclVat(ClaimResponse claimResponse) {
-        ClaimField claimField = new ClaimField();
-        claimField.setKey(ALLOWED_TOTAL_INCL_VAT);
+        ClaimField claimField = ClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).type(ClaimFieldType.ALLOWED).build();
         FeeCalculationPatch fee = claimResponse.getFeeCalculationResponse();
         BigDecimal calculated = fee != null ? fee.getTotalAmount() : null;
         claimField.setCalculated(calculated);
-        claimField.setType(ClaimFieldType.ALLOWED);
         return claimField;
     }
 }
