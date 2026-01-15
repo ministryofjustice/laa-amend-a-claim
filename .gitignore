@@ -23,3 +23,5 @@ out/
 
 snyk-app.sarif
 dump.rdb
+
+data-claim-api/db/*.sql
