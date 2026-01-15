@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.utils;
+package uk.gov.justice.laa.amend.claim.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 

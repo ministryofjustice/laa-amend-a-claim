@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
-import base.BaseTest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
@@ -11,10 +10,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import uk.gov.justice.laa.amend.claim.base.BaseTest;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-import uk.gov.justice.laa.amend.claim.utils.ClaimDetailsFixture;
-import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetailsData;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
 import java.util.stream.Stream;
 
@@ -28,7 +28,7 @@ public class ClaimDetailsTest extends BaseTest {
 
     private static final String CRIME_PROVIDER_ACCOUNT = "2R223X";
 
-    static Stream<ClaimDetailsFixture> detailsCases() {
+    static Stream<ClaimDetailsData> detailsCases() {
         return Stream.of(
             // crime
             loadFixture(
@@ -72,26 +72,26 @@ public class ClaimDetailsTest extends BaseTest {
     /**
      * Verifying Totals has been removed from test data, until we fix test data
      *
-     * @param claimDetailsFixture
+     * @param claimDetailsData
      */
     @ParameterizedTest(name = "[{index}] {0} Claim: Values match fixture")
     @MethodSource("detailsCases")
     @DisplayName("Claim Details: Values match fixture")
     @Severity(SeverityLevel.CRITICAL)
-    void crimeClaimValuesMatchFixture(ClaimDetailsFixture claimDetailsFixture) {
+    void crimeClaimValuesMatchFixture(ClaimDetailsData claimDetailsData) {
         String baseUrl = EnvConfig.baseUrl();
 
         SearchPage search = new SearchPage(page).navigateTo(baseUrl);
 
         search.searchForClaim(
-            claimDetailsFixture.getProviderAccount(),
+            claimDetailsData.getProviderAccount(),
             "",
             "",
-            claimDetailsFixture.getUfn(),
+            claimDetailsData.getUfn(),
             ""
         );
 
-        search.clickViewForUfn(claimDetailsFixture.getUfn());
+        search.clickViewForUfn(claimDetailsData.getUfn());
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
         details.waitForPage();
@@ -102,11 +102,11 @@ public class ClaimDetailsTest extends BaseTest {
         );
 
         Assertions.assertEquals(
-            claimDetailsFixture.isAddAssessmentOutcomeDisabled(),
+            claimDetailsData.isAddAssessmentOutcomeDisabled(),
             details.isAddAssessmentOutcomeDisabled(),
             "Add assessment outcome enabled/disabled state mismatch"
         );
 
-        details.assertAllValues(claimDetailsFixture.getValues());
+        details.assertAllValues(claimDetailsData.getValues());
     }
 }

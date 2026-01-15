@@ -1,97 +1,111 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
-import base.BaseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
-import uk.gov.justice.laa.amend.claim.utils.TestData;
+import uk.gov.justice.laa.amend.claim.base.BaseTest;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.util.LinkedHashMap;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.Map;
 
 public class DbSeedSmokeTest extends BaseTest {
 
     @Test
     @DisplayName("DB Seed: inserts claim and verifies claim row exists")
-    void seedAndVerifyClaimInsert() throws Exception {
+    void seedAndVerifyClaimInsert() throws SQLException {
 
-        TestData.Scope scope = TestData.seed(
-                "DbSeedSmokeTest",
-                "fixtures/db/claims/insert-claim.sql"
-        );
-
+        String calculatedFeeDetailId = scope.get("calculated_fee_detail.id");
+        String claimSummaryFeeId = scope.get("claim_summary_fee.id");
         String claimId = scope.get("claim.id");
-        String submissionId = scope.get("db.claims.claim.submission_id");
+        String submissionId = scope.get("submission.id");
         String ufn = scope.get("claim.ufn");
 
         Assertions.assertFalse(ufn.isBlank(), "Generated UFN must not be blank");
 
-        String jdbcUrl = "jdbc:postgresql://"
-                + EnvConfig.dbHost() + ":"
-                + EnvConfig.dbPort() + "/"
-                + EnvConfig.dbName();
+        checkSeededClaimData(claimId, submissionId, ufn);
+        checkSeededClaimSummaryFeeData(claimSummaryFeeId, claimId);
+        checkSeededCalculatedFeeDetailData(calculatedFeeDetailId, claimSummaryFeeId, claimId);
+    }
 
-        Map<String, String> claimRow = new LinkedHashMap<>();
+    private void checkSeededClaimData(String claimId, String submissionId, String ufn) throws SQLException {
+        String query = """
+            SELECT
+              id,
+              submission_id,
+              status,
+              schedule_reference,
+              case_reference_number,
+              unique_file_number,
+              case_start_date,
+              case_concluded_date,
+              matter_type_code,
+              fee_code,
+              procurement_area_code,
+              is_amended,
+              has_assessment,
+              version
+            FROM claims.claim
+            WHERE id = ?::uuid
+            """;
+        Map<Integer, Object> parameters = Map.of(1, claimId);
+        ResultSet rs = dqe.executeQuery(query, parameters);
 
-        try (Connection conn = DriverManager.getConnection(
-                jdbcUrl,
-                EnvConfig.dbUser(),
-                EnvConfig.dbPassword()
-        );
-             var ps = conn.prepareStatement(
-                     """
-                     SELECT
-                       id,
-                       submission_id,
-                       status,
-                       schedule_reference,
-                       case_reference_number,
-                       unique_file_number,
-                       case_start_date,
-                       case_concluded_date,
-                       matter_type_code,
-                       fee_code,
-                       procurement_area_code,
-                       is_amended,
-                       has_assessment,
-                       version
-                     FROM claims.claim
-                     WHERE id = ?::uuid
-                     """
-             )) {
+        printResult(rs, "claim");
 
-            ps.setString(1, claimId);
+        Assertions.assertEquals(claimId, rs.getString("id"));
+        Assertions.assertEquals(submissionId, rs.getString("submission_id"));
+        Assertions.assertEquals(ufn, rs.getString("unique_file_number"));
+        Assertions.assertEquals("VALID", rs.getString("status"));
+    }
 
-            try (var rs = ps.executeQuery()) {
-                Assertions.assertTrue(rs.next(), "Expected claim row to exist");
+    private void checkSeededClaimSummaryFeeData(String claimSummaryFeeId, String claimId) throws SQLException {
+        String query = """
+            SELECT
+              id,
+              claim_id
+            FROM claims.claim_summary_fee
+            WHERE id = ?::uuid
+            """;
+        Map<Integer, Object> parameters = Map.of(1, claimSummaryFeeId);
+        ResultSet rs = dqe.executeQuery(query, parameters);
 
-                claimRow.put("id", rs.getString("id"));
-                claimRow.put("submission_id", rs.getString("submission_id"));
-                claimRow.put("status", rs.getString("status"));
-                claimRow.put("schedule_reference", rs.getString("schedule_reference"));
-                claimRow.put("case_reference_number", rs.getString("case_reference_number"));
-                claimRow.put("unique_file_number", rs.getString("unique_file_number"));
-                claimRow.put("case_start_date", String.valueOf(rs.getDate("case_start_date")));
-                claimRow.put("case_concluded_date", String.valueOf(rs.getDate("case_concluded_date")));
-                claimRow.put("matter_type_code", rs.getString("matter_type_code"));
-                claimRow.put("fee_code", rs.getString("fee_code"));
-                claimRow.put("procurement_area_code", rs.getString("procurement_area_code"));
-                claimRow.put("is_amended", String.valueOf(rs.getBoolean("is_amended")));
-                claimRow.put("has_assessment", String.valueOf(rs.getBoolean("has_assessment")));
-                claimRow.put("version", String.valueOf(rs.getInt("version")));
-            }
+        printResult(rs, "claim_summary_fee");
+
+        Assertions.assertEquals(claimSummaryFeeId, rs.getString("id"));
+        Assertions.assertEquals(claimId, rs.getString("claim_id"));
+    }
+
+    private void checkSeededCalculatedFeeDetailData(String calculatedFeeDetailId, String claimSummaryFeeId, String claimId) throws SQLException {
+        String query = """
+            SELECT
+              id,
+              claim_summary_fee_id,
+              claim_id
+            FROM claims.calculated_fee_detail
+            WHERE id = ?::uuid
+            """;
+        Map<Integer, Object> parameters = Map.of(1, calculatedFeeDetailId);
+        ResultSet rs = dqe.executeQuery(query, parameters);
+
+        printResult(rs, "calculated_fee_detail");
+
+        Assertions.assertEquals(calculatedFeeDetailId, rs.getString("id"));
+        Assertions.assertEquals(claimSummaryFeeId, rs.getString("claim_summary_fee_id"));
+        Assertions.assertEquals(claimId, rs.getString("claim_id"));
+    }
+
+    private void printResult(ResultSet rs, String table) throws SQLException {
+        Assertions.assertTrue(rs.next(), "Expected claim row to exist");
+        System.out.printf("\n===== ROW INSERTED into %s =====%n", table);
+        ResultSetMetaData meta = rs.getMetaData();
+        int columnCount = meta.getColumnCount();
+        for (int i = 1; i <= columnCount; i++) {
+            String columnName = meta.getColumnLabel(i); // respects AS aliases
+            Object value = rs.getObject(i);
+            System.out.printf("%-25s : %s%n", columnName, value);
         }
-
-        System.out.println("\n===== CLAIM ROW INSERTED =====");
-        claimRow.forEach((k, v) -> System.out.printf("%-25s : %s%n", k, v));
         System.out.println("=============================\n");
-
-        Assertions.assertEquals(claimId, claimRow.get("id"));
-        Assertions.assertEquals(submissionId, claimRow.get("submission_id"));
-        Assertions.assertEquals(ufn, claimRow.get("unique_file_number"));
-        Assertions.assertEquals("VALID", claimRow.get("status"));
     }
 }

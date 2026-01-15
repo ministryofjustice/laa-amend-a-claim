@@ -1,12 +1,20 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
-import base.BaseTest;
-import io.qameta.allure.*;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.pages.*;
-import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
+import uk.gov.justice.laa.amend.claim.base.BaseTest;
+import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
+import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
+import uk.gov.justice.laa.amend.claim.pages.DiscardAssessmentPage;
+import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
+import uk.gov.justice.laa.amend.claim.pages.SearchPage;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
 @Epic("Assessment Discard Flow")
 @Feature("Discard Assessment Confirmation & Behaviour")

@@ -1,9 +1,9 @@
-package uk.gov.justice.laa.amend.claim.utils;
+package uk.gov.justice.laa.amend.claim.models;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ClaimDetailsFixture {
+public class ClaimDetailsData {
 
     private boolean addAssessmentOutcomeDisabled;
     private String claimType;

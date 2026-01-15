@@ -1,10 +1,14 @@
-package base;
+package uk.gov.justice.laa.amend.claim.base;
 
 import com.microsoft.playwright.Page;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import uk.gov.justice.laa.amend.claim.base.BrowserSession;
-import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
+import org.junit.jupiter.api.TestInfo;
+import uk.gov.justice.laa.amend.claim.persistence.DatabaseQueryExecutor;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
+import uk.gov.justice.laa.amend.claim.models.Scope;
+
+import java.sql.SQLException;
 
 /**
  * The {@code BaseTest} class provides a foundation for UI tests using the
@@ -35,10 +39,21 @@ import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
  *   completes.
  */
 public abstract class BaseTest {
+
+    protected Scope scope;
+    protected DatabaseQueryExecutor dqe;
     protected Page page;
 
     @BeforeEach
-    void createPage() {
+    void createPage(TestInfo testInfo) {
+        try {
+            String scopeName = testInfo.getDisplayName();
+            this.scope = new Scope(scopeName);
+            dqe = new DatabaseQueryExecutor();
+            dqe.seed(scope);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to seed database", e);
+        }
         page = BrowserSession.getContext().newPage();
         page.navigate(EnvConfig.baseUrl());
     }
