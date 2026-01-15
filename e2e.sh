@@ -5,9 +5,14 @@ export $(grep -v '^#' .env | xargs)
 export CLAIMS_API="http://localhost:8082"
 export SPRING_PROFILES_ACTIVE="dev"
 
-echo "[INFO] Starting port-forward..."
+echo "[INFO] Starting API port-forward..."
 kubectl port-forward amend-api-port-forward-pod 8082:8080 -n laa-amend-a-claim-dev >/dev/null 2>&1 &
-PORT_FORWARD_PID=$!
+API_PORT_FORWARD_PID=$!
+sleep 3
+
+echo "[INFO] Starting DB port-forward..."
+kubectl port-forward amend-db-port-forward-pod 5440:5432 -n laa-amend-a-claim-dev >/dev/null 2>&1 &
+DB_PORT_FORWARD_PID=$!
 sleep 3
 
 echo "[INFO] Starting application..."
@@ -26,4 +31,4 @@ else
 fi
 
 echo "[INFO] Cleaning up..."
-kill "$BOOTRUN_PID" "$PORT_FORWARD_PID" 2>/dev/null || true
+kill "$BOOTRUN_PID" "$API_PORT_FORWARD_PID" "$DB_PORT_FORWARD_PID" 2>/dev/null || true
