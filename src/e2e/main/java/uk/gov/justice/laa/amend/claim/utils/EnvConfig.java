@@ -19,6 +19,13 @@ public class EnvConfig {
     public static String apiBase() { return getOrDefault("API_BASE", "https://reqres.in"); }
     public static String mfaSecret() { return getOrDefault("P_MFA_SECRET", ""); }
 
-    
     public static boolean useMocks() { return Boolean.parseBoolean(getOrDefault("USE_MOCKS", "false")); }
+
+    public static String dbHost() { return getOrDefault("DB_HOST", "localhost"); }
+    public static int dbPort() {
+        return Integer.parseInt(getOrDefault("DB_PORT", "5440"));
+    }
+    public static String dbName() { return getOrDefault("DB_NAME", "postgres"); }
+    public static String dbUser() { return getOrDefault("DB_USER", "postgres"); }
+    public static String dbPassword() { return getOrDefault("DB_PASSWORD", ""); }
 }

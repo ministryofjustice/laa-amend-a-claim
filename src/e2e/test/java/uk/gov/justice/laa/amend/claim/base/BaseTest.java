@@ -39,8 +39,8 @@ public abstract class BaseTest {
 
     @BeforeEach
     void createPage() {
-        page = BrowserSession.getContext().newPage();
-        page.navigate(EnvConfig.baseUrl());
+        // page = BrowserSession.getContext().newPage();
+        // page.navigate(EnvConfig.baseUrl());
     }
 
     @AfterEach

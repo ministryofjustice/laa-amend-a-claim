@@ -36,6 +36,7 @@ dependencies {
 
     // Allure + JUnit 5
     testImplementation 'io.qameta.allure:allure-junit5:2.25.0'
+    testImplementation 'org.postgresql:postgresql:42.7.4'
 }
 
 tasks.withType(Test).configureEach {
