@@ -15,40 +15,48 @@ public class DbSeedSmokeTest extends BaseTest {
     @Test
     @DisplayName("DB Seed: inserts claim and verifies claim row exists")
     void seedAndVerifyClaimInsert() throws SQLException {
-
         String calculatedFeeDetailId = scope.get("calculated_fee_detail.id");
         String claimSummaryFeeId = scope.get("claim_summary_fee.id");
         String claimId = scope.get("claim.id");
         String submissionId = scope.get("submission.id");
+        String bulkSubmissionId = scope.get("bulk_submission.id");
         String ufn = scope.get("claim.ufn");
 
         Assertions.assertFalse(ufn.isBlank(), "Generated UFN must not be blank");
 
+        checkSeededBulkSubmissionData(bulkSubmissionId);
+        checkSeededSubmissionData(submissionId, bulkSubmissionId);
         checkSeededClaimData(claimId, submissionId, ufn);
         checkSeededClaimSummaryFeeData(claimSummaryFeeId, claimId);
         checkSeededCalculatedFeeDetailData(calculatedFeeDetailId, claimSummaryFeeId, claimId);
     }
 
+    private void checkSeededBulkSubmissionData(String bulkSubmissionId) throws SQLException {
+        String query = "SELECT * FROM claims.bulk_submission WHERE id = ?::uuid";
+        Map<Integer, Object> parameters = Map.of(1, bulkSubmissionId);
+        ResultSet rs = dqe.executeQuery(query, parameters);
+
+        printResult(rs, "bulk_submission");
+
+        Assertions.assertEquals(bulkSubmissionId, rs.getString("id"));
+    }
+
+    private void checkSeededSubmissionData(String submissionId, String bulkSubmissionId) throws SQLException {
+        String query = "SELECT * FROM claims.submission WHERE id = ?::uuid";
+        Map<Integer, Object> parameters = Map.of(1, submissionId);
+        ResultSet rs = dqe.executeQuery(query, parameters);
+
+        printResult(rs, "submission");
+
+        Assertions.assertEquals(submissionId, rs.getString("id"));
+        Assertions.assertEquals(bulkSubmissionId, rs.getString("bulk_submission_id"));
+        Assertions.assertEquals("123456", rs.getString("office_account_number"));
+        Assertions.assertEquals("MAR-2020", rs.getString("submission_period"));
+        Assertions.assertEquals("LEGAL_HELP", rs.getString("area_of_law"));
+    }
+
     private void checkSeededClaimData(String claimId, String submissionId, String ufn) throws SQLException {
-        String query = """
-            SELECT
-              id,
-              submission_id,
-              status,
-              schedule_reference,
-              case_reference_number,
-              unique_file_number,
-              case_start_date,
-              case_concluded_date,
-              matter_type_code,
-              fee_code,
-              procurement_area_code,
-              is_amended,
-              has_assessment,
-              version
-            FROM claims.claim
-            WHERE id = ?::uuid
-            """;
+        String query = "SELECT * FROM claims.claim WHERE id = ?::uuid";
         Map<Integer, Object> parameters = Map.of(1, claimId);
         ResultSet rs = dqe.executeQuery(query, parameters);
 
@@ -61,13 +69,7 @@ public class DbSeedSmokeTest extends BaseTest {
     }
 
     private void checkSeededClaimSummaryFeeData(String claimSummaryFeeId, String claimId) throws SQLException {
-        String query = """
-            SELECT
-              id,
-              claim_id
-            FROM claims.claim_summary_fee
-            WHERE id = ?::uuid
-            """;
+        String query = "SELECT * FROM claims.claim_summary_fee WHERE id = ?::uuid";
         Map<Integer, Object> parameters = Map.of(1, claimSummaryFeeId);
         ResultSet rs = dqe.executeQuery(query, parameters);
 
@@ -78,14 +80,7 @@ public class DbSeedSmokeTest extends BaseTest {
     }
 
     private void checkSeededCalculatedFeeDetailData(String calculatedFeeDetailId, String claimSummaryFeeId, String claimId) throws SQLException {
-        String query = """
-            SELECT
-              id,
-              claim_summary_fee_id,
-              claim_id
-            FROM claims.calculated_fee_detail
-            WHERE id = ?::uuid
-            """;
+        String query = "SELECT * FROM claims.calculated_fee_detail WHERE id = ?::uuid";
         Map<Integer, Object> parameters = Map.of(1, calculatedFeeDetailId);
         ResultSet rs = dqe.executeQuery(query, parameters);
 

@@ -95,7 +95,8 @@ public class DatabaseQueryExecutor implements AutoCloseable {
                 for (int i = 0; i < columns.size(); i++) {
                     String col = normalizeColumnName(columns.get(i));
                     String val = i < insert.values().size() ? insert.values().get(i) : "";
-                    scope.put("db." + insert.table() + "." + col, val);
+                    String key = String.format("db.%s.%s", insert.table(), col);
+                    scope.put(key, val);
                 }
             }
         }

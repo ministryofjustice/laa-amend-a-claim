@@ -20,8 +20,8 @@ INSERT INTO claims.submission (
 ) VALUES (
   '{{SUBMISSION_ID}}'::uuid,
   '{{BULK_SUBMISSION_ID}}'::uuid,
-  '0P251D',
-  'APR-2019',
+  '123456',
+  'MAR-2020',
   'LEGAL_HELP',
   'VALIDATION_SUCCEEDED',
   '0P251D/CIVIL',
