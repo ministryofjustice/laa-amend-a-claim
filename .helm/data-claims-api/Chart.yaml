@@ -1,0 +1,6 @@
+apiVersion: v2
+name: data-claims-api
+description: Data Claims API Helm chart with embedded PostgreSQL
+type: application
+version: 1.0.0
+appVersion: "1.0"

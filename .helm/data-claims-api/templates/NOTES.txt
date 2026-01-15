@@ -1,0 +1,22 @@
+Data Claims API has been deployed!
+
+{{- if .Values.dataClaimsApi.enabled }}
+
+To access the API internally within the cluster:
+  Service: data-claims-api
+  Port: {{ .Values.dataClaimsApi.service.port }}
+
+{{- if .Values.dataClaimsApi.postgres.enabled }}
+PostgreSQL sidecar is enabled:
+  Host: localhost (from within the pod)
+  Port: 5435
+  Database: {{ .Values.dataClaimsApi.postgres.database }}
+  Persistence: {{ .Values.dataClaimsApi.postgres.persistence.enabled }}
+{{- end }}
+
+To test the connection:
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/data-claims-api 8082:{{ .Values.dataClaimsApi.service.port }}
+  
+Then visit: http://localhost:8082/actuator/health
+
+{{- end }}

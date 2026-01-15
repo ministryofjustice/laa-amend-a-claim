@@ -1,0 +1,16 @@
+{{- if .Values.laaAmendAClaim.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: e2e-amend-a-claim
+  labels:
+    app: e2e-amend-a-claim
+spec:
+  type: ClusterIP
+  selector:
+    app: e2e-amend-a-claim
+  ports:
+    - name: http
+      port: {{ .Values.laaAmendAClaim.service.port }}
+      targetPort: http
+{{- end }}
