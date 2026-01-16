@@ -3,15 +3,23 @@ package uk.gov.justice.laa.amend.claim.tests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
+import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReviewAndAmendTest extends BaseTest {
+
+    @Override
+    protected List<Insert> inserts() {
+        return List.of();
+    }
 
     // ---------------- Crime data ----------------
     private static final String CRIME_PROVIDER_ACCOUNT = "2R223X";

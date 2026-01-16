@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.tests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
+import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.pages.AssessAllowedTotalsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessTotalClaimValuePage;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
@@ -11,9 +12,16 @@ import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AssessTotalsValidationTest extends BaseTest {
+
+    @Override
+    protected List<Insert> inserts() {
+        return List.of();
+    }
 
     private static final String PROVIDER_ACCOUNT = "2N199K";
     private static final String UFN = "121019/001";

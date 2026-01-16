@@ -11,11 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
+import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetailsFixture;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import static uk.gov.justice.laa.amend.claim.base.E2ETestHelper.loadFixture;
@@ -23,6 +25,11 @@ import static uk.gov.justice.laa.amend.claim.base.E2ETestHelper.loadFixture;
 @Epic("Claim Details")
 @Feature("Assessment Outcome Button State")
 public class ClaimDetailsTest extends BaseTest {
+
+    @Override
+    protected List<Insert> inserts() {
+        return List.of();
+    }
 
     private static final String NON_ESCAPE_UFN = "021123/005";
 

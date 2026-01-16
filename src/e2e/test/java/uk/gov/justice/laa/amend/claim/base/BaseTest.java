@@ -4,9 +4,11 @@ import com.microsoft.playwright.Page;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
+import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.persistence.DatabaseQueryExecutor;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * The {@code BaseTest} class provides a foundation for UI tests using the
@@ -41,14 +43,17 @@ public abstract class BaseTest {
     protected DatabaseQueryExecutor dqe;
     protected Page page;
 
+    protected abstract List<Insert> inserts();
+
     @BeforeEach
     public void setup() {
         try {
             dqe = new DatabaseQueryExecutor();
-            dqe.seed();
+            dqe.seed(inserts());
         } catch (SQLException e) {
             throw new RuntimeException("Failed to seed database", e);
         }
+
         page = BrowserSession.getContext().newPage();
         page.navigate(EnvConfig.baseUrl());
     }
@@ -60,6 +65,6 @@ public abstract class BaseTest {
                 page.close();
             } catch (Exception ignored) {}
         }
-        dqe.delete();
+        dqe.delete(inserts());
     }
 }

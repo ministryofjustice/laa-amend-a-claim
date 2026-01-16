@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
+import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.DiscardAssessmentPage;
@@ -16,10 +17,16 @@ import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
+import java.util.List;
+
 @Epic("Assessment Discard Flow")
 @Feature("Discard Assessment Confirmation & Behaviour")
 public class DiscardAssessmentTest extends BaseTest {
 
+    @Override
+    protected List<Insert> inserts() {
+        return List.of();
+    }
 
     private static final EscapeClaim ESCAPE_CLAIM = new EscapeClaim(
             "2R223X",       

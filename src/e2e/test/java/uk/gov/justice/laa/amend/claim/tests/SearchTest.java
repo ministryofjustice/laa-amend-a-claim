@@ -13,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
+import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.models.SearchData;
@@ -25,6 +26,11 @@ import java.util.stream.Stream;
 @Epic("E2E")
 @Feature("Search")
 public class SearchTest extends BaseTest {
+
+    @Override
+    protected List<Insert> inserts() {
+        return List.of();
+    }
 
     private static Stream<Arguments> searchConfigProvider() {
         return loadSearchConfigs().stream().map(Arguments::of);

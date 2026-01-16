@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
+import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.pages.AssessAllowedTotalsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessDisbursementsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessDisbursementsVatPage;
@@ -18,7 +19,14 @@ import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
+import java.util.List;
+
 public class AssessmentFlowE2ETest extends BaseTest {
+
+    @Override
+    protected List<Insert> inserts() {
+        return List.of();
+    }
 
     private static final String CRIME_PROVIDER_ACCOUNT = "0P322F";
     private static final String CRIME_UFN = "111018/001";

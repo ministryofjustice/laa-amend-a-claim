@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
+import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.pages.AssessAllowedTotalsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessProfitCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentCompletePage;
@@ -16,6 +17,8 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetailsFixture;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
+import java.util.List;
+
 import static uk.gov.justice.laa.amend.claim.base.E2ETestHelper.getFromMap;
 import static uk.gov.justice.laa.amend.claim.base.E2ETestHelper.loadFixture;
 import static uk.gov.justice.laa.amend.claim.base.E2ETestHelper.normalizeMoneyForInput;
@@ -23,6 +26,11 @@ import static uk.gov.justice.laa.amend.claim.base.E2ETestHelper.normalizeMoneyFo
 @Epic("ClaimDetails")
 @Feature("Assessment Totals")
 public class AssessedClaimDetailsTest extends BaseTest {
+
+    @Override
+    protected List<Insert> inserts() {
+        return List.of();
+    }
 
     @Disabled("Disabled this until we have test data for INVC fee codes")
     @DisplayName("E2E: Assessed ClaimDetails - Reduced (still escaped) - Show claim Assessed/Allowed totals")

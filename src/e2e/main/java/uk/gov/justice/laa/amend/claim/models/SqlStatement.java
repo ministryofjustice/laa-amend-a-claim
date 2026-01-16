@@ -16,10 +16,10 @@ public record SqlStatement(String sql, List<Object> parameters) {
         return map;
     }
 
-    public static SqlStatement fromFile(String directory, String name, List<Object> parameters) {
-        String path = String.format("fixtures/db/claims/%s/%s.sql", directory, name);
+    public static SqlStatement fromFile(Insert insert) {
+        String path = String.format("fixtures/db/claims/insert_%s.sql", insert.table());
         String sql = readClasspathResource(path);
-        return new SqlStatement(sql, parameters);
+        return new SqlStatement(sql, insert.parameters());
     }
 
     public static SqlStatement fromRaw(String sql, List<Object> parameters) {
