@@ -80,7 +80,7 @@ public class ClaimStatusHandler {
      * Check if the field is Assessed Total
      */
     private boolean isAssessedTotalField(ClaimField field) {
-        return field.getType() == ClaimFieldType.ASSESSED;
+        return field.getType() == ClaimFieldType.ASSESSED_TOTAL;
     }
 
     private ClaimFieldStatus isFieldModifiable(ClaimField field) {

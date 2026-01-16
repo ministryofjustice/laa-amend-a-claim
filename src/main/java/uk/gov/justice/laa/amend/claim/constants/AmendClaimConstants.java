@@ -56,5 +56,6 @@ public class AmendClaimConstants {
 
     public static final String ASSESSMENT_ID = "assessmentId";
 
+    // We allow setting the assessed total values if it's a crime case and has a valid police station fee code
     public static final Set<String> VALID_POLICE_STATION_FEE_CODES = Set.of("INVC");
 }

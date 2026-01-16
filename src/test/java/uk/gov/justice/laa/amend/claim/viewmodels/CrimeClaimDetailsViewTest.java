@@ -126,7 +126,7 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
         @Test
         void rowsRenderedForClaimValuesWhenClaimDoesNotHaveAnAssessment() {
             CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
-            claim.setTotalAmount(MockClaimsFunctions.createClaimField(TOTAL, ClaimFieldType.TOTAL));
+            claim.setTotalAmount(MockClaimsFunctions.createClaimField(TOTAL, ClaimFieldType.CALCULATED_TOTAL));
             claim.setHasAssessment(false);
 
             CrimeClaimDetailsView viewModel = createView(claim);

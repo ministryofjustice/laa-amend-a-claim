@@ -23,13 +23,13 @@ public class MockClaimsFunctions {
         claim.setEscaped(true);
 
         claim.setFixedFee(createClaimField(FIXED_FEE, ClaimFieldType.FIXED_FEE));
-        claim.setNetProfitCost(createClaimField(NET_PROFIT_COST, ClaimFieldType.NORMAL));
-        claim.setNetDisbursementAmount(createClaimField(NET_DISBURSEMENTS_COST, ClaimFieldType.NORMAL));
-        claim.setDisbursementVatAmount(createClaimField(DISBURSEMENT_VAT, ClaimFieldType.NORMAL));
-        claim.setTotalAmount(createClaimField(TOTAL, ClaimFieldType.TOTAL));
-        claim.setCounselsCost(createClaimField(COUNSELS_COST, ClaimFieldType.NORMAL));
-        claim.setDetentionTravelWaitingCosts(createClaimField(DETENTION_TRAVEL_COST, ClaimFieldType.NORMAL));
-        claim.setJrFormFillingCost(createClaimField(JR_FORM_FILLING, ClaimFieldType.NORMAL));
+        claim.setNetProfitCost(createClaimField(NET_PROFIT_COST, ClaimFieldType.OTHER));
+        claim.setNetDisbursementAmount(createClaimField(NET_DISBURSEMENTS_COST, ClaimFieldType.OTHER));
+        claim.setDisbursementVatAmount(createClaimField(DISBURSEMENT_VAT, ClaimFieldType.OTHER));
+        claim.setTotalAmount(createClaimField(TOTAL, ClaimFieldType.CALCULATED_TOTAL));
+        claim.setCounselsCost(createClaimField(COUNSELS_COST, ClaimFieldType.OTHER));
+        claim.setDetentionTravelWaitingCosts(createClaimField(DETENTION_TRAVEL_COST, ClaimFieldType.OTHER));
+        claim.setJrFormFillingCost(createClaimField(JR_FORM_FILLING, ClaimFieldType.OTHER));
         claim.setAdjournedHearing(createClaimField(ADJOURNED_FEE, ClaimFieldType.BOLT_ON));
         claim.setCmrhTelephone(createClaimField(CMRH_TELEPHONE, ClaimFieldType.BOLT_ON));
         claim.setCmrhOral(createClaimField(CMRH_ORAL, ClaimFieldType.BOLT_ON));
@@ -38,10 +38,10 @@ public class MockClaimsFunctions {
         claim.setVatClaimed(createBooleanClaimField(VAT));
         claim.setAssessmentOutcome(OutcomeType.REDUCED);
 
-        claim.setAssessedTotalVat(createClaimField(ASSESSED_TOTAL_VAT, ClaimFieldType.ASSESSED));
-        claim.setAssessedTotalInclVat(createClaimField(ASSESSED_TOTAL_INCL_VAT, ClaimFieldType.ASSESSED));
-        claim.setAllowedTotalInclVat(createClaimField(ALLOWED_TOTAL_INCL_VAT, ClaimFieldType.ALLOWED));
-        claim.setAllowedTotalVat(createClaimField(ALLOWED_TOTAL_VAT, ClaimFieldType.ALLOWED));
+        claim.setAssessedTotalVat(createClaimField(ASSESSED_TOTAL_VAT, ClaimFieldType.ASSESSED_TOTAL));
+        claim.setAssessedTotalInclVat(createClaimField(ASSESSED_TOTAL_INCL_VAT, ClaimFieldType.ASSESSED_TOTAL));
+        claim.setAllowedTotalInclVat(createClaimField(ALLOWED_TOTAL_INCL_VAT, ClaimFieldType.ALLOWED_TOTAL));
+        claim.setAllowedTotalVat(createClaimField(ALLOWED_TOTAL_VAT, ClaimFieldType.ALLOWED_TOTAL));
         return claim;
     }
 
@@ -51,19 +51,19 @@ public class MockClaimsFunctions {
         claim.setSubmissionId("test-submission-456");
         claim.setEscaped(true);
 
-        claim.setNetProfitCost(createClaimField(NET_PROFIT_COST, ClaimFieldType.NORMAL));
-        claim.setTravelCosts(createClaimField(TRAVEL_COSTS, ClaimFieldType.NORMAL));
-        claim.setWaitingCosts(createClaimField(WAITING_COSTS, ClaimFieldType.NORMAL));
+        claim.setNetProfitCost(createClaimField(NET_PROFIT_COST, ClaimFieldType.OTHER));
+        claim.setTravelCosts(createClaimField(TRAVEL_COSTS, ClaimFieldType.OTHER));
+        claim.setWaitingCosts(createClaimField(WAITING_COSTS, ClaimFieldType.OTHER));
         claim.setFixedFee(createClaimField(FIXED_FEE, ClaimFieldType.FIXED_FEE));
-        claim.setNetDisbursementAmount(createClaimField(NET_DISBURSEMENTS_COST, ClaimFieldType.NORMAL));
-        claim.setDisbursementVatAmount(createClaimField(DISBURSEMENT_VAT, ClaimFieldType.NORMAL));
+        claim.setNetDisbursementAmount(createClaimField(NET_DISBURSEMENTS_COST, ClaimFieldType.OTHER));
+        claim.setDisbursementVatAmount(createClaimField(DISBURSEMENT_VAT, ClaimFieldType.OTHER));
         claim.setVatClaimed(createBooleanClaimField(VAT));
 
-        claim.setAssessedTotalVat(createClaimField(ASSESSED_TOTAL_VAT, ClaimFieldType.ASSESSED));
-        claim.setAssessedTotalInclVat(createClaimField(ASSESSED_TOTAL_INCL_VAT, ClaimFieldType.ASSESSED));
+        claim.setAssessedTotalVat(createClaimField(ASSESSED_TOTAL_VAT, ClaimFieldType.ASSESSED_TOTAL));
+        claim.setAssessedTotalInclVat(createClaimField(ASSESSED_TOTAL_INCL_VAT, ClaimFieldType.ASSESSED_TOTAL));
 
-        claim.setAllowedTotalInclVat(createClaimField(ALLOWED_TOTAL_INCL_VAT, ClaimFieldType.ALLOWED));
-        claim.setAllowedTotalVat(createClaimField(ALLOWED_TOTAL_VAT, ClaimFieldType.ALLOWED));
+        claim.setAllowedTotalInclVat(createClaimField(ALLOWED_TOTAL_INCL_VAT, ClaimFieldType.ALLOWED_TOTAL));
+        claim.setAllowedTotalVat(createClaimField(ALLOWED_TOTAL_VAT, ClaimFieldType.ALLOWED_TOTAL));
         claim.setAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
 
         return claim;
@@ -76,7 +76,7 @@ public class MockClaimsFunctions {
             .calculated(BigDecimal.valueOf(200))
             .assessed(BigDecimal.valueOf(300))
             .status(status)
-            .type(ClaimFieldType.NORMAL)
+            .type(ClaimFieldType.OTHER)
             .build();
     }
 
@@ -96,7 +96,7 @@ public class MockClaimsFunctions {
             .submitted(true)
             .calculated(false)
             .assessed(true)
-            .type(ClaimFieldType.NORMAL)
+            .type(ClaimFieldType.OTHER)
             .build();
     }
 

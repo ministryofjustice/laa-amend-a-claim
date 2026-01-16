@@ -10,7 +10,7 @@ public class ClaimFieldTest {
 
     @Test
     void constructorWithoutAmendedValueShouldUseSubmittedValue() {
-        ClaimField claimField = new ClaimField("fooBar", BigDecimal.ONE, BigDecimal.TWO, ClaimFieldType.NORMAL);
+        ClaimField claimField = new ClaimField("fooBar", BigDecimal.ONE, BigDecimal.TWO, ClaimFieldType.OTHER);
 
         Assertions.assertEquals("fooBar", claimField.getKey());
         Assertions.assertEquals("claimSummary.rows.fooBar", claimField.getLabel());
@@ -20,7 +20,7 @@ public class ClaimFieldTest {
         Assertions.assertEquals(BigDecimal.TWO, claimField.getCalculated());
         Assertions.assertEquals(BigDecimal.ONE, claimField.getAssessed());
         Assertions.assertNull(claimField.getChangeUrl());
-        Assertions.assertEquals(ClaimFieldType.NORMAL, claimField.getType());
+        Assertions.assertEquals(ClaimFieldType.OTHER, claimField.getType());
     }
 
 

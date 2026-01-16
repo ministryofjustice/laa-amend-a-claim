@@ -24,7 +24,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
     protected abstract V createView(C claim);
 
     public static ClaimField createClaimField(String key, ClaimFieldStatus status) {
-        return ClaimField.builder().key(key).status(status).type(ClaimFieldType.NORMAL).build();
+        return ClaimField.builder().key(key).status(status).type(ClaimFieldType.OTHER).build();
     }
 
     @Nested

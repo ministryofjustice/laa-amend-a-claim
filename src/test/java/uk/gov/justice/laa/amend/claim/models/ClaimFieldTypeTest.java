@@ -11,7 +11,7 @@ public class ClaimFieldTypeTest {
 
         @Test
         void returnsFalseForNormal() {
-            ClaimFieldType cft = ClaimFieldType.NORMAL;
+            ClaimFieldType cft = ClaimFieldType.OTHER;
             Assertions.assertFalse(cft.isNotAssessable());
         }
 
@@ -23,19 +23,19 @@ public class ClaimFieldTypeTest {
 
         @Test
         void returnsFalseForAssessed() {
-            ClaimFieldType cft = ClaimFieldType.ASSESSED;
+            ClaimFieldType cft = ClaimFieldType.ASSESSED_TOTAL;
             Assertions.assertFalse(cft.isNotAssessable());
         }
 
         @Test
         void returnsFalseForAllowed() {
-            ClaimFieldType cft = ClaimFieldType.ALLOWED;
+            ClaimFieldType cft = ClaimFieldType.ALLOWED_TOTAL;
             Assertions.assertFalse(cft.isNotAssessable());
         }
 
         @Test
         void returnsTrueForTotal() {
-            ClaimFieldType cft = ClaimFieldType.TOTAL;
+            ClaimFieldType cft = ClaimFieldType.CALCULATED_TOTAL;
             Assertions.assertTrue(cft.isNotAssessable());
         }
 

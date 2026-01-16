@@ -197,14 +197,14 @@ class ClaimSummaryViewTest extends ViewTestBase {
         CivilClaimDetails claim = new CivilClaimDetails();
         createClaimSummary(claim);
         claim.setMatterTypeCode("IMLB:AHQS");
-        claim.setDetentionTravelWaitingCosts(new ClaimField(DETENTION_TRAVEL_COST, 100, 90, 95, 90, ClaimFieldType.NORMAL));
-        claim.setJrFormFillingCost(new ClaimField(JR_FORM_FILLING, 50, 45, 48, 45, ClaimFieldType.NORMAL));
+        claim.setDetentionTravelWaitingCosts(new ClaimField(DETENTION_TRAVEL_COST, 100, 90, 95, 90, ClaimFieldType.OTHER));
+        claim.setJrFormFillingCost(new ClaimField(JR_FORM_FILLING, 50, 45, 48, 45, ClaimFieldType.OTHER));
         claim.setAdjournedHearing(new ClaimField(ADJOURNED_FEE, 200, 180, 190, 180, ClaimFieldType.BOLT_ON));
         claim.setCmrhTelephone(new ClaimField(CMRH_TELEPHONE, 75, 70, 72, ClaimFieldType.BOLT_ON));
         claim.setCmrhOral(new ClaimField(CMRH_ORAL, 150, 140, 145, 140, ClaimFieldType.BOLT_ON));
         claim.setHoInterview(new ClaimField(HO_INTERVIEW, 120, 110, 115, 120, ClaimFieldType.BOLT_ON));
         claim.setSubstantiveHearing(new ClaimField(SUBSTANTIVE_HEARING, 300, 280, 290, 300, ClaimFieldType.BOLT_ON));
-        claim.setCounselsCost(new ClaimField(COUNSELS_COST, 400, 380, 390, 400, ClaimFieldType.NORMAL));
+        claim.setCounselsCost(new ClaimField(COUNSELS_COST, 400, 380, 390, 400, ClaimFieldType.OTHER));
         claim.setAreaOfLaw("LEGAL_HELP");
         claim.setCategoryOfLaw("TEST");
         return claim;
@@ -215,8 +215,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
         CrimeClaimDetails claim = new CrimeClaimDetails();
         createClaimSummary(claim);
         claim.setMatterTypeCode("IMLB");
-        claim.setTravelCosts(new ClaimField(TRAVEL_COSTS, 100, 90, ClaimFieldType.NORMAL));
-        claim.setWaitingCosts(new ClaimField(WAITING_COSTS, 50, 45,  ClaimFieldType.NORMAL));
+        claim.setTravelCosts(new ClaimField(TRAVEL_COSTS, 100, 90, ClaimFieldType.OTHER));
+        claim.setWaitingCosts(new ClaimField(WAITING_COSTS, 50, 45,  ClaimFieldType.OTHER));
 
         claim.setAreaOfLaw("CRIME");
         claim.setSchemeId("SCHEME");
@@ -292,12 +292,12 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setSubmittedDate(LocalDateTime.of(2020, 6, 15, 9, 30, 0));
 
         // Set ClaimFieldRow fields
-        claim.setVatClaimed(new ClaimField(VAT, 80, 75, 78, 75,  ClaimFieldType.NORMAL));
+        claim.setVatClaimed(new ClaimField(VAT, 80, 75, 78, 75,  ClaimFieldType.OTHER));
         claim.setFixedFee(new ClaimField(FIXED_FEE, 500, 480, 490, 500,  ClaimFieldType.FIXED_FEE));
-        claim.setNetProfitCost(new ClaimField(NET_PROFIT_COST, 600, 580, 590, 600,  ClaimFieldType.NORMAL));
-        claim.setNetDisbursementAmount(new ClaimField(NET_DISBURSEMENTS_COST, 200, 190, 195, 200,  ClaimFieldType.NORMAL));
-        claim.setTotalAmount(new ClaimField(TOTAL, 1380, 1325, 1350, 1325,  ClaimFieldType.TOTAL));
-        claim.setDisbursementVatAmount(new ClaimField(DISBURSEMENT_VAT, 40, 38, 39, 40,  ClaimFieldType.NORMAL));
+        claim.setNetProfitCost(new ClaimField(NET_PROFIT_COST, 600, 580, 590, 600,  ClaimFieldType.OTHER));
+        claim.setNetDisbursementAmount(new ClaimField(NET_DISBURSEMENTS_COST, 200, 190, 195, 200,  ClaimFieldType.OTHER));
+        claim.setTotalAmount(new ClaimField(TOTAL, 1380, 1325, 1350, 1325,  ClaimFieldType.CALCULATED_TOTAL));
+        claim.setDisbursementVatAmount(new ClaimField(DISBURSEMENT_VAT, 40, 38, 39, 40,  ClaimFieldType.OTHER));
         claim.setAreaOfLaw("CRIME");
     }
 
