@@ -1,0 +1,67 @@
+# GitHub Self-Hosted Runner with E2E Tests
+# Based on official GitHub Actions runner
+FROM ghcr.io/actions/actions-runner:latest
+
+USER root
+
+# Install basic dependencies and Java 21
+RUN apt-get update && apt-get install -y \
+    curl wget git jq unzip ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Java 21
+RUN wget -O- https://apt.corretto.aws/corretto.key | gpg --dearmor -o /usr/share/keyrings/corretto-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/corretto-keyring.gpg] https://apt.corretto.aws stable main" | \
+    tee /etc/apt/sources.list.d/corretto.list && \
+    apt-get update && \
+    apt-get install -y java-21-amazon-corretto-jdk && \
+    rm -rf /var/lib/apt/lists/*
+
+ENV JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+# Install Playwright dependencies that test.yml uses
+RUN apt-get update && apt-get install -y \
+    libwoff1 libvpx9 libevent-2.1-7t64 libopus0 \
+    libgstreamer-plugins-base1.0-0 libgstreamer-gl1.0-0 \
+    libgstreamer-plugins-bad1.0-0 libharfbuzz-icu0 \
+    libsecret-1-0 libhyphen0 libmanette-0.2-0 \
+    libflite1 libgles2 gstreamer1.0-libav \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Allure for test reporting
+RUN curl -o allure-2.25.0.tgz -Ls https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/2.25.0/allure-commandline-2.25.0.tgz && \
+    tar -zxf allure-2.25.0.tgz -C /opt/ && \
+    ln -s /opt/allure-2.25.0/bin/allure /usr/bin/allure && \
+    rm allure-2.25.0.tgz
+
+# Copy E2E tests
+WORKDIR /actions-runner/_work
+RUN mkdir -p e2e-tests
+WORKDIR /actions-runner/_work/e2e-tests
+
+# Copy Gradle wrapper and E2E source
+COPY --chown=runner:runner gradle/ gradle/
+COPY --chown=runner:runner gradlew gradlew.bat gradle.properties settings.gradle ./
+COPY --chown=runner:runner src/e2e/ ./src/e2e/
+
+# Make gradlew executable and install Playwright
+RUN chmod +x gradlew && \
+    cd src/e2e && \
+    ../gradlew dependencies --no-daemon || true && \
+    ../gradlew playwright install chromium --no-daemon || true
+
+# Set up runner user permissions (no sudo - minimal permissions)
+RUN chown -R runner:runner /actions-runner
+
+# Switch to runner user (non-root)
+USER runner
+WORKDIR /actions-runner
+
+# Environment variables for E2E tests
+ENV HEADLESS=true
+ENV BROWSER=chromium
+ENV CI=true
+
+# Use default GitHub runner entrypoint
+ENTRYPOINT ["/entrypoint.sh"]

@@ -1,0 +1,63 @@
+name: Build and E2E Tests
+
+on:
+  push:
+    branches:
+      - feature/BC-353-docker-spin-up
+  workflow_dispatch:
+    inputs:
+      skip_e2e:
+        description: 'Skip E2E tests'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  # Build the application image
+  build:
+    name: Build Application
+    uses: ./.github/workflows/build.yml
+    secrets:
+      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+
+  # Run E2E tests using the built image
+  e2e-tests:
+    name: E2E Tests
+    needs: build
+    if: ${{ !inputs.skip_e2e && github.event_name != 'pull_request' }}
+    uses: ./.github/workflows/e2e-tests.yml
+    with:
+      branch: ${{ github.ref_name }}
+      environment: dev
+    secrets:
+      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+#      DATA_CLAIMS_API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CERT: ${{ secrets.KUBE_CERT }}
+
+#  # Summary job
+#  summary:
+#    name: Workflow Summary
+#    needs: [build, e2e-tests]
+#    if: always()
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Generate Summary
+#        run: |
+#          echo "## Workflow Execution Summary" >> $GITHUB_STEP_SUMMARY
+#          echo "" >> $GITHUB_STEP_SUMMARY
+#          echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+#          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+#          echo "- **Image Tag:** ${{ needs.build.outputs.image_tag }}" >> $GITHUB_STEP_SUMMARY
+#          echo "" >> $GITHUB_STEP_SUMMARY
+#          echo "### Job Results" >> $GITHUB_STEP_SUMMARY
+#          echo "- Build: ${{ needs.build.result }}" >> $GITHUB_STEP_SUMMARY
+#          echo "- E2E Tests: ${{ needs.e2e-tests.result }}" >> $GITHUB_STEP_SUMMARY
