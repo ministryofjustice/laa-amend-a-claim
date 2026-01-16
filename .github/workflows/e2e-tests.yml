@@ -62,8 +62,7 @@ jobs:
           file: ./Dockerfile.e2e-runner
           push: true
           tags: |
-            ${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}-e2e-runner:${{ steps.get_sha.outputs.sha }}
-            ${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}-e2e-runner:latest
+            ${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:github-e2e-runner
 
   deploy-e2e-environment:
     name: Deploy E2E Environment with Runner
