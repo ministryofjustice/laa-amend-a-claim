@@ -10,11 +10,11 @@ INSERT INTO claims.bulk_submission (
   ?::uuid,
   '{
     "OFFICE": {
-      "account": "123456"
+      "account": "234567"
     },
     "SCHEDULE": {
-      "submissionPeriod": "MAR-2020",
-      "areaOfLaw": "LEGAL HELP",
+      "submissionPeriod": "JUN-2025",
+      "areaOfLaw": "LEGAL_HELP",
       "scheduleNum": "0U733A/CIVIL"
     },
     "OUTCOME": {

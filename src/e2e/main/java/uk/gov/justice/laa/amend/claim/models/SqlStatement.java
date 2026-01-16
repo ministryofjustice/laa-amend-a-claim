@@ -16,8 +16,8 @@ public record SqlStatement(String sql, List<Object> parameters) {
         return map;
     }
 
-    public static SqlStatement fromFile(String name, List<Object> parameters) {
-        String path = String.format("fixtures/db/claims/%s.sql", name);
+    public static SqlStatement fromFile(String directory, String name, List<Object> parameters) {
+        String path = String.format("fixtures/db/claims/%s/%s.sql", directory, name);
         String sql = readClasspathResource(path);
         return new SqlStatement(sql, parameters);
     }

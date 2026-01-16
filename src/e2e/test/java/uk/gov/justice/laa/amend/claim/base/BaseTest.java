@@ -29,10 +29,10 @@ import java.sql.SQLException;
  *   session management and configuration.
  *
  * Structure:
- * - {@code createPage()}: A method annotated with {@code @BeforeEach} to set up the testing
+ * - {@code setup()}: A method annotated with {@code @BeforeEach} to set up the testing
  *   environment. It creates a new browser page and navigates to the configured
  *   base URL.
- * - {@code cleanUp()}: A method annotated with {@code @AfterEach} to ensure that
+ * - {@code tearDown()}: A method annotated with {@code @AfterEach} to ensure that
  *   resources are properly released by closing the browser page after the test
  *   completes.
  */
@@ -42,7 +42,7 @@ public abstract class BaseTest {
     protected Page page;
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         try {
             dqe = new DatabaseQueryExecutor();
             dqe.seed();
@@ -54,7 +54,7 @@ public abstract class BaseTest {
     }
 
     @AfterEach
-    void tearDown() {
+    public void tearDown() {
         if (page != null) {
             try {
                 page.close();

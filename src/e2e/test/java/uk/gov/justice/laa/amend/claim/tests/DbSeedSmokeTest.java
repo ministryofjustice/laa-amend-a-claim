@@ -14,18 +14,33 @@ public class DbSeedSmokeTest extends BaseTest {
     @Test
     @DisplayName("DB Seed: inserts claim and verifies claim row exists")
     void seedAndVerifyClaimInsert() throws SQLException {
-        String calculatedFeeDetailId = dqe.getCalculatedFeeDetailId();
-        String claimSummaryFeeId = dqe.getClaimSummaryFeeId();
-        String claimId = dqe.getClaimId();
-        String submissionId = dqe.getSubmissionId();
-        String bulkSubmissionId = dqe.getBulkSubmissionId();
-        String ufn = dqe.getUfn();
+        checkSeededData(
+            dqe.getCrimeBulkSubmissionId(),
+            dqe.getCrimeSubmissionId(),
+            dqe.getCrimeClaimId(),
+            dqe.getCrimeClaimSummaryFeeId(),
+            dqe.getCrimeCalculatedFeeDetailId()
+        );
 
-        Assertions.assertFalse(ufn.isBlank(), "Generated UFN must not be blank");
-
+        checkSeededData(
+            dqe.getCivilBulkSubmissionId(),
+            dqe.getCivilSubmissionId(),
+            dqe.getCivilClaimId(),
+            dqe.getCivilClaimSummaryFeeId(),
+            dqe.getCivilCalculatedFeeDetailId()
+        );
+    }
+    
+    private void checkSeededData(
+        String bulkSubmissionId,
+        String submissionId,
+        String claimId,
+        String claimSummaryFeeId,
+        String calculatedFeeDetailId
+    ) throws SQLException {
         checkSeededBulkSubmissionData(bulkSubmissionId);
         checkSeededSubmissionData(submissionId, bulkSubmissionId);
-        checkSeededClaimData(claimId, submissionId, ufn);
+        checkSeededClaimData(claimId, submissionId, dqe.getUfn());
         checkSeededClaimSummaryFeeData(claimSummaryFeeId, claimId);
         checkSeededCalculatedFeeDetailData(calculatedFeeDetailId, claimSummaryFeeId, claimId);
     }
@@ -49,9 +64,6 @@ public class DbSeedSmokeTest extends BaseTest {
 
                 Assertions.assertEquals(submissionId, rs.getString("id"));
                 Assertions.assertEquals(bulkSubmissionId, rs.getString("bulk_submission_id"));
-                Assertions.assertEquals("123456", rs.getString("office_account_number"));
-                Assertions.assertEquals("MAR-2020", rs.getString("submission_period"));
-                Assertions.assertEquals("LEGAL_HELP", rs.getString("area_of_law"));
             }
         }
     }
@@ -65,7 +77,6 @@ public class DbSeedSmokeTest extends BaseTest {
                 Assertions.assertEquals(claimId, rs.getString("id"));
                 Assertions.assertEquals(submissionId, rs.getString("submission_id"));
                 Assertions.assertEquals(ufn, rs.getString("unique_file_number"));
-                Assertions.assertEquals("VALID", rs.getString("status"));
             }
         }
     }

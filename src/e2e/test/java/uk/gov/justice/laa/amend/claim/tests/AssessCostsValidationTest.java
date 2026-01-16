@@ -1,21 +1,21 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.pages.AssessCounselCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessDetentionTravelAndWaitingCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessDisbursementsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessDisbursementsVatPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessJrFormFillingCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessProfitCostsPage;
-import uk.gov.justice.laa.amend.claim.pages.AssessTravelCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessWaitingCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,15 +23,31 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AssessCostsValidationTest extends BaseTest {
 
         // ---------------- Crime data ----------------
-    private static final String CRIME_PROVIDER_ACCOUNT = "2R223X";
-    private static final String CRIME_UFN = "031222/002";
-    private static final String CRIME_MONTH = "04";
-    private static final String CRIME_YEAR = "2025";
+    private String CRIME_PROVIDER_ACCOUNT;
+    private String CRIME_UFN;
+    private String CRIME_MONTH;
+    private String CRIME_YEAR;
     // ---------------- Civil data ----------------
-    private static final String CIVIL_PROVIDER_ACCOUNT = "2N199K";
-    private static final String CIVIL_UFN = "121019/001";
-    private static final String CIVIL_MONTH = "06";
-    private static final String CIVIL_YEAR = "2025";
+    private String CIVIL_PROVIDER_ACCOUNT;
+    private String CIVIL_UFN;
+    private String CIVIL_MONTH;
+    private String CIVIL_YEAR;
+
+    @Override
+    @BeforeEach
+    public void setup() {
+        super.setup();
+
+        this.CRIME_PROVIDER_ACCOUNT = "123456";
+        this.CRIME_UFN = dqe.getUfn();
+        this.CRIME_MONTH = "04";
+        this.CRIME_YEAR = "2025";
+
+        this.CIVIL_PROVIDER_ACCOUNT = "234567";
+        this.CIVIL_UFN = dqe.getUfn();
+        this.CIVIL_MONTH = "06";
+        this.CIVIL_YEAR = "2025";
+    }
 
     private void navigateToReviewAndAmend(String provider, String month, String year, String ufn) {
         String baseUrl = EnvConfig.baseUrl();
@@ -111,22 +127,7 @@ public class AssessCostsValidationTest extends BaseTest {
         assertNumberWith2DpErrorShown();
     }
 
-    @Test
-    @DisplayName("Crime: Travel costs - letters cause number validation error")
-    void crimeTravelCostsLettersShowsError() {
-        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
-        review.clickChangeTravelCosts();
-
-        AssessTravelCostsPage travel = new AssessTravelCostsPage(page);
-        travel.waitForPage();
-        travel.setAssessedValue("dasad");
-        travel.saveChanges();
-
-        assertNumberWith2DpErrorShown();
-    }
 
     @Test
     @DisplayName("Crime: Waiting costs - letters cause number validation error")

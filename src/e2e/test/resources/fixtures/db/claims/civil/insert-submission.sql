@@ -20,8 +20,8 @@ INSERT INTO claims.submission (
 ) VALUES (
   ?::uuid,
   ?::uuid,
-  '123456',
-  'MAR-2020',
+  '234567',
+  'JUN-2025',
   'LEGAL_HELP',
   'VALIDATION_SUCCEEDED',
   '0P251D/CIVIL',

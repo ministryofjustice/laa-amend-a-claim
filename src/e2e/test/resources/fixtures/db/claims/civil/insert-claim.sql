@@ -8,7 +8,7 @@ INSERT INTO claims.claim (
   prison_law_prior_approval_number, is_duty_solicitor, is_youth_court, scheme_id,
   mediation_sessions_count, mediation_time_minutes, outreach_location, referral_source,
   matched_claim_id, created_by_user_id, created_on,
-  updated_by_user_id, updated_on, is_amended, has_assessment, "version"
+  updated_by_user_id, updated_on, is_amended, has_assessment, version
 ) VALUES (
   ?::uuid,
   ?::uuid,
