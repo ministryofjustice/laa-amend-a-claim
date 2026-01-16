@@ -64,30 +64,27 @@ public class DatabaseQueryExecutor implements AutoCloseable {
 
     public ResultSet executeQuery(SqlStatement sql) {
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql.sql());
-
-            for (Map.Entry<Integer, Object> entry : sql.getParameters().entrySet()) {
-                preparedStatement.setObject(entry.getKey(), entry.getValue());
-            }
-
+            PreparedStatement preparedStatement = prepareStatement(sql);
             return preparedStatement.executeQuery();
         } catch (Exception e) {
-            throw new RuntimeException("Failed to execute SQL fixture against DB", e);
+            throw new RuntimeException("Failed to execute SQL query against DB", e);
         }
     }
 
     public void executeUpdate(SqlStatement sql) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql.sql());
-
-            for (Map.Entry<Integer, Object> entry : sql.getParameters().entrySet()) {
-                preparedStatement.setObject(entry.getKey(), entry.getValue());
-            }
-
+        try (PreparedStatement preparedStatement = prepareStatement(sql)) {
             preparedStatement.executeUpdate();
         } catch (Exception e) {
-            throw new RuntimeException("Failed to execute SQL fixture against DB", e);
+            throw new RuntimeException("Failed to execute SQL update against DB", e);
         }
+    }
+
+    private PreparedStatement prepareStatement(SqlStatement sql) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement(sql.sql());
+        for (Map.Entry<Integer, Object> entry : sql.getParameters().entrySet()) {
+            ps.setObject(entry.getKey(), entry.getValue());
+        }
+        return ps;
     }
 
     public void seed() {
