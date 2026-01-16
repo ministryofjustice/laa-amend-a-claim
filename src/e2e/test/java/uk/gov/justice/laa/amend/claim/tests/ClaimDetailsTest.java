@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetailsData;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetailsFixture;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
 import java.util.stream.Stream;
@@ -28,7 +28,7 @@ public class ClaimDetailsTest extends BaseTest {
 
     private static final String CRIME_PROVIDER_ACCOUNT = "2R223X";
 
-    static Stream<ClaimDetailsData> detailsCases() {
+    static Stream<ClaimDetailsFixture> detailsCases() {
         return Stream.of(
             // crime
             loadFixture(
@@ -72,26 +72,26 @@ public class ClaimDetailsTest extends BaseTest {
     /**
      * Verifying Totals has been removed from test data, until we fix test data
      *
-     * @param claimDetailsData
+     * @param claimDetailsFixture
      */
     @ParameterizedTest(name = "[{index}] {0} Claim: Values match fixture")
     @MethodSource("detailsCases")
     @DisplayName("Claim Details: Values match fixture")
     @Severity(SeverityLevel.CRITICAL)
-    void crimeClaimValuesMatchFixture(ClaimDetailsData claimDetailsData) {
+    void crimeClaimValuesMatchFixture(ClaimDetailsFixture claimDetailsFixture) {
         String baseUrl = EnvConfig.baseUrl();
 
         SearchPage search = new SearchPage(page).navigateTo(baseUrl);
 
         search.searchForClaim(
-            claimDetailsData.getProviderAccount(),
+            claimDetailsFixture.getProviderAccount(),
             "",
             "",
-            claimDetailsData.getUfn(),
+            claimDetailsFixture.getUfn(),
             ""
         );
 
-        search.clickViewForUfn(claimDetailsData.getUfn());
+        search.clickViewForUfn(claimDetailsFixture.getUfn());
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
         details.waitForPage();
@@ -102,11 +102,11 @@ public class ClaimDetailsTest extends BaseTest {
         );
 
         Assertions.assertEquals(
-            claimDetailsData.isAddAssessmentOutcomeDisabled(),
+            claimDetailsFixture.isAddAssessmentOutcomeDisabled(),
             details.isAddAssessmentOutcomeDisabled(),
             "Add assessment outcome enabled/disabled state mismatch"
         );
 
-        details.assertAllValues(claimDetailsData.getValues());
+        details.assertAllValues(claimDetailsFixture.getValues());
     }
 }

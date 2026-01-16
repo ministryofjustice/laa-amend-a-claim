@@ -5,9 +5,9 @@ INSERT INTO claims.calculated_fee_detail (
     created_by_user_id,
     created_on
 ) VALUES (
-  '{{CALCULATED_FEE_DETAIL_ID}}'::uuid,
-  '{{CLAIM_SUMMARY_FEE_ID}}'::uuid,
-  '{{CLAIM_ID}}'::uuid,
-  '{{CREATED_BY_USER_ID}}',
+  ?::uuid,
+  ?::uuid,
+  ?::uuid,
+  ?,
   now()
 );

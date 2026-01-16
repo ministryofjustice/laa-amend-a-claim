@@ -3,10 +3,8 @@ package uk.gov.justice.laa.amend.claim.base;
 import com.microsoft.playwright.Page;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
-import uk.gov.justice.laa.amend.claim.persistence.DatabaseQueryExecutor;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
-import uk.gov.justice.laa.amend.claim.models.Scope;
+import uk.gov.justice.laa.amend.claim.persistence.DatabaseQueryExecutor;
 
 import java.sql.SQLException;
 
@@ -40,17 +38,14 @@ import java.sql.SQLException;
  */
 public abstract class BaseTest {
 
-    protected Scope scope;
     protected DatabaseQueryExecutor dqe;
     protected Page page;
 
     @BeforeEach
-    void createPage(TestInfo testInfo) {
+    void setup() {
         try {
-            String scopeName = testInfo.getDisplayName();
-            this.scope = new Scope(scopeName);
             dqe = new DatabaseQueryExecutor();
-            dqe.seed(scope);
+            dqe.seed();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to seed database", e);
         }
@@ -59,11 +54,12 @@ public abstract class BaseTest {
     }
 
     @AfterEach
-    void cleanUp() {
+    void tearDown() {
         if (page != null) {
             try {
                 page.close();
             } catch (Exception ignored) {}
         }
+        dqe.delete();
     }
 }

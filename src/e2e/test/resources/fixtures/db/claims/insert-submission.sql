@@ -18,8 +18,8 @@ INSERT INTO claims.submission (
   mediation_submission_reference,
   provider_user_id
 ) VALUES (
-  '{{SUBMISSION_ID}}'::uuid,
-  '{{BULK_SUBMISSION_ID}}'::uuid,
+  ?::uuid,
+  ?::uuid,
   '123456',
   'MAR-2020',
   'LEGAL_HELP',
@@ -29,9 +29,9 @@ INSERT INTO claims.submission (
   false,
   1,
   null,
-  '{{CREATED_BY_USER_ID}}',
+  ?,
   now(),
-  '{{CREATED_BY_USER_ID}}',
+  ?,
   now(),
   null,
   null,

@@ -7,7 +7,7 @@ INSERT INTO claims.bulk_submission (
   updated_by_user_id,
   updated_on
 ) VALUES (
-  '{{BULK_SUBMISSION_ID}}'::uuid,
+  ?::uuid,
   '{
     "OFFICE": {
       "account": "123456"
@@ -72,8 +72,8 @@ INSERT INTO claims.bulk_submission (
     }
   }'::jsonb,
   'VALIDATION_SUCCEEDED',
-  '{{CREATED_BY_USER_ID}}',
+  ?,
   now(),
-  '{{CREATED_BY_USER_ID}}',
+  ?,
   now()
 );

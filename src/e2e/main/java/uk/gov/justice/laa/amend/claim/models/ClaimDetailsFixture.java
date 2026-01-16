@@ -3,7 +3,7 @@ package uk.gov.justice.laa.amend.claim.models;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ClaimDetailsData {
+public class ClaimDetailsFixture {
 
     private boolean addAssessmentOutcomeDisabled;
     private String claimType;
