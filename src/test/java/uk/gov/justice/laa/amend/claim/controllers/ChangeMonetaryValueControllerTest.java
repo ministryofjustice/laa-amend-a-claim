@@ -175,8 +175,7 @@ class ChangeMonetaryValueControllerTest {
         } else {
             claim = MockClaimsFunctions.createMockCrimeClaim();
         }
-        ClaimField claimField = new ClaimField();
-        claimField.setKey("");
+        ClaimField claimField = ClaimField.builder().key("").build();
         cost.getAccessor().set(claim, claimField);
         return claim;
     }

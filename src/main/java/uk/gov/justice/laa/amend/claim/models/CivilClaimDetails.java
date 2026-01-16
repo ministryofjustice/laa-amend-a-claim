@@ -82,7 +82,7 @@ public class CivilClaimDetails extends ClaimDetails {
     }
 
     @Override
-    public boolean getIsCrimeClaim() {
+    public boolean isAssessedTotalFieldModifiable() {
         return false;
     }
 

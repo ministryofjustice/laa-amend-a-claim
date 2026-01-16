@@ -9,7 +9,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 import java.util.stream.Stream;
 
-import static uk.gov.justice.laa.amend.claim.validators.FeeCodeValidator.isNotValidFeeCode;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.VALID_POLICE_STATION_FEE_CODES;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -59,8 +59,8 @@ public class CrimeClaimDetails extends ClaimDetails {
     }
 
     @Override
-    public boolean getIsCrimeClaim() {
-        return true;
+    public boolean isAssessedTotalFieldModifiable() {
+        return this.getFeeCode() != null && VALID_POLICE_STATION_FEE_CODES.contains(this.getFeeCode());
     }
 
     @Override
