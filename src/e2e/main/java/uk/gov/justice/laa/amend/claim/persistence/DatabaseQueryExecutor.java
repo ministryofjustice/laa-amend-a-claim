@@ -62,6 +62,8 @@ public class DatabaseQueryExecutor implements AutoCloseable {
         return ufn;
     }
 
+    // Caller is responsible for closing the ResultSet by using try-with-resources
+    @SuppressWarnings("resource")
     public ResultSet executeQuery(SqlStatement sql) {
         try {
             PreparedStatement preparedStatement = prepareStatement(sql);
