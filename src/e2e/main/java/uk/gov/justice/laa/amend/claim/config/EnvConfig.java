@@ -6,8 +6,7 @@ public class EnvConfig {
     private static final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
     public static String getOrDefault(String key, String defaultValue) {
-        String v = dotenv.get(key);
-        return v != null ? v : defaultValue;
+        return dotenv.get(key, defaultValue);
     }
 
     public static String baseUrl() { return getOrDefault("UI_BASE_URL", "http://localhost:8080/"); }
