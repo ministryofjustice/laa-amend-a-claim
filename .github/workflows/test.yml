@@ -204,6 +204,13 @@ jobs:
           sleep 10
           curl -I http://localhost:8082 || true
 
+      - name: Port forward Claims data DB
+        if: ${{ inputs.use_mocks == false }}
+        run: |
+          kubectl port-forward amend-db-port-forward-pod 5440:5432 -n ${{ secrets.KUBE_NAMESPACE }} &
+          sleep 10
+          curl -I http://localhost:5440 || true
+
       # Start services
       - name: Start docker dependencies
         run: docker compose up -d
