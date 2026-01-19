@@ -63,7 +63,7 @@ public class DatabaseQueryExecutor implements AutoCloseable {
 
     public void deleteById(String table, String id) {
         if (table != null && id != null) {
-            System.out.printf("Deleting %s from %s", id, table);
+            System.out.printf("Deleting %s from %s%n", id, table);
             String sql = String.format("DELETE FROM claims.%s WHERE id = ?::uuid", table);
             executeUpdate(SqlStatement.fromRaw(sql, List.of(id)));
         }

@@ -9,6 +9,7 @@ import uk.gov.justice.laa.amend.claim.persistence.DatabaseQueryExecutor;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -44,23 +45,11 @@ public abstract class BaseTest {
     protected DatabaseQueryExecutor dqe;
     protected Page page;
     protected ConcurrentHashMap<String, String> store;
+
+    public final String BULK_SUBMISSION_ID = UUID.randomUUID().toString();
     public final String USER_ID = EnvConfig.userId();
 
     protected abstract List<Insert> inserts();
-
-    /*@BeforeAll
-    public static void beforeAll() {
-        try (DatabaseQueryExecutor dqe = new DatabaseQueryExecutor()) {
-            String userId = EnvConfig.userId();
-            dqe.deleteByUserId("calculated_fee_detail", userId);
-            dqe.deleteByUserId("claim_summary_fee", userId);
-            dqe.deleteByUserId("claim", userId);
-            dqe.deleteByUserId("submission", userId);
-            dqe.deleteByUserId("bulk_submission", userId);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to clean database", e);
-        }
-    }*/
 
     @BeforeEach
     public void setup() {

@@ -27,14 +27,13 @@ import java.util.UUID;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 public class AssessCostsValidationTest extends BaseTest {
 
-    private final String BULK_SUBMISSION_ID = UUID.randomUUID().toString();
-
     // ---------------- Crime data ----------------
     private final String CRIME_PROVIDER_ACCOUNT = "123456";
-    private final String CRIME_UFN = "031222/002";
+    private final String CRIME_UFN = generateUfn();
     private final String CRIME_MONTH = "04";
     private final String CRIME_YEAR = "2025";
     private final String CRIME_SUBMISSION_ID = UUID.randomUUID().toString();
@@ -44,7 +43,7 @@ public class AssessCostsValidationTest extends BaseTest {
 
     // ---------------- Civil data ----------------
     private final String CIVIL_PROVIDER_ACCOUNT = "234567";
-    private final String CIVIL_UFN = "121019/001";
+    private final String CIVIL_UFN = generateUfn();
     private final String CIVIL_MONTH = "06";
     private final String CIVIL_YEAR = "2025";
     private final String CIVIL_SUBMISSION_ID = UUID.randomUUID().toString();
@@ -116,6 +115,7 @@ public class AssessCostsValidationTest extends BaseTest {
                 .id(CRIME_CALCULATED_FEE_DETAIL_ID)
                 .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
                 .claimId(CRIME_CLAIM_ID)
+                .escaped(true)
                 .userId(USER_ID)
                 .build(),
 
@@ -124,6 +124,7 @@ public class AssessCostsValidationTest extends BaseTest {
                 .id(CIVIL_CALCULATED_FEE_DETAIL_ID)
                 .claimSummaryFeeId(CIVIL_CLAIM_SUMMARY_FEE_ID)
                 .claimId(CIVIL_CLAIM_ID)
+                .escaped(true)
                 .userId(USER_ID)
                 .build()
         );

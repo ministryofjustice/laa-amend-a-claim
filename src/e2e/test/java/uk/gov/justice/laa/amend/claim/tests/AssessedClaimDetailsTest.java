@@ -34,8 +34,6 @@ import static uk.gov.justice.laa.amend.claim.base.E2ETestHelper.normalizeMoneyFo
 @Feature("Assessment Totals")
 public class AssessedClaimDetailsTest extends BaseTest {
 
-    private final String BULK_SUBMISSION_ID = UUID.randomUUID().toString();
-
     private final String PROVIDER_ACCOUNT = "123456";
     private final String UFN = "031222/003";
     private final String SUBMISSION_ID = UUID.randomUUID().toString();
@@ -83,6 +81,7 @@ public class AssessedClaimDetailsTest extends BaseTest {
                 .id(CALCULATED_FEE_DETAIL_ID)
                 .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
                 .claimId(CLAIM_ID)
+                .escaped(true)
                 .userId(USER_ID)
                 .build()
         );
@@ -169,13 +168,12 @@ public class AssessedClaimDetailsTest extends BaseTest {
 
         AssessmentCompletePage complete = new AssessmentCompletePage(page);
         complete.waitForPage();
+        complete.storeAssessmentId(store);
 
         Assertions.assertEquals("Assessment complete", complete.getHeadingText());
         Assertions.assertTrue(complete.getBodyText().contains("Your changes have been submitted"));
         Assertions.assertTrue(complete.goToSearchExists());
         Assertions.assertTrue(complete.viewAssessedClaimExists());
-
-        store.put("assessmentId", complete.getAssessmentId());
 
         complete.clickViewAssessedClaim();
 

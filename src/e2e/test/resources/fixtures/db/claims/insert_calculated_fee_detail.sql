@@ -29,7 +29,7 @@ INSERT INTO claims.calculated_fee_detail (
   80,
   239.35,
   767.22,
-  true,
+  ?::boolean,
   ?,
   now()
 );

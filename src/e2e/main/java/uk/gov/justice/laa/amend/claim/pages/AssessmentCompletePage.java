@@ -4,6 +4,8 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class AssessmentCompletePage {
     private final Page page;
 
@@ -53,5 +55,9 @@ public class AssessmentCompletePage {
         String url = page.url();
         int lastSlashIndex = url.lastIndexOf("/");
         return url.substring(lastSlashIndex + 1);
+    }
+
+    public void storeAssessmentId(ConcurrentHashMap<String, String> store) {
+        store.put("assessmentId", getAssessmentId());
     }
 }
