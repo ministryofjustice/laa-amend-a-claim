@@ -10,7 +10,6 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
@@ -32,6 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -115,7 +115,8 @@ public class ClaimReviewControllerTest {
         mockMvc.perform(post(path).session(session))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl(redirectUrl))
-            .andExpect(MockMvcResultMatchers.request().sessionAttributeDoesNotExist(claimId.toString()));
+            .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()))
+            .andExpect(request().sessionAttribute("assessmentId", assessmentId.toString()));
 
         verify(assessmentService).submitAssessment(claim, userId);
     }
@@ -145,8 +146,7 @@ public class ClaimReviewControllerTest {
 
     @Test
     public void testUnsuccessfulValidationReloadsPageWithErrorSummary() throws Exception {
-        ClaimField claimField = new ClaimField();
-        claimField.setKey("foo");
+        ClaimField claimField = ClaimField.builder().key("foo").build();
         claimField.setStatus(ClaimFieldStatus.MODIFIABLE);
         claimField.setAssessed(null);
         claim.setNetProfitCost(claimField);

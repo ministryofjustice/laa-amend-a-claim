@@ -47,5 +47,10 @@ public interface ClaimsApiClient {
 
 
     @GetExchange(url = "/claims/{claimId}/assessments", accept = MediaType.APPLICATION_JSON_VALUE)
-    Mono<AssessmentResultSet> getAssessments(@PathVariable UUID claimId);
+    Mono<AssessmentResultSet> getAssessments(
+        @PathVariable UUID claimId,
+        @RequestParam(value = "page", required = false) int page,
+        @RequestParam(value = "size", required = false) int size,
+        @RequestParam(value = "sort", required = false) String sort
+    );
 }

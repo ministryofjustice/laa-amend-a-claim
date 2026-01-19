@@ -14,9 +14,9 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -198,11 +198,6 @@ public abstract class ViewTestBase {
     Assertions.assertEquals(expectedText, content.text());
   }
 
-  protected void assertPageHasSummaryList(Document doc) {
-    Elements elements = doc.getElementsByClass("govuk-summary-list");
-    Assertions.assertFalse(elements.isEmpty());
-  }
-
   protected void assertPageHasRadioButtons(Document doc) {
     Elements elements = doc.getElementsByClass("govuk-radios");
     Assertions.assertFalse(elements.isEmpty());
@@ -212,44 +207,6 @@ public abstract class ViewTestBase {
     Elements elements = doc.getElementsByClass("govuk-radios--inline");
     Assertions.assertFalse(elements.isEmpty());
   }
-
-  protected void assertPageHasNoSummaryList(Document doc) {
-    Elements elements = doc.getElementsByClass("govuk-summary-list");
-    Assertions.assertTrue(elements.isEmpty());
-  }
-
-  protected void assertPageHasSummaryListRow(Document doc, String expectedKey, String expectedValue) {
-    Elements rows = doc.getElementsByClass("govuk-summary-list__row");
-    boolean rowFound = rows.stream().anyMatch(row -> {
-      String keyText = row.select(".govuk-summary-list__key").text().trim();
-      String valueText = row.select(".govuk-summary-list__value").text().trim();
-      return keyText.equals(expectedKey) && valueText.equals(expectedValue);
-    });
-    Assertions.assertTrue(rowFound);
-  }
-
-  protected void assertPageHasValuesRow(Document doc, String expectedKey, ClaimField claimFieldRow, boolean checkAssessed) {
-    Elements rows = doc.getElementsByClass("govuk-summary-list__row");
-    boolean rowFound = rows.stream().anyMatch(row -> {
-      String keyText = row.select(".govuk-summary-list__key").text().trim();
-      Elements valueElements = row.select(".govuk-summary-list__value");
-      if (valueElements.size() < 2) return false;
-      String calculatedText = valueElements.get(0).text().trim();
-      String submittedText = valueElements.get(1).text().trim();
-
-      boolean value = keyText.equals(expectedKey) && calculatedText.equals(claimFieldRow.getCalculated().toString()) && submittedText.equals(claimFieldRow.getSubmitted().toString());
-      if (checkAssessed) {
-        Object expectedAssessedValue = claimFieldRow.getAssessed();
-        if (expectedAssessedValue == null) {
-          expectedAssessedValue = "Not applicable";
-        }
-        return value && expectedAssessedValue.toString().equals(valueElements.get(2).text().trim());
-      }
-      return value;
-    });
-    Assertions.assertTrue(rowFound);
-  }
-
 
   protected void assertPageHasErrorSummary(Document doc, String... errorFields) {
     Element errorSummary = selectFirst(doc, ".govuk-error-summary");
@@ -288,17 +245,90 @@ public abstract class ViewTestBase {
     Assertions.assertFalse(elements.isEmpty());
   }
 
-  protected boolean pageHasLabel(Document doc, String label) {
-    return !doc.select("dl.govuk-summary-list dt.govuk-summary-list__key:containsOwn(" + label + ")").isEmpty();
+  protected List<List<Element>> getTable(Document doc, String summaryCardTitle) {
+    Element summaryCard = getSummaryCard(doc, summaryCardTitle);
+    Element table = selectFirst(summaryCard, "table.govuk-table");
+    List<List<Element>> matrix = new ArrayList<>();
+    for (Element row : table.select("tbody tr")) {
+      List<Element> cells = row.select("td").stream().toList();
+      matrix.add(cells);
+    }
+    return matrix;
   }
 
-  protected void assertPageHasUpdateAssessmentButton(Document doc) {
-    Elements elements = doc.select("div.govuk-button-group button.govuk-button");
+  protected List<List<Element>> getSummaryList(Document doc, String summaryCardTitle) {
+    Element summaryCard = getSummaryCard(doc, summaryCardTitle);
+    Element summaryList = selectFirst(summaryCard, "dl.govuk-summary-list");
+    List<List<Element>> matrix = new ArrayList<>();
+    for (Element row : summaryList.select(".govuk-summary-list__row")) {
+      Element key =  selectFirst(row, ".govuk-summary-list__key");
+      List<Element> values = row.select(".govuk-summary-list__value").stream().toList();
+      List<Element> cells = new ArrayList<>();
+      cells.add(key);
+      cells.addAll(values);
+      matrix.add(cells);
+    }
+    return matrix;
+  }
 
-    Assertions.assertFalse(elements.isEmpty(), "Expected Button not found");
+  protected Element getSummaryCard(Document doc, String summaryCardTitle) {
+      return selectFirst(
+          doc,
+          ".govuk-summary-card:has(h2.govuk-summary-card__title:matchesOwn(^" + summaryCardTitle + "$))"
+      );
+  }
 
-    String buttonText = elements.text();
-    Assertions.assertTrue(buttonText.contains("Update assessment outcome"),
-            "Button does not contain expected label. Actual: " + buttonText);
+  private void assertCellContainsText(Element cell, String expectedText) {
+    Assertions.assertEquals(expectedText, cell.text(), "Cell does not contain expected text: " + expectedText);
+  }
+
+  private void assertCellIsEmpty(Element cell) {
+    assertCellContainsText(cell, "");
+  }
+
+  private void assertCellContainsChangeLink(Element cell, String expectedHref) {
+    Element link = selectFirst(cell, "a.govuk-link");
+    Assertions.assertEquals("Change", link.ownText());
+    Assertions.assertEquals(expectedHref, link.attr("href"));
+  }
+
+  protected void assertTableRowContainsValuesWithNoChangeLink(
+      List<Element> row,
+      String label,
+      String calculated,
+      String requested,
+      String assessed
+  ) {
+    assertCellContainsText(row.getFirst(), label);
+    assertCellContainsText(row.get(1), calculated);
+    assertCellContainsText(row.get(2), requested);
+    assertCellContainsText(row.get(3), assessed);
+    assertCellIsEmpty(row.get(4));
+  }
+
+  protected void assertTableRowContainsValuesWithChangeLink(
+      List<Element> row,
+      String label,
+      String calculated,
+      String requested,
+      String assessed,
+      String changeUrl
+  ) {
+    assertCellContainsText(row.getFirst(), label);
+    assertCellContainsText(row.get(1), calculated);
+    assertCellContainsText(row.get(2), requested);
+    assertCellContainsText(row.get(3), assessed);
+    assertCellContainsChangeLink(row.get(4), changeUrl);
+  }
+
+  protected void assertSummaryListRowContainsValues(
+      List<Element> row,
+      String label,
+      String... values
+  ) {
+    assertCellContainsText(row.getFirst(), label);
+    for (int i = 0; i < values.length; i++) {
+      assertCellContainsText(row.get(i + 1), values[i]);
+    }
   }
 }

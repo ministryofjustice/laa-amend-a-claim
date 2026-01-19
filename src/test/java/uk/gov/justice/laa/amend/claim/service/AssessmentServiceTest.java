@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.service;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -9,8 +10,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
-import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
+import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -48,6 +49,19 @@ class AssessmentServiceTest {
 
     public AssessmentServiceTest() {
         MockitoAnnotations.openMocks(this);
+    }
+    
+    private UUID claimId;
+    private int page;
+    private int size;
+    private String sort;
+    
+    @BeforeEach
+    void setUp() {
+        claimId = UUID.randomUUID();
+        page = 0;
+        size = 1;
+        sort = "createdOn,desc";
     }
 
     @Nested
@@ -121,9 +135,8 @@ class AssessmentServiceTest {
 
         @Test
         void testCrimeClaimAssessmentSubmittedToApi() {
-            String claimId = UUID.randomUUID().toString();
             CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
-            claim.setClaimId(claimId);
+            claim.setClaimId(claimId.toString());
             String userId = UUID.randomUUID().toString();
             AssessmentPost assessment = new AssessmentPost();
 
@@ -132,7 +145,7 @@ class AssessmentServiceTest {
 
             ResponseEntity<CreateAssessment201Response> response = ResponseEntity.ok(new CreateAssessment201Response());
 
-            when(claimsApiClient.submitAssessment(claimId, assessment))
+            when(claimsApiClient.submitAssessment(claimId.toString(), assessment))
                 .thenReturn(Mono.just(response));
 
             CreateAssessment201Response result =
@@ -142,7 +155,7 @@ class AssessmentServiceTest {
             assertEquals(response.getBody(), result);
 
             verify(assessmentMapper).mapCrimeClaimToAssessment(claim, userId);
-            verify(claimsApiClient).submitAssessment(claimId, assessment);
+            verify(claimsApiClient).submitAssessment(claimId.toString(), assessment);
         }
 
         @Test
@@ -198,13 +211,13 @@ class AssessmentServiceTest {
         void shouldReturnMappedClaimDetailsWhenAssessmentExists() {
 
             var claimDetails = new CivilClaimDetails();
-            claimDetails.setClaimId(UUID.randomUUID().toString());
+            claimDetails.setClaimId(claimId.toString());
 
             // Arrange
             AssessmentGet assessment = new AssessmentGet(); // dummy assessment
             AssessmentResultSet resultSet = new AssessmentResultSet();
             resultSet.setAssessments(List.of(assessment));
-            when(claimsApiClient.getAssessments(UUID.fromString(claimDetails.getClaimId())))
+            when(claimsApiClient.getAssessments(claimId, page, size, sort))
                     .thenReturn(Mono.just(resultSet));
 
             ClaimDetails mappedDetails = new CivilClaimDetails();
@@ -218,18 +231,18 @@ class AssessmentServiceTest {
             ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claimDetails);
             // Assert
             assertThat(result).isEqualTo(mappedDetails);
-            verify(claimsApiClient).getAssessments(UUID.fromString(claimDetails.getClaimId()));
+            verify(claimsApiClient).getAssessments(claimId, page, size, sort);
             verify(assessmentMapper).mapAssessmentToClaimDetails(mappedDetails);
         }
 
         @Test
         void shouldThrowExceptionWhenAssessmentsAreEmpty() {
             var claimDetails = new CivilClaimDetails();
-            claimDetails.setClaimId(UUID.randomUUID().toString());
+            claimDetails.setClaimId(claimId.toString());
             // Arrange
             AssessmentResultSet emptyResultSet = new AssessmentResultSet();
             emptyResultSet.setAssessments(List.of());
-            when(claimsApiClient.getAssessments(UUID.fromString(claimDetails.getClaimId())))
+            when(claimsApiClient.getAssessments(claimId, page, size, sort))
                     .thenReturn(Mono.just(emptyResultSet));
 
             // Act & Assert
@@ -243,9 +256,9 @@ class AssessmentServiceTest {
         @Test
         void shouldThrowExceptionWhenResultIsNull() {
             var claimDetails = new CivilClaimDetails();
-            claimDetails.setClaimId(UUID.randomUUID().toString());
+            claimDetails.setClaimId(claimId.toString());
             // Arrange
-            when(claimsApiClient.getAssessments(UUID.fromString(claimDetails.getClaimId())))
+            when(claimsApiClient.getAssessments(claimId, page, size, sort))
                     .thenReturn(Mono.empty());
 
             // Act & Assert

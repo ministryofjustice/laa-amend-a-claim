@@ -7,14 +7,30 @@ import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
+import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.updateClaimFieldSubmittedValue;
 
 public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDetails, CivilClaimDetailsView> {
 
@@ -171,236 +187,238 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
 
         @Test
         void rowsRenderedForClaimValuesWhenClaimHasAnAssessment() {
-            ClaimField fixedFee = new ClaimField("1", null, null);
-            ClaimField netProfitCost = new ClaimField("2", null, null);
-            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
-            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
-            ClaimField counselCost = new ClaimField("5", null, null);
-            ClaimField detention = new ClaimField("6", null, null);
-            ClaimField jrFormFilling = new ClaimField("7", null, null);
-            ClaimField adjournedHearing = new ClaimField("8", 100, 100);
-            ClaimField cmrhTelephone = new ClaimField("9", 100, 100);
-            ClaimField cmrhOral = new ClaimField("10", 100, 100);
-            ClaimField hoInterview = new ClaimField("11", 100, 100);
-            ClaimField substantiveHearing = new ClaimField("12", 100, 100);
-            ClaimField vatClaimed = new ClaimField("13", 100, 100);
-            ClaimField totalAmount = new ClaimField("14", 100, 100);
-
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(fixedFee);
-            claim.setNetProfitCost(netProfitCost);
-            claim.setNetDisbursementAmount(netDisbursementAmount);
-            claim.setDisbursementVatAmount(disbursementVatAmount);
-            claim.setCounselsCost(counselCost);
-            claim.setDetentionTravelWaitingCosts(detention);
-            claim.setJrFormFillingCost(jrFormFilling);
-            claim.setAdjournedHearing(adjournedHearing);
-            claim.setCmrhTelephone(cmrhTelephone);
-            claim.setCmrhOral(cmrhOral);
-            claim.setHoInterview(hoInterview);
-            claim.setSubstantiveHearing(substantiveHearing);
-            claim.setVatClaimed(vatClaimed);
-            claim.setTotalAmount(totalAmount);
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setHasAssessment(true);
 
             CivilClaimDetailsView viewModel = createView(claim);
-            ArrayList<ClaimField> expectedRows = new ArrayList<>(List.of(
-                fixedFee,
-                netProfitCost,
-                netDisbursementAmount,
-                disbursementVatAmount,
-                detention,
-                jrFormFilling,
-                counselCost,
-                cmrhOral,
-                cmrhTelephone,
-                hoInterview,
-                substantiveHearing,
-                adjournedHearing,
-                vatClaimed
-            ));
+            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
 
-            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
+            Assertions.assertEquals(13, result.size());
+
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
+
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
+
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
+
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
+
+            Assertions.assertEquals(CMRH_ORAL, result.get(7).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(7).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(7).getCalculated());
+
+            Assertions.assertEquals(CMRH_TELEPHONE, result.get(8).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).getCalculated());
+
+            Assertions.assertEquals(HO_INTERVIEW, result.get(9).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(9).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(9).getCalculated());
+
+            Assertions.assertEquals(SUBSTANTIVE_HEARING, result.get(10).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(10).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(10).getCalculated());
+
+            Assertions.assertEquals(ADJOURNED_FEE, result.get(11).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(11).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(11).getCalculated());
+
+            Assertions.assertEquals(VAT, result.get(12).getKey());
+            Assertions.assertEquals(true, result.get(12).getSubmitted());
+            Assertions.assertEquals(false, result.get(12).getCalculated());
         }
 
         @Test
         void rowsRenderedForClaimValuesWhenClaimDoesNotHaveAnAssessment() {
-            ClaimField fixedFee = new ClaimField("1", null, null);
-            ClaimField netProfitCost = new ClaimField("2", null, null);
-            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
-            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
-            ClaimField counselCost = new ClaimField("5", null, null);
-            ClaimField detention = new ClaimField("6", null, null);
-            ClaimField jrFormFilling = new ClaimField("7", null, null);
-            ClaimField adjournedHearing = new ClaimField("8", 100, 100);
-            ClaimField cmrhTelephone = new ClaimField("9", 100, 100);
-            ClaimField cmrhOral = new ClaimField("10", 100, 100);
-            ClaimField hoInterview = new ClaimField("11", 100, 100);
-            ClaimField substantiveHearing = new ClaimField("12", 100, 100);
-            ClaimField vatClaimed = new ClaimField("13", 100, 100);
-            ClaimField totalAmount = new ClaimField("14", 100, 100);
-
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(fixedFee);
-            claim.setNetProfitCost(netProfitCost);
-            claim.setNetDisbursementAmount(netDisbursementAmount);
-            claim.setDisbursementVatAmount(disbursementVatAmount);
-            claim.setCounselsCost(counselCost);
-            claim.setDetentionTravelWaitingCosts(detention);
-            claim.setJrFormFillingCost(jrFormFilling);
-            claim.setAdjournedHearing(adjournedHearing);
-            claim.setCmrhTelephone(cmrhTelephone);
-            claim.setCmrhOral(cmrhOral);
-            claim.setHoInterview(hoInterview);
-            claim.setSubstantiveHearing(substantiveHearing);
-            claim.setVatClaimed(vatClaimed);
-            claim.setTotalAmount(totalAmount);
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setHasAssessment(false);
 
             CivilClaimDetailsView viewModel = createView(claim);
-            ArrayList<ClaimField> expectedRows = new ArrayList<>(List.of(
-                fixedFee,
-                netProfitCost,
-                netDisbursementAmount,
-                disbursementVatAmount,
-                detention,
-                jrFormFilling,
-                counselCost,
-                cmrhOral,
-                cmrhTelephone,
-                hoInterview,
-                substantiveHearing,
-                adjournedHearing,
-                vatClaimed,
-                totalAmount
-            ));
+            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
 
-            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
-        }
+            Assertions.assertEquals(14, result.size());
 
-        @Test void onlyRowsWithValuesRendered() {
-            ClaimField fixedFee = new ClaimField("1", null, null);
-            ClaimField netProfitCost = new ClaimField("2", null, null);
-            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
-            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
-            ClaimField counselCost = new ClaimField("5", null, null);
-            ClaimField detention = new ClaimField("6", null, null);
-            ClaimField jrFormFilling = new ClaimField("7", null, null);
-            ClaimField adjournedHearing = new ClaimField("8", 100, 100);
-            ClaimField cmrhTelephone = new ClaimField("9", null, null);
-            ClaimField cmrhOral = new ClaimField("10", null, null);
-            ClaimField hoInterview = new ClaimField("11", null, null);
-            ClaimField substantiveHearing = new ClaimField("12", null, null);
-            ClaimField vatClaimed = new ClaimField("13", null, 100);
-            ClaimField totalAmount = new ClaimField("14", 100, null);
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(fixedFee);
-            claim.setNetProfitCost(netProfitCost);
-            claim.setNetDisbursementAmount(netDisbursementAmount);
-            claim.setDisbursementVatAmount(disbursementVatAmount);
-            claim.setCounselsCost(counselCost);
-            claim.setDetentionTravelWaitingCosts(detention);
-            claim.setJrFormFillingCost(jrFormFilling);
-            claim.setAdjournedHearing(adjournedHearing);
-            claim.setCmrhTelephone(cmrhTelephone);
-            claim.setCmrhOral(cmrhOral);
-            claim.setHoInterview(hoInterview);
-            claim.setSubstantiveHearing(substantiveHearing);
-            claim.setVatClaimed(vatClaimed);
-            claim.setTotalAmount(totalAmount);
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
-            CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> expectedRows = new ArrayList<>(List.of(
-                fixedFee,
-                netProfitCost,
-                netDisbursementAmount,
-                disbursementVatAmount,
-                detention,
-                jrFormFilling,
-                counselCost,
-                adjournedHearing,
-                vatClaimed,
-                totalAmount
-            ));
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
-            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
+
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
+
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
+
+            Assertions.assertEquals(CMRH_ORAL, result.get(7).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(7).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(7).getCalculated());
+
+            Assertions.assertEquals(CMRH_TELEPHONE, result.get(8).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).getCalculated());
+
+            Assertions.assertEquals(HO_INTERVIEW, result.get(9).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(9).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(9).getCalculated());
+
+            Assertions.assertEquals(SUBSTANTIVE_HEARING, result.get(10).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(10).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(10).getCalculated());
+
+            Assertions.assertEquals(ADJOURNED_FEE, result.get(11).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(11).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(11).getCalculated());
+
+            Assertions.assertEquals(VAT, result.get(12).getKey());
+            Assertions.assertEquals(true, result.get(12).getSubmitted());
+            Assertions.assertEquals(false, result.get(12).getCalculated());
+
+            Assertions.assertEquals(TOTAL, result.get(13).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(13).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(13).getCalculated());
         }
 
         @Test
         void rowsRenderedForNullBoltOnClaimValues() {
-            ClaimField fixedFee = new ClaimField("1", null, null);
-            ClaimField netProfitCost = new ClaimField("2", null, null);
-            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
-            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
-            ClaimField counselCost = new ClaimField("5", null, null);
-            ClaimField detention = new ClaimField("6", null, null);
-            ClaimField jrFormFilling = new ClaimField("7", null, null);
-
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(fixedFee);
-            claim.setNetProfitCost(netProfitCost);
-            claim.setNetDisbursementAmount(netDisbursementAmount);
-            claim.setDisbursementVatAmount(disbursementVatAmount);
-            claim.setCounselsCost(counselCost);
-            claim.setDetentionTravelWaitingCosts(detention);
-            claim.setJrFormFillingCost(jrFormFilling);
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            claim.setAdjournedHearing(null);
+            claim.setCmrhTelephone(null);
+            claim.setCmrhOral(null);
+            claim.setHoInterview(null);
+            claim.setSubstantiveHearing(null);
 
             CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> expectedRows = List.of(
-                fixedFee,
-                netProfitCost,
-                netDisbursementAmount,
-                disbursementVatAmount,
-                detention,
-                jrFormFilling,
-                counselCost
-            );
+            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
 
-            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
+            Assertions.assertEquals(9, result.size());
+
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
+
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
+
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
+
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
+
+            Assertions.assertEquals(VAT, result.get(7).getKey());
+            Assertions.assertEquals(true, result.get(7).getSubmitted());
+            Assertions.assertEquals(false, result.get(7).getCalculated());
+
+            Assertions.assertEquals(TOTAL, result.get(8).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).getCalculated());
         }
 
         @Test
         void rowsRenderedForZeroBoltOnClaimValues() {
-            ClaimField fixedFee = new ClaimField("1", null, null);
-            ClaimField netProfitCost = new ClaimField("2", null, null);
-            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
-            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
-            ClaimField counselCost = new ClaimField("5", null, null);
-            ClaimField detention = new ClaimField("6", null, null);
-            ClaimField jrFormFilling = new ClaimField("7", null, null);
-            ClaimField adjournedHearing = new ClaimField("8", BigDecimal.ZERO, 100);
-            ClaimField cmrhTelephone = new ClaimField("9", 0, null);
-            ClaimField cmrhOral = new ClaimField("10", 0, null);
-            ClaimField hoInterview = new ClaimField("11", 0, null);
-            ClaimField substantiveHearing = new ClaimField("12", BigDecimal.ZERO, null);
-
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(fixedFee);
-            claim.setNetProfitCost(netProfitCost);
-            claim.setNetDisbursementAmount(netDisbursementAmount);
-            claim.setDisbursementVatAmount(disbursementVatAmount);
-            claim.setCounselsCost(counselCost);
-            claim.setDetentionTravelWaitingCosts(detention);
-            claim.setJrFormFillingCost(jrFormFilling);
-            claim.setAdjournedHearing(adjournedHearing);
-            claim.setCmrhTelephone(cmrhTelephone);
-            claim.setCmrhOral(cmrhOral);
-            claim.setHoInterview(hoInterview);
-            claim.setSubstantiveHearing(substantiveHearing);
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            claim.setAdjournedHearing(updateClaimFieldSubmittedValue(claim.getAdjournedHearing(), BigDecimal.ZERO));
+            claim.setCmrhTelephone(updateClaimFieldSubmittedValue(claim.getCmrhTelephone(), 0));
+            claim.setCmrhOral(updateClaimFieldSubmittedValue(claim.getCmrhOral(), 0));
+            claim.setHoInterview(updateClaimFieldSubmittedValue(claim.getHoInterview(), 0));
+            claim.setSubstantiveHearing(updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), BigDecimal.ZERO));
 
             CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> expectedRows = List.of(
-                fixedFee,
-                netProfitCost,
-                netDisbursementAmount,
-                disbursementVatAmount,
-                detention,
-                jrFormFilling,
-                counselCost
-            );
+            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
 
-            Assertions.assertEquals(expectedRows, viewModel.getSummaryClaimFieldRows());
+            Assertions.assertEquals(9, result.size());
+
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
+
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
+
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
+
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
+
+            Assertions.assertEquals(VAT, result.get(7).getKey());
+            Assertions.assertEquals(true, result.get(7).getSubmitted());
+            Assertions.assertEquals(false, result.get(7).getCalculated());
+
+            Assertions.assertEquals(TOTAL, result.get(8).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).getCalculated());
         }
     }
 
@@ -409,189 +427,163 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
 
         @Test
         void rowsRenderedForClaimValues() {
-            ClaimField fixedFee = new ClaimField("1", null, null);
-            ClaimField netProfitCost = new ClaimField("2", null, null);
-            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
-            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
-            ClaimField counselCost = new ClaimField("5", null, null);
-            ClaimField detention = new ClaimField("6", null, null);
-            ClaimField jrFormFilling = new ClaimField("7", null, null);
-            ClaimField adjournedHearing = new ClaimField("8", 100, 100);
-            ClaimField cmrhTelephone = new ClaimField("9", 100, 100);
-            ClaimField cmrhOral = new ClaimField("10", 100, 100);
-            ClaimField hoInterview = new ClaimField("11", 100, 100);
-            ClaimField substantiveHearing = new ClaimField("12", 100, 100);
-            ClaimField vatClaimed = new ClaimField("13", 100, 100);
-            ClaimField totalAmount = new ClaimField("14", 100, 100);
-
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(fixedFee);
-            claim.setNetProfitCost(netProfitCost);
-            claim.setNetDisbursementAmount(netDisbursementAmount);
-            claim.setDisbursementVatAmount(disbursementVatAmount);
-            claim.setCounselsCost(counselCost);
-            claim.setDetentionTravelWaitingCosts(detention);
-            claim.setJrFormFillingCost(jrFormFilling);
-            claim.setAdjournedHearing(adjournedHearing);
-            claim.setCmrhTelephone(cmrhTelephone);
-            claim.setCmrhOral(cmrhOral);
-            claim.setHoInterview(hoInterview);
-            claim.setSubstantiveHearing(substantiveHearing);
-            claim.setVatClaimed(vatClaimed);
-            claim.setTotalAmount(totalAmount);
-            claim.setHasAssessment(true);
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
             CivilClaimDetailsView viewModel = createView(claim);
-            ArrayList<ClaimField> expectedRows = new ArrayList<>(List.of(
-                fixedFee,
-                netProfitCost,
-                netDisbursementAmount,
-                disbursementVatAmount,
-                detention,
-                jrFormFilling,
-                counselCost,
-                cmrhOral,
-                cmrhTelephone,
-                hoInterview,
-                substantiveHearing,
-                adjournedHearing,
-                vatClaimed
-            ));
+            List<ClaimField> result = viewModel.getReviewClaimFieldRows();
 
-            Assertions.assertEquals(expectedRows, viewModel.getReviewClaimFieldRows());
-        }
+            Assertions.assertEquals(13, result.size());
 
-        @Test void nullBoltOnRowsRenderedForClaimValues() {
-            ClaimField fixedFee = new ClaimField("1", null, null);
-            ClaimField netProfitCost = new ClaimField("2", null, null);
-            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
-            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
-            ClaimField counselCost = new ClaimField("5", null, null);
-            ClaimField detention = new ClaimField("6", null, null);
-            ClaimField jrFormFilling = new ClaimField("7", null, null);
-            ClaimField adjournedHearing = new ClaimField("8", null, 100);
-            ClaimField cmrhTelephone = new ClaimField("9", null, null);
-            ClaimField cmrhOral = new ClaimField("10", null, null);
-            ClaimField hoInterview = new ClaimField("11", null, null);
-            ClaimField substantiveHearing = new ClaimField("12", null, null);
-            ClaimField vatClaimed = new ClaimField("13", null, 100);
-            ClaimField totalAmount = new ClaimField("14", 100, null);
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(fixedFee);
-            claim.setNetProfitCost(netProfitCost);
-            claim.setNetDisbursementAmount(netDisbursementAmount);
-            claim.setDisbursementVatAmount(disbursementVatAmount);
-            claim.setCounselsCost(counselCost);
-            claim.setDetentionTravelWaitingCosts(detention);
-            claim.setJrFormFillingCost(jrFormFilling);
-            claim.setAdjournedHearing(adjournedHearing);
-            claim.setCmrhTelephone(cmrhTelephone);
-            claim.setCmrhOral(cmrhOral);
-            claim.setHoInterview(hoInterview);
-            claim.setSubstantiveHearing(substantiveHearing);
-            claim.setVatClaimed(vatClaimed);
-            claim.setTotalAmount(totalAmount);
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
-            CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> expectedRows = new ArrayList<>(List.of(
-                fixedFee,
-                netProfitCost,
-                netDisbursementAmount,
-                disbursementVatAmount,
-                detention,
-                jrFormFilling,
-                counselCost,
-                cmrhOral,
-                cmrhTelephone,
-                hoInterview,
-                substantiveHearing,
-                adjournedHearing,
-                vatClaimed
-            ));
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
-            Assertions.assertEquals(expectedRows, viewModel.getReviewClaimFieldRows());
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
+
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
+
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
+
+            Assertions.assertEquals(CMRH_ORAL, result.get(7).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(7).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(7).getCalculated());
+
+            Assertions.assertEquals(CMRH_TELEPHONE, result.get(8).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).getCalculated());
+
+            Assertions.assertEquals(HO_INTERVIEW, result.get(9).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(9).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(9).getCalculated());
+
+            Assertions.assertEquals(SUBSTANTIVE_HEARING, result.get(10).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(10).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(10).getCalculated());
+
+            Assertions.assertEquals(ADJOURNED_FEE, result.get(11).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(11).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(11).getCalculated());
+
+            Assertions.assertEquals(VAT, result.get(12).getKey());
+            Assertions.assertEquals(true, result.get(12).getSubmitted());
+            Assertions.assertEquals(false, result.get(12).getCalculated());
+            Assertions.assertEquals("/submissions/%s/claims/%s/assessment-outcome", result.get(12).getChangeUrl());
         }
 
         @Test
         void rowsRenderedForNullBoltOnClaimValues() {
-            ClaimField fixedFee = new ClaimField("1", null, null);
-            ClaimField netProfitCost = new ClaimField("2", null, null);
-            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
-            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
-            ClaimField counselCost = new ClaimField("5", null, null);
-            ClaimField detention = new ClaimField("6", null, null);
-            ClaimField jrFormFilling = new ClaimField("7", null, null);
-
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(fixedFee);
-            claim.setNetProfitCost(netProfitCost);
-            claim.setNetDisbursementAmount(netDisbursementAmount);
-            claim.setDisbursementVatAmount(disbursementVatAmount);
-            claim.setCounselsCost(counselCost);
-            claim.setDetentionTravelWaitingCosts(detention);
-            claim.setJrFormFillingCost(jrFormFilling);
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            claim.setAdjournedHearing(null);
+            claim.setCmrhTelephone(null);
+            claim.setCmrhOral(null);
+            claim.setHoInterview(null);
+            claim.setSubstantiveHearing(null);
 
             CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> expectedRows = List.of(
-                fixedFee,
-                netProfitCost,
-                netDisbursementAmount,
-                disbursementVatAmount,
-                detention,
-                jrFormFilling,
-                counselCost
-            );
+            List<ClaimField> result = viewModel.getReviewClaimFieldRows();
 
-            Assertions.assertEquals(expectedRows, viewModel.getReviewClaimFieldRows());
+            Assertions.assertEquals(8, result.size());
+
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
+
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
+
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
+
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
+
+            Assertions.assertEquals(VAT, result.get(7).getKey());
+            Assertions.assertEquals(true, result.get(7).getSubmitted());
+            Assertions.assertEquals(false, result.get(7).getCalculated());
+            Assertions.assertEquals("/submissions/%s/claims/%s/assessment-outcome", result.get(7).getChangeUrl());
         }
 
         @Test
         void rowsRenderedForZeroBoltOnClaimValues() {
-            ClaimField fixedFee = new ClaimField("1", null, null);
-            ClaimField netProfitCost = new ClaimField("2", null, null);
-            ClaimField netDisbursementAmount = new ClaimField("3", null, null);
-            ClaimField disbursementVatAmount = new ClaimField("4", null, null);
-            ClaimField counselCost = new ClaimField("5", null, null);
-            ClaimField detention = new ClaimField("6", null, null);
-            ClaimField jrFormFilling = new ClaimField("7", null, null);
-            ClaimField adjournedHearing = new ClaimField("8", BigDecimal.ZERO, 100);
-            ClaimField cmrhTelephone = new ClaimField("9", 0, null);
-            ClaimField cmrhOral = new ClaimField("10", 0, null);
-            ClaimField hoInterview = new ClaimField("11", 0, null);
-            ClaimField substantiveHearing = new ClaimField("12", BigDecimal.ZERO, null);
-
-            CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setFixedFee(fixedFee);
-            claim.setNetProfitCost(netProfitCost);
-            claim.setNetDisbursementAmount(netDisbursementAmount);
-            claim.setDisbursementVatAmount(disbursementVatAmount);
-            claim.setCounselsCost(counselCost);
-            claim.setDetentionTravelWaitingCosts(detention);
-            claim.setJrFormFillingCost(jrFormFilling);
-            claim.setAdjournedHearing(adjournedHearing);
-            claim.setCmrhTelephone(cmrhTelephone);
-            claim.setCmrhOral(cmrhOral);
-            claim.setHoInterview(hoInterview);
-            claim.setSubstantiveHearing(substantiveHearing);
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            claim.setAdjournedHearing(updateClaimFieldSubmittedValue(claim.getAdjournedHearing(), BigDecimal.ZERO));
+            claim.setCmrhTelephone(updateClaimFieldSubmittedValue(claim.getCmrhTelephone(), 0));
+            claim.setCmrhOral(updateClaimFieldSubmittedValue(claim.getCmrhOral(), 0));
+            claim.setHoInterview(updateClaimFieldSubmittedValue(claim.getHoInterview(), 0));
+            claim.setSubstantiveHearing(updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), BigDecimal.ZERO));
 
             CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> expectedRows = List.of(
-                fixedFee,
-                netProfitCost,
-                netDisbursementAmount,
-                disbursementVatAmount,
-                detention,
-                jrFormFilling,
-                counselCost,
-                cmrhOral,
-                cmrhTelephone,
-                hoInterview,
-                substantiveHearing,
-                adjournedHearing
-            );
+            List<ClaimField> result = viewModel.getReviewClaimFieldRows();
 
-            Assertions.assertEquals(expectedRows, viewModel.getReviewClaimFieldRows());
+            Assertions.assertEquals(8, result.size());
+
+            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
+
+            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+
+            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+
+            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
+            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+
+            Assertions.assertEquals(DETENTION_TRAVEL_COST, result.get(4).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(4).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(4).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(4).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/detention-travel-and-waiting-costs", result.get(4).getChangeUrl());
+
+            Assertions.assertEquals(JR_FORM_FILLING, result.get(5).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(5).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(5).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(5).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/jr-form-filling-costs", result.get(5).getChangeUrl());
+
+            Assertions.assertEquals(COUNSELS_COST, result.get(6).getKey());
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(6).getSubmitted());
+            Assertions.assertEquals(BigDecimal.valueOf(200), result.get(6).getCalculated());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
+            Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
+
+            Assertions.assertEquals(VAT, result.get(7).getKey());
+            Assertions.assertEquals(true, result.get(7).getSubmitted());
+            Assertions.assertEquals(false, result.get(7).getCalculated());
         }
     }
 
