@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
+import uk.gov.justice.laa.amend.claim.models.ClaimFieldType;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
@@ -125,7 +126,7 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
         @Test
         void rowsRenderedForClaimValuesWhenClaimDoesNotHaveAnAssessment() {
             CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
-            claim.setTotalAmount(MockClaimsFunctions.createClaimField(TOTAL));
+            claim.setTotalAmount(MockClaimsFunctions.createClaimField(TOTAL, ClaimFieldType.CALCULATED_TOTAL));
             claim.setHasAssessment(false);
 
             CrimeClaimDetailsView viewModel = createView(claim);

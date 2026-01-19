@@ -146,8 +146,7 @@ public class ClaimReviewControllerTest {
 
     @Test
     public void testUnsuccessfulValidationReloadsPageWithErrorSummary() throws Exception {
-        ClaimField claimField = new ClaimField();
-        claimField.setKey("foo");
+        ClaimField claimField = ClaimField.builder().key("foo").build();
         claimField.setStatus(ClaimFieldStatus.MODIFIABLE);
         claimField.setAssessed(null);
         claim.setNetProfitCost(claimField);

@@ -11,6 +11,7 @@ PORT_FORWARD_PID=$!
 sleep 3
 
 echo "[INFO] Starting application..."
+docker-compose up -d
 ./gradlew bootRun >/dev/null 2>&1 &
 BOOTRUN_PID=$!
 sleep 10
@@ -27,3 +28,4 @@ fi
 
 echo "[INFO] Cleaning up..."
 kill "$BOOTRUN_PID" "$PORT_FORWARD_PID" 2>/dev/null || true
+docker-compose down -v
