@@ -55,15 +55,23 @@ public class DatabaseQueryExecutor implements AutoCloseable {
             .forEach(this::executeUpdate);
     }
 
-    public void delete(List<Insert> inserts) {
+    public void deleteById(List<Insert> inserts) {
         inserts
             .reversed()
-            .forEach(insert -> delete(insert.table(), insert.id()));
+            .forEach(insert -> deleteById(insert.table(), insert.id()));
     }
 
-    private void delete(String table, String id) {
-        String sql = String.format("DELETE FROM claims.%s WHERE id = ?::uuid", table);
-        executeUpdate(SqlStatement.fromRaw(sql, List.of(id)));
+    public void deleteById(String table, String id) {
+        if (table != null && id != null) {
+            System.out.printf("Deleting %s from %s", id, table);
+            String sql = String.format("DELETE FROM claims.%s WHERE id = ?::uuid", table);
+            executeUpdate(SqlStatement.fromRaw(sql, List.of(id)));
+        }
+    }
+
+    public void deleteByUserId(String table, String userId) {
+        String sql = String.format("DELETE FROM claims.%s WHERE created_by_user_id = ?", table);
+        executeUpdate(SqlStatement.fromRaw(sql, List.of(userId)));
     }
 
     public ResultSet select(String table, String id) {

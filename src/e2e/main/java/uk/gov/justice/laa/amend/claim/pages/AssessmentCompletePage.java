@@ -48,4 +48,10 @@ public class AssessmentCompletePage {
     public void clickViewAssessedClaim() {
         viewAssessedClaimButton.click();
     }
+
+    public String getAssessmentId() {
+        String url = page.url();
+        int lastSlashIndex = url.lastIndexOf("/");
+        return url.substring(lastSlashIndex + 1);
+    }
 }

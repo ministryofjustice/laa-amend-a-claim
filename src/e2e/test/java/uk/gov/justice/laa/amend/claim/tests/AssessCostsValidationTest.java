@@ -52,8 +52,6 @@ public class AssessCostsValidationTest extends BaseTest {
     private final String CIVIL_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
     private final String CIVIL_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
 
-    private final String USER_ID = UUID.randomUUID().toString();
-
     @Override
     protected List<Insert> inserts() {
         return List.of(

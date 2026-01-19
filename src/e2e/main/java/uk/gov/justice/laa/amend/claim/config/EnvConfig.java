@@ -28,4 +28,7 @@ public class EnvConfig {
     public static String dbName() { return getOrDefault("DB_NAME", "postgres"); }
     public static String dbUser() { return getOrDefault("DB_USER", "postgres"); }
     public static String dbPassword() { return getOrDefault("DB_PASSWORD", ""); }
+    public static String userId() {
+        return "LAA-Amend-A-Claim-E2E-Tests";
+    }
 }

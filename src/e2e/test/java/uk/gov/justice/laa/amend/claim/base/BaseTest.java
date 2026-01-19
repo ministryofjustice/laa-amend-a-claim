@@ -9,6 +9,7 @@ import uk.gov.justice.laa.amend.claim.persistence.DatabaseQueryExecutor;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The {@code BaseTest} class provides a foundation for UI tests using the
@@ -42,11 +43,29 @@ public abstract class BaseTest {
 
     protected DatabaseQueryExecutor dqe;
     protected Page page;
+    protected ConcurrentHashMap<String, String> store;
+    public final String USER_ID = EnvConfig.userId();
 
     protected abstract List<Insert> inserts();
 
+    /*@BeforeAll
+    public static void beforeAll() {
+        try (DatabaseQueryExecutor dqe = new DatabaseQueryExecutor()) {
+            String userId = EnvConfig.userId();
+            dqe.deleteByUserId("calculated_fee_detail", userId);
+            dqe.deleteByUserId("claim_summary_fee", userId);
+            dqe.deleteByUserId("claim", userId);
+            dqe.deleteByUserId("submission", userId);
+            dqe.deleteByUserId("bulk_submission", userId);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to clean database", e);
+        }
+    }*/
+
     @BeforeEach
     public void setup() {
+        store = new ConcurrentHashMap<>();
+
         try {
             dqe = new DatabaseQueryExecutor();
             dqe.seed(inserts());
@@ -65,6 +84,10 @@ public abstract class BaseTest {
                 page.close();
             } catch (Exception ignored) {}
         }
-        dqe.delete(inserts());
+
+        dqe.deleteById("assessment", store.get("assessmentId"));
+        dqe.deleteById(inserts());
+
+        store.clear();
     }
 }

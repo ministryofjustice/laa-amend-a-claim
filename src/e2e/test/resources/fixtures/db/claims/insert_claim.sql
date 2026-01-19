@@ -22,7 +22,7 @@ INSERT INTO claims.claim (
   'IMCB:IRVL',
   null,
   null,
-  'CAPA',
+  ?,
   'PA20000',
   'AP20000',
   null,
