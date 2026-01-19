@@ -1,153 +1,133 @@
+# E2E tests
+
 This module contains the standalone E2E UI automation suite for the LAA Amend a Claim service.  
 It uses Playwright (Java), JUnit 5 and Allure. The E2E project is isolated under src/e2e.
 
-============================================================
-PREREQUISITES
-============================================================
+## Prerequisites
 
-Java 17 or 21
-Gradle 8.2 or higher
-Node.js (required for Allure CLI)
-Allure CLI: npm install -g allure-commandline
-Playwright browsers (auto-installed on first run)
-Docker (required for running dependencies locally or in CI)
+* Java 17 or 21
+* Gradle 8.2 or higher
+* Node.js (required for Allure CLI)
+* Allure CLI: npm install -g allure-commandline
+* Playwright browsers (auto-installed on first run)
+* Docker (required for running dependencies locally or in CI)
 
-============================================================
-ENVIRONMENT CONFIG (.env)
-============================================================
+## Environment Config (`.env`)
 
 Example .env contents:
 
-UI_BASE_URL=http://localhost:8080
-USERNAME=test@example.com
-PASSWORD=SuperSecret123
-MFA_SECRET=BASE32SECRET
-HEADLESS=true
-BROWSER=chromium
-API_BASE=https://reqres.in
+* UI_BASE_URL=http://localhost:8080
+* P_USERNAME=<your test@devl.justice.gov.uk email>
+* P_PASSWORD=<your test@devl.justice.gov.uk password>
+* MFA_SECRET=<see below instructions>
+* HEADLESS=true
+* BROWSER=chromium
+* API_BASE=https://reqres.in
+* DB_PASSWORD=<see 1Password>
 
-============================================================
-RUN ALL E2E TESTS (LOCAL)
-============================================================
+## MFA Secret
 
-cd src/e2e
-./gradlew clean test
+1. Go to https://mysignins.microsoft.com/security-info
+2. Add sign-in method
+3. Microsoft Authenticator
+4. Set up a different authentication app
+5. Next
+6. Can't scan the QR code?
+7. Make a note of the secret key, and add it to `.env`
+8. Use a different authenticator app (e.g. Authy) and finish the setup
+9. Change default sign-in method to "App based authentication or hardware token - code"
 
-Allure results are written to:
+## Run all E2E tests
 
-src/e2e/build/allure-results/
+`./e2e.sh`
 
-============================================================
-DEBUG MODE (HEADLESS/OFF + SLOW-MO)
-============================================================
+## Run a particular test class
 
-Visible browser:
-./gradlew test -Pheadless=false
+`./e2e.sh <class name>` e.g. `./e2e.sh SearchTest`
 
-Or using environment variables:
-HEADLESS=false BROWSER=firefox ./gradlew test
+## Run a particular test
 
-Slow-motion debugging:
-LaunchOptions.setSlowMo(150);
+`./e2e.sh <class name.test name>` e.g. `./e2e.sh SearchTest.canSearchForClaim`
 
-============================================================
-RUN A SPECIFIC TEST
-============================================================
+## Debug mode
 
-./gradlew test --tests uk.gov.justice.laa.amend.claim.tests.SearchTest
+1. Visible browser:
 
-Or a single method:
-./gradlew test --tests "uk.gov.justice.laa.amend.claim.tests.SearchTest.canSearchForClaim"
+   In `.env` set `HEADLESS=false`
 
-============================================================
-VIEW ALLURE REPORT (LOCAL)
-============================================================
+2. Slow-motion debugging:
 
-Generate static HTML:
-./gradlew allureReport
+   In `DriverFactory` add `.setSlowMo(150)` to the launch options
 
-Serve report:
-./gradlew allureServe
+## Allure
 
-Local URL:
-http://localhost:9090
+### Generate static HTML
+```
+./e2e.sh --allure-report
+./e2e.sh SearchTest --allure-report
+./e2e.sh SearchTest.canSearchForClaim --allure-report
+```
 
-IMPORTANT:
-Do not open index.html via "file://".  
-This will always show 0 tests because browsers block AJAX when using local files.
+### Serve report
+```
+./e2e.sh --allure-serve
+./e2e.sh SearchTest --allure-serve
+./e2e.sh SearchTest.canSearchForClaim --allure-serve
+```
 
-To view reports properly:
-cd allure-report
+### View report
+```
+cd src/e2e/build/allure-report
 allure open .
-
-Or:
-cd allure-report
+```
+or
+```
+cd src/e2e/build/allure-report
 npx http-server -p 8085
 Open: http://localhost:8085
+```
 
-============================================================
-VIEW ALLURE REPORT GENERATED IN CI
-============================================================
-
+### GitHub
 The GitHub Actions pipeline uploads the Allure report as an artifact:
-
-1. Download the "allure-report.zip" from the CI run
+1. Download the `allure-report.zip` from the CI run
 2. Unzip it
-3. DO NOT double-click index.html
-   (opening via file:// will show a blank report)
-4. Serve it locally:
+3. `cd` into the folder
+4. `allure open .`
 
-Option 1:
-allure open .
+## Troubleshooting
 
-Option 2:
-npx http-server -p 8085
-Open http://localhost:8085
+1. Allure report shows 0 tests:
 
-If you follow these steps, the CI report will show the correct test results.
+    Must serve via allure open or http-server, not file://
 
-============================================================
-USEFUL GRADLE COMMANDS
-============================================================
+2. Playwright browser won't open:
 
-./gradlew clean
-./gradlew test -Pheadless=false
-./gradlew allureReport
-./gradlew allureServe
+    Use `HEADLESS=false`
 
-============================================================
-TROUBLESHOOTING
-============================================================
+3. MFA failing:
 
-Allure report shows 0 tests:
-- Must serve via allure open or http-server, not file://
+    Ensure MFA_SECRET is correct
 
-Playwright browser won't open:
-- Use HEADLESS=false
+4. Dotenv not loading:
 
-MFA failing:
-- Ensure MFA_SECRET is correct Base32 key
+    Ensure .env exists in repo root or src/e2e
 
-Dotenv not loading:
-- Ensure .env exists in repo root or src/e2e
+5. UI timing out:
 
-UI timing out:
-- Increase waitFor timeouts
+    Increase waitFor timeouts
 
-============================================================
-DEBUGGING TIPS
-============================================================
 
-Use page.pause() to open Playwright Inspector  
-Use System.out.println() for debug logging  
-Screenshots automatically attach to Allure via @AfterEach  
-Use slow-motion (setSlowMo) to watch UI steps  
-Increase wait times for slower CI environments  
+## Debugging tips
+* Use `page.pause()` to open Playwright Inspector  
+* Use `System.out.println()` for debug logging  
+* Screenshots automatically attach to Allure via `@AfterEach` 
+* Use slow-motion `setSlowMo()` to watch UI steps  
+* Increase wait times for slower CI environments  
 
-============================================================
-E2E PROJECT STRUCTURE
-============================================================
 
+## Project structure
+
+```
 src/e2e/
  ├── main/java/uk/gov/justice/laa/amend/claim/
  │    ├── drivers/DriverFactory.java
@@ -166,11 +146,10 @@ src/e2e/
  │
  ├── main/resources/allure.properties
  └── test/resources/junit-platform.properties
+```
 
-============================================================
-ALLURE + JUNIT GRADLE CONFIG (SUMMARY)
-============================================================
-
+## ALLURE + JUNIT GRADLE CONFIG (SUMMARY)
+```
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
     outputs.upToDateWhen { false }
@@ -183,3 +162,4 @@ tasks.withType(Test).configureEach {
         showStandardStreams = true
     }
 }
+```
