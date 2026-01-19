@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
 
@@ -101,7 +101,7 @@ jobs:
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
 
       - name: Comment on PR with Environment URL
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const hostname = '${{ steps.sanitize.outputs.hostname }}';
