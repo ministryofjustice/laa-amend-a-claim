@@ -40,6 +40,8 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            - name: management
+              containerPort: {{ .Values.service.managementPort }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:

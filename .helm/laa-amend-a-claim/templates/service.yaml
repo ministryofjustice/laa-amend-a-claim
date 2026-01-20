@@ -11,5 +11,9 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    - name: management
+      port: {{ .Values.service.managementPort }}
+      targetPort: {{ .Values.service.managementPort }}
+      protocol: TCP
   selector:
     {{- include "laa-amend-a-claim.selectorLabels" . | nindent 4 }}
