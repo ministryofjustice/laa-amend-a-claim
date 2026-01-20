@@ -46,6 +46,15 @@ logging:
     org.apache.http.headers: DEBUG
     org.springframework.session: INFO
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 ---
 spring:
   config:
