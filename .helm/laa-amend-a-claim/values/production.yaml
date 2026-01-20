@@ -4,7 +4,7 @@
 replicaCount: 4
 
 ingress:
-  className: "modsec-prod"
+  className: "modsec"
 
 resources:
   requests:
