@@ -107,3 +107,21 @@ jobs:
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
+
+  deploy-production:
+    name: Deploy to Production
+    needs: [ build, test, security, deploy-uat, deploy-staging ]
+    uses: ./.github/workflows/deploy.yml
+    with:
+      branch: ${{ github.ref_name }}
+      environment: production
+      SENTRY_ENV: production
+      image_tag: ${{ needs.build.outputs.image_tag }}
+      aws_region: ${{ vars.ECR_REGION }}
+      values_file: values/production.yaml
+    secrets:
+      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CERT: ${{ secrets.KUBE_CERT }}
