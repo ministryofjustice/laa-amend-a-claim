@@ -37,6 +37,25 @@ Example .env contents:
 8. Use a different authenticator app (e.g. Authy) and finish the setup
 9. Change default sign-in method to "App based authentication or hardware token - code"
 
+## Writing a test
+
+Each test class extends `BaseTest`, and must override the implementation of `inserts`. This defines the data that will be inserted into the database before each test inside that class.
+
+Here, the order is important. For example, we cannot insert a claim into the database without a corresponding submission.
+
+Therefore, when defining these inserts, the following order should be followed:
+1. Bulk submission
+2. Submission (requires a bulk submission ID)
+3. Claim (requires a submission ID)
+4. Claim summary fee (requires a claim ID)
+5. Calculated fee detail (requires a claim ID and claim summary fee ID)
+
+After each test has been executed, the `AfterEach` hook:
+1. Deletes any assessments that were created
+2. Iterates back through the inserts in reverse order to delete the seeded data from the database (note again that the order is important here).
+
+The insert classes define a list of parameters that will be substituted into the wildcards (`?`) inside the [SQL files](/test/resources/fixtures/db/claims). Additional wildcards and parameters can be added as needed.
+
 ## Run all E2E tests
 
 `./e2e.sh`
