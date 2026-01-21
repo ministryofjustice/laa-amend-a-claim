@@ -1,10 +1,16 @@
-package base;
+package uk.gov.justice.laa.amend.claim.base;
 
 import com.microsoft.playwright.Page;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import uk.gov.justice.laa.amend.claim.base.BrowserSession;
-import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
+import uk.gov.justice.laa.amend.claim.models.Insert;
+import uk.gov.justice.laa.amend.claim.persistence.DatabaseQueryExecutor;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The {@code BaseTest} class provides a foundation for UI tests using the
@@ -27,28 +33,50 @@ import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
  *   session management and configuration.
  *
  * Structure:
- * - {@code createPage()}: A method annotated with {@code @BeforeEach} to set up the testing
+ * - {@code setup()}: A method annotated with {@code @BeforeEach} to set up the testing
  *   environment. It creates a new browser page and navigates to the configured
  *   base URL.
- * - {@code cleanUp()}: A method annotated with {@code @AfterEach} to ensure that
+ * - {@code tearDown()}: A method annotated with {@code @AfterEach} to ensure that
  *   resources are properly released by closing the browser page after the test
  *   completes.
  */
 public abstract class BaseTest {
+
+    protected DatabaseQueryExecutor dqe;
     protected Page page;
+    protected ConcurrentHashMap<String, String> store;
+
+    public final String BULK_SUBMISSION_ID = UUID.randomUUID().toString();
+    public final String USER_ID = EnvConfig.userId();
+
+    protected abstract List<Insert> inserts();
 
     @BeforeEach
-    void createPage() {
+    public void setup() {
+        store = new ConcurrentHashMap<>();
+
+        try {
+            dqe = new DatabaseQueryExecutor();
+            dqe.seed(inserts());
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to seed database", e);
+        }
+
         page = BrowserSession.getContext().newPage();
         page.navigate(EnvConfig.baseUrl());
     }
 
     @AfterEach
-    void cleanUp() {
+    public void tearDown() {
         if (page != null) {
             try {
                 page.close();
             } catch (Exception ignored) {}
         }
+
+        dqe.deleteById("assessment", store.get("assessmentId"));
+        dqe.deleteById(inserts());
+
+        store.clear();
     }
 }
