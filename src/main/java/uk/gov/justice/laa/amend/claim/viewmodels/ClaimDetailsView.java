@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
+
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
 
     // 'Summary' rows for the 'Claim details' page
@@ -119,16 +121,16 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     default ClaimField setDisplayForNulls(ClaimField field) {
         if (field != null) {
-            field.setSubmittedForDisplay();
-            field.setCalculatedForDisplay();
-            field.setAssessedForDisplay();
+            field.setSubmitted(getOrElseZero(field.getSubmitted()));
+            field.setCalculated(getOrElseZero(field.getCalculated()));
+            field.setAssessed(getOrElseZero(field.getAssessed()));
         }
         return field;
     }
 
     private ClaimField setCalculatedDisplayForNulls(ClaimField field) {
         if (field != null) {
-            field.setCalculatedForDisplay();
+            field.setCalculated(getOrElseZero(field.getCalculated()));
         }
         return field;
     }

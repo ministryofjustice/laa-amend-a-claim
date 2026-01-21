@@ -9,8 +9,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
-
 @Data
 @AllArgsConstructor
 @Builder
@@ -130,17 +128,5 @@ public class ClaimField implements Serializable {
 
     public boolean hasSubmittedValue() {
         return !hasNoSubmittedValue();
-    }
-
-    public void setSubmittedForDisplay() {
-        setSubmitted(getOrElseZero(submitted));
-    }
-
-    public void setCalculatedForDisplay() {
-        setCalculated(getOrElseZero(calculated));
-    }
-
-    public void setAssessedForDisplay() {
-        setAssessed(getOrElseZero(assessed));
     }
 }
