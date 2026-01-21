@@ -8,7 +8,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import uk.gov.justice.laa.amend.claim.pages.LoginPage;
-import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
 /**
  * The {@code BrowserSession} class provides a managed browser session for

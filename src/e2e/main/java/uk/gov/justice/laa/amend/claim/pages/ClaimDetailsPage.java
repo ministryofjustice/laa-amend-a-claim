@@ -228,8 +228,11 @@ public class ClaimDetailsPage {
             String.format("Value mismatch in column %d", columnIndex));
     }
 
-    public void assertButtonLabel(String expectedLabel) {
-        Assertions.assertEquals(expectedLabel, addAssessmentOutcomeButton.textContent().trim(), "Button label should be " + expectedLabel);
+    public void assertAddAssessmentOutcomeButtonIsPresent() {
+        addAssessmentOutcomeButton.waitFor();
     }
 
+    public void assertUpdateAssessmentOutcomeButtonIsPresent() {
+        updateAssessmentOutcomeButton.waitFor();
+    }
 }
