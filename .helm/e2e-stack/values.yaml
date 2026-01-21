@@ -220,7 +220,7 @@ githubRunner:
     - name: RUNNER_NAME
       value: "k8s-e2e-runner"
     - name: RUNNER_LABELS
-      value: "self-hosted,linux,abc-e2e"
+      value: "self-hosted,linux,aabc-e2e"
     - name: UI_BASE_URL
       value: "http://e2e-amend-a-claim:8084"
     - name: API_BASE

@@ -44,7 +44,7 @@ fi
     --url "https://github.com/${GITHUB_REPOSITORY}" \
     --token "${RUNNER_TOKEN}" \
     --name "${RUNNER_NAME}" \
-    --labels "${RUNNER_LABELS:-self-hosted,linux,e2e}" \
+    --labels "${RUNNER_LABELS:-self-hosted,linux,aabc-e2e}" \
     --unattended \
     --replace
 
