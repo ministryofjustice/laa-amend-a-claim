@@ -54,7 +54,7 @@ After each test has been executed, the `AfterEach` hook:
 1. Deletes any assessments that were created
 2. Iterates back through the inserts in reverse order to delete the seeded data from the database (note again that the order is important here).
 
-The insert classes define a list of parameters that will be substituted into the wildcards (`?`) inside the [SQL files](/test/resources/fixtures/db/claims). Additional wildcards and parameters can be added as needed.
+The insert classes define a list of parameters that will be substituted into the wildcards (`?`) inside the [SQL files](/src/e2e/test/resources/fixtures/db/claims). Additional wildcards and parameters can be added as needed.
 
 ## Run all E2E tests
 
