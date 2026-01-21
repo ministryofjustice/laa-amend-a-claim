@@ -8,10 +8,11 @@ import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
@@ -49,77 +50,63 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     // 'Values' rows for the 'Claim details' page
     default List<ClaimFieldRow> getSummaryClaimFieldRows() {
-        List<ClaimField> rows = claimFields();
-        addRowIfNotNull(
-            rows,
-            claim().getVatClaimed(),
-            claim().isHasAssessment() ? null : claim().getTotalAmount()
+        Stream<ClaimField> rows = Stream.concat(
+            claimFields(),
+            Stream.of(
+                claim().getVatClaimed(),
+                claim().isHasAssessment() ? null : claim().getTotalAmount()
+            )
         );
-        return rows.stream().map(ClaimField::toClaimFieldRow).toList();
+        return rows.map(ClaimField::toClaimFieldRow).filter(Objects::nonNull).toList();
     }
 
     // 'Claim costs' rows for the 'Review and amend' page
     default List<ClaimFieldRow> getReviewClaimFieldRows() {
-        List<ClaimField> rows = claimFields();
-        addRowIfNotNull(
-            rows,
-            claim().getVatClaimed()
+        Stream<ClaimField> rows = Stream.concat(
+            claimFields(),
+            Stream.of(
+                claim().getVatClaimed()
+            )
         );
-        return rows.stream().map(ClaimField::toClaimFieldRow).toList();
+        return rows.map(ClaimField::toClaimFieldRow).filter(Objects::nonNull).toList();
     }
 
     // 'Total claim value' rows for the 'Review and amend' page
     default List<ClaimFieldRow> getAssessedTotals() {
-        List<ClaimField> rows = new ArrayList<>();
-        addRowIfNotNull(
-            rows,
-            claim().getAssessedTotalVat(),
-            claim().getAssessedTotalInclVat()
-        );
-
-        return rows.stream().map(ClaimField::toClaimFieldRow).toList();
+        return claim()
+            .getAssessedTotalFields()
+            .map(ClaimField::toClaimFieldRow)
+            .filter(Objects::nonNull)
+            .toList();
     }
 
     // 'Total allowed value' rows for the 'Review and amend' page
     default List<ClaimFieldRow> getAllowedTotals() {
-        List<ClaimField> rows = new ArrayList<>();
-        addRowIfNotNull(
-            rows,
-            claim().getAllowedTotalVat(),
-            claim().getAllowedTotalInclVat()
-        );
-
-        return rows.stream().map(ClaimField::toClaimFieldRow).toList();
+        return claim()
+            .getAllowedTotalFields()
+            .map(ClaimField::toClaimFieldRow)
+            .filter(Objects::nonNull)
+            .toList();
     }
 
-    default void addRowIfNotNull(List<ClaimField> list, ClaimField... claimFields) {
-        for (ClaimField claimField : claimFields) {
-            if (claimField != null) {
-                list.add(claimField);
-            }
-        }
-    }
-
-    default List<ClaimField> claimFields() {
-        List<ClaimField> fields = new ArrayList<>();
-        addRowIfNotNull(
-            fields,
+    default Stream<ClaimField> claimFields() {
+        return Stream.of(
             claim().getFixedFee(),
             claim().getNetProfitCost(),
             claim().getNetDisbursementAmount(),
             claim().getDisbursementVatAmount()
         );
-        return fields;
     }
 
     default List<ReviewAndAmendFormError> getErrors() {
         return Stream.of(
                 claimFields(),
-                claim().getAssessedTotalFields().toList(),
-                claim().getAllowedTotalFields().toList()
+                claim().getAssessedTotalFields(),
+                claim().getAllowedTotalFields()
             )
-            .flatMap(List::stream)
+            .flatMap(Function.identity())
             .map(ClaimField::toClaimFieldRow)
+            .filter(Objects::nonNull)
             .filter(ClaimFieldRow::isAssessableAndUnassessed)
             .map(f -> new ReviewAndAmendFormError(f.getId(), f.getErrorKey()))
             .toList();

@@ -7,8 +7,8 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 @EqualsAndHashCode(callSuper = true)
@@ -51,28 +51,28 @@ public abstract class ClaimDetails extends Claim {
 
     public abstract AssessmentPost toAssessment(AssessmentMapper mapper, String userId);
 
-    public List<ClaimField> getClaimFields() {
+    public Stream<ClaimField> getClaimFields() {
         return Stream.concat(
                 commonClaimFields(),
                 specificClaimFields()
             )
-            .filter(Objects::nonNull)
-            .toList();
+            .filter(Objects::nonNull);
     }
 
     protected Stream<ClaimField> commonClaimFields() {
         return Stream.of(
-            getVatClaimed(),
-            getFixedFee(),
-            getNetProfitCost(),
-            getNetDisbursementAmount(),
-            getDisbursementVatAmount(),
-            getTotalAmount(),
-            getAssessedTotalVat(),
-            getAssessedTotalInclVat(),
-            getAllowedTotalVat(),
-            getAllowedTotalInclVat()
-        );
+                Stream.of(
+                    getVatClaimed(),
+                    getFixedFee(),
+                    getNetProfitCost(),
+                    getNetDisbursementAmount(),
+                    getDisbursementVatAmount(),
+                    getTotalAmount()
+                ),
+                getAssessedTotalFields(),
+                getAllowedTotalFields()
+            )
+            .flatMap(Function.identity());
     }
 
     protected abstract Stream<ClaimField> specificClaimFields();

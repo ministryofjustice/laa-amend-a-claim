@@ -13,12 +13,12 @@ import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
 @Getter
 public class ClaimFieldRow {
 
-    private String key;
+    private final String key;
     private Object submitted;
     private Object calculated;
     private Object assessed;
-    private boolean assessable;
-    private String changeUrl;
+    private final boolean assessable;
+    private final String changeUrl;
 
     public ClaimFieldRow(ClaimField claimField) {
         this.key = claimField.getKey();
@@ -26,11 +26,17 @@ public class ClaimFieldRow {
         this.calculated = claimField.getCalculated();
         this.assessed = claimField.getAssessed();
         this.assessable = claimField.isAssessable();
+
         switch (claimField) {
             case CostClaimField x -> {
-                this.submitted = getOrElseZero(submitted);
-                this.calculated = getOrElseZero(calculated);
-                this.assessed = getOrElseZero(assessed);
+                switch (x.getCost()) {
+                    case PROFIT_COSTS, DISBURSEMENTS, DISBURSEMENTS_VAT -> {}
+                    default -> {
+                        this.submitted = getOrElseZero(submitted);
+                        this.calculated = getOrElseZero(calculated);
+                        this.assessed = getOrElseZero(assessed);
+                    }
+                }
                 this.changeUrl = x.getCost().getChangeUrl();
             }
             case AllowedClaimField x -> {

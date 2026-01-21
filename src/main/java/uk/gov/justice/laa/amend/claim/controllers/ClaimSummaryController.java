@@ -12,7 +12,6 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 
-
 @Controller
 @RequiredArgsConstructor
 public class ClaimSummaryController {

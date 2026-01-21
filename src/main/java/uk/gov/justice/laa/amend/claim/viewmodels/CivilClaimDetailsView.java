@@ -6,6 +6,8 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 
 public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDetailsView<CivilClaimDetails> {
@@ -44,19 +46,19 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
     }
 
     @Override
-    public List<ClaimField> claimFields() {
-        List<ClaimField> fields = ClaimDetailsView.super.claimFields();
-        addRowIfNotNull(
-            fields,
-            claim.getDetentionTravelWaitingCosts(),
-            claim.getJrFormFillingCost(),
-            claim.getCounselsCost(),
-            claim.getCmrhOral(),
-            claim.getCmrhTelephone(),
-            claim.getHoInterview(),
-            claim.getSubstantiveHearing(),
-            claim.getAdjournedHearing()
-        );
-        return fields;
+    public Stream<ClaimField> claimFields() {
+        return Stream.concat(
+                ClaimDetailsView.super.claimFields(),
+                Stream.of(
+                    claim.getDetentionTravelWaitingCosts(),
+                    claim.getJrFormFillingCost(),
+                    claim.getCounselsCost(),
+                    claim.getCmrhOral(),
+                    claim.getCmrhTelephone(),
+                    claim.getHoInterview(),
+                    claim.getSubstantiveHearing(),
+                    claim.getAdjournedHearing()
+                )
+            );
     }
 }

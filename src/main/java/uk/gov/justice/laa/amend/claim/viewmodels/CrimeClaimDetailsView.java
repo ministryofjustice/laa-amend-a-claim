@@ -5,6 +5,8 @@ import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public record CrimeClaimDetailsView(CrimeClaimDetails claim) implements ClaimDetailsView<CrimeClaimDetails> {
 
@@ -27,13 +29,13 @@ public record CrimeClaimDetailsView(CrimeClaimDetails claim) implements ClaimDet
     }
 
     @Override
-    public List<ClaimField> claimFields() {
-        List<ClaimField> fields = ClaimDetailsView.super.claimFields();
-        addRowIfNotNull(
-            fields,
-            claim.getTravelCosts(),
-            claim.getWaitingCosts()
-        );
-        return fields;
+    public Stream<ClaimField> claimFields() {
+        return Stream.concat(
+                ClaimDetailsView.super.claimFields(),
+                Stream.of(
+                    claim.getTravelCosts(),
+                    claim.getWaitingCosts()
+                )
+            );
     }
 }

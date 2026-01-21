@@ -8,7 +8,6 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -25,10 +24,9 @@ public class ClaimStatusHandler {
      * @param outcome Outcome type determining the status changes
      */
     public void updateFieldStatuses(ClaimDetails claim, OutcomeType outcome) {
-        List<ClaimField> fields = claim.getClaimFields();
-        fields.stream()
-                .filter(Objects::nonNull)
-                .forEach(field -> updateFieldStatus(field, outcome, claim));
+        claim
+            .getClaimFields()
+            .forEach(field -> updateFieldStatus(field, outcome, claim));
     }
 
     private void updateFieldStatus(ClaimField field, OutcomeType outcome, ClaimDetails claim) {
