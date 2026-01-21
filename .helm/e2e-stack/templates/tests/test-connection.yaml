@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "e2e-stack.fullname" . }}-test-connection"
+  labels:
+    {{- include "e2e-stack.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['e2e-data-claims-api:{{ .Values.dataClaimsApi.service.port }}']
+  restartPolicy: Never
