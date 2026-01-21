@@ -10,7 +10,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeAssessedTotalsController;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
 @ActiveProfiles("local")

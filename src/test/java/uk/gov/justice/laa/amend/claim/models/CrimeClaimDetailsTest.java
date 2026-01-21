@@ -26,21 +26,21 @@ public class CrimeClaimDetailsTest {
         @Test
         void returnsFalseWhenFeeCodeIsNull() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            Assertions.assertFalse(claim.isAssessedTotalFieldModifiable());
+            Assertions.assertFalse(claim.isAssessedTotalFieldAssessable());
         }
 
         @Test
         void returnsTrueWhenFeeCodeIsINVC() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
             claim.setFeeCode("INVC");
-            Assertions.assertTrue(claim.isAssessedTotalFieldModifiable());
+            Assertions.assertTrue(claim.isAssessedTotalFieldAssessable());
         }
 
         @Test
         void returnsFalseWhenFeeCodeIsSomethingElse() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
             claim.setFeeCode("ABCD");
-            Assertions.assertFalse(claim.isAssessedTotalFieldModifiable());
+            Assertions.assertFalse(claim.isAssessedTotalFieldAssessable());
         }
     }
 

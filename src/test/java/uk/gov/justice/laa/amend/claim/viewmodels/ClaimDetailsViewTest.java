@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldType;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 

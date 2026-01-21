@@ -21,45 +21,7 @@ public class CrimeClaimDetails extends ClaimDetails {
     private String schemeId;
 
     @Override
-    public void setNilledValues() {
-        super.setNilledValues();
-        applyIfNotNull(travelCosts, ClaimField::setNilled);
-        applyIfNotNull(waitingCosts, ClaimField::setNilled);
-    }
-
-    @Override
-    public void setReducedToFixedFeeValues() {
-        super.setReducedToFixedFeeValues();
-        applyIfNotNull(travelCosts, ClaimField::setAssessedToCalculated);
-        applyIfNotNull(waitingCosts, ClaimField::setAssessedToCalculated);
-    }
-
-    @Override
-    public void setReducedValues() {
-        super.setReducedValues();
-        setPaidInFullOrReduced();
-    }
-
-    @Override
-    public void setPaidInFullValues() {
-        super.setPaidInFullValues();
-        setPaidInFullOrReduced();
-    }
-
-    private void setPaidInFullOrReduced() {
-        applyIfNotNull(travelCosts, ClaimField::setAssessedToSubmitted);
-        applyIfNotNull(waitingCosts, ClaimField::setAssessedToSubmitted);
-
-        ClaimField assessedTotalVat = getAssessedTotalVat();
-        ClaimField assessedTotalInclVat = getAssessedTotalInclVat();
-
-        // assessed total fields are only shown on crime claims if the claim has a certain fee code (e.g. INVC)
-        applyIfNotNull(assessedTotalVat, ClaimField::setAssessedToNull);
-        applyIfNotNull(assessedTotalInclVat, ClaimField::setAssessedToNull);
-    }
-
-    @Override
-    public boolean isAssessedTotalFieldModifiable() {
+    public boolean isAssessedTotalFieldAssessable() {
         return this.getFeeCode() != null && VALID_POLICE_STATION_FEE_CODES.contains(this.getFeeCode());
     }
 

@@ -4,7 +4,6 @@ import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
@@ -14,8 +13,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-
-import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
 
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
 
@@ -51,57 +48,48 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     void addMatterTypeCodeRow(Map<String, Object> summaryRows);
 
     // 'Values' rows for the 'Claim details' page
-    default List<ClaimField> getSummaryClaimFieldRows() {
-        List<ClaimField> rows = claimFieldsWithBoltOns();
+    default List<ClaimFieldRow> getSummaryClaimFieldRows() {
+        List<ClaimField> rows = claimFields();
         addRowIfNotNull(
             rows,
             claim().getVatClaimed(),
             claim().isHasAssessment() ? null : claim().getTotalAmount()
         );
-        return rows;
+        return rows.stream().map(ClaimField::toClaimFieldRow).toList();
     }
 
     // 'Claim costs' rows for the 'Review and amend' page
-    default List<ClaimField> getReviewClaimFieldRows() {
-        List<ClaimField> rows = claimFieldsWithBoltOns();
+    default List<ClaimFieldRow> getReviewClaimFieldRows() {
+        List<ClaimField> rows = claimFields();
         addRowIfNotNull(
             rows,
-            setChangeUrl(claim().getVatClaimed(), "/submissions/%s/claims/%s/assessment-outcome")
+            claim().getVatClaimed()
         );
-        return rows;
+        return rows.stream().map(ClaimField::toClaimFieldRow).toList();
     }
 
     // 'Total claim value' rows for the 'Review and amend' page
-    default List<ClaimField> getAssessedTotals() {
+    default List<ClaimFieldRow> getAssessedTotals() {
         List<ClaimField> rows = new ArrayList<>();
-        String changeUrl = "/submissions/%s/claims/%s/assessed-totals";
         addRowIfNotNull(
             rows,
-            setChangeUrl(resolveValue(claim().getAssessedTotalVat(), claim().getAllowedTotalVat()), changeUrl),
-            setChangeUrl(resolveValue(claim().getAssessedTotalInclVat(), claim().getAllowedTotalInclVat()), changeUrl)
+            claim().getAssessedTotalVat(),
+            claim().getAssessedTotalInclVat()
         );
 
-        return rows;
-    }
-
-    private ClaimField resolveValue(ClaimField assessed, ClaimField allowed) {
-        if (assessed != null && allowed != null && assessed.isNotAssessable()) {
-            assessed.setAssessed(allowed.getAssessed());
-        }
-        return assessed;
+        return rows.stream().map(ClaimField::toClaimFieldRow).toList();
     }
 
     // 'Total allowed value' rows for the 'Review and amend' page
-    default List<ClaimField> getAllowedTotals() {
+    default List<ClaimFieldRow> getAllowedTotals() {
         List<ClaimField> rows = new ArrayList<>();
-        String changeUrl = "/submissions/%s/claims/%s/allowed-totals";
         addRowIfNotNull(
             rows,
-            setChangeUrl(setCalculatedDisplayForNulls(claim().getAllowedTotalVat()), changeUrl),
-            setChangeUrl(setCalculatedDisplayForNulls(claim().getAllowedTotalInclVat()), changeUrl)
+            claim().getAllowedTotalVat(),
+            claim().getAllowedTotalInclVat()
         );
 
-        return rows;
+        return rows.stream().map(ClaimField::toClaimFieldRow).toList();
     }
 
     default void addRowIfNotNull(List<ClaimField> list, ClaimField... claimFields) {
@@ -112,47 +100,27 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         }
     }
 
-    default ClaimField checkSubmittedValue(ClaimField field) {
-        if (field != null && field.hasSubmittedValue()) {
-            return field;
-        }
-        return null;
-    }
-
-    default ClaimField setDisplayForNulls(ClaimField field) {
-        if (field != null) {
-            field.setSubmitted(getOrElseZero(field.getSubmitted()));
-            field.setCalculated(getOrElseZero(field.getCalculated()));
-            field.setAssessed(getOrElseZero(field.getAssessed()));
-        }
-        return field;
-    }
-
-    private ClaimField setCalculatedDisplayForNulls(ClaimField field) {
-        if (field != null) {
-            field.setCalculated(getOrElseZero(field.getCalculated()));
-        }
-        return field;
-    }
-
     default List<ClaimField> claimFields() {
         List<ClaimField> fields = new ArrayList<>();
         addRowIfNotNull(
             fields,
             claim().getFixedFee(),
-            setChangeUrl(claim().getNetProfitCost(), Cost.PROFIT_COSTS),
-            setChangeUrl(claim().getNetDisbursementAmount(), Cost.DISBURSEMENTS),
-            setChangeUrl(claim().getDisbursementVatAmount(), Cost.DISBURSEMENTS_VAT)
+            claim().getNetProfitCost(),
+            claim().getNetDisbursementAmount(),
+            claim().getDisbursementVatAmount()
         );
         return fields;
     }
 
-    List<ClaimField> claimFieldsWithBoltOns();
-
     default List<ReviewAndAmendFormError> getErrors() {
-        return Stream.of(claimFields(), getAssessedTotals(), getAllowedTotals())
+        return Stream.of(
+                claimFields(),
+                claim().getAssessedTotalFields().toList(),
+                claim().getAllowedTotalFields().toList()
+            )
             .flatMap(List::stream)
-            .filter(ClaimField::isAssessableAndUnassessed)
+            .map(ClaimField::toClaimFieldRow)
+            .filter(ClaimFieldRow::isAssessableAndUnassessed)
             .map(f -> new ReviewAndAmendFormError(f.getId(), f.getErrorKey()))
             .toList();
     }
@@ -175,16 +143,5 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         } else {
             return new ThymeleafMessage("claimSummary.lastAssessmentText.noUser", date, time, outcome);
         }
-    }
-
-    default ClaimField setChangeUrl(ClaimField field, Cost cost) {
-        return setChangeUrl(field, cost.getChangeUrl());
-    }
-
-    default ClaimField setChangeUrl(ClaimField field, String path) {
-        if (field != null) {
-            field.setChangeUrl(path);
-        }
-        return field;
     }
 }

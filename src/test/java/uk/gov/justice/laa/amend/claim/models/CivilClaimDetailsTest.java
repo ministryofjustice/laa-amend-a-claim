@@ -32,7 +32,7 @@ public class CivilClaimDetailsTest {
         @Test
         void returnsFalse() {
             CivilClaimDetails claim = new CivilClaimDetails();
-            Assertions.assertFalse(claim.isAssessedTotalFieldModifiable());
+            Assertions.assertFalse(claim.isAssessedTotalFieldAssessable());
         }
     }
 

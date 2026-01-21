@@ -19,7 +19,6 @@ import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldType;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;

@@ -19,7 +19,6 @@ import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldType;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;

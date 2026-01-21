@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 import java.math.BigDecimal;

@@ -1,11 +1,9 @@
 package uk.gov.justice.laa.amend.claim.resources;
 
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldType;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 

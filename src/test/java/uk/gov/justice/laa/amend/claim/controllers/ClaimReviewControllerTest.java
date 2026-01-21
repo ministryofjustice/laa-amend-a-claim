@@ -16,7 +16,6 @@ import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;

@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
