@@ -16,6 +16,7 @@ import uk.gov.justice.laa.amend.claim.pages.AssessDisbursementsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessDisbursementsVatPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessJrFormFillingCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessProfitCostsPage;
+import uk.gov.justice.laa.amend.claim.pages.AssessTravelCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessWaitingCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
@@ -208,7 +209,21 @@ public class AssessCostsValidationTest extends BaseTest {
         assertNumberWith2DpErrorShown();
     }
 
+    @DisplayName("Crime: Travel costs - letters cause number validation error")
+    void crimeTravelCostsLettersShowsError() {
+        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+        review.waitForPage();
+        review.clickChangeTravelCosts();
+
+        AssessTravelCostsPage travel = new AssessTravelCostsPage(page);
+        travel.waitForPage();
+        travel.setAssessedValue("dasad");
+        travel.saveChanges();
+
+        assertNumberWith2DpErrorShown();
+    }
 
     @Test
     @DisplayName("Crime: Waiting costs - letters cause number validation error")
@@ -226,7 +241,6 @@ public class AssessCostsValidationTest extends BaseTest {
 
         assertNumberWith2DpErrorShown();
     }
-
 
     @Test
     @DisplayName("Civil: Detention travel and waiting costs - letters cause number validation error")
