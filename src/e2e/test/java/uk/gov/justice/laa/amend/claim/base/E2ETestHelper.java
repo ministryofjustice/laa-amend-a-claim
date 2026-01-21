@@ -2,7 +2,7 @@ package uk.gov.justice.laa.amend.claim.base;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import uk.gov.justice.laa.amend.claim.tests.ClaimDetailsTest;
-import uk.gov.justice.laa.amend.claim.utils.ClaimDetailsFixture;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetailsFixture;
 
 import java.io.InputStream;
 import java.util.Map;
