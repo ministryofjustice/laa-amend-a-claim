@@ -13,6 +13,7 @@ public class EnvConfig {
     public static String username() { return getOrDefault("P_USERNAME", "standard_user"); }
     public static String password() { return getOrDefault("P_PASSWORD", "secret_sauce"); }
     public static String browser() { return getOrDefault("BROWSER", "chromium"); }
+    public static String silasAuthenticationEnabled() { return getOrDefault("SILAS_AUTH_ENABLED", "false"); }
 
     public static boolean headless() { return Boolean.parseBoolean(getOrDefault("HEADLESS", "true")); }
     public static String apiBase() { return getOrDefault("API_BASE", "https://reqres.in"); }
