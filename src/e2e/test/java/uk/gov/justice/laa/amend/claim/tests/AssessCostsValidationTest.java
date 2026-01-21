@@ -209,6 +209,7 @@ public class AssessCostsValidationTest extends BaseTest {
         assertNumberWith2DpErrorShown();
     }
 
+    @Test
     @DisplayName("Crime: Travel costs - letters cause number validation error")
     void crimeTravelCostsLettersShowsError() {
         navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
