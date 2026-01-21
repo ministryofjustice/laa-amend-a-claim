@@ -149,25 +149,32 @@ The GitHub Actions pipeline uploads the Allure report as an artifact:
 ```
 src/e2e/
  ├── main/java/uk/gov/justice/laa/amend/claim/
- │    ├── drivers/DriverFactory.java
+ │    ├── config/
+ │    │     └── EnvConfig.java
+ │    ├── drivers/
+ │    │     └── DriverFactory.java
+ │    ├── models/
+ │    │     └── Insert.java
  │    ├── pages/
  │    │     ├── LoginPage.java
  │    │     └── SearchPage.java
+ │    ├── persistence/
+ │    │     └── DatabaseQueryExecutor.java
  │    └── utils/
- │          ├── EnvConfig.java
- │          └── ApiUtils.java
+ │          └── TestDataUtils.java
  │
  ├── test/java/uk/gov/justice/laa/amend/claim/
- │    ├── base/BaseTest.java
+ │    ├── base/
+ │    │     └── BaseTest.java
  │    └── tests/
- │          ├── SearchTest.java
- │          └── ApiTest.java
+ │          ├── DbSeedSmokeTest.java
+ │          └── SearchTest.java
  │
  ├── main/resources/allure.properties
  └── test/resources/junit-platform.properties
 ```
 
-## ALLURE + JUNIT GRADLE CONFIG (SUMMARY)
+## Allure + JUnit gradle config (Summary)
 ```
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
