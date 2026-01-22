@@ -24,3 +24,14 @@
     font-weight: bold;
 }
 
+.aligned-costs-table col:nth-child(1) {
+    width: 30%;
+}
+
+.aligned-costs-table col:nth-child(2),
+.aligned-costs-table col:nth-child(3),
+.aligned-costs-table col:nth-child(4),
+.aligned-costs-table col:nth-child(5) {
+    width: 17.5%;
+}
+
