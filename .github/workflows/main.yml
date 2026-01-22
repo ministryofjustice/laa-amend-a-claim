@@ -38,6 +38,8 @@ jobs:
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       DATA_CLAIMS_API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
+      DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
+      E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
 
   security:
     name: Security

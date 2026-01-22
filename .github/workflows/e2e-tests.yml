@@ -16,12 +16,13 @@ on:
       build_runner_image:
         required: false
         type: boolean
-        default: false
-        description: 'Build new runner image (set to false to rebuild)'
+        default: true
+        description: 'Build new runner image (set to true to rebuild)'
       claims_api_image_tag:
         required: false
         type: string
-        default: '63724ddf945df5fb5e29794b6eadc6b9105a70c3'
+        default: '583b286c97dacacbc270075729bc297714628554'
+        description: 'data-claims-api image tag, retrieved from github build logs (needs to update with latest version)'
     secrets:
       ECR_ROLE_TO_ASSUME:
         required: true
@@ -35,6 +36,10 @@ on:
         required: true
       KUBE_CERT:
         required: true
+      E2E_DB_PASSWORD:
+        required: true
+      E2E_DB_USER:
+         required: true
 
 permissions:
   id-token: write
@@ -47,7 +52,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       runner_image_tag: ${{ steps.build.outputs.tag }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -74,11 +78,10 @@ jobs:
 
   deploy-e2e-environment:
     name: Deploy E2E Environment with Runner
-    needs: [build-runner-image]
-    if: always()
+    needs: build-runner-image
+    if: ${{ always() && (needs.build-runner-image.result == 'success' || needs.build-runner-image.result == 'skipped') }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -115,6 +118,8 @@ jobs:
            --set dataClaimsApi.image.repository=${API_IMAGE} \
            --set dataClaimsApi.image.tag=${{ inputs.claims_api_image_tag }} \
            --set dataClaimsApi.postgres.enabled=true \
+           --set dataClaimsApi.postgres.user=${{ secrets.E2E_DB_USER }} \
+           --set dataClaimsApi.postgres.password=${{ secrets.E2E_DB_PASSWORD }} \
            --set laaAmendAClaim.enabled=true \
            --set laaAmendAClaim.image.repository=${REGISTRY}/${REPOSITORY} \
            --set laaAmendAClaim.image.tag=${{ inputs.amend_a_claim_image_tag }} \
@@ -142,17 +147,12 @@ jobs:
         run: |
           echo "Waiting for GitHub runner to register..."
           sleep 30
-
-          # Check runner is registered
-          RUNNER_NAME="k8s-e2e-runner"
-          echo "Expected runner name: $RUNNER_NAME"
-
           kubectl logs -n ${{ secrets.KUBE_NAMESPACE }} -l app=github-runner --tail=50 || true
 
   run-e2e-tests:
     name: Run E2E Tests
     needs: deploy-e2e-environment
-    if: success()
+    if: ${{ always() && (needs.deploy-e2e-environment.result == 'success') }}
     runs-on: [self-hosted, aabc-e2e]
     steps:
       - name: Checkout
@@ -176,12 +176,10 @@ jobs:
       - name: Run E2E Tests
         working-directory: src/e2e
         run: |
-          export UI_BASE_URL=http://e2e-amend-a-claim:8084
-          export API_BASE=http://e2e-data-claims-api:8082
-          export HEADLESS=true
-          export BROWSER=chromium
           export CI=true
           export SILAS_AUTH_ENABLED=false
+          export DB_USER=${{ secrets.E2E_DB_USER }}
+          export DB_PASSWORD=${{ secrets.E2E_DB_PASSWORD }}          
 
           echo "Running E2E tests..."
           ./gradlew clean test --no-daemon

@@ -48,6 +48,8 @@ jobs:
       P_USERNAME: ${{ secrets.P_USERNAME }}
       P_PASSWORD: ${{ secrets.P_PASSWORD }}
       P_MFA_SECRET: ${{ secrets.P_MFA_SECRET }}
+      E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
+      E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
       KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}

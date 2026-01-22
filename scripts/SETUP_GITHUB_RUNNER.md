@@ -26,7 +26,7 @@ Builds a Docker image containing:
 - `GITHUB_TOKEN` (required) - GitHub runner registration token
 - `GITHUB_REPOSITORY` (required) - Format: `owner/repo` (e.g., `ministryofjustice/laa-amend-a-claim`)
 - `RUNNER_NAME` (optional) - Defaults to `k8s-e2e-runner` 
-- `RUNNER_LABELS` (optional) - Defaults to `self-hosted,linux, abc-e2e`
+- `RUNNER_LABELS` (optional) - Defaults to `self-hosted,linux, aabc-e2e`
 
 Generate a GitHub Personal Access Token (PAT) with these scopes:
 - `repo` - Full control of private repositories

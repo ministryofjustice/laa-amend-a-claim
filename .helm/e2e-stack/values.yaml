@@ -47,8 +47,8 @@ dataClaimsApi:
   # Embedded PostgreSQL as sidecar container
   postgres:
     enabled: true
-    user: user
-    password: dev
+    user: ""
+    password: ""
     database: laa_data_claims_api_dev
     image: postgres
     imageTag: "17"
@@ -231,10 +231,6 @@ githubRunner:
       value: "chromium"
     - name: DB_CONNECTION_URL
       value: jdbc:postgresql://e2e-data-claims-api:5435/laa_data_claims_api_dev
-    - name: DB_USER
-      value: user
-    - name: DB_PASSWORD
-      value: dev
   resources:
     requests:
       memory: "1Gi"

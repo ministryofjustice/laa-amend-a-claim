@@ -20,6 +20,10 @@ on:
         required: true
       P_MFA_SECRET:
         required: true
+      E2E_DB_PASSWORD:
+        required: true
+      E2E_DB_USER:
+        required: true
       KUBE_NAMESPACE:
         required: true
       KUBE_CLUSTER:
@@ -117,7 +121,7 @@ jobs:
       branch: ${{ github.ref_name }}
       environment: ${{ inputs.environment }}
       amend_a_claim_image_tag: ${{ inputs.amend_a_claim_image_tag }}
-      build_runner_image: true
+      build_runner_image: false
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       DATA_CLAIMS_API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
@@ -125,3 +129,5 @@ jobs:
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
+      E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
+      E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
