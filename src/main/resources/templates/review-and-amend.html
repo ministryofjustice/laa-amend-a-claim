@@ -5,7 +5,8 @@
         title=#{claimReview.title},
         mainContent=~{::#main-content},
         pageCategory=${null},
-        showBackLink=${true}
+        showBackLink=${true},
+        backLinkUrl=@{/submissions/{submissionId}/claims/{claimId}/assessment-outcome(submissionId=${submissionId}, claimId=${claimId})}
     )}">
 <body>
 <main class="govuk-main-wrapper" id="main-content">
