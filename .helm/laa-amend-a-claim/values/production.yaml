@@ -3,6 +3,9 @@
 
 replicaCount: 4
 
+ingress:
+  className: "modsec"
+
 resources:
   requests:
     memory: "1500Mi"

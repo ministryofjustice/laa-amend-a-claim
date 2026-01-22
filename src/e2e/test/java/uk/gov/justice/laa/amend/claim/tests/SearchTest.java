@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
-import base.BaseTest;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qameta.allure.Epic;
@@ -13,30 +12,104 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import uk.gov.justice.laa.amend.claim.base.BaseTest;
+import uk.gov.justice.laa.amend.claim.models.BulkSubmissionInsert;
+import uk.gov.justice.laa.amend.claim.models.CalculatedFeeDetailInsert;
+import uk.gov.justice.laa.amend.claim.models.ClaimInsert;
+import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
+import uk.gov.justice.laa.amend.claim.models.Insert;
+import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
-import uk.gov.justice.laa.amend.claim.utils.SearchConfig;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
+import uk.gov.justice.laa.amend.claim.models.SearchData;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
+
+import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 @Epic("E2E")
 @Feature("Search")
 public class SearchTest extends BaseTest {
 
+    // ---------------- Submission 1 (Has claims) ----------------
+    private final String SUBMISSION_ID_1 = UUID.randomUUID().toString();
+    private final String CLAIM_ID_1 = UUID.randomUUID().toString();
+    private final String CLAIM_SUMMARY_FEE_ID_1 = UUID.randomUUID().toString();
+    private final String CALCULATED_FEE_DETAIL_ID_1 = UUID.randomUUID().toString();
+
+    // ---------------- Submission 2 (Does not have claims) ----------------
+    private final String SUBMISSION_ID_2 = UUID.randomUUID().toString();
+
+    @Override
+    protected List<Insert> inserts() {
+        return List.of(
+            BulkSubmissionInsert
+                .builder()
+                .id(BULK_SUBMISSION_ID)
+                .userId(USER_ID)
+                .build(),
+
+            SubmissionInsert
+                .builder()
+                .id(SUBMISSION_ID_1)
+                .bulkSubmissionId(BULK_SUBMISSION_ID)
+                .officeAccountNumber("123456")
+                .submissionPeriod("APR-2025")
+                .areaOfLaw("CRIME_LOWER")
+                .userId(USER_ID)
+                .build(),
+
+            SubmissionInsert
+                .builder()
+                .id(SUBMISSION_ID_2)
+                .bulkSubmissionId(BULK_SUBMISSION_ID)
+                .officeAccountNumber("234567")
+                .submissionPeriod("OCT-2025")
+                .areaOfLaw("LEGAL_HELP")
+                .userId(USER_ID)
+                .build(),
+
+            ClaimInsert
+                .builder()
+                .id(CLAIM_ID_1)
+                .submissionId(SUBMISSION_ID_1)
+                .uniqueFileNumber("121019/001")
+                .userId(USER_ID)
+                .build(),
+
+            ClaimSummaryFeeInsert
+                .builder()
+                .id(CLAIM_SUMMARY_FEE_ID_1)
+                .claimId(CLAIM_ID_1)
+                .userId(USER_ID)
+                .build(),
+
+            CalculatedFeeDetailInsert
+                .builder()
+                .id(CALCULATED_FEE_DETAIL_ID_1)
+                .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID_1)
+                .claimId(CLAIM_ID_1)
+                .escaped(true)
+                .userId(USER_ID)
+                .build()
+        );
+    }
+
     private static Stream<Arguments> searchConfigProvider() {
         return loadSearchConfigs().stream().map(Arguments::of);
     }
 
-    private static List<SearchConfig> loadSearchConfigs() {
+    private static List<SearchData> loadSearchConfigs() {
         ObjectMapper mapper = new ObjectMapper();
         try (InputStream is = SearchTest.class.getClassLoader().getResourceAsStream("search-config.json")) {
             if (is == null) {
                 throw new RuntimeException("search-config.json not found in test resources");
             }
-            return mapper.readValue(is, new TypeReference<List<SearchConfig>>() {});
+            return mapper.readValue(is, new TypeReference<List<SearchData>>() {});
         } catch (IOException e) {
             throw new RuntimeException("Failed to load search config", e);
         }
@@ -47,24 +120,22 @@ public class SearchTest extends BaseTest {
     @Story("Search for claim")
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Search: submit form and results available")
-    void canSearchForClaim(SearchConfig config) {
+    void canSearchForClaim(SearchData config) {
         String baseUrl = EnvConfig.baseUrl();
         SearchPage searchPage = new SearchPage(page).navigateTo(baseUrl);
 
         Assertions.assertEquals("Search for a claim", searchPage.getHeadingText());
 
         searchPage.searchForClaim(
-                config.getProviderAccountNumber(),
-                config.getSubmissionMonth(),
-                config.getSubmissionYear(),
-                config.getUfn(),
-                config.getCrn(),
-                config.isExpectedResults()
+            config.getProviderAccountNumber(),
+            config.getSubmissionMonth(),
+            config.getSubmissionYear(),
+            config.getUfn(),
+            config.getCrn(),
+            config.isExpectedResults()
         );
 
         boolean hasResults = searchPage.hasResults();
         Assertions.assertEquals(config.isExpectedResults(), hasResults, "Results presence should match expected.");
     }
 }
-
-

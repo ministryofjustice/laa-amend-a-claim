@@ -36,6 +36,11 @@ dependencies {
 
     // Allure + JUnit 5
     testImplementation 'io.qameta.allure:allure-junit5:2.25.0'
+    testImplementation 'org.postgresql:postgresql:42.7.4'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
 }
 
 tasks.withType(Test).configureEach {

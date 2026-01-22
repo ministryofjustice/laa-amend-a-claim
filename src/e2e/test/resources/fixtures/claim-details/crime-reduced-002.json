@@ -2,20 +2,20 @@
   "addAssessmentOutcomeDisabled": false,
   "claimType": "Crime",
   "outcome": "reduced-still-escaped",
-  "providerAccount": "2R223X",
+  "providerAccount": "123456",
   "ufn": "031222/003",
   "values": {
-    "Fixed fee": ["£145.57", "Not applicable"],
-    "Profit costs": ["Not applicable", "£340.00"],
-    "Disbursements": ["£500.00", "£500.00"],
-    "Disbursement VAT": ["£100.00", "£100.00"],
+    "Fixed fee": ["£239.35", "Not applicable"],
+    "Profit costs": ["Not applicable", "£750.00"],
+    "Disbursements": ["£400.00", "£400.00"],
+    "Disbursement VAT": ["£80.00", "£80.00"],
     "Travel costs": ["£0.00", "£0.00"],
     "Waiting costs": ["£0.00", "£0.00"],
     "VAT": ["Yes", "Yes"]
   },
   "allowedTotals": {
-    "Allowed total VAT": ["£129.11", "Not applicable", "£321.00"],
-    "Allowed total incl VAT": ["£774.68", "Not applicable", "£321.00"]
+    "Allowed total VAT": ["£127.87", "Not applicable", "£321.00"],
+    "Allowed total incl VAT": ["£767.22", "Not applicable", "£321.00"]
   },
   "assessedTotals": {
     "Assessed total VAT": ["Not applicable", "Not applicable", "£321.00"],

@@ -13,7 +13,7 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
 
     @Override
     public void addUcnSummaryRow(Map<String, Object> summaryRows) {
-        summaryRows.put("ucn", claim.getCaseReferenceNumber());
+        summaryRows.put("ucn", claim.getUniqueClientNumber());
     }
 
     @Override

@@ -142,7 +142,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setClientForename("John");
             claim.setClientSurname("Smith");
             claim.setUniqueFileNumber("unique file number");
-            claim.setCaseReferenceNumber("case reference number");
+            claim.setUniqueClientNumber("unique client number");
             claim.setProviderName("provider name");
             claim.setProviderAccountNumber("provider account number");
             claim.setSubmittedDate(submittedDate);
@@ -163,7 +163,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             Map<String, Object> expectedResult = new LinkedHashMap<>();
             expectedResult.put("clientName", "John Smith");
             expectedResult.put("ufn", "unique file number");
-            expectedResult.put("ucn", "case reference number");
+            expectedResult.put("ucn", "unique client number");
             expectedResult.put("providerName", "provider name");
             expectedResult.put("providerAccountNumber", "provider account number");
             expectedResult.put("submittedDate", submittedDate);

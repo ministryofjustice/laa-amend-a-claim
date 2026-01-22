@@ -30,7 +30,7 @@ public class WireMockSetup {
             }""";
 
     private void setupClaimsApiStub() {
-        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v0/claims.*"))
+        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v1/claims.*"))
             .willReturn(WireMock.aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
