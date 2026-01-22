@@ -26,8 +26,6 @@ class ChangeAssessedTotalViewTest extends ViewTestBase {
     public void setup() {
         super.setup();
         claim.setAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
-        claim.getAssessedTotalVat().setStatus(ClaimFieldStatus.MODIFIABLE);
-        claim.getAssessedTotalInclVat().setStatus(ClaimFieldStatus.MODIFIABLE);
     }
 
     @Test

@@ -3,20 +3,9 @@ package uk.gov.justice.laa.amend.claim.models;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 import java.math.BigDecimal;
-
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 
 public class CrimeClaimDetailsTest {
 
@@ -49,19 +38,9 @@ public class CrimeClaimDetailsTest {
 
         @Test
         void setsValuesToNilledStatus() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
+            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
 
-            claim.setNetProfitCost(ClaimField.builder().build());
-            claim.setNetDisbursementAmount(ClaimField.builder().build());
-            claim.setDisbursementVatAmount(ClaimField.builder().build());
-            claim.setTravelCosts(ClaimField.builder().build());
-            claim.setWaitingCosts(ClaimField.builder().build());
-            claim.setAssessedTotalInclVat(ClaimField.builder().build());
-            claim.setAssessedTotalVat(ClaimField.builder().build());
-            claim.setAllowedTotalInclVat(ClaimField.builder().build());
-            claim.setAllowedTotalVat(ClaimField.builder().build());
-
-            claim.setNilledValues();
+            claim.applyOutcome(OutcomeType.NILLED);
 
             Assertions.assertEquals(BigDecimal.ZERO, claim.getNetProfitCost().getAssessed());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getNetDisbursementAmount().getAssessed());
@@ -80,18 +59,17 @@ public class CrimeClaimDetailsTest {
 
         @Test
         void paidInFull() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            buildCrimeDetails(claim);
+            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
 
-            claim.setPaidInFullValues();
+            claim.applyOutcome(OutcomeType.PAID_IN_FULL);
 
             Assertions.assertNull(claim.getFixedFee().getAssessed());
-            Assertions.assertEquals(BigDecimal.ONE, claim.getNetProfitCost().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(100), claim.getNetProfitCost().getAssessed());
             Assertions.assertEquals(true, claim.getVatClaimed().getAssessed());
-            Assertions.assertEquals(BigDecimal.ONE, claim.getNetDisbursementAmount().getAssessed());
-            Assertions.assertEquals(BigDecimal.ONE, claim.getDisbursementVatAmount().getAssessed());
-            Assertions.assertEquals(BigDecimal.ONE, claim.getTravelCosts().getAssessed());
-            Assertions.assertEquals(BigDecimal.ONE, claim.getWaitingCosts().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(100), claim.getNetDisbursementAmount().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(100), claim.getDisbursementVatAmount().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(100), claim.getTravelCosts().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(100), claim.getWaitingCosts().getAssessed());
             Assertions.assertNull(claim.getAllowedTotalVat().getAssessed());
             Assertions.assertNull(claim.getAllowedTotalInclVat().getAssessed());
         }
@@ -102,36 +80,22 @@ public class CrimeClaimDetailsTest {
 
         @Test
         void reduced() {
-            CrimeClaimDetails claim = new CrimeClaimDetails();
+            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
 
-            buildCrimeDetails(claim);
-
-            claim.setReducedValues();
+            claim.applyOutcome(OutcomeType.REDUCED);
 
             Assertions.assertNull(claim.getFixedFee().getAssessed());
             Assertions.assertNull(claim.getNetProfitCost().getAssessed());
             Assertions.assertEquals(true, claim.getVatClaimed().getAssessed());
-            Assertions.assertEquals(BigDecimal.ONE, claim.getNetDisbursementAmount().getAssessed());
-            Assertions.assertEquals(BigDecimal.ONE, claim.getDisbursementVatAmount().getAssessed());
-            Assertions.assertEquals(BigDecimal.ONE, claim.getTravelCosts().getAssessed());
-            Assertions.assertEquals(BigDecimal.ONE, claim.getWaitingCosts().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(100), claim.getNetDisbursementAmount().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(100), claim.getDisbursementVatAmount().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(100), claim.getTravelCosts().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(100), claim.getWaitingCosts().getAssessed());
+            Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
+            Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
             Assertions.assertNull(claim.getAllowedTotalVat().getAssessed());
             Assertions.assertNull(claim.getAllowedTotalInclVat().getAssessed());
         }
-    }
-
-    private static void buildCrimeDetails(CrimeClaimDetails claim) {
-        claim.setFixedFee(ClaimField.builder().calculated(BigDecimal.ONE).key(FIXED_FEE).build());
-        claim.setNetProfitCost(ClaimField.builder().submitted(BigDecimal.ONE).key(NET_PROFIT_COST).build());
-        claim.setVatClaimed(ClaimField.builder().submitted(true).key(VAT).build());
-        claim.setNetDisbursementAmount(ClaimField.builder().submitted(BigDecimal.ONE).key(NET_DISBURSEMENTS_COST).build());
-        claim.setDisbursementVatAmount(ClaimField.builder().submitted(BigDecimal.ONE).key(DISBURSEMENT_VAT).build());
-        claim.setTravelCosts(ClaimField.builder().submitted(BigDecimal.ONE).key(TRAVEL_COSTS).build());
-        claim.setWaitingCosts(ClaimField.builder().submitted(BigDecimal.ONE).key(WAITING_COSTS).build());
-        claim.setAssessedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ASSESSED_TOTAL_VAT).build());
-        claim.setAssessedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ASSESSED_TOTAL_INCL_VAT).build());
-        claim.setAllowedTotalVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ALLOWED_TOTAL_VAT).build());
-        claim.setAllowedTotalInclVat(ClaimField.builder().submitted(BigDecimal.ONE).key(ALLOWED_TOTAL_INCL_VAT).build());
     }
 
     @Nested
@@ -140,28 +104,28 @@ public class CrimeClaimDetailsTest {
         @Test
         void reducedToFixedFee() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setFixedFee(ClaimField.builder().key(FIXED_FEE).calculated(BigDecimal.ONE).build());
-            claim.setNetProfitCost(ClaimField.builder().key(NET_PROFIT_COST).calculated(BigDecimal.ONE).build());
-            claim.setVatClaimed(ClaimField.builder().key(VAT).calculated(true).build());
-            claim.setNetDisbursementAmount(ClaimField.builder().key(NET_DISBURSEMENTS_COST).calculated(BigDecimal.ONE).build());
-            claim.setDisbursementVatAmount(ClaimField.builder().key(DISBURSEMENT_VAT).calculated(BigDecimal.ONE).build());
-            claim.setTravelCosts(ClaimField.builder().key(TRAVEL_COSTS).calculated(BigDecimal.ONE).build());
-            claim.setWaitingCosts(ClaimField.builder().key(WAITING_COSTS).calculated(BigDecimal.ONE).build());
-            claim.setAssessedTotalVat(ClaimField.builder().key(ASSESSED_TOTAL_VAT).calculated(BigDecimal.ONE).build());
-            claim.setAssessedTotalInclVat(ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).calculated(BigDecimal.ONE).build());
-            claim.setAllowedTotalVat(ClaimField.builder().key(ALLOWED_TOTAL_VAT).calculated(BigDecimal.ONE).build());
-            claim.setAllowedTotalInclVat(ClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).calculated(BigDecimal.ONE).build());
+            claim.setFixedFee(MockClaimsFunctions.createFixedFeeField());
+            claim.setNetProfitCost(MockClaimsFunctions.createNetProfitCostField());
+            claim.setVatClaimed(MockClaimsFunctions.createVatClaimedField());
+            claim.setNetDisbursementAmount(MockClaimsFunctions.createDisbursementCostField());
+            claim.setDisbursementVatAmount(MockClaimsFunctions.createDisbursementVatCostField());
+            claim.setTravelCosts(MockClaimsFunctions.createTravelCostField());
+            claim.setWaitingCosts(MockClaimsFunctions.createWaitingCostField());
+            claim.setAssessedTotalVat(MockClaimsFunctions.createAssessedTotalVatField());
+            claim.setAssessedTotalInclVat(MockClaimsFunctions.createAssessedTotalInclVatField());
+            claim.setAllowedTotalVat(MockClaimsFunctions.createAllowedTotalVatField());
+            claim.setAllowedTotalInclVat(MockClaimsFunctions.createAllowedTotalInclVatField());
 
 
-            claim.setReducedToFixedFeeValues();
+            claim.applyOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
 
-            Assertions.assertEquals(BigDecimal.ONE, claim.getFixedFee().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(200), claim.getFixedFee().getAssessed());
             Assertions.assertNull(claim.getNetProfitCost().getAssessed());
-            Assertions.assertEquals(true, claim.getVatClaimed().getAssessed());
-            Assertions.assertEquals(BigDecimal.ONE, claim.getNetDisbursementAmount().getAssessed());
-            Assertions.assertEquals(BigDecimal.ONE, claim.getDisbursementVatAmount().getAssessed());
-            Assertions.assertEquals(BigDecimal.ONE, claim.getTravelCosts().getAssessed());
-            Assertions.assertEquals(BigDecimal.ONE, claim.getWaitingCosts().getAssessed());
+            Assertions.assertEquals(false, claim.getVatClaimed().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(200), claim.getNetDisbursementAmount().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(200), claim.getDisbursementVatAmount().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(200), claim.getTravelCosts().getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(200), claim.getWaitingCosts().getAssessed());
             Assertions.assertNull(claim.getAllowedTotalVat().getAssessed());
             Assertions.assertNull(claim.getAllowedTotalInclVat().getAssessed());
         }

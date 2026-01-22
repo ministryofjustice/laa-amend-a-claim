@@ -40,7 +40,7 @@ public class ClaimFieldRow {
                 this.changeUrl = x.getCost().getChangeUrl();
             }
             case AllowedClaimField x -> {
-                this.submitted = getOrElseZero(submitted);
+                this.calculated = getOrElseZero(calculated);
                 this.changeUrl = "/submissions/%s/claims/%s/allowed-totals";
             }
             case AssessedClaimField x -> this.changeUrl = "/submissions/%s/claims/%s/assessed-totals";

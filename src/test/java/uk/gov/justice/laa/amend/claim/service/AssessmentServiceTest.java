@@ -73,7 +73,7 @@ class AssessmentServiceTest {
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
 
-            verify(claim).setNilledValues();
+            verify(claim).applyOutcome(OutcomeType.NILLED);
         }
 
         @Test
@@ -82,7 +82,7 @@ class AssessmentServiceTest {
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
-            verify(claim).setReducedToFixedFeeValues();
+            verify(claim).applyOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
         }
 
         @Test
@@ -91,7 +91,7 @@ class AssessmentServiceTest {
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
 
-            verify(claim).setReducedValues();
+            verify(claim).applyOutcome(OutcomeType.REDUCED);
         }
 
         @Test
@@ -100,7 +100,7 @@ class AssessmentServiceTest {
 
             assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
-            verify(claim).setPaidInFullValues();
+            verify(claim).applyOutcome(OutcomeType.PAID_IN_FULL);
         }
     }
 

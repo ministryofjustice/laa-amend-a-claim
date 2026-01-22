@@ -26,15 +26,12 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.add;
 
@@ -46,14 +43,14 @@ public class ClaimMapperHelper {
         var calculated = claimResponse.getFeeCalculationResponse() != null
             ? claimResponse.getFeeCalculationResponse().getTotalAmount() : null;
         var submitted = claimResponse.getTotalValue();
-        return new CalculatedTotalClaimField(TOTAL, submitted, calculated);
+        return new CalculatedTotalClaimField(submitted, calculated);
     }
 
     @Named("mapFixedFee")
     public ClaimField mapFixedFee(ClaimResponse claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
             ? claimResponse.getFeeCalculationResponse().getFixedFeeAmount() : null;
-        return new FixedFeeClaimField(FIXED_FEE, calculated);
+        return new FixedFeeClaimField(calculated);
     }
 
     @Named("mapNetProfitCost")
@@ -69,7 +66,7 @@ public class ClaimMapperHelper {
         var submitted = claimResponse.getIsVatApplicable();
         var calculated = claimResponse.getFeeCalculationResponse() != null
             && Boolean.TRUE.equals(claimResponse.getFeeCalculationResponse().getVatIndicator());
-        return new VatLiabilityClaimField(VAT, submitted, calculated);
+        return new VatLiabilityClaimField(submitted, calculated);
     }
 
     @Named("mapNetDisbursementAmount")

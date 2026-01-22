@@ -1,10 +1,17 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import lombok.Builder;
+
 public class AllowedClaimField extends ClaimField {
 
-    public AllowedClaimField(String key, Object calculated) {
-        super(key, null, calculated, null);
+    @Builder
+    public AllowedClaimField(String key, Object submitted, Object calculated, Object assessed) {
+        super(key, submitted, calculated, assessed);
         this.assessable = true;
+    }
+
+    public AllowedClaimField(String key, Object calculated) {
+        this(key, null, calculated, null);
     }
 
     @Override

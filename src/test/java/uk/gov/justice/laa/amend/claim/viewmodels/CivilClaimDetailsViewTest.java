@@ -190,7 +190,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setHasAssessment(true);
 
             CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
+            List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
 
             Assertions.assertEquals(13, result.size());
 
@@ -254,7 +254,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setHasAssessment(false);
 
             CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
+            List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
 
             Assertions.assertEquals(14, result.size());
 
@@ -326,7 +326,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setSubstantiveHearing(null);
 
             CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
+            List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
 
             Assertions.assertEquals(9, result.size());
 
@@ -378,7 +378,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setSubstantiveHearing(updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), BigDecimal.ZERO));
 
             CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
+            List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
 
             Assertions.assertEquals(9, result.size());
 
@@ -429,7 +429,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
             CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getReviewClaimFieldRows();
+            List<ClaimFieldRow> result = viewModel.getReviewClaimFieldRows();
 
             Assertions.assertEquals(13, result.size());
 
@@ -498,7 +498,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setSubstantiveHearing(null);
 
             CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getReviewClaimFieldRows();
+            List<ClaimFieldRow> result = viewModel.getReviewClaimFieldRows();
 
             Assertions.assertEquals(8, result.size());
 
@@ -547,7 +547,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setSubstantiveHearing(updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), BigDecimal.ZERO));
 
             CivilClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getReviewClaimFieldRows();
+            List<ClaimFieldRow> result = viewModel.getReviewClaimFieldRows();
 
             Assertions.assertEquals(8, result.size());
 
@@ -592,13 +592,31 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
         @Test
         void convertFieldsThatNeedAmendingIntoErrors() {
             CivilClaimDetails claim = new CivilClaimDetails();
-            claim.setNetProfitCost(createClaimField("profitCost", ClaimFieldStatus.MODIFIABLE));
-            claim.setCounselsCost(createClaimField("counselsCost", ClaimFieldStatus.MODIFIABLE));
-            claim.setJrFormFillingCost(createClaimField("jrFormFilling", ClaimFieldStatus.MODIFIABLE));
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.MODIFIABLE));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
-            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE));
-            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
+
+            ClaimField netProfitCostField = MockClaimsFunctions.createNetProfitCostField();
+            ClaimField counselField = MockClaimsFunctions.createCounselCostField();
+            ClaimField jrFormField = MockClaimsFunctions.createJrFormFillingCostField();
+            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
+            ClaimField allowedTotalVatField = MockClaimsFunctions.createAllowedTotalVatField();
+            ClaimField allowedTotalInclVatField = MockClaimsFunctions.createAllowedTotalInclVatField();
+
+            netProfitCostField.setAssessed(null);
+            counselField.setAssessed(null);
+            jrFormField.setAssessed(null);
+            assessedTotalVatField.setAssessed(null);
+            assessedTotalInclVatField.setAssessed(null);
+            allowedTotalVatField.setAssessed(null);
+            allowedTotalInclVatField.setAssessed(null);
+
+            claim.setNetProfitCost(netProfitCostField);
+            claim.setCounselsCost(counselField);
+            claim.setJrFormFillingCost(jrFormField);
+            claim.setAssessedTotalVat(assessedTotalVatField);
+            claim.setAssessedTotalInclVat(assessedTotalInclVatField);
+            claim.setAllowedTotalVat(allowedTotalVatField);
+            claim.setAllowedTotalInclVat(allowedTotalInclVatField);
+
             CivilClaimDetailsView viewModel = createView(claim);
 
             List<ReviewAndAmendFormError> expectedErrors = List.of(

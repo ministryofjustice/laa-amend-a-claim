@@ -57,7 +57,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
                 claim().isHasAssessment() ? null : claim().getTotalAmount()
             )
         );
-        return rows.map(ClaimField::toClaimFieldRow).filter(Objects::nonNull).toList();
+        return toClaimFieldRows(rows).toList();
     }
 
     // 'Claim costs' rows for the 'Review and amend' page
@@ -68,25 +68,17 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
                 claim().getVatClaimed()
             )
         );
-        return rows.map(ClaimField::toClaimFieldRow).filter(Objects::nonNull).toList();
+        return toClaimFieldRows(rows).toList();
     }
 
     // 'Total claim value' rows for the 'Review and amend' page
     default List<ClaimFieldRow> getAssessedTotals() {
-        return claim()
-            .getAssessedTotalFields()
-            .map(ClaimField::toClaimFieldRow)
-            .filter(Objects::nonNull)
-            .toList();
+        return toClaimFieldRows(claim().getAssessedTotalFields()).toList();
     }
 
     // 'Total allowed value' rows for the 'Review and amend' page
     default List<ClaimFieldRow> getAllowedTotals() {
-        return claim()
-            .getAllowedTotalFields()
-            .map(ClaimField::toClaimFieldRow)
-            .filter(Objects::nonNull)
-            .toList();
+        return toClaimFieldRows(claim().getAllowedTotalFields()).toList();
     }
 
     default Stream<ClaimField> claimFields() {
@@ -99,14 +91,13 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default List<ReviewAndAmendFormError> getErrors() {
-        return Stream.of(
-                claimFields(),
-                claim().getAssessedTotalFields(),
-                claim().getAllowedTotalFields()
-            )
-            .flatMap(Function.identity())
-            .map(ClaimField::toClaimFieldRow)
-            .filter(Objects::nonNull)
+        Stream<ClaimField> claimFields = Stream.of(
+            claimFields(),
+            claim().getAssessedTotalFields(),
+            claim().getAllowedTotalFields()
+        ).flatMap(Function.identity());
+
+        return toClaimFieldRows(claimFields)
             .filter(ClaimFieldRow::isAssessableAndUnassessed)
             .map(f -> new ReviewAndAmendFormError(f.getId(), f.getErrorKey()))
             .toList();
@@ -130,5 +121,12 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         } else {
             return new ThymeleafMessage("claimSummary.lastAssessmentText.noUser", date, time, outcome);
         }
+    }
+
+    private Stream<ClaimFieldRow> toClaimFieldRows(Stream<ClaimField> claimFields) {
+        return claimFields
+            .filter(Objects::nonNull)
+            .map(ClaimField::toClaimFieldRow)
+            .filter(Objects::nonNull);
     }
 }

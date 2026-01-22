@@ -129,7 +129,8 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
     @Test
     void testPageWithValidationError() throws Exception {
-        ClaimField claimField = ClaimField.builder().key("profitCosts").status(ClaimFieldStatus.MODIFIABLE).build();
+        ClaimField claimField = MockClaimsFunctions.createNetProfitCostField();
+        claimField.setAssessed(null);
         claim.setNetProfitCost(claimField);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -140,6 +141,6 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
         assertPageHasHeading(doc, "Review and amend");
 
-        assertPageHasErrorSummary(doc, "profit-costs");
+        assertPageHasErrorSummary(doc, "profit-cost");
     }
 }

@@ -12,9 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
+import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
@@ -57,8 +57,8 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsView_CivilClaim() throws Exception {
-        civilClaim.setAllowedTotalVat(ClaimField.builder().status(ClaimFieldStatus.MODIFIABLE).build());
-        civilClaim.setAllowedTotalInclVat(ClaimField.builder().status(ClaimFieldStatus.MODIFIABLE).build());
+        civilClaim.setAllowedTotalVat(AllowedClaimField.builder().build());
+        civilClaim.setAllowedTotalInclVat(AllowedClaimField.builder().build());
         session.setAttribute(claimId, civilClaim);
 
         mockMvc.perform(get(buildPath())
@@ -71,8 +71,8 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsView_CrimeClaim() throws Exception {
-        crimeClaim.setAllowedTotalVat(ClaimField.builder().status(ClaimFieldStatus.MODIFIABLE).build());
-        crimeClaim.setAllowedTotalInclVat(ClaimField.builder().status(ClaimFieldStatus.MODIFIABLE).build());
+        crimeClaim.setAllowedTotalVat(AllowedClaimField.builder().build());
+        crimeClaim.setAllowedTotalInclVat(AllowedClaimField.builder().build());
         session.setAttribute(claimId, crimeClaim);
 
         mockMvc.perform(get(buildPath())
@@ -85,8 +85,8 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsViewWhenQuestionAlreadyAnswered_CivilClaim() throws Exception {
-        civilClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimField(ClaimFieldStatus.MODIFIABLE));
-        civilClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimField(ClaimFieldStatus.MODIFIABLE));
+        civilClaim.setAllowedTotalInclVat(MockClaimsFunctions.createAllowedTotalInclVatField());
+        civilClaim.setAllowedTotalVat(MockClaimsFunctions.createAllowedTotalVatField());
 
         session.setAttribute(claimId, civilClaim);
 
@@ -100,8 +100,8 @@ class ChangeAllowedTotalsControllerTest {
 
     @Test
     void testGetReturnsViewWhenQuestionAlreadyAnswered_CrimeClaim() throws Exception {
-        crimeClaim.setAllowedTotalInclVat(MockClaimsFunctions.createClaimField(ClaimFieldStatus.MODIFIABLE));
-        crimeClaim.setAllowedTotalVat(MockClaimsFunctions.createClaimField(ClaimFieldStatus.MODIFIABLE));
+        crimeClaim.setAllowedTotalInclVat(MockClaimsFunctions.createAllowedTotalInclVatField());
+        crimeClaim.setAllowedTotalVat(MockClaimsFunctions.createAllowedTotalVatField());
 
         session.setAttribute(claimId, crimeClaim);
 
@@ -139,10 +139,8 @@ class ChangeAllowedTotalsControllerTest {
         Assertions.assertNotNull(updated);
 
         Assertions.assertEquals(new BigDecimal("700.00"), updated.getAllowedTotalVat().getAssessed());
-        Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, updated.getAllowedTotalVat().getStatus());
 
         Assertions.assertEquals(new BigDecimal("800.00"), updated.getAllowedTotalInclVat().getAssessed());
-        Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, updated.getAllowedTotalInclVat().getStatus());
     }
 
     @Test

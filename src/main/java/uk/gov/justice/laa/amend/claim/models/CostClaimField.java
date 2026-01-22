@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -7,10 +8,15 @@ public class CostClaimField extends ClaimField {
 
     protected Cost cost;
 
-    public CostClaimField(String key, Object submitted, Object calculated, Cost cost) {
-        super(key, submitted, calculated, submitted);
+    @Builder
+    public CostClaimField(String key, Object submitted, Object calculated, Object assessed, Cost cost) {
+        super(key, submitted, calculated, assessed);
         this.assessable = true;
         this.cost = cost;
+    }
+
+    public CostClaimField(String key, Object submitted, Object calculated, Cost cost) {
+        this(key, submitted, calculated, submitted, cost);
     }
 
     @Override
