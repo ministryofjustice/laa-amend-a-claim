@@ -54,6 +54,7 @@ public interface ClaimMapper {
     @Mapping(target = "caseReferenceNumber", source = "caseReferenceNumber")
     @Mapping(target = "clientSurname", source = "clientSurname")
     @Mapping(target = "clientForename", source = "clientForename")
+    @Mapping(target = "uniqueClientNumber", source = "uniqueClientNumber")
     @Mapping(target = "caseStartDate", source = "caseStartDate")
     @Mapping(target = "caseEndDate", source = "caseConcludedDate")
     @Mapping(target = "scheduleReference", source = "scheduleReference")
