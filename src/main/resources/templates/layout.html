@@ -3,8 +3,6 @@
     <head th:replace="~{partials/head :: head(title=${title})}"></head>
 
     <body class="govuk-template__body">
-        <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
-
         <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
 
         <th:block th:replace="~{partials/header :: header}"></th:block>
@@ -25,7 +23,7 @@
 
             <a th:if="${showBackLink}"
                href="#"
-               onclick="window.history.go(-1); return false;"
+               data-module="back-link"
                class="govuk-back-link"
                th:text="#{service.back}">
             </a>
@@ -35,16 +33,7 @@
 
         <th:block th:replace="~{partials/footer :: footer}"></th:block>
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-        <script type="module" th:src="@{/webjars/govuk-frontend/dist/govuk/govuk-frontend.min.js}"></script>
-        <script type="module" th:src="@{/webjars/ministryofjustice__frontend/moj/moj-frontend.min.js}"></script>
-        <script type="module">
-            import * as GOVUKFrontend from '/webjars/govuk-frontend/dist/govuk/govuk-frontend.min.js'
-            import * as MOJFrontend from '/webjars/ministryofjustice__frontend/moj/moj-frontend.min.js'
-
-            GOVUKFrontend.initAll()
-            MOJFrontend.initAll()
-        </script>
+        <script type="module" th:src="@{/js/app.js}"></script>
     </body>
 
 </html>
