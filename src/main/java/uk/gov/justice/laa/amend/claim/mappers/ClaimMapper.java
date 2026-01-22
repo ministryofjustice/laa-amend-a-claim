@@ -54,7 +54,6 @@ public interface ClaimMapper {
     @Mapping(target = "caseReferenceNumber", source = "caseReferenceNumber")
     @Mapping(target = "clientSurname", source = "clientSurname")
     @Mapping(target = "clientForename", source = "clientForename")
-    @Mapping(target = "uniqueClientNumber", source = "uniqueClientNumber")
     @Mapping(target = "caseStartDate", source = "caseStartDate")
     @Mapping(target = "caseEndDate", source = "caseConcludedDate")
     @Mapping(target = "scheduleReference", source = "scheduleReference")
@@ -73,6 +72,7 @@ public interface ClaimMapper {
     @Mapping(target = "substantiveHearing", source = "claimResponse", qualifiedByName = "mapSubstantiveHearing")
     @Mapping(target = "counselsCost", source = "claimResponse", qualifiedByName = "mapCounselsCost")
     @Mapping(target = "matterTypeCode", source = "matterTypeCode")
+    @Mapping(target = "uniqueClientNumber", source = "uniqueClientNumber")
     CivilClaimDetails mapToCivilClaimDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
 
     @InheritConfiguration(name = "mapToCommonDetails")

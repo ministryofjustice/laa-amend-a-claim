@@ -25,7 +25,6 @@ public class Claim implements Serializable {
     private String caseReferenceNumber;
     private String clientSurname;
     private String clientForename;
-    private String uniqueClientNumber;
 
 
     @JsonSerialize(using = YearMonthSerializer.class)

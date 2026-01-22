@@ -21,6 +21,7 @@ public class CivilClaimDetails extends ClaimDetails {
     private ClaimField hoInterview;
     private ClaimField substantiveHearing;
     private ClaimField counselsCost;
+    private String uniqueClientNumber;
 
     @Override
     public void setNilledValues() {
