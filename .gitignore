@@ -23,3 +23,4 @@ out/
 
 snyk-app.sarif
 dump.rdb
+e2e.log
