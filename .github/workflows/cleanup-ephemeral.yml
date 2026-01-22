@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.1
 
       - name: Sanitize Branch Name
         id: sanitize
@@ -27,7 +27,7 @@ jobs:
           namespace: ${{ secrets.KUBE_NAMESPACE }}
 
       - name: Authenticate to Kubernetes Cluster
-        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@main
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@768f673017edbb793cf052fa159c272d6c1f9177
         with:
           kube-cert: ${{ secrets.KUBE_CERT }}
           kube-token: ${{ secrets.KUBE_TOKEN }}
