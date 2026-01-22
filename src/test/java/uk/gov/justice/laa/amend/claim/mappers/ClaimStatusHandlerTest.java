@@ -9,28 +9,11 @@ import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldType;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 
 @ExtendWith(MockitoExtension.class)
 class ClaimStatusHandlerTest {
@@ -46,37 +29,37 @@ class ClaimStatusHandlerTest {
     class NilledStatusTests {
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiable() {
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
+            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
             ClaimDetails claimDetails = new CrimeClaimDetails();
             claimDetails.setAssessedTotalVat(assessedTotalVatField);
             claimDetails.setAssessedTotalInclVat(assessedTotalInclVatField);
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.NILLED);
 
-            assertThat(assessedTotalVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(assessedTotalInclVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(assessedTotalVatField.isAssessable()).isFalse();
+            assertThat(assessedTotalInclVatField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetAssessableCrimeFieldsToNotModifiable() {
-            ClaimField travelCostsField = ClaimField.builder().key(TRAVEL_COSTS).type(ClaimFieldType.OTHER).build();
-            ClaimField waitingCostsField = ClaimField.builder().key(WAITING_COSTS).type(ClaimFieldType.OTHER).build();
+            ClaimField travelCostsField = MockClaimsFunctions.createTravelCostField();
+            ClaimField waitingCostsField = MockClaimsFunctions.createWaitingCostField();
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
             crimeClaim.setTravelCosts(travelCostsField);
             crimeClaim.setWaitingCosts(waitingCostsField);
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.NILLED);
 
-            assertThat(travelCostsField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(waitingCostsField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(travelCostsField.isAssessable()).isFalse();
+            assertThat(waitingCostsField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetAssessableCivilFieldsToNotModifiable() {
-            ClaimField detentionTravelWaitingCostsField = ClaimField.builder().key(DETENTION_TRAVEL_COST).type(ClaimFieldType.OTHER).build();
-            ClaimField jrFormFillingCostField = ClaimField.builder().key(JR_FORM_FILLING).type(ClaimFieldType.OTHER).build();
-            ClaimField counselsCostField = ClaimField.builder().key(COUNSELS_COST).type(ClaimFieldType.OTHER).build();
+            ClaimField detentionTravelWaitingCostsField = MockClaimsFunctions.createDetentionCostField();
+            ClaimField jrFormFillingCostField = MockClaimsFunctions.createJrFormFillingCostField();
+            ClaimField counselsCostField = MockClaimsFunctions.createCounselCostField();
             CivilClaimDetails crimeClaim = new CivilClaimDetails();
             crimeClaim.setDetentionTravelWaitingCosts(detentionTravelWaitingCostsField);
             crimeClaim.setJrFormFillingCost(jrFormFillingCostField);
@@ -84,18 +67,18 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.NILLED);
 
-            assertThat(detentionTravelWaitingCostsField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(jrFormFillingCostField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(counselsCostField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(detentionTravelWaitingCostsField.isAssessable()).isFalse();
+            assertThat(jrFormFillingCostField.isAssessable()).isFalse();
+            assertThat(counselsCostField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetBoltOnFieldsToNotModifiable() {
-            ClaimField adjournedHearingField = ClaimField.builder().key(ADJOURNED_FEE).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField cmrhTelephoneField = ClaimField.builder().key(CMRH_TELEPHONE).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField cmrhOralField = ClaimField.builder().key(CMRH_ORAL).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField hoInterviewField = ClaimField.builder().key(HO_INTERVIEW).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField substantiveHearingField = ClaimField.builder().key(SUBSTANTIVE_HEARING).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField adjournedHearingField = MockClaimsFunctions.createAdjournedHearingField();
+            ClaimField cmrhTelephoneField = MockClaimsFunctions.createCmrhTelephoneField();
+            ClaimField cmrhOralField = MockClaimsFunctions.createCmrhOralField();
+            ClaimField hoInterviewField = MockClaimsFunctions.createHoInterviewField();
+            ClaimField substantiveHearingField = MockClaimsFunctions.createSubstantiveHearingField();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setAdjournedHearing(adjournedHearingField);
             claimDetails.setCmrhTelephone(cmrhTelephoneField);
@@ -105,44 +88,44 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.NILLED);
 
-            assertThat(adjournedHearingField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(cmrhTelephoneField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(cmrhOralField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(hoInterviewField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(substantiveHearingField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(adjournedHearingField.isAssessable()).isFalse();
+            assertThat(cmrhTelephoneField.isAssessable()).isFalse();
+            assertThat(cmrhOralField.isAssessable()).isFalse();
+            assertThat(hoInterviewField.isAssessable()).isFalse();
+            assertThat(substantiveHearingField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetFixedFeeFieldToNotModifiable() {
-            ClaimField fixedFeeField = ClaimField.builder().key(FIXED_FEE).type(ClaimFieldType.FIXED_FEE).build();
+            ClaimField fixedFeeField = MockClaimsFunctions.createFixedFeeField();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setFixedFee(fixedFeeField);
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.NILLED);
 
-            assertThat(fixedFeeField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(fixedFeeField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetTotalAmountFieldToNotModifiable() {
-            ClaimField totalAmountField = ClaimField.builder().key(TOTAL).type(ClaimFieldType.CALCULATED_TOTAL).build();
+            ClaimField totalAmountField = MockClaimsFunctions.createTotalAmountField();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setTotalAmount(totalAmountField);
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.NILLED);
 
-            assertThat(totalAmountField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(totalAmountField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetVatClaimedFieldToModifiable() {
-            ClaimField vatClaimedField = ClaimField.builder().key(VAT).type(ClaimFieldType.OTHER).build();
+            ClaimField vatClaimedField = MockClaimsFunctions.createVatClaimedField();
             ClaimDetails civilClaimDetails = new CivilClaimDetails();
             civilClaimDetails.setVatClaimed(vatClaimedField);
 
             claimStatusHandler.updateFieldStatuses(civilClaimDetails, OutcomeType.NILLED);
 
-            assertThat(vatClaimedField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
+            assertThat(vatClaimedField.isAssessable()).isTrue();
         }
     }
 
@@ -151,80 +134,80 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiableForCrimeClaimWithNoFeeCode() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
+            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
             crimeClaim.setFeeCode(null);
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED);
 
-            assertThat(assessedTotalVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(assessedTotalInclVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(assessedTotalVatField.isAssessable()).isFalse();
+            assertThat(assessedTotalInclVatField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiableForCrimeClaimWithInvalidFeeCode() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
+            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
             crimeClaim.setFeeCode("ABCD");
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED);
 
-            assertThat(assessedTotalVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(assessedTotalInclVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(assessedTotalVatField.isAssessable()).isFalse();
+            assertThat(assessedTotalInclVatField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetAssessedTotalFieldsToModifiableForCrimeClaimWithValidFeeCode() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
+            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
             crimeClaim.setFeeCode("INVC");
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED);
 
-            assertThat(assessedTotalVatField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
-            assertThat(assessedTotalInclVatField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
+            assertThat(assessedTotalVatField.isAssessable()).isTrue();
+            assertThat(assessedTotalInclVatField.isAssessable()).isTrue();
         }
 
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiableForCivilClaim() {
             CivilClaimDetails crimeClaim = new CivilClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
+            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED);
 
-            assertThat(assessedTotalVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(assessedTotalInclVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(assessedTotalVatField.isAssessable()).isFalse();
+            assertThat(assessedTotalInclVatField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetNetProfitCostFieldToModifiable() {
-            ClaimField netProfitCostField = ClaimField.builder().key(NET_PROFIT_COST).type(ClaimFieldType.OTHER).build();
+            ClaimField netProfitCostField = MockClaimsFunctions.createNetProfitCostField();
             ClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setNetProfitCost(netProfitCostField);
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.REDUCED);
 
-            assertThat(netProfitCostField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
+            assertThat(netProfitCostField.isAssessable()).isTrue();
         }
 
         @Test
         void shouldSetBoltOnFieldsToNotModifiable() {
-            ClaimField adjournedHearingField = ClaimField.builder().key(ADJOURNED_FEE).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField cmrhTelephoneField = ClaimField.builder().key(CMRH_TELEPHONE).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField cmrhOralField = ClaimField.builder().key(CMRH_ORAL).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField hoInterviewField = ClaimField.builder().key(HO_INTERVIEW).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField substantiveHearingField = ClaimField.builder().key(SUBSTANTIVE_HEARING).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField adjournedHearingField = MockClaimsFunctions.createAdjournedHearingField();
+            ClaimField cmrhTelephoneField = MockClaimsFunctions.createCmrhTelephoneField();
+            ClaimField cmrhOralField = MockClaimsFunctions.createCmrhOralField();
+            ClaimField hoInterviewField = MockClaimsFunctions.createHoInterviewField();
+            ClaimField substantiveHearingField = MockClaimsFunctions.createSubstantiveHearingField();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setAdjournedHearing(adjournedHearingField);
             claimDetails.setCmrhTelephone(cmrhTelephoneField);
@@ -234,54 +217,54 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.REDUCED);
 
-            assertThat(adjournedHearingField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(cmrhTelephoneField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(cmrhOralField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(hoInterviewField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(substantiveHearingField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(adjournedHearingField.isAssessable()).isFalse();
+            assertThat(cmrhTelephoneField.isAssessable()).isFalse();
+            assertThat(cmrhOralField.isAssessable()).isFalse();
+            assertThat(hoInterviewField.isAssessable()).isFalse();
+            assertThat(substantiveHearingField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetFixedFeeFieldToNotModifiable() {
-            ClaimField fixedFeeField = ClaimField.builder().key(FIXED_FEE).type(ClaimFieldType.FIXED_FEE).build();
+            ClaimField fixedFeeField = MockClaimsFunctions.createFixedFeeField();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setFixedFee(fixedFeeField);
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.REDUCED);
 
-            assertThat(fixedFeeField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(fixedFeeField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetTotalAmountFieldToNotModifiable() {
-            ClaimField totalAmountField = ClaimField.builder().key(TOTAL).type(ClaimFieldType.CALCULATED_TOTAL).build();
+            ClaimField totalAmountField = MockClaimsFunctions.createTotalAmountField();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setTotalAmount(totalAmountField);
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.REDUCED);
 
-            assertThat(totalAmountField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(totalAmountField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetAssessableCrimeFieldsToModifiable() {
-            ClaimField travelCostsField = ClaimField.builder().key(TRAVEL_COSTS).type(ClaimFieldType.OTHER).build();
-            ClaimField waitingCostsField = ClaimField.builder().key(WAITING_COSTS).type(ClaimFieldType.OTHER).build();
+            ClaimField travelCostsField = MockClaimsFunctions.createTravelCostField();
+            ClaimField waitingCostsField = MockClaimsFunctions.createWaitingCostField();
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
             crimeClaim.setTravelCosts(travelCostsField);
             crimeClaim.setWaitingCosts(waitingCostsField);
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED);
 
-            assertThat(travelCostsField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
-            assertThat(waitingCostsField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
+            assertThat(travelCostsField.isAssessable()).isTrue();
+            assertThat(waitingCostsField.isAssessable()).isTrue();
         }
 
         @Test
         void shouldSetAssessableCivilFieldsToModifiable() {
-            ClaimField detentionTravelWaitingCostsField = ClaimField.builder().key(DETENTION_TRAVEL_COST).type(ClaimFieldType.OTHER).build();
-            ClaimField jrFormFillingCostField = ClaimField.builder().key(JR_FORM_FILLING).type(ClaimFieldType.OTHER).build();
-            ClaimField counselsCostField = ClaimField.builder().key(COUNSELS_COST).type(ClaimFieldType.OTHER).build();
+            ClaimField detentionTravelWaitingCostsField = MockClaimsFunctions.createDetentionCostField();
+            ClaimField jrFormFillingCostField = MockClaimsFunctions.createJrFormFillingCostField();
+            ClaimField counselsCostField = MockClaimsFunctions.createCounselCostField();
             CivilClaimDetails crimeClaim = new CivilClaimDetails();
             crimeClaim.setDetentionTravelWaitingCosts(detentionTravelWaitingCostsField);
             crimeClaim.setJrFormFillingCost(jrFormFillingCostField);
@@ -289,9 +272,9 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED);
 
-            assertThat(detentionTravelWaitingCostsField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
-            assertThat(jrFormFillingCostField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
-            assertThat(counselsCostField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
+            assertThat(detentionTravelWaitingCostsField.isAssessable()).isTrue();
+            assertThat(jrFormFillingCostField.isAssessable()).isTrue();
+            assertThat(counselsCostField.isAssessable()).isTrue();
         }
     }
 
@@ -300,8 +283,8 @@ class ClaimStatusHandlerTest {
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiableForCrimeClaimWithNoFeeCode() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
+            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
             crimeClaim.setFeeCode(null);
@@ -309,83 +292,83 @@ class ClaimStatusHandlerTest {
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 
-            assertThat(assessedTotalVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(assessedTotalInclVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(assessedTotalVatField.isAssessable()).isFalse();
+            assertThat(assessedTotalInclVatField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiableForCrimeClaimWithInvalidFeeCode() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
+            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
             crimeClaim.setFeeCode("ABCD");
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 
-            assertThat(assessedTotalVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(assessedTotalInclVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(assessedTotalVatField.isAssessable()).isFalse();
+            assertThat(assessedTotalInclVatField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetAssessedTotalFieldsToModifiableForCrimeClaimWithValidFeeCode() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
+            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
             crimeClaim.setFeeCode("INVC");
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 
-            assertThat(assessedTotalVatField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
-            assertThat(assessedTotalInclVatField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
+            assertThat(assessedTotalVatField.isAssessable()).isTrue();
+            assertThat(assessedTotalInclVatField.isAssessable()).isTrue();
         }
 
         @Test
         void shouldSetAssessedTotalFieldsToNotModifiableForCivilClaim() {
             CivilClaimDetails crimeClaim = new CivilClaimDetails();
-            ClaimField assessedTotalVatField = ClaimField.builder().key(ASSESSED_TOTAL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
-            ClaimField assessedTotalInclVatField = ClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).type(ClaimFieldType.ASSESSED_TOTAL).build();
+            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
             crimeClaim.setAssessedTotalVat(assessedTotalVatField);
             crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 
-            assertThat(assessedTotalVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(assessedTotalInclVatField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(assessedTotalVatField.isAssessable()).isFalse();
+            assertThat(assessedTotalInclVatField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetFixedFeeFieldToNotModifiable() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField field = ClaimField.builder().key(FIXED_FEE).type(ClaimFieldType.FIXED_FEE).build();
+            ClaimField field = MockClaimsFunctions.createFixedFeeField();
             crimeClaim.setFixedFee(field);
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 
-            assertThat(field.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(field.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetTotalAmountFieldToNotModifiable() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
-            ClaimField field = ClaimField.builder().key(TOTAL).type(ClaimFieldType.CALCULATED_TOTAL).build();
+            ClaimField field = MockClaimsFunctions.createTotalAmountField();
             crimeClaim.setTotalAmount(field);
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 
-            assertThat(field.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(field.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetBoltOnFieldsToNotModifiable() {
-            ClaimField adjournedHearingField = ClaimField.builder().key(ADJOURNED_FEE).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField cmrhTelephoneField = ClaimField.builder().key(CMRH_TELEPHONE).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField cmrhOralField = ClaimField.builder().key(CMRH_ORAL).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField hoInterviewField = ClaimField.builder().key(HO_INTERVIEW).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField substantiveHearingField = ClaimField.builder().key(SUBSTANTIVE_HEARING).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField adjournedHearingField = MockClaimsFunctions.createAdjournedHearingField();
+            ClaimField cmrhTelephoneField = MockClaimsFunctions.createCmrhTelephoneField();
+            ClaimField cmrhOralField = MockClaimsFunctions.createCmrhOralField();
+            ClaimField hoInterviewField = MockClaimsFunctions.createHoInterviewField();
+            ClaimField substantiveHearingField = MockClaimsFunctions.createSubstantiveHearingField();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setAdjournedHearing(adjournedHearingField);
             claimDetails.setCmrhTelephone(cmrhTelephoneField);
@@ -395,32 +378,32 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.PAID_IN_FULL);
 
-            assertThat(adjournedHearingField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(cmrhTelephoneField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(cmrhOralField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(hoInterviewField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(substantiveHearingField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(adjournedHearingField.isAssessable()).isFalse();
+            assertThat(cmrhTelephoneField.isAssessable()).isFalse();
+            assertThat(cmrhOralField.isAssessable()).isFalse();
+            assertThat(hoInterviewField.isAssessable()).isFalse();
+            assertThat(substantiveHearingField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetAssessableCrimeFieldsToModifiable() {
-            ClaimField travelCostsField = ClaimField.builder().key(TRAVEL_COSTS).type(ClaimFieldType.OTHER).build();
-            ClaimField waitingCostsField = ClaimField.builder().key(WAITING_COSTS).type(ClaimFieldType.OTHER).build();
+            ClaimField travelCostsField = MockClaimsFunctions.createTravelCostField();
+            ClaimField waitingCostsField = MockClaimsFunctions.createWaitingCostField();
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
             crimeClaim.setTravelCosts(travelCostsField);
             crimeClaim.setWaitingCosts(waitingCostsField);
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 
-            assertThat(travelCostsField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
-            assertThat(waitingCostsField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
+            assertThat(travelCostsField.isAssessable()).isTrue();
+            assertThat(waitingCostsField.isAssessable()).isTrue();
         }
 
         @Test
         void shouldSetAssessableCivilFieldsToModifiable() {
-            ClaimField detentionTravelWaitingCostsField = ClaimField.builder().key(DETENTION_TRAVEL_COST).type(ClaimFieldType.OTHER).build();
-            ClaimField jrFormFillingCostField = ClaimField.builder().key(JR_FORM_FILLING).type(ClaimFieldType.OTHER).build();
-            ClaimField counselsCostField = ClaimField.builder().key(COUNSELS_COST).type(ClaimFieldType.OTHER).build();
+            ClaimField detentionTravelWaitingCostsField = MockClaimsFunctions.createDetentionCostField();
+            ClaimField jrFormFillingCostField = MockClaimsFunctions.createJrFormFillingCostField();
+            ClaimField counselsCostField = MockClaimsFunctions.createCounselCostField();
             CivilClaimDetails crimeClaim = new CivilClaimDetails();
             crimeClaim.setDetentionTravelWaitingCosts(detentionTravelWaitingCostsField);
             crimeClaim.setJrFormFillingCost(jrFormFillingCostField);
@@ -428,9 +411,9 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 
-            assertThat(detentionTravelWaitingCostsField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
-            assertThat(jrFormFillingCostField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
-            assertThat(counselsCostField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
+            assertThat(detentionTravelWaitingCostsField.isAssessable()).isTrue();
+            assertThat(jrFormFillingCostField.isAssessable()).isTrue();
+            assertThat(counselsCostField.isAssessable()).isTrue();
         }
     }
 
@@ -438,23 +421,23 @@ class ClaimStatusHandlerTest {
     class ReducedToFixedFeeStatusTests {
         @Test
         void shouldSetAssessableCrimeFieldsToModifiable() {
-            ClaimField travelCostsField = ClaimField.builder().key(TRAVEL_COSTS).type(ClaimFieldType.OTHER).build();
-            ClaimField waitingCostsField = ClaimField.builder().key(WAITING_COSTS).type(ClaimFieldType.OTHER).build();
+            ClaimField travelCostsField = MockClaimsFunctions.createTravelCostField();
+            ClaimField waitingCostsField = MockClaimsFunctions.createWaitingCostField();
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
             crimeClaim.setTravelCosts(travelCostsField);
             crimeClaim.setWaitingCosts(waitingCostsField);
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
-            assertThat(travelCostsField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
-            assertThat(waitingCostsField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
+            assertThat(travelCostsField.isAssessable()).isTrue();
+            assertThat(waitingCostsField.isAssessable()).isTrue();
         }
 
         @Test
         void shouldSetAssessableCivilFieldsToModifiable() {
-            ClaimField detentionTravelWaitingCostsField = ClaimField.builder().key(DETENTION_TRAVEL_COST).type(ClaimFieldType.OTHER).build();
-            ClaimField jrFormFillingCostField = ClaimField.builder().key(JR_FORM_FILLING).type(ClaimFieldType.OTHER).build();
-            ClaimField counselsCostField = ClaimField.builder().key(COUNSELS_COST).type(ClaimFieldType.OTHER).build();
+            ClaimField detentionTravelWaitingCostsField = MockClaimsFunctions.createDetentionCostField();
+            ClaimField jrFormFillingCostField = MockClaimsFunctions.createJrFormFillingCostField();
+            ClaimField counselsCostField = MockClaimsFunctions.createCounselCostField();
             CivilClaimDetails crimeClaim = new CivilClaimDetails();
             crimeClaim.setDetentionTravelWaitingCosts(detentionTravelWaitingCostsField);
             crimeClaim.setJrFormFillingCost(jrFormFillingCostField);
@@ -462,18 +445,18 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
-            assertThat(detentionTravelWaitingCostsField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
-            assertThat(jrFormFillingCostField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
-            assertThat(counselsCostField.getStatus()).isEqualTo(ClaimFieldStatus.MODIFIABLE);
+            assertThat(detentionTravelWaitingCostsField.isAssessable()).isTrue();
+            assertThat(jrFormFillingCostField.isAssessable()).isTrue();
+            assertThat(counselsCostField.isAssessable()).isTrue();
         }
 
         @Test
         void shouldSetBoltOnFieldsToNotModifiable() {
-            ClaimField adjournedHearingField = ClaimField.builder().key(ADJOURNED_FEE).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField cmrhTelephoneField = ClaimField.builder().key(CMRH_TELEPHONE).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField cmrhOralField = ClaimField.builder().key(CMRH_ORAL).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField hoInterviewField = ClaimField.builder().key(HO_INTERVIEW).type(ClaimFieldType.BOLT_ON).build();
-            ClaimField substantiveHearingField = ClaimField.builder().key(SUBSTANTIVE_HEARING).type(ClaimFieldType.BOLT_ON).build();
+            ClaimField adjournedHearingField = MockClaimsFunctions.createAdjournedHearingField();
+            ClaimField cmrhTelephoneField = MockClaimsFunctions.createCmrhTelephoneField();
+            ClaimField cmrhOralField = MockClaimsFunctions.createCmrhOralField();
+            ClaimField hoInterviewField = MockClaimsFunctions.createHoInterviewField();
+            ClaimField substantiveHearingField = MockClaimsFunctions.createSubstantiveHearingField();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setAdjournedHearing(adjournedHearingField);
             claimDetails.setCmrhTelephone(cmrhTelephoneField);
@@ -483,33 +466,33 @@ class ClaimStatusHandlerTest {
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.REDUCED_TO_FIXED_FEE);
 
-            assertThat(adjournedHearingField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(cmrhTelephoneField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(cmrhOralField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(hoInterviewField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
-            assertThat(substantiveHearingField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(adjournedHearingField.isAssessable()).isFalse();
+            assertThat(cmrhTelephoneField.isAssessable()).isFalse();
+            assertThat(cmrhOralField.isAssessable()).isFalse();
+            assertThat(hoInterviewField.isAssessable()).isFalse();
+            assertThat(substantiveHearingField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetFixedFeeFieldToNotModifiable() {
-            ClaimField fixedFeeField = ClaimField.builder().key(FIXED_FEE).type(ClaimFieldType.FIXED_FEE).build();
+            ClaimField fixedFeeField = MockClaimsFunctions.createFixedFeeField();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setFixedFee(fixedFeeField);
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.REDUCED_TO_FIXED_FEE);
 
-            assertThat(fixedFeeField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(fixedFeeField.isAssessable()).isFalse();
         }
 
         @Test
         void shouldSetTotalAmountFieldToNotModifiable() {
-            ClaimField totalAmountField = ClaimField.builder().key(TOTAL).type(ClaimFieldType.CALCULATED_TOTAL).build();
+            ClaimField totalAmountField = MockClaimsFunctions.createTotalAmountField();
             CivilClaimDetails claimDetails = new CivilClaimDetails();
             claimDetails.setTotalAmount(totalAmountField);
 
             claimStatusHandler.updateFieldStatuses(claimDetails, OutcomeType.REDUCED_TO_FIXED_FEE);
 
-            assertThat(totalAmountField.getStatus()).isEqualTo(ClaimFieldStatus.NOT_MODIFIABLE);
+            assertThat(totalAmountField.isAssessable()).isFalse();
         }
     }
 }

@@ -3,11 +3,11 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
+import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldType;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
@@ -18,14 +18,15 @@ import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.util.List;
 
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_VAT;
+
 public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends ClaimDetailsView<C>> {
 
     protected abstract C createClaim();
     protected abstract V createView(C claim);
-
-    public static ClaimField createClaimField(String key, ClaimFieldStatus status) {
-        return ClaimField.builder().key(key).status(status).type(ClaimFieldType.OTHER).build();
-    }
 
     @Nested
     class GetAccountNumberTests {
@@ -88,18 +89,18 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         void getAssessedTotalsHandlesNullFields() {
             C claim = createClaim();
             V viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getAssessedTotals();
+            List<ClaimFieldRow> result = viewModel.getAssessedTotals();
             Assertions.assertEquals(0, result.size());
         }
 
         @Test
         void getAssessedTotalsHandlesValidFields() {
             C claim = createClaim();
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.MODIFIABLE));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
+            claim.setAssessedTotalVat(AssessedClaimField.builder().key(ASSESSED_TOTAL_VAT).build());
+            claim.setAssessedTotalInclVat(AssessedClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).build());
             V viewModel = createView(claim);
 
-            List<ClaimField> result = viewModel.getAssessedTotals();
+            List<ClaimFieldRow> result = viewModel.getAssessedTotals();
 
             Assertions.assertEquals(2, result.size());
 
@@ -113,11 +114,11 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         @Test
         void getAssessedTotalsHandlesNonAssessableFields() {
             C claim = createClaim();
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.NOT_MODIFIABLE));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.NOT_MODIFIABLE));
+            claim.setAssessedTotalVat(AssessedClaimField.builder().key(ASSESSED_TOTAL_VAT).build());
+            claim.setAssessedTotalInclVat(AssessedClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).build());
 
-            ClaimField allowedTotal = createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE);
-            ClaimField allowedTotalInclVat = createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE);
+            ClaimField allowedTotal = AllowedClaimField.builder().key(ALLOWED_TOTAL_VAT).build();
+            ClaimField allowedTotalInclVat = AllowedClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).build();
 
             allowedTotal.setAssessed(BigDecimal.valueOf(100));
             allowedTotalInclVat.setAssessed(BigDecimal.valueOf(100));
@@ -130,14 +131,14 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
 
             V viewModel = createView(claim);
 
-            List<ClaimField> result = viewModel.getAssessedTotals();
+            List<ClaimFieldRow> result = viewModel.getAssessedTotals();
 
             Assertions.assertEquals(2, result.size());
 
-            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(0).getAssessed());
+            Assertions.assertNull(result.get(0).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(0).getChangeUrl());
 
-            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(1).getAssessed());
+            Assertions.assertNull(result.get(1).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(1).getChangeUrl());
         }
     }
@@ -155,11 +156,11 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         @Test
         void getAllowedTotalsHandlesNullCalculatedValues() {
             C claim = createClaim();
-            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE));
-            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
+            claim.setAllowedTotalVat(AllowedClaimField.builder().key(ALLOWED_TOTAL_VAT).build());
+            claim.setAllowedTotalInclVat(AllowedClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).build());
             V viewModel = createView(claim);
 
-            List<ClaimField> result = viewModel.getAllowedTotals();
+            List<ClaimFieldRow> result = viewModel.getAllowedTotals();
 
             Assertions.assertEquals(BigDecimal.ZERO, result.get(0).getCalculated());
             Assertions.assertEquals("/submissions/%s/claims/%s/allowed-totals", result.get(0).getChangeUrl());
@@ -173,8 +174,8 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         void getAllowedTotalsHandlesValid() {
             C claim = createClaim();
 
-            ClaimField allowedTotal = createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE);
-            ClaimField allowedTotalInclVat = createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE);
+            ClaimField allowedTotal = AllowedClaimField.builder().key(ALLOWED_TOTAL_VAT).build();
+            ClaimField allowedTotalInclVat = AllowedClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).build();
 
             allowedTotal.setAssessed(BigDecimal.valueOf(100));
             allowedTotalInclVat.setAssessed(BigDecimal.valueOf(100));
@@ -184,12 +185,12 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
 
             V viewModel = createView(claim);
 
-            List<ClaimField> result = viewModel.getAllowedTotals();
+            List<ClaimFieldRow> result = viewModel.getAllowedTotals();
 
-            Assertions.assertEquals(claim.getAllowedTotalVat(), result.get(0));
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(0).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/allowed-totals", result.get(0).getChangeUrl());
 
-            Assertions.assertEquals(claim.getAllowedTotalInclVat(), result.get(1));
+            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(1).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/allowed-totals", result.get(1).getChangeUrl());
         }
     }

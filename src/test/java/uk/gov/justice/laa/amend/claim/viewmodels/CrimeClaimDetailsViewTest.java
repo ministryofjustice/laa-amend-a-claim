@@ -4,9 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
+import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldType;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
@@ -99,7 +98,7 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
             claim.setHasAssessment(true);
 
             CrimeClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
+            List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
 
             Assertions.assertEquals(7, result.size());
 
@@ -126,11 +125,11 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
         @Test
         void rowsRenderedForClaimValuesWhenClaimDoesNotHaveAnAssessment() {
             CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
-            claim.setTotalAmount(MockClaimsFunctions.createClaimField(TOTAL, ClaimFieldType.CALCULATED_TOTAL));
+            claim.setTotalAmount(CalculatedTotalClaimField.builder().build());
             claim.setHasAssessment(false);
 
             CrimeClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getSummaryClaimFieldRows();
+            List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
 
             Assertions.assertEquals(8, result.size());
 
@@ -164,7 +163,7 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
             CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
 
             CrimeClaimDetailsView viewModel = createView(claim);
-            List<ClaimField> result = viewModel.getReviewClaimFieldRows();
+            List<ClaimFieldRow> result = viewModel.getReviewClaimFieldRows();
 
             Assertions.assertEquals(7, result.size());
 
@@ -195,13 +194,31 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
         @Test
         void convertFieldsThatNeedAmendingIntoErrors() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setNetProfitCost(createClaimField("profitCost", ClaimFieldStatus.MODIFIABLE));
-            claim.setTravelCosts(createClaimField("travel", ClaimFieldStatus.MODIFIABLE));
-            claim.setWaitingCosts(createClaimField("waiting", ClaimFieldStatus.MODIFIABLE));
-            claim.setAssessedTotalVat(createClaimField("assessedTotalVat", ClaimFieldStatus.MODIFIABLE));
-            claim.setAssessedTotalInclVat(createClaimField("assessedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
-            claim.setAllowedTotalVat(createClaimField("allowedTotalVat", ClaimFieldStatus.MODIFIABLE));
-            claim.setAllowedTotalInclVat(createClaimField("allowedTotalInclVat", ClaimFieldStatus.MODIFIABLE));
+
+            ClaimField netProfitCostField = MockClaimsFunctions.createNetProfitCostField();
+            ClaimField travelCostsField = MockClaimsFunctions.createTravelCostField();
+            ClaimField waitingCostsField = MockClaimsFunctions.createWaitingCostField();
+            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
+            ClaimField allowedTotalVatField = MockClaimsFunctions.createAllowedTotalVatField();
+            ClaimField allowedTotalInclVatField = MockClaimsFunctions.createAllowedTotalInclVatField();
+
+            netProfitCostField.setAssessed(null);
+            travelCostsField.setAssessed(null);
+            waitingCostsField.setAssessed(null);
+            assessedTotalVatField.setAssessed(null);
+            assessedTotalInclVatField.setAssessed(null);
+            allowedTotalVatField.setAssessed(null);
+            allowedTotalInclVatField.setAssessed(null);
+
+            claim.setNetProfitCost(netProfitCostField);
+            claim.setTravelCosts(travelCostsField);
+            claim.setWaitingCosts(waitingCostsField);
+            claim.setAssessedTotalVat(assessedTotalVatField);
+            claim.setAssessedTotalInclVat(assessedTotalInclVatField);
+            claim.setAllowedTotalVat(allowedTotalVatField);
+            claim.setAllowedTotalInclVat(allowedTotalInclVatField);
+
             CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
 
             List<ReviewAndAmendFormError> expectedErrors = List.of(

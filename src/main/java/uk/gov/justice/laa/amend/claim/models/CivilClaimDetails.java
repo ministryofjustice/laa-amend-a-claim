@@ -24,66 +24,7 @@ public class CivilClaimDetails extends ClaimDetails {
     private String uniqueClientNumber;
 
     @Override
-    public void setNilledValues() {
-        super.setNilledValues();
-        applyIfNotNull(counselsCost, ClaimField::setNilled);
-        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setNilled);
-        applyIfNotNull(jrFormFillingCost, ClaimField::setNilled);
-
-        // Bolt-ons get set to 0
-        applyIfNotNull(adjournedHearing, ClaimField::setNilled);
-        applyIfNotNull(cmrhTelephone, ClaimField::setNilled);
-        applyIfNotNull(cmrhOral, ClaimField::setNilled);
-        applyIfNotNull(hoInterview, ClaimField::setNilled);
-        applyIfNotNull(substantiveHearing, ClaimField::setNilled);
-    }
-
-    @Override
-    public void setReducedToFixedFeeValues() {
-        super.setReducedToFixedFeeValues();
-        applyIfNotNull(counselsCost, ClaimField::setAssessedToCalculated);
-        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAssessedToCalculated);
-        applyIfNotNull(jrFormFillingCost, ClaimField::setAssessedToCalculated);
-
-        // Bolt-ons get set to calculated
-        applyIfNotNull(adjournedHearing, ClaimField::setAssessedToCalculated);
-        applyIfNotNull(cmrhTelephone, ClaimField::setAssessedToCalculated);
-        applyIfNotNull(cmrhOral, ClaimField::setAssessedToCalculated);
-        applyIfNotNull(hoInterview, ClaimField::setAssessedToCalculated);
-        applyIfNotNull(substantiveHearing, ClaimField::setAssessedToCalculated);
-    }
-
-    @Override
-    public void setReducedValues() {
-        super.setReducedValues();
-        applyIfNotNull(counselsCost, ClaimField::setAssessedToSubmitted);
-        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAssessedToSubmitted);
-        applyIfNotNull(jrFormFillingCost, ClaimField::setAssessedToSubmitted);
-
-        // Bolt-ons get set to null
-        applyIfNotNull(adjournedHearing, ClaimField::setAssessedToNull);
-        applyIfNotNull(cmrhTelephone, ClaimField::setAssessedToNull);
-        applyIfNotNull(cmrhOral, ClaimField::setAssessedToNull);
-        applyIfNotNull(hoInterview, ClaimField::setAssessedToNull);
-        applyIfNotNull(substantiveHearing, ClaimField::setAssessedToNull);
-    }
-
-    public void setPaidInFullValues() {
-        super.setPaidInFullValues();
-        applyIfNotNull(counselsCost, ClaimField::setAssessedToSubmitted);
-        applyIfNotNull(detentionTravelWaitingCosts, ClaimField::setAssessedToSubmitted);
-        applyIfNotNull(jrFormFillingCost, ClaimField::setAssessedToSubmitted);
-
-        // Bolt-ons get set to null
-        applyIfNotNull(adjournedHearing, ClaimField::setAssessedToNull);
-        applyIfNotNull(cmrhTelephone, ClaimField::setAssessedToNull);
-        applyIfNotNull(cmrhOral, ClaimField::setAssessedToNull);
-        applyIfNotNull(hoInterview, ClaimField::setAssessedToNull);
-        applyIfNotNull(substantiveHearing, ClaimField::setAssessedToNull);
-    }
-
-    @Override
-    public boolean isAssessedTotalFieldModifiable() {
+    public boolean isAssessedTotalFieldAssessable() {
         return false;
     }
 

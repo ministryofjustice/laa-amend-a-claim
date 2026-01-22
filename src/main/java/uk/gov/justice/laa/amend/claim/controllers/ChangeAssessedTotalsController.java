@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.forms.AssessedTotalForm;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
@@ -80,11 +79,11 @@ public class ChangeAssessedTotalsController {
 
         ClaimField totalVatField = claim.getAssessedTotalVat();
         BigDecimal totalVat = setScale(form.getAssessedTotalVat());
-        totalVatField.setAssessedToValue(totalVat);
+        totalVatField.setAssessed(totalVat);
 
         ClaimField totalInclVatField = claim.getAssessedTotalInclVat();
         BigDecimal totalInclVat = setScale(form.getAssessedTotalInclVat());
-        totalInclVatField.setAssessedToValue(totalInclVat);
+        totalInclVatField.setAssessed(totalInclVat);
 
         // Save updated Claim back to session
         session.setAttribute(claimId, claim);

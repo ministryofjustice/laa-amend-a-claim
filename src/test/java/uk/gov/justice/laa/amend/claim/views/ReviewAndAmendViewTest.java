@@ -13,7 +13,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimReviewController;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
@@ -130,7 +129,8 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
     @Test
     void testPageWithValidationError() throws Exception {
-        ClaimField claimField = ClaimField.builder().key("profitCosts").status(ClaimFieldStatus.MODIFIABLE).build();
+        ClaimField claimField = MockClaimsFunctions.createNetProfitCostField();
+        claimField.setAssessed(null);
         claim.setNetProfitCost(claimField);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -141,6 +141,6 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
         assertPageHasHeading(doc, "Review and amend");
 
-        assertPageHasErrorSummary(doc, "profit-costs");
+        assertPageHasErrorSummary(doc, "profit-cost");
     }
 }

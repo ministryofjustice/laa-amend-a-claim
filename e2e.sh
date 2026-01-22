@@ -9,7 +9,7 @@ export SPRING_PROFILES_ACTIVE="dev"
 
 echo "[INFO] Starting application..."
 docker-compose up -d
-./gradlew bootRun >/dev/null 2>&1 &
+./gradlew bootRun >> e2e.log 2>&1 &
 BOOTRUN_PID=$!
 sleep 10
 
