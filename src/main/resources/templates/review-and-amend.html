@@ -32,9 +32,10 @@
             <h2 class="govuk-summary-card__title" th:text="#{claimSummary.claimCostsTableTitle}"/>
         </div>
         <div class="govuk-summary-card__content">
-            <table class="govuk-table govuk-!-margin-bottom-0 aligned-costs-table">
+            <table th:with="hasActions=${#lists.size(viewModel.reviewClaimFieldRows.?[assessable]) > 0}"
+                   th:class="${'govuk-table govuk-!-margin-bottom-0 aligned-costs-table' + (hasActions ? '' : ' aligned-costs-table--no-actions')}">
                 <colgroup>
-                    <col><col><col><col><col>
+                    <col><col><col><col><col th:if="${hasActions}">
                 </colgroup>
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -42,7 +43,7 @@
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.assessed}"></th>
-                        <th scope="col" class="govuk-table__header"></th>
+                        <th scope="col" class="govuk-table__header" th:if="${hasActions}"></th>
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
@@ -63,7 +64,7 @@
                                 </a>
                             </td>
 
-                            <td class="govuk-table__cell"></td>
+                            <td class="govuk-table__cell" th:if="${hasActions}"></td>
                         </th:block>
 
                         <th:block th:if="${row.isAssessableAndAssessed}">
@@ -71,7 +72,7 @@
                                 th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}">
                             </td>
 
-                            <td class="govuk-table__cell">
+                            <td class="govuk-table__cell" th:if="${hasActions}">
                                 <a th:if="${row.getChangeUrl(submissionId,claimId) != null}"
                                    th:href="${row.getChangeUrl(submissionId,claimId)}"
                                    th:data-testid="${'claim-field-' + row.key}"
@@ -86,7 +87,7 @@
                             <td class="govuk-table__cell"
                                 th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}">
                             </td>
-                            <td class="govuk-table__cell"></td>
+                            <td class="govuk-table__cell" th:if="${hasActions}"></td>
                         </th:block>
                     </tr>
                 </tbody>
@@ -99,9 +100,10 @@
             <h2 class="govuk-summary-card__title" th:text="#{claimSummary.assessedTotalsTableTitle}"/>
         </div>
         <div class="govuk-summary-card__content">
-            <table class="govuk-table govuk-!-margin-bottom-0 aligned-costs-table">
+            <table th:with="hasActions=${#lists.size(viewModel.assessedTotals.?[assessable]) > 0}"
+                   th:class="${'govuk-table govuk-!-margin-bottom-0 aligned-costs-table' + (hasActions ? '' : ' aligned-costs-table--no-actions')}">
                 <colgroup>
-                    <col><col><col><col><col>
+                    <col><col><col><col><col th:if="${hasActions}">
                 </colgroup>
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -109,7 +111,7 @@
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.assessed}"></th>
-                        <th scope="col" class="govuk-table__header"></th>
+                        <th scope="col" class="govuk-table__header" th:if="${hasActions}"></th>
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
@@ -129,10 +131,10 @@
                             </td>
                         </th:block>
 
-                        <td class="govuk-table__cell" th:if="${(row.isNotAssessable())}"></td>
+                        <td class="govuk-table__cell" th:if="${(row.isNotAssessable()) and hasActions}"></td>
 
                         <th:block th:if="${row.isAssessableAndAssessed()}">
-                            <td class="govuk-table__cell">
+                            <td class="govuk-table__cell" th:if="${hasActions}">
                                 <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                                    th:id="${row.id}" th:data-testid="${'totals-' + row.key}"
                                    class="govuk-link govuk-link--no-visited-state"
@@ -152,9 +154,10 @@
             <h2 class="govuk-summary-card__title" th:text="#{claimSummary.allowedTotalsTableTitle}"/>
         </div>
         <div class="govuk-summary-card__content">
-            <table class="govuk-table govuk-!-margin-bottom-0 aligned-costs-table">
+            <table th:with="hasActions=${#lists.size(viewModel.allowedTotals.?[assessable]) > 0}"
+                   th:class="${'govuk-table govuk-!-margin-bottom-0 aligned-costs-table' + (hasActions ? '' : ' aligned-costs-table--no-actions')}">
                 <colgroup>
-                    <col><col><col><col><col>
+                    <col><col><col><col><col th:if="${hasActions}">
                 </colgroup>
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -162,7 +165,7 @@
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.allowed}"></th>
-                        <th scope="col" class="govuk-table__header"></th>
+                        <th scope="col" class="govuk-table__header" th:if="${hasActions}"></th>
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
@@ -182,10 +185,10 @@
                             </td>
                         </th:block>
 
-                        <td class="govuk-table__cell" th:if="${(row.isNotAssessable())}"></td>
+                        <td class="govuk-table__cell" th:if="${(row.isNotAssessable()) and hasActions}"></td>
 
                         <th:block th:if="${row.isAssessableAndAssessed()}">
-                            <td class="govuk-table__cell">
+                            <td class="govuk-table__cell" th:if="${hasActions}">
                                 <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                                    th:id="${row.id}" th:data-testid="${'totals-' + row.key}"
                                    class="govuk-link govuk-link--no-visited-state"
