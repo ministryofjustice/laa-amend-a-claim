@@ -229,6 +229,12 @@ githubRunner:
       value: "true"
     - name: BROWSER
       value: "chromium"
+    - name: DB_CONNECTION_URL
+      value: jdbc:postgresql://e2e-data-claims-api:5435/laa_data_claims_api_dev
+    - name: DB_USER
+      value: user
+    - name: DB_PASSWORD
+      value: dev
   resources:
     requests:
       memory: "1Gi"
