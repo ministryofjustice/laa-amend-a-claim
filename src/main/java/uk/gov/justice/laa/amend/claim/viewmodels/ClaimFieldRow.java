@@ -30,7 +30,7 @@ public class ClaimFieldRow {
         switch (claimField) {
             case CostClaimField x -> {
                 switch (x.getCost()) {
-                    case PROFIT_COSTS, DISBURSEMENTS, DISBURSEMENTS_VAT -> {}
+                    case PROFIT_COSTS, DISBURSEMENTS, DISBURSEMENTS_VAT -> { }
                     default -> {
                         this.submitted = getOrElseZero(submitted);
                         this.calculated = getOrElseZero(calculated);

@@ -19,9 +19,9 @@ public class VatLiabilityClaimField extends ClaimField {
     @Override
     public void applyOutcome(OutcomeType outcome) {
         switch (outcome) {
-            case NILLED -> {}
             case REDUCED_TO_FIXED_FEE -> setAssessedToCalculated();
             case REDUCED, PAID_IN_FULL -> setAssessedToSubmitted();
+            default -> { }
         }
     }
 }

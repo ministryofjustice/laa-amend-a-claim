@@ -36,6 +36,7 @@ public class CostClaimField extends ClaimField {
                 }
             }
             case PAID_IN_FULL -> setAssessedToSubmitted();
+            default -> { }
         }
     }
 }

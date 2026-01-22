@@ -22,6 +22,7 @@ public class FixedFeeClaimField extends ClaimField {
             case NILLED -> setNilled();
             case REDUCED_TO_FIXED_FEE -> setAssessedToCalculated();
             case REDUCED, PAID_IN_FULL -> setAssessedToNull();
+            default -> { }
         }
     }
 }
