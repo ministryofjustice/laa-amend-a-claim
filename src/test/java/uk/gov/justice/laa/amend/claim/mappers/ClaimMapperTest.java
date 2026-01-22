@@ -577,6 +577,7 @@ class ClaimMapperTest {
         response.setCaseReferenceNumber("CASE456");
         response.setClientSurname("Doe");
         response.setClientForename("John");
+        response.setUniqueClientNumber("21121985/J/DOE");
         response.setCaseStartDate("2025-01-01");
         response.setCaseConcludedDate("2025-02-01");
 
@@ -606,6 +607,7 @@ class ClaimMapperTest {
         assertEquals("CASE456", claim.getCaseReferenceNumber());
         assertEquals("Doe", claim.getClientSurname());
         assertEquals("John", claim.getClientForename());
+        assertEquals("21121985/J/DOE", claim.getUniqueClientNumber());
         assertEquals("FeeCode", claim.getFeeCode());
         assertEquals("FeeCodeDesc", claim.getFeeCodeDescription());
         assertEquals("Civil", claim.getCategoryOfLaw());
