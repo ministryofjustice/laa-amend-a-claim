@@ -34,15 +34,3 @@
     width: 17.5%;
 }
 
-.aligned-costs-table col:nth-child(5) {
-    width: 17.5%;
-}
-
-.aligned-costs-table--no-actions col:nth-child(4) {
-    width: 35%;
-}
-
-.aligned-costs-table--no-actions col:nth-child(5) {
-    display: none;
-}
-
