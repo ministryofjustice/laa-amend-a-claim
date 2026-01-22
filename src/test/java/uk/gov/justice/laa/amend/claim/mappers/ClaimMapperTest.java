@@ -346,11 +346,9 @@ class ClaimMapperTest {
     @Test
     void mapSubstantiveHearing() {
         ClaimResponse response = new ClaimResponse();
-        response.setHoInterview(100);
         response.setIsSubstantiveHearing(true);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         BoltOnPatch bolt = new BoltOnPatch();
-        bolt.setBoltOnHomeOfficeInterviewFee(BigDecimal.valueOf(120));
         bolt.setBoltOnSubstantiveHearingFee(BigDecimal.valueOf(120));
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
