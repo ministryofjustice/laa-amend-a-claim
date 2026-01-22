@@ -44,20 +44,17 @@ public class ClaimStatusHandler {
     }
 
     private boolean handleNilledStatus(ClaimField field) {
-        return switch (field) {
-            case VatLiabilityClaimField x -> true;
-            default -> false;
-        };
+        return field instanceof VatLiabilityClaimField;
     }
 
     /**
      * Set the field status for REDUCED outcome status.
      */
     private boolean handleReducedStatus(ClaimField field, ClaimDetails claim) {
-        return switch (field) {
-            case AssessedClaimField x -> claim.isAssessedTotalFieldAssessable();
-            default -> field.isAssessable();
-        };
+        if (field instanceof AssessedClaimField) {
+            return claim.isAssessedTotalFieldAssessable();
+        }
+        return field.isAssessable();
     }
 
     /**
@@ -71,9 +68,9 @@ public class ClaimStatusHandler {
      * Set the field status for PAID_IN_FULL outcome status.
      */
     private boolean handleAssessmentInFullStatus(ClaimField field, ClaimDetails claim) {
-        return switch (field) {
-            case AssessedClaimField x -> claim.isAssessedTotalFieldAssessable();
-            default -> field.isAssessable();
-        };
+        if (field instanceof AssessedClaimField) {
+            return claim.isAssessedTotalFieldAssessable();
+        }
+        return field.isAssessable();
     }
 }

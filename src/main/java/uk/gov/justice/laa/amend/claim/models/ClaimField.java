@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public abstract class ClaimField implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    protected String key;
+    protected final String key;
     protected Object submitted;
     protected Object calculated;
     protected Object assessed;
@@ -42,10 +42,10 @@ public abstract class ClaimField implements Serializable {
     }
 
     public ClaimFieldRow toClaimFieldRow() {
-        return switch (this) {
-            case BoltOnClaimField x -> hasSubmittedValue() ? new ClaimFieldRow(x) : null;
-            default -> new ClaimFieldRow(this);
-        };
+        if (this instanceof BoltOnClaimField x) {
+            return hasSubmittedValue() ? new ClaimFieldRow(x) : null;
+        }
+        return new ClaimFieldRow(this);
     }
 
     public abstract void applyOutcome(OutcomeType outcome);

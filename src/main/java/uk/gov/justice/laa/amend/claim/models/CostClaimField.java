@@ -3,16 +3,18 @@ package uk.gov.justice.laa.amend.claim.models;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Getter
 public class CostClaimField extends ClaimField {
 
-    protected Cost cost;
+    protected final Cost cost;
 
     @Builder
     public CostClaimField(String key, Object submitted, Object calculated, Object assessed, Cost cost) {
         super(key, submitted, calculated, assessed);
         this.assessable = true;
-        this.cost = cost;
+        this.cost = Objects.requireNonNull(cost, "Cost must not be null for CostClaimField");
     }
 
     public CostClaimField(String key, Object submitted, Object calculated, Cost cost) {
@@ -24,15 +26,17 @@ public class CostClaimField extends ClaimField {
         switch (outcome) {
             case NILLED -> setNilled();
             case REDUCED_TO_FIXED_FEE -> {
-                switch (cost) {
-                    case PROFIT_COSTS -> setAssessedToNull();
-                    default -> setAssessedToCalculated();
+                if (cost == Cost.PROFIT_COSTS) {
+                    setAssessedToNull();
+                } else {
+                    setAssessedToCalculated();
                 }
             }
             case REDUCED -> {
-                switch (cost) {
-                    case PROFIT_COSTS -> setAssessedToNull();
-                    default -> setAssessedToSubmitted();
+                if (cost == Cost.PROFIT_COSTS) {
+                    setAssessedToNull();
+                } else {
+                    setAssessedToSubmitted();
                 }
             }
             case PAID_IN_FULL -> setAssessedToSubmitted();

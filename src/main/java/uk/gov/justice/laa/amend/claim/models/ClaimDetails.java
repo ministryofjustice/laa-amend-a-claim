@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
@@ -51,7 +52,7 @@ public abstract class ClaimDetails extends Claim {
 
     public abstract AssessmentPost toAssessment(AssessmentMapper mapper, String userId);
 
-    public Stream<ClaimField> getClaimFields() {
+    public Stream<@NotNull ClaimField> getClaimFields() {
         return Stream.concat(
                 commonClaimFields(),
                 specificClaimFields()
