@@ -127,11 +127,6 @@ env:
       secretKeyRef:
         name: laa-amend-a-claim-claims-api-token
         key: CLAIMS_TOKEN
-  - name: DB_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: laa-amend-a-claim-claims-db-password
-        key: DB_PASSWORD
   - name: REDIS_URL
     valueFrom:
       secretKeyRef:
