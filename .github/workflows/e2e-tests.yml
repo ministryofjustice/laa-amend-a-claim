@@ -16,8 +16,8 @@ on:
       build_runner_image:
         required: false
         type: boolean
-        default: true
-        description: 'Build new runner image (set to true to rebuild)'
+        default: false
+        description: 'Build new runner image (set to false to rebuild)'
       claims_api_image_tag:
         required: false
         type: string
