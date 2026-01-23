@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -26,12 +25,12 @@ import uk.gov.justice.laa.amend.claim.base.RedisSetup;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Import(SecurityConfigIntegrationTest.TestControllerConfig.class)
 public class SecurityConfigIntegrationTest extends RedisSetup {
 
     @Autowired
@@ -81,7 +80,7 @@ public class SecurityConfigIntegrationTest extends RedisSetup {
     void unauthenticatedUsersRedirectToLogin() throws Exception {
         mockMvc.perform(get("/test-only"))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrlPattern("**/login"));
+            .andExpect(redirectedUrl("/login"));
     }
 
     @Test

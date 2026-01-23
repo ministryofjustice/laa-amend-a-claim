@@ -24,6 +24,7 @@ public class UserRetrievalService {
 
     private final OAuth2AuthorizedClientManager authorizedClientManager;
 
+    // TODO - create client class for MicrosoftGraphApi
     private Mono<MicrosoftApiUser> callMicrosoftGraphApi(String upn, String token) {
         return webClientBuilder.baseUrl("https://graph.microsoft.com/v1.0")
             .build()
