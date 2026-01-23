@@ -52,7 +52,7 @@
                                 <form th:action="@{/logout}" method="post" th:hidden="true" name="logoutForm">
                                     <input type="submit" value="Logout" />
                                 </form>
-                                <a class="moj-header__navigation-link" href="#" onclick="document.logoutForm.submit()" th:text="#{service.signOut}"></a>
+                                <a class="moj-header__navigation-link" href="#" data-module="logout-link" th:text="#{service.signOut}"></a>
                             </li>
                         </ul>
                     </nav>

@@ -60,7 +60,20 @@ public class SecurityConfig {
                         )
                 )
 
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny));
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(
+                                "default-src 'self'; "
+                                + "script-src 'self'; "
+                                + "style-src 'self'; "
+                                + "img-src 'self' data:; "
+                                + "font-src 'self'; "
+                                + "connect-src 'self'; "
+                                + "frame-ancestors 'none'; "
+                                + "base-uri 'self'; "
+                                + "form-action 'self'; "
+                                + "upgrade-insecure-requests"
+                        )));
 
         return http.build();
     }
