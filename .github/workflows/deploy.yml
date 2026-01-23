@@ -93,6 +93,7 @@ jobs:
             --set image.tag=${IMAGE_TAG} \
             --set namespace=${KUBE_NAMESPACE} \
             --set ingress.host=${KUBE_NAMESPACE}.apps.live.cloud-platform.service.justice.gov.uk \
+            --set "ipAllowlist=${{ steps.ip-allowlist.outputs.cidrs }}" \
             --set sentryEnvironment=${SENTRY_ENV} \
             --wait \
             --timeout 5m
