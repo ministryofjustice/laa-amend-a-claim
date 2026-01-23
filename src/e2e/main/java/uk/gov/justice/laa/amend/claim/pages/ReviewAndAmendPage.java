@@ -14,6 +14,7 @@ public class ReviewAndAmendPage {
     private final Page page;
 
     private final Locator heading;
+    private final Locator backLink;
 
     private final Locator claimCostsCard;
     private final Locator totalClaimValueCard;
@@ -35,6 +36,8 @@ public class ReviewAndAmendPage {
                 AriaRole.HEADING,
                 new Page.GetByRoleOptions().setName("Review and amend")
         );
+
+        this.backLink = page.locator(".govuk-back-link");
 
         this.claimCostsCard = cardByTitle("Claim costs", page);
         this.totalClaimValueCard = cardByTitle("Total claim value", page);
@@ -130,6 +133,10 @@ public class ReviewAndAmendPage {
 
     public void discardChanges() {
         discardChangesLink.click();
+    }
+
+    public void clickBackLink() {
+        backLink.click();
     }
 
     public boolean isAssessClaimValuesVisible() {

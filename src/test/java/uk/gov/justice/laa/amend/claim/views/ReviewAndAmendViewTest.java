@@ -143,4 +143,11 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
         assertPageHasErrorSummary(doc, "profit-cost");
     }
+
+    @Test
+    void testBackLinkNavigatesToAssessmentOutcome() throws Exception {
+        Document doc = renderDocument();
+
+        assertPageHasBackLinkWithHref(doc, "/submissions/submissionId/claims/claimId/assessment-outcome");
+    }
 }
