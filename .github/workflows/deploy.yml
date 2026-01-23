@@ -85,20 +85,22 @@ jobs:
           kube-sa: deploy-user
 
       - name: Deploy to Cloud Platform with Helm
-        run: |
-          helm upgrade --install laa-amend-a-claim .helm/laa-amend-a-claim \
-            --namespace ${KUBE_NAMESPACE} \
-            --values .helm/laa-amend-a-claim/${{ inputs.values_file }} \
-            --set image.repository=${REGISTRY}/${REPOSITORY} \
-            --set image.tag=${IMAGE_TAG} \
-            --set namespace=${KUBE_NAMESPACE} \
-            --set ingress.host=${KUBE_NAMESPACE}.apps.live.cloud-platform.service.justice.gov.uk \
-            --set sentryEnvironment=${SENTRY_ENV} \
-            --wait \
-            --timeout 5m
         env:
           REGISTRY: ${{ steps.ecr-auth.outputs.image_registry }}
           REPOSITORY: ${{ vars.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ inputs.image_tag }}
           KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+          VALUES_FILE: ${{ inputs.values_file }}
+          SENTRY_ENV: ${{ inputs.SENTRY_ENV }}
+        run: |
+          helm upgrade --install laa-amend-a-claim .helm/laa-amend-a-claim \
+            --namespace "${KUBE_NAMESPACE}" \
+            --values ".helm/laa-amend-a-claim/${VALUES_FILE}" \
+            --set image.repository="${REGISTRY}/${REPOSITORY}" \
+            --set image.tag="${IMAGE_TAG}" \
+            --set namespace="${KUBE_NAMESPACE}" \
+            --set ingress.host="${KUBE_NAMESPACE}.apps.live.cloud-platform.service.justice.gov.uk" \
+            --set sentryEnvironment="${SENTRY_ENV}" \
+            --wait \
+            --timeout 5m

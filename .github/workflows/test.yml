@@ -147,8 +147,10 @@ jobs:
     steps:
       # Set CLAIMS_API based on use_mocks
       - name: Set CLAIMS_API
+        env:
+          USE_MOCKS: ${{ inputs.use_mocks }}
         run: |
-          if [ "${{ inputs.use_mocks }}" = "true" ]; then
+          if [ "${USE_MOCKS}" = "true" ]; then
             echo "CLAIMS_API=http://localhost:8081" >> $GITHUB_ENV
           else
             echo "CLAIMS_API=http://localhost:8082" >> $GITHUB_ENV
