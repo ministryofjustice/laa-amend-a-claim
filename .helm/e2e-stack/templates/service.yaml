@@ -1,0 +1,26 @@
+{{- if .Values.dataClaimsApi.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: e2e-data-claims-api
+  labels:
+    app: e2e-data-claims-api
+spec:
+  type: {{ .Values.dataClaimsApi.service.type }}
+  selector:
+    app: e2e-data-claims-api
+  ports:
+    - name: http
+      port: {{ .Values.dataClaimsApi.service.port }}
+      targetPort: http
+    {{- if .Values.dataClaimsApi.service.metricsPort }}
+    - name: metrics
+      port: {{ .Values.dataClaimsApi.service.metricsPort }}
+      targetPort: metrics
+    {{- end }}
+    {{- if .Values.dataClaimsApi.postgres.enabled }}
+    - name: postgres
+      port: 5435
+      targetPort: postgres
+    {{- end }}
+{{- end }}
