@@ -27,13 +27,8 @@ jobs:
     with:
       branch: ${{ github.ref_name }}
       environment: dev
-      use_mocks: false
+      amend_a_claim_image_tag: ${{ needs.build.outputs.image_tag }}
     secrets:
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      CLAIMS_TOKEN: ${{ secrets.CLAIMS_TOKEN }}
-      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       P_USERNAME: ${{ secrets.P_USERNAME }}
       P_PASSWORD: ${{ secrets.P_PASSWORD }}
       P_MFA_SECRET: ${{ secrets.P_MFA_SECRET }}
@@ -42,6 +37,8 @@ jobs:
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
+      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+      DATA_CLAIMS_API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
 
   security:
     name: Security
