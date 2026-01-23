@@ -17,9 +17,10 @@ public class WireMockSetup {
 
     @BeforeAll
     static void setupWireMock() {
-        wireMockServer = new WireMockServer(8089); // pick any port
+        int port = 8089;
+        wireMockServer = new WireMockServer(port);
         wireMockServer.start();
-        WireMock.configureFor("localhost", 8089);
+        WireMock.configureFor("localhost", port);
     }
 
     @AfterAll
