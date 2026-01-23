@@ -88,7 +88,7 @@ jobs:
         run: |
           helm upgrade --install laa-amend-a-claim .helm/laa-amend-a-claim \
             --namespace ${KUBE_NAMESPACE} \
-            --values .helm/laa-amend-a-claim/${{ inputs.values_file }} \
+            --values .helm/laa-amend-a-claim/${INPUT_VALUES} \
             --set image.repository=${REGISTRY}/${REPOSITORY} \
             --set image.tag=${IMAGE_TAG} \
             --set namespace=${KUBE_NAMESPACE} \
@@ -102,3 +102,4 @@ jobs:
           IMAGE_TAG: ${{ inputs.image_tag }}
           KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+          INPUT_VALUES: ${{ inputs.values_file }}
