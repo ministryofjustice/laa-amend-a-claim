@@ -13,9 +13,6 @@ on:
       amend_a_claim_image_tag:
         required: true
         type: string
-      image_tag:
-        required: true
-        type: string
       build_runner_image:
         required: false
         type: boolean
@@ -130,7 +127,7 @@ jobs:
            --set dataClaimsApi.postgres.password=${E2E_DB_PASSWORD} \
            --set laaAmendAClaim.enabled=true \
            --set laaAmendAClaim.image.repository=${REGISTRY}/${REPOSITORY} \
-           --set laaAmendAClaim.image.tag=${API_IMAGE_TAG} \
+           --set laaAmendAClaim.image.tag=${IMAGE_TAG} \
            --set redis.enabled=true \
            --set githubRunner.enabled=true \
            --set githubRunner.image.repository=${REGISTRY}/${REPOSITORY} \
@@ -146,9 +143,9 @@ jobs:
         env:
           REGISTRY: ${{ steps.ecr-auth.outputs.image_registry }}
           REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ inputs.image_tag }}
+          IMAGE_TAG: ${{ inputs.amend_a_claim_image_tag }}
           API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
-          API_IMAGE_TAG: ${{ inputs.amend_a_claim_image_tag }}
+          API_IMAGE_TAG: ${{ inputs.claims_api_image_tag }}
           E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
           E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
           GITHUB_REPO: ${{ github.repository }}
