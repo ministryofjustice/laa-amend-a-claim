@@ -73,7 +73,7 @@ jobs:
 
   deploy-dev:
     name: Deploy to Dev
-    needs: [ build, test ]
+    needs: [ build ]
     uses: ./.github/workflows/deploy.yml
     with:
       branch: ${{ github.ref_name }}
