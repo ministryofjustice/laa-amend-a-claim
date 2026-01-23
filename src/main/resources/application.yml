@@ -47,6 +47,7 @@ logging:
     org.apache.http.wire: DEBUG
     org.apache.http.headers: DEBUG
     org.springframework.session: INFO
+    org.springframework.web.reactive.function.client: DEBUG
 
 ---
 spring:
