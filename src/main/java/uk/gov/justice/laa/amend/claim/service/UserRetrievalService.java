@@ -27,15 +27,17 @@ public class UserRetrievalService {
                 .principal(authentication)
                 .build();
 
-            try {
-                OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
-                if (authorizedClient != null) {
-                    String accessToken = authorizedClient.getAccessToken().getTokenValue();
-                    return client.getUser(userId, "Bearer " + accessToken).block();
-                }
-            } catch (Exception ex) {
-                log.warn("Error retrieving user {}", userId);
-                return null;
+            OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
+            if (authorizedClient != null) {
+                String accessToken = authorizedClient.getAccessToken().getTokenValue();
+                Mono<MicrosoftApiUser> user = client.getUser(userId, "Bearer " + accessToken).exchangeToMono(response -> {
+                    if (response.statusCode().equals(HttpStatus.OK)) {
+                        return response.bodyToMono(MicrosoftApiUser.class);
+                    }
+                    else {
+                        return response.createError();
+                    }
+                });
             }
         }
         return null;
