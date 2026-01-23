@@ -28,18 +28,12 @@ public class UserRetrievalService {
                 .build();
 
             OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
-            if (authorizedClient != null) {
-                String accessToken = authorizedClient.getAccessToken().getTokenValue();
-                Mono<MicrosoftApiUser> user = client.getUser(userId, "Bearer " + accessToken).exchangeToMono(response -> {
-                    if (response.statusCode().equals(HttpStatus.OK)) {
-                        return response.bodyToMono(MicrosoftApiUser.class);
-                    }
-                    else {
-                        return response.createError();
-                    }
-                });
+            if (authorizedClient == null) {
+                throw new RuntimeException("Failed to authorize with Entra ID for user: " + userId);
             }
+            String accessToken = authorizedClient.getAccessToken().getTokenValue();
+            return client.getUser(userId, "Bearer " + accessToken).block();
         }
-        return null;
+        throw new IllegalArgumentException("Invalid authentication or missing userId");
     }
 }
