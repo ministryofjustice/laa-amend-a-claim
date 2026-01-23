@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
@@ -25,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.AUTHENTICATED;
 import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PUBLIC_PATHS;
 
 @Profile("!local & !ephemeral")
@@ -33,21 +33,17 @@ import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.P
 @EnableWebSecurity
 public class SecurityConfig {
 
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, ClientRegistrationRepository repository) throws Exception {
-
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(PUBLIC_PATHS).permitAll()
                 .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2
-                        .authorizationEndpoint(ae -> ae.authorizationRequestResolver(forceLoginAuthorizationResolver(repository)))
-                        .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
-                        .successHandler((request, response, authentication) -> {
-                            request.getSession(true).setAttribute(AUTHENTICATED, true);
-                            response.sendRedirect("/");
-                        }))
+                    .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
+                    .successHandler((request, response, authentication) -> {
+                        response.sendRedirect("/");
+                    }))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/logout-success")
@@ -56,19 +52,17 @@ public class SecurityConfig {
                         .deleteCookies("SESSION")
                 )
                 .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .invalidSessionUrl("/logout-success?message=expired")
-                        .maximumSessions(1)
-                        .expiredUrl("/logout-success?message=expired")
+                        .sessionConcurrency(concurrency -> concurrency
+                                .maximumSessions(1)
+                                .expiredUrl("/logout-success?message=expired")
+                        )
                 )
 
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny));
 
         return http.build();
-    }
-
-    @Bean
-    public ForceLoginAuthorizationResolver forceLoginAuthorizationResolver(ClientRegistrationRepository repository) {
-        return new ForceLoginAuthorizationResolver(repository, "/oauth2/authorization", "login");
     }
 
     @Bean

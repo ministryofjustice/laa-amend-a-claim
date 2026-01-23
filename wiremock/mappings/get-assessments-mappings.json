@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPattern":  "/api/v0/claims/(.*)/assessments"
+    "urlPattern":  "/api/v1/claims/(.*)/assessments"
   },
   "response": {
     "status": 200,

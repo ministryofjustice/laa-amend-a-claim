@@ -49,7 +49,7 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.branch }}
 
@@ -69,14 +69,14 @@ jobs:
 
       - name: Authenticate to ECR
         id: ecr-auth
-        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/ecr-auth@main
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/ecr-auth@768f673017edbb793cf052fa159c272d6c1f9177
         with:
           ecr_region: ${{ inputs.aws_region }}
           ecr_role: ${{ secrets.ECR_ROLE_TO_ASSUME }}
           role-session-name: ${{ github.run_id }}-deploy
 
       - name: Authenticate to Kubernetes Cluster
-        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@main
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@768f673017edbb793cf052fa159c272d6c1f9177
         with:
           kube-cert: ${{ secrets.KUBE_CERT }}
           kube-token: ${{ secrets.KUBE_TOKEN }}

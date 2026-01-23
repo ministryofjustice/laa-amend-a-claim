@@ -23,7 +23,12 @@
                 </p>
             </div>
 
-            <a th:if="${showBackLink}"
+            <a th:if="${showBackLink and backLinkUrl != null}"
+               th:href="${backLinkUrl}"
+               class="govuk-back-link"
+               th:text="#{service.back}">
+            </a>
+            <a th:if="${showBackLink and backLinkUrl == null}"
                href="#"
                onclick="window.history.go(-1); return false;"
                class="govuk-back-link"

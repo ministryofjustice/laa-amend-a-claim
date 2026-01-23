@@ -11,6 +11,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
+import uk.gov.justice.laa.amend.claim.pages.AssessTravelCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
@@ -202,5 +203,36 @@ public class ReviewAndAmendTest extends BaseTest {
 
         assertTrue(page.url().contains("/review"));
         review.assertSubmitTotalsRequiredErrors();
+    }
+
+    @Test
+    @DisplayName("Review & amend back link navigates to assessment outcome page (not browser history)")
+    void backLinkNavigatesToAssessmentOutcome() {
+        navigateToReviewAndAmend(
+            CRIME_PROVIDER_ACCOUNT,
+            CRIME_MONTH,
+            CRIME_YEAR,
+            CRIME_UFN
+        );
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+        review.waitForPage();
+
+        // Navigate to a change page to add entries to browser history
+        review.clickChangeTravelCosts();
+        AssessTravelCostsPage travelCosts = new AssessTravelCostsPage(page);
+        travelCosts.waitForPage();
+
+        // Cancel to return to review page
+        travelCosts.cancel();
+        review.waitForPage();
+
+        // Click back link which should go to assessment-outcome, not travel-costs
+        review.clickBackLink();
+
+        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
+        outcome.waitForPage();
+
+        assertTrue(page.url().contains("/assessment-outcome"));
     }
 }

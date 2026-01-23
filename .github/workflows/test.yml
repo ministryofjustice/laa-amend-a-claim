@@ -58,18 +58,18 @@ jobs:
     steps:
       # Checkout and setup
       - name: Checkout Source Code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.branch }}
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v5.2.0
         with:
           java-version: 21
           distribution: corretto
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5.0.0
 
       # Run tests
       - name: Run unit tests
@@ -86,7 +86,7 @@ jobs:
       # Upload artifacts
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: test-results
           path: build/test-results
@@ -94,7 +94,7 @@ jobs:
 
       - name: Upload checkstyle report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: checkstyle-report
           path: build/reports/checkstyle
@@ -102,7 +102,7 @@ jobs:
 
       - name: Upload test report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: test-report
           path: build/reports/tests
@@ -110,7 +110,7 @@ jobs:
 
       - name: Upload jacoco coverage report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: jacoco-coverage-report
           path: build/reports/jacoco
@@ -158,18 +158,18 @@ jobs:
 
       # Checkout and setup
       - name: Checkout Source Code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6.0.1
         with:
           ref: ${{ inputs.branch }}
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v5.2.0
         with:
           java-version: 21
           distribution: corretto
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5.0.0
 
       # BUILD JAR
       - name: Build JAR
@@ -189,7 +189,7 @@ jobs:
       # Kubernetes setup (only if not using mocks)
       - name: Set up kubectl
         if: ${{ inputs.use_mocks == false }}
-        uses: azure/setup-kubectl@v4
+        uses: azure/setup-kubectl@v4.0.1
         with:
           version: v1.28.0
 
@@ -242,7 +242,7 @@ jobs:
 
       - name: Upload Allure Report artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: allure-report
           path: src/e2e/build/allure-report
