@@ -54,7 +54,7 @@ jobs:
       runner_image_tag: ${{ steps.build.outputs.tag }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
 
@@ -89,7 +89,7 @@ jobs:
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
 
@@ -166,7 +166,7 @@ jobs:
       E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6
 
       - name: Wait for Services
         run: |

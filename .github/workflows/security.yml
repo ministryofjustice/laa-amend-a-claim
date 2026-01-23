@@ -39,7 +39,7 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
 
@@ -51,7 +51,7 @@ jobs:
 
       - name: Upload result to GitHub Code Scanning
         if: always()
-        uses: github/codeql-action/upload-sarif@7434149006143a4d75b82a2f411ef15b03ccc2d7
+        uses: github/codeql-action/upload-sarif@55252c7a3a47fea1e0fdd923b269f4be8a5ad9a0
         with:
           sarif_file: snyk-app.sarif
 
@@ -69,7 +69,7 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
 

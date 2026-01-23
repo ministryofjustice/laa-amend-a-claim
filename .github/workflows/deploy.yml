@@ -49,7 +49,7 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.branch }}
 
