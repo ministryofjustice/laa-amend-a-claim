@@ -1,11 +1,10 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
-import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.base.WireMockSetup;
 
@@ -18,9 +17,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@WireMockTest(httpPort = 8089)
-@ActiveProfiles("local")
 class HomePageControllerIntegrationTest extends WireMockSetup {
+
+    @BeforeEach
+    void setUp() {
+        setupGetClaimsStub();
+    }
 
     @Autowired
     private MockMvc mockMvc;

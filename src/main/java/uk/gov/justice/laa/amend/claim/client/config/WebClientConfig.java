@@ -11,10 +11,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.amend.claim.client.MicrosoftGraphApiClient;
 
 @Slf4j
 @Configuration
-@EnableConfigurationProperties({ClaimsApiProperties.class})
+@EnableConfigurationProperties({ClaimsApiProperties.class, MicrosoftGraphApiProperties.class})
 public class WebClientConfig {
 
     @Bean
@@ -39,5 +40,15 @@ public class WebClientConfig {
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
 
         return factory.createClient(ClaimsApiClient.class);
+    }
+
+    @Bean
+    public MicrosoftGraphApiClient microsoftGraphApiClient(WebClient.Builder webClientBuilder, MicrosoftGraphApiProperties properties) {
+        WebClient webClient = webClientBuilder
+            .baseUrl(properties.getUrl())
+            .build();
+        WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
+        return factory.createClient(MicrosoftGraphApiClient.class);
     }
 }

@@ -1,17 +1,34 @@
 package uk.gov.justice.laa.amend.claim.base;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 
 public class WireMockSetup {
 
-    @BeforeEach
-    void setUp() {
-        WireMock.reset();
-        setupClaimsApiStub();
+    private static WireMockServer wireMockServer;
+
+    @BeforeAll
+    static void setupWireMock() {
+        wireMockServer = new WireMockServer(8089); // pick any port
+        wireMockServer.start();
+        WireMock.configureFor("localhost", 8089);
     }
 
-    private static final String CLAIMS_RESPONSE = """
+    @AfterAll
+    static void stopWireMock() {
+        wireMockServer.stop();
+    }
+
+    public void setupGetClaimsStub() {
+        String response = """
             {
                 "claims": [
                     {
@@ -28,12 +45,10 @@ public class WireMockSetup {
                 "totalPages": 1,
                 "pageNumber": 0
             }""";
-
-    private void setupClaimsApiStub() {
-        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/api/v1/claims.*"))
-            .willReturn(WireMock.aResponse()
+        stubFor(get(urlPathMatching("/api/v1/claims.*"))
+            .willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody(CLAIMS_RESPONSE)));
+                .withBody(response)));
     }
 }
