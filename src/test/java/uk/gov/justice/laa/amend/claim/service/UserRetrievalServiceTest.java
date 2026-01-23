@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,20 +69,14 @@ public class UserRetrievalServiceTest {
         // Mock WebClient chain
         when(microsoftGraphApiClient.getUser(anyString(), anyString())).thenReturn(Mono.just(user));
 
-        /*String json = """
-            {
-              "id": "test-user",
-              "displayName": "Dummy User",
-              "userPrincipalName": "test-user@example.com"
-            }
-            """;*/
-
         // Act
         MicrosoftApiUser result = userRetrievalService.getMicrosoftApiUser(authentication, userId);
 
         // Assert
         assertNotNull(result);
         assertEquals("Dummy User", result.getDisplayName());
+
+        verify(microsoftGraphApiClient).getUser("test-user", "Bearer dummy-token");
     }
 
     @Test
