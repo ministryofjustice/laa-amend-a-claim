@@ -13,6 +13,9 @@ on:
       amend_a_claim_image_tag:
         required: true
         type: string
+      image_tag:
+        required: true
+        type: string
       build_runner_image:
         required: false
         type: boolean

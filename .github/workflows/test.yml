@@ -13,6 +13,9 @@ on:
       amend_a_claim_image_tag:
         required: true
         type: string
+      image_tag:
+        required: true
+        type: string
     secrets:
       P_USERNAME:
         required: true
@@ -122,6 +125,7 @@ jobs:
       environment: ${{ inputs.environment }}
       amend_a_claim_image_tag: ${{ inputs.amend_a_claim_image_tag }}
       build_runner_image: false
+      image_tag: ${{ inputs.image_tag }}
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       DATA_CLAIMS_API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
