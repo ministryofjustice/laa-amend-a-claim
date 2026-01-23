@@ -2,7 +2,7 @@
   "priority": 5,
   "request": {
     "method": "POST",
-    "urlPattern": "/api/v0/claims/(.*)/assessments"
+    "urlPattern": "/api/v1/claims/(.*)/assessments"
   },
   "response": {
     "status": 201,

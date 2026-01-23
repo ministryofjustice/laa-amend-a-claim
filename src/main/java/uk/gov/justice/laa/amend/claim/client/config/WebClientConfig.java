@@ -11,35 +11,44 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.amend.claim.client.MicrosoftGraphApiClient;
 
 @Slf4j
 @Configuration
-@EnableConfigurationProperties({ClaimsApiProperties.class})
+@EnableConfigurationProperties({ClaimsApiProperties.class, MicrosoftGraphApiProperties.class})
 public class WebClientConfig {
 
+    @Bean
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
+    }
 
     @Bean
-    public ClaimsApiClient claimsApiClient(final ClaimsApiProperties properties) {
-        final WebClient webClient = createWebClient(properties);
-        final WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
+    public ClaimsApiClient claimsApiClient(WebClient.Builder webClientBuilder, ClaimsApiProperties properties) {
+        ExchangeStrategies strategies = ExchangeStrategies
+            .builder()
+            .codecs(ClientCodecConfigurer::defaultCodecs)
+            .build();
+
+        WebClient webClient = webClientBuilder
+            .baseUrl(properties.getUrl())
+            .defaultHeader(HttpHeaders.AUTHORIZATION, properties.getAccessToken())
+            .exchangeStrategies(strategies)
+            .build();
+
+        WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
 
         return factory.createClient(ClaimsApiClient.class);
     }
 
-    /**
-     * Creates a WebClient instance using the provided configuration properties.
-     *
-     * @param apiProperties The configuration properties for the API.
-     * @return A WebClient instance.
-     */
-    public static WebClient createWebClient(final ClaimsApiProperties apiProperties) {
-        final ExchangeStrategies strategies =
-                ExchangeStrategies.builder().codecs(ClientCodecConfigurer::defaultCodecs).build();
-        return WebClient.builder()
-                .baseUrl(apiProperties.getUrl())
-                .defaultHeader(HttpHeaders.AUTHORIZATION, apiProperties.getAccessToken())
-                .exchangeStrategies(strategies)
-                .build();
+    @Bean
+    public MicrosoftGraphApiClient microsoftGraphApiClient(WebClient.Builder webClientBuilder, MicrosoftGraphApiProperties properties) {
+        WebClient webClient = webClientBuilder
+            .baseUrl(properties.getUrl())
+            .build();
+        WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
+        return factory.createClient(MicrosoftGraphApiClient.class);
     }
 }

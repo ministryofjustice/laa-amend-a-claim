@@ -29,6 +29,8 @@ sentry:
 claims-api:
   url: ${CLAIMS_API}
   access-token: ${CLAIMS_TOKEN}
+microsoft-graph-api:
+  url: https://graph.microsoft.com
 search:
   sort-enabled: true
 app:
