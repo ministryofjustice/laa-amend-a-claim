@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
@@ -36,6 +37,20 @@ public class LocalSecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
             .csrf(AbstractHttpConfigurer::disable)
+            .headers(headers -> headers
+                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                    .contentSecurityPolicy(csp -> csp.policyDirectives(
+                            "default-src 'self'; "
+                            + "script-src 'self'; "
+                            + "style-src 'self'; "
+                            + "img-src 'self' data:; "
+                            + "font-src 'self'; "
+                            + "connect-src 'self'; "
+                            + "frame-ancestors 'none'; "
+                            + "base-uri 'self'; "
+                            + "form-action 'self'; "
+                            + "upgrade-insecure-requests"
+                    )))
             .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class);
         return http.build();
     }
