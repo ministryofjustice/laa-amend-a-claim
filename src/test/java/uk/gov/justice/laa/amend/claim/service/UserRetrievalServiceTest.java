@@ -95,7 +95,7 @@ public class UserRetrievalServiceTest {
     }
 
     @Test
-    void testGetMicrosoftApiUserThrowsException() {
+    void testGetMicrosoftApiUserWhenClientManagerThrowsException() {
         // Arrange
         OAuth2AuthenticationToken authentication = mock(OAuth2AuthenticationToken.class);
         when(authentication.getAuthorizedClientRegistrationId()).thenReturn("test");
@@ -107,6 +107,84 @@ public class UserRetrievalServiceTest {
 
         // Assert
         assertNull(result);
+    }
+
+    @Test
+    void testGetMicrosoftApiUserWhenClientThrowsException() {
+        // Arrange
+        String userId = "test-user";
+        String tokenValue = "dummy-token";
+
+        MicrosoftApiUser user = new MicrosoftApiUser(userId, "Dummy User");
+
+        // Mock OAuth2AuthorizedClient
+        OAuth2AuthorizedClient client = new OAuth2AuthorizedClient(
+            ClientRegistration.withRegistrationId("test")
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .clientId("client-id")
+                .authorizationUri("https://example.com/auth")
+                .tokenUri("https://example.com/token")
+                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+                .build(),
+            "principalName",
+            new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, tokenValue, Instant.now(), Instant.now().plusSeconds(3600))
+        );
+
+        when(authorizedClientManager.authorize(any())).thenReturn(client);
+
+        // Mock Authentication
+        OAuth2AuthenticationToken authentication = mock(OAuth2AuthenticationToken.class);
+        when(authentication.getAuthorizedClientRegistrationId()).thenReturn("test");
+
+        // Mock WebClient chain
+        when(microsoftGraphApiClient.getUser(anyString(), anyString())).thenReturn(Mono.error(new Exception("Error")));
+
+        // Act
+        MicrosoftApiUser result = userRetrievalService.getMicrosoftApiUser(authentication, userId);
+
+        // Assert
+        assertNull(result);
+
+        verify(microsoftGraphApiClient).getUser("test-user", "Bearer dummy-token");
+    }
+
+    @Test
+    void testGetMicrosoftApiUserWhenClientReturnsEmptyResponse() {
+        // Arrange
+        String userId = "test-user";
+        String tokenValue = "dummy-token";
+
+        MicrosoftApiUser user = new MicrosoftApiUser(userId, "Dummy User");
+
+        // Mock OAuth2AuthorizedClient
+        OAuth2AuthorizedClient client = new OAuth2AuthorizedClient(
+            ClientRegistration.withRegistrationId("test")
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .clientId("client-id")
+                .authorizationUri("https://example.com/auth")
+                .tokenUri("https://example.com/token")
+                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+                .build(),
+            "principalName",
+            new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, tokenValue, Instant.now(), Instant.now().plusSeconds(3600))
+        );
+
+        when(authorizedClientManager.authorize(any())).thenReturn(client);
+
+        // Mock Authentication
+        OAuth2AuthenticationToken authentication = mock(OAuth2AuthenticationToken.class);
+        when(authentication.getAuthorizedClientRegistrationId()).thenReturn("test");
+
+        // Mock WebClient chain
+        when(microsoftGraphApiClient.getUser(anyString(), anyString())).thenReturn(Mono.empty());
+
+        // Act
+        MicrosoftApiUser result = userRetrievalService.getMicrosoftApiUser(authentication, userId);
+
+        // Assert
+        assertNull(result);
+
+        verify(microsoftGraphApiClient).getUser("test-user", "Bearer dummy-token");
     }
 }
 
