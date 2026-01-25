@@ -97,7 +97,7 @@ jobs:
     runs-on: [self-hosted, abc-e2e]
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.2
       
       - name: Run E2E Tests
         run: |
