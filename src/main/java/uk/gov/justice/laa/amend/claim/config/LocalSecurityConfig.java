@@ -18,9 +18,6 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -39,39 +36,13 @@ public class LocalSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChainLocal(final HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
             .csrf(AbstractHttpConfigurer::disable)
             .headers(headers -> headers
                     .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                    .contentSecurityPolicy(csp -> csp.policyDirectives(
-                            "default-src 'self'; "
-                            + "script-src 'self'; "
-                            + "style-src 'self'; "
-                            + "img-src 'self' data:; "
-                            + "font-src 'self'; "
-                            + "connect-src 'self'; "
-                            + "frame-ancestors 'none'; "
-                            + "base-uri 'self'; "
-                            + "form-action 'self'; "
-                            + "upgrade-insecure-requests"
-                    )))
+                    )
             .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class);
         return http.build();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of());
-        configuration.setAllowedMethods(List.of("GET", "POST"));
-        configuration.setAllowedHeaders(List.of());
-        configuration.setAllowCredentials(false);
-        configuration.setMaxAge(0L);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 
     @Bean
