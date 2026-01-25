@@ -18,60 +18,34 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
-@Profile({"local", "ephemeral"})
+/**
+ * Security configuration for E2E testing environments.
+ * This configuration disables CSP to allow Playwright tests to interact with the UI without
+ * Content Security Policy restrictions interfering with test automation.
+ */
+@Profile("e2e")
 @Configuration
 @EnableWebSecurity
-public class LocalSecurityConfig {
+public class E2eSecurityConfig {
 
     public static String userId = "dummy-oid-12345";
 
     @Bean
-    public SecurityFilterChain securityFilterChainLocal(final HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChainE2e(final HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
             .csrf(AbstractHttpConfigurer::disable)
             .headers(headers -> headers
-                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                    .contentSecurityPolicy(csp -> csp.policyDirectives(
-                            "default-src 'self'; "
-                            + "script-src 'self'; "
-                            + "style-src 'self'; "
-                            + "img-src 'self' data:; "
-                            + "font-src 'self'; "
-                            + "connect-src 'self'; "
-                            + "frame-ancestors 'none'; "
-                            + "base-uri 'self'; "
-                            + "form-action 'self'; "
-                            + "upgrade-insecure-requests"
-                    )))
+                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny))
             .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class);
         return http.build();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of());
-        configuration.setAllowedMethods(List.of("GET", "POST"));
-        configuration.setAllowedHeaders(List.of());
-        configuration.setAllowCredentials(false);
-        configuration.setMaxAge(0L);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 
     @Bean
@@ -86,12 +60,12 @@ public class LocalSecurityConfig {
 
                 Map<String, Object> claims = Map.of(
                     "oid", userId,
-                    "email", "dummy-email@example.com",
-                    "name", "Dummy Name"
+                    "email", "e2e-test@example.com",
+                    "name", "E2E Test User"
                 );
 
                 OidcIdToken token = new OidcIdToken(
-                    "dummy-token",
+                    "e2e-test-token",
                     Instant.now(),
                     Instant.now().plusSeconds(3600),
                     claims
@@ -106,7 +80,7 @@ public class LocalSecurityConfig {
                 OAuth2AuthenticationToken oauthToken = new OAuth2AuthenticationToken(
                         oidcUser,
                         oidcUser.getAuthorities(),
-                        "test" // registrationId
+                        "test"
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(oauthToken);
