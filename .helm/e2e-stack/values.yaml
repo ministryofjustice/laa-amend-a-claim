@@ -1,0 +1,241 @@
+# Default values for data-claims-api.
+# Sidecar PostgreSQL with internal-only access
+# No ingress or external access required
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 999
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 999
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  seccompProfile:
+    type: RuntimeDefault
+  capabilities:
+    drop: ["ALL"]
+
+livenessProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: http
+  initialDelaySeconds: 60
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /actuator/health/readiness
+    port: http
+  initialDelaySeconds: 60
+  periodSeconds: 10
+
+dataClaimsApi:
+  image:
+    repository: ""
+    tag: ""
+    pullPolicy: IfNotPresent
+  enabled: true
+  springProfile: "application"
+  service:
+    type: ClusterIP
+    port: 8082
+    metricsPort: 8083
+  # Embedded PostgreSQL as sidecar container
+  postgres:
+    enabled: true
+    user: ""
+    password: ""
+    database: laa_data_claims_api_dev
+    image: postgres
+    imageTag: "17"
+    pullPolicy: IfNotPresent
+    persistence:
+      enabled: false
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
+        memory: "512Mi"
+        cpu: "250m"
+  env:
+    - name: SERVER_PORT
+      value: "8082"
+    - name: SERVER_ADDRESS
+      value: "0.0.0.0"
+    - name: MANAGEMENT_SERVER_PORT
+      value: "8082"
+    - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+      value: "health,info"
+    - name: MANAGEMENT_ENDPOINTS_WEB_BASEPATH
+      value: "/actuator"
+    - name: SPRING_FLYWAY_ENABLED
+      value: "true"
+    - name: SPRING_FLYWAY_BASELINE_ON_MIGRATE
+      value: "true"
+    - name: SPRING_FLYWAY_BASELINE_VERSION
+      value: "1"
+    - name: SPRING_FLYWAY_VALIDATE_ON_MIGRATE
+      value: "true"
+    - name: AWS_REGION
+      value: "us-east-1"
+    - name: SPRING_DATASOURCE_URL
+      value: "jdbc:postgresql://localhost:5435/laa_data_claims_api_dev?connectTimeout=10&socketTimeout=30&loginTimeout=30"
+    - name: AWS_ACCESS_KEY_ID
+      value: "dummy-access-key"
+    - name: AWS_SECRET_ACCESS_KEY
+      value: "dummy-access-key"
+    - name: AWS_ENDPOINT_URL
+      value: "http://host.docker.internal:4566"
+    - name: AWS_SQS_ENDPOINT
+      value: "http://host.docker.internal:4566"
+  resources: {}
+
+# Redis for laa-amend-a-claim session/cache
+redis:
+  image: redis
+  imageTag: "7-alpine"
+  pullPolicy: IfNotPresent
+  port: 6380
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
+
+# LAA Amend a Claim Spring Boot Application
+laaAmendAClaim:
+  enabled: true
+  image:
+    repository: ""
+    tag: ""
+    pullPolicy: IfNotPresent
+  springProfile: "e2e"
+  service:
+    type: ClusterIP
+    port: 8084
+  readinessProbe:
+    enabled: true
+    type: tcp  # or "http"
+    path: /actuator/health
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    failureThreshold: 3
+  livenessProbe:
+    enabled: false
+    type: tcp  # or "http"
+    path: /actuator/health
+    initialDelaySeconds: 60
+    periodSeconds: 15
+    failureThreshold: 3
+  env:
+    - name: SERVER_PORT
+      value: "8084"
+    - name: SERVER_ADDRESS
+      value: "0.0.0.0"
+    - name: MANAGEMENT_SERVER_PORT
+      value: "8084"
+    - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+      value: "health,info"
+    - name: MANAGEMENT_ENDPOINTS_WEB_BASEPATH
+      value: "/actuator"
+    - name: SPRING_DATA_REDIS_HOST
+      value: "localhost"
+    - name: SPRING_DATA_REDIS_PORT
+      value: "6380"
+    - name: REDIS_URL
+      value: "redis://localhost:6380"
+    - name: SPRING_DATA_REDIS_TIMEOUT
+      value: "10000"
+    - name: SPRING_DATA_REDIS_CONNECT_TIMEOUT
+      value: "10000"
+    - name: SPRING_REDIS_LETTUCE_POOL_ENABLED
+      value: "true"
+    - name: AZURE_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-azure-client-id
+          key: AZURE_CLIENT_ID
+    - name: AZURE_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-azure-client-secret
+          key: AZURE_CLIENT_SECRET
+    - name: AZURE_TENANT_ID
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-azure-tenant
+          key: AZURE_TENANT_ID
+    - name: BASE_URL_HOMEPAGE
+      value: http://localhost:8084
+    - name: SENTRY_DSN
+      value: ""
+    - name: CLAIMS_API
+      value: http://e2e-data-claims-api:8082
+    - name: CLAIMS_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-e2e-claims-api-token
+          key: claims_token
+    - name: FEEDBACK_URL
+      valueFrom:
+        configMapKeyRef:
+          name: urls
+          key: feedback
+    - name: LAA_URL
+      valueFrom:
+        configMapKeyRef:
+          name: urls
+          key: laa
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+
+# GitHub Self-Hosted Runner for E2E Tests
+githubRunner:
+  enabled: false
+  replicas: 1
+  image:
+    repository: ""
+    tag: ""
+    pullPolicy: Always  # Always pull to get latest image even if tag unchanged
+  env:
+    - name: GITHUB_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-e2e-github-token
+          key: token
+    - name: GITHUB_REPOSITORY
+      value: "ministryofjustice/laa-amend-a-claim"
+    - name: RUNNER_NAME
+      value: "k8s-e2e-runner"
+    - name: RUNNER_LABELS
+      value: "self-hosted,linux,aabc-e2e"
+    - name: UI_BASE_URL
+      value: "http://e2e-amend-a-claim:8084"
+    - name: API_BASE
+      value: "http://e2e-data-claims-api:8082"
+    - name: HEADLESS
+      value: "true"
+    - name: BROWSER
+      value: "chromium"
+    - name: DB_CONNECTION_URL
+      value: jdbc:postgresql://e2e-data-claims-api:5435/laa_data_claims_api_dev
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+

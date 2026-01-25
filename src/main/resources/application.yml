@@ -22,7 +22,7 @@ spring:
     redis:
       url: ${REDIS_URL}
   session:
-    timeout: 15m
+    timeout: 30m
 sentry:
   dsn: ${SENTRY_DSN}
   environment: ${SENTRY_ENVIRONMENT}

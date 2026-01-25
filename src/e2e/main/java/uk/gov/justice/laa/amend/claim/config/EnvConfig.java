@@ -13,18 +13,14 @@ public class EnvConfig {
     public static String username() { return getOrDefault("P_USERNAME", "standard_user"); }
     public static String password() { return getOrDefault("P_PASSWORD", "secret_sauce"); }
     public static String browser() { return getOrDefault("BROWSER", "chromium"); }
+    public static String silasAuthenticationEnabled() { return getOrDefault("SILAS_AUTH_ENABLED", "false"); }
 
     public static boolean headless() { return Boolean.parseBoolean(getOrDefault("HEADLESS", "true")); }
     public static String apiBase() { return getOrDefault("API_BASE", "https://reqres.in"); }
     public static String mfaSecret() { return getOrDefault("P_MFA_SECRET", ""); }
 
-    public static boolean useMocks() { return Boolean.parseBoolean(getOrDefault("USE_MOCKS", "false")); }
 
-    public static String dbHost() { return getOrDefault("DB_HOST", "localhost"); }
-    public static int dbPort() {
-        return Integer.parseInt(getOrDefault("DB_PORT", "5440"));
-    }
-    public static String dbName() { return getOrDefault("DB_NAME", "postgres"); }
+    public static String dbConnectionUrl() { return getOrDefault("DB_CONNECTION_URL", "jdbc:postgresql://localhost:5432/dbname"); }
     public static String dbUser() { return getOrDefault("DB_USER", "postgres"); }
     public static String dbPassword() { return getOrDefault("DB_PASSWORD", ""); }
     public static String userId() {

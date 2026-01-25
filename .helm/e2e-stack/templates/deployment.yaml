@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: e2e-data-claims-api
+  labels:
+    app: e2e-data-claims-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: e2e-data-claims-api
+  template:
+    metadata:
+      labels:
+        app: e2e-data-claims-api
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: data-claims-api
+          securityContext:
+                 {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.dataClaimsApi.image.repository }}:{{ .Values.dataClaimsApi.image.tag }}"
+          imagePullPolicy: {{ .Values.dataClaimsApi.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8082
+            {{- if .Values.dataClaimsApi.service.metricsPort }}
+            - name: metrics
+              containerPort: 8083
+            {{- end }}
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "{{ .Values.dataClaimsApi.springProfile }}"
+            {{- range .Values.dataClaimsApi.env }}
+            - name: {{ .name }}
+              {{- if hasKey . "valueFrom" }}
+              valueFrom:
+                {{- toYaml .valueFrom | nindent 16 }}
+              {{- else }}
+              value: {{ .value | quote }}
+              {{- end }}
+            {{- end }}
+          {{- with .Values.dataClaimsApi.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          readinessProbe:
+            tcpSocket:
+              port: 8082
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+        {{- if .Values.dataClaimsApi.postgres.enabled }}
+        - name: postgres
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.dataClaimsApi.postgres.image }}:{{ .Values.dataClaimsApi.postgres.imageTag }}"
+          imagePullPolicy: {{ .Values.dataClaimsApi.postgres.pullPolicy }}
+          args:
+            - -p
+            - "5435"
+          ports:
+            - name: postgres
+              containerPort: 5435
+          env:
+            - name: POSTGRES_PORT
+              value: "5435"
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
+            - name: POSTGRES_DB
+              value: "{{ .Values.dataClaimsApi.postgres.database }}"
+            - name: POSTGRES_USER
+              value: "{{ .Values.dataClaimsApi.postgres.user }}"
+            - name: POSTGRES_PASSWORD
+              value: "{{ .Values.dataClaimsApi.postgres.password }}"
+          resources:
+            {{- toYaml .Values.dataClaimsApi.postgres.resources | nindent 12 }}
+          startupProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pg_isready -U {{ .Values.dataClaimsApi.postgres.user }} -d {{ .Values.dataClaimsApi.postgres.database }} -p 5435
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 30
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pg_isready -U {{ .Values.dataClaimsApi.postgres.user }} -d {{ .Values.dataClaimsApi.postgres.database }} -p 5435
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pg_isready -U {{ .Values.dataClaimsApi.postgres.user }} -d {{ .Values.dataClaimsApi.postgres.database }} -p 5435
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+        {{- end }}
+      {{- if .Values.dataClaimsApi.postgres.enabled }}
+      volumes:
+        - name: postgres-data
+          {{- if .Values.dataClaimsApi.postgres.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: data-claims-api-postgres-pvc
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+      {{- end }}

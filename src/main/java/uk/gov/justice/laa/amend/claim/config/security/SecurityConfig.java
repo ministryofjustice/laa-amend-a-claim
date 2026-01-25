@@ -20,6 +20,9 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +31,7 @@ import java.util.stream.Collectors;
 
 import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PUBLIC_PATHS;
 
-@Profile("!local & !ephemeral")
+@Profile("!local & !ephemeral & !e2e")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -36,6 +39,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(PUBLIC_PATHS).permitAll()
                 .anyRequest().authenticated())
@@ -60,9 +64,36 @@ public class SecurityConfig {
                         )
                 )
 
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny));
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(
+                                "default-src 'self'; "
+                                + "script-src 'self'; "
+                                + "style-src 'self'; "
+                                + "img-src 'self' data:; "
+                                + "font-src 'self'; "
+                                + "connect-src 'self'; "
+                                + "frame-ancestors 'none'; "
+                                + "base-uri 'self'; "
+                                + "form-action 'self'; "
+                                + "upgrade-insecure-requests"
+                        )));
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of());
+        configuration.setAllowedMethods(List.of("GET", "POST"));
+        configuration.setAllowedHeaders(List.of());
+        configuration.setAllowCredentials(false);
+        configuration.setMaxAge(0L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
