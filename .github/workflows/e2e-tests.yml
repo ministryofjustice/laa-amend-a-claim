@@ -1,0 +1,213 @@
+name: E2E Tests with Self-Hosted Runner
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: 'main'
+      environment:
+        required: true
+        type: string
+      amend_a_claim_image_tag:
+        required: true
+        type: string
+      build_runner_image:
+        required: false
+        type: boolean
+        default: true
+        description: 'Build new runner image (set to true to rebuild)'
+      claims_api_image_tag:
+        required: false
+        type: string
+        default: '583b286c97dacacbc270075729bc297714628554'
+        description: 'data-claims-api image tag, retrieved from github build logs (needs to update with latest version)'
+    secrets:
+      ECR_ROLE_TO_ASSUME:
+        required: true
+      DATA_CLAIMS_API_IMAGE:
+        required: true
+      KUBE_NAMESPACE:
+        required: true
+      KUBE_CLUSTER:
+        required: true
+      KUBE_TOKEN:
+        required: true
+      KUBE_CERT:
+        required: true
+      E2E_DB_PASSWORD:
+        required: true
+      E2E_DB_USER:
+         required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-runner-image:
+    name: Build E2E Runner Image
+    if: ${{ inputs.build_runner_image }}
+    runs-on: ubuntu-latest
+    outputs:
+      runner_image_tag: ${{ steps.build.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Authenticate to ECR
+        id: ecr-auth
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/ecr-auth@768f673017edbb793cf052fa159c272d6c1f9177
+        with:
+          ecr_region: ${{ vars.ECR_REGION }}
+          ecr_role: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+          role-session-name: ${{ github.run_id }}-e2e-build
+
+      - name: Build and Push Runner Image
+        id: build
+        uses: docker/build-push-action@v6.18.0
+        with:
+          context: ./scripts
+          file: ./scripts/Dockerfile.e2e-runner
+          push: true
+          tags: |
+            ${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:github-e2e-runner-latest
+
+  deploy-e2e-environment:
+    name: Deploy E2E Environment with Runner
+    needs: build-runner-image
+    if: ${{ always() && (needs.build-runner-image.result == 'success' || needs.build-runner-image.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      KUBE_CERT: ${{ secrets.KUBE_CERT }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Authenticate to ECR
+        id: ecr-auth
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/ecr-auth@768f673017edbb793cf052fa159c272d6c1f9177
+        with:
+          ecr_region: ${{ vars.ECR_REGION }}
+          ecr_role: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+          role-session-name: ${{ github.run_id }}-e2e-deploy
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4.0.1
+        with:
+          version: v1.28.0
+
+      - name: Configure kubectl
+        run: |
+          echo "${KUBE_CERT}" > ca.crt
+          kubectl config set-cluster ${KUBE_CLUSTER} --certificate-authority=./ca.crt --server=https://${KUBE_CLUSTER}
+          kubectl config set-credentials deploy-user --token=${KUBE_TOKEN}
+          kubectl config set-context ${KUBE_CLUSTER} --cluster=${KUBE_CLUSTER} --user=deploy-user --namespace=${KUBE_NAMESPACE}
+          kubectl config use-context ${KUBE_CLUSTER}
+
+      - name: Deploy to Cloud Platform with Helm
+        run: |
+          helm upgrade --install e2e-stack ./.helm/e2e-stack \
+           --namespace ${KUBE_NAMESPACE} \
+           --values .helm/e2e-stack/values.yaml \
+           --set dataClaimsApi.enabled=true \
+           --set dataClaimsApi.image.repository=${API_IMAGE} \
+           --set dataClaimsApi.image.tag=${API_IMAGE_TAG} \
+           --set dataClaimsApi.postgres.enabled=true \
+           --set dataClaimsApi.postgres.user=${E2E_DB_USER} \
+           --set dataClaimsApi.postgres.password=${E2E_DB_PASSWORD} \
+           --set laaAmendAClaim.enabled=true \
+           --set laaAmendAClaim.image.repository=${REGISTRY}/${REPOSITORY} \
+           --set laaAmendAClaim.image.tag=${IMAGE_TAG} \
+           --set redis.enabled=true \
+           --set githubRunner.enabled=true \
+           --set githubRunner.image.repository=${REGISTRY}/${REPOSITORY} \
+           --set githubRunner.image.tag=github-e2e-runner-latest \
+           --set githubRunner.env[1].value=${GITHUB_REPO} \
+           --set githubRunner.env[2].value=k8s-e2e-runner \
+           --wait \
+           --timeout 5m
+
+          echo " Helm deployment complete"
+          kubectl get pods -n ${KUBE_NAMESPACE}
+
+        env:
+          REGISTRY: ${{ steps.ecr-auth.outputs.image_registry }}
+          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ inputs.amend_a_claim_image_tag }}
+          API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
+          API_IMAGE_TAG: ${{ inputs.claims_api_image_tag }}
+          E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
+          E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
+          GITHUB_REPO: ${{ github.repository }}
+
+      - name: Wait for Runner Registration
+        run: |
+          echo "Waiting for GitHub runner to register..."
+          sleep 30
+          kubectl logs -n ${KUBE_NAMESPACE} -l app=github-runner --tail=50 || true
+
+  run-e2e-tests:
+    name: Run E2E Tests
+    needs: deploy-e2e-environment
+    if: ${{ always() && (needs.deploy-e2e-environment.result == 'success') }}
+    runs-on: [self-hosted, aabc-e2e]
+    env:
+      E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
+      E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+
+      - name: Wait for Services
+        run: |
+          echo "Waiting for services to be ready..."
+          until curl -sf http://e2e-amend-a-claim:8084/actuator/health 2>/dev/null; do
+            echo "Waiting for UI application..."
+            sleep 5
+          done
+          echo "UI ready"
+
+          until curl -sf http://e2e-data-claims-api:8082/actuator/health 2>/dev/null; do
+            echo "Waiting for API..."
+            sleep 5
+          done
+          echo "API ready"
+
+      - name: Run E2E Tests
+        working-directory: src/e2e
+        run: |
+          export CI=true
+          export SILAS_AUTH_ENABLED=false
+          export DB_USER=${E2E_DB_USER}
+          export DB_PASSWORD=${E2E_DB_PASSWORD}          
+
+          echo "Running E2E tests..."
+          ./gradlew clean test --no-daemon
+
+      - name: Generate Allure Report
+        if: always()
+        working-directory: src/e2e
+        run: |
+          allure generate build/allure-results -o build/allure-report --clean || true
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v6.0.0
+        with:
+          name: e2e-test-results-${{ github.run_number }}
+          path: |
+            src/e2e/build/test-results/
+            src/e2e/build/reports/
+            src/e2e/build/allure-report/
+          retention-days: 15
+

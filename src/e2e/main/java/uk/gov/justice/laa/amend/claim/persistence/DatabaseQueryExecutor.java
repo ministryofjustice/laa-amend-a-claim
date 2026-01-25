@@ -17,7 +17,7 @@ public class DatabaseQueryExecutor implements AutoCloseable {
     private final Connection connection;
 
     public DatabaseQueryExecutor() throws SQLException {
-        String url = String.format("jdbc:postgresql://%s:%s/%s", EnvConfig.dbHost(), EnvConfig.dbPort(), EnvConfig.dbName());
+        String url = EnvConfig.dbConnectionUrl();
         this.connection = DriverManager.getConnection(url, EnvConfig.dbUser(), EnvConfig.dbPassword());
     }
 
