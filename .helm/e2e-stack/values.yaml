@@ -116,7 +116,7 @@ laaAmendAClaim:
     repository: ""
     tag: ""
     pullPolicy: IfNotPresent
-  springProfile: "local"
+  springProfile: "e2e"
   service:
     type: ClusterIP
     port: 8084
