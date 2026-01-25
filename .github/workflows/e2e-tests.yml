@@ -54,7 +54,7 @@ jobs:
       runner_image_tag: ${{ steps.build.outputs.tag }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.branch }}
 
@@ -68,7 +68,7 @@ jobs:
 
       - name: Build and Push Runner Image
         id: build
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v6.18.0
         with:
           context: ./scripts
           file: ./scripts/Dockerfile.e2e-runner
@@ -89,7 +89,7 @@ jobs:
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.branch }}
 
@@ -102,7 +102,7 @@ jobs:
           role-session-name: ${{ github.run_id }}-e2e-deploy
 
       - name: Set up kubectl
-        uses: azure/setup-kubectl@v4
+        uses: azure/setup-kubectl@v4.0.1
         with:
           version: v1.28.0
 
@@ -166,7 +166,7 @@ jobs:
       E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
 
       - name: Wait for Services
         run: |
