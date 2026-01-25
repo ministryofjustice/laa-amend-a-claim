@@ -24,8 +24,10 @@ runs:
     - name: Sanitize Branch Name
       id: sanitize
       shell: bash
+      env:
+        INPUT_BRANCH_NAME: ${{ inputs.branch_name }}
       run: |
-        BRANCH_NAME="${{ inputs.branch_name }}"
+        BRANCH_NAME="${INPUT_BRANCH_NAME}"
 
         # Remove everything before and including the first slash (feature/, bugfix/, etc.)
         # If no slash exists, use the whole branch name
@@ -60,7 +62,7 @@ runs:
         echo "hostname=${HOSTNAME}" >> $GITHUB_OUTPUT
 
         # Log for debugging
-        echo "Original branch: ${{ inputs.branch_name }}"
+        echo "Original branch: ${INPUT_BRANCH_NAME}"
         echo "Sanitized: ${SANITIZED}"
         echo "Release name: ${RELEASE_NAME}"
         echo "Hostname: ${HOSTNAME}"
