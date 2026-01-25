@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PUBLIC_PATHS;
 
-@Profile("!local & !ephemeral")
+@Profile("!local & !ephemeral & !e2e")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
