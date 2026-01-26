@@ -8,6 +8,10 @@ public class BoltOnClaimField extends ClaimField {
     @Builder
     public BoltOnClaimField(String key, Object submitted, Object calculated, Object assessed) {
         super(key, submitted, calculated, assessed);
+    }
+
+    @Override
+    public void setAssessableToDefault() {
         this.assessable = false;
     }
 

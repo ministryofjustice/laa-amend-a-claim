@@ -12,7 +12,6 @@ public class AssessedClaimField extends ClaimField {
     @Builder
     public AssessedClaimField(String key, Object submitted, Object calculated, Object assessed, TotalType type) {
         super(key, submitted, calculated, assessed);
-        this.assessable = true;
         this.type = type;
     }
 
@@ -23,6 +22,11 @@ public class AssessedClaimField extends ClaimField {
     @Override
     public void applyOutcome(OutcomeType outcome) {
         setAssessedToNull();
+    }
+
+    @Override
+    public void setAssessableToDefault() {
+        this.assessable = true;
     }
 
     @Override

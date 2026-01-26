@@ -22,6 +22,7 @@ public abstract class ClaimField implements Serializable {
         this.submitted = submitted;
         this.calculated = calculated;
         this.assessed = assessed;
+        setAssessableToDefault();
     }
 
     public boolean hasSubmittedValue() {
@@ -37,6 +38,8 @@ public abstract class ClaimField implements Serializable {
             default -> false;
         };
     }
+
+    public abstract void setAssessableToDefault();
 
     public boolean isNotAssessable() {
         return !isAssessable();

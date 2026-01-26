@@ -8,8 +8,6 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 
-import java.util.Objects;
-
 /**
  * Handles the mapping between different outcome types and their corresponding field assessment statuses.
  */
@@ -30,12 +28,7 @@ public class ClaimStatusHandler {
     }
 
     private void updateFieldStatus(ClaimField field, OutcomeType outcome, ClaimDetails claim) {
-        boolean status = determineFieldStatus(field, outcome, claim);
-        field.setAssessable(status);
-    }
-
-    private boolean determineFieldStatus(ClaimField field, OutcomeType outcome, ClaimDetails claim) {
-        return switch (outcome) {
+        switch (outcome) {
             case NILLED -> handleNilledStatus(field);
             case PAID_IN_FULL -> handleAssessmentInFullStatus(field, claim);
             case REDUCED -> handleReducedStatus(field, claim);
@@ -43,34 +36,36 @@ public class ClaimStatusHandler {
         };
     }
 
-    private boolean handleNilledStatus(ClaimField field) {
-        return field instanceof VatLiabilityClaimField;
+    private void handleNilledStatus(ClaimField field) {
+        field.setAssessable(field instanceof VatLiabilityClaimField);
     }
 
     /**
      * Set the field status for REDUCED outcome status.
      */
-    private boolean handleReducedStatus(ClaimField field, ClaimDetails claim) {
+    private void handleReducedStatus(ClaimField field, ClaimDetails claim) {
         if (field instanceof AssessedClaimField) {
-            return claim.isAssessedTotalFieldAssessable();
+            field.setAssessable(claim.isAssessedTotalFieldAssessable());
+        } else {
+            field.setAssessableToDefault();
         }
-        return field.isAssessable();
     }
 
     /**
      * Set the field status for REDUCED_TO_FIXED_FEE outcome status.
      */
-    private boolean handleReducedToFixedFeeStatus(ClaimField field) {
-        return field.isAssessable();
+    private void handleReducedToFixedFeeStatus(ClaimField field) {
+        field.setAssessableToDefault();
     }
 
     /**
      * Set the field status for PAID_IN_FULL outcome status.
      */
-    private boolean handleAssessmentInFullStatus(ClaimField field, ClaimDetails claim) {
+    private void handleAssessmentInFullStatus(ClaimField field, ClaimDetails claim) {
         if (field instanceof AssessedClaimField) {
-            return claim.isAssessedTotalFieldAssessable();
+            field.setAssessable(claim.isAssessedTotalFieldAssessable());
+        } else {
+            field.setAssessableToDefault();
         }
-        return field.isAssessable();
     }
 }

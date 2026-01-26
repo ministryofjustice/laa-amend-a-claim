@@ -10,7 +10,6 @@ public class CalculatedTotalClaimField extends ClaimField {
     @Builder
     public CalculatedTotalClaimField(Object submitted, Object calculated, Object assessed) {
         super(TOTAL, submitted, calculated, assessed);
-        this.assessable = false;
     }
 
     public CalculatedTotalClaimField(Object submitted, Object calculated) {
@@ -19,6 +18,11 @@ public class CalculatedTotalClaimField extends ClaimField {
 
     @Override
     public void applyOutcome(OutcomeType outcome) { }
+
+    @Override
+    public void setAssessableToDefault() {
+        this.assessable = false;
+    }
 
     @Override
     public ClaimFieldRow toClaimFieldRow(ClaimDetails claim) {

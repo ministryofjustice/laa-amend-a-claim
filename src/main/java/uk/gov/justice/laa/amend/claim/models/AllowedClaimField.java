@@ -8,6 +8,10 @@ public class AllowedClaimField extends ClaimField {
     @Builder
     public AllowedClaimField(String key, Object submitted, Object calculated, Object assessed) {
         super(key, submitted, calculated, assessed);
+    }
+
+    @Override
+    public void setAssessableToDefault() {
         this.assessable = true;
     }
 

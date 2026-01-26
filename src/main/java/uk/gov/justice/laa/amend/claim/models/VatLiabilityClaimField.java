@@ -10,7 +10,6 @@ public class VatLiabilityClaimField extends ClaimField {
     @Builder
     public VatLiabilityClaimField(Object submitted, Object calculated, Object assessed) {
         super(VAT, submitted, calculated, assessed);
-        this.assessable = true;
     }
 
     public VatLiabilityClaimField(Object submitted, Object calculated) {
@@ -24,6 +23,11 @@ public class VatLiabilityClaimField extends ClaimField {
             case REDUCED, PAID_IN_FULL -> setAssessedToSubmitted();
             default -> { }
         }
+    }
+
+    @Override
+    public void setAssessableToDefault() {
+        this.assessable = true;
     }
 
     @Override

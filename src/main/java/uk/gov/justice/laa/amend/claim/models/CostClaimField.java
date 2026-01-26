@@ -14,7 +14,6 @@ public class CostClaimField extends ClaimField {
     @Builder
     public CostClaimField(String key, Object submitted, Object calculated, Object assessed, Cost cost) {
         super(key, submitted, calculated, assessed);
-        this.assessable = true;
         this.cost = Objects.requireNonNull(cost, "Cost must not be null for CostClaimField");
     }
 
@@ -43,6 +42,11 @@ public class CostClaimField extends ClaimField {
             case PAID_IN_FULL -> setAssessedToSubmitted();
             default -> { }
         }
+    }
+
+    @Override
+    public void setAssessableToDefault() {
+        this.assessable = true;
     }
 
     @Override
