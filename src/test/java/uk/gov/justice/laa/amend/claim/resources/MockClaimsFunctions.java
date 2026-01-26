@@ -101,7 +101,7 @@ public class MockClaimsFunctions {
     }
 
     public static ClaimField updateClaimFieldSubmittedValue(ClaimField claimField, Object submitted) {
-        claimField.setSubmitted(BigDecimal.ZERO);
+        claimField.setSubmitted(submitted);
         return claimField;
     }
 

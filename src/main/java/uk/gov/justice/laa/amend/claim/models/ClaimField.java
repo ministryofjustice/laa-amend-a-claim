@@ -33,6 +33,7 @@ public abstract class ClaimField implements Serializable {
             case null -> true;
             case BigDecimal bigDecimal -> BigDecimal.ZERO.compareTo(bigDecimal) == 0;
             case Integer i -> i == 0;
+            case Boolean b -> !b;
             default -> false;
         };
     }

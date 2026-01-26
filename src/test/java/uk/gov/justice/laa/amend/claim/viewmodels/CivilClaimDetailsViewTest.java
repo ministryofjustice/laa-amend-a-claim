@@ -328,6 +328,13 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
 
+            List.of(ADJOURNED_FEE, SUBSTANTIVE_HEARING, CMRH_TELEPHONE, CMRH_ORAL, HO_INTERVIEW).forEach(key ->
+                Assertions.assertFalse(
+                    result.stream().anyMatch(row -> key.equals(row.getKey())),
+                    "Field with key '" + key + "' should not exist"
+                )
+            );
+
             Assertions.assertEquals(9, result.size());
 
             Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
@@ -368,6 +375,20 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).getCalculated());
         }
 
+
+        @Test
+        void substantiveHearingBoltOnNotVisibleOnFalse() {
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            CivilClaimDetailsView viewModel = createView(claim);
+
+            claim.setSubstantiveHearing(updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), false));
+            List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
+            Assertions.assertFalse(
+                result.stream().anyMatch(row -> SUBSTANTIVE_HEARING.equals(row.getKey())),
+                "Rows should not contain substantive hearing"
+            );
+        }
+
         @Test
         void rowsRenderedForZeroBoltOnClaimValues() {
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
@@ -375,7 +396,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setCmrhTelephone(updateClaimFieldSubmittedValue(claim.getCmrhTelephone(), 0));
             claim.setCmrhOral(updateClaimFieldSubmittedValue(claim.getCmrhOral(), 0));
             claim.setHoInterview(updateClaimFieldSubmittedValue(claim.getHoInterview(), 0));
-            claim.setSubstantiveHearing(updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), BigDecimal.ZERO));
+            claim.setSubstantiveHearing(updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), false));
 
             CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
@@ -429,6 +450,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
             CivilClaimDetailsView viewModel = createView(claim);
+            claim.setSubstantiveHearing(updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), true));
             List<ClaimFieldRow> result = viewModel.getReviewClaimFieldRows();
 
             Assertions.assertEquals(13, result.size());
@@ -475,7 +497,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             Assertions.assertEquals(BigDecimal.valueOf(200), result.get(9).getCalculated());
 
             Assertions.assertEquals(SUBSTANTIVE_HEARING, result.get(10).getKey());
-            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(10).getSubmitted());
+            Assertions.assertEquals(true, result.get(10).getSubmitted());
             Assertions.assertEquals(BigDecimal.valueOf(200), result.get(10).getCalculated());
 
             Assertions.assertEquals(ADJOURNED_FEE, result.get(11).getKey());
