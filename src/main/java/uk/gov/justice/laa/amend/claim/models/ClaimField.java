@@ -22,6 +22,7 @@ public abstract class ClaimField implements Serializable {
         this.submitted = submitted;
         this.calculated = calculated;
         this.assessed = assessed;
+        setAssessableToDefault();
     }
 
     public boolean hasSubmittedValue() {
@@ -38,16 +39,13 @@ public abstract class ClaimField implements Serializable {
         };
     }
 
+    public abstract void setAssessableToDefault();
+
     public boolean isNotAssessable() {
         return !isAssessable();
     }
 
-    public ClaimFieldRow toClaimFieldRow() {
-        if (this instanceof BoltOnClaimField x) {
-            return hasSubmittedValue() ? new ClaimFieldRow(x) : null;
-        }
-        return new ClaimFieldRow(this);
-    }
+    public abstract ClaimFieldRow toClaimFieldRow(ClaimDetails claim);
 
     public abstract void applyOutcome(OutcomeType outcome);
 

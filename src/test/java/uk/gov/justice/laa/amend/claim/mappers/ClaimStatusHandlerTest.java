@@ -276,6 +276,26 @@ class ClaimStatusHandlerTest {
             assertThat(jrFormFillingCostField.isAssessable()).isTrue();
             assertThat(counselsCostField.isAssessable()).isTrue();
         }
+
+        @Test
+        void shouldResetWhetherAFieldIsAssessableOrNotAfterOutcomeChange() {
+            CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
+            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
+            crimeClaim.setAssessedTotalVat(assessedTotalVatField);
+            crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
+            crimeClaim.setFeeCode("INVC");
+
+            claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.NILLED);
+
+            assertThat(assessedTotalVatField.isAssessable()).isFalse();
+            assertThat(assessedTotalInclVatField.isAssessable()).isFalse();
+
+            claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED);
+
+            assertThat(assessedTotalVatField.isAssessable()).isTrue();
+            assertThat(assessedTotalInclVatField.isAssessable()).isTrue();
+        }
     }
 
     @Nested

@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Builder;
 import lombok.Getter;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
 import java.util.Objects;
 
@@ -13,7 +14,6 @@ public class CostClaimField extends ClaimField {
     @Builder
     public CostClaimField(String key, Object submitted, Object calculated, Object assessed, Cost cost) {
         super(key, submitted, calculated, assessed);
-        this.assessable = true;
         this.cost = Objects.requireNonNull(cost, "Cost must not be null for CostClaimField");
     }
 
@@ -42,5 +42,15 @@ public class CostClaimField extends ClaimField {
             case PAID_IN_FULL -> setAssessedToSubmitted();
             default -> { }
         }
+    }
+
+    @Override
+    public void setAssessableToDefault() {
+        this.assessable = true;
+    }
+
+    @Override
+    public ClaimFieldRow toClaimFieldRow(ClaimDetails claim) {
+        return ClaimFieldRow.from(this);
     }
 }
