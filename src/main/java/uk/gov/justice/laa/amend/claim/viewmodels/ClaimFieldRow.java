@@ -58,16 +58,17 @@ public class ClaimFieldRow {
     }
 
     public static ClaimFieldRow from(BoltOnClaimField claimField) {
-        return claimField.hasSubmittedValue() ?
-            new ClaimFieldRow(
+        if (claimField.hasSubmittedValue()) {
+            return new ClaimFieldRow(
                 claimField.getKey(),
                 claimField.getSubmitted(),
                 claimField.getCalculated(),
                 claimField.getAssessed(),
                 claimField.isAssessable(),
                 null
-            ) :
-            null;
+            );
+        }
+        return null;
     }
 
     public static ClaimFieldRow from(CostClaimField claimField) {

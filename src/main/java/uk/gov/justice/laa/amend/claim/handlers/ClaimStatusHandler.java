@@ -33,7 +33,8 @@ public class ClaimStatusHandler {
             case PAID_IN_FULL -> handleAssessmentInFullStatus(field, claim);
             case REDUCED -> handleReducedStatus(field, claim);
             case REDUCED_TO_FIXED_FEE -> handleReducedToFixedFeeStatus(field);
-        };
+            default -> { }
+        }
     }
 
     private void handleNilledStatus(ClaimField field) {
