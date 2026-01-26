@@ -33,6 +33,7 @@
             <h2 class="govuk-summary-card__title" th:text="#{claimSummary.claimCostsTableTitle}"/>
         </div>
         <div class="govuk-summary-card__content">
+
             <table class="govuk-table govuk-!-margin-bottom-0">
                 <colgroup>
                     <col class="govuk-table__row-item">
@@ -41,60 +42,49 @@
                     <col class="govuk-table__row-values">
                     <col class="govuk-table__row-actions">
                 </colgroup>
-
                 <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header" th:text="#{claimSummary.item}"></th>
-                        <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
-                        <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
-                        <th scope="col" class="govuk-table__header" th:text="#{claimSummary.assessed}"></th>
-                        <th scope="col" class="govuk-table__header"></th>
-                    </tr>
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.item}"></th>
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.assessed}"></th>
+                    <th scope="col" class="govuk-table__header"></th>
+                </tr>
                 </thead>
                 <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row" th:each="row : ${viewModel.reviewClaimFieldRows}">
+                <tr class="govuk-table__row" th:each="row : ${viewModel.reviewClaimFieldRows}">
 
-                        <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
-                        <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
-                        <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}" />
 
-                        <th:block th:if="${row.isAssessableAndUnassessed}">
-                            <td class="govuk-table__cell">
-                                <a th:href="${row.getChangeUrl(submissionId, claimId)}"
-                                   th:id="${row.id}"
-                                   th:data-testid="${'claim-field-' + row.key}"
-                                   class="govuk-link govuk-link--no-visited-state">
-                                    <th:block th:text="#{service.add}"></th:block>
-                                    <span class="govuk-visually-hidden" th:text=" #{${row.label}}"></span>
-                                </a>
-                            </td>
+                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"/>
 
-                            <td class="govuk-table__cell"></td>
-                        </th:block>
+                    <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"/>
 
-                        <th:block th:if="${row.isAssessableAndAssessed}">
-                            <td class="govuk-table__cell"
-                                th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}">
-                            </td>
+                    <td class="govuk-table__cell">
 
-                            <td class="govuk-table__cell">
-                                <a th:if="${row.getChangeUrl(submissionId,claimId) != null}"
-                                   th:href="${row.getChangeUrl(submissionId,claimId)}"
-                                   th:data-testid="${'claim-field-' + row.key}"
-                                   class="govuk-link govuk-link--no-visited-state">
-                                    <th:block th:text="#{service.change}"></th:block>
-                                    <span class="govuk-visually-hidden" th:text=" #{${row.label}}"></span>
-                                </a>
-                            </td>
-                        </th:block>
+                        <a th:if="${row.isAssessableAndUnassessed}"
+                           th:href="${row.getChangeUrl(submissionId, claimId)}"
+                           th:id="${row.id}"
+                           th:data-testid="${'claim-field-' + row.key}"
+                           class="govuk-link govuk-link--no-visited-state">
+                            <span th:text="#{service.add}"/>
+                            <span class="govuk-visually-hidden" th:text="#{${row.label}}"/>
+                        </a>
 
-                        <th:block th:if="${row.isNotAssessable()}">
-                            <td class="govuk-table__cell"
-                                th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}">
-                            </td>
-                            <td class="govuk-table__cell"></td>
-                        </th:block>
-                    </tr>
+                        <span th:if="${!row.isAssessableAndUnassessed}"
+                              th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"/>
+                    </td>
+
+                    <td class="govuk-table__cell">
+                        <a th:if="${row.isAssessableAndAssessed and row.getChangeUrl(submissionId, claimId) != null}"
+                           th:href="${row.getChangeUrl(submissionId, claimId)}"
+                           th:data-testid="${'claim-field-' + row.key}"
+                           class="govuk-link govuk-link--no-visited-state">
+                            <span th:text="#{service.change}"/>
+                            <span class="govuk-visually-hidden" th:text="#{${row.label}}"/>
+                        </a>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -115,48 +105,47 @@
                 </colgroup>
 
                 <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header" th:text="#{claimSummary.item}"></th>
-                        <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
-                        <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
-                        <th scope="col" class="govuk-table__header" th:text="#{claimSummary.assessed}"></th>
-                        <th scope="col" class="govuk-table__header"></th>
-                    </tr>
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.item}"></th>
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
+                    <th scope="col" class="govuk-table__header" th:text="#{claimSummary.assessed}"></th>
+                    <th scope="col" class="govuk-table__header"></th>
+                </tr>
                 </thead>
                 <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row" th:each="row : ${viewModel.assessedTotals}">
-                        <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
-                        <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
-                        <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
-                        <td class="govuk-table__cell" th:if="${(row.isAssessed)}" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></td>
-                        <th:block th:if="${(row.isAssessableAndUnassessed())}">
-                            <td class="govuk-table__cell">
-                                <a th:href="${row.getChangeUrl(submissionId, claimId)}"
-                                   th:id="${row.id}" th:data-testid="${'totals-' + row.key}"
-                                   class="govuk-link govuk-link--no-visited-state"
-                                   th:text="${@ThymeleafUtils.getChangeLinkText(row).resolve(#messages)}">
-                                    <th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span>
-                                </a>
-                            </td>
-                            <td class="govuk-table__cell"></td>
-                        </th:block>
+                <tr class="govuk-table__row" th:each="row : ${viewModel.assessedTotals}">
 
-                        <th:block th:if="${(row.isNotAssessable())}">
-                            <td class="govuk-table__cell"></td>
-                            <td class="govuk-table__cell"></td>
-                        </th:block>
+                    <td class="govuk-table__cell govuk-!-font-weight-bold"
+                        th:text="#{${row.label}}">
+                    </td>
 
-                        <th:block th:if="${row.isAssessableAndAssessed()}">
-                            <td class="govuk-table__cell">
-                                <a th:href="${row.getChangeUrl(submissionId, claimId)}"
-                                   th:id="${row.id}" th:data-testid="${'totals-' + row.key}"
-                                   class="govuk-link govuk-link--no-visited-state"
-                                   th:text="${@ThymeleafUtils.getChangeLinkText(row).resolve(#messages)}">
-                                    <th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span>
-                                </a>
-                            </td>
-                        </th:block>
-                    </tr>
+                    <td class="govuk-table__cell"
+                        th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}">
+                    </td>
+
+                    <td class="govuk-table__cell"
+                        th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}">
+                    </td>
+
+                    <td class="govuk-table__cell"
+                        th:text="${row.isAssessed} ?
+                        ${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}: ''">
+                    </td>
+
+                    <td class="govuk-table__cell">
+                        <a th:if="${row.isAssessable()}"
+                           th:href="${row.getChangeUrl(submissionId, claimId)}"
+                           th:id="${row.id}"
+                           th:data-testid="${'totals-' + row.key}"
+                           class="govuk-link govuk-link--no-visited-state"
+                           th:text="${@ThymeleafUtils.getChangeLinkText(row).resolve(#messages)}">
+                            <span class="govuk-visually-hidden"
+                                  th:text="#{${row.label}}">
+                            </span>
+                        </a>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
