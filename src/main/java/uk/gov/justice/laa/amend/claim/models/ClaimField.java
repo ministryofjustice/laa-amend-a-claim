@@ -41,12 +41,7 @@ public abstract class ClaimField implements Serializable {
         return !isAssessable();
     }
 
-    public ClaimFieldRow toClaimFieldRow() {
-        if (this instanceof BoltOnClaimField x) {
-            return hasSubmittedValue() ? new ClaimFieldRow(x) : null;
-        }
-        return new ClaimFieldRow(this);
-    }
+    public abstract ClaimFieldRow toClaimFieldRow(ClaimDetails claim);
 
     public abstract void applyOutcome(OutcomeType outcome);
 

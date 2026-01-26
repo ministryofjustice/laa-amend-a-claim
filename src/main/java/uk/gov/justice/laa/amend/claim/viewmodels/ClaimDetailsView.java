@@ -126,7 +126,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     private Stream<ClaimFieldRow> toClaimFieldRows(Stream<ClaimField> claimFields) {
         return claimFields
             .filter(Objects::nonNull)
-            .map(ClaimField::toClaimFieldRow)
+            .map(x -> x.toClaimFieldRow(claim()))
             .filter(Objects::nonNull);
     }
 }

@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Builder;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
 public class BoltOnClaimField extends ClaimField {
 
@@ -22,5 +23,10 @@ public class BoltOnClaimField extends ClaimField {
             case REDUCED, PAID_IN_FULL -> setAssessedToNull();
             default -> { }
         }
+    }
+
+    @Override
+    public ClaimFieldRow toClaimFieldRow(ClaimDetails claim) {
+        return ClaimFieldRow.from(this);
     }
 }

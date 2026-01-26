@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Builder;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
 
@@ -17,6 +18,10 @@ public class CalculatedTotalClaimField extends ClaimField {
     }
 
     @Override
-    public void applyOutcome(OutcomeType outcome) {
+    public void applyOutcome(OutcomeType outcome) { }
+
+    @Override
+    public ClaimFieldRow toClaimFieldRow(ClaimDetails claim) {
+        return ClaimFieldRow.from(this);
     }
 }

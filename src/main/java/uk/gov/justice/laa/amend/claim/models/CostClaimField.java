@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Builder;
 import lombok.Getter;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
 import java.util.Objects;
 
@@ -42,5 +43,10 @@ public class CostClaimField extends ClaimField {
             case PAID_IN_FULL -> setAssessedToSubmitted();
             default -> { }
         }
+    }
+
+    @Override
+    public ClaimFieldRow toClaimFieldRow(ClaimDetails claim) {
+        return ClaimFieldRow.from(this);
     }
 }

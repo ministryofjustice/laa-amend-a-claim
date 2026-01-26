@@ -2,8 +2,16 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
+import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
+import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
+import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
+import uk.gov.justice.laa.amend.claim.models.CostClaimField;
+import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
+import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 import java.math.BigDecimal;
@@ -12,8 +20,8 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenProfitCostClaimField() {
-        ClaimField field = MockClaimsFunctions.createNetProfitCostField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        CostClaimField field = MockClaimsFunctions.createNetProfitCostField();
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
@@ -24,8 +32,8 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenDisbursementsClaimField() {
-        ClaimField field = MockClaimsFunctions.createDisbursementCostField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        CostClaimField field = MockClaimsFunctions.createDisbursementCostField();
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
@@ -36,8 +44,8 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenDisbursementsVatClaimField() {
-        ClaimField field = MockClaimsFunctions.createDisbursementVatCostField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        CostClaimField field = MockClaimsFunctions.createDisbursementVatCostField();
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
@@ -48,11 +56,11 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenTravelCostClaimFieldWhenValuesAreNull() {
-        ClaimField field = MockClaimsFunctions.createTravelCostField();
+        CostClaimField field = MockClaimsFunctions.createTravelCostField();
         field.setSubmitted(null);
         field.setCalculated(null);
         field.setAssessed(null);
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(BigDecimal.ZERO, result.getSubmitted());
         Assertions.assertEquals(BigDecimal.ZERO, result.getCalculated());
@@ -63,8 +71,8 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenTravelCostClaimFieldWhenValuesAreNotNull() {
-        ClaimField field = MockClaimsFunctions.createTravelCostField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        CostClaimField field = MockClaimsFunctions.createTravelCostField();
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
@@ -75,11 +83,11 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenWaitingCostClaimFieldWhenValuesAreNull() {
-        ClaimField field = MockClaimsFunctions.createWaitingCostField();
+        CostClaimField field = MockClaimsFunctions.createWaitingCostField();
         field.setSubmitted(null);
         field.setCalculated(null);
         field.setAssessed(null);
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(BigDecimal.ZERO, result.getSubmitted());
         Assertions.assertEquals(BigDecimal.ZERO, result.getCalculated());
@@ -90,8 +98,8 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenWaitingCostClaimFieldWhenValuesAreNotNull() {
-        ClaimField field = MockClaimsFunctions.createWaitingCostField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        CostClaimField field = MockClaimsFunctions.createWaitingCostField();
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
@@ -102,11 +110,11 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenDetentionCostClaimFieldWhenValuesAreNull() {
-        ClaimField field = MockClaimsFunctions.createDetentionCostField();
+        CostClaimField field = MockClaimsFunctions.createDetentionCostField();
         field.setSubmitted(null);
         field.setCalculated(null);
         field.setAssessed(null);
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(BigDecimal.ZERO, result.getSubmitted());
         Assertions.assertEquals(BigDecimal.ZERO, result.getCalculated());
@@ -117,8 +125,8 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenDetentionCostClaimFieldWhenValuesAreNotNull() {
-        ClaimField field = MockClaimsFunctions.createDetentionCostField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        CostClaimField field = MockClaimsFunctions.createDetentionCostField();
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
@@ -129,11 +137,11 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenJrFormFillingCostClaimFieldWhenValuesAreNull() {
-        ClaimField field = MockClaimsFunctions.createJrFormFillingCostField();
+        CostClaimField field = MockClaimsFunctions.createJrFormFillingCostField();
         field.setSubmitted(null);
         field.setCalculated(null);
         field.setAssessed(null);
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(BigDecimal.ZERO, result.getSubmitted());
         Assertions.assertEquals(BigDecimal.ZERO, result.getCalculated());
@@ -144,8 +152,8 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenJrFormFillingCostClaimFieldWhenValuesAreNotNull() {
-        ClaimField field = MockClaimsFunctions.createJrFormFillingCostField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        CostClaimField field = MockClaimsFunctions.createJrFormFillingCostField();
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
@@ -156,11 +164,11 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenCounselCostClaimFieldWhenValuesAreNull() {
-        ClaimField field = MockClaimsFunctions.createCounselCostField();
+        CostClaimField field = MockClaimsFunctions.createCounselCostField();
         field.setSubmitted(null);
         field.setCalculated(null);
         field.setAssessed(null);
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(BigDecimal.ZERO, result.getSubmitted());
         Assertions.assertEquals(BigDecimal.ZERO, result.getCalculated());
@@ -171,8 +179,8 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenCounselCostClaimFieldWhenValuesAreNotNull() {
-        ClaimField field = MockClaimsFunctions.createCounselCostField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        CostClaimField field = MockClaimsFunctions.createCounselCostField();
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
@@ -183,11 +191,11 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenAllowedClaimFieldWhenValuesAreNull() {
-        ClaimField field = MockClaimsFunctions.createAllowedTotalVatField();
+        AllowedClaimField field = MockClaimsFunctions.createAllowedTotalVatField();
         field.setSubmitted(null);
         field.setCalculated(null);
         field.setAssessed(null);
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertNull(result.getSubmitted());
         Assertions.assertEquals(BigDecimal.ZERO, result.getCalculated());
@@ -198,8 +206,8 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenAllowedClaimFieldWhenValuesAreNotNull() {
-        ClaimField field = MockClaimsFunctions.createAllowedTotalVatField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        AllowedClaimField field = MockClaimsFunctions.createAllowedTotalVatField();
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
@@ -210,8 +218,9 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenAssessedClaimField() {
-        ClaimField field = MockClaimsFunctions.createAssessedTotalVatField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+        AssessedClaimField field = MockClaimsFunctions.createAssessedTotalVatField();
+        ClaimFieldRow result = ClaimFieldRow.from(field, claim);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
@@ -221,9 +230,75 @@ public class ClaimFieldRowTest {
     }
 
     @Test
+    void whenAssessedTotalVatClaimFieldHasAssessedValue() {
+        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+        ClaimField allowedField = MockClaimsFunctions.createAllowedTotalVatField();
+        claim.setAllowedTotalVat(allowedField);
+        ClaimField assessedField = MockClaimsFunctions.createAssessedTotalVatField();
+        ClaimFieldRow result = assessedField.toClaimFieldRow(claim);
+        Assertions.assertEquals(assessedField.getAssessed(), result.getAssessed());
+    }
+
+    @Test
+    void whenAssessedTotalVatClaimFieldHasNullAssessedValueAndAllowedTotalVatHasAssessedValue() {
+        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+        ClaimField allowedField = MockClaimsFunctions.createAllowedTotalVatField();
+        claim.setAllowedTotalVat(allowedField);
+        ClaimField assessedField = MockClaimsFunctions.createAssessedTotalVatField();
+        assessedField.setAssessed(null);
+        ClaimFieldRow result = assessedField.toClaimFieldRow(claim);
+        Assertions.assertEquals(allowedField.getAssessed(), result.getAssessed());
+    }
+
+    @Test
+    void whenAssessedTotalVatClaimFieldHasNullAssessedValueAndAllowedTotalVatHasNullAssessedValue() {
+        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+        ClaimField allowedField = MockClaimsFunctions.createAllowedTotalVatField();
+        allowedField.setAssessed(null);
+        claim.setAllowedTotalVat(allowedField);
+        ClaimField assessedField = MockClaimsFunctions.createAssessedTotalVatField();
+        assessedField.setAssessed(null);
+        ClaimFieldRow result = assessedField.toClaimFieldRow(claim);
+        Assertions.assertNull(result.getAssessed());
+    }
+
+    @Test
+    void whenAssessedTotalInclVatClaimFieldHasAssessedValue() {
+        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+        ClaimField allowedField = MockClaimsFunctions.createAllowedTotalInclVatField();
+        claim.setAllowedTotalInclVat(allowedField);
+        ClaimField assessedField = MockClaimsFunctions.createAssessedTotalInclVatField();
+        ClaimFieldRow result = assessedField.toClaimFieldRow(claim);
+        Assertions.assertEquals(assessedField.getAssessed(), result.getAssessed());
+    }
+
+    @Test
+    void whenAssessedTotalInclVatClaimFieldHasNullAssessedValueAndAllowedTotalInclVatHasAssessedValue() {
+        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+        ClaimField allowedField = MockClaimsFunctions.createAllowedTotalInclVatField();
+        claim.setAllowedTotalInclVat(allowedField);
+        ClaimField assessedField = MockClaimsFunctions.createAssessedTotalInclVatField();
+        assessedField.setAssessed(null);
+        ClaimFieldRow result = assessedField.toClaimFieldRow(claim);
+        Assertions.assertEquals(allowedField.getAssessed(), result.getAssessed());
+    }
+
+    @Test
+    void whenAssessedTotalInclVatClaimFieldHasNullAssessedValueAndAllowedTotalInclVatHasNullAssessedValue() {
+        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+        ClaimField allowedField = MockClaimsFunctions.createAllowedTotalInclVatField();
+        allowedField.setAssessed(null);
+        claim.setAllowedTotalInclVat(allowedField);
+        ClaimField assessedField = MockClaimsFunctions.createAssessedTotalInclVatField();
+        assessedField.setAssessed(null);
+        ClaimFieldRow result = assessedField.toClaimFieldRow(claim);
+        Assertions.assertNull(result.getAssessed());
+    }
+
+    @Test
     void whenVatLiabilityClaimField() {
-        ClaimField field = MockClaimsFunctions.createVatClaimedField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        VatLiabilityClaimField field = MockClaimsFunctions.createVatClaimedField();
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
@@ -234,8 +309,8 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenBoltOnClaimField() {
-        ClaimField field = MockClaimsFunctions.createAdjournedHearingField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        BoltOnClaimField field = MockClaimsFunctions.createAdjournedHearingField();
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
@@ -245,9 +320,33 @@ public class ClaimFieldRowTest {
     }
 
     @Test
+    void whenBoltOnClaimFieldWithNullSubmittedValue() {
+        BoltOnClaimField field = MockClaimsFunctions.createAdjournedHearingField();
+        field.setSubmitted(null);
+        ClaimFieldRow result = ClaimFieldRow.from(field);
+        Assertions.assertNull(result);
+    }
+
+    @Test
+    void whenBoltOnClaimFieldWithZeroSubmittedValue() {
+        BoltOnClaimField field = MockClaimsFunctions.createAdjournedHearingField();
+        field.setSubmitted(BigDecimal.ZERO);
+        ClaimFieldRow result = ClaimFieldRow.from(field);
+        Assertions.assertNull(result);
+    }
+
+    @Test
+    void whenBoltOnClaimFieldWithNonZeroSubmittedValue() {
+        BoltOnClaimField field = MockClaimsFunctions.createAdjournedHearingField();
+        field.setSubmitted(BigDecimal.ONE);
+        ClaimFieldRow result = ClaimFieldRow.from(field);
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
     void whenTotalClaimField() {
-        ClaimField field = MockClaimsFunctions.createTotalAmountField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        CalculatedTotalClaimField field = MockClaimsFunctions.createTotalAmountField();
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
@@ -258,8 +357,8 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenFixedFeeClaimField() {
-        ClaimField field = MockClaimsFunctions.createFixedFeeField();
-        ClaimFieldRow result = new ClaimFieldRow(field);
+        FixedFeeClaimField field = MockClaimsFunctions.createFixedFeeField();
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());

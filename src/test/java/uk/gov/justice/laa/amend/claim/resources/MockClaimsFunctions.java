@@ -13,6 +13,7 @@ import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.models.TotalType;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 
 import java.math.BigDecimal;
@@ -104,39 +105,39 @@ public class MockClaimsFunctions {
         return claimField;
     }
 
-    public static ClaimField createNetProfitCostField() {
+    public static CostClaimField createNetProfitCostField() {
         return createCostField(NET_PROFIT_COST, Cost.PROFIT_COSTS);
     }
 
-    public static ClaimField createDisbursementCostField() {
+    public static CostClaimField createDisbursementCostField() {
         return createCostField(NET_DISBURSEMENTS_COST, Cost.DISBURSEMENTS);
     }
 
-    public static ClaimField createDisbursementVatCostField() {
+    public static CostClaimField createDisbursementVatCostField() {
         return createCostField(DISBURSEMENT_VAT, Cost.DISBURSEMENTS_VAT);
     }
 
-    public static ClaimField createCounselCostField() {
+    public static CostClaimField createCounselCostField() {
         return createCostField(COUNSELS_COST, Cost.COUNSEL_COSTS);
     }
 
-    public static ClaimField createTravelCostField() {
+    public static CostClaimField createTravelCostField() {
         return createCostField(TRAVEL_COSTS, Cost.TRAVEL_COSTS);
     }
 
-    public static ClaimField createWaitingCostField() {
+    public static CostClaimField createWaitingCostField() {
         return createCostField(WAITING_COSTS, Cost.WAITING_COSTS);
     }
 
-    public static ClaimField createJrFormFillingCostField() {
+    public static CostClaimField createJrFormFillingCostField() {
         return createCostField(JR_FORM_FILLING, Cost.JR_FORM_FILLING_COSTS);
     }
 
-    public static ClaimField createDetentionCostField() {
+    public static CostClaimField createDetentionCostField() {
         return createCostField(DETENTION_TRAVEL_COST, Cost.DETENTION_TRAVEL_AND_WAITING_COSTS);
     }
     
-    private static ClaimField createCostField(String key, Cost cost) {
+    private static CostClaimField createCostField(String key, Cost cost) {
         return CostClaimField
             .builder()
             .key(key)
@@ -147,7 +148,7 @@ public class MockClaimsFunctions {
             .build();
     }
 
-    public static ClaimField createFixedFeeField() {
+    public static FixedFeeClaimField createFixedFeeField() {
         return FixedFeeClaimField
             .builder()
             .submitted(BigDecimal.valueOf(100))
@@ -156,7 +157,7 @@ public class MockClaimsFunctions {
             .build();
     }
 
-    public static ClaimField createTotalAmountField() {
+    public static CalculatedTotalClaimField createTotalAmountField() {
         return CalculatedTotalClaimField
             .builder()
             .submitted(BigDecimal.valueOf(100))
@@ -165,7 +166,7 @@ public class MockClaimsFunctions {
             .build();
     }
 
-    public static ClaimField createVatClaimedField() {
+    public static VatLiabilityClaimField createVatClaimedField() {
         return VatLiabilityClaimField
             .builder()
             .submitted(true)
@@ -174,27 +175,27 @@ public class MockClaimsFunctions {
             .build();
     }
 
-    public static ClaimField createAdjournedHearingField() {
+    public static BoltOnClaimField createAdjournedHearingField() {
         return createBoltOnField(ADJOURNED_FEE);
     }
 
-    public static ClaimField createCmrhOralField() {
+    public static BoltOnClaimField createCmrhOralField() {
         return createBoltOnField(CMRH_ORAL);
     }
 
-    public static ClaimField createCmrhTelephoneField() {
+    public static BoltOnClaimField createCmrhTelephoneField() {
         return createBoltOnField(CMRH_TELEPHONE);
     }
 
-    public static ClaimField createHoInterviewField() {
+    public static BoltOnClaimField createHoInterviewField() {
         return createBoltOnField(HO_INTERVIEW);
     }
 
-    public static ClaimField createSubstantiveHearingField() {
+    public static BoltOnClaimField createSubstantiveHearingField() {
         return createBoltOnField(SUBSTANTIVE_HEARING);
     }
 
-    private static ClaimField createBoltOnField(String key) {
+    private static BoltOnClaimField createBoltOnField(String key) {
         return BoltOnClaimField
             .builder()
             .key(key)
@@ -204,33 +205,34 @@ public class MockClaimsFunctions {
             .build();
     }
 
-    public static ClaimField createAssessedTotalVatField() {
-        return createAssessedTotalField(ASSESSED_TOTAL_VAT);
+    public static AssessedClaimField createAssessedTotalVatField() {
+        return createAssessedTotalField(ASSESSED_TOTAL_VAT, TotalType.TOTAL_VAT);
     }
 
-    public static ClaimField createAssessedTotalInclVatField() {
-        return createAssessedTotalField(ASSESSED_TOTAL_INCL_VAT);
+    public static AssessedClaimField createAssessedTotalInclVatField() {
+        return createAssessedTotalField(ASSESSED_TOTAL_INCL_VAT, TotalType.TOTAL_INCL_VAT);
     }
 
-    private static ClaimField createAssessedTotalField(String key) {
+    private static AssessedClaimField createAssessedTotalField(String key, TotalType type) {
         return AssessedClaimField
             .builder()
             .key(key)
             .submitted(BigDecimal.valueOf(100))
             .calculated(BigDecimal.valueOf(200))
             .assessed(BigDecimal.valueOf(300))
+            .type(type)
             .build();
     }
 
-    public static ClaimField createAllowedTotalVatField() {
+    public static AllowedClaimField createAllowedTotalVatField() {
         return createAllowedTotalField(ALLOWED_TOTAL_VAT);
     }
 
-    public static ClaimField createAllowedTotalInclVatField() {
+    public static AllowedClaimField createAllowedTotalInclVatField() {
         return createAllowedTotalField(ALLOWED_TOTAL_INCL_VAT);
     }
 
-    private static ClaimField createAllowedTotalField(String key) {
+    private static AllowedClaimField createAllowedTotalField(String key) {
         return AllowedClaimField
             .builder()
             .key(key)
