@@ -66,8 +66,8 @@ class ChangeAllowedTotalsControllerTest {
                 .session(session))
             .andExpect(status().isOk())
             .andExpect(view().name("allowed-totals"))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", nullValue())))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalInclVat", nullValue())));
+            .andExpect(model().attribute("form", hasProperty("allowedTotalVat", nullValue())))
+            .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", nullValue())));
     }
 
     @Test
@@ -80,8 +80,8 @@ class ChangeAllowedTotalsControllerTest {
                 .session(session))
             .andExpect(status().isOk())
             .andExpect(view().name("allowed-totals"))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", nullValue())))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalInclVat", nullValue())));
+            .andExpect(model().attribute("form", hasProperty("allowedTotalVat", nullValue())))
+            .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", nullValue())));
     }
 
     @Test
@@ -95,8 +95,8 @@ class ChangeAllowedTotalsControllerTest {
                 .session(session))
             .andExpect(status().isOk())
             .andExpect(view().name("allowed-totals"))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", is("300.00"))))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalInclVat", is("300.00"))));
+            .andExpect(model().attribute("form", hasProperty("allowedTotalVat", is("300.00"))))
+            .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", is("300.00"))));
     }
 
     @Test
@@ -110,8 +110,8 @@ class ChangeAllowedTotalsControllerTest {
                 .session(session))
             .andExpect(status().isOk())
             .andExpect(view().name("allowed-totals"))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalVat", is("300.00"))))
-            .andExpect(model().attribute("allowedTotalForm", hasProperty("allowedTotalInclVat", is("300.00"))));
+            .andExpect(model().attribute("form", hasProperty("allowedTotalVat", is("300.00"))))
+            .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", is("300.00"))));
     }
 
     @Test
