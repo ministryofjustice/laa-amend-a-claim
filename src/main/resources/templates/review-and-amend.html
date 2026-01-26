@@ -138,6 +138,7 @@
                                     <th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span>
                                 </a>
                             </td>
+                            <td class="govuk-table__cell"></td>
                         </th:block>
 
                         <th:block th:if="${(row.isNotAssessable())}">
@@ -204,7 +205,6 @@
                     </td>
 
                     <td class="govuk-table__cell">
-
                         <th:block th:if="${assessed}">
                             <span th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></span>
                         </th:block>
