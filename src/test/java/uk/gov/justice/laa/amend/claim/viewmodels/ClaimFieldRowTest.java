@@ -6,8 +6,6 @@ import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
 import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
@@ -218,81 +216,14 @@ public class ClaimFieldRowTest {
 
     @Test
     void whenAssessedClaimField() {
-        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
         AssessedClaimField field = MockClaimsFunctions.createAssessedTotalVatField();
-        ClaimFieldRow result = ClaimFieldRow.from(field, claim);
+        ClaimFieldRow result = ClaimFieldRow.from(field);
         Assertions.assertEquals(field.getKey(), result.getKey());
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
         Assertions.assertEquals(field.getAssessed(), result.getAssessed());
         Assertions.assertTrue(result.isAssessable());
         Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.getChangeUrl());
-    }
-
-    @Test
-    void whenAssessedTotalVatClaimFieldHasAssessedValue() {
-        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        ClaimField allowedField = MockClaimsFunctions.createAllowedTotalVatField();
-        claim.setAllowedTotalVat(allowedField);
-        ClaimField assessedField = MockClaimsFunctions.createAssessedTotalVatField();
-        ClaimFieldRow result = assessedField.toClaimFieldRow(claim);
-        Assertions.assertEquals(assessedField.getAssessed(), result.getAssessed());
-    }
-
-    @Test
-    void whenAssessedTotalVatClaimFieldHasNullAssessedValueAndAllowedTotalVatHasAssessedValue() {
-        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        ClaimField allowedField = MockClaimsFunctions.createAllowedTotalVatField();
-        claim.setAllowedTotalVat(allowedField);
-        ClaimField assessedField = MockClaimsFunctions.createAssessedTotalVatField();
-        assessedField.setAssessed(null);
-        ClaimFieldRow result = assessedField.toClaimFieldRow(claim);
-        Assertions.assertEquals(allowedField.getAssessed(), result.getAssessed());
-    }
-
-    @Test
-    void whenAssessedTotalVatClaimFieldHasNullAssessedValueAndAllowedTotalVatHasNullAssessedValue() {
-        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        ClaimField allowedField = MockClaimsFunctions.createAllowedTotalVatField();
-        allowedField.setAssessed(null);
-        claim.setAllowedTotalVat(allowedField);
-        ClaimField assessedField = MockClaimsFunctions.createAssessedTotalVatField();
-        assessedField.setAssessed(null);
-        ClaimFieldRow result = assessedField.toClaimFieldRow(claim);
-        Assertions.assertNull(result.getAssessed());
-    }
-
-    @Test
-    void whenAssessedTotalInclVatClaimFieldHasAssessedValue() {
-        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        ClaimField allowedField = MockClaimsFunctions.createAllowedTotalInclVatField();
-        claim.setAllowedTotalInclVat(allowedField);
-        ClaimField assessedField = MockClaimsFunctions.createAssessedTotalInclVatField();
-        ClaimFieldRow result = assessedField.toClaimFieldRow(claim);
-        Assertions.assertEquals(assessedField.getAssessed(), result.getAssessed());
-    }
-
-    @Test
-    void whenAssessedTotalInclVatClaimFieldHasNullAssessedValueAndAllowedTotalInclVatHasAssessedValue() {
-        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        ClaimField allowedField = MockClaimsFunctions.createAllowedTotalInclVatField();
-        claim.setAllowedTotalInclVat(allowedField);
-        ClaimField assessedField = MockClaimsFunctions.createAssessedTotalInclVatField();
-        assessedField.setAssessed(null);
-        ClaimFieldRow result = assessedField.toClaimFieldRow(claim);
-        Assertions.assertEquals(allowedField.getAssessed(), result.getAssessed());
-    }
-
-    @Test
-    void whenAssessedTotalInclVatClaimFieldHasNullAssessedValueAndAllowedTotalInclVatHasNullAssessedValue() {
-        ClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        ClaimField allowedField = MockClaimsFunctions.createAllowedTotalInclVatField();
-        allowedField.setAssessed(null);
-        claim.setAllowedTotalInclVat(allowedField);
-        ClaimField assessedField = MockClaimsFunctions.createAssessedTotalInclVatField();
-        assessedField.setAssessed(null);
-        ClaimFieldRow result = assessedField.toClaimFieldRow(claim);
-        Assertions.assertNull(result.getAssessed());
     }
 
     @Test

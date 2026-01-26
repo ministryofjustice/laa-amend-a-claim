@@ -76,6 +76,16 @@ public class ChangeAllowedTotalsController {
         BigDecimal allowedTotalInclVat = setScale(allowedTotalForm.getAllowedTotalInclVat());
         allowedTotalInclVatField.setAssessed(allowedTotalInclVat);
 
+        ClaimField assessedTotalVatField = claim.getAssessedTotalVat();
+        if (assessedTotalVatField.isNotAssessable()) {
+            assessedTotalVatField.setAssessed(allowedTotalVat);
+        }
+
+        ClaimField assessedTotalInclVatField = claim.getAssessedTotalInclVat();
+        if (assessedTotalInclVatField.isNotAssessable()) {
+            assessedTotalInclVatField.setAssessed(allowedTotalInclVat);
+        }
+
         // Save updated Claim back to session
         session.setAttribute(claimId, claim);
 

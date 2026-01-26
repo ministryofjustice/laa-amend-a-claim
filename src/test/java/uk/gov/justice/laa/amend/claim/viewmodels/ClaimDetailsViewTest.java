@@ -3,7 +3,6 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
@@ -17,9 +16,6 @@ import java.time.OffsetDateTime;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.util.List;
-
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
 
 public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends ClaimDetailsView<C>> {
 
@@ -106,44 +102,6 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(0).getChangeUrl());
 
             Assertions.assertEquals(BigDecimal.valueOf(300), result.get(1).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(1).getChangeUrl());
-        }
-
-        @Test
-        void getAssessedTotalsHandlesNonAssessableFields() {
-            C claim = createClaim();
-
-            ClaimField assessedTotalVat = MockClaimsFunctions.createAssessedTotalVatField();
-            ClaimField assessedTotalInclVat = MockClaimsFunctions.createAssessedTotalInclVatField();
-
-            assessedTotalVat.setAssessed(null);
-            assessedTotalInclVat.setAssessed(null);
-
-            claim.setAssessedTotalVat(assessedTotalVat);
-            claim.setAssessedTotalInclVat(assessedTotalInclVat);
-
-            ClaimField allowedTotalVat = MockClaimsFunctions.createAllowedTotalVatField();
-            ClaimField allowedTotalInclVat = MockClaimsFunctions.createAllowedTotalInclVatField();
-
-            allowedTotalVat.setAssessed(BigDecimal.valueOf(100));
-            allowedTotalInclVat.setAssessed(BigDecimal.valueOf(100));
-
-            claim.setAllowedTotalVat(allowedTotalVat);
-            claim.setAllowedTotalInclVat(allowedTotalInclVat);
-
-            Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-
-            V viewModel = createView(claim);
-
-            List<ClaimFieldRow> result = viewModel.getAssessedTotals();
-
-            Assertions.assertEquals(2, result.size());
-
-            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(0).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(0).getChangeUrl());
-
-            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(1).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(1).getChangeUrl());
         }
     }
