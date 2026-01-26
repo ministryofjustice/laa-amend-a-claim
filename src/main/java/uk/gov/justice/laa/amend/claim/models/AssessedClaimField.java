@@ -7,16 +7,13 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 @Getter
 public class AssessedClaimField extends ClaimField {
 
-    protected final TotalType type;
-
     @Builder
-    public AssessedClaimField(String key, Object submitted, Object calculated, Object assessed, TotalType type) {
+    public AssessedClaimField(String key, Object submitted, Object calculated, Object assessed) {
         super(key, submitted, calculated, assessed);
-        this.type = type;
     }
 
-    public AssessedClaimField(String key, TotalType type) {
-        this(key, null, null, null, type);
+    public AssessedClaimField(String key) {
+        this(key, null, null, null);
     }
 
     @Override
@@ -30,7 +27,7 @@ public class AssessedClaimField extends ClaimField {
     }
 
     @Override
-    public ClaimFieldRow toClaimFieldRow(ClaimDetails claim) {
-        return ClaimFieldRow.from(this, claim);
+    public ClaimFieldRow toClaimFieldRow() {
+        return ClaimFieldRow.from(this);
     }
 }

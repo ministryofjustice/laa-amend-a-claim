@@ -15,6 +15,7 @@ import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
@@ -114,7 +115,7 @@ class ChangeAllowedTotalsControllerTest {
     }
 
     @Test
-    void testPostSavesValueAndRedirects() throws Exception {
+    void testPostSavesValuesAndRedirectsWhenAssessedTotalsAreAssessable() throws Exception {
         ClaimDetails claim = crimeClaim;
         //Given the Claim Field status has been set based on outcome
         claimStatusHandler.updateFieldStatuses(claim, claim.getAssessmentOutcome());
@@ -139,8 +140,48 @@ class ChangeAllowedTotalsControllerTest {
         Assertions.assertNotNull(updated);
 
         Assertions.assertEquals(new BigDecimal("700.00"), updated.getAllowedTotalVat().getAssessed());
-
         Assertions.assertEquals(new BigDecimal("800.00"), updated.getAllowedTotalInclVat().getAssessed());
+
+        Assertions.assertEquals(new BigDecimal("300"), updated.getAssessedTotalVat().getAssessed());
+        Assertions.assertEquals(new BigDecimal("300"), updated.getAssessedTotalInclVat().getAssessed());
+    }
+
+    @Test
+    void testPostSavesValuesAndRedirectsWhenAssessedTotalsAreNotAssessable() throws Exception {
+        ClaimDetails claim = crimeClaim;
+        //Given the Claim Field status has been set based on outcome
+        claimStatusHandler.updateFieldStatuses(claim, claim.getAssessmentOutcome());
+
+        ClaimField assessedTotalVat = claim.getAssessedTotalVat();
+        ClaimField assessedTotalInclVat = claim.getAssessedTotalInclVat();
+
+        assessedTotalVat.setAssessable(false);
+        assessedTotalInclVat.setAssessable(false);
+
+        Assertions.assertNotNull(crimeClaim.getAllowedTotalVat());
+        Assertions.assertNotNull(crimeClaim.getAllowedTotalInclVat());
+
+        session.setAttribute(claimId, claim);
+
+        mockMvc.perform(
+                post(buildPath())
+                    .session(session)
+                    .with(csrf())
+                    .param("allowedTotalVat", "700")
+                    .param("allowedTotalInclVat", "800")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(buildRedirectPath()));
+
+        ClaimDetails updated = (ClaimDetails) session.getAttribute(claimId);
+
+        Assertions.assertNotNull(updated);
+
+        Assertions.assertEquals(new BigDecimal("700.00"), updated.getAllowedTotalVat().getAssessed());
+        Assertions.assertEquals(new BigDecimal("800.00"), updated.getAllowedTotalInclVat().getAssessed());
+
+        Assertions.assertEquals(new BigDecimal("700.00"), updated.getAssessedTotalVat().getAssessed());
+        Assertions.assertEquals(new BigDecimal("800.00"), updated.getAssessedTotalInclVat().getAssessed());
     }
 
     @Test

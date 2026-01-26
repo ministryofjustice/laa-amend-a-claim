@@ -13,7 +13,6 @@ import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
-import uk.gov.justice.laa.amend.claim.models.TotalType;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 
 import java.math.BigDecimal;
@@ -206,21 +205,20 @@ public class MockClaimsFunctions {
     }
 
     public static AssessedClaimField createAssessedTotalVatField() {
-        return createAssessedTotalField(ASSESSED_TOTAL_VAT, TotalType.TOTAL_VAT);
+        return createAssessedTotalField(ASSESSED_TOTAL_VAT);
     }
 
     public static AssessedClaimField createAssessedTotalInclVatField() {
-        return createAssessedTotalField(ASSESSED_TOTAL_INCL_VAT, TotalType.TOTAL_INCL_VAT);
+        return createAssessedTotalField(ASSESSED_TOTAL_INCL_VAT);
     }
 
-    private static AssessedClaimField createAssessedTotalField(String key, TotalType type) {
+    private static AssessedClaimField createAssessedTotalField(String key) {
         return AssessedClaimField
             .builder()
             .key(key)
             .submitted(BigDecimal.valueOf(100))
             .calculated(BigDecimal.valueOf(200))
             .assessed(BigDecimal.valueOf(300))
-            .type(type)
             .build();
     }
 

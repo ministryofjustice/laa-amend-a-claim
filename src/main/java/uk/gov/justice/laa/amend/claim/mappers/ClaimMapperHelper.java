@@ -10,7 +10,6 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
-import uk.gov.justice.laa.amend.claim.models.TotalType;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
@@ -173,12 +172,12 @@ public class ClaimMapperHelper {
 
     @Named("mapAssessedTotalVat")
     public ClaimField mapAssessedTotalVat() {
-        return new AssessedClaimField(ASSESSED_TOTAL_VAT, TotalType.TOTAL_VAT);
+        return new AssessedClaimField(ASSESSED_TOTAL_VAT);
     }
 
     @Named("mapAssessedTotalInclVat")
     public ClaimField mapAssessedTotalInclVat() {
-        return new AssessedClaimField(ASSESSED_TOTAL_INCL_VAT, TotalType.TOTAL_INCL_VAT);
+        return new AssessedClaimField(ASSESSED_TOTAL_INCL_VAT);
     }
 
     @Named("mapAllowedTotalVat")

@@ -6,7 +6,6 @@ import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
 import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
@@ -36,22 +35,12 @@ public class ClaimFieldRow {
         );
     }
 
-    public static ClaimFieldRow from(AssessedClaimField claimField, ClaimDetails claim) {
-        Object assessed;
-        if (claimField.getAssessed() == null) {
-            switch (claimField.getType()) {
-                case TOTAL_VAT -> assessed = claim.getAllowedTotalVat().getAssessed();
-                case TOTAL_INCL_VAT -> assessed = claim.getAllowedTotalInclVat().getAssessed();
-                default -> assessed = null;
-            }
-        } else {
-            assessed = claimField.getAssessed();
-        }
+    public static ClaimFieldRow from(AssessedClaimField claimField) {
         return new ClaimFieldRow(
             claimField.getKey(),
             claimField.getSubmitted(),
             claimField.getCalculated(),
-            assessed,
+            claimField.getAssessed(),
             claimField.isAssessable(),
             "/submissions/%s/claims/%s/assessed-totals"
         );

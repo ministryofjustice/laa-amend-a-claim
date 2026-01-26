@@ -45,7 +45,7 @@ public abstract class ClaimField implements Serializable {
         return !isAssessable();
     }
 
-    public abstract ClaimFieldRow toClaimFieldRow(ClaimDetails claim);
+    public abstract ClaimFieldRow toClaimFieldRow();
 
     public abstract void applyOutcome(OutcomeType outcome);
 

@@ -262,8 +262,7 @@ public interface AssessmentMapper {
      * @return the assessed total VAT, unless this is not modifiable in the UI (i.e. null) in which case we return the allowed total VAT
      */
     default BigDecimal mapAssessedTotalVat(ClaimDetails claim) {
-        BigDecimal assessedValue = mapToBigDecimal(claim.getAssessedTotalVat());
-        return assessedValue != null ? assessedValue : mapToBigDecimal(claim.getAllowedTotalVat());
+        return mapToBigDecimal(claim.getAssessedTotalVat());
     }
 
     /**
@@ -272,8 +271,7 @@ public interface AssessmentMapper {
      * @return the assessed total (including VAT), unless this is not modifiable in the UI (i.e. null) in which case we return the allowed total (including VAT)
      */
     default BigDecimal mapAssessedTotalInclVat(ClaimDetails claim) {
-        BigDecimal assessedValue = mapToBigDecimal(claim.getAssessedTotalInclVat());
-        return assessedValue != null ? assessedValue : mapToBigDecimal(claim.getAllowedTotalInclVat());
+        return mapToBigDecimal(claim.getAssessedTotalInclVat());
     }
 
     default BigDecimal mapAllowedTotalVat(ClaimDetails claim) {

@@ -12,7 +12,6 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.TotalType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -417,7 +416,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAssessed());
-        assertEquals(TotalType.TOTAL_VAT, claimField.getType());
     }
 
     @Test
@@ -433,7 +431,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAssessed());
-        assertEquals(TotalType.TOTAL_INCL_VAT, claimField.getType());
     }
 
     @Test

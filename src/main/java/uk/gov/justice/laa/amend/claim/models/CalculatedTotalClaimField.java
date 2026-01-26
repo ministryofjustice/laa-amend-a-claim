@@ -25,7 +25,7 @@ public class CalculatedTotalClaimField extends ClaimField {
     }
 
     @Override
-    public ClaimFieldRow toClaimFieldRow(ClaimDetails claim) {
+    public ClaimFieldRow toClaimFieldRow() {
         return ClaimFieldRow.from(this);
     }
 }
