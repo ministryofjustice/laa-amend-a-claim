@@ -6,3 +6,5 @@ exclude:
   global:
     - >-
       src/main/java/uk/gov/justice/laa/amend/claim/config/LocalSecurityConfig.java
+    - >-
+      src/main/java/uk/gov/justice/laa/amend/claim/config/E2eSecurityConfig.java

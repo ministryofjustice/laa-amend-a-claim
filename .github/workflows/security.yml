@@ -93,7 +93,6 @@ jobs:
 
       - name: Run Snyk on Docker image
         uses: snyk/actions/docker@9adf32b1121593767fc3c057af55b55db032dc04
-        continue-on-error: true
         with:
           image: spring-boot-microservice:scan
           args: --file=Dockerfile --severity-threshold=high
