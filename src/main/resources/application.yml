@@ -22,7 +22,7 @@ spring:
     redis:
       url: ${REDIS_URL}
   session:
-    timeout: 15m
+    timeout: 30m
 sentry:
   dsn: ${SENTRY_DSN}
   environment: ${SENTRY_ENVIRONMENT}
@@ -37,6 +37,12 @@ app:
   feedback-url: ${FEEDBACK_URL}
   laa-url: ${LAA_URL}
 
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
 logging:
   level:
     org.springframework.security: DEBUG
@@ -47,12 +53,6 @@ logging:
     org.apache.http.wire: DEBUG
     org.apache.http.headers: DEBUG
     org.springframework.session: INFO
-
----
-spring:
-  config:
-    activate:
-      on-profile: local
 
 ---
 spring:

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: e2e-stack
+description: Helm chart with embedded PostgreSQL, data-claims-api and amend-a-claim services
+type: application
+version: 1.0.0
+appVersion: "1.0"

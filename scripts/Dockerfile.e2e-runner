@@ -1,0 +1,65 @@
+# GitHub Self-Hosted Runner with E2E Tests
+FROM ubuntu:22.04
+
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    RUNNER_VERSION=2.331.0 \
+    PLATFORM=x64 \
+    NODE_VERSION=20.x \
+    JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto \
+    PATH=/usr/lib/jvm/java-21-amazon-corretto/bin:$PATH
+
+# Install base dependencies
+RUN apt-get update && apt-get install -y \
+    curl wget git ca-certificates \
+    gnupg software-properties-common \
+    jq unzip zip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION} | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest
+
+
+# Install Java 21
+RUN wget -O- https://apt.corretto.aws/corretto.key | gpg --dearmor -o /usr/share/keyrings/corretto-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/corretto-keyring.gpg] https://apt.corretto.aws stable main" | tee /etc/apt/sources.list.d/corretto.list \
+    && apt-get update && apt-get install -y java-21-amazon-corretto-jdk \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Playwright and browsers
+RUN npm init -y \
+    && npm install -g playwright@latest \
+    && npx playwright install --with-deps chromium firefox webkit
+
+# Install Allure
+RUN npm install -g allure-commandline
+
+# Create runner user
+RUN useradd -m -u 1001 runner \
+    && chown -R runner:runner /home/runner \
+    && echo "runner ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+
+USER runner
+WORKDIR /home/runner
+
+# Install GitHub Actions runner
+RUN mkdir actions-runner && cd actions-runner \
+    && curl -o actions-runner-linux-${PLATFORM}-${RUNNER_VERSION}.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-${PLATFORM}-${RUNNER_VERSION}.tar.gz \
+    && tar xzf ./actions-runner-linux-${PLATFORM}-${RUNNER_VERSION}.tar.gz \
+    && rm actions-runner-linux-${PLATFORM}-${RUNNER_VERSION}.tar.gz
+
+WORKDIR /home/runner/actions-runner
+
+
+# Copy and set up entrypoint script
+COPY runner_script.sh /runner_script.sh
+USER root
+RUN chmod +x /runner_script.sh
+
+
+USER runner
+ENTRYPOINT ["/runner_script.sh"]
+
