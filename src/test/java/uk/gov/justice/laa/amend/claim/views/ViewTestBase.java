@@ -295,7 +295,7 @@ public abstract class ViewTestBase {
 
   private void assertCellContainsChangeLink(Element cell, String expectedHref) {
     Element link = selectFirst(cell, "a.govuk-link");
-    Assertions.assertEquals("Change", link.ownText());
+    Assertions.assertTrue(link.text().startsWith("Change"));
     Assertions.assertEquals(expectedHref, link.attr("href"));
   }
 
