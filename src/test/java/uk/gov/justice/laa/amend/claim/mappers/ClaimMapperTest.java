@@ -617,7 +617,7 @@ class ClaimMapperTest {
         assertEquals("MT1+MT2", claim.getMatterTypeCode());
         assertEquals(claimSummaryFeeId.toString(), claim.getClaimSummaryFeeId());
         assertEquals("LEGAL HELP", claim.getAreaOfLaw());
-        assertEquals("User ID", claim.getProviderName());
+        assertNull(claim.getProviderName());
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }
 
@@ -663,7 +663,7 @@ class ClaimMapperTest {
         assertEquals("PrisonCode", claim.getPoliceStationCourtPrisonId());
         assertEquals("SchemeId", claim.getSchemeId());
 
-        assertEquals("User ID", claim.getProviderName());
+        assertNull(claim.getProviderName());
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }
 }
