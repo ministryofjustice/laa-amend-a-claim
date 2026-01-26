@@ -34,6 +34,14 @@
         </div>
         <div class="govuk-summary-card__content">
             <table class="govuk-table govuk-!-margin-bottom-0">
+                <colgroup>
+                    <col class="govuk-table__row-item">
+                    <col class="govuk-table__row-values">
+                    <col class="govuk-table__row-values">
+                    <col class="govuk-table__row-values">
+                    <col class="govuk-table__row-actions">
+                </colgroup>
+
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.item}"></th>
@@ -98,6 +106,14 @@
         </div>
         <div class="govuk-summary-card__content">
             <table class="govuk-table govuk-!-margin-bottom-0">
+                <colgroup>
+                    <col class="govuk-table__row-item">
+                    <col class="govuk-table__row-values">
+                    <col class="govuk-table__row-values">
+                    <col class="govuk-table__row-values">
+                    <col class="govuk-table__row-actions">
+                </colgroup>
+
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.item}"></th>
@@ -124,7 +140,10 @@
                             </td>
                         </th:block>
 
-                        <td class="govuk-table__cell" th:if="${(row.isNotAssessable())}"></td>
+                        <th:block th:if="${(row.isNotAssessable())}">
+                            <td class="govuk-table__cell"></td>
+                            <td class="govuk-table__cell"></td>
+                        </th:block>
 
                         <th:block th:if="${row.isAssessableAndAssessed()}">
                             <td class="govuk-table__cell">
@@ -148,6 +167,13 @@
         </div>
         <div class="govuk-summary-card__content">
             <table class="govuk-table govuk-!-margin-bottom-0">
+                <colgroup>
+                    <col class="govuk-table__row-item">
+                    <col class="govuk-table__row-values">
+                    <col class="govuk-table__row-values">
+                    <col class="govuk-table__row-values">
+                    <col class="govuk-table__row-actions">
+                </colgroup>
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.item}"></th>
@@ -172,9 +198,14 @@
                                     <th:span class="govuk-visually-hidden" th:text=" #{${row.label}}"></th:span>
                                 </a>
                             </td>
+                            <td class="govuk-table__cell"></td>
+                            <td class="govuk-table__cell"></td>
                         </th:block>
 
-                        <td class="govuk-table__cell" th:if="${(row.isNotAssessable())}"></td>
+                        <th:block th:if="${(row.isNotAssessable())}">
+                            <td class="govuk-table__cell"></td>
+                            <td class="govuk-table__cell"></td>
+                        </th:block>
 
                         <th:block th:if="${row.isAssessableAndAssessed()}">
                             <td class="govuk-table__cell">
