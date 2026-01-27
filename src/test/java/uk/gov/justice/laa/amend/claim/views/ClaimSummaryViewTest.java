@@ -130,19 +130,27 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setHasAssessment(true);
 
         OAuth2AuthorizedClient mockClient = mock(OAuth2AuthorizedClient.class);
-        when(mockClient.getAccessToken()).thenReturn(new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "mock-token", Instant.now(), Instant.now().plusSeconds(3600)));
+        when(mockClient.getAccessToken())
+            .thenReturn(new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "mock-token", Instant.now(), Instant.now().plusSeconds(3600)));
+
         when(authorizedClientService.loadAuthorizedClient(eq("entra"), anyString()))
                 .thenReturn(mockClient);
 
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+        when(claimService.getClaimDetails(anyString(), anyString()))
+            .thenReturn(claim);
+
         var lastAssessment = new AssessmentInfo();
         lastAssessment.setLastAssessedBy("test");
         LocalDateTime localDateTime = LocalDateTime.of(2025, 12, 18, 16, 11, 27);
         lastAssessment.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
         lastAssessment.setLastAssessmentOutcome(OutcomeType.NILLED);
         claim.setLastAssessment(lastAssessment);
-        when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
-        when(userRetrievalService.getMicrosoftApiUser(any(), any())).thenReturn(new MicrosoftApiUser("test","test"));
+
+        when(assessmentService.getLatestAssessmentByClaim(claim))
+            .thenReturn(claim);
+
+        when(userRetrievalService.getMicrosoftApiUser(any()))
+            .thenReturn(new MicrosoftApiUser("test-id","Bloggs, Joe", "Joe", "Bloggs"));
 
         Document doc = renderDocument();
 
@@ -153,7 +161,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertPageHasInformationAlert(
             doc,
             "This claim has been assessed",
-            "Last edited by test on 18 December 2025 at 16:11:27 Nilled."
+            "Last edited by Joe Bloggs on 18 December 2025 at 16:11:27 Nilled."
         );
 
         assertPageHasNoActiveServiceNavigationItems(doc);

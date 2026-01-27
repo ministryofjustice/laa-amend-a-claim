@@ -23,9 +23,11 @@ public class MicrosoftGraphApiClientIntegrationTest extends WireMockSetup {
     void testGetUserWhenOkResponse() {
         String response = """
             {
-                "id": "test-user",
-                "displayName": "Dummy User",
-                "userPrincipalName": "test-user@example.com"
+                "id": "dummy-id",
+                "displayName": "User, Dummy",
+                "userPrincipalName": "dummy.user@example.com",
+                "givenName": "Dummy",
+                "surname": "User"
             }""";
 
         stubFor(get(urlPathMatching("/v1.0/users/abc"))
@@ -37,8 +39,10 @@ public class MicrosoftGraphApiClientIntegrationTest extends WireMockSetup {
         MicrosoftApiUser user = microsoftGraphApiClient.getUser("abc", "123").block();
 
         Assertions.assertNotNull(user);
-        Assertions.assertEquals("test-user", user.getId());
-        Assertions.assertEquals("Dummy User", user.getDisplayName());
+        Assertions.assertEquals("dummy-id", user.getId());
+        Assertions.assertEquals("User, Dummy", user.getDisplayName());
+        Assertions.assertEquals("Dummy", user.getGivenName());
+        Assertions.assertEquals("User", user.getSurname());
     }
 
     @Test

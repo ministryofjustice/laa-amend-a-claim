@@ -201,7 +201,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
     @Nested
     class LastEditedByTests {
         @Test
-        void displayLastEditedTextWhenEverythingNonNull() {
+        void displayLastEditedTextWhenUserValuesAreNonNull() {
             C claim = createClaim();
             AssessmentInfo assessmentInfo = new AssessmentInfo();
             LocalDateTime localDateTime = LocalDateTime.of(2025, 12, 18, 16, 11, 27);
@@ -209,7 +209,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             assessmentInfo.setLastAssessmentOutcome(OutcomeType.NILLED);
             claim.setLastAssessment(assessmentInfo);
             V viewModel = createView(claim);
-            MicrosoftApiUser user = new MicrosoftApiUser("id", "Joe Bloggs");
+            MicrosoftApiUser user = new MicrosoftApiUser("id", "Bloggs, Joe", "Joe", "Bloggs");
 
             ThymeleafMessage result = viewModel.lastEditedBy(user);
 
@@ -218,6 +218,27 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             Assertions.assertEquals("18 December 2025", result.getParams()[1]);
             Assertions.assertEquals("16:11:27", result.getParams()[2]);
             ThymeleafMessage param = (ThymeleafMessage) result.getParams()[3];
+            Assertions.assertEquals("outcome.nilled", param.getKey());
+            Assertions.assertEquals(0, param.getParams().length);
+        }
+
+        @Test
+        void displayLastEditedTextWhenUserValuesAreNull() {
+            C claim = createClaim();
+            AssessmentInfo assessmentInfo = new AssessmentInfo();
+            LocalDateTime localDateTime = LocalDateTime.of(2025, 12, 18, 16, 11, 27);
+            assessmentInfo.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
+            assessmentInfo.setLastAssessmentOutcome(OutcomeType.NILLED);
+            claim.setLastAssessment(assessmentInfo);
+            V viewModel = createView(claim);
+            MicrosoftApiUser user = new MicrosoftApiUser("id", null, null, null);
+
+            ThymeleafMessage result = viewModel.lastEditedBy(user);
+
+            Assertions.assertEquals("claimSummary.lastAssessmentText.noUser", result.getKey());
+            Assertions.assertEquals("18 December 2025", result.getParams()[0]);
+            Assertions.assertEquals("16:11:27", result.getParams()[1]);
+            ThymeleafMessage param = (ThymeleafMessage) result.getParams()[2];
             Assertions.assertEquals("outcome.nilled", param.getKey());
             Assertions.assertEquals(0, param.getParams().length);
         }
