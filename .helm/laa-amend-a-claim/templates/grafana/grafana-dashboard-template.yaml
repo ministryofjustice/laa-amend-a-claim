@@ -27,16 +27,267 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 199,
+  "id": 327,
   "links": [],
   "panels": [
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 49,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.6+security-01",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(\n    assessment_submissions_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Claim assessments",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "id": 47,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.6+security-01",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "round(\n  100 *\n  (\n    sum(increase(assessment_submissions_failed_total[$__range]))\n    /\n    clamp_min(sum(increase(assessment_submissions_total[$__range])), 1)\n  )\n)",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Submission failure rate",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 16,
+        "x": 8,
+        "y": 0
+      },
+      "id": 48,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.6+security-01",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(\n    assessment_submissions_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
+          "legendFormat": "Successful assessments",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Failures",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Claim assessments",
+      "type": "timeseries"
+    },
     {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 8
       },
       "id": 40,
       "panels": [],
@@ -74,7 +325,7 @@
         "h": 6,
         "w": 3,
         "x": 0,
-        "y": 1
+        "y": 9
       },
       "id": 2,
       "options": {
@@ -92,7 +343,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -100,7 +351,7 @@
             "uid": "prometheus"
           },
           "editorMode": "builder",
-          "expr": "sum(kube_pod_container_info{namespace='{{ .Release.Namespace }}', container='$container'})",
+          "expr": "sum(kube_pod_container_info{namespace='laa-amend-a-claim-dev', container='$container'})",
           "legendFormat": "Total",
           "range": true,
           "refId": "A"
@@ -111,7 +362,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum({namespace='{{ .Release.Namespace }}', container='$container', phase='Running',pod=~'.*deployment.*'} + 0)",
+          "expr": "sum({namespace='laa-amend-a-claim-dev', container='$container', phase='Running',pod=~'.*deployment.*'} + 0)",
           "hide": false,
           "legendFormat": "Running",
           "range": true,
@@ -123,7 +374,7 @@
             "uid": "prometheus"
           },
           "editorMode": "builder",
-          "expr": "sum({namespace='{{ .Release.Namespace }}', container='$container',phase='Pending',pod=~'.*deployment.*'} + 0)",
+          "expr": "sum({namespace='laa-amend-a-claim-dev', container='$container',phase='Pending',pod=~'.*deployment.*'} + 0)",
           "hide": false,
           "legendFormat": "Pending",
           "range": true,
@@ -135,7 +386,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum({namespace='{{ .Release.Namespace }}', container='$container',phase='Failed',pod=~'.*deployment.*'} + 0)",
+          "expr": "sum({namespace='laa-amend-a-claim-dev', container='$container',phase='Failed',pod=~'.*deployment.*'} + 0)",
           "hide": false,
           "legendFormat": "Failed",
           "range": true,
@@ -207,9 +458,9 @@
       },
       "gridPos": {
         "h": 10,
-        "w": 6,
+        "w": 10,
         "x": 3,
-        "y": 1
+        "y": 9
       },
       "id": 46,
       "options": {
@@ -220,11 +471,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -232,7 +484,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by(instance) (increase(http_server_requests_seconds_count{namespace='{{ .Release.Namespace }}',container='$container'}[$__rate_interval])) ",
+          "expr": "sum by(instance) (increase(http_server_requests_seconds_count{namespace='laa-amend-a-claim-dev',container='$container'}[$__rate_interval])) ",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -303,105 +555,9 @@
       },
       "gridPos": {
         "h": 10,
-        "w": 4,
-        "x": 9,
-        "y": 1
-      },
-      "id": 20,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.3.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum by(application) (increase(http_server_requests_seconds_count{namespace='{{ .Release.Namespace }}', container='$container', status='401'}[$__rate_interval]))",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Unauthorised Requests",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
         "w": 11,
         "x": 13,
-        "y": 1
+        "y": 9
       },
       "id": 4,
       "options": {
@@ -412,11 +568,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -424,8 +581,8 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by(uri, method) (increase(http_server_requests_seconds_count{namespace='{{ .Release.Namespace }}',container='$container', uri!~'.*actuator.*|.*swagger.*|.*v3.*|.*providers.*'}[$__rate_interval])) ",
-          "legendFormat": "{{`{{app}}`}}",
+          "expr": "sum by(uri, method) (increase(http_server_requests_seconds_count{namespace='laa-amend-a-claim-dev',container='$container', uri!~'.*actuator.*|.*swagger.*|.*v3.*|.*providers.*'}[$__rate_interval])) ",
+          "legendFormat": "{{app}}",
           "range": true,
           "refId": "A"
         }
@@ -498,7 +655,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 11
+        "y": 19
       },
       "id": 42,
       "options": {
@@ -509,11 +666,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -521,7 +679,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by(uri, method) (rate(http_server_requests_seconds_sum{namespace='{{ .Release.Namespace }}',container='$container', uri!~'.*actuator.*|.*swagger.*|.*v3.*|.*providers.*'}[1m])) / sum by(uri) (rate(http_server_requests_seconds_count{namespace='{{ .Release.Namespace }}',container='$container', uri!~'.*actuator.*|.*swagger.*|.*v3.*|.*providers.*', status='200'}[$__rate_interval]))",
+          "expr": "sum by (uri, method) (\n  rate(\n    http_server_requests_seconds_sum{\n      namespace=\"laa-amend-a-claim-dev\",\n      container=\"$container\",\n      uri!~\".*actuator.*|.*swagger.*|.*v3.*|.*providers.*\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)\n/\nsum by (uri, method) (\n  rate(\n    http_server_requests_seconds_count{\n      namespace=\"laa-amend-a-claim-dev\",\n      container=\"$container\",\n      uri!~\".*actuator.*|.*swagger.*|.*v3.*|.*providers.*\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -595,7 +753,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 11
+        "y": 19
       },
       "id": 44,
       "options": {
@@ -606,11 +764,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -618,7 +777,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "max by(uri, method) (http_server_requests_seconds_max{namespace='{{ .Release.Namespace }}',container='$container', uri!~'.*actuator.*|.*swagger.*|.*v3.*|.*providers.*'}) ",
+          "expr": "max by(uri, method) (http_server_requests_seconds_max{namespace='laa-amend-a-claim-dev',container='$container', uri!~'.*actuator.*|.*swagger.*|.*v3.*|.*providers.*'}) ",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -633,7 +792,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 29
       },
       "id": 36,
       "panels": [],
@@ -645,6 +804,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "Part of Garbage Collection. Eden space is a memory pool where new objects are created.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -667,7 +827,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 22
+        "y": 30
       },
       "id": 18,
       "options": {
@@ -685,7 +845,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -693,14 +853,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_max_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Eden Space'}/1000000",
-          "legendFormat": "{{`{{instance}}`}}",
+          "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Eden Space'}/1000000",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
       ],
       "title": "Max Eden (MB)",
-      "description": "Part of Garbage Collection. Eden space is a memory pool where new objects are created.",
       "type": "gauge"
     },
     {
@@ -708,6 +867,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "Part of garbage collection. Survivor space is the memory pool in which when eden space is full, objects are moved to if they are still in use.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -730,7 +890,7 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 22
+        "y": 30
       },
       "id": 16,
       "options": {
@@ -749,7 +909,7 @@
         "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -757,14 +917,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_max_bytes{namespace='{{ .Release.Namespace }}',container='$container', area='heap', id='Survivor Space', namespace='{{ .Release.Namespace }}'} / 1000000",
-          "legendFormat": "{{`{{instance}}`}}",
+          "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container', area='heap', id='Survivor Space', namespace='laa-amend-a-claim-dev'} / 1000000",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
       ],
       "title": "Max Survivor (MB)",
-      "description": "Part of garbage collection. Survivor space is the memory pool in which when eden space is full, objects are moved to if they are still in use.",
       "type": "gauge"
     },
     {
@@ -772,6 +931,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "Part of garbage collection. Tenured space is where long-lived objects are stored. Objects are moved here if they survive multiple garbage collection cycles within the survivor space. Garbage collection checks this space less often.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -794,7 +954,7 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 22
+        "y": 30
       },
       "id": 14,
       "options": {
@@ -812,7 +972,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -820,14 +980,13 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_max_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Tenured Gen',} /1000000",
-          "legendFormat": "{{`{{instance}}`}}",
+          "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Tenured Gen',} /1000000",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
       ],
       "title": "Max Tenured (MB)",
-      "description": "Part of garbage collection. Tenured space is where long-lived objects are stored. Objects are moved here if they survive multiple garbage collection cycles within the survivor space. Garbage collection checks this space less often.",
       "type": "gauge"
     },
     {
@@ -841,11 +1000,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "MB",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -854,6 +1015,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -875,7 +1037,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "#EAB839",
@@ -890,7 +1053,7 @@
         "h": 10,
         "w": 8,
         "x": 0,
-        "y": 28
+        "y": 36
       },
       "id": 8,
       "options": {
@@ -901,10 +1064,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
+      "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -912,8 +1077,8 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_used_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Eden Space'}/1000000",
-          "legendFormat": "{{`{{instance}}`}}",
+          "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Eden Space'}/1000000",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -932,11 +1097,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "MB",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -945,6 +1112,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -966,7 +1134,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -981,7 +1150,7 @@
         "h": 10,
         "w": 8,
         "x": 8,
-        "y": 28
+        "y": 36
       },
       "id": 10,
       "options": {
@@ -992,10 +1161,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
+      "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1003,8 +1174,8 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_used_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Survivor Space'}/1000000",
-          "legendFormat": "{{`{{instance}}`}}",
+          "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Survivor Space'}/1000000",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -1023,11 +1194,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "MB",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -1036,6 +1209,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1057,7 +1231,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1072,7 +1247,7 @@
         "h": 10,
         "w": 8,
         "x": 16,
-        "y": 28
+        "y": 36
       },
       "id": 12,
       "options": {
@@ -1083,10 +1258,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "single",
           "sort": "none"
         }
       },
+      "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
           "datasource": {
@@ -1094,8 +1271,8 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_used_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Tenured Gen',} /1000000",
-          "legendFormat": "{{`{{instance}}`}}",
+          "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Tenured Gen',} /1000000",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -1111,35 +1288,35 @@
     "LAA",
     "DSTEW",
     "Claims",
-    "{{ .Chart.Name }}",
-    "{{ .Release.Namespace }}",
-    "{{ .Release.Name }}"
+    "laa-amend-a-claim",
+    "laa-amend-a-claim-dev",
+    "laa-amend-a-claim"
   ],
   "templating": {
     "list": [
       {
         "current": {
-          "text": "{{ .Release.Namespace }}-{{ .Chart.Name }}",
-          "value": "{{ .Release.Namespace }}-{{ .Chart.Name }}"
+          "text": "laa-amend-a-claim",
+          "value": "laa-amend-a-claim"
         },
-        "definition": "label_values(kube_pod_container_info{namespace=\"{{ .Release.Namespace }}\"},container)",
+        "definition": "label_values(kube_pod_container_info{namespace=\"laa-amend-a-claim-dev\"},container)",
         "description": "",
         "label": "Helm install",
         "name": "container",
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(kube_pod_container_info{namespace=\"{{ .Release.Namespace }}\"},container)",
+          "query": "label_values(kube_pod_container_info{namespace=\"laa-amend-a-claim-dev\"},container)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
-        "regex": "/.*{{ .Chart.Name }}/",
+        "regex": "/.*laa-amend-a-claim/",
         "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
@@ -1156,8 +1333,8 @@
     ]
   },
   "timezone": "browser",
-  "title": "LAA Amend a Claim Dashboard - {{ .Release.Name }} / {{ .Release.Namespace }}",
-  "uid": "{{ .Release.Name | trunc 12 }}-{{ .Release.Namespace | trunc -10 }}-{{ .Chart.Name | trunc -12 }}",
+  "title": "LAA Amend a Claim Dashboard - laa-amend-a-claim / laa-amend-a-claim-dev",
+  "uid": "laa-amend-a---claim-dev-mend-a-claim",
   "version": 1,
   "weekStart": ""
 }
