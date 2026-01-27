@@ -49,7 +49,7 @@ public class AssessmentOutcomeController {
     public String selectAssessmentOutcome(
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId,
-        @Valid @ModelAttribute AssessmentOutcomeForm form,
+        @Valid @ModelAttribute("form") AssessmentOutcomeForm form,
         BindingResult bindingResult,
         HttpSession session,
         Model model,
@@ -85,7 +85,7 @@ public class AssessmentOutcomeController {
     private String renderView(Model model, AssessmentOutcomeForm form, String submissionId, String claimId) {
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claimId", claimId);
-        model.addAttribute("assessmentOutcomeForm", form);
+        model.addAttribute("form", form);
 
         return "assessment-outcome";
     }

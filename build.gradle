@@ -9,7 +9,7 @@ java {
 }
 
 checkstyle {
-    toolVersion = '10.21.2'
+    toolVersion = '13.0.0'
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
 
