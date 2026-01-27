@@ -128,9 +128,19 @@
                         th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}">
                     </td>
 
-                    <td class="govuk-table__cell"
-                        th:text="${row.isAssessed} ?
-                        ${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}: ''">
+                    <td class="govuk-table__cell">
+
+                        <a th:if="${row.isAssessableAndUnassessed}"
+                           th:href="${row.getChangeUrl(submissionId, claimId)}"
+                           th:id="${row.id}"
+                           th:data-testid="${'claim-field-' + row.key}"
+                           class="govuk-link govuk-link--no-visited-state">
+                            <span th:text="#{service.add}"/>
+                            <span class="govuk-visually-hidden" th:text="#{${row.label}}"/>
+                        </a>
+
+                        <span th:if="${!row.isAssessableAndUnassessed}"
+                              th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"/>
                     </td>
 
                     <td class="govuk-table__cell">
