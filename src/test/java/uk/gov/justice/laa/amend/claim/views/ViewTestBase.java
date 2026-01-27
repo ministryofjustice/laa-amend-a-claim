@@ -293,16 +293,20 @@ public abstract class ViewTestBase {
     assertCellContainsText(cell, "");
   }
 
-  private void assertCellContainsChangeLink(Element cell, String expectedHref) {
-    Element link = selectFirst(cell, "a.govuk-link");
-    Assertions.assertTrue(link.text().startsWith("Change"));
-    Assertions.assertEquals(expectedHref, link.attr("href"));
+  private void assertCellContainsChangeLink(Element cell, String expectedHref, String expectedHiddenText) {
+    assertCellContainsLink(cell, "Change", expectedHref, expectedHiddenText);
   }
 
-  private void assertCellContainsAddLink(Element cell, String expectedHref) {
+  private void assertCellContainsAddLink(Element cell, String expectedHref, String expectedHiddenText) {
+    assertCellContainsLink(cell, "Add", expectedHref, expectedHiddenText);
+  }
+
+  private void assertCellContainsLink(Element cell, String expectedText, String expectedHref, String expectedHiddenText) {
     Element link = selectFirst(cell, "a.govuk-link");
-    Assertions.assertTrue(link.text().startsWith("Add"));
+    Assertions.assertEquals(expectedText, link.ownText());
     Assertions.assertEquals(expectedHref, link.attr("href"));
+    Element hiddenText = selectFirst(link, "span.govuk-visually-hidden");
+    Assertions.assertEquals(String.format(" %s", expectedHiddenText), hiddenText.wholeOwnText());
   }
 
   protected void assertTableRowContainsValuesWithNoChangeLink(
@@ -331,7 +335,7 @@ public abstract class ViewTestBase {
     assertCellContainsText(row.get(1), calculated);
     assertCellContainsText(row.get(2), requested);
     assertCellContainsText(row.get(3), assessed);
-    assertCellContainsChangeLink(row.get(4), changeUrl);
+    assertCellContainsChangeLink(row.get(4), changeUrl, label);
   }
 
   protected void assertTableRowContainsValuesWithAddLink(
@@ -344,7 +348,7 @@ public abstract class ViewTestBase {
     assertCellContainsText(row.getFirst(), label);
     assertCellContainsText(row.get(1), calculated);
     assertCellContainsText(row.get(2), requested);
-    assertCellContainsAddLink(row.get(3), addUrl);
+    assertCellContainsAddLink(row.get(3), addUrl, label);
     assertCellIsEmpty(row.get(4));
   }
 
