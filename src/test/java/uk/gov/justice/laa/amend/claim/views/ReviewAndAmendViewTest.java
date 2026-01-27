@@ -3,7 +3,7 @@ package uk.gov.justice.laa.amend.claim.views;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -13,7 +13,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimReviewController;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
@@ -130,7 +129,8 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
     @Test
     void testPageWithValidationError() throws Exception {
-        ClaimField claimField = ClaimField.builder().key("profitCosts").status(ClaimFieldStatus.MODIFIABLE).build();
+        ClaimField claimField = MockClaimsFunctions.createNetProfitCostField();
+        claimField.setAssessed(null);
         claim.setNetProfitCost(claimField);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -141,6 +141,13 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
         assertPageHasHeading(doc, "Review and amend");
 
-        assertPageHasErrorSummary(doc, "profit-costs");
+        assertPageHasErrorSummary(doc, "profit-cost");
+    }
+
+    @Test
+    void testBackLinkNavigatesToAssessmentOutcome() throws Exception {
+        Document doc = renderDocument();
+
+        assertPageHasBackLinkWithHref(doc, "/submissions/submissionId/claims/claimId/assessment-outcome");
     }
 }

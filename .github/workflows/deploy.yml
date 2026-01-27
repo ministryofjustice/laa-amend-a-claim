@@ -49,20 +49,34 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.branch }}
 
+      - name: Fetch IP Allowlist
+        id: ip-allowlist
+        run: |
+          # Download the IP allowlist and format as Helm array syntax
+          # 1. Convert newlines to commas: "10.0.0.0/8\n192.168.0.0/16" → "10.0.0.0/8,192.168.0.0/16"
+          # 2. Wrap in braces for Helm array syntax: → "{10.0.0.0/8,192.168.0.0/16}"
+          # 3. Helm parses as array: ["10.0.0.0/8", "192.168.0.0/16"]
+          # 4. Template helper joins array back to comma-separated string for nginx annotation
+          CIDRS=$(curl -s https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/main/cidrs.txt | tr -d ' ' | tr '\n' ',' | sed 's/,$//')
+          CIDRS_ARRAY="{${CIDRS}}"
+
+          # Output for use in helm command
+          echo "cidrs=${CIDRS_ARRAY}" >> $GITHUB_OUTPUT
+
       - name: Authenticate to ECR
         id: ecr-auth
-        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/ecr-auth@main
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/ecr-auth@768f673017edbb793cf052fa159c272d6c1f9177
         with:
           ecr_region: ${{ inputs.aws_region }}
           ecr_role: ${{ secrets.ECR_ROLE_TO_ASSUME }}
           role-session-name: ${{ github.run_id }}-deploy
 
       - name: Authenticate to Kubernetes Cluster
-        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@main
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@768f673017edbb793cf052fa159c272d6c1f9177
         with:
           kube-cert: ${{ secrets.KUBE_CERT }}
           kube-token: ${{ secrets.KUBE_TOKEN }}
@@ -74,11 +88,12 @@ jobs:
         run: |
           helm upgrade --install laa-amend-a-claim .helm/laa-amend-a-claim \
             --namespace ${KUBE_NAMESPACE} \
-            --values .helm/laa-amend-a-claim/${{ inputs.values_file }} \
+            --values .helm/laa-amend-a-claim/${INPUT_VALUES} \
             --set image.repository=${REGISTRY}/${REPOSITORY} \
             --set image.tag=${IMAGE_TAG} \
             --set namespace=${KUBE_NAMESPACE} \
             --set ingress.host=${KUBE_NAMESPACE}.apps.live.cloud-platform.service.justice.gov.uk \
+            --set "ipAllowlist=${{ steps.ip-allowlist.outputs.cidrs }}" \
             --set sentryEnvironment=${SENTRY_ENV} \
             --wait \
             --timeout 5m
@@ -88,3 +103,4 @@ jobs:
           IMAGE_TAG: ${{ inputs.image_tag }}
           KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+          INPUT_VALUES: ${{ inputs.values_file }}

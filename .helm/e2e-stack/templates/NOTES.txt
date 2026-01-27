@@ -1,0 +1,30 @@
+E2E Test Stack has been deployed!
+
+{{- if .Values.dataClaimsApi.enabled }}
+
+Data Claims API (Internal E2E Service):
+  Service Name: data-claims-api
+  Port: {{ .Values.dataClaimsApi.service.port }}
+  Type: ClusterIP (internal only)
+
+Access from within the cluster:
+  http://data-claims-api:{{ .Values.dataClaimsApi.service.port }}
+
+{{- if .Values.dataClaimsApi.postgres.enabled }}
+
+PostgreSQL Database:
+  Host: localhost (sidecar container)
+  Port: 5435
+  Database: {{ .Values.dataClaimsApi.postgres.database }}
+  Persistence: {{ .Values.dataClaimsApi.postgres.persistence.enabled }}
+{{- end }}
+
+For local testing with port-forward:
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/data-claims-api {{ .Values.dataClaimsApi.service.port }}:{{ .Values.dataClaimsApi.service.port }}
+  
+Then visit: http://localhost:{{ .Values.dataClaimsApi.service.port }}/actuator/health
+
+For GitHub Actions E2E tests:
+  Use service name directly: http://data-claims-api:{{ .Values.dataClaimsApi.service.port }}
+
+{{- end }}

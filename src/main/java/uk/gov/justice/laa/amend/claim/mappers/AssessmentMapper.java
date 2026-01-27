@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
+import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Context;
 import org.mapstruct.InheritConfiguration;
@@ -19,6 +20,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentOutcome;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 import java.math.BigDecimal;
+import java.util.function.Function;
 
 @Mapper(componentModel = "spring")
 public interface AssessmentMapper {
@@ -65,33 +67,80 @@ public interface AssessmentMapper {
 
 
     @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
-    @Mapping(target = "vatClaimed.assessed", source = "isVatApplicable")
-    @Mapping(target = "fixedFee.assessed", source = "fixedFeeAmount")
-    @Mapping(target = "netDisbursementAmount.assessed", source = "disbursementAmount")
-    @Mapping(target = "disbursementVatAmount.assessed", source = "disbursementVatAmount")
-    @Mapping(target = "netProfitCost.assessed", source = "netProfitCostsAmount")
     @Mapping(target = "assessmentOutcome", source = "lastAssessmentOutcome")
-    @Mapping(target = "assessedTotalVat.assessed", source = "assessedTotalVat")
-    @Mapping(target = "assessedTotalInclVat.assessed", source = "assessedTotalInclVat")
-    @Mapping(target = "allowedTotalVat.assessed", source = "allowedTotalVat")
-    @Mapping(target = "allowedTotalInclVat.assessed", source = "allowedTotalInclVat")
+    @Mapping(target = "vatClaimed", ignore = true)
+    @Mapping(target = "fixedFee", ignore = true)
+    @Mapping(target = "netDisbursementAmount", ignore = true)
+    @Mapping(target = "disbursementVatAmount", ignore = true)
+    @Mapping(target = "netProfitCost", ignore = true)
+    @Mapping(target = "assessedTotalVat", ignore = true)
+    @Mapping(target = "assessedTotalInclVat", ignore = true)
+    @Mapping(target = "allowedTotalVat", ignore = true)
+    @Mapping(target = "allowedTotalInclVat", ignore = true)
     ClaimDetails mapToClaim(AssessmentInfo assessmentInfo, @MappingTarget ClaimDetails claimDetails);
 
     @InheritConfiguration(name = "mapToClaim")
-    @Mapping(target = "hoInterview.assessed", source = "boltOnHomeOfficeInterviewFee")
-    @Mapping(target = "cmrhOral.assessed", source = "boltOnCmrhOralFee")
-    @Mapping(target = "cmrhTelephone.assessed", source = "boltOnCmrhTelephoneFee")
-    @Mapping(target = "jrFormFillingCost.assessed", source = "jrFormFillingAmount")
-    @Mapping(target = "detentionTravelWaitingCosts.assessed", source = "detentionTravelAndWaitingCostsAmount")
-    @Mapping(target = "adjournedHearing.assessed", source = "boltOnAdjournedHearingFee")
-    @Mapping(target = "substantiveHearing.assessed", source = "boltOnSubstantiveHearingFee")
-    @Mapping(target = "counselsCost.assessed", source = "netCostOfCounselAmount")
+    @Mapping(target = "hoInterview", ignore = true)
+    @Mapping(target = "cmrhOral", ignore = true)
+    @Mapping(target = "cmrhTelephone", ignore = true)
+    @Mapping(target = "jrFormFillingCost", ignore = true)
+    @Mapping(target = "detentionTravelWaitingCosts", ignore = true)
+    @Mapping(target = "adjournedHearing", ignore = true)
+    @Mapping(target = "substantiveHearing", ignore = true)
+    @Mapping(target = "counselsCost", ignore = true)
     CivilClaimDetails mapToCivilClaim(AssessmentInfo assessmentInfo, @MappingTarget CivilClaimDetails claimDetails);
 
     @InheritConfiguration(name = "mapToClaim")
-    @Mapping(target = "travelCosts.assessed", source = "netTravelCostsAmount")
-    @Mapping(target = "waitingCosts.assessed", source = "netWaitingCostsAmount")
+    @Mapping(target = "travelCosts", ignore = true)
+    @Mapping(target = "waitingCosts", ignore = true)
     CrimeClaimDetails mapToCrimeClaim(AssessmentInfo assessmentInfo, @MappingTarget CrimeClaimDetails claimDetails);
+
+    @AfterMapping
+    default void mapToClaimAfterMapping(
+        AssessmentInfo source,
+        @MappingTarget ClaimDetails target
+    ) {
+        map(source, target.getVatClaimed(), AssessmentInfo::getIsVatApplicable);
+        map(source, target.getFixedFee(), AssessmentInfo::getFixedFeeAmount);
+        map(source, target.getNetDisbursementAmount(), AssessmentInfo::getDisbursementAmount);
+        map(source, target.getDisbursementVatAmount(), AssessmentInfo::getDisbursementVatAmount);
+        map(source, target.getNetProfitCost(), AssessmentInfo::getNetProfitCostsAmount);
+        map(source, target.getAssessedTotalVat(), AssessmentInfo::getAssessedTotalVat);
+        map(source, target.getAssessedTotalInclVat(), AssessmentInfo::getAssessedTotalInclVat);
+        map(source, target.getAllowedTotalVat(), AssessmentInfo::getAllowedTotalVat);
+        map(source, target.getAllowedTotalInclVat(), AssessmentInfo::getAllowedTotalInclVat);
+    }
+
+    @AfterMapping
+    default void mapToCivilClaimAfterMapping(
+        AssessmentInfo source,
+        @MappingTarget CivilClaimDetails target
+    ) {
+        map(source, target.getJrFormFillingCost(), AssessmentInfo::getJrFormFillingAmount);
+        map(source, target.getDetentionTravelWaitingCosts(), AssessmentInfo::getDetentionTravelAndWaitingCostsAmount);
+        map(source, target.getCounselsCost(), AssessmentInfo::getNetCostOfCounselAmount);
+        map(source, target.getHoInterview(), AssessmentInfo::getBoltOnHomeOfficeInterviewFee);
+        map(source, target.getCmrhOral(), AssessmentInfo::getBoltOnCmrhOralFee);
+        map(source, target.getCmrhTelephone(), AssessmentInfo::getBoltOnCmrhTelephoneFee);
+        map(source, target.getAdjournedHearing(), AssessmentInfo::getBoltOnAdjournedHearingFee);
+        map(source, target.getSubstantiveHearing(), AssessmentInfo::getBoltOnSubstantiveHearingFee);
+    }
+
+    @AfterMapping
+    default void mapToCrimeClaimAfterMapping(
+        AssessmentInfo source,
+        @MappingTarget CrimeClaimDetails target
+    ) {
+        map(source, target.getTravelCosts(), AssessmentInfo::getNetTravelCostsAmount);
+        map(source, target.getWaitingCosts(), AssessmentInfo::getNetWaitingCostsAmount);
+    }
+
+    private void map(AssessmentInfo source, ClaimField target, Function<AssessmentInfo, Object> f) {
+        if (source == null || target == null) {
+            return;
+        }
+        target.setAssessed(f.apply(source));
+    }
 
     /**
      * Maps AssessmentGet response object into AssessmentInfo

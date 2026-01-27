@@ -5,7 +5,7 @@ import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
-import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
 public class DriverFactory {
     private static Playwright playwright;

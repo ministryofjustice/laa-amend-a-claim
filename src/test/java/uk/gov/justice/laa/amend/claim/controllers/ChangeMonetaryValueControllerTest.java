@@ -6,14 +6,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.models.*;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.Cost;
+import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 import java.math.BigDecimal;
@@ -21,11 +25,19 @@ import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @ActiveProfiles("local")
 @WebMvcTest(ChangeMonetaryValueController.class)
@@ -112,7 +124,6 @@ class ChangeMonetaryValueControllerTest {
 
         Assertions.assertNotNull(updated);
         Assertions.assertEquals(new BigDecimal("100.00"), cost.getAccessor().get(updated).getAssessed());
-        Assertions.assertEquals(ClaimFieldStatus.MODIFIABLE, cost.getAccessor().get(updated).getStatus());
     }
 
     @ParameterizedTest
@@ -175,7 +186,7 @@ class ChangeMonetaryValueControllerTest {
         } else {
             claim = MockClaimsFunctions.createMockCrimeClaim();
         }
-        ClaimField claimField = ClaimField.builder().key("").build();
+        ClaimField claimField = CostClaimField.builder().cost(cost).build();
         cost.getAccessor().set(claim, claimField);
         return claim;
     }

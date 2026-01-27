@@ -1,0 +1,101 @@
+{{- if .Values.laaAmendAClaim.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: e2e-amend-a-claim
+  labels:
+    app: e2e-amend-a-claim
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: e2e-amend-a-claim
+  template:
+    metadata:
+      labels:
+        app: e2e-amend-a-claim
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: laa-amend-a-claim
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.laaAmendAClaim.image.repository }}:{{ .Values.laaAmendAClaim.image.tag }}"
+          imagePullPolicy: {{ .Values.laaAmendAClaim.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.laaAmendAClaim.service.port }}
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "{{ .Values.laaAmendAClaim.springProfile }}"
+            {{- range .Values.laaAmendAClaim.env }}
+            - name: {{ .name }}
+              {{- if hasKey . "valueFrom" }}
+              valueFrom:
+                {{- toYaml .valueFrom | nindent 16 }}
+              {{- else }}
+              value: {{ .value | quote }}
+              {{- end }}
+            {{- end }}
+          {{- with .Values.laaAmendAClaim.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.laaAmendAClaim.readinessProbe.enabled }}
+          readinessProbe:
+            {{- if eq .Values.laaAmendAClaim.readinessProbe.type "http" }}
+            httpGet:
+              path: {{ .Values.laaAmendAClaim.readinessProbe.path }}
+              port: {{ .Values.laaAmendAClaim.service.port }}
+            {{- else }}
+            tcpSocket:
+              port: {{ .Values.laaAmendAClaim.service.port }}
+            {{- end }}
+            initialDelaySeconds: {{ .Values.laaAmendAClaim.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.laaAmendAClaim.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.laaAmendAClaim.readinessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.laaAmendAClaim.livenessProbe.enabled }}
+          livenessProbe:
+            {{- if eq .Values.laaAmendAClaim.livenessProbe.type "http" }}
+            httpGet:
+              path: {{ .Values.laaAmendAClaim.livenessProbe.path }}
+              port: {{ .Values.laaAmendAClaim.service.port }}
+            {{- else }}
+            tcpSocket:
+              port: {{ .Values.laaAmendAClaim.service.port }}
+            {{- end }}
+            initialDelaySeconds: {{ .Values.laaAmendAClaim.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.laaAmendAClaim.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.laaAmendAClaim.livenessProbe.failureThreshold }}
+          {{- end }}
+        - name: redis
+          image: "{{ .Values.redis.image }}:{{ .Values.redis.imageTag }}"
+          imagePullPolicy: {{ .Values.redis.pullPolicy }}
+          command: ["redis-server"]
+          args: 
+            - "--port"
+            - "{{ .Values.redis.port }}"
+            - "--dir"
+            - "/data"
+          ports:
+            - name: redis
+              containerPort: {{ .Values.redis.port }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+          resources:
+            {{- toYaml .Values.redis.resources | nindent 12 }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.redis.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: redis-data
+          emptyDir: {}
+        {{- end }}
+

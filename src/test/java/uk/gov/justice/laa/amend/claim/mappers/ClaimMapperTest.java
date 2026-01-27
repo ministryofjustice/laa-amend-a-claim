@@ -10,7 +10,6 @@ import uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldType;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
@@ -26,7 +25,6 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {ClaimMapperImpl.class, ClaimMapperHelper.class})
@@ -55,8 +53,6 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.CALCULATED_TOTAL, claimField.getType());
     }
 
     @Test
@@ -75,8 +71,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertNull(claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.FIXED_FEE, claimField.getType());
     }
 
     @Test
@@ -96,8 +90,6 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.OTHER, claimField.getType());
     }
 
     @Test
@@ -114,8 +106,6 @@ class ClaimMapperTest {
         assertEquals(false, claimField.getSubmitted());
         assertEquals(false, claimField.getCalculated());
         assertEquals(false, claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.OTHER, claimField.getType());
     }
 
     @Test
@@ -134,8 +124,6 @@ class ClaimMapperTest {
         assertEquals(true, claimField.getSubmitted());
         assertEquals(false, claimField.getCalculated());
         assertEquals(true, claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.OTHER, claimField.getType());
     }
 
     @Test
@@ -155,8 +143,6 @@ class ClaimMapperTest {
         assertEquals(true, claimField.getSubmitted());
         assertEquals(false, claimField.getCalculated());
         assertEquals(true, claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.OTHER, claimField.getType());
     }
 
     @Test
@@ -176,8 +162,6 @@ class ClaimMapperTest {
         assertEquals(true, claimField.getSubmitted());
         assertEquals(true, claimField.getCalculated());
         assertEquals(true, claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.OTHER, claimField.getType());
     }
 
     @Test
@@ -197,8 +181,6 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.OTHER, claimField.getType());
     }
 
     @Test
@@ -218,8 +200,6 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.OTHER, claimField.getType());
     }
 
     @Test
@@ -239,8 +219,6 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.OTHER, claimField.getType());
     }
 
     @Test
@@ -260,8 +238,6 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.OTHER, claimField.getType());
     }
 
     @Test
@@ -281,8 +257,6 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.OTHER, claimField.getType());
     }
 
     @Test
@@ -304,8 +278,6 @@ class ClaimMapperTest {
         assertEquals(100, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(100, claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.BOLT_ON, claimField.getType());
     }
 
     @Test
@@ -327,8 +299,6 @@ class ClaimMapperTest {
         assertEquals(100, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(100, claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.BOLT_ON, claimField.getType());
     }
 
     @Test
@@ -350,8 +320,6 @@ class ClaimMapperTest {
         assertEquals(100, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(100, claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.BOLT_ON, claimField.getType());
     }
 
     @Test
@@ -373,18 +341,14 @@ class ClaimMapperTest {
         assertEquals(100, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(100, claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.BOLT_ON, claimField.getType());
     }
 
     @Test
     void mapSubstantiveHearing() {
         ClaimResponse response = new ClaimResponse();
-        response.setHoInterview(100);
         response.setIsSubstantiveHearing(true);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         BoltOnPatch bolt = new BoltOnPatch();
-        bolt.setBoltOnHomeOfficeInterviewFee(BigDecimal.valueOf(120));
         bolt.setBoltOnSubstantiveHearingFee(BigDecimal.valueOf(120));
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
@@ -398,8 +362,6 @@ class ClaimMapperTest {
         assertEquals(true, claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(true, claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.BOLT_ON, claimField.getType());
     }
 
     @Test
@@ -419,8 +381,6 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.OTHER, claimField.getType());
     }
 
     @Test
@@ -440,8 +400,6 @@ class ClaimMapperTest {
         assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
         assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
-        assertNull(claimField.getChangeUrl(submissionId, claimId));
-        assertEquals(ClaimFieldType.OTHER, claimField.getType());
     }
 
     @Test
@@ -457,8 +415,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAssessed());
-        assertNull(claimField.getStatus());
-        assertEquals(ClaimFieldType.ASSESSED_TOTAL, claimField.getType());
     }
 
     @Test
@@ -474,8 +430,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAssessed());
-        assertNull(claimField.getStatus());
-        assertEquals(ClaimFieldType.ASSESSED_TOTAL, claimField.getType());
     }
 
     @Test
@@ -495,8 +449,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(300), claimField.getCalculated());
         assertNull(claimField.getAssessed());
-        assertNull(claimField.getStatus());
-        assertEquals(ClaimFieldType.ALLOWED_TOTAL, claimField.getType());
     }
 
     @Test
@@ -512,8 +464,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAssessed());
-        assertNull(claimField.getStatus());
-        assertEquals(ClaimFieldType.ALLOWED_TOTAL, claimField.getType());
     }
 
     @Test
@@ -531,8 +481,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAssessed());
-        assertNull(claimField.getStatus());
-        assertEquals(ClaimFieldType.ALLOWED_TOTAL, claimField.getType());
     }
 
     @Test
@@ -551,8 +499,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(100), claimField.getCalculated());
         assertNull(claimField.getAssessed());
-        assertNull(claimField.getStatus());
-        assertEquals(ClaimFieldType.ALLOWED_TOTAL, claimField.getType());
     }
 
     @Test
@@ -571,8 +517,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(100), claimField.getCalculated());
         assertNull(claimField.getAssessed());
-        assertNull(claimField.getStatus());
-        assertEquals(ClaimFieldType.ALLOWED_TOTAL, claimField.getType());
     }
 
     @Test
@@ -591,8 +535,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(100), claimField.getCalculated());
         assertNull(claimField.getAssessed());
-        assertNull(claimField.getStatus());
-        assertEquals(ClaimFieldType.ALLOWED_TOTAL, claimField.getType());
     }
 
     @Test
@@ -608,8 +550,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAssessed());
-        assertNull(claimField.getStatus());
-        assertEquals(ClaimFieldType.ALLOWED_TOTAL, claimField.getType());
     }
 
     @Test
@@ -625,8 +565,6 @@ class ClaimMapperTest {
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
         assertNull(claimField.getAssessed());
-        assertNull(claimField.getStatus());
-        assertEquals(ClaimFieldType.ALLOWED_TOTAL, claimField.getType());
     }
 
     @ParameterizedTest(name = "Map to Civil Claim when Area of Law: {0}")
@@ -637,6 +575,7 @@ class ClaimMapperTest {
         response.setCaseReferenceNumber("CASE456");
         response.setClientSurname("Doe");
         response.setClientForename("John");
+        response.setUniqueClientNumber("21121985/J/DOE");
         response.setCaseStartDate("2025-01-01");
         response.setCaseConcludedDate("2025-02-01");
 
@@ -666,6 +605,7 @@ class ClaimMapperTest {
         assertEquals("CASE456", claim.getCaseReferenceNumber());
         assertEquals("Doe", claim.getClientSurname());
         assertEquals("John", claim.getClientForename());
+        assertEquals("21121985/J/DOE", claim.getUniqueClientNumber());
         assertEquals("FeeCode", claim.getFeeCode());
         assertEquals("FeeCodeDesc", claim.getFeeCodeDescription());
         assertEquals("Civil", claim.getCategoryOfLaw());
@@ -702,7 +642,7 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(boltOn);
         response.setFeeCalculationResponse(feeCalc);
 
-        response.setCrimeMatterTypeCode("CRIME123");
+        response.setMatterTypeCode("INVC");
         response.setPoliceStationCourtPrisonId("PrisonCode");
         response.setSchemeId("SchemeId");
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
@@ -715,8 +655,7 @@ class ClaimMapperTest {
         assertEquals("FeeCodeDesc", claim.getFeeCodeDescription());
         assertEquals("Civil", claim.getCategoryOfLaw());
         assertTrue(claim.getEscaped());
-        assertEquals("CRIME123", claim.getMatterTypeCode());
-        assertEquals("CRIME123", claim.getMatterTypeCode());
+        assertEquals("INVC", claim.getMatterTypeCode());
         assertEquals("PrisonCode", claim.getPoliceStationCourtPrisonId());
         assertEquals("SchemeId", claim.getSchemeId());
 

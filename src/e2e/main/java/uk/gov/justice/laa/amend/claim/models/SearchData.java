@@ -1,6 +1,6 @@
-package uk.gov.justice.laa.amend.claim.utils;
+package uk.gov.justice.laa.amend.claim.models;
 
-public class SearchConfig {
+public class SearchData {
     private String providerAccountNumber;
     private String submissionMonth;
     private String submissionYear;
@@ -8,7 +8,7 @@ public class SearchConfig {
     private String crn;
     private boolean expectedResults;
 
-    public SearchConfig() {}
+    public SearchData() {}
 
     public String getProviderAccountNumber() {
         return providerAccountNumber;

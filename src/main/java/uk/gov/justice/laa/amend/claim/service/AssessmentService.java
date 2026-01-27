@@ -64,13 +64,7 @@ public class AssessmentService {
             log.info("Applying assessment outcome logic: {} -> {} for claim {}",
                     previousOutcome, newOutcome, claim.getClaimId());
 
-            switch (newOutcome) {
-                case NILLED -> claim.setNilledValues();
-                case REDUCED -> claim.setReducedValues();
-                case PAID_IN_FULL -> claim.setPaidInFullValues();
-                case REDUCED_TO_FIXED_FEE -> claim.setReducedToFixedFeeValues();
-                default -> log.warn("Unhandled outcome type: {}", newOutcome);
-            }
+            claim.applyOutcome(newOutcome);
         }
         if (shouldReapplyAssessment(claim, newOutcome)) {
             assessmentMapper.mapAssessmentToClaimDetails(claim);

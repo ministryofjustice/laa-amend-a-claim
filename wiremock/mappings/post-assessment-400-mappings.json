@@ -2,7 +2,7 @@
   "priority": 1,
   "request": {
     "method": "POST",
-    "urlPattern": "/api/v0/claims/0199a474-65d5-7f95-a1f3-290976326ecd/assessments"
+    "urlPattern": "/api/v1/claims/0199a474-65d5-7f95-a1f3-290976326ecd/assessments"
   },
   "response": {
     "status": 400

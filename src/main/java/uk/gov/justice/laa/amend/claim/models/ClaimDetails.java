@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
@@ -7,9 +8,8 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 @EqualsAndHashCode(callSuper = true)
@@ -42,108 +42,53 @@ public abstract class ClaimDetails extends Claim {
     private boolean hasAssessment;
     private AssessmentInfo lastAssessment;
 
-    public void setNilledValues() {
-        // Costs Table
-        applyIfNotNull(netProfitCost, ClaimField::setNilled);
-        applyIfNotNull(fixedFee, ClaimField::setNilled);
-        applyIfNotNull(netDisbursementAmount, ClaimField::setNilled);
-        applyIfNotNull(disbursementVatAmount, ClaimField::setNilled);
-
-        // Assessed Totals Table
-        applyIfNotNull(assessedTotalVat, ClaimField::setAssessedToNull);
-        applyIfNotNull(assessedTotalInclVat, ClaimField::setAssessedToNull);
-
-        // Allowed Totals Table
-        applyIfNotNull(allowedTotalInclVat, ClaimField::setNilled);
-        applyIfNotNull(allowedTotalVat, ClaimField::setNilled);
+    public void applyOutcome(OutcomeType outcome) {
+        getClaimFields().forEach(x -> x.applyOutcome(outcome));
     }
 
-    public void setReducedToFixedFeeValues() {
-        // Costs Table
-        applyIfNotNull(vatClaimed, ClaimField::setAssessedToCalculated);
-        applyIfNotNull(fixedFee, ClaimField::setAssessedToCalculated);
-        applyIfNotNull(netProfitCost, ClaimField::setAssessedToNull);
-        applyIfNotNull(netDisbursementAmount, ClaimField::setAssessedToCalculated);
-        applyIfNotNull(disbursementVatAmount, ClaimField::setAssessedToCalculated);
-
-        // Assessed Totals Table
-        applyIfNotNull(assessedTotalVat, ClaimField::setAssessedToNull);
-        applyIfNotNull(assessedTotalInclVat, ClaimField::setAssessedToNull);
-
-        // Allowed Totals Table
-        applyIfNotNull(allowedTotalInclVat, ClaimField::setAssessedToNull);
-        applyIfNotNull(allowedTotalVat, ClaimField::setAssessedToNull);
-    }
-
-    public void setReducedValues() {
-        // Costs Table
-        applyIfNotNull(fixedFee, ClaimField::setAssessedToNull);
-        applyIfNotNull(netProfitCost, ClaimField::setAssessedToNull);
-        applyIfNotNull(vatClaimed, ClaimField::setAssessedToSubmitted);
-        applyIfNotNull(netDisbursementAmount, ClaimField::setAssessedToSubmitted);
-        applyIfNotNull(disbursementVatAmount, ClaimField::setAssessedToSubmitted);
-
-        // Assessed Totals Table
-        applyIfNotNull(assessedTotalVat, ClaimField::setAssessedToNull);
-        applyIfNotNull(assessedTotalInclVat, ClaimField::setAssessedToNull);
-
-        // Allowed Totals Table
-        applyIfNotNull(allowedTotalInclVat, ClaimField::setAssessedToNull);
-        applyIfNotNull(allowedTotalVat, ClaimField::setAssessedToNull);
-    }
-
-    public void setPaidInFullValues() {
-        // Costs Table
-        applyIfNotNull(fixedFee, ClaimField::setAssessedToNull);
-        applyIfNotNull(netProfitCost, ClaimField::setAssessedToSubmitted);
-        applyIfNotNull(vatClaimed, ClaimField::setAssessedToSubmitted);
-        applyIfNotNull(netDisbursementAmount, ClaimField::setAssessedToSubmitted);
-        applyIfNotNull(disbursementVatAmount, ClaimField::setAssessedToSubmitted);
-
-        // Assessed Totals Table
-        applyIfNotNull(assessedTotalVat, ClaimField::setAssessedToNull);
-        applyIfNotNull(assessedTotalInclVat, ClaimField::setAssessedToNull);
-
-        // Allowed Totals Table
-        applyIfNotNull(allowedTotalInclVat, ClaimField::setAssessedToNull);
-        applyIfNotNull(allowedTotalVat, ClaimField::setAssessedToNull);
-    }
-
-    protected void applyIfNotNull(ClaimField field, Consumer<ClaimField> f) {
-        if (field != null) {
-            f.accept(field);
-        }
-    }
-
-    public abstract boolean isAssessedTotalFieldModifiable();
+    public abstract boolean isAssessedTotalFieldAssessable();
 
     public abstract ClaimDetailsView<? extends ClaimDetails> toViewModel();
 
     public abstract AssessmentPost toAssessment(AssessmentMapper mapper, String userId);
 
-    public List<ClaimField> getClaimFields() {
+    public Stream<@NotNull ClaimField> getClaimFields() {
         return Stream.concat(
                 commonClaimFields(),
                 specificClaimFields()
             )
-            .filter(Objects::nonNull)
-            .toList();
+            .filter(Objects::nonNull);
     }
 
     protected Stream<ClaimField> commonClaimFields() {
         return Stream.of(
-            getVatClaimed(),
-            getFixedFee(),
-            getNetProfitCost(),
-            getNetDisbursementAmount(),
-            getDisbursementVatAmount(),
-            getTotalAmount(),
+                Stream.of(
+                    getVatClaimed(),
+                    getFixedFee(),
+                    getNetProfitCost(),
+                    getNetDisbursementAmount(),
+                    getDisbursementVatAmount(),
+                    getTotalAmount()
+                ),
+                getAssessedTotalFields(),
+                getAllowedTotalFields()
+            )
+            .flatMap(Function.identity());
+    }
+
+    protected abstract Stream<ClaimField> specificClaimFields();
+
+    public Stream<ClaimField> getAssessedTotalFields() {
+        return Stream.of(
             getAssessedTotalVat(),
-            getAssessedTotalInclVat(),
+            getAssessedTotalInclVat()
+        );
+    }
+
+    public Stream<ClaimField> getAllowedTotalFields() {
+        return Stream.of(
             getAllowedTotalVat(),
             getAllowedTotalInclVat()
         );
     }
-
-    protected abstract Stream<ClaimField> specificClaimFields();
 }

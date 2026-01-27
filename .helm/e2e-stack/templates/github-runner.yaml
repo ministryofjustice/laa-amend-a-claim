@@ -1,0 +1,51 @@
+{{- if .Values.githubRunner.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: github-runner-e2e
+  labels:
+    app: github-runner-e2e
+spec:
+  replicas: {{ .Values.githubRunner.replicas }}
+  selector:
+    matchLabels:
+      app: github-runner-e2e
+  template:
+    metadata:
+      labels:
+        app: github-runner-e2e
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001  # runner user in GitHub Actions image
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: runner
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false  # Runner needs write access to _work directory
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop: ["ALL"]
+          image: "{{ .Values.githubRunner.image.repository }}:{{ .Values.githubRunner.image.tag }}"
+          imagePullPolicy: {{ .Values.githubRunner.image.pullPolicy }}
+          env:
+            {{- range .Values.githubRunner.env }}
+            - name: {{ .name }}
+              {{- if hasKey . "valueFrom" }}
+              valueFrom:
+                {{- toYaml .valueFrom | nindent 16 }}
+              {{- else }}
+              value: {{ .value | quote }}
+              {{- end }}
+            {{- end }}
+          {{- with .Values.githubRunner.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}

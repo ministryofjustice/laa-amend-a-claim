@@ -8,7 +8,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import uk.gov.justice.laa.amend.claim.pages.LoginPage;
-import uk.gov.justice.laa.amend.claim.utils.EnvConfig;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
 /**
  * The {@code BrowserSession} class provides a managed browser session for
@@ -21,22 +21,33 @@ public class BrowserSession {
     private static BrowserContext context;
     private static boolean initialized = false;
 
+    private static boolean isSilasAuthenticationDisabled() {
+        return EnvConfig.silasAuthenticationEnabled()
+            .equals("false");
+    }
+
     public static synchronized void initializeIfNeeded() {
         if (!initialized) {
             playwright = Playwright.create();
             browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(EnvConfig.headless()));
             context = browser.newContext();
 
-            // Single login for all tests
-            Page loginPage = context.newPage();
-            LoginPage login = new LoginPage(loginPage);
-            login.navigate();
-
-            try {
-                login.login();
-                loginPage.waitForSelector("h1:has-text('Search for a claim')", new Page.WaitForSelectorOptions().setTimeout(60_000).setState(WaitForSelectorState.VISIBLE));
-            } finally {
-                loginPage.close();
+            if (isSilasAuthenticationDisabled()) {
+                System.out.println("Running in local profile - skipping login");
+                Page page = context.newPage();
+                page.navigate(EnvConfig.baseUrl());
+                page.close();
+            } else {
+                // Single login for all tests
+                Page loginPage = context.newPage();
+                LoginPage login = new LoginPage(loginPage);
+                login.navigate();
+                try {
+                    login.login();
+                    loginPage.waitForSelector("h1:has-text('Search for a claim')", new Page.WaitForSelectorOptions().setTimeout(60_000).setState(WaitForSelectorState.VISIBLE));
+                } finally {
+                    loginPage.close();
+                }
             }
 
             initialized = true;

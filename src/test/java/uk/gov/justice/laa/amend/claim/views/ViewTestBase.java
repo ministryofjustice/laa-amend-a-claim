@@ -97,6 +97,13 @@ public abstract class ViewTestBase {
     Assertions.assertFalse(elements.isEmpty());
   }
 
+  protected void assertPageHasBackLinkWithHref(Document doc, String expectedHref) {
+    Elements elements = doc.getElementsByClass("govuk-back-link");
+    Assertions.assertFalse(elements.isEmpty(), "Expected page to have a back link");
+    Element backLink = elements.first();
+    Assertions.assertEquals(expectedHref, backLink.attr("href"), "Back link href does not match expected URL");
+  }
+
   protected void assertPageHasPrimaryButton(Document doc, String expectedText) {
     Elements elements = doc.getElementsByClass("govuk-button");
     Assertions.assertFalse(elements.isEmpty());

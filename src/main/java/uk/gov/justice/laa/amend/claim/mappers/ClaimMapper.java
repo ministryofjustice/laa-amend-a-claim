@@ -30,6 +30,7 @@ public interface ClaimMapper {
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
     @Mapping(target = "feeCode", source = "feeCalculationResponse.feeCode")
     @Mapping(target = "feeCodeDescription", source = "feeCalculationResponse.feeCodeDescription")
+    @Mapping(target = "matterTypeCode", source = "matterTypeCode")
     @Mapping(target = "assessedTotalVat", expression = "java(claimMapperHelper.mapAssessedTotalVat())")
     @Mapping(target = "assessedTotalInclVat", expression = "java(claimMapperHelper.mapAssessedTotalInclVat())")
     @Mapping(target = "allowedTotalVat", source = ".", qualifiedByName = "mapAllowedTotalVat")
@@ -71,11 +72,10 @@ public interface ClaimMapper {
     @Mapping(target = "hoInterview", source = "claimResponse", qualifiedByName = "mapHoInterview")
     @Mapping(target = "substantiveHearing", source = "claimResponse", qualifiedByName = "mapSubstantiveHearing")
     @Mapping(target = "counselsCost", source = "claimResponse", qualifiedByName = "mapCounselsCost")
-    @Mapping(target = "matterTypeCode", source = "matterTypeCode")
+    @Mapping(target = "uniqueClientNumber", source = "uniqueClientNumber")
     CivilClaimDetails mapToCivilClaimDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
 
     @InheritConfiguration(name = "mapToCommonDetails")
-    @Mapping(target = "matterTypeCode", source = "crimeMatterTypeCode")
     @Mapping(target = "travelCosts", source = "claimResponse", qualifiedByName = "mapTravelCosts")
     @Mapping(target = "waitingCosts", source = "claimResponse", qualifiedByName = "mapWaitingCosts")
     CrimeClaimDetails mapToCrimeClaimDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);

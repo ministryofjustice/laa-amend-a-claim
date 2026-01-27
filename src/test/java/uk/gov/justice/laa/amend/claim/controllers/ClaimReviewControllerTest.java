@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
@@ -16,7 +16,6 @@ import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
@@ -146,8 +145,7 @@ public class ClaimReviewControllerTest {
 
     @Test
     public void testUnsuccessfulValidationReloadsPageWithErrorSummary() throws Exception {
-        ClaimField claimField = ClaimField.builder().key("foo").build();
-        claimField.setStatus(ClaimFieldStatus.MODIFIABLE);
+        ClaimField claimField = MockClaimsFunctions.createNetProfitCostField();
         claimField.setAssessed(null);
         claim.setNetProfitCost(claimField);
 

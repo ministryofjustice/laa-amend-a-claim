@@ -1,103 +1,98 @@
 package uk.gov.justice.laa.amend.claim.resources;
 
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldStatus;
+import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
+import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
+import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
+import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimFieldType;
+import uk.gov.justice.laa.amend.claim.models.Cost;
+import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.*;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 
 public class MockClaimsFunctions {
 
     private static final ClaimStatusHandler claimStatusHandler = new ClaimStatusHandler();
     public static CivilClaimDetails createMockCivilClaim(){
         CivilClaimDetails claim = new CivilClaimDetails();
-        claim.setClaimId("test-civil-claim-123");
-        claim.setSubmissionId("test-submission-456");
+        claim.setClaimId(UUID.randomUUID().toString());
+        claim.setSubmissionId(UUID.randomUUID().toString());
+        claim.setClaimSummaryFeeId(UUID.randomUUID().toString());
         claim.setEscaped(true);
 
-        claim.setFixedFee(createClaimField(FIXED_FEE, ClaimFieldType.FIXED_FEE));
-        claim.setNetProfitCost(createClaimField(NET_PROFIT_COST, ClaimFieldType.OTHER));
-        claim.setNetDisbursementAmount(createClaimField(NET_DISBURSEMENTS_COST, ClaimFieldType.OTHER));
-        claim.setDisbursementVatAmount(createClaimField(DISBURSEMENT_VAT, ClaimFieldType.OTHER));
-        claim.setTotalAmount(createClaimField(TOTAL, ClaimFieldType.CALCULATED_TOTAL));
-        claim.setCounselsCost(createClaimField(COUNSELS_COST, ClaimFieldType.OTHER));
-        claim.setDetentionTravelWaitingCosts(createClaimField(DETENTION_TRAVEL_COST, ClaimFieldType.OTHER));
-        claim.setJrFormFillingCost(createClaimField(JR_FORM_FILLING, ClaimFieldType.OTHER));
-        claim.setAdjournedHearing(createClaimField(ADJOURNED_FEE, ClaimFieldType.BOLT_ON));
-        claim.setCmrhTelephone(createClaimField(CMRH_TELEPHONE, ClaimFieldType.BOLT_ON));
-        claim.setCmrhOral(createClaimField(CMRH_ORAL, ClaimFieldType.BOLT_ON));
-        claim.setHoInterview(createClaimField(HO_INTERVIEW, ClaimFieldType.BOLT_ON));
-        claim.setSubstantiveHearing(createClaimField(SUBSTANTIVE_HEARING, ClaimFieldType.BOLT_ON));
-        claim.setVatClaimed(createBooleanClaimField(VAT));
+        claim.setFixedFee(createFixedFeeField());
+        claim.setNetProfitCost(createNetProfitCostField());
+        claim.setNetDisbursementAmount(createDisbursementCostField());
+        claim.setDisbursementVatAmount(createDisbursementVatCostField());
+        claim.setTotalAmount(createTotalAmountField());
+        claim.setCounselsCost(createCounselCostField());
+        claim.setDetentionTravelWaitingCosts(createDetentionCostField());
+        claim.setJrFormFillingCost(createJrFormFillingCostField());
+        claim.setAdjournedHearing(createAdjournedHearingField());
+        claim.setCmrhTelephone(createCmrhTelephoneField());
+        claim.setCmrhOral(createCmrhOralField());
+        claim.setHoInterview(createHoInterviewField());
+        claim.setSubstantiveHearing(createSubstantiveHearingField());
+        claim.setVatClaimed(createVatClaimedField());
         claim.setAssessmentOutcome(OutcomeType.REDUCED);
 
-        claim.setAssessedTotalVat(createClaimField(ASSESSED_TOTAL_VAT, ClaimFieldType.ASSESSED_TOTAL));
-        claim.setAssessedTotalInclVat(createClaimField(ASSESSED_TOTAL_INCL_VAT, ClaimFieldType.ASSESSED_TOTAL));
-        claim.setAllowedTotalInclVat(createClaimField(ALLOWED_TOTAL_INCL_VAT, ClaimFieldType.ALLOWED_TOTAL));
-        claim.setAllowedTotalVat(createClaimField(ALLOWED_TOTAL_VAT, ClaimFieldType.ALLOWED_TOTAL));
+        claim.setAssessedTotalVat(createAssessedTotalVatField());
+        claim.setAssessedTotalInclVat(createAssessedTotalInclVatField());
+        claim.setAllowedTotalVat(createAllowedTotalVatField());
+        claim.setAllowedTotalInclVat(createAllowedTotalInclVatField());
         return claim;
     }
 
     public static CrimeClaimDetails createMockCrimeClaim() {
         CrimeClaimDetails claim = new CrimeClaimDetails();
-        claim.setClaimId("test-crime-claim-123");
-        claim.setSubmissionId("test-submission-456");
+        claim.setClaimId(UUID.randomUUID().toString());
+        claim.setSubmissionId(UUID.randomUUID().toString());
+        claim.setClaimSummaryFeeId(UUID.randomUUID().toString());
         claim.setEscaped(true);
 
-        claim.setNetProfitCost(createClaimField(NET_PROFIT_COST, ClaimFieldType.OTHER));
-        claim.setTravelCosts(createClaimField(TRAVEL_COSTS, ClaimFieldType.OTHER));
-        claim.setWaitingCosts(createClaimField(WAITING_COSTS, ClaimFieldType.OTHER));
-        claim.setFixedFee(createClaimField(FIXED_FEE, ClaimFieldType.FIXED_FEE));
-        claim.setNetDisbursementAmount(createClaimField(NET_DISBURSEMENTS_COST, ClaimFieldType.OTHER));
-        claim.setDisbursementVatAmount(createClaimField(DISBURSEMENT_VAT, ClaimFieldType.OTHER));
-        claim.setVatClaimed(createBooleanClaimField(VAT));
+        claim.setNetProfitCost(createNetProfitCostField());
+        claim.setTravelCosts(createTravelCostField());
+        claim.setWaitingCosts(createWaitingCostField());
+        claim.setFixedFee(createFixedFeeField());
+        claim.setNetDisbursementAmount(createDisbursementCostField());
+        claim.setDisbursementVatAmount(createDisbursementVatCostField());
+        claim.setVatClaimed(createVatClaimedField());
+        claim.setTotalAmount(createTotalAmountField());
 
-        claim.setAssessedTotalVat(createClaimField(ASSESSED_TOTAL_VAT, ClaimFieldType.ASSESSED_TOTAL));
-        claim.setAssessedTotalInclVat(createClaimField(ASSESSED_TOTAL_INCL_VAT, ClaimFieldType.ASSESSED_TOTAL));
+        claim.setAssessedTotalVat(createAssessedTotalVatField());
+        claim.setAssessedTotalInclVat(createAssessedTotalInclVatField());
 
-        claim.setAllowedTotalInclVat(createClaimField(ALLOWED_TOTAL_INCL_VAT, ClaimFieldType.ALLOWED_TOTAL));
-        claim.setAllowedTotalVat(createClaimField(ALLOWED_TOTAL_VAT, ClaimFieldType.ALLOWED_TOTAL));
+        claim.setAllowedTotalVat(createAllowedTotalVatField());
+        claim.setAllowedTotalInclVat(createAllowedTotalInclVatField());
         claim.setAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
 
         return claim;
-    }
-
-    public static ClaimField createClaimField(ClaimFieldStatus status) {
-        return ClaimField.builder()
-            .key("foo")
-            .submitted(BigDecimal.valueOf(100))
-            .calculated(BigDecimal.valueOf(200))
-            .assessed(BigDecimal.valueOf(300))
-            .status(status)
-            .type(ClaimFieldType.OTHER)
-            .build();
-    }
-
-    public static ClaimField createClaimField(String key, ClaimFieldType type) {
-        return ClaimField.builder()
-            .key(key)
-            .submitted(BigDecimal.valueOf(100))
-            .calculated(BigDecimal.valueOf(200))
-            .assessed(BigDecimal.valueOf(300))
-            .type(type)
-            .build();
-    }
-
-    public static ClaimField createBooleanClaimField(String key) {
-        return ClaimField.builder()
-            .key(key)
-            .submitted(true)
-            .calculated(false)
-            .assessed(true)
-            .type(ClaimFieldType.OTHER)
-            .build();
     }
 
     public static void updateStatus(ClaimDetails claim, OutcomeType outcome) {
@@ -107,5 +102,141 @@ public class MockClaimsFunctions {
     public static ClaimField updateClaimFieldSubmittedValue(ClaimField claimField, Object submitted) {
         claimField.setSubmitted(BigDecimal.ZERO);
         return claimField;
+    }
+
+    public static ClaimField createNetProfitCostField() {
+        return createCostField(NET_PROFIT_COST, Cost.PROFIT_COSTS);
+    }
+
+    public static ClaimField createDisbursementCostField() {
+        return createCostField(NET_DISBURSEMENTS_COST, Cost.DISBURSEMENTS);
+    }
+
+    public static ClaimField createDisbursementVatCostField() {
+        return createCostField(DISBURSEMENT_VAT, Cost.DISBURSEMENTS_VAT);
+    }
+
+    public static ClaimField createCounselCostField() {
+        return createCostField(COUNSELS_COST, Cost.COUNSEL_COSTS);
+    }
+
+    public static ClaimField createTravelCostField() {
+        return createCostField(TRAVEL_COSTS, Cost.TRAVEL_COSTS);
+    }
+
+    public static ClaimField createWaitingCostField() {
+        return createCostField(WAITING_COSTS, Cost.WAITING_COSTS);
+    }
+
+    public static ClaimField createJrFormFillingCostField() {
+        return createCostField(JR_FORM_FILLING, Cost.JR_FORM_FILLING_COSTS);
+    }
+
+    public static ClaimField createDetentionCostField() {
+        return createCostField(DETENTION_TRAVEL_COST, Cost.DETENTION_TRAVEL_AND_WAITING_COSTS);
+    }
+    
+    private static ClaimField createCostField(String key, Cost cost) {
+        return CostClaimField
+            .builder()
+            .key(key)
+            .submitted(BigDecimal.valueOf(100))
+            .calculated(BigDecimal.valueOf(200))
+            .assessed(BigDecimal.valueOf(300))
+            .cost(cost)
+            .build();
+    }
+
+    public static ClaimField createFixedFeeField() {
+        return FixedFeeClaimField
+            .builder()
+            .submitted(BigDecimal.valueOf(100))
+            .calculated(BigDecimal.valueOf(200))
+            .assessed(BigDecimal.valueOf(300))
+            .build();
+    }
+
+    public static ClaimField createTotalAmountField() {
+        return CalculatedTotalClaimField
+            .builder()
+            .submitted(BigDecimal.valueOf(100))
+            .calculated(BigDecimal.valueOf(200))
+            .assessed(BigDecimal.valueOf(300))
+            .build();
+    }
+
+    public static ClaimField createVatClaimedField() {
+        return VatLiabilityClaimField
+            .builder()
+            .submitted(true)
+            .calculated(false)
+            .assessed(true)
+            .build();
+    }
+
+    public static ClaimField createAdjournedHearingField() {
+        return createBoltOnField(ADJOURNED_FEE);
+    }
+
+    public static ClaimField createCmrhOralField() {
+        return createBoltOnField(CMRH_ORAL);
+    }
+
+    public static ClaimField createCmrhTelephoneField() {
+        return createBoltOnField(CMRH_TELEPHONE);
+    }
+
+    public static ClaimField createHoInterviewField() {
+        return createBoltOnField(HO_INTERVIEW);
+    }
+
+    public static ClaimField createSubstantiveHearingField() {
+        return createBoltOnField(SUBSTANTIVE_HEARING);
+    }
+
+    private static ClaimField createBoltOnField(String key) {
+        return BoltOnClaimField
+            .builder()
+            .key(key)
+            .submitted(BigDecimal.valueOf(100))
+            .calculated(BigDecimal.valueOf(200))
+            .assessed(BigDecimal.valueOf(300))
+            .build();
+    }
+
+    public static ClaimField createAssessedTotalVatField() {
+        return createAssessedTotalField(ASSESSED_TOTAL_VAT);
+    }
+
+    public static ClaimField createAssessedTotalInclVatField() {
+        return createAssessedTotalField(ASSESSED_TOTAL_INCL_VAT);
+    }
+
+    private static ClaimField createAssessedTotalField(String key) {
+        return AssessedClaimField
+            .builder()
+            .key(key)
+            .submitted(BigDecimal.valueOf(100))
+            .calculated(BigDecimal.valueOf(200))
+            .assessed(BigDecimal.valueOf(300))
+            .build();
+    }
+
+    public static ClaimField createAllowedTotalVatField() {
+        return createAllowedTotalField(ALLOWED_TOTAL_VAT);
+    }
+
+    public static ClaimField createAllowedTotalInclVatField() {
+        return createAllowedTotalField(ALLOWED_TOTAL_INCL_VAT);
+    }
+
+    private static ClaimField createAllowedTotalField(String key) {
+        return AllowedClaimField
+            .builder()
+            .key(key)
+            .submitted(BigDecimal.valueOf(100))
+            .calculated(BigDecimal.valueOf(200))
+            .assessed(BigDecimal.valueOf(300))
+            .build();
     }
 }

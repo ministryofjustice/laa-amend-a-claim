@@ -17,7 +17,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
-@HttpExchange("/api/v0")
+@HttpExchange("/api/v1")
 public interface ClaimsApiClient {
 
     @GetExchange(url = "/claims", accept = MediaType.APPLICATION_JSON_VALUE)
