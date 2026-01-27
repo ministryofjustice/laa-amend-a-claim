@@ -299,6 +299,12 @@ public abstract class ViewTestBase {
     Assertions.assertEquals(expectedHref, link.attr("href"));
   }
 
+  private void assertCellContainsAddLink(Element cell, String expectedHref) {
+    Element link = selectFirst(cell, "a.govuk-link");
+    Assertions.assertTrue(link.text().startsWith("Add"));
+    Assertions.assertEquals(expectedHref, link.attr("href"));
+  }
+
   protected void assertTableRowContainsValuesWithNoChangeLink(
       List<Element> row,
       String label,
@@ -326,6 +332,20 @@ public abstract class ViewTestBase {
     assertCellContainsText(row.get(2), requested);
     assertCellContainsText(row.get(3), assessed);
     assertCellContainsChangeLink(row.get(4), changeUrl);
+  }
+
+  protected void assertTableRowContainsValuesWithAddLink(
+      List<Element> row,
+      String label,
+      String calculated,
+      String requested,
+      String addUrl
+  ) {
+    assertCellContainsText(row.getFirst(), label);
+    assertCellContainsText(row.get(1), calculated);
+    assertCellContainsText(row.get(2), requested);
+    assertCellContainsAddLink(row.get(3), addUrl);
+    assertCellIsEmpty(row.get(4));
   }
 
   protected void assertSummaryListRowContainsValues(
