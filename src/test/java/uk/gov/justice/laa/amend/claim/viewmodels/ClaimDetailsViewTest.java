@@ -209,7 +209,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             assessmentInfo.setLastAssessmentOutcome(OutcomeType.NILLED);
             claim.setLastAssessment(assessmentInfo);
             V viewModel = createView(claim);
-            MicrosoftApiUser user = new MicrosoftApiUser("id", "Joe Bloggs");
+            MicrosoftApiUser user = new MicrosoftApiUser("id", "Bloggs, Joe", "Joe", "Bloggs");
 
             ThymeleafMessage result = viewModel.lastEditedBy(user);
 

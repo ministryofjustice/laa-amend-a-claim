@@ -2,7 +2,6 @@ package uk.gov.justice.laa.amend.claim.controllers;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +23,6 @@ public class ClaimSummaryController {
     public String onPageLoad(
         HttpSession session,
         Model model,
-        Authentication authentication,
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId
     ) {
@@ -32,7 +30,7 @@ public class ClaimSummaryController {
         if (claimDetails.isHasAssessment()) {
             claimDetails = assessmentService.getLatestAssessmentByClaim(claimDetails);
             if (claimDetails.getLastAssessment() != null) {
-                var user = userRetrievalService.getMicrosoftApiUser(authentication, claimDetails.getLastAssessment().getLastAssessedBy());
+                var user = userRetrievalService.getMicrosoftApiUser(claimDetails.getLastAssessment().getLastAssessedBy());
                 model.addAttribute("user", user);
             }
         }

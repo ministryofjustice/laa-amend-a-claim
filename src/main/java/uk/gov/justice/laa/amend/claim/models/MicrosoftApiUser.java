@@ -8,4 +8,13 @@ import lombok.Data;
 public class MicrosoftApiUser {
     private String id;
     private String displayName;
+    private String givenName;
+    private String surname;
+
+    public String getName() {
+        if (givenName != null && surname != null) {
+            return String.format("%s %s", givenName, surname);
+        }
+        return displayName;
+    }
 }
