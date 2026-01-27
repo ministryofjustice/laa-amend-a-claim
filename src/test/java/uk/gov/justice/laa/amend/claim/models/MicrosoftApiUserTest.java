@@ -22,5 +22,12 @@ public class MicrosoftApiUserTest {
             String result = user.getName();
             Assertions.assertEquals("Joe Bloggs", result);
         }
+
+        @Test
+        void whenAllValuesAreNull() {
+            MicrosoftApiUser user = new MicrosoftApiUser("test-id",null, null, null);
+            String result = user.getName();
+            Assertions.assertNull(result);
+        }
     }
 }
