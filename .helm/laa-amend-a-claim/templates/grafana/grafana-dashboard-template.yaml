@@ -27,7 +27,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 327,
+  "id": 330,
   "links": [],
   "panels": [
     {
@@ -85,7 +85,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(\n    assessment_submissions_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
+          "expr": "round(\n  sum(\n    increase(\n      assessment_submissions_total{\n        namespace=\"laa-amend-a-claim-dev\",\n        service=\"laa-amend-a-claim\"\n      }[$__range]\n    )\n  )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1037,8 +1037,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "#EAB839",
@@ -1134,8 +1133,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1231,8 +1229,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1316,7 +1313,7 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
