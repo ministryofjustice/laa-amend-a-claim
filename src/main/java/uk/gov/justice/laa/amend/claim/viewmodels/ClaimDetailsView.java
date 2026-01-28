@@ -116,8 +116,8 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         String date = DateUtils.displayDateTimeDateValue(dateTime);
         String time = DateUtils.displayDateTimeTimeValue(dateTime);
         ThymeleafMessage outcome = new ThymeleafMessage(lastAssessment().getLastAssessmentOutcome().getMessageKey());
-        if (user != null) {
-            return new ThymeleafMessage("claimSummary.lastAssessmentText", user.getDisplayName(), date, time, outcome);
+        if (user != null && user.getName() != null) {
+            return new ThymeleafMessage("claimSummary.lastAssessmentText", user.getName(), date, time, outcome);
         } else {
             return new ThymeleafMessage("claimSummary.lastAssessmentText.noUser", date, time, outcome);
         }
