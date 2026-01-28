@@ -25,4 +25,8 @@ public record SqlStatement(String sql, List<Object> parameters) {
     public static SqlStatement fromRaw(String sql, List<Object> parameters) {
         return new SqlStatement(sql, parameters);
     }
+
+    public static SqlStatement fromRaw(String sql) {
+        return new SqlStatement(sql, List.of());
+    }
 }

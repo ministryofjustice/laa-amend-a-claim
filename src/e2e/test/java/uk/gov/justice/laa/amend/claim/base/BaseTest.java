@@ -57,6 +57,7 @@ public abstract class BaseTest {
 
         try {
             dqe = new DatabaseQueryExecutor();
+            dqe.clean();
             dqe.seed(inserts());
         } catch (SQLException e) {
             throw new RuntimeException("Failed to seed database", e);
@@ -73,9 +74,6 @@ public abstract class BaseTest {
                 page.close();
             } catch (Exception ignored) {}
         }
-
-        dqe.deleteById("assessment", store.get("assessmentId"));
-        dqe.deleteById(inserts());
 
         store.clear();
     }

@@ -8,9 +8,15 @@ It uses Playwright (Java), JUnit 5 and Allure. The E2E project is isolated under
 * Java 17 or 21
 * Gradle 8.2 or higher
 * Node.js (required for Allure CLI)
-* Allure CLI: npm install -g allure-commandline
+* Allure CLI: `npm install -g allure-commandline`
 * Playwright browsers (auto-installed on first run)
 * Docker (required for running dependencies locally or in CI)
+* Clone the `laa-data-claims-api` repository into the same parent directory as this repository e.g.
+  ```
+  projects/
+   ├── laa-amend-a-claim/
+   └── laa-data-claims-api/
+  ```
 
 ## Environment Config (`.env`)
 
@@ -23,7 +29,9 @@ Example .env contents:
 * HEADLESS=true
 * BROWSER=chromium
 * API_BASE=https://reqres.in
-* DB_PASSWORD=<see 1Password>
+* DB_CONNECTION_URL=jdbc:postgresql://localhost:5432/laa_data_claims_api_dev
+* DB_USER=user
+* DB_PASSWORD=dev
 
 ## MFA Secret
 
@@ -41,8 +49,9 @@ Example .env contents:
 
 Each test class extends `BaseTest`, and must override the implementation of `inserts`. This defines the data that will be inserted into the database before each test inside that class.
 
-Here, the order is important. For example, we cannot insert a claim into the database without a corresponding submission.
+The insert classes define a list of parameters that will be substituted into the wildcards (`?`) inside the [SQL files](/src/e2e/test/resources/fixtures/db/claims). Additional wildcards and parameters can be added as needed.
 
+The order of the inserts is important. For example, we cannot insert a claim into the database without a corresponding submission.
 Therefore, when defining these inserts, the following order should be followed:
 1. Bulk submission
 2. Submission (requires a bulk submission ID)
@@ -50,11 +59,8 @@ Therefore, when defining these inserts, the following order should be followed:
 4. Claim summary fee (requires a claim ID)
 5. Calculated fee detail (requires a claim ID and claim summary fee ID)
 
-After each test has been executed, the `AfterEach` hook:
-1. Deletes any assessments that were created
-2. Iterates back through the inserts in reverse order to delete the seeded data from the database (note again that the order is important here).
-
-The insert classes define a list of parameters that will be substituted into the wildcards (`?`) inside the [SQL files](/src/e2e/test/resources/fixtures/db/claims). Additional wildcards and parameters can be added as needed.
+Additionally, before each test has been executed, the `BeforeEach` hook ensures the tables in the database have been cleared so that each test can run in isolation.
+Again, the order matters here due to foreign key constraints.
 
 ## Run all E2E tests
 
