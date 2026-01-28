@@ -71,12 +71,12 @@
                             <span class="govuk-visually-hidden" th:text="| #{${row.label}}|"></span>
                         </a>
 
-                        <span th:if="${!row.isAssessableAndUnassessed}"
+                        <span th:if="${row.isAssessed()}"
                               th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"/>
                     </td>
 
                     <td class="govuk-table__cell">
-                        <a th:if="${row.isAssessableAndAssessed and row.getChangeUrl(submissionId, claimId) != null}"
+                        <a th:if="${row.isAssessableAndAssessed()}"
                            th:href="${row.getChangeUrl(submissionId, claimId)}"
                            th:data-testid="${'claim-field-' + row.key}"
                            class="govuk-link govuk-link--no-visited-state">
@@ -129,8 +129,7 @@
                     </td>
 
                     <td class="govuk-table__cell">
-
-                        <a th:if="${row.isAssessableAndUnassessed}"
+                        <a th:if="${row.isAssessableAndUnassessed()}"
                            th:href="${row.getChangeUrl(submissionId, claimId)}"
                            th:id="${row.id}"
                            th:data-testid="${'totals-' + row.key}"
@@ -139,7 +138,7 @@
                             <span class="govuk-visually-hidden" th:text="| #{${row.label}}|"></span>
                         </a>
 
-                        <span th:if="${!row.isAssessableAndUnassessed}"
+                        <span th:if="${row.isAssessed()}"
                               th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"/>
                     </td>
 
@@ -149,7 +148,7 @@
                                th:id="${row.id}"
                                th:data-testid="${'totals-' + row.key}"
                                class="govuk-link govuk-link--no-visited-state">
-                                <th:block th:text="${@ThymeleafUtils.getChangeLinkText(row).resolve(#messages)}"></th:block>
+                                <th:block th:text="#{service.change}"></th:block>
                                 <span class="govuk-visually-hidden" th:text="| #{${row.label}}|"></span>
                             </a>
                         </th:block>
@@ -183,12 +182,7 @@
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
-                <tr class="govuk-table__row"
-                    th:each="row : ${viewModel.allowedTotals}"
-                    th:with="
-                    assessed=${row.isAssessed()},
-                    assessableUnassessed=${row.isAssessableAndUnassessed()},
-                    assessableAssessed=${row.isAssessableAndAssessed()}">
+                <tr class="govuk-table__row" th:each="row : ${viewModel.allowedTotals}">
 
                     <td class="govuk-table__cell govuk-!-font-weight-bold"
                         th:text="#{${row.label}}">
@@ -203,28 +197,26 @@
                     </td>
 
                     <td class="govuk-table__cell">
-                        <th:block th:if="${assessed}">
-                            <span th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></span>
-                        </th:block>
+                        <a th:if="${row.isAssessableAndUnassessed()}"
+                           th:href="${row.getChangeUrl(submissionId, claimId)}"
+                           th:id="${row.id}"
+                           th:data-testid="${'totals-' + row.key}"
+                           class="govuk-link govuk-link--no-visited-state">
+                            <th:block th:text="#{service.add}"></th:block>
+                            <span class="govuk-visually-hidden" th:text="| #{${row.label}}|"></span>
+                        </a>
 
-                        <th:block th:if="${assessableUnassessed}">
-                            <a th:href="${row.getChangeUrl(submissionId, claimId)}"
-                               th:id="${row.id}"
-                               th:data-testid="${'totals-' + row.key}"
-                               class="govuk-link govuk-link--no-visited-state">
-                                <th:block th:text="${@ThymeleafUtils.getChangeLinkText(row).resolve(#messages)}"></th:block>
-                                <span class="govuk-visually-hidden" th:text="| #{${row.label}}|"></span>
-                            </a>
-                        </th:block>
+                        <span th:if="${row.isAssessed()}"
+                              th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"/>
                     </td>
 
                     <td class="govuk-table__cell">
-                        <th:block th:if="${assessableAssessed}">
+                        <th:block th:if="${row.isAssessableAndAssessed()}">
                             <a th:href="${row.getChangeUrl(submissionId, claimId)}"
                                th:id="${row.id}"
                                th:data-testid="${'totals-' + row.key}"
                                class="govuk-link govuk-link--no-visited-state">
-                                <th:block th:text="${@ThymeleafUtils.getChangeLinkText(row).resolve(#messages)}"></th:block>
+                                <th:block th:text="#{service.change}"></th:block>
                                 <span class="govuk-visually-hidden" th:text="| #{${row.label}}|"></span>
                             </a>
                         </th:block>
