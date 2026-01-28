@@ -53,7 +53,7 @@ wait_for() {
     sleep 1
   done
 }
-wait_for "http://localhost:8888/actuator/health" "UP"
+wait_for "http://localhost:8080/actuator/health" "UP"
 wait_for "http://localhost:8082/v3/api-docs" "openapi"
 
 CMD="./gradlew test"
