@@ -71,7 +71,7 @@
                             <span class="govuk-visually-hidden" th:text="| #{${row.label}}|"></span>
                         </a>
 
-                        <span th:if="${row.isAssessed()}"
+                        <span th:unless="${row.isAssessableAndUnassessed()}"
                               th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"/>
                     </td>
 
@@ -206,7 +206,7 @@
                             <span class="govuk-visually-hidden" th:text="| #{${row.label}}|"></span>
                         </a>
 
-                        <span th:if="${row.isAssessed()}"
+                        <span th:unless="${row.isAssessableAndUnassessed()}"
                               th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"/>
                     </td>
 
