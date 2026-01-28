@@ -113,14 +113,16 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     }
 
     @Test
-    void testCrimeClaimWithAddAssessedAndAllowedTotalsLinks() throws Exception {
+    void testCrimeClaimPageWithAddLinks() throws Exception {
         claim = MockClaimsFunctions.createMockCrimeClaim();
 
+        ClaimField netProfitCostField = MockClaimsFunctions.createNetProfitCostField();
         ClaimField assessedTotalVat = MockClaimsFunctions.createAssessedTotalVatField();
         ClaimField assessedTotalInclVat = MockClaimsFunctions.createAssessedTotalInclVatField();
         ClaimField allowedTotalVat = MockClaimsFunctions.createAllowedTotalVatField();
         ClaimField allowedTotalInclVat = MockClaimsFunctions.createAllowedTotalInclVatField();
 
+        netProfitCostField.setAssessed(null);
         assessedTotalVat.setAssessed(null);
         assessedTotalInclVat.setAssessed(null);
         allowedTotalVat.setAssessed(null);
@@ -130,6 +132,8 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
         claim.setAssessmentOutcome(outcome);
         claim.setFeeCode("INVC");
+
+        claim.setNetProfitCost(netProfitCostField);
         claim.setAssessedTotalVat(assessedTotalVat);
         claim.setAssessedTotalInclVat(assessedTotalInclVat);
         claim.setAllowedTotalVat(allowedTotalVat);
@@ -148,7 +152,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
         List<List<Element>> table1 = getTable(doc, "Claim costs");
         assertTableRowContainsValuesWithNoChangeLink(table1.getFirst(), "Fixed fee", "£200.00", "£100.00", "£300.00");
-        assertTableRowContainsValuesWithChangeLink(table1.get(1), "Profit costs", "£200.00", "£100.00", "£300.00", "/submissions/submissionId/claims/claimId/profit-costs");
+        assertTableRowContainsValuesWithAddLink(table1.get(1), "Profit costs", "£200.00", "£100.00", "/submissions/submissionId/claims/claimId/profit-costs");
         assertTableRowContainsValuesWithChangeLink(table1.get(2), "Disbursements", "£200.00", "£100.00", "£300.00", "/submissions/submissionId/claims/claimId/disbursements");
         assertTableRowContainsValuesWithChangeLink(table1.get(3), "Disbursement VAT", "£200.00", "£100.00", "£300.00", "/submissions/submissionId/claims/claimId/disbursements-vat");
         assertTableRowContainsValuesWithChangeLink(table1.get(4), "Travel costs", "£200.00", "£100.00", "£300.00", "/submissions/submissionId/claims/claimId/travel-costs");
