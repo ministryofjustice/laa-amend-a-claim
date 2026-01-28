@@ -5,3 +5,6 @@ replicaCount: 4
 
 ingress:
   className: "modsec-non-prod"
+
+grafana:
+  enabled: true

@@ -1,0 +1,23 @@
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "laa-amend-a-claim.fullname" . }}
+  labels:
+    {{- include "laa-amend-a-claim.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "laa-amend-a-claim.selectorLabels" . | nindent 6 }}
+
+  {{- if .Values.serviceMonitor.namespaceSelector.enabled }}
+  namespaceSelector:
+    matchNames:
+      {{- toYaml .Values.serviceMonitor.namespaceSelector.matchNames | nindent 6 }}
+  {{- end }}
+
+  endpoints:
+    - port: management
+      path: {{ .Values.serviceMonitor.path }}
+      interval: {{ .Values.serviceMonitor.interval }}
+{{- end }}
