@@ -36,11 +36,14 @@ jobs:
           kube-sa: deploy-user
 
       - name: Delete Helm Release
+        env:
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          RELEASE_NAME: ${{ steps.sanitize.outputs.release_name }}
         run: |
-          if helm list -n ${{ secrets.KUBE_NAMESPACE }} | grep -q "${{ steps.sanitize.outputs.release_name }}"; then
-            echo "Deleting release: ${{ steps.sanitize.outputs.release_name }}"
-            helm uninstall ${{ steps.sanitize.outputs.release_name }} -n ${{ secrets.KUBE_NAMESPACE }}
+          if helm list -n "${KUBE_NAMESPACE}" | grep -q "${RELEASE_NAME}"; then
+            echo "Deleting release: ${RELEASE_NAME}"
+            helm uninstall "${RELEASE_NAME}" -n "${KUBE_NAMESPACE}"
             echo "Ephemeral environment cleaned up successfully"
           else
-            echo "Release ${{ steps.sanitize.outputs.release_name }} not found, nothing to clean up"
+            echo "Release ${RELEASE_NAME} not found, nothing to clean up"
           fi

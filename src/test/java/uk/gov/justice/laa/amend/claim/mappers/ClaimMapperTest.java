@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants;
+import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
@@ -410,7 +411,7 @@ class ClaimMapperTest {
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
-        ClaimField claimField = claim.getAssessedTotalVat();
+        AssessedClaimField claimField = (AssessedClaimField) claim.getAssessedTotalVat();
         assertEquals(AmendClaimConstants.Label.ASSESSED_TOTAL_VAT, claimField.getKey());
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());
@@ -425,7 +426,7 @@ class ClaimMapperTest {
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
-        ClaimField claimField = claim.getAssessedTotalInclVat();
+        AssessedClaimField claimField = (AssessedClaimField) claim.getAssessedTotalInclVat();
         assertEquals(AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT, claimField.getKey());
         assertNull(claimField.getSubmitted());
         assertNull(claimField.getCalculated());

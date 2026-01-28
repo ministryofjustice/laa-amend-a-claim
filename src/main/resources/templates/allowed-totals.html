@@ -14,7 +14,7 @@
                     <div class="govuk-grid-column-two-thirds">
 
                         <form th:action="@{/submissions/{submissionId}/claims/{claimId}/allowed-totals(submissionId=${submissionId}, claimId=${claimId})}"
-                              th:object="${allowedTotalForm}"
+                              th:object="${form}"
                               method="post">
 
                             <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toAllowedTotalFormErrors(#fields.detailedErrors())})}"></th:block>

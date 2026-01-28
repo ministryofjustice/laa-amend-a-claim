@@ -54,7 +54,7 @@ public class ChangeAllowedTotalsController {
     public String onSubmit(
         @PathVariable(value = "submissionId") String submissionId,
         @PathVariable(value = "claimId") String claimId,
-        @Valid @ModelAttribute("allowedTotalForm") AllowedTotalForm allowedTotalForm,
+        @Valid @ModelAttribute("form") AllowedTotalForm form,
         BindingResult bindingResult,
         HttpSession session,
         Model model,
@@ -63,18 +63,28 @@ public class ChangeAllowedTotalsController {
     ) {
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return renderView(model, allowedTotalForm, submissionId, claimId);
+            return renderView(model, form, submissionId, claimId);
         }
 
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
         ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
-        BigDecimal allowedTotalVat = setScale(allowedTotalForm.getAllowedTotalVat());
+        BigDecimal allowedTotalVat = setScale(form.getAllowedTotalVat());
         allowedTotalVatField.setAssessed(allowedTotalVat);
 
         ClaimField allowedTotalInclVatField = claim.getAllowedTotalInclVat();
-        BigDecimal allowedTotalInclVat = setScale(allowedTotalForm.getAllowedTotalInclVat());
+        BigDecimal allowedTotalInclVat = setScale(form.getAllowedTotalInclVat());
         allowedTotalInclVatField.setAssessed(allowedTotalInclVat);
+
+        ClaimField assessedTotalVatField = claim.getAssessedTotalVat();
+        if (assessedTotalVatField.isNotAssessable()) {
+            assessedTotalVatField.setAssessed(allowedTotalVat);
+        }
+
+        ClaimField assessedTotalInclVatField = claim.getAssessedTotalInclVat();
+        if (assessedTotalInclVatField.isNotAssessable()) {
+            assessedTotalInclVatField.setAssessed(allowedTotalInclVat);
+        }
 
         // Save updated Claim back to session
         session.setAttribute(claimId, claim);
@@ -83,7 +93,7 @@ public class ChangeAllowedTotalsController {
     }
 
     private String renderView(Model model, AllowedTotalForm form, String submissionId, String claimId) {
-        model.addAttribute("allowedTotalForm", form);
+        model.addAttribute("form", form);
         model.addAttribute("redirectUrl", getRedirectUrl(submissionId, claimId));
         return "allowed-totals";
     }

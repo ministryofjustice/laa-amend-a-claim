@@ -55,7 +55,7 @@ public class AssessmentOutcomeControllerTest {
                 get(path).session(session)
             )
             .andExpect(status().isOk())
-            .andExpect(model().attributeExists("assessmentOutcomeForm"))
+            .andExpect(model().attributeExists("form"))
             .andExpect(view().name("assessment-outcome"));
     }
 

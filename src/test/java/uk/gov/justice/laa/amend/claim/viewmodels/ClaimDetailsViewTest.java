@@ -3,13 +3,12 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
-import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,11 +16,6 @@ import java.time.OffsetDateTime;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.util.List;
-
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_VAT;
 
 public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends ClaimDetailsView<C>> {
 
@@ -96,49 +90,18 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         @Test
         void getAssessedTotalsHandlesValidFields() {
             C claim = createClaim();
-            claim.setAssessedTotalVat(AssessedClaimField.builder().key(ASSESSED_TOTAL_VAT).build());
-            claim.setAssessedTotalInclVat(AssessedClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).build());
+            claim.setAssessedTotalVat(MockClaimsFunctions.createAssessedTotalVatField());
+            claim.setAssessedTotalInclVat(MockClaimsFunctions.createAssessedTotalInclVatField());
             V viewModel = createView(claim);
 
             List<ClaimFieldRow> result = viewModel.getAssessedTotals();
 
             Assertions.assertEquals(2, result.size());
 
-            Assertions.assertNull(result.get(0).getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(0).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(0).getChangeUrl());
 
-            Assertions.assertNull(result.get(1).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(1).getChangeUrl());
-        }
-
-        @Test
-        void getAssessedTotalsHandlesNonAssessableFields() {
-            C claim = createClaim();
-            claim.setAssessedTotalVat(AssessedClaimField.builder().key(ASSESSED_TOTAL_VAT).build());
-            claim.setAssessedTotalInclVat(AssessedClaimField.builder().key(ASSESSED_TOTAL_INCL_VAT).build());
-
-            ClaimField allowedTotal = AllowedClaimField.builder().key(ALLOWED_TOTAL_VAT).build();
-            ClaimField allowedTotalInclVat = AllowedClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).build();
-
-            allowedTotal.setAssessed(BigDecimal.valueOf(100));
-            allowedTotalInclVat.setAssessed(BigDecimal.valueOf(100));
-
-            claim.setAllowedTotalVat(allowedTotal);
-            claim.setAllowedTotalInclVat(allowedTotalInclVat);
-
-            Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
-
-            V viewModel = createView(claim);
-
-            List<ClaimFieldRow> result = viewModel.getAssessedTotals();
-
-            Assertions.assertEquals(2, result.size());
-
-            Assertions.assertNull(result.get(0).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(0).getChangeUrl());
-
-            Assertions.assertNull(result.get(1).getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(1).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(1).getChangeUrl());
         }
     }
@@ -156,8 +119,16 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         @Test
         void getAllowedTotalsHandlesNullCalculatedValues() {
             C claim = createClaim();
-            claim.setAllowedTotalVat(AllowedClaimField.builder().key(ALLOWED_TOTAL_VAT).build());
-            claim.setAllowedTotalInclVat(AllowedClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).build());
+
+            ClaimField allowedTotalVat = MockClaimsFunctions.createAllowedTotalVatField();
+            ClaimField allowedTotalInclVat = MockClaimsFunctions.createAllowedTotalInclVatField();
+
+            allowedTotalVat.setCalculated(null);
+            allowedTotalInclVat.setCalculated(null);
+
+            claim.setAllowedTotalVat(allowedTotalVat);
+            claim.setAllowedTotalInclVat(allowedTotalInclVat);
+
             V viewModel = createView(claim);
 
             List<ClaimFieldRow> result = viewModel.getAllowedTotals();
@@ -174,11 +145,8 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         void getAllowedTotalsHandlesValid() {
             C claim = createClaim();
 
-            ClaimField allowedTotal = AllowedClaimField.builder().key(ALLOWED_TOTAL_VAT).build();
-            ClaimField allowedTotalInclVat = AllowedClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).build();
-
-            allowedTotal.setAssessed(BigDecimal.valueOf(100));
-            allowedTotalInclVat.setAssessed(BigDecimal.valueOf(100));
+            ClaimField allowedTotal = MockClaimsFunctions.createAllowedTotalVatField();
+            ClaimField allowedTotalInclVat = MockClaimsFunctions.createAllowedTotalInclVatField();
 
             claim.setAllowedTotalVat(allowedTotal);
             claim.setAllowedTotalInclVat(allowedTotalInclVat);
@@ -187,10 +155,10 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
 
             List<ClaimFieldRow> result = viewModel.getAllowedTotals();
 
-            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(0).getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(0).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/allowed-totals", result.get(0).getChangeUrl());
 
-            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(1).getAssessed());
+            Assertions.assertEquals(BigDecimal.valueOf(300), result.get(1).getAssessed());
             Assertions.assertEquals("/submissions/%s/claims/%s/allowed-totals", result.get(1).getChangeUrl());
         }
     }
@@ -233,7 +201,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
     @Nested
     class LastEditedByTests {
         @Test
-        void displayLastEditedTextWhenEverythingNonNull() {
+        void displayLastEditedTextWhenUserValuesAreNonNull() {
             C claim = createClaim();
             AssessmentInfo assessmentInfo = new AssessmentInfo();
             LocalDateTime localDateTime = LocalDateTime.of(2025, 12, 18, 16, 11, 27);
@@ -241,7 +209,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             assessmentInfo.setLastAssessmentOutcome(OutcomeType.NILLED);
             claim.setLastAssessment(assessmentInfo);
             V viewModel = createView(claim);
-            MicrosoftApiUser user = new MicrosoftApiUser("id", "Joe Bloggs");
+            MicrosoftApiUser user = new MicrosoftApiUser("id", "Bloggs, Joe", "Joe", "Bloggs");
 
             ThymeleafMessage result = viewModel.lastEditedBy(user);
 
@@ -250,6 +218,27 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             Assertions.assertEquals("18 December 2025", result.getParams()[1]);
             Assertions.assertEquals("16:11:27", result.getParams()[2]);
             ThymeleafMessage param = (ThymeleafMessage) result.getParams()[3];
+            Assertions.assertEquals("outcome.nilled", param.getKey());
+            Assertions.assertEquals(0, param.getParams().length);
+        }
+
+        @Test
+        void displayLastEditedTextWhenUserValuesAreNull() {
+            C claim = createClaim();
+            AssessmentInfo assessmentInfo = new AssessmentInfo();
+            LocalDateTime localDateTime = LocalDateTime.of(2025, 12, 18, 16, 11, 27);
+            assessmentInfo.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
+            assessmentInfo.setLastAssessmentOutcome(OutcomeType.NILLED);
+            claim.setLastAssessment(assessmentInfo);
+            V viewModel = createView(claim);
+            MicrosoftApiUser user = new MicrosoftApiUser("id", null, null, null);
+
+            ThymeleafMessage result = viewModel.lastEditedBy(user);
+
+            Assertions.assertEquals("claimSummary.lastAssessmentText.noUser", result.getKey());
+            Assertions.assertEquals("18 December 2025", result.getParams()[0]);
+            Assertions.assertEquals("16:11:27", result.getParams()[1]);
+            ThymeleafMessage param = (ThymeleafMessage) result.getParams()[2];
             Assertions.assertEquals("outcome.nilled", param.getKey());
             Assertions.assertEquals(0, param.getParams().length);
         }

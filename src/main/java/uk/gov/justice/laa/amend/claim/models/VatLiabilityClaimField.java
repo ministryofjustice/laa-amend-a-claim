@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Builder;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
 
@@ -9,7 +10,6 @@ public class VatLiabilityClaimField extends ClaimField {
     @Builder
     public VatLiabilityClaimField(Object submitted, Object calculated, Object assessed) {
         super(VAT, submitted, calculated, assessed);
-        this.assessable = true;
     }
 
     public VatLiabilityClaimField(Object submitted, Object calculated) {
@@ -23,5 +23,15 @@ public class VatLiabilityClaimField extends ClaimField {
             case REDUCED, PAID_IN_FULL -> setAssessedToSubmitted();
             default -> { }
         }
+    }
+
+    @Override
+    public void setAssessableToDefault() {
+        this.assessable = true;
+    }
+
+    @Override
+    public ClaimFieldRow toClaimFieldRow() {
+        return ClaimFieldRow.from(this);
     }
 }
