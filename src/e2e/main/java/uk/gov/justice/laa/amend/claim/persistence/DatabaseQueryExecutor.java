@@ -62,6 +62,7 @@ public class DatabaseQueryExecutor implements AutoCloseable {
         delete("client");
         delete("claim_case");
         delete("claim");
+        delete("matter_start");
         delete("submission");
         delete("bulk_submission");
     }
