@@ -39,8 +39,8 @@ public class CivilClaimDetailsTest {
             Assertions.assertEquals(BigDecimal.ZERO, claim.getCmrhOral().getAssessed());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getHoInterview().getAssessed());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getSubstantiveHearing().getAssessed());
-            Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAssessedTotalVat().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAssessedTotalInclVat().getAssessed());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalVat().getAssessed());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalInclVat().getAssessed());
         }
