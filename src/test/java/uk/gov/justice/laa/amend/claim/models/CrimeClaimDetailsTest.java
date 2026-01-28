@@ -47,8 +47,8 @@ public class CrimeClaimDetailsTest {
             Assertions.assertEquals(BigDecimal.ZERO, claim.getDisbursementVatAmount().getAssessed());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getTravelCosts().getAssessed());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getWaitingCosts().getAssessed());
-            Assertions.assertNull(claim.getAssessedTotalVat().getAssessed());
-            Assertions.assertNull(claim.getAssessedTotalInclVat().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAssessedTotalVat().getAssessed());
+            Assertions.assertEquals(BigDecimal.ZERO, claim.getAssessedTotalInclVat().getAssessed());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalInclVat().getAssessed());
             Assertions.assertEquals(BigDecimal.ZERO, claim.getAllowedTotalVat().getAssessed());
         }
