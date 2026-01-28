@@ -8,12 +8,12 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 public class FixedFeeClaimField extends ClaimField {
 
     @Builder
-    public FixedFeeClaimField(Object submitted, Object calculated, Object assessed) {
-        super(FIXED_FEE, submitted, calculated, assessed);
+    public FixedFeeClaimField(Object calculated, Object assessed) {
+        super(FIXED_FEE, null, calculated, assessed);
     }
 
     public FixedFeeClaimField(Object calculated) {
-        this(null, calculated, null);
+        this(calculated, null);
     }
 
     @Override

@@ -147,10 +147,6 @@ public class ClaimFieldRow {
         return isAssessable() && isAssessed();
     }
 
-    public boolean isNotAssessable() {
-        return !isAssessable();
-    }
-
     public boolean isAssessed() {
         return assessed != null;
     }

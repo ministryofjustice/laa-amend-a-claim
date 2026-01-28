@@ -108,8 +108,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         List<List<Element>> summaryList2 = getSummaryList(doc, "Values");
         Assertions.assertEquals(15, summaryList2.size());
-        assertSummaryListRowContainsValues(summaryList2.get(1), "Fixed fee", "£200.00", "£100.00");
-        assertSummaryListRowContainsValues(summaryList2.get(2), "Profit costs", "£200.00", "£100.00");
+        assertSummaryListRowContainsValues(summaryList2.get(1), "Fixed fee", "£200.00", "Not applicable");
+        assertSummaryListRowContainsValues(summaryList2.get(2), "Profit costs", "Not applicable", "£100.00");
         assertSummaryListRowContainsValues(summaryList2.get(3), "Disbursements", "£200.00", "£100.00");
         assertSummaryListRowContainsValues(summaryList2.get(4), "Disbursement VAT", "£200.00", "£100.00");
         assertSummaryListRowContainsValues(summaryList2.get(5), "Detention travel and waiting costs", "£200.00", "£100.00");
@@ -172,8 +172,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         List<List<Element>> summaryList2 = getSummaryList(doc, "Values");
         Assertions.assertEquals(14, summaryList2.size());
-        assertSummaryListRowContainsValues(summaryList2.get(1), "Fixed fee", "£200.00", "£100.00", "£300.00");
-        assertSummaryListRowContainsValues(summaryList2.get(2), "Profit costs", "£200.00", "£100.00", "£300.00");
+        assertSummaryListRowContainsValues(summaryList2.get(1), "Fixed fee", "£200.00", "Not applicable", "£300.00");
+        assertSummaryListRowContainsValues(summaryList2.get(2), "Profit costs", "Not applicable", "£100.00", "£300.00");
         assertSummaryListRowContainsValues(summaryList2.get(3), "Disbursements", "£200.00", "£100.00", "£300.00");
         assertSummaryListRowContainsValues(summaryList2.get(4), "Disbursement VAT", "£200.00", "£100.00", "£300.00");
         assertSummaryListRowContainsValues(summaryList2.get(5), "Detention travel and waiting costs", "£200.00", "£100.00", "£300.00");
@@ -231,8 +231,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         List<List<Element>> summaryList2 = getSummaryList(doc, "Values");
         Assertions.assertEquals(9, summaryList2.size());
-        assertSummaryListRowContainsValues(summaryList2.get(1), "Fixed fee", "£200.00", "£100.00");
-        assertSummaryListRowContainsValues(summaryList2.get(2), "Profit costs", "£200.00", "£100.00");
+        assertSummaryListRowContainsValues(summaryList2.get(1), "Fixed fee", "£200.00", "Not applicable");
+        assertSummaryListRowContainsValues(summaryList2.get(2), "Profit costs", "Not applicable", "£100.00");
         assertSummaryListRowContainsValues(summaryList2.get(3), "Disbursements", "£200.00", "£100.00");
         assertSummaryListRowContainsValues(summaryList2.get(4), "Disbursement VAT", "£200.00", "£100.00");
         assertSummaryListRowContainsValues(summaryList2.get(5), "Travel costs", "£200.00", "£100.00");
