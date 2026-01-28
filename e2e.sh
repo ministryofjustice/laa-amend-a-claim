@@ -1,38 +1,67 @@
 #!/bin/bash
 
+set -e
+
+API_BOOTRUN_PID=""
+BOOTRUN_PID=""
+
+cleanup() {
+  echo "[INFO] Cleaning up..."
+  kill "$BOOTRUN_PID" "$API_BOOTRUN_PID" 2>/dev/null || true
+}
+
+trap cleanup EXIT INT TERM
+
 docker-compose down -v
 
 echo "[INFO] Configuring environment variables..."
 export $(grep -v '^#' .env | xargs)
 export CLAIMS_API="http://localhost:8082"
+export CLAIMS_TOKEN="f67f968e-b479-4e61-b66e-f57984931e56"
 export SPRING_PROFILES_ACTIVE="dev"
+export SILAS_AUTH_ENABLED=true
 
-echo "[INFO] Starting application..."
-docker-compose up -d
+echo "[INFO] Starting API application..."
+pushd ../laa-data-claims-api >/dev/null
+git checkout main
+git pull
+cd claims-data
+docker-compose down -v
+docker compose up -d
+../gradlew bootRun --args='--server.port=8082' >> ../../e2e.api.log 2>&1 &
+API_BOOTRUN_PID=$!
+popd >/dev/null
+
+echo "[INFO] Starting frontend application..."
+docker-compose up -d redis
 ./gradlew bootRun >> e2e.log 2>&1 &
 BOOTRUN_PID=$!
-sleep 10
 
-echo "[INFO] Starting API port-forward..."
-kubectl port-forward amend-api-port-forward-pod 8082:8080 -n laa-amend-a-claim-dev >/dev/null 2>&1 &
-API_PORT_FORWARD_PID=$!
-sleep 3
+echo "[INFO] Waiting for application to be ready..."
+wait_for() {
+  local url=$1
+  local word=$2
+  local retries=30
 
-echo "[INFO] Starting DB port-forward..."
-kubectl port-forward amend-db-port-forward-pod 5440:5432 -n laa-amend-a-claim-dev >/dev/null 2>&1 &
-DB_PORT_FORWARD_PID=$!
-sleep 3
+  until curl -s "$url" | grep -q "$word"; do
+    ((retries--)) || {
+      echo "[ERROR] $url never became ready"
+      exit 1
+    }
+    sleep 1
+  done
+}
+wait_for "http://localhost:8888/actuator/health" "UP"
+wait_for "http://localhost:8082/v3/api-docs" "openapi"
 
 CMD="./gradlew test"
 for arg in "$@"; do
   case $arg in
     --allure-report)
       CMD+=" allureReport"
-      shift
       ;;
     --allure-serve)
       CMD+=" allureServe"
-      shift
       ;;
     *)
       CMD+=" --tests uk.gov.justice.laa.amend.claim.tests.$arg"
@@ -41,7 +70,3 @@ for arg in "$@"; do
 done
 echo "[INFO] Running tests with $CMD"
 (cd src/e2e/ && eval $CMD)
-
-echo "[INFO] Cleaning up..."
-disown $API_PORT_FORWARD_PID $DB_PORT_FORWARD_PID
-kill "$BOOTRUN_PID" "$API_PORT_FORWARD_PID" "$DB_PORT_FORWARD_PID" 2>/dev/null || true

@@ -23,7 +23,9 @@ Example .env contents:
 * HEADLESS=true
 * BROWSER=chromium
 * API_BASE=https://reqres.in
-* DB_PASSWORD=<see 1Password>
+* DB_CONNECTION_URL=jdbc:postgresql://localhost:5432/laa_data_claims_api_dev
+* DB_USER=user
+* DB_PASSWORD=dev
 
 ## MFA Secret
 

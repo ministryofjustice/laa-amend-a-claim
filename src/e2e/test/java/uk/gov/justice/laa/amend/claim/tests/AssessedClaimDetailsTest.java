@@ -168,7 +168,6 @@ public class AssessedClaimDetailsTest extends BaseTest {
 
         AssessmentCompletePage complete = new AssessmentCompletePage(page);
         complete.waitForPage();
-        complete.storeAssessmentId(store);
 
         Assertions.assertEquals("Assessment complete", complete.getHeadingText());
         Assertions.assertTrue(complete.getBodyText().contains("Your changes have been submitted"));
