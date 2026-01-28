@@ -44,6 +44,9 @@ dependencies {
 
     implementation("io.vavr:vavr:0.11.0")
 
+    // Sentry dependencies for Spring Boot 4 compatibility
+    implementation platform('io.sentry:sentry-bom:8.0.0')
+    implementation 'io.sentry:sentry-spring-boot-starter-jakarta'
 
     compileOnly 'org.projectlombok:lombok'
 
