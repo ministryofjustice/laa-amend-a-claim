@@ -133,7 +133,7 @@
                         <a th:if="${row.isAssessableAndUnassessed}"
                            th:href="${row.getChangeUrl(submissionId, claimId)}"
                            th:id="${row.id}"
-                           th:data-testid="${'claim-field-' + row.key}"
+                           th:data-testid="${'totals-' + row.key}"
                            class="govuk-link govuk-link--no-visited-state">
                             <th:block th:text="#{service.add}"></th:block>
                             <span class="govuk-visually-hidden" th:text="| #{${row.label}}|"></span>
