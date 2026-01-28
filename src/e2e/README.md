@@ -8,9 +8,15 @@ It uses Playwright (Java), JUnit 5 and Allure. The E2E project is isolated under
 * Java 17 or 21
 * Gradle 8.2 or higher
 * Node.js (required for Allure CLI)
-* Allure CLI: npm install -g allure-commandline
+* Allure CLI: `npm install -g allure-commandline`
 * Playwright browsers (auto-installed on first run)
 * Docker (required for running dependencies locally or in CI)
+* Clone the `laa-data-claims-api` repository into the same parent directory as this repository e.g.
+  ```
+  projects/
+   ├── laa-amend-a-claim/
+   └── laa-data-claims-api/
+  ```
 
 ## Environment Config (`.env`)
 
