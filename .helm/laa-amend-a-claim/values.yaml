@@ -73,18 +73,23 @@ resources:
     memory: "3000Mi"
     cpu: "1"
 
+startupProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: http
+  failureThreshold: 30
+  periodSeconds: 10
+
 livenessProbe:
   httpGet:
     path: /actuator/health/liveness
     port: http
-  initialDelaySeconds: 60
   periodSeconds: 10
 
 readinessProbe:
   httpGet:
     path: /actuator/health/readiness
     port: http
-  initialDelaySeconds: 60
   periodSeconds: 10
 
 # Sentry environment name (override at deploy time)
