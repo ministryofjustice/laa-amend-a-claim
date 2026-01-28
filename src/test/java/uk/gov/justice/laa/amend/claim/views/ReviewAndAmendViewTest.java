@@ -113,6 +113,62 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     }
 
     @Test
+    void testCrimeClaimPageWithAddLinks() throws Exception {
+        claim = MockClaimsFunctions.createMockCrimeClaim();
+
+        ClaimField netProfitCostField = MockClaimsFunctions.createNetProfitCostField();
+        ClaimField assessedTotalVat = MockClaimsFunctions.createAssessedTotalVatField();
+        ClaimField assessedTotalInclVat = MockClaimsFunctions.createAssessedTotalInclVatField();
+        ClaimField allowedTotalVat = MockClaimsFunctions.createAllowedTotalVatField();
+        ClaimField allowedTotalInclVat = MockClaimsFunctions.createAllowedTotalInclVatField();
+
+        netProfitCostField.setAssessed(null);
+        assessedTotalVat.setAssessed(null);
+        assessedTotalInclVat.setAssessed(null);
+        allowedTotalVat.setAssessed(null);
+        allowedTotalInclVat.setAssessed(null);
+
+        OutcomeType outcome = OutcomeType.REDUCED;
+
+        claim.setAssessmentOutcome(outcome);
+        claim.setFeeCode("INVC");
+
+        claim.setNetProfitCost(netProfitCostField);
+        claim.setAssessedTotalVat(assessedTotalVat);
+        claim.setAssessedTotalInclVat(assessedTotalInclVat);
+        claim.setAllowedTotalVat(allowedTotalVat);
+        claim.setAllowedTotalInclVat(allowedTotalInclVat);
+
+        MockClaimsFunctions.updateStatus(claim, outcome);
+
+        Document doc = renderDocument();
+
+        assertPageHasTitle(doc, "Review and amend");
+
+        assertPageHasHeading(doc, "Review and amend");
+
+        assertPageHasPrimaryButton(doc, "Submit adjustments");
+        assertPageHasSecondaryButton(doc, "Discard changes");
+
+        List<List<Element>> table1 = getTable(doc, "Claim costs");
+        assertTableRowContainsValuesWithNoChangeLink(table1.getFirst(), "Fixed fee", "£200.00", "£100.00", "£300.00");
+        assertTableRowContainsValuesWithAddLink(table1.get(1), "Profit costs", "£200.00", "£100.00", "/submissions/submissionId/claims/claimId/profit-costs");
+        assertTableRowContainsValuesWithChangeLink(table1.get(2), "Disbursements", "£200.00", "£100.00", "£300.00", "/submissions/submissionId/claims/claimId/disbursements");
+        assertTableRowContainsValuesWithChangeLink(table1.get(3), "Disbursement VAT", "£200.00", "£100.00", "£300.00", "/submissions/submissionId/claims/claimId/disbursements-vat");
+        assertTableRowContainsValuesWithChangeLink(table1.get(4), "Travel costs", "£200.00", "£100.00", "£300.00", "/submissions/submissionId/claims/claimId/travel-costs");
+        assertTableRowContainsValuesWithChangeLink(table1.get(5), "Waiting costs", "£200.00", "£100.00", "£300.00", "/submissions/submissionId/claims/claimId/waiting-costs");
+        assertTableRowContainsValuesWithChangeLink(table1.get(6), "VAT", "No", "Yes", "Yes", "/submissions/submissionId/claims/claimId/assessment-outcome");
+
+        List<List<Element>> table2 = getTable(doc, "Total claim value");
+        assertTableRowContainsValuesWithAddLink(table2.getFirst(), "Assessed total VAT", "£200.00", "£100.00", "/submissions/submissionId/claims/claimId/assessed-totals");
+        assertTableRowContainsValuesWithAddLink(table2.get(1), "Assessed total incl VAT", "£200.00", "£100.00", "/submissions/submissionId/claims/claimId/assessed-totals");
+
+        List<List<Element>> table3 = getTable(doc, "Total allowed value");
+        assertTableRowContainsValuesWithAddLink(table3.getFirst(), "Allowed total VAT", "£200.00", "£100.00", "/submissions/submissionId/claims/claimId/allowed-totals");
+        assertTableRowContainsValuesWithAddLink(table3.get(1), "Allowed total incl VAT", "£200.00", "£100.00", "/submissions/submissionId/claims/claimId/allowed-totals");
+    }
+
+    @Test
     void testPageWithSubmissionError() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
