@@ -23,7 +23,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("clientName", getClientName());
         rows.put("ufn", claim().getUniqueFileNumber());
         addUcnSummaryRow(rows);
-        rows.put("providerName", claim().getProviderName());
+        putIfNotNull(rows, "providerName", claim().getProviderName());
         rows.put("providerAccountNumber", claim().getProviderAccountNumber());
         rows.put("submittedDate", claim().getSubmittedDate());
         rows.put("areaOfLaw", claim().getAreaOfLaw());
@@ -38,6 +38,12 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("escaped", claim().getEscaped());
         rows.put("vatRequested", claim().getVatApplicable());
         return rows;
+    }
+
+    private void putIfNotNull(Map<String, Object> map, String key, Object value) {
+        if (value != null) {
+            map.put(key, value);
+        }
     }
 
     void addUcnSummaryRow(Map<String, Object> summaryRows);

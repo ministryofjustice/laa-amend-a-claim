@@ -120,7 +120,7 @@ public interface ClaimMapper {
         if (submissionResponse != null && submissionResponse.getAreaOfLaw() != null) {
             claim.setAreaOfLaw(submissionResponse.getAreaOfLaw().getValue());
             claim.setProviderAccountNumber(submissionResponse.getOfficeAccountNumber());
-            claim.setProviderName(submissionResponse.getProviderUserId());
+            // Provider name mapping not available
             claim.setSubmittedDate(submissionResponse.getSubmitted() != null ? submissionResponse.getSubmitted().toLocalDateTime() : null);
         }
     }
