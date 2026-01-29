@@ -43,6 +43,15 @@ securityContext:
 service:
   type: ClusterIP
   port: 8080
+  managementPort: 8182
+
+serviceMonitor:
+  enabled: true
+  interval: 15s
+  path: /actuator/prometheus
+  namespaceSelector:
+    enabled: false
+    matchNames: []
 
 namespace: ""  # Override at deploy time
 
@@ -76,20 +85,20 @@ resources:
 startupProbe:
   httpGet:
     path: /actuator/health
-    port: http
+    port: management
   failureThreshold: 30
   periodSeconds: 10
 
 livenessProbe:
   httpGet:
     path: /actuator/health/liveness
-    port: http
+    port: management
   periodSeconds: 10
 
 readinessProbe:
   httpGet:
     path: /actuator/health/readiness
-    port: http
+    port: management
   periodSeconds: 10
 
 # Sentry environment name (override at deploy time)

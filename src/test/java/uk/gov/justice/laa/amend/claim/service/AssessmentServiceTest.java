@@ -1,12 +1,13 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
@@ -44,24 +45,31 @@ class AssessmentServiceTest {
     @Mock
     private AssessmentMapper assessmentMapper;
 
-    @InjectMocks
+    private SimpleMeterRegistry meterRegistry;
     private AssessmentService assessmentService;
 
     public AssessmentServiceTest() {
         MockitoAnnotations.openMocks(this);
     }
-    
+
     private UUID claimId;
     private int page;
     private int size;
     private String sort;
-    
+
     @BeforeEach
     void setUp() {
         claimId = UUID.randomUUID();
         page = 0;
         size = 1;
         sort = "createdOn,desc";
+        meterRegistry = new SimpleMeterRegistry();
+        assessmentService = new AssessmentService(
+            claimsApiClient,
+            assessmentMapper,
+            claimStatusHandler,
+            meterRegistry
+        );
     }
 
     @Nested
@@ -108,7 +116,7 @@ class AssessmentServiceTest {
     class SubmitAssessmentTests {
 
         @Test
-        void testCivilClaimAssessmentSubmittedToApi() {
+        void testCivilClaimAssessmentSubmittedToApiAndIncrementsSuccessCounter() {
             String claimId = UUID.randomUUID().toString();
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
@@ -131,10 +139,13 @@ class AssessmentServiceTest {
 
             verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
             verify(claimsApiClient).submitAssessment(claimId, assessment);
+
+            assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(1.0);
+            assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(0.0);
         }
 
         @Test
-        void testCrimeClaimAssessmentSubmittedToApi() {
+        void testCrimeClaimAssessmentSubmittedToApiAndIncrementsSuccessCounter() {
             CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
             claim.setClaimId(claimId.toString());
             String userId = UUID.randomUUID().toString();
@@ -156,10 +167,13 @@ class AssessmentServiceTest {
 
             verify(assessmentMapper).mapCrimeClaimToAssessment(claim, userId);
             verify(claimsApiClient).submitAssessment(claimId.toString(), assessment);
+
+            assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(1.0);
+            assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(0.0);
         }
 
         @Test
-        void testWhenApiReturnsEmpty() {
+        void testWhenApiReturnsEmptyAndIncrementsFailureCounter() {
             String claimId = UUID.randomUUID().toString();
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
@@ -179,10 +193,42 @@ class AssessmentServiceTest {
 
             verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
             verify(claimsApiClient).submitAssessment(claimId, assessment);
+
+            assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
+            assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(1.0);
         }
 
         @Test
-        void testWhenApiReturnsNullBody() {
+        void testWhenApiReturns5xxStatusAndIncrementsFailureCounter() {
+            String claimId = UUID.randomUUID().toString();
+            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+            claim.setClaimId(claimId);
+            String userId = UUID.randomUUID().toString();
+            AssessmentPost assessment = new AssessmentPost();
+
+            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId))
+                .thenReturn(assessment);
+
+            ResponseEntity<CreateAssessment201Response> response =
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CreateAssessment201Response());
+
+            when(claimsApiClient.submitAssessment(claimId, assessment))
+                .thenReturn(Mono.just(response));
+
+            assertThrows(
+                RuntimeException.class,
+                () -> assessmentService.submitAssessment(claim, userId)
+            );
+
+            verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
+            verify(claimsApiClient).submitAssessment(claimId, assessment);
+
+            assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
+            assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(1.0);
+        }
+
+        @Test
+        void testWhenWebClientThrowsExceptionAndIncrementsFailureCounterOnce() {
             String claimId = UUID.randomUUID().toString();
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
@@ -193,7 +239,7 @@ class AssessmentServiceTest {
                 .thenReturn(assessment);
 
             when(claimsApiClient.submitAssessment(claimId, assessment))
-                .thenReturn(Mono.just(ResponseEntity.ok(null)));
+                .thenReturn(Mono.error(new RuntimeException("Network error")));
 
             assertThrows(
                 RuntimeException.class,
@@ -202,6 +248,9 @@ class AssessmentServiceTest {
 
             verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
             verify(claimsApiClient).submitAssessment(claimId, assessment);
+
+            assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
+            assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(1.0);
         }
     }
 

@@ -17,3 +17,10 @@ resources:
 # Enable ephemeral Redis instance for session storage
 redis:
   enabled: true
+
+serviceMonitor:
+  enabled: false
+
+grafana:
+  enabled: false
+

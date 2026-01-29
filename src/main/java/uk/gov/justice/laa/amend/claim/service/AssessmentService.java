@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.service;
 
-import lombok.RequiredArgsConstructor;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,28 @@ import java.util.UUID;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class AssessmentService {
 
     private final ClaimsApiClient claimsApiClient;
     private final AssessmentMapper assessmentMapper;
     private final ClaimStatusHandler claimStatusHandler;
+    private final Counter assessmentSubmissionCounter;
+    private final Counter assessmentSubmissionFailureCounter;
+
+    public AssessmentService(ClaimsApiClient claimsApiClient,
+                             AssessmentMapper assessmentMapper,
+                             ClaimStatusHandler claimStatusHandler,
+                             MeterRegistry meterRegistry) {
+        this.claimsApiClient = claimsApiClient;
+        this.assessmentMapper = assessmentMapper;
+        this.claimStatusHandler = claimStatusHandler;
+        this.assessmentSubmissionCounter = Counter.builder("assessment.submissions")
+                .description("Total number of successful assessment submissions")
+                .register(meterRegistry);
+        this.assessmentSubmissionFailureCounter = Counter.builder("assessment.submissions.failed")
+                .description("Total number of failed assessment submissions")
+                .register(meterRegistry);
+    }
 
     /**
      * Applies business logic based on the assessment outcome.
@@ -58,11 +75,19 @@ public class AssessmentService {
 
     public CreateAssessment201Response submitAssessment(ClaimDetails claim, String userId) {
         AssessmentPost assessment = claim.toAssessment(assessmentMapper, userId);
-        ResponseEntity<CreateAssessment201Response> response = claimsApiClient.submitAssessment(claim.getClaimId(), assessment).block();
-        if (response == null || response.getBody() == null) {
-            throw new RuntimeException(String.format("Failed to submit assessment for claim ID: %s", claim.getClaimId()));
+
+        try {
+            ResponseEntity<CreateAssessment201Response> response = claimsApiClient.submitAssessment(claim.getClaimId(), assessment).block();
+
+            if (response == null || !response.getStatusCode().is2xxSuccessful()) {
+                throw new RuntimeException(String.format("Failed to submit assessment for claim ID: %s", claim.getClaimId()));
+            }
+            assessmentSubmissionCounter.increment();
+            return response.getBody();
+        } catch (Exception e) {
+            assessmentSubmissionFailureCounter.increment();
+            throw e;
         }
-        return response.getBody();
     }
 
     public ClaimDetails getLatestAssessmentByClaim(ClaimDetails claimDetails) {
