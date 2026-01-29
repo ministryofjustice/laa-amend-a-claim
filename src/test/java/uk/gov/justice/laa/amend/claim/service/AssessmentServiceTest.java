@@ -199,7 +199,7 @@ class AssessmentServiceTest {
         }
 
         @Test
-        void testWhenApiReturnsNon2xxStatusAndIncrementsFailureCounter() {
+        void testWhenApiReturns5xxStatusAndIncrementsFailureCounter() {
             String claimId = UUID.randomUUID().toString();
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
