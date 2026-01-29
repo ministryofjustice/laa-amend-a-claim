@@ -48,10 +48,9 @@ dependencies {
     implementation("io.vavr:vavr:0.11.0")
     implementation("uk.gov.justice.laadata.providers:providers-api:1.23.0")
 
-    // Sentry observability
-    implementation enforcedPlatform('io.sentry:sentry-bom:8.0.0')
-    implementation 'io.sentry:sentry-logback'
-    implementation 'io.sentry:sentry-spring-boot-starter-jakarta'
+    // Sentry observability for Spring Boot 4
+    implementation enforcedPlatform('io.sentry:sentry-bom:8.26.0')
+    implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
 
