@@ -20,6 +20,7 @@ jobs:
       branch: ${{ github.ref_name }}
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
   deploy-ephemeral:
     name: Deploy Ephemeral Environment
@@ -38,12 +39,13 @@ jobs:
 
   test:
     name: Test
-    needs: build
+    needs: [build, deploy-ephemeral]
     uses: ./.github/workflows/test.yml
     with:
       branch: ${{ github.ref_name }}
       environment: dev
       amend_a_claim_image_tag: ${{ needs.build.outputs.image_tag }}
+      sanitized_release_name: ${{ needs.deploy-ephemeral.outputs.sanitized_release_name }}
     secrets:
       P_USERNAME: ${{ secrets.P_USERNAME }}
       P_PASSWORD: ${{ secrets.P_PASSWORD }}
@@ -56,6 +58,7 @@ jobs:
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       DATA_CLAIMS_API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
   security:
     name: Security
@@ -69,20 +72,20 @@ jobs:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
 
-  deploy-dev:
-    name: Deploy to Dev
-    needs: [ build, test ]
-    uses: ./.github/workflows/deploy.yml
-    with:
-      branch: ${{ github.ref_name }}
-      environment: dev
-      SENTRY_ENV: development
-      image_tag: ${{ needs.build.outputs.image_tag }}
-      aws_region: ${{ vars.ECR_REGION }}
-      values_file: values/dev.yaml
-    secrets:
-      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
-      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
-      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
-      KUBE_CERT: ${{ secrets.KUBE_CERT }}
+#  deploy-dev:
+#    name: Deploy to Dev
+#    needs: [ build, test ]
+#    uses: ./.github/workflows/deploy.yml
+#    with:
+#      branch: ${{ github.ref_name }}
+#      environment: dev
+#      SENTRY_ENV: development
+#      image_tag: ${{ needs.build.outputs.image_tag }}
+#      aws_region: ${{ vars.ECR_REGION }}
+#      values_file: values/dev.yaml
+#    secrets:
+#      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+#      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+#      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+#      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+#      KUBE_CERT: ${{ secrets.KUBE_CERT }}

@@ -28,6 +28,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    outputs:
+      sanitized_release_name: ${{ steps.sanitize.outputs.sanitized }}
     environment: dev
     permissions:
       id-token: write

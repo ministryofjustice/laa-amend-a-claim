@@ -13,6 +13,10 @@ on:
       amend_a_claim_image_tag:
         required: true
         type: string
+      sanitized_release_name:
+        required: false
+        type: string
+        description: 'Sanitized release name from ephemeral deployment (e.g., my-branch-name). If not provided, uses default e2e-stack release.'
       build_runner_image:
         required: false
         type: boolean
@@ -74,7 +78,7 @@ jobs:
           file: ./scripts/Dockerfile.e2e-runner
           push: true
           tags: |
-            ${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:github-e2e-runner-latest
+            ${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:github-e2e-runner${{ github.run_id }}
 
   deploy-e2e-environment:
     name: Deploy E2E Environment with Runner
@@ -115,8 +119,26 @@ jobs:
           kubectl config use-context ${KUBE_CLUSTER}
 
       - name: Deploy to Cloud Platform with Helm
+        env:
+          REGISTRY: ${{ steps.ecr-auth.outputs.image_registry }}
+          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ inputs.amend_a_claim_image_tag }}
+          API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
+          API_IMAGE_TAG: ${{ inputs.claims_api_image_tag }}
+          E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
+          E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
+          GITHUB_REPO: ${{ github.repository }}
+          RELEASE_NAME: ${{ inputs.sanitized_release_name }}
         run: |
-          helm upgrade --install e2e-stack ./.helm/e2e-stack \
+          echo "Deploying with release name: ${RELEASE_NAME}"
+          
+          # For ephemeral deployments, service names use the sanitized release name
+          UI_SERVICE="${RELEASE_NAME}-e2e-laa-amend-a-claim"
+          API_SERVICE="${RELEASE_NAME}-e2e-data-claims-api"
+          
+          echo "Using services: ${UI_SERVICE} and ${API_SERVICE}"
+          
+          helm upgrade --install ${RELEASE_NAME}-e2e ./.helm/e2e-stack \
            --namespace ${KUBE_NAMESPACE} \
            --values .helm/e2e-stack/values.yaml \
            --set dataClaimsApi.enabled=true \
@@ -131,24 +153,20 @@ jobs:
            --set redis.enabled=true \
            --set githubRunner.enabled=true \
            --set githubRunner.image.repository=${REGISTRY}/${REPOSITORY} \
-           --set githubRunner.image.tag=github-e2e-runner-latest \
+           --set githubRunner.image.tag=github-e2e-runner${{ github.run_id }} \
            --set githubRunner.env[1].value=${GITHUB_REPO} \
            --set githubRunner.env[2].value=k8s-e2e-runner \
+           --set githubRunner.env[7].name=UI_BASE_URL \
+           --set githubRunner.env[7].value=http://${UI_SERVICE}:8084 \
+           --set githubRunner.env[8].name=API_BASE \
+           --set githubRunner.env[8].value=http://${API_SERVICE}:8082 \
+           --set githubRunner.env[9].name=DB_CONNECTION_URL \
+           --set githubRunner.env[9].value=jdbc:postgresql://${API_SERVICE}:5435/laa_data_claims_api_dev \
            --wait \
            --timeout 5m
 
-          echo " Helm deployment complete"
+          echo "Helm deployment complete"
           kubectl get pods -n ${KUBE_NAMESPACE}
-
-        env:
-          REGISTRY: ${{ steps.ecr-auth.outputs.image_registry }}
-          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ inputs.amend_a_claim_image_tag }}
-          API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
-          API_IMAGE_TAG: ${{ inputs.claims_api_image_tag }}
-          E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
-          E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
-          GITHUB_REPO: ${{ github.repository }}
 
       - name: Wait for Runner Registration
         run: |
@@ -168,16 +186,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6.0.2
 
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5.2.0
+        with:
+          java-version: 25
+          distribution: corretto
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5.0.0
+
       - name: Wait for Services
+        env:
+          RELEASE_NAME: ${{ inputs.sanitized_release_name }}
         run: |
           echo "Waiting for services to be ready..."
-          until curl -sf http://e2e-amend-a-claim:8084/actuator/health 2>/dev/null; do
+          
+          # For ephemeral deployments, service names use the sanitized release name
+          AMEND_CLAIM_SERVICE="${RELEASE_NAME}-e2e-laa-amend-a-claim"
+          DATA_CLAIMS_SERVICE="${RELEASE_NAME}-e2e-data-claims-api"  # Claims API service name stays the same in e2e-stack
+          
+          echo "Using services: ${AMEND_CLAIM_SERVICE} and ${DATA_CLAIMS_SERVICE}"
+          
+          until curl -sf http://${AMEND_CLAIM_SERVICE}:8084/actuator/health 2>/dev/null; do
             echo "Waiting for UI application..."
             sleep 5
           done
           echo "UI ready"
 
-          until curl -sf http://e2e-data-claims-api:8082/actuator/health 2>/dev/null; do
+          until curl -sf http://${DATA_CLAIMS_SERVICE}:8082/actuator/health 2>/dev/null; do
             echo "Waiting for API..."
             sleep 5
           done

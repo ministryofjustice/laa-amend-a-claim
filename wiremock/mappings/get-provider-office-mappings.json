@@ -1,0 +1,15 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "urlPattern": "/api/v1/provider-offices/(.*)"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "get-provider-office-response.json",
+    "transformers": ["response-template"],
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

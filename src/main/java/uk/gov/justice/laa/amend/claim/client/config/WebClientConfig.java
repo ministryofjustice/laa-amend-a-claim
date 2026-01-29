@@ -6,16 +6,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.codec.ClientCodecConfigurer;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
+import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.client.MicrosoftGraphApiClient;
+import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 
 @Slf4j
 @Configuration
-@EnableConfigurationProperties({ClaimsApiProperties.class, MicrosoftGraphApiProperties.class})
+@EnableConfigurationProperties({ClaimsApiProperties.class, MicrosoftGraphApiProperties.class, ProviderApiProperties.class})
 public class WebClientConfig {
 
     @Bean
@@ -43,6 +46,27 @@ public class WebClientConfig {
     }
 
     @Bean
+    public ProviderApiClient providerApiClient(WebClient.Builder webClientBuilder, ProviderApiProperties properties) {
+        ExchangeStrategies strategies = ExchangeStrategies
+            .builder()
+            .codecs(ClientCodecConfigurer::defaultCodecs)
+            .build();
+
+        WebClient webClient = webClientBuilder
+            .baseUrl(properties.getUrl())
+            .defaultHeader(HttpHeaders.AUTHORIZATION, properties.getAccessToken())
+            .filter(logRequest())
+            .filter(logResponse())
+            .exchangeStrategies(strategies)
+            .build();
+
+        WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
+
+        return factory.createClient(ProviderApiClient.class);
+    }
+
+    @Bean
     public MicrosoftGraphApiClient microsoftGraphApiClient(WebClient.Builder webClientBuilder, MicrosoftGraphApiProperties properties) {
         WebClient webClient = webClientBuilder
             .baseUrl(properties.getUrl())
@@ -50,5 +74,20 @@ public class WebClientConfig {
         WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
         return factory.createClient(MicrosoftGraphApiClient.class);
+    }
+
+    private ExchangeFilterFunction logRequest() {
+        return ExchangeFilterFunction.ofRequestProcessor(request -> {
+            boolean hasAuth = request.headers().containsHeader(HttpHeaders.AUTHORIZATION);
+            log.debug("WebClient request: {} {} authHeaderPresent={}", request.method(), request.url(), hasAuth);
+            return Mono.just(request);
+        });
+    }
+
+    private ExchangeFilterFunction logResponse() {
+        return ExchangeFilterFunction.ofResponseProcessor(response -> {
+            log.debug("WebClient response status={}", response.statusCode());
+            return Mono.just(response);
+        });
     }
 }
