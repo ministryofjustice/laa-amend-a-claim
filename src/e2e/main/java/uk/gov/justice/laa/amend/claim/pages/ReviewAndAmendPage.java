@@ -78,11 +78,6 @@ public class ReviewAndAmendPage {
         ).first();
     }
 
-    private void clickAddChangeRow(String itemName) {
-        rowByItemName(itemName).getByTestId("claim-field-profitCost")
-                .click();
-    }
-
     private void clickChangeInRow(String itemName) {
         rowByItemName(itemName)
             .locator("a.govuk-link:has-text('Change')")
@@ -99,7 +94,7 @@ public class ReviewAndAmendPage {
         link.click();
     }
 
-    public void clickChangeProfitCosts()      { clickAddChangeRow("Profit costs"); }
+    public void clickChangeProfitCosts()      { clickChangeInRow("Profit costs"); }
     public void clickAddProfitCosts()         { clickAddLink("Profit costs", "claim-field-profitCost"); }
     public void clickChangeDisbursements()    { clickChangeInRow("Disbursements"); }
     public void clickChangeDisbursementsVat() { clickChangeInRow("Disbursement VAT"); }

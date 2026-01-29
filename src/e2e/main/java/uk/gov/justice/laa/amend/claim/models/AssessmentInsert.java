@@ -6,28 +6,26 @@ import java.util.Arrays;
 import java.util.List;
 
 @Builder
-public record ClaimInsert(
+public record AssessmentInsert(
     String id,
-    String submissionId,
-    String uniqueFileNumber,
-    String userId,
-    Boolean hasAssessment
+    String claimSummaryFeeId,
+    String claimId,
+    String userId
 ) implements Insert {
 
     @Override
     public String table() {
-        return "claim";
+        return "assessment";
     }
 
     @Override
     public List<Object> parameters() {
         return Arrays.asList(
             id,
-            submissionId,
-            uniqueFileNumber,
+            claimSummaryFeeId,
+            claimId,
             userId,
-            userId,
-            hasAssessment != null  ? hasAssessment : false
+            userId
         );
     }
 }

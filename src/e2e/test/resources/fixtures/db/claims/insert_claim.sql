@@ -46,6 +46,6 @@ INSERT INTO claims.claim (
   ?,
   now(),
   false,
-  false,
+  ?,
   0
 );
