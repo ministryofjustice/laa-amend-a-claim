@@ -53,7 +53,6 @@ public class AssessmentOutcomeTest extends BaseTest {
                 .id(CLAIM_ID)
                 .submissionId(SUBMISSION_ID)
                 .uniqueFileNumber(UFN)
-                .feeCode("INVC")
                 .userId(USER_ID)
                 .build(),
 

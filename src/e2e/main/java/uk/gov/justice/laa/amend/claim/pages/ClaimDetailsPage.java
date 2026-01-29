@@ -208,18 +208,30 @@ public class ClaimDetailsPage {
     }
 
     public void assertAllowedTotals(Map<String, String[]> expectedTotals) {
-        Locator totalAllowedValuesCard = cardByTitle("Total allowed value", page);
         for (Map.Entry<String, String[]> entry : expectedTotals.entrySet()) {
-            Locator row = rowByLabel(totalAllowedValuesCard, entry.getKey());
             String[] values = entry.getValue();
-
-            // Check calculated value
-            assertCellValue(row, 1, values[0]);
-            // Check submitted value
-            assertCellValue(row, 2, values[1]);
-            // Check allowed value
-            assertCellValue(row, 3, values[2]);
+            assertAllowedTotals(entry.getKey(), values[0], values[1], values[2]);
         }
+    }
+
+    public void assertAllowedTotals(String label, String calculated, String submitted, String allowed) {
+        assertTotals("Total allowed value", label, calculated, submitted, allowed);
+    }
+
+    public void assertAssessedTotals(String label, String calculated, String submitted, String allowed) {
+        assertTotals("Total claim value", label, calculated, submitted, allowed);
+    }
+
+    public void assertTotals(String title, String label, String calculated, String submitted, String allowed) {
+        Locator card = cardByTitle(title, page);
+        Locator row = rowByLabel(card, label);
+
+        // Check calculated value
+        assertCellValue(row, 1, calculated);
+        // Check submitted value
+        assertCellValue(row, 2, submitted);
+        // Check allowed value
+        assertCellValue(row, 3, allowed);
     }
 
     private void assertCellValue(Locator rowSelector, int columnIndex, String expectedValue) {

@@ -10,6 +10,7 @@ public record CalculatedFeeDetailInsert(
     String id,
     String claimSummaryFeeId,
     String claimId,
+    String feeCode,
     boolean escaped,
     String userId
 ) implements Insert {
@@ -25,6 +26,7 @@ public record CalculatedFeeDetailInsert(
             id,
             claimSummaryFeeId,
             claimId,
+            feeCode,
             escaped,
             userId
         );

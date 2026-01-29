@@ -10,7 +10,6 @@ public record ClaimInsert(
     String id,
     String submissionId,
     String uniqueFileNumber,
-    String feeCode,
     String userId
 ) implements Insert {
 
@@ -25,7 +24,6 @@ public record ClaimInsert(
             id,
             submissionId,
             uniqueFileNumber,
-            feeCode,
             userId,
             userId
         );

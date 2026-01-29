@@ -19,7 +19,7 @@ public class DriverFactory {
 
     public static BrowserContext createContext() {
         ensureStarted();
-        BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setHeadless(EnvConfig.headless());
+        BrowserType.LaunchOptions options = new BrowserType.LaunchOptions().setHeadless(EnvConfig.headless()).setSlowMo(150);
         String type = EnvConfig.browser().toLowerCase();
         switch (type) {
             case "firefox":
