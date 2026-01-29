@@ -7,8 +7,6 @@ import uk.gov.justice.laa.amend.claim.forms.errors.AssessedTotalFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessmentOutcomeFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.MonetaryValueFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
-import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafLiteralString;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafString;
@@ -85,17 +83,6 @@ public class ThymeleafUtils {
             default -> new ThymeleafLiteralString(value.toString());
         };
     }
-
-    public ThymeleafString getAssessedValue(ClaimField value) {
-        Object obj = value != null && value.getAssessed() != null ? value.getAssessed() : null;
-        return getFormattedValue(obj);
-    }
-
-    public ThymeleafString getChangeLinkText(ClaimFieldRow value) {
-        var val = value != null && value.isAssessed() ? "service.change" : "service.add";
-        return new ThymeleafMessage(val);
-    }
-
 
     public ThymeleafString getFormattedBoolean(Boolean value) {
         String key = (value != null && value) ? "service.yes" : "service.no";

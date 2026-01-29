@@ -84,7 +84,7 @@ resources:
 
 startupProbe:
   httpGet:
-    path: /actuator/health/liveness
+    path: /actuator/health
     port: management
   failureThreshold: 30
   periodSeconds: 10

@@ -105,7 +105,9 @@ public class MockClaimsFunctions {
     }
 
     public static CostClaimField createNetProfitCostField() {
-        return createCostField(NET_PROFIT_COST, Cost.PROFIT_COSTS);
+        CostClaimField field = createCostField(NET_PROFIT_COST, Cost.PROFIT_COSTS);
+        field.setCalculated(null);
+        return field;
     }
 
     public static CostClaimField createDisbursementCostField() {
@@ -150,7 +152,6 @@ public class MockClaimsFunctions {
     public static FixedFeeClaimField createFixedFeeField() {
         return FixedFeeClaimField
             .builder()
-            .submitted(BigDecimal.valueOf(100))
             .calculated(BigDecimal.valueOf(200))
             .assessed(BigDecimal.valueOf(300))
             .build();

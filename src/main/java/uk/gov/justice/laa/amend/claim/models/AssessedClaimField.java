@@ -18,7 +18,11 @@ public class AssessedClaimField extends ClaimField {
 
     @Override
     public void applyOutcome(OutcomeType outcome) {
-        setAssessedToNull();
+        switch (outcome) {
+            case NILLED -> setNilled();
+            case REDUCED, PAID_IN_FULL, REDUCED_TO_FIXED_FEE -> setAssessedToNull();
+            default -> { }
+        }
     }
 
     @Override
