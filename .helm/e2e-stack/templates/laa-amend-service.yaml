@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: e2e-amend-a-claim
+  name: {{ printf "%s-amend-a-claim" .Release.Name }}
   labels:
-    app: e2e-amend-a-claim
+    app: {{ printf "%s-amend-a-claim" .Release.Name }}
 spec:
   type: ClusterIP
   selector:
-    app: e2e-amend-a-claim
+    app: {{ printf "%s-amend-a-claim" .Release.Name }}
   ports:
     - name: http
       port: {{ .Values.laaAmendAClaim.service.port }}

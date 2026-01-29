@@ -128,12 +128,14 @@ jobs:
           E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
           E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
           GITHUB_REPO: ${{ github.repository }}
-          RELEASE_NAME: ${{ inputs.sanitized_release_name }}
+          RELEASE_NAME_INPUT: ${{ inputs.sanitized_release_name}}
         run: |
+          # Truncate release name to 20 chars to avoid K8s 63-char naming limit
+          RELEASE_NAME=$(echo "${RELEASE_NAME_INPUT}" | cut -c1-12)
           echo "Deploying with release name: ${RELEASE_NAME}"
           
           # For ephemeral deployments, service names use the sanitized release name
-          UI_SERVICE="${RELEASE_NAME}-e2e-laa-amend-a-claim"
+          UI_SERVICE="${RELEASE_NAME}-e2e-amend-a-claim"
           API_SERVICE="${RELEASE_NAME}-e2e-data-claims-api"
           
           echo "Using services: ${UI_SERVICE} and ${API_SERVICE}"
@@ -150,18 +152,16 @@ jobs:
            --set laaAmendAClaim.enabled=true \
            --set laaAmendAClaim.image.repository=${REGISTRY}/${REPOSITORY} \
            --set laaAmendAClaim.image.tag=${IMAGE_TAG} \
+           --set laaAmendAClaim.claimsApiHost=${API_SERVICE} \
            --set redis.enabled=true \
            --set githubRunner.enabled=true \
            --set githubRunner.image.repository=${REGISTRY}/${REPOSITORY} \
            --set githubRunner.image.tag=github-e2e-runner${{ github.run_id }} \
            --set githubRunner.env[1].value=${GITHUB_REPO} \
            --set githubRunner.env[2].value=k8s-e2e-runner \
-           --set githubRunner.env[7].name=UI_BASE_URL \
-           --set githubRunner.env[7].value=http://${UI_SERVICE}:8084 \
-           --set githubRunner.env[8].name=API_BASE \
-           --set githubRunner.env[8].value=http://${API_SERVICE}:8082 \
-           --set githubRunner.env[9].name=DB_CONNECTION_URL \
-           --set githubRunner.env[9].value=jdbc:postgresql://${API_SERVICE}:5435/laa_data_claims_api_dev \
+           --set githubRunner.env[4].value=http://${UI_SERVICE}:8084 \
+           --set githubRunner.env[5].value=http://${API_SERVICE}:8082 \
+           --set githubRunner.env[8].value=jdbc:postgresql://${API_SERVICE}:5435/laa_data_claims_api_dev \
            --wait \
            --timeout 5m
 
@@ -169,10 +169,14 @@ jobs:
           kubectl get pods -n ${KUBE_NAMESPACE}
 
       - name: Wait for Runner Registration
+        env:
+          RELEASE_NAME_INPUT: ${{ inputs.sanitized_release_name }}
         run: |
+          # Truncate release name to 20 chars (same as deploy step)
+          RELEASE_NAME=$(echo "${RELEASE_NAME_INPUT}" | cut -c1-12)
           echo "Waiting for GitHub runner to register..."
           sleep 30
-          kubectl logs -n ${KUBE_NAMESPACE} -l app=github-runner --tail=50 || true
+          kubectl logs -n ${KUBE_NAMESPACE} -l app=${RELEASE_NAME}-e2e-github-runner-e2e --tail=50 || true
 
   run-e2e-tests:
     name: Run E2E Tests
@@ -197,8 +201,10 @@ jobs:
 
       - name: Wait for Services
         env:
-          RELEASE_NAME: ${{ inputs.sanitized_release_name }}
+          RELEASE_NAME_INPUT: ${{ inputs.sanitized_release_name }}
         run: |
+          # Truncate release name to 20 chars (same as deploy step)
+          RELEASE_NAME=$(echo "${RELEASE_NAME_INPUT}" | cut -c1-12)
           echo "Waiting for services to be ready..."
           
           # For ephemeral deployments, service names use the sanitized release name

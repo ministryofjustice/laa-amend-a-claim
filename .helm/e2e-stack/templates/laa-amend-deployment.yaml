@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: e2e-amend-a-claim
+  name: {{ printf "%s-amend-a-claim" .Release.Name }}
   labels:
-    app: e2e-amend-a-claim
+    app: {{ printf "%s-amend-a-claim" .Release.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: e2e-amend-a-claim
+      app: {{ printf "%s-amend-a-claim" .Release.Name }}
   template:
     metadata:
       labels:
-        app: e2e-amend-a-claim
+        app: {{ printf "%s-amend-a-claim" .Release.Name }}
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -29,6 +29,10 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "{{ .Values.laaAmendAClaim.springProfile }}"
+            {{- if .Values.laaAmendAClaim.claimsApiHost }}
+            - name: CLAIMS_API
+              value: "http://{{ .Values.laaAmendAClaim.claimsApiHost }}:8082"
+            {{- end }}
             {{- range .Values.laaAmendAClaim.env }}
             - name: {{ .name }}
               {{- if hasKey . "valueFrom" }}

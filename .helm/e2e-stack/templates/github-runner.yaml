@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: github-runner-e2e
+  name: {{ printf "%s-github-runner-e2e" .Release.Name }}
   labels:
-    app: github-runner-e2e
+    app: {{ printf "%s-github-runner-e2e" .Release.Name }}
 spec:
   replicas: {{ .Values.githubRunner.replicas }}
   selector:
     matchLabels:
-      app: github-runner-e2e
+      app: {{ printf "%s-github-runner-e2e" .Release.Name }}
   template:
     metadata:
       labels:
-        app: github-runner-e2e
+        app: {{ printf "%s-github-runner-e2e" .Release.Name }}
     spec:
       securityContext:
         runAsNonRoot: true

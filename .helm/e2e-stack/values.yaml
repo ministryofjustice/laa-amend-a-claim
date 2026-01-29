@@ -112,6 +112,7 @@ redis:
 # LAA Amend a Claim Spring Boot Application
 laaAmendAClaim:
   enabled: true
+  claimsApiHost: "e2e-data-claims-api"
   image:
     repository: ""
     tag: ""
@@ -176,8 +177,6 @@ laaAmendAClaim:
       value: http://localhost:8084
     - name: SENTRY_DSN
       value: ""
-    - name: CLAIMS_API
-      value: http://e2e-data-claims-api:8082
     - name: CLAIMS_TOKEN
       valueFrom:
         secretKeyRef:
