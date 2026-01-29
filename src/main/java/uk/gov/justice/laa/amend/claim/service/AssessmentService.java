@@ -79,7 +79,7 @@ public class AssessmentService {
         try {
             ResponseEntity<CreateAssessment201Response> response = claimsApiClient.submitAssessment(claim.getClaimId(), assessment).block();
 
-            if (!response.getStatusCode().is2xxSuccessful()) {
+            if (response == null || !response.getStatusCode().is2xxSuccessful()) {
                 throw new RuntimeException(String.format("Failed to submit assessment for claim ID: %s", claim.getClaimId()));
             }
             assessmentSubmissionCounter.increment();
