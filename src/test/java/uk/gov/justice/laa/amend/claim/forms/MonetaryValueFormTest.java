@@ -82,6 +82,34 @@ public class MonetaryValueFormTest extends FormTest {
     }
 
     @Test
+    void testValueWithComma() {
+        String value = "1,000";
+
+        MonetaryValueForm form = new MonetaryValueForm();
+        form.setValue(value);
+        form.setCost(cost);
+
+        Set<ConstraintViolation<MonetaryValueForm>> violations = validator.validate(form);
+        Assertions.assertTrue(violations.isEmpty());
+
+        Assertions.assertEquals(value, form.getValue());
+    }
+
+    @Test
+    void testValueWithInvalidCommaPlacement() {
+        String value = "1,0000";
+
+        MonetaryValueForm form = new MonetaryValueForm();
+        form.setValue(value);
+        form.setCost(cost);
+
+        Set<ConstraintViolation<MonetaryValueForm>> violations = validator.validate(form);
+        Assertions.assertTrue(violations.isEmpty());
+
+        Assertions.assertEquals(value, form.getValue());
+    }
+
+    @Test
     void testValueEqualToMax() {
         MonetaryValueForm form = new MonetaryValueForm();
         form.setValue("1000000.00");
