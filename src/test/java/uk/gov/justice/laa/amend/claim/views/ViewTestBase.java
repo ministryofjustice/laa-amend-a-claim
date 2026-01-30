@@ -124,9 +124,10 @@ public abstract class ViewTestBase {
     Assertions.assertEquals(expectedText, elements.getFirst().text());
   }
 
-  protected void assertPageHasLink(Document doc, String id, String expectedText) {
+  protected void assertPageHasLink(Document doc, String id, String expectedText, String expectedHref) {
     Element element = getElementById(doc, id);
     Assertions.assertEquals(expectedText, element.text());
+    Assertions.assertEquals(expectedHref, element.attr("href"));
   }
 
   protected void assertPageHasHint(Document doc, String id, String expectedText) {
