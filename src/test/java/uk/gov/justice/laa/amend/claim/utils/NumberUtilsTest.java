@@ -109,7 +109,8 @@ class NumberUtilsTest {
             "!",
             "%",
             "&",
-            "*"
+            "*",
+            "NaN"
     })
     void rejectsSpecialCharactersAndSymbols(String input) {
         ParseException ex =
@@ -125,7 +126,9 @@ class NumberUtilsTest {
             "£123",
             "100😊",
             "π3.14",
-            "1,000€"
+            "1,000€",
+            "50∞",
+            "100NaN"
     })
     void rejectsMixedNumbersWithSymbols(String input) {
         assertThrows(ParseException.class,
