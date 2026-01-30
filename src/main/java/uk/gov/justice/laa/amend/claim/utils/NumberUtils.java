@@ -3,6 +3,11 @@ package uk.gov.justice.laa.amend.claim.utils;
 import lombok.experimental.UtilityClass;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.util.Locale;
 
 @UtilityClass
 public class NumberUtils {
@@ -17,5 +22,32 @@ public class NumberUtils {
             sum = sum == null ? value : sum.add((BigDecimal) getOrElseZero(value));
         }
         return sum;
+    }
+
+    public static BigDecimal parse(String value) throws ParseException {
+        if (value == null) {
+            throw new ParseException("NUMBER_PARSE_FAILED", 0);
+        }
+
+        DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance(Locale.UK);
+        format.setParseBigDecimal(true);
+
+        String trimmed = value.trim();  // Allow leading and trailing whitespace
+
+        ParsePosition pos = new ParsePosition(0);
+
+        Number parsed = format.parse(trimmed, pos);
+
+        // No number parsed or non-finite value (e.g. ∞)
+        if (!(parsed instanceof BigDecimal)) {
+            throw new ParseException("NUMBER_PARSE_FAILED", pos.getIndex());
+        }
+
+        // Reject partial parsing i.e. 35kg and 1abc3 should fail
+        if (pos.getIndex() != trimmed.length()) {
+            throw new ParseException("NUMBER_PARSE_FAILED", pos.getIndex());
+        }
+
+        return (BigDecimal) parsed;
     }
 }

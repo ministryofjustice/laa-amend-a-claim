@@ -47,6 +47,10 @@ public class CurrencyUtils {
     }
 
     public static BigDecimal setScale(String value) {
-        return setScale(new BigDecimal(value));
+        try {
+            return setScale(NumberUtils.parse(value));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

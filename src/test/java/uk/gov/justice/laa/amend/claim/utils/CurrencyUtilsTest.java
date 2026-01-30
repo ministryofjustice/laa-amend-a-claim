@@ -82,4 +82,10 @@ class CurrencyUtilsTest {
         BigDecimal result = CurrencyUtils.setScale(amount);
         assertThat(result).isEqualTo(new BigDecimal("5.12"));
     }
+
+    @Test
+    void setScaleWhenValueHasComma() {
+        BigDecimal result = CurrencyUtils.setScale("1,000.123");
+        assertThat(result).isEqualTo(new BigDecimal("1000.12"));
+    }
 }

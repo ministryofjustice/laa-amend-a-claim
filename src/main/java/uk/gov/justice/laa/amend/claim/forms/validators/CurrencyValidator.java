@@ -1,8 +1,10 @@
 package uk.gov.justice.laa.amend.claim.forms.validators;
 
 import jakarta.validation.ConstraintValidatorContext;
+import uk.gov.justice.laa.amend.claim.utils.NumberUtils;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -20,7 +22,7 @@ public class CurrencyValidator extends Validator {
         }
 
         try {
-            BigDecimal amount = new BigDecimal(value);
+            BigDecimal amount = NumberUtils.parse(value);
 
             if (amount.scale() > 2) {
                 addViolation(context, fieldName, String.format("{%s.error.invalid}", prefix));
@@ -38,7 +40,7 @@ public class CurrencyValidator extends Validator {
             }
 
             return true;
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | ParseException e) {
             addViolation(context, fieldName, String.format("{%s.error.invalid}", prefix));
             return false;
         }

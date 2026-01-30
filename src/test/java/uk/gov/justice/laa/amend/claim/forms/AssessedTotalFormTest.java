@@ -118,6 +118,30 @@ public class AssessedTotalFormTest extends FormTest {
         checkViolations(totalInclVatViolationMessage, totalVatViolationMessage);
     }
 
+    @Test
+    void testValueWithComma() {
+        form.setAssessedTotalInclVat("1,000.00");
+        form.setAssessedTotalVat("1,000.00");
+
+        checkNoViolations(form);
+    }
+
+    @Test
+    void testValueWithInvalidCommaPlacement() {
+        form.setAssessedTotalInclVat("1,0000.00");
+        form.setAssessedTotalVat("1,0000.00");
+
+        checkNoViolations(form);
+    }
+
+    @Test
+    void testValueWithNoCommas() {
+        form.setAssessedTotalInclVat("10000");
+        form.setAssessedTotalVat("10000");
+
+        checkNoViolations(form);
+    }
+
     private void checkViolations(String totalInclVatViolationMessage, String totalVatViolationMessage){
         Set<ConstraintViolation<AssessedTotalForm>> violations = validator.validate(form);
         ConstraintViolation<AssessedTotalForm> totalVatViolation = getViolation(violations, "assessedTotalVat");

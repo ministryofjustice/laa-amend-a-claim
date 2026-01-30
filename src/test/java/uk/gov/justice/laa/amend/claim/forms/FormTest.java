@@ -27,4 +27,9 @@ public class FormTest {
         Assertions.assertNotNull(violation);
         return violation;
     }
+
+    protected <T> void checkNoViolations(T form) {
+        Set<ConstraintViolation<T>> violations = validator.validate(form);
+        Assertions.assertTrue(violations.isEmpty());
+    }
 }
