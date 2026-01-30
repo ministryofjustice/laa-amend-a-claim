@@ -9,6 +9,7 @@ import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,6 +20,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
+import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.models.SearchData;
@@ -29,7 +31,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("E2E")
 @Feature("Search")
@@ -137,5 +139,28 @@ public class SearchTest extends BaseTest {
 
         boolean hasResults = searchPage.hasResults();
         Assertions.assertEquals(config.isExpectedResults(), hasResults, "Results presence should match expected.");
+    }
+
+    @Test
+    @DisplayName("Search values retained upon 'Back to search' click")
+    void backToSearch() {
+        String baseUrl = EnvConfig.baseUrl();
+        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
+
+        search.searchForClaim(
+            "123456",
+            "04",
+            "2025",
+            "",
+            ""
+        );
+
+        search.clickViewForUfn("121019/001");
+
+        ClaimDetailsPage details = new ClaimDetailsPage(page);
+        details.waitForPage();
+
+        details.clickBackToSearchButton();
+        assertTrue(page.url().contains("/?providerAccountNumber=123456&submissionDateMonth=04&submissionDateYear=2025&page=1&sort=uniqueFileNumber,asc"));
     }
 }

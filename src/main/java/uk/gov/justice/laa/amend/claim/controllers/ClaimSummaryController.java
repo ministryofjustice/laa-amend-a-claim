@@ -36,12 +36,12 @@ public class ClaimSummaryController {
                 model.addAttribute("user", user);
             }
         }
-        String searchUrl = (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
         session.setAttribute(claimId, claimDetails);
+        String searchUrl = (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
+        model.addAttribute("searchUrl", searchUrl);
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claim", claimDetails.toViewModel());
-        model.addAttribute("searchUrl", searchUrl);
         return "claim-summary";
     }
 

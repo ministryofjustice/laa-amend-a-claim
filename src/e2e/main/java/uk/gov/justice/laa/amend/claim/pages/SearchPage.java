@@ -107,13 +107,7 @@ public class SearchPage {
 
     public void searchForClaim(String providerAccount, String month, String year,
                                String ufn, String crn) {
-        waitForPage();
-        enterProviderAccountNumber(providerAccount);
-        enterSubmissionDate(month, year);
-        enterUFN(ufn);
-        enterCRN(crn);
-        clickSearch();
-        waitForResults(true);
+        searchForClaim(providerAccount, month, year, ufn, crn, true);
     }
 
     public String getHeadingText() {
