@@ -62,7 +62,6 @@ public class AssessmentFlowE2ETest extends BaseTest {
                 .id(CLAIM_ID)
                 .submissionId(SUBMISSION_ID)
                 .uniqueFileNumber(UFN)
-                .feeCode("INVC")
                 .userId(USER_ID)
                 .build(),
 
@@ -78,6 +77,7 @@ public class AssessmentFlowE2ETest extends BaseTest {
                 .id(CALCULATED_FEE_DETAIL_ID)
                 .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
                 .claimId(CLAIM_ID)
+                .feeCode("INVC")
                 .escaped(true)
                 .userId(USER_ID)
                 .build()

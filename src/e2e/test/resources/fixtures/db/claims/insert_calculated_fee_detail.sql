@@ -19,7 +19,7 @@ INSERT INTO claims.calculated_fee_detail (
   ?::uuid,
   ?::uuid,
   ?::uuid,
-  'INVC',
+  ?,
   'Police station: attendance',
   'INVEST',
   true,

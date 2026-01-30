@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Assertions;
 import java.util.Map;
 
 import static uk.gov.justice.laa.amend.claim.pages.PageHelper.cardByTitle;
-import static uk.gov.justice.laa.amend.claim.pages.PageHelper.rowByLabel;
+import static uk.gov.justice.laa.amend.claim.pages.PageHelper.summaryListByCard;
+import static uk.gov.justice.laa.amend.claim.pages.PageHelper.summaryListRowByLabel;
+import static uk.gov.justice.laa.amend.claim.pages.PageHelper.tableRowByLabel;
 
 public class ClaimDetailsPage {
 
@@ -18,6 +20,7 @@ public class ClaimDetailsPage {
     private final Locator addAssessmentOutcomeButton;
     private final Locator updateAssessmentOutcomeButton;
     private final Locator addUpdateAssessmentOutcomeButton;
+    private final Locator infoAlert;
 
     public ClaimDetailsPage(Page page) {
         this.page = page;
@@ -39,6 +42,7 @@ public class ClaimDetailsPage {
 
         this.addUpdateAssessmentOutcomeButton = page.getByTestId("claim-details-assessment-button");
 
+        this.infoAlert = page.locator(".moj-alert--information");
     }
 
     public void waitForPage() {
@@ -191,41 +195,50 @@ public class ClaimDetailsPage {
         return sb.toString();
     }
 
-    public void assertAssessedTotals(Map<String, String[]> expectedTotals) {
-        Locator totalAssessedValuesCard = cardByTitle("Total claim value", page);
-        for (Map.Entry<String, String[]> entry : expectedTotals.entrySet()) {
-
-            Locator row = rowByLabel(totalAssessedValuesCard, entry.getKey());
-            String[] values = entry.getValue();
-
-            // Check calculated value
-            assertCellValue(row, 1, values[0]);
-            // Check submitted value
-            assertCellValue(row, 2, values[1]);
-            // Check assessed value
-            assertCellValue(row, 3, values[2]);
-        }
+    public void assertCost(String label, String calculated, String submitted, String assessed) {
+        assertSummaryListRow("Values", label, calculated, submitted, assessed);
     }
 
-    public void assertAllowedTotals(Map<String, String[]> expectedTotals) {
-        Locator totalAllowedValuesCard = cardByTitle("Total allowed value", page);
-        for (Map.Entry<String, String[]> entry : expectedTotals.entrySet()) {
-            Locator row = rowByLabel(totalAllowedValuesCard, entry.getKey());
-            String[] values = entry.getValue();
-
-            // Check calculated value
-            assertCellValue(row, 1, values[0]);
-            // Check submitted value
-            assertCellValue(row, 2, values[1]);
-            // Check allowed value
-            assertCellValue(row, 3, values[2]);
-        }
+    public void assertAllowedTotals(String label, String calculated, String submitted, String allowed) {
+        assertTableRow("Total allowed value", label, calculated, submitted, allowed);
     }
 
-    private void assertCellValue(Locator rowSelector, int columnIndex, String expectedValue) {
+    public void assertAssessedTotals(String label, String calculated, String submitted, String assessed) {
+        assertTableRow("Total claim value", label, calculated, submitted, assessed);
+    }
+
+    private void assertTableRow(String title, String label, String calculated, String submitted, String assessed) {
+        Locator card = cardByTitle(title, page);
+        Locator row = tableRowByLabel(card, label);
+
+        // Check calculated value
+        assertTableCellValue(row, 1, calculated);
+        // Check submitted value
+        assertTableCellValue(row, 2, submitted);
+        // Check allowed value
+        assertTableCellValue(row, 3, assessed);
+    }
+
+    private void assertSummaryListRow(String title, String label, String calculated, String submitted, String assessed) {
+        Locator card = cardByTitle(title, page);
+        Locator row = summaryListRowByLabel(card, label);
+        // Check calculated value
+        assertSummaryListValue(row, 0, calculated);
+        // Check submitted value
+        assertSummaryListValue(row, 1, submitted);
+        // Check allowed value
+        assertSummaryListValue(row, 2, assessed);
+    }
+
+    private void assertTableCellValue(Locator rowSelector, int columnIndex, String expectedValue) {
         String actualValue = rowSelector.locator("td").nth(columnIndex).textContent().trim();
         Assertions.assertEquals(expectedValue, actualValue,
             String.format("Value mismatch in column %d", columnIndex));
+    }
+
+    private void assertSummaryListValue(Locator rowSelector, int columnIndex, String expectedValue) {
+        String actualValue = rowSelector.locator("dd").nth(columnIndex).textContent().trim();
+        Assertions.assertEquals(expectedValue, actualValue, "Value mismatch in key");
     }
 
     public void assertAddAssessmentOutcomeButtonIsPresent() {
@@ -234,5 +247,10 @@ public class ClaimDetailsPage {
 
     public void assertUpdateAssessmentOutcomeButtonIsPresent() {
         updateAssessmentOutcomeButton.waitFor();
+    }
+
+    public void assertInfoAlertIsPresent() {
+        Locator heading = infoAlert.locator(".moj-alert__heading");
+        Assertions.assertEquals("This claim has been assessed", heading.textContent());
     }
 }

@@ -108,6 +108,7 @@ public class ReviewAndAmendTest extends BaseTest {
                 .id(CRIME_CALCULATED_FEE_DETAIL_ID)
                 .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
                 .claimId(CRIME_CLAIM_ID)
+                .feeCode("INVC")
                 .escaped(true)
                 .userId(USER_ID)
                 .build(),

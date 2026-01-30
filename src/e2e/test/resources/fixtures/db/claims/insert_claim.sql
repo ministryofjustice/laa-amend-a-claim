@@ -22,7 +22,7 @@ INSERT INTO claims.claim (
   'IMCB:IRVL',
   null,
   null,
-  ?,
+  null,
   'PA20000',
   'AP20000',
   null,
@@ -46,6 +46,6 @@ INSERT INTO claims.claim (
   ?,
   now(),
   false,
-  false,
+  ?,
   0
 );

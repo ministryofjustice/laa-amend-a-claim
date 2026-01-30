@@ -13,6 +13,11 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FRONTEND_LOG="$SCRIPT_DIR/e2e.log"
+API_LOG="$SCRIPT_DIR/e2e.api.log"
+
+rm -rf "$FRONTEND_LOG"
+rm -rf "$API_LOG"
 
 docker-compose down -v
 
@@ -30,13 +35,13 @@ git pull
 cd claims-data
 docker-compose down -v
 docker compose up -d
-../gradlew bootRun --args='--server.port=8082' >> "$SCRIPT_DIR/e2e.api.log" 2>&1 &
+../gradlew bootRun --args='--server.port=8082' >> "$API_LOG" 2>&1 &
 API_BOOTRUN_PID=$!
 popd >/dev/null
 
 echo "[INFO] Starting frontend application..."
 docker-compose up -d redis
-./gradlew bootRun >> "$SCRIPT_DIR/e2e.log" 2>&1 &
+./gradlew bootRun >> "$FRONTEND_LOG" 2>&1 &
 BOOTRUN_PID=$!
 
 echo "[INFO] Waiting for application to be ready..."
