@@ -38,11 +38,25 @@ claims-api:
   access-token: ${CLAIMS_TOKEN}
 microsoft-graph-api:
   url: https://graph.microsoft.com
+provider-api:
+  url: ${PROVIDER_API}
+  access-token: ${PROVIDER_TOKEN}
 search:
   sort-enabled: true
 app:
   feedback-url: ${FEEDBACK_URL}
   laa-url: ${LAA_URL}
+
+logging:
+  level:
+    org.springframework.web.client.RestTemplate: DEBUG
+    org.springframework.http.client: DEBUG
+    org.springframework.web.client.support: TRACE
+    org.apache.http.wire: DEBUG
+    org.apache.http.headers: DEBUG
+    org.springframework.session: INFO
+    org.apache.coyote.http11.Http11InputBuffer: ERROR
+    org.springframework.web.reactive.function.client: DEBUG
 
 ---
 spring:
@@ -60,6 +74,7 @@ logging:
     org.apache.http.wire: DEBUG
     org.apache.http.headers: DEBUG
     org.springframework.session: INFO
+    org.apache.coyote.http11.Http11InputBuffer: ERROR
 
 ---
 spring:

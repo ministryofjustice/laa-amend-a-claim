@@ -1,23 +1,24 @@
-{{- if .Values.githubRunner.enabled }}
+{{- if .Values.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: github-runner-e2e
+  name: {{ .Release.Name }}
   labels:
-    app: github-runner-e2e
+    app: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.githubRunner.replicas }}
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: github-runner-e2e
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: github-runner-e2e
+        app: {{ .Release.Name }}
     spec:
+      terminationGracePeriodSeconds: 90
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1001  # runner user in GitHub Actions image
+        runAsUser: 1001
         fsGroup: 1001
         seccompProfile:
           type: RuntimeDefault
@@ -27,15 +28,19 @@ spec:
             runAsNonRoot: true
             runAsUser: 1001
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: false  # Runner needs write access to _work directory
+            readOnlyRootFilesystem: false
             seccompProfile:
               type: RuntimeDefault
             capabilities:
               drop: ["ALL"]
-          image: "{{ .Values.githubRunner.image.repository }}:{{ .Values.githubRunner.image.tag }}"
-          imagePullPolicy: {{ .Values.githubRunner.image.pullPolicy }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "echo 'PreStop: signaling runner cleanup'; kill -s TERM 1; sleep 20"]
           env:
-            {{- range .Values.githubRunner.env }}
+            {{- range .Values.env }}
             - name: {{ .name }}
               {{- if hasKey . "valueFrom" }}
               valueFrom:
@@ -44,7 +49,7 @@ spec:
               value: {{ .value | quote }}
               {{- end }}
             {{- end }}
-          {{- with .Values.githubRunner.resources }}
+          {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}

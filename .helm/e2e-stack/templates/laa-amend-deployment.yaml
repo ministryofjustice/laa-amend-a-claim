@@ -2,18 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: e2e-amend-a-claim
+  name: {{ include "e2e-stack.amendName" . }}
   labels:
-    app: e2e-amend-a-claim
+    {{- include "e2e-stack.labels" . | nindent 4 }}
+    app: {{ include "e2e-stack.amendName" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: e2e-amend-a-claim
+      app: {{ include "e2e-stack.amendName" . }}
   template:
     metadata:
       labels:
-        app: e2e-amend-a-claim
+        app: {{ include "e2e-stack.amendName" . }}
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -29,6 +30,10 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "{{ .Values.laaAmendAClaim.springProfile }}"
+            {{- if .Values.laaAmendAClaim.claimsApiHost }}
+            - name: CLAIMS_API
+              value: "http://{{ .Values.laaAmendAClaim.claimsApiHost }}:8082"
+            {{- end }}
             {{- range .Values.laaAmendAClaim.env }}
             - name: {{ .name }}
               {{- if hasKey . "valueFrom" }}
@@ -74,7 +79,7 @@ spec:
           image: "{{ .Values.redis.image }}:{{ .Values.redis.imageTag }}"
           imagePullPolicy: {{ .Values.redis.pullPolicy }}
           command: ["redis-server"]
-          args: 
+          args:
             - "--port"
             - "{{ .Values.redis.port }}"
             - "--dir"
@@ -97,5 +102,5 @@ spec:
       volumes:
         - name: redis-data
           emptyDir: {}
-        {{- end }}
+{{- end }}
 

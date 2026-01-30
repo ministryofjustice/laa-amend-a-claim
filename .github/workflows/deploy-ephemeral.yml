@@ -24,10 +24,16 @@ on:
         required: true
       KUBE_CERT:
         required: true
+    outputs:
+      sanitized_release_name:
+        description: "The Docker image tag (commit SHA) - Cache test"
+        value: ${{ jobs.deploy.outputs.sanitized_release_name }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    outputs:
+      sanitized_release_name: ${{ steps.sanitize.outputs.sanitized }}
     environment: dev
     permissions:
       id-token: write
