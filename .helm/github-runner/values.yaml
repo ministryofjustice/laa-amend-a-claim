@@ -1,0 +1,31 @@
+# GitHub Self-Hosted Runner
+enabled: true
+replicas: 2
+
+image:
+  repository: ""  # Set via --set
+  tag: "latest"
+  pullPolicy: Always
+
+env:
+  - name: GITHUB_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: laa-amend-a-claim-e2e-github-token
+        key: token
+  - name: GITHUB_REPOSITORY
+    value: "ministryofjustice/laa-amend-a-claim"
+  - name: RUNNER_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.name
+  - name: RUNNER_LABELS
+    value: "self-hosted,linux,aabc-e2e-java25"
+
+resources:
+  requests:
+    memory: "1Gi"
+    cpu: "500m"
+  limits:
+    memory: "2Gi"
+    cpu: "1000m"

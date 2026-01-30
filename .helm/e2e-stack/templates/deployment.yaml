@@ -1,18 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: e2e-data-claims-api
+  name: {{ include "e2e-stack.claimsName" . }}
   labels:
-    app: e2e-data-claims-api
+    app: {{ include "e2e-stack.claimsName" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: e2e-data-claims-api
+      app: {{ include "e2e-stack.claimsName" . }}
   template:
     metadata:
       labels:
-        app: e2e-data-claims-api
+        {{- include "e2e-stack.labels" . | nindent 8 }}
+        app: {{ include "e2e-stack.claimsName" . }}
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}

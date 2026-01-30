@@ -47,3 +47,14 @@ Selector labels
 app.kubernetes.io/name: {{ include "e2e-stack.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Resource names for e2e services
+*/}}
+{{- define "e2e-stack.amendName" -}}
+{{- printf "%s-amend-claim" .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "e2e-stack.claimsName" -}}
+{{- printf "%s-claims-api" .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- end }}

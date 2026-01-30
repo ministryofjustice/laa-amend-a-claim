@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: e2e-data-claims-api
+  name: {{ include "e2e-stack.claimsName" . }}
   labels:
-    app: e2e-data-claims-api
+    app: {{ include "e2e-stack.claimsName" . }}
 spec:
   type: {{ .Values.dataClaimsApi.service.type }}
   selector:
-    app: e2e-data-claims-api
+    app: {{ include "e2e-stack.claimsName" . }}
   ports:
     - name: http
       port: {{ .Values.dataClaimsApi.service.port }}
