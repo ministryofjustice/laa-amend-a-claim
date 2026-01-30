@@ -32,8 +32,8 @@ class ConfirmationViewTest extends ViewTestBase {
 
         assertPageHasContent(doc, "Your changes have been submitted");
 
-        assertPageHasLink(doc, "go-to-search", "Go to search");
+        assertPageHasLink(doc, "go-to-search", "Go to search", "/");
 
-        assertPageHasLink(doc, "view-assessed-claim", "View assessed claim");
+        assertPageHasLink(doc, "view-assessed-claim", "View assessed claim", "/submissions/123/claims/456");
     }
 }

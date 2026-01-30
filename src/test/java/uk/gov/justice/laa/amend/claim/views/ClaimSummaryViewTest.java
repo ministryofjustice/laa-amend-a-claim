@@ -250,6 +250,30 @@ class ClaimSummaryViewTest extends ViewTestBase {
         Document doc = renderDocument();
 
         assertPageHasPrimaryButtonDisabled(doc, "Add assessment outcome");
+
+        assertPageHasLink(doc, "back-to-search", "Back to search", "/");
+    }
+
+    @Test
+    void testPageWhenEmptyClaim() throws Exception {
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(new CrimeClaimDetails());
+
+        Document doc = renderDocument();
+
+        assertPageHasTitle(doc, "Claim details");
+
+        assertPageHasHeading(doc, "Claim details");
+    }
+
+    @Test
+    void testPageWithCachedSearchUrl() throws Exception {
+        session.setAttribute("searchUrl", "/?providerAccountNumber=0P322F&page=1");
+
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+
+        Document doc = renderDocument();
+
+        assertPageHasLink(doc, "back-to-search", "Back to search", "/?providerAccountNumber=0P322F&page=1");
     }
 
     private static void createClaimSummary(ClaimDetails claim) {
@@ -262,16 +286,5 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
         claim.setCaseEndDate(LocalDate.of(2020, 12, 31));
         claim.setSubmittedDate(LocalDateTime.of(2020, 6, 15, 9, 30, 0));
-    }
-
-    @Test
-    void testPageWhenEmptyClaim() throws Exception {
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(new CrimeClaimDetails());
-
-        Document doc = renderDocument();
-
-        assertPageHasTitle(doc, "Claim details");
-
-        assertPageHasHeading(doc, "Claim details");
     }
 }

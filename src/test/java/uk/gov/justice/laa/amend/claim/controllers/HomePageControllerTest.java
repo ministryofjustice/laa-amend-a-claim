@@ -136,7 +136,8 @@ public class HomePageControllerTest {
                 .param("providerAccountNumber", "12345")
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/?providerAccountNumber=12345&page=1&sort=uniqueFileNumber,asc"));
+            .andExpect(redirectedUrl("/?providerAccountNumber=12345&page=1&sort=uniqueFileNumber,asc"))
+            .andExpect(request().sessionAttribute("searchUrl", "/?providerAccountNumber=12345&page=1&sort=uniqueFileNumber,asc"));
     }
 
     @Test
@@ -152,7 +153,8 @@ public class HomePageControllerTest {
                 .param("caseReferenceNumber", "789")
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/?providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789&page=1&sort=uniqueFileNumber,asc"));;
+            .andExpect(redirectedUrl("/?providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789&page=1&sort=uniqueFileNumber,asc"))
+            .andExpect(request().sessionAttribute("searchUrl", "/?providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789&page=1&sort=uniqueFileNumber,asc"));
     }
 
     @Test
@@ -164,6 +166,7 @@ public class HomePageControllerTest {
                 .param("providerAccountNumber", "12345")
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/?providerAccountNumber=12345&page=1"));
+            .andExpect(redirectedUrl("/?providerAccountNumber=12345&page=1"))
+            .andExpect(request().sessionAttribute("searchUrl", "/?providerAccountNumber=12345&page=1"));
     }
 }

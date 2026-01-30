@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -88,7 +89,8 @@ public class HomePageController {
     public String onSubmit(
         @Valid @ModelAttribute("form") SearchForm form,
         BindingResult bindingResult,
-        HttpServletResponse response
+        HttpServletResponse response,
+        HttpSession session
     ) {
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -97,6 +99,7 @@ public class HomePageController {
 
         Sort sort = searchProperties.isSortEnabled() ? Sort.defaults() : null;
         String redirectUrl = RedirectUrlUtils.getRedirectUrl(form, sort);
+        session.setAttribute("searchUrl", redirectUrl);
         return "redirect:" + redirectUrl;
     }
 }

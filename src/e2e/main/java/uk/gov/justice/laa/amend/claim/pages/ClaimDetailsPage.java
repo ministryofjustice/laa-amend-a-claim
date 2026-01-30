@@ -18,18 +18,19 @@ public class ClaimDetailsPage {
     private final Locator addAssessmentOutcomeButton;
     private final Locator updateAssessmentOutcomeButton;
     private final Locator addUpdateAssessmentOutcomeButton;
+    private final Locator backToSearchButton;
 
     public ClaimDetailsPage(Page page) {
         this.page = page;
 
         this.heading = page.getByRole(
-                AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Claim details")
+            AriaRole.HEADING,
+            new Page.GetByRoleOptions().setName("Claim details")
         );
 
         this.addAssessmentOutcomeButton = page.getByRole(
-                AriaRole.BUTTON,
-                new Page.GetByRoleOptions().setName("Add assessment outcome")
+            AriaRole.BUTTON,
+            new Page.GetByRoleOptions().setName("Add assessment outcome")
         );
 
         this.updateAssessmentOutcomeButton = page.getByRole(
@@ -39,6 +40,10 @@ public class ClaimDetailsPage {
 
         this.addUpdateAssessmentOutcomeButton = page.getByTestId("claim-details-assessment-button");
 
+        this.backToSearchButton = page.getByRole(
+            AriaRole.BUTTON,
+            new Page.GetByRoleOptions().setName("Back to search")
+        );
     }
 
     public void waitForPage() {
@@ -63,6 +68,9 @@ public class ClaimDetailsPage {
         addAssessmentOutcomeButton.click();
     }
 
+    public void clickBackToSearchButton() {
+        backToSearchButton.click();
+    }
 
     public boolean isAddAssessmentOutcomeDisabled() {
         String ariaDisabled = addAssessmentOutcomeButton.getAttribute("aria-disabled");
