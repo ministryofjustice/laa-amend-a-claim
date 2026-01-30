@@ -9,8 +9,8 @@
     )}">
     <body>
         <main class="govuk-main-wrapper" id="main-content">
-            <div class="govuk-width-container">
-                <div class="govuk-grid-row">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
                     <th:block th:if="${claim.hasAssessment}">
                         <th:block th:replace="~{partials/information-alert :: informationAlert('claimSummary', ${claim.lastEditedBy(user).resolve(#messages)})}"></th:block>
                     </th:block>
@@ -69,7 +69,6 @@
                                             <th class="govuk-table__header" scope="col" th:text="#{claimSummary.calculated}"></th>
                                             <th class="govuk-table__header" scope="col" th:text="#{claimSummary.submitted}"></th>
                                             <th class="govuk-table__header" scope="col" th:text="#{claimSummary.assessed}"></th>
-                                            <th class="govuk-table__header" scope="col"></th>
                                         </tr>
                                         </thead>
                                         <tbody class="govuk-table__body">
@@ -96,7 +95,6 @@
                                             <th class="govuk-table__header" scope="col" th:text="#{claimSummary.calculated}"></th>
                                             <th class="govuk-table__header" scope="col" th:text="#{claimSummary.submitted}"></th>
                                             <th class="govuk-table__header" scope="col" th:text="#{claimSummary.allowed}"></th>
-                                            <th class="govuk-table__header" scope="col"></th>
                                         </tr>
                                         </thead>
                                         <tbody class="govuk-table__body">
@@ -104,8 +102,7 @@
                                             <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
                                             <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
                                             <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
-                                            <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}">
-                                            </td>
+                                            <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></td>
                                         </tr>
                                         </tbody>
                                     </table>

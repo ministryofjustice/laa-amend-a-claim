@@ -11,6 +11,9 @@
 <body>
 <main class="govuk-main-wrapper" id="main-content">
 
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
     <th:block th:if="${validationFailed}">
         <th:block th:replace="~{partials/error-summary :: error-summary(${viewModel.errors})}"></th:block>
     </th:block>
@@ -48,7 +51,9 @@
                     <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
                     <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
                     <th scope="col" class="govuk-table__header" th:text="#{claimSummary.assessed}"></th>
-                    <th scope="col" class="govuk-table__header"></th>
+                    <th scope="col" class="govuk-table__header">
+                        <span class="govuk-visually-hidden" th:text="#{service.actions}"></span>
+                    </th>
                 </tr>
                 </thead>
                 <tbody class="govuk-table__body">
@@ -110,7 +115,9 @@
                     <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
                     <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
                     <th scope="col" class="govuk-table__header" th:text="#{claimSummary.assessed}"></th>
-                    <th scope="col" class="govuk-table__header"></th>
+                    <th scope="col" class="govuk-table__header">
+                        <span class="govuk-visually-hidden" th:text="#{service.actions}"></span>
+                    </th>
                 </tr>
                 </thead>
                 <tbody class="govuk-table__body">
@@ -178,7 +185,9 @@
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.calculated}"></th>
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.submitted}"></th>
                         <th scope="col" class="govuk-table__header" th:text="#{claimSummary.allowed}"></th>
-                        <th scope="col" class="govuk-table__header"></th>
+                        <th scope="col" class="govuk-table__header">
+                            <span class="govuk-visually-hidden" th:text="#{service.actions}"></span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
@@ -238,6 +247,8 @@
                th:text="#{claimReview.discard}"></a>
         </div>
     </form>
+    </div>
+</div>
 </main>
 </body>
 </html>

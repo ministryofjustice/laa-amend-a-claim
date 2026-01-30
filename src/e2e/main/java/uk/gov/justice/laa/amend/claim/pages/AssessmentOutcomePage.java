@@ -6,11 +6,8 @@ import com.microsoft.playwright.options.AriaRole;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class AssessmentOutcomePage {
+public class AssessmentOutcomePage extends LaaPage {
 
-    private final Page page;
-
-    private final Locator heading;
     private final Locator continueButton;
 
     private final Locator assessedInFullRadio;
@@ -29,12 +26,7 @@ public class AssessmentOutcomePage {
     private final Locator inlineErrorMessage;
 
     public AssessmentOutcomePage(Page page) {
-        this.page = page;
-
-        this.heading = page.getByRole(
-                AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Assessment outcome")
-        );
+        super(page, "Assessment Outcome");
 
         this.assessedInFullRadio =
                 page.getByLabel("Assessed in full", new Page.GetByLabelOptions().setExact(true));
@@ -62,14 +54,8 @@ public class AssessmentOutcomePage {
         this.inlineErrorMessage = page.locator(".govuk-error-message");
     }
 
-    public void waitForPage() {
-        heading.waitFor();
-    }
-
     public void assertPageLoaded() {
         waitForPage();
-
-        assertThat(heading).isVisible();
 
         assertThat(assessedInFullRadio).isVisible();
         assertThat(reducedStillEscapedRadio).isVisible();
@@ -134,10 +120,5 @@ public class AssessmentOutcomePage {
         selectAssessmentOutcome(outcome);
         selectVatLiable(vat);
         clickContinue();
-    }
-
-
-    public String getHeadingText() {
-        return heading.textContent().trim();
     }
 }

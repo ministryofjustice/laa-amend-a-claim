@@ -7,13 +7,11 @@ import com.microsoft.playwright.options.AriaRole;
 import java.util.List;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static uk.gov.justice.laa.amend.claim.pages.PageHelper.cardByTitle;
-import static uk.gov.justice.laa.amend.claim.pages.PageHelper.tableByCard;
+import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.cardByTitle;
+import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.tableByCard;
 
-public class ReviewAndAmendPage {
-    private final Page page;
+public class ReviewAndAmendPage extends LaaPage {
 
-    private final Locator heading;
     private final Locator backLink;
 
     private final Locator claimCostsCard;
@@ -30,12 +28,7 @@ public class ReviewAndAmendPage {
     private final Locator errorSummary;
 
     public ReviewAndAmendPage(Page page) {
-        this.page = page;
-
-        this.heading = page.getByRole(
-                AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Review and amend")
-        );
+        super(page, "Review and amend");
 
         this.backLink = page.locator(".govuk-back-link");
 
@@ -56,21 +49,6 @@ public class ReviewAndAmendPage {
 
         this.errorSummary = page.locator(".govuk-error-summary");
     }
-
-    public void waitForPage() {
-        heading.waitFor();
-        claimCostsCard.waitFor();
-        if (totalClaimValueCard.isVisible()) {
-            totalClaimValueCard.waitFor();
-        }
-        totalAllowedValueCard.waitFor();
-    }
-
-    public String getHeadingText() {
-        return heading.textContent().trim();
-    }
-
-
 
     private Locator rowByItemName(String itemName) {
         return claimCostsTable.locator("tbody tr").filter(

@@ -4,10 +4,8 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 
-public class SearchPage {
-    private final Page page;
+public class SearchPage extends LaaPage {
 
-    private final Locator heading;
     private final Locator providerAccountNumberInput;
     private final Locator submissionMonthInput;
     private final Locator submissionYearInput;
@@ -25,12 +23,7 @@ public class SearchPage {
     private final Locator noResultsMessage;
 
     public SearchPage(Page page) {
-        this.page = page;
-
-        this.heading = page.getByRole(
-                AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Search for a claim")
-        );
+        super(page, "Search for a claim");
 
         this.providerAccountNumberInput = page.locator("#provider-account-number");
         this.submissionMonthInput = page.locator("#submission-date-month");
@@ -56,10 +49,6 @@ public class SearchPage {
         this.successBannerHeading = successBanner.locator(".govuk-notification-banner__heading");
 
         this.noResultsMessage = page.locator("h2.govuk-heading-m:has-text('no results')");
-    }
-
-    public void waitForPage() {
-        heading.waitFor();
     }
 
     public SearchPage navigateTo(String baseUrl) {
@@ -114,10 +103,6 @@ public class SearchPage {
         enterCRN(crn);
         clickSearch();
         waitForResults(true);
-    }
-
-    public String getHeadingText() {
-        return heading.textContent().trim();
     }
 
     public void waitForResults(boolean expectResults) {

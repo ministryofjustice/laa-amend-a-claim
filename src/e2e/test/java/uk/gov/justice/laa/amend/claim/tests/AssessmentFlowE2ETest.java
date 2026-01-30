@@ -113,7 +113,6 @@ public class AssessmentFlowE2ETest extends BaseTest {
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.waitForPage();
-        Assertions.assertEquals("Review and amend", review.getHeadingText());
 
         // -------- Claim costs --------
 
@@ -179,7 +178,6 @@ public class AssessmentFlowE2ETest extends BaseTest {
         AssessmentCompletePage complete = new AssessmentCompletePage(page);
         complete.waitForPage();
 
-        Assertions.assertEquals("Assessment complete", complete.getHeadingText());
         Assertions.assertTrue(complete.getBodyText().contains("Your changes have been submitted"));
         Assertions.assertTrue(complete.goToSearchExists());
         Assertions.assertTrue(complete.viewAssessedClaimExists());

@@ -7,25 +7,17 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.Map;
 
-import static uk.gov.justice.laa.amend.claim.pages.PageHelper.cardByTitle;
-import static uk.gov.justice.laa.amend.claim.pages.PageHelper.rowByLabel;
+import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.cardByTitle;
+import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.rowByLabel;
 
-public class ClaimDetailsPage {
+public class ClaimDetailsPage extends LaaPage {
 
-    private final Page page;
-
-    private final Locator heading;
     private final Locator addAssessmentOutcomeButton;
     private final Locator updateAssessmentOutcomeButton;
     private final Locator addUpdateAssessmentOutcomeButton;
 
     public ClaimDetailsPage(Page page) {
-        this.page = page;
-
-        this.heading = page.getByRole(
-                AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Claim details")
-        );
+        super(page, "Claim details");
 
         this.addAssessmentOutcomeButton = page.getByRole(
                 AriaRole.BUTTON,
@@ -39,14 +31,6 @@ public class ClaimDetailsPage {
 
         this.addUpdateAssessmentOutcomeButton = page.getByTestId("claim-details-assessment-button");
 
-    }
-
-    public void waitForPage() {
-        heading.waitFor();
-    }
-
-    public String getHeadingText() {
-        return heading.textContent().trim();
     }
 
     public void clickAddUpdateAssessmentOutcome() {

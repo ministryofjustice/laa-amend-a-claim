@@ -6,10 +6,8 @@ import com.microsoft.playwright.options.AriaRole;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class AssessDetentionTravelAndWaitingCostsPage {
-            private final Page page;
+public class AssessDetentionTravelAndWaitingCostsPage extends LaaPage {
 
-    private final Locator labelHeading;
     private final Locator valueInput;
     private final Locator saveButton;
     private final Locator cancelButton;
@@ -18,11 +16,7 @@ public class AssessDetentionTravelAndWaitingCostsPage {
     private final Locator inlineError;
 
     public AssessDetentionTravelAndWaitingCostsPage(Page page) {
-        this.page = page;
-
-        this.labelHeading = page.locator("label.govuk-label--xl").filter(
-                new Locator.FilterOptions().setHasText("Assess detention travel and waiting costs")
-        );
+        super(page, "Assess detention travel and waiting costs");
 
         this.valueInput = page.locator("input#value");
         this.saveButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Save changes"));
@@ -31,8 +25,6 @@ public class AssessDetentionTravelAndWaitingCostsPage {
         this.errorSummary = page.locator(".govuk-error-summary");
         this.inlineError = page.locator(".govuk-error-message");
     }
-
-    public void waitForPage() { labelHeading.waitFor(); }
 
     public void setAssessedValue(String amount) { valueInput.fill(amount); }
 

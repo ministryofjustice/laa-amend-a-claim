@@ -6,10 +6,8 @@ import com.microsoft.playwright.options.AriaRole;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class AssessCounselCostsPage {
-    private final Page page;
+public class AssessCounselCostsPage extends LaaPage {
 
-    private final Locator heading;
     private final Locator valueInput;
     private final Locator saveButton;
     private final Locator cancelButton;
@@ -18,12 +16,7 @@ public class AssessCounselCostsPage {
     private final Locator inlineError;
 
     public AssessCounselCostsPage(Page page) {
-        this.page = page;
-
-        this.heading = page.getByRole(
-                AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Assess counsel costs")
-        );
+        super(page, "Assess counsel costs");
 
         this.valueInput = page.locator("input#value");
 
@@ -40,8 +33,6 @@ public class AssessCounselCostsPage {
         this.errorSummary = page.locator(".govuk-error-summary");
         this.inlineError = page.locator(".govuk-error-message");
     }
-
-    public void waitForPage() { heading.waitFor(); }
 
     public void setAssessedValue(String amount) { valueInput.fill(amount); }
 

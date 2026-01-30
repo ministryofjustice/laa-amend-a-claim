@@ -118,8 +118,6 @@ public class AssessedClaimDetailsTest extends BaseTest {
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.waitForPage();
-        Assertions.assertEquals("Review and amend", review.getHeadingText());
-
 
         review.clickChangeProfitCosts();
         AssessProfitCostsPage profit = new AssessProfitCostsPage(page);
@@ -169,7 +167,6 @@ public class AssessedClaimDetailsTest extends BaseTest {
         AssessmentCompletePage complete = new AssessmentCompletePage(page);
         complete.waitForPage();
 
-        Assertions.assertEquals("Assessment complete", complete.getHeadingText());
         Assertions.assertTrue(complete.getBodyText().contains("Your changes have been submitted"));
         Assertions.assertTrue(complete.goToSearchExists());
         Assertions.assertTrue(complete.viewAssessedClaimExists());

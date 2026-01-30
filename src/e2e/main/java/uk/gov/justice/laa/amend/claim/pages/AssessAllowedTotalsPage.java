@@ -6,11 +6,8 @@ import com.microsoft.playwright.options.AriaRole;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class AssessAllowedTotalsPage {
+public class AssessAllowedTotalsPage extends LaaPage {
 
-    private final Page page;
-
-    private final Locator heading;
     private final Locator allowedTotalVatInput;
     private final Locator allowedTotalInclVatInput;
     private final Locator saveButton;
@@ -20,12 +17,7 @@ public class AssessAllowedTotalsPage {
     private final Locator inlineErrors;
 
     public AssessAllowedTotalsPage(Page page) {
-        this.page = page;
-
-        this.heading = page.getByRole(
-                AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Assess total allowed value")
-        );
+        super(page, "Assess total allowed value");
 
         this.allowedTotalVatInput = page.locator("#allowed-total-vat");
         this.allowedTotalInclVatInput = page.locator("#allowed-total-incl-vat");
@@ -43,8 +35,6 @@ public class AssessAllowedTotalsPage {
         this.errorSummary = page.locator(".govuk-error-summary");
         this.inlineErrors = page.locator(".govuk-error-message");
     }
-
-    public void waitForPage() { heading.waitFor(); }
 
     public void setAllowedTotalVat(String amount) { allowedTotalVatInput.fill(amount); }
 

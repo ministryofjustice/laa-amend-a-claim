@@ -9,34 +9,32 @@
     )}">
     <body>
         <main class="govuk-main-wrapper" id="main-content">
-            <div class="govuk-width-container">
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-two-thirds">
-                        <div class="govuk-panel govuk-panel--confirmation">
-                            <h1 class="govuk-panel__title" th:text="#{confirmation.heading}"></h1>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-panel govuk-panel--confirmation">
+                        <h1 class="govuk-panel__title" th:text="#{confirmation.heading}"></h1>
 
-                            <div class="govuk-panel__body">
-                                <span th:text="#{confirmation.text}"></span>
-                            </div>
+                        <div class="govuk-panel__body">
+                            <span th:text="#{confirmation.text}"></span>
                         </div>
+                    </div>
 
-                        <div class="govuk-button-group govuk-!-margin-top-8">
-                            <a th:href="@{/}"
-                               th:text="#{confirmation.search}"
-                               role="button"
-                               class="govuk-button"
-                               data-module="govuk-button"
-                               id="go-to-search">
-                            </a>
+                    <div class="govuk-button-group govuk-!-margin-top-8">
+                        <a th:href="@{/}"
+                           th:text="#{confirmation.search}"
+                           role="button"
+                           class="govuk-button"
+                           data-module="govuk-button"
+                           id="go-to-search">
+                        </a>
 
-                            <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
-                               th:text="#{confirmation.view}"
-                               role="button"
-                               class="govuk-button govuk-button--secondary"
-                               data-module="govuk-button"
-                               id="view-assessed-claim">
-                            </a>
-                        </div>
+                        <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
+                           th:text="#{confirmation.view}"
+                           role="button"
+                           class="govuk-button govuk-button--secondary"
+                           data-module="govuk-button"
+                           id="view-assessed-claim">
+                        </a>
                     </div>
                 </div>
             </div>

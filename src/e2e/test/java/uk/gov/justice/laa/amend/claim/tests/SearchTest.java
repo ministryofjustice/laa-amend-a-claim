@@ -13,23 +13,21 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.models.BulkSubmissionInsert;
 import uk.gov.justice.laa.amend.claim.models.CalculatedFeeDetailInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
+import uk.gov.justice.laa.amend.claim.models.SearchData;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
-import uk.gov.justice.laa.amend.claim.models.SearchData;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
-
-import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 @Epic("E2E")
 @Feature("Search")
@@ -123,8 +121,6 @@ public class SearchTest extends BaseTest {
     void canSearchForClaim(SearchData config) {
         String baseUrl = EnvConfig.baseUrl();
         SearchPage searchPage = new SearchPage(page).navigateTo(baseUrl);
-
-        Assertions.assertEquals("Search for a claim", searchPage.getHeadingText());
 
         searchPage.searchForClaim(
             config.getProviderAccountNumber(),
