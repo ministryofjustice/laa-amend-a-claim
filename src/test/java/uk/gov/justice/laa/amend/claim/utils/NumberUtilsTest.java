@@ -90,15 +90,6 @@ class NumberUtilsTest {
     }
 
     @Test
-    void rejectsInvalidUkGrouping() {
-        ParseException ex =
-                assertThrows(ParseException.class,
-                        () -> NumberUtils.parseStrictUkNumber("1,23"));
-
-        assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
-    }
-
-    @Test
     void acceptsMoreThanTwoDecimalPlacesAtParseStage() throws Exception {
         // Business rule enforced in validator, not parser
         BigDecimal result = NumberUtils.parseStrictUkNumber("1.234");

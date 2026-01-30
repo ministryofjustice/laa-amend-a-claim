@@ -36,13 +36,18 @@ public class NumberUtils {
 
         ParsePosition pos = new ParsePosition(0);
 
-        BigDecimal result = (BigDecimal) format.parse(trimmed, pos);
+        Number parsed = format.parse(trimmed, pos);
 
-        // Reject partial parsing i.e. 35kg and 1abc3 should fail
-        if (result == null || pos.getIndex() != trimmed.length()) {
+        // No number parsed or non-finite value (e.g. ∞)
+        if (!(parsed instanceof BigDecimal)) {
             throw new ParseException("NUMBER_PARSE_FAILED", pos.getIndex());
         }
 
-        return result;
+        // Reject partial parsing i.e. 35kg and 1abc3 should fail
+        if (pos.getIndex() != trimmed.length()) {
+            throw new ParseException("NUMBER_PARSE_FAILED", pos.getIndex());
+        }
+
+        return (BigDecimal) parsed;
     }
 }
