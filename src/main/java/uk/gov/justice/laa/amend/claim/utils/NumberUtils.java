@@ -24,7 +24,7 @@ public class NumberUtils {
         return sum;
     }
 
-    public static BigDecimal parseStrictUkNumber(String value) throws ParseException {
+    public static BigDecimal parse(String value) throws ParseException {
         if (value == null) {
             throw new ParseException("NUMBER_PARSE_FAILED", 0);
         }

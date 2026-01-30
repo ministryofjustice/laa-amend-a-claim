@@ -13,25 +13,25 @@ class NumberUtilsTest {
 
     @Test
     void parsesWholeNumber() throws Exception {
-        BigDecimal result = NumberUtils.parseStrictUkNumber("1000");
+        BigDecimal result = NumberUtils.parse("1000");
         assertEquals(new BigDecimal("1000"), result);
     }
 
     @Test
     void parsesDecimalNumber() throws Exception {
-        BigDecimal result = NumberUtils.parseStrictUkNumber("250.50");
+        BigDecimal result = NumberUtils.parse("250.50");
         assertEquals(new BigDecimal("250.50"), result);
     }
 
     @Test
     void parsesNumberWithGroupingSeparators() throws Exception {
-        BigDecimal result = NumberUtils.parseStrictUkNumber("1,305.50");
+        BigDecimal result = NumberUtils.parse("1,305.50");
         assertEquals(new BigDecimal("1305.50"), result);
     }
 
     @Test
     void allowsLeadingAndTrailingWhitespace() throws Exception {
-        BigDecimal result = NumberUtils.parseStrictUkNumber("  250.50  ");
+        BigDecimal result = NumberUtils.parse("  250.50  ");
         assertEquals(new BigDecimal("250.50"), result);
     }
 
@@ -39,7 +39,7 @@ class NumberUtilsTest {
     void rejectsNullInput() {
         ParseException ex =
                 assertThrows(ParseException.class,
-                        () -> NumberUtils.parseStrictUkNumber(null));
+                        () -> NumberUtils.parse(null));
 
         assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
     }
@@ -48,7 +48,7 @@ class NumberUtilsTest {
     void rejectsEmptyString() {
         ParseException ex =
                 assertThrows(ParseException.class,
-                        () -> NumberUtils.parseStrictUkNumber(""));
+                        () -> NumberUtils.parse(""));
 
         assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
     }
@@ -57,7 +57,7 @@ class NumberUtilsTest {
     void rejectsAlphabeticInput() {
         ParseException ex =
                 assertThrows(ParseException.class,
-                        () -> NumberUtils.parseStrictUkNumber("abc"));
+                        () -> NumberUtils.parse("abc"));
 
         assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
     }
@@ -66,7 +66,7 @@ class NumberUtilsTest {
     void rejectsAlphanumericInput() {
         ParseException ex =
                 assertThrows(ParseException.class,
-                        () -> NumberUtils.parseStrictUkNumber("24word53"));
+                        () -> NumberUtils.parse("24word53"));
 
         assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
     }
@@ -75,7 +75,7 @@ class NumberUtilsTest {
     void rejectsTrailingCharacters() {
         ParseException ex =
                 assertThrows(ParseException.class,
-                        () -> NumberUtils.parseStrictUkNumber("35kg"));
+                        () -> NumberUtils.parse("35kg"));
 
         assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
     }
@@ -84,7 +84,7 @@ class NumberUtilsTest {
     void rejectsNonUkFormattedNumber() {
         ParseException ex =
                 assertThrows(ParseException.class,
-                        () -> NumberUtils.parseStrictUkNumber("1.305,50"));
+                        () -> NumberUtils.parse("1.305,50"));
 
         assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
     }
@@ -92,7 +92,7 @@ class NumberUtilsTest {
     @Test
     void acceptsMoreThanTwoDecimalPlacesAtParseStage() throws Exception {
         // Business rule enforced in validator, not parser
-        BigDecimal result = NumberUtils.parseStrictUkNumber("1.234");
+        BigDecimal result = NumberUtils.parse("1.234");
         assertEquals(new BigDecimal("1.234"), result);
     }
 
@@ -115,7 +115,7 @@ class NumberUtilsTest {
     void rejectsSpecialCharactersAndSymbols(String input) {
         ParseException ex =
                 assertThrows(ParseException.class,
-                        () -> NumberUtils.parseStrictUkNumber(input));
+                        () -> NumberUtils.parse(input));
 
         assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
     }
@@ -132,6 +132,6 @@ class NumberUtilsTest {
     })
     void rejectsMixedNumbersWithSymbols(String input) {
         assertThrows(ParseException.class,
-                () -> NumberUtils.parseStrictUkNumber(input));
+                () -> NumberUtils.parse(input));
     }
 }

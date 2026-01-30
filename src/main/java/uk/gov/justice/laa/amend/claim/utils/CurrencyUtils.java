@@ -48,7 +48,7 @@ public class CurrencyUtils {
 
     public static BigDecimal setScale(String value) {
         try {
-            return setScale(NumberUtils.parseStrictUkNumber(value));
+            return setScale(NumberUtils.parse(value));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

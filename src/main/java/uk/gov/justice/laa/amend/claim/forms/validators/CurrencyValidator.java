@@ -22,7 +22,7 @@ public class CurrencyValidator extends Validator {
         }
 
         try {
-            BigDecimal amount = NumberUtils.parseStrictUkNumber(value);
+            BigDecimal amount = NumberUtils.parse(value);
 
             if (amount.scale() > 2) {
                 addViolation(context, fieldName, String.format("{%s.error.invalid}", prefix));
