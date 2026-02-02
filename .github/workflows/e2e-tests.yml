@@ -207,7 +207,7 @@ jobs:
         if: always()
         working-directory: src/e2e
         run: |
-          ./gradlew allureReport || true
+          allure generate build/allure-results -o build/allure-report --clean || true
 
       - name: Upload Test Results
         if: always()
