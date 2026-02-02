@@ -136,11 +136,9 @@ public class ReviewAndAmendTest extends BaseTest {
         search.clickViewForUfn(ufn);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
         details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
 
         // Minimal inputs to proceed
         outcome.selectAssessmentOutcome("assessed in full");
@@ -163,7 +161,6 @@ public class ReviewAndAmendTest extends BaseTest {
         );
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         assertTrue(page.url().contains("/review"));
         review.assertCrimePageLoadedHeadersAndItems();
@@ -180,7 +177,6 @@ public class ReviewAndAmendTest extends BaseTest {
         );
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         assertTrue(page.url().contains("/review"));
         review.assertCivilPageLoadedHeadersAndItems();
@@ -197,7 +193,6 @@ public class ReviewAndAmendTest extends BaseTest {
         );
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         review.submitAdjustments();
 
@@ -216,22 +211,18 @@ public class ReviewAndAmendTest extends BaseTest {
         );
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         // Navigate to a change page to add entries to browser history
         review.clickChangeTravelCosts();
         AssessTravelCostsPage travelCosts = new AssessTravelCostsPage(page);
-        travelCosts.waitForPage();
 
         // Cancel to return to review page
         travelCosts.cancel();
-        review.waitForPage();
 
         // Click back link which should go to assessment-outcome, not travel-costs
         review.clickBackLink();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
 
         assertTrue(page.url().contains("/assessment-outcome"));
     }

@@ -92,10 +92,7 @@ public class DiscardAssessmentTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     void discardAssessmentScreenDisplaysCorrectly() {
 
-        goToDiscardAssessmentScreen();
-
-        DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
-        discard.waitForPage();
+        DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
 
         Assertions.assertTrue(
                 discard.isDiscardAssessmentButtonVisible(),
@@ -114,14 +111,10 @@ public class DiscardAssessmentTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     void discardAssessmentRedirectsToSearchWithBanner() {
 
-        goToDiscardAssessmentScreen();
-
-        DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
-        discard.waitForPage();
+        DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
         discard.clickDiscardAssessment();
 
         SearchPage searchAfterDiscard = new SearchPage(page);
-        searchAfterDiscard.waitForPage();
 
         Assertions.assertTrue(
                 searchAfterDiscard.isSuccessBannerVisible(),
@@ -141,14 +134,10 @@ public class DiscardAssessmentTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     void returnToClaimNavigatesBackToReviewScreen() {
 
-        goToDiscardAssessmentScreen();
-
-        DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
-        discard.waitForPage();
+        DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
         discard.clickReturnToClaim();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
     }
 
     @Test
@@ -157,28 +146,20 @@ public class DiscardAssessmentTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     void reviewAndAmendDiscardNavigatesToDiscardScreen() {
 
-        goToReviewAndAmendPage();
-
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
+        ReviewAndAmendPage review = goToReviewAndAmendPage();
         review.discardChanges();
 
         DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
-        discard.waitForPage();
     }
 
-    private void goToDiscardAssessmentScreen() {
-        goToReviewAndAmendPage();
-
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
+    private DiscardAssessmentPage goToDiscardAssessmentScreen() {
+        ReviewAndAmendPage review = goToReviewAndAmendPage();
         review.discardChanges();
 
-        DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
-        discard.waitForPage();
+        return new DiscardAssessmentPage(page);
     }
 
-    private void goToReviewAndAmendPage() {
+    private ReviewAndAmendPage goToReviewAndAmendPage() {
         String baseUrl = EnvConfig.baseUrl();
 
         SearchPage search = new SearchPage(page).navigateTo(baseUrl);
@@ -194,7 +175,6 @@ public class DiscardAssessmentTest extends BaseTest {
         search.clickViewForUfn(UFN);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
 
         Assertions.assertFalse(
                 details.isAddAssessmentOutcomeDisabled(),
@@ -204,10 +184,8 @@ public class DiscardAssessmentTest extends BaseTest {
         details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
         outcome.completeAssessment("assessed in full", true);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
+        return new ReviewAndAmendPage(page);
     }
 }

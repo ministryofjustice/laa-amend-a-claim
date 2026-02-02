@@ -139,11 +139,9 @@ public class AssessCostsValidationTest extends BaseTest {
         search.clickViewForUfn(ufn);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
         details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
         outcome.selectAssessmentOutcome("assessed in full");
         outcome.clickContinue();
 
@@ -164,11 +162,9 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeProfitCosts();
 
         AssessProfitCostsPage profit = new AssessProfitCostsPage(page);
-        profit.waitForPage();
         profit.setAssessedValue("dasad");
         profit.saveChanges();
 
@@ -181,11 +177,9 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeDisbursements();
 
         AssessDisbursementsPage disb = new AssessDisbursementsPage(page);
-        disb.waitForPage();
         disb.setAssessedValue("dasad");
         disb.saveChanges();
 
@@ -198,11 +192,9 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeDisbursementsVat();
 
         AssessDisbursementsVatPage disbVat = new AssessDisbursementsVatPage(page);
-        disbVat.waitForPage();
         disbVat.setAssessedValue("dasad");
         disbVat.saveChanges();
 
@@ -215,11 +207,9 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeTravelCosts();
 
         AssessTravelCostsPage travel = new AssessTravelCostsPage(page);
-        travel.waitForPage();
         travel.setAssessedValue("dasad");
         travel.saveChanges();
 
@@ -232,11 +222,9 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeWaitingCosts();
 
         AssessWaitingCostsPage waiting = new AssessWaitingCostsPage(page);
-        waiting.waitForPage();
         waiting.setAssessedValue("dasad");
         waiting.saveChanges();
 
@@ -249,11 +237,9 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeDetentionTravelAndWaitingCosts();
 
         AssessDetentionTravelAndWaitingCostsPage detention = new AssessDetentionTravelAndWaitingCostsPage(page);
-        detention.waitForPage();
         detention.setAssessedValue("dasad");
         detention.saveChanges();
 
@@ -266,11 +252,9 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeJrAndFormFilling();
 
         AssessJrFormFillingCostsPage jr = new AssessJrFormFillingCostsPage(page);
-        jr.waitForPage();
         jr.setAssessedValue("dasad");
         jr.saveChanges();
 
@@ -283,11 +267,9 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeCounselCosts();
 
         AssessCounselCostsPage counsel = new AssessCounselCostsPage(page);
-        counsel.waitForPage();
         counsel.setAssessedValue("dasad");
         counsel.saveChanges();
 

@@ -104,24 +104,19 @@ public class AssessedClaimDetailsTest extends BaseTest {
         search.clickViewForUfn(claimDetailsFixture.getUfn());
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
-
 
         details.clickAddUpdateAssessmentOutcome();
 
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
         outcome.selectAssessmentOutcome(claimDetailsFixture.getOutcome());
         outcome.selectVatLiable(true);
         outcome.clickContinue();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         review.clickChangeProfitCosts();
         AssessProfitCostsPage profit = new AssessProfitCostsPage(page);
-        profit.waitForPage();
         profit.setAssessedValue("999.99");
         profit.saveChanges();
 
@@ -134,10 +129,8 @@ public class AssessedClaimDetailsTest extends BaseTest {
         String assessedVat = normalizeMoneyForInput(assessedVatRaw);       // e.g., "£239.35" -> "239.35"
         String assessedInclVat = normalizeMoneyForInput(assessedInclVatRaw); // "Not applicable" -> null
 
-        review.waitForPage();
         review.clickAddAssessedTotalVat();
         AssessAssessedTotalsPage assessedTotals = new AssessAssessedTotalsPage(page);
-        assessedTotals.waitForPage();
         assessedTotals.setAssessedTotalVat(assessedVat);
         assessedTotals.setAssessedTotalInclVat(assessedInclVat);
         assessedTotals.saveChanges();
@@ -151,21 +144,17 @@ public class AssessedClaimDetailsTest extends BaseTest {
         String allowedVat = normalizeMoneyForInput(allowedVatRaw);       // e.g., "£239.35" -> "239.35"
         String allowedInclVat = normalizeMoneyForInput(allowedInclVatRaw); // "Not applicable" -> null
 
-        review.waitForPage();
         review.clickAddAllowedTotalVat();
         AssessAllowedTotalsPage allowedTotals = new AssessAllowedTotalsPage(page);
-        allowedTotals.waitForPage();
         allowedTotals.setAllowedTotalVat(allowedVat);
         allowedTotals.setAllowedTotalInclVat(allowedInclVat);
         allowedTotals.saveChanges();
 
         // -------- Submit --------
 
-        review.waitForPage();
         review.submitAdjustments();
 
         AssessmentCompletePage complete = new AssessmentCompletePage(page);
-        complete.waitForPage();
 
         Assertions.assertTrue(complete.getBodyText().contains("Your changes have been submitted"));
         Assertions.assertTrue(complete.goToSearchExists());
@@ -174,7 +163,6 @@ public class AssessedClaimDetailsTest extends BaseTest {
         complete.clickViewAssessedClaim();
 
         ClaimDetailsPage claimDetails = new ClaimDetailsPage(page);
-        claimDetails.waitForPage();
         claimDetails.assertUpdateAssessmentOutcomeButtonIsPresent();
         claimDetails.assertAllowedTotals(claimDetailsFixture.getAllowedTotals());
         claimDetails.assertAssessedTotals(claimDetailsFixture.getAssessedTotals());

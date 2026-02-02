@@ -11,6 +11,7 @@ It uses Playwright (Java), JUnit 5 and Allure. The E2E project is isolated under
 * Allure CLI: `npm install -g allure-commandline`
 * Playwright browsers (auto-installed on first run)
 * Docker (required for running dependencies locally or in CI)
+* Axe HTML reporter: `npm i -g axe-html-reporter`
 * Clone the `laa-data-claims-api` repository into the same parent directory as this repository e.g.
   ```
   projects/

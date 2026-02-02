@@ -87,11 +87,9 @@ public class AssessTotalsValidationTest extends BaseTest {
         search.clickViewForUfn(UFN);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
         details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
         outcome.selectAssessmentOutcome("reduced-to-fixed-fee-assessed");
         outcome.clickContinue();
 
@@ -104,11 +102,9 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickAddAssessedTotalVat();
 
         AssessTotalClaimValuePage totals = new AssessTotalClaimValuePage(page);
-        totals.waitForPage();
         totals.saveChanges();
 
         totals.assertRequiredErrorsShown();
@@ -120,11 +116,9 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickAddAssessedTotalVat();
 
         AssessTotalClaimValuePage totals = new AssessTotalClaimValuePage(page);
-        totals.waitForPage();
         totals.setAssessedTotalVat("dasad");
         totals.setAssessedTotalInclVat("dasad");
         totals.saveChanges();
@@ -138,11 +132,9 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickAddAllowedTotalVat();
 
         AssessAllowedTotalsPage allowed = new AssessAllowedTotalsPage(page);
-        allowed.waitForPage();
         allowed.saveChanges();
 
         allowed.assertRequiredErrorsShown();
@@ -154,11 +146,9 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickAddAllowedTotalVat();
 
         AssessAllowedTotalsPage allowed = new AssessAllowedTotalsPage(page);
-        allowed.waitForPage();
         allowed.setAllowedTotalVat("dasad");
         allowed.setAllowedTotalInclVat("dasad");
         allowed.saveChanges();
@@ -172,7 +162,6 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         review.assertAllowedTotalsAreCorrect("£127.87", "£767.22");
     }

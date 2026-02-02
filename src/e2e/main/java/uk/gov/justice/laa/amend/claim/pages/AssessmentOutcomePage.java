@@ -55,8 +55,6 @@ public class AssessmentOutcomePage extends LaaPage {
     }
 
     public void assertPageLoaded() {
-        waitForPage();
-
         assertThat(assessedInFullRadio).isVisible();
         assertThat(reducedStillEscapedRadio).isVisible();
         assertThat(reducedToFixedFeeRadio).isVisible();
@@ -78,7 +76,6 @@ public class AssessmentOutcomePage extends LaaPage {
 
 
     public void selectAssessmentOutcome(String outcome) {
-        waitForPage();
         switch (outcome.toLowerCase()) {
             case "assessed in full":
             case "paid-in-full":

@@ -53,7 +53,6 @@ public class SearchPage extends LaaPage {
 
     public SearchPage navigateTo(String baseUrl) {
         page.navigate(baseUrl);
-        waitForPage();
         return this;
     }
 
@@ -85,7 +84,6 @@ public class SearchPage extends LaaPage {
     // ---- COMBINED SEARCH + WAIT FOR RESULTS ----
     public void searchForClaim(String providerAccount, String month, String year,
                                String ufn, String crn, boolean expectResults) {
-        waitForPage();
         enterProviderAccountNumber(providerAccount);
         enterSubmissionDate(month, year);
         enterUFN(ufn);
@@ -96,7 +94,6 @@ public class SearchPage extends LaaPage {
 
     public void searchForClaim(String providerAccount, String month, String year,
                                String ufn, String crn) {
-        waitForPage();
         enterProviderAccountNumber(providerAccount);
         enterSubmissionDate(month, year);
         enterUFN(ufn);

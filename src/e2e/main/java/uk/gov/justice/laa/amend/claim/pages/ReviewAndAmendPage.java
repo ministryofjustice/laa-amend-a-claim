@@ -122,8 +122,6 @@ public class ReviewAndAmendPage extends LaaPage {
     }
 
     public void assertCrimePageLoadedHeadersAndItems() {
-        waitForPage();
-
         assertTableHasHeaders(claimCostsTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalClaimValueTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalAllowedValueTable, "Item", "Calculated", "Requested", "Allowed");
@@ -143,8 +141,6 @@ public class ReviewAndAmendPage extends LaaPage {
     }
 
     public void assertCivilPageLoadedHeadersAndItems() {
-        waitForPage();
-
         assertTableHasHeaders(claimCostsTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalClaimValueTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalAllowedValueTable, "Item", "Calculated", "Requested", "Allowed");

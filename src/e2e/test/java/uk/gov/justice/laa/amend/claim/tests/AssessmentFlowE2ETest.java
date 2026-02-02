@@ -102,81 +102,63 @@ public class AssessmentFlowE2ETest extends BaseTest {
         search.clickViewForUfn(UFN);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
         details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
         outcome.selectAssessmentOutcome("assessed in full");
         outcome.selectVatLiable(true);
         outcome.clickContinue();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         // -------- Claim costs --------
 
         review.clickChangeProfitCosts();
         AssessProfitCostsPage profit = new AssessProfitCostsPage(page);
-        profit.waitForPage();
         profit.setAssessedValue("999.99");
         profit.saveChanges();
 
-        review.waitForPage();
         review.clickChangeDisbursements();
         AssessDisbursementsPage disb = new AssessDisbursementsPage(page);
-        disb.waitForPage();
         disb.setAssessedValue("111.11");
         disb.saveChanges();
 
-        review.waitForPage();
         review.clickChangeDisbursementsVat();
         AssessDisbursementsVatPage disbVat = new AssessDisbursementsVatPage(page);
-        disbVat.waitForPage();
         disbVat.setAssessedValue("22.22");
         disbVat.saveChanges();
 
-        review.waitForPage();
         review.clickChangeTravelCosts();
         AssessTravelCostsPage travel = new AssessTravelCostsPage(page);
-        travel.waitForPage();
         travel.setAssessedValue("10.00");
         travel.saveChanges();
 
-        review.waitForPage();
         review.clickChangeWaitingCosts();
         AssessWaitingCostsPage waiting = new AssessWaitingCostsPage(page);
-        waiting.waitForPage();
         waiting.setAssessedValue("12.34");
         waiting.saveChanges();
 
         // -------- Total claim value (assessed totals) --------
 
-        review.waitForPage();
         review.clickAddAssessedTotalVat();
         AssessTotalClaimValuePage assessedTotals = new AssessTotalClaimValuePage(page);
-        assessedTotals.waitForPage();
         assessedTotals.setAssessedTotalVat("5.00");
         assessedTotals.setAssessedTotalInclVat("1000.00");
         assessedTotals.saveChanges();
 
         // -------- Total allowed value --------
 
-        review.waitForPage();
         review.clickAddAllowedTotalVat();
         AssessAllowedTotalsPage allowedTotals = new AssessAllowedTotalsPage(page);
-        allowedTotals.waitForPage();
         allowedTotals.setAllowedTotalVat("6.00");
         allowedTotals.setAllowedTotalInclVat("1100.00");
         allowedTotals.saveChanges();
 
         // -------- Submit --------
 
-        review.waitForPage();
         review.submitAdjustments();
 
         AssessmentCompletePage complete = new AssessmentCompletePage(page);
-        complete.waitForPage();
 
         Assertions.assertTrue(complete.getBodyText().contains("Your changes have been submitted"));
         Assertions.assertTrue(complete.goToSearchExists());
