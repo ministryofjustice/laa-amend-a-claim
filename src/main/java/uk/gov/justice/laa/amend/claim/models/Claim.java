@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.YearMonthDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 import lombok.Data;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
 
@@ -41,5 +42,9 @@ public class Claim implements Serializable {
 
     public BaseClaimView<? extends Claim> toViewModel() {
         return new ClaimView(this);
+    }
+
+    public String reviewAssessmentChangeUrl(String submissionId, String claimId) {
+        return String.format("/submissions/%s/claims/%s/assessment-outcome",  submissionId, claimId);
     }
 }

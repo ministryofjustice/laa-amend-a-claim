@@ -338,6 +338,17 @@ public abstract class ViewTestBase {
     assertCellContainsChangeLink(row.get(4), changeUrl, label);
   }
 
+    protected void assertTableRowContainsValuesWithChangeLink(
+            List<Element> row,
+            String label,
+            String value,
+            String changeUrl
+    ) {
+        assertCellContainsText(row.getFirst(), label);
+        assertCellContainsText(row.get(1), value);
+        assertCellContainsChangeLink(row.get(2), changeUrl, label);
+    }
+
   protected void assertTableRowContainsValuesWithAddLink(
       List<Element> row,
       String label,

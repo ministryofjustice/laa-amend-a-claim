@@ -25,14 +25,14 @@
 }
 
 .govuk-table__row-item{
-    min-width: 14.75rem;
+    width: 18rem;
 }
 
 .govuk-table__row-values{
-    min-width: 12rem;
+    width: 11rem;
 }
 
 .govuk-table__row-actions{
-    min-width: 4.5rem;
+    width: 4.5rem;
 }
 
