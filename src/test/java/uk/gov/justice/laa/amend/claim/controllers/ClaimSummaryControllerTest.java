@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -18,15 +18,16 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -46,14 +47,21 @@ public class ClaimSummaryControllerTest {
 
     @MockitoBean
     private AssessmentService assessmentService;
+
+    private String submissionId;
+    private String claimId;
+    private MockHttpSession session;
+
+    @BeforeEach
+    void setUp() {
+        submissionId = UUID.randomUUID().toString();
+        claimId = UUID.randomUUID().toString();
+        session = new MockHttpSession();
+    }
+
     @Test
     public void testOnPageLoadReturnsView() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
-
-        CivilClaimDetails claim = createClaim();
-
-        MockHttpSession session = new MockHttpSession();
+        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
         when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
 
@@ -68,28 +76,43 @@ public class ClaimSummaryControllerTest {
         mockMvc.perform(get(path).session(session))
             .andExpect(status().isOk())
             .andExpect(view().name("claim-summary"))
-            .andExpect(model().attributeExists("claim"));
-
-        Assertions.assertEquals(claim, session.getAttribute(claimId));
+            .andExpect(model().attributeExists("claim"))
+            .andExpect(model().attribute("searchUrl", "/"))
+            .andExpect(request().sessionAttribute(claimId, claim));
     }
 
-    private static CivilClaimDetails createClaim() {
+    @Test
+    public void testOnPageLoadWithCachedSearchUrlReturnsView() throws Exception {
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setUniqueFileNumber("UFN12345");
-        claim.setCaseReferenceNumber("CASE98765");
-        claim.setClientSurname("Doe");
-        claim.setClientForename("Jane");
-        claim.setCaseStartDate(LocalDate.now().minusDays(2));
-        claim.setCaseEndDate(LocalDate.now());
-        claim.setFeeCode("FeeCode");
-        claim.setFeeCodeDescription("FeeCodeDesc");
-        claim.setAreaOfLaw("Civil");
-        claim.setSubmittedDate(LocalDateTime.now().minusDays(10));
-        claim.setEscaped(true);
-        claim.setProviderAccountNumber("ACC123");
-        claim.setProviderName("Provider Ltd");
-        claim.setMatterTypeCode("IMM:DET");
 
-        return claim;
+        session.setAttribute("searchUrl", "/?providerAccountNumber=12345&page=1");
+
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+
+        var lastAssessment = new AssessmentInfo();
+        lastAssessment.setLastAssessedBy("test");
+        lastAssessment.setLastAssessmentDate(OffsetDateTime.now());
+        claim.setLastAssessment(lastAssessment);
+        when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+
+        String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+
+        mockMvc.perform(get(path).session(session))
+            .andExpect(status().isOk())
+            .andExpect(view().name("claim-summary"))
+            .andExpect(model().attributeExists("claim"))
+            .andExpect(model().attribute("searchUrl", "/?providerAccountNumber=12345&page=1"))
+            .andExpect(request().sessionAttribute(claimId, claim));
+    }
+
+    @Test
+    public void testOnSubmitRedirects() throws Exception {
+        String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+
+        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
+
+        mockMvc.perform(post(path).session(session))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(expectedRedirectUrl));
     }
 }
