@@ -90,6 +90,6 @@ public class CrimeClaimDetailsWithINVCFeeCodeTest extends E2eBaseTest {
     @Test
     @DisplayName("E2E: Assessed ClaimDetails - Assessed in full - Show claim Assessed/Allowed totals")
     void assessedInFull() {
-        submitWithAddedAssessedAndAllowedTotals("paid-in-full");
+        submitWithAddedAssessedTotalsAndAllowedTotals("paid-in-full");
     }
 }

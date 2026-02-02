@@ -84,7 +84,7 @@ public abstract class E2eBaseTest extends BaseTest {
         checkAssessedClaim("£300.00", "£400.00", "£300.00", "£400.00");
     }
 
-    protected void submitWithAddedAssessedAndAllowedTotals(String assessmentOutcome) {
+    protected void submitWithAddedAssessedTotalsAndAllowedTotals(String assessmentOutcome) {
         findClaim();
 
         addAssessmentOutcome(assessmentOutcome);
