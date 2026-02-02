@@ -168,6 +168,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6.0.2
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        working-directory: src/e2e
+        run: npm install
+
       - name: Wait for Services
         run: |
           echo "Waiting for services to be ready..."
@@ -198,7 +208,7 @@ jobs:
         if: always()
         working-directory: src/e2e
         run: |
-          allure generate build/allure-results -o build/allure-report --clean || true
+          ./gradlew allureReport || true
 
       - name: Upload Test Results
         if: always()
@@ -209,5 +219,6 @@ jobs:
             src/e2e/build/test-results/
             src/e2e/build/reports/
             src/e2e/build/allure-report/
+            src/e2e/build/axe-reports/
           retention-days: 15
 
