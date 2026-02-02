@@ -44,6 +44,17 @@ app:
   feedback-url: ${FEEDBACK_URL}
   laa-url: ${LAA_URL}
 
+management:
+  server:
+    port: 8182
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
 ---
 spring:
   config:
@@ -60,17 +71,6 @@ logging:
     org.apache.http.wire: DEBUG
     org.apache.http.headers: DEBUG
     org.springframework.session: INFO
-
-management:
-  server:
-    port: 8182
-  endpoints:
-    web:
-      exposure:
-        include: health,info,prometheus
-  metrics:
-    tags:
-      application: ${spring.application.name}
 
 ---
 spring:
