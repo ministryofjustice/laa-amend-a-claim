@@ -207,7 +207,7 @@ public class ClaimDetailsTest extends BaseTest {
     @MethodSource("detailsCases")
     @DisplayName("Claim Details: Values match fixture")
     @Severity(SeverityLevel.CRITICAL)
-    void crimeClaimValuesMatchFixture(ClaimDetailsFixture claimDetailsFixture) {
+    void claimValuesMatchFixture(ClaimDetailsFixture claimDetailsFixture) {
         String baseUrl = EnvConfig.baseUrl();
 
         SearchPage search = new SearchPage(page).navigateTo(baseUrl);

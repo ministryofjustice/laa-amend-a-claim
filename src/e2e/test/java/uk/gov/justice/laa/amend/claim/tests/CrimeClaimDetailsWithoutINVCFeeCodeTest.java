@@ -1,29 +1,23 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.base.BaseTest;
 import uk.gov.justice.laa.amend.claim.models.BulkSubmissionInsert;
 import uk.gov.justice.laa.amend.claim.models.CalculatedFeeDetailInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
-import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
-import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
-import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
+@Epic("ClaimDetails")
+@Feature("Crime claim without INVC code")
+public class CrimeClaimDetailsWithoutINVCFeeCodeTest extends E2eBaseTest {
 
-public class AssessmentOutcomeTest extends BaseTest {
-
-    private final String PROVIDER_ACCOUNT = "123456";
-    private final String UFN = generateUfn();
     private final String SUBMISSION_ID = UUID.randomUUID().toString();
     private final String CLAIM_ID = UUID.randomUUID().toString();
     private final String CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
@@ -68,52 +62,34 @@ public class AssessmentOutcomeTest extends BaseTest {
                 .id(CALCULATED_FEE_DETAIL_ID)
                 .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
                 .claimId(CLAIM_ID)
+                .feeCode("CAPA")
                 .escaped(true)
                 .userId(USER_ID)
                 .build()
         );
     }
 
-    private void navigateToAssessmentOutcome() {
-        String baseUrl = EnvConfig.baseUrl();
-
-        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
-
-        search.searchForClaim(
-            PROVIDER_ACCOUNT,
-            "04",
-            "2025",
-            UFN,
-            ""
-        );
-
-        search.clickViewForUfn(UFN);
-
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.clickAddUpdateAssessmentOutcome();
+    @Test
+    @DisplayName("E2E: Assessed ClaimDetails - Reduced (still escaped) - Show claim Assessed/Allowed totals")
+    void reduced() {
+        submitWithAddedProfitCostsAndAllowedTotals("reduced-still-escaped");
     }
 
     @Test
-    @DisplayName("Assessment outcome page loads: shows 4 outcome radios + VAT question + Continue")
-    void assessmentOutcomePageLoadsSuccessfully() {
-        navigateToAssessmentOutcome();
-
-        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.assertPageLoaded();
-
-        assertTrue(page.url().contains("/assessment-outcome"));
+    @DisplayName("E2E: Assessed ClaimDetails - Reduced (fixed fee) - Show claim Assessed/Allowed totals")
+    void reducedFixedFee() {
+        submitWithAddedProfitCostsAndAssessedTotalsAndAllowedTotals("reduced-to-fixed-fee-assessed");
     }
 
     @Test
-    @DisplayName("Assessment outcome validation: Continue without selecting outcome shows GOV.UK error summary")
-    void continueWithoutSelectingOutcomeShowsError() {
-        navigateToAssessmentOutcome();
+    @DisplayName("E2E: Assessed ClaimDetails - Nilled - Show claim Assessed/Allowed totals")
+    void nilled() {
+        submitNilled();
+    }
 
-        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-
-        outcome.clickContinue();
-
-        assertTrue(page.url().contains("/assessment-outcome"));
-        outcome.assertAssessmentOutcomeRequiredError();
+    @Test
+    @DisplayName("E2E: Assessed ClaimDetails - Assessed in full - Show claim Assessed/Allowed totals")
+    void assessedInFull() {
+        submitWithAddedAllowedTotals("paid-in-full");
     }
 }

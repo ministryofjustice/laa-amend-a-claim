@@ -56,18 +56,24 @@ public class ReviewAndAmendPage extends LaaPage {
         ).first();
     }
 
-    private void clickAddChangeRow(String itemName) {
-        rowByItemName(itemName).getByTestId("claim-field-profitCost")
-                .click();
-    }
-
     private void clickChangeInRow(String itemName) {
         rowByItemName(itemName)
             .locator("a.govuk-link:has-text('Change')")
             .click();
     }
 
-    public void clickChangeProfitCosts()      { clickAddChangeRow("Profit costs"); }
+    private void clickAddLink(String itemName, String id) {
+        Locator link = rowByItemName(itemName).getByTestId(id);
+        clickAddLink(link);
+    }
+
+    private void clickAddLink(Locator link) {
+        assertThat(link).containsText("Add");
+        link.click();
+    }
+
+    public void clickChangeProfitCosts()      { clickChangeInRow("Profit costs"); }
+    public void clickAddProfitCosts()         { clickAddLink("Profit costs", "claim-field-profitCost"); }
     public void clickChangeDisbursements()    { clickChangeInRow("Disbursements"); }
     public void clickChangeDisbursementsVat() { clickChangeInRow("Disbursement VAT"); }
     public void clickChangeTravelCosts()      { clickChangeInRow("Travel costs"); }
@@ -88,22 +94,14 @@ public class ReviewAndAmendPage extends LaaPage {
 
 
     public void clickAddAssessedTotalVat() {
-        totalClaimValueTable.getByTestId("totals-assessedTotalVat").click();
+        Locator link = totalClaimValueTable.getByTestId("totals-assessedTotalVat");
+        clickAddLink(link);
     }
-
-    public void clickAddAssessedTotalInclVat() {
-        totalClaimValueTable.getByTestId("totals-assessedTotalInclVat").click();
-    }
-
 
     public void clickAddAllowedTotalVat() {
-        totalAllowedValueTable.getByTestId("totals-allowedTotalVat").click();
+        Locator link = totalAllowedValueTable.getByTestId("totals-allowedTotalVat");
+        clickAddLink(link);
     }
-
-    public void clickAddAllowedTotalInclVat() {
-        totalAllowedValueTable.getByTestId("totals-allowedTotalInclVat").click();
-    }
-
 
     public void submitAdjustments() {
         submitAdjustmentsButton.click();

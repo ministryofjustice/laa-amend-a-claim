@@ -2,36 +2,25 @@ package uk.gov.justice.laa.amend.claim.tests;
 
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
+import uk.gov.justice.laa.amend.claim.models.AssessmentInsert;
 import uk.gov.justice.laa.amend.claim.models.BulkSubmissionInsert;
 import uk.gov.justice.laa.amend.claim.models.CalculatedFeeDetailInsert;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetailsFixture;
 import uk.gov.justice.laa.amend.claim.models.ClaimInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
-import uk.gov.justice.laa.amend.claim.pages.AssessAllowedTotalsPage;
-import uk.gov.justice.laa.amend.claim.pages.AssessAssessedTotalsPage;
-import uk.gov.justice.laa.amend.claim.pages.AssessProfitCostsPage;
-import uk.gov.justice.laa.amend.claim.pages.AssessmentCompletePage;
-import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
-import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 
 import java.util.List;
 import java.util.UUID;
 
-import static uk.gov.justice.laa.amend.claim.base.E2ETestHelper.getFromMap;
-import static uk.gov.justice.laa.amend.claim.base.E2ETestHelper.loadFixture;
-import static uk.gov.justice.laa.amend.claim.base.E2ETestHelper.normalizeMoneyForInput;
-
 @Epic("ClaimDetails")
-@Feature("Assessment Totals")
+@Feature("Assessed claim")
 public class AssessedClaimDetailsTest extends BaseTest {
 
     private final String PROVIDER_ACCOUNT = "123456";
@@ -40,6 +29,7 @@ public class AssessedClaimDetailsTest extends BaseTest {
     private final String CLAIM_ID = UUID.randomUUID().toString();
     private final String CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
     private final String CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
+    private final String ASSESSMENT_ID = UUID.randomUUID().toString();
 
     @Override
     protected List<Insert> inserts() {
@@ -56,7 +46,7 @@ public class AssessedClaimDetailsTest extends BaseTest {
                 .bulkSubmissionId(BULK_SUBMISSION_ID)
                 .officeAccountNumber(PROVIDER_ACCOUNT)
                 .submissionPeriod("APR-2025")
-                .areaOfLaw("CRIME_LOWER")
+                .areaOfLaw("LEGAL_HELP")
                 .userId(USER_ID)
                 .build(),
 
@@ -65,8 +55,8 @@ public class AssessedClaimDetailsTest extends BaseTest {
                 .id(CLAIM_ID)
                 .submissionId(SUBMISSION_ID)
                 .uniqueFileNumber(UFN)
-                .feeCode("INVC")
                 .userId(USER_ID)
+                .hasAssessment(true)
                 .build(),
 
             ClaimSummaryFeeInsert
@@ -83,14 +73,21 @@ public class AssessedClaimDetailsTest extends BaseTest {
                 .claimId(CLAIM_ID)
                 .escaped(true)
                 .userId(USER_ID)
+                .build(),
+
+            AssessmentInsert
+                .builder()
+                .id(ASSESSMENT_ID)
+                .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
+                .claimId(CLAIM_ID)
+                .userId(USER_ID)
                 .build()
         );
     }
 
     @Test
-    @DisplayName("E2E: Assessed ClaimDetails - Reduced (still escaped) - Show claim Assessed/Allowed totals")
-    void showClaimTotals() {
-        ClaimDetailsFixture claimDetailsFixture = loadFixture("fixtures/claim-details/crime-reduced-002.json");
+    @DisplayName("E2E: Assessed ClaimDetails")
+    void assessed() throws InterruptedException {
         SearchPage search = new SearchPage(page).navigateTo(EnvConfig.baseUrl());
 
         search.searchForClaim(
@@ -101,71 +98,27 @@ public class AssessedClaimDetailsTest extends BaseTest {
             ""
         );
 
-        search.clickViewForUfn(claimDetailsFixture.getUfn());
-
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
-
-        details.clickAddUpdateAssessmentOutcome();
-
-
-        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.selectAssessmentOutcome(claimDetailsFixture.getOutcome());
-        outcome.selectVatLiable(true);
-        outcome.clickContinue();
-
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-
-        review.clickChangeProfitCosts();
-        AssessProfitCostsPage profit = new AssessProfitCostsPage(page);
-        profit.setAssessedValue("999.99");
-        profit.saveChanges();
-
-        // -------- Total claim value --------
-
-        String assessedVatRaw = getFromMap(claimDetailsFixture.getAssessedTotals(), "Assessed total VAT", 2);
-        String assessedInclVatRaw = getFromMap(claimDetailsFixture.getAssessedTotals(), "Assessed total incl VAT", 2);
-
-        // Normalize for input fields (strip currency, commas, handle "Not applicable")
-        String assessedVat = normalizeMoneyForInput(assessedVatRaw);       // e.g., "£239.35" -> "239.35"
-        String assessedInclVat = normalizeMoneyForInput(assessedInclVatRaw); // "Not applicable" -> null
-
-        review.clickAddAssessedTotalVat();
-        AssessAssessedTotalsPage assessedTotals = new AssessAssessedTotalsPage(page);
-        assessedTotals.setAssessedTotalVat(assessedVat);
-        assessedTotals.setAssessedTotalInclVat(assessedInclVat);
-        assessedTotals.saveChanges();
-
-        // -------- Total allowed value --------
-
-        String allowedVatRaw = getFromMap(claimDetailsFixture.getAllowedTotals(), "Allowed total VAT", 2);
-        String allowedInclVatRaw = getFromMap(claimDetailsFixture.getAllowedTotals(), "Allowed total incl VAT", 2);
-
-        // Normalize for input fields (strip currency, commas, handle "Not applicable")
-        String allowedVat = normalizeMoneyForInput(allowedVatRaw);       // e.g., "£239.35" -> "239.35"
-        String allowedInclVat = normalizeMoneyForInput(allowedInclVatRaw); // "Not applicable" -> null
-
-        review.clickAddAllowedTotalVat();
-        AssessAllowedTotalsPage allowedTotals = new AssessAllowedTotalsPage(page);
-        allowedTotals.setAllowedTotalVat(allowedVat);
-        allowedTotals.setAllowedTotalInclVat(allowedInclVat);
-        allowedTotals.saveChanges();
-
-        // -------- Submit --------
-
-        review.submitAdjustments();
-
-        AssessmentCompletePage complete = new AssessmentCompletePage(page);
-
-        Assertions.assertTrue(complete.getBodyText().contains("Your changes have been submitted"));
-        Assertions.assertTrue(complete.goToSearchExists());
-        Assertions.assertTrue(complete.viewAssessedClaimExists());
-
-        complete.clickViewAssessedClaim();
+        search.clickViewForUfn(UFN);
 
         ClaimDetailsPage claimDetails = new ClaimDetailsPage(page);
+        claimDetails.assertInfoAlertIsPresent();
         claimDetails.assertUpdateAssessmentOutcomeButtonIsPresent();
-        claimDetails.assertAllowedTotals(claimDetailsFixture.getAllowedTotals());
-        claimDetails.assertAssessedTotals(claimDetailsFixture.getAssessedTotals());
-    }
 
+        //Thread.sleep(10000);
+
+        claimDetails.assertCost("Fixed fee", "£239.35", "Not applicable", "£1,000.00");
+        claimDetails.assertCost("Profit costs", "Not applicable", "£750.00", "£2,000.00");
+        claimDetails.assertCost("Disbursements", "£400.00", "£400.00", "Not applicable");
+        claimDetails.assertCost("Disbursement VAT", "£80.00", "£80.00", "Not applicable");
+        claimDetails.assertCost("Detention travel and waiting costs", "£0.00", "£0.00", "£0.00");
+        claimDetails.assertCost("JR and form filling", "£0.00", "£0.00", "£0.00");
+        claimDetails.assertCost("Counsel costs", "£0.00", "£0.00", "£0.00");
+        claimDetails.assertCost("VAT", "Yes", "Yes", "No");
+
+        claimDetails.assertAssessedTotals("Assessed total VAT", "Not applicable", "Not applicable", "£3,000.00");
+        claimDetails.assertAssessedTotals("Assessed total incl VAT", "Not applicable", "Not applicable", "£4,000.00");
+
+        claimDetails.assertAllowedTotals("Allowed total VAT", "£127.87", "Not applicable", "£5,000.00");
+        claimDetails.assertAllowedTotals("Allowed total incl VAT", "£767.22", "Not applicable", "£6,000.00");
+    }
 }
