@@ -1,11 +1,14 @@
 plugins {
-    id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.0.1'
-    id "io.sentry.jvm.gradle" version "5.12.2"
+    id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.0.5'
+
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 checkstyle {
@@ -43,7 +46,11 @@ dependencies {
     implementation 'io.netty:netty-codec-http2:4.2.9.Final'
 
     implementation("io.vavr:vavr:0.11.0")
+    implementation("uk.gov.justice.laadata.providers:providers-api:1.23.0")
 
+    // Sentry observability for Spring Boot 4
+    implementation enforcedPlatform('io.sentry:sentry-bom:8.26.0')
+    implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
 
