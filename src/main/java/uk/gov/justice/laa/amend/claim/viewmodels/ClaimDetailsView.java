@@ -130,7 +130,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
             .filter(Objects::nonNull);
     }
 
-    default String reviewAssessmentChangeUrl(String submissionId, String claimId) {
-        return String.format("/submissions/%s/claims/%s/assessment-outcome",  submissionId, claimId);
+    default String reviewAssessmentChangeUrl(String submissionId, String claimId, String question) {
+        return String.format("/submissions/%s/claims/%s/assessment-outcome#%s",  submissionId, claimId, question);
     }
 }

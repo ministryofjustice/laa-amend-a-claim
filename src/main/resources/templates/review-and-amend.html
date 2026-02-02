@@ -45,7 +45,7 @@
 
                     <td class="govuk-table__cell">
                         <a
-                                th:href="${viewModel.reviewAssessmentChangeUrl(submissionId, claimId)}"
+                                th:href="${viewModel.reviewAssessmentChangeUrl(submissionId, claimId, 'assessment-outcome')}"
                                 th:data-testid="claim-field-assessment-outcome"
                                 class="govuk-link govuk-link--no-visited-state">
                             <th:block th:text="#{service.change}"></th:block>
@@ -63,7 +63,7 @@
 
                     <td class="govuk-table__cell">
                         <a
-                           th:href="${viewModel.reviewAssessmentChangeUrl(submissionId, claimId)}"
+                           th:href="${viewModel.reviewAssessmentChangeUrl(submissionId, claimId, 'liability-for-vat')}"
                            th:data-testid="claim-field-vat-liability"
                            class="govuk-link govuk-link--no-visited-state">
                             <th:block th:text="#{service.change}"></th:block>
