@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -11,6 +12,7 @@ import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
+import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -22,6 +24,7 @@ public class ClaimService {
 
     private final ClaimsApiClient claimsApiClient;
     private final ClaimMapper claimMapper;
+    private final ProviderApiClient providerApiClient;
 
 
     public ClaimResultSet searchClaims(
@@ -67,7 +70,10 @@ public class ClaimService {
                 String.format("Claim with ID %s not found for submission %s", claimId, submissionId)
             );
         }
-        return claimMapper.mapToClaimDetails(claimResponse, submissionResponse);
+        var officeCode = submissionResponse.getOfficeAccountNumber();
+        var claimDetails = claimMapper.mapToClaimDetails(claimResponse, submissionResponse);
+        claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(officeCode));
+        return claimDetails;
     }
 
     public SubmissionResponse getSubmission(String submissionId) {
@@ -77,5 +83,27 @@ public class ClaimService {
             log.error("Error getting submission {}", submissionId, e);
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Fetches provider firm name from Provider API
+     *
+     * @param officeAccountNumber the office account number
+     * @return firm name from API or office account number as fallback
+     */
+    private String getProviderFirmName(String officeAccountNumber) {
+        try {
+            ProviderFirmOfficeDto providerOffice = providerApiClient
+                .getProviderOffice(officeAccountNumber)
+                .block();
+
+            if (providerOffice != null && providerOffice.getFirm() != null) {
+                return providerOffice.getFirm().getFirmName();
+            }
+        } catch (Exception e) {
+            log.warn("Failed to fetch provider firm name for office account: {}. Error: {}",
+                officeAccountNumber, e.getMessage());
+        }
+        return null;
     }
 }

@@ -23,7 +23,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("clientName", getClientName());
         rows.put("ufn", claim().getUniqueFileNumber());
         addUcnSummaryRow(rows);
-        rows.put("providerName", claim().getProviderName());
+        rows.put("providerName", claim().getProviderName() == null ? new ThymeleafMessage("provider.firmName.notAvailable") : claim().getProviderName());
         rows.put("providerAccountNumber", claim().getProviderAccountNumber());
         rows.put("submittedDate", claim().getSubmittedDate());
         rows.put("areaOfLaw", claim().getAreaOfLaw());

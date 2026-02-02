@@ -147,6 +147,16 @@ env:
       configMapKeyRef:
         name: urls
         key: laa
+  - name: PROVIDER_API
+    valueFrom:
+      secretKeyRef:
+        name: laa-amend-a-claim-provider-api-url
+        key: PROVIDER_API
+  - name: PROVIDER_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: laa-amend-a-claim-provider-api-token
+        key: PROVIDER_TOKEN
 
 autoscaling:
   enabled: false

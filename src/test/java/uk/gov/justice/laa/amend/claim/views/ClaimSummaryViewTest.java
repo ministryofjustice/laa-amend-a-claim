@@ -92,7 +92,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList1.getFirst(), "Client name", "John Doe");
         assertSummaryListRowContainsValues(summaryList1.get(1), "Unique file number (UFN)", "Not applicable");
         assertSummaryListRowContainsValues(summaryList1.get(2), "Unique client number (UCN)", "Not applicable");
-        assertSummaryListRowContainsValues(summaryList1.get(3), "Provider name", "Not applicable");
+        assertSummaryListRowContainsValues(summaryList1.get(3), "Provider name", "Currently not available");
         assertSummaryListRowContainsValues(summaryList1.get(4), "Provider account number", "0P322F");
         assertSummaryListRowContainsValues(summaryList1.get(5), "Date submitted", "15 June 2020 at 09:30:00");
         assertSummaryListRowContainsValues(summaryList1.get(6), "Area of law", "LEGAL_HELP");
@@ -214,7 +214,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         Assertions.assertEquals(16, summaryList1.size());
         assertSummaryListRowContainsValues(summaryList1.getFirst(), "Client name", "John Doe");
         assertSummaryListRowContainsValues(summaryList1.get(1), "Unique file number (UFN)", "Not applicable");
-        assertSummaryListRowContainsValues(summaryList1.get(2), "Provider name", "Not applicable");
+        assertSummaryListRowContainsValues(summaryList1.get(2), "Provider name", "Currently not available");
         assertSummaryListRowContainsValues(summaryList1.get(3), "Provider account number", "0P322F");
         assertSummaryListRowContainsValues(summaryList1.get(4), "Date submitted", "15 June 2020 at 09:30:00");
         assertSummaryListRowContainsValues(summaryList1.get(5), "Area of law", "CRIME");
