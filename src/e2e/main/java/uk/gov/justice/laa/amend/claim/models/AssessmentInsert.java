@@ -6,18 +6,16 @@ import java.util.Arrays;
 import java.util.List;
 
 @Builder
-public record CalculatedFeeDetailInsert(
+public record AssessmentInsert(
     String id,
     String claimSummaryFeeId,
     String claimId,
-    String feeCode,
-    boolean escaped,
     String userId
 ) implements Insert {
 
     @Override
     public String table() {
-        return "calculated_fee_detail";
+        return "assessment";
     }
 
     @Override
@@ -26,8 +24,7 @@ public record CalculatedFeeDetailInsert(
             id,
             claimSummaryFeeId,
             claimId,
-            feeCode,
-            escaped,
+            userId,
             userId
         );
     }
