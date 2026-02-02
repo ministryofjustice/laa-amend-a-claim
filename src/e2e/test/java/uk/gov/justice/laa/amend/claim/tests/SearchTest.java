@@ -156,7 +156,6 @@ public class SearchTest extends BaseTest {
         search.clickViewForUfn("121019/001");
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
 
         details.clickBackToSearchButton();
         assertTrue(page.url().contains("/?providerAccountNumber=123456&submissionDateMonth=04&submissionDateYear=2025&page=1&sort=uniqueFileNumber,asc"));

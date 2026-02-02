@@ -1,0 +1,24 @@
+{
+  "name": "laa-amend-a-claim",
+  "version": "1.0.0",
+  "description": "[![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/laa-spring-boot-microservice-template/badge)](https://github-community.service.justice.gov.uk/repository-standards/laa-spring-boot-microservice-template)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ministryofjustice/laa-amend-a-claim.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ministryofjustice/laa-amend-a-claim/issues"
+  },
+  "homepage": "https://github.com/ministryofjustice/laa-amend-a-claim#readme",
+  "dependencies": {
+    "axe-html-reporter": "^2.2.11"
+  }
+}

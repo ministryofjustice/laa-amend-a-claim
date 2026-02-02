@@ -6,6 +6,7 @@ import com.deque.html.axecore.results.AxeResults;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,17 +40,20 @@ public abstract class LaaPage {
     private void waitForPage() {
         heading.waitFor();
         assertThat(heading).isVisible();
+        generateAxeReport();
+    }
+
+    private void generateAxeReport() {
         try {
-            String directory = "build/axe-reports";
+            String directory = EnvConfig.axeReportsDirectory();
             new File(directory).mkdirs();
-            String fileName = heading.textContent().replace(" ", "_");
+            String fileName = heading.textContent().trim().replace(" ", "_");
             String path = String.format("%s/%s.json", directory, fileName);
-            if (!Files.exists(Paths.get(path))) {
-                Reporter reporter = new Reporter();
+            if (Files.notExists(Paths.get(path))) {
                 AxeResults axeResults = axeBuilder.analyze();
-                axeResults.getViolations().forEach(System.out::println);
-                assertTrue(axeResults.violationFree());
+                Reporter reporter = new Reporter();
                 reporter.JSONStringify(axeResults, path);
+                assertTrue(axeResults.violationFree());
             }
         } catch (RuntimeException | IOException e) {
             System.err.println(e.getMessage());
