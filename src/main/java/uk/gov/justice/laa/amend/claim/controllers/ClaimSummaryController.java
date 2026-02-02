@@ -11,6 +11,8 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 
+import java.util.Optional;
+
 @Controller
 @RequiredArgsConstructor
 public class ClaimSummaryController {
@@ -35,6 +37,8 @@ public class ClaimSummaryController {
             }
         }
         session.setAttribute(claimId, claimDetails);
+        String searchUrl = (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
+        model.addAttribute("searchUrl", searchUrl);
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claim", claimDetails.toViewModel());

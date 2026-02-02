@@ -94,12 +94,7 @@ public class SearchPage extends LaaPage {
 
     public void searchForClaim(String providerAccount, String month, String year,
                                String ufn, String crn) {
-        enterProviderAccountNumber(providerAccount);
-        enterSubmissionDate(month, year);
-        enterUFN(ufn);
-        enterCRN(crn);
-        clickSearch();
-        waitForResults(true);
+        searchForClaim(providerAccount, month, year, ufn, crn, true);
     }
 
     public void waitForResults(boolean expectResults) {

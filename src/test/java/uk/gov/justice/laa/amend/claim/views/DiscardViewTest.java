@@ -32,6 +32,6 @@ class DiscardViewTest extends ViewTestBase {
 
         assertPageHasPrimaryButton(doc, "Discard assessment");
 
-        assertPageHasLink(doc, "return-to-claim", "Return to claim");
+        assertPageHasLink(doc, "return-to-claim", "Return to claim", "/submissions/submissionId/claims/claimId/review");
     }
 }

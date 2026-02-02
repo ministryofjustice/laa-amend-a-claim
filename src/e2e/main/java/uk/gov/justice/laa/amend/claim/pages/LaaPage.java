@@ -7,7 +7,10 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,11 +40,17 @@ public abstract class LaaPage {
         heading.waitFor();
         assertThat(heading).isVisible();
         try {
-            AxeResults axeResults = axeBuilder.analyze();
-            axeResults.getViolations().forEach(System.out::println);
-            assertTrue(axeResults.violationFree());
-            Reporter reporter = new Reporter();
-            reporter.JSONStringify(axeResults, "AxeResults.json");
+            String directory = "build/axe-reports";
+            new File(directory).mkdirs();
+            String fileName = heading.textContent().replace(" ", "_");
+            String path = String.format("%s/%s.json", directory, fileName);
+            if (!Files.exists(Paths.get(path))) {
+                Reporter reporter = new Reporter();
+                AxeResults axeResults = axeBuilder.analyze();
+                axeResults.getViolations().forEach(System.out::println);
+                assertTrue(axeResults.violationFree());
+                reporter.JSONStringify(axeResults, path);
+            }
         } catch (RuntimeException | IOException e) {
             System.err.println(e.getMessage());
         }
