@@ -10,8 +10,8 @@ public record ClaimInsert(
     String id,
     String submissionId,
     String uniqueFileNumber,
-    String feeCode,
-    String userId
+    String userId,
+    Boolean hasAssessment
 ) implements Insert {
 
     @Override
@@ -25,9 +25,9 @@ public record ClaimInsert(
             id,
             submissionId,
             uniqueFileNumber,
-            feeCode,
             userId,
-            userId
+            userId,
+            hasAssessment != null  ? hasAssessment : false
         );
     }
 }
