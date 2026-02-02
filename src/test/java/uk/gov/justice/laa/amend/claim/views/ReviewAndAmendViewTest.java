@@ -57,8 +57,8 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         assertPageHasSecondaryButton(doc, "Discard changes");
 
         List<List<Element>> assessmentTable = getTable(doc, "Assessment");
-        assertTableRowContainsValuesWithChangeLink(assessmentTable.getFirst(), "Assessment outcome", "Assessed in full", "/submissions/submissionId/claims/claimId/assessment-outcome");
-        assertTableRowContainsValuesWithChangeLink(assessmentTable.get(1), "Is this claim liable for VAT?", "Yes", "/submissions/submissionId/claims/claimId/assessment-outcome");
+        assertTableRowContainsValuesWithChangeLink(assessmentTable.getFirst(), "Assessment outcome", "Assessed in full", "/submissions/submissionId/claims/claimId/assessment-outcome#assessment-outcome");
+        assertTableRowContainsValuesWithChangeLink(assessmentTable.get(1), "Is this claim liable for VAT?", "Yes", "/submissions/submissionId/claims/claimId/assessment-outcome#liability-for-vat");
 
         List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
         assertTableRowContainsValuesWithNoChangeLink(claimCostsTable.getFirst(), "Fixed fee", "£200.00", "Not applicable", "£300.00");
@@ -101,8 +101,8 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         assertPageHasSecondaryButton(doc, "Discard changes");
 
         List<List<Element>> assessmentTable = getTable(doc, "Assessment");
-        assertTableRowContainsValuesWithChangeLink(assessmentTable.getFirst(), "Assessment outcome", "Assessed in full", "/submissions/submissionId/claims/claimId/assessment-outcome");
-        assertTableRowContainsValuesWithChangeLink(assessmentTable.get(1), "Is this claim liable for VAT?", "Yes", "/submissions/submissionId/claims/claimId/assessment-outcome");
+        assertTableRowContainsValuesWithChangeLink(assessmentTable.getFirst(), "Assessment outcome", "Assessed in full", "/submissions/submissionId/claims/claimId/assessment-outcome#assessment-outcome");
+        assertTableRowContainsValuesWithChangeLink(assessmentTable.get(1), "Is this claim liable for VAT?", "Yes", "/submissions/submissionId/claims/claimId/assessment-outcome#liability-for-vat");
 
         List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
         Assertions.assertEquals(7, claimCostsTable.size());
@@ -164,8 +164,8 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         assertPageHasSecondaryButton(doc, "Discard changes");
 
         List<List<Element>> assessmentTable = getTable(doc, "Assessment");
-        assertTableRowContainsValuesWithChangeLink(assessmentTable.getFirst(), "Assessment outcome", "Reduced (still escaped)", "/submissions/submissionId/claims/claimId/assessment-outcome");
-        assertTableRowContainsValuesWithChangeLink(assessmentTable.get(1), "Is this claim liable for VAT?", "Yes", "/submissions/submissionId/claims/claimId/assessment-outcome");
+        assertTableRowContainsValuesWithChangeLink(assessmentTable.getFirst(), "Assessment outcome", "Reduced (still escaped)", "/submissions/submissionId/claims/claimId/assessment-outcome#assessment-outcome");
+        assertTableRowContainsValuesWithChangeLink(assessmentTable.get(1), "Is this claim liable for VAT?", "Yes", "/submissions/submissionId/claims/claimId/assessment-outcome#liability-for-vat");
 
         List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
         Assertions.assertEquals(7, claimCostsTable.size());
@@ -217,8 +217,8 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         assertPageHasSecondaryButton(doc, "Discard changes");
 
         List<List<Element>> assessmentTable = getTable(doc, "Assessment");
-        assertTableRowContainsValuesWithChangeLink(assessmentTable.getFirst(), "Assessment outcome", "Reduced (still escaped)", "/submissions/submissionId/claims/claimId/assessment-outcome");
-        assertTableRowContainsValuesWithChangeLink(assessmentTable.get(1), "Is this claim liable for VAT?", "Yes", "/submissions/submissionId/claims/claimId/assessment-outcome");
+        assertTableRowContainsValuesWithChangeLink(assessmentTable.getFirst(), "Assessment outcome", "Reduced (still escaped)", "/submissions/submissionId/claims/claimId/assessment-outcome#assessment-outcome");
+        assertTableRowContainsValuesWithChangeLink(assessmentTable.get(1), "Is this claim liable for VAT?", "Yes", "/submissions/submissionId/claims/claimId/assessment-outcome#liability-for-vat");
 
         List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
         Assertions.assertEquals(13, claimCostsTable.size());
@@ -324,8 +324,8 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         assertPageHasSecondaryButton(doc, "Discard changes");
 
         List<List<Element>> assessmentTable = getTable(doc, "Assessment");
-        assertTableRowContainsValuesWithChangeLink(assessmentTable.getFirst(), "Assessment outcome", "Assessed in full", "/submissions/submissionId/claims/claimId/assessment-outcome");
-        assertTableRowContainsValuesWithChangeLink(assessmentTable.get(1), "Is this claim liable for VAT?", "Yes", "/submissions/submissionId/claims/claimId/assessment-outcome");
+        assertTableRowContainsValuesWithChangeLink(assessmentTable.getFirst(), "Assessment outcome", "Assessed in full", "/submissions/submissionId/claims/claimId/assessment-outcome#assessment-outcome");
+        assertTableRowContainsValuesWithChangeLink(assessmentTable.get(1), "Is this claim liable for VAT?", "Yes", "/submissions/submissionId/claims/claimId/assessment-outcome#liability-for-vat");
 
         List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
         Assertions.assertEquals(13, claimCostsTable.size());
@@ -393,8 +393,8 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         assertPageHasSecondaryButton(doc, "Discard changes");
 
         List<List<Element>> assessmentTable = getTable(doc, "Assessment");
-        assertTableRowContainsValuesWithChangeLink(assessmentTable.getFirst(), "Assessment outcome", "Assessed in full", "/submissions/submissionId/claims/claimId/assessment-outcome");
-        assertTableRowContainsValuesWithChangeLink(assessmentTable.get(1), "Is this claim liable for VAT?", "Yes", "/submissions/submissionId/claims/claimId/assessment-outcome");
+        assertTableRowContainsValuesWithChangeLink(assessmentTable.getFirst(), "Assessment outcome", "Assessed in full", "/submissions/submissionId/claims/claimId/assessment-outcome#assessment-outcome");
+        assertTableRowContainsValuesWithChangeLink(assessmentTable.get(1), "Is this claim liable for VAT?", "Yes", "/submissions/submissionId/claims/claimId/assessment-outcome#liability-for-vat");
 
         List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
         Assertions.assertEquals(8, claimCostsTable.size());
