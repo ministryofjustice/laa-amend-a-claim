@@ -205,4 +205,76 @@ public class ReviewAndAmendTest extends BaseTest {
         assertTrue(page.url().contains("/review"));
         review.assertSubmitTotalsRequiredErrors();
     }
+
+    @Test
+    @DisplayName("Review & amend (Crime) change assessment outcome – navigates correctly")
+    void crimeChangeAssessmentOutcome() {
+        navigateToReviewAndAmend(
+                CRIME_PROVIDER_ACCOUNT,
+                CRIME_MONTH,
+                CRIME_YEAR,
+                CRIME_UFN
+        );
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+        review.waitForPage();
+
+        review.clickAssessmentOutcome();
+
+        assertTrue(page.url().contains("/assessment-outcome"));
+    }
+
+    @Test
+    @DisplayName("Review & amend (Crime) change VAT liability – navigates correctly")
+    void crimeChangeVatLiability() {
+        navigateToReviewAndAmend(
+                CRIME_PROVIDER_ACCOUNT,
+                CRIME_MONTH,
+                CRIME_YEAR,
+                CRIME_UFN
+        );
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+        review.waitForPage();
+
+        review.clickLiableForVat();
+
+        assertTrue(page.url().contains("/assessment-outcome"));
+    }
+
+    @Test
+    @DisplayName("Review & amend (Civil) change assessment outcome – navigates correctly")
+    void civilChangeAssessmentOutcome() {
+        navigateToReviewAndAmend(
+                CIVIL_PROVIDER_ACCOUNT,
+                CIVIL_MONTH,
+                CIVIL_YEAR,
+                CIVIL_UFN
+        );
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+        review.waitForPage();
+
+        review.clickAssessmentOutcome();
+
+        assertTrue(page.url().contains("/assessment-outcome"));
+    }
+
+    @Test
+    @DisplayName("Review & amend (Civil) change VAT liability – navigates correctly")
+    void civilChangeVatLiability() {
+        navigateToReviewAndAmend(
+                CIVIL_PROVIDER_ACCOUNT,
+                CIVIL_MONTH,
+                CIVIL_YEAR,
+                CIVIL_UFN
+        );
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+        review.waitForPage();
+
+        review.clickLiableForVat();
+
+        assertTrue(page.url().contains("/assessment-outcome"));
+    }
 }
