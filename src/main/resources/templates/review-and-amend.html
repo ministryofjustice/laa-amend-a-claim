@@ -5,8 +5,7 @@
         title=#{claimReview.title},
         mainContent=~{::#main-content},
         pageCategory=${null},
-        showBackLink=${false},
-        backLinkUrl=@{/submissions/{submissionId}/claims/{claimId}/assessment-outcome(submissionId=${submissionId}, claimId=${claimId})}
+        showBackLink=${false}
     )}">
 <body>
 <main class="govuk-main-wrapper" id="main-content">
@@ -22,11 +21,6 @@
     <h1 class="govuk-heading-xl">
         <span th:text="#{claimReview.mainHeading}"></span>
     </h1>
-
-    <p class="govuk-body">
-        <strong th:text="#{claimReview.assessmentOutcome} "></strong>
-        <span th:text="#{${(claim.assessmentOutcome != null) ? claim.assessmentOutcome.messageKey : 'claimValuesTable.noData'}}"></span>
-    </p>
 
     <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
@@ -51,7 +45,7 @@
 
                     <td class="govuk-table__cell">
                         <a
-                                th:href="${claim.reviewAssessmentChangeUrl(submissionId, claimId)}"
+                                th:href="${viewModel.reviewAssessmentChangeUrl(submissionId, claimId)}"
                                 th:data-testid="claim-field-assessment-outcome"
                                 class="govuk-link govuk-link--no-visited-state">
                             <th:block th:text="#{service.change}"></th:block>
@@ -64,13 +58,12 @@
 
                     <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{claimSummary.rows.vatLiability}"></td>
 
-
                     <td class="govuk-table__cell" colspan="3"
-                        th:text="${@ThymeleafUtils.getFormattedValue(claim.vatClaimed.getSubmitted()).resolve(#messages)}"/>
+                        th:text="${@ThymeleafUtils.getFormattedValue(claim.vatClaimed.getAssessed()).resolve(#messages)}"/>
 
                     <td class="govuk-table__cell">
                         <a
-                           th:href="${claim.reviewAssessmentChangeUrl(submissionId, claimId)}"
+                           th:href="${viewModel.reviewAssessmentChangeUrl(submissionId, claimId)}"
                            th:data-testid="claim-field-vat-liability"
                            class="govuk-link govuk-link--no-visited-state">
                             <th:block th:text="#{service.change}"></th:block>

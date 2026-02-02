@@ -129,4 +129,8 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
             .map(ClaimField::toClaimFieldRow)
             .filter(Objects::nonNull);
     }
+
+    default String reviewAssessmentChangeUrl(String submissionId, String claimId) {
+        return String.format("/submissions/%s/claims/%s/assessment-outcome",  submissionId, claimId);
+    }
 }

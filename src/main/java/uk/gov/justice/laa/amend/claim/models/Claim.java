@@ -43,8 +43,4 @@ public class Claim implements Serializable {
     public BaseClaimView<? extends Claim> toViewModel() {
         return new ClaimView(this);
     }
-
-    public String reviewAssessmentChangeUrl(String submissionId, String claimId) {
-        return String.format("/submissions/%s/claims/%s/assessment-outcome",  submissionId, claimId);
-    }
 }
