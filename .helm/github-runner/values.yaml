@@ -1,6 +1,6 @@
 # GitHub Self-Hosted Runner
 enabled: true
-replicas: 2
+replicas: 2  # Increase for more parallel jobs
 
 image:
   repository: ""  # Set via --set
