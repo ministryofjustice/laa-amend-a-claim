@@ -16,10 +16,12 @@ public class ReviewAndAmendPage {
     private final Locator heading;
     private final Locator backLink;
 
+    private final Locator assessmentOutcomeCard;
     private final Locator claimCostsCard;
     private final Locator totalClaimValueCard;
     private final Locator totalAllowedValueCard;
 
+    private final Locator assessmentTable;
     private final Locator claimCostsTable;
     private final Locator totalClaimValueTable;
     private final Locator totalAllowedValueTable;
@@ -39,10 +41,12 @@ public class ReviewAndAmendPage {
 
         this.backLink = page.locator(".govuk-back-link");
 
+        this.assessmentOutcomeCard = cardByTitle("Assessment", page);
         this.claimCostsCard = cardByTitle("Claim costs", page);
         this.totalClaimValueCard = cardByTitle("Total claim value", page);
         this.totalAllowedValueCard = cardByTitle("Total allowed value", page);
 
+        this.assessmentTable = tableByCard(assessmentOutcomeCard);
         this.claimCostsTable = tableByCard(claimCostsCard);
         this.totalClaimValueTable = tableByCard(totalClaimValueCard);
         this.totalAllowedValueTable = tableByCard(totalAllowedValueCard);
@@ -59,6 +63,7 @@ public class ReviewAndAmendPage {
 
     public void waitForPage() {
         heading.waitFor();
+        assessmentOutcomeCard.waitFor();
         claimCostsCard.waitFor();
         if (totalClaimValueCard.isVisible()) {
             totalClaimValueCard.waitFor();
@@ -72,20 +77,20 @@ public class ReviewAndAmendPage {
 
 
 
-    private Locator rowByItemName(String itemName) {
-        return claimCostsTable.locator("tbody tr").filter(
+    private Locator rowByItemName(String itemName, Locator locator) {
+        return locator.locator("tbody tr").filter(
                 new Locator.FilterOptions().setHasText(itemName)
         ).first();
     }
 
-    private void clickChangeInRow(String itemName) {
-        rowByItemName(itemName)
+    private void clickChangeInRow(String itemName, Locator locator) {
+        rowByItemName(itemName, locator)
             .locator("a.govuk-link:has-text('Change')")
             .click();
     }
 
-    private void clickAddLink(String itemName, String id) {
-        Locator link = rowByItemName(itemName).getByTestId(id);
+    private void clickAddLink(String itemName, String id, Locator locator) {
+        Locator link = rowByItemName(itemName, locator).getByTestId(id);
         clickAddLink(link);
     }
 
@@ -94,24 +99,26 @@ public class ReviewAndAmendPage {
         link.click();
     }
 
-    public void clickChangeProfitCosts()      { clickChangeInRow("Profit costs"); }
-    public void clickAddProfitCosts()         { clickAddLink("Profit costs", "claim-field-profitCost"); }
-    public void clickChangeDisbursements()    { clickChangeInRow("Disbursements"); }
-    public void clickChangeDisbursementsVat() { clickChangeInRow("Disbursement VAT"); }
-    public void clickChangeTravelCosts()      { clickChangeInRow("Travel costs"); }
-    public void clickChangeWaitingCosts()     { clickChangeInRow("Waiting costs"); }
-    public void clickChangeVat()              { clickChangeInRow("VAT"); }
+    public void clickAssessmentOutcome()      { clickChangeInRow("Assessment outcome", assessmentTable); }
+    public void clickLiableForVat()      { clickChangeInRow("Is this claim liable for VAT?", assessmentTable); }
+    public void clickChangeProfitCosts()      { clickChangeInRow("Profit costs", claimCostsTable); }
+    public void clickAddProfitCosts()         { clickAddLink("Profit costs", "claim-field-profitCost", claimCostsTable); }
+    public void clickChangeDisbursements()    { clickChangeInRow("Disbursements", claimCostsTable); }
+    public void clickChangeDisbursementsVat() { clickChangeInRow("Disbursement VAT", claimCostsTable); }
+    public void clickChangeTravelCosts()      { clickChangeInRow("Travel costs", claimCostsTable); }
+    public void clickChangeWaitingCosts()     { clickChangeInRow("Waiting costs", claimCostsTable); }
+    public void clickChangeVat()              { clickChangeInRow("VAT", claimCostsTable); }
 
     public void clickChangeDetentionTravelAndWaitingCosts() {
-        clickChangeInRow("Detention travel and waiting costs");
+        clickChangeInRow("Detention travel and waiting costs", claimCostsTable);
     }
 
     public void clickChangeJrAndFormFilling() {
-        clickChangeInRow("JR and form filling");
+        clickChangeInRow("JR and form filling", claimCostsTable);
     }
 
     public void clickChangeCounselCosts() {
-        clickChangeInRow("Counsel costs");
+        clickChangeInRow("Counsel costs", claimCostsTable);
     }
 
 
@@ -148,6 +155,7 @@ public class ReviewAndAmendPage {
         assertTableHasHeaders(totalClaimValueTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalAllowedValueTable, "Item", "Calculated", "Requested", "Allowed");
 
+        assertAssessmentHasItems("Assessment outcome", "Is this claim liable for VAT?");
         assertClaimCostsHasItems(
                 "Fixed fee",
                 "Profit costs",
@@ -169,6 +177,7 @@ public class ReviewAndAmendPage {
         assertTableHasHeaders(totalClaimValueTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalAllowedValueTable, "Item", "Calculated", "Requested", "Allowed");
 
+        assertAssessmentHasItems("Assessment outcome", "Is this claim liable for VAT?");
         assertClaimCostsHasItems(
                 "Fixed fee",
                 "Profit costs",
@@ -201,6 +210,17 @@ public class ReviewAndAmendPage {
                     AriaRole.COLUMNHEADER,
                     new Locator.GetByRoleOptions().setName(header)
             )).isVisible();
+        }
+    }
+
+    private void assertAssessmentHasItems(String... itemNames) {
+        assertThat(assessmentTable).isVisible();
+
+        Locator rows = assessmentTable.locator("tbody tr");
+        assertThat(rows.first()).isVisible(); // strict-safe
+
+        for (String item : itemNames) {
+            assertThat(assessmentTable).containsText(item);
         }
     }
 

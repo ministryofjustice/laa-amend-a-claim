@@ -5,8 +5,7 @@
         title=#{claimReview.title},
         mainContent=~{::#main-content},
         pageCategory=${null},
-        showBackLink=${true},
-        backLinkUrl=@{/submissions/{submissionId}/claims/{claimId}/assessment-outcome(submissionId=${submissionId}, claimId=${claimId})}
+        showBackLink=${false}
     )}">
 <body>
 <main class="govuk-main-wrapper" id="main-content">
@@ -23,10 +22,60 @@
         <span th:text="#{claimReview.mainHeading}"></span>
     </h1>
 
-    <p class="govuk-body">
-        <strong th:text="#{claimReview.assessmentOutcome} "></strong>
-        <span th:text="#{${(claim.assessmentOutcome != null) ? claim.assessmentOutcome.messageKey : 'claimValuesTable.noData'}}"></span>
-    </p>
+    <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title" th:text="#{claimSummary.assessmentTableTitle}"/>
+        </div>
+        <div class="govuk-summary-card__content">
+
+            <table class="govuk-table govuk-!-margin-bottom-0">
+                <colgroup>
+                    <col class="govuk-table__row-item">
+                    <col class="govuk-table__row-values" span="3">
+                    <col class="govuk-table__row-actions">
+                </colgroup>
+
+                <tbody class="govuk-table__body">
+
+                <tr class="govuk-table__row">
+
+                    <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{claimSummary.rows.assessmentOutcome}"></td>
+
+                    <td class="govuk-table__cell" colspan="3" th:text="#{${(claim.assessmentOutcome != null) ? claim.assessmentOutcome.messageKey : 'claimValuesTable.noData'}}"/>
+
+                    <td class="govuk-table__cell">
+                        <a
+                                th:href="${viewModel.reviewAssessmentChangeUrl(submissionId, claimId, 'assessment-outcome')}"
+                                th:data-testid="claim-field-assessment-outcome"
+                                class="govuk-link govuk-link--no-visited-state">
+                            <th:block th:text="#{service.change}"></th:block>
+                            <span class="govuk-visually-hidden" th:text="| #{claimSummary.rows.assessmentOutcome}|"></span>
+                        </a>
+                    </td>
+                </tr>
+
+                <tr class="govuk-table__row">
+
+                    <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{claimSummary.rows.vatLiability}"></td>
+
+                    <td class="govuk-table__cell" colspan="3"
+                        th:text="${@ThymeleafUtils.getFormattedValue(claim.vatClaimed.getAssessed()).resolve(#messages)}"/>
+
+                    <td class="govuk-table__cell">
+                        <a
+                           th:href="${viewModel.reviewAssessmentChangeUrl(submissionId, claimId, 'liability-for-vat')}"
+                           th:data-testid="claim-field-vat-liability"
+                           class="govuk-link govuk-link--no-visited-state">
+                            <th:block th:text="#{service.change}"></th:block>
+                            <span class="govuk-visually-hidden" th:text="| #{claimSummary.rows.vatLiability}|"></span>
+                        </a>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
