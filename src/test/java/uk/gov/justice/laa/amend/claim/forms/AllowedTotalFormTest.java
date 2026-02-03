@@ -131,7 +131,10 @@ public class AllowedTotalFormTest extends FormTest {
         form.setAllowedTotalInclVat("1,0000.00");
         form.setAllowedTotalVat("1,0000.00");
 
-        checkNoViolations(form);
+        String totalInclVatViolationMessage = "{allowedTotals.allowedTotalInclVat.error.commas}";
+        String totalVatViolationMessage = "{allowedTotals.allowedTotalVat.error.commas}";
+
+        checkViolations(totalInclVatViolationMessage, totalVatViolationMessage);
     }
 
     @Test
