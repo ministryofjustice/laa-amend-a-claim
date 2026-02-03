@@ -11,7 +11,6 @@ import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
-import uk.gov.justice.laa.amend.claim.pages.AssessTravelCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
@@ -202,28 +201,69 @@ public class ReviewAndAmendTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Review & amend back link navigates to assessment outcome page (not browser history)")
-    void backLinkNavigatesToAssessmentOutcome() {
+    @DisplayName("Review & amend (Crime) change assessment outcome – navigates correctly")
+    void crimeChangeAssessmentOutcome() {
         navigateToReviewAndAmend(
-            CRIME_PROVIDER_ACCOUNT,
-            CRIME_MONTH,
-            CRIME_YEAR,
-            CRIME_UFN
+                CRIME_PROVIDER_ACCOUNT,
+                CRIME_MONTH,
+                CRIME_YEAR,
+                CRIME_UFN
         );
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
-        // Navigate to a change page to add entries to browser history
-        review.clickChangeTravelCosts();
-        AssessTravelCostsPage travelCosts = new AssessTravelCostsPage(page);
+        review.clickAssessmentOutcome();
 
-        // Cancel to return to review page
-        travelCosts.cancel();
+        assertTrue(page.url().contains("/assessment-outcome"));
+    }
 
-        // Click back link which should go to assessment-outcome, not travel-costs
-        review.clickBackLink();
+    @Test
+    @DisplayName("Review & amend (Crime) change VAT liability – navigates correctly")
+    void crimeChangeVatLiability() {
+        navigateToReviewAndAmend(
+                CRIME_PROVIDER_ACCOUNT,
+                CRIME_MONTH,
+                CRIME_YEAR,
+                CRIME_UFN
+        );
 
-        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+
+        review.clickLiableForVat();
+
+        assertTrue(page.url().contains("/assessment-outcome"));
+    }
+
+    @Test
+    @DisplayName("Review & amend (Civil) change assessment outcome – navigates correctly")
+    void civilChangeAssessmentOutcome() {
+        navigateToReviewAndAmend(
+                CIVIL_PROVIDER_ACCOUNT,
+                CIVIL_MONTH,
+                CIVIL_YEAR,
+                CIVIL_UFN
+        );
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+
+        review.clickAssessmentOutcome();
+
+        assertTrue(page.url().contains("/assessment-outcome"));
+    }
+
+    @Test
+    @DisplayName("Review & amend (Civil) change VAT liability – navigates correctly")
+    void civilChangeVatLiability() {
+        navigateToReviewAndAmend(
+                CIVIL_PROVIDER_ACCOUNT,
+                CIVIL_MONTH,
+                CIVIL_YEAR,
+                CIVIL_UFN
+        );
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+
+        review.clickLiableForVat();
 
         assertTrue(page.url().contains("/assessment-outcome"));
     }
