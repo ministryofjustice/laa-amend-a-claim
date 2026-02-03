@@ -52,7 +52,7 @@ public abstract class LaaPage {
         generateAxeReport(400);
     }
 
-    protected void generateAxeReport(int status) {
+    private void generateAxeReport(int status) {
         try {
             String fileName = heading.textContent().trim().replace(" ", "_");
             String path = String.format("%s/%s_%d.json", directory, fileName, status);
