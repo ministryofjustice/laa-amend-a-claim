@@ -338,7 +338,23 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Submission failures"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -771,7 +787,7 @@
             "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
-          "expr": "sum by (uri, method) (\n  rate(\n    http_server_requests_seconds_sum{\n      namespace=\"laa-amend-a-claim-dev\",\n      container=\"$container\",\n      uri!~\".*actuator.*|.*swagger.*|.*v3.*|.*providers.*\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)\n/\nsum by (uri, method) (\n  rate(\n    http_server_requests_seconds_count{\n      namespace=\"laa-amend-a-claim-dev\",\n      container=\"$container\",\n      uri!~\".*actuator.*|.*swagger.*|.*v3.*|.*providers.*\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)",
+          "expr": "sum by (uri, method) (\n  rate(\n    http_server_requests_seconds_sum{\n      namespace=\"laa-amend-a-claim-dev\",\n      container=\"$container\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)\n/\nsum by (uri, method) (\n  rate(\n    http_server_requests_seconds_count{\n      namespace=\"laa-amend-a-claim-dev\",\n      container=\"$container\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -869,7 +885,7 @@
             "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
-          "expr": "max by(uri, method) (http_server_requests_seconds_max{namespace='laa-amend-a-claim-dev',container='$container', uri!~'.*actuator.*|.*swagger.*|.*v3.*|.*providers.*'}) ",
+          "expr": "max by(uri, method) (http_server_requests_seconds_max{namespace='laa-amend-a-claim-dev',container='$container'}) ",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -1408,7 +1424,7 @@
     ]
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
