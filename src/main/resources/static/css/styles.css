@@ -24,14 +24,17 @@
     font-weight: bold;
 }
 
+/* Row label column - set to accommodate the remaining size */
 .govuk-table__row-item{
     width: 18rem;
 }
 
+/* Submitted, Calculated, Assessed columns - set to accommodate 'Not applicable' */
 .govuk-table__row-values{
     width: 11rem;
 }
 
+/* Change button column - set to accommodate 'Change' (largest possible value) and create space for 'items' */
 .govuk-table__row-actions{
     width: 4.5rem;
 }
