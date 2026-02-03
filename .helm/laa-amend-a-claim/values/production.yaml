@@ -15,4 +15,4 @@ resources:
     cpu: "2"
 
 grafana:
-  enabled: false
+  enabled: true
