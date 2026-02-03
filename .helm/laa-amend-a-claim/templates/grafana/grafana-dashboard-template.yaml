@@ -27,13 +27,13 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 330,
+  "id": 339,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "P5DCFC7561CCDE821"
       },
       "fieldConfig": {
         "defaults": {
@@ -84,6 +84,10 @@
       "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P5DCFC7561CCDE821"
+          },
           "editorMode": "code",
           "expr": "round(\n  sum(\n    increase(\n      assessment_submissions_total{\n        namespace=\"laa-amend-a-claim-dev\",\n        service=\"laa-amend-a-claim\"\n      }[$__range]\n    )\n  )\n)",
           "legendFormat": "__auto",
@@ -97,7 +101,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "P5DCFC7561CCDE821"
       },
       "fieldConfig": {
         "defaults": {
@@ -149,6 +153,10 @@
       "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P5DCFC7561CCDE821"
+          },
           "editorMode": "code",
           "expr": "round(\n  100 *\n  (\n    sum(increase(assessment_submissions_failed_total[$__range]))\n    /\n    clamp_min(sum(increase(assessment_submissions_total[$__range])), 1)\n  )\n)",
           "legendFormat": "__auto",
@@ -162,7 +170,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "P5DCFC7561CCDE821"
       },
       "fieldConfig": {
         "defaults": {
@@ -237,7 +245,7 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 16,
+        "w": 8,
         "x": 8,
         "y": 0
       },
@@ -258,27 +266,111 @@
       "pluginVersion": "11.5.6+security-01",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P5DCFC7561CCDE821"
+          },
           "editorMode": "code",
           "expr": "sum(\n    assessment_submissions_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
           "legendFormat": "Successful assessments",
           "range": true,
           "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "Failures",
-          "range": true,
-          "refId": "B"
         }
       ],
-      "title": "Claim assessments",
+      "title": "Claim assessment submissions",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 50,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.6+security-01",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
+          "legendFormat": "Submission failures",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Failed submissions",
       "type": "timeseries"
     },
     {
@@ -399,7 +491,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "P5DCFC7561CCDE821"
       },
       "fieldConfig": {
         "defaults": {
@@ -481,7 +573,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
           "expr": "sum by(instance) (increase(http_server_requests_seconds_count{namespace='laa-amend-a-claim-dev',container='$container'}[$__rate_interval])) ",
@@ -496,7 +588,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "P5DCFC7561CCDE821"
       },
       "fieldConfig": {
         "defaults": {
@@ -578,11 +670,11 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
           "expr": "sum by(uri, method) (increase(http_server_requests_seconds_count{namespace='laa-amend-a-claim-dev',container='$container', uri!~'.*actuator.*|.*swagger.*|.*v3.*|.*providers.*'}[$__rate_interval])) ",
-          "legendFormat": "{{`{{app}}`}}",
+          "legendFormat": "{{app}}",
           "range": true,
           "refId": "A"
         }
@@ -593,7 +685,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "P5DCFC7561CCDE821"
       },
       "fieldConfig": {
         "defaults": {
@@ -676,7 +768,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
           "expr": "sum by (uri, method) (\n  rate(\n    http_server_requests_seconds_sum{\n      namespace=\"laa-amend-a-claim-dev\",\n      container=\"$container\",\n      uri!~\".*actuator.*|.*swagger.*|.*v3.*|.*providers.*\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)\n/\nsum by (uri, method) (\n  rate(\n    http_server_requests_seconds_count{\n      namespace=\"laa-amend-a-claim-dev\",\n      container=\"$container\",\n      uri!~\".*actuator.*|.*swagger.*|.*v3.*|.*providers.*\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)",
@@ -691,7 +783,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "P5DCFC7561CCDE821"
       },
       "fieldConfig": {
         "defaults": {
@@ -774,7 +866,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
           "expr": "max by(uri, method) (http_server_requests_seconds_max{namespace='laa-amend-a-claim-dev',container='$container', uri!~'.*actuator.*|.*swagger.*|.*v3.*|.*providers.*'}) ",
@@ -854,7 +946,7 @@
           },
           "editorMode": "code",
           "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Eden Space'}/1000000",
-          "legendFormat": "{{`{{instance}}`}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -918,7 +1010,7 @@
           },
           "editorMode": "code",
           "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container', area='heap', id='Survivor Space', namespace='laa-amend-a-claim-dev'} / 1000000",
-          "legendFormat": "{{`{{instance}}`}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -981,7 +1073,7 @@
           },
           "editorMode": "code",
           "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Tenured Gen',} /1000000",
-          "legendFormat": "{{`{{instance}}`}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -1037,7 +1129,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "#EAB839",
@@ -1077,7 +1170,7 @@
           },
           "editorMode": "code",
           "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Eden Space'}/1000000",
-          "legendFormat": "{{`{{instance}}`}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -1133,7 +1226,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1173,7 +1267,7 @@
           },
           "editorMode": "code",
           "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Survivor Space'}/1000000",
-          "legendFormat": "{{`{{instance}}`}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -1229,7 +1323,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1269,7 +1364,7 @@
           },
           "editorMode": "code",
           "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Tenured Gen',} /1000000",
-          "legendFormat": "{{`{{instance}}`}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -1313,7 +1408,7 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {
