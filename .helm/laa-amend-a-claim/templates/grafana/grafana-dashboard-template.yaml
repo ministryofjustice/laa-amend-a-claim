@@ -89,7 +89,7 @@
             "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
-          "expr": "round(\n  sum(\n    increase(\n      assessment_submissions_total{\n        namespace=\"laa-amend-a-claim-dev\",\n        service=\"laa-amend-a-claim\"\n      }[$__range]\n    )\n  )\n)",
+          "expr": "round(\n  sum(\n    increase(\n      assessment_submissions_total{\n        namespace=\"{{ .Release.Namespace }}\",\n        service=\"laa-amend-a-claim\"\n      }[$__range]\n    )\n  )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -229,7 +229,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)"
+              "options": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"{{ .Release.Namespace }}\",\n      service=\"laa-amend-a-claim\"\n    }\n)"
             },
             "properties": [
               {
@@ -271,7 +271,7 @@
             "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
-          "expr": "sum(\n    assessment_submissions_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
+          "expr": "sum(\n    assessment_submissions_total{\n      namespace=\"{{ .Release.Namespace }}\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
           "legendFormat": "Successful assessments",
           "range": true,
           "refId": "A"
@@ -380,7 +380,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
+          "expr": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"{{ .Release.Namespace }}\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
           "legendFormat": "Submission failures",
           "range": true,
           "refId": "A"
@@ -459,7 +459,7 @@
             "uid": "prometheus"
           },
           "editorMode": "builder",
-          "expr": "sum(kube_pod_container_info{namespace='laa-amend-a-claim-dev', container='$container'})",
+          "expr": "sum(kube_pod_container_info{namespace='{{ .Release.Namespace }}', container='$container'})",
           "legendFormat": "Total",
           "range": true,
           "refId": "A"
@@ -470,7 +470,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum({namespace='laa-amend-a-claim-dev', container='$container', phase='Running',pod=~'.*deployment.*'} + 0)",
+          "expr": "sum({namespace='{{ .Release.Namespace }}', container='$container', phase='Running',pod=~'.*deployment.*'} + 0)",
           "hide": false,
           "legendFormat": "Running",
           "range": true,
@@ -482,7 +482,7 @@
             "uid": "prometheus"
           },
           "editorMode": "builder",
-          "expr": "sum({namespace='laa-amend-a-claim-dev', container='$container',phase='Pending',pod=~'.*deployment.*'} + 0)",
+          "expr": "sum({namespace='{{ .Release.Namespace }}', container='$container',phase='Pending',pod=~'.*deployment.*'} + 0)",
           "hide": false,
           "legendFormat": "Pending",
           "range": true,
@@ -494,7 +494,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum({namespace='laa-amend-a-claim-dev', container='$container',phase='Failed',pod=~'.*deployment.*'} + 0)",
+          "expr": "sum({namespace='{{ .Release.Namespace }}', container='$container',phase='Failed',pod=~'.*deployment.*'} + 0)",
           "hide": false,
           "legendFormat": "Failed",
           "range": true,
@@ -592,7 +592,7 @@
             "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
-          "expr": "sum by(instance) (increase(http_server_requests_seconds_count{namespace='laa-amend-a-claim-dev',container='$container'}[$__rate_interval])) ",
+          "expr": "sum by(instance) (increase(http_server_requests_seconds_count{namespace='{{ .Release.Namespace }}',container='$container'}[$__rate_interval])) ",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -689,8 +689,8 @@
             "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
-          "expr": "sum by(uri, method) (increase(http_server_requests_seconds_count{namespace='laa-amend-a-claim-dev',container='$container', uri!~'.*actuator.*|.*swagger.*|.*v3.*|.*providers.*'}[$__rate_interval])) ",
-          "legendFormat": "{{app}}",
+          "expr": "sum by(uri, method) (increase(http_server_requests_seconds_count{namespace='{{ .Release.Namespace }}',container='$container', uri!~'.*actuator.*|.*swagger.*|.*v3.*|.*providers.*'}[$__rate_interval])) ",
+          "legendFormat": "{{`{{app}}`}}",
           "range": true,
           "refId": "A"
         }
@@ -787,7 +787,7 @@
             "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
-          "expr": "sum by (uri, method) (\n  rate(\n    http_server_requests_seconds_sum{\n      namespace=\"laa-amend-a-claim-dev\",\n      container=\"$container\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)\n/\nsum by (uri, method) (\n  rate(\n    http_server_requests_seconds_count{\n      namespace=\"laa-amend-a-claim-dev\",\n      container=\"$container\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)",
+          "expr": "sum by (uri, method) (\n  rate(\n    http_server_requests_seconds_sum{\n      namespace=\"{{ .Release.Namespace }}\",\n      container=\"$container\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)\n/\nsum by (uri, method) (\n  rate(\n    http_server_requests_seconds_count{\n      namespace=\"{{ .Release.Namespace }}\",\n      container=\"$container\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -885,7 +885,7 @@
             "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
-          "expr": "max by(uri, method) (http_server_requests_seconds_max{namespace='laa-amend-a-claim-dev',container='$container'}) ",
+          "expr": "max by(uri, method) (http_server_requests_seconds_max{namespace='{{ .Release.Namespace }}',container='$container'}) ",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -961,7 +961,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Eden Space'}/1000000",
+          "expr": "jvm_memory_max_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Eden Space'}/1000000",
           "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
@@ -1025,7 +1025,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container', area='heap', id='Survivor Space', namespace='laa-amend-a-claim-dev'} / 1000000",
+          "expr": "jvm_memory_max_bytes{namespace='{{ .Release.Namespace }}',container='$container', area='heap', id='Survivor Space', namespace='{{ .Release.Namespace }}'} / 1000000",
           "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
@@ -1088,7 +1088,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Tenured Gen',} /1000000",
+          "expr": "jvm_memory_max_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Tenured Gen',} /1000000",
           "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
@@ -1185,7 +1185,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Eden Space'}/1000000",
+          "expr": "jvm_memory_used_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Eden Space'}/1000000",
           "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
@@ -1282,7 +1282,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Survivor Space'}/1000000",
+          "expr": "jvm_memory_used_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Survivor Space'}/1000000",
           "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
@@ -1379,7 +1379,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Tenured Gen',} /1000000",
+          "expr": "jvm_memory_used_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Tenured Gen',} /1000000",
           "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
@@ -1397,7 +1397,7 @@
     "DSTEW",
     "Claims",
     "laa-amend-a-claim",
-    "laa-amend-a-claim-dev",
+    "{{ .Release.Namespace }}",
     "laa-amend-a-claim"
   ],
   "templating": {
@@ -1407,14 +1407,14 @@
           "text": "laa-amend-a-claim",
           "value": "laa-amend-a-claim"
         },
-        "definition": "label_values(kube_pod_container_info{namespace=\"laa-amend-a-claim-dev\"},container)",
+        "definition": "label_values(kube_pod_container_info{namespace=\"{{ .Release.Namespace }}\"},container)",
         "description": "",
         "label": "Helm install",
         "name": "container",
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(kube_pod_container_info{namespace=\"laa-amend-a-claim-dev\"},container)",
+          "query": "label_values(kube_pod_container_info{namespace=\"{{ .Release.Namespace }}\"},container)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
@@ -1441,7 +1441,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "LAA Amend a Claim Dashboard - laa-amend-a-claim / laa-amend-a-claim-dev",
+  "title": "LAA Amend a Claim Dashboard - laa-amend-a-claim / {{ .Release.Namespace }}",
   "uid": "laa-amend-a---claim-dev-mend-a-claim",
   "version": 1,
   "weekStart": ""
