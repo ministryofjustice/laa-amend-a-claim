@@ -58,9 +58,10 @@ public class HomePageControllerTest {
             .build();
 
         mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"))
-                .andExpect(model().attribute("sorts", equalTo(expectedSorts)));
+            .andExpect(status().isOk())
+            .andExpect(view().name("index"))
+            .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
+            .andExpect(request().sessionAttribute("searchUrl", "/?page=1&sort=uniqueFileNumber,asc"));
     }
 
     @Test
@@ -76,7 +77,8 @@ public class HomePageControllerTest {
         mockMvc.perform(get("/?sort=caseReferenceNumber,desc"))
             .andExpect(status().isOk())
             .andExpect(view().name("index"))
-            .andExpect(model().attribute("sorts", equalTo(expectedSorts)));
+            .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
+            .andExpect(request().sessionAttribute("searchUrl", "/?page=1&sort=caseReferenceNumber,desc"));
     }
 
     @Test
@@ -91,7 +93,8 @@ public class HomePageControllerTest {
         mockMvc.perform(get("/"))
             .andExpect(status().isOk())
             .andExpect(view().name("index"))
-            .andExpect(model().attribute("sorts", equalTo(expectedSorts)));
+            .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
+            .andExpect(request().sessionAttribute("searchUrl", "/?page=1"));
     }
 
     @Test
@@ -111,7 +114,18 @@ public class HomePageControllerTest {
             .andExpect(model().attribute("form", hasProperty("submissionDateMonth", is("3"))))
             .andExpect(model().attribute("form", hasProperty("submissionDateYear", is("2007"))))
             .andExpect(model().attribute("form", hasProperty("uniqueFileNumber", is("REF001"))))
-            .andExpect(model().attribute("form", hasProperty("caseReferenceNumber", is("789"))));
+            .andExpect(model().attribute("form", hasProperty("caseReferenceNumber", is("789"))))
+            .andExpect(request().sessionAttribute("searchUrl", "/?providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=REF001&caseReferenceNumber=789&page=1&sort=uniqueFileNumber,asc"));
+    }
+
+    @Test
+    public void testOnPageLoadWithUnknownParamsReturnsBadRequest() throws Exception {
+        when(searchProperties.isSortEnabled()).thenReturn(true);
+
+        mockMvc.perform(get("/")
+                .param("foo", "bar")
+            )
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -136,8 +150,7 @@ public class HomePageControllerTest {
                 .param("providerAccountNumber", "12345")
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/?providerAccountNumber=12345&page=1&sort=uniqueFileNumber,asc"))
-            .andExpect(request().sessionAttribute("searchUrl", "/?providerAccountNumber=12345&page=1&sort=uniqueFileNumber,asc"));
+            .andExpect(redirectedUrl("/?providerAccountNumber=12345&page=1&sort=uniqueFileNumber,asc"));
     }
 
     @Test
@@ -153,8 +166,7 @@ public class HomePageControllerTest {
                 .param("caseReferenceNumber", "789")
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/?providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789&page=1&sort=uniqueFileNumber,asc"))
-            .andExpect(request().sessionAttribute("searchUrl", "/?providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789&page=1&sort=uniqueFileNumber,asc"));
+            .andExpect(redirectedUrl("/?providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789&page=1&sort=uniqueFileNumber,asc"));
     }
 
     @Test
@@ -166,7 +178,6 @@ public class HomePageControllerTest {
                 .param("providerAccountNumber", "12345")
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/?providerAccountNumber=12345&page=1"))
-            .andExpect(request().sessionAttribute("searchUrl", "/?providerAccountNumber=12345&page=1"));
+            .andExpect(redirectedUrl("/?providerAccountNumber=12345&page=1"));
     }
 }

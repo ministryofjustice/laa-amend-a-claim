@@ -1,59 +1,58 @@
-package uk.gov.justice.laa.amend.claim.utils;
+package uk.gov.justice.laa.amend.claim.models;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.forms.SearchForm;
-import uk.gov.justice.laa.amend.claim.models.Sort;
-import uk.gov.justice.laa.amend.claim.models.SortDirection;
 
-public class RedirectUrlUtilsTest {
+public class SearchQueryTest {
 
     @Test
     void createRedirectUrlWhenUnsorted() {
-        SearchForm form = new SearchForm();
+        SearchQuery query = new SearchQuery();
 
-        String result = RedirectUrlUtils.getRedirectUrl(form, 1, null);
+        String result = query.getRedirectUrl(null);
 
         Assertions.assertEquals("/?page=1", result);
     }
 
     @Test
     void createRedirectUrlWhenAccountNumberPresent() {
-        SearchForm form = new SearchForm();
-        form.setProviderAccountNumber("123");
+        SearchQuery query = new SearchQuery();
+        query.setProviderAccountNumber("123");
 
         Sort sort = Sort.builder().field("uniqueFileNumber").direction(SortDirection.ASCENDING).build();
-        String result = RedirectUrlUtils.getRedirectUrl(form, 1, sort);
+        String result = query.getRedirectUrl(sort);
 
         Assertions.assertEquals("/?providerAccountNumber=123&page=1&sort=uniqueFileNumber,asc", result);
     }
 
     @Test
     void createRedirectUrlWhenAccountNumberAndDatePresent() {
-        SearchForm form = new SearchForm();
+        SearchQuery query = new SearchQuery();
 
-        form.setProviderAccountNumber("123");
-        form.setSubmissionDateMonth("3");
-        form.setSubmissionDateYear("2007");
+        query.setPage(2);
+        query.setProviderAccountNumber("123");
+        query.setSubmissionDateMonth("3");
+        query.setSubmissionDateYear("2007");
 
         Sort sort = Sort.builder().field("uniqueFileNumber").direction(SortDirection.ASCENDING).build();
-        String result = RedirectUrlUtils.getRedirectUrl(form, 2, sort);
+        String result = query.getRedirectUrl(sort);
 
         Assertions.assertEquals("/?providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&page=2&sort=uniqueFileNumber,asc", result);
     }
 
     @Test
     void createRedirectUrlWhenAllPresent() {
-        SearchForm form = new SearchForm();
+        SearchQuery query = new SearchQuery();
 
-        form.setProviderAccountNumber("123");
-        form.setSubmissionDateMonth("3");
-        form.setSubmissionDateYear("2007");
-        form.setUniqueFileNumber("456");
-        form.setCaseReferenceNumber("789");
+        query.setPage(3);
+        query.setProviderAccountNumber("123");
+        query.setSubmissionDateMonth("3");
+        query.setSubmissionDateYear("2007");
+        query.setUniqueFileNumber("456");
+        query.setCaseReferenceNumber("789");
 
         Sort sort = Sort.builder().field("uniqueFileNumber").direction(SortDirection.ASCENDING).build();
-        String result = RedirectUrlUtils.getRedirectUrl(form, 3, sort);
+        String result = query.getRedirectUrl(sort);
 
         Assertions.assertEquals("/?providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789&page=3&sort=uniqueFileNumber,asc", result);
     }
