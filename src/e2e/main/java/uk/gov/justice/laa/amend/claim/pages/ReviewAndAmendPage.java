@@ -166,6 +166,8 @@ public class ReviewAndAmendPage extends LaaPage {
         assertThat(errorSummary).containsText("The submission must include an assessed total including VAT");
         assertThat(errorSummary).containsText("The submission must include an allowed total VAT");
         assertThat(errorSummary).containsText("The submission must include an allowed total including VAT");
+
+        generateErrorSummaryAxeReport();
     }
 
     private void assertTableHasHeaders(Locator table, String... headers) {

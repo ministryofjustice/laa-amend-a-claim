@@ -157,16 +157,16 @@ public abstract class E2eBaseTest extends BaseTest {
     private void addAssessedTotals(ReviewAndAmendPage review, String assessedTotalVat, String assessedTotalInclVat) {
         review.clickAddAssessedTotalVat();
         AssessAssessedTotalsPage assessedTotals = new AssessAssessedTotalsPage(page);
-        assessedTotals.setAssessedTotalVat(assessedTotalVat);
-        assessedTotals.setAssessedTotalInclVat(assessedTotalInclVat);
+        assessedTotals.setTotalVat(assessedTotalVat);
+        assessedTotals.setTotalInclVat(assessedTotalInclVat);
         assessedTotals.saveChanges();
     }
 
     private void addAllowedTotals(ReviewAndAmendPage review, String allowedTotalVat, String allowedTotalInclVat) {
         review.clickAddAllowedTotalVat();
         AssessAllowedTotalsPage allowedTotals = new AssessAllowedTotalsPage(page);
-        allowedTotals.setAllowedTotalVat(allowedTotalVat);
-        allowedTotals.setAllowedTotalInclVat(allowedTotalInclVat);
+        allowedTotals.setTotalVat(allowedTotalVat);
+        allowedTotals.setTotalInclVat(allowedTotalInclVat);
         allowedTotals.saveChanges();
     }
 }

@@ -18,9 +18,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class LaaPage {
 
-    protected Page page;
-    protected Locator heading;
-    protected AxeBuilder axeBuilder;
+    protected final Page page;
+    protected final Locator heading;
+    protected final AxeBuilder axeBuilder;
+    private final String directory;
 
     public LaaPage(Page page, String heading) {
         this.page = page;
@@ -34,21 +35,27 @@ public abstract class LaaPage {
             .exclude(".govuk-phase-banner")
             .exclude(".govuk-back-link");
 
+        this.directory = EnvConfig.axeReportsDirectory();
+
+        new File(directory).mkdirs();
+
         waitForPage();
     }
 
     private void waitForPage() {
         heading.waitFor();
         assertThat(heading).isVisible();
-        generateAxeReport();
+        generateAxeReport(200);
     }
 
-    private void generateAxeReport() {
+    protected void generateErrorSummaryAxeReport() {
+        generateAxeReport(400);
+    }
+
+    protected void generateAxeReport(int status) {
         try {
-            String directory = EnvConfig.axeReportsDirectory();
-            new File(directory).mkdirs();
             String fileName = heading.textContent().trim().replace(" ", "_");
-            String path = String.format("%s/%s.json", directory, fileName);
+            String path = String.format("%s/%s_%d.json", directory, fileName, status);
             if (Files.notExists(Paths.get(path))) {
                 AxeResults axeResults = axeBuilder.analyze();
                 Reporter reporter = new Reporter();

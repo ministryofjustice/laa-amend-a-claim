@@ -26,7 +26,6 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import java.util.List;
 import java.util.UUID;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
@@ -148,13 +147,6 @@ public class AssessCostsValidationTest extends BaseTest {
         assertTrue(page.url().contains("/review"));
     }
 
-    private void assertNumberWith2DpErrorShown() {
-        assertThat(page.locator(".govuk-error-summary")).isVisible();
-        assertThat(page.locator(".govuk-error-message")).isVisible();
-        assertThat(page.locator(".govuk-error-summary")).containsText("must be a number with up to 2 decimal places");
-        assertThat(page.locator(".govuk-error-message")).containsText("must be a number with up to 2 decimal places");
-    }
-
 
     @Test
     @DisplayName("Crime: Profit costs - letters cause number validation error")
@@ -168,7 +160,7 @@ public class AssessCostsValidationTest extends BaseTest {
         profit.setAssessedValue("dasad");
         profit.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        profit.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -183,7 +175,7 @@ public class AssessCostsValidationTest extends BaseTest {
         disb.setAssessedValue("dasad");
         disb.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        disb.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -198,7 +190,7 @@ public class AssessCostsValidationTest extends BaseTest {
         disbVat.setAssessedValue("dasad");
         disbVat.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        disbVat.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -213,7 +205,7 @@ public class AssessCostsValidationTest extends BaseTest {
         travel.setAssessedValue("dasad");
         travel.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        travel.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -228,7 +220,7 @@ public class AssessCostsValidationTest extends BaseTest {
         waiting.setAssessedValue("dasad");
         waiting.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        waiting.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -243,7 +235,7 @@ public class AssessCostsValidationTest extends BaseTest {
         detention.setAssessedValue("dasad");
         detention.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        detention.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -258,7 +250,7 @@ public class AssessCostsValidationTest extends BaseTest {
         jr.setAssessedValue("dasad");
         jr.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        jr.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -273,6 +265,6 @@ public class AssessCostsValidationTest extends BaseTest {
         counsel.setAssessedValue("dasad");
         counsel.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        counsel.assertMustBeNumberWithUpTo2DpError();
     }
 }

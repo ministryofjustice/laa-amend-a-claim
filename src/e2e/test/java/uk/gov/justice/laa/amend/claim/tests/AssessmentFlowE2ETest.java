@@ -12,10 +12,10 @@ import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.AssessAllowedTotalsPage;
+import uk.gov.justice.laa.amend.claim.pages.AssessAssessedTotalsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessDisbursementsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessDisbursementsVatPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessProfitCostsPage;
-import uk.gov.justice.laa.amend.claim.pages.AssessTotalClaimValuePage;
 import uk.gov.justice.laa.amend.claim.pages.AssessTravelCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessWaitingCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentCompletePage;
@@ -141,17 +141,17 @@ public class AssessmentFlowE2ETest extends BaseTest {
         // -------- Total claim value (assessed totals) --------
 
         review.clickAddAssessedTotalVat();
-        AssessTotalClaimValuePage assessedTotals = new AssessTotalClaimValuePage(page);
-        assessedTotals.setAssessedTotalVat("5.00");
-        assessedTotals.setAssessedTotalInclVat("1000.00");
+        AssessAssessedTotalsPage assessedTotals = new AssessAssessedTotalsPage(page);
+        assessedTotals.setTotalVat("5.00");
+        assessedTotals.setTotalInclVat("1000.00");
         assessedTotals.saveChanges();
 
         // -------- Total allowed value --------
 
         review.clickAddAllowedTotalVat();
         AssessAllowedTotalsPage allowedTotals = new AssessAllowedTotalsPage(page);
-        allowedTotals.setAllowedTotalVat("6.00");
-        allowedTotals.setAllowedTotalInclVat("1100.00");
+        allowedTotals.setTotalVat("6.00");
+        allowedTotals.setTotalInclVat("1100.00");
         allowedTotals.saveChanges();
 
         // -------- Submit --------

@@ -11,7 +11,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.AssessAllowedTotalsPage;
-import uk.gov.justice.laa.amend.claim.pages.AssessTotalClaimValuePage;
+import uk.gov.justice.laa.amend.claim.pages.AssessAssessedTotalsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
@@ -104,7 +104,7 @@ public class AssessTotalsValidationTest extends BaseTest {
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.clickAddAssessedTotalVat();
 
-        AssessTotalClaimValuePage totals = new AssessTotalClaimValuePage(page);
+        AssessAssessedTotalsPage totals = new AssessAssessedTotalsPage(page);
         totals.saveChanges();
 
         totals.assertRequiredErrorsShown();
@@ -118,9 +118,9 @@ public class AssessTotalsValidationTest extends BaseTest {
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.clickAddAssessedTotalVat();
 
-        AssessTotalClaimValuePage totals = new AssessTotalClaimValuePage(page);
-        totals.setAssessedTotalVat("dasad");
-        totals.setAssessedTotalInclVat("dasad");
+        AssessAssessedTotalsPage totals = new AssessAssessedTotalsPage(page);
+        totals.setTotalVat("dasad");
+        totals.setTotalInclVat("dasad");
         totals.saveChanges();
 
         totals.assertNumericErrorsShown();
@@ -149,8 +149,8 @@ public class AssessTotalsValidationTest extends BaseTest {
         review.clickAddAllowedTotalVat();
 
         AssessAllowedTotalsPage allowed = new AssessAllowedTotalsPage(page);
-        allowed.setAllowedTotalVat("dasad");
-        allowed.setAllowedTotalInclVat("dasad");
+        allowed.setTotalVat("dasad");
+        allowed.setTotalInclVat("dasad");
         allowed.saveChanges();
 
         allowed.assertNumericErrorsShown();
