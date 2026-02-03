@@ -1,9 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: amend-bulk-claim-maintenance
-  labels:
-      {{- include "laa-amend-a-claim.labels" . | nindent 4 }}
+  name: amend-a-bulk-claim-maintenance
 data:
   enabled: "false"                     # "true" | "false"
   title: "Service maintenance"
