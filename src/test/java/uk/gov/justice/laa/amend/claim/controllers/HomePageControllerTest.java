@@ -18,6 +18,7 @@ import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 import java.util.Map;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -61,7 +62,7 @@ public class HomePageControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("index"))
             .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
-            .andExpect(request().sessionAttribute("searchUrl", "/?page=1&sort=uniqueFileNumber,asc"));
+            .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
     }
 
     @Test
@@ -78,7 +79,7 @@ public class HomePageControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("index"))
             .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
-            .andExpect(request().sessionAttribute("searchUrl", "/?page=1&sort=caseReferenceNumber,desc"));
+            .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
     }
 
     @Test
@@ -94,7 +95,7 @@ public class HomePageControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("index"))
             .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
-            .andExpect(request().sessionAttribute("searchUrl", "/?page=1"));
+            .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
     }
 
     @Test
@@ -105,7 +106,7 @@ public class HomePageControllerTest {
                 .param("providerAccountNumber", "12345")
                 .param("submissionDateMonth", "3")
                 .param("submissionDateYear", "2007")
-                .param("uniqueFileNumber", "REF001")
+                .param("uniqueFileNumber", "67890")
                 .param("caseReferenceNumber", "789")
             )
             .andExpect(status().isOk())
@@ -113,9 +114,9 @@ public class HomePageControllerTest {
             .andExpect(model().attribute("form", hasProperty("providerAccountNumber", is("12345"))))
             .andExpect(model().attribute("form", hasProperty("submissionDateMonth", is("3"))))
             .andExpect(model().attribute("form", hasProperty("submissionDateYear", is("2007"))))
-            .andExpect(model().attribute("form", hasProperty("uniqueFileNumber", is("REF001"))))
+            .andExpect(model().attribute("form", hasProperty("uniqueFileNumber", is("67890"))))
             .andExpect(model().attribute("form", hasProperty("caseReferenceNumber", is("789"))))
-            .andExpect(request().sessionAttribute("searchUrl", "/?providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=REF001&caseReferenceNumber=789&page=1&sort=uniqueFileNumber,asc"));
+            .andExpect(request().sessionAttribute("searchUrl", "/?providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=67890&caseReferenceNumber=789&page=1&sort=uniqueFileNumber,asc"));
     }
 
     @Test
@@ -126,6 +127,18 @@ public class HomePageControllerTest {
                 .param("foo", "bar")
             )
             .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testOnPageLoadWithInvalidParamsReturnsBadRequest() throws Exception {
+        when(searchProperties.isSortEnabled()).thenReturn(true);
+
+        mockMvc.perform(get("/")
+                .param("providerAccountNumber", "12345")
+                .param("uniqueFileNumber", "§§§")
+            )
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(containsString("There is a problem")));;
     }
 
     @Test

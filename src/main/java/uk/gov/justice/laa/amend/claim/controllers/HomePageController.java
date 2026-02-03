@@ -8,6 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,22 +38,20 @@ public class HomePageController {
     private final ClaimResultMapper claimResultMapper;
     private final ClaimMapper claimMapper;
     private final SearchProperties searchProperties;
+    private final Validator validator;
 
     @GetMapping("/")
     public String onPageLoad(
         Model model,
         SearchQuery query,
         HttpSession session,
-        HttpServletRequest request
+        HttpServletRequest request,
+        Errors errors,
+        HttpServletResponse response
     ) {
         query.rejectUnknownParams(request);
 
-        SearchForm form = new SearchForm();
-        form.setProviderAccountNumber(query.getProviderAccountNumber());
-        form.setSubmissionDateMonth(query.getSubmissionDateMonth());
-        form.setSubmissionDateYear(query.getSubmissionDateYear());
-        form.setUniqueFileNumber(query.getUniqueFileNumber());
-        form.setCaseReferenceNumber(query.getCaseReferenceNumber());
+        SearchForm form = new SearchForm(query);
 
         model.addAttribute("form", form);
         model.addAttribute("query", query);
@@ -68,9 +70,13 @@ public class HomePageController {
         }
         model.addAttribute("sorts", sorts);
 
-        String redirectUrl = query.getRedirectUrl(sort);
-
         if (form.anyNonEmpty()) {
+            ValidationUtils.invokeValidator(validator, form, errors);
+            if (errors.hasErrors()) {
+                model.addAttribute("org.springframework.validation.BindingResult.form", errors);
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return "index";
+            }
             ClaimResultSet result = claimService.searchClaims(
                 form.getProviderAccountNumber(),
                 Optional.ofNullable(form.getUniqueFileNumber()),
@@ -80,11 +86,11 @@ public class HomePageController {
                 DEFAULT_PAGE_SIZE,
                 sort
             );
+            String redirectUrl = query.getRedirectUrl(sort);
             SearchResultView viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
             model.addAttribute("viewModel", viewModel);
+            session.setAttribute("searchUrl", redirectUrl);
         }
-
-        session.setAttribute("searchUrl", redirectUrl);
 
         return "index";
     }

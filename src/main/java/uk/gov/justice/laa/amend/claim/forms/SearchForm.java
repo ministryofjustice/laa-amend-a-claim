@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
+import uk.gov.justice.laa.amend.claim.models.SearchQuery;
 import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
 import static org.springframework.util.StringUtils.hasText;
@@ -38,6 +39,14 @@ public class SearchForm {
 
     @Pattern(regexp = CASE_REFERENCE_NUMBER_REGEX, message = CASE_REFERENCE_NUMBER_INVALID_ERROR)
     private String caseReferenceNumber;
+
+    public SearchForm(SearchQuery query) {
+        this.providerAccountNumber = query.getProviderAccountNumber();
+        this.submissionDateMonth = query.getSubmissionDateMonth();
+        this.submissionDateYear = query.getSubmissionDateYear();
+        this.uniqueFileNumber = query.getUniqueFileNumber();
+        this.caseReferenceNumber = query.getCaseReferenceNumber();
+    }
 
     public boolean anyNonEmpty() {
         return hasText(providerAccountNumber)
