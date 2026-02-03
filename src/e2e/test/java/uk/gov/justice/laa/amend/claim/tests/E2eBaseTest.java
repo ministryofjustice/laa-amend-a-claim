@@ -29,7 +29,7 @@ public abstract class E2eBaseTest extends BaseTest {
         addProfitCosts(review, "999.99");
         addAllowedTotals(review, "300", "400");
 
-        review.submitAdjustments();
+        review.saveChanges();
 
         viewAssessedClaim();
 
@@ -47,7 +47,7 @@ public abstract class E2eBaseTest extends BaseTest {
         addAssessedTotals(review, "200", "300");
         addAllowedTotals(review, "400", "500");
 
-        review.submitAdjustments();
+        review.saveChanges();
 
         viewAssessedClaim();
 
@@ -61,7 +61,7 @@ public abstract class E2eBaseTest extends BaseTest {
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
-        review.submitAdjustments();
+        review.saveChanges();
 
         viewAssessedClaim();
 
@@ -77,7 +77,7 @@ public abstract class E2eBaseTest extends BaseTest {
 
         addAllowedTotals(review, "300", "400");
 
-        review.submitAdjustments();
+        review.saveChanges();
 
         viewAssessedClaim();
 
@@ -94,7 +94,7 @@ public abstract class E2eBaseTest extends BaseTest {
         addAssessedTotals(review, "100", "200");
         addAllowedTotals(review, "300", "400");
 
-        review.submitAdjustments();
+        review.saveChanges();
 
         viewAssessedClaim();
 
@@ -123,7 +123,7 @@ public abstract class E2eBaseTest extends BaseTest {
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
         outcome.selectAssessmentOutcome(assessmentOutcome);
         outcome.selectVatLiable(true);
-        outcome.clickContinue();
+        outcome.saveChanges();
     }
 
     private void viewAssessedClaim() {

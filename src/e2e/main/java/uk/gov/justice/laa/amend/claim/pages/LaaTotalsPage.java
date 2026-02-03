@@ -5,7 +5,7 @@ import com.microsoft.playwright.Page;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class LaaTotalsPage extends LaaInputPage {
+public abstract class LaaTotalsPage extends LaaInputPage {
 
     protected Locator totalVatInput;
     protected Locator totalInclVatInput;
@@ -34,15 +34,12 @@ public class LaaTotalsPage extends LaaInputPage {
     }
 
     private void assertErrorsShown(String totalVatError, String totalInclVatError) {
-        assertThat(errorSummary).isVisible();
-        assertThat(inlineErrors.first()).isVisible();
+        waitForPageErrors();
 
         assertThat(errorSummary).containsText(totalVatError);
         assertThat(errorSummary).containsText(totalInclVatError);
 
         assertThat(inlineErrors.filter(new Locator.FilterOptions().setHasText(totalVatError)).first()).isVisible();
         assertThat(inlineErrors.filter(new Locator.FilterOptions().setHasText(totalInclVatError)).first()).isVisible();
-
-        generateErrorSummaryAxeReport();
     }
 }

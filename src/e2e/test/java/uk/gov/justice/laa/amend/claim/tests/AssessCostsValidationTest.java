@@ -142,7 +142,7 @@ public class AssessCostsValidationTest extends BaseTest {
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
         outcome.selectAssessmentOutcome("assessed in full");
-        outcome.clickContinue();
+        outcome.saveChanges();
 
         assertTrue(page.url().contains("/review"));
     }

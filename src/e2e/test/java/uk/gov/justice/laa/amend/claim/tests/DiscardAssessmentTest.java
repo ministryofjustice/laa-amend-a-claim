@@ -146,14 +146,14 @@ public class DiscardAssessmentTest extends BaseTest {
     void reviewAndAmendDiscardNavigatesToDiscardScreen() {
 
         ReviewAndAmendPage review = goToReviewAndAmendPage();
-        review.discardChanges();
+        review.cancel();
 
         DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
     }
 
     private DiscardAssessmentPage goToDiscardAssessmentScreen() {
         ReviewAndAmendPage review = goToReviewAndAmendPage();
-        review.discardChanges();
+        review.cancel();
 
         return new DiscardAssessmentPage(page);
     }

@@ -10,7 +10,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.cardByTitle;
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.tableByCard;
 
-public class ReviewAndAmendPage extends LaaPage {
+public class ReviewAndAmendPage extends LaaErrorSummaryPage {
 
     private final Locator backLink;
 
@@ -21,11 +21,6 @@ public class ReviewAndAmendPage extends LaaPage {
     private final Locator claimCostsTable;
     private final Locator totalClaimValueTable;
     private final Locator totalAllowedValueTable;
-
-    private final Locator submitAdjustmentsButton;
-    private final Locator discardChangesLink;
-
-    private final Locator errorSummary;
 
     public ReviewAndAmendPage(Page page) {
         super(page, "Review and amend");
@@ -40,14 +35,12 @@ public class ReviewAndAmendPage extends LaaPage {
         this.totalClaimValueTable = tableByCard(totalClaimValueCard);
         this.totalAllowedValueTable = tableByCard(totalAllowedValueCard);
 
-        this.submitAdjustmentsButton = page.getByRole(
-                AriaRole.BUTTON,
-                new Page.GetByRoleOptions().setName("Submit adjustments")
+        this.saveButton = page.getByRole(
+            AriaRole.BUTTON,
+            new Page.GetByRoleOptions().setName("Submit adjustments")
         );
 
-        this.discardChangesLink = page.locator("#discard");
-
-        this.errorSummary = page.locator(".govuk-error-summary");
+        this.cancelButton = page.locator("#discard");
     }
 
     private Locator rowByItemName(String itemName) {
@@ -103,14 +96,6 @@ public class ReviewAndAmendPage extends LaaPage {
         clickAddLink(link);
     }
 
-    public void submitAdjustments() {
-        submitAdjustmentsButton.click();
-    }
-
-    public void discardChanges() {
-        discardChangesLink.click();
-    }
-
     public void clickBackLink() {
         backLink.click();
     }
@@ -134,8 +119,8 @@ public class ReviewAndAmendPage extends LaaPage {
                 "VAT"
         );
         assertClaimCostsNotHasItems("Total");
-        assertThat(submitAdjustmentsButton).isVisible();
-        assertThat(discardChangesLink).isVisible();
+        assertThat(saveButton).isVisible();
+        assertThat(cancelButton).isVisible();
     }
 
     public void assertCivilPageLoadedHeadersAndItems() {
@@ -155,19 +140,17 @@ public class ReviewAndAmendPage extends LaaPage {
         );
         assertClaimCostsNotHasItems("Total");
 
-        assertThat(submitAdjustmentsButton).isVisible();
-        assertThat(discardChangesLink).isVisible();
+        assertThat(saveButton).isVisible();
+        assertThat(cancelButton).isVisible();
     }
 
     public void assertSubmitTotalsRequiredErrors() {
-        assertThat(errorSummary).isVisible();
+        waitForPageErrors();
 
         assertThat(errorSummary).containsText("The submission must include an assessed total VAT");
         assertThat(errorSummary).containsText("The submission must include an assessed total including VAT");
         assertThat(errorSummary).containsText("The submission must include an allowed total VAT");
         assertThat(errorSummary).containsText("The submission must include an allowed total including VAT");
-
-        generateErrorSummaryAxeReport();
     }
 
     private void assertTableHasHeaders(Locator table, String... headers) {

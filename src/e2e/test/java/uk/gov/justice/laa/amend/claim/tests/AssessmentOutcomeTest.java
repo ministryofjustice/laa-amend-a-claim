@@ -111,7 +111,7 @@ public class AssessmentOutcomeTest extends BaseTest {
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
 
-        outcome.clickContinue();
+        outcome.saveChanges();
 
         assertTrue(page.url().contains("/assessment-outcome"));
         outcome.assertAssessmentOutcomeRequiredError();

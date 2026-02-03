@@ -6,9 +6,7 @@ import com.microsoft.playwright.options.AriaRole;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class AssessmentOutcomePage extends LaaPage {
-
-    private final Locator continueButton;
+public class AssessmentOutcomePage extends LaaInputPage {
 
     private final Locator assessedInFullRadio;
     private final Locator reducedStillEscapedRadio;
@@ -20,10 +18,8 @@ public class AssessmentOutcomePage extends LaaPage {
     private final Locator vatYesRadio;
     private final Locator vatNoRadio;
 
-    private final Locator errorSummary;
     private final Locator errorSummaryTitle;
     private final Locator errorSummaryLink;
-    private final Locator inlineErrorMessage;
 
     public AssessmentOutcomePage(Page page) {
         super(page, "Assessment Outcome");
@@ -45,13 +41,11 @@ public class AssessmentOutcomePage extends LaaPage {
         this.vatYesRadio = vatGroup.getByLabel("Yes", new Locator.GetByLabelOptions().setExact(true));
         this.vatNoRadio  = vatGroup.getByLabel("No", new Locator.GetByLabelOptions().setExact(true));
 
-        this.continueButton =
+        this.saveButton =
                 page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue"));
 
-        this.errorSummary = page.locator(".govuk-error-summary");
         this.errorSummaryTitle = page.locator(".govuk-error-summary__title");
         this.errorSummaryLink = page.locator(".govuk-error-summary__list a");
-        this.inlineErrorMessage = page.locator(".govuk-error-message");
     }
 
     public void assertPageLoaded() {
@@ -64,14 +58,15 @@ public class AssessmentOutcomePage extends LaaPage {
         assertThat(vatYesRadio).isVisible();
         assertThat(vatNoRadio).isVisible();
 
-        assertThat(continueButton).isVisible();
+        assertThat(saveButton).isVisible();
     }
 
     public void assertAssessmentOutcomeRequiredError() {
-        assertThat(errorSummary).isVisible();
+        waitForPageErrors();
+
         assertThat(errorSummaryTitle).containsText("There is a problem");
         assertThat(errorSummaryLink).containsText("Select the assessment outcome");
-        assertThat(inlineErrorMessage).containsText("Select the assessment outcome");
+        assertThat(inlineErrors).containsText("Select the assessment outcome");
     }
 
 
@@ -109,13 +104,9 @@ public class AssessmentOutcomePage extends LaaPage {
         }
     }
 
-    public void clickContinue() {
-        continueButton.click();
-    }
-
     public void completeAssessment(String outcome, boolean vat) {
         selectAssessmentOutcome(outcome);
         selectVatLiable(vat);
-        clickContinue();
+        saveChanges();
     }
 }

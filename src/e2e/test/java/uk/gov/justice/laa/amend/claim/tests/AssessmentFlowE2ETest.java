@@ -107,7 +107,7 @@ public class AssessmentFlowE2ETest extends BaseTest {
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
         outcome.selectAssessmentOutcome("assessed in full");
         outcome.selectVatLiable(true);
-        outcome.clickContinue();
+        outcome.saveChanges();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
@@ -156,7 +156,7 @@ public class AssessmentFlowE2ETest extends BaseTest {
 
         // -------- Submit --------
 
-        review.submitAdjustments();
+        review.saveChanges();
 
         AssessmentCompletePage complete = new AssessmentCompletePage(page);
 

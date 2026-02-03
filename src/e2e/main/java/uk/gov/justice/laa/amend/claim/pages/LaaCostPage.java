@@ -5,7 +5,7 @@ import com.microsoft.playwright.Page;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
-public class LaaCostPage extends LaaInputPage {
+public abstract class LaaCostPage extends LaaInputPage {
 
     protected final Locator valueInput;
 
@@ -20,12 +20,9 @@ public class LaaCostPage extends LaaInputPage {
     }
 
     public void assertMustBeNumberWithUpTo2DpError() {
-        assertThat(errorSummary).isVisible();
-        assertThat(inlineErrors).isVisible();
+        waitForPageErrors();
 
         assertThat(errorSummary).containsText("must be a number with up to 2 decimal places");
         assertThat(inlineErrors).containsText("must be a number with up to 2 decimal places");
-
-        generateErrorSummaryAxeReport();
     }
 }

@@ -148,7 +148,7 @@ public class ReviewAndAmendTest extends BaseTest {
         // If your app requires VAT explicitly, uncomment one line:
         // outcome.selectVatLiable(false);
 
-        outcome.clickContinue();
+        outcome.saveChanges();
     }
 
     @Test
@@ -195,7 +195,7 @@ public class ReviewAndAmendTest extends BaseTest {
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
-        review.submitAdjustments();
+        review.saveChanges();
 
         assertTrue(page.url().contains("/review"));
         review.assertSubmitTotalsRequiredErrors();
