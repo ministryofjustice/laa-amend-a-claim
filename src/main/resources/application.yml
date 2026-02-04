@@ -67,11 +67,11 @@ management:
           - 500ms
           - 650ms
           - 800ms
-          - 1s
-          - 1.5s
-          - 2s
-          - 3s
-          - 5s
+          - 1000ms
+          - 1500ms
+          - 2000ms
+          - 3000ms
+          - 5000ms
 
 ---
 spring:
