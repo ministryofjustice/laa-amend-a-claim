@@ -2,6 +2,8 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @Getter
 public enum SortField {
 
@@ -16,11 +18,10 @@ public enum SortField {
     }
 
     public static SortField fromValue(String value) {
-        return switch (value) {
-            case "uniqueFileNumber" -> UNIQUE_FILE_NUMBER;
-            case "caseReferenceNumber" -> CASE_REFERENCE_NUMBER;
-            case "scheduleReference" -> SCHEDULE_REFERENCE;
-            default -> throw new IllegalArgumentException("Could not parse sort field: " + value);
-        };
+        return Arrays
+            .stream(values())
+            .filter(sortField -> sortField.value.equals(value))
+            .findFirst()
+            .orElseThrow(IllegalArgumentException::new);
     }
 }
