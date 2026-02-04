@@ -88,11 +88,24 @@ tasks.withType(Test).configureEach {
         htmlDir.mkdirs()
 
         jsonDir.eachFileMatch(~/.*\.json/) { File jsonFile ->
-            exec {
-                commandLine "node",
-                        "generateAxeReport.js",
-                        jsonFile.absolutePath,
-                        jsonFile.name.replace(".json", ".html")
+            println "Generating HTML report for ${jsonFile.name}"
+            def htmlFileName = jsonFile.name.replace(".json", ".html")
+            def htmlFilePath = new File(htmlDir, htmlFileName).name
+            def scriptFile = file("generateAxeReport.js")
+
+            def process = new ProcessBuilder(
+                "node",
+                scriptFile.absolutePath,
+                jsonFile.absolutePath,
+                htmlFilePath
+            )
+            .redirectErrorStream(true)
+            .directory(htmlDir) // Set working directory to htmlDir
+            .start()
+            process.inputStream.eachLine { println it }
+            int exitCode = process.waitFor()
+            if (exitCode != 0) {
+                println "Failed to generate report for ${jsonFile.name}: exit code $exitCode"
             }
         }
     }
