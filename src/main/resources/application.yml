@@ -38,6 +38,9 @@ claims-api:
   access-token: ${CLAIMS_TOKEN}
 microsoft-graph-api:
   url: https://graph.microsoft.com
+provider-api:
+  url: ${PROVIDER_API}
+  access-token: ${PROVIDER_TOKEN}
 search:
   sort-enabled: true
 app:

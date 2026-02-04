@@ -112,6 +112,7 @@ redis:
 # LAA Amend a Claim Spring Boot Application
 laaAmendAClaim:
   enabled: true
+  claimsApiHost: "e2e-claims-api"
   image:
     repository: ""
     tag: ""
@@ -176,8 +177,6 @@ laaAmendAClaim:
       value: http://localhost:8084
     - name: SENTRY_DSN
       value: ""
-    - name: CLAIMS_API
-      value: http://e2e-data-claims-api:8082
     - name: CLAIMS_TOKEN
       valueFrom:
         secretKeyRef:
@@ -200,42 +199,4 @@ laaAmendAClaim:
     limits:
       memory: "1Gi"
       cpu: "500m"
-
-# GitHub Self-Hosted Runner for E2E Tests
-githubRunner:
-  enabled: false
-  replicas: 1
-  image:
-    repository: ""
-    tag: ""
-    pullPolicy: Always  # Always pull to get latest image even if tag unchanged
-  env:
-    - name: GITHUB_TOKEN
-      valueFrom:
-        secretKeyRef:
-          name: laa-amend-a-claim-e2e-github-token
-          key: token
-    - name: GITHUB_REPOSITORY
-      value: "ministryofjustice/laa-amend-a-claim"
-    - name: RUNNER_NAME
-      value: "k8s-e2e-runner"
-    - name: RUNNER_LABELS
-      value: "self-hosted,linux,aabc-e2e"
-    - name: UI_BASE_URL
-      value: "http://e2e-amend-a-claim:8084"
-    - name: API_BASE
-      value: "http://e2e-data-claims-api:8082"
-    - name: HEADLESS
-      value: "true"
-    - name: BROWSER
-      value: "chromium"
-    - name: DB_CONNECTION_URL
-      value: jdbc:postgresql://e2e-data-claims-api:5435/laa_data_claims_api_dev
-  resources:
-    requests:
-      memory: "1Gi"
-      cpu: "500m"
-    limits:
-      memory: "2Gi"
-      cpu: "1000m"
 

@@ -13,6 +13,10 @@ on:
       amend_a_claim_image_tag:
         required: true
         type: string
+      sanitized_release_name:
+        required: false
+        type: string
+        description: 'Sanitized release name from ephemeral deployment'
     secrets:
       P_USERNAME:
         required: true
@@ -36,6 +40,8 @@ on:
         required: true
       DATA_CLAIMS_API_IMAGE:
         required: true
+      PAT_TOKEN:
+        required: true
 
 
 permissions:
@@ -51,6 +57,7 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
     steps:
       # Checkout and setup
@@ -59,10 +66,10 @@ jobs:
         with:
           ref: ${{ inputs.branch }}
 
-      - name: Set up JDK 21
+      - name: Set up JDK 25
         uses: actions/setup-java@v5.2.0
         with:
-          java-version: 21
+          java-version: 25
           distribution: corretto
 
       - name: Set up Gradle
@@ -72,7 +79,7 @@ jobs:
       - name: Run unit tests
         run: ./gradlew test
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Test coverage verification
         run: ./gradlew jacocoTestCoverageVerification
@@ -121,7 +128,7 @@ jobs:
       branch: ${{ github.ref_name }}
       environment: ${{ inputs.environment }}
       amend_a_claim_image_tag: ${{ inputs.amend_a_claim_image_tag }}
-      build_runner_image: false
+      sanitized_release_name: ${{ inputs.sanitized_release_name }}
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       DATA_CLAIMS_API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}

@@ -23,5 +23,8 @@ claims-api:
   access-token: ""
 microsoft-graph-api:
   url: http://localhost:8089
+provider-api:
+  url: http://localhost:8089
+  access-token: ""
 search:
   sort-enabled: true

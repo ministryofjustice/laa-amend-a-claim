@@ -77,6 +77,7 @@ public class ThymeleafUtils {
             case Integer i -> new ThymeleafLiteralString(i.toString());
             case Boolean b -> getFormattedBoolean(b);
             case String s -> new ThymeleafLiteralString(s);
+            case ThymeleafMessage s -> s;
             case OffsetDateTime o -> getFormattedValue(o.toLocalDateTime());
             case LocalDate d -> new ThymeleafLiteralString(displayDateValue(d));
             case LocalDateTime d -> new ThymeleafMessage("fulldate.format", displayDateTimeDateValue(d), displayDateTimeTimeValue(d));

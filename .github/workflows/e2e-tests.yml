@@ -13,11 +13,10 @@ on:
       amend_a_claim_image_tag:
         required: true
         type: string
-      build_runner_image:
-        required: false
-        type: boolean
-        default: true
-        description: 'Build new runner image (set to true to rebuild)'
+      sanitized_release_name:
+        required: true
+        type: string
+        description: 'Sanitized release name from ephemeral deployment (e.g., my-branch-name).'
       claims_api_image_tag:
         required: false
         type: string
@@ -46,27 +45,59 @@ permissions:
   contents: read
 
 jobs:
-  build-runner-image:
-    name: Build E2E Runner Image
-    if: ${{ inputs.build_runner_image }}
+  ensure-runner-available:
+    name: Ensure GitHub Runner Available
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     outputs:
-      runner_image_tag: ${{ steps.build.outputs.tag }}
+      deploy-runner: ${{ steps.check-runner.outputs.deploy-runner }}
+    env:
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      KUBE_CERT: ${{ secrets.KUBE_CERT }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.branch }}
 
+      - name: Authenticate to Kubernetes Cluster
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@768f673017edbb793cf052fa159c272d6c1f9177
+        with:
+          kube-cert: ${{ secrets.KUBE_CERT }}
+          kube-token: ${{ secrets.KUBE_TOKEN }}
+          kube-cluster: ${{ secrets.KUBE_CLUSTER }}
+          kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
+          kube-sa: deploy-user
+
+      - name: Check Runner Pod/Release
+        id: check-runner
+        run: |
+          set +e
+          echo "Checking if e2e-github-runner Helm release is deployed and pod is running..."
+          helm status e2e-github-runner --namespace ${KUBE_NAMESPACE} > /dev/null 2>&1
+          HELM_STATUS=$?
+          POD_STATUS=$(kubectl get pods -n ${KUBE_NAMESPACE} -l app=e2e-github-runner -o jsonpath='{.items[0].status.phase}' 2>/dev/null)
+          if [ "$HELM_STATUS" -eq 0 ] && [ "$POD_STATUS" = "Running" ]; then
+            echo "Runner release and pod are present and running."
+            echo "deploy-runner=false" >> $GITHUB_OUTPUT
+          else
+            echo "Runner not present or not running, will deploy."
+            echo "deploy-runner=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Authenticate to ECR
+        if: steps.check-runner.outputs.deploy-runner == 'true'
         id: ecr-auth
         uses: ministryofjustice/laa-reusable-github-actions/.github/actions/ecr-auth@768f673017edbb793cf052fa159c272d6c1f9177
         with:
           ecr_region: ${{ vars.ECR_REGION }}
           ecr_role: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-          role-session-name: ${{ github.run_id }}-e2e-build
+          role-session-name: ${{ github.run_id }}-runner-deploy
 
       - name: Build and Push Runner Image
+        if: steps.check-runner.outputs.deploy-runner == 'true'
         id: build
         uses: docker/build-push-action@v6.18.0
         with:
@@ -74,12 +105,35 @@ jobs:
           file: ./scripts/Dockerfile.e2e-runner
           push: true
           tags: |
-            ${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:github-e2e-runner-latest
+            ${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:github-runner-${{ github.run_id }}
+
+      - name: Deploy Runner
+        if: steps.check-runner.outputs.deploy-runner == 'true'
+        env:
+          REGISTRY: ${{ steps.ecr-auth.outputs.image_registry }}
+          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+        run: |
+          echo "Deploying persistent GitHub runner..."
+          helm upgrade --install e2e-github-runner ./.helm/github-runner \
+            --namespace ${KUBE_NAMESPACE} \
+            --set image.repository=${REGISTRY}/${REPOSITORY} \
+            --set image.tag=github-runner-${{ github.run_id }} \
+            --wait \
+            --timeout 5m
+          
+          echo "Checking runner logs for registration..."
+          
+          for i in {1..30}; do
+            if kubectl logs -l app=e2e-github-runner -n ${KUBE_NAMESPACE} | grep -q "Registered"; then
+              echo "Runner logged successful registration."
+              break
+            fi
+            sleep 5
+          done
 
   deploy-e2e-environment:
-    name: Deploy E2E Environment with Runner
-    needs: build-runner-image
-    if: ${{ always() && (needs.build-runner-image.result == 'success' || needs.build-runner-image.result == 'skipped') }}
+    name: Deploy E2E Environment
+    needs: ensure-runner-available
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     env:
@@ -87,6 +141,9 @@ jobs:
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+      RELEASE_NAME: e2e-${{ inputs.sanitized_release_name }}
+      AMEND_CLAIM_UI: e2e-${{ inputs.sanitized_release_name }}-amend-claim
+      DATA_CLAIMS_SERVICE: e2e-${{ inputs.sanitized_release_name }}-claims-api
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -115,8 +172,20 @@ jobs:
           kubectl config use-context ${KUBE_CLUSTER}
 
       - name: Deploy to Cloud Platform with Helm
+        env:
+          REGISTRY: ${{ steps.ecr-auth.outputs.image_registry }}
+          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ inputs.amend_a_claim_image_tag }}
+          API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
+          API_IMAGE_TAG: ${{ inputs.claims_api_image_tag }}
+          E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
+          E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
+          GITHUB_REPO: ${{ github.repository }}
         run: |
-          helm upgrade --install e2e-stack ./.helm/e2e-stack \
+          echo "Deploying with release name: ${RELEASE_NAME}"
+          echo "Using services: ${AMEND_CLAIM_UI} and ${DATA_CLAIMS_SERVICE}"
+          
+          helm upgrade --install ${RELEASE_NAME} ./.helm/e2e-stack \
            --namespace ${KUBE_NAMESPACE} \
            --values .helm/e2e-stack/values.yaml \
            --set dataClaimsApi.enabled=true \
@@ -128,45 +197,29 @@ jobs:
            --set laaAmendAClaim.enabled=true \
            --set laaAmendAClaim.image.repository=${REGISTRY}/${REPOSITORY} \
            --set laaAmendAClaim.image.tag=${IMAGE_TAG} \
+           --set laaAmendAClaim.claimsApiHost=${DATA_CLAIMS_SERVICE} \
            --set redis.enabled=true \
-           --set githubRunner.enabled=true \
-           --set githubRunner.image.repository=${REGISTRY}/${REPOSITORY} \
-           --set githubRunner.image.tag=github-e2e-runner-latest \
-           --set githubRunner.env[1].value=${GITHUB_REPO} \
-           --set githubRunner.env[2].value=k8s-e2e-runner \
            --wait \
            --timeout 5m
 
-          echo " Helm deployment complete"
+          echo "Helm deployment complete"
           kubectl get pods -n ${KUBE_NAMESPACE}
-
-        env:
-          REGISTRY: ${{ steps.ecr-auth.outputs.image_registry }}
-          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ inputs.amend_a_claim_image_tag }}
-          API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
-          API_IMAGE_TAG: ${{ inputs.claims_api_image_tag }}
-          E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
-          E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
-          GITHUB_REPO: ${{ github.repository }}
-
-      - name: Wait for Runner Registration
-        run: |
-          echo "Waiting for GitHub runner to register..."
-          sleep 30
-          kubectl logs -n ${KUBE_NAMESPACE} -l app=github-runner --tail=50 || true
 
   run-e2e-tests:
     name: Run E2E Tests
     needs: deploy-e2e-environment
-    if: ${{ always() && (needs.deploy-e2e-environment.result == 'success') }}
-    runs-on: [self-hosted, aabc-e2e]
+    runs-on: [self-hosted, aabc-e2e-java25]
     env:
       E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
       E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
+      AMEND_CLAIM_UI: e2e-${{ inputs.sanitized_release_name }}-amend-claim
+      DATA_CLAIMS_SERVICE: e2e-${{ inputs.sanitized_release_name }}-claims-api
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5.0.0
 
       - name: Install Node dependencies
         working-directory: src/e2e
@@ -175,17 +228,23 @@ jobs:
       - name: Wait for Services
         run: |
           echo "Waiting for services to be ready..."
-          until curl -sf http://e2e-amend-a-claim:8084/actuator/health 2>/dev/null; do
-            echo "Waiting for UI application..."
-            sleep 5
-          done
-          echo "UI ready"
-
-          until curl -sf http://e2e-data-claims-api:8082/actuator/health 2>/dev/null; do
-            echo "Waiting for API..."
-            sleep 5
-          done
-          echo "API ready"
+          check_health() {
+            local name=$1
+            local url=$2
+            local retries=20
+            for i in $(seq 1 $retries); do
+              echo "check $name (attempt $i of $retries).."
+              if curl -sf $url > /dev/null; then
+                echo "$name is healthy";
+                return 0;
+              fi
+              sleep 2
+            done
+            echo "ERROR: $name is not healthy"           
+            exit 1
+          }          
+          check_health "AMEND_CLAIM_UI" "http://${AMEND_CLAIM_UI}:8084/actuator/health"
+          check_health "DATA_CLAIMS_SERVICE" "http://${DATA_CLAIMS_SERVICE}:8082/actuator/health"
 
       - name: Run E2E Tests
         working-directory: src/e2e
@@ -193,8 +252,10 @@ jobs:
           export CI=true
           export SILAS_AUTH_ENABLED=false
           export DB_USER=${E2E_DB_USER}
-          export DB_PASSWORD=${E2E_DB_PASSWORD}          
-
+          export DB_PASSWORD=${E2E_DB_PASSWORD}
+          export UI_BASE_URL=http://${AMEND_CLAIM_UI}:8084 
+          export DB_CONNECTION_URL=jdbc:postgresql://${DATA_CLAIMS_SERVICE}:5435/laa_data_claims_api_dev \
+          
           echo "Running E2E tests..."
           ./gradlew clean test --no-daemon
 
