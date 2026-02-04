@@ -54,6 +54,24 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
+    distribution:  # Histogram buckets (for p95, p99 response times)
+      percentiles-histogram:
+        http.server.requests: true
+      slo:
+        http.server.requests:
+          - 50ms
+          - 100ms
+          - 200ms
+          - 300ms
+          - 400ms
+          - 500ms
+          - 650ms
+          - 800ms
+          - 1s
+          - 1.5s
+          - 2s
+          - 3s
+          - 5s
 
 ---
 spring:
