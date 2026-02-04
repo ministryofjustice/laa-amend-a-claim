@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.pages;
+package uk.gov.justice.laa.amend.claim.helpers;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;

@@ -191,7 +191,6 @@ public class ClaimDetailsTest extends BaseTest {
         search.clickViewForUfn(UNESCAPED_UFN);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
 
         Assertions.assertTrue(
             details.isAddAssessmentOutcomeDisabled(),
@@ -224,7 +223,6 @@ public class ClaimDetailsTest extends BaseTest {
         search.clickViewForUfn(claimDetailsFixture.getUfn());
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
 
         Assertions.assertFalse(
             details.isAddAssessmentOutcomeDisabled(),

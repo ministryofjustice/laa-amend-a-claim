@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.pages;
 
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import com.microsoft.playwright.Page;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

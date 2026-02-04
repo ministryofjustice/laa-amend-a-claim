@@ -24,12 +24,12 @@ public abstract class E2eBaseTest extends BaseTest {
 
         addAssessmentOutcome(assessmentOutcome);
 
-        ReviewAndAmendPage review = getReviewPage();
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
         addProfitCosts(review, "999.99");
         addAllowedTotals(review, "300", "400");
 
-        submit(review);
+        review.saveChanges();
 
         viewAssessedClaim();
 
@@ -41,13 +41,13 @@ public abstract class E2eBaseTest extends BaseTest {
 
         addAssessmentOutcome(assessmentOutcome);
 
-        ReviewAndAmendPage review = getReviewPage();
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
         addProfitCosts(review, "100");
         addAssessedTotals(review, "200", "300");
         addAllowedTotals(review, "400", "500");
 
-        submit(review);
+        review.saveChanges();
 
         viewAssessedClaim();
 
@@ -59,9 +59,9 @@ public abstract class E2eBaseTest extends BaseTest {
 
         addAssessmentOutcome("nilled");
 
-        ReviewAndAmendPage review = getReviewPage();
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
-        submit(review);
+        review.saveChanges();
 
         viewAssessedClaim();
 
@@ -73,11 +73,11 @@ public abstract class E2eBaseTest extends BaseTest {
 
         addAssessmentOutcome(assessmentOutcome);
 
-        ReviewAndAmendPage review = getReviewPage();
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
         addAllowedTotals(review, "300", "400");
 
-        submit(review);
+        review.saveChanges();
 
         viewAssessedClaim();
 
@@ -89,12 +89,12 @@ public abstract class E2eBaseTest extends BaseTest {
 
         addAssessmentOutcome(assessmentOutcome);
 
-        ReviewAndAmendPage review = getReviewPage();
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
         addAssessedTotals(review, "100", "200");
         addAllowedTotals(review, "300", "400");
 
-        submit(review);
+        review.saveChanges();
 
         viewAssessedClaim();
 
@@ -117,29 +117,18 @@ public abstract class E2eBaseTest extends BaseTest {
 
     private void addAssessmentOutcome(String assessmentOutcome) {
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
 
         details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
         outcome.selectAssessmentOutcome(assessmentOutcome);
         outcome.selectVatLiable(true);
-        outcome.clickContinue();
-    }
-
-    private ReviewAndAmendPage getReviewPage() {
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
-        Assertions.assertEquals("Review and amend", review.getHeadingText());
-        return review;
+        outcome.saveChanges();
     }
 
     private void viewAssessedClaim() {
         AssessmentCompletePage complete = new AssessmentCompletePage(page);
-        complete.waitForPage();
 
-        Assertions.assertEquals("Assessment complete", complete.getHeadingText());
         Assertions.assertTrue(complete.getBodyText().contains("Your changes have been submitted"));
         Assertions.assertTrue(complete.goToSearchExists());
         Assertions.assertTrue(complete.viewAssessedClaimExists());
@@ -149,7 +138,6 @@ public abstract class E2eBaseTest extends BaseTest {
 
     private void checkAssessedClaim(String assessedTotalVat, String assessedTotalInclVat, String allowedTotalVat, String allowedTotalInclVat) {
         ClaimDetailsPage claimDetails = new ClaimDetailsPage(page);
-        claimDetails.waitForPage();
         claimDetails.assertUpdateAssessmentOutcomeButtonIsPresent();
 
         claimDetails.assertAssessedTotals("Assessed total VAT", "Not applicable", "Not applicable", assessedTotalVat);
@@ -162,33 +150,23 @@ public abstract class E2eBaseTest extends BaseTest {
     private void addProfitCosts(ReviewAndAmendPage review, String profitCosts) {
         review.clickAddProfitCosts();
         AssessProfitCostsPage profit = new AssessProfitCostsPage(page);
-        profit.waitForPage();
         profit.setAssessedValue(profitCosts);
         profit.saveChanges();
     }
 
     private void addAssessedTotals(ReviewAndAmendPage review, String assessedTotalVat, String assessedTotalInclVat) {
-        review.waitForPage();
         review.clickAddAssessedTotalVat();
         AssessAssessedTotalsPage assessedTotals = new AssessAssessedTotalsPage(page);
-        assessedTotals.waitForPage();
-        assessedTotals.setAssessedTotalVat(assessedTotalVat);
-        assessedTotals.setAssessedTotalInclVat(assessedTotalInclVat);
+        assessedTotals.setTotalVat(assessedTotalVat);
+        assessedTotals.setTotalInclVat(assessedTotalInclVat);
         assessedTotals.saveChanges();
     }
 
     private void addAllowedTotals(ReviewAndAmendPage review, String allowedTotalVat, String allowedTotalInclVat) {
-        review.waitForPage();
         review.clickAddAllowedTotalVat();
         AssessAllowedTotalsPage allowedTotals = new AssessAllowedTotalsPage(page);
-        allowedTotals.waitForPage();
-        allowedTotals.setAllowedTotalVat(allowedTotalVat);
-        allowedTotals.setAllowedTotalInclVat(allowedTotalInclVat);
+        allowedTotals.setTotalVat(allowedTotalVat);
+        allowedTotals.setTotalInclVat(allowedTotalInclVat);
         allowedTotals.saveChanges();
-    }
-
-    private void submit(ReviewAndAmendPage review) {
-        review.waitForPage();
-        review.submitAdjustments();
     }
 }

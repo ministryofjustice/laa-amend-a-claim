@@ -90,7 +90,6 @@ public class AssessmentOutcomeTest extends BaseTest {
         search.clickViewForUfn(UFN);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
         details.clickAddUpdateAssessmentOutcome();
     }
 
@@ -111,9 +110,8 @@ public class AssessmentOutcomeTest extends BaseTest {
         navigateToAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
 
-        outcome.clickContinue();
+        outcome.saveChanges();
 
         assertTrue(page.url().contains("/assessment-outcome"));
         outcome.assertAssessmentOutcomeRequiredError();
