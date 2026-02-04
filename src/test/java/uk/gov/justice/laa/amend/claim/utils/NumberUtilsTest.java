@@ -100,7 +100,6 @@ class NumberUtilsTest {
     @ParameterizedTest
     @ValueSource(strings = {
         "200,00",
-        "200,00",
         ",100",
         "1,000,00,000",
         "100.1,2345",
