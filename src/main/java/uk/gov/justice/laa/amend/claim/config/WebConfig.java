@@ -19,6 +19,6 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(new MaintenanceInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/actuator/**", "/health");
+                .excludePathPatterns("/actuator/**", "/health", "/error");
     }
 }
