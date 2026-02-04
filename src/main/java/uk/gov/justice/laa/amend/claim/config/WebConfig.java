@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import uk.gov.justice.laa.amend.claim.interceptors.ClaimInterceptor;
@@ -18,6 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
             .excludePathPatterns("/submissions/*/claims/*/assessments/*");
 
         registry.addInterceptor(new MaintenanceInterceptor())
+                .order(Ordered.HIGHEST_PRECEDENCE)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/actuator/**", "/health", "/error");
     }
