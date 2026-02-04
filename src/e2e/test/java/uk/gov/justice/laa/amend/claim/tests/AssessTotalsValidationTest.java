@@ -11,7 +11,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.AssessAllowedTotalsPage;
-import uk.gov.justice.laa.amend.claim.pages.AssessTotalClaimValuePage;
+import uk.gov.justice.laa.amend.claim.pages.AssessAssessedTotalsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
@@ -87,13 +87,11 @@ public class AssessTotalsValidationTest extends BaseTest {
         search.clickViewForUfn(UFN);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
         details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
         outcome.selectAssessmentOutcome("reduced-to-fixed-fee-assessed");
-        outcome.clickContinue();
+        outcome.saveChanges();
 
         assertTrue(page.url().contains("/review"));
     }
@@ -104,11 +102,9 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickAddAssessedTotalVat();
 
-        AssessTotalClaimValuePage totals = new AssessTotalClaimValuePage(page);
-        totals.waitForPage();
+        AssessAssessedTotalsPage totals = new AssessAssessedTotalsPage(page);
         totals.saveChanges();
 
         totals.assertRequiredErrorsShown();
@@ -120,13 +116,11 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickAddAssessedTotalVat();
 
-        AssessTotalClaimValuePage totals = new AssessTotalClaimValuePage(page);
-        totals.waitForPage();
-        totals.setAssessedTotalVat("dasad");
-        totals.setAssessedTotalInclVat("dasad");
+        AssessAssessedTotalsPage totals = new AssessAssessedTotalsPage(page);
+        totals.setTotalVat("dasad");
+        totals.setTotalInclVat("dasad");
         totals.saveChanges();
 
         totals.assertNumericErrorsShown();
@@ -138,11 +132,9 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickAddAllowedTotalVat();
 
         AssessAllowedTotalsPage allowed = new AssessAllowedTotalsPage(page);
-        allowed.waitForPage();
         allowed.saveChanges();
 
         allowed.assertRequiredErrorsShown();
@@ -154,13 +146,11 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickAddAllowedTotalVat();
 
         AssessAllowedTotalsPage allowed = new AssessAllowedTotalsPage(page);
-        allowed.waitForPage();
-        allowed.setAllowedTotalVat("dasad");
-        allowed.setAllowedTotalInclVat("dasad");
+        allowed.setTotalVat("dasad");
+        allowed.setTotalInclVat("dasad");
         allowed.saveChanges();
 
         allowed.assertNumericErrorsShown();
@@ -172,7 +162,6 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         review.assertAllowedTotalsAreCorrect("£127.87", "£767.22");
     }

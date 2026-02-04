@@ -101,7 +101,6 @@ public class AssessedClaimDetailsTest extends BaseTest {
         search.clickViewForUfn(UFN);
 
         ClaimDetailsPage claimDetails = new ClaimDetailsPage(page);
-        claimDetails.waitForPage();
         claimDetails.assertInfoAlertIsPresent();
         claimDetails.assertUpdateAssessmentOutcomeButtonIsPresent();
 

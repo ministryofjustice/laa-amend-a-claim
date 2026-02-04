@@ -11,7 +11,6 @@ import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
-import uk.gov.justice.laa.amend.claim.pages.AssessTravelCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
@@ -137,11 +136,9 @@ public class ReviewAndAmendTest extends BaseTest {
         search.clickViewForUfn(ufn);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
         details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
 
         // Minimal inputs to proceed
         outcome.selectAssessmentOutcome("assessed in full");
@@ -150,7 +147,7 @@ public class ReviewAndAmendTest extends BaseTest {
         // If your app requires VAT explicitly, uncomment one line:
         // outcome.selectVatLiable(false);
 
-        outcome.clickContinue();
+        outcome.saveChanges();
     }
 
     @Test
@@ -164,7 +161,6 @@ public class ReviewAndAmendTest extends BaseTest {
         );
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         assertTrue(page.url().contains("/review"));
         review.assertCrimePageLoadedHeadersAndItems();
@@ -181,7 +177,6 @@ public class ReviewAndAmendTest extends BaseTest {
         );
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         assertTrue(page.url().contains("/review"));
         review.assertCivilPageLoadedHeadersAndItems();
@@ -198,9 +193,8 @@ public class ReviewAndAmendTest extends BaseTest {
         );
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
-        review.submitAdjustments();
+        review.saveChanges();
 
         assertTrue(page.url().contains("/review"));
         review.assertSubmitTotalsRequiredErrors();
@@ -217,7 +211,6 @@ public class ReviewAndAmendTest extends BaseTest {
         );
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         review.clickAssessmentOutcome();
 
@@ -235,7 +228,6 @@ public class ReviewAndAmendTest extends BaseTest {
         );
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         review.clickLiableForVat();
 
@@ -253,7 +245,6 @@ public class ReviewAndAmendTest extends BaseTest {
         );
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         review.clickAssessmentOutcome();
 
@@ -271,7 +262,6 @@ public class ReviewAndAmendTest extends BaseTest {
         );
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         review.clickLiableForVat();
 
