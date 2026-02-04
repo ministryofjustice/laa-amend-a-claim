@@ -59,8 +59,7 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             log.error("============EC");
             log.error("============EC");
             log.error("enabled found");
-            log.error("enabled found");
-            log.error("enabled found");
+            log.error(Files.readString(enabled));
             log.error("============End");
             log.error("============End");
         }
