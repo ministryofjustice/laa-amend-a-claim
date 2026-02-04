@@ -18,9 +18,9 @@ import java.nio.file.Paths;
 @Slf4j
 public class MaintenanceInterceptor implements HandlerInterceptor {
 
-    private static final Path enabled = Paths.get("config/maintenance/enabled");
-    private static final Path message = Paths.get("config/maintenance/message");
-    private static final Path title = Paths.get("config/maintenance/title");
+    private static final Path enabled = Paths.get("/config/maintenance/enabled");
+    private static final Path message = Paths.get("/config/maintenance/message");
+    private static final Path title = Paths.get("/config/maintenance/title");
 
     @Override
     public boolean preHandle(
