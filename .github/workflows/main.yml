@@ -19,6 +19,7 @@ jobs:
       branch: ${{ github.ref_name }}
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
   test:
     name: Test
@@ -28,6 +29,7 @@ jobs:
       branch: ${{ github.ref_name }}
       environment: dev
       amend_a_claim_image_tag: ${{ needs.build.outputs.image_tag }}
+      sanitized_release_name: 'main'
     secrets:
       P_USERNAME: ${{ secrets.P_USERNAME }}
       P_PASSWORD: ${{ secrets.P_PASSWORD }}
@@ -40,6 +42,7 @@ jobs:
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       DATA_CLAIMS_API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
   security:
     name: Security

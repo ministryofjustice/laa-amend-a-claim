@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['e2e-data-claims-api:{{ .Values.dataClaimsApi.service.port }}']
+      args: ['{{ include "e2e-stack.claimsName" . }}:{{ .Values.dataClaimsApi.service.port }}']
   restartPolicy: Never
