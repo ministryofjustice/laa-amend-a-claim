@@ -46,6 +46,16 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
 
         }
 
+        if (Files.exists(enabled)) {
+            log.error("============EC");
+            log.error("============EC");
+            log.error("enabled found");
+            log.error("enabled found");
+            log.error("enabled found");
+            log.error("============End");
+            log.error("============End");
+        }
+
         if (Files.exists(enabled)
                 && Files.readString(enabled).replace("/r", "")
                 .trim().equalsIgnoreCase("true")) {
