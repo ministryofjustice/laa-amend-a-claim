@@ -28,14 +28,13 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler) throws IOException, ServletException {
-        String path = request.getRequestURI();
-
         log.error("============");
         log.error("============");
         log.error("entering claim interceptor");
         log.error("============");
         log.error("============");
 
+        String path = request.getRequestURI();
         if (path.startsWith("/actuator") || path.startsWith("/health")) {
             return true;
         }
