@@ -374,4 +374,20 @@ public abstract class ViewTestBase {
       assertCellContainsText(row.get(i + 1), values[i]);
     }
   }
+
+  protected Elements getTableHeaders(Document doc) {
+    return doc.getElementsByClass("govuk-table__header");
+  }
+
+  protected void assertTableHeaderIsSortable(Element header, String ariaSort, String expectedText, String expectedLink) {
+    Assertions.assertEquals(ariaSort, header.attr("aria-sort"));
+    Element link = selectFirst(header, "a");
+    Element span = selectFirst(link, "span");
+    Assertions.assertEquals(expectedText, span.text());
+    Assertions.assertEquals(expectedLink, link.attr("href"));
+  }
+
+  protected void assertTableHeaderIsNotSortable(Element header, String expectedText) {
+    Assertions.assertEquals(expectedText, header.text());
+  }
 }

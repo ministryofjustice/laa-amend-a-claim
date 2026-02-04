@@ -74,7 +74,11 @@
                 </th:block>
 
                 <th:block th:unless="${viewModel.claims.isEmpty()}">
-                    <h2 class="govuk-heading-m" th:text="#{index.results.searchResults(${viewModel.pagination.results.count})}"></h2>
+                    <h2 class="govuk-heading-m"
+                        th:text="${viewModel.pagination.results.hasOne()}
+                          ? #{index.results.searchResult}
+                          : #{index.results.searchResults(${viewModel.pagination.results.count})}">
+                    </h2>
 
                     <table class="govuk-table">
                         <thead class="govuk-table__head">
