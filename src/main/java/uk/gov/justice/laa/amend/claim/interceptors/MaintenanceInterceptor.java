@@ -4,19 +4,14 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.HandlerMapping;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 @Component
 @Slf4j
@@ -39,7 +34,8 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         }
 
         if (Files.exists(enabled)
-                && Files.readString(enabled).trim().equalsIgnoreCase("true")) {
+                && Files.readString(enabled).replace("/r", "")
+                .trim().equalsIgnoreCase("true")) {
 
             request.setAttribute(RequestDispatcher.ERROR_STATUS_CODE, 503);
             request.setAttribute(RequestDispatcher.ERROR_MESSAGE, Files.readString(message).trim());
