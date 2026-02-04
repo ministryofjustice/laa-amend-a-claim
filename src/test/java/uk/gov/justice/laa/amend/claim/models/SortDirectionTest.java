@@ -44,10 +44,9 @@ public class SortDirectionTest {
         }
 
         @Test
-        void shouldConvertNoneToNone() {
+        void shouldThrowExceptionForNone() {
             String str = "none";
-            SortDirection result = SortDirection.fromValue(str);
-            Assertions.assertEquals(SortDirection.NONE, result);
+            Assertions.assertThrows(IllegalArgumentException.class, () -> SortDirection.fromValue(str));
         }
     }
 }

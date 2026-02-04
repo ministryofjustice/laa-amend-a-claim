@@ -21,6 +21,7 @@ import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.SearchQuery;
 import uk.gov.justice.laa.amend.claim.models.Sort;
+import uk.gov.justice.laa.amend.claim.models.SortField;
 import uk.gov.justice.laa.amend.claim.models.Sorts;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
@@ -55,6 +56,7 @@ public class HomePageController {
 
         model.addAttribute("form", form);
         model.addAttribute("query", query);
+        model.addAttribute("SortField", SortField.class);
 
         Sorts sorts;
         Sort sort = query.getSort();

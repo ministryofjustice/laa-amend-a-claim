@@ -87,15 +87,15 @@
                                     <tr class="govuk-table__row">
                                         <th scope="col" class="govuk-table__header" th:text="#{index.results.claim}"></th>
 
-                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, 'uniqueFileNumber', 'index.results.uniqueFileNumber')}"></th:block>
+                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.UNIQUE_FILE_NUMBER}, 'index.results.uniqueFileNumber')}"></th:block>
 
-                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, 'caseReferenceNumber', 'index.results.caseReferenceNumber')}"></th:block>
+                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.CASE_REFERENCE_NUMBER}, 'index.results.caseReferenceNumber')}"></th:block>
 
                                         <th scope="col" class="govuk-table__header" th:text="#{index.results.clientSurname}"></th>
 
                                         <th scope="col" class="govuk-table__header" th:text="#{index.results.dateSubmitted}"></th>
 
-                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, 'scheduleReference', 'index.results.account')}"></th:block>
+                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.SCHEDULE_REFERENCE}, 'index.results.account')}"></th:block>
 
                                         <th scope="col" class="govuk-table__header" th:text="#{index.results.categoryOfLaw}"></th>
 

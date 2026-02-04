@@ -5,9 +5,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
-import java.time.YearMonth;
-
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 public class SortTest {
@@ -18,7 +15,7 @@ public class SortTest {
         void shouldConvertStringToSortWhenAscendingOrder() {
             String str = "uniqueFileNumber,asc";
             Sort result = new Sort(str);
-            Assertions.assertEquals("uniqueFileNumber", result.getField());
+            Assertions.assertEquals(SortField.UNIQUE_FILE_NUMBER, result.getField());
             Assertions.assertEquals(SortDirection.ASCENDING, result.getDirection());
         }
 
@@ -26,29 +23,26 @@ public class SortTest {
         void shouldConvertStringToSortWhenDescendingOrder() {
             String str = "caseReferenceNumber,desc";
             Sort result = new Sort(str);
-            Assertions.assertEquals("caseReferenceNumber", result.getField());
+            Assertions.assertEquals(SortField.CASE_REFERENCE_NUMBER, result.getField());
             Assertions.assertEquals(SortDirection.DESCENDING, result.getDirection());
         }
 
         @Test
         void shouldThrowExceptionForInvalidDirection() {
             String str = "scheduleReference,foo";
-            ResponseStatusException ex = Assertions.assertThrows(ResponseStatusException.class, () -> new Sort(str));
-            Assertions.assertTrue(ex.getStatusCode().isSameCodeAs(BAD_REQUEST));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> new Sort(str));
         }
 
         @Test
         void shouldThrowExceptionForNonCommaSeparatedInput() {
             String str = "foo";
-            ResponseStatusException ex = Assertions.assertThrows(ResponseStatusException.class, () -> new Sort(str));
-            Assertions.assertTrue(ex.getStatusCode().isSameCodeAs(BAD_REQUEST));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> new Sort(str));
         }
 
         @Test
         void shouldThrowExceptionForInvalidInput() {
             String str = "scheduleReference,desc,foo";
-            ResponseStatusException ex = Assertions.assertThrows(ResponseStatusException.class, () -> new Sort(str));
-            Assertions.assertTrue(ex.getStatusCode().isSameCodeAs(BAD_REQUEST));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> new Sort(str));
         }
     }
 
@@ -56,19 +50,19 @@ public class SortTest {
     class ToStringTests {
         @Test
         void shouldConvertSortToStringWhenAscendingOrder() {
-            Sort sort = Sort.builder().field("uniqueFileNumber").direction(SortDirection.ASCENDING).build();
+            Sort sort = Sort.builder().field(SortField.UNIQUE_FILE_NUMBER).direction(SortDirection.ASCENDING).build();
             Assertions.assertEquals("uniqueFileNumber,asc", sort.toString());
         }
 
         @Test
         void shouldConvertSortToStringWhenDescendingOrder() {
-            Sort sort = Sort.builder().field("caseReferenceNumber").direction(SortDirection.DESCENDING).build();
+            Sort sort = Sort.builder().field(SortField.CASE_REFERENCE_NUMBER).direction(SortDirection.DESCENDING).build();
             Assertions.assertEquals("caseReferenceNumber,desc", sort.toString());
         }
 
         @Test
         void shouldConvertSortToStringWhenNoOrder() {
-            Sort sort = Sort.builder().field("scheduleReference").direction(SortDirection.NONE).build();
+            Sort sort = Sort.builder().field(SortField.SCHEDULE_REFERENCE).direction(SortDirection.NONE).build();
             Assertions.assertNull(sort.toString());
         }
     }

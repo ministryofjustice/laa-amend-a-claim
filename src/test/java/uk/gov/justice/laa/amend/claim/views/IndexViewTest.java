@@ -105,11 +105,11 @@ class IndexViewTest extends ViewTestBase {
         Elements headers = getTableHeaders(doc);
 
         assertTableHeaderIsNotSortable(headers.get(0), "Claim");
-        assertTableHeaderIsSortable(headers.get(1), "ascending", "UFN", "/?page=2&sort=uniqueFileNumber,desc");
-        assertTableHeaderIsSortable(headers.get(2), "none", "CRN", "/?page=2&sort=caseReferenceNumber,asc");
+        assertTableHeaderIsSortable(headers.get(1), "ascending", "UFN", "/?page=1&sort=uniqueFileNumber,desc");
+        assertTableHeaderIsSortable(headers.get(2), "none", "CRN", "/?page=1&sort=caseReferenceNumber,asc");
         assertTableHeaderIsNotSortable(headers.get(3), "Client surname");
         assertTableHeaderIsNotSortable(headers.get(4), "Submission period");
-        assertTableHeaderIsSortable(headers.get(5), "none", "Account", "/?page=2&sort=scheduleReference,asc");
+        assertTableHeaderIsSortable(headers.get(5), "none", "Account", "/?page=1&sort=scheduleReference,asc");
         assertTableHeaderIsNotSortable(headers.get(6), "Category of law");
         assertTableHeaderIsNotSortable(headers.get(7), "Escape case");
     }

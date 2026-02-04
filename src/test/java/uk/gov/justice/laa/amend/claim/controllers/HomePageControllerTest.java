@@ -13,6 +13,7 @@ import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.SortDirection;
+import uk.gov.justice.laa.amend.claim.models.SortField;
 import uk.gov.justice.laa.amend.claim.models.Sorts;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
@@ -26,7 +27,12 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @ActiveProfiles("local")
 @WebMvcTest(HomePageController.class)
@@ -54,7 +60,7 @@ public class HomePageControllerTest {
 
         Sorts expectedSorts = Sorts
             .builder()
-            .value(Map.of("uniqueFileNumber", SortDirection.ASCENDING))
+            .value(Map.of(SortField.UNIQUE_FILE_NUMBER, SortDirection.ASCENDING))
             .enabled(true)
             .build();
 
@@ -71,7 +77,7 @@ public class HomePageControllerTest {
 
         Sorts expectedSorts = Sorts
             .builder()
-            .value(Map.of("caseReferenceNumber", SortDirection.DESCENDING))
+            .value(Map.of(SortField.CASE_REFERENCE_NUMBER, SortDirection.DESCENDING))
             .enabled(true)
             .build();
 
@@ -126,6 +132,22 @@ public class HomePageControllerTest {
         mockMvc.perform(get("/")
                 .param("foo", "bar")
             )
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testOnPageLoadWithInvalidSortFieldReturnsBadRequest() throws Exception {
+        when(searchProperties.isSortEnabled()).thenReturn(true);
+
+        mockMvc.perform(get("/?providerAccountNumber=123&page=1&sort=foo,asc"))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testOnPageLoadWithInvalidSortDirectionReturnsBadRequest() throws Exception {
+        when(searchProperties.isSortEnabled()).thenReturn(true);
+
+        mockMvc.perform(get("/?providerAccountNumber=123&page=1&sort=uniqueFileNumber,foo"))
             .andExpect(status().isBadRequest());
     }
 

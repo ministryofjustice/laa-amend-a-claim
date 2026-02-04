@@ -10,22 +10,22 @@ public class SortsTest {
     @Test
     void defaultToNoneIfFieldNotFound() {
         Sorts sorts = new Sorts();
-        sorts.setValue(Map.of("uniqueFileNumber", SortDirection.ASCENDING));
-        Assertions.assertEquals(SortDirection.NONE, sorts.getDirection("caseReferenceNumber"));
+        sorts.setValue(Map.of(SortField.UNIQUE_FILE_NUMBER, SortDirection.ASCENDING));
+        Assertions.assertEquals(SortDirection.NONE, sorts.getDirection(SortField.CASE_REFERENCE_NUMBER));
     }
 
     @Test
     void returnDirectionIfFieldFound() {
         Sorts sorts = new Sorts();
-        sorts.setValue(Map.of("uniqueFileNumber", SortDirection.ASCENDING));
-        Assertions.assertEquals(SortDirection.ASCENDING, sorts.getDirection("uniqueFileNumber"));
+        sorts.setValue(Map.of(SortField.UNIQUE_FILE_NUMBER, SortDirection.ASCENDING));
+        Assertions.assertEquals(SortDirection.ASCENDING, sorts.getDirection(SortField.UNIQUE_FILE_NUMBER));
     }
 
     @Test
     void returnsValueWhenEnabled() {
-        Sort sort = Sort.builder().field("uniqueFileNumber").direction(SortDirection.ASCENDING).build();
+        Sort sort = Sort.builder().field(SortField.UNIQUE_FILE_NUMBER).direction(SortDirection.ASCENDING).build();
         Sorts sorts = new Sorts(sort);
-        Assertions.assertEquals(SortDirection.ASCENDING, sorts.getDirection("uniqueFileNumber"));
+        Assertions.assertEquals(SortDirection.ASCENDING, sorts.getDirection(SortField.UNIQUE_FILE_NUMBER));
         Assertions.assertTrue(sorts.isEnabled());
     }
 

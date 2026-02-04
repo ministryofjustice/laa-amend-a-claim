@@ -55,14 +55,18 @@ public class SearchQuery {
     }
 
     public String getRedirectUrl() {
-        return getRedirectUrl(sort);
+        return getRedirectUrl(page, sort);
     }
 
-    public String getRedirectUrl(String field, SortDirection direction) {
-        return getRedirectUrl(new Sort(field, direction));
+    public String getRedirectUrl(SortField field, SortDirection direction) {
+        return getRedirectUrl(1, new Sort(field, direction));
     }
 
     public String getRedirectUrl(Sort sort) {
+        return getRedirectUrl(page, sort);
+    }
+
+    private String getRedirectUrl(int page, Sort sort) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/");
 
         addQueryParam(builder, "providerAccountNumber", providerAccountNumber);

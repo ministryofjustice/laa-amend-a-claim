@@ -1,7 +1,5 @@
 package uk.gov.justice.laa.amend.claim.constants;
 
-import uk.gov.justice.laa.amend.claim.models.SortDirection;
-
 import java.util.Set;
 
 public class AmendClaimConstants {
@@ -23,10 +21,6 @@ public class AmendClaimConstants {
     public static final String DEFAULT_DATE_FORMAT = "dd MMMM yyyy";
     public static final String DEFAULT_PERIOD_FORMAT = "MMM yyyy";
     public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
-
-    public static final String DEFAULT_SORT = "uniqueFileNumber,asc";
-    public static final String DEFAULT_SORT_FIELD = "uniqueFileNumber";
-    public static final SortDirection DEFAULT_SORT_ORDER = SortDirection.ASCENDING;
 
     public static final String ASSESSMENT_OUTCOME_REQUIRED_ERROR = "{assessmentOutcome.assessmentOutcomeRequiredError}";
     public static final String LIABILITY_FOR_VAT_REQUIRED_ERROR = "{assessmentOutcome.liabilityForVatRequiredError}";

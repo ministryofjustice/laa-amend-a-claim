@@ -12,6 +12,7 @@ import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.amend.claim.models.SortDirection;
+import uk.gov.justice.laa.amend.claim.models.SortField;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
@@ -52,7 +53,7 @@ class ClaimServiceTest {
 
         when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc"))
                 .thenReturn(Mono.just(mockApiResponse));
-        Sort sort = Sort.builder().field("uniqueFileNumber").direction(SortDirection.ASCENDING).build();
+        Sort sort = Sort.builder().field(SortField.UNIQUE_FILE_NUMBER).direction(SortDirection.ASCENDING).build();
 
         // Act
         ClaimResultSet result = claimService.searchClaims("0p322f", Optional.empty(), Optional.empty(), Optional.empty(), 1, 10, sort);
@@ -89,7 +90,7 @@ class ClaimServiceTest {
         // Arrange
         when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc"))
                 .thenThrow(new RuntimeException("API Error"));
-        Sort sort = Sort.builder().field("uniqueFileNumber").direction(SortDirection.ASCENDING).build();
+        Sort sort = Sort.builder().field(SortField.UNIQUE_FILE_NUMBER).direction(SortDirection.ASCENDING).build();
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
@@ -106,7 +107,7 @@ class ClaimServiceTest {
         // Arrange
         when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc"))
                 .thenReturn(Mono.empty());
-        Sort sort = Sort.builder().field("uniqueFileNumber").direction(SortDirection.ASCENDING).build();
+        Sort sort = Sort.builder().field(SortField.UNIQUE_FILE_NUMBER).direction(SortDirection.ASCENDING).build();
 
         // Act
         ClaimResultSet result = claimService.searchClaims("0P322F", Optional.empty(), Optional.empty(), Optional.empty(), 1, 10, sort);
