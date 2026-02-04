@@ -28,20 +28,33 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler) throws IOException, ServletException {
-        log.error("============");
-        log.error("============");
+        log.error("============1");
+        log.error("============1");
         log.error("entering maintenance interceptor");
-        log.error("============");
-        log.error("============");
+        log.error("============2");
+        log.error("============2");
 
         String path = request.getRequestURI();
         if (path.startsWith("/actuator") || path.startsWith("/health")) {
+
+            log.error("============3");
+            log.error("============3");
+            log.error("inside actuator or health");
+            log.error("============4");
+            log.error("============4");
             return true;
+
         }
 
         if (Files.exists(enabled)
                 && Files.readString(enabled).replace("/r", "")
                 .trim().equalsIgnoreCase("true")) {
+
+            log.error("============5");
+            log.error("============5");
+            log.error("if file exists hit");
+            log.error("============6");
+            log.error("============6");
 
             request.setAttribute(RequestDispatcher.ERROR_STATUS_CODE, 503);
             request.setAttribute(RequestDispatcher.ERROR_MESSAGE, Files.readString(message).trim());
