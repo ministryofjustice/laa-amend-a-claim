@@ -105,7 +105,7 @@ public class MonetaryValueFormTest extends FormTest {
         ConstraintViolation<MonetaryValueForm> violation = getViolation(violations, "value");
 
         Assertions.assertNotNull(violation);
-        String expectedMessage = String.format("{%s.error.commas}", cost.getPrefix());
+        String expectedMessage = String.format("{%s.error.invalid}", cost.getPrefix());
         Assertions.assertEquals(expectedMessage, violation.getMessage());
     }
 

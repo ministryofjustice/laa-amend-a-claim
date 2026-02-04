@@ -42,7 +42,7 @@ public class CurrencyValidator extends Validator {
 
             return true;
         } catch (ThousandsSeparatorParseException e) {
-            addViolation(context, fieldName, String.format("{%s.error.commas}", prefix));
+            addViolation(context, fieldName, String.format("{%s.error.invalid}", prefix));
             return false;
         } catch (NumberFormatException | ParseException e) {
             addViolation(context, fieldName, String.format("{%s.error.invalid}", prefix));
