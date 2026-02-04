@@ -91,15 +91,7 @@ public class DiscardAssessmentTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     void discardAssessmentScreenDisplaysCorrectly() {
 
-        goToDiscardAssessmentScreen();
-
-        DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
-        discard.waitForPage();
-
-        Assertions.assertEquals(
-                "Confirm you want to discard this assessment",
-                discard.getHeadingText()
-        );
+        DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
 
         Assertions.assertTrue(
                 discard.isDiscardAssessmentButtonVisible(),
@@ -118,14 +110,10 @@ public class DiscardAssessmentTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     void discardAssessmentRedirectsToSearchWithBanner() {
 
-        goToDiscardAssessmentScreen();
-
-        DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
-        discard.waitForPage();
+        DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
         discard.clickDiscardAssessment();
 
         SearchPage searchAfterDiscard = new SearchPage(page);
-        searchAfterDiscard.waitForPage();
 
         Assertions.assertTrue(
                 searchAfterDiscard.isSuccessBannerVisible(),
@@ -145,20 +133,10 @@ public class DiscardAssessmentTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     void returnToClaimNavigatesBackToReviewScreen() {
 
-        goToDiscardAssessmentScreen();
-
-        DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
-        discard.waitForPage();
+        DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
         discard.clickReturnToClaim();
 
-        ReviewAndAmendPage reviewBack = new ReviewAndAmendPage(page);
-        reviewBack.waitForPage();
-
-        Assertions.assertEquals(
-                "Review and amend",
-                reviewBack.getHeadingText(),
-                "Should return to Review and amend page"
-        );
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
     }
 
     @Test
@@ -167,34 +145,20 @@ public class DiscardAssessmentTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     void reviewAndAmendDiscardNavigatesToDiscardScreen() {
 
-        goToReviewAndAmendPage();
-
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
-        review.discardChanges();
+        ReviewAndAmendPage review = goToReviewAndAmendPage();
+        review.cancel();
 
         DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
-        discard.waitForPage();
-
-        Assertions.assertEquals(
-                "Confirm you want to discard this assessment",
-                discard.getHeadingText(),
-                "Should land on discard confirmation screen"
-        );
     }
 
-    private void goToDiscardAssessmentScreen() {
-        goToReviewAndAmendPage();
+    private DiscardAssessmentPage goToDiscardAssessmentScreen() {
+        ReviewAndAmendPage review = goToReviewAndAmendPage();
+        review.cancel();
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
-        review.discardChanges();
-
-        DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
-        discard.waitForPage();
+        return new DiscardAssessmentPage(page);
     }
 
-    private void goToReviewAndAmendPage() {
+    private ReviewAndAmendPage goToReviewAndAmendPage() {
         String baseUrl = EnvConfig.baseUrl();
 
         SearchPage search = new SearchPage(page).navigateTo(baseUrl);
@@ -210,7 +174,6 @@ public class DiscardAssessmentTest extends BaseTest {
         search.clickViewForUfn(UFN);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
 
         Assertions.assertFalse(
                 details.isAddAssessmentOutcomeDisabled(),
@@ -220,10 +183,8 @@ public class DiscardAssessmentTest extends BaseTest {
         details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
         outcome.completeAssessment("assessed in full", true);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
+        return new ReviewAndAmendPage(page);
     }
 }

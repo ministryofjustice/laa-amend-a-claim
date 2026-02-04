@@ -7,15 +7,12 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.Map;
 
-import static uk.gov.justice.laa.amend.claim.pages.PageHelper.cardByTitle;
-import static uk.gov.justice.laa.amend.claim.pages.PageHelper.summaryListRowByLabel;
-import static uk.gov.justice.laa.amend.claim.pages.PageHelper.tableRowByLabel;
+import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.cardByTitle;
+import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.summaryListRowByLabel;
+import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.tableRowByLabel;
 
-public class ClaimDetailsPage {
+public class ClaimDetailsPage extends LaaPage {
 
-    private final Page page;
-
-    private final Locator heading;
     private final Locator addAssessmentOutcomeButton;
     private final Locator updateAssessmentOutcomeButton;
     private final Locator addUpdateAssessmentOutcomeButton;
@@ -23,12 +20,7 @@ public class ClaimDetailsPage {
     private final Locator backToSearchButton;
 
     public ClaimDetailsPage(Page page) {
-        this.page = page;
-
-        this.heading = page.getByRole(
-            AriaRole.HEADING,
-            new Page.GetByRoleOptions().setName("Claim details")
-        );
+        super(page, "Claim details");
 
         this.addAssessmentOutcomeButton = page.getByRole(
             AriaRole.BUTTON,
@@ -48,14 +40,6 @@ public class ClaimDetailsPage {
             AriaRole.BUTTON,
             new Page.GetByRoleOptions().setName("Back to search")
         );
-    }
-
-    public void waitForPage() {
-        heading.waitFor();
-    }
-
-    public String getHeadingText() {
-        return heading.textContent().trim();
     }
 
     public void clickAddUpdateAssessmentOutcome() {

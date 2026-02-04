@@ -7,13 +7,11 @@ import com.microsoft.playwright.options.AriaRole;
 import java.util.List;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static uk.gov.justice.laa.amend.claim.pages.PageHelper.cardByTitle;
-import static uk.gov.justice.laa.amend.claim.pages.PageHelper.tableByCard;
+import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.cardByTitle;
+import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.tableByCard;
 
-public class ReviewAndAmendPage {
-    private final Page page;
+public class ReviewAndAmendPage extends LaaErrorSummaryPage {
 
-    private final Locator heading;
     private final Locator backLink;
 
     private final Locator assessmentOutcomeCard;
@@ -26,18 +24,8 @@ public class ReviewAndAmendPage {
     private final Locator totalClaimValueTable;
     private final Locator totalAllowedValueTable;
 
-    private final Locator submitAdjustmentsButton;
-    private final Locator discardChangesLink;
-
-    private final Locator errorSummary;
-
     public ReviewAndAmendPage(Page page) {
-        this.page = page;
-
-        this.heading = page.getByRole(
-                AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Review and amend")
-        );
+        super(page, "Review and amend");
 
         this.backLink = page.locator(".govuk-back-link");
 
@@ -51,31 +39,13 @@ public class ReviewAndAmendPage {
         this.totalClaimValueTable = tableByCard(totalClaimValueCard);
         this.totalAllowedValueTable = tableByCard(totalAllowedValueCard);
 
-        this.submitAdjustmentsButton = page.getByRole(
-                AriaRole.BUTTON,
-                new Page.GetByRoleOptions().setName("Submit adjustments")
+        this.saveButton = page.getByRole(
+            AriaRole.BUTTON,
+            new Page.GetByRoleOptions().setName("Submit adjustments")
         );
 
-        this.discardChangesLink = page.locator("#discard");
-
-        this.errorSummary = page.locator(".govuk-error-summary");
+        this.cancelButton = page.locator("#discard");
     }
-
-    public void waitForPage() {
-        heading.waitFor();
-        assessmentOutcomeCard.waitFor();
-        claimCostsCard.waitFor();
-        if (totalClaimValueCard.isVisible()) {
-            totalClaimValueCard.waitFor();
-        }
-        totalAllowedValueCard.waitFor();
-    }
-
-    public String getHeadingText() {
-        return heading.textContent().trim();
-    }
-
-
 
     private Locator rowByItemName(String itemName, Locator locator) {
         return locator.locator("tbody tr").filter(
@@ -132,14 +102,6 @@ public class ReviewAndAmendPage {
         clickAddLink(link);
     }
 
-    public void submitAdjustments() {
-        submitAdjustmentsButton.click();
-    }
-
-    public void discardChanges() {
-        discardChangesLink.click();
-    }
-
     public void clickBackLink() {
         backLink.click();
     }
@@ -149,8 +111,6 @@ public class ReviewAndAmendPage {
     }
 
     public void assertCrimePageLoadedHeadersAndItems() {
-        waitForPage();
-
         assertTableHasHeaders(claimCostsTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalClaimValueTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalAllowedValueTable, "Item", "Calculated", "Requested", "Allowed");
@@ -166,13 +126,11 @@ public class ReviewAndAmendPage {
                 "VAT"
         );
         assertClaimCostsNotHasItems("Total");
-        assertThat(submitAdjustmentsButton).isVisible();
-        assertThat(discardChangesLink).isVisible();
+        assertThat(saveButton).isVisible();
+        assertThat(cancelButton).isVisible();
     }
 
     public void assertCivilPageLoadedHeadersAndItems() {
-        waitForPage();
-
         assertTableHasHeaders(claimCostsTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalClaimValueTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalAllowedValueTable, "Item", "Calculated", "Requested", "Allowed");
@@ -190,12 +148,12 @@ public class ReviewAndAmendPage {
         );
         assertClaimCostsNotHasItems("Total");
 
-        assertThat(submitAdjustmentsButton).isVisible();
-        assertThat(discardChangesLink).isVisible();
+        assertThat(saveButton).isVisible();
+        assertThat(cancelButton).isVisible();
     }
 
     public void assertSubmitTotalsRequiredErrors() {
-        assertThat(errorSummary).isVisible();
+        waitForPageErrors();
 
         assertThat(errorSummary).containsText("The submission must include an assessed total VAT");
         assertThat(errorSummary).containsText("The submission must include an assessed total including VAT");

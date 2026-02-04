@@ -4,10 +4,8 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 
-public class SearchPage {
-    private final Page page;
+public class SearchPage extends LaaPage {
 
-    private final Locator heading;
     private final Locator providerAccountNumberInput;
     private final Locator submissionMonthInput;
     private final Locator submissionYearInput;
@@ -25,12 +23,7 @@ public class SearchPage {
     private final Locator noResultsMessage;
 
     public SearchPage(Page page) {
-        this.page = page;
-
-        this.heading = page.getByRole(
-                AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Search for a claim")
-        );
+        super(page, "Search for a claim");
 
         this.providerAccountNumberInput = page.locator("#provider-account-number");
         this.submissionMonthInput = page.locator("#submission-date-month");
@@ -58,13 +51,8 @@ public class SearchPage {
         this.noResultsMessage = page.locator("h2.govuk-heading-m:has-text('no results')");
     }
 
-    public void waitForPage() {
-        heading.waitFor();
-    }
-
     public SearchPage navigateTo(String baseUrl) {
         page.navigate(baseUrl);
-        waitForPage();
         return this;
     }
 
@@ -96,7 +84,6 @@ public class SearchPage {
     // ---- COMBINED SEARCH + WAIT FOR RESULTS ----
     public void searchForClaim(String providerAccount, String month, String year,
                                String ufn, String crn, boolean expectResults) {
-        waitForPage();
         enterProviderAccountNumber(providerAccount);
         enterSubmissionDate(month, year);
         enterUFN(ufn);
@@ -108,10 +95,6 @@ public class SearchPage {
     public void searchForClaim(String providerAccount, String month, String year,
                                String ufn, String crn) {
         searchForClaim(providerAccount, month, year, ufn, crn, true);
-    }
-
-    public String getHeadingText() {
-        return heading.textContent().trim();
     }
 
     public void waitForResults(boolean expectResults) {

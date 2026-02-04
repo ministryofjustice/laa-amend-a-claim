@@ -5,7 +5,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class EnvConfig {
     private static final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
-    public static String getOrDefault(String key, String defaultValue) {
+    private static String getOrDefault(String key, String defaultValue) {
         return dotenv.get(key, defaultValue);
     }
 
@@ -25,5 +25,9 @@ public class EnvConfig {
     public static String dbPassword() { return getOrDefault("DB_PASSWORD", ""); }
     public static String userId() {
         return "LAA-Amend-A-Claim-E2E-Tests";
+    }
+
+    public static String axeReportsDirectory() {
+        return "build/axe-reports/json";
     }
 }
