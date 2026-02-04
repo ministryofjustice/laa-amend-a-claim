@@ -30,7 +30,7 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             Object handler) throws IOException, ServletException {
         log.error("============");
         log.error("============");
-        log.error("entering claim interceptor");
+        log.error("entering maintenance interceptor");
         log.error("============");
         log.error("============");
 
