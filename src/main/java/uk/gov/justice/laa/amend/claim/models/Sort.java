@@ -3,6 +3,8 @@ package uk.gov.justice.laa.amend.claim.models;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,13 +32,13 @@ public class Sort {
 
     public Sort(String str) {
         if (str != null) {
-            Pattern pattern = Pattern.compile("^(\\w+),(\\w+)$");
+            Pattern pattern = Pattern.compile("^(uniqueFileNumber|caseReferenceNumber|scheduleReference),(asc|desc)$");
             Matcher matcher = pattern.matcher(str);
             if (matcher.matches()) {
                 this.field = matcher.group(1);
                 this.direction = SortDirection.fromValue(matcher.group(2));
             } else {
-                applyDefaults();
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not parse sort sting: " + str);
             }
         } else {
             applyDefaults();

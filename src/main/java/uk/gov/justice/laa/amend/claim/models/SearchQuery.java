@@ -49,10 +49,7 @@ public class SearchQuery {
 
         request.getParameterMap().keySet().forEach(param -> {
             if (!allowed.contains(param)) {
-                throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Unknown query parameter: " + param
-                );
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown query parameter: " + param);
             }
         });
     }

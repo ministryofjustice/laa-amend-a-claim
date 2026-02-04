@@ -3,9 +3,12 @@ package uk.gov.justice.laa.amend.claim.models;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 public class SortTest {
 
@@ -28,35 +31,24 @@ public class SortTest {
         }
 
         @Test
-        void shouldConvertStringToSortWhenNoOrder() {
-            String str = "scheduleReference,none";
-            Sort result = new Sort(str);
-            Assertions.assertEquals("scheduleReference", result.getField());
-            Assertions.assertEquals(SortDirection.NONE, result.getDirection());
-        }
-
-        @Test
-        void shouldDefaultToNoOrderForInvalidDirection() {
+        void shouldThrowExceptionForInvalidDirection() {
             String str = "scheduleReference,foo";
-            Sort result = new Sort(str);
-            Assertions.assertEquals("scheduleReference", result.getField());
-            Assertions.assertEquals(SortDirection.NONE, result.getDirection());
+            ResponseStatusException ex = Assertions.assertThrows(ResponseStatusException.class, () -> new Sort(str));
+            Assertions.assertTrue(ex.getStatusCode().isSameCodeAs(BAD_REQUEST));
         }
 
         @Test
-        void shouldDefaultToAscendingUniqueFileNumberForNonCommaSeparatedInput() {
+        void shouldThrowExceptionForNonCommaSeparatedInput() {
             String str = "foo";
-            Sort result = new Sort(str);
-            Assertions.assertEquals("uniqueFileNumber", result.getField());
-            Assertions.assertEquals(SortDirection.ASCENDING, result.getDirection());
+            ResponseStatusException ex = Assertions.assertThrows(ResponseStatusException.class, () -> new Sort(str));
+            Assertions.assertTrue(ex.getStatusCode().isSameCodeAs(BAD_REQUEST));
         }
 
         @Test
-        void shouldDefaultToAscendingUniqueFileNumberForInvalidInput() {
+        void shouldThrowExceptionForInvalidInput() {
             String str = "scheduleReference,desc,foo";
-            Sort result = new Sort(str);
-            Assertions.assertEquals("uniqueFileNumber", result.getField());
-            Assertions.assertEquals(SortDirection.ASCENDING, result.getDirection());
+            ResponseStatusException ex = Assertions.assertThrows(ResponseStatusException.class, () -> new Sort(str));
+            Assertions.assertTrue(ex.getStatusCode().isSameCodeAs(BAD_REQUEST));
         }
     }
 

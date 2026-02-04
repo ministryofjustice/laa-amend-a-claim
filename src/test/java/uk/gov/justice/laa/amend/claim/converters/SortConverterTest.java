@@ -33,13 +33,4 @@ public class SortConverterTest {
         Assertions.assertEquals("caseReferenceNumber", result.getField());
         Assertions.assertEquals(SortDirection.DESCENDING, result.getDirection());
     }
-
-    @Test
-    void shouldConvertNoOrderField() {
-        String source = "scheduleReference,none";
-        SortConverter converter = new SortConverter();
-        Sort result = converter.convert(source);
-        Assertions.assertEquals("scheduleReference", result.getField());
-        Assertions.assertEquals(SortDirection.NONE, result.getDirection());
-    }
 }
