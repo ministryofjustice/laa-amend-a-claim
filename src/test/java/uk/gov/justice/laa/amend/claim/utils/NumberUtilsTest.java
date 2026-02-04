@@ -3,7 +3,6 @@ package uk.gov.justice.laa.amend.claim.utils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import uk.gov.justice.laa.amend.claim.exceptions.ThousandsSeparatorParseException;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -107,8 +106,8 @@ class NumberUtilsTest {
         "1.305,50"
     })
     void rejectsInvalidSeparators(String input) {
-        ThousandsSeparatorParseException ex =
-            assertThrows(ThousandsSeparatorParseException.class,
+        ParseException ex =
+            assertThrows(ParseException.class,
                 () -> NumberUtils.parse(input));
 
         assertEquals("Value must have valid comma separators or none at all", ex.getMessage());

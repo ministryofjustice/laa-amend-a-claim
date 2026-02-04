@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.amend.claim.utils;
 
 import lombok.experimental.UtilityClass;
-import uk.gov.justice.laa.amend.claim.exceptions.ThousandsSeparatorParseException;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -61,7 +60,7 @@ public class NumberUtils {
         if (value.contains(",")) {
             Pattern pattern = Pattern.compile("^\\d{1,3}(,\\d{3})*(\\.\\d+)?$");
             if (!pattern.matcher(value).matches()) {
-                throw new ThousandsSeparatorParseException("Value must have valid comma separators or none at all");
+                throw new ParseException("Value must have valid comma separators or none at all", 0);
             }
         }
     }

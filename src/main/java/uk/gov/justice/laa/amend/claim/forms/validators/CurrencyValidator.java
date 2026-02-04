@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.amend.claim.forms.validators;
 
 import jakarta.validation.ConstraintValidatorContext;
-import uk.gov.justice.laa.amend.claim.exceptions.ThousandsSeparatorParseException;
 import uk.gov.justice.laa.amend.claim.utils.NumberUtils;
 
 import java.math.BigDecimal;
@@ -41,9 +40,6 @@ public class CurrencyValidator extends Validator {
             }
 
             return true;
-        } catch (ThousandsSeparatorParseException e) {
-            addViolation(context, fieldName, String.format("{%s.error.invalid}", prefix));
-            return false;
         } catch (NumberFormatException | ParseException e) {
             addViolation(context, fieldName, String.format("{%s.error.invalid}", prefix));
             return false;
