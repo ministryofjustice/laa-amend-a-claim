@@ -22,7 +22,6 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
     private static final Path message = Paths.get("config/maintenance/message");
     private static final Path title = Paths.get("config/maintenance/title");
 
-
     @Override
     public boolean preHandle(
             HttpServletRequest request,
@@ -33,6 +32,16 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         log.error("entering maintenance interceptor");
         log.error("============2");
         log.error("============2");
+
+
+        log.error("============PATH");
+        log.error("============PATH");
+        log.error("Path String: {}", enabled);
+        log.error("File exists?: {}", Files.exists(enabled));
+        log.error("Absolute path: {}", enabled.toAbsolutePath());
+        log.error("Readable: {}", Files.isReadable(enabled));
+        log.error("============PATHEND");
+        log.error("============PATHEND");
 
         String path = request.getRequestURI();
         if (path.startsWith("/actuator") || path.startsWith("/health")) {
