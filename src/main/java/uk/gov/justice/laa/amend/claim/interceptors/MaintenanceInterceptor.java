@@ -51,7 +51,9 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
 
         return true;
     }
-    private boolean error(HttpServletResponse response, HttpServletRequest request, String message) throws IOException {
+
+    private boolean error(
+            HttpServletResponse response, HttpServletRequest request, String message) throws IOException {
         log.warn("{}: {}", request.getRequestURI(), message);
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
         return false;
