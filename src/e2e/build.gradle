@@ -100,7 +100,6 @@ tasks.withType(Test).configureEach {
                 htmlFilePath
             )
             .redirectErrorStream(true)
-            .directory(htmlDir) // Set working directory to htmlDir
             .start()
             process.inputStream.eachLine { println it }
             int exitCode = process.waitFor()
