@@ -39,8 +39,8 @@ public class ErrorPageController implements ErrorController {
             log.error("============= in error controller");
 
 
-            log.error("MESSAGE: " , Files.readString(message).trim());
-            log.error("TITLE: " , Files.readString(title).trim());
+            log.error("MESSAGE: ", Files.readString(message).trim());
+            log.error("TITLE: ", Files.readString(title).trim());
 
             log.error("============= in error controller");
             log.error("============= in error controller");
