@@ -90,7 +90,7 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
 
             response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
 
-            request.getRequestDispatcher("/error").forward(request, response);
+            request.getRequestDispatcher("maintenance-page").forward(request, response);
 
             return false;
         }
