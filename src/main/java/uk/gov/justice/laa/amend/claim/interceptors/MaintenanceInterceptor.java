@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,9 +19,9 @@ import java.nio.file.Paths;
 @Slf4j
 public class MaintenanceInterceptor implements HandlerInterceptor {
 
-    private static final Path enabled = Paths.get("/config/maintenance/enabled");
-    private static final Path message = Paths.get("/config/maintenance/message");
-    private static final Path title = Paths.get("/config/maintenance/title");
+    Path enabled = Paths.get("/config/maintenance/enabled");
+    Path message = Paths.get("/config/maintenance/message");
+    Path title = Paths.get("/config/maintenance/title");
 
     @Override
     public boolean preHandle(
@@ -32,6 +33,17 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         log.error("entering maintenance interceptor");
         log.error("============2");
         log.error("============2");
+
+        String enabledValue = new String(
+                Files.readAllBytes(enabled),
+                StandardCharsets.UTF_8
+        ).trim();
+
+        log.error("RAW ENABLED = {}" , enabledValue);
+
+        boolean enabledBoolean = Boolean.parseBoolean(enabledValue);
+
+        log.error("parsed ENABLED = {}" , enabledBoolean);
 
 
         log.error("============PATH");
