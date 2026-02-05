@@ -21,35 +21,6 @@ public class ErrorPageController implements ErrorController {
     @RequestMapping("/error")
     public String handleError(HttpServletRequest request, Model model) throws IOException {
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-        Path message = Paths.get("/config/maintenance/message");
-        Path title = Paths.get("/config/maintenance/title");
-
-        Path enabled = Paths.get("/config/maintenance/enabled");
-
-        if (Files.exists(enabled)
-                && Files.readString(enabled).replace("/r", "")
-                .trim().equalsIgnoreCase("true")) {
-
-
-            model.addAttribute("message", Files.readString(message));
-            model.addAttribute("title", Files.readString(title));
-
-            log.error("============= in error controller");
-            log.error("============= in error controller");
-            log.error("============= in error controller");
-
-
-            log.error("MESSAGE: " + Files.readString(message).trim());
-            log.error("TITLE: " + Files.readString(title).trim());
-
-            log.error("============= in error controller");
-            log.error("============= in error controller");
-            log.error("============= in error controller");
-
-        }
-
-
-
         if (status != null) {
             int statusCode = Integer.parseInt(status.toString());
             model.addAttribute("statusCode", statusCode);
