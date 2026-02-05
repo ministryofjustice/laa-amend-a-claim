@@ -32,12 +32,7 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             return true;
         }
 
-
-
-
         log.error("entering maintenance interceptor");
-
-
 
 
         String path = request.getRequestURI();
@@ -48,11 +43,6 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         if (Files.exists(enabled)
                 && Files.readString(enabled).replace("/r", "")
                 .trim().equalsIgnoreCase("true")) {
-
-            request.setAttribute(RequestDispatcher.ERROR_STATUS_CODE, 503);
-
-            response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-
             request.getRequestDispatcher("/maintenance").forward(request, response);
 
             return false;
