@@ -25,20 +25,20 @@ public class MaintenancePageController {
         Path message = Paths.get("/config/maintenance/message");
         Path title = Paths.get("/config/maintenance/title");
 
-            model.addAttribute("message", Files.readString(message));
-            model.addAttribute("title", Files.readString(title));
+        model.addAttribute("message", Files.readString(message));
+        model.addAttribute("title", Files.readString(title));
 
-            log.error("============= in error controller");
-            log.error("============= in error controller");
-            log.error("============= in error controller");
+        log.error("============= in error controller");
+        log.error("============= in error controller");
+        log.error("============= in error controller");
 
 
-            log.error("MESSAGE: " + Files.readString(message).trim());
-            log.error("TITLE: " + Files.readString(title).trim());
+        log.error("MESSAGE: " + Files.readString(message).trim());
+        log.error("TITLE: " + Files.readString(title).trim());
 
-            log.error("============= in error controller");
-            log.error("============= in error controller");
-            log.error("============= in error controller");
+        log.error("============= in error controller");
+        log.error("============= in error controller");
+        log.error("============= in error controller");
 
         return "maintenance";
     }

@@ -34,18 +34,17 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         String path = request.getRequestURI();
 
 
-       if(maintenanceEnabled()) {
-           if  (request.getRequestURI().equals("/maintenance")) {
-               return true;
-           }
-           if (path.startsWith("/actuator") || path.startsWith("/health")) {
-               return true;
-           }
-           request.getRequestDispatcher("/maintenance").forward(request, response);
-           return false;
-       }
-
-        return true;
+        if (maintenanceEnabled()) {
+            if  (request.getRequestURI().equals("/maintenance")) {
+                return true;
+            }
+            if (path.startsWith("/actuator") || path.startsWith("/health")) {
+                return true;
+            }
+            request.getRequestDispatcher("/maintenance").forward(request, response);
+            return false;
+            }
+            return true;
     }
 
     private boolean error(
