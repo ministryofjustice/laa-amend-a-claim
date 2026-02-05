@@ -1,8 +1,7 @@
-package uk.gov.justice.laa.amend.claim.exceptions;
+package uk.gov.justice.laa.amend.claim.controllers;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.boot.webmvc.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +14,7 @@ import java.nio.file.Paths;
 import static reactor.netty.http.HttpConnectionLiveness.log;
 
 @Controller
-public class MaintenancePageController implements ErrorController {
+public class MaintenancePageController {
 
     @RequestMapping("/maintenance")
     public String handleError(HttpServletRequest request, Model model) throws IOException {
