@@ -42,7 +42,7 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
 
         boolean enabledBoolean = Boolean.parseBoolean(enabledValue);
 
-        log.error("parsed ENABLED = {}" , enabledBoolean);
+        log.error("parsed ENABLED = {}", enabledBoolean);
 
 
         log.error("============PATH");
