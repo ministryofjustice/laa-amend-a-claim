@@ -42,6 +42,19 @@ Using the `.env-template` file as a template, copy to a new .env file
 
 Be sure to fill out all values as they are required for pulling dependencies for the application to run
 
+
+### Developer setup
+1. Run `scripts/setup-hooks.sh` to install pre-commit hooks for Git.
+    - This will install prek pre commit hook into git, which helps to:
+        - Run Spotless to automatically format Java files
+        - Run Checkstyle validation
+        - Scan for potential secrets in code
+    - Note: If Spotless detects formatting issues, the commit will fail. After Spotless applies the formatting, you can commit the changes again.
+
+2. Configure code formatting:
+    - We use [palantir-java-format](https://github.com/palantir/palantir-java-format) for consistent code formatting
+    - Install and enable the "palantir-java-format" plugin in IntelliJ IDEA
+
 ### Build And Run Application
 1. Run:
    1. `./run.sh` or `./run.sh local` to run the service with:

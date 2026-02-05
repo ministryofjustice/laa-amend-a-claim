@@ -1,6 +1,8 @@
 plugins {
     id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.0.5'
 
+    id "com.diffplug.spotless" version "8.2.1"
+    id "com.palantir.java-format-spotless" version "2.85.0"
 }
 
 java {
@@ -14,6 +16,16 @@ java {
 checkstyle {
     toolVersion = '13.0.0'
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+}
+
+spotless {
+    java {
+        // Palantir formatter is already active
+        target 'src/main/java/**/*.java'
+        importOrder()
+        removeUnusedImports()
+        cleanthat()
+    }
 }
 
 repositories {
