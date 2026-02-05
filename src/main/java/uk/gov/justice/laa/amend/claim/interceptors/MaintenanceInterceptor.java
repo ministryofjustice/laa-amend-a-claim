@@ -59,10 +59,6 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         Path enabled = Paths.get("/config/maintenance/enabled");
 
         try {
-//            if (Files.exists(enabled) && Files.readString(enabled).replace("/r", "").trim().equalsIgnoreCase("true")) {
-//                return false;
-//            }
-
             if (Files.exists(enabled)) {
                 String value = Files.readString(enabled).trim();
 
