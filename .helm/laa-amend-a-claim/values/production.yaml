@@ -13,3 +13,6 @@ resources:
   limits:
     memory: "4000Mi"
     cpu: "2"
+
+grafana:
+  enabled: true
