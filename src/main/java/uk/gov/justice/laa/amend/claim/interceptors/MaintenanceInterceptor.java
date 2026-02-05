@@ -26,7 +26,18 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler) throws IOException, ServletException {
+        log.error("before check for loop");
+
+        if  (request.getRequestURI().equals("/maintenance")) {
+            return true;
+        }
+
+
+
+
         log.error("entering maintenance interceptor");
+
+
 
 
         String path = request.getRequestURI();

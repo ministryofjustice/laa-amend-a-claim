@@ -22,12 +22,6 @@ public class ClaimInterceptor implements HandlerInterceptor {
         HttpServletResponse response,
         Object handler
     ) throws Exception {
-
-        log.error("============");
-        log.error("============");
-        log.error("entering claim interceptor");
-        log.error("============");
-        log.error("============");
         Map<String, String> pathVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
         String submissionId = pathVariables.get("submissionId");
         String claimId = pathVariables.get("claimId");
