@@ -43,8 +43,8 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             }
             request.getRequestDispatcher("/maintenance").forward(request, response);
             return false;
-            }
-            return true;
+        }
+        return true;
     }
 
     private boolean error(
