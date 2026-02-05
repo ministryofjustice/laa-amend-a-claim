@@ -43,4 +43,8 @@ public class PaginationResults {
         this.count = totalNumberOfResults;
         this.text = totalNumberOfResults == 1 ? "result" : "results";
     }
+
+    public boolean hasOne() {
+        return count == 1;
+    }
 }

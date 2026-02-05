@@ -3,9 +3,9 @@ package uk.gov.justice.laa.amend.claim.models;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
-import java.time.YearMonth;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 public class SortTest {
 
@@ -15,7 +15,7 @@ public class SortTest {
         void shouldConvertStringToSortWhenAscendingOrder() {
             String str = "uniqueFileNumber,asc";
             Sort result = new Sort(str);
-            Assertions.assertEquals("uniqueFileNumber", result.getField());
+            Assertions.assertEquals(SortField.UNIQUE_FILE_NUMBER, result.getField());
             Assertions.assertEquals(SortDirection.ASCENDING, result.getDirection());
         }
 
@@ -23,40 +23,26 @@ public class SortTest {
         void shouldConvertStringToSortWhenDescendingOrder() {
             String str = "caseReferenceNumber,desc";
             Sort result = new Sort(str);
-            Assertions.assertEquals("caseReferenceNumber", result.getField());
+            Assertions.assertEquals(SortField.CASE_REFERENCE_NUMBER, result.getField());
             Assertions.assertEquals(SortDirection.DESCENDING, result.getDirection());
         }
 
         @Test
-        void shouldConvertStringToSortWhenNoOrder() {
-            String str = "scheduleReference,none";
-            Sort result = new Sort(str);
-            Assertions.assertEquals("scheduleReference", result.getField());
-            Assertions.assertEquals(SortDirection.NONE, result.getDirection());
-        }
-
-        @Test
-        void shouldDefaultToNoOrderForInvalidDirection() {
+        void shouldThrowExceptionForInvalidDirection() {
             String str = "scheduleReference,foo";
-            Sort result = new Sort(str);
-            Assertions.assertEquals("scheduleReference", result.getField());
-            Assertions.assertEquals(SortDirection.NONE, result.getDirection());
+            Assertions.assertThrows(IllegalArgumentException.class, () -> new Sort(str));
         }
 
         @Test
-        void shouldDefaultToAscendingUniqueFileNumberForNonCommaSeparatedInput() {
+        void shouldThrowExceptionForNonCommaSeparatedInput() {
             String str = "foo";
-            Sort result = new Sort(str);
-            Assertions.assertEquals("uniqueFileNumber", result.getField());
-            Assertions.assertEquals(SortDirection.ASCENDING, result.getDirection());
+            Assertions.assertThrows(IllegalArgumentException.class, () -> new Sort(str));
         }
 
         @Test
-        void shouldDefaultToAscendingUniqueFileNumberForInvalidInput() {
+        void shouldThrowExceptionForInvalidInput() {
             String str = "scheduleReference,desc,foo";
-            Sort result = new Sort(str);
-            Assertions.assertEquals("uniqueFileNumber", result.getField());
-            Assertions.assertEquals(SortDirection.ASCENDING, result.getDirection());
+            Assertions.assertThrows(IllegalArgumentException.class, () -> new Sort(str));
         }
     }
 
@@ -64,19 +50,19 @@ public class SortTest {
     class ToStringTests {
         @Test
         void shouldConvertSortToStringWhenAscendingOrder() {
-            Sort sort = Sort.builder().field("uniqueFileNumber").direction(SortDirection.ASCENDING).build();
+            Sort sort = Sort.builder().field(SortField.UNIQUE_FILE_NUMBER).direction(SortDirection.ASCENDING).build();
             Assertions.assertEquals("uniqueFileNumber,asc", sort.toString());
         }
 
         @Test
         void shouldConvertSortToStringWhenDescendingOrder() {
-            Sort sort = Sort.builder().field("caseReferenceNumber").direction(SortDirection.DESCENDING).build();
+            Sort sort = Sort.builder().field(SortField.CASE_REFERENCE_NUMBER).direction(SortDirection.DESCENDING).build();
             Assertions.assertEquals("caseReferenceNumber,desc", sort.toString());
         }
 
         @Test
         void shouldConvertSortToStringWhenNoOrder() {
-            Sort sort = Sort.builder().field("scheduleReference").direction(SortDirection.NONE).build();
+            Sort sort = Sort.builder().field(SortField.SCHEDULE_REFERENCE).direction(SortDirection.NONE).build();
             Assertions.assertNull(sort.toString());
         }
     }

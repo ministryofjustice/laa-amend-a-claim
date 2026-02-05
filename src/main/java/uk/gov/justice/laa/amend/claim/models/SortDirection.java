@@ -28,7 +28,7 @@ public enum SortDirection {
         return switch (value) {
             case "asc" -> SortDirection.ASCENDING;
             case "desc" -> SortDirection.DESCENDING;
-            default -> SortDirection.NONE;
+            default -> throw new IllegalArgumentException("Could not parse sort direction: " + value);
         };
     }
 }

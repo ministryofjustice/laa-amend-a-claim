@@ -41,7 +41,7 @@ public class SearchPage extends LaaPage {
                 new Page.GetByRoleOptions().setName("Clear all")
         );
 
-        this.resultsHeading = page.locator("h2.govuk-heading-m:has-text('search results')");
+        this.resultsHeading = page.locator("h2.govuk-heading-m:has-text('search result')");
         this.resultsTable = page.locator("table.govuk-table");
         this.resultRows = resultsTable.locator("tbody tr.govuk-table__row");
 
