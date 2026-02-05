@@ -35,11 +35,10 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         log.error("============2");
 
         String enabledValue = new String(
-                Files.readAllBytes(enabled),
-                StandardCharsets.UTF_8
+                Files.readAllBytes(enabled), StandardCharsets.UTF_8
         ).trim();
 
-        log.error("RAW ENABLED = {}" , enabledValue);
+        log.error("RAW ENABLED = {}", enabledValue);
 
         boolean enabledBoolean = Boolean.parseBoolean(enabledValue);
 
