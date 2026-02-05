@@ -28,25 +28,22 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             Object handler) throws IOException, ServletException {
         log.error("before check for loop");
 
-        if  (request.getRequestURI().equals("/maintenance")) {
-            return true;
-        }
-
         log.error("entering maintenance interceptor");
 
 
         String path = request.getRequestURI();
-        if (path.startsWith("/actuator") || path.startsWith("/health")) {
-            return true;
-        }
 
-        if (Files.exists(enabled)
-                && Files.readString(enabled).replace("/r", "")
-                .trim().equalsIgnoreCase("true")) {
-            request.getRequestDispatcher("/maintenance").forward(request, response);
 
-            return false;
-        }
+       if(maintenanceEnabled()) {
+           if  (request.getRequestURI().equals("/maintenance")) {
+               return true;
+           }
+           if (path.startsWith("/actuator") || path.startsWith("/health")) {
+               return true;
+           }
+           request.getRequestDispatcher("/maintenance").forward(request, response);
+           return false;
+       }
 
         return true;
     }
@@ -55,6 +52,25 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             HttpServletResponse response, HttpServletRequest request, String message) throws IOException {
         log.warn("{}: {}", request.getRequestURI(), message);
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        return false;
+    }
+
+    private boolean maintenanceEnabled() {
+        Path enabled = Paths.get("/config/maintenance/enabled");
+
+        try {
+//            if (Files.exists(enabled) && Files.readString(enabled).replace("/r", "").trim().equalsIgnoreCase("true")) {
+//                return false;
+//            }
+
+            if (Files.exists(enabled)) {
+                String value = Files.readString(enabled).trim();
+
+                return Boolean.parseBoolean(value);
+            }
+        } catch (IOException e) {
+            log.error("Failed to read maintenance flag", e);
+        }
         return false;
     }
 }

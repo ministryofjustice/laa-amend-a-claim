@@ -19,19 +19,11 @@ import static reactor.netty.http.HttpConnectionLiveness.log;
 @Controller
 public class MaintenancePageController {
 
-    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     @GetMapping("/maintenance")
     public String handleError(HttpServletRequest request, Model model) throws IOException {
-        Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+
         Path message = Paths.get("/config/maintenance/message");
         Path title = Paths.get("/config/maintenance/title");
-
-        Path enabled = Paths.get("/config/maintenance/enabled");
-
-        if (Files.exists(enabled)
-                && Files.readString(enabled).replace("/r", "")
-                .trim().equalsIgnoreCase("true")) {
-
 
             model.addAttribute("message", Files.readString(message));
             model.addAttribute("title", Files.readString(title));
@@ -48,12 +40,6 @@ public class MaintenancePageController {
             log.error("============= in error controller");
             log.error("============= in error controller");
 
-        }
-
-        if (status != null) {
-            int statusCode = Integer.parseInt(status.toString());
-            model.addAttribute("statusCode", statusCode);
-        }
         return "maintenance";
     }
 }
