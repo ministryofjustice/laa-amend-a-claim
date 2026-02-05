@@ -32,7 +32,6 @@ public class MaintenancePageController implements ErrorController {
 
             model.addAttribute("message", Files.readString(message));
             model.addAttribute("title", Files.readString(title));
-            model.addAttribute("enabled", true);
 
             log.error("============= in error controller");
             log.error("============= in error controller");
@@ -46,12 +45,7 @@ public class MaintenancePageController implements ErrorController {
             log.error("============= in error controller");
             log.error("============= in error controller");
 
-        } else {
-            model.addAttribute("enabled", false);
         }
-
-
-
 
         if (status != null) {
             int statusCode = Integer.parseInt(status.toString());
