@@ -41,7 +41,7 @@ class NumberUtilsTest {
                 assertThrows(ParseException.class,
                         () -> NumberUtils.parse(null));
 
-        assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
+        assertEquals("Value must not be null", ex.getMessage());
     }
 
     @Test
@@ -50,7 +50,7 @@ class NumberUtilsTest {
                 assertThrows(ParseException.class,
                         () -> NumberUtils.parse(""));
 
-        assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
+        assertEquals("Parsed value must be a BigDecimal", ex.getMessage());
     }
 
     @Test
@@ -59,7 +59,7 @@ class NumberUtilsTest {
                 assertThrows(ParseException.class,
                         () -> NumberUtils.parse("abc"));
 
-        assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
+        assertEquals("Parsed value must be a BigDecimal", ex.getMessage());
     }
 
     @Test
@@ -68,7 +68,16 @@ class NumberUtilsTest {
                 assertThrows(ParseException.class,
                         () -> NumberUtils.parse("24word53"));
 
-        assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
+        assertEquals("Value must be fully parsable", ex.getMessage());
+    }
+
+    @Test
+    void rejectsInputWithSpaces() {
+        ParseException ex =
+            assertThrows(ParseException.class,
+                () -> NumberUtils.parse("1 2 3"));
+
+        assertEquals("Value must be fully parsable", ex.getMessage());
     }
 
     @Test
@@ -77,16 +86,7 @@ class NumberUtilsTest {
                 assertThrows(ParseException.class,
                         () -> NumberUtils.parse("35kg"));
 
-        assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
-    }
-
-    @Test
-    void rejectsNonUkFormattedNumber() {
-        ParseException ex =
-                assertThrows(ParseException.class,
-                        () -> NumberUtils.parse("1.305,50"));
-
-        assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
+        assertEquals("Value must be fully parsable", ex.getMessage());
     }
 
     @Test
@@ -94,6 +94,23 @@ class NumberUtilsTest {
         // Business rule enforced in validator, not parser
         BigDecimal result = NumberUtils.parse("1.234");
         assertEquals(new BigDecimal("1.234"), result);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "200,00",
+        ",100",
+        "1,000,00,000",
+        "100.1,2345",
+        "1234,567",
+        "1.305,50"
+    })
+    void rejectsInvalidSeparators(String input) {
+        ParseException ex =
+            assertThrows(ParseException.class,
+                () -> NumberUtils.parse(input));
+
+        assertEquals("Value must have valid comma separators or none at all", ex.getMessage());
     }
 
     @ParameterizedTest
@@ -117,7 +134,7 @@ class NumberUtilsTest {
                 assertThrows(ParseException.class,
                         () -> NumberUtils.parse(input));
 
-        assertEquals("NUMBER_PARSE_FAILED", ex.getMessage());
+        assertEquals("Parsed value must be a BigDecimal", ex.getMessage());
     }
 
     @ParameterizedTest

@@ -131,7 +131,10 @@ public class AssessedTotalFormTest extends FormTest {
         form.setAssessedTotalInclVat("1,0000.00");
         form.setAssessedTotalVat("1,0000.00");
 
-        checkNoViolations(form);
+        String totalInclVatViolationMessage = "{assessedTotals.assessedTotalInclVat.error.invalid}";
+        String totalVatViolationMessage = "{assessedTotals.assessedTotalVat.error.invalid}";
+
+        checkViolations(totalInclVatViolationMessage, totalVatViolationMessage);
     }
 
     @Test
