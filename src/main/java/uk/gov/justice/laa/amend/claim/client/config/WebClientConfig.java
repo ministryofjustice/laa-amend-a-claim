@@ -16,7 +16,11 @@ import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 
 @Slf4j
 @Configuration
-@EnableConfigurationProperties({ClaimsApiProperties.class, MicrosoftGraphApiProperties.class, ProviderApiProperties.class})
+@EnableConfigurationProperties({
+    ClaimsApiProperties.class,
+    MicrosoftGraphApiProperties.class,
+    ProviderApiProperties.class
+})
 public class WebClientConfig {
 
     @Bean
@@ -26,44 +30,46 @@ public class WebClientConfig {
 
     @Bean
     public ClaimsApiClient claimsApiClient(WebClient.Builder webClientBuilder, ClaimsApiProperties properties) {
-        ExchangeStrategies strategies = ExchangeStrategies
-            .builder()
-            .codecs(ClientCodecConfigurer::defaultCodecs)
-            .build();
+        ExchangeStrategies strategies = ExchangeStrategies.builder()
+                .codecs(ClientCodecConfigurer::defaultCodecs)
+                .build();
 
         WebClient webClient = webClientBuilder
-            .baseUrl(properties.getUrl())
-            .defaultHeader(HttpHeaders.AUTHORIZATION, properties.getAccessToken())
-            .exchangeStrategies(strategies)
-            .build();
+                .baseUrl(properties.getUrl())
+                .defaultHeader(HttpHeaders.AUTHORIZATION, properties.getAccessToken())
+                .exchangeStrategies(strategies)
+                .build();
 
         WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
+        HttpServiceProxyFactory factory =
+                HttpServiceProxyFactory.builderFor(webClientAdapter).build();
 
         return factory.createClient(ClaimsApiClient.class);
     }
 
     @Bean
     public ProviderApiClient providerApiClient(WebClient.Builder webClientBuilder, ProviderApiProperties properties) {
-        WebClient webClient =
-            webClientBuilder
+        WebClient webClient = webClientBuilder
                 .baseUrl(properties.getUrl())
                 .defaultHeader("X-Authorization", properties.getAccessToken())
-                .exchangeStrategies(ExchangeStrategies.builder().codecs(ClientCodecConfigurer::defaultCodecs).build())
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(ClientCodecConfigurer::defaultCodecs)
+                        .build())
                 .build();
 
         WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
+        HttpServiceProxyFactory factory =
+                HttpServiceProxyFactory.builderFor(webClientAdapter).build();
         return factory.createClient(ProviderApiClient.class);
     }
 
     @Bean
-    public MicrosoftGraphApiClient microsoftGraphApiClient(WebClient.Builder webClientBuilder, MicrosoftGraphApiProperties properties) {
-        WebClient webClient = webClientBuilder
-            .baseUrl(properties.getUrl())
-            .build();
+    public MicrosoftGraphApiClient microsoftGraphApiClient(
+            WebClient.Builder webClientBuilder, MicrosoftGraphApiProperties properties) {
+        WebClient webClient = webClientBuilder.baseUrl(properties.getUrl()).build();
         WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
-        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
+        HttpServiceProxyFactory factory =
+                HttpServiceProxyFactory.builderFor(webClientAdapter).build();
         return factory.createClient(MicrosoftGraphApiClient.class);
     }
 }

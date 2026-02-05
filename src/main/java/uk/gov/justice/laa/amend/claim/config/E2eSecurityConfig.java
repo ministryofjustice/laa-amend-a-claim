@@ -4,6 +4,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.Map;
 import lombok.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,11 +24,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.Map;
-
 /**
  * Security configuration for E2E testing environments.
  * This configuration disables CSP to allow Playwright tests to interact with the UI without
@@ -39,12 +38,10 @@ public class E2eSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChainE2e(final HttpSecurity http) throws Exception {
-        http
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-            .csrf(AbstractHttpConfigurer::disable)
-            .headers(headers -> headers
-                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny))
-            .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class);
+        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny))
+                .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class);
         return http.build();
     }
 
@@ -53,35 +50,23 @@ public class E2eSecurityConfig {
         return new OncePerRequestFilter() {
             @Override
             protected void doFilterInternal(
-                @NonNull HttpServletRequest request,
-                @NonNull HttpServletResponse response,
-                @NonNull FilterChain filterChain
-            ) throws ServletException, IOException {
+                    @NonNull HttpServletRequest request,
+                    @NonNull HttpServletResponse response,
+                    @NonNull FilterChain filterChain)
+                    throws ServletException, IOException {
 
                 Map<String, Object> claims = Map.of(
-                    "oid", userId,
-                    "email", "e2e-test@example.com",
-                    "name", "E2E Test User"
-                );
+                        "oid", userId,
+                        "email", "e2e-test@example.com",
+                        "name", "E2E Test User");
 
                 OidcIdToken token = new OidcIdToken(
-                    "e2e-test-token",
-                    Instant.now(),
-                    Instant.now().plusSeconds(3600),
-                    claims
-                );
+                        "e2e-test-token", Instant.now(), Instant.now().plusSeconds(3600), claims);
 
-                DefaultOidcUser oidcUser = new DefaultOidcUser(
-                    Collections.emptyList(),
-                    token,
-                    "email"
-                );
+                DefaultOidcUser oidcUser = new DefaultOidcUser(Collections.emptyList(), token, "email");
 
-                OAuth2AuthenticationToken oauthToken = new OAuth2AuthenticationToken(
-                        oidcUser,
-                        oidcUser.getAuthorities(),
-                        "test"
-                );
+                OAuth2AuthenticationToken oauthToken =
+                        new OAuth2AuthenticationToken(oidcUser, oidcUser.getAuthorities(), "test");
 
                 SecurityContextHolder.getContext().setAuthentication(oauthToken);
 

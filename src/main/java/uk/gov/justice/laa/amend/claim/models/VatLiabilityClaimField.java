@@ -1,9 +1,9 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
+
 import lombok.Builder;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
-
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
 
 public class VatLiabilityClaimField extends ClaimField {
 
@@ -21,7 +21,7 @@ public class VatLiabilityClaimField extends ClaimField {
         switch (outcome) {
             case REDUCED_TO_FIXED_FEE -> setAssessedToCalculated();
             case REDUCED, PAID_IN_FULL -> setAssessedToSubmitted();
-            default -> { }
+            default -> {}
         }
     }
 

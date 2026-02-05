@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidAllowedTotal;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @NoArgsConstructor

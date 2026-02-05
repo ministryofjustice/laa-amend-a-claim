@@ -7,11 +7,16 @@ import uk.gov.justice.laa.amend.claim.forms.AllowedTotalForm;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidAllowedTotal;
 
 @AllArgsConstructor
-public class AllowedTotalsValueValidator extends CurrencyValidator implements ConstraintValidator<ValidAllowedTotal, AllowedTotalForm> {
+public class AllowedTotalsValueValidator extends CurrencyValidator
+        implements ConstraintValidator<ValidAllowedTotal, AllowedTotalForm> {
 
     @Override
     public boolean isValid(AllowedTotalForm form, ConstraintValidatorContext context) {
         return isValid(form.getAllowedTotalVat(), context, "allowedTotalVat", "allowedTotals.allowedTotalVat")
-                & isValid(form.getAllowedTotalInclVat(), context, "allowedTotalInclVat", "allowedTotals.allowedTotalInclVat");
+                & isValid(
+                        form.getAllowedTotalInclVat(),
+                        context,
+                        "allowedTotalInclVat",
+                        "allowedTotals.allowedTotalInclVat");
     }
 }

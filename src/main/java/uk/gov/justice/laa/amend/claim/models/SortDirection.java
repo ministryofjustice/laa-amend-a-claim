@@ -4,7 +4,6 @@ import lombok.Getter;
 
 @Getter
 public enum SortDirection {
-
     ASCENDING("asc", "ascending"),
     DESCENDING("desc", "descending"),
     NONE(null, "none");

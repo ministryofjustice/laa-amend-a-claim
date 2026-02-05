@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
+import java.math.BigDecimal;
+import java.util.function.Function;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Context;
@@ -18,9 +20,6 @@ import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentGet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentOutcome;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
-
-import java.math.BigDecimal;
-import java.util.function.Function;
 
 @Mapper(componentModel = "spring")
 public interface AssessmentMapper {
@@ -51,7 +50,9 @@ public interface AssessmentMapper {
 
     @InheritConfiguration(name = "mapClaimToAssessment")
     @Mapping(target = "netCostOfCounselAmount", expression = "java(mapNetCostOfCounselAmount(claim))")
-    @Mapping(target = "detentionTravelAndWaitingCostsAmount", expression = "java(mapDetentionTravelAndWaitingCostsAmount(claim))")
+    @Mapping(
+            target = "detentionTravelAndWaitingCostsAmount",
+            expression = "java(mapDetentionTravelAndWaitingCostsAmount(claim))")
     @Mapping(target = "boltOnAdjournedHearingFee", expression = "java(mapBoltOnAdjournedHearingFee(claim))")
     @Mapping(target = "jrFormFillingAmount", expression = "java(mapJrFormFillingAmount(claim))")
     @Mapping(target = "boltOnCmrhOralFee", expression = "java(mapBoltOnCmrhOralFee(claim))")
@@ -64,7 +65,6 @@ public interface AssessmentMapper {
     @Mapping(target = "netTravelCostsAmount", expression = "java(mapNetTravelCostsAmount(claim))")
     @Mapping(target = "netWaitingCostsAmount", expression = "java(mapNetWaitingCostsAmount(claim))")
     AssessmentPost mapCrimeClaimToAssessment(CrimeClaimDetails claim, @Context String userId);
-
 
     @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     @Mapping(target = "assessmentOutcome", source = "lastAssessmentOutcome")
@@ -96,10 +96,7 @@ public interface AssessmentMapper {
     CrimeClaimDetails mapToCrimeClaim(AssessmentInfo assessmentInfo, @MappingTarget CrimeClaimDetails claimDetails);
 
     @AfterMapping
-    default void mapToClaimAfterMapping(
-        AssessmentInfo source,
-        @MappingTarget ClaimDetails target
-    ) {
+    default void mapToClaimAfterMapping(AssessmentInfo source, @MappingTarget ClaimDetails target) {
         map(source, target.getVatClaimed(), AssessmentInfo::getIsVatApplicable);
         map(source, target.getFixedFee(), AssessmentInfo::getFixedFeeAmount);
         map(source, target.getNetDisbursementAmount(), AssessmentInfo::getDisbursementAmount);
@@ -112,10 +109,7 @@ public interface AssessmentMapper {
     }
 
     @AfterMapping
-    default void mapToCivilClaimAfterMapping(
-        AssessmentInfo source,
-        @MappingTarget CivilClaimDetails target
-    ) {
+    default void mapToCivilClaimAfterMapping(AssessmentInfo source, @MappingTarget CivilClaimDetails target) {
         map(source, target.getJrFormFillingCost(), AssessmentInfo::getJrFormFillingAmount);
         map(source, target.getDetentionTravelWaitingCosts(), AssessmentInfo::getDetentionTravelAndWaitingCostsAmount);
         map(source, target.getCounselsCost(), AssessmentInfo::getNetCostOfCounselAmount);
@@ -127,10 +121,7 @@ public interface AssessmentMapper {
     }
 
     @AfterMapping
-    default void mapToCrimeClaimAfterMapping(
-        AssessmentInfo source,
-        @MappingTarget CrimeClaimDetails target
-    ) {
+    default void mapToCrimeClaimAfterMapping(AssessmentInfo source, @MappingTarget CrimeClaimDetails target) {
         map(source, target.getTravelCosts(), AssessmentInfo::getNetTravelCostsAmount);
         map(source, target.getWaitingCosts(), AssessmentInfo::getNetWaitingCostsAmount);
     }
@@ -158,7 +149,6 @@ public interface AssessmentMapper {
     @Mapping(target = "assessmentOutcome", source = "assessmentOutcome", qualifiedByName = "mapToOutcome")
     @Mapping(target = "lastAssessment", source = "assessmentGet", qualifiedByName = "toAssessmentInfo")
     ClaimDetails updateClaim(AssessmentGet assessmentGet, @MappingTarget ClaimDetails claimDetails);
-
 
     /**
      * Maps existing lastAssessment Details into the ClaimDetails object as assessed values.
@@ -192,13 +182,12 @@ public interface AssessmentMapper {
             return null;
         }
         return switch (outcome) {
-            case PAID_IN_FULL           -> OutcomeType.PAID_IN_FULL;
-            case REDUCED_STILL_ESCAPED  -> OutcomeType.REDUCED;
-            case REDUCED_TO_FIXED_FEE   -> OutcomeType.REDUCED_TO_FIXED_FEE;
-            case NILLED                 -> OutcomeType.NILLED;
+            case PAID_IN_FULL -> OutcomeType.PAID_IN_FULL;
+            case REDUCED_STILL_ESCAPED -> OutcomeType.REDUCED;
+            case REDUCED_TO_FIXED_FEE -> OutcomeType.REDUCED_TO_FIXED_FEE;
+            case NILLED -> OutcomeType.NILLED;
         };
     }
-
 
     default BigDecimal mapFixedFeeAmount(ClaimDetails claim) {
         return mapToBigDecimal(claim.getFixedFee());

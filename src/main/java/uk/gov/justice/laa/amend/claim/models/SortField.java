@@ -1,12 +1,10 @@
 package uk.gov.justice.laa.amend.claim.models;
 
-import lombok.Getter;
-
 import java.util.Arrays;
+import lombok.Getter;
 
 @Getter
 public enum SortField {
-
     UNIQUE_FILE_NUMBER("uniqueFileNumber"),
     CASE_REFERENCE_NUMBER("caseReferenceNumber"),
     SCHEDULE_REFERENCE("scheduleReference");
@@ -18,10 +16,9 @@ public enum SortField {
     }
 
     public static SortField fromValue(String value) {
-        return Arrays
-            .stream(values())
-            .filter(sortField -> sortField.value.equals(value))
-            .findFirst()
-            .orElseThrow(IllegalArgumentException::new);
+        return Arrays.stream(values())
+                .filter(sortField -> sortField.value.equals(value))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

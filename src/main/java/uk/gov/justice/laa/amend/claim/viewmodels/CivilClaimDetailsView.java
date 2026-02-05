@@ -1,14 +1,10 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
 
 public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDetailsView<CivilClaimDetails> {
 
@@ -50,15 +46,13 @@ public record CivilClaimDetailsView(CivilClaimDetails claim) implements ClaimDet
         return Stream.concat(
                 ClaimDetailsView.super.claimFields(),
                 Stream.of(
-                    claim.getDetentionTravelWaitingCosts(),
-                    claim.getJrFormFillingCost(),
-                    claim.getCounselsCost(),
-                    claim.getCmrhOral(),
-                    claim.getCmrhTelephone(),
-                    claim.getHoInterview(),
-                    claim.getSubstantiveHearing(),
-                    claim.getAdjournedHearing()
-                )
-            );
+                        claim.getDetentionTravelWaitingCosts(),
+                        claim.getJrFormFillingCost(),
+                        claim.getCounselsCost(),
+                        claim.getCmrhOral(),
+                        claim.getCmrhTelephone(),
+                        claim.getHoInterview(),
+                        claim.getSubstantiveHearing(),
+                        claim.getAdjournedHearing()));
     }
 }

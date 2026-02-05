@@ -1,15 +1,11 @@
 package uk.gov.justice.laa.amend.claim.models;
 
-import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
-
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 
 public record ClaimFieldAccessor<T extends Claim>(
-    Class<T> type,
-    Function<T, ClaimField> getter,
-    BiConsumer<T, ClaimField> setter
-) {
+        Class<T> type, Function<T, ClaimField> getter, BiConsumer<T, ClaimField> setter) {
     public ClaimField get(Claim claim) throws ClaimMismatchException {
         if (type.isInstance(claim)) {
             return getter.apply(type.cast(claim));
