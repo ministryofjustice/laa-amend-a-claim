@@ -31,8 +31,8 @@ public class ErrorPageController implements ErrorController {
                 .trim().equalsIgnoreCase("true")) {
 
 
-            model.addAttribute( "message",Files.readString(message));
-            model.addAttribute( "title",Files.readString(title));
+            model.addAttribute("message", Files.readString(message));
+            model.addAttribute("title", Files.readString(title));
 
             log.error("============= in error controller");
             log.error("============= in error controller");
