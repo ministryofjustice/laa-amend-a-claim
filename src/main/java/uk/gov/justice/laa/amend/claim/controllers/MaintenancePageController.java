@@ -22,19 +22,19 @@ public class MaintenancePageController {
     @GetMapping("/maintenance")
     public String handleError(HttpServletRequest request, Model model) throws IOException {
 
-        Path message = Paths.get("/config/maintenance/message");
-        Path title = Paths.get("/config/maintenance/title");
+        Path maintenanceMessage = Paths.get("/config/maintenance/message");
+        Path maintenanceTitle = Paths.get("/config/maintenance/title");
 
-        model.addAttribute("message", Files.readString(message));
-        model.addAttribute("title", Files.readString(title));
+        model.addAttribute("maintenanceMessage", Files.readString(maintenanceMessage));
+        model.addAttribute("maintenanceTitle", Files.readString(maintenanceTitle));
 
         log.error("============= in error controller");
         log.error("============= in error controller");
         log.error("============= in error controller");
 
 
-        log.error("MESSAGE: " + Files.readString(message).trim());
-        log.error("TITLE: " + Files.readString(title).trim());
+        log.error("MESSAGE: " + Files.readString(maintenanceMessage).trim());
+        log.error("TITLE: " + Files.readString(maintenanceTitle).trim());
 
         log.error("============= in error controller");
         log.error("============= in error controller");

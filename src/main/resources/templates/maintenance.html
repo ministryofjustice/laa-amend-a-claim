@@ -2,15 +2,14 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout :: layout(
-        title=#{index.title},
+        title=${maintenanceTitle},
         mainContent=~{::#main-content},
         pageCategory=${null},
         showBackLink=${true}
     )}">
 <body>
     <main class="govuk-main-wrapper" id="main-content">
-        <h1 class="govuk-heading-xl" th:text="${title}"></h1>
-        <h1 class="govuk-heading-xl" th:text="${message}"></h1>
+        <h1 class="govuk-body" th:text="${maintenanceMessage}"></h1>
     </main>
 </body>
 </html>
