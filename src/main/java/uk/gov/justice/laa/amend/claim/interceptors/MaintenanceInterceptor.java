@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.interceptors;
 
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,6 +22,10 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler) throws IOException, ServletException {
+
+        if (request.getDispatcherType() != DispatcherType.REQUEST) {
+            return true;
+        }
 
         String path = request.getRequestURI();
         String contextPath = request.getContextPath();
