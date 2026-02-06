@@ -28,11 +28,6 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         }
 
         String path = request.getRequestURI();
-        String contextPath = request.getContextPath();
-
-        if (!contextPath.isEmpty()) {
-            path = path.substring(contextPath.length());
-        }
 
         log.error("MaintenanceInterceptor path: {}", path);
 
@@ -41,7 +36,7 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        if (ALLOWED_URLS.stream().anyMatch(path::startsWith)) {
+        if (ALLOWED_URLS.stream().anyMatch(path::contains)) {
             log.error("Maintenance on, bypass: {}", path);
             return true;
         }
