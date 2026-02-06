@@ -1,44 +1,24 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static reactor.netty.http.HttpConnectionLiveness.log;
-
 @Controller
 public class MaintenancePageController {
 
     @GetMapping("/maintenance")
-    public String handleError(HttpServletRequest request, Model model) throws IOException {
-
+    public String handleMaintenance(Model model) throws IOException {
         Path maintenanceMessage = Paths.get("/config/maintenance/message");
         Path maintenanceTitle = Paths.get("/config/maintenance/title");
 
         model.addAttribute("maintenanceMessage", Files.readString(maintenanceMessage));
         model.addAttribute("maintenanceTitle", Files.readString(maintenanceTitle));
-
-        log.error("============= in error controller");
-        log.error("============= in error controller");
-        log.error("============= in error controller");
-
-
-        log.error("MESSAGE: " + Files.readString(maintenanceMessage).trim());
-        log.error("TITLE: " + Files.readString(maintenanceTitle).trim());
-
-        log.error("============= in error controller");
-        log.error("============= in error controller");
-        log.error("============= in error controller");
 
         return "maintenance";
     }
