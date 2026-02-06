@@ -1,11 +1,10 @@
 package uk.gov.justice.laa.amend.claim.forms;
 
 import jakarta.validation.ConstraintViolation;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.Cost;
-
-import java.util.Set;
 
 public class MonetaryValueFormTest extends FormTest {
 

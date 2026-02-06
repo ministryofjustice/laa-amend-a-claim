@@ -1,13 +1,12 @@
 package uk.gov.justice.laa.amend.claim.utils;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class NumberUtilsTest {
 
@@ -37,54 +36,42 @@ class NumberUtilsTest {
 
     @Test
     void rejectsNullInput() {
-        ParseException ex =
-                assertThrows(ParseException.class,
-                        () -> NumberUtils.parse(null));
+        ParseException ex = assertThrows(ParseException.class, () -> NumberUtils.parse(null));
 
         assertEquals("Value must not be null", ex.getMessage());
     }
 
     @Test
     void rejectsEmptyString() {
-        ParseException ex =
-                assertThrows(ParseException.class,
-                        () -> NumberUtils.parse(""));
+        ParseException ex = assertThrows(ParseException.class, () -> NumberUtils.parse(""));
 
         assertEquals("Parsed value must be a BigDecimal", ex.getMessage());
     }
 
     @Test
     void rejectsAlphabeticInput() {
-        ParseException ex =
-                assertThrows(ParseException.class,
-                        () -> NumberUtils.parse("abc"));
+        ParseException ex = assertThrows(ParseException.class, () -> NumberUtils.parse("abc"));
 
         assertEquals("Parsed value must be a BigDecimal", ex.getMessage());
     }
 
     @Test
     void rejectsAlphanumericInput() {
-        ParseException ex =
-                assertThrows(ParseException.class,
-                        () -> NumberUtils.parse("24word53"));
+        ParseException ex = assertThrows(ParseException.class, () -> NumberUtils.parse("24word53"));
 
         assertEquals("Value must be fully parsable", ex.getMessage());
     }
 
     @Test
     void rejectsInputWithSpaces() {
-        ParseException ex =
-            assertThrows(ParseException.class,
-                () -> NumberUtils.parse("1 2 3"));
+        ParseException ex = assertThrows(ParseException.class, () -> NumberUtils.parse("1 2 3"));
 
         assertEquals("Value must be fully parsable", ex.getMessage());
     }
 
     @Test
     void rejectsTrailingCharacters() {
-        ParseException ex =
-                assertThrows(ParseException.class,
-                        () -> NumberUtils.parse("35kg"));
+        ParseException ex = assertThrows(ParseException.class, () -> NumberUtils.parse("35kg"));
 
         assertEquals("Value must be fully parsable", ex.getMessage());
     }
@@ -97,58 +84,24 @@ class NumberUtilsTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-        "200,00",
-        ",100",
-        "1,000,00,000",
-        "100.1,2345",
-        "1234,567",
-        "1.305,50"
-    })
+    @ValueSource(strings = {"200,00", ",100", "1,000,00,000", "100.1,2345", "1234,567", "1.305,50"})
     void rejectsInvalidSeparators(String input) {
-        ParseException ex =
-            assertThrows(ParseException.class,
-                () -> NumberUtils.parse(input));
+        ParseException ex = assertThrows(ParseException.class, () -> NumberUtils.parse(input));
 
         assertEquals("Value must have valid comma separators or none at all", ex.getMessage());
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "£",
-            "€",
-            "$",
-            "π",
-            "∞",
-            "😊",
-            "@",
-            "#",
-            "!",
-            "%",
-            "&",
-            "*",
-            "NaN"
-    })
+    @ValueSource(strings = {"£", "€", "$", "π", "∞", "😊", "@", "#", "!", "%", "&", "*", "NaN"})
     void rejectsSpecialCharactersAndSymbols(String input) {
-        ParseException ex =
-                assertThrows(ParseException.class,
-                        () -> NumberUtils.parse(input));
+        ParseException ex = assertThrows(ParseException.class, () -> NumberUtils.parse(input));
 
         assertEquals("Parsed value must be a BigDecimal", ex.getMessage());
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "123£",
-            "£123",
-            "100😊",
-            "π3.14",
-            "1,000€",
-            "50∞",
-            "100NaN"
-    })
+    @ValueSource(strings = {"123£", "£123", "100😊", "π3.14", "1,000€", "50∞", "100NaN"})
     void rejectsMixedNumbersWithSymbols(String input) {
-        assertThrows(ParseException.class,
-                () -> NumberUtils.parse(input));
+        assertThrows(ParseException.class, () -> NumberUtils.parse(input));
     }
 }

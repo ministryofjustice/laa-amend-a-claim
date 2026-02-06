@@ -11,7 +11,7 @@ import uk.gov.justice.laa.amend.claim.controllers.LogoutController;
 @ActiveProfiles("local")
 @WebMvcTest(LogoutController.class)
 @Import(LocalSecurityConfig.class)
-public class LogoutViewTest extends ViewTestBase{
+public class LogoutViewTest extends ViewTestBase {
     protected LogoutViewTest() {
         super("/logout-success");
     }

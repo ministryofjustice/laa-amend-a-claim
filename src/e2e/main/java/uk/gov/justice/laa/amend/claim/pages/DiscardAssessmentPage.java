@@ -12,8 +12,7 @@ public class DiscardAssessmentPage extends LaaPage {
     public DiscardAssessmentPage(Page page) {
         super(page, "Confirm you want to discard this assessment");
 
-        this.discardButton = page.getByRole(AriaRole.BUTTON,
-                new Page.GetByRoleOptions().setName("Discard assessment"));
+        this.discardButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Discard assessment"));
 
         this.returnToClaimLink = page.locator("#return-to-claim");
     }
@@ -26,7 +25,11 @@ public class DiscardAssessmentPage extends LaaPage {
         return returnToClaimLink.isVisible();
     }
 
-    public void clickDiscardAssessment() { discardButton.click(); }
+    public void clickDiscardAssessment() {
+        discardButton.click();
+    }
 
-    public void clickReturnToClaim() { returnToClaimLink.click(); }
+    public void clickReturnToClaim() {
+        returnToClaimLink.click();
+    }
 }

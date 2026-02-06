@@ -1,6 +1,15 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -23,16 +32,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentGet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
-
-import java.util.List;
-import java.util.UUID;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 class AssessmentServiceTest {
 
@@ -64,16 +63,11 @@ class AssessmentServiceTest {
         size = 1;
         sort = "createdOn,desc";
         meterRegistry = new SimpleMeterRegistry();
-        assessmentService = new AssessmentService(
-            claimsApiClient,
-            assessmentMapper,
-            claimStatusHandler,
-            meterRegistry
-        );
+        assessmentService = new AssessmentService(claimsApiClient, assessmentMapper, claimStatusHandler, meterRegistry);
     }
 
     @Nested
-    class ApplyAssessmentOutcome{
+    class ApplyAssessmentOutcome {
 
         @Test
         void testNilledOutcome() {
@@ -123,16 +117,13 @@ class AssessmentServiceTest {
             String userId = UUID.randomUUID().toString();
             AssessmentPost assessment = new AssessmentPost();
 
-            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId))
-                .thenReturn(assessment);
+            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
 
             ResponseEntity<CreateAssessment201Response> response = ResponseEntity.ok(new CreateAssessment201Response());
 
-            when(claimsApiClient.submitAssessment(claimId, assessment))
-                .thenReturn(Mono.just(response));
+            when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
 
-            CreateAssessment201Response result =
-                assessmentService.submitAssessment(claim, userId);
+            CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
 
             Assertions.assertNotNull(result);
             assertEquals(response.getBody(), result);
@@ -141,7 +132,8 @@ class AssessmentServiceTest {
             verify(claimsApiClient).submitAssessment(claimId, assessment);
 
             assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(1.0);
-            assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(0.0);
+            assertThat(meterRegistry.counter("assessment.submissions.failed").count())
+                    .isEqualTo(0.0);
         }
 
         @Test
@@ -151,16 +143,14 @@ class AssessmentServiceTest {
             String userId = UUID.randomUUID().toString();
             AssessmentPost assessment = new AssessmentPost();
 
-            when(assessmentMapper.mapCrimeClaimToAssessment(claim, userId))
-                .thenReturn(assessment);
+            when(assessmentMapper.mapCrimeClaimToAssessment(claim, userId)).thenReturn(assessment);
 
             ResponseEntity<CreateAssessment201Response> response = ResponseEntity.ok(new CreateAssessment201Response());
 
             when(claimsApiClient.submitAssessment(claimId.toString(), assessment))
-                .thenReturn(Mono.just(response));
+                    .thenReturn(Mono.just(response));
 
-            CreateAssessment201Response result =
-                assessmentService.submitAssessment(claim, userId);
+            CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
 
             Assertions.assertNotNull(result);
             assertEquals(response.getBody(), result);
@@ -169,7 +159,8 @@ class AssessmentServiceTest {
             verify(claimsApiClient).submitAssessment(claimId.toString(), assessment);
 
             assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(1.0);
-            assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(0.0);
+            assertThat(meterRegistry.counter("assessment.submissions.failed").count())
+                    .isEqualTo(0.0);
         }
 
         @Test
@@ -180,22 +171,18 @@ class AssessmentServiceTest {
             String userId = UUID.randomUUID().toString();
             AssessmentPost assessment = new AssessmentPost();
 
-            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId))
-                .thenReturn(assessment);
+            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
 
-            when(claimsApiClient.submitAssessment(claimId, assessment))
-                .thenReturn(Mono.empty());
+            when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.empty());
 
-            assertThrows(
-                RuntimeException.class,
-                () -> assessmentService.submitAssessment(claim, userId)
-            );
+            assertThrows(RuntimeException.class, () -> assessmentService.submitAssessment(claim, userId));
 
             verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
             verify(claimsApiClient).submitAssessment(claimId, assessment);
 
             assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
-            assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(1.0);
+            assertThat(meterRegistry.counter("assessment.submissions.failed").count())
+                    .isEqualTo(1.0);
         }
 
         @Test
@@ -206,25 +193,21 @@ class AssessmentServiceTest {
             String userId = UUID.randomUUID().toString();
             AssessmentPost assessment = new AssessmentPost();
 
-            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId))
-                .thenReturn(assessment);
+            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
 
             ResponseEntity<CreateAssessment201Response> response =
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CreateAssessment201Response());
+                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CreateAssessment201Response());
 
-            when(claimsApiClient.submitAssessment(claimId, assessment))
-                .thenReturn(Mono.just(response));
+            when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
 
-            assertThrows(
-                RuntimeException.class,
-                () -> assessmentService.submitAssessment(claim, userId)
-            );
+            assertThrows(RuntimeException.class, () -> assessmentService.submitAssessment(claim, userId));
 
             verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
             verify(claimsApiClient).submitAssessment(claimId, assessment);
 
             assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
-            assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(1.0);
+            assertThat(meterRegistry.counter("assessment.submissions.failed").count())
+                    .isEqualTo(1.0);
         }
 
         @Test
@@ -235,22 +218,19 @@ class AssessmentServiceTest {
             String userId = UUID.randomUUID().toString();
             AssessmentPost assessment = new AssessmentPost();
 
-            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId))
-                .thenReturn(assessment);
+            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
 
             when(claimsApiClient.submitAssessment(claimId, assessment))
-                .thenReturn(Mono.error(new RuntimeException("Network error")));
+                    .thenReturn(Mono.error(new RuntimeException("Network error")));
 
-            assertThrows(
-                RuntimeException.class,
-                () -> assessmentService.submitAssessment(claim, userId)
-            );
+            assertThrows(RuntimeException.class, () -> assessmentService.submitAssessment(claim, userId));
 
             verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
             verify(claimsApiClient).submitAssessment(claimId, assessment);
 
             assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
-            assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(1.0);
+            assertThat(meterRegistry.counter("assessment.submissions.failed").count())
+                    .isEqualTo(1.0);
         }
     }
 
@@ -266,16 +246,13 @@ class AssessmentServiceTest {
             AssessmentGet assessment = new AssessmentGet(); // dummy assessment
             AssessmentResultSet resultSet = new AssessmentResultSet();
             resultSet.setAssessments(List.of(assessment));
-            when(claimsApiClient.getAssessments(claimId, page, size, sort))
-                    .thenReturn(Mono.just(resultSet));
+            when(claimsApiClient.getAssessments(claimId, page, size, sort)).thenReturn(Mono.just(resultSet));
 
             ClaimDetails mappedDetails = new CivilClaimDetails();
             AssessmentInfo assessmentInfo = new AssessmentInfo();
             mappedDetails.setLastAssessment(assessmentInfo);
-            when(assessmentMapper.updateClaim(assessment, claimDetails))
-                    .thenReturn(mappedDetails);
-            when(assessmentMapper.mapAssessmentToClaimDetails(mappedDetails))
-                    .thenReturn(mappedDetails);
+            when(assessmentMapper.updateClaim(assessment, claimDetails)).thenReturn(mappedDetails);
+            when(assessmentMapper.mapAssessmentToClaimDetails(mappedDetails)).thenReturn(mappedDetails);
             // Act
             ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claimDetails);
             // Assert
@@ -291,28 +268,25 @@ class AssessmentServiceTest {
             // Arrange
             AssessmentResultSet emptyResultSet = new AssessmentResultSet();
             emptyResultSet.setAssessments(List.of());
-            when(claimsApiClient.getAssessments(claimId, page, size, sort))
-                    .thenReturn(Mono.just(emptyResultSet));
+            when(claimsApiClient.getAssessments(claimId, page, size, sort)).thenReturn(Mono.just(emptyResultSet));
 
             // Act & Assert
-            RuntimeException ex = assertThrows(RuntimeException.class,
-                    () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
+            RuntimeException ex = assertThrows(
+                    RuntimeException.class, () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
 
             assertThat(ex.getMessage()).contains("Failed to get assessments");
         }
-
 
         @Test
         void shouldThrowExceptionWhenResultIsNull() {
             var claimDetails = new CivilClaimDetails();
             claimDetails.setClaimId(claimId.toString());
             // Arrange
-            when(claimsApiClient.getAssessments(claimId, page, size, sort))
-                    .thenReturn(Mono.empty());
+            when(claimsApiClient.getAssessments(claimId, page, size, sort)).thenReturn(Mono.empty());
 
             // Act & Assert
-            RuntimeException ex = assertThrows(RuntimeException.class,
-                    () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
+            RuntimeException ex = assertThrows(
+                    RuntimeException.class, () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
 
             assertThat(ex.getMessage()).contains("Failed to get assessments");
         }

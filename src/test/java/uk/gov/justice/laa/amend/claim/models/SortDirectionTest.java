@@ -46,11 +46,7 @@ public class SortDirectionTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "none",
-            "foo",
-            "bar"
-        })
+        @ValueSource(strings = {"none", "foo", "bar"})
         void shouldThrowExceptionForAnythingElse(String str) {
             Assertions.assertThrows(IllegalArgumentException.class, () -> SortDirection.fromValue(str));
         }

@@ -31,15 +31,9 @@ public class SearchPage extends LaaPage {
         this.ufnInput = page.locator("#unique-file-number");
         this.crnInput = page.locator("#case-reference-number");
 
-        this.searchButton = page.getByRole(
-                AriaRole.BUTTON,
-                new Page.GetByRoleOptions().setName("Search")
-        );
+        this.searchButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Search"));
 
-        this.clearAllLink = page.getByRole(
-                AriaRole.LINK,
-                new Page.GetByRoleOptions().setName("Clear all")
-        );
+        this.clearAllLink = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Clear all"));
 
         this.resultsHeading = page.locator("h2.govuk-heading-m:has-text('search result')");
         this.resultsTable = page.locator("table.govuk-table");
@@ -82,8 +76,8 @@ public class SearchPage extends LaaPage {
     }
 
     // ---- COMBINED SEARCH + WAIT FOR RESULTS ----
-    public void searchForClaim(String providerAccount, String month, String year,
-                               String ufn, String crn, boolean expectResults) {
+    public void searchForClaim(
+            String providerAccount, String month, String year, String ufn, String crn, boolean expectResults) {
         enterProviderAccountNumber(providerAccount);
         enterSubmissionDate(month, year);
         enterUFN(ufn);
@@ -92,15 +86,14 @@ public class SearchPage extends LaaPage {
         waitForResults(expectResults);
     }
 
-    public void searchForClaim(String providerAccount, String month, String year,
-                               String ufn, String crn) {
+    public void searchForClaim(String providerAccount, String month, String year, String ufn, String crn) {
         searchForClaim(providerAccount, month, year, ufn, crn, true);
     }
 
     public void waitForResults(boolean expectResults) {
         if (expectResults) {
             waitForResults();
-        } else  {
+        } else {
             noResultsMessage.waitFor();
         }
     }
@@ -126,13 +119,15 @@ public class SearchPage extends LaaPage {
 
     public void clickViewForUfn(String ufn) {
         waitForResults();
-        Locator row = resultRows.filter(new Locator.FilterOptions().setHasText(ufn)).first();
+        Locator row =
+                resultRows.filter(new Locator.FilterOptions().setHasText(ufn)).first();
         row.locator("a.govuk-link:has-text('View')").click();
     }
 
     public void clickViewForCrn(String crn) {
         waitForResults();
-        Locator row = resultRows.filter(new Locator.FilterOptions().setHasText(crn)).first();
+        Locator row =
+                resultRows.filter(new Locator.FilterOptions().setHasText(crn)).first();
         row.locator("a.govuk-link:has-text('View')").click();
     }
 

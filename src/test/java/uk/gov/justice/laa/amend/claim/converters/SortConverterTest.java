@@ -41,10 +41,8 @@ public class SortConverterTest {
         String source = "foo,bar";
         SortConverter converter = new SortConverter();
 
-        ResponseStatusException exception = Assertions.assertThrows(
-            ResponseStatusException.class,
-            () -> converter.convert(source)
-        );
+        ResponseStatusException exception =
+                Assertions.assertThrows(ResponseStatusException.class, () -> converter.convert(source));
 
         Assertions.assertEquals(400, exception.getStatusCode().value());
     }

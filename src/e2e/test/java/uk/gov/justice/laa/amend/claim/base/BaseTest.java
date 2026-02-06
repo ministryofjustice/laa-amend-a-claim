@@ -1,15 +1,14 @@
 package uk.gov.justice.laa.amend.claim.base;
 
 import com.microsoft.playwright.Page;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.persistence.DatabaseQueryExecutor;
-
-import java.sql.SQLException;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * The {@code BaseTest} class provides a foundation for UI tests using the
@@ -68,7 +67,8 @@ public abstract class BaseTest {
         if (page != null) {
             try {
                 page.close();
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
     }
 }

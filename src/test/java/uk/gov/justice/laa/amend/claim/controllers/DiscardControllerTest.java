@@ -1,5 +1,14 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,16 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-
-import java.util.UUID;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @ActiveProfiles("local")
 @WebMvcTest(DiscardController.class)
@@ -48,10 +47,10 @@ public class DiscardControllerTest {
         String uri = String.format("/submissions/%s/claims/%s/discard", submissionId, claimId);
 
         mockMvc.perform(get(uri).session(session))
-            .andExpect(status().isOk())
-            .andExpect(view().name("discard"))
-            .andExpect(model().attribute("submissionId", submissionId.toString()))
-            .andExpect(model().attribute("claimId", claimId.toString()));
+                .andExpect(status().isOk())
+                .andExpect(view().name("discard"))
+                .andExpect(model().attribute("submissionId", submissionId.toString()))
+                .andExpect(model().attribute("claimId", claimId.toString()));
     }
 
     @Test
@@ -61,9 +60,9 @@ public class DiscardControllerTest {
         String expectedRedirectUrl = "/";
 
         mockMvc.perform(post(uri).session(session))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl(expectedRedirectUrl))
-            .andExpect(flash().attribute("discarded", true))
-            .andExpect(result -> Assertions.assertNull(session.getAttribute(claimId.toString())));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(expectedRedirectUrl))
+                .andExpect(flash().attribute("discarded", true))
+                .andExpect(result -> Assertions.assertNull(session.getAttribute(claimId.toString())));
     }
 }

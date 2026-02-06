@@ -4,10 +4,9 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-
-import java.util.Set;
 
 public class FormTest {
 
@@ -21,9 +20,9 @@ public class FormTest {
 
     protected <T> ConstraintViolation<T> getViolation(Set<ConstraintViolation<T>> violations, String field) {
         ConstraintViolation<T> violation = violations.stream()
-            .filter(v -> v.getPropertyPath().toString().equals(field))
-            .findFirst()
-            .orElse(null);
+                .filter(v -> v.getPropertyPath().toString().equals(field))
+                .findFirst()
+                .orElse(null);
         Assertions.assertNotNull(violation);
         return violation;
     }

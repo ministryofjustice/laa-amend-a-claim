@@ -1,20 +1,5 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
-import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
-import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
@@ -23,6 +8,20 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
+import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDetails, CrimeClaimDetailsView> {
 
@@ -105,19 +104,24 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
             Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
             Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
             Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
             Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
 
             Assertions.assertEquals(TRAVEL_COSTS, result.get(4).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
 
             Assertions.assertEquals(WAITING_COSTS, result.get(5).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
 
             Assertions.assertEquals(VAT, result.get(6).getKey());
         }
@@ -136,19 +140,24 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
             Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
             Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
             Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
             Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
 
             Assertions.assertEquals(TRAVEL_COSTS, result.get(4).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
 
             Assertions.assertEquals(WAITING_COSTS, result.get(5).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
 
             Assertions.assertEquals(VAT, result.get(6).getKey());
 
@@ -170,19 +179,24 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
             Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
             Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
 
             Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
 
             Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
 
             Assertions.assertEquals(TRAVEL_COSTS, result.get(4).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
 
             Assertions.assertEquals(WAITING_COSTS, result.get(5).getKey());
-            Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
 
             Assertions.assertEquals(VAT, result.get(6).getKey());
         }
@@ -222,12 +236,13 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
             CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
 
             List<ReviewAndAmendFormError> expectedErrors = List.of(
-                new ReviewAndAmendFormError("profit-cost", "claimSummary.rows.profitCost.error"),
-                new ReviewAndAmendFormError("assessed-total-vat", "claimSummary.rows.assessedTotalVat.error"),
-                new ReviewAndAmendFormError("assessed-total-incl-vat", "claimSummary.rows.assessedTotalInclVat.error"),
-                new ReviewAndAmendFormError("allowed-total-vat", "claimSummary.rows.allowedTotalVat.error"),
-                new ReviewAndAmendFormError("allowed-total-incl-vat", "claimSummary.rows.allowedTotalInclVat.error")
-            );
+                    new ReviewAndAmendFormError("profit-cost", "claimSummary.rows.profitCost.error"),
+                    new ReviewAndAmendFormError("assessed-total-vat", "claimSummary.rows.assessedTotalVat.error"),
+                    new ReviewAndAmendFormError(
+                            "assessed-total-incl-vat", "claimSummary.rows.assessedTotalInclVat.error"),
+                    new ReviewAndAmendFormError("allowed-total-vat", "claimSummary.rows.allowedTotalVat.error"),
+                    new ReviewAndAmendFormError(
+                            "allowed-total-incl-vat", "claimSummary.rows.allowedTotalInclVat.error"));
 
             Assertions.assertEquals(expectedErrors, viewModel.getErrors());
         }

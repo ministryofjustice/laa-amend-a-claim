@@ -1,9 +1,8 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 public class SortsTest {
 
@@ -23,7 +22,10 @@ public class SortsTest {
 
     @Test
     void returnsValueWhenEnabled() {
-        Sort sort = Sort.builder().field(SortField.UNIQUE_FILE_NUMBER).direction(SortDirection.ASCENDING).build();
+        Sort sort = Sort.builder()
+                .field(SortField.UNIQUE_FILE_NUMBER)
+                .direction(SortDirection.ASCENDING)
+                .build();
         Sorts sorts = new Sorts(sort);
         Assertions.assertEquals(SortDirection.ASCENDING, sorts.getDirection(SortField.UNIQUE_FILE_NUMBER));
         Assertions.assertTrue(sorts.isEnabled());

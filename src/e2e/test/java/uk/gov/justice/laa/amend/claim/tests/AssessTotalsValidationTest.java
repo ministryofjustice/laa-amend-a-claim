@@ -1,5 +1,10 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
+
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
@@ -17,12 +22,6 @@ import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
-
 public class AssessTotalsValidationTest extends BaseTest {
 
     private final String PROVIDER_ACCOUNT = "234567";
@@ -37,46 +36,36 @@ public class AssessTotalsValidationTest extends BaseTest {
     @Override
     protected List<Insert> inserts() {
         return List.of(
-            BulkSubmissionInsert
-                .builder()
-                .id(BULK_SUBMISSION_ID)
-                .userId(USER_ID)
-                .build(),
-
-            SubmissionInsert
-                .builder()
-                .id(SUBMISSION_ID)
-                .bulkSubmissionId(BULK_SUBMISSION_ID)
-                .officeAccountNumber(PROVIDER_ACCOUNT)
-                .submissionPeriod("JUN-2025")
-                .areaOfLaw("LEGAL_HELP")
-                .userId(USER_ID)
-                .build(),
-
-            ClaimInsert
-                .builder()
-                .id(CLAIM_ID)
-                .submissionId(SUBMISSION_ID)
-                .uniqueFileNumber(UFN)
-                .userId(USER_ID)
-                .build(),
-
-            ClaimSummaryFeeInsert
-                .builder()
-                .id(CLAIM_SUMMARY_FEE_ID)
-                .claimId(CLAIM_ID)
-                .userId(USER_ID)
-                .build(),
-
-            CalculatedFeeDetailInsert
-                .builder()
-                .id(CALCULATED_FEE_DETAIL_ID)
-                .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
-                .claimId(CLAIM_ID)
-                .escaped(true)
-                .userId(USER_ID)
-                .build()
-        );
+                BulkSubmissionInsert.builder()
+                        .id(BULK_SUBMISSION_ID)
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(SUBMISSION_ID)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber(PROVIDER_ACCOUNT)
+                        .submissionPeriod("JUN-2025")
+                        .areaOfLaw("LEGAL_HELP")
+                        .userId(USER_ID)
+                        .build(),
+                ClaimInsert.builder()
+                        .id(CLAIM_ID)
+                        .submissionId(SUBMISSION_ID)
+                        .uniqueFileNumber(UFN)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimSummaryFeeInsert.builder()
+                        .id(CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CLAIM_ID)
+                        .userId(USER_ID)
+                        .build(),
+                CalculatedFeeDetailInsert.builder()
+                        .id(CALCULATED_FEE_DETAIL_ID)
+                        .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CLAIM_ID)
+                        .escaped(true)
+                        .userId(USER_ID)
+                        .build());
     }
 
     private void navigateToReviewAndAmend() {

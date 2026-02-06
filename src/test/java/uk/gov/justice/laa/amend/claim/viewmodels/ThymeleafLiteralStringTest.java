@@ -1,12 +1,12 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.thymeleaf.expression.Messages;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.thymeleaf.expression.Messages;
 
 class ThymeleafLiteralStringTest {
 
@@ -19,8 +19,7 @@ class ThymeleafLiteralStringTest {
 
     @Test
     void resolve_shouldReturnValue() {
-        ThymeleafLiteralString tls =
-            new ThymeleafLiteralString("value");
+        ThymeleafLiteralString tls = new ThymeleafLiteralString("value");
 
         String result = tls.resolve(messages);
 

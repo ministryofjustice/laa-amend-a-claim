@@ -1442,7 +1442,7 @@
   },
   "timezone": "browser",
   "title": "LAA Amend a Claim Dashboard - laa-amend-a-claim / {{ .Release.Namespace }}",
-  "uid": "laa-amend-a---claim-dev-mend-a-claim",
+  "uid": "{{ .Release.Namespace }}",
   "version": 1,
   "weekStart": ""
 }

@@ -2,6 +2,8 @@ package uk.gov.justice.laa.amend.claim.tests;
 
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
@@ -15,9 +17,6 @@ import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-
-import java.util.List;
-import java.util.UUID;
 
 @Epic("ClaimDetails")
 @Feature("Assessed claim")
@@ -34,55 +33,43 @@ public class AssessedClaimDetailsTest extends BaseTest {
     @Override
     protected List<Insert> inserts() {
         return List.of(
-            BulkSubmissionInsert
-                .builder()
-                .id(BULK_SUBMISSION_ID)
-                .userId(USER_ID)
-                .build(),
-
-            SubmissionInsert
-                .builder()
-                .id(SUBMISSION_ID)
-                .bulkSubmissionId(BULK_SUBMISSION_ID)
-                .officeAccountNumber(PROVIDER_ACCOUNT)
-                .submissionPeriod("APR-2025")
-                .areaOfLaw("LEGAL_HELP")
-                .userId(USER_ID)
-                .build(),
-
-            ClaimInsert
-                .builder()
-                .id(CLAIM_ID)
-                .submissionId(SUBMISSION_ID)
-                .uniqueFileNumber(UFN)
-                .userId(USER_ID)
-                .hasAssessment(true)
-                .build(),
-
-            ClaimSummaryFeeInsert
-                .builder()
-                .id(CLAIM_SUMMARY_FEE_ID)
-                .claimId(CLAIM_ID)
-                .userId(USER_ID)
-                .build(),
-
-            CalculatedFeeDetailInsert
-                .builder()
-                .id(CALCULATED_FEE_DETAIL_ID)
-                .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
-                .claimId(CLAIM_ID)
-                .escaped(true)
-                .userId(USER_ID)
-                .build(),
-
-            AssessmentInsert
-                .builder()
-                .id(ASSESSMENT_ID)
-                .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
-                .claimId(CLAIM_ID)
-                .userId(USER_ID)
-                .build()
-        );
+                BulkSubmissionInsert.builder()
+                        .id(BULK_SUBMISSION_ID)
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(SUBMISSION_ID)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber(PROVIDER_ACCOUNT)
+                        .submissionPeriod("APR-2025")
+                        .areaOfLaw("LEGAL_HELP")
+                        .userId(USER_ID)
+                        .build(),
+                ClaimInsert.builder()
+                        .id(CLAIM_ID)
+                        .submissionId(SUBMISSION_ID)
+                        .uniqueFileNumber(UFN)
+                        .userId(USER_ID)
+                        .hasAssessment(true)
+                        .build(),
+                ClaimSummaryFeeInsert.builder()
+                        .id(CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CLAIM_ID)
+                        .userId(USER_ID)
+                        .build(),
+                CalculatedFeeDetailInsert.builder()
+                        .id(CALCULATED_FEE_DETAIL_ID)
+                        .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CLAIM_ID)
+                        .escaped(true)
+                        .userId(USER_ID)
+                        .build(),
+                AssessmentInsert.builder()
+                        .id(ASSESSMENT_ID)
+                        .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CLAIM_ID)
+                        .userId(USER_ID)
+                        .build());
     }
 
     @Test
@@ -90,13 +77,7 @@ public class AssessedClaimDetailsTest extends BaseTest {
     void assessed() throws InterruptedException {
         SearchPage search = new SearchPage(page).navigateTo(EnvConfig.baseUrl());
 
-        search.searchForClaim(
-            PROVIDER_ACCOUNT,
-            "",
-            "",
-            UFN,
-            ""
-        );
+        search.searchForClaim(PROVIDER_ACCOUNT, "", "", UFN, "");
 
         search.clickViewForUfn(UFN);
 
@@ -104,7 +85,7 @@ public class AssessedClaimDetailsTest extends BaseTest {
         claimDetails.assertInfoAlertIsPresent();
         claimDetails.assertUpdateAssessmentOutcomeButtonIsPresent();
 
-        //Thread.sleep(10000);
+        // Thread.sleep(10000);
 
         claimDetails.assertCost("Fixed fee", "£239.35", "Not applicable", "£1,000.00");
         claimDetails.assertCost("Profit costs", "Not applicable", "£750.00", "£2,000.00");

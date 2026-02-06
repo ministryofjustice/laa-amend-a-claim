@@ -2,6 +2,8 @@ package uk.gov.justice.laa.amend.claim.tests;
 
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.BulkSubmissionInsert;
@@ -10,9 +12,6 @@ import uk.gov.justice.laa.amend.claim.models.ClaimInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
-
-import java.util.List;
-import java.util.UUID;
 
 @Epic("ClaimDetails")
 @Feature("Crime claim without INVC code")
@@ -26,47 +25,37 @@ public class CrimeClaimDetailsWithoutINVCFeeCodeTest extends E2eBaseTest {
     @Override
     protected List<Insert> inserts() {
         return List.of(
-            BulkSubmissionInsert
-                .builder()
-                .id(BULK_SUBMISSION_ID)
-                .userId(USER_ID)
-                .build(),
-
-            SubmissionInsert
-                .builder()
-                .id(SUBMISSION_ID)
-                .bulkSubmissionId(BULK_SUBMISSION_ID)
-                .officeAccountNumber(PROVIDER_ACCOUNT)
-                .submissionPeriod("APR-2025")
-                .areaOfLaw("CRIME_LOWER")
-                .userId(USER_ID)
-                .build(),
-
-            ClaimInsert
-                .builder()
-                .id(CLAIM_ID)
-                .submissionId(SUBMISSION_ID)
-                .uniqueFileNumber(UFN)
-                .userId(USER_ID)
-                .build(),
-
-            ClaimSummaryFeeInsert
-                .builder()
-                .id(CLAIM_SUMMARY_FEE_ID)
-                .claimId(CLAIM_ID)
-                .userId(USER_ID)
-                .build(),
-
-            CalculatedFeeDetailInsert
-                .builder()
-                .id(CALCULATED_FEE_DETAIL_ID)
-                .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
-                .claimId(CLAIM_ID)
-                .feeCode("CAPA")
-                .escaped(true)
-                .userId(USER_ID)
-                .build()
-        );
+                BulkSubmissionInsert.builder()
+                        .id(BULK_SUBMISSION_ID)
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(SUBMISSION_ID)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber(PROVIDER_ACCOUNT)
+                        .submissionPeriod("APR-2025")
+                        .areaOfLaw("CRIME_LOWER")
+                        .userId(USER_ID)
+                        .build(),
+                ClaimInsert.builder()
+                        .id(CLAIM_ID)
+                        .submissionId(SUBMISSION_ID)
+                        .uniqueFileNumber(UFN)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimSummaryFeeInsert.builder()
+                        .id(CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CLAIM_ID)
+                        .userId(USER_ID)
+                        .build(),
+                CalculatedFeeDetailInsert.builder()
+                        .id(CALCULATED_FEE_DETAIL_ID)
+                        .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CLAIM_ID)
+                        .feeCode("CAPA")
+                        .escaped(true)
+                        .userId(USER_ID)
+                        .build());
     }
 
     @Test
