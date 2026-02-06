@@ -47,7 +47,8 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         }
 
         log.error("Maintenance on, forward: {} to maintenance page", path);
-        request.getRequestDispatcher("/maintenance").forward(request, response);
+        //request.getRequestDispatcher("/maintenance").forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/maintenance");
         return false;
     }
 
