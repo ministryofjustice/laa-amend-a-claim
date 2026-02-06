@@ -47,12 +47,13 @@ Be sure to fill out all values as they are required for pulling dependencies for
 
 ### Commit hooks
 Run `scripts/setup-hooks.sh` to install pre-commit hooks for Git. This will install prek pre commit hook into git, which helps to:
-   - Run Spotless to automatically format Java files
-   - Run Checkstyle validation
-   - Scan for potential secrets in code
-   - Scan for dependency vulnerabilities
-   - Scan for code vulnerabilities
-- Note: If Spotless detects formatting issues, the commit will fail. After Spotless applies the formatting, you can commit the changes again.
+- Run Spotless to automatically format Java files
+- Run Checkstyle validation
+- Scan for potential secrets in code
+- Scan for dependency vulnerabilities
+- Scan for code vulnerabilities
+
+Note: If Spotless detects formatting issues, the commit will fail. After Spotless applies the formatting, you can commit the changes again.
 
 To run pre-commit hooks manually:
 ```bash
