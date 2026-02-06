@@ -49,15 +49,15 @@ jobs:
             echo "Release ${RELEASE_NAME} not found, nothing to clean up"
           fi
 
-      - name: Delete E2E ephemeral environment
+      - name: Delete E2E environment for branch
         env:
           KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
-          RELEASE_NAME: ${{ steps.sanitize.outputs.release_name }}
+          E2E_RELEASE_NAME: e2e-${{ steps.sanitize.outputs.sanitized }}
         run: |
-          if helm list -n "${KUBE_NAMESPACE}" | grep -q "e2e-${RELEASE_NAME}"; then
-            echo "Deleting release: e2e-${RELEASE_NAME}"
-            helm uninstall "e2e-${RELEASE_NAME}" -n "${KUBE_NAMESPACE}"
+          if helm list -n "${KUBE_NAMESPACE}" | grep -q "${E2E_RELEASE_NAME}"; then
+            echo "Deleting release: ${E2E_RELEASE_NAME}"
+            helm uninstall "${E2E_RELEASE_NAME}" -n "${KUBE_NAMESPACE}"
             echo "E2E ephemeral environment cleaned up successfully"
           else
-            echo "Release e2e-${RELEASE_NAME} not found, nothing to clean up"
+            echo "Release ${E2E_RELEASE_NAME} not found, nothing to clean up"
           fi
