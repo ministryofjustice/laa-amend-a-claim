@@ -1,7 +1,9 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static uk.gov.justice.laa.amend.claim.viewmodels.PaginationItem.PaginationItemType.*;
+import static uk.gov.justice.laa.amend.claim.viewmodels.PaginationItem.PaginationItemType.ACTIVE_PAGE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.PaginationItem.PaginationItemType.ELLIPSIS;
+import static uk.gov.justice.laa.amend.claim.viewmodels.PaginationItem.PaginationItemType.INACTIVE_PAGE;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
