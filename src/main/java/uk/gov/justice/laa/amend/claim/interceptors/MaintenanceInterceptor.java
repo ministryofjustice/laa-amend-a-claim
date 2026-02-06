@@ -26,46 +26,30 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler) throws IOException, ServletException {
-        log.error("before check for loop");
-
-        log.error("entering maintenance interceptor");
-
+        if (!maintenanceEnabled()) {
+            return true;
+        }
 
         String path = request.getRequestURI();
 
-
-        if (maintenanceEnabled()) {
-            if  (request.getRequestURI().equals("/maintenance")) {
-                return true;
-            }
-            if (path.startsWith("/actuator") || path.startsWith("/health")) {
-                return true;
-            }
-            request.getRequestDispatcher("/maintenance").forward(request, response);
-            return false;
+        if (path.equals("/maintenance") || path.startsWith("/actuator") || path.startsWith("/health")) {
+            return true;
         }
-        return true;
-    }
 
-    private boolean error(
-            HttpServletResponse response, HttpServletRequest request, String message) throws IOException {
-        log.warn("{}: {}", request.getRequestURI(), message);
-        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        request.getRequestDispatcher("/maintenance").forward(request, response);
         return false;
     }
 
     private boolean maintenanceEnabled() {
         Path enabled = Paths.get("/config/maintenance/enabled");
-
         try {
-            if (Files.exists(enabled)) {
-                String value = Files.readString(enabled).trim();
-
-                return Boolean.parseBoolean(value);
+            if(!Files.exists(enabled)) {
+                return false;
             }
+            return Boolean.parseBoolean(Files.readString(enabled).trim());
         } catch (IOException e) {
             log.error("Failed to read maintenance flag", e);
+            return false;
         }
-        return false;
     }
 }
