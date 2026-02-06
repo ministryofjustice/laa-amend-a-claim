@@ -43,17 +43,44 @@ Using the `.env-template` file as a template, copy to a new .env file
 Be sure to fill out all values as they are required for pulling dependencies for the application to run
 
 
-### Developer setup
+## Developer setup
+
 1. Run `scripts/setup-hooks.sh` to install pre-commit hooks for Git.
-    - This will install prek pre commit hook into git, which helps to:
-        - Run Spotless to automatically format Java files
-        - Run Checkstyle validation
-        - Scan for potential secrets in code
-    - Note: If Spotless detects formatting issues, the commit will fail. After Spotless applies the formatting, you can commit the changes again.
+   - This will install prek pre commit hook into git, which helps to:
+      - Run Spotless to automatically format Java files
+      - Run Checkstyle validation
+      - Scan for potential secrets in code
+   - Note: If Spotless detects formatting issues, the commit will fail. After Spotless applies the formatting, you can commit the changes again.
+
+   To run pre-commit hooks manually:
+   ```bash
+   git add .
+   prek run --all-files
+   ```
 
 2. Configure code formatting:
-    - We use [palantir-java-format](https://github.com/palantir/palantir-java-format) for consistent code formatting
-    - Install and enable the "palantir-java-format" plugin in IntelliJ IDEA
+   - We use [palantir-java-format](https://github.com/palantir/palantir-java-format) for consistent code formatting
+   - Install and enable the "palantir-java-format" plugin in IntelliJ IDEA
+   - Configure the plugin:
+      1. Go to Settings → Other → Palantir Java Formatter and enable it
+      2. Navigate to Settings → Code Style → Java
+      3. Set the following values:
+         - Class count to use import with '*': 999
+         - Names count to use static import with '*': 999
+
+   Import layout should be as follows:
+
+   ```text
+   import static <all other imports>
+
+   import java.*
+   import javax.*
+   import jakarta.*
+   import org.*
+   import com.*
+   import net.*
+   import <all other imports>
+   ```
 
 ### Build And Run Application
 1. Run:
