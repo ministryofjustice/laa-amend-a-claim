@@ -48,7 +48,7 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
 
     private static final List<String> ALLOWED_URLS = List.of(
             "/actuator/**", "/health", "/maintenance", "/error", "/assets/**",
-            "/css/**", "/static/**", "/public/**", "js/**", "/webjars/**", "images/**");
+            "/css/**", "/static/**", "/public/**", "/js/**", "/webjars/**", "images/**");
 
     private boolean maintenanceEnabled() {
         Path enabled = Paths.get("/config/maintenance/enabled");
