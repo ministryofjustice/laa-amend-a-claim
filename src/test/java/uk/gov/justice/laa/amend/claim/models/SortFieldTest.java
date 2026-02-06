@@ -32,10 +32,7 @@ public class SortFieldTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-            "foo",
-            "bar"
-        })
+        @ValueSource(strings = {"foo", "bar"})
         void shouldThrowExceptionForAnythingElse(String str) {
             Assertions.assertThrows(IllegalArgumentException.class, () -> SortField.fromValue(str));
         }

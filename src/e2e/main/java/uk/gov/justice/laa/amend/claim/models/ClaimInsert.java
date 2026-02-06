@@ -1,18 +1,12 @@
 package uk.gov.justice.laa.amend.claim.models;
 
-import lombok.Builder;
-
 import java.util.Arrays;
 import java.util.List;
+import lombok.Builder;
 
 @Builder
-public record ClaimInsert(
-    String id,
-    String submissionId,
-    String uniqueFileNumber,
-    String userId,
-    Boolean hasAssessment
-) implements Insert {
+public record ClaimInsert(String id, String submissionId, String uniqueFileNumber, String userId, Boolean hasAssessment)
+        implements Insert {
 
     @Override
     public String table() {
@@ -22,12 +16,6 @@ public record ClaimInsert(
     @Override
     public List<Object> parameters() {
         return Arrays.asList(
-            id,
-            submissionId,
-            uniqueFileNumber,
-            userId,
-            userId,
-            hasAssessment != null  ? hasAssessment : false
-        );
+                id, submissionId, uniqueFileNumber, userId, userId, hasAssessment != null ? hasAssessment : false);
     }
 }

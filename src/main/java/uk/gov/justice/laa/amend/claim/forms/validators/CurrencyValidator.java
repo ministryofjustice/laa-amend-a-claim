@@ -1,12 +1,11 @@
 package uk.gov.justice.laa.amend.claim.forms.validators;
 
-import jakarta.validation.ConstraintValidatorContext;
-import uk.gov.justice.laa.amend.claim.utils.NumberUtils;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import jakarta.validation.ConstraintValidatorContext;
 import java.math.BigDecimal;
 import java.text.ParseException;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import uk.gov.justice.laa.amend.claim.utils.NumberUtils;
 
 public class CurrencyValidator extends Validator {
 

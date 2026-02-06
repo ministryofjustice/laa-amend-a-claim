@@ -1,5 +1,11 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-
-import java.util.UUID;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @ActiveProfiles("local")
 @WebMvcTest(ConfirmationController.class)
@@ -44,10 +43,10 @@ public class ConfirmationControllerTest {
         String uri = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
 
         mockMvc.perform(get(uri).session(session))
-            .andExpect(status().isOk())
-            .andExpect(view().name("confirmation"))
-            .andExpect(model().attribute("submissionId", submissionId))
-            .andExpect(model().attribute("claimId", claimId));
+                .andExpect(status().isOk())
+                .andExpect(view().name("confirmation"))
+                .andExpect(model().attribute("submissionId", submissionId))
+                .andExpect(model().attribute("claimId", claimId));
     }
 
     @Test
@@ -61,8 +60,7 @@ public class ConfirmationControllerTest {
 
         String uri = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId2);
 
-        mockMvc.perform(get(uri).session(session))
-            .andExpect(status().isNotFound());
+        mockMvc.perform(get(uri).session(session)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -73,7 +71,6 @@ public class ConfirmationControllerTest {
 
         String uri = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
 
-        mockMvc.perform(get(uri))
-            .andExpect(status().isNotFound());
+        mockMvc.perform(get(uri)).andExpect(status().isNotFound());
     }
 }

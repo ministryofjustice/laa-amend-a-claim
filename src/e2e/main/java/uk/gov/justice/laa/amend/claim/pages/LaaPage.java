@@ -1,20 +1,19 @@
 package uk.gov.justice.laa.amend.claim.pages;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.deque.html.axecore.playwright.AxeBuilder;
 import com.deque.html.axecore.playwright.Reporter;
 import com.deque.html.axecore.results.AxeResults;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
 public abstract class LaaPage {
 
@@ -26,14 +25,9 @@ public abstract class LaaPage {
     public LaaPage(Page page, String heading) {
         this.page = page;
 
-        this.heading = page.getByRole(
-            AriaRole.HEADING,
-            new Page.GetByRoleOptions().setName(heading)
-        );
+        this.heading = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName(heading));
 
-        this.axeBuilder = new AxeBuilder(page)
-            .exclude(".govuk-phase-banner")
-            .exclude(".govuk-back-link");
+        this.axeBuilder = new AxeBuilder(page).exclude(".govuk-phase-banner").exclude(".govuk-back-link");
 
         this.directory = EnvConfig.axeReportsDirectory();
 

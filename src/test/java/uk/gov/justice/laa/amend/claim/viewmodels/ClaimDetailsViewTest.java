@@ -1,5 +1,11 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.YearMonth;
+import java.time.ZoneOffset;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,16 +16,10 @@ import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.YearMonth;
-import java.time.ZoneOffset;
-import java.util.List;
-
 public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends ClaimDetailsView<C>> {
 
     protected abstract C createClaim();
+
     protected abstract V createView(C claim);
 
     @Nested
@@ -99,10 +99,12 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             Assertions.assertEquals(2, result.size());
 
             Assertions.assertEquals(BigDecimal.valueOf(300), result.get(0).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(0).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/assessed-totals", result.get(0).getChangeUrl());
 
             Assertions.assertEquals(BigDecimal.valueOf(300), result.get(1).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/assessed-totals", result.get(1).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/assessed-totals", result.get(1).getChangeUrl());
         }
     }
 
@@ -134,11 +136,12 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             List<ClaimFieldRow> result = viewModel.getAllowedTotals();
 
             Assertions.assertEquals(BigDecimal.ZERO, result.get(0).getCalculated());
-            Assertions.assertEquals("/submissions/%s/claims/%s/allowed-totals", result.get(0).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/allowed-totals", result.get(0).getChangeUrl());
 
             Assertions.assertEquals(BigDecimal.ZERO, result.get(1).getCalculated());
-            Assertions.assertEquals("/submissions/%s/claims/%s/allowed-totals", result.get(1).getChangeUrl());
-
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/allowed-totals", result.get(1).getChangeUrl());
         }
 
         @Test
@@ -156,10 +159,12 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             List<ClaimFieldRow> result = viewModel.getAllowedTotals();
 
             Assertions.assertEquals(BigDecimal.valueOf(300), result.get(0).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/allowed-totals", result.get(0).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/allowed-totals", result.get(0).getChangeUrl());
 
             Assertions.assertEquals(BigDecimal.valueOf(300), result.get(1).getAssessed());
-            Assertions.assertEquals("/submissions/%s/claims/%s/allowed-totals", result.get(1).getChangeUrl());
+            Assertions.assertEquals(
+                    "/submissions/%s/claims/%s/allowed-totals", result.get(1).getChangeUrl());
         }
     }
 

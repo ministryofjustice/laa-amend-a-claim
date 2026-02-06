@@ -1,10 +1,14 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
+
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,11 +26,6 @@ import uk.gov.justice.laa.amend.claim.pages.DiscardAssessmentPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 
-import java.util.List;
-import java.util.UUID;
-
-import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
-
 @Epic("Assessment Discard Flow")
 @Feature("Discard Assessment Confirmation & Behaviour")
 public class DiscardAssessmentTest extends BaseTest {
@@ -43,46 +42,36 @@ public class DiscardAssessmentTest extends BaseTest {
     @Override
     protected List<Insert> inserts() {
         return List.of(
-            BulkSubmissionInsert
-                .builder()
-                .id(BULK_SUBMISSION_ID)
-                .userId(USER_ID)
-                .build(),
-
-            SubmissionInsert
-                .builder()
-                .id(SUBMISSION_ID)
-                .bulkSubmissionId(BULK_SUBMISSION_ID)
-                .officeAccountNumber(PROVIDER_ACCOUNT)
-                .submissionPeriod("APR-2025")
-                .areaOfLaw("CRIME_LOWER")
-                .userId(USER_ID)
-                .build(),
-
-            ClaimInsert
-                .builder()
-                .id(CLAIM_ID)
-                .submissionId(SUBMISSION_ID)
-                .uniqueFileNumber(UFN)
-                .userId(USER_ID)
-                .build(),
-
-            ClaimSummaryFeeInsert
-                .builder()
-                .id(CLAIM_SUMMARY_FEE_ID)
-                .claimId(CLAIM_ID)
-                .userId(USER_ID)
-                .build(),
-
-            CalculatedFeeDetailInsert
-                .builder()
-                .id(CALCULATED_FEE_DETAIL_ID)
-                .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
-                .claimId(CLAIM_ID)
-                .escaped(true)
-                .userId(USER_ID)
-                .build()
-        );
+                BulkSubmissionInsert.builder()
+                        .id(BULK_SUBMISSION_ID)
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(SUBMISSION_ID)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber(PROVIDER_ACCOUNT)
+                        .submissionPeriod("APR-2025")
+                        .areaOfLaw("CRIME_LOWER")
+                        .userId(USER_ID)
+                        .build(),
+                ClaimInsert.builder()
+                        .id(CLAIM_ID)
+                        .submissionId(SUBMISSION_ID)
+                        .uniqueFileNumber(UFN)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimSummaryFeeInsert.builder()
+                        .id(CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CLAIM_ID)
+                        .userId(USER_ID)
+                        .build(),
+                CalculatedFeeDetailInsert.builder()
+                        .id(CALCULATED_FEE_DETAIL_ID)
+                        .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CLAIM_ID)
+                        .escaped(true)
+                        .userId(USER_ID)
+                        .build());
     }
 
     @Test
@@ -93,15 +82,9 @@ public class DiscardAssessmentTest extends BaseTest {
 
         DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
 
-        Assertions.assertTrue(
-                discard.isDiscardAssessmentButtonVisible(),
-                "Discard Assessment button must be visible"
-        );
+        Assertions.assertTrue(discard.isDiscardAssessmentButtonVisible(), "Discard Assessment button must be visible");
 
-        Assertions.assertTrue(
-                discard.isReturnToClaimLinkVisible(),
-                "Return to Claim link must be visible"
-        );
+        Assertions.assertTrue(discard.isReturnToClaimLinkVisible(), "Return to Claim link must be visible");
     }
 
     @Test
@@ -117,14 +100,12 @@ public class DiscardAssessmentTest extends BaseTest {
 
         Assertions.assertTrue(
                 searchAfterDiscard.isSuccessBannerVisible(),
-                "Success notification banner should appear after discarding"
-        );
+                "Success notification banner should appear after discarding");
 
         Assertions.assertEquals(
                 "You discarded the assessment",
                 searchAfterDiscard.getSuccessBannerHeading(),
-                "Success banner heading must match expected text"
-        );
+                "Success banner heading must match expected text");
     }
 
     @Test
@@ -163,13 +144,7 @@ public class DiscardAssessmentTest extends BaseTest {
 
         SearchPage search = new SearchPage(page).navigateTo(baseUrl);
 
-        search.searchForClaim(
-            PROVIDER_ACCOUNT,
-            MONTH,
-            YEAR,
-            UFN,
-            ""
-        );
+        search.searchForClaim(PROVIDER_ACCOUNT, MONTH, YEAR, UFN, "");
 
         search.clickViewForUfn(UFN);
 
@@ -177,8 +152,7 @@ public class DiscardAssessmentTest extends BaseTest {
 
         Assertions.assertFalse(
                 details.isAddAssessmentOutcomeDisabled(),
-                "Test data issue: expected escape claim (Add assessment outcome enabled) but it was disabled"
-        );
+                "Test data issue: expected escape claim (Add assessment outcome enabled) but it was disabled");
 
         details.clickAddUpdateAssessmentOutcome();
 

@@ -1,9 +1,8 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import java.util.Arrays;
 import lombok.Getter;
 import org.thymeleaf.expression.Messages;
-
-import java.util.Arrays;
 
 @Getter
 public class ThymeleafMessage extends ThymeleafString {
@@ -19,8 +18,8 @@ public class ThymeleafMessage extends ThymeleafString {
     @Override
     public String resolve(Messages messages) {
         Object[] resolvedParams = Arrays.stream(params)
-            .map(param -> resolveParam(param, messages))
-            .toArray();
+                .map(param -> resolveParam(param, messages))
+                .toArray();
         return messages.msgWithParams(key, resolvedParams);
     }
 

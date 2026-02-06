@@ -1,9 +1,5 @@
 package uk.gov.justice.laa.amend.claim.persistence;
 
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
-import uk.gov.justice.laa.amend.claim.models.Insert;
-import uk.gov.justice.laa.amend.claim.models.SqlStatement;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,6 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import uk.gov.justice.laa.amend.claim.config.EnvConfig;
+import uk.gov.justice.laa.amend.claim.models.Insert;
+import uk.gov.justice.laa.amend.claim.models.SqlStatement;
 
 public class DatabaseQueryExecutor implements AutoCloseable {
 
@@ -49,10 +48,7 @@ public class DatabaseQueryExecutor implements AutoCloseable {
     }
 
     public void seed(List<Insert> inserts) {
-        inserts
-            .stream()
-            .map(SqlStatement::fromFile)
-            .forEach(this::executeUpdate);
+        inserts.stream().map(SqlStatement::fromFile).forEach(this::executeUpdate);
     }
 
     public void clean() {

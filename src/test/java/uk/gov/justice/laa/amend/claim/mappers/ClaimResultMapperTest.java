@@ -1,14 +1,13 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
-import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
-
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
 class ClaimResultMapperTest {
 

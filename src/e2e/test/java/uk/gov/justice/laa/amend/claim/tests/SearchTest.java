@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qameta.allure.Epic;
@@ -7,6 +9,11 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,14 +32,6 @@ import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @Epic("E2E")
 @Feature("Search")
 public class SearchTest extends BaseTest {
@@ -49,56 +48,44 @@ public class SearchTest extends BaseTest {
     @Override
     protected List<Insert> inserts() {
         return List.of(
-            BulkSubmissionInsert
-                .builder()
-                .id(BULK_SUBMISSION_ID)
-                .userId(USER_ID)
-                .build(),
-
-            SubmissionInsert
-                .builder()
-                .id(SUBMISSION_ID_1)
-                .bulkSubmissionId(BULK_SUBMISSION_ID)
-                .officeAccountNumber("123456")
-                .submissionPeriod("APR-2025")
-                .areaOfLaw("CRIME_LOWER")
-                .userId(USER_ID)
-                .build(),
-
-            SubmissionInsert
-                .builder()
-                .id(SUBMISSION_ID_2)
-                .bulkSubmissionId(BULK_SUBMISSION_ID)
-                .officeAccountNumber("234567")
-                .submissionPeriod("OCT-2025")
-                .areaOfLaw("LEGAL_HELP")
-                .userId(USER_ID)
-                .build(),
-
-            ClaimInsert
-                .builder()
-                .id(CLAIM_ID_1)
-                .submissionId(SUBMISSION_ID_1)
-                .uniqueFileNumber("121019/001")
-                .userId(USER_ID)
-                .build(),
-
-            ClaimSummaryFeeInsert
-                .builder()
-                .id(CLAIM_SUMMARY_FEE_ID_1)
-                .claimId(CLAIM_ID_1)
-                .userId(USER_ID)
-                .build(),
-
-            CalculatedFeeDetailInsert
-                .builder()
-                .id(CALCULATED_FEE_DETAIL_ID_1)
-                .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID_1)
-                .claimId(CLAIM_ID_1)
-                .escaped(true)
-                .userId(USER_ID)
-                .build()
-        );
+                BulkSubmissionInsert.builder()
+                        .id(BULK_SUBMISSION_ID)
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(SUBMISSION_ID_1)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber("123456")
+                        .submissionPeriod("APR-2025")
+                        .areaOfLaw("CRIME_LOWER")
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(SUBMISSION_ID_2)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber("234567")
+                        .submissionPeriod("OCT-2025")
+                        .areaOfLaw("LEGAL_HELP")
+                        .userId(USER_ID)
+                        .build(),
+                ClaimInsert.builder()
+                        .id(CLAIM_ID_1)
+                        .submissionId(SUBMISSION_ID_1)
+                        .uniqueFileNumber("121019/001")
+                        .userId(USER_ID)
+                        .build(),
+                ClaimSummaryFeeInsert.builder()
+                        .id(CLAIM_SUMMARY_FEE_ID_1)
+                        .claimId(CLAIM_ID_1)
+                        .userId(USER_ID)
+                        .build(),
+                CalculatedFeeDetailInsert.builder()
+                        .id(CALCULATED_FEE_DETAIL_ID_1)
+                        .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID_1)
+                        .claimId(CLAIM_ID_1)
+                        .escaped(true)
+                        .userId(USER_ID)
+                        .build());
     }
 
     private static Stream<Arguments> searchConfigProvider() {
@@ -127,13 +114,12 @@ public class SearchTest extends BaseTest {
         SearchPage searchPage = new SearchPage(page).navigateTo(baseUrl);
 
         searchPage.searchForClaim(
-            config.getProviderAccountNumber(),
-            config.getSubmissionMonth(),
-            config.getSubmissionYear(),
-            config.getUfn(),
-            config.getCrn(),
-            config.isExpectedResults()
-        );
+                config.getProviderAccountNumber(),
+                config.getSubmissionMonth(),
+                config.getSubmissionYear(),
+                config.getUfn(),
+                config.getCrn(),
+                config.isExpectedResults());
 
         boolean hasResults = searchPage.hasResults();
         Assertions.assertEquals(config.isExpectedResults(), hasResults, "Results presence should match expected.");
@@ -145,19 +131,16 @@ public class SearchTest extends BaseTest {
         String baseUrl = EnvConfig.baseUrl();
         SearchPage search = new SearchPage(page).navigateTo(baseUrl);
 
-        search.searchForClaim(
-            "123456",
-            "04",
-            "2025",
-            "",
-            ""
-        );
+        search.searchForClaim("123456", "04", "2025", "", "");
 
         search.clickViewForUfn("121019/001");
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
 
         details.clickBackToSearchButton();
-        assertTrue(page.url().contains("/?providerAccountNumber=123456&submissionDateMonth=04&submissionDateYear=2025&page=1&sort=uniqueFileNumber,asc"));
+        assertTrue(
+                page.url()
+                        .contains(
+                                "/?providerAccountNumber=123456&submissionDateMonth=04&submissionDateYear=2025&page=1&sort=uniqueFileNumber,asc"));
     }
 }

@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,9 +16,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
-import java.util.Objects;
-import java.util.Optional;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -26,26 +25,25 @@ public class ClaimService {
     private final ClaimMapper claimMapper;
     private final ProviderApiClient providerApiClient;
 
-
     public ClaimResultSet searchClaims(
-        String officeCode,
-        Optional<String> uniqueFileNumber,
-        Optional<String> caseReferenceNumber,
-        Optional<String> submissionPeriod,
-        int page,
-        int size,
-        Sort sort
-    ) {
+            String officeCode,
+            Optional<String> uniqueFileNumber,
+            Optional<String> caseReferenceNumber,
+            Optional<String> submissionPeriod,
+            int page,
+            int size,
+            Sort sort) {
         try {
-            return claimsApiClient.searchClaims(
-                officeCode.toUpperCase(),
-                uniqueFileNumber.orElse(null),
-                caseReferenceNumber.orElse(null),
-                submissionPeriod.orElse(null),
-                page - 1,
-                size,
-                Objects.toString(sort, null)
-            ).block();
+            return claimsApiClient
+                    .searchClaims(
+                            officeCode.toUpperCase(),
+                            uniqueFileNumber.orElse(null),
+                            caseReferenceNumber.orElse(null),
+                            submissionPeriod.orElse(null),
+                            page - 1,
+                            size,
+                            Objects.toString(sort, null))
+                    .block();
         } catch (Exception e) {
             log.error("Error searching claims", e);
             throw new RuntimeException(e);
@@ -67,8 +65,7 @@ public class ClaimService {
         if (claimResponse == null || submissionResponse == null) {
             log.error("Claim or submission not found for submission {} and claim {}", submissionId, claimId);
             throw new ClaimNotFoundException(
-                String.format("Claim with ID %s not found for submission %s", claimId, submissionId)
-            );
+                    String.format("Claim with ID %s not found for submission %s", claimId, submissionId));
         }
         var officeCode = submissionResponse.getOfficeAccountNumber();
         var claimDetails = claimMapper.mapToClaimDetails(claimResponse, submissionResponse);
@@ -93,16 +90,17 @@ public class ClaimService {
      */
     private String getProviderFirmName(String officeAccountNumber) {
         try {
-            ProviderFirmOfficeDto providerOffice = providerApiClient
-                .getProviderOffice(officeAccountNumber)
-                .block();
+            ProviderFirmOfficeDto providerOffice =
+                    providerApiClient.getProviderOffice(officeAccountNumber).block();
 
             if (providerOffice != null && providerOffice.getFirm() != null) {
                 return providerOffice.getFirm().getFirmName();
             }
         } catch (Exception e) {
-            log.warn("Failed to fetch provider firm name for office account: {}. Error: {}",
-                officeAccountNumber, e.getMessage());
+            log.warn(
+                    "Failed to fetch provider firm name for office account: {}. Error: {}",
+                    officeAccountNumber,
+                    e.getMessage());
         }
         return null;
     }

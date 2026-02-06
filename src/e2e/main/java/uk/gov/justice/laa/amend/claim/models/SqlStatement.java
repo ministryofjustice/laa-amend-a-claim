@@ -1,10 +1,10 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.readClasspathResource;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.readClasspathResource;
 
 public record SqlStatement(String sql, List<Object> parameters) {
 

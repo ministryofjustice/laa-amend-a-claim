@@ -27,7 +27,8 @@ class ChangeMonetaryValueViewTest extends ViewTestBase {
 
         assertPageHasHeading(doc, "Assess profit costs");
 
-        assertPageHasHint(doc, "value-hint", "Enter the assessed value for the providers' profit costs, excluding VAT.");
+        assertPageHasHint(
+                doc, "value-hint", "Enter the assessed value for the providers' profit costs, excluding VAT.");
 
         assertPageHasTextInput(doc, "value", "Assess profit costs");
     }

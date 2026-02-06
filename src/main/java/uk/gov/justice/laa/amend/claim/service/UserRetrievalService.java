@@ -20,8 +20,8 @@ public class UserRetrievalService {
 
     public MicrosoftApiUser getMicrosoftApiUser(String userId) {
         OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("graph")
-            .principal("system")
-            .build();
+                .principal("system")
+                .build();
 
         try {
             OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);

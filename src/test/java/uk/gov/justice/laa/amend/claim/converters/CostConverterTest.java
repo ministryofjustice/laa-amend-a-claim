@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.models.Cost;
-import uk.gov.justice.laa.amend.claim.models.Sort;
-import uk.gov.justice.laa.amend.claim.models.SortDirection;
 
 public class CostConverterTest {
 
@@ -78,10 +76,8 @@ public class CostConverterTest {
         String source = "foo";
         CostConverter converter = new CostConverter();
 
-        ResponseStatusException exception = Assertions.assertThrows(
-            ResponseStatusException.class,
-            () -> converter.convert(source)
-        );
+        ResponseStatusException exception =
+                Assertions.assertThrows(ResponseStatusException.class, () -> converter.convert(source));
 
         Assertions.assertEquals(404, exception.getStatusCode().value());
     }

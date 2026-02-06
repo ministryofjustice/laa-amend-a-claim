@@ -1,14 +1,14 @@
 package uk.gov.justice.laa.amend.claim.base;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 public class WireMockSetup {
 
@@ -46,10 +46,10 @@ public class WireMockSetup {
                 "pageNumber": 0
             }""";
         stubFor(get(urlPathMatching("/api/v1/claims.*"))
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader("Content-Type", "application/json")
-                .withBody(response)));
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(response)));
     }
 
     public void setupGetClaimStub(String submissionId, String claimId) {
@@ -78,10 +78,10 @@ public class WireMockSetup {
               }""", claimId, submissionId);
 
         stubFor(get(urlPathMatching(String.format("/api/v1/submissions/%s/claims/%s", submissionId, claimId)))
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader("Content-Type", "application/json")
-                .withBody(response)));
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(response)));
     }
 
     public void setupGetSubmissionStub(String submissionId, String officeAccountNumber) {
@@ -94,10 +94,10 @@ public class WireMockSetup {
             }""", submissionId, officeAccountNumber);
 
         stubFor(get(urlPathMatching(String.format("/api/v1/submissions/%s", submissionId)))
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader("Content-Type", "application/json")
-                .withBody(response)));
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(response)));
     }
 
     public void setupGetProviderOfficeStub(String officeAccountNumber, String firmName) {
@@ -109,9 +109,9 @@ public class WireMockSetup {
             }""", firmName);
 
         stubFor(get(urlPathMatching(String.format("/api/v1/provider-offices/%s", officeAccountNumber)))
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader("Content-Type", "application/json")
-                .withBody(response)));
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(response)));
     }
 }

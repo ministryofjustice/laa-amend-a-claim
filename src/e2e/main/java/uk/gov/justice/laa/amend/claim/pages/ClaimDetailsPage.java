@@ -1,15 +1,14 @@
 package uk.gov.justice.laa.amend.claim.pages;
 
-import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.AriaRole;
-import org.junit.jupiter.api.Assertions;
-
-import java.util.Map;
-
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.cardByTitle;
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.summaryListRowByLabel;
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.tableRowByLabel;
+
+import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.AriaRole;
+import java.util.Map;
+import org.junit.jupiter.api.Assertions;
 
 public class ClaimDetailsPage extends LaaPage {
 
@@ -22,24 +21,18 @@ public class ClaimDetailsPage extends LaaPage {
     public ClaimDetailsPage(Page page) {
         super(page, "Claim details");
 
-        this.addAssessmentOutcomeButton = page.getByRole(
-            AriaRole.BUTTON,
-            new Page.GetByRoleOptions().setName("Add assessment outcome")
-        );
+        this.addAssessmentOutcomeButton =
+                page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Add assessment outcome"));
 
-        this.updateAssessmentOutcomeButton = page.getByRole(
-            AriaRole.BUTTON,
-            new Page.GetByRoleOptions().setName("Update assessment outcome")
-        );
+        this.updateAssessmentOutcomeButton =
+                page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Update assessment outcome"));
 
         this.addUpdateAssessmentOutcomeButton = page.getByTestId("claim-details-assessment-button");
 
         this.infoAlert = page.locator(".moj-alert--information");
 
-        this.backToSearchButton = page.getByRole(
-            AriaRole.BUTTON,
-            new Page.GetByRoleOptions().setName("Back to search")
-        );
+        this.backToSearchButton =
+                page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Back to search"));
     }
 
     public void clickAddUpdateAssessmentOutcome() {
@@ -68,7 +61,8 @@ public class ClaimDetailsPage extends LaaPage {
     }
 
     private Locator valuesCard() {
-        return page.locator(".govuk-summary-card:has(h2.govuk-summary-card__title:has-text('Values'))").first();
+        return page.locator(".govuk-summary-card:has(h2.govuk-summary-card__title:has-text('Values'))")
+                .first();
     }
 
     public boolean hasValuesCard() {
@@ -145,7 +139,8 @@ public class ClaimDetailsPage extends LaaPage {
             String[] pair = entry.getValue();
 
             if (pair == null || pair.length != 2) {
-                throw new AssertionError("Invalid expected pair for item '" + item + "'. Must be [calculated, requested].");
+                throw new AssertionError(
+                        "Invalid expected pair for item '" + item + "'. Must be [calculated, requested].");
             }
 
             if (!valuesHasItem(item)) {
@@ -159,13 +154,13 @@ public class ClaimDetailsPage extends LaaPage {
             String actualRequested = getRequestedValue(item);
 
             if (!actualCalculated.equals(expectedCalculated)) {
-                throw new AssertionError("Calculated mismatch for '" + item + "'. Expected: "
-                        + expectedCalculated + " but was: " + actualCalculated);
+                throw new AssertionError("Calculated mismatch for '" + item + "'. Expected: " + expectedCalculated
+                        + " but was: " + actualCalculated);
             }
 
             if (!actualRequested.equals(expectedRequested)) {
-                throw new AssertionError("Requested mismatch for '" + item + "'. Expected: "
-                        + expectedRequested + " but was: " + actualRequested);
+                throw new AssertionError("Requested mismatch for '" + item + "'. Expected: " + expectedRequested
+                        + " but was: " + actualRequested);
             }
         }
     }
@@ -211,7 +206,8 @@ public class ClaimDetailsPage extends LaaPage {
         assertTableCellValue(row, 3, assessed);
     }
 
-    private void assertSummaryListRow(String title, String label, String calculated, String submitted, String assessed) {
+    private void assertSummaryListRow(
+            String title, String label, String calculated, String submitted, String assessed) {
         Locator card = cardByTitle(title, page);
         Locator row = summaryListRowByLabel(card, label);
         // Check calculated value
@@ -223,13 +219,14 @@ public class ClaimDetailsPage extends LaaPage {
     }
 
     private void assertTableCellValue(Locator rowSelector, int columnIndex, String expectedValue) {
-        String actualValue = rowSelector.locator("td").nth(columnIndex).textContent().trim();
-        Assertions.assertEquals(expectedValue, actualValue,
-            String.format("Value mismatch in column %d", columnIndex));
+        String actualValue =
+                rowSelector.locator("td").nth(columnIndex).textContent().trim();
+        Assertions.assertEquals(expectedValue, actualValue, String.format("Value mismatch in column %d", columnIndex));
     }
 
     private void assertSummaryListValue(Locator rowSelector, int columnIndex, String expectedValue) {
-        String actualValue = rowSelector.locator("dd").nth(columnIndex).textContent().trim();
+        String actualValue =
+                rowSelector.locator("dd").nth(columnIndex).textContent().trim();
         Assertions.assertEquals(expectedValue, actualValue, "Value mismatch in key");
     }
 

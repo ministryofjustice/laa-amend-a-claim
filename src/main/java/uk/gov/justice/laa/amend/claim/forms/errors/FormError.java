@@ -1,11 +1,10 @@
 package uk.gov.justice.laa.amend.claim.forms.errors;
 
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.thymeleaf.spring6.util.DetailedError;
 import uk.gov.justice.laa.amend.claim.utils.FormUtils;
-
-import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -27,10 +26,7 @@ public abstract class FormError implements Comparable<FormError> {
         if (other == null) {
             return 1;
         } else {
-            return Integer.compare(
-                getFieldOrder(this.getFieldName()),
-                getFieldOrder(other.getFieldName())
-            );
+            return Integer.compare(getFieldOrder(this.getFieldName()), getFieldOrder(other.getFieldName()));
         }
     }
 

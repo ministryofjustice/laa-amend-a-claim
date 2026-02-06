@@ -7,7 +7,6 @@ import org.springframework.web.service.annotation.HttpExchange;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
-
 @HttpExchange("/api/v1")
 public interface ProviderApiClient {
 

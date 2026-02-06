@@ -1,14 +1,13 @@
 package uk.gov.justice.laa.amend.claim.base;
 
-
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.WaitForSelectorState;
-import uk.gov.justice.laa.amend.claim.pages.LoginPage;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
+import uk.gov.justice.laa.amend.claim.pages.LoginPage;
 
 /**
  * The {@code BrowserSession} class provides a managed browser session for
@@ -22,8 +21,7 @@ public class BrowserSession {
     private static boolean initialized = false;
 
     private static boolean isSilasAuthenticationDisabled() {
-        return EnvConfig.silasAuthenticationEnabled()
-            .equals("false");
+        return EnvConfig.silasAuthenticationEnabled().equals("false");
     }
 
     public static synchronized void initializeIfNeeded() {
@@ -44,7 +42,11 @@ public class BrowserSession {
                 login.navigate();
                 try {
                     login.login();
-                    loginPage.waitForSelector("h1:has-text('Search for a claim')", new Page.WaitForSelectorOptions().setTimeout(60_000).setState(WaitForSelectorState.VISIBLE));
+                    loginPage.waitForSelector(
+                            "h1:has-text('Search for a claim')",
+                            new Page.WaitForSelectorOptions()
+                                    .setTimeout(60_000)
+                                    .setState(WaitForSelectorState.VISIBLE));
                 } finally {
                     loginPage.close();
                 }
@@ -68,7 +70,9 @@ public class BrowserSession {
                 // Sign out
                 Page signoutPage = context.newPage();
                 signoutPage.navigate(EnvConfig.baseUrl());
-                signoutPage.locator(".moj-header__navigation-link:has-text('Sign out')").click();
+                signoutPage
+                        .locator(".moj-header__navigation-link:has-text('Sign out')")
+                        .click();
                 signoutPage.waitForLoadState();
 
             } finally {

@@ -1,13 +1,12 @@
 package uk.gov.justice.laa.amend.claim.utils;
 
-import lombok.experimental.UtilityClass;
+import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Locale;
-
-import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
+import lombok.experimental.UtilityClass;
 
 /**
  * Utility class for formatting currency.

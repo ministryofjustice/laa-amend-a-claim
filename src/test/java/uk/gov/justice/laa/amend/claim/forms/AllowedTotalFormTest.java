@@ -1,18 +1,17 @@
 package uk.gov.justice.laa.amend.claim.forms;
 
 import jakarta.validation.ConstraintViolation;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
 
 public class AllowedTotalFormTest extends FormTest {
 
     private AllowedTotalForm form;
 
     @BeforeEach
-    void Setup(){
+    void Setup() {
         form = new AllowedTotalForm();
     }
 
@@ -145,7 +144,7 @@ public class AllowedTotalFormTest extends FormTest {
         checkNoViolations(form);
     }
 
-    private void checkViolations(String totalInclVatViolationMessage, String totalVatViolationMessage){
+    private void checkViolations(String totalInclVatViolationMessage, String totalVatViolationMessage) {
         Set<ConstraintViolation<AllowedTotalForm>> violations = validator.validate(form);
         ConstraintViolation<AllowedTotalForm> totalVatViolation = getViolation(violations, "allowedTotalVat");
         ConstraintViolation<AllowedTotalForm> totalInclVatViolation = getViolation(violations, "allowedTotalInclVat");

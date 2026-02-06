@@ -8,8 +8,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 public class ProviderApiProperties {
 
-    @NotBlank private final String url;
-    @NotBlank private final String accessToken;
+    @NotBlank
+    private final String url;
+
+    @NotBlank
+    private final String accessToken;
 
     public ProviderApiProperties(String url, String accessToken) {
         this.url = url;

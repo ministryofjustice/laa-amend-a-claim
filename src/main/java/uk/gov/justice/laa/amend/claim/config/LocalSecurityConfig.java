@@ -4,6 +4,11 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import lombok.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,12 +28,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 @Profile({"local", "ephemeral"})
 @Configuration
 @EnableWebSecurity
@@ -38,25 +37,21 @@ public class LocalSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChainLocal(final HttpSecurity http) throws Exception {
-        http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-            .csrf(AbstractHttpConfigurer::disable)
-            .headers(headers -> headers
-                    .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                    .contentSecurityPolicy(csp -> csp.policyDirectives(
-                            "default-src 'self'; "
-                            + "script-src 'self'; "
-                            + "style-src 'self'; "
-                            + "img-src 'self' data:; "
-                            + "font-src 'self'; "
-                            + "connect-src 'self'; "
-                            + "frame-ancestors 'none'; "
-                            + "base-uri 'self'; "
-                            + "form-action 'self'; "
-                            + "upgrade-insecure-requests"
-                    )))
-            .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class);
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                        .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; "
+                                + "script-src 'self'; "
+                                + "style-src 'self'; "
+                                + "img-src 'self' data:; "
+                                + "font-src 'self'; "
+                                + "connect-src 'self'; "
+                                + "frame-ancestors 'none'; "
+                                + "base-uri 'self'; "
+                                + "form-action 'self'; "
+                                + "upgrade-insecure-requests")))
+                .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class);
         return http.build();
     }
 
@@ -79,35 +74,24 @@ public class LocalSecurityConfig {
         return new OncePerRequestFilter() {
             @Override
             protected void doFilterInternal(
-                @NonNull HttpServletRequest request,
-                @NonNull HttpServletResponse response,
-                @NonNull FilterChain filterChain
-            ) throws ServletException, IOException {
+                    @NonNull HttpServletRequest request,
+                    @NonNull HttpServletResponse response,
+                    @NonNull FilterChain filterChain)
+                    throws ServletException, IOException {
 
                 Map<String, Object> claims = Map.of(
-                    "oid", userId,
-                    "email", "dummy-email@example.com",
-                    "name", "Dummy Name"
-                );
+                        "oid", userId,
+                        "email", "dummy-email@example.com",
+                        "name", "Dummy Name");
 
                 OidcIdToken token = new OidcIdToken(
-                    "dummy-token",
-                    Instant.now(),
-                    Instant.now().plusSeconds(3600),
-                    claims
-                );
+                        "dummy-token", Instant.now(), Instant.now().plusSeconds(3600), claims);
 
-                DefaultOidcUser oidcUser = new DefaultOidcUser(
-                    Collections.emptyList(),
-                    token,
-                    "email"
-                );
+                DefaultOidcUser oidcUser = new DefaultOidcUser(Collections.emptyList(), token, "email");
 
                 OAuth2AuthenticationToken oauthToken = new OAuth2AuthenticationToken(
-                        oidcUser,
-                        oidcUser.getAuthorities(),
-                        "test" // registrationId
-                );
+                        oidcUser, oidcUser.getAuthorities(), "test" // registrationId
+                        );
 
                 SecurityContextHolder.getContext().setAuthentication(oauthToken);
 

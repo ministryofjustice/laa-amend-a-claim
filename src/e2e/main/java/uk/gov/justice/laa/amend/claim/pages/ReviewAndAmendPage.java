@@ -1,14 +1,13 @@
 package uk.gov.justice.laa.amend.claim.pages;
 
-import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.AriaRole;
-
-import java.util.List;
-
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.cardByTitle;
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.tableByCard;
+
+import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.AriaRole;
+import java.util.List;
 
 public class ReviewAndAmendPage extends LaaErrorSummaryPage {
 
@@ -39,24 +38,21 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
         this.totalClaimValueTable = tableByCard(totalClaimValueCard);
         this.totalAllowedValueTable = tableByCard(totalAllowedValueCard);
 
-        this.saveButton = page.getByRole(
-            AriaRole.BUTTON,
-            new Page.GetByRoleOptions().setName("Submit adjustments")
-        );
+        this.saveButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Submit adjustments"));
 
         this.cancelButton = page.locator("#discard");
     }
 
     private Locator rowByItemName(String itemName, Locator locator) {
-        return locator.locator("tbody tr").filter(
-                new Locator.FilterOptions().setHasText(itemName)
-        ).first();
+        return locator.locator("tbody tr")
+                .filter(new Locator.FilterOptions().setHasText(itemName))
+                .first();
     }
 
     private void clickChangeInRow(String itemName, Locator locator) {
         rowByItemName(itemName, locator)
-            .locator("a.govuk-link:has-text('Change')")
-            .click();
+                .locator("a.govuk-link:has-text('Change')")
+                .click();
     }
 
     private void clickAddLink(String itemName, String id, Locator locator) {
@@ -69,15 +65,41 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
         link.click();
     }
 
-    public void clickAssessmentOutcome()      { clickChangeInRow("Assessment outcome", assessmentTable); }
-    public void clickLiableForVat()      { clickChangeInRow("Is this claim liable for VAT?", assessmentTable); }
-    public void clickChangeProfitCosts()      { clickChangeInRow("Profit costs", claimCostsTable); }
-    public void clickAddProfitCosts()         { clickAddLink("Profit costs", "claim-field-profitCost", claimCostsTable); }
-    public void clickChangeDisbursements()    { clickChangeInRow("Disbursements", claimCostsTable); }
-    public void clickChangeDisbursementsVat() { clickChangeInRow("Disbursement VAT", claimCostsTable); }
-    public void clickChangeTravelCosts()      { clickChangeInRow("Travel costs", claimCostsTable); }
-    public void clickChangeWaitingCosts()     { clickChangeInRow("Waiting costs", claimCostsTable); }
-    public void clickChangeVat()              { clickChangeInRow("VAT", claimCostsTable); }
+    public void clickAssessmentOutcome() {
+        clickChangeInRow("Assessment outcome", assessmentTable);
+    }
+
+    public void clickLiableForVat() {
+        clickChangeInRow("Is this claim liable for VAT?", assessmentTable);
+    }
+
+    public void clickChangeProfitCosts() {
+        clickChangeInRow("Profit costs", claimCostsTable);
+    }
+
+    public void clickAddProfitCosts() {
+        clickAddLink("Profit costs", "claim-field-profitCost", claimCostsTable);
+    }
+
+    public void clickChangeDisbursements() {
+        clickChangeInRow("Disbursements", claimCostsTable);
+    }
+
+    public void clickChangeDisbursementsVat() {
+        clickChangeInRow("Disbursement VAT", claimCostsTable);
+    }
+
+    public void clickChangeTravelCosts() {
+        clickChangeInRow("Travel costs", claimCostsTable);
+    }
+
+    public void clickChangeWaitingCosts() {
+        clickChangeInRow("Waiting costs", claimCostsTable);
+    }
+
+    public void clickChangeVat() {
+        clickChangeInRow("VAT", claimCostsTable);
+    }
 
     public void clickChangeDetentionTravelAndWaitingCosts() {
         clickChangeInRow("Detention travel and waiting costs", claimCostsTable);
@@ -90,7 +112,6 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
     public void clickChangeCounselCosts() {
         clickChangeInRow("Counsel costs", claimCostsTable);
     }
-
 
     public void clickAddAssessedTotalVat() {
         Locator link = totalClaimValueTable.getByTestId("totals-assessedTotalVat");
@@ -123,8 +144,7 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
                 "Disbursement VAT",
                 "Travel costs",
                 "Waiting costs",
-                "VAT"
-        );
+                "VAT");
         assertClaimCostsNotHasItems("Total");
         assertThat(saveButton).isVisible();
         assertThat(cancelButton).isVisible();
@@ -144,8 +164,7 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
                 "Detention travel and waiting costs",
                 "JR and form filling",
                 "Counsel costs",
-                "VAT"
-        );
+                "VAT");
         assertClaimCostsNotHasItems("Total");
 
         assertThat(saveButton).isVisible();
@@ -164,10 +183,8 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
     private void assertTableHasHeaders(Locator table, String... headers) {
         assertThat(table).isVisible();
         for (String header : headers) {
-            assertThat(table.getByRole(
-                    AriaRole.COLUMNHEADER,
-                    new Locator.GetByRoleOptions().setName(header)
-            )).isVisible();
+            assertThat(table.getByRole(AriaRole.COLUMNHEADER, new Locator.GetByRoleOptions().setName(header)))
+                    .isVisible();
         }
     }
 

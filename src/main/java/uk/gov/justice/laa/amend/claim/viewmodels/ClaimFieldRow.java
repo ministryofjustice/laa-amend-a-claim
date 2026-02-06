@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
@@ -10,8 +12,6 @@ import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.amend.claim.utils.FormUtils;
-
-import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
 
 @Getter
 @AllArgsConstructor
@@ -26,36 +26,33 @@ public class ClaimFieldRow {
 
     public static ClaimFieldRow from(AllowedClaimField claimField) {
         return new ClaimFieldRow(
-            claimField.getKey(),
-            claimField.getSubmitted(),
-            getOrElseZero(claimField.getCalculated()),
-            claimField.getAssessed(),
-            claimField.isAssessable(),
-            "/submissions/%s/claims/%s/allowed-totals"
-        );
+                claimField.getKey(),
+                claimField.getSubmitted(),
+                getOrElseZero(claimField.getCalculated()),
+                claimField.getAssessed(),
+                claimField.isAssessable(),
+                "/submissions/%s/claims/%s/allowed-totals");
     }
 
     public static ClaimFieldRow from(AssessedClaimField claimField) {
         return new ClaimFieldRow(
-            claimField.getKey(),
-            claimField.getSubmitted(),
-            claimField.getCalculated(),
-            claimField.getAssessed(),
-            claimField.isAssessable(),
-            "/submissions/%s/claims/%s/assessed-totals"
-        );
-    }
-
-    public static ClaimFieldRow from(BoltOnClaimField claimField) {
-        if (claimField.hasSubmittedValue()) {
-            return new ClaimFieldRow(
                 claimField.getKey(),
                 claimField.getSubmitted(),
                 claimField.getCalculated(),
                 claimField.getAssessed(),
                 claimField.isAssessable(),
-                null
-            );
+                "/submissions/%s/claims/%s/assessed-totals");
+    }
+
+    public static ClaimFieldRow from(BoltOnClaimField claimField) {
+        if (claimField.hasSubmittedValue()) {
+            return new ClaimFieldRow(
+                    claimField.getKey(),
+                    claimField.getSubmitted(),
+                    claimField.getCalculated(),
+                    claimField.getAssessed(),
+                    claimField.isAssessable(),
+                    null);
         }
         return null;
     }
@@ -77,46 +74,42 @@ public class ClaimFieldRow {
             }
         }
         return new ClaimFieldRow(
-            claimField.getKey(),
-            submitted,
-            calculated,
-            assessed,
-            claimField.isAssessable(),
-            claimField.getCost().getChangeUrl()
-        );
+                claimField.getKey(),
+                submitted,
+                calculated,
+                assessed,
+                claimField.isAssessable(),
+                claimField.getCost().getChangeUrl());
     }
 
     public static ClaimFieldRow from(CalculatedTotalClaimField claimField) {
         return new ClaimFieldRow(
-            claimField.getKey(),
-            claimField.getSubmitted(),
-            claimField.getCalculated(),
-            claimField.getAssessed(),
-            claimField.isAssessable(),
-            null
-        );
+                claimField.getKey(),
+                claimField.getSubmitted(),
+                claimField.getCalculated(),
+                claimField.getAssessed(),
+                claimField.isAssessable(),
+                null);
     }
 
     public static ClaimFieldRow from(FixedFeeClaimField claimField) {
         return new ClaimFieldRow(
-            claimField.getKey(),
-            claimField.getSubmitted(),
-            claimField.getCalculated(),
-            claimField.getAssessed(),
-            claimField.isAssessable(),
-            null
-        );
+                claimField.getKey(),
+                claimField.getSubmitted(),
+                claimField.getCalculated(),
+                claimField.getAssessed(),
+                claimField.isAssessable(),
+                null);
     }
 
     public static ClaimFieldRow from(VatLiabilityClaimField claimField) {
         return new ClaimFieldRow(
-            claimField.getKey(),
-            claimField.getSubmitted(),
-            claimField.getCalculated(),
-            claimField.getAssessed(),
-            claimField.isAssessable(),
-            "/submissions/%s/claims/%s/assessment-outcome"
-        );
+                claimField.getKey(),
+                claimField.getSubmitted(),
+                claimField.getCalculated(),
+                claimField.getAssessed(),
+                claimField.isAssessable(),
+                "/submissions/%s/claims/%s/assessment-outcome");
     }
 
     public String getLabel() {

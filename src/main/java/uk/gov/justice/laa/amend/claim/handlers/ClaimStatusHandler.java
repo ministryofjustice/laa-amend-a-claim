@@ -22,9 +22,7 @@ public class ClaimStatusHandler {
      * @param outcome Outcome type determining the status changes
      */
     public void updateFieldStatuses(ClaimDetails claim, OutcomeType outcome) {
-        claim
-            .getClaimFields()
-            .forEach(field -> updateFieldStatus(field, outcome, claim));
+        claim.getClaimFields().forEach(field -> updateFieldStatus(field, outcome, claim));
     }
 
     private void updateFieldStatus(ClaimField field, OutcomeType outcome, ClaimDetails claim) {
@@ -33,7 +31,7 @@ public class ClaimStatusHandler {
             case PAID_IN_FULL -> handleAssessmentInFullStatus(field, claim);
             case REDUCED -> handleReducedStatus(field, claim);
             case REDUCED_TO_FIXED_FEE -> handleReducedToFixedFeeStatus(field);
-            default -> { }
+            default -> {}
         }
     }
 

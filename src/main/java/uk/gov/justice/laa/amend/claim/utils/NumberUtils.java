@@ -1,7 +1,5 @@
 package uk.gov.justice.laa.amend.claim.utils;
 
-import lombok.experimental.UtilityClass;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -9,6 +7,7 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class NumberUtils {

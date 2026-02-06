@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
+
 import org.junit.jupiter.api.Assertions;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
@@ -11,8 +13,6 @@ import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-
-import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 public abstract class E2eBaseTest extends BaseTest {
 
@@ -104,13 +104,7 @@ public abstract class E2eBaseTest extends BaseTest {
     private void findClaim() {
         SearchPage search = new SearchPage(page).navigateTo(EnvConfig.baseUrl());
 
-        search.searchForClaim(
-            PROVIDER_ACCOUNT,
-            "",
-            "",
-            UFN,
-            ""
-        );
+        search.searchForClaim(PROVIDER_ACCOUNT, "", "", UFN, "");
 
         search.clickViewForUfn(UFN);
     }
@@ -136,12 +130,14 @@ public abstract class E2eBaseTest extends BaseTest {
         complete.clickViewAssessedClaim();
     }
 
-    private void checkAssessedClaim(String assessedTotalVat, String assessedTotalInclVat, String allowedTotalVat, String allowedTotalInclVat) {
+    private void checkAssessedClaim(
+            String assessedTotalVat, String assessedTotalInclVat, String allowedTotalVat, String allowedTotalInclVat) {
         ClaimDetailsPage claimDetails = new ClaimDetailsPage(page);
         claimDetails.assertUpdateAssessmentOutcomeButtonIsPresent();
 
         claimDetails.assertAssessedTotals("Assessed total VAT", "Not applicable", "Not applicable", assessedTotalVat);
-        claimDetails.assertAssessedTotals("Assessed total incl VAT", "Not applicable", "Not applicable", assessedTotalInclVat);
+        claimDetails.assertAssessedTotals(
+                "Assessed total incl VAT", "Not applicable", "Not applicable", assessedTotalInclVat);
 
         claimDetails.assertAllowedTotals("Allowed total VAT", "£127.87", "Not applicable", allowedTotalVat);
         claimDetails.assertAllowedTotals("Allowed total incl VAT", "£767.22", "Not applicable", allowedTotalInclVat);

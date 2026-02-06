@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new ClaimInterceptor())
-            .addPathPatterns("/submissions/*/claims/*/*")
-            .excludePathPatterns("/submissions/*/claims/*/assessments/*");
+                .addPathPatterns("/submissions/*/claims/*/*")
+                .excludePathPatterns("/submissions/*/claims/*/assessments/*");
     }
 }

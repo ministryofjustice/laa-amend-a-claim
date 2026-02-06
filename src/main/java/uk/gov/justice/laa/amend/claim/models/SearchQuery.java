@@ -1,7 +1,14 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import static org.springframework.util.StringUtils.hasText;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Min;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,14 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.springframework.util.StringUtils.hasText;
 
 @Getter
 @Setter
@@ -44,8 +43,8 @@ public class SearchQuery {
 
     public void rejectUnknownParams(HttpServletRequest request) {
         Set<String> allowed = Arrays.stream(this.getClass().getDeclaredFields())
-            .map(Field::getName)
-            .collect(Collectors.toSet());
+                .map(Field::getName)
+                .collect(Collectors.toSet());
 
         request.getParameterMap().keySet().forEach(param -> {
             if (!allowed.contains(param)) {

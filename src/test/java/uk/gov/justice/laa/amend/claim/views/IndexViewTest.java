@@ -1,5 +1,11 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Test;
@@ -21,13 +27,6 @@ import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import static org.mockito.Mockito.when;
 
 @ActiveProfiles("local")
 @WebMvcTest(HomePageController.class)
@@ -86,7 +85,8 @@ class IndexViewTest extends ViewTestBase {
         when(searchProperties.isSortEnabled()).thenReturn(true);
 
         ClaimView claimViewModel = new ClaimView(MockClaimsFunctions.createMockCivilClaim());
-        List<BaseClaimView<Claim>> claims = new ArrayList<>(Collections.nCopies(numberOfResultsPerPage, claimViewModel));
+        List<BaseClaimView<Claim>> claims =
+                new ArrayList<>(Collections.nCopies(numberOfResultsPerPage, claimViewModel));
 
         SearchResultView viewModel = new SearchResultView();
         viewModel.setClaims(claims);
@@ -143,12 +143,12 @@ class IndexViewTest extends ViewTestBase {
 
         Document doc = renderDocumentWithErrors(params);
 
-        assertPageHasErrorSummary(doc,
-            "provider-account-number",
-            "submission-date-month", // date errors get combined
-            "unique-file-number",
-            "case-reference-number"
-        );
+        assertPageHasErrorSummary(
+                doc,
+                "provider-account-number",
+                "submission-date-month", // date errors get combined
+                "unique-file-number",
+                "case-reference-number");
     }
 
     @Test
