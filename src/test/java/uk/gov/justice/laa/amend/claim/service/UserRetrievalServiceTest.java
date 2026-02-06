@@ -1,6 +1,14 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,16 +22,6 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.MicrosoftGraphApiClient;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
-
-import java.time.Instant;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserRetrievalServiceTest {
@@ -47,16 +45,19 @@ public class UserRetrievalServiceTest {
 
         // Mock OAuth2AuthorizedClient
         OAuth2AuthorizedClient client = new OAuth2AuthorizedClient(
-            ClientRegistration.withRegistrationId("test")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .clientId("client-id")
-                .authorizationUri("https://example.com/auth")
-                .tokenUri("https://example.com/token")
-                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
-                .build(),
-            "principalName",
-            new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, tokenValue, Instant.now(), Instant.now().plusSeconds(3600))
-        );
+                ClientRegistration.withRegistrationId("test")
+                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                        .clientId("client-id")
+                        .authorizationUri("https://example.com/auth")
+                        .tokenUri("https://example.com/token")
+                        .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+                        .build(),
+                "principalName",
+                new OAuth2AccessToken(
+                        OAuth2AccessToken.TokenType.BEARER,
+                        tokenValue,
+                        Instant.now(),
+                        Instant.now().plusSeconds(3600)));
 
         when(authorizedClientManager.authorize(any())).thenReturn(client);
 
@@ -88,7 +89,8 @@ public class UserRetrievalServiceTest {
     @Test
     void testGetMicrosoftApiUserWhenClientManagerThrowsException() {
         // Arrange
-        when(authorizedClientManager.authorize(any())).thenThrow(new IllegalArgumentException("Could not find ClientRegistration with id 'test'"));
+        when(authorizedClientManager.authorize(any()))
+                .thenThrow(new IllegalArgumentException("Could not find ClientRegistration with id 'test'"));
 
         // Act
         MicrosoftApiUser result = userRetrievalService.getMicrosoftApiUser("test-user");
@@ -105,16 +107,19 @@ public class UserRetrievalServiceTest {
 
         // Mock OAuth2AuthorizedClient
         OAuth2AuthorizedClient client = new OAuth2AuthorizedClient(
-            ClientRegistration.withRegistrationId("test")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .clientId("client-id")
-                .authorizationUri("https://example.com/auth")
-                .tokenUri("https://example.com/token")
-                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
-                .build(),
-            "principalName",
-            new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, tokenValue, Instant.now(), Instant.now().plusSeconds(3600))
-        );
+                ClientRegistration.withRegistrationId("test")
+                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                        .clientId("client-id")
+                        .authorizationUri("https://example.com/auth")
+                        .tokenUri("https://example.com/token")
+                        .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+                        .build(),
+                "principalName",
+                new OAuth2AccessToken(
+                        OAuth2AccessToken.TokenType.BEARER,
+                        tokenValue,
+                        Instant.now(),
+                        Instant.now().plusSeconds(3600)));
 
         when(authorizedClientManager.authorize(any())).thenReturn(client);
 
@@ -138,16 +143,19 @@ public class UserRetrievalServiceTest {
 
         // Mock OAuth2AuthorizedClient
         OAuth2AuthorizedClient client = new OAuth2AuthorizedClient(
-            ClientRegistration.withRegistrationId("test")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .clientId("client-id")
-                .authorizationUri("https://example.com/auth")
-                .tokenUri("https://example.com/token")
-                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
-                .build(),
-            "principalName",
-            new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, tokenValue, Instant.now(), Instant.now().plusSeconds(3600))
-        );
+                ClientRegistration.withRegistrationId("test")
+                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                        .clientId("client-id")
+                        .authorizationUri("https://example.com/auth")
+                        .tokenUri("https://example.com/token")
+                        .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+                        .build(),
+                "principalName",
+                new OAuth2AccessToken(
+                        OAuth2AccessToken.TokenType.BEARER,
+                        tokenValue,
+                        Instant.now(),
+                        Instant.now().plusSeconds(3600)));
 
         when(authorizedClientManager.authorize(any())).thenReturn(client);
 
@@ -163,4 +171,3 @@ public class UserRetrievalServiceTest {
         verify(microsoftGraphApiClient).getUser("test-user", "dummy-token");
     }
 }
-

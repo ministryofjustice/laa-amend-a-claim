@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_ID;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -18,8 +20,6 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_ID;
-
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -30,11 +30,10 @@ public class ClaimReviewController {
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}/review")
     public String onPageLoad(
-        HttpServletRequest request,
-        Model model,
-        @PathVariable(value = "submissionId") String submissionId,
-        @PathVariable(value = "claimId") String claimId
-    ) {
+            HttpServletRequest request,
+            Model model,
+            @PathVariable(value = "submissionId") String submissionId,
+            @PathVariable(value = "claimId") String claimId) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
         if (claim.getAssessmentOutcome() == null) {
@@ -45,14 +44,13 @@ public class ClaimReviewController {
 
     @PostMapping("/submissions/{submissionId}/claims/{claimId}/review")
     public String submit(
-        HttpServletRequest request,
-        HttpSession session,
-        Model model,
-        @AuthenticationPrincipal OidcUser oidcUser,
-        @PathVariable(value = "submissionId") String submissionId,
-        @PathVariable(value = "claimId") String claimId,
-        HttpServletResponse response
-    ) {
+            HttpServletRequest request,
+            HttpSession session,
+            Model model,
+            @AuthenticationPrincipal OidcUser oidcUser,
+            @PathVariable(value = "submissionId") String submissionId,
+            @PathVariable(value = "claimId") String claimId,
+            HttpServletResponse response) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
         ClaimDetailsView<? extends ClaimDetails> viewModel = claim.toViewModel();
         if (viewModel.getErrors().isEmpty()) {
@@ -62,7 +60,8 @@ public class ClaimReviewController {
                 session.removeAttribute(claimId);
                 String assessmentId = result.getId().toString();
                 session.setAttribute(ASSESSMENT_ID, assessmentId);
-                return String.format("redirect:/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
+                return String.format(
+                        "redirect:/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
             } catch (Exception e) {
                 log.error("Failed to submit assessment for claim ID: {}", claimId, e);
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -74,25 +73,19 @@ public class ClaimReviewController {
         }
     }
 
-    private String renderView(
-        Model model,
-        ClaimDetails claim,
-        String submissionId,
-        String claimId
-    ) {
+    private String renderView(Model model, ClaimDetails claim, String submissionId, String claimId) {
         return renderView(model, claim, claim.toViewModel(), submissionId, claimId, false, false);
     }
 
     private String renderView(
-        Model model,
-        ClaimDetails claim,
-        ClaimDetailsView<? extends ClaimDetails> viewModel,
-        String submissionId,
-        String claimId,
-        boolean submissionFailed,
-        boolean validationFailed
-    ) {
-        //Populate with the right status of Claim fields based on outcome status and assessed values
+            Model model,
+            ClaimDetails claim,
+            ClaimDetailsView<? extends ClaimDetails> viewModel,
+            String submissionId,
+            String claimId,
+            boolean submissionFailed,
+            boolean validationFailed) {
+        // Populate with the right status of Claim fields based on outcome status and assessed values
         claimStatusHandler.updateFieldStatuses(claim, claim.getAssessmentOutcome());
         model.addAttribute("claim", claim);
         model.addAttribute("viewModel", viewModel);

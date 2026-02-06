@@ -1,5 +1,17 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.time.OffsetDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +29,6 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
-
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @ActiveProfiles("local")
 @WebMvcTest(ClaimSummaryController.class)
@@ -74,11 +73,11 @@ public class ClaimSummaryControllerTest {
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 
         mockMvc.perform(get(path).session(session))
-            .andExpect(status().isOk())
-            .andExpect(view().name("claim-summary"))
-            .andExpect(model().attributeExists("claim"))
-            .andExpect(model().attribute("searchUrl", "/"))
-            .andExpect(request().sessionAttribute(claimId, claim));
+                .andExpect(status().isOk())
+                .andExpect(view().name("claim-summary"))
+                .andExpect(model().attributeExists("claim"))
+                .andExpect(model().attribute("searchUrl", "/"))
+                .andExpect(request().sessionAttribute(claimId, claim));
     }
 
     @Test
@@ -98,21 +97,22 @@ public class ClaimSummaryControllerTest {
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 
         mockMvc.perform(get(path).session(session))
-            .andExpect(status().isOk())
-            .andExpect(view().name("claim-summary"))
-            .andExpect(model().attributeExists("claim"))
-            .andExpect(model().attribute("searchUrl", "/?providerAccountNumber=12345&page=1"))
-            .andExpect(request().sessionAttribute(claimId, claim));
+                .andExpect(status().isOk())
+                .andExpect(view().name("claim-summary"))
+                .andExpect(model().attributeExists("claim"))
+                .andExpect(model().attribute("searchUrl", "/?providerAccountNumber=12345&page=1"))
+                .andExpect(request().sessionAttribute(claimId, claim));
     }
 
     @Test
     public void testOnSubmitRedirects() throws Exception {
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 
-        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
+        String expectedRedirectUrl =
+                String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
 
         mockMvc.perform(post(path).session(session))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl(expectedRedirectUrl));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(expectedRedirectUrl));
     }
 }

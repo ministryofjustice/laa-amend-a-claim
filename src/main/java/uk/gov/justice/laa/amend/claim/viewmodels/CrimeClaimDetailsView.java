@@ -1,12 +1,9 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import java.util.Map;
+import java.util.stream.Stream;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
-
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 public record CrimeClaimDetailsView(CrimeClaimDetails claim) implements ClaimDetailsView<CrimeClaimDetails> {
 
@@ -31,11 +28,6 @@ public record CrimeClaimDetailsView(CrimeClaimDetails claim) implements ClaimDet
     @Override
     public Stream<ClaimField> claimFields() {
         return Stream.concat(
-                ClaimDetailsView.super.claimFields(),
-                Stream.of(
-                    claim.getTravelCosts(),
-                    claim.getWaitingCosts()
-                )
-            );
+                ClaimDetailsView.super.claimFields(), Stream.of(claim.getTravelCosts(), claim.getWaitingCosts()));
     }
 }

@@ -19,8 +19,6 @@ public class ClaimDetailsFixture {
     private Map<String, String[]> assessedTotals = new LinkedHashMap<>();
     private Map<String, String[]> allowedTotals = new LinkedHashMap<>();
 
-
-
     public String getOutcome() {
         return outcome;
     }
@@ -61,7 +59,6 @@ public class ClaimDetailsFixture {
         this.hasAssessment = hasAssessment;
     }
 
-
     public boolean isAddAssessmentOutcomeDisabled() {
         return addAssessmentOutcomeDisabled;
     }
@@ -98,5 +95,4 @@ public class ClaimDetailsFixture {
     public String toString() {
         return claimType;
     }
-
 }

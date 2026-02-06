@@ -1,9 +1,9 @@
 package uk.gov.justice.laa.amend.claim.pages;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public abstract class LaaCostPage extends LaaInputPage {
 

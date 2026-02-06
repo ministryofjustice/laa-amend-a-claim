@@ -1,5 +1,11 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,12 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import uk.gov.justice.laa.amend.claim.base.WireMockSetup;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -39,13 +39,19 @@ class ClaimDetailsIntegrationTest extends WireMockSetup {
 
     @Test
     void testClaimDetailsPageLoadsSuccessfully() throws Exception {
-        var result = mockMvc.perform(get("/submissions/{submissionId}/claims/{claimId}", SUBMISSION_ID, CLAIM_ID)).andExpect(status().isOk()).andExpect(view().name("claim-summary"))
-            .andExpect(model().attributeExists("claim")).andExpect(model().attributeExists("submissionId")).andExpect(model().attributeExists("claimId")).andReturn();
+        var result = mockMvc.perform(get("/submissions/{submissionId}/claims/{claimId}", SUBMISSION_ID, CLAIM_ID))
+                .andExpect(status().isOk())
+                .andExpect(view().name("claim-summary"))
+                .andExpect(model().attributeExists("claim"))
+                .andExpect(model().attributeExists("submissionId"))
+                .andExpect(model().attributeExists("claimId"))
+                .andReturn();
 
         ModelAndView modelAndView = result.getModelAndView();
         Assertions.assertNotNull(modelAndView);
         @SuppressWarnings("unchecked")
-        ClaimDetailsView<ClaimDetails> claim = (ClaimDetailsView<ClaimDetails>) modelAndView.getModel().get("claim");
+        ClaimDetailsView<ClaimDetails> claim =
+                (ClaimDetailsView<ClaimDetails>) modelAndView.getModel().get("claim");
         assertThat(claim).isNotNull();
         assertThat(claim.claim().getProviderName()).isEqualTo(FIRM_NAME);
     }

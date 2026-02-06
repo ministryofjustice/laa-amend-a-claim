@@ -1,5 +1,10 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
+
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
@@ -22,12 +27,6 @@ import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 public class AssessCostsValidationTest extends BaseTest {
 
@@ -54,80 +53,62 @@ public class AssessCostsValidationTest extends BaseTest {
     @Override
     protected List<Insert> inserts() {
         return List.of(
-            BulkSubmissionInsert
-                .builder()
-                .id(BULK_SUBMISSION_ID)
-                .userId(USER_ID)
-                .build(),
-
-            SubmissionInsert
-                .builder()
-                .id(CRIME_SUBMISSION_ID)
-                .bulkSubmissionId(BULK_SUBMISSION_ID)
-                .officeAccountNumber(CRIME_PROVIDER_ACCOUNT)
-                .submissionPeriod("APR-2025")
-                .areaOfLaw("CRIME_LOWER")
-                .userId(USER_ID)
-                .build(),
-
-            SubmissionInsert
-                .builder()
-                .id(CIVIL_SUBMISSION_ID)
-                .bulkSubmissionId(BULK_SUBMISSION_ID)
-                .officeAccountNumber(CIVIL_PROVIDER_ACCOUNT)
-                .submissionPeriod("JUN-2025")
-                .areaOfLaw("LEGAL_HELP")
-                .userId(USER_ID)
-                .build(),
-
-            ClaimInsert
-                .builder()
-                .id(CRIME_CLAIM_ID)
-                .submissionId(CRIME_SUBMISSION_ID)
-                .uniqueFileNumber(CRIME_UFN)
-                .userId(USER_ID)
-                .build(),
-
-            ClaimInsert
-                .builder()
-                .id(CIVIL_CLAIM_ID)
-                .submissionId(CIVIL_SUBMISSION_ID)
-                .uniqueFileNumber(CIVIL_UFN)
-                .userId(USER_ID)
-                .build(),
-
-            ClaimSummaryFeeInsert
-                .builder()
-                .id(CRIME_CLAIM_SUMMARY_FEE_ID)
-                .claimId(CRIME_CLAIM_ID)
-                .userId(USER_ID)
-                .build(),
-
-            ClaimSummaryFeeInsert
-                .builder()
-                .id(CIVIL_CLAIM_SUMMARY_FEE_ID)
-                .claimId(CIVIL_CLAIM_ID)
-                .userId(USER_ID)
-                .build(),
-
-            CalculatedFeeDetailInsert
-                .builder()
-                .id(CRIME_CALCULATED_FEE_DETAIL_ID)
-                .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
-                .claimId(CRIME_CLAIM_ID)
-                .escaped(true)
-                .userId(USER_ID)
-                .build(),
-
-            CalculatedFeeDetailInsert
-                .builder()
-                .id(CIVIL_CALCULATED_FEE_DETAIL_ID)
-                .claimSummaryFeeId(CIVIL_CLAIM_SUMMARY_FEE_ID)
-                .claimId(CIVIL_CLAIM_ID)
-                .escaped(true)
-                .userId(USER_ID)
-                .build()
-        );
+                BulkSubmissionInsert.builder()
+                        .id(BULK_SUBMISSION_ID)
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(CRIME_SUBMISSION_ID)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber(CRIME_PROVIDER_ACCOUNT)
+                        .submissionPeriod("APR-2025")
+                        .areaOfLaw("CRIME_LOWER")
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(CIVIL_SUBMISSION_ID)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber(CIVIL_PROVIDER_ACCOUNT)
+                        .submissionPeriod("JUN-2025")
+                        .areaOfLaw("LEGAL_HELP")
+                        .userId(USER_ID)
+                        .build(),
+                ClaimInsert.builder()
+                        .id(CRIME_CLAIM_ID)
+                        .submissionId(CRIME_SUBMISSION_ID)
+                        .uniqueFileNumber(CRIME_UFN)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimInsert.builder()
+                        .id(CIVIL_CLAIM_ID)
+                        .submissionId(CIVIL_SUBMISSION_ID)
+                        .uniqueFileNumber(CIVIL_UFN)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimSummaryFeeInsert.builder()
+                        .id(CRIME_CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CRIME_CLAIM_ID)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimSummaryFeeInsert.builder()
+                        .id(CIVIL_CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CIVIL_CLAIM_ID)
+                        .userId(USER_ID)
+                        .build(),
+                CalculatedFeeDetailInsert.builder()
+                        .id(CRIME_CALCULATED_FEE_DETAIL_ID)
+                        .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CRIME_CLAIM_ID)
+                        .escaped(true)
+                        .userId(USER_ID)
+                        .build(),
+                CalculatedFeeDetailInsert.builder()
+                        .id(CIVIL_CALCULATED_FEE_DETAIL_ID)
+                        .claimSummaryFeeId(CIVIL_CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CIVIL_CLAIM_ID)
+                        .escaped(true)
+                        .userId(USER_ID)
+                        .build());
     }
 
     private void navigateToReviewAndAmend(String provider, String month, String year, String ufn) {
@@ -146,7 +127,6 @@ public class AssessCostsValidationTest extends BaseTest {
 
         assertTrue(page.url().contains("/review"));
     }
-
 
     @Test
     @DisplayName("Crime: Profit costs - letters cause number validation error")

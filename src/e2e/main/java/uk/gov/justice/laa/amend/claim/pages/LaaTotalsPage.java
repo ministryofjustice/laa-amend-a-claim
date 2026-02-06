@@ -1,9 +1,9 @@
 package uk.gov.justice.laa.amend.claim.pages;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public abstract class LaaTotalsPage extends LaaInputPage {
 
@@ -39,7 +39,13 @@ public abstract class LaaTotalsPage extends LaaInputPage {
         assertThat(errorSummary).containsText(totalVatError);
         assertThat(errorSummary).containsText(totalInclVatError);
 
-        assertThat(inlineErrors.filter(new Locator.FilterOptions().setHasText(totalVatError)).first()).isVisible();
-        assertThat(inlineErrors.filter(new Locator.FilterOptions().setHasText(totalInclVatError)).first()).isVisible();
+        assertThat(inlineErrors
+                        .filter(new Locator.FilterOptions().setHasText(totalVatError))
+                        .first())
+                .isVisible();
+        assertThat(inlineErrors
+                        .filter(new Locator.FilterOptions().setHasText(totalInclVatError))
+                        .first())
+                .isVisible();
     }
 }

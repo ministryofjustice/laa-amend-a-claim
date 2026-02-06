@@ -11,21 +11,21 @@ public class MicrosoftApiUserTest {
 
         @Test
         void whenGivenNameAndSurnameAreNull() {
-            MicrosoftApiUser user = new MicrosoftApiUser("test-id","Bloggs, Joe", null, null);
+            MicrosoftApiUser user = new MicrosoftApiUser("test-id", "Bloggs, Joe", null, null);
             String result = user.getName();
             Assertions.assertEquals("Bloggs, Joe", result);
         }
 
         @Test
         void whenGivenNameAndSurnameAreNotNull() {
-            MicrosoftApiUser user = new MicrosoftApiUser("test-id","Bloggs, Joe", "Joe", "Bloggs");
+            MicrosoftApiUser user = new MicrosoftApiUser("test-id", "Bloggs, Joe", "Joe", "Bloggs");
             String result = user.getName();
             Assertions.assertEquals("Joe Bloggs", result);
         }
 
         @Test
         void whenAllValuesAreNull() {
-            MicrosoftApiUser user = new MicrosoftApiUser("test-id",null, null, null);
+            MicrosoftApiUser user = new MicrosoftApiUser("test-id", null, null, null);
             String result = user.getName();
             Assertions.assertNull(result);
         }

@@ -3,9 +3,6 @@ package uk.gov.justice.laa.amend.claim.models;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.server.ResponseStatusException;
-
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 public class SortTest {
 
@@ -50,19 +47,28 @@ public class SortTest {
     class ToStringTests {
         @Test
         void shouldConvertSortToStringWhenAscendingOrder() {
-            Sort sort = Sort.builder().field(SortField.UNIQUE_FILE_NUMBER).direction(SortDirection.ASCENDING).build();
+            Sort sort = Sort.builder()
+                    .field(SortField.UNIQUE_FILE_NUMBER)
+                    .direction(SortDirection.ASCENDING)
+                    .build();
             Assertions.assertEquals("uniqueFileNumber,asc", sort.toString());
         }
 
         @Test
         void shouldConvertSortToStringWhenDescendingOrder() {
-            Sort sort = Sort.builder().field(SortField.CASE_REFERENCE_NUMBER).direction(SortDirection.DESCENDING).build();
+            Sort sort = Sort.builder()
+                    .field(SortField.CASE_REFERENCE_NUMBER)
+                    .direction(SortDirection.DESCENDING)
+                    .build();
             Assertions.assertEquals("caseReferenceNumber,desc", sort.toString());
         }
 
         @Test
         void shouldConvertSortToStringWhenNoOrder() {
-            Sort sort = Sort.builder().field(SortField.SCHEDULE_REFERENCE).direction(SortDirection.NONE).build();
+            Sort sort = Sort.builder()
+                    .field(SortField.SCHEDULE_REFERENCE)
+                    .direction(SortDirection.NONE)
+                    .build();
             Assertions.assertNull(sort.toString());
         }
     }

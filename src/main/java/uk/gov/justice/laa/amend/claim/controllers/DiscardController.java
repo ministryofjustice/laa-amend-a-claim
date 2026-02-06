@@ -17,10 +17,9 @@ public class DiscardController {
 
     @GetMapping()
     public String onPageLoad(
-        Model model,
-        @PathVariable(value = "submissionId") String submissionId,
-        @PathVariable(value = "claimId") String claimId
-    ) {
+            Model model,
+            @PathVariable(value = "submissionId") String submissionId,
+            @PathVariable(value = "claimId") String claimId) {
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claimId", claimId);
 
@@ -29,11 +28,10 @@ public class DiscardController {
 
     @PostMapping()
     public String discard(
-        HttpSession session,
-        RedirectAttributes redirectAttributes,
-        @PathVariable(value = "submissionId") String submissionId,
-        @PathVariable(value = "claimId") String claimId
-    ) {
+            HttpSession session,
+            RedirectAttributes redirectAttributes,
+            @PathVariable(value = "submissionId") String submissionId,
+            @PathVariable(value = "claimId") String claimId) {
         session.removeAttribute(claimId);
 
         redirectAttributes.addFlashAttribute("discarded", true);

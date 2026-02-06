@@ -6,7 +6,7 @@ public class Validator {
 
     protected void addViolation(ConstraintValidatorContext context, String fieldName, String message) {
         context.buildConstraintViolationWithTemplate(message)
-            .addPropertyNode(fieldName)
-            .addConstraintViolation();
+                .addPropertyNode(fieldName)
+                .addConstraintViolation();
     }
 }

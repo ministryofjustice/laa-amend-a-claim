@@ -1,19 +1,13 @@
 package uk.gov.justice.laa.amend.claim.models;
 
-import lombok.Builder;
-
 import java.util.Arrays;
 import java.util.List;
+import lombok.Builder;
 
 @Builder
 public record CalculatedFeeDetailInsert(
-    String id,
-    String claimSummaryFeeId,
-    String claimId,
-    String feeCode,
-    boolean escaped,
-    String userId
-) implements Insert {
+        String id, String claimSummaryFeeId, String claimId, String feeCode, boolean escaped, String userId)
+        implements Insert {
 
     @Override
     public String table() {
@@ -22,13 +16,6 @@ public record CalculatedFeeDetailInsert(
 
     @Override
     public List<Object> parameters() {
-        return Arrays.asList(
-            id,
-            claimSummaryFeeId,
-            claimId,
-            feeCode,
-            escaped,
-            userId
-        );
+        return Arrays.asList(id, claimSummaryFeeId, claimId, feeCode, escaped, userId);
     }
 }

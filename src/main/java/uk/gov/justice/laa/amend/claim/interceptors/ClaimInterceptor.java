@@ -3,25 +3,21 @@ package uk.gov.justice.laa.amend.claim.interceptors;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
-import java.io.IOException;
-import java.util.Map;
-
 @Component
 @Slf4j
 public class ClaimInterceptor implements HandlerInterceptor {
 
     @Override
-    public boolean preHandle(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        Object handler
-    ) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
         Object attribute = request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
         if (attribute instanceof Map<?, ?>) {
             @SuppressWarnings("unchecked")

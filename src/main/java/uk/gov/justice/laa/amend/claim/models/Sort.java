@@ -1,11 +1,10 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Data
 @AllArgsConstructor

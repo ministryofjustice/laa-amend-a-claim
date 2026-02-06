@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.models;
 
-
 import lombok.Getter;
 
 @Getter

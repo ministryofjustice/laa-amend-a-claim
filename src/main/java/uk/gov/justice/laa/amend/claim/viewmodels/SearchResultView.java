@@ -1,9 +1,8 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import java.util.List;
 import lombok.Data;
 import uk.gov.justice.laa.amend.claim.models.Claim;
-
-import java.util.List;
 
 @Data
 public class SearchResultView {

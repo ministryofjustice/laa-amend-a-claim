@@ -21,7 +21,7 @@ public class AssessedClaimField extends ClaimField {
         switch (outcome) {
             case NILLED -> setNilled();
             case REDUCED, PAID_IN_FULL, REDUCED_TO_FIXED_FEE -> setAssessedToNull();
-            default -> { }
+            default -> {}
         }
     }
 

@@ -1,10 +1,10 @@
 package uk.gov.justice.laa.amend.claim.pages;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
-
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 public class AssessmentOutcomePage extends LaaInputPage {
 
@@ -24,25 +24,20 @@ public class AssessmentOutcomePage extends LaaInputPage {
     public AssessmentOutcomePage(Page page) {
         super(page, "Assessment Outcome");
 
-        this.assessedInFullRadio =
-                page.getByLabel("Assessed in full", new Page.GetByLabelOptions().setExact(true));
+        this.assessedInFullRadio = page.getByLabel("Assessed in full", new Page.GetByLabelOptions().setExact(true));
         this.reducedStillEscapedRadio =
                 page.getByLabel("Reduced (still escaped)", new Page.GetByLabelOptions().setExact(true));
         this.reducedToFixedFeeRadio =
                 page.getByLabel("Reduced to fixed fee (assessed)", new Page.GetByLabelOptions().setExact(true));
-        this.nilledRadio =
-                page.getByLabel("Nilled", new Page.GetByLabelOptions().setExact(true));
+        this.nilledRadio = page.getByLabel("Nilled", new Page.GetByLabelOptions().setExact(true));
 
-        this.vatGroup = page.getByRole(
-                AriaRole.GROUP,
-                new Page.GetByRoleOptions().setName("Is this claim liable for VAT?")
-        );
+        this.vatGroup =
+                page.getByRole(AriaRole.GROUP, new Page.GetByRoleOptions().setName("Is this claim liable for VAT?"));
         this.vatLegend = page.getByText("Is this claim liable for VAT?");
         this.vatYesRadio = vatGroup.getByLabel("Yes", new Locator.GetByLabelOptions().setExact(true));
-        this.vatNoRadio  = vatGroup.getByLabel("No", new Locator.GetByLabelOptions().setExact(true));
+        this.vatNoRadio = vatGroup.getByLabel("No", new Locator.GetByLabelOptions().setExact(true));
 
-        this.saveButton =
-                page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue"));
+        this.saveButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue"));
 
         this.errorSummaryTitle = page.locator(".govuk-error-summary__title");
         this.errorSummaryLink = page.locator(".govuk-error-summary__list a");
@@ -68,7 +63,6 @@ public class AssessmentOutcomePage extends LaaInputPage {
         assertThat(errorSummaryLink).containsText("Select the assessment outcome");
         assertThat(inlineErrors).containsText("Select the assessment outcome");
     }
-
 
     public void selectAssessmentOutcome(String outcome) {
         switch (outcome.toLowerCase()) {

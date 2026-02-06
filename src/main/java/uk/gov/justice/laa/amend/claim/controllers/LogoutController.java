@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class LogoutController {
 
-
     @GetMapping("/logout-success")
     public String logoutSuccess(@RequestParam(required = false) String message, Model model) {
         if (message != null && message.contains("expired")) {

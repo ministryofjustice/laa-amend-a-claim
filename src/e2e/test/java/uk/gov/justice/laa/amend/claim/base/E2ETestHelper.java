@@ -1,11 +1,10 @@
 package uk.gov.justice.laa.amend.claim.base;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import uk.gov.justice.laa.amend.claim.tests.ClaimDetailsTest;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetailsFixture;
-
 import java.io.InputStream;
 import java.util.Map;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetailsFixture;
+import uk.gov.justice.laa.amend.claim.tests.ClaimDetailsTest;
 
 public class E2ETestHelper {
 
@@ -43,9 +42,7 @@ public class E2ETestHelper {
         }
 
         // Remove common currency formatting
-        s = s.replace("£", "")
-            .replace(",", "")
-            .trim();
+        s = s.replace("£", "").replace(",", "").trim();
 
         // If it contains anything other than digits or dot after stripping, consider skipping
         if (!s.matches("\\d+(\\.\\d{1,2})?")) {

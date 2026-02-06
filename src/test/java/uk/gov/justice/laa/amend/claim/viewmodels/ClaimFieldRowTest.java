@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import java.math.BigDecimal;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
@@ -11,8 +12,6 @@ import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-
-import java.math.BigDecimal;
 
 public class ClaimFieldRowTest {
 

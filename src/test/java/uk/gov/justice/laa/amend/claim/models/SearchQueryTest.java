@@ -19,7 +19,10 @@ public class SearchQueryTest {
         SearchQuery query = new SearchQuery();
         query.setProviderAccountNumber("123");
 
-        Sort sort = Sort.builder().field(SortField.UNIQUE_FILE_NUMBER).direction(SortDirection.ASCENDING).build();
+        Sort sort = Sort.builder()
+                .field(SortField.UNIQUE_FILE_NUMBER)
+                .direction(SortDirection.ASCENDING)
+                .build();
         String result = query.getRedirectUrl(sort);
 
         Assertions.assertEquals("/?providerAccountNumber=123&page=1&sort=uniqueFileNumber,asc", result);
@@ -34,10 +37,15 @@ public class SearchQueryTest {
         query.setSubmissionDateMonth("3");
         query.setSubmissionDateYear("2007");
 
-        Sort sort = Sort.builder().field(SortField.UNIQUE_FILE_NUMBER).direction(SortDirection.ASCENDING).build();
+        Sort sort = Sort.builder()
+                .field(SortField.UNIQUE_FILE_NUMBER)
+                .direction(SortDirection.ASCENDING)
+                .build();
         String result = query.getRedirectUrl(sort);
 
-        Assertions.assertEquals("/?providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&page=2&sort=uniqueFileNumber,asc", result);
+        Assertions.assertEquals(
+                "/?providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&page=2&sort=uniqueFileNumber,asc",
+                result);
     }
 
     @Test
@@ -51,9 +59,14 @@ public class SearchQueryTest {
         query.setUniqueFileNumber("456");
         query.setCaseReferenceNumber("789");
 
-        Sort sort = Sort.builder().field(SortField.UNIQUE_FILE_NUMBER).direction(SortDirection.ASCENDING).build();
+        Sort sort = Sort.builder()
+                .field(SortField.UNIQUE_FILE_NUMBER)
+                .direction(SortDirection.ASCENDING)
+                .build();
         String result = query.getRedirectUrl(sort);
 
-        Assertions.assertEquals("/?providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789&page=3&sort=uniqueFileNumber,asc", result);
+        Assertions.assertEquals(
+                "/?providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789&page=3&sort=uniqueFileNumber,asc",
+                result);
     }
 }

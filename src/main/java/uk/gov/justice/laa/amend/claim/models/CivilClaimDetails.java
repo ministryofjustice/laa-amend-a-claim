@@ -1,13 +1,12 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import java.util.stream.Stream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
-
-import java.util.stream.Stream;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -41,14 +40,13 @@ public class CivilClaimDetails extends ClaimDetails {
     @Override
     protected Stream<ClaimField> specificClaimFields() {
         return Stream.of(
-            getHoInterview(),
-            getSubstantiveHearing(),
-            getCounselsCost(),
-            getJrFormFillingCost(),
-            getAdjournedHearing(),
-            getCmrhOral(),
-            getCmrhTelephone(),
-            getDetentionTravelWaitingCosts()
-        );
+                getHoInterview(),
+                getSubstantiveHearing(),
+                getCounselsCost(),
+                getJrFormFillingCost(),
+                getAdjournedHearing(),
+                getCmrhOral(),
+                getCmrhTelephone(),
+                getDetentionTravelWaitingCosts());
     }
 }

@@ -1,15 +1,17 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +29,6 @@ import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
-import java.util.Optional;
-
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
-
 @Controller
 @RequiredArgsConstructor
 public class HomePageController {
@@ -43,13 +41,12 @@ public class HomePageController {
 
     @GetMapping("/")
     public String onPageLoad(
-        Model model,
-        SearchQuery query,
-        HttpSession session,
-        HttpServletRequest request,
-        Errors errors,
-        HttpServletResponse response
-    ) {
+            Model model,
+            SearchQuery query,
+            HttpSession session,
+            HttpServletRequest request,
+            Errors errors,
+            HttpServletResponse response) {
         query.rejectUnknownParams(request);
 
         SearchForm form = new SearchForm(query);
@@ -80,14 +77,13 @@ public class HomePageController {
                 return "index";
             }
             ClaimResultSet result = claimService.searchClaims(
-                form.getProviderAccountNumber(),
-                Optional.ofNullable(form.getUniqueFileNumber()),
-                Optional.ofNullable(form.getCaseReferenceNumber()),
-                Optional.ofNullable(form.getSubmissionPeriod()),
-                page,
-                DEFAULT_PAGE_SIZE,
-                sort
-            );
+                    form.getProviderAccountNumber(),
+                    Optional.ofNullable(form.getUniqueFileNumber()),
+                    Optional.ofNullable(form.getCaseReferenceNumber()),
+                    Optional.ofNullable(form.getSubmissionPeriod()),
+                    page,
+                    DEFAULT_PAGE_SIZE,
+                    sort);
             String redirectUrl = query.getRedirectUrl(sort);
             SearchResultView viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
             model.addAttribute("viewModel", viewModel);
@@ -99,10 +95,7 @@ public class HomePageController {
 
     @PostMapping("/")
     public String onSubmit(
-        @Valid @ModelAttribute("form") SearchForm form,
-        BindingResult bindingResult,
-        HttpServletResponse response
-    ) {
+            @Valid @ModelAttribute("form") SearchForm form, BindingResult bindingResult, HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return "index";
