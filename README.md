@@ -72,7 +72,7 @@ Be sure to fill out all values as they are required for pulling dependencies for
 
    ```text
    import static <all other imports>
-
+    <blank line>
    import java.*
    import javax.*
    import jakarta.*
