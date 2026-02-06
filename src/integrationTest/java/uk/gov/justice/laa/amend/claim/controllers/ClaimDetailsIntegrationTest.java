@@ -1,11 +1,13 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.servlet.ModelAndView;
 import uk.gov.justice.laa.amend.claim.base.WireMockSetup;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
@@ -40,7 +42,10 @@ class ClaimDetailsIntegrationTest extends WireMockSetup {
         var result = mockMvc.perform(get("/submissions/{submissionId}/claims/{claimId}", SUBMISSION_ID, CLAIM_ID)).andExpect(status().isOk()).andExpect(view().name("claim-summary"))
             .andExpect(model().attributeExists("claim")).andExpect(model().attributeExists("submissionId")).andExpect(model().attributeExists("claimId")).andReturn();
 
-        ClaimDetailsView<ClaimDetails> claim = (ClaimDetailsView<ClaimDetails>) result.getModelAndView().getModel().get("claim");
+        ModelAndView modelAndView = result.getModelAndView();
+        Assertions.assertNotNull(modelAndView);
+        @SuppressWarnings("unchecked")
+        ClaimDetailsView<ClaimDetails> claim = (ClaimDetailsView<ClaimDetails>) modelAndView.getModel().get("claim");
         assertThat(claim).isNotNull();
         assertThat(claim.claim().getProviderName()).isEqualTo(FIRM_NAME);
     }

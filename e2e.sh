@@ -19,8 +19,6 @@ API_LOG="$SCRIPT_DIR/e2e.api.log"
 rm -rf "$FRONTEND_LOG"
 rm -rf "$API_LOG"
 
-docker-compose down -v
-
 echo "[INFO] Configuring environment variables..."
 export $(grep -v '^#' .env | xargs)
 export CLAIMS_API="http://localhost:8082"
@@ -34,12 +32,13 @@ git checkout main
 git pull
 cd claims-data
 docker-compose down -v
-docker compose up -d
+docker compose up -d postgres
 ../gradlew bootRun --args='--server.port=8082' >> "$API_LOG" 2>&1 &
 API_BOOTRUN_PID=$!
 popd >/dev/null
 
 echo "[INFO] Starting frontend application..."
+docker-compose down -v
 docker-compose up -d redis
 ./gradlew bootRun >> "$FRONTEND_LOG" 2>&1 &
 BOOTRUN_PID=$!
@@ -58,7 +57,7 @@ wait_for() {
     sleep 1
   done
 }
-wait_for "http://localhost:8080/actuator/health" "UP"
+wait_for "http://localhost:8182/actuator/health" "UP"
 wait_for "http://localhost:8082/v3/api-docs" "openapi"
 
 CMD="./gradlew test"

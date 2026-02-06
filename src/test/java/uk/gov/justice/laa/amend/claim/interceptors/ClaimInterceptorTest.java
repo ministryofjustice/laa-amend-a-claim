@@ -60,6 +60,18 @@ class ClaimInterceptorTest {
     }
 
     @Test
+    void preHandle_shouldReturn404_whenUriVariablesIsUnexpectedType() throws Exception {
+        String uri = String.format("/submission/%s/claims/%s", submissionId, claimId);
+
+        when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE)).thenReturn("foo");
+        when(request.getRequestURI()).thenReturn(uri);
+
+        assertFalse(interceptor.preHandle(request, response, handler));
+
+        verify(response).sendError(eq(404));
+    }
+
+    @Test
     void preHandle_shouldReturn404_whenClaimIdMissing() throws Exception {
         String uri = String.format("/submission/%s/claims/%s", submissionId, claimId);
         Map<String, String> vars = Map.of(
