@@ -23,6 +23,12 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             Object handler) throws IOException, ServletException {
 
         String path = request.getRequestURI();
+        String contextPath = request.getContextPath();
+
+        if (!contextPath.isEmpty()) {
+            path = path.substring(contextPath.length());
+        }
+
         log.error("MaintenanceInterceptor path: {}", path);
 
         if (!maintenanceEnabled()) {
