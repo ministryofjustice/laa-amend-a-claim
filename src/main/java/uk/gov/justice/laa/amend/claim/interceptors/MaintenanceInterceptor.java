@@ -43,7 +43,7 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
     private boolean maintenanceEnabled() {
         Path enabled = Paths.get("/config/maintenance/enabled");
         try {
-            if(!Files.exists(enabled)) {
+            if (!Files.exists(enabled)) {
                 return false;
             }
             return Boolean.parseBoolean(Files.readString(enabled).trim());
