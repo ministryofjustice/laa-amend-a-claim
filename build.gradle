@@ -1,5 +1,5 @@
 plugins {
-    id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.0.5'
+    id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.0.8'
 
     id "com.diffplug.spotless" version "8.2.1"
     id "com.palantir.java-format-spotless" version "2.85.0"
@@ -58,6 +58,9 @@ dependencies {
     implementation 'io.netty:netty-codec-http:4.2.9.Final'
     implementation 'io.netty:netty-codec-http2:4.2.9.Final'
 
+    implementation 'ch.qos.logback:logback-core:1.5.27'
+    implementation 'ch.qos.logback:logback-classic:1.5.27'
+
     implementation("io.vavr:vavr:0.11.0")
     implementation("uk.gov.justice.laadata.providers:providers-api:1.23.0")
 
@@ -72,11 +75,11 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
     // test dependencies
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:5.0.1'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:5.0.2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    testImplementation 'org.assertj:assertj-core:3.27.6'
+    testImplementation 'org.assertj:assertj-core:3.27.7'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.jmockit:jmockit:1.50'
     testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
