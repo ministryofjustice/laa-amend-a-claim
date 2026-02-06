@@ -73,14 +73,6 @@ Be sure to fill out all values as they are required for pulling dependencies for
    ```text
    import static <all other imports>
     <blank line>
-   import io.*
-   import com.*
-   import jakarta.*
-   import java.*   
-   import javax.*
-   import lombok.*
-   import org.*   
-   import net.*
    import <all other imports>
    ```
 
