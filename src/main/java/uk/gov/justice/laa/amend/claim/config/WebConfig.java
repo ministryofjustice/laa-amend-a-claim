@@ -8,6 +8,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import uk.gov.justice.laa.amend.claim.interceptors.ClaimInterceptor;
 import uk.gov.justice.laa.amend.claim.interceptors.MaintenanceInterceptor;
 
+import java.util.List;
+
 @Configuration
 @AllArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
@@ -20,8 +22,6 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(new MaintenanceInterceptor())
                 .order(Ordered.HIGHEST_PRECEDENCE)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/actuator/**", "/health", "/maintenance", "/error", "/assets/**",
-                        "/css/**", "/static/**", "/public/**", "js/**", "/webjars/**", "images/**");
+                .addPathPatterns("/**");
     }
 }
