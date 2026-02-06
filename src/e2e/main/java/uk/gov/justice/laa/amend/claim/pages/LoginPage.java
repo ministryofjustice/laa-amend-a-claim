@@ -12,7 +12,8 @@ public class LoginPage {
 
     private final String userField = "input[name='loginfmt'], input[type='email']";
     private final String nextButton =
-            "input[type='submit'], button[type='submit'], button:has-text('Next'), button:has-text('Continue'), button:has-text('Sign in')";
+            "input[type='submit'], button[type='submit'], button:has-text('Next'), button:has-text('Continue'),"
+                    + " button:has-text('Sign in')";
     private final String passwordField = "input[name='passwd']";
     private final String signInButton = "input[type='submit'], button:has-text('Sign in')";
     private final String otcInput = "input[name='otc']";
