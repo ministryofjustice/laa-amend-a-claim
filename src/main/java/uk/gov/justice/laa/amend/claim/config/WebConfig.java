@@ -25,6 +25,6 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     private static final String[] ALLOWED_URLS = {
-            "/actuator/**", "/health", "/maintenance", "/error", "/assets/**",
-            "/css/**", "/static/**", "/public/**", "/js/**", "/webjars/**", "images/**"};
+        "/actuator/**", "/health", "/maintenance", "/error", "/assets/**",
+        "/css/**", "/static/**", "/public/**", "/js/**", "/webjars/**", "images/**"};
 }
