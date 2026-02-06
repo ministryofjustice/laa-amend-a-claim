@@ -22,6 +22,11 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(new MaintenanceInterceptor())
                 .order(Ordered.HIGHEST_PRECEDENCE)
-                .addPathPatterns("/**");
+                .addPathPatterns("/**")
+                .excludePathPatterns(ALLOWED_URLS);
     }
+
+    private static final String[] ALLOWED_URLS = {
+            "/actuator/**", "/health", "/maintenance", "/error", "/assets/**",
+            "/css/**", "/static/**", "/public/**", "/js/**", "/webjars/**", "images/**"};
 }

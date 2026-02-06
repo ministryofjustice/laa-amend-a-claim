@@ -36,20 +36,11 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        if (ALLOWED_URLS.stream().anyMatch(path::contains)) {
-            log.error("Maintenance on, bypass: {}", path);
-            return true;
-        }
-
         log.error("Maintenance on, forward: {} to maintenance page", path);
-        //request.getRequestDispatcher("/maintenance").forward(request, response);
+
         response.sendRedirect(request.getContextPath() + "/maintenance");
         return false;
     }
-
-    private static final List<String> ALLOWED_URLS = List.of(
-            "/actuator/**", "/health", "/maintenance", "/error", "/assets/**",
-            "/css/**", "/static/**", "/public/**", "/js/**", "/webjars/**", "images/**");
 
     private boolean maintenanceEnabled() {
         Path enabled = Paths.get("/config/maintenance/enabled");
