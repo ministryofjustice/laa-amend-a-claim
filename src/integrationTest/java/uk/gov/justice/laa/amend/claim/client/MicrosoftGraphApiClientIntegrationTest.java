@@ -28,7 +28,8 @@ public class MicrosoftGraphApiClientIntegrationTest extends WireMockSetup {
                 "userPrincipalName": "dummy.user@example.com",
                 "givenName": "Dummy",
                 "surname": "User"
-            }""";
+            }
+            """;
 
         stubFor(get(urlPathMatching("/v1.0/users/abc"))
                 .willReturn(aResponse()
@@ -50,7 +51,8 @@ public class MicrosoftGraphApiClientIntegrationTest extends WireMockSetup {
         String response = """
             {
                 "foo": "bar"
-            }""";
+            }\
+            """;
 
         stubFor(get(urlPathMatching("/v1.0/users/abc"))
                 .willReturn(aResponse()

@@ -44,7 +44,8 @@ public class WireMockSetup {
                 "totalElements": 1,
                 "totalPages": 1,
                 "pageNumber": 0
-            }""";
+            }
+            """;
         stubFor(get(urlPathMatching("/api/v1/claims.*"))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -75,7 +76,8 @@ public class WireMockSetup {
                           "escape_case_flag": true
                       }
                   }
-              }""", claimId, submissionId);
+              }\
+            """, claimId, submissionId);
 
         stubFor(get(urlPathMatching(String.format("/api/v1/submissions/%s/claims/%s", submissionId, claimId)))
                 .willReturn(aResponse()
@@ -91,7 +93,8 @@ public class WireMockSetup {
                 "office_account_number": "%s",
                 "area_of_law": "LEGAL HELP",
                 "submitted": "2025-01-10T14:30:00+02:00"
-            }""", submissionId, officeAccountNumber);
+            }\
+            """, submissionId, officeAccountNumber);
 
         stubFor(get(urlPathMatching(String.format("/api/v1/submissions/%s", submissionId)))
                 .willReturn(aResponse()
@@ -106,7 +109,8 @@ public class WireMockSetup {
                 "firm": {
                     "firmName": "%s"
                 }
-            }""", firmName);
+            }\
+            """, firmName);
 
         stubFor(get(urlPathMatching(String.format("/api/v1/provider-offices/%s", officeAccountNumber)))
                 .willReturn(aResponse()
