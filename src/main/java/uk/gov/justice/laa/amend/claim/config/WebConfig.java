@@ -8,8 +8,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import uk.gov.justice.laa.amend.claim.interceptors.ClaimInterceptor;
 import uk.gov.justice.laa.amend.claim.interceptors.MaintenanceInterceptor;
 
-import java.util.List;
-
 @Configuration
 @AllArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
