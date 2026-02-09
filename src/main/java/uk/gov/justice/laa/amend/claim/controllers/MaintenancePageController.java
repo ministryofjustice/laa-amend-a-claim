@@ -17,7 +17,6 @@ public class MaintenancePageController {
     public String handleMaintenance(Model model) throws IOException {
         model.addAttribute("maintenanceMessage", maintenanceService.getMessage());
         model.addAttribute("maintenanceTitle", maintenanceService.getTitle());
-
         return "maintenance";
     }
 }
