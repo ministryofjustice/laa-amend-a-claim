@@ -23,8 +23,8 @@ echo "[INFO] Configuring environment variables..."
 export $(grep -v '^#' .env | xargs)
 export CLAIMS_API="http://localhost:8082"
 export CLAIMS_TOKEN="f67f968e-b479-4e61-b66e-f57984931e56"
-export SPRING_PROFILES_ACTIVE="dev"
-export SILAS_AUTH_ENABLED=true
+export SPRING_PROFILES_ACTIVE="e2e"
+export SILAS_AUTH_ENABLED=false
 
 echo "[INFO] Starting API application..."
 pushd ../laa-data-claims-api >/dev/null

@@ -28,4 +28,4 @@ exclude:
     - >-
       src/main/java/uk/gov/justice/laa/amend/claim/config/E2eSecurityConfig.java
     - >-
-      src/e2e/*
+      src/e2e/main/java/uk/gov/justice/laa/amend/claim/pages/LoginPage.java

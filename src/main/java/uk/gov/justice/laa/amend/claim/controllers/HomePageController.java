@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
@@ -46,7 +48,11 @@ public class HomePageController {
             HttpSession session,
             HttpServletRequest request,
             Errors errors,
-            HttpServletResponse response) {
+            HttpServletResponse response,
+            @RequestHeader Map<String, String> headers) {
+        headers.forEach((key, value) -> {
+            System.out.println(String.format("Header '%s' = %s", key, value));
+        });
         query.rejectUnknownParams(request);
 
         SearchForm form = new SearchForm(query);
