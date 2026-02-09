@@ -15,9 +15,10 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
@@ -32,6 +33,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
+@ExtendWith(MockitoExtension.class)
 class ClaimServiceTest {
 
     @Mock
@@ -45,10 +47,6 @@ class ClaimServiceTest {
 
     @InjectMocks
     private ClaimService claimService;
-
-    public ClaimServiceTest() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     @DisplayName("Should return sorted valid ClaimResultSet when API client provides valid response")

@@ -8,14 +8,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
@@ -33,7 +37,10 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
+@ExtendWith(MockitoExtension.class)
 class AssessmentServiceTest {
+
+    private static final BigDecimal HIGH_VALUE_ASSESSMENT_LIMIT = new BigDecimal("25000");
 
     @Mock
     private ClaimsApiClient claimsApiClient;
@@ -47,10 +54,6 @@ class AssessmentServiceTest {
     private SimpleMeterRegistry meterRegistry;
     private AssessmentService assessmentService;
 
-    public AssessmentServiceTest() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     private UUID claimId;
     private int page;
     private int size;
@@ -63,7 +66,8 @@ class AssessmentServiceTest {
         size = 1;
         sort = "createdOn,desc";
         meterRegistry = new SimpleMeterRegistry();
-        assessmentService = new AssessmentService(claimsApiClient, assessmentMapper, claimStatusHandler, meterRegistry);
+        assessmentService = new AssessmentService(
+                claimsApiClient, assessmentMapper, claimStatusHandler, meterRegistry, HIGH_VALUE_ASSESSMENT_LIMIT);
     }
 
     @Nested
@@ -231,6 +235,44 @@ class AssessmentServiceTest {
             assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
             assertThat(meterRegistry.counter("assessment.submissions.failed").count())
                     .isEqualTo(1.0);
+        }
+
+        @ExtendWith(OutputCaptureExtension.class)
+        @Test
+        void testHighValueAssessmentSubmittedWillLogWarning(CapturedOutput output) {
+            setupHighValueAssessmentLimitTest(HIGH_VALUE_ASSESSMENT_LIMIT);
+
+            assertThat(output.getOut()).contains("HIGH_VALUE_ASSESSMENT");
+        }
+
+        @ExtendWith(OutputCaptureExtension.class)
+        @Test
+        void testLowValueAssessmentSubmittedWillNotLogWarning(CapturedOutput output) {
+            setupHighValueAssessmentLimitTest(HIGH_VALUE_ASSESSMENT_LIMIT.subtract(BigDecimal.ONE));
+
+            assertThat(output.getOut()).doesNotContain("HIGH_VALUE_ASSESSMENT");
+        }
+
+        private void setupHighValueAssessmentLimitTest(BigDecimal assessedTotalInclVat) {
+            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
+            claim.setClaimId(claimId.toString());
+            String userId = UUID.randomUUID().toString();
+            AssessmentPost assessment = new AssessmentPost();
+            assessment.setAssessedTotalInclVat(assessedTotalInclVat);
+
+            when(assessmentMapper.mapCrimeClaimToAssessment(claim, userId)).thenReturn(assessment);
+
+            ResponseEntity<CreateAssessment201Response> response = ResponseEntity.ok(new CreateAssessment201Response());
+
+            when(claimsApiClient.submitAssessment(claimId.toString(), assessment))
+                    .thenReturn(Mono.just(response));
+
+            CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
+
+            Assertions.assertNotNull(result);
+            assertEquals(response.getBody(), result);
+
+            verify(claimsApiClient).submitAssessment(claimId.toString(), assessment);
         }
     }
 
