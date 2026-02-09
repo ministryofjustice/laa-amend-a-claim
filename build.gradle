@@ -1,7 +1,7 @@
 plugins {
     id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.0.5'
     id "com.diffplug.spotless" version "8.2.1"
-    id "com.palantir.java-format-spotless" version "2.85.0"
+    id "com.palantir.java-format-spotless" version "2.86.0"
 }
 
 java {
@@ -55,14 +55,14 @@ dependencies {
     implementation 'org.webjars.npm:govuk-frontend:5.14.0'
     implementation 'org.webjars.npm:ministryofjustice__frontend:7.1.0'
 
-    implementation 'io.netty:netty-codec-http:4.2.9.Final'
-    implementation 'io.netty:netty-codec-http2:4.2.9.Final'
+    implementation 'io.netty:netty-codec-http:4.2.10.Final'
+    implementation 'io.netty:netty-codec-http2:4.2.10.Final'
 
     implementation("io.vavr:vavr:0.11.0")
     implementation("uk.gov.justice.laadata.providers:providers-api:1.23.0")
 
     // Sentry observability for Spring Boot 4
-    implementation enforcedPlatform('io.sentry:sentry-bom:8.26.0')
+    implementation enforcedPlatform('io.sentry:sentry-bom:8.31.0')
     implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
@@ -72,11 +72,11 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
     // test dependencies
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:5.0.1'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:5.0.2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    testImplementation 'org.assertj:assertj-core:3.27.6'
+    testImplementation 'org.assertj:assertj-core:3.27.7'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.jmockit:jmockit:1.50'
     testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
