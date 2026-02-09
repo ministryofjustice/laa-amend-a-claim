@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -33,8 +35,33 @@ public class MaintenanceService {
 
       private static final Path maintenanceMessage = Paths.get("/config/maintenance/message");
       private static final  Path maintenanceTitle = Paths.get("/config/maintenance/title");
+      private static final Path enabled = Paths.get("/config/maintenance/enabled");
 
       private final MessageSource messageSource;
+
+    public boolean maintenanceApplies(HttpServletRequest request) {
+        return maintenanceEnabled() && !hasBypassCookie(request);
+    }
+
+    private boolean hasBypassCookie(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return false;
+        }
+
+        return Arrays.stream(request.getCookies()).anyMatch(cookie -> cookie.getName().equals("maintenance_bypass"));
+    }
+
+    private boolean maintenanceEnabled() {
+        try {
+            if (!Files.exists(enabled)) {
+                return false;
+            }
+            return Boolean.parseBoolean(Files.readString(enabled).trim());
+        } catch (IOException e) {
+            log.error("Failed to read maintenance flag", e);
+            return false;
+        }
+    }
 
       public String getMessage() {
           return readConfigMap(maintenanceMessage, "maintenance.default.message");
@@ -61,5 +88,4 @@ public class MaintenanceService {
                   LocaleContextHolder.getLocale()
           );
       }
-
 }
