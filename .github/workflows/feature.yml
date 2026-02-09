@@ -35,6 +35,7 @@ jobs:
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
+      BYPASS_PASSWORD: ${{ secrets.BYPASS_PASSWORD }}
 
   test:
     name: Test
@@ -86,3 +87,4 @@ jobs:
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
+      BYPASS_PASSWORD: ${{ secrets.BYPASS_PASSWORD }}
