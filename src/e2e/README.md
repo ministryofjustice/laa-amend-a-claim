@@ -65,7 +65,11 @@ Again, the order matters here due to foreign key constraints.
 
 ## Run all E2E tests
 
-`./e2e.sh`
+Before you run these for the first time, you will need to run:
+1. `cd src/e2e/`
+2. `npm install`
+
+Then from the root directory you can run: `./e2e.sh`
 
 ## Run a particular test class
 

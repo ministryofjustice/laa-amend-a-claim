@@ -16,6 +16,20 @@ repos:
         args: [ "checkstyleAll", "--quiet" ]
         pass_filenames: false
 
+      - id: snyk-dependency-scan
+        name: Snyk dependency scan
+        entry: snyk
+        language: system
+        args: [ "test" ]
+        pass_filenames: false
+
+      - id: snyk-code-scan
+        name: Snyk code scan
+        entry: snyk
+        language: system
+        args: [ "code", "test" ]
+        pass_filenames: false
+
   # Ministry of Justice DevSecOps hooks for secret detection
   # Not supporting custom api tokens of PDA service
   - repo: https://github.com/ministryofjustice/devsecops-hooks
