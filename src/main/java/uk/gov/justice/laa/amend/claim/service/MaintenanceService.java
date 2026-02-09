@@ -31,35 +31,35 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MaintenanceService {
 
-  private static final Path maintenanceMessage = Paths.get("/config/maintenance/message");
-  private static final  Path maintenanceTitle = Paths.get("/config/maintenance/title");
+      private static final Path maintenanceMessage = Paths.get("/config/maintenance/message");
+      private static final  Path maintenanceTitle = Paths.get("/config/maintenance/title");
 
-  private final MessageSource messageSource;
+      private final MessageSource messageSource;
 
-  public String getMessage() {
-      return readConfigMap(maintenanceMessage, "maintenance.default.message");
-  }
-
-  public String getTitle() {
-      return readConfigMap(maintenanceTitle, "maintenance.default.title");
-  }
-
-  private String readConfigMap(Path path, String messageKey) {
-      try {
-          if (Files.exists(path)) {
-              String message = Files.readString(path).trim();
-              if (!message.isBlank()) {
-                  return message;
-              }
-          }
-      } catch (IOException e) {
-          log.warn("Could not read config map from file {}", path, e);
+      public String getMessage() {
+          return readConfigMap(maintenanceMessage, "maintenance.default.message");
       }
-      return messageSource.getMessage(
-              messageKey,
-              new Object[0],
-              LocaleContextHolder.getLocale()
-      );
-  }
+
+      public String getTitle() {
+          return readConfigMap(maintenanceTitle, "maintenance.default.title");
+      }
+
+      private String readConfigMap(Path path, String messageKey) {
+          try {
+              if (Files.exists(path)) {
+                  String message = Files.readString(path).trim();
+                  if (!message.isBlank()) {
+                      return message;
+                  }
+              }
+          } catch (IOException e) {
+              log.warn("Could not read config map from file {}", path, e);
+          }
+          return messageSource.getMessage(
+                  messageKey,
+                  new Object[0],
+                  LocaleContextHolder.getLocale()
+          );
+      }
 
 }
