@@ -13,7 +13,7 @@ repos:
         name: Checkstyle
         entry: ./gradlew
         language: system
-        args: [ "checkstyleMain", "--quiet" ]
+        args: [ "checkstyleAll", "--quiet" ]
         pass_filenames: false
 
   # Ministry of Justice DevSecOps hooks for secret detection

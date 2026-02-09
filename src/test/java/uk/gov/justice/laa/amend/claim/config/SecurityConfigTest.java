@@ -37,7 +37,7 @@ public class SecurityConfigTest {
         }
 
         @Test
-        void mapRolesToAuthoritiesWhenRolesAreInAList() {
+        void mapRolesToAuthoritiesWhenRolesAreInList() {
             Map<String, Object> attributes = Map.of("LAA_APP_ROLES", List.of("USER", "ADMIN"));
 
             Set<GrantedAuthority> result = config.getAuthorities(attributes);

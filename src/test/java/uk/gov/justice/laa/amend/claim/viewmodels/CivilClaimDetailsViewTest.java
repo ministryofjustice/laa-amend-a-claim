@@ -154,10 +154,6 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setEscaped(true);
             claim.setVatApplicable(false);
 
-            CivilClaimDetailsView viewModel = createView(claim);
-
-            Map<String, Object> result = viewModel.getSummaryRows();
-
             Map<String, Object> expectedResult = new LinkedHashMap<>();
             expectedResult.put("clientName", "John Smith");
             expectedResult.put("ufn", "unique file number");
@@ -176,6 +172,8 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             expectedResult.put("escaped", true);
             expectedResult.put("vatRequested", false);
 
+            CivilClaimDetailsView viewModel = createView(claim);
+            Map<String, Object> result = viewModel.getSummaryRows();
             Assertions.assertEquals(expectedResult, result);
         }
     }
@@ -668,24 +666,23 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
 
         @Test
         void convertFieldsThatNeedAmendingIntoErrors() {
-            CivilClaimDetails claim = new CivilClaimDetails();
-
             ClaimField netProfitCostField = MockClaimsFunctions.createNetProfitCostField();
             ClaimField counselField = MockClaimsFunctions.createCounselCostField();
             ClaimField jrFormField = MockClaimsFunctions.createJrFormFillingCostField();
-            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
-            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
-            ClaimField allowedTotalVatField = MockClaimsFunctions.createAllowedTotalVatField();
-            ClaimField allowedTotalInclVatField = MockClaimsFunctions.createAllowedTotalInclVatField();
 
             netProfitCostField.setAssessed(null);
             counselField.setAssessed(null);
             jrFormField.setAssessed(null);
+
+            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
             assessedTotalVatField.setAssessed(null);
             assessedTotalInclVatField.setAssessed(null);
+            ClaimField allowedTotalVatField = MockClaimsFunctions.createAllowedTotalVatField();
+            ClaimField allowedTotalInclVatField = MockClaimsFunctions.createAllowedTotalInclVatField();
             allowedTotalVatField.setAssessed(null);
             allowedTotalInclVatField.setAssessed(null);
-
+            CivilClaimDetails claim = new CivilClaimDetails();
             claim.setNetProfitCost(netProfitCostField);
             claim.setCounselsCost(counselField);
             claim.setJrFormFillingCost(jrFormField);

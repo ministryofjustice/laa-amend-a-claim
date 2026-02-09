@@ -153,11 +153,11 @@ class AssessmentMapperTest {
     void updateClaimShouldUpdateLastAssessment() {
         // Given
         var assessmentDate = OffsetDateTime.now();
-        ClaimDetails target = new CivilClaimDetails();
         AssessmentInfo existing = new AssessmentInfo();
         existing.setLastAssessmentOutcome(OutcomeType.PAID_IN_FULL);
         existing.setLastAssessmentDate(assessmentDate);
         existing.setLastAssessedBy("u1");
+        ClaimDetails target = new CivilClaimDetails();
         target.setLastAssessment(existing);
 
         AssessmentGet source = new AssessmentGet();
