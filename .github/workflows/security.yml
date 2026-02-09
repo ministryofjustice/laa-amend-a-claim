@@ -95,4 +95,4 @@ jobs:
         uses: snyk/actions/docker@9adf32b1121593767fc3c057af55b55db032dc04
         with:
           image: spring-boot-microservice:scan
-          args: --file=Dockerfile --severity-threshold=low
+          args: --file=Dockerfile --severity-threshold=high
