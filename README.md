@@ -82,10 +82,11 @@ import <all other imports>
 
 ### Snyk
 We use Snyk to help identify security vulnerabilities in our code and dependencies. To setup:
-1. Install [snyk-cli](https://formulae.brew.sh/formula/snyk-cli)
-2. `snyk config set org=<org-id>` (this is available in 1Password)
-3. `snyk auth`
-4. You should now be able to run `snyk test`, `snyk code test` etc. These are both executed as part of the pre-commit hooks. Exclusions and ignores can be defined in [.snyk](/.snyk) as required.
+1. Request access to [Snyk](https://app.snyk.io/org/legal-aid-agency) from an organisation admin. Contact the team lead developer for help doing this. Additionally, there is a `#snyk` channel in Slack.
+2. Install [snyk-cli](https://formulae.brew.sh/formula/snyk-cli)
+3. `snyk config set org=<org-id>` (this is available in 1Password)
+4. `snyk auth` and log in through GitHub
+5. You should now be able to run `snyk test`, `snyk code test` etc. These are both executed as part of the pre-commit hooks. Exclusions and ignores can be defined in [.snyk](/.snyk) as required.
 
 ### Build and run application
 1. Run:
