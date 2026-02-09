@@ -32,7 +32,7 @@ public class DateUtilsTest {
         }
 
         @Test
-        void returnsNullWhenInvalidMYear() {
+        void returnsNullWhenInvalidMonthYear() {
             String month = "3";
             String year = "foo";
             String result = DateUtils.toSubmissionPeriod(month, year);

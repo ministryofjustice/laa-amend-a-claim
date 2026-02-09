@@ -11,7 +11,7 @@ public class AllowedTotalFormTest extends FormTest {
     private AllowedTotalForm form;
 
     @BeforeEach
-    void Setup() {
+    void setUp() {
         form = new AllowedTotalForm();
     }
 
@@ -61,14 +61,13 @@ public class AllowedTotalFormTest extends FormTest {
 
     @Test
     void testValueEqualToMin() {
-        String value = "0";
         form.setAllowedTotalInclVat("0");
         form.setAllowedTotalVat("0");
 
         Set<ConstraintViolation<AllowedTotalForm>> violations = validator.validate(form);
 
         Assertions.assertTrue(violations.isEmpty());
-
+        String value = "0";
         Assertions.assertEquals(value, form.getAllowedTotalInclVat());
         Assertions.assertEquals(value, form.getAllowedTotalVat());
     }

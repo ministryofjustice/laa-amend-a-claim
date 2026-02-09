@@ -278,7 +278,7 @@ class ClaimStatusHandlerTest {
         }
 
         @Test
-        void shouldResetWhetherAFieldIsAssessableOrNotAfterOutcomeChange() {
+        void shouldResetWhetherFieldIsAssessableOrNotAfterOutcomeChange() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
             ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
             ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();

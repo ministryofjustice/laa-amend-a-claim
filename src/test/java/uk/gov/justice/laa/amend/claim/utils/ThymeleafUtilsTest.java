@@ -13,7 +13,7 @@ import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
 public class ThymeleafUtilsTest {
 
     @Nested
-    class toSearchFormErrorsTests {
+    class ToSearchFormErrorsTests {
         @Test
         void sortErrorsByFieldOrder() {
             List<DetailedError> errors = List.of(
@@ -67,7 +67,7 @@ public class ThymeleafUtilsTest {
     }
 
     @Nested
-    class toAssessmentOutcomeErrorsTests {
+    class ToAssessmentOutcomeErrorsTests {
         @Test
         void sortErrorsByFieldOrder() {
             List<DetailedError> errors = List.of(

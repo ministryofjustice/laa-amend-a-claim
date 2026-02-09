@@ -103,3 +103,13 @@ gradle.taskGraph.whenReady { graph ->
         }
     }
 }
+
+tasks.register('checkstyleAll') {
+    group = 'verification'
+    description = 'Runs checkstyleMain, checkstyleTest, and checkstyleIntegrationTest.'
+    dependsOn tasks.matching { it.name in ['checkstyleMain', 'checkstyleTest', 'checkstyleIntegrationTest'] }
+}
+
+tasks.named('build') {
+    dependsOn tasks.named('checkstyleAll')
+}

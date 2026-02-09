@@ -260,12 +260,13 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         ClaimField netProfitCostField = MockClaimsFunctions.createNetProfitCostField();
         ClaimField assessedTotalVat = MockClaimsFunctions.createAssessedTotalVatField();
         ClaimField assessedTotalInclVat = MockClaimsFunctions.createAssessedTotalInclVatField();
-        ClaimField allowedTotalVat = MockClaimsFunctions.createAllowedTotalVatField();
-        ClaimField allowedTotalInclVat = MockClaimsFunctions.createAllowedTotalInclVatField();
 
         netProfitCostField.setAssessed(null);
         assessedTotalVat.setAssessed(null);
         assessedTotalInclVat.setAssessed(null);
+
+        ClaimField allowedTotalVat = MockClaimsFunctions.createAllowedTotalVatField();
+        ClaimField allowedTotalInclVat = MockClaimsFunctions.createAllowedTotalInclVatField();
         allowedTotalVat.setAssessed(null);
         allowedTotalInclVat.setAssessed(null);
 
@@ -542,18 +543,16 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
     @Test
     void testCivilClaimPageWithBoltOnsWithNullCalculatedValue() throws Exception {
-        claim = MockClaimsFunctions.createMockCivilClaim();
-        CivilClaimDetails civilClaim = (CivilClaimDetails) claim;
-
         ClaimField cmrhOralField = MockClaimsFunctions.createCmrhOralField();
         ClaimField cmrhTelephoneField = MockClaimsFunctions.createCmrhTelephoneField();
         ClaimField hoInterviewField = MockClaimsFunctions.createHoInterviewField();
-        ClaimField substantiveHearingField = MockClaimsFunctions.createSubstantiveHearingField();
-        ClaimField adjournedHearingField = MockClaimsFunctions.createAdjournedHearingField();
 
         cmrhOralField.setCalculated(null);
         cmrhTelephoneField.setCalculated(null);
         hoInterviewField.setCalculated(null);
+
+        ClaimField substantiveHearingField = MockClaimsFunctions.createSubstantiveHearingField();
+        ClaimField adjournedHearingField = MockClaimsFunctions.createAdjournedHearingField();
         substantiveHearingField.setCalculated(null);
         adjournedHearingField.setCalculated(null);
 
@@ -563,6 +562,8 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         substantiveHearingField.setAssessed(null);
         adjournedHearingField.setAssessed(null);
 
+        claim = MockClaimsFunctions.createMockCivilClaim();
+        CivilClaimDetails civilClaim = (CivilClaimDetails) claim;
         civilClaim.setCmrhOral(cmrhOralField);
         civilClaim.setCmrhTelephone(cmrhTelephoneField);
         civilClaim.setHoInterview(hoInterviewField);
@@ -687,21 +688,22 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
     @Test
     void testCivilClaimPageWithBoltOnsWithNullSubmittedValue() throws Exception {
-        claim = MockClaimsFunctions.createMockCivilClaim();
-        CivilClaimDetails civilClaim = (CivilClaimDetails) claim;
 
         ClaimField cmrhOralField = MockClaimsFunctions.createCmrhOralField();
         ClaimField cmrhTelephoneField = MockClaimsFunctions.createCmrhTelephoneField();
         ClaimField hoInterviewField = MockClaimsFunctions.createHoInterviewField();
-        ClaimField substantiveHearingField = MockClaimsFunctions.createSubstantiveHearingField();
-        ClaimField adjournedHearingField = MockClaimsFunctions.createAdjournedHearingField();
 
         cmrhOralField.setSubmitted(null);
         cmrhTelephoneField.setSubmitted(null);
         hoInterviewField.setSubmitted(null);
+
+        ClaimField substantiveHearingField = MockClaimsFunctions.createSubstantiveHearingField();
+        ClaimField adjournedHearingField = MockClaimsFunctions.createAdjournedHearingField();
         substantiveHearingField.setSubmitted(null);
         adjournedHearingField.setSubmitted(null);
 
+        claim = MockClaimsFunctions.createMockCivilClaim();
+        CivilClaimDetails civilClaim = (CivilClaimDetails) claim;
         civilClaim.setCmrhOral(cmrhOralField);
         civilClaim.setCmrhTelephone(cmrhTelephoneField);
         civilClaim.setHoInterview(hoInterviewField);

@@ -43,7 +43,7 @@ public class SecurityConfigIntegrationTest extends RedisSetup {
     private OAuth2AuthorizedClientRepository authorizedClientRepository;
 
     @MockitoBean
-    private OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService;
+    private OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService;
 
     @TestConfiguration
     static class TestControllerConfig {
@@ -88,8 +88,8 @@ public class SecurityConfigIntegrationTest extends RedisSetup {
     }
 
     @Test
-    void failedOAuthRedirectsToLoginErrorPage() throws Exception {
-        when(oAuth2UserService.loadUser(any()))
+    void failedOauthRedirectsToLoginErrorPage() throws Exception {
+        when(oauth2UserService.loadUser(any()))
                 .thenThrow(new OAuth2AuthenticationException(new OAuth2Error("invalid_token")));
 
         mockMvc.perform(get("/login/oauth2/code/id"))
