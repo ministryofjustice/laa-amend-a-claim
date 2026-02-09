@@ -11,7 +11,7 @@ public class AssessedTotalFormTest extends FormTest {
     private AssessedTotalForm form;
 
     @BeforeEach
-    void Setup() {
+    void setUp() {
         form = new AssessedTotalForm();
     }
 
@@ -61,7 +61,6 @@ public class AssessedTotalFormTest extends FormTest {
 
     @Test
     void testValueEqualToMin() {
-        String value = "0";
         form.setAssessedTotalInclVat("0");
         form.setAssessedTotalVat("0");
 
@@ -69,6 +68,7 @@ public class AssessedTotalFormTest extends FormTest {
 
         Assertions.assertTrue(violations.isEmpty());
 
+        String value = "0";
         Assertions.assertEquals(value, form.getAssessedTotalInclVat());
         Assertions.assertEquals(value, form.getAssessedTotalVat());
     }

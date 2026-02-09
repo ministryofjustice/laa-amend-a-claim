@@ -18,7 +18,7 @@ public class CrimeClaimDetailsTest {
         }
 
         @Test
-        void returnsTrueWhenFeeCodeIsINVC() {
+        void returnsTrueWhenFeeCodeIsInvc() {
             CrimeClaimDetails claim = new CrimeClaimDetails();
             claim.setFeeCode("INVC");
             Assertions.assertTrue(claim.isAssessedTotalFieldAssessable());

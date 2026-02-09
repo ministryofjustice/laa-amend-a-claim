@@ -66,13 +66,13 @@ public class ClaimReviewControllerTest {
 
     @Test
     public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
-        String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
         // Given outcome for claim has been selected
         claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
         MockClaimsFunctions.updateStatus(claim, OutcomeType.PAID_IN_FULL);
 
         session.setAttribute(claimId.toString(), claim);
 
+        String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
         mockMvc.perform(get(path).session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("review-and-amend"))
@@ -165,17 +165,18 @@ public class ClaimReviewControllerTest {
 
     @Test
     public void testOnPageLoadWithMultipleClaimsInSession() throws Exception {
-        String claimId1 = UUID.randomUUID().toString();
-        String claimId2 = UUID.randomUUID().toString();
+
         session.clearAttributes();
         ClaimDetails claim1 = MockClaimsFunctions.createMockCivilClaim();
         claim1.setSubmissionId(submissionId.toString());
+        String claimId1 = UUID.randomUUID().toString();
         claim1.setClaimId(claimId1);
         claim1.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
         MockClaimsFunctions.updateStatus(claim1, OutcomeType.PAID_IN_FULL);
 
         ClaimDetails claim2 = MockClaimsFunctions.createMockCrimeClaim();
         claim2.setSubmissionId(submissionId.toString());
+        String claimId2 = UUID.randomUUID().toString();
         claim2.setClaimId(claimId2);
         claim2.setAssessmentOutcome(OutcomeType.NILLED);
         MockClaimsFunctions.updateStatus(claim2, claim2.getAssessmentOutcome());
