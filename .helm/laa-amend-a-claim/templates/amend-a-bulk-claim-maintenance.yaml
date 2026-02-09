@@ -6,3 +6,4 @@ data:
   enabled: "false"                     # "true" | "false"
   title: "Service maintenance"
   message: "We are performing scheduled maintenance. Expected return: 09:00"
+  bypassPassword: "{{ .Values.maintenance.bypassPassword}}" # empty to be set in deployment

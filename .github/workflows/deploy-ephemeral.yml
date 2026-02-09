@@ -24,6 +24,8 @@ on:
         required: true
       KUBE_CERT:
         required: true
+      BYPASS_PASSWORD:
+        required: true
 
 jobs:
   deploy:
@@ -101,6 +103,7 @@ jobs:
             --set "ipAllowlist=${IP_ALLOWLIST}" \
             --set springProfile=ephemeral \
             --set sentryEnvironment="ephemeral-${SANITIZED_NAME}" \
+            --set maintenance.bypassPassword=${BYPASS_PASSWORD} \
             --wait \
             --timeout 5m
 

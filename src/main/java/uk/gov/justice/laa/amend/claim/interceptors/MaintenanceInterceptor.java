@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,7 +18,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class MaintenanceInterceptor implements HandlerInterceptor {
 
-    private final MaintenanceService maintenanceService;
+    private static final Path enabled = Paths.get("/config/maintenance/enabled");
 
     @Override
     public boolean preHandle(
@@ -29,7 +28,7 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         String path = request.getRequestURI();
         log.info("MaintenanceInterceptor path: {}", path);
 
-        if (!maintenanceService.maintenanceApplies(request)) {
+        if (!maintenanceApplies(request)) {
             log.info("Maintenance off, allow: {}", path);
             return true;
         }
@@ -39,5 +38,27 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    public boolean maintenanceApplies(HttpServletRequest request) {
+        return maintenanceEnabled() && !hasBypassCookie(request);
+    }
 
+    private boolean hasBypassCookie(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return false;
+        }
+
+        return Arrays.stream(request.getCookies()).anyMatch(cookie -> cookie.getName().equals("maintenance_bypass"));
+    }
+
+    private boolean maintenanceEnabled() {
+        try {
+            if (!Files.exists(enabled)) {
+                return false;
+            }
+            return Boolean.parseBoolean(Files.readString(enabled).trim());
+        } catch (IOException e) {
+            log.error("Failed to read maintenance flag", e);
+            return false;
+        }
+    }
 }

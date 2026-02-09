@@ -148,6 +148,9 @@ env:
         name: urls
         key: laa
 
+maintenance:
+  bypassPassword: ""
+
 autoscaling:
   enabled: false
   minReplicas: 1
