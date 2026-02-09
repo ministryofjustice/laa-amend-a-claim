@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 @Component
 @Slf4j
@@ -19,6 +20,10 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler) throws IOException {
+
+        if (hasBypassCookie(request)) {
+            return true;
+        }
 
         String path = request.getRequestURI();
         log.info("MaintenanceInterceptor path: {}", path);
@@ -31,6 +36,10 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         log.info("Maintenance on, forward: {} to maintenance page", path);
         response.sendRedirect(request.getContextPath() + "/maintenance");
         return false;
+    }
+
+    private boolean hasBypassCookie(HttpServletRequest request) {
+        return Arrays.stream(request.getCookies()).anyMatch(cookie -> cookie.getName().equals("maintenance_bypass"));
     }
 
     private boolean maintenanceEnabled() {
