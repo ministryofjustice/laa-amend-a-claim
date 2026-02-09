@@ -91,6 +91,7 @@ jobs:
           SANITIZED_NAME: ${{ steps.sanitize.outputs.sanitized }}
           HOSTNAME: ${{ steps.sanitize.outputs.hostname }}
           IP_ALLOWLIST: ${{ steps.ip-allowlist.outputs.cidrs }}
+          BYPASS_PASSWORD: ${{ secrets.BYPASS_PASSWORD }}
         run: |
           helm upgrade --install "${RELEASE_NAME}" .helm/laa-amend-a-claim \
             --namespace "${KUBE_NAMESPACE}" \

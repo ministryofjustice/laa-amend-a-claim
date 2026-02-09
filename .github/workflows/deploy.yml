@@ -107,3 +107,4 @@ jobs:
           KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
           INPUT_VALUES: ${{ inputs.values_file }}
+          BYPASS_PASSWORD: ${{ secrets.BYPASS_PASSWORD }}
