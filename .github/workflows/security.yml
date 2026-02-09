@@ -46,7 +46,7 @@ jobs:
       - name: Run Snyk app vulnerability scan
         uses: snyk/actions/gradle-9-jdk21@9adf32b1121593767fc3c057af55b55db032dc04
         with:
-          args: --severity-threshold=high --sarif-file-output=snyk-app.sarif
+          args: --severity-threshold=low --sarif-file-output=snyk-app.sarif
 
       - name: Upload result to GitHub Code Scanning
         if: always()
@@ -95,4 +95,4 @@ jobs:
         uses: snyk/actions/docker@9adf32b1121593767fc3c057af55b55db032dc04
         with:
           image: spring-boot-microservice:scan
-          args: --file=Dockerfile --severity-threshold=high
+          args: --file=Dockerfile --severity-threshold=low
