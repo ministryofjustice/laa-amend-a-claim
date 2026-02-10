@@ -46,7 +46,7 @@ jobs:
 
   security:
     name: Security
-    needs: [build, test]
+    needs: [ build, test ]
     uses: ./.github/workflows/security.yml
     with:
       branch: ${{ github.ref_name }}
@@ -58,12 +58,12 @@ jobs:
 
   deploy-dev:
     name: Deploy to Dev
-    needs: [build, test, security]
+    needs: [ build, test, security ]
     uses: ./.github/workflows/deploy.yml
     with:
       branch: ${{ github.ref_name }}
       environment: dev
-      SENTRY_ENV: development
+      sentry_env: development
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
       values_file: values/dev.yaml
@@ -76,12 +76,12 @@ jobs:
 
   deploy-uat:
     name: Deploy to UAT
-    needs: [build, test, security, deploy-dev]
+    needs: [ build, test, security, deploy-dev ]
     uses: ./.github/workflows/deploy.yml
     with:
       branch: ${{ github.ref_name }}
       environment: test
-      SENTRY_ENV: test
+      sentry_env: test
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
       values_file: values/uat.yaml
@@ -99,7 +99,7 @@ jobs:
     with:
       branch: ${{ github.ref_name }}
       environment: staging
-      SENTRY_ENV: staging
+      sentry_env: staging
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
       values_file: values/staging.yaml
@@ -117,7 +117,7 @@ jobs:
     with:
       branch: ${{ github.ref_name }}
       environment: production
-      SENTRY_ENV: production
+      sentry_env: production
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
       values_file: values/production.yaml
