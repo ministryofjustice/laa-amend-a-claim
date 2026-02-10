@@ -40,7 +40,7 @@ jobs:
 
   test:
     name: Test
-    needs: [build, deploy-ephemeral]
+    needs: [ build, deploy-ephemeral ]
     uses: ./.github/workflows/test.yml
     with:
       branch: ${{ github.ref_name }}
@@ -80,7 +80,7 @@ jobs:
     with:
       branch: ${{ github.ref_name }}
       environment: dev
-      SENTRY_ENV: development
+      sentry_env: development
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
       values_file: values/dev.yaml
