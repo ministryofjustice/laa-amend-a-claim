@@ -19,6 +19,7 @@ import java.util.Arrays;
 public class MaintenanceInterceptor implements HandlerInterceptor {
 
     private static final Path enabled = Paths.get("/config/maintenance/enabled");
+    private static final Path bypassPath = Paths.get("/config/maintenance/bypassPassword");
 
     @Override
     public boolean preHandle(
@@ -38,16 +39,18 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         return false;
     }
 
-    public boolean maintenanceApplies(HttpServletRequest request) {
+    public boolean maintenanceApplies(HttpServletRequest request) throws IOException {
         return maintenanceEnabled() && !hasBypassCookie(request);
     }
 
-    private boolean hasBypassCookie(HttpServletRequest request) {
+    private boolean hasBypassCookie(HttpServletRequest request) throws IOException {
         if (request.getCookies() == null) {
             return false;
         }
 
-        return Arrays.stream(request.getCookies()).anyMatch(cookie -> cookie.getName().equals("maintenance_bypass"));
+        String bypassPassword = Files.readString(bypassPath).trim();
+
+        return Arrays.stream(request.getCookies()).anyMatch(cookie -> cookie.getName().equals(bypassPassword));
     }
 
     private boolean maintenanceEnabled() {
