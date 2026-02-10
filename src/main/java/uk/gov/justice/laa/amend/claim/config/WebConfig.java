@@ -15,8 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new ClaimInterceptor())
-            .addPathPatterns("/submissions/*/claims/*/*")
-            .excludePathPatterns("/submissions/*/claims/*/assessments/*");
+                .addPathPatterns("/submissions/*/claims/*/*")
+                .excludePathPatterns("/submissions/*/claims/*/assessments/*");
 
         registry.addInterceptor(new MaintenanceInterceptor())
                 .order(Ordered.HIGHEST_PRECEDENCE)
@@ -25,6 +25,16 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     private static final String[] ALLOWED_URLS = {
-        "/actuator/**", "/health", "/maintenance", "/error", "/assets/**",
-        "/css/**", "/static/**", "/public/**", "/js/**", "/webjars/**", "images/**"};
+        "/actuator/**",
+        "/health",
+        "/maintenance",
+        "/error",
+        "/assets/**",
+        "/css/**",
+        "/static/**",
+        "/public/**",
+        "/js/**",
+        "/webjars/**",
+        "images/**"
+    };
 }

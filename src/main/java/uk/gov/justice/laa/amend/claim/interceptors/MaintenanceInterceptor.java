@@ -2,16 +2,15 @@ package uk.gov.justice.laa.amend.claim.interceptors;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 @Slf4j
@@ -22,10 +21,8 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
     private static final Path bypassPath = Paths.get("/config/maintenance/bypassPassword");
 
     @Override
-    public boolean preHandle(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Object handler) throws IOException {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws IOException {
         String path = request.getRequestURI();
         log.info("MaintenanceInterceptor path: {}", path);
 
@@ -50,7 +47,8 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
 
         String bypassPassword = Files.readString(bypassPath).trim();
 
-        return Arrays.stream(request.getCookies()).anyMatch(cookie -> cookie.getName().equals(bypassPassword));
+        return Arrays.stream(request.getCookies())
+                .anyMatch(cookie -> cookie.getValue().equals(bypassPassword));
     }
 
     private boolean maintenanceEnabled() {
