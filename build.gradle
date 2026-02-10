@@ -1,7 +1,7 @@
 plugins {
     id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.0.5'
     id "com.diffplug.spotless" version "8.2.1"
-    id "com.palantir.java-format-spotless" version "2.85.0"
+    id "com.palantir.java-format-spotless" version "2.86.0"
     id "io.sentry.jvm.gradle" version "6.0.0"
 }
 
@@ -56,17 +56,17 @@ dependencies {
     implementation 'org.webjars.npm:govuk-frontend:5.14.0'
     implementation 'org.webjars.npm:ministryofjustice__frontend:7.1.0'
 
-    implementation 'io.netty:netty-codec-http:4.2.9.Final'
-    implementation 'io.netty:netty-codec-http2:4.2.9.Final'
+    implementation 'io.netty:netty-codec-http:4.2.10.Final'
+    implementation 'io.netty:netty-codec-http2:4.2.10.Final'
 
-    implementation 'ch.qos.logback:logback-core:1.5.27'
-    implementation 'ch.qos.logback:logback-classic:1.5.27'
+    implementation 'ch.qos.logback:logback-core:1.5.29'
+    implementation 'ch.qos.logback:logback-classic:1.5.29'
 
-    implementation("io.vavr:vavr:0.11.0")
+    implementation("io.vavr:vavr:1.0.0")
     implementation("uk.gov.justice.laadata.providers:providers-api:1.23.0")
 
     // Sentry observability for Spring Boot 4
-    implementation enforcedPlatform('io.sentry:sentry-bom:8.26.0')
+    implementation enforcedPlatform('io.sentry:sentry-bom:8.32.0')
     implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
