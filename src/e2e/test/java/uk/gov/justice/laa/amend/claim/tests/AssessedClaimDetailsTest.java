@@ -74,7 +74,7 @@ public class AssessedClaimDetailsTest extends BaseTest {
 
     @Test
     @DisplayName("E2E: Assessed ClaimDetails")
-    void assessed() throws InterruptedException {
+    void assessed() {
         SearchPage search = new SearchPage(page).navigateTo(EnvConfig.baseUrl());
 
         search.searchForClaim(PROVIDER_ACCOUNT, "", "", UFN, "");
@@ -84,8 +84,6 @@ public class AssessedClaimDetailsTest extends BaseTest {
         ClaimDetailsPage claimDetails = new ClaimDetailsPage(page);
         claimDetails.assertInfoAlertIsPresent();
         claimDetails.assertUpdateAssessmentOutcomeButtonIsPresent();
-
-        // Thread.sleep(10000);
 
         claimDetails.assertCost("Fixed fee", "£239.35", "Not applicable", "£1,000.00");
         claimDetails.assertCost("Profit costs", "Not applicable", "£750.00", "£2,000.00");

@@ -1,7 +1,9 @@
 package uk.gov.justice.laa.amend.claim.base;
 
+import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
@@ -46,6 +48,8 @@ public abstract class BaseTest {
     public final String BULK_SUBMISSION_ID = UUID.randomUUID().toString();
     public final String USER_ID = EnvConfig.userId();
 
+
+    protected BrowserContext browserContext;
     protected abstract List<Insert> inserts();
 
     @BeforeEach
@@ -58,7 +62,8 @@ public abstract class BaseTest {
             throw new RuntimeException("Failed to seed database", e);
         }
 
-        page = BrowserSession.getContext().newPage();
+        browserContext = BrowserSession.getContext();
+        page = browserContext.newPage();
         page.navigate(EnvConfig.baseUrl());
     }
 
