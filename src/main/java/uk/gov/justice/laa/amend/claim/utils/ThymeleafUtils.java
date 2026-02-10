@@ -1,5 +1,18 @@
 package uk.gov.justice.laa.amend.claim.utils;
 
+import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.formatCurrency;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateTimeDateValue;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateTimeTimeValue;
+import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateValue;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.thymeleaf.spring6.util.DetailedError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AllowedTotalFormError;
@@ -10,20 +23,6 @@ import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafLiteralString;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafString;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.formatCurrency;
-import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateTimeDateValue;
-import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateTimeTimeValue;
-import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateValue;
 
 @AllArgsConstructor
 public class ThymeleafUtils {
@@ -49,25 +48,13 @@ public class ThymeleafUtils {
     }
 
     private <T> List<T> mapErrors(
-        List<DetailedError> errors,
-        Function<DetailedError, T> mapper,
-        Function<T, String> keyExtractor
-    ) {
-        return errors
-            .stream()
-            .map(mapper)
-            .sorted()
-            .collect(
-                Collectors.collectingAndThen(
-                    Collectors.toMap(
-                        keyExtractor,
-                        Function.identity(),
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                    ),
-                    map -> map.values().stream().toList()
-                )
-            );
+            List<DetailedError> errors, Function<DetailedError, T> mapper, Function<T, String> keyExtractor) {
+        return errors.stream()
+                .map(mapper)
+                .sorted()
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toMap(keyExtractor, Function.identity(), (e1, e2) -> e1, LinkedHashMap::new),
+                        map -> map.values().stream().toList()));
     }
 
     public ThymeleafString getFormattedValue(Object value) {
@@ -77,9 +64,11 @@ public class ThymeleafUtils {
             case Integer i -> new ThymeleafLiteralString(i.toString());
             case Boolean b -> getFormattedBoolean(b);
             case String s -> new ThymeleafLiteralString(s);
+            case ThymeleafMessage s -> s;
             case OffsetDateTime o -> getFormattedValue(o.toLocalDateTime());
             case LocalDate d -> new ThymeleafLiteralString(displayDateValue(d));
-            case LocalDateTime d -> new ThymeleafMessage("fulldate.format", displayDateTimeDateValue(d), displayDateTimeTimeValue(d));
+            case LocalDateTime d ->
+                new ThymeleafMessage("fulldate.format", displayDateTimeDateValue(d), displayDateTimeTimeValue(d));
             default -> new ThymeleafLiteralString(value.toString());
         };
     }

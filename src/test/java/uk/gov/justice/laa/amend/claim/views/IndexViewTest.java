@@ -1,6 +1,13 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -13,16 +20,13 @@ import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.HomePageController;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
-
-import java.util.List;
-import java.util.Map;
 
 @ActiveProfiles("local")
 @WebMvcTest(HomePageController.class)
@@ -74,30 +78,58 @@ class IndexViewTest extends ViewTestBase {
 
     @Test
     void testPageWithPagination() throws Exception {
-        // TODO - tests can be enhanced to test the values being rendered on the page
-        CivilClaimDetails claim1 = new CivilClaimDetails();
-        CivilClaimDetails claim2 = new CivilClaimDetails();
-        CivilClaimDetails claim3 = new CivilClaimDetails();
+        int currentPage = 2;
+        String url = String.format("/?page=%d", currentPage);
+        int numberOfResultsPerPage = 10;
+        this.mapping = url;
+        when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        List<BaseClaimView<Claim>> claims = List.of(
-            new ClaimView(claim1),
-            new ClaimView(claim2),
-            new ClaimView(claim3)
-        );
+        ClaimView claimViewModel = new ClaimView(MockClaimsFunctions.createMockCivilClaim());
+        List<BaseClaimView<Claim>> claims =
+                new ArrayList<>(Collections.nCopies(numberOfResultsPerPage, claimViewModel));
 
         SearchResultView viewModel = new SearchResultView();
         viewModel.setClaims(claims);
-        Pagination pagination = new Pagination(10, 10, 1, "/");
+        Pagination pagination = new Pagination(20, numberOfResultsPerPage, currentPage, url);
         viewModel.setPagination(pagination);
 
         Map<String, Object> variables = Map.of("viewModel", viewModel);
         Document doc = renderDocument(variables);
 
-        assertPageHasH2(doc, "10 search results");
+        assertPageHasH2(doc, "20 search results");
 
         assertPageHasTable(doc);
 
         assertPageHasPagination(doc);
+
+        Elements headers = getTableHeaders(doc);
+
+        assertTableHeaderIsNotSortable(headers.get(0), "Claim");
+        assertTableHeaderIsSortable(headers.get(1), "ascending", "UFN", "/?page=1&sort=uniqueFileNumber,desc");
+        assertTableHeaderIsSortable(headers.get(2), "none", "CRN", "/?page=1&sort=caseReferenceNumber,asc");
+        assertTableHeaderIsNotSortable(headers.get(3), "Client surname");
+        assertTableHeaderIsNotSortable(headers.get(4), "Submission period");
+        assertTableHeaderIsSortable(headers.get(5), "none", "Account", "/?page=1&sort=scheduleReference,asc");
+        assertTableHeaderIsNotSortable(headers.get(6), "Category of law");
+        assertTableHeaderIsNotSortable(headers.get(7), "Escape case");
+    }
+
+    @Test
+    void testPageWithOneResult() throws Exception {
+        when(searchProperties.isSortEnabled()).thenReturn(true);
+
+        ClaimView claimViewModel = new ClaimView(MockClaimsFunctions.createMockCivilClaim());
+        List<BaseClaimView<Claim>> claims = List.of(claimViewModel);
+
+        SearchResultView viewModel = new SearchResultView();
+        viewModel.setClaims(claims);
+        Pagination pagination = new Pagination(1, 10, 1, "/");
+        viewModel.setPagination(pagination);
+
+        Map<String, Object> variables = Map.of("viewModel", viewModel);
+        Document doc = renderDocument(variables);
+
+        assertPageHasH2(doc, "1 search result");
     }
 
     @Test
@@ -111,12 +143,12 @@ class IndexViewTest extends ViewTestBase {
 
         Document doc = renderDocumentWithErrors(params);
 
-        assertPageHasErrorSummary(doc,
-            "provider-account-number",
-            "submission-date-month", // date errors get combined
-            "unique-file-number",
-            "case-reference-number"
-        );
+        assertPageHasErrorSummary(
+                doc,
+                "provider-account-number",
+                "submission-date-month", // date errors get combined
+                "unique-file-number",
+                "case-reference-number");
     }
 
     @Test

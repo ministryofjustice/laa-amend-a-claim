@@ -8,8 +8,6 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ConfirmationController;
 
-import java.util.Map;
-
 @ActiveProfiles("local")
 @WebMvcTest(ConfirmationController.class)
 @Import(LocalSecurityConfig.class)

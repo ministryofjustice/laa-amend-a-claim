@@ -1,5 +1,12 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw.CRIME_LOWER;
+
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
+import java.util.Locale;
 import org.mapstruct.Context;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
@@ -12,13 +19,9 @@ import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.DateTimeParseException;
-import java.util.Locale;
-
-@Mapper(componentModel = "spring", uses = {ClaimMapperHelper.class})
+@Mapper(
+        componentModel = "spring",
+        uses = {ClaimMapperHelper.class})
 public interface ClaimMapper {
     @InheritConfiguration(name = "mapToClaim")
     @Mapping(target = "vatClaimed", source = ".", qualifiedByName = "mapVatClaimed")
@@ -46,7 +49,6 @@ public interface ClaimMapper {
     @Mapping(target = "claimFields", ignore = true)
     ClaimDetails mapToCommonDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
 
-
     @Mapping(target = "submissionId", source = "submissionId")
     @Mapping(target = "claimId", source = "id")
     @Mapping(target = "claimSummaryFeeId", source = "feeCalculationResponse.claimSummaryFeeId")
@@ -64,7 +66,10 @@ public interface ClaimMapper {
     Claim mapToClaim(ClaimResponse claimResponse);
 
     @InheritConfiguration(name = "mapToCommonDetails")
-    @Mapping(target = "detentionTravelWaitingCosts", source = "claimResponse", qualifiedByName = "mapDetentionTravelWaitingCosts")
+    @Mapping(
+            target = "detentionTravelWaitingCosts",
+            source = "claimResponse",
+            qualifiedByName = "mapDetentionTravelWaitingCosts")
     @Mapping(target = "jrFormFillingCost", source = "claimResponse", qualifiedByName = "mapJrFormFillingCost")
     @Mapping(target = "adjournedHearing", source = "claimResponse", qualifiedByName = "mapAdjournedHearingFee")
     @Mapping(target = "cmrhTelephone", source = "claimResponse", qualifiedByName = "mapCmrhTelephone")
@@ -73,12 +78,14 @@ public interface ClaimMapper {
     @Mapping(target = "substantiveHearing", source = "claimResponse", qualifiedByName = "mapSubstantiveHearing")
     @Mapping(target = "counselsCost", source = "claimResponse", qualifiedByName = "mapCounselsCost")
     @Mapping(target = "uniqueClientNumber", source = "uniqueClientNumber")
-    CivilClaimDetails mapToCivilClaimDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
+    CivilClaimDetails mapToCivilClaimDetails(
+            ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
 
     @InheritConfiguration(name = "mapToCommonDetails")
     @Mapping(target = "travelCosts", source = "claimResponse", qualifiedByName = "mapTravelCosts")
     @Mapping(target = "waitingCosts", source = "claimResponse", qualifiedByName = "mapWaitingCosts")
-    CrimeClaimDetails mapToCrimeClaimDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
+    CrimeClaimDetails mapToCrimeClaimDetails(
+            ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
 
     @ObjectFactory
     default ClaimDetails createClaimDetails(@Context SubmissionResponse submissionResponse) {
@@ -93,20 +100,30 @@ public interface ClaimMapper {
 
     default ClaimDetails mapToClaimDetails(ClaimResponse claimResponse, SubmissionResponse submissionResponse) {
         if (claimResponse != null && submissionResponse != null && submissionResponse.getAreaOfLaw() != null) {
-            ClaimDetails claimDetails = switch (submissionResponse.getAreaOfLaw()) {
-                case CRIME_LOWER -> mapToCrimeClaimDetails(claimResponse, submissionResponse);
-                case LEGAL_HELP, MEDIATION -> mapToCivilClaimDetails(claimResponse, submissionResponse);
-            };
+            var claimDetails = createClaimDetailsFromResponse(claimResponse, submissionResponse);
             enrichWithSubmission(claimDetails, submissionResponse);
             return claimDetails;
         }
         throw new IllegalArgumentException("Both claimResponse and submissionResponse must be non-null");
     }
 
+    private ClaimDetails createClaimDetailsFromResponse(
+            ClaimResponse claimResponse, SubmissionResponse submissionResponse) {
+        var areaOfLaw = submissionResponse.getAreaOfLaw();
+        if (CRIME_LOWER == areaOfLaw) {
+            return mapToCrimeClaimDetails(claimResponse, submissionResponse);
+        } else {
+            return mapToCivilClaimDetails(claimResponse, submissionResponse);
+        }
+    }
+
     default YearMonth mapSubmissionPeriod(ClaimResponse claimResponse) {
         if (claimResponse.getSubmissionPeriod() != null) {
             try {
-                DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("MMM-yyyy").toFormatter(Locale.ENGLISH);
+                DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+                        .parseCaseInsensitive()
+                        .appendPattern("MMM-yyyy")
+                        .toFormatter(Locale.ENGLISH);
                 return YearMonth.parse(claimResponse.getSubmissionPeriod(), formatter);
             } catch (DateTimeParseException e) {
                 return null;
@@ -120,8 +137,16 @@ public interface ClaimMapper {
         if (submissionResponse != null && submissionResponse.getAreaOfLaw() != null) {
             claim.setAreaOfLaw(submissionResponse.getAreaOfLaw().getValue());
             claim.setProviderAccountNumber(submissionResponse.getOfficeAccountNumber());
-            claim.setProviderName(submissionResponse.getProviderUserId());
-            claim.setSubmittedDate(submissionResponse.getSubmitted() != null ? submissionResponse.getSubmitted().toLocalDateTime() : null);
+            claim.setSubmittedDate(
+                    submissionResponse.getSubmitted() != null
+                            ? submissionResponse.getSubmitted().toLocalDateTime()
+                            : null);
+        }
+    }
+
+    default void enrichWithProviderName(ClaimDetails claim, String accountName) {
+        if (claim != null) {
+            claim.setProviderName(accountName);
         }
     }
 }

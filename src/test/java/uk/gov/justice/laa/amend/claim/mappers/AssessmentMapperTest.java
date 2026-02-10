@@ -1,5 +1,14 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -16,16 +25,6 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentGet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentOutcome;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
-
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = AssessmentMapperImpl.class)
@@ -44,7 +43,8 @@ class AssessmentMapperTest {
         AssessmentPost assessment = mapper.mapCivilClaimToAssessment(claim, userId);
 
         assertEquals(claim.getClaimId(), assessment.getClaimId().toString());
-        assertEquals(claim.getClaimSummaryFeeId(), assessment.getClaimSummaryFeeId().toString());
+        assertEquals(
+                claim.getClaimSummaryFeeId(), assessment.getClaimSummaryFeeId().toString());
         assertEquals(AssessmentOutcome.REDUCED_STILL_ESCAPED, assessment.getAssessmentOutcome());
         assertEquals(BigDecimal.valueOf(300), assessment.getFixedFeeAmount());
         assertEquals(BigDecimal.valueOf(300), assessment.getNetProfitCostsAmount());
@@ -76,7 +76,8 @@ class AssessmentMapperTest {
         AssessmentPost assessment = mapper.mapCrimeClaimToAssessment(claim, userId);
 
         assertEquals(claim.getClaimId(), assessment.getClaimId().toString());
-        assertEquals(claim.getClaimSummaryFeeId(), assessment.getClaimSummaryFeeId().toString());
+        assertEquals(
+                claim.getClaimSummaryFeeId(), assessment.getClaimSummaryFeeId().toString());
         assertEquals(AssessmentOutcome.REDUCED_TO_FIXED_FEE, assessment.getAssessmentOutcome());
         assertEquals(BigDecimal.valueOf(300), assessment.getFixedFeeAmount());
         assertEquals(BigDecimal.valueOf(300), assessment.getNetProfitCostsAmount());
@@ -95,16 +96,20 @@ class AssessmentMapperTest {
     @Test
     void testMapAssessedTotalVat() {
         CivilClaimDetails claim = new CivilClaimDetails();
-        claim.setAssessedTotalVat(AssessedClaimField.builder().assessed(BigDecimal.ONE).build());
-        claim.setAllowedTotalVat(AllowedClaimField.builder().assessed(BigDecimal.TWO).build());
+        claim.setAssessedTotalVat(
+                AssessedClaimField.builder().assessed(BigDecimal.ONE).build());
+        claim.setAllowedTotalVat(
+                AllowedClaimField.builder().assessed(BigDecimal.TWO).build());
         assertEquals(BigDecimal.ONE, mapper.mapAssessedTotalVat(claim));
     }
 
     @Test
     void testMapAssessedTotalInclVat() {
         CivilClaimDetails claim = new CivilClaimDetails();
-        claim.setAssessedTotalInclVat(AssessedClaimField.builder().assessed(BigDecimal.ONE).build());
-        claim.setAllowedTotalInclVat(AllowedClaimField.builder().assessed(BigDecimal.TWO).build());
+        claim.setAssessedTotalInclVat(
+                AssessedClaimField.builder().assessed(BigDecimal.ONE).build());
+        claim.setAllowedTotalInclVat(
+                AllowedClaimField.builder().assessed(BigDecimal.TWO).build());
         assertEquals(BigDecimal.ONE, mapper.mapAssessedTotalInclVat(claim));
     }
 
@@ -136,23 +141,23 @@ class AssessmentMapperTest {
         assertEquals(new BigDecimal("100"), result.getFixedFee().getAssessed());
         assertEquals(new BigDecimal("50"), result.getNetDisbursementAmount().getAssessed());
         assertEquals(new BigDecimal("10"), result.getDisbursementVatAmount().getAssessed());
-        assertEquals(new BigDecimal("200"),result.getNetProfitCost().getAssessed());
-        assertEquals(new BigDecimal("6"),result.getAssessedTotalVat().getAssessed());
-        assertEquals(new BigDecimal("7"),result.getAssessedTotalInclVat().getAssessed());
-        assertEquals(new BigDecimal("20"),result.getAllowedTotalVat().getAssessed());
-        assertEquals(new BigDecimal("300"),result.getAllowedTotalInclVat().getAssessed());
-        assertEquals(new BigDecimal("100"),result.getJrFormFillingCost().getAssessed());
+        assertEquals(new BigDecimal("200"), result.getNetProfitCost().getAssessed());
+        assertEquals(new BigDecimal("6"), result.getAssessedTotalVat().getAssessed());
+        assertEquals(new BigDecimal("7"), result.getAssessedTotalInclVat().getAssessed());
+        assertEquals(new BigDecimal("20"), result.getAllowedTotalVat().getAssessed());
+        assertEquals(new BigDecimal("300"), result.getAllowedTotalInclVat().getAssessed());
+        assertEquals(new BigDecimal("100"), result.getJrFormFillingCost().getAssessed());
     }
 
     @Test
     void updateClaimShouldUpdateLastAssessment() {
         // Given
         var assessmentDate = OffsetDateTime.now();
-        ClaimDetails target = new CivilClaimDetails();
         AssessmentInfo existing = new AssessmentInfo();
         existing.setLastAssessmentOutcome(OutcomeType.PAID_IN_FULL);
         existing.setLastAssessmentDate(assessmentDate);
         existing.setLastAssessedBy("u1");
+        ClaimDetails target = new CivilClaimDetails();
         target.setLastAssessment(existing);
 
         AssessmentGet source = new AssessmentGet();
@@ -164,7 +169,10 @@ class AssessmentMapperTest {
         mapper.updateClaim(source, target);
 
         // Then: confirm lastAssessment reference is same (in-place update)
-        assertThat(target.getLastAssessment()).usingRecursiveComparison().ignoringActualNullFields().isEqualTo(existing);
+        assertThat(target.getLastAssessment())
+                .usingRecursiveComparison()
+                .ignoringActualNullFields()
+                .isEqualTo(existing);
     }
 
     @Test
@@ -186,11 +194,18 @@ class AssessmentMapperTest {
         assessmentGet.setNetTravelCostsAmount(BigDecimal.valueOf(100));
         assessmentGet.setNetWaitingCostsAmount(BigDecimal.valueOf(200));
 
-
         ClaimDetails claimDetails = MockClaimsFunctions.createMockCrimeClaim();
         claimDetails.setAreaOfLaw("CRIME_LOWER");
-        ClaimField allowedTotalVatField = AllowedClaimField.builder().key(ALLOWED_TOTAL_VAT).submitted(345).calculated(345).build();
-        ClaimField allowedTotalInclVatField = AllowedClaimField.builder().key(ALLOWED_TOTAL_INCL_VAT).submitted(348).calculated(348).build();
+        ClaimField allowedTotalVatField = AllowedClaimField.builder()
+                .key(ALLOWED_TOTAL_VAT)
+                .submitted(345)
+                .calculated(345)
+                .build();
+        ClaimField allowedTotalInclVatField = AllowedClaimField.builder()
+                .key(ALLOWED_TOTAL_INCL_VAT)
+                .submitted(348)
+                .calculated(348)
+                .build();
         claimDetails.setAllowedTotalVat(allowedTotalVatField);
         claimDetails.setAllowedTotalInclVat(allowedTotalInclVatField);
         claimDetails.setLastAssessment(assessmentGet);
@@ -202,15 +217,20 @@ class AssessmentMapperTest {
         assertEquals(new BigDecimal("100"), result.getFixedFee().getAssessed());
         assertEquals(new BigDecimal("50"), result.getNetDisbursementAmount().getAssessed());
         assertEquals(new BigDecimal("10"), result.getDisbursementVatAmount().getAssessed());
-        assertEquals(new BigDecimal("200"),result.getNetProfitCost().getAssessed());
+        assertEquals(new BigDecimal("200"), result.getNetProfitCost().getAssessed());
         assertNotNull(result.getVatClaimed().getAssessed());
-        assertEquals("user123",result.getLastAssessment().getLastAssessedBy());
-        assertEquals(new BigDecimal("6"),result.getAssessedTotalVat().getAssessed());
-        assertEquals(new BigDecimal("7"),result.getAssessedTotalInclVat().getAssessed());
+        assertEquals("user123", result.getLastAssessment().getLastAssessedBy());
+        assertEquals(new BigDecimal("6"), result.getAssessedTotalVat().getAssessed());
+        assertEquals(new BigDecimal("7"), result.getAssessedTotalInclVat().getAssessed());
         assertEquals(BigDecimal.valueOf(300), result.getAllowedTotalInclVat().getAssessed());
         assertEquals(BigDecimal.valueOf(20), result.getAllowedTotalVat().getAssessed());
-        assertEquals(BigDecimal.valueOf(100), ((CrimeClaimDetails)result).getTravelCosts().getAssessed());
-        assertEquals(BigDecimal.valueOf(200), ((CrimeClaimDetails)result).getWaitingCosts().getAssessed());
-        assertEquals(OutcomeType.REDUCED_TO_FIXED_FEE, result.getLastAssessment().getLastAssessmentOutcome());
+        assertEquals(
+                BigDecimal.valueOf(100),
+                ((CrimeClaimDetails) result).getTravelCosts().getAssessed());
+        assertEquals(
+                BigDecimal.valueOf(200),
+                ((CrimeClaimDetails) result).getWaitingCosts().getAssessed());
+        assertEquals(
+                OutcomeType.REDUCED_TO_FIXED_FEE, result.getLastAssessment().getLastAssessmentOutcome());
     }
 }

@@ -1,18 +1,17 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Map;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Sorts {
-    private Map<String, SortDirection> value;
+    private Map<SortField, SortDirection> value;
     private boolean enabled;
 
     public Sorts(Sort sort) {
@@ -24,7 +23,7 @@ public class Sorts {
         return Sorts.builder().enabled(false).build();
     }
 
-    public SortDirection getDirection(String field) {
+    public SortDirection getDirection(SortField field) {
         return value.getOrDefault(field, SortDirection.NONE);
     }
 }

@@ -42,7 +42,53 @@ Using the `.env-template` file as a template, copy to a new .env file
 
 Be sure to fill out all values as they are required for pulling dependencies for the application to run
 
-### Build And Run Application
+
+## Developer setup
+
+### Commit hooks
+Run `scripts/setup-hooks.sh` to install pre-commit hooks for Git. This will install prek pre commit hook into git, which helps to:
+- Run Spotless to automatically format Java files
+- Run Checkstyle validation
+- Scan for potential secrets in code
+- Scan for dependency vulnerabilities
+- Scan for code vulnerabilities
+
+Note: If Spotless detects formatting issues, the commit will fail. After Spotless applies the formatting, you can commit the changes again.
+
+To run pre-commit hooks manually:
+```bash
+git add .
+prek run --all-files
+```
+
+### Code formatting
+Configure code formatting:
+- We use [palantir-java-format](https://github.com/palantir/palantir-java-format) for consistent code formatting
+- Install and enable the "palantir-java-format" plugin in IntelliJ IDEA
+- Configure the plugin:
+   1. Go to Settings → Other → Palantir Java Formatter and enable it
+   2. Navigate to Settings → Code Style → Java
+   3. Set the following values:
+      - Class count to use import with '*': 999
+      - Names count to use static import with '*': 999
+
+Import layout should be as follows:
+
+```text
+import static <all other imports>
+<blank line>
+import <all other imports>
+```
+
+### Snyk
+We use Snyk to help identify security vulnerabilities in our code and dependencies. To setup:
+1. Request access to [Snyk](https://app.snyk.io/org/legal-aid-agency) from an organisation admin. Contact the team lead developer for help doing this. Additionally, there is a `#snyk` channel in Slack.
+2. Install [snyk-cli](https://formulae.brew.sh/formula/snyk-cli)
+3. `snyk config set org=<org-id>` (this is available in 1Password)
+4. `snyk auth` and log in through GitHub
+5. You should now be able to run `snyk test`, `snyk code test` etc. These are both executed as part of the pre-commit hooks. Exclusions and ignores can be defined in [.snyk](/.snyk) as required.
+
+### Build and run application
 1. Run:
    1. `./run.sh` or `./run.sh local` to run the service with:
       1. WireMock to mock the responses from the claims API
@@ -67,20 +113,20 @@ Be sure to fill out all values as they are required for pulling dependencies for
 #### API docs (JSON)
 - http://localhost:8080/v3/api-docs
 
-### Actuator Endpoints
+#### Actuator endpoints
 The following actuator endpoints have been configured:
-- http://localhost:8080/actuator
-- http://localhost:8080/actuator/health
+- http://localhost:8182/actuator
+- http://localhost:8182/actuator/health
 
-#### 5. GitHub workflow
+## GitHub workflow
 The following workflows have been provided:
 
 * Build and test PR - `build-test-pr.yml`
 * Build and deploy after PR merged - `pr-merge-main.yml` 
 
-## Additional Information
+## Additional information
 
-### Libraries Used
+### Libraries used
 - [Spring Boot Actuator](https://docs.spring.io/spring-boot/reference/actuator/index.html) - used to provide various endpoints to help monitor the application, such as view application health and information.
 - [Spring Boot Web](https://docs.spring.io/spring-boot/reference/web/index.html) - used to provide features for building the REST API implementation.
 - [Spring Data JPA](https://docs.spring.io/spring-data/jpa/reference/jpa.html) - used to simplify database access and interaction, by providing an abstraction over persistence technologies, to help reduce boilerplate code.

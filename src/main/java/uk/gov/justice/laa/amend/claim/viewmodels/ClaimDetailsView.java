@@ -1,12 +1,5 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
-import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
-import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
-import uk.gov.justice.laa.amend.claim.utils.DateUtils;
-
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,6 +7,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
+import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
+import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
 
@@ -23,7 +22,11 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("clientName", getClientName());
         rows.put("ufn", claim().getUniqueFileNumber());
         addUcnSummaryRow(rows);
-        rows.put("providerName", claim().getProviderName());
+        rows.put(
+                "providerName",
+                claim().getProviderName() == null
+                        ? new ThymeleafMessage("provider.firmName.notAvailable")
+                        : claim().getProviderName());
         rows.put("providerAccountNumber", claim().getProviderAccountNumber());
         rows.put("submittedDate", claim().getSubmittedDate());
         rows.put("areaOfLaw", claim().getAreaOfLaw());
@@ -51,23 +54,14 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     // 'Values' rows for the 'Claim details' page
     default List<ClaimFieldRow> getSummaryClaimFieldRows() {
         Stream<ClaimField> rows = Stream.concat(
-            claimFields(),
-            Stream.of(
-                claim().getVatClaimed(),
-                claim().isHasAssessment() ? null : claim().getTotalAmount()
-            )
-        );
+                claimFields(),
+                Stream.of(claim().getVatClaimed(), claim().isHasAssessment() ? null : claim().getTotalAmount()));
         return toClaimFieldRows(rows).toList();
     }
 
     // 'Claim costs' rows for the 'Review and amend' page
     default List<ClaimFieldRow> getReviewClaimFieldRows() {
-        Stream<ClaimField> rows = Stream.concat(
-            claimFields(),
-            Stream.of(
-                claim().getVatClaimed()
-            )
-        );
+        Stream<ClaimField> rows = Stream.concat(claimFields(), Stream.of(claim().getVatClaimed()));
         return toClaimFieldRows(rows).toList();
     }
 
@@ -83,24 +77,21 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     default Stream<ClaimField> claimFields() {
         return Stream.of(
-            claim().getFixedFee(),
-            claim().getNetProfitCost(),
-            claim().getNetDisbursementAmount(),
-            claim().getDisbursementVatAmount()
-        );
+                claim().getFixedFee(),
+                claim().getNetProfitCost(),
+                claim().getNetDisbursementAmount(),
+                claim().getDisbursementVatAmount());
     }
 
     default List<ReviewAndAmendFormError> getErrors() {
         Stream<ClaimField> claimFields = Stream.of(
-            claimFields(),
-            claim().getAssessedTotalFields(),
-            claim().getAllowedTotalFields()
-        ).flatMap(Function.identity());
+                        claimFields(), claim().getAssessedTotalFields(), claim().getAllowedTotalFields())
+                .flatMap(Function.identity());
 
         return toClaimFieldRows(claimFields)
-            .filter(ClaimFieldRow::isAssessableAndUnassessed)
-            .map(f -> new ReviewAndAmendFormError(f.getId(), f.getErrorKey()))
-            .toList();
+                .filter(ClaimFieldRow::isAssessableAndUnassessed)
+                .map(f -> new ReviewAndAmendFormError(f.getId(), f.getErrorKey()))
+                .toList();
     }
 
     default boolean hasAssessment() {
@@ -115,7 +106,8 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         LocalDateTime dateTime = lastAssessment().getLastAssessmentDate().toLocalDateTime();
         String date = DateUtils.displayDateTimeDateValue(dateTime);
         String time = DateUtils.displayDateTimeTimeValue(dateTime);
-        ThymeleafMessage outcome = new ThymeleafMessage(lastAssessment().getLastAssessmentOutcome().getMessageKey());
+        ThymeleafMessage outcome =
+                new ThymeleafMessage(lastAssessment().getLastAssessmentOutcome().getMessageKey());
         if (user != null && user.getName() != null) {
             return new ThymeleafMessage("claimSummary.lastAssessmentText", user.getName(), date, time, outcome);
         } else {
@@ -125,8 +117,12 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     private Stream<ClaimFieldRow> toClaimFieldRows(Stream<ClaimField> claimFields) {
         return claimFields
-            .filter(Objects::nonNull)
-            .map(ClaimField::toClaimFieldRow)
-            .filter(Objects::nonNull);
+                .filter(Objects::nonNull)
+                .map(ClaimField::toClaimFieldRow)
+                .filter(Objects::nonNull);
+    }
+
+    default String reviewAssessmentChangeUrl(String submissionId, String claimId, String question) {
+        return String.format("/submissions/%s/claims/%s/assessment-outcome#%s", submissionId, claimId, question);
     }
 }

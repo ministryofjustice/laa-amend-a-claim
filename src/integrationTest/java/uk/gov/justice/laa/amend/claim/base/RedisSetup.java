@@ -1,10 +1,9 @@
 package uk.gov.justice.laa.amend.claim.base;
 
+import java.io.IOException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import redis.embedded.RedisServer;
-
-import java.io.IOException;
 
 public class RedisSetup {
 

@@ -1,5 +1,11 @@
 package uk.gov.justice.laa.amend.claim.config.security;
 
+import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PUBLIC_PATHS;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -20,16 +26,10 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PUBLIC_PATHS;
 
 @Profile("!local & !ephemeral & !e2e")
 @Configuration
@@ -38,36 +38,28 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(PUBLIC_PATHS).permitAll()
-                .anyRequest().authenticated())
-                .oauth2Login(oauth2 -> oauth2
-                    .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
-                    .successHandler((request, response, authentication) -> {
-                        response.sendRedirect("/");
-                    }))
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                // this is the default CSRF configuration, but we're using it explicitly here so Snyk can see it
+                .csrf((csrf) -> csrf.csrfTokenRepository(new HttpSessionCsrfTokenRepository()))
+                .authorizeHttpRequests(auth -> auth.requestMatchers(PUBLIC_PATHS)
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
+                .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
+                        .successHandler((request, response, authentication) -> {
+                            response.sendRedirect("/");
+                        }))
+                .logout(logout -> logout.logoutUrl("/logout")
                         .logoutSuccessUrl("/logout-success")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
-                        .deleteCookies("SESSION")
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .deleteCookies("SESSION"))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .invalidSessionUrl("/logout-success?message=expired")
-                        .sessionConcurrency(concurrency -> concurrency
-                                .maximumSessions(1)
-                                .expiredUrl("/logout-success?message=expired")
-                        )
-                )
-
-                .headers(headers -> headers
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                        .contentSecurityPolicy(csp -> csp.policyDirectives(
-                                "default-src 'self'; "
+                        .sessionConcurrency(concurrency ->
+                                concurrency.maximumSessions(1).expiredUrl("/logout-success?message=expired")))
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                        .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; "
                                 + "script-src 'self'; "
                                 + "style-src 'self'; "
                                 + "img-src 'self' data:; "
@@ -76,8 +68,7 @@ public class SecurityConfig {
                                 + "frame-ancestors 'none'; "
                                 + "base-uri 'self'; "
                                 + "form-action 'self'; "
-                                + "upgrade-insecure-requests"
-                        )));
+                                + "upgrade-insecure-requests")));
 
         return http.build();
     }
@@ -111,11 +102,7 @@ public class SecurityConfig {
     public Set<GrantedAuthority> getAuthorities(Map<String, Object> attributes) {
         List<String> roles = parseRawRoles(attributes.get("LAA_APP_ROLES"));
         return new SimpleAuthorityMapper()
-            .mapAuthorities(
-                roles.stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList())
-            );
+                .mapAuthorities(roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
     }
 
     private List<String> parseRawRoles(Object rawRoles) {

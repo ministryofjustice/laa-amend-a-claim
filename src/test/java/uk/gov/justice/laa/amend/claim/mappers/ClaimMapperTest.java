@@ -1,5 +1,13 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -17,15 +25,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {ClaimMapperImpl.class, ClaimMapperHelper.class})
@@ -45,7 +44,8 @@ class ClaimMapperTest {
         feeCalc.setTotalAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -63,7 +63,8 @@ class ClaimMapperTest {
         feeCalc.setFixedFeeAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -82,7 +83,8 @@ class ClaimMapperTest {
         feeCalc.setNetProfitCostsAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -98,7 +100,8 @@ class ClaimMapperTest {
         ClaimResponse response = new ClaimResponse();
         response.setIsVatApplicable(false);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -116,7 +119,8 @@ class ClaimMapperTest {
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -135,7 +139,8 @@ class ClaimMapperTest {
         feeCalc.setVatIndicator(false);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -154,7 +159,8 @@ class ClaimMapperTest {
         feeCalc.setVatIndicator(true);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -173,7 +179,8 @@ class ClaimMapperTest {
         feeCalc.setDisbursementAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -192,7 +199,8 @@ class ClaimMapperTest {
         feeCalc.setDisbursementVatAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -211,7 +219,8 @@ class ClaimMapperTest {
         feeCalc.setNetCostOfCounselAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -230,7 +239,8 @@ class ClaimMapperTest {
         feeCalc.setDetentionTravelAndWaitingCostsAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -249,7 +259,8 @@ class ClaimMapperTest {
         feeCalc.setJrFormFillingAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -270,7 +281,8 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -291,7 +303,8 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -312,7 +325,8 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -333,7 +347,8 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -354,7 +369,8 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -373,7 +389,8 @@ class ClaimMapperTest {
         feeCalc.setNetTravelCostsAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -392,7 +409,8 @@ class ClaimMapperTest {
         feeCalc.setNetWaitingCostsAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -407,7 +425,8 @@ class ClaimMapperTest {
     void mapAssessedTotalVat() {
         ClaimResponse response = new ClaimResponse();
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -422,7 +441,8 @@ class ClaimMapperTest {
     void mapAssessedTotalInclVat() {
         ClaimResponse response = new ClaimResponse();
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -441,7 +461,8 @@ class ClaimMapperTest {
         feeCalculationPatch.setDisbursementVatAmount(BigDecimal.valueOf(200));
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -456,7 +477,8 @@ class ClaimMapperTest {
     void mapAllowedTotalVatWhenFeeCalculationIsNull() {
         ClaimResponse response = new ClaimResponse();
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -473,7 +495,8 @@ class ClaimMapperTest {
         FeeCalculationPatch feeCalculationPatch = new FeeCalculationPatch();
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -491,7 +514,8 @@ class ClaimMapperTest {
         feeCalculationPatch.setCalculatedVatAmount(BigDecimal.valueOf(100));
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -509,7 +533,8 @@ class ClaimMapperTest {
         feeCalculationPatch.setDisbursementVatAmount(BigDecimal.valueOf(100));
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -527,7 +552,8 @@ class ClaimMapperTest {
         feeCalculationPatch.setTotalAmount(BigDecimal.valueOf(100));
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -542,7 +568,8 @@ class ClaimMapperTest {
     void mapAllowedTotalInclVatWhenFeeCalculationIsNull() {
         ClaimResponse response = new ClaimResponse();
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -557,7 +584,8 @@ class ClaimMapperTest {
     void mapAllowedTotalInclVatWhenTotalAmountIsNull() {
         ClaimResponse response = new ClaimResponse();
 
-        SubmissionResponse submissionResponse = new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
+        SubmissionResponse submissionResponse =
+                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
 
         CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
 
@@ -569,7 +597,9 @@ class ClaimMapperTest {
     }
 
     @ParameterizedTest(name = "Map to Civil Claim when Area of Law: {0}")
-    @EnumSource(value = AreaOfLaw.class, names = {"CRIME_LOWER", "LEGAL_HELP"})
+    @EnumSource(
+            value = AreaOfLaw.class,
+            names = {"CRIME_LOWER", "LEGAL_HELP"})
     void testMapToCivilClaim() {
         ClaimResponse response = new ClaimResponse();
         response.setUniqueFileNumber("UFN123");
@@ -614,7 +644,7 @@ class ClaimMapperTest {
         assertEquals("MT1+MT2", claim.getMatterTypeCode());
         assertEquals(claimSummaryFeeId.toString(), claim.getClaimSummaryFeeId());
         assertEquals("LEGAL HELP", claim.getAreaOfLaw());
-        assertEquals("User ID", claim.getProviderName());
+        assertEquals(null, claim.getProviderName());
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }
 
@@ -660,7 +690,6 @@ class ClaimMapperTest {
         assertEquals("PrisonCode", claim.getPoliceStationCourtPrisonId());
         assertEquals("SchemeId", claim.getSchemeId());
 
-        assertEquals("User ID", claim.getProviderName());
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }
 }

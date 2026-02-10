@@ -1,5 +1,5 @@
 # Specify java runtime base image
-FROM amazoncorretto:21-alpine
+FROM amazoncorretto:25-alpine
 
 # Define a volume to safely store temporary files across restarts
 VOLUME /tmp
@@ -18,4 +18,4 @@ USER 1001
 EXPOSE 8080
 
 # Run the JAR file
-CMD java -jar application.jar
+CMD ["java", "-jar", "application.jar"]

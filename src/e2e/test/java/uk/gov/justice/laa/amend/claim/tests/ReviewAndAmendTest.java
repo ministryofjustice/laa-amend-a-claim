@@ -1,5 +1,10 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
+
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
@@ -11,16 +16,9 @@ import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
-import uk.gov.justice.laa.amend.claim.pages.AssessTravelCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 public class ReviewAndAmendTest extends BaseTest {
 
@@ -47,89 +45,66 @@ public class ReviewAndAmendTest extends BaseTest {
     @Override
     protected List<Insert> inserts() {
         return List.of(
-            BulkSubmissionInsert
-                .builder()
-                .id(BULK_SUBMISSION_ID)
-                .userId(USER_ID)
-                .build(),
-
-            SubmissionInsert
-                .builder()
-                .id(CRIME_SUBMISSION_ID)
-                .bulkSubmissionId(BULK_SUBMISSION_ID)
-                .officeAccountNumber(CRIME_PROVIDER_ACCOUNT)
-                .submissionPeriod("APR-2025")
-                .areaOfLaw("CRIME_LOWER")
-                .userId(USER_ID)
-                .build(),
-
-            SubmissionInsert
-                .builder()
-                .id(CIVIL_SUBMISSION_ID)
-                .bulkSubmissionId(BULK_SUBMISSION_ID)
-                .officeAccountNumber(CIVIL_PROVIDER_ACCOUNT)
-                .submissionPeriod("JUN-2025")
-                .areaOfLaw("LEGAL_HELP")
-                .userId(USER_ID)
-                .build(),
-
-            ClaimInsert
-                .builder()
-                .id(CRIME_CLAIM_ID)
-                .submissionId(CRIME_SUBMISSION_ID)
-                .uniqueFileNumber(CRIME_UFN)
-                .userId(USER_ID)
-                .build(),
-
-            ClaimInsert
-                .builder()
-                .id(CIVIL_CLAIM_ID)
-                .submissionId(CIVIL_SUBMISSION_ID)
-                .uniqueFileNumber(CIVIL_UFN)
-                .userId(USER_ID)
-                .build(),
-
-            ClaimSummaryFeeInsert
-                .builder()
-                .id(CRIME_CLAIM_SUMMARY_FEE_ID)
-                .claimId(CRIME_CLAIM_ID)
-                .userId(USER_ID)
-                .build(),
-
-            ClaimSummaryFeeInsert
-                .builder()
-                .id(CIVIL_CLAIM_SUMMARY_FEE_ID)
-                .claimId(CIVIL_CLAIM_ID)
-                .userId(USER_ID)
-                .build(),
-
-            CalculatedFeeDetailInsert
-                .builder()
-                .id(CRIME_CALCULATED_FEE_DETAIL_ID)
-                .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
-                .claimId(CRIME_CLAIM_ID)
-                .feeCode("INVC")
-                .escaped(true)
-                .userId(USER_ID)
-                .build(),
-
-            CalculatedFeeDetailInsert
-                .builder()
-                .id(CIVIL_CALCULATED_FEE_DETAIL_ID)
-                .claimSummaryFeeId(CIVIL_CLAIM_SUMMARY_FEE_ID)
-                .claimId(CIVIL_CLAIM_ID)
-                .escaped(true)
-                .userId(USER_ID)
-                .build()
-        );
+                BulkSubmissionInsert.builder()
+                        .id(BULK_SUBMISSION_ID)
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(CRIME_SUBMISSION_ID)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber(CRIME_PROVIDER_ACCOUNT)
+                        .submissionPeriod("APR-2025")
+                        .areaOfLaw("CRIME_LOWER")
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(CIVIL_SUBMISSION_ID)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber(CIVIL_PROVIDER_ACCOUNT)
+                        .submissionPeriod("JUN-2025")
+                        .areaOfLaw("LEGAL_HELP")
+                        .userId(USER_ID)
+                        .build(),
+                ClaimInsert.builder()
+                        .id(CRIME_CLAIM_ID)
+                        .submissionId(CRIME_SUBMISSION_ID)
+                        .uniqueFileNumber(CRIME_UFN)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimInsert.builder()
+                        .id(CIVIL_CLAIM_ID)
+                        .submissionId(CIVIL_SUBMISSION_ID)
+                        .uniqueFileNumber(CIVIL_UFN)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimSummaryFeeInsert.builder()
+                        .id(CRIME_CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CRIME_CLAIM_ID)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimSummaryFeeInsert.builder()
+                        .id(CIVIL_CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CIVIL_CLAIM_ID)
+                        .userId(USER_ID)
+                        .build(),
+                CalculatedFeeDetailInsert.builder()
+                        .id(CRIME_CALCULATED_FEE_DETAIL_ID)
+                        .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CRIME_CLAIM_ID)
+                        .feeCode("INVC")
+                        .escaped(true)
+                        .userId(USER_ID)
+                        .build(),
+                CalculatedFeeDetailInsert.builder()
+                        .id(CIVIL_CALCULATED_FEE_DETAIL_ID)
+                        .claimSummaryFeeId(CIVIL_CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CIVIL_CLAIM_ID)
+                        .escaped(true)
+                        .userId(USER_ID)
+                        .build());
     }
 
-    private void navigateToReviewAndAmend(
-        String providerAccount,
-        String month,
-        String year,
-        String ufn
-    ) {
+    private void navigateToReviewAndAmend(String providerAccount, String month, String year, String ufn) {
         String baseUrl = EnvConfig.baseUrl();
 
         SearchPage search = new SearchPage(page).navigateTo(baseUrl);
@@ -137,11 +112,9 @@ public class ReviewAndAmendTest extends BaseTest {
         search.clickViewForUfn(ufn);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
         details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
 
         // Minimal inputs to proceed
         outcome.selectAssessmentOutcome("assessed in full");
@@ -150,21 +123,15 @@ public class ReviewAndAmendTest extends BaseTest {
         // If your app requires VAT explicitly, uncomment one line:
         // outcome.selectVatLiable(false);
 
-        outcome.clickContinue();
+        outcome.saveChanges();
     }
 
     @Test
     @DisplayName("Review & amend (Crime) loads correctly – headers + claim cost items")
     void crimeReviewAndAmendLoads() {
-        navigateToReviewAndAmend(
-            CRIME_PROVIDER_ACCOUNT,
-            CRIME_MONTH,
-            CRIME_YEAR,
-            CRIME_UFN
-        );
+        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         assertTrue(page.url().contains("/review"));
         review.assertCrimePageLoadedHeadersAndItems();
@@ -173,15 +140,9 @@ public class ReviewAndAmendTest extends BaseTest {
     @Test
     @DisplayName("Review & amend (Civil) loads correctly – headers + claim cost items")
     void civilReviewAndAmendLoads() {
-        navigateToReviewAndAmend(
-            CIVIL_PROVIDER_ACCOUNT,
-            CIVIL_MONTH,
-            CIVIL_YEAR,
-            CIVIL_UFN
-        );
+        navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         assertTrue(page.url().contains("/review"));
         review.assertCivilPageLoadedHeadersAndItems();
@@ -190,49 +151,60 @@ public class ReviewAndAmendTest extends BaseTest {
     @Test
     @DisplayName("Review & amend (Crime) submit without totals shows GOV.UK error summary")
     void crimeSubmitWithoutTotalsShowsErrors() {
-        navigateToReviewAndAmend(
-            CRIME_PROVIDER_ACCOUNT,
-            CRIME_MONTH,
-            CRIME_YEAR,
-            CRIME_UFN
-        );
+        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
-        review.submitAdjustments();
+        review.saveChanges();
 
         assertTrue(page.url().contains("/review"));
         review.assertSubmitTotalsRequiredErrors();
     }
 
     @Test
-    @DisplayName("Review & amend back link navigates to assessment outcome page (not browser history)")
-    void backLinkNavigatesToAssessmentOutcome() {
-        navigateToReviewAndAmend(
-            CRIME_PROVIDER_ACCOUNT,
-            CRIME_MONTH,
-            CRIME_YEAR,
-            CRIME_UFN
-        );
+    @DisplayName("Review & amend (Crime) change assessment outcome – navigates correctly")
+    void crimeChangeAssessmentOutcome() {
+        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
-        // Navigate to a change page to add entries to browser history
-        review.clickChangeTravelCosts();
-        AssessTravelCostsPage travelCosts = new AssessTravelCostsPage(page);
-        travelCosts.waitForPage();
+        review.clickAssessmentOutcome();
 
-        // Cancel to return to review page
-        travelCosts.cancel();
-        review.waitForPage();
+        assertTrue(page.url().contains("/assessment-outcome"));
+    }
 
-        // Click back link which should go to assessment-outcome, not travel-costs
-        review.clickBackLink();
+    @Test
+    @DisplayName("Review & amend (Crime) change VAT liability – navigates correctly")
+    void crimeChangeVatLiability() {
+        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
-        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+
+        review.clickLiableForVat();
+
+        assertTrue(page.url().contains("/assessment-outcome"));
+    }
+
+    @Test
+    @DisplayName("Review & amend (Civil) change assessment outcome – navigates correctly")
+    void civilChangeAssessmentOutcome() {
+        navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+
+        review.clickAssessmentOutcome();
+
+        assertTrue(page.url().contains("/assessment-outcome"));
+    }
+
+    @Test
+    @DisplayName("Review & amend (Civil) change VAT liability – navigates correctly")
+    void civilChangeVatLiability() {
+        navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+
+        review.clickLiableForVat();
 
         assertTrue(page.url().contains("/assessment-outcome"));
     }

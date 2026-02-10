@@ -4,10 +4,8 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 
-public class SearchPage {
-    private final Page page;
+public class SearchPage extends LaaPage {
 
-    private final Locator heading;
     private final Locator providerAccountNumberInput;
     private final Locator submissionMonthInput;
     private final Locator submissionYearInput;
@@ -25,12 +23,7 @@ public class SearchPage {
     private final Locator noResultsMessage;
 
     public SearchPage(Page page) {
-        this.page = page;
-
-        this.heading = page.getByRole(
-                AriaRole.HEADING,
-                new Page.GetByRoleOptions().setName("Search for a claim")
-        );
+        super(page, "Search for a claim");
 
         this.providerAccountNumberInput = page.locator("#provider-account-number");
         this.submissionMonthInput = page.locator("#submission-date-month");
@@ -38,17 +31,11 @@ public class SearchPage {
         this.ufnInput = page.locator("#unique-file-number");
         this.crnInput = page.locator("#case-reference-number");
 
-        this.searchButton = page.getByRole(
-                AriaRole.BUTTON,
-                new Page.GetByRoleOptions().setName("Search")
-        );
+        this.searchButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Search"));
 
-        this.clearAllLink = page.getByRole(
-                AriaRole.LINK,
-                new Page.GetByRoleOptions().setName("Clear all")
-        );
+        this.clearAllLink = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Clear all"));
 
-        this.resultsHeading = page.locator("h2.govuk-heading-m:has-text('search results')");
+        this.resultsHeading = page.locator("h2.govuk-heading-m:has-text('search result')");
         this.resultsTable = page.locator("table.govuk-table");
         this.resultRows = resultsTable.locator("tbody tr.govuk-table__row");
 
@@ -58,13 +45,8 @@ public class SearchPage {
         this.noResultsMessage = page.locator("h2.govuk-heading-m:has-text('no results')");
     }
 
-    public void waitForPage() {
-        heading.waitFor();
-    }
-
     public SearchPage navigateTo(String baseUrl) {
         page.navigate(baseUrl);
-        waitForPage();
         return this;
     }
 
@@ -94,9 +76,8 @@ public class SearchPage {
     }
 
     // ---- COMBINED SEARCH + WAIT FOR RESULTS ----
-    public void searchForClaim(String providerAccount, String month, String year,
-                               String ufn, String crn, boolean expectResults) {
-        waitForPage();
+    public void searchForClaim(
+            String providerAccount, String month, String year, String ufn, String crn, boolean expectResults) {
         enterProviderAccountNumber(providerAccount);
         enterSubmissionDate(month, year);
         enterUFN(ufn);
@@ -105,19 +86,14 @@ public class SearchPage {
         waitForResults(expectResults);
     }
 
-    public void searchForClaim(String providerAccount, String month, String year,
-                               String ufn, String crn) {
+    public void searchForClaim(String providerAccount, String month, String year, String ufn, String crn) {
         searchForClaim(providerAccount, month, year, ufn, crn, true);
-    }
-
-    public String getHeadingText() {
-        return heading.textContent().trim();
     }
 
     public void waitForResults(boolean expectResults) {
         if (expectResults) {
             waitForResults();
-        } else  {
+        } else {
             noResultsMessage.waitFor();
         }
     }
@@ -143,13 +119,15 @@ public class SearchPage {
 
     public void clickViewForUfn(String ufn) {
         waitForResults();
-        Locator row = resultRows.filter(new Locator.FilterOptions().setHasText(ufn)).first();
+        Locator row =
+                resultRows.filter(new Locator.FilterOptions().setHasText(ufn)).first();
         row.locator("a.govuk-link:has-text('View')").click();
     }
 
     public void clickViewForCrn(String crn) {
         waitForResults();
-        Locator row = resultRows.filter(new Locator.FilterOptions().setHasText(crn)).first();
+        Locator row =
+                resultRows.filter(new Locator.FilterOptions().setHasText(crn)).first();
         row.locator("a.govuk-link:has-text('View')").click();
     }
 

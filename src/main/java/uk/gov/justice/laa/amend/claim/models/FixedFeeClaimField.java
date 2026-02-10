@@ -1,9 +1,9 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
+
 import lombok.Builder;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
-
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.FIXED_FEE;
 
 public class FixedFeeClaimField extends ClaimField {
 
@@ -22,7 +22,7 @@ public class FixedFeeClaimField extends ClaimField {
             case NILLED -> setNilled();
             case REDUCED_TO_FIXED_FEE -> setAssessedToCalculated();
             case REDUCED, PAID_IN_FULL -> setAssessedToNull();
-            default -> { }
+            default -> {}
         }
     }
 

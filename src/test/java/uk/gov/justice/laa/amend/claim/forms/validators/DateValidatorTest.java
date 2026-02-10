@@ -1,15 +1,19 @@
 package uk.gov.justice.laa.amend.claim.forms.validators;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.ConstraintValidatorContext.ConstraintViolationBuilder;
 import jakarta.validation.ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
 
 class DateValidatorTest {
 
@@ -23,7 +27,8 @@ class DateValidatorTest {
         ConstraintViolationBuilder builder = mock(ConstraintViolationBuilder.class);
         NodeBuilderCustomizableContext nodeBuilderCustomizableContext = mock(NodeBuilderCustomizableContext.class);
 
-        when(constraintValidatorContext.buildConstraintViolationWithTemplate(anyString())).thenReturn(builder);
+        when(constraintValidatorContext.buildConstraintViolationWithTemplate(anyString()))
+                .thenReturn(builder);
         when(builder.addPropertyNode(anyString())).thenReturn(nodeBuilderCustomizableContext);
         when(builder.addConstraintViolation()).thenReturn(constraintValidatorContext);
     }
@@ -53,7 +58,8 @@ class DateValidatorTest {
         form.setSubmissionDateYear("2025");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.month.error.required}");
+        verify(constraintValidatorContext)
+                .buildConstraintViolationWithTemplate("{index.submissionDate.month.error.required}");
     }
 
     @Test
@@ -63,7 +69,8 @@ class DateValidatorTest {
         form.setSubmissionDateYear("2025");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.month.error.required}");
+        verify(constraintValidatorContext)
+                .buildConstraintViolationWithTemplate("{index.submissionDate.month.error.required}");
     }
 
     @Test
@@ -73,7 +80,8 @@ class DateValidatorTest {
         form.setSubmissionDateYear(null);
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.year.error.required}");
+        verify(constraintValidatorContext)
+                .buildConstraintViolationWithTemplate("{index.submissionDate.year.error.required}");
     }
 
     @Test
@@ -83,7 +91,8 @@ class DateValidatorTest {
         form.setSubmissionDateYear("");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.year.error.required}");
+        verify(constraintValidatorContext)
+                .buildConstraintViolationWithTemplate("{index.submissionDate.year.error.required}");
     }
 
     @Test
@@ -93,7 +102,8 @@ class DateValidatorTest {
         form.setSubmissionDateYear("2025");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.month.error.invalid}");
+        verify(constraintValidatorContext)
+                .buildConstraintViolationWithTemplate("{index.submissionDate.month.error.invalid}");
     }
 
     @Test
@@ -103,7 +113,8 @@ class DateValidatorTest {
         form.setSubmissionDateYear("xyz");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.year.error.invalid}");
+        verify(constraintValidatorContext)
+                .buildConstraintViolationWithTemplate("{index.submissionDate.year.error.invalid}");
     }
 
     @Test
@@ -113,7 +124,8 @@ class DateValidatorTest {
         form.setSubmissionDateYear("xyz");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext, times(2)).buildConstraintViolationWithTemplate("{index.submissionDate.error.invalid}");
+        verify(constraintValidatorContext, times(2))
+                .buildConstraintViolationWithTemplate("{index.submissionDate.error.invalid}");
     }
 
     @Test
@@ -123,7 +135,8 @@ class DateValidatorTest {
         form.setSubmissionDateYear("");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext, times(2)).buildConstraintViolationWithTemplate("{index.submissionDate.error.invalid}");
+        verify(constraintValidatorContext, times(2))
+                .buildConstraintViolationWithTemplate("{index.submissionDate.error.invalid}");
     }
 
     @Test
@@ -133,7 +146,8 @@ class DateValidatorTest {
         form.setSubmissionDateYear("xyz");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext, times(2)).buildConstraintViolationWithTemplate("{index.submissionDate.error.invalid}");
+        verify(constraintValidatorContext, times(2))
+                .buildConstraintViolationWithTemplate("{index.submissionDate.error.invalid}");
     }
 
     @Test
@@ -143,7 +157,8 @@ class DateValidatorTest {
         form.setSubmissionDateYear("2025");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.submissionDate.month.error.range}");
+        verify(constraintValidatorContext)
+                .buildConstraintViolationWithTemplate("{index.submissionDate.month.error.range}");
     }
 
     @Test
@@ -153,7 +168,8 @@ class DateValidatorTest {
         form.setSubmissionDateYear("xyz");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext, times(2)).buildConstraintViolationWithTemplate("{index.submissionDate.error.invalid}");
+        verify(constraintValidatorContext, times(2))
+                .buildConstraintViolationWithTemplate("{index.submissionDate.error.invalid}");
     }
 
     @Test

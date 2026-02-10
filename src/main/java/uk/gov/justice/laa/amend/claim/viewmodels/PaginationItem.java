@@ -7,9 +7,14 @@ import lombok.Getter;
 @Getter
 public class PaginationItem {
     private String text;
-    @Nullable private String href;
+
+    @Nullable
+    private String href;
+
     private PaginationItemType type;
-    @Nullable private String ariaLabel;
+
+    @Nullable
+    private String ariaLabel;
 
     /** The type of pagination item. */
     public enum PaginationItemType {

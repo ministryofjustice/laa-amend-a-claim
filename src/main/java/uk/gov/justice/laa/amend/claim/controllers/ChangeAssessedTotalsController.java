@@ -1,9 +1,12 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,10 +23,6 @@ import uk.gov.justice.laa.amend.claim.forms.AssessedTotalForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
-import java.math.BigDecimal;
-
-import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/assessed-totals")
@@ -32,14 +31,11 @@ public class ChangeAssessedTotalsController {
 
     @GetMapping()
     public String onPageLoad(
-        @PathVariable String claimId,
-        @PathVariable String submissionId,
-        Model model,
-        HttpServletRequest request
-    ) {
+            @PathVariable String claimId, @PathVariable String submissionId, Model model, HttpServletRequest request) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
-        if (claim.getAssessedTotalVat().isNotAssessable() || claim.getAssessedTotalInclVat().isNotAssessable()) {
+        if (claim.getAssessedTotalVat().isNotAssessable()
+                || claim.getAssessedTotalInclVat().isNotAssessable()) {
             log.warn("The assessed totals are not modifiable for claim {}. Returning 404.", claimId);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -61,15 +57,14 @@ public class ChangeAssessedTotalsController {
 
     @PostMapping()
     public String onSubmit(
-        @PathVariable(value = "submissionId") String submissionId,
-        @PathVariable(value = "claimId") String claimId,
-        @Valid @ModelAttribute("form") AssessedTotalForm form,
-        BindingResult bindingResult,
-        HttpSession session,
-        Model model,
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) {
+            @PathVariable(value = "submissionId") String submissionId,
+            @PathVariable(value = "claimId") String claimId,
+            @Valid @ModelAttribute("form") AssessedTotalForm form,
+            BindingResult bindingResult,
+            HttpSession session,
+            Model model,
+            HttpServletRequest request,
+            HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return renderView(model, form, submissionId, claimId);

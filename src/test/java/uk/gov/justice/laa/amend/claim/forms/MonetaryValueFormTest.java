@@ -1,11 +1,10 @@
 package uk.gov.justice.laa.amend.claim.forms;
 
 import jakarta.validation.ConstraintViolation;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.Cost;
-
-import java.util.Set;
 
 public class MonetaryValueFormTest extends FormTest {
 
@@ -97,16 +96,16 @@ public class MonetaryValueFormTest extends FormTest {
 
     @Test
     void testValueWithInvalidCommaPlacement() {
-        String value = "1,0000";
-
         MonetaryValueForm form = new MonetaryValueForm();
-        form.setValue(value);
+        form.setValue("1,0000");
         form.setCost(cost);
 
         Set<ConstraintViolation<MonetaryValueForm>> violations = validator.validate(form);
-        Assertions.assertTrue(violations.isEmpty());
+        ConstraintViolation<MonetaryValueForm> violation = getViolation(violations, "value");
 
-        Assertions.assertEquals(value, form.getValue());
+        Assertions.assertNotNull(violation);
+        String expectedMessage = String.format("{%s.error.invalid}", cost.getPrefix());
+        Assertions.assertEquals(expectedMessage, violation.getMessage());
     }
 
     @Test

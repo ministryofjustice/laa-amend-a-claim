@@ -27,11 +27,10 @@ public class AssessmentOutcomeController {
 
     @GetMapping("/assessment-outcome")
     public String setAssessmentOutcome(
-        HttpServletRequest request,
-        Model model,
-        @PathVariable(value = "submissionId") String submissionId,
-        @PathVariable(value = "claimId") String claimId
-    ) {
+            HttpServletRequest request,
+            Model model,
+            @PathVariable(value = "submissionId") String submissionId,
+            @PathVariable(value = "claimId") String claimId) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
@@ -47,15 +46,14 @@ public class AssessmentOutcomeController {
 
     @PostMapping("/assessment-outcome")
     public String selectAssessmentOutcome(
-        @PathVariable(value = "submissionId") String submissionId,
-        @PathVariable(value = "claimId") String claimId,
-        @Valid @ModelAttribute("form") AssessmentOutcomeForm form,
-        BindingResult bindingResult,
-        HttpSession session,
-        Model model,
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) {
+            @PathVariable(value = "submissionId") String submissionId,
+            @PathVariable(value = "claimId") String claimId,
+            @Valid @ModelAttribute("form") AssessmentOutcomeForm form,
+            BindingResult bindingResult,
+            HttpSession session,
+            Model model,
+            HttpServletRequest request,
+            HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return renderView(model, form, submissionId, claimId);

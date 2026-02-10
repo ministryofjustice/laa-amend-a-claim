@@ -1,16 +1,16 @@
 package uk.gov.justice.laa.amend.claim.models;
 
-import lombok.Data;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import lombok.Data;
+import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
 @Data
 public abstract class ClaimField implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+
     protected final String key;
     protected Object submitted;
     protected Object calculated;

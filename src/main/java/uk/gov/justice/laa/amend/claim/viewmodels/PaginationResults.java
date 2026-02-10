@@ -19,22 +19,18 @@ public class PaginationResults {
      * @param totalNumberOfPages The total number of pages
      */
     public PaginationResults(
-        int totalNumberOfResults,
-        int numberOfResultsPerPage,
-        int currentPage,
-        int totalNumberOfPages) {
+            int totalNumberOfResults, int numberOfResultsPerPage, int currentPage, int totalNumberOfPages) {
         if (totalNumberOfResults == 0) {
             this.from = 0;
             this.to = 0;
         } else {
             int from = (currentPage - 1) * numberOfResultsPerPage + 1;
 
-            int numberOfResultsOnThisPage =
-                (currentPage < totalNumberOfPages)
+            int numberOfResultsOnThisPage = (currentPage < totalNumberOfPages)
                     ? numberOfResultsPerPage
                     : (totalNumberOfResults % numberOfResultsPerPage == 0
-                    ? numberOfResultsPerPage
-                    : totalNumberOfResults % numberOfResultsPerPage);
+                            ? numberOfResultsPerPage
+                            : totalNumberOfResults % numberOfResultsPerPage);
 
             this.from = from;
             this.to = from + numberOfResultsOnThisPage - 1;
@@ -42,5 +38,9 @@ public class PaginationResults {
 
         this.count = totalNumberOfResults;
         this.text = totalNumberOfResults == 1 ? "result" : "results";
+    }
+
+    public boolean hasOne() {
+        return count == 1;
     }
 }

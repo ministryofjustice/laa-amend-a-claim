@@ -1,23 +1,5 @@
 package uk.gov.justice.laa.amend.claim.resources;
 
-import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
-import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
-import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
-import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
-import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.Cost;
-import uk.gov.justice.laa.amend.claim.models.CostClaimField;
-import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
-import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
-
-import java.math.BigDecimal;
-import java.util.UUID;
-
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
@@ -36,10 +18,28 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 
+import java.math.BigDecimal;
+import java.util.UUID;
+import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
+import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
+import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
+import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
+import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.Cost;
+import uk.gov.justice.laa.amend.claim.models.CostClaimField;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
+
 public class MockClaimsFunctions {
 
     private static final ClaimStatusHandler claimStatusHandler = new ClaimStatusHandler();
-    public static CivilClaimDetails createMockCivilClaim(){
+
+    public static CivilClaimDetails createMockCivilClaim() {
         CivilClaimDetails claim = new CivilClaimDetails();
         claim.setClaimId(UUID.randomUUID().toString());
         claim.setSubmissionId(UUID.randomUUID().toString());
@@ -137,42 +137,38 @@ public class MockClaimsFunctions {
     public static CostClaimField createDetentionCostField() {
         return createCostField(DETENTION_TRAVEL_COST, Cost.DETENTION_TRAVEL_AND_WAITING_COSTS);
     }
-    
+
     private static CostClaimField createCostField(String key, Cost cost) {
-        return CostClaimField
-            .builder()
-            .key(key)
-            .submitted(BigDecimal.valueOf(100))
-            .calculated(BigDecimal.valueOf(200))
-            .assessed(BigDecimal.valueOf(300))
-            .cost(cost)
-            .build();
+        return CostClaimField.builder()
+                .key(key)
+                .submitted(BigDecimal.valueOf(100))
+                .calculated(BigDecimal.valueOf(200))
+                .assessed(BigDecimal.valueOf(300))
+                .cost(cost)
+                .build();
     }
 
     public static FixedFeeClaimField createFixedFeeField() {
-        return FixedFeeClaimField
-            .builder()
-            .calculated(BigDecimal.valueOf(200))
-            .assessed(BigDecimal.valueOf(300))
-            .build();
+        return FixedFeeClaimField.builder()
+                .calculated(BigDecimal.valueOf(200))
+                .assessed(BigDecimal.valueOf(300))
+                .build();
     }
 
     public static CalculatedTotalClaimField createTotalAmountField() {
-        return CalculatedTotalClaimField
-            .builder()
-            .submitted(BigDecimal.valueOf(100))
-            .calculated(BigDecimal.valueOf(200))
-            .assessed(BigDecimal.valueOf(300))
-            .build();
+        return CalculatedTotalClaimField.builder()
+                .submitted(BigDecimal.valueOf(100))
+                .calculated(BigDecimal.valueOf(200))
+                .assessed(BigDecimal.valueOf(300))
+                .build();
     }
 
     public static VatLiabilityClaimField createVatClaimedField() {
-        return VatLiabilityClaimField
-            .builder()
-            .submitted(true)
-            .calculated(false)
-            .assessed(true)
-            .build();
+        return VatLiabilityClaimField.builder()
+                .submitted(true)
+                .calculated(false)
+                .assessed(true)
+                .build();
     }
 
     public static BoltOnClaimField createAdjournedHearingField() {
@@ -196,13 +192,12 @@ public class MockClaimsFunctions {
     }
 
     private static BoltOnClaimField createBoltOnField(String key) {
-        return BoltOnClaimField
-            .builder()
-            .key(key)
-            .submitted(BigDecimal.valueOf(100))
-            .calculated(BigDecimal.valueOf(200))
-            .assessed(BigDecimal.valueOf(300))
-            .build();
+        return BoltOnClaimField.builder()
+                .key(key)
+                .submitted(BigDecimal.valueOf(100))
+                .calculated(BigDecimal.valueOf(200))
+                .assessed(BigDecimal.valueOf(300))
+                .build();
     }
 
     public static AssessedClaimField createAssessedTotalVatField() {
@@ -214,13 +209,12 @@ public class MockClaimsFunctions {
     }
 
     private static AssessedClaimField createAssessedTotalField(String key) {
-        return AssessedClaimField
-            .builder()
-            .key(key)
-            .submitted(BigDecimal.valueOf(100))
-            .calculated(BigDecimal.valueOf(200))
-            .assessed(BigDecimal.valueOf(300))
-            .build();
+        return AssessedClaimField.builder()
+                .key(key)
+                .submitted(BigDecimal.valueOf(100))
+                .calculated(BigDecimal.valueOf(200))
+                .assessed(BigDecimal.valueOf(300))
+                .build();
     }
 
     public static AllowedClaimField createAllowedTotalVatField() {
@@ -232,12 +226,11 @@ public class MockClaimsFunctions {
     }
 
     private static AllowedClaimField createAllowedTotalField(String key) {
-        return AllowedClaimField
-            .builder()
-            .key(key)
-            .submitted(BigDecimal.valueOf(100))
-            .calculated(BigDecimal.valueOf(200))
-            .assessed(BigDecimal.valueOf(300))
-            .build();
+        return AllowedClaimField.builder()
+                .key(key)
+                .submitted(BigDecimal.valueOf(100))
+                .calculated(BigDecimal.valueOf(200))
+                .assessed(BigDecimal.valueOf(300))
+                .build();
     }
 }

@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -12,8 +14,6 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class ClaimStatusHandlerTest {
@@ -278,7 +278,7 @@ class ClaimStatusHandlerTest {
         }
 
         @Test
-        void shouldResetWhetherAFieldIsAssessableOrNotAfterOutcomeChange() {
+        void shouldResetWhetherFieldIsAssessableOrNotAfterOutcomeChange() {
             CrimeClaimDetails crimeClaim = new CrimeClaimDetails();
             ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
             ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();

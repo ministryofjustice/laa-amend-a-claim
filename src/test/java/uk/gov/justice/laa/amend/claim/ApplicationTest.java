@@ -6,5 +6,4 @@ import org.springframework.boot.test.context.SpringBootTest;
  * Javadoc comment.
  */
 @SpringBootTest
-public class ApplicationTest {
-}
+public class ApplicationTest {}

@@ -1,9 +1,13 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.io.IOException;
+import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,11 +26,6 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-
-import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/")
@@ -35,13 +34,13 @@ public class ChangeMonetaryValueController {
 
     @GetMapping("{cost}")
     public String getMonetaryValue(
-        Model model,
-        @PathVariable(value = "submissionId") String submissionId,
-        @PathVariable(value = "claimId") String claimId,
-        @PathVariable(value = "cost") Cost cost,
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) throws IOException {
+            Model model,
+            @PathVariable(value = "submissionId") String submissionId,
+            @PathVariable(value = "claimId") String claimId,
+            @PathVariable(value = "cost") Cost cost,
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws IOException {
         try {
             ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
             ClaimField claimField = cost.getAccessor().get(claim);
@@ -67,16 +66,16 @@ public class ChangeMonetaryValueController {
 
     @PostMapping("{cost}")
     public String postMonetaryValue(
-        HttpSession session,
-        Model model,
-        @PathVariable(value = "submissionId") String submissionId,
-        @PathVariable(value = "claimId") String claimId,
-        @PathVariable(value = "cost") Cost cost,
-        HttpServletRequest request,
-        HttpServletResponse response,
-        @Valid @ModelAttribute("form") MonetaryValueForm form,
-        BindingResult bindingResult
-    ) throws IOException {
+            HttpSession session,
+            Model model,
+            @PathVariable(value = "submissionId") String submissionId,
+            @PathVariable(value = "claimId") String claimId,
+            @PathVariable(value = "cost") Cost cost,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @Valid @ModelAttribute("form") MonetaryValueForm form,
+            BindingResult bindingResult)
+            throws IOException {
         try {
             ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 

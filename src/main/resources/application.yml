@@ -38,11 +38,25 @@ claims-api:
   access-token: ${CLAIMS_TOKEN}
 microsoft-graph-api:
   url: https://graph.microsoft.com
+provider-api:
+  url: ${PROVIDER_API}
+  access-token: ${PROVIDER_TOKEN}
 search:
   sort-enabled: true
 app:
   feedback-url: ${FEEDBACK_URL}
   laa-url: ${LAA_URL}
+
+management:
+  server:
+    port: 8182
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 ---
 spring:

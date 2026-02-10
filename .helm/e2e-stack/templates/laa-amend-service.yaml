@@ -2,13 +2,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: e2e-amend-a-claim
+  name: {{ include "e2e-stack.amendName" . }}
   labels:
-    app: e2e-amend-a-claim
+    {{- include "e2e-stack.labels" . | nindent 4 }}
+    app: {{ include "e2e-stack.amendName" . }}
 spec:
   type: ClusterIP
   selector:
-    app: e2e-amend-a-claim
+    app: {{ include "e2e-stack.amendName" . }}
   ports:
     - name: http
       port: {{ .Values.laaAmendAClaim.service.port }}

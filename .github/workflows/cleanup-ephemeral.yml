@@ -1,4 +1,5 @@
 on:
+  workflow_dispatch:
   pull_request:
     types: [closed]
   delete:
@@ -46,4 +47,17 @@ jobs:
             echo "Ephemeral environment cleaned up successfully"
           else
             echo "Release ${RELEASE_NAME} not found, nothing to clean up"
+          fi
+
+      - name: Delete E2E environment for branch
+        env:
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+          E2E_RELEASE_NAME: e2e-${{ steps.sanitize.outputs.sanitized }}
+        run: |
+          if helm list -n "${KUBE_NAMESPACE}" | grep -q "${E2E_RELEASE_NAME}"; then
+            echo "Deleting release: ${E2E_RELEASE_NAME}"
+            helm uninstall "${E2E_RELEASE_NAME}" -n "${KUBE_NAMESPACE}"
+            echo "E2E ephemeral environment cleaned up successfully"
+          else
+            echo "Release ${E2E_RELEASE_NAME} not found, nothing to clean up"
           fi

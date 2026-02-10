@@ -1,10 +1,9 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
-import uk.gov.justice.laa.amend.claim.models.Claim;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PERIOD_FORMAT;
 
 import java.time.format.DateTimeFormatter;
-
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PERIOD_FORMAT;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 
 public interface BaseClaimView<T extends Claim> {
     T claim();
@@ -25,17 +24,21 @@ public interface BaseClaimView<T extends Claim> {
         }
     }
 
-
     default String getAccountNumber() {
-        return claim().getScheduleReference() != null ? claim().getScheduleReference().split("/")[0] : null;
+        return claim().getScheduleReference() != null
+                ? claim().getScheduleReference().split("/")[0]
+                : null;
     }
 
     default String getSubmissionPeriodForDisplay() {
-        return claim().getSubmissionPeriod() != null ? claim().getSubmissionPeriod().format(DateTimeFormatter.ofPattern(DEFAULT_PERIOD_FORMAT)) : null;
+        return claim().getSubmissionPeriod() != null
+                ? claim().getSubmissionPeriod().format(DateTimeFormatter.ofPattern(DEFAULT_PERIOD_FORMAT))
+                : null;
     }
 
     default long getSubmissionPeriodForSorting() {
-        return claim().getSubmissionPeriod() != null ? claim().getSubmissionPeriod().atDay(1).toEpochDay() : 0;
+        return claim().getSubmissionPeriod() != null
+                ? claim().getSubmissionPeriod().atDay(1).toEpochDay()
+                : 0;
     }
-
 }

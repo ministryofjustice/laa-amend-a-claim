@@ -1,5 +1,10 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
+
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
@@ -22,13 +27,6 @@ import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-
-import java.util.List;
-import java.util.UUID;
-
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 public class AssessCostsValidationTest extends BaseTest {
 
@@ -55,80 +53,62 @@ public class AssessCostsValidationTest extends BaseTest {
     @Override
     protected List<Insert> inserts() {
         return List.of(
-            BulkSubmissionInsert
-                .builder()
-                .id(BULK_SUBMISSION_ID)
-                .userId(USER_ID)
-                .build(),
-
-            SubmissionInsert
-                .builder()
-                .id(CRIME_SUBMISSION_ID)
-                .bulkSubmissionId(BULK_SUBMISSION_ID)
-                .officeAccountNumber(CRIME_PROVIDER_ACCOUNT)
-                .submissionPeriod("APR-2025")
-                .areaOfLaw("CRIME_LOWER")
-                .userId(USER_ID)
-                .build(),
-
-            SubmissionInsert
-                .builder()
-                .id(CIVIL_SUBMISSION_ID)
-                .bulkSubmissionId(BULK_SUBMISSION_ID)
-                .officeAccountNumber(CIVIL_PROVIDER_ACCOUNT)
-                .submissionPeriod("JUN-2025")
-                .areaOfLaw("LEGAL_HELP")
-                .userId(USER_ID)
-                .build(),
-
-            ClaimInsert
-                .builder()
-                .id(CRIME_CLAIM_ID)
-                .submissionId(CRIME_SUBMISSION_ID)
-                .uniqueFileNumber(CRIME_UFN)
-                .userId(USER_ID)
-                .build(),
-
-            ClaimInsert
-                .builder()
-                .id(CIVIL_CLAIM_ID)
-                .submissionId(CIVIL_SUBMISSION_ID)
-                .uniqueFileNumber(CIVIL_UFN)
-                .userId(USER_ID)
-                .build(),
-
-            ClaimSummaryFeeInsert
-                .builder()
-                .id(CRIME_CLAIM_SUMMARY_FEE_ID)
-                .claimId(CRIME_CLAIM_ID)
-                .userId(USER_ID)
-                .build(),
-
-            ClaimSummaryFeeInsert
-                .builder()
-                .id(CIVIL_CLAIM_SUMMARY_FEE_ID)
-                .claimId(CIVIL_CLAIM_ID)
-                .userId(USER_ID)
-                .build(),
-
-            CalculatedFeeDetailInsert
-                .builder()
-                .id(CRIME_CALCULATED_FEE_DETAIL_ID)
-                .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
-                .claimId(CRIME_CLAIM_ID)
-                .escaped(true)
-                .userId(USER_ID)
-                .build(),
-
-            CalculatedFeeDetailInsert
-                .builder()
-                .id(CIVIL_CALCULATED_FEE_DETAIL_ID)
-                .claimSummaryFeeId(CIVIL_CLAIM_SUMMARY_FEE_ID)
-                .claimId(CIVIL_CLAIM_ID)
-                .escaped(true)
-                .userId(USER_ID)
-                .build()
-        );
+                BulkSubmissionInsert.builder()
+                        .id(BULK_SUBMISSION_ID)
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(CRIME_SUBMISSION_ID)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber(CRIME_PROVIDER_ACCOUNT)
+                        .submissionPeriod("APR-2025")
+                        .areaOfLaw("CRIME_LOWER")
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(CIVIL_SUBMISSION_ID)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber(CIVIL_PROVIDER_ACCOUNT)
+                        .submissionPeriod("JUN-2025")
+                        .areaOfLaw("LEGAL_HELP")
+                        .userId(USER_ID)
+                        .build(),
+                ClaimInsert.builder()
+                        .id(CRIME_CLAIM_ID)
+                        .submissionId(CRIME_SUBMISSION_ID)
+                        .uniqueFileNumber(CRIME_UFN)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimInsert.builder()
+                        .id(CIVIL_CLAIM_ID)
+                        .submissionId(CIVIL_SUBMISSION_ID)
+                        .uniqueFileNumber(CIVIL_UFN)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimSummaryFeeInsert.builder()
+                        .id(CRIME_CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CRIME_CLAIM_ID)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimSummaryFeeInsert.builder()
+                        .id(CIVIL_CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CIVIL_CLAIM_ID)
+                        .userId(USER_ID)
+                        .build(),
+                CalculatedFeeDetailInsert.builder()
+                        .id(CRIME_CALCULATED_FEE_DETAIL_ID)
+                        .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CRIME_CLAIM_ID)
+                        .escaped(true)
+                        .userId(USER_ID)
+                        .build(),
+                CalculatedFeeDetailInsert.builder()
+                        .id(CIVIL_CALCULATED_FEE_DETAIL_ID)
+                        .claimSummaryFeeId(CIVIL_CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CIVIL_CLAIM_ID)
+                        .escaped(true)
+                        .userId(USER_ID)
+                        .build());
     }
 
     private void navigateToReviewAndAmend(String provider, String month, String year, String ufn) {
@@ -139,24 +119,14 @@ public class AssessCostsValidationTest extends BaseTest {
         search.clickViewForUfn(ufn);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
         details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
         outcome.selectAssessmentOutcome("assessed in full");
-        outcome.clickContinue();
+        outcome.saveChanges();
 
         assertTrue(page.url().contains("/review"));
     }
-
-    private void assertNumberWith2DpErrorShown() {
-        assertThat(page.locator(".govuk-error-summary")).isVisible();
-        assertThat(page.locator(".govuk-error-message")).isVisible();
-        assertThat(page.locator(".govuk-error-summary")).containsText("must be a number with up to 2 decimal places");
-        assertThat(page.locator(".govuk-error-message")).containsText("must be a number with up to 2 decimal places");
-    }
-
 
     @Test
     @DisplayName("Crime: Profit costs - letters cause number validation error")
@@ -164,15 +134,13 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeProfitCosts();
 
         AssessProfitCostsPage profit = new AssessProfitCostsPage(page);
-        profit.waitForPage();
         profit.setAssessedValue("dasad");
         profit.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        profit.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -181,15 +149,13 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeDisbursements();
 
         AssessDisbursementsPage disb = new AssessDisbursementsPage(page);
-        disb.waitForPage();
         disb.setAssessedValue("dasad");
         disb.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        disb.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -198,15 +164,13 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeDisbursementsVat();
 
         AssessDisbursementsVatPage disbVat = new AssessDisbursementsVatPage(page);
-        disbVat.waitForPage();
         disbVat.setAssessedValue("dasad");
         disbVat.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        disbVat.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -215,15 +179,13 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeTravelCosts();
 
         AssessTravelCostsPage travel = new AssessTravelCostsPage(page);
-        travel.waitForPage();
         travel.setAssessedValue("dasad");
         travel.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        travel.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -232,15 +194,13 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeWaitingCosts();
 
         AssessWaitingCostsPage waiting = new AssessWaitingCostsPage(page);
-        waiting.waitForPage();
         waiting.setAssessedValue("dasad");
         waiting.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        waiting.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -249,15 +209,13 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeDetentionTravelAndWaitingCosts();
 
         AssessDetentionTravelAndWaitingCostsPage detention = new AssessDetentionTravelAndWaitingCostsPage(page);
-        detention.waitForPage();
         detention.setAssessedValue("dasad");
         detention.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        detention.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -266,15 +224,13 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeJrAndFormFilling();
 
         AssessJrFormFillingCostsPage jr = new AssessJrFormFillingCostsPage(page);
-        jr.waitForPage();
         jr.setAssessedValue("dasad");
         jr.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        jr.assertMustBeNumberWithUpTo2DpError();
     }
 
     @Test
@@ -283,14 +239,12 @@ public class AssessCostsValidationTest extends BaseTest {
         navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickChangeCounselCosts();
 
         AssessCounselCostsPage counsel = new AssessCounselCostsPage(page);
-        counsel.waitForPage();
         counsel.setAssessedValue("dasad");
         counsel.saveChanges();
 
-        assertNumberWith2DpErrorShown();
+        counsel.assertMustBeNumberWithUpTo2DpError();
     }
 }

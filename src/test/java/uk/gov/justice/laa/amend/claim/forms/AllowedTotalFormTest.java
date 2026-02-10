@@ -1,18 +1,17 @@
 package uk.gov.justice.laa.amend.claim.forms;
 
 import jakarta.validation.ConstraintViolation;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
 
 public class AllowedTotalFormTest extends FormTest {
 
     private AllowedTotalForm form;
 
     @BeforeEach
-    void Setup(){
+    void setUp() {
         form = new AllowedTotalForm();
     }
 
@@ -62,14 +61,13 @@ public class AllowedTotalFormTest extends FormTest {
 
     @Test
     void testValueEqualToMin() {
-        String value = "0";
         form.setAllowedTotalInclVat("0");
         form.setAllowedTotalVat("0");
 
         Set<ConstraintViolation<AllowedTotalForm>> violations = validator.validate(form);
 
         Assertions.assertTrue(violations.isEmpty());
-
+        String value = "0";
         Assertions.assertEquals(value, form.getAllowedTotalInclVat());
         Assertions.assertEquals(value, form.getAllowedTotalVat());
     }
@@ -131,7 +129,10 @@ public class AllowedTotalFormTest extends FormTest {
         form.setAllowedTotalInclVat("1,0000.00");
         form.setAllowedTotalVat("1,0000.00");
 
-        checkNoViolations(form);
+        String totalInclVatViolationMessage = "{allowedTotals.allowedTotalInclVat.error.invalid}";
+        String totalVatViolationMessage = "{allowedTotals.allowedTotalVat.error.invalid}";
+
+        checkViolations(totalInclVatViolationMessage, totalVatViolationMessage);
     }
 
     @Test
@@ -142,7 +143,7 @@ public class AllowedTotalFormTest extends FormTest {
         checkNoViolations(form);
     }
 
-    private void checkViolations(String totalInclVatViolationMessage, String totalVatViolationMessage){
+    private void checkViolations(String totalInclVatViolationMessage, String totalVatViolationMessage) {
         Set<ConstraintViolation<AllowedTotalForm>> violations = validator.validate(form);
         ConstraintViolation<AllowedTotalForm> totalVatViolation = getViolation(violations, "allowedTotalVat");
         ConstraintViolation<AllowedTotalForm> totalInclVatViolation = getViolation(violations, "allowedTotalInclVat");

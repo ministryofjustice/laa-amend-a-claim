@@ -65,7 +65,7 @@ cleanup() {
     fi
 }
 
-trap cleanup EXIT
-trap cleanup SIGINT SIGTERM
+trap cleanup SIGTERM
+trap cleanup SIGINT
 
 ./run.sh

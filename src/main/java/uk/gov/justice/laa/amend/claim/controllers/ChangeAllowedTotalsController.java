@@ -1,9 +1,12 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +20,6 @@ import uk.gov.justice.laa.amend.claim.forms.AllowedTotalForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
-import java.math.BigDecimal;
-
-import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/allowed-totals")
@@ -28,11 +27,7 @@ public class ChangeAllowedTotalsController {
 
     @GetMapping()
     public String onPageLoad(
-        @PathVariable String claimId,
-        @PathVariable String submissionId,
-        Model model,
-        HttpServletRequest request
-    ) {
+            @PathVariable String claimId, @PathVariable String submissionId, Model model, HttpServletRequest request) {
         ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
         AllowedTotalForm allowedTotalForm = new AllowedTotalForm();
@@ -42,9 +37,11 @@ public class ChangeAllowedTotalsController {
             allowedTotalForm.setAllowedTotalVat(setScale(allowedTotalVat).toString());
         }
 
-        BigDecimal allowedTotalInclVat = (BigDecimal) claim.getAllowedTotalInclVat().getAssessed();
+        BigDecimal allowedTotalInclVat =
+                (BigDecimal) claim.getAllowedTotalInclVat().getAssessed();
         if (allowedTotalInclVat != null) {
-            allowedTotalForm.setAllowedTotalInclVat(setScale(allowedTotalInclVat).toString());
+            allowedTotalForm.setAllowedTotalInclVat(
+                    setScale(allowedTotalInclVat).toString());
         }
 
         return renderView(model, allowedTotalForm, submissionId, claimId);
@@ -52,15 +49,14 @@ public class ChangeAllowedTotalsController {
 
     @PostMapping()
     public String onSubmit(
-        @PathVariable(value = "submissionId") String submissionId,
-        @PathVariable(value = "claimId") String claimId,
-        @Valid @ModelAttribute("form") AllowedTotalForm form,
-        BindingResult bindingResult,
-        HttpSession session,
-        Model model,
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) {
+            @PathVariable(value = "submissionId") String submissionId,
+            @PathVariable(value = "claimId") String claimId,
+            @Valid @ModelAttribute("form") AllowedTotalForm form,
+            BindingResult bindingResult,
+            HttpSession session,
+            Model model,
+            HttpServletRequest request,
+            HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return renderView(model, form, submissionId, claimId);
@@ -101,5 +97,4 @@ public class ChangeAllowedTotalsController {
     private String getRedirectUrl(String submissionId, String claimId) {
         return String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
     }
-
 }

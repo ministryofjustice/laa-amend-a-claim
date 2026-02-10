@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "com.diffplug.spotless" version "8.2.1"
 }
 
 repositories {
@@ -7,8 +8,19 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+spotless {
+    java {
+        palantirJavaFormat()
+        importOrder()
+        removeUnusedImports()
+    }
 }
 
 sourceSets {
@@ -25,6 +37,8 @@ sourceSets {
 
 dependencies {
     implementation 'com.microsoft.playwright:playwright:1.57.0'
+    implementation 'com.deque.html.axe-core:playwright:4.11.0'
+    testImplementation 'org.webjars.npm:axe-html-reporter:2.2.11'
     implementation 'io.github.cdimascio:dotenv-java:3.2.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.21.0'
     implementation 'org.slf4j:slf4j-simple:2.0.17'
@@ -68,6 +82,34 @@ tasks.withType(Test).configureEach {
 
     doFirst {
         delete fileTree("$buildDir/allure-results")
+        delete fileTree("$buildDir/axe-reports")
+    }
+
+    doLast {
+        def jsonDir = file("$buildDir/axe-reports/json")
+        def htmlDir = file("$buildDir/axe-reports/html")
+
+        if (!jsonDir.exists()) {
+            println "No axe JSON reports found"
+            return
+        }
+
+        htmlDir.mkdirs()
+
+        def scriptFile = file("generateAxeReports.js")
+
+        println "Generating HTML axe reports"
+        def process = new ProcessBuilder(
+                "node",
+                scriptFile.absolutePath
+            )
+            .redirectErrorStream(true)
+            .start()
+        process.inputStream.eachLine { println it }
+        int exitCode = process.waitFor()
+        if (exitCode != 0) {
+            println "Failed to generate axe reports: exit code $exitCode"
+        }
     }
 }
 

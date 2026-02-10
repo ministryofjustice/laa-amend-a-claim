@@ -21,12 +21,7 @@
                 </p>
             </div>
 
-            <a th:if="${showBackLink and backLinkUrl != null}"
-               th:href="${backLinkUrl}"
-               class="govuk-back-link"
-               th:text="#{service.back}">
-            </a>
-            <a th:if="${showBackLink and backLinkUrl == null}"
+            <a th:if="${showBackLink}"
                href="#"
                data-module="back-link"
                class="govuk-back-link"

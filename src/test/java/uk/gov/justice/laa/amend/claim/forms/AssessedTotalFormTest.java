@@ -1,18 +1,17 @@
 package uk.gov.justice.laa.amend.claim.forms;
 
 import jakarta.validation.ConstraintViolation;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
 
 public class AssessedTotalFormTest extends FormTest {
 
     private AssessedTotalForm form;
 
     @BeforeEach
-    void Setup(){
+    void setUp() {
         form = new AssessedTotalForm();
     }
 
@@ -62,7 +61,6 @@ public class AssessedTotalFormTest extends FormTest {
 
     @Test
     void testValueEqualToMin() {
-        String value = "0";
         form.setAssessedTotalInclVat("0");
         form.setAssessedTotalVat("0");
 
@@ -70,6 +68,7 @@ public class AssessedTotalFormTest extends FormTest {
 
         Assertions.assertTrue(violations.isEmpty());
 
+        String value = "0";
         Assertions.assertEquals(value, form.getAssessedTotalInclVat());
         Assertions.assertEquals(value, form.getAssessedTotalVat());
     }
@@ -131,7 +130,10 @@ public class AssessedTotalFormTest extends FormTest {
         form.setAssessedTotalInclVat("1,0000.00");
         form.setAssessedTotalVat("1,0000.00");
 
-        checkNoViolations(form);
+        String totalInclVatViolationMessage = "{assessedTotals.assessedTotalInclVat.error.invalid}";
+        String totalVatViolationMessage = "{assessedTotals.assessedTotalVat.error.invalid}";
+
+        checkViolations(totalInclVatViolationMessage, totalVatViolationMessage);
     }
 
     @Test
@@ -142,7 +144,7 @@ public class AssessedTotalFormTest extends FormTest {
         checkNoViolations(form);
     }
 
-    private void checkViolations(String totalInclVatViolationMessage, String totalVatViolationMessage){
+    private void checkViolations(String totalInclVatViolationMessage, String totalVatViolationMessage) {
         Set<ConstraintViolation<AssessedTotalForm>> violations = validator.validate(form);
         ConstraintViolation<AssessedTotalForm> totalVatViolation = getViolation(violations, "assessedTotalVat");
         ConstraintViolation<AssessedTotalForm> totalInclVatViolation = getViolation(violations, "assessedTotalInclVat");

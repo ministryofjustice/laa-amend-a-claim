@@ -1,14 +1,5 @@
 package uk.gov.justice.laa.amend.claim.forms;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
-import uk.gov.justice.laa.amend.claim.utils.DateUtils;
-
 import static org.springframework.util.StringUtils.hasText;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.CASE_REFERENCE_NUMBER_INVALID_ERROR;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.CASE_REFERENCE_NUMBER_REGEX;
@@ -17,6 +8,16 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVI
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.PROVIDER_ACCOUNT_NUMBER_REQUIRED_ERROR;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.UNIQUE_FILE_NUMBER_INVALID_ERROR;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.UNIQUE_FILE_NUMBER_REGEX;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
+import uk.gov.justice.laa.amend.claim.models.SearchQuery;
+import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
 @Getter
 @Setter
@@ -39,12 +40,20 @@ public class SearchForm {
     @Pattern(regexp = CASE_REFERENCE_NUMBER_REGEX, message = CASE_REFERENCE_NUMBER_INVALID_ERROR)
     private String caseReferenceNumber;
 
+    public SearchForm(SearchQuery query) {
+        this.providerAccountNumber = query.getProviderAccountNumber();
+        this.submissionDateMonth = query.getSubmissionDateMonth();
+        this.submissionDateYear = query.getSubmissionDateYear();
+        this.uniqueFileNumber = query.getUniqueFileNumber();
+        this.caseReferenceNumber = query.getCaseReferenceNumber();
+    }
+
     public boolean anyNonEmpty() {
         return hasText(providerAccountNumber)
-            || hasText(submissionDateMonth)
-            || hasText(submissionDateYear)
-            || hasText(uniqueFileNumber)
-            || hasText(caseReferenceNumber);
+                || hasText(submissionDateMonth)
+                || hasText(submissionDateYear)
+                || hasText(uniqueFileNumber)
+                || hasText(caseReferenceNumber);
     }
 
     public String getSubmissionPeriod() {

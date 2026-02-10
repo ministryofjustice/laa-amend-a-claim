@@ -1,0 +1,19 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "This module contains the standalone E2E UI automation suite for the LAA Amend a Claim service.   It uses Playwright (Java), JUnit 5 and Allure. The E2E project is isolated under src/e2e.",
+  "main": "generateAxeReports.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "axe-html-reporter": "^2.2.11"
+  }
+}

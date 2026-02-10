@@ -1,5 +1,10 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
+
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
@@ -11,17 +16,11 @@ import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.AssessAllowedTotalsPage;
-import uk.gov.justice.laa.amend.claim.pages.AssessTotalClaimValuePage;
+import uk.gov.justice.laa.amend.claim.pages.AssessAssessedTotalsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessmentOutcomePage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ReviewAndAmendPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 public class AssessTotalsValidationTest extends BaseTest {
 
@@ -37,46 +36,36 @@ public class AssessTotalsValidationTest extends BaseTest {
     @Override
     protected List<Insert> inserts() {
         return List.of(
-            BulkSubmissionInsert
-                .builder()
-                .id(BULK_SUBMISSION_ID)
-                .userId(USER_ID)
-                .build(),
-
-            SubmissionInsert
-                .builder()
-                .id(SUBMISSION_ID)
-                .bulkSubmissionId(BULK_SUBMISSION_ID)
-                .officeAccountNumber(PROVIDER_ACCOUNT)
-                .submissionPeriod("JUN-2025")
-                .areaOfLaw("LEGAL_HELP")
-                .userId(USER_ID)
-                .build(),
-
-            ClaimInsert
-                .builder()
-                .id(CLAIM_ID)
-                .submissionId(SUBMISSION_ID)
-                .uniqueFileNumber(UFN)
-                .userId(USER_ID)
-                .build(),
-
-            ClaimSummaryFeeInsert
-                .builder()
-                .id(CLAIM_SUMMARY_FEE_ID)
-                .claimId(CLAIM_ID)
-                .userId(USER_ID)
-                .build(),
-
-            CalculatedFeeDetailInsert
-                .builder()
-                .id(CALCULATED_FEE_DETAIL_ID)
-                .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
-                .claimId(CLAIM_ID)
-                .escaped(true)
-                .userId(USER_ID)
-                .build()
-        );
+                BulkSubmissionInsert.builder()
+                        .id(BULK_SUBMISSION_ID)
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(SUBMISSION_ID)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber(PROVIDER_ACCOUNT)
+                        .submissionPeriod("JUN-2025")
+                        .areaOfLaw("LEGAL_HELP")
+                        .userId(USER_ID)
+                        .build(),
+                ClaimInsert.builder()
+                        .id(CLAIM_ID)
+                        .submissionId(SUBMISSION_ID)
+                        .uniqueFileNumber(UFN)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimSummaryFeeInsert.builder()
+                        .id(CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CLAIM_ID)
+                        .userId(USER_ID)
+                        .build(),
+                CalculatedFeeDetailInsert.builder()
+                        .id(CALCULATED_FEE_DETAIL_ID)
+                        .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
+                        .claimId(CLAIM_ID)
+                        .escaped(true)
+                        .userId(USER_ID)
+                        .build());
     }
 
     private void navigateToReviewAndAmend() {
@@ -87,13 +76,11 @@ public class AssessTotalsValidationTest extends BaseTest {
         search.clickViewForUfn(UFN);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.waitForPage();
         details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.waitForPage();
         outcome.selectAssessmentOutcome("reduced-to-fixed-fee-assessed");
-        outcome.clickContinue();
+        outcome.saveChanges();
 
         assertTrue(page.url().contains("/review"));
     }
@@ -104,11 +91,9 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickAddAssessedTotalVat();
 
-        AssessTotalClaimValuePage totals = new AssessTotalClaimValuePage(page);
-        totals.waitForPage();
+        AssessAssessedTotalsPage totals = new AssessAssessedTotalsPage(page);
         totals.saveChanges();
 
         totals.assertRequiredErrorsShown();
@@ -120,13 +105,11 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickAddAssessedTotalVat();
 
-        AssessTotalClaimValuePage totals = new AssessTotalClaimValuePage(page);
-        totals.waitForPage();
-        totals.setAssessedTotalVat("dasad");
-        totals.setAssessedTotalInclVat("dasad");
+        AssessAssessedTotalsPage totals = new AssessAssessedTotalsPage(page);
+        totals.setTotalVat("dasad");
+        totals.setTotalInclVat("dasad");
         totals.saveChanges();
 
         totals.assertNumericErrorsShown();
@@ -138,11 +121,9 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickAddAllowedTotalVat();
 
         AssessAllowedTotalsPage allowed = new AssessAllowedTotalsPage(page);
-        allowed.waitForPage();
         allowed.saveChanges();
 
         allowed.assertRequiredErrorsShown();
@@ -154,13 +135,11 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
         review.clickAddAllowedTotalVat();
 
         AssessAllowedTotalsPage allowed = new AssessAllowedTotalsPage(page);
-        allowed.waitForPage();
-        allowed.setAllowedTotalVat("dasad");
-        allowed.setAllowedTotalInclVat("dasad");
+        allowed.setTotalVat("dasad");
+        allowed.setTotalInclVat("dasad");
         allowed.saveChanges();
 
         allowed.assertNumericErrorsShown();
@@ -172,7 +151,6 @@ public class AssessTotalsValidationTest extends BaseTest {
         navigateToReviewAndAmend();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.waitForPage();
 
         review.assertAllowedTotalsAreCorrect("£127.87", "£767.22");
     }
