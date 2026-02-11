@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,6 +32,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class HomePageController {
 
     private final ClaimService claimService;
@@ -47,6 +49,7 @@ public class HomePageController {
             HttpServletRequest request,
             Errors errors,
             HttpServletResponse response) {
+        log.error("Test");
         query.rejectUnknownParams(request);
 
         SearchForm form = new SearchForm(query);
