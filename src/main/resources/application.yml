@@ -35,6 +35,11 @@ sentry:
   environment: ${SENTRY_ENVIRONMENT}
   logs:
     enabled: true
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
 claims-api:
   url: ${CLAIMS_API}
   access-token: ${CLAIMS_TOKEN}
