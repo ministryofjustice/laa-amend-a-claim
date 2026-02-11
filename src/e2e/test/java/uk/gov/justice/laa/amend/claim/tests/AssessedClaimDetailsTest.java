@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInsert;
 import uk.gov.justice.laa.amend.claim.models.BulkSubmissionInsert;
 import uk.gov.justice.laa.amend.claim.models.CalculatedFeeDetailInsert;
@@ -75,7 +74,7 @@ public class AssessedClaimDetailsTest extends BaseTest {
     @Test
     @DisplayName("E2E: Assessed ClaimDetails")
     void assessed() throws InterruptedException {
-        SearchPage search = new SearchPage(page).navigateTo(EnvConfig.baseUrl());
+        SearchPage search = new SearchPage(page);
 
         search.searchForClaim(PROVIDER_ACCOUNT, "", "", UFN, "");
 

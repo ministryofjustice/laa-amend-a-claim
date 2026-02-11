@@ -21,7 +21,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.models.BulkSubmissionInsert;
 import uk.gov.justice.laa.amend.claim.models.CalculatedFeeDetailInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimInsert;
@@ -110,8 +109,7 @@ public class SearchTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Search: submit form and results available")
     void canSearchForClaim(SearchData config) {
-        String baseUrl = EnvConfig.baseUrl();
-        SearchPage searchPage = new SearchPage(page).navigateTo(baseUrl);
+        SearchPage searchPage = new SearchPage(page);
 
         searchPage.searchForClaim(
                 config.getProviderAccountNumber(),
@@ -128,8 +126,7 @@ public class SearchTest extends BaseTest {
     @Test
     @DisplayName("Search values retained upon 'Back to search' click")
     void backToSearch() {
-        String baseUrl = EnvConfig.baseUrl();
-        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
+        SearchPage search = new SearchPage(page);
 
         search.searchForClaim("123456", "04", "2025", "", "");
 

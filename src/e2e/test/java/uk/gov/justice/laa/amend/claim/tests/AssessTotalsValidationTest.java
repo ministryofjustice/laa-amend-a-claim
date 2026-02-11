@@ -8,7 +8,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.models.BulkSubmissionInsert;
 import uk.gov.justice.laa.amend.claim.models.CalculatedFeeDetailInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimInsert;
@@ -69,9 +68,7 @@ public class AssessTotalsValidationTest extends BaseTest {
     }
 
     private void navigateToReviewAndAmend() {
-        String baseUrl = EnvConfig.baseUrl();
-
-        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
+        SearchPage search = new SearchPage(page);
         search.searchForClaim(PROVIDER_ACCOUNT, MONTH, YEAR, UFN, "");
         search.clickViewForUfn(UFN);
 
