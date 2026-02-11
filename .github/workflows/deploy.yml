@@ -10,7 +10,7 @@ on:
       environment:
         required: true
         type: string
-      SENTRY_ENV:
+      sentry_env:
         required: true
         type: string
       image_tag:
@@ -108,3 +108,4 @@ jobs:
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
           INPUT_VALUES: ${{ inputs.values_file }}
           BYPASS_PASSWORD: ${{ secrets.BYPASS_PASSWORD }}
+          SENTRY_ENV: ${{ inputs.sentry_env }}
