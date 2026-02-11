@@ -24,8 +24,6 @@ on:
         required: true
       KUBE_CERT:
         required: true
-      BYPASS_PASSWORD:
-        required: true
     outputs:
       sanitized_release_name:
         description: "The Docker image tag (commit SHA) - Cache test"
@@ -97,7 +95,6 @@ jobs:
           SANITIZED_NAME: ${{ steps.sanitize.outputs.sanitized }}
           HOSTNAME: ${{ steps.sanitize.outputs.hostname }}
           IP_ALLOWLIST: ${{ steps.ip-allowlist.outputs.cidrs }}
-          BYPASS_PASSWORD: ${{ secrets.BYPASS_PASSWORD }}
         run: |
           helm upgrade --install "${RELEASE_NAME}" .helm/laa-amend-a-claim \
             --namespace "${KUBE_NAMESPACE}" \
@@ -110,7 +107,6 @@ jobs:
             --set "ipAllowlist=${IP_ALLOWLIST}" \
             --set springProfile=ephemeral \
             --set sentryEnvironment="ephemeral-${SANITIZED_NAME}" \
-            --set maintenance.bypassPassword=${BYPASS_PASSWORD} \
             --wait \
             --timeout 5m
 

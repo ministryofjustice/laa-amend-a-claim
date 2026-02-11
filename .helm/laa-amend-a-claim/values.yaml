@@ -177,15 +177,9 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
-volumes:
-  - name: maintenance-config
-    configMap:
-      name:  amend-a-bulk-claim-maintenance
+volumes: []
 
-volumeMounts:
-  - name: maintenance-config
-    mountPath: /config/maintenance
-    readOnly: true
+volumeMounts: []
 
 nodeSelector: {}
 

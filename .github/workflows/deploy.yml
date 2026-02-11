@@ -38,8 +38,6 @@ on:
         required: true
       KUBE_CERT:
         required: true
-      BYPASS_PASSWORD:
-        required: true
 
 jobs:
   deploy:
@@ -97,7 +95,6 @@ jobs:
             --set ingress.host=${KUBE_NAMESPACE}.apps.live.cloud-platform.service.justice.gov.uk \
             --set "ipAllowlist=${{ steps.ip-allowlist.outputs.cidrs }}" \
             --set sentryEnvironment=${SENTRY_ENV} \
-            --set maintenance.bypassPassword=${BYPASS_PASSWORD} \
             --wait \
             --timeout 5m
         env:
@@ -107,5 +104,4 @@ jobs:
           KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
           INPUT_VALUES: ${{ inputs.values_file }}
-          BYPASS_PASSWORD: ${{ secrets.BYPASS_PASSWORD }}
           SENTRY_ENV: ${{ inputs.sentry_env }}

@@ -73,7 +73,6 @@ jobs:
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
-      BYPASS_PASSWORD: ${{ secrets.BYPASS_PASSWORD }}
 
   deploy-uat:
     name: Deploy to UAT
@@ -92,7 +91,6 @@ jobs:
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
-      BYPASS_PASSWORD: ${{ secrets.BYPASS_PASSWORD }}
 
   deploy-staging:
     name: Deploy to Staging
@@ -111,7 +109,6 @@ jobs:
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
-      BYPASS_PASSWORD: ${{ secrets.BYPASS_PASSWORD }}
 
   deploy-production:
     name: Deploy to Production
@@ -130,4 +127,3 @@ jobs:
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
-      BYPASS_PASSWORD: ${{ secrets.BYPASS_PASSWORD }}
