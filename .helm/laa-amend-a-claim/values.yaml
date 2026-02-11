@@ -180,7 +180,7 @@ autoscaling:
 volumes:
   - name: maintenance-config
     configMap:
-      name: amend-a-bulk-claim-maintenance
+      name:  {{ include "laa-amend-a-claim.fullname" . }}-maintenance
 
 volumeMounts:
   - name: maintenance-config

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: amend-a-bulk-claim-maintenance
+  name:  {{ include "laa-amend-a-claim.fullname" . }}-maintenance
 data:
   enabled: "false"                     # "true" | "false"
   title: "Service maintenance"
