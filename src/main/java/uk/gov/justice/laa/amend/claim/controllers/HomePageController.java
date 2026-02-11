@@ -49,7 +49,8 @@ public class HomePageController {
             HttpServletRequest request,
             Errors errors,
             HttpServletResponse response) {
-        log.error("Test");
+        log.error("Test error log");
+        log.warn("Test warn log");
         query.rejectUnknownParams(request);
 
         SearchForm form = new SearchForm(query);
