@@ -167,9 +167,6 @@ env:
         name: laa-amend-a-claim-provider-api-token
         key: PROVIDER_TOKEN
 
-maintenance:
-  bypassPassword: ""
-
 autoscaling:
   enabled: false
   minReplicas: 1
