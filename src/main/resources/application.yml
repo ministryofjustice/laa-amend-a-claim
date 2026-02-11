@@ -43,6 +43,8 @@ provider-api:
   access-token: ${PROVIDER_TOKEN}
 search:
   sort-enabled: true
+submission:
+  high-value-assessment-limit: 25000
 app:
   feedback-url: ${FEEDBACK_URL}
   laa-url: ${LAA_URL}

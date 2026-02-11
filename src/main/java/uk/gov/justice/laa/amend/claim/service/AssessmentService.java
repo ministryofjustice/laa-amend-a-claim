@@ -2,9 +2,11 @@ package uk.gov.justice.laa.amend.claim.service;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
@@ -28,12 +30,14 @@ public class AssessmentService {
     private final ClaimStatusHandler claimStatusHandler;
     private final Counter assessmentSubmissionCounter;
     private final Counter assessmentSubmissionFailureCounter;
+    private final BigDecimal highValueAssessmentLimit;
 
     public AssessmentService(
             ClaimsApiClient claimsApiClient,
             AssessmentMapper assessmentMapper,
             ClaimStatusHandler claimStatusHandler,
-            MeterRegistry meterRegistry) {
+            MeterRegistry meterRegistry,
+            @Value("${submission.high-value-assessment-limit}") BigDecimal highValueAssessmentLimit) {
         this.claimsApiClient = claimsApiClient;
         this.assessmentMapper = assessmentMapper;
         this.claimStatusHandler = claimStatusHandler;
@@ -43,6 +47,7 @@ public class AssessmentService {
         this.assessmentSubmissionFailureCounter = Counter.builder("assessment.submissions.failed")
                 .description("Total number of failed assessment submissions")
                 .register(meterRegistry);
+        this.highValueAssessmentLimit = highValueAssessmentLimit;
     }
 
     /**
@@ -84,10 +89,15 @@ public class AssessmentService {
                     .submitAssessment(claim.getClaimId(), assessment)
                     .block();
 
-            if (response == null || !response.getStatusCode().is2xxSuccessful()) {
+            if (response == null
+                    || response.getBody() == null
+                    || !response.getStatusCode().is2xxSuccessful()) {
                 throw new RuntimeException(
                         String.format("Failed to submit assessment for claim ID: %s", claim.getClaimId()));
             }
+
+            checkForHighValueAssessment(claim, assessment, response.getBody().getId());
+
             assessmentSubmissionCounter.increment();
             return response.getBody();
         } catch (Exception e) {
@@ -117,5 +127,22 @@ public class AssessmentService {
             return false;
         }
         return Objects.equals(newOutcome, last.getLastAssessmentOutcome());
+    }
+
+    private void checkForHighValueAssessment(ClaimDetails claim, AssessmentPost assessment, UUID assessmentId) {
+        if (assessment.getAssessedTotalInclVat() != null
+                && assessment.getAssessedTotalInclVat().compareTo(highValueAssessmentLimit) >= 0) {
+            log.warn(
+                    "HIGH_VALUE_ASSESSMENT: detected for claimId {}, providerAccountNumber {}, uniqueFileNumber {},"
+                            + " assessmentId {}, assessmentOutcome {}, assessedTotalInclVat {}, allowedTotalInclVat"
+                            + " {}",
+                    claim.getClaimId(),
+                    claim.getProviderAccountNumber(),
+                    claim.getUniqueFileNumber(),
+                    assessmentId,
+                    claim.getAssessmentOutcome(),
+                    assessment.getAssessedTotalInclVat(),
+                    assessment.getAllowedTotalInclVat());
+        }
     }
 }

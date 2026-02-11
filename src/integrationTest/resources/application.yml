@@ -28,3 +28,5 @@ provider-api:
   access-token: ""
 search:
   sort-enabled: true
+submission:
+  high-value-assessment-limit: 25000
