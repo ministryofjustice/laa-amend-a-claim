@@ -60,6 +60,9 @@ wait_for() {
 wait_for "http://localhost:8182/actuator/health" "UP"
 wait_for "http://localhost:8082/v3/api-docs" "openapi"
 
+echo "[INFO] Installing node dependencies..."
+(cd src/e2e/ && npm install)
+
 CMD="./gradlew test"
 for arg in "$@"; do
   case $arg in

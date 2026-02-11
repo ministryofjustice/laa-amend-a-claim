@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.models.BulkSubmissionInsert;
 import uk.gov.justice.laa.amend.claim.models.CalculatedFeeDetailInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetailsFixture;
@@ -146,9 +145,7 @@ public class ClaimDetailsTest extends BaseTest {
     @DisplayName("Claim Details: Add assessment outcome is disabled for non-escape claims")
     @Severity(SeverityLevel.CRITICAL)
     void addAssessmentOutcomeIsDisabledForNonEscapeClaim() {
-        String baseUrl = EnvConfig.baseUrl();
-
-        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
+        SearchPage search = new SearchPage(page);
 
         search.searchForClaim(CRIME_PROVIDER_ACCOUNT, "11", "2025", UNESCAPED_UFN, "");
 
@@ -171,9 +168,7 @@ public class ClaimDetailsTest extends BaseTest {
     @DisplayName("Claim Details: Values match fixture")
     @Severity(SeverityLevel.CRITICAL)
     void claimValuesMatchFixture(ClaimDetailsFixture claimDetailsFixture) {
-        String baseUrl = EnvConfig.baseUrl();
-
-        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
+        SearchPage search = new SearchPage(page);
 
         search.searchForClaim(claimDetailsFixture.getProviderAccount(), "", "", claimDetailsFixture.getUfn(), "");
 

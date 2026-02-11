@@ -45,11 +45,6 @@ public class SearchPage extends LaaPage {
         this.noResultsMessage = page.locator("h2.govuk-heading-m:has-text('no results')");
     }
 
-    public SearchPage navigateTo(String baseUrl) {
-        page.navigate(baseUrl);
-        return this;
-    }
-
     public void enterProviderAccountNumber(String number) {
         providerAccountNumberInput.fill(number);
     }

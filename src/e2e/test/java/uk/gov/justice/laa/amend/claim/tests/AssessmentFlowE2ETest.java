@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.models.BulkSubmissionInsert;
 import uk.gov.justice.laa.amend.claim.models.CalculatedFeeDetailInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimInsert;
@@ -76,9 +75,7 @@ public class AssessmentFlowE2ETest extends BaseTest {
     @Test
     @DisplayName("E2E: Full Crime Assessment Flow – Search → View → Outcome → Amend All → Submit")
     void fullAssessmentFlow() {
-        String baseUrl = EnvConfig.baseUrl();
-
-        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
+        SearchPage search = new SearchPage(page);
 
         search.searchForClaim(PROVIDER_ACCOUNT, "03", "2020", UFN, "");
 

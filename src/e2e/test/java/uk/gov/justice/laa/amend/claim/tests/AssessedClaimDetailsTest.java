@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInsert;
 import uk.gov.justice.laa.amend.claim.models.BulkSubmissionInsert;
 import uk.gov.justice.laa.amend.claim.models.CalculatedFeeDetailInsert;

@@ -4,7 +4,6 @@ import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 import org.junit.jupiter.api.Assertions;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.pages.AssessAllowedTotalsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessAssessedTotalsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessProfitCostsPage;
@@ -102,7 +101,7 @@ public abstract class E2eBaseTest extends BaseTest {
     }
 
     private void findClaim() {
-        SearchPage search = new SearchPage(page).navigateTo(EnvConfig.baseUrl());
+        SearchPage search = new SearchPage(page);
 
         search.searchForClaim(PROVIDER_ACCOUNT, "", "", UFN, "");
 
