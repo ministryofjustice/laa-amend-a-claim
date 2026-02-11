@@ -96,6 +96,12 @@ public abstract class ViewTestBase {
         Assertions.assertEquals(String.format("%s - Amend a claim - GOV.UK", expectedText), title);
     }
 
+    protected void assertPageBodyText(Document doc, String expectedText) {
+        Elements body = doc.getElementsByClass("govuk-body");
+        String bodyText = body.text();
+        Assertions.assertEquals(bodyText, expectedText);
+    }
+
     protected void assertPageHasBackLink(Document doc) {
         Elements elements = doc.getElementsByClass("govuk-back-link");
         Assertions.assertFalse(elements.isEmpty());
