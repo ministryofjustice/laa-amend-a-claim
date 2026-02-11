@@ -33,6 +33,8 @@ spring:
 sentry:
   dsn: ${SENTRY_DSN}
   environment: ${SENTRY_ENVIRONMENT}
+  logs:
+    enabled: true
 claims-api:
   url: ${CLAIMS_API}
   access-token: ${CLAIMS_TOKEN}
