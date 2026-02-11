@@ -60,7 +60,6 @@ public abstract class BaseTest {
             throw new RuntimeException("Failed to seed database", e);
         }
 
-        browserContext = BrowserSession.getContext();
         page = browserContext.newPage();
         page.navigate(EnvConfig.baseUrl());
     }
