@@ -74,7 +74,7 @@ public class AssessedClaimDetailsTest extends BaseTest {
     @Test
     @DisplayName("E2E: Assessed ClaimDetails")
     void assessed() {
-        SearchPage search = new SearchPage(page).navigateTo(EnvConfig.baseUrl());
+        SearchPage search = new SearchPage(page);
 
         search.searchForClaim(PROVIDER_ACCOUNT, "", "", UFN, "");
 
