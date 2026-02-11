@@ -54,7 +54,7 @@ public class MaintenanceService {
 
     boolean readEnabledValue() {
         try {
-            return Boolean.parseBoolean(Files.readString(bypassPath).trim());
+            return Boolean.parseBoolean(Files.readString(enabled).trim());
         } catch (IOException e) {
             log.info("Failed to read config map", e);
             return true;
