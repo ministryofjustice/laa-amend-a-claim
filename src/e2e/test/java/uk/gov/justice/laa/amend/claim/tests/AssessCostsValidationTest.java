@@ -8,7 +8,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
-import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.models.BulkSubmissionInsert;
 import uk.gov.justice.laa.amend.claim.models.CalculatedFeeDetailInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimInsert;
@@ -112,9 +111,7 @@ public class AssessCostsValidationTest extends BaseTest {
     }
 
     private void navigateToReviewAndAmend(String provider, String month, String year, String ufn) {
-        String baseUrl = EnvConfig.baseUrl();
-
-        SearchPage search = new SearchPage(page).navigateTo(baseUrl);
+        SearchPage search = new SearchPage(page);
         search.searchForClaim(provider, month, year, ufn, "");
         search.clickViewForUfn(ufn);
 
