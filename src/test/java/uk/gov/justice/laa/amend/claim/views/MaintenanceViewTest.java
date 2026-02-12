@@ -12,7 +12,6 @@ import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.MaintenancePageController;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafLiteralString;
-import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 
 @ActiveProfiles("local")
 @WebMvcTest(MaintenancePageController.class)
