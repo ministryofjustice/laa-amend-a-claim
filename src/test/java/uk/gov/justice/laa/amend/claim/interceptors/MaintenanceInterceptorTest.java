@@ -9,20 +9,26 @@ import static org.mockito.Mockito.when;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
+@ExtendWith(MockitoExtension.class)
 class MaintenanceInterceptorTest {
 
-    MaintenanceInterceptor interceptor;
-    MaintenanceService service;
-    HttpServletRequest request;
-    HttpServletResponse response;
-    HttpSession session;
+    @InjectMocks
+    private MaintenanceInterceptor interceptor;
 
-    Object handler;
+    @Mock
+    private MaintenanceService service;
+
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+    private Object handler;
 
     @BeforeEach
     void setup() {
@@ -30,7 +36,6 @@ class MaintenanceInterceptorTest {
         interceptor = new MaintenanceInterceptor(service);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
-        session = mock(HttpSession.class);
         handler = new Object();
     }
 
