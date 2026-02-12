@@ -103,7 +103,7 @@ jobs:
             --set image.tag="${IMAGE_TAG}" \
             --set namespace="${KUBE_NAMESPACE}" \
             --set fullnameOverride="${SANITIZED_NAME}" \
-            --set ingress.host="${HOSTNAME}" \
+            --set ingress.cloudPlatformHost="${HOSTNAME}" \
             --set "ipAllowlist=${IP_ALLOWLIST}" \
             --set springProfile=ephemeral \
             --set sentryEnvironment="ephemeral-${SANITIZED_NAME}" \
