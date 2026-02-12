@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,8 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -37,7 +36,6 @@ public class DiscardController {
         session.removeAttribute(claimId);
         String searchUrl =
                 (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
-
 
         redirectAttributes.addFlashAttribute("discarded", true);
 
