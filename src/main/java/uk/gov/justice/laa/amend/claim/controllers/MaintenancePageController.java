@@ -12,7 +12,7 @@ public class MaintenancePageController {
     private final MaintenanceService maintenanceService;
 
     @GetMapping("/maintenance")
-    public String handleMaintenance(Model model) {
+    public String onPageLoad(Model model) {
         model.addAttribute("maintenanceMessage", maintenanceService.getMessage());
         model.addAttribute("maintenanceTitle", maintenanceService.getTitle());
         return "maintenance";
