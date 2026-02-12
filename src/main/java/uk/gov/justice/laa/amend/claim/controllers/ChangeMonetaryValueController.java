@@ -50,6 +50,11 @@ public class ChangeMonetaryValueController {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
 
+            if (claimField.isNotAssessable()) {
+                log.warn("This claim field is not modifiable for claim {}. Returning 404.", claimId);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+
             BigDecimal value = (BigDecimal) claimField.getAssessed();
 
             MonetaryValueForm form = new MonetaryValueForm();

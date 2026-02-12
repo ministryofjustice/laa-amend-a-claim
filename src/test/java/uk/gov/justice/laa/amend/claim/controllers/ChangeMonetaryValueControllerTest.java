@@ -82,7 +82,14 @@ class ChangeMonetaryValueControllerTest {
         Claim claim = createClaimWithNullFieldFor(cost);
         session.setAttribute(claimId, claim);
 
-        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+        mockMvc.perform(get(buildPath(cost.getPath())).session(session)).andExpect(status().isNotFound());
+    }
+
+    @ParameterizedTest
+    @MethodSource("validCosts")
+    void testGetReturns404_whenFieldIsNotAssessable(Cost cost) throws Exception {
+        Claim claim = createClaimWithUnassessableFieldFor(cost);
+        session.setAttribute(claimId, claim);
 
         mockMvc.perform(get(buildPath(cost.getPath())).session(session)).andExpect(status().isNotFound());
     }
@@ -172,19 +179,27 @@ class ChangeMonetaryValueControllerTest {
     }
 
     private Claim createClaimFor(Cost cost) {
-        Class<?> targetClass = cost.getAccessor().type();
-        Claim claim;
-        if (CivilClaimDetails.class.equals(targetClass)) {
-            claim = MockClaimsFunctions.createMockCivilClaim();
-        } else {
-            claim = MockClaimsFunctions.createMockCrimeClaim();
-        }
+        Claim claim = createClaim(cost);
         ClaimField claimField = CostClaimField.builder().cost(cost).build();
         cost.getAccessor().set(claim, claimField);
         return claim;
     }
 
     private Claim createClaimWithNullFieldFor(Cost cost) {
+        Claim claim = createClaim(cost);
+        cost.getAccessor().set(claim, null);
+        return claim;
+    }
+
+    private Claim createClaimWithUnassessableFieldFor(Cost cost) {
+        Claim claim = createClaim(cost);
+        ClaimField claimField = CostClaimField.builder().cost(cost).build();
+        claimField.setAssessable(false);
+        cost.getAccessor().set(claim, claimField);
+        return claim;
+    }
+
+    private Claim createClaim(Cost cost) {
         Class<?> targetClass = cost.getAccessor().type();
         Claim claim;
         if (CivilClaimDetails.class.equals(targetClass)) {

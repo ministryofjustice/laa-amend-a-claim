@@ -82,7 +82,7 @@ class ChangeAssessedTotalsControllerTest {
     }
 
     @Test
-    void testGetRedirectsWhenStatusIsDoNotDisplay_CivilClaim() throws Exception {
+    void testGetRedirectsWhenFieldIsNotAssessable_CivilClaim() throws Exception {
         ClaimField assessedTotalVat = AssessedClaimField.builder().build();
         ClaimField assessedTotalInclVat = AssessedClaimField.builder().build();
         assessedTotalVat.setAssessable(false);
@@ -95,7 +95,7 @@ class ChangeAssessedTotalsControllerTest {
     }
 
     @Test
-    void testGetRedirectsWhenStatusIsDoNotDisplay_CrimeClaim() throws Exception {
+    void testGetRedirectsWhenFieldIsNotAssessable_CrimeClaim() throws Exception {
         ClaimField assessedTotalVat = AssessedClaimField.builder().build();
         ClaimField assessedTotalInclVat = AssessedClaimField.builder().build();
         assessedTotalVat.setAssessable(false);
