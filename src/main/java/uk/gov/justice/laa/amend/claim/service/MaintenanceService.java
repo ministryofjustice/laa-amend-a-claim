@@ -26,11 +26,11 @@ public class MaintenanceService {
     private static final Path ENABLED = ROOT.resolve("enabled");
     private static final Path PASSWORD = ROOT.resolve("bypassPassword");
 
-    public boolean maintenanceApplies(HttpServletRequest request) throws IOException {
+    public boolean maintenanceApplies(HttpServletRequest request) {
         return maintenanceEnabled() && !hasBypassCookie(request);
     }
 
-    boolean hasBypassCookie(HttpServletRequest request) throws IOException {
+    boolean hasBypassCookie(HttpServletRequest request) {
         log.info("Maintenance on, checking for cookie");
 
         if (request.getCookies() == null) {

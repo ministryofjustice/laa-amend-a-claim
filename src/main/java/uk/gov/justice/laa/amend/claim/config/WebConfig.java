@@ -14,7 +14,7 @@ import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 public class WebConfig implements WebMvcConfigurer {
 
     private ClaimInterceptor claimInterceptor;
-    private MaintenanceService maintenanceService;
+    private MaintenanceInterceptor maintenanceInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -22,7 +22,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/submissions/*/claims/*/*")
                 .excludePathPatterns("/submissions/*/claims/*/assessments/*");
 
-        registry.addInterceptor(new MaintenanceInterceptor(maintenanceService))
+        registry.addInterceptor(maintenanceInterceptor)
                 .order(Ordered.HIGHEST_PRECEDENCE)
                 .addPathPatterns("/**")
                 .excludePathPatterns(ALLOWED_URLS);
