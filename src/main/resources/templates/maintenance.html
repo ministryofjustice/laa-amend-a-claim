@@ -9,8 +9,8 @@
     )}">
 <body>
     <main class="govuk-main-wrapper" id="main-content">
-        <h1 class="govuk-heading-xl" th:text="${maintenanceTitle}"></h1>
-        <p class="govuk-body" th:text="${maintenanceMessage}"></p>
+        <h1 class="govuk-heading-xl" th:text="${maintenanceTitle.resolve(#messages)}"></h1>
+        <p class="govuk-body" th:text="${maintenanceMessage.resolve(#messages)}"></p>
     </main>
 </body>
 </html>

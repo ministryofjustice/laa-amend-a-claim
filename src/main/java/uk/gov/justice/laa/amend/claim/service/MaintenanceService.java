@@ -8,9 +8,10 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafLiteralString;
+import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
+import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafString;
 
 /**
  * Service for handling maintenance page data and defaults.
@@ -19,12 +20,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class MaintenanceService {
-    private static final Path MESSAGE = Paths.get("/config/maintenance/message");
-    private static final Path TITLE = Paths.get("/config/maintenance/title");
-    private static final Path ENABLED = Paths.get("/config/maintenance/enabled");
-    private static final Path PASSWORD = Paths.get("/config/maintenance/bypassPassword");
-
-    private final MessageSource messageSource;
+    private static final Path ROOT = Paths.get("/config/maintenance");
+    private static final Path MESSAGE = ROOT.resolve("message");
+    private static final Path TITLE = ROOT.resolve("title");
+    private static final Path ENABLED = ROOT.resolve("enabled");
+    private static final Path PASSWORD = ROOT.resolve("bypassPassword");
 
     public boolean maintenanceApplies(HttpServletRequest request) throws IOException {
         return maintenanceEnabled() && !hasBypassCookie(request);
@@ -70,25 +70,25 @@ public class MaintenanceService {
         }
     }
 
-    public String getMessage() {
+    public ThymeleafString getMessage() {
         return readConfigMap(MESSAGE, "maintenance.default.message");
     }
 
-    public String getTitle() {
+    public ThymeleafString getTitle() {
         return readConfigMap(TITLE, "maintenance.default.title");
     }
 
-    private String readConfigMap(Path path, String messageKey) {
+    private ThymeleafString readConfigMap(Path path, String messageKey) {
         try {
             if (Files.exists(path)) {
                 String message = Files.readString(path).trim();
                 if (!message.isBlank()) {
-                    return message;
+                    return new ThymeleafLiteralString(message);
                 }
             }
         } catch (IOException e) {
             log.warn("Could not read config map from file {}", path, e);
         }
-        return messageSource.getMessage(messageKey, new Object[0], LocaleContextHolder.getLocale());
+        return new ThymeleafMessage(messageKey);
     }
 }

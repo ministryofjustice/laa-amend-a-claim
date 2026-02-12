@@ -12,18 +12,16 @@ import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.context.MessageSource;
 
 public class MaintenanceServiceTest {
 
     MaintenanceService service;
     HttpServletRequest request;
-    MessageSource messageSource;
 
     @BeforeEach
     void setUp() {
         request = Mockito.mock(HttpServletRequest.class);
-        service = spy(new MaintenanceService(messageSource));
+        service = spy(new MaintenanceService());
     }
 
     @Test

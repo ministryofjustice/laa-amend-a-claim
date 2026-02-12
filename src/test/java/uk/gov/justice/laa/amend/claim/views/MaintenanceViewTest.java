@@ -11,6 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.MaintenancePageController;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
+import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafLiteralString;
+import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 
 @ActiveProfiles("local")
 @WebMvcTest(MaintenancePageController.class)
@@ -26,8 +28,8 @@ class MaintenanceViewTest extends ViewTestBase {
 
     @Test
     void testPage() throws Exception {
-        when(maintenanceService.getTitle()).thenReturn("Service maintenance");
-        when(maintenanceService.getMessage()).thenReturn("Expected return: 9:00");
+        when(maintenanceService.getTitle()).thenReturn(new ThymeleafLiteralString("Service maintenance"));
+        when(maintenanceService.getMessage()).thenReturn(new ThymeleafLiteralString("Expected return: 9:00"));
 
         Document doc = renderDocument();
 

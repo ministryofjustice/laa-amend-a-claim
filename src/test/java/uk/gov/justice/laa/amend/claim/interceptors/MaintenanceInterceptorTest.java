@@ -12,15 +12,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.MessageSource;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 class MaintenanceInterceptorTest {
 
     MaintenanceInterceptor interceptor;
     MaintenanceService service;
-    MessageSource messageSource;
-
     HttpServletRequest request;
     HttpServletResponse response;
     HttpSession session;
@@ -29,7 +26,7 @@ class MaintenanceInterceptorTest {
 
     @BeforeEach
     void setup() {
-        service = spy(new MaintenanceService(messageSource));
+        service = spy(new MaintenanceService());
         interceptor = new MaintenanceInterceptor(service);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
