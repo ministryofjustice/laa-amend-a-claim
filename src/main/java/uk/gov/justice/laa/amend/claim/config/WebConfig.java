@@ -7,7 +7,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import uk.gov.justice.laa.amend.claim.interceptors.ClaimInterceptor;
 import uk.gov.justice.laa.amend.claim.interceptors.MaintenanceInterceptor;
-import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @Configuration
 @AllArgsConstructor
