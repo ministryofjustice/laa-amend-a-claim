@@ -49,6 +49,12 @@ public class ClaimSummaryController {
     public String onSubmit(
             @PathVariable(value = "submissionId") String submissionId,
             @PathVariable(value = "claimId") String claimId) {
+        var claimDetails = claimService.getClaimDetails(submissionId, claimId);
+
+        if (claimDetails.isHasAssessment()) {
+            return  String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
+        }
+
         return String.format("redirect:/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
     }
 }
