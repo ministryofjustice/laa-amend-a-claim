@@ -17,18 +17,23 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @Import(ThymeleafConfig.class)
 public abstract class ViewTestBase {
 
     @Autowired
     public MockMvc mockMvc;
+
+    @MockitoBean
+    private MaintenanceService maintenanceService;
 
     @BeforeEach
     public void setup() {
@@ -89,6 +94,12 @@ public abstract class ViewTestBase {
     protected void assertPageHasTitle(Document doc, String expectedText) {
         String title = doc.title();
         Assertions.assertEquals(String.format("%s - Amend a claim - GOV.UK", expectedText), title);
+    }
+
+    protected void assertPageBodyText(Document doc, String expectedText) {
+        Elements body = doc.getElementsByClass("govuk-body");
+        String bodyText = body.text();
+        Assertions.assertEquals(bodyText, expectedText);
     }
 
     protected void assertPageHasBackLink(Document doc) {

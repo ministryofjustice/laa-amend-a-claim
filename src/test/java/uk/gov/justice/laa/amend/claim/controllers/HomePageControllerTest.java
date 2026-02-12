@@ -32,6 +32,7 @@ import uk.gov.justice.laa.amend.claim.models.SortDirection;
 import uk.gov.justice.laa.amend.claim.models.SortField;
 import uk.gov.justice.laa.amend.claim.models.Sorts;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
+import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @ActiveProfiles("local")
 @WebMvcTest(HomePageController.class)
@@ -40,6 +41,9 @@ public class HomePageControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    private MaintenanceService maintenanceService;
 
     @MockitoBean
     private ClaimService claimService;

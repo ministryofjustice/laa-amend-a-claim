@@ -22,6 +22,7 @@ import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
+import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @ActiveProfiles("local")
 @WebMvcTest(AssessmentOutcomeController.class)
@@ -33,6 +34,9 @@ public class AssessmentOutcomeControllerTest {
 
     @MockitoBean
     private AssessmentService assessmentService;
+
+    @MockitoBean
+    private MaintenanceService maintenanceService;
 
     private UUID submissionId;
     private UUID claimId;

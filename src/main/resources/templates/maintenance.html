@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{maintenance.default.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${false}
+    )}">
+<body>
+    <main class="govuk-main-wrapper" id="main-content">
+        <h1 class="govuk-heading-xl" th:text="${maintenanceTitle.resolve(#messages)}"></h1>
+        <p class="govuk-body" th:text="${maintenanceMessage.resolve(#messages)}"></p>
+    </main>
+</body>
+</html>
