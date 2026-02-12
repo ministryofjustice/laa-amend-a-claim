@@ -31,6 +31,7 @@ public class DiscardControllerTest {
 
     private UUID submissionId;
     private UUID claimId;
+    private String redirectUrl;
     private MockHttpSession session;
 
     @Autowired
@@ -43,6 +44,7 @@ public class DiscardControllerTest {
     void setup() {
         submissionId = UUID.randomUUID();
         claimId = UUID.randomUUID();
+        redirectUrl = "fromSession";
         session = new MockHttpSession();
         session.setAttribute(claimId.toString(), MockClaimsFunctions.createMockCivilClaim());
     }
@@ -61,8 +63,9 @@ public class DiscardControllerTest {
     @Test
     public void testDiscardRemovesClaimFromSessionAndRedirects() throws Exception {
         String uri = String.format("/submissions/%s/claims/%s/discard", submissionId, claimId);
+        session.setAttribute("searchUrl", redirectUrl);
 
-        String expectedRedirectUrl = "/";
+        String expectedRedirectUrl = redirectUrl;
 
         mockMvc.perform(post(uri).session(session))
                 .andExpect(status().is3xxRedirection())

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Optional;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/discard")
@@ -33,9 +35,12 @@ public class DiscardController {
             @PathVariable(value = "submissionId") String submissionId,
             @PathVariable(value = "claimId") String claimId) {
         session.removeAttribute(claimId);
+        String searchUrl =
+                (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
+
 
         redirectAttributes.addFlashAttribute("discarded", true);
 
-        return "redirect:/";
+        return String.format("redirect:%s", searchUrl);
     }
 }
