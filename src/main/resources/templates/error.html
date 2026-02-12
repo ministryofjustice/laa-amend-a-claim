@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout :: layout(
-        title=#{index.title},
-        mainContent=~{::#main-content},
-        pageCategory=${null},
-        showBackLink=${true}
+      th:replace="~{error_layout :: errorLayout(
+        title=#{error.title},
+        mainContent=~{::#main-content}
     )}">
-<body>
-    <main class="govuk-main-wrapper" id="main-content">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-xl" th:text="#{error.generic.message}"></h1>
-                <p class="govuk-body" th:text="#{error.code(${statusCode})}"></p>
-                <p class="govuk-body">
-                    <a class="govuk-link" href="/" th:text="#{back.to.home}"></a>
-                </p>
+    <body>
+        <main class="govuk-main-wrapper" id="main-content">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h1 class="govuk-heading-l" th:text="#{error.heading}"></h1>
+                    <p class="govuk-body" th:text="#{error.p1}"></p>
+                    <p class="govuk-body" th:text="#{error.p2}"></p>
+                    <p class="govuk-body">
+                        <th:block th:text="#{error.p3.1}"></th:block>
+                        <a class="govuk-link" id="email" th:href="'mailto:' + ${@environment.getProperty('app.email')}" th:text="#{error.p3.link}"></a>
+                        <th:block th:utext="#{error.p3.2(${referenceNumber.value})}"></th:block>
+                    </p>
+                </div>
             </div>
-        </div>
-    </main>
-</body>
+        </main>
+    </body>
 </html>

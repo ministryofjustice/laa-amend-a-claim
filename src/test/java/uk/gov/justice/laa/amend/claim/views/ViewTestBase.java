@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import jakarta.servlet.RequestDispatcher;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,15 +53,17 @@ public abstract class ViewTestBase {
     }
 
     protected Document renderDocument(Map<String, Object> variables) throws Exception {
-        session.setAttribute("claimId", claim);
-        MockHttpServletRequestBuilder requestBuilder = get(mapping).session(session);
-
+        MockHttpServletRequestBuilder requestBuilder = get(mapping);
         for (Map.Entry<String, Object> entry : variables.entrySet()) {
             requestBuilder = requestBuilder.flashAttr(entry.getKey(), entry.getValue());
         }
+        return renderDocument(requestBuilder, 200);
+    }
 
-        String html = mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
+    private Document renderDocument(MockHttpServletRequestBuilder requestBuilder, int expectedStatus) throws Exception {
+        session.setAttribute("claimId", claim);
+        String html = mockMvc.perform(requestBuilder.session(session))
+                .andExpect(status().is(expectedStatus))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -68,17 +71,15 @@ public abstract class ViewTestBase {
         return Jsoup.parse(html);
     }
 
+    protected Document renderErrorPage(int status) throws Exception {
+        MockHttpServletRequestBuilder requestBuilder =
+                get(mapping).requestAttr(RequestDispatcher.ERROR_STATUS_CODE, status);
+        return renderDocument(requestBuilder, status);
+    }
+
     protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) throws Exception {
-        session.setAttribute("claimId", claim);
-        MockHttpServletRequestBuilder requestBuilder = post(mapping).session(session);
-
-        String html = mockMvc.perform(requestBuilder.params(params))
-                .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        return Jsoup.parse(html);
+        MockHttpServletRequestBuilder requestBuilder = post(mapping).params(params);
+        return renderDocument(requestBuilder, 400);
     }
 
     protected void assertPageHasHeading(Document doc, String expectedText) {
@@ -94,13 +95,6 @@ public abstract class ViewTestBase {
     protected void assertPageHasBackLink(Document doc) {
         Elements elements = doc.getElementsByClass("govuk-back-link");
         Assertions.assertFalse(elements.isEmpty());
-    }
-
-    protected void assertPageHasBackLinkWithHref(Document doc, String expectedHref) {
-        Elements elements = doc.getElementsByClass("govuk-back-link");
-        Assertions.assertFalse(elements.isEmpty(), "Expected page to have a back link");
-        Element backLink = elements.first();
-        Assertions.assertEquals(expectedHref, backLink.attr("href"), "Back link href does not match expected URL");
     }
 
     protected void assertPageHasPrimaryButton(Document doc, String expectedText) {
