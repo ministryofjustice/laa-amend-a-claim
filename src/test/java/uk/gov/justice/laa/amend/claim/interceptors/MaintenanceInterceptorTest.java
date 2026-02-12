@@ -3,7 +3,6 @@ package uk.gov.justice.laa.amend.claim.interceptors;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,8 +31,6 @@ class MaintenanceInterceptorTest {
 
     @BeforeEach
     void setup() {
-        service = spy(new MaintenanceService());
-        interceptor = new MaintenanceInterceptor(service);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         handler = new Object();
