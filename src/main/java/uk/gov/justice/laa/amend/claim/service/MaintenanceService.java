@@ -20,17 +20,18 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafString;
 @Slf4j
 @RequiredArgsConstructor
 public class MaintenanceService {
+
     private static final Path ROOT = Paths.get("/config/maintenance");
     private static final Path MESSAGE = ROOT.resolve("message");
     private static final Path TITLE = ROOT.resolve("title");
     private static final Path ENABLED = ROOT.resolve("enabled");
     private static final Path PASSWORD = ROOT.resolve("bypassPassword");
 
-    public boolean maintenanceApplies(HttpServletRequest request) {
+    public boolean maintenanceApplies(HttpServletRequest request) throws IOException {
         return maintenanceEnabled() && !hasBypassCookie(request);
     }
 
-    boolean hasBypassCookie(HttpServletRequest request) {
+    private boolean hasBypassCookie(HttpServletRequest request) throws IOException {
         log.info("Maintenance on, checking for cookie");
 
         if (request.getCookies() == null) {
@@ -45,14 +46,14 @@ public class MaintenanceService {
                 .anyMatch(cookie -> cookie.getValue().equals(bypassPassword));
     }
 
-    boolean maintenanceEnabled() {
+    private boolean maintenanceEnabled() {
         if (!Files.exists(ENABLED)) {
             return false;
         }
         return readEnabledValue();
     }
 
-    boolean readEnabledValue() {
+    private boolean readEnabledValue() {
         try {
             return Boolean.parseBoolean(Files.readString(ENABLED).trim());
         } catch (IOException e) {
@@ -61,13 +62,8 @@ public class MaintenanceService {
         }
     }
 
-    String readBypassValue() {
-        try {
-            return Files.readString(PASSWORD).trim();
-        } catch (IOException e) {
-            log.info("Failed to read maintenance bypass cookie", e);
-            return "";
-        }
+    private String readBypassValue() throws IOException {
+        return Files.readString(PASSWORD).trim();
     }
 
     public ThymeleafString getMessage() {
