@@ -7,21 +7,21 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import uk.gov.justice.laa.amend.claim.interceptors.ClaimInterceptor;
 import uk.gov.justice.laa.amend.claim.interceptors.MaintenanceInterceptor;
-import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @Configuration
 @AllArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    MaintenanceService maintenanceService;
+    ClaimInterceptor claimInterceptor;
+    MaintenanceInterceptor maintenanceInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new ClaimInterceptor())
+        registry.addInterceptor(claimInterceptor)
                 .addPathPatterns("/submissions/*/claims/*/*")
                 .excludePathPatterns("/submissions/*/claims/*/assessments/*");
 
-        registry.addInterceptor(new MaintenanceInterceptor(maintenanceService))
+        registry.addInterceptor(maintenanceInterceptor)
                 .order(Ordered.HIGHEST_PRECEDENCE)
                 .addPathPatterns("/**")
                 .excludePathPatterns(ALLOWED_URLS);

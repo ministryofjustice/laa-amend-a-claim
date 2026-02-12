@@ -19,10 +19,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class MaintenanceService {
-    private static final Path maintenanceMessage = Paths.get("/config/maintenance/message");
-    private static final Path maintenanceTitle = Paths.get("/config/maintenance/title");
-    private static final Path enabled = Paths.get("/config/maintenance/enabled");
-    private static final Path bypassPath = Paths.get("/config/maintenance/bypassPassword");
+    private static final Path MESSAGE = Paths.get("/config/maintenance/message");
+    private static final Path TITLE = Paths.get("/config/maintenance/title");
+    private static final Path ENABLED = Paths.get("/config/maintenance/enabled");
+    private static final Path PASSWORD = Paths.get("/config/maintenance/bypassPassword");
 
     private final MessageSource messageSource;
 
@@ -46,7 +46,7 @@ public class MaintenanceService {
     }
 
     boolean maintenanceEnabled() {
-        if (!Files.exists(enabled)) {
+        if (!Files.exists(ENABLED)) {
             return false;
         }
         return readEnabledValue();
@@ -54,7 +54,7 @@ public class MaintenanceService {
 
     boolean readEnabledValue() {
         try {
-            return Boolean.parseBoolean(Files.readString(enabled).trim());
+            return Boolean.parseBoolean(Files.readString(ENABLED).trim());
         } catch (IOException e) {
             log.info("Failed to read config map", e);
             return true;
@@ -63,7 +63,7 @@ public class MaintenanceService {
 
     String readBypassValue() {
         try {
-            return Files.readString(bypassPath).trim();
+            return Files.readString(PASSWORD).trim();
         } catch (IOException e) {
             log.info("Failed to read maintenance bypass cookie", e);
             return "";
@@ -71,11 +71,11 @@ public class MaintenanceService {
     }
 
     public String getMessage() {
-        return readConfigMap(maintenanceMessage, "maintenance.default.message");
+        return readConfigMap(MESSAGE, "maintenance.default.message");
     }
 
     public String getTitle() {
-        return readConfigMap(maintenanceTitle, "maintenance.default.title");
+        return readConfigMap(TITLE, "maintenance.default.title");
     }
 
     private String readConfigMap(Path path, String messageKey) {
