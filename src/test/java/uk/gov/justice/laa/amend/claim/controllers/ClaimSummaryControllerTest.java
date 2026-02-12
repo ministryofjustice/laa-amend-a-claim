@@ -110,6 +110,16 @@ public class ClaimSummaryControllerTest {
 
     @Test
     public void testOnSubmitRedirects() throws Exception {
+        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+
+        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+
+        var lastAssessment = new AssessmentInfo();
+        lastAssessment.setLastAssessedBy("test");
+        lastAssessment.setLastAssessmentDate(OffsetDateTime.now());
+        claim.setLastAssessment(lastAssessment);
+        when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 
         String expectedRedirectUrl =
