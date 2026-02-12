@@ -5,7 +5,7 @@
         title=#{claimSummary.title},
         mainContent=~{::#main-content},
         pageCategory=${null},
-        showBackLink=${true}
+        showBackLink=${false}
     )}">
     <body>
         <main class="govuk-main-wrapper" id="main-content">
@@ -124,8 +124,8 @@
                                 </th:block>
 
                                 <a th:href="@{${searchUrl}}" id="back-to-search"
-                                   role="button" draggable="false" class="govuk-button govuk-button--secondary"
-                                   th:text="#{claimSummary.backToSearch}" data-module="govuk-button">
+                                   class="govuk-link govuk-link--no-visited-state"
+                                   th:text="#{claimSummary.backToSearch}">
                                 </a>
                             </div>
                         </form>
