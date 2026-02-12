@@ -52,7 +52,7 @@ public class ClaimSummaryController {
         var claimDetails = claimService.getClaimDetails(submissionId, claimId);
 
         if (claimDetails.isHasAssessment()) {
-            return  String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
+            return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
         }
 
         return String.format("redirect:/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
