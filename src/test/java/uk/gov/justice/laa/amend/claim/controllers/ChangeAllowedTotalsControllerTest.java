@@ -25,6 +25,7 @@ import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
+import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
@@ -79,6 +80,32 @@ class ChangeAllowedTotalsControllerTest {
                 .andExpect(view().name("allowed-totals"))
                 .andExpect(model().attribute("form", hasProperty("allowedTotalVat", nullValue())))
                 .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", nullValue())));
+    }
+
+    @Test
+    void testGetRedirectsWhenFieldIsNotAssessable_CivilClaim() throws Exception {
+        ClaimField allowedTotalVat = AssessedClaimField.builder().build();
+        ClaimField allowedTotalInclVat = AssessedClaimField.builder().build();
+        allowedTotalVat.setAssessable(false);
+        allowedTotalInclVat.setAssessable(false);
+        civilClaim.setAllowedTotalVat(allowedTotalVat);
+        civilClaim.setAllowedTotalInclVat(allowedTotalInclVat);
+        session.setAttribute(claimId, civilClaim);
+
+        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testGetRedirectsWhenFieldIsNotAssessable_CrimeClaim() throws Exception {
+        ClaimField allowedTotalVat = AssessedClaimField.builder().build();
+        ClaimField allowedTotalInclVat = AssessedClaimField.builder().build();
+        allowedTotalVat.setAssessable(false);
+        allowedTotalInclVat.setAssessable(false);
+        crimeClaim.setAllowedTotalVat(allowedTotalVat);
+        crimeClaim.setAllowedTotalInclVat(allowedTotalInclVat);
+        session.setAttribute(claimId, crimeClaim);
+
+        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isNotFound());
     }
 
     @Test
