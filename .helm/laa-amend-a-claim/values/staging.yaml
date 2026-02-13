@@ -7,7 +7,7 @@ ingress:
   className: "modsec-non-prod"
 
 grafana:
-  enabled: false
+  enabled: true
 
 autoscaling:
   enabled: true
