@@ -5,11 +5,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.UUID;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,6 @@ public class DiscardControllerTest {
 
     private UUID submissionId;
     private UUID claimId;
-    private String redirectUrl;
     private MockHttpSession session;
 
     @Autowired
@@ -44,7 +43,6 @@ public class DiscardControllerTest {
     void setup() {
         submissionId = UUID.randomUUID();
         claimId = UUID.randomUUID();
-        redirectUrl = "fromSession";
         session = new MockHttpSession();
         session.setAttribute(claimId.toString(), MockClaimsFunctions.createMockCivilClaim());
     }
@@ -61,16 +59,27 @@ public class DiscardControllerTest {
     }
 
     @Test
-    public void testDiscardRemovesClaimFromSessionAndRedirects() throws Exception {
+    public void testDiscardRemovesClaimFromSessionAndRedirectsWhenSearchUrlIsCached() throws Exception {
         String uri = String.format("/submissions/%s/claims/%s/discard", submissionId, claimId);
-        session.setAttribute("searchUrl", redirectUrl);
 
-        String expectedRedirectUrl = redirectUrl;
+        String searchUrl = "/?page=1";
+        session.setAttribute("searchUrl", searchUrl);
 
         mockMvc.perform(post(uri).session(session))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(expectedRedirectUrl))
+                .andExpect(redirectedUrl(searchUrl))
                 .andExpect(flash().attribute("discarded", true))
-                .andExpect(result -> Assertions.assertNull(session.getAttribute(claimId.toString())));
+                .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
+    }
+
+    @Test
+    public void testDiscardRemovesClaimFromSessionAndRedirectsWhenSearchUrlIsNotCached() throws Exception {
+        String uri = String.format("/submissions/%s/claims/%s/discard", submissionId, claimId);
+
+        mockMvc.perform(post(uri).session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"))
+                .andExpect(flash().attribute("discarded", true))
+                .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
     }
 }
