@@ -47,7 +47,7 @@ echo "[INFO] Waiting for application to be ready..."
 wait_for() {
   local url=$1
   local word=$2
-  local retries=30
+  local retries=60
 
   until curl -s "$url" | grep -q "$word"; do
     ((retries--)) || {

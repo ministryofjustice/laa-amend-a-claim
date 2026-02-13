@@ -81,7 +81,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         assertPageHasNoActiveServiceNavigationItems(doc);
 
-        assertPageHasBackLink(doc);
+        assertPageDoesNotHaveBackLink(doc);
 
         List<List<Element>> summaryList1 = getSummaryList(doc, "Summary");
         Assertions.assertEquals(16, summaryList1.size());
@@ -164,7 +164,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         assertPageHasNoActiveServiceNavigationItems(doc);
 
-        assertPageHasBackLink(doc);
+        assertPageDoesNotHaveBackLink(doc);
 
         assertPageHasSummaryCard(doc, "Summary");
 
@@ -210,7 +210,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         assertPageHasNoActiveServiceNavigationItems(doc);
 
-        assertPageHasBackLink(doc);
+        assertPageDoesNotHaveBackLink(doc);
 
         List<List<Element>> summaryList1 = getSummaryList(doc, "Summary");
         Assertions.assertEquals(16, summaryList1.size());

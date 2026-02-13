@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
@@ -26,29 +27,36 @@ public class ClaimSummaryController {
             Model model,
             @PathVariable(value = "submissionId") String submissionId,
             @PathVariable(value = "claimId") String claimId) {
-        var claimDetails = claimService.getClaimDetails(submissionId, claimId);
-        if (claimDetails.isHasAssessment()) {
-            claimDetails = assessmentService.getLatestAssessmentByClaim(claimDetails);
-            if (claimDetails.getLastAssessment() != null) {
+        ClaimDetails claim = claimService.getClaimDetails(submissionId, claimId);
+        if (claim.isHasAssessment()) {
+            claim = assessmentService.getLatestAssessmentByClaim(claim);
+            if (claim.getLastAssessment() != null) {
                 var user = userRetrievalService.getMicrosoftApiUser(
-                        claimDetails.getLastAssessment().getLastAssessedBy());
+                        claim.getLastAssessment().getLastAssessedBy());
                 model.addAttribute("user", user);
             }
         }
-        session.setAttribute(claimId, claimDetails);
+        session.setAttribute(claimId, claim);
         String searchUrl =
                 (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
         model.addAttribute("searchUrl", searchUrl);
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
-        model.addAttribute("claim", claimDetails.toViewModel());
+        model.addAttribute("claim", claim.toViewModel());
         return "claim-summary";
     }
 
     @PostMapping("/submissions/{submissionId}/claims/{claimId}")
     public String onSubmit(
             @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId) {
+            @PathVariable(value = "claimId") String claimId,
+            HttpSession session) {
+        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
+
+        if (claim.isHasAssessment()) {
+            return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
+        }
+
         return String.format("redirect:/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
     }
 }

@@ -102,6 +102,11 @@ public abstract class ViewTestBase {
         Assertions.assertEquals(bodyText, expectedText);
     }
 
+    protected void assertPageDoesNotHaveBackLink(Document doc) {
+        Elements elements = doc.getElementsByClass("govuk-back-link");
+        Assertions.assertTrue(elements.isEmpty());
+    }
+
     protected void assertPageHasBackLink(Document doc) {
         Elements elements = doc.getElementsByClass("govuk-back-link");
         Assertions.assertFalse(elements.isEmpty());
@@ -130,6 +135,12 @@ public abstract class ViewTestBase {
 
     protected void assertPageHasSecondaryButton(Document doc, String expectedText) {
         Elements elements = doc.getElementsByClass("govuk-button--secondary");
+        Assertions.assertFalse(elements.isEmpty());
+        Assertions.assertEquals(expectedText, elements.getFirst().text());
+    }
+
+    protected void assertPageHasSecondaryLink(Document doc, String expectedText) {
+        Elements elements = doc.getElementsByClass("govuk-link govuk-link--no-visited-state");
         Assertions.assertFalse(elements.isEmpty());
         Assertions.assertEquals(expectedText, elements.getFirst().text());
     }
