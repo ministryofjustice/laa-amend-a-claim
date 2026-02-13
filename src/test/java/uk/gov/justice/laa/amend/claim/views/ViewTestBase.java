@@ -76,10 +76,10 @@ public abstract class ViewTestBase {
         return Jsoup.parse(html);
     }
 
-    protected Document renderErrorPage(int status) throws Exception {
+    protected Document renderErrorPage(int requestStatus, int responseStatus) throws Exception {
         MockHttpServletRequestBuilder requestBuilder =
-                get(mapping).requestAttr(RequestDispatcher.ERROR_STATUS_CODE, status);
-        return renderDocument(requestBuilder, status);
+                get(mapping).requestAttr(RequestDispatcher.ERROR_STATUS_CODE, requestStatus);
+        return renderDocument(requestBuilder, responseStatus);
     }
 
     protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) throws Exception {

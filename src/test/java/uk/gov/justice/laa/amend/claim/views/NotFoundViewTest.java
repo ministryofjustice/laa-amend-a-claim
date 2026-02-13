@@ -24,7 +24,7 @@ public class NotFoundViewTest extends ViewTestBase {
 
     @Test
     void testPage() throws Exception {
-        Document doc = renderErrorPage(404);
+        Document doc = renderErrorPage(404, 404);
 
         assertPageHasTitle(doc, "Page not found");
 

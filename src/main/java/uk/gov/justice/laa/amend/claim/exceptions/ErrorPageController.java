@@ -24,17 +24,19 @@ public class ErrorPageController implements ErrorController {
         int status = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE))
                 .map(x -> Integer.parseInt(x.toString()))
                 .orElse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        response.setStatus(status);
         if (status == HttpServletResponse.SC_NOT_FOUND) {
+            response.setStatus(status);
             return "not-found";
+        } else {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            String referenceNumber = referenceNumberFactory.create();
+            model.addAttribute("referenceNumber", referenceNumber);
+            log.error(
+                    "Something went wrong. Reference: {}. Status: {}. Session ID: {}",
+                    referenceNumber,
+                    status,
+                    request.getSession().getId());
+            return "error";
         }
-        String referenceNumber = referenceNumberFactory.create();
-        model.addAttribute("referenceNumber", referenceNumber);
-        log.error(
-                "Something went wrong. Reference: {}. Status: {}. Session ID: {}",
-                referenceNumber,
-                status,
-                request.getSession().getId());
-        return "error";
     }
 }
