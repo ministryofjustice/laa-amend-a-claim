@@ -39,7 +39,6 @@ class ClaimMapperTest {
     @Test
     void testMapTotalAmount() {
         ClaimResponse response = new ClaimResponse();
-        response.setTotalValue(BigDecimal.valueOf(100));
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setTotalAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
@@ -51,9 +50,9 @@ class ClaimMapperTest {
 
         ClaimField claimField = claim.getTotalAmount();
         assertEquals(AmendClaimConstants.Label.TOTAL, claimField.getKey());
-        assertEquals(BigDecimal.valueOf(100), claimField.getSubmitted());
+        assertNull(claimField.getSubmitted());
         assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
-        assertEquals(BigDecimal.valueOf(100), claimField.getAssessed());
+        assertNull(claimField.getAssessed());
     }
 
     @Test

@@ -118,7 +118,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList2.get(11), "Substantive hearing", "£200.00", "£100.00");
         assertSummaryListRowContainsValues(summaryList2.get(12), "Adjourned hearing fee", "£200.00", "£100.00");
         assertSummaryListRowContainsValues(summaryList2.get(13), "VAT", "No", "Yes");
-        assertSummaryListRowContainsValues(summaryList2.get(14), "Total", "£200.00", "£100.00");
+        assertSummaryListRowContainsValues(summaryList2.get(14), "Total", "£200.00", "Not applicable");
     }
 
     @Test
@@ -241,7 +241,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList2.get(5), "Travel costs", "£200.00", "£100.00");
         assertSummaryListRowContainsValues(summaryList2.get(6), "Waiting costs", "£200.00", "£100.00");
         assertSummaryListRowContainsValues(summaryList2.get(7), "VAT", "No", "Yes");
-        assertSummaryListRowContainsValues(summaryList2.get(8), "Total", "£200.00", "£100.00");
+        assertSummaryListRowContainsValues(summaryList2.get(8), "Total", "£200.00", "Not applicable");
     }
 
     @Test

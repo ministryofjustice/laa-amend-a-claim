@@ -42,8 +42,7 @@ public class ClaimMapperHelper {
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getTotalAmount()
                 : null;
-        var submitted = claimResponse.getTotalValue();
-        return new CalculatedTotalClaimField(submitted, calculated);
+        return new CalculatedTotalClaimField(calculated);
     }
 
     @Named("mapFixedFee")

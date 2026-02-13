@@ -20,7 +20,7 @@ on:
       claims_api_image_tag:
         required: false
         type: string
-        default: '583b286c97dacacbc270075729bc297714628554'
+        default: 'd694928c4891a615dd2658abe08d7be41c1db226'
         description: 'data-claims-api image tag, retrieved from github build logs (needs to update with latest version)'
     secrets:
       ECR_ROLE_TO_ASSUME:

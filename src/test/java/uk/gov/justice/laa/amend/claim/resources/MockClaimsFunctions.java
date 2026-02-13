@@ -157,7 +157,6 @@ public class MockClaimsFunctions {
 
     public static CalculatedTotalClaimField createTotalAmountField() {
         return CalculatedTotalClaimField.builder()
-                .submitted(BigDecimal.valueOf(100))
                 .calculated(BigDecimal.valueOf(200))
                 .assessed(BigDecimal.valueOf(300))
                 .build();
