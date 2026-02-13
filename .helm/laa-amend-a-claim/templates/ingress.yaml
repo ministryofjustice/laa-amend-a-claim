@@ -18,14 +18,19 @@ metadata:
     {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
-  {{- if .Values.ingress.host }}
+  {{- if and .Values.ingress.laaHost (eq .Values.ingress.laaHost.enabled true) }}
   tls:
     - hosts:
-        - {{ .Values.ingress.host }}
+        - {{ required "laaHost value must be provided when laaHost is enabled." .Values.ingress.laaHost.value }}
+      secretName: {{ required "laaHost certSecretName must be provided when laaHost is present." .Values.ingress.laaHost.certSecretName }}
+  {{- else if .Values.ingress.cloudPlatformHost }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.cloudPlatformHost }}
   {{- end }}
   rules:
-    {{- if .Values.ingress.host }}
-    - host: {{ .Values.ingress.host }}
+  {{- if and .Values.ingress.laaHost (eq .Values.ingress.laaHost.enabled true) }}
+    - host: {{ required "laaHost value must be provided when laaHost is enabled." .Values.ingress.laaHost.value }}
       http:
         paths:
           - path: /
@@ -35,5 +40,16 @@ spec:
                 name: {{ $fullName }}
                 port:
                   number: {{ $svcPort }}
-    {{- end }}
+  {{- else if .Values.ingress.cloudPlatformHost }}
+    - host: {{ .Values.ingress.cloudPlatformHost }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+  {{- end }}
 {{- end }}
