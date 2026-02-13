@@ -5,7 +5,7 @@
         title=#{assessmentOutcome.title},
         mainContent=~{::#main-content},
         pageCategory=${null},
-        showBackLink=${true}
+        showBackLink=${false}
     )}">
     <body>
         <main class="govuk-main-wrapper" id="main-content">
@@ -89,10 +89,9 @@
                             </div>
 
                             <div class="govuk-button-group">
-                                <button class="govuk-button" type="submit" th:text="#{assessmentOutcome.continue}"></button>
+                                <button class="govuk-button" type="submit" th:text="#{assessmentOutcome.saveChanges}"></button>
                                 <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
-                                   class="govuk-button govuk-button--secondary"
-                                   data-module="govuk-button"
+                                   class="govuk-link govuk-link--no-visited-state"
                                    th:text="#{assessmentOutcome.cancel}"></a>
                             </div>
                         </fieldset>

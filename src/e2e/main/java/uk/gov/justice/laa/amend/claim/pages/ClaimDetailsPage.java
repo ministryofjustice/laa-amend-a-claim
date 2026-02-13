@@ -31,8 +31,7 @@ public class ClaimDetailsPage extends LaaPage {
 
         this.infoAlert = page.locator(".moj-alert--information");
 
-        this.backToSearchButton =
-                page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Back to search"));
+        this.backToSearchButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Back to search"));
     }
 
     public void clickAddUpdateAssessmentOutcome() {

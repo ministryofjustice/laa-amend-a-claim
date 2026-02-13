@@ -28,6 +28,7 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
+import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 
 @ActiveProfiles("local")
@@ -37,6 +38,9 @@ public class ClaimSummaryControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockitoBean
+    private MaintenanceService maintenanceService;
 
     @MockitoBean
     private ClaimService claimService;
@@ -105,7 +109,28 @@ public class ClaimSummaryControllerTest {
     }
 
     @Test
-    public void testOnSubmitRedirects() throws Exception {
+    public void testOnSubmitRedirectsWhenClaimHasAnAssessment() throws Exception {
+        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+
+        claim.setHasAssessment(true);
+        session.setAttribute(claimId, claim);
+
+        String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+
+        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+
+        mockMvc.perform(post(path).session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(expectedRedirectUrl));
+    }
+
+    @Test
+    public void testOnSubmitRedirectsWhenClaimHasNoAssessment() throws Exception {
+        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+
+        claim.setHasAssessment(false);
+        session.setAttribute(claimId, claim);
+
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 
         String expectedRedirectUrl =

@@ -37,8 +37,6 @@ public class AssessmentOutcomePage extends LaaInputPage {
         this.vatYesRadio = vatGroup.getByLabel("Yes", new Locator.GetByLabelOptions().setExact(true));
         this.vatNoRadio = vatGroup.getByLabel("No", new Locator.GetByLabelOptions().setExact(true));
 
-        this.saveButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue"));
-
         this.errorSummaryTitle = page.locator(".govuk-error-summary__title");
         this.errorSummaryLink = page.locator(".govuk-error-summary__list a");
     }
