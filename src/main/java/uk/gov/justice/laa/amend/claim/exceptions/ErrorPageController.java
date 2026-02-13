@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.factories.ReferenceNumberFactory;
-import uk.gov.justice.laa.amend.claim.models.ReferenceNumber;
 
 @Controller
 @AllArgsConstructor
@@ -29,7 +28,7 @@ public class ErrorPageController implements ErrorController {
         if (status == HttpServletResponse.SC_NOT_FOUND) {
             return "not-found";
         }
-        ReferenceNumber referenceNumber = referenceNumberFactory.create();
+        String referenceNumber = referenceNumberFactory.create();
         model.addAttribute("referenceNumber", referenceNumber);
         log.error(
                 "Something went wrong. Reference: {}. Status: {}. Session ID: {}",

@@ -12,7 +12,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.exceptions.ErrorPageController;
 import uk.gov.justice.laa.amend.claim.factories.ReferenceNumberFactory;
-import uk.gov.justice.laa.amend.claim.models.ReferenceNumber;
 
 @ActiveProfiles("local")
 @WebMvcTest(ErrorPageController.class)
@@ -29,7 +28,7 @@ public class ErrorViewTest extends ViewTestBase {
     @ParameterizedTest
     @ValueSource(ints = {400, 401, 403, 500, 503})
     void testPage(int status) throws Exception {
-        when(referenceNumberFactory.create()).thenReturn(new ReferenceNumber("123456"));
+        when(referenceNumberFactory.create()).thenReturn("123456");
 
         Document doc = renderErrorPage(status);
 
@@ -44,6 +43,10 @@ public class ErrorViewTest extends ViewTestBase {
         assertPageHasContent(
                 doc, "Contact the Amend a Bulk Claim digital team quoting reference 123456 if you have any questions.");
 
-        assertPageHasLink(doc, "email", "Amend a Bulk Claim digital team", "mailto:someone@example.com");
+        assertPageHasLink(
+                doc,
+                "email",
+                "Amend a Bulk Claim digital team",
+                "mailto:someone@example.com?subject=AaBC issue reference: 123456");
     }
 }

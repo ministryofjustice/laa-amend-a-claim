@@ -14,8 +14,10 @@
                     <p class="govuk-body" th:text="#{error.p2}"></p>
                     <p class="govuk-body">
                         <th:block th:text="#{error.p3.1}"></th:block>
-                        <a class="govuk-link" id="email" th:href="'mailto:' + ${@environment.getProperty('app.email')}" th:text="#{error.p3.link}"></a>
-                        <th:block th:utext="#{error.p3.2(${referenceNumber.value})}"></th:block>
+                        <a class="govuk-link" id="email"
+                           th:href="'mailto:' + ${@environment.getProperty('app.email')} + '?subject=AaBC issue reference: ' + ${referenceNumber}"
+                           th:text="#{error.p3.link}"></a>
+                        <th:block th:utext="#{error.p3.2(${referenceNumber})}"></th:block>
                     </p>
                 </div>
             </div>
