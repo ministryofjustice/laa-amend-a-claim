@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{error_layout :: errorLayout(
+        title=#{notFound.title},
+        mainContent=~{::#main-content}
+    )}">
+    <body>
+        <main class="govuk-main-wrapper" id="main-content">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h1 class="govuk-heading-l" th:text="#{notFound.heading}"></h1>
+                    <p class="govuk-body" th:text="#{notFound.p1}"></p>
+                    <p class="govuk-body">
+                        <th:block th:text="#{notFound.p2.1}"></th:block>
+                        <a class="govuk-link" id="homepage" th:href="@{/}" th:text="#{notFound.p2.link}"></a>
+                        <th:block th:text="#{notFound.p2.2}"></th:block>
+                    </p>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
