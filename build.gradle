@@ -44,7 +44,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server'
 
     // Data claims API
-    implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:b3044a5-SNAPSHOT'
+    implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:147d1d3-SNAPSHOT'
     // Removes 'unknown enum constant RequiredMode.REQUIRED' warning (springdoc is a transitive dependency of data-claims-api-models)
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1'
 
