@@ -1,8 +1,7 @@
-package uk.gov.justice.laa.amend.claim;
+package uk.gov.justice.laa.amend.claim.factories;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
-import uk.gov.justice.laa.amend.claim.factories.ReferenceNumberFactory;
 
 public class ReferenceNumberFactoryTest {
 
