@@ -77,13 +77,13 @@ Again, the order matters here due to foreign key constraints.
 
 ## Debug mode
 
-1. Visible browser:
+### Visible browser
 
-   In `.env` set `HEADLESS=false`
+In `.env` set `HEADLESS=false`
 
-2. Slow-motion debugging:
+### Slow-motion debugging
 
-   In `DriverFactory` add `.setSlowMo(150)` to the launch options
+In `DriverFactory` add `.setSlowMo(150)` to the launch options
 
 ## Allure
 
@@ -112,6 +112,18 @@ cd src/e2e/build/allure-report
 npx http-server -p 8085
 Open: http://localhost:8085
 ```
+
+## Data claims API
+To get the latest `claims_api_image_tag`:
+1. Go to the [Deploy with Helm](https://github.com/ministryofjustice/laa-data-claims-api/actions/workflows/build-test-deploy.yml?query=branch%3Amain) action
+2. Click the latest one
+3. Inside `build-test`:
+   1. Expand `Publish api models package`
+   2. Upgrade the dependency in `build.gradle` to the `Published Maven artifact`
+4. Inside `build and push docker image`:
+   1. Expand `Build and push a Docker image for claims-data`
+   2. Expand the first line (`Run docker build`)
+   3. Update `claims_api_image_tag` in `e2e-tests.yml` with the `IMAGE_TAG`
 
 ### GitHub
 The GitHub Actions pipeline uploads the Allure report as an artifact:
