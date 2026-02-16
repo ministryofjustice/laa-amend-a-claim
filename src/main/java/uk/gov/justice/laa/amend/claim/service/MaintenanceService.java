@@ -85,6 +85,6 @@ public class MaintenanceService {
         } catch (IOException e) {
             log.warn("Could not read config map from file {}", path, e);
         }
-        return new ThymeleafLiteralString(new ThymeleafMessage(messageKey).toString());
+        return new ThymeleafMessage(messageKey);
     }
 }
