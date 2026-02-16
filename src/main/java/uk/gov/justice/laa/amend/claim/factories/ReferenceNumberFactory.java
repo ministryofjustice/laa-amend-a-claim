@@ -10,5 +10,5 @@ public class ReferenceNumberFactory {
         return RandomStringUtils.secure().next(6, CHARS).toUpperCase();
     }
 
-    private static final String CHARS = "ABCDEFHJKLMNPRSTUV2345789";
+    private static final String CHARS = "ABCDEFHJKLMNPRSTUVWXYZ2345789";
 }

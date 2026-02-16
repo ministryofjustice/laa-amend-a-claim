@@ -28,10 +28,6 @@ public class ReferenceNumberFactoryTest {
         Assertions.assertFalse(result.contains("I")); // Often confused with 1
         Assertions.assertFalse(result.contains("O")); // Often confused with 0
         Assertions.assertFalse(result.contains("Q")); // Often confused with 0
-        Assertions.assertFalse(result.contains("W")); // Often excluded from DEC alphabet
-        Assertions.assertFalse(result.contains("X")); // Often excluded from DEC alphabet
-        Assertions.assertFalse(result.contains("Y")); // Often excluded from DEC alphabet
-        Assertions.assertFalse(result.contains("Z")); // Often excluded from DEC alphabet
         Assertions.assertFalse(result.contains("0")); // Often confused with O and Q
         Assertions.assertFalse(result.contains("1")); // Often confused with I
         Assertions.assertFalse(result.contains("6")); // Often confused with G
