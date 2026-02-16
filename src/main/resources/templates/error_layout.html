@@ -1,0 +1,19 @@
+<html th:fragment="errorLayout(title,mainContent)" lang="en" class="govuk-template govuk-template--rebranded">
+
+    <head th:replace="~{partials/head :: head(title=${title})}"></head>
+
+    <body class="govuk-template__body">
+        <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+        <th:block th:replace="~{partials/header :: header}"></th:block>
+
+        <div class="govuk-width-container">
+            <th:block th:replace="${mainContent}"></th:block>
+        </div>
+
+        <th:block th:replace="~{partials/footer :: footer}"></th:block>
+
+        <script type="module" th:src="@{/js/app.js}"></script>
+    </body>
+
+</html>
