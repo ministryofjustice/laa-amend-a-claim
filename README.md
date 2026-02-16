@@ -9,6 +9,10 @@ The service authenticates users via Sign in to LAA Services (SiLAS), reads claim
 
 ## Developer setup
 
+### Prerequisites
+- Java 25
+- Docker
+
 ### Creating a GitHub Token
 
 1. Ensure you have created a classic GitHub Personal Access Token with the following permissions:
@@ -109,22 +113,15 @@ This starts the following services:
 - **WireMock** (port 8081): Mocks the Claims API and Provider API
 - **Redis** (port 6379): Session storage with persistent volume
 
-#### Swagger UI
-- http://localhost:8080/swagger-ui/index.html
-
-#### API docs (JSON)
-- http://localhost:8080/v3/api-docs
-
 #### Actuator endpoints
 The following actuator endpoints have been configured:
 - http://localhost:8182/actuator
 - http://localhost:8182/actuator/health
 
-## GitHub workflow
-The following workflows have been provided:
+## GitHub workflows
 
-* Build and test PR - `build-test-pr.yml`
-* Build and deploy after PR merged - `pr-merge-main.yml` 
+* `feature.yml` - Feature branch pipeline: build -> deploy to ephemeral → test → security → deploy to dev
+* `main.yml` - Main branch pipeline: build → test → security → deploy to dev → UAT → staging → production 
 
 ## Additional information
 
@@ -156,3 +153,4 @@ This project uses [laa-spring-boot-gradle-plugin](https://github.com/ministryofj
 
 #### Observability
 - [Sentry](https://docs.sentry.io/platforms/java/guides/spring-boot/) - provides error tracking and performance monitoring.
+- [Micrometer](https://micrometer.io/) with [Prometheus](https://prometheus.io/) - provides application metrics.
