@@ -99,7 +99,7 @@ jobs:
       - name: Build and Push Runner Image
         if: steps.check-runner.outputs.deploy-runner == 'true'
         id: build
-        uses: docker/build-push-action@v6.18.0
+        uses: docker/build-push-action@v6.19.2
         with:
           context: ./scripts
           file: ./scripts/Dockerfile.e2e-runner
@@ -219,7 +219,7 @@ jobs:
         uses: actions/checkout@v6.0.2
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v5.0.0
+        uses: gradle/actions/setup-gradle@v5.0.1
 
       - name: Install Node dependencies
         working-directory: src/e2e
