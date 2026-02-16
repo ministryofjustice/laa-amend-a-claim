@@ -1,31 +1,20 @@
-# laa-amend-a-claim
-[![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/laa-spring-boot-microservice-template/badge)](https://github-community.service.justice.gov.uk/repository-standards/laa-spring-boot-microservice-template)
+# Amend a claim
+[![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/laa-amend-a-claim/badge)](https://github-community.service.justice.gov.uk/repository-standards/laa-amend-a-claim)
 
-### ⚠️ WORK IN PROGRESS ⚠️
 ## Overview
 
-The project uses the `laa-spring-boot-gradle-plugin` Gradle plugin which provides
-sensible defaults for the following plugins:
+Amend a claim is a Spring Boot web application that enables Legal Aid Agency caseworkers to perform escape case assessments on claims submitted via [Submit a Bulk Claim](https://github.com/ministryofjustice/laa-submit-a-bulk-claim).
 
-- [Checkstyle](https://docs.gradle.org/current/userguide/checkstyle_plugin.html)
-- [Dependency Management](https://plugins.gradle.org/plugin/io.spring.dependency-management)
-- [Jacoco](https://docs.gradle.org/current/userguide/jacoco_plugin.html)
-- [Java](https://docs.gradle.org/current/userguide/java_plugin.html)
-- [Maven Publish](https://docs.gradle.org/current/userguide/publishing_maven.html)
-- [Spring Boot](https://plugins.gradle.org/plugin/org.springframework.boot)
-- [Test Logger](https://github.com/radarsh/gradle-test-logger-plugin)
-- [Versions](https://github.com/ben-manes/gradle-versions-plugin)
+The service authenticates users via Sign in to LAA Services (SiLAS), reads claims from Data Stewardship's [Data Claims API](https://github.com/ministryofjustice/laa-data-claims-api), and allows users to submit escape case assessments to this data store.
 
-The plugin is provided by -  [laa-spring-boot-common](https://github.com/ministryofjustice/laa-spring-boot-common), where you can find
-more information regarding setup and usage.
+## Developer setup
 
-
-#### Creating a GitHub Token
+### Creating a GitHub Token
 
 1. Ensure you have created a classic GitHub Personal Access Token with the following permissions:
-   1. repo
-   2. write:packages
-   3. read:packages
+    1. repo
+    2. write:packages
+    3. read:packages
 2. The token **must be authorised with (MoJ) SSO**.
 3. Add the following parameters to `~/.gradle/gradle.properties`
 
@@ -35,15 +24,12 @@ project.ext.gitPackageKey = <your GitHub access token>
 
 ```
 
-#### Filling out .env
+### Filling out .env
 
 Using the `.env-template` file as a template, copy to a new .env file
 `cp .env-template .env`
 
 Be sure to fill out all values as they are required for pulling dependencies for the application to run
-
-
-## Developer setup
 
 ### Commit hooks
 Run `scripts/setup-hooks.sh` to install pre-commit hooks for Git. This will install prek pre commit hook into git, which helps to:
