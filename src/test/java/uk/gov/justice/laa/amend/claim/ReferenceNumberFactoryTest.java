@@ -2,12 +2,11 @@ package uk.gov.justice.laa.amend.claim;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.factories.ReferenceNumberFactory;
 
 public class ReferenceNumberFactoryTest {
 
-    @Test
+    @RepeatedTest(10)
     void referenceNumberShouldBe6Characters() {
         ReferenceNumberFactory factory = new ReferenceNumberFactory();
         String result = factory.create();
@@ -15,9 +14,17 @@ public class ReferenceNumberFactoryTest {
     }
 
     @RepeatedTest(10)
+    void referenceNumberShouldOnlyContainUppercaseLettersAndNumbers() {
+        ReferenceNumberFactory factory = new ReferenceNumberFactory();
+        String result = factory.create();
+        Assertions.assertTrue(result.matches("[A-Z0-9]+"));
+    }
+
+    @RepeatedTest(10)
     void referenceNumberShouldNotContainDisallowedCharacters() {
         ReferenceNumberFactory factory = new ReferenceNumberFactory();
         String result = factory.create();
+
         Assertions.assertFalse(result.contains("G")); // Often confused with 6
         Assertions.assertFalse(result.contains("I")); // Often confused with 1
         Assertions.assertFalse(result.contains("O")); // Often confused with 0
