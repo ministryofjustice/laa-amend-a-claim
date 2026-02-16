@@ -186,7 +186,7 @@ volumes:
 volumeMounts:
   - name: maintenance-config
     mountPath: /config/maintenance
-    readonly: true
+    readOnly: true
 
 nodeSelector: {}
 
