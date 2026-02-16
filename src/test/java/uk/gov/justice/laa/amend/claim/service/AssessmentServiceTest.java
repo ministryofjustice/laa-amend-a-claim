@@ -118,7 +118,7 @@ class AssessmentServiceTest {
             String claimId = UUID.randomUUID().toString();
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
-            String userId = UUID.randomUUID().toString();
+            UUID userId = UUID.randomUUID();
             AssessmentPost assessment = new AssessmentPost();
 
             when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
@@ -144,7 +144,7 @@ class AssessmentServiceTest {
         void testCrimeClaimAssessmentSubmittedToApiAndIncrementsSuccessCounter() {
             CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
             claim.setClaimId(claimId.toString());
-            String userId = UUID.randomUUID().toString();
+            UUID userId = UUID.randomUUID();
             AssessmentPost assessment = new AssessmentPost();
 
             when(assessmentMapper.mapCrimeClaimToAssessment(claim, userId)).thenReturn(assessment);
@@ -172,7 +172,7 @@ class AssessmentServiceTest {
             String claimId = UUID.randomUUID().toString();
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
-            String userId = UUID.randomUUID().toString();
+            UUID userId = UUID.randomUUID();
             AssessmentPost assessment = new AssessmentPost();
 
             when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
@@ -194,7 +194,7 @@ class AssessmentServiceTest {
             String claimId = UUID.randomUUID().toString();
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
-            String userId = UUID.randomUUID().toString();
+            UUID userId = UUID.randomUUID();
             AssessmentPost assessment = new AssessmentPost();
 
             when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
@@ -219,7 +219,7 @@ class AssessmentServiceTest {
             String claimId = UUID.randomUUID().toString();
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
-            String userId = UUID.randomUUID().toString();
+            UUID userId = UUID.randomUUID();
             AssessmentPost assessment = new AssessmentPost();
 
             when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);

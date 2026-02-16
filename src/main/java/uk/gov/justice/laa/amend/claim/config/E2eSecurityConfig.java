@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.UUID;
 import java.util.Collections;
 import java.util.Map;
 import lombok.NonNull;
@@ -34,7 +35,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @EnableWebSecurity
 public class E2eSecurityConfig {
 
-    public static String userId = "dummy-oid-12345";
+    public static UUID userId = UUID.fromString("00000000-0000-0000-0000-000000000001");
 
     @Bean
     public SecurityFilterChain securityFilterChainE2e(final HttpSecurity http) throws Exception {

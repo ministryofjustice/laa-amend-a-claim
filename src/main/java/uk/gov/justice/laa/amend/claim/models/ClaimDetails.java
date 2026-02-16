@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.models;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import lombok.Data;
@@ -49,7 +50,7 @@ public abstract class ClaimDetails extends Claim {
 
     public abstract ClaimDetailsView<? extends ClaimDetails> toViewModel();
 
-    public abstract AssessmentPost toAssessment(AssessmentMapper mapper, String userId);
+    public abstract AssessmentPost toAssessment(AssessmentMapper mapper, UUID userId);
 
     public Stream<@NotNull ClaimField> getClaimFields() {
         return Stream.concat(commonClaimFields(), specificClaimFields()).filter(Objects::nonNull);

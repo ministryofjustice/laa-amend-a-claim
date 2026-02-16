@@ -35,7 +35,7 @@ class AssessmentMapperTest {
 
     @Test
     void testMapCivilClaimToAssessment() {
-        String userId = UUID.randomUUID().toString();
+        UUID userId = UUID.randomUUID();
 
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
         claim.setVatApplicable(true);
@@ -68,7 +68,7 @@ class AssessmentMapperTest {
 
     @Test
     void testMapCrimeClaimToAssessment() {
-        String userId = UUID.randomUUID().toString();
+        UUID userId = UUID.randomUUID();
 
         CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
         claim.setVatApplicable(true);
