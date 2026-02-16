@@ -55,7 +55,7 @@ submission:
 app:
   feedback-url: ${FEEDBACK_URL}
   laa-url: ${LAA_URL}
-  email: amend-a-bulk-claim@justice.gov.uk
+  email: AmendaBulkClaimTeam@justice.gov.uk
 
 management:
   server:
