@@ -325,7 +325,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             Assertions.assertEquals(false, result.get(12).getCalculated());
 
             Assertions.assertEquals(TOTAL, result.get(13).getKey());
-            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(13).getSubmitted());
+            Assertions.assertNull(result.get(13).getSubmitted());
             Assertions.assertEquals(BigDecimal.valueOf(200), result.get(13).getCalculated());
         }
 
@@ -390,7 +390,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             Assertions.assertEquals(false, result.get(7).getCalculated());
 
             Assertions.assertEquals(TOTAL, result.get(8).getKey());
-            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).getSubmitted());
+            Assertions.assertNull(result.get(8).getSubmitted());
             Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).getCalculated());
         }
 
@@ -462,7 +462,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             Assertions.assertEquals(false, result.get(7).getCalculated());
 
             Assertions.assertEquals(TOTAL, result.get(8).getKey());
-            Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).getSubmitted());
+            Assertions.assertNull(result.get(8).getSubmitted());
             Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).getCalculated());
         }
     }
