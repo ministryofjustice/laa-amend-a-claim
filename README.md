@@ -90,8 +90,24 @@ We use Snyk to help identify security vulnerabilities in our code and dependenci
 ### Run integration tests
 `./gradlew integrationTest`
 
+### Run E2E tests
+E2E tests use Playwright for UI automation testing.
+
+```bash
+./e2e.sh                              # Run all E2E tests
+./e2e.sh SearchTest                   # Run a specific test class
+./e2e.sh SearchTest.canSearchForClaim # Run a specific test
+./e2e.sh --allure-serve               # Run tests and serve Allure report
+```
+
+See [src/e2e/README.md](src/e2e/README.md) for detailed setup instructions, including MFA configuration and test data setup.
+
 ### Run application via Docker
 `docker compose up`
+
+This starts the following services:
+- **WireMock** (port 8081): Mocks the Claims API and Provider API
+- **Redis** (port 6379): Session storage with persistent volume
 
 #### Swagger UI
 - http://localhost:8080/swagger-ui/index.html
@@ -112,13 +128,31 @@ The following workflows have been provided:
 
 ## Additional information
 
+### Build plugin
+This project uses [laa-spring-boot-gradle-plugin](https://github.com/ministryofjustice/laa-ccms-spring-boot-common) which provides sensible defaults for:
+- Checkstyle
+- Dependency Management
+- Jacoco (code coverage)
+- Java
+- Spring Boot
+- Test Logger
+- Versions
+
 ### Libraries used
-- [Spring Boot Actuator](https://docs.spring.io/spring-boot/reference/actuator/index.html) - used to provide various endpoints to help monitor the application, such as view application health and information.
-- [Spring Boot Web](https://docs.spring.io/spring-boot/reference/web/index.html) - used to provide features for building the REST API implementation.
-- [Spring Data JPA](https://docs.spring.io/spring-data/jpa/reference/jpa.html) - used to simplify database access and interaction, by providing an abstraction over persistence technologies, to help reduce boilerplate code.
-- [Springdoc OpenAPI](https://springdoc.org/) - used to generate OpenAPI documentation. It automatically generates Swagger UI, JSON documentation based on your Spring REST APIs.
-- [Lombok](https://projectlombok.org/) - used to help to reduce boilerplate Java code by automatically generating common
-  methods like getters, setters, constructors etc. at compile-time using annotations.
-- [MapStruct](https://mapstruct.org/) - used for object mapping, specifically for converting between different Java object types, such as Data Transfer Objects (DTOs)
-  and Entity objects. It generates mapping code at compile code.
-- [H2](https://www.h2database.com/html/main.html) - used to provide an example database and should not be used in production.
+
+#### Spring Framework
+- [Spring Boot Actuator](https://docs.spring.io/spring-boot/reference/actuator/index.html) - provides endpoints for monitoring application health and information.
+- [Spring Boot Web](https://docs.spring.io/spring-boot/reference/web/index.html) - provides features for building the web application with Thymeleaf templating.
+- [Spring Data Redis](https://docs.spring.io/spring-data/redis/reference/index.html) - provides Redis-backed session management.
+- [Spring Security OAuth2](https://docs.spring.io/spring-security/reference/servlet/oauth2/index.html) - provides authentication via Azure Entra ID.
+
+#### Frontend
+- [GOV.UK Frontend](https://frontend.design-system.service.gov.uk/) - provides GOV.UK Design System components for accessible, consistent UI.
+- [MOJ Frontend](https://design-patterns.service.justice.gov.uk/) - extends GOV.UK Frontend with Ministry of Justice specific components.
+
+#### Code Generation
+- [Lombok](https://projectlombok.org/) - reduces boilerplate by generating getters, setters, constructors etc. at compile-time.
+- [MapStruct](https://mapstruct.org/) - generates type-safe mapping code between DTOs and entity objects at compile time.
+
+#### Observability
+- [Sentry](https://docs.sentry.io/platforms/java/guides/spring-boot/) - provides error tracking and performance monitoring.
