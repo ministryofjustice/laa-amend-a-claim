@@ -5,6 +5,10 @@ replicaCount: 4
 
 ingress:
   className: "modsec"
+  laaHost:
+    enabled: true
+    value: amend-a-claim.laa.service.justice.gov.uk
+    certSecretName: laa-aac-cert
 
 resources:
   requests:

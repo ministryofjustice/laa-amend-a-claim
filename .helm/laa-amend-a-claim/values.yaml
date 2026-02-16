@@ -58,7 +58,11 @@ namespace: ""  # Override at deploy time
 ingress:
   enabled: true
   className: "modsec"
-  host: ""  # Override at deploy time
+  cloudPlatformHost: ""  # Override at deploy time
+  laaHost:
+    enabled: false
+    value: "" # Only populated if enabled
+    certSecretName: "" # Only populated if enabled
   cluster:
     name: green
     weight: "100"
