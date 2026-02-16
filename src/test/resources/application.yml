@@ -2,3 +2,5 @@ management:
   health:
     redis:
       enabled: false
+app:
+  email: someone@example.com
