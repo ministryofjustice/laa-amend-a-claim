@@ -14,8 +14,4 @@ public class ThymeleafLiteralString extends ThymeleafString {
     public String resolve(Messages messages) {
         return value;
     }
-
-    public String convertThymeleafMessage(ThymeleafMessage message) {
-        return message.toString();
-    }
 }
