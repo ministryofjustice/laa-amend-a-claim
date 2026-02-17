@@ -56,13 +56,19 @@ jobs:
       - name: Fetch IP Allowlist
         id: ip-allowlist
         run: |
-          # Download the IP allowlist and format as Helm array syntax
-          # 1. Convert newlines to commas: "10.0.0.0/8\n192.168.0.0/16" → "10.0.0.0/8,192.168.0.0/16"
-          # 2. Wrap in braces for Helm array syntax: → "{10.0.0.0/8,192.168.0.0/16}"
-          # 3. Helm parses as array: ["10.0.0.0/8", "192.168.0.0/16"]
-          # 4. Template helper joins array back to comma-separated string for nginx annotation
-          CIDRS=$(curl -s https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/main/cidrs.txt | tr -d ' ' | tr '\n' ',' | sed 's/,$//')
-          CIDRS_ARRAY="{${CIDRS}}"
+          # Download the LAA IP allowlist (already in CIDR format)
+          LAA_CIDRS=$(curl -s https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/main/cidrs.txt | tr -d ' ' | tr '\n' ',' | sed 's/,$//')
+
+          # Download Pingdom probe IPs and convert to CIDR format (add /32 for single IPs)
+          PINGDOM_CIDRS=$(curl -s https://my.pingdom.com/probes/ipv4 | tr -d ' ' | sed 's/$/.32/' | tr '\n' ',' | sed 's/,$//' | sed 's/\.32/.\/32/g')
+
+          # Merge both lists
+          ALL_CIDRS="${LAA_CIDRS},${PINGDOM_CIDRS}"
+
+          # Wrap in braces for Helm array syntax: → "{10.0.0.0/8,192.168.0.0/16,...}"
+          # Helm parses as array: ["10.0.0.0/8", "192.168.0.0/16", ...]
+          # Template helper joins array back to comma-separated string for nginx annotation
+          CIDRS_ARRAY="{${ALL_CIDRS}}"
 
           # Output for use in helm command
           echo "cidrs=${CIDRS_ARRAY}" >> $GITHUB_OUTPUT
