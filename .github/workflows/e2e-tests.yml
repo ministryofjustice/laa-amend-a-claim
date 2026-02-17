@@ -251,6 +251,8 @@ jobs:
         run: |
           export CI=true
           export SILAS_AUTH_ENABLED=false
+          export AXE_ENABLED=true
+          export ZAP_ENABLED=true
           export DB_USER=${E2E_DB_USER}
           export DB_PASSWORD=${E2E_DB_PASSWORD}
           export UI_BASE_URL=http://${AMEND_CLAIM_UI}:8084 
@@ -275,5 +277,6 @@ jobs:
             src/e2e/build/reports/
             src/e2e/build/allure-report/
             src/e2e/build/axe-reports/
+            src/e2e/build/zap-reports/
           retention-days: 15
 
