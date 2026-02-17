@@ -60,7 +60,7 @@ jobs:
           LAA_CIDRS=$(curl -s https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/main/cidrs.txt | tr -d ' ' | tr '\n' ',' | sed 's/,$//')
 
           # Download Pingdom probe IPs and convert to CIDR format (add /32 for single IPs)
-          PINGDOM_CIDRS=$(curl -s https://my.pingdom.com/probes/ipv4 | tr -d ' ' | sed 's/$/.32/' | tr '\n' ',' | sed 's/,$//' | sed 's/\.32/.\/32/g')
+          PINGDOM_CIDRS=$(curl -s https://my.pingdom.com/probes/ipv4 | tr -d ' ' | sed 's/$/\/32/' | tr '\n' ',' | sed 's/,$//')
 
           # Merge both lists
           ALL_CIDRS="${LAA_CIDRS},${PINGDOM_CIDRS}"
