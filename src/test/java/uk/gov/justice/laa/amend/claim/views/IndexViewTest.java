@@ -61,6 +61,8 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasTextInput(doc, "provider-account-number", "Provider account number");
 
+        assertPageHasHint(doc, "provider-account-number-hint", "For example, 0P322F");
+
         assertPageHasDateInput(doc, "Submission period");
 
         assertPageHasHint(doc, "submission-date-hint", "For example, 3 2007");
@@ -70,6 +72,8 @@ class IndexViewTest extends ViewTestBase {
         assertPageHasTextInput(doc, "submission-date-year", "Year");
 
         assertPageHasTextInput(doc, "unique-file-number", "Unique file number (UFN)");
+
+        assertPageHasHint(doc, "unique-file-number-hint", "For example, 120223/001");
 
         assertPageHasTextInput(doc, "case-reference-number", "Case reference number (CRN)");
 
