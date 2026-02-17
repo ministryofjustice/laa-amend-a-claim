@@ -9,6 +9,10 @@ public class EnvConfig {
         return dotenv.get(key, defaultValue);
     }
 
+    private static boolean getBooleanOrDefault(String key, boolean defaultValue) {
+        return Boolean.parseBoolean(getOrDefault(key, String.valueOf(defaultValue)));
+    }
+
     public static String baseUrl() {
         return getOrDefault("UI_BASE_URL", "http://localhost:8080/");
     }
@@ -25,12 +29,12 @@ public class EnvConfig {
         return getOrDefault("BROWSER", "chromium");
     }
 
-    public static String silasAuthenticationEnabled() {
-        return getOrDefault("SILAS_AUTH_ENABLED", "false");
+    public static boolean silasAuthenticationEnabled() {
+        return getBooleanOrDefault("SILAS_AUTH_ENABLED", false);
     }
 
     public static boolean headless() {
-        return Boolean.parseBoolean(getOrDefault("HEADLESS", "true"));
+        return getBooleanOrDefault("HEADLESS", true);
     }
 
     public static String apiBase() {
@@ -57,7 +61,15 @@ public class EnvConfig {
         return "LAA-Amend-A-Claim-E2E-Tests";
     }
 
+    public static boolean axeEnabled() {
+        return getBooleanOrDefault("AXE_ENABLED", false);
+    }
+
     public static String axeReportsDirectory() {
         return "build/axe-reports/json";
+    }
+
+    public static boolean zapEnabled() {
+        return getBooleanOrDefault("ZAP_ENABLED", false);
     }
 }

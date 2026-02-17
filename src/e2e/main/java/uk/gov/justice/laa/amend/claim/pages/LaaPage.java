@@ -47,17 +47,19 @@ public abstract class LaaPage {
     }
 
     private void generateAxeReport(int status) {
-        try {
-            String fileName = heading.textContent().trim().replace(" ", "_");
-            String path = String.format("%s/%s_%d.json", directory, fileName, status);
-            if (Files.notExists(Paths.get(path))) {
-                AxeResults axeResults = axeBuilder.analyze();
-                Reporter reporter = new Reporter();
-                reporter.JSONStringify(axeResults, path);
-                assertTrue(axeResults.violationFree());
+        if (EnvConfig.axeEnabled()) {
+            try {
+                String fileName = heading.textContent().trim().replace(" ", "_");
+                String path = String.format("%s/%s_%d.json", directory, fileName, status);
+                if (Files.notExists(Paths.get(path))) {
+                    AxeResults axeResults = axeBuilder.analyze();
+                    Reporter reporter = new Reporter();
+                    reporter.JSONStringify(axeResults, path);
+                    assertTrue(axeResults.violationFree());
+                }
+            } catch (RuntimeException | IOException e) {
+                System.err.println(e.getMessage());
             }
-        } catch (RuntimeException | IOException e) {
-            System.err.println(e.getMessage());
         }
     }
 }

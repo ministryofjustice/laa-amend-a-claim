@@ -39,6 +39,7 @@ dependencies {
     implementation 'com.microsoft.playwright:playwright:1.57.0'
     implementation 'com.deque.html.axe-core:playwright:4.11.0'
     testImplementation 'org.webjars.npm:axe-html-reporter:2.2.11'
+    implementation 'org.zaproxy:zap-clientapi:1.17.0'
     implementation 'io.github.cdimascio:dotenv-java:3.2.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.21.0'
     implementation 'org.slf4j:slf4j-simple:2.0.17'
@@ -83,6 +84,7 @@ tasks.withType(Test).configureEach {
     doFirst {
         delete fileTree("$buildDir/allure-results")
         delete fileTree("$buildDir/axe-reports")
+        delete fileTree("$buildDir/zap-reports")
     }
 
     doLast {

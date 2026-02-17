@@ -1,11 +1,19 @@
 package uk.gov.justice.laa.amend.claim.base;
 
+import static org.apache.commons.lang3.BooleanUtils.FALSE;
+import static org.apache.commons.lang3.BooleanUtils.TRUE;
+
 import com.microsoft.playwright.Page;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.zaproxy.clientapi.core.ApiResponse;
+import org.zaproxy.clientapi.core.ApiResponseElement;
+import org.zaproxy.clientapi.core.ClientApi;
+import org.zaproxy.clientapi.core.ClientApiException;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.persistence.DatabaseQueryExecutor;
@@ -70,5 +78,48 @@ public abstract class BaseTest {
             } catch (Exception ignored) {
             }
         }
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        if (BrowserSession.getZap() != null) {
+            zap(BrowserSession.getZap());
+        }
+    }
+
+    private static void zap(ClientApi zap) {
+        try {
+            String target = EnvConfig.baseUrl();
+            passiveScan(zap);
+            activeScan(zap, target);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private static void passiveScan(ClientApi zap) throws InterruptedException, ClientApiException {
+        while (true) {
+            Thread.sleep(1000);
+            int progress = Integer.parseInt(((ApiResponseElement) zap.pscan.recordsToScan()).getValue());
+            System.out.println("Passive Scan progress : " + progress + " records left");
+            if (progress < 1) {
+                break;
+            }
+        }
+        System.out.println("Passive Scan complete");
+    }
+
+    private static void activeScan(ClientApi zap, String target) throws InterruptedException, ClientApiException {
+        ApiResponse response = zap.ascan.scan(target, FALSE, TRUE, null, null, null);
+        String scanId = ((ApiResponseElement) response).getValue();
+        while (true) {
+            Thread.sleep(5000);
+            int progress = Integer.parseInt(((ApiResponseElement) zap.ascan.status(scanId)).getValue());
+            System.out.println("Active Scan progress : " + progress + "%");
+            if (progress >= 100) {
+                break;
+            }
+        }
+        System.out.println("Active Scan complete");
     }
 }

@@ -18,6 +18,21 @@ services:
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
+  zap:
+    image: zaproxy/zap-stable
+    container_name: zap-proxy
+    ports:
+      - "8090:8090"
+    extra_hosts:
+      - "localhost:host-gateway"
+    volumes:
+      - ./zap-reports:/zap/wrk:rw
+    command: >
+      zap.sh -daemon -host 0.0.0.0
+      -port 8090
+      -config api.addrs.addr.name=.*
+      -config api.addrs.addr.regex=true
+      -config api.disablekey=true
 
 volumes:
   redis_data:

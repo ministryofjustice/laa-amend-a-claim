@@ -6,6 +6,10 @@ import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.WaitForSelectorState;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.zaproxy.clientapi.core.ClientApi;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.pages.LoginPage;
 
@@ -15,27 +19,25 @@ import uk.gov.justice.laa.amend.claim.pages.LoginPage;
  * initialization, login, and cleanup within a reusable browser context.
  */
 public class BrowserSession {
+
     private static Playwright playwright;
     private static Browser browser;
     private static BrowserContext context;
+    private static ClientApi zap;
     private static boolean initialized = false;
-
-    private static boolean isSilasAuthenticationDisabled() {
-        return EnvConfig.silasAuthenticationEnabled().equals("false");
-    }
 
     public static synchronized void initializeIfNeeded() {
         if (!initialized) {
             playwright = Playwright.create();
-            browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(EnvConfig.headless()));
+            BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(EnvConfig.headless());
+            if (EnvConfig.zapEnabled()) {
+                launchOptions.setProxy("http://localhost:8090");
+                setupZap();
+            }
+            browser = playwright.chromium().launch(launchOptions);
             context = browser.newContext();
 
-            if (isSilasAuthenticationDisabled()) {
-                System.out.println("Running in local profile - skipping login");
-                Page page = context.newPage();
-                page.navigate(EnvConfig.baseUrl());
-                page.close();
-            } else {
+            if (EnvConfig.silasAuthenticationEnabled()) {
                 // Single login for all tests
                 Page loginPage = context.newPage();
                 LoginPage login = new LoginPage(loginPage);
@@ -50,6 +52,11 @@ public class BrowserSession {
                 } finally {
                     loginPage.close();
                 }
+            } else {
+                System.out.println("Running in local profile - skipping login");
+                Page page = context.newPage();
+                page.navigate(EnvConfig.baseUrl());
+                page.close();
             }
 
             initialized = true;
@@ -64,7 +71,43 @@ public class BrowserSession {
         return context;
     }
 
-    public static synchronized void cleanup() {
+    public static ClientApi getZap() {
+        return zap;
+    }
+
+    private static synchronized void setupZap() {
+        try {
+            Runtime.getRuntime().addShutdownHook(new Thread(BrowserSession::generateZapReport));
+            zap = new ClientApi("localhost", 8090);
+            String[] urlsToExclude = {
+                "http://clients2\\.google\\.com.*",
+                "https://aadcdn\\.msauth\\.net.*",
+                "https://dev\\.your\\-legal\\-aid\\-services\\.service\\.justice\\.gov\\.uk.*",
+                "https://fonts\\.googleapis\\.com.*",
+                "https://fonts\\.gstatic\\.com.*",
+                "https://www\\.googletagmanager\\.com.*",
+                "https://login\\.live\\.com.*",
+                "https://www\\.nationalarchives\\.gov\\.uk.*"
+            };
+            for (String regex : urlsToExclude) {
+                zap.ascan.excludeFromScan(regex);
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private static synchronized void generateZapReport() {
+        try {
+            Path path = Paths.get("build/zap-reports/zap.html");
+            Files.createDirectories(path.getParent());
+            Files.write(path, zap.core.htmlreport());
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private static synchronized void cleanup() {
         if (initialized) {
             try {
                 // Sign out

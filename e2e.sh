@@ -39,7 +39,7 @@ popd >/dev/null
 
 echo "[INFO] Starting frontend application..."
 docker-compose down -v
-docker-compose up -d redis
+docker-compose up -d redis zap
 ./gradlew bootRun >> "$FRONTEND_LOG" 2>&1 &
 BOOTRUN_PID=$!
 
