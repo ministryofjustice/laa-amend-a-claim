@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
@@ -74,6 +75,13 @@ public abstract class ViewTestBase {
                 .getContentAsString();
 
         return Jsoup.parse(html);
+    }
+
+    protected Document renderDocumentWithAssessmentOutcome(Boolean hasAssessment, OutcomeType outcome)
+            throws Exception {
+        claim.setHasAssessment(hasAssessment);
+        claim.setAssessmentOutcome(outcome);
+        return renderDocument(Map.of());
     }
 
     protected Document renderErrorPage(int requestStatus, int responseStatus) throws Exception {
@@ -137,6 +145,12 @@ public abstract class ViewTestBase {
         Elements elements = doc.getElementsByClass("govuk-link govuk-link--no-visited-state");
         Assertions.assertFalse(elements.isEmpty());
         Assertions.assertEquals(expectedText, elements.getFirst().text());
+    }
+
+    protected void assertPageCancelLinkValue(Document doc, String expectedText, String expectedHref) {
+        Elements element = doc.getElementsByClass("govuk-link govuk-link--no-visited-state");
+        Assertions.assertEquals(expectedText, element.text());
+        Assertions.assertEquals(expectedHref, element.attr("href"));
     }
 
     protected void assertPageHasLink(Document doc, String id, String expectedText, String expectedHref) {
