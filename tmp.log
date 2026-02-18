@@ -65,3 +65,78 @@ java.lang.IllegalArgumentException: Invalid character found in method name [0x16
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
 	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
 
+2026-02-18T21:23:47.107Z  INFO 27419 --- [LAA Amend a Claim Service] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 25 class path changes (0 additions, 24 deletions, 1 modification)
+2026-02-18T21:23:47.117Z  INFO 27419 --- [LAA Amend a Claim Service] [       Thread-1] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-02-18T21:23:48.125Z  INFO 27419 --- [LAA Amend a Claim Service] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-02-18T21:23:48.125Z  INFO 27419 --- [LAA Amend a Claim Service] [       Thread-1] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-02-18T21:23:50.129Z  INFO 27419 --- [LAA Amend a Claim Service] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-02-18T21:23:50.132Z ERROR 27419 --- [LAA Amend a Claim Service] [o-8182-Acceptor] org.apache.tomcat.util.net.Acceptor      : Socket accept failed
+
+java.nio.channels.AsynchronousCloseException
+	at java.base/java.nio.channels.spi.AbstractInterruptibleChannel.end(AbstractInterruptibleChannel.java:218) ~[na:na]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.end(ServerSocketChannelImpl.java:374) ~[na:na]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:399) ~[na:na]
+	at org.apache.tomcat.util.net.NioEndpoint.serverSocketAccept(NioEndpoint.java:532) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.tomcat.util.net.NioEndpoint.serverSocketAccept(NioEndpoint.java:71) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.tomcat.util.net.Acceptor.run(Acceptor.java:127) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
+
+2026-02-18T21:23:50.141Z  INFO 27419 --- [LAA Amend a Claim Service] [       Thread-1] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.2)
+
+2026-02-18T21:23:52.181Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] u.g.justice.laa.amend.claim.Application  : Starting Application using Java 25.0.2 with PID 27419 (/Users/jack.heslop/repos/moj/laa-amend-a-claim/build/classes/java/main started by jack.heslop in /Users/jack.heslop/repos/moj/laa-amend-a-claim)
+2026-02-18T21:23:52.181Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] u.g.justice.laa.amend.claim.Application  : The following 1 profile is active: "dev"
+2026-02-18T21:23:52.441Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-18T21:23:52.441Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-18T21:23:52.447Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 5 ms. Found 0 Redis repository interfaces.
+2026-02-18T21:23:52.502Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-18T21:23:52.503Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-18T21:23:52.503Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
+2026-02-18T21:23:52.510Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 328 ms
+2026-02-18T21:23:52.756Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] o.s.b.w.a.WelcomePageHandlerMapping      : Adding welcome page template: index
+2026-02-18T21:23:52.804Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-02-18T21:23:52.825Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8182 (http)
+2026-02-18T21:23:52.825Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-18T21:23:52.825Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.18]
+2026-02-18T21:23:52.831Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 26 ms
+2026-02-18T21:23:52.834Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2026-02-18T21:23:52.844Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8182 (http) with context path '/'
+ERROR: Failed to load Sentry configuration since it is not a file or does not exist: sentry.properties
+2026-02-18T21:23:52.846Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] u.g.justice.laa.amend.claim.Application  : Started Application in 0.68 seconds (process running for 1025.407)
+2026-02-18T21:23:52.847Z  INFO 27419 --- [LAA Amend a Claim Service] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-02-18T21:23:54.223Z  INFO 27419 --- [LAA Amend a Claim Service] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 109 class path changes (30 additions, 0 deletions, 79 modifications)
+2026-02-18T21:23:54.224Z  INFO 27419 --- [LAA Amend a Claim Service] [       Thread-5] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-02-18T21:23:56.228Z  INFO 27419 --- [LAA Amend a Claim Service] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-02-18T21:23:56.228Z ERROR 27419 --- [LAA Amend a Claim Service] [o-8080-Acceptor] org.apache.tomcat.util.net.Acceptor      : Socket accept failed
+
+java.nio.channels.AsynchronousCloseException
+	at java.base/java.nio.channels.spi.AbstractInterruptibleChannel.end(AbstractInterruptibleChannel.java:218) ~[na:na]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.end(ServerSocketChannelImpl.java:374) ~[na:na]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:399) ~[na:na]
+	at org.apache.tomcat.util.net.NioEndpoint.serverSocketAccept(NioEndpoint.java:532) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.tomcat.util.net.NioEndpoint.serverSocketAccept(NioEndpoint.java:71) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.tomcat.util.net.Acceptor.run(Acceptor.java:127) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
+
+2026-02-18T21:23:56.228Z  INFO 27419 --- [LAA Amend a Claim Service] [       Thread-5] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-02-18T21:23:58.232Z  INFO 27419 --- [LAA Amend a Claim Service] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-02-18T21:23:58.232Z ERROR 27419 --- [LAA Amend a Claim Service] [o-8182-Acceptor] org.apache.tomcat.util.net.Acceptor      : Socket accept failed
+
+java.nio.channels.AsynchronousCloseException
+	at java.base/java.nio.channels.spi.AbstractInterruptibleChannel.end(AbstractInterruptibleChannel.java:218) ~[na:na]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.end(ServerSocketChannelImpl.java:374) ~[na:na]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:399) ~[na:na]
+	at org.apache.tomcat.util.net.NioEndpoint.serverSocketAccept(NioEndpoint.java:532) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.tomcat.util.net.NioEndpoint.serverSocketAccept(NioEndpoint.java:71) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at org.apache.tomcat.util.net.Acceptor.run(Acceptor.java:127) ~[tomcat-embed-core-11.0.18.jar:11.0.18]
+	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
+
+2026-02-18T21:23:58.233Z  INFO 27419 --- [LAA Amend a Claim Service] [       Thread-5] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
