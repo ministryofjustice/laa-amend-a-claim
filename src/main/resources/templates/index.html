@@ -27,7 +27,7 @@
                             <div id="search-hint" class="govuk-hint" th:text="#{index.hint}"></div>
 
                             <div class="search-panel">
-                                <div th:replace="~{partials/text-input :: textInput('providerAccountNumber', 'provider-account-number', 'index.providerAccountNumber', 'govuk-!-width-one-half', 'text', true, 'govuk-label--s')}"></div>
+                                <div th:replace="~{partials/text-input :: textInput('providerAccountNumber', 'provider-account-number', 'index.providerAccountNumber', 'govuk-!-width-one-half', 'text', true, 'govuk-label--s', true)}"></div>
 
                                 <div class="govuk-form-group" th:classappend="${#fields.hasErrors('submissionDateMonth') || #fields.hasErrors('submissionDateYear') ? 'govuk-form-group--error' : ''}">
                                     <fieldset class="govuk-fieldset" role="group" aria-describedby="submission-date-hint">
@@ -47,18 +47,18 @@
                                         </p>
                                         <div class="govuk-date-input">
                                             <div class="govuk-date-input__item">
-                                                <div th:replace="~{partials/text-input :: textInput('submissionDateMonth', 'submission-date-month', 'index.submissionDate.month', 'govuk-input--width-2', 'numeric', false, 'govuk-date-input__label')}"></div>
+                                                <div th:replace="~{partials/text-input :: textInput('submissionDateMonth', 'submission-date-month', 'index.submissionDate.month', 'govuk-input--width-2', 'numeric', false, 'govuk-date-input__label', false)}"></div>
                                             </div>
                                             <div class="govuk-date-input__item">
-                                                <div th:replace="~{partials/text-input :: textInput('submissionDateYear', 'submission-date-year', 'index.submissionDate.year', 'govuk-input--width-4', 'numeric', false, 'govuk-date-input__label')}"></div>
+                                                <div th:replace="~{partials/text-input :: textInput('submissionDateYear', 'submission-date-year', 'index.submissionDate.year', 'govuk-input--width-4', 'numeric', false, 'govuk-date-input__label', false)}"></div>
                                             </div>
                                         </div>
                                     </fieldset>
                                 </div>
 
-                                <div th:replace="~{partials/text-input :: textInput('uniqueFileNumber', 'unique-file-number', 'index.uniqueFileNumber', 'govuk-!-width-one-half', 'text', true, 'govuk-label--s')}"></div>
+                                <div th:replace="~{partials/text-input :: textInput('uniqueFileNumber', 'unique-file-number', 'index.uniqueFileNumber', 'govuk-!-width-one-half', 'text', true, 'govuk-label--s', true)}"></div>
 
-                                <div th:replace="~{partials/text-input :: textInput('caseReferenceNumber', 'case-reference-number', 'index.caseReferenceNumber', 'govuk-!-width-one-half', 'text', true, 'govuk-label--s')}"></div>
+                                <div th:replace="~{partials/text-input :: textInput('caseReferenceNumber', 'case-reference-number', 'index.caseReferenceNumber', 'govuk-!-width-one-half', 'text', true, 'govuk-label--s', false)}"></div>
 
                                 <div class="govuk-button-group">
                                     <button type="submit" class="govuk-button" data-module="govuk-button" th:text="#{index.search}"></button>
