@@ -139,6 +139,12 @@ public abstract class ViewTestBase {
         Assertions.assertEquals(expectedText, elements.getFirst().text());
     }
 
+    protected void assertPageCancelLinkValue(Document doc, String expectedText, String expectedHref) {
+        Elements element = doc.getElementsByClass("govuk-link govuk-link--no-visited-state");
+        Assertions.assertEquals(expectedText, element.text());
+        Assertions.assertEquals(expectedHref, element.attr("href"));
+    }
+
     protected void assertPageHasLink(Document doc, String id, String expectedText, String expectedHref) {
         Element element = getElementById(doc, id);
         Assertions.assertEquals(expectedText, element.text());

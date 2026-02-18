@@ -41,7 +41,7 @@ public class AssessmentOutcomeController {
             form.setLiabilityForVat((Boolean) claim.getVatClaimed().getAssessed());
         }
 
-        return renderView(model, form, submissionId, claimId);
+        return renderView(model, form, submissionId, claimId, claim);
     }
 
     @PostMapping("/assessment-outcome")
@@ -54,12 +54,12 @@ public class AssessmentOutcomeController {
             Model model,
             HttpServletRequest request,
             HttpServletResponse response) {
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
+
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return renderView(model, form, submissionId, claimId);
+            return renderView(model, form, submissionId, claimId, claim);
         }
-
-        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
 
         OutcomeType newOutcome = form.getAssessmentOutcome();
 
@@ -80,10 +80,12 @@ public class AssessmentOutcomeController {
         return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
     }
 
-    private String renderView(Model model, AssessmentOutcomeForm form, String submissionId, String claimId) {
+    private String renderView(
+            Model model, AssessmentOutcomeForm form, String submissionId, String claimId, ClaimDetails claim) {
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claimId", claimId);
         model.addAttribute("form", form);
+        model.addAttribute("hasAssessment", claim.isHasAssessment());
 
         return "assessment-outcome";
     }
