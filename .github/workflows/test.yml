@@ -150,8 +150,11 @@ jobs:
           ref: ${{ inputs.branch }}
       - name: Start app with local profile
         run: |
-          chmod +x run.sh
-          ./run.sh local &
+          export SPRING_PROFILES_ACTIVE=local
+          export CLAIMS_API=http://localhost:8081
+          
+          echo "Running application..."
+          ./gradlew bootRun
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.13.0
         with:
