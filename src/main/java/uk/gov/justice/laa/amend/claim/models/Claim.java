@@ -11,6 +11,7 @@ import tools.jackson.databind.ext.javatime.deser.YearMonthDeserializer;
 import tools.jackson.databind.ext.javatime.ser.YearMonthSerializer;
 import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @Data
@@ -33,6 +34,7 @@ public class Claim implements Serializable {
     private LocalDate caseStartDate;
 
     private LocalDate caseEndDate;
+    private AreaOfLaw areaOfLaw;
     private String categoryOfLaw;
     private Boolean escaped;
     private Boolean vatApplicable;

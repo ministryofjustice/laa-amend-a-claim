@@ -22,6 +22,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentGet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentOutcome;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
@@ -132,7 +133,7 @@ class AssessmentMapperTest {
         assessmentGet.setLastAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
 
         CivilClaimDetails claimDetails = MockClaimsFunctions.createMockCivilClaim();
-        claimDetails.setAreaOfLaw("LEGAL_HELP");
+        claimDetails.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         // Act
         CivilClaimDetails result = mapper.mapToCivilClaim(assessmentGet, claimDetails);
@@ -195,7 +196,7 @@ class AssessmentMapperTest {
         assessmentGet.setNetWaitingCostsAmount(BigDecimal.valueOf(200));
 
         ClaimDetails claimDetails = MockClaimsFunctions.createMockCrimeClaim();
-        claimDetails.setAreaOfLaw("CRIME_LOWER");
+        claimDetails.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
         ClaimField allowedTotalVatField = AllowedClaimField.builder()
                 .key(ALLOWED_TOTAL_VAT)
                 .submitted(345)

@@ -29,7 +29,8 @@ export IS_VOIDING_ENABLED=true
 
 echo "[INFO] Starting API application..."
 pushd ../laa-data-claims-api >/dev/null
-git checkout main
+# TODO: Revert to main
+git checkout feature/BC-393-improved-claim-search
 git pull
 cd claims-data
 docker-compose down -v
