@@ -161,7 +161,14 @@ jobs:
           export CLAIMS_API=http://localhost:8081
           
           echo "Running application..."
-          ./gradlew bootRun
+          ./gradlew bootRun &
+          
+          echo "Waiting for application..."
+          until curl -s http://localhost:8182/actuator/health; do
+            sleep 5
+          done
+          
+          echo "Application ready"
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.13.0
         with:
