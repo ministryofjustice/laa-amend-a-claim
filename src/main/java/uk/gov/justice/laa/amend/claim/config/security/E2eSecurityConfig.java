@@ -40,7 +40,6 @@ public class E2eSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChainE2e(final HttpSecurity http) {
         http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny))
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
                         .contentSecurityPolicy(csp -> csp.policyDirectives(POLICY_DIRECTIVES)))
                 .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class);
