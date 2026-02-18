@@ -148,6 +148,10 @@ jobs:
         uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.branch }}
+      - name: Start app with local profile
+        run: |
+          chmod +x run.sh
+          ./run.sh local &
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.13.0
         with:
