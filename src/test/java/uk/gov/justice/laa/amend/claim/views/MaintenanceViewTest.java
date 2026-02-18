@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import org.jsoup.nodes.Document;
@@ -27,7 +28,7 @@ class MaintenanceViewTest extends ViewTestBase {
 
     @Test
     void testPage() throws Exception {
-        when(maintenanceService.maintenanceEnabled()).thenReturn(true);
+        when(maintenanceService.maintenanceApplies(any())).thenReturn(true);
         when(maintenanceService.getTitle()).thenReturn(new ThymeleafLiteralString("Service maintenance"));
         when(maintenanceService.getMessage()).thenReturn(new ThymeleafLiteralString("Expected return: 9:00"));
 
