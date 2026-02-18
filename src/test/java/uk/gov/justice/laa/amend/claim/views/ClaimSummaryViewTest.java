@@ -36,6 +36,7 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
@@ -67,7 +68,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
     void testCivilClaimPage() throws Exception {
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
         createClaimSummary(claim);
-        claim.setAreaOfLaw("LEGAL_HELP");
+        claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
         claim.setCategoryOfLaw("TEST");
         claim.setMatterTypeCode("IMLB:AHQS");
 
@@ -91,7 +92,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList1.get(3), "Provider name", "Currently not available");
         assertSummaryListRowContainsValues(summaryList1.get(4), "Provider account number", "0P322F");
         assertSummaryListRowContainsValues(summaryList1.get(5), "Date submitted", "15 June 2020 at 09:30:00");
-        assertSummaryListRowContainsValues(summaryList1.get(6), "Area of law", "LEGAL_HELP");
+        assertSummaryListRowContainsValues(summaryList1.get(6), "Area of law", "LEGAL HELP");
         assertSummaryListRowContainsValues(summaryList1.get(7), "Category of law", "TEST");
         assertSummaryListRowContainsValues(summaryList1.get(8), "Fee code", "FC");
         assertSummaryListRowContainsValues(summaryList1.get(9), "Fee code description", "FCD");
@@ -194,7 +195,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
         createClaimSummary(claim);
         claim.setMatterTypeCode("IMLB");
-        claim.setAreaOfLaw("CRIME");
+        claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
         claim.setSchemeId("SCHEME");
         claim.setPoliceStationCourtPrisonId("POLICE_STATION_COURT_PRISON");
 
@@ -219,7 +220,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList1.get(2), "Provider name", "Currently not available");
         assertSummaryListRowContainsValues(summaryList1.get(3), "Provider account number", "0P322F");
         assertSummaryListRowContainsValues(summaryList1.get(4), "Date submitted", "15 June 2020 at 09:30:00");
-        assertSummaryListRowContainsValues(summaryList1.get(5), "Area of law", "CRIME");
+        assertSummaryListRowContainsValues(summaryList1.get(5), "Area of law", "CRIME LOWER");
         assertSummaryListRowContainsValues(summaryList1.get(6), "Category of law", "Not applicable");
         assertSummaryListRowContainsValues(summaryList1.get(7), "Fee code", "FC");
         assertSummaryListRowContainsValues(summaryList1.get(8), "Fee code description", "FCD");

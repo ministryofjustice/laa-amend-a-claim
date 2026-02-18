@@ -11,8 +11,8 @@ import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Sort;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
@@ -25,7 +25,7 @@ public class ClaimService {
     private final ClaimMapper claimMapper;
     private final ProviderApiClient providerApiClient;
 
-    public ClaimResultSet searchClaims(
+    public ClaimResultSetV2 searchClaims(
             String officeCode,
             Optional<String> uniqueFileNumber,
             Optional<String> caseReferenceNumber,
@@ -50,7 +50,7 @@ public class ClaimService {
         }
     }
 
-    public ClaimResponse getClaim(String submissionId, String claimId) {
+    public ClaimResponseV2 getClaim(String submissionId, String claimId) {
         try {
             return claimsApiClient.getClaim(submissionId, claimId).block();
         } catch (Exception e) {

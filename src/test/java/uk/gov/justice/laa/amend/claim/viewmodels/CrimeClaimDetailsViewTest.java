@@ -22,6 +22,7 @@ import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 
 public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDetails, CrimeClaimDetailsView> {
 
@@ -51,7 +52,7 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
             claim.setProviderName("provider name");
             claim.setProviderAccountNumber("provider account number");
             claim.setSubmittedDate(submittedDate);
-            claim.setAreaOfLaw("area of law");
+            claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
             claim.setCategoryOfLaw("category of law");
             claim.setFeeCode("fee code");
             claim.setFeeCodeDescription("fee code description");
@@ -69,7 +70,7 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
             expectedResult.put("providerName", "provider name");
             expectedResult.put("providerAccountNumber", "provider account number");
             expectedResult.put("submittedDate", submittedDate);
-            expectedResult.put("areaOfLaw", "area of law");
+            expectedResult.put("areaOfLaw", AreaOfLaw.CRIME_LOWER);
             expectedResult.put("categoryOfLaw", "category of law");
             expectedResult.put("feeCode", "fee code");
             expectedResult.put("feeCodeDescription", "fee code description");

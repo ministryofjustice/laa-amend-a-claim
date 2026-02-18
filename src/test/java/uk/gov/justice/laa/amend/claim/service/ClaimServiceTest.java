@@ -28,8 +28,8 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.amend.claim.models.SortDirection;
 import uk.gov.justice.laa.amend.claim.models.SortField;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
@@ -52,7 +52,7 @@ class ClaimServiceTest {
     @DisplayName("Should return sorted valid ClaimResultSet when API client provides valid response")
     void testSortedSearchClaims_ValidResponse() {
         // Arrange
-        var mockApiResponse = new ClaimResultSet(); // Replace with appropriate type or mock object
+        var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
 
         when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc"))
                 .thenReturn(Mono.just(mockApiResponse));
@@ -62,7 +62,7 @@ class ClaimServiceTest {
                 .build();
 
         // Act
-        ClaimResultSet result =
+        var result =
                 claimService.searchClaims("0p322f", Optional.empty(), Optional.empty(), Optional.empty(), 1, 10, sort);
 
         // Assert
@@ -76,13 +76,13 @@ class ClaimServiceTest {
     @DisplayName("Should return valid unsorted ClaimResultSet when API client provides valid response")
     void testUnsortedSearchClaims_ValidResponse() {
         // Arrange
-        var mockApiResponse = new ClaimResultSet(); // Replace with appropriate type or mock object
+        var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
 
         when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, null))
                 .thenReturn(Mono.just(mockApiResponse));
 
         // Act
-        ClaimResultSet result =
+        var result =
                 claimService.searchClaims("0p322f", Optional.empty(), Optional.empty(), Optional.empty(), 1, 10, null);
 
         // Assert
@@ -125,7 +125,7 @@ class ClaimServiceTest {
                 .build();
 
         // Act
-        ClaimResultSet result =
+        var result =
                 claimService.searchClaims("0P322F", Optional.empty(), Optional.empty(), Optional.empty(), 1, 10, sort);
 
         // Assert
@@ -138,12 +138,12 @@ class ClaimServiceTest {
     @DisplayName("Should return valid ClaimResponse when API client provides valid response")
     void testGetClaim_ValidResponse() {
         // Arrange
-        var mockApiResponse = new ClaimResponse(); // Replace with appropriate type or mock object
+        var mockApiResponse = new ClaimResponseV2(); // Replace with appropriate type or mock object
 
         when(claimsApiClient.getClaim("submissionId", "claimId")).thenReturn(Mono.just(mockApiResponse));
 
         // Act
-        ClaimResponse result = claimService.getClaim("submissionId", "claimId");
+        var result = claimService.getClaim("submissionId", "claimId");
 
         // Assert
         assertNotNull(result);
@@ -188,7 +188,7 @@ class ClaimServiceTest {
     @DisplayName("Should return claim details")
     void testGetClaimDetails_Success() {
         // Arrange
-        when(claimsApiClient.getClaim("submissionId", "claimId")).thenReturn(Mono.just(new ClaimResponse()));
+        when(claimsApiClient.getClaim("submissionId", "claimId")).thenReturn(Mono.just(new ClaimResponseV2()));
 
         when(claimsApiClient.getSubmission("submissionId")).thenReturn(Mono.just(new SubmissionResponse()));
         when(claimMapper.mapToClaimDetails(any(), any())).thenReturn(new CivilClaimDetails());
@@ -204,7 +204,7 @@ class ClaimServiceTest {
     @DisplayName("Should enrich claim details with provider name from provider API")
     void testGetClaimDetailsEnrichesProviderName() {
         // Arrange
-        ClaimResponse claimResponse = new ClaimResponse();
+        var claimResponse = new ClaimResponseV2();
         SubmissionResponse submissionResponse = new SubmissionResponse();
         submissionResponse.setOfficeAccountNumber("0P322F");
         CivilClaimDetails claimDetails = new CivilClaimDetails();

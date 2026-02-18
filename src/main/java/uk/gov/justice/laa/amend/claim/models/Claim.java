@@ -11,6 +11,7 @@ import java.time.YearMonth;
 import lombok.Data;
 import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 
 @Data
 public class Claim implements Serializable {
@@ -32,6 +33,7 @@ public class Claim implements Serializable {
     private LocalDate caseStartDate;
 
     private LocalDate caseEndDate;
+    private AreaOfLaw areaOfLaw;
     private String categoryOfLaw;
     private Boolean escaped;
     private Boolean vatApplicable;
