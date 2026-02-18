@@ -1,7 +1,5 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -32,30 +30,29 @@ public class MaintenancePageControllerTest {
     private MaintenanceService maintenanceService;
 
     @Test
+    public void testOnPageLoadReturnsHomeWhenMaintenanceDisabled() throws Exception {
+        when(maintenanceService.maintenanceEnabled()).thenReturn(false);
+
+        mockMvc.perform(get("/maintenance"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
+    }
+
+    @Test
     public void testOnPageLoadReturnsViewWhenMaintenanceEnabled() throws Exception {
         when(maintenanceService.maintenanceEnabled()).thenReturn(true);
 
-        ThymeleafLiteralString message = new ThymeleafLiteralString("Foo");
-        ThymeleafLiteralString title = new ThymeleafLiteralString("Bar");
+        ThymeleafLiteralString pageMessage = new ThymeleafLiteralString("Service undergoing maintenance");
+        ThymeleafLiteralString pageTitle = new ThymeleafLiteralString("Service maintenance");
 
-        when(maintenanceService.getMessage()).thenReturn(message);
+        when(maintenanceService.getMessage()).thenReturn(pageMessage);
 
-        when(maintenanceService.getTitle()).thenReturn(title);
+        when(maintenanceService.getTitle()).thenReturn(pageTitle);
 
         mockMvc.perform(get("/maintenance"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("maintenance"))
-                .andExpect(model().attribute("maintenanceMessage", message))
-                .andExpect(model().attribute("maintenanceTitle", title));
-    }
-
-    @Test
-    public void testOnPageLoadReturnsNotFoundWhenMaintenanceDisabled() throws Exception {
-        when(maintenanceService.maintenanceEnabled()).thenReturn(false);
-
-        mockMvc.perform(get("/maintenance")).andExpect(status().isNotFound());
-
-        verify(maintenanceService, never()).getMessage();
-        verify(maintenanceService, never()).getTitle();
+                .andExpect(model().attribute("maintenanceMessage", pageMessage))
+                .andExpect(model().attribute("maintenanceTitle", pageTitle));
     }
 }
