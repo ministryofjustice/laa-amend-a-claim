@@ -148,6 +148,11 @@ jobs:
         uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.branch }}
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5.2.0
+        with:
+          java-version: 25
+          distribution: corretto
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5.0.0
       - name: Start app with local profile
