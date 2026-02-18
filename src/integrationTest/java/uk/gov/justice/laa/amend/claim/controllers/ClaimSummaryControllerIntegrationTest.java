@@ -20,7 +20,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class ClaimDetailsIntegrationTest extends WireMockSetup {
+class ClaimSummaryControllerIntegrationTest extends WireMockSetup {
 
     private static final String SUBMISSION_ID = "c8f2c0d4-97b1-4c4a-96f2-4dd62a4e6aa2";
     private static final String CLAIM_ID = "3f8a0ac4-2f63-4ed2-8bfb-2eb0fc0ba330";
