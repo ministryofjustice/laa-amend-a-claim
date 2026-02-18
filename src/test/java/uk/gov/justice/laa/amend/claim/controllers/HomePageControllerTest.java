@@ -106,23 +106,27 @@ public class HomePageControllerTest {
     public void testOnPageLoadWithParamsReturnsView() throws Exception {
         when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        mockMvc.perform(get("/").param("providerAccountNumber", "12345")
+        String expectedSearchUrl = "/?providerAccountNumber=123456"
+                + "&submissionDateMonth=3"
+                + "&submissionDateYear=2007"
+                + "&uniqueFileNumber=123456/789"
+                + "&caseReferenceNumber=789"
+                + "&page=1"
+                + "&sort=uniqueFileNumber,asc";
+
+        mockMvc.perform(get("/").param("providerAccountNumber", "123456")
                         .param("submissionDateMonth", "3")
                         .param("submissionDateYear", "2007")
-                        .param("uniqueFileNumber", "67890")
+                        .param("uniqueFileNumber", "123456/789")
                         .param("caseReferenceNumber", "789"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
-                .andExpect(model().attribute("form", hasProperty("providerAccountNumber", is("12345"))))
+                .andExpect(model().attribute("form", hasProperty("providerAccountNumber", is("123456"))))
                 .andExpect(model().attribute("form", hasProperty("submissionDateMonth", is("3"))))
                 .andExpect(model().attribute("form", hasProperty("submissionDateYear", is("2007"))))
-                .andExpect(model().attribute("form", hasProperty("uniqueFileNumber", is("67890"))))
+                .andExpect(model().attribute("form", hasProperty("uniqueFileNumber", is("123456/789"))))
                 .andExpect(model().attribute("form", hasProperty("caseReferenceNumber", is("789"))))
-                .andExpect(
-                        request()
-                                .sessionAttribute(
-                                        "searchUrl",
-                                        "/?providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=67890&caseReferenceNumber=789&page=1&sort=uniqueFileNumber,asc"));
+                .andExpect(request().sessionAttribute("searchUrl", expectedSearchUrl));
     }
 
     @Test
@@ -154,7 +158,6 @@ public class HomePageControllerTest {
         mockMvc.perform(get("/").param("providerAccountNumber", "12345").param("uniqueFileNumber", "§§§"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(containsString("There is a problem")));
-        ;
     }
 
     @Test
@@ -173,34 +176,44 @@ public class HomePageControllerTest {
     public void testOnSubmitReturnsViewForValidFormWithOneField() throws Exception {
         when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        mockMvc.perform(post("/").with(csrf()).param("providerAccountNumber", "12345"))
+        String expectedRedirectUrl = "/?providerAccountNumber=123456&page=1&sort=uniqueFileNumber,asc";
+
+        mockMvc.perform(post("/").with(csrf()).param("providerAccountNumber", "123456"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/?providerAccountNumber=12345&page=1&sort=uniqueFileNumber,asc"));
+                .andExpect(redirectedUrl(expectedRedirectUrl));
     }
 
     @Test
     public void testOnSubmitReturnsViewForValidFormWithAllFields() throws Exception {
         when(searchProperties.isSortEnabled()).thenReturn(true);
 
+        String expectedRedirectUrl = "/?providerAccountNumber=123456"
+                + "&submissionDateMonth=3"
+                + "&submissionDateYear=2007"
+                + "&uniqueFileNumber=123456/789"
+                + "&caseReferenceNumber=789"
+                + "&page=1"
+                + "&sort=uniqueFileNumber,asc";
+
         mockMvc.perform(post("/")
                         .with(csrf())
-                        .param("providerAccountNumber", "12345")
+                        .param("providerAccountNumber", "123456")
                         .param("submissionDateMonth", "3")
                         .param("submissionDateYear", "2007")
-                        .param("uniqueFileNumber", "456")
+                        .param("uniqueFileNumber", "123456/789")
                         .param("caseReferenceNumber", "789"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(
-                        redirectedUrl(
-                                "/?providerAccountNumber=12345&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789&page=1&sort=uniqueFileNumber,asc"));
+                .andExpect(redirectedUrl(expectedRedirectUrl));
     }
 
     @Test
     public void testOnSubmitReturnsViewForValidFormWithSortingDisabled() throws Exception {
         when(searchProperties.isSortEnabled()).thenReturn(false);
 
-        mockMvc.perform(post("/").with(csrf()).param("providerAccountNumber", "12345"))
+        String expectedRedirectUrl = "/?providerAccountNumber=123456&page=1";
+
+        mockMvc.perform(post("/").with(csrf()).param("providerAccountNumber", "123456"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/?providerAccountNumber=12345&page=1"));
+                .andExpect(redirectedUrl(expectedRedirectUrl));
     }
 }

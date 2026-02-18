@@ -1,6 +1,9 @@
-<th:block th:fragment="textInput(name, id, messageKey, inputWidth, inputMode, showErrorMessage, labelClass)">
+<th:block th:fragment="textInput(name, id, messageKey, inputWidth, inputMode, showErrorMessage, labelClass, showHint)">
     <div class="govuk-form-group" th:classappend="${#fields.hasErrors(name) ? 'govuk-form-group--error' : ''}">
         <label th:class="'govuk-label ' + ${labelClass}" th:for="${id}" th:text="#{${messageKey}}"></label>
+        <th:block th:if="${showHint}">
+            <div th:with="key=${messageKey} + '.hint'" th:id="${id} + '-hint'" class="govuk-hint" th:text="#{${key}}"></div>
+        </th:block>
         <th:block th:if="${showErrorMessage}">
             <p th:if="${#fields.hasErrors(name)}" class="govuk-error-message">
                 <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
