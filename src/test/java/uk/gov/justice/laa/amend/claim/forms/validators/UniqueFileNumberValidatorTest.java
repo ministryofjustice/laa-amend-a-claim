@@ -72,6 +72,16 @@ class UniqueFileNumberValidatorTest {
     }
 
     @Test
+    void testAllForwardSlashesIsInvalid() {
+        SearchForm form = new SearchForm();
+        form.setUniqueFileNumber("//////////");
+
+        assertFalse(validator.isValid(form, constraintValidatorContext));
+        verify(constraintValidatorContext)
+                .buildConstraintViolationWithTemplate("{index.uniqueFileNumber.error.format}");
+    }
+
+    @Test
     void testValidInputIsValid() {
         SearchForm form = new SearchForm();
         form.setUniqueFileNumber("123456/789");
