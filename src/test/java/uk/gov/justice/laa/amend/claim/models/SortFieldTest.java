@@ -25,10 +25,38 @@ public class SortFieldTest {
         }
 
         @Test
+        void shouldConvertClientSurname() {
+            String str = "client.clientSurname";
+            SortField result = SortField.fromValue(str);
+            Assertions.assertEquals(SortField.CLIENT_SURNAME, result);
+        }
+
+        @Test
+        void shouldConvertSubmissionPeriod() {
+            String str = "submission.submissionPeriod";
+            SortField result = SortField.fromValue(str);
+            Assertions.assertEquals(SortField.SUBMISSION_PERIOD, result);
+        }
+
+        @Test
+        void shouldConvertCategoryOfLaw() {
+            String str = "calculatedFeeDetail.categoryOfLaw";
+            SortField result = SortField.fromValue(str);
+            Assertions.assertEquals(SortField.CATEGORY_OF_LAW, result);
+        }
+
+        @Test
         void shouldConvertScheduleReference() {
             String str = "scheduleReference";
             SortField result = SortField.fromValue(str);
             Assertions.assertEquals(SortField.SCHEDULE_REFERENCE, result);
+        }
+
+        @Test
+        void shouldConvertEscapeCaseFlag() {
+            String str = "calculatedFeeDetail.escapeCaseFlag";
+            SortField result = SortField.fromValue(str);
+            Assertions.assertEquals(SortField.ESCAPE_CASE_FLAG, result);
         }
 
         @ParameterizedTest

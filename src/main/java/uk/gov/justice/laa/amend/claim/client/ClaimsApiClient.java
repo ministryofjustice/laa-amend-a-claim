@@ -33,8 +33,7 @@ public interface ClaimsApiClient {
             @RequestParam(value = "sort", required = false) String sort,
             @RequestParam(value = "claim_statuses", required = false) ClaimStatus claimStatus);
 
-    // TODO: I've asked Jose to make a v2 version so we can correctly use ClaimResponseV2 as return type
-    @GetExchange(url = "/v1/submissions/{submissionId}/claims/{claimId}", accept = MediaType.APPLICATION_JSON_VALUE)
+    @GetExchange(url = "/v2/submissions/{submissionId}/claims/{claimId}", accept = MediaType.APPLICATION_JSON_VALUE)
     Mono<ClaimResponseV2> getClaim(@PathVariable UUID submissionId, @PathVariable UUID claimId);
 
     @GetExchange(url = "/v1/submissions/{id}", accept = MediaType.APPLICATION_JSON_VALUE)

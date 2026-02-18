@@ -26,7 +26,7 @@ public class Sort {
 
     public Sort(String str) {
         if (str != null) {
-            Pattern pattern = Pattern.compile("^(\\w+),(\\w+)$");
+            Pattern pattern = Pattern.compile("^([\\w.]+),(\\w+)$");
             Matcher matcher = pattern.matcher(str);
             if (matcher.matches()) {
                 this.field = SortField.fromValue(matcher.group(1));
