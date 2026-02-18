@@ -52,13 +52,6 @@ public class SortFieldTest {
             Assertions.assertEquals(SortField.SCHEDULE_REFERENCE, result);
         }
 
-        @Test
-        void shouldConvertEscapeCaseFlag() {
-            String str = "calculatedFeeDetail.escapeCaseFlag";
-            SortField result = SortField.fromValue(str);
-            Assertions.assertEquals(SortField.ESCAPE_CASE_FLAG, result);
-        }
-
         @ParameterizedTest
         @ValueSource(strings = {"foo", "bar"})
         void shouldThrowExceptionForAnythingElse(String str) {

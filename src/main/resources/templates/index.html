@@ -99,7 +99,7 @@
 
                                         <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.CATEGORY_OF_LAW}, 'index.results.categoryOfLaw')}"></th:block>
 
-                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.ESCAPE_CASE_FLAG}, 'index.results.escaped')}"></th:block>
+                                        <th scope="col" class="govuk-table__header" th:text="#{index.results.escaped}"></th>
                                     </tr>
                                 </thead>
                                 <tbody class="govuk-table__body">
