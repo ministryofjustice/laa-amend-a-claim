@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -31,7 +32,7 @@ public class MaintenancePageControllerTest {
 
     @Test
     public void testOnPageLoadReturnsHomeWhenMaintenanceDisabled() throws Exception {
-        when(maintenanceService.maintenanceEnabled()).thenReturn(false);
+        when(maintenanceService.maintenanceApplies(any())).thenReturn(false);
 
         mockMvc.perform(get("/maintenance"))
                 .andExpect(status().is3xxRedirection())
@@ -40,7 +41,7 @@ public class MaintenancePageControllerTest {
 
     @Test
     public void testOnPageLoadReturnsViewWhenMaintenanceEnabled() throws Exception {
-        when(maintenanceService.maintenanceEnabled()).thenReturn(true);
+        when(maintenanceService.maintenanceApplies(any())).thenReturn(true);
 
         ThymeleafLiteralString pageMessage = new ThymeleafLiteralString("Service undergoing maintenance");
         ThymeleafLiteralString pageTitle = new ThymeleafLiteralString("Service maintenance");
