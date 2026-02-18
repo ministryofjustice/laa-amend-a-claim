@@ -33,7 +33,7 @@ public class BrowserSession {
             playwright = Playwright.create();
             BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(EnvConfig.headless());
             if (EnvConfig.zapEnabled()) {
-                launchOptions.setProxy("http://localhost:8090");
+                launchOptions.setProxy(EnvConfig.zapUrl());
                 setupZap();
             }
             browser = playwright.chromium().launch(launchOptions);
@@ -80,7 +80,7 @@ public class BrowserSession {
     private static synchronized void setupZap() {
         try {
             Runtime.getRuntime().addShutdownHook(new Thread(BrowserSession::generateZapReport));
-            zap = new ClientApi("localhost", 8090);
+            zap = new ClientApi(EnvConfig.host(), 8090);
             String[] urlsToExclude = {
                 "http://clients2\\.google\\.com.*",
                 "https://aadcdn\\.msauth\\.net.*",

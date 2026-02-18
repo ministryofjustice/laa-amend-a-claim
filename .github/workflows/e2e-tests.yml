@@ -221,6 +221,9 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5.0.0
 
+      - name: Set up ZAP
+        run: docker compose up -d zap
+
       - name: Install Node dependencies
         working-directory: src/e2e
         run: npm install
@@ -245,17 +248,20 @@ jobs:
           }          
           check_health "AMEND_CLAIM_UI" "http://${AMEND_CLAIM_UI}:8084/actuator/health"
           check_health "DATA_CLAIMS_SERVICE" "http://${DATA_CLAIMS_SERVICE}:8082/actuator/health"
+          check_health "ZAP" "http://${AMEND_CLAIM_UI}:8090"
 
       - name: Run E2E Tests
         working-directory: src/e2e
         run: |
           export CI=true
+          export HOST=${AMEND_CLAIM_UI}
           export SILAS_AUTH_ENABLED=false
           export AXE_ENABLED=true
-          export ZAP_ENABLED=false
+          export ZAP_ENABLED=true
+          export ZAP_URL=http://${HOST}:8090
           export DB_USER=${E2E_DB_USER}
           export DB_PASSWORD=${E2E_DB_PASSWORD}
-          export UI_BASE_URL=http://${AMEND_CLAIM_UI}:8084 
+          export UI_BASE_URL=http://${HOST}:8084
           export DB_CONNECTION_URL=jdbc:postgresql://${DATA_CLAIMS_SERVICE}:5435/laa_data_claims_api_dev \
           
           echo "Running E2E tests..."

@@ -69,6 +69,14 @@ public class EnvConfig {
         return "build/axe-reports/json";
     }
 
+    public static String zapUrl() {
+        return getOrDefault("ZAP_URL", "http://localhost:8090");
+    }
+
+    public static String host() {
+        return getOrDefault("HOST", "localhost");
+    }
+
     public static boolean zapEnabled() {
         return getBooleanOrDefault("ZAP_ENABLED", false);
     }
