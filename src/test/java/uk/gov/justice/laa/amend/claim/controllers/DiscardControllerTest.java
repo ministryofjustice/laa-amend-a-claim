@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
@@ -65,7 +66,7 @@ public class DiscardControllerTest {
         String searchUrl = "/?page=1";
         session.setAttribute("searchUrl", searchUrl);
 
-        mockMvc.perform(post(uri).session(session))
+        mockMvc.perform(post(uri).session(session).with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(searchUrl))
                 .andExpect(flash().attribute("discarded", true))
@@ -76,7 +77,7 @@ public class DiscardControllerTest {
     public void testDiscardRemovesClaimFromSessionAndRedirectsWhenSearchUrlIsNotCached() throws Exception {
         String uri = String.format("/submissions/%s/claims/%s/discard", submissionId, claimId);
 
-        mockMvc.perform(post(uri).session(session))
+        mockMvc.perform(post(uri).session(session).with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
                 .andExpect(flash().attribute("discarded", true))

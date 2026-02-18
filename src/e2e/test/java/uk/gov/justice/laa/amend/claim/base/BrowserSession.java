@@ -6,10 +6,12 @@ import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.WaitForSelectorState;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.zaproxy.clientapi.core.ClientApi;
+import org.zaproxy.clientapi.core.ClientApiException;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.pages.LoginPage;
 
@@ -102,7 +104,8 @@ public class BrowserSession {
             Path path = Paths.get("build/zap-reports/zap.html");
             Files.createDirectories(path.getParent());
             Files.write(path, zap.core.htmlreport());
-        } catch (Exception e) {
+            // TODO - add step to GitHub action to review the /zap-reports/zap.html artifact and fail for >= Medium
+        } catch (IOException | ClientApiException e) {
             System.err.println(e.getMessage());
         }
     }

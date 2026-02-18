@@ -57,7 +57,7 @@ public abstract class LaaPage {
                     reporter.JSONStringify(axeResults, path);
                     assertTrue(axeResults.violationFree());
                 }
-            } catch (RuntimeException | IOException e) {
+            } catch (IOException e) {
                 System.err.println(e.getMessage());
             }
         }
