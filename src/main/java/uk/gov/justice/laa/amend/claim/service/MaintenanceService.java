@@ -46,11 +46,11 @@ public class MaintenanceService {
                 .anyMatch(cookie -> cookie.getValue().equals(bypassPassword));
     }
 
-    private boolean maintenanceEnabled() {
-        if (!Files.exists(ENABLED)) {
-            return false;
+    public boolean maintenanceEnabled() {
+        if (Files.exists(ENABLED)) {
+            return readEnabledValue();
         }
-        return readEnabledValue();
+        return false;
     }
 
     private boolean readEnabledValue() {

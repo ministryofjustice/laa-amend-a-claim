@@ -1,31 +1,24 @@
-# laa-amend-a-claim
-[![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/laa-spring-boot-microservice-template/badge)](https://github-community.service.justice.gov.uk/repository-standards/laa-spring-boot-microservice-template)
+# Amend a claim
+[![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/laa-amend-a-claim/badge)](https://github-community.service.justice.gov.uk/repository-standards/laa-amend-a-claim)
 
-### ⚠️ WORK IN PROGRESS ⚠️
 ## Overview
 
-The project uses the `laa-spring-boot-gradle-plugin` Gradle plugin which provides
-sensible defaults for the following plugins:
+Amend a claim is a Spring Boot web application that enables Legal Aid Agency caseworkers to perform escape case assessments on claims submitted via [Submit a Bulk Claim](https://github.com/ministryofjustice/laa-submit-a-bulk-claim).
 
-- [Checkstyle](https://docs.gradle.org/current/userguide/checkstyle_plugin.html)
-- [Dependency Management](https://plugins.gradle.org/plugin/io.spring.dependency-management)
-- [Jacoco](https://docs.gradle.org/current/userguide/jacoco_plugin.html)
-- [Java](https://docs.gradle.org/current/userguide/java_plugin.html)
-- [Maven Publish](https://docs.gradle.org/current/userguide/publishing_maven.html)
-- [Spring Boot](https://plugins.gradle.org/plugin/org.springframework.boot)
-- [Test Logger](https://github.com/radarsh/gradle-test-logger-plugin)
-- [Versions](https://github.com/ben-manes/gradle-versions-plugin)
+The service authenticates users via Sign in to LAA Services (SiLAS), reads claims from Data Stewardship's [Data Claims API](https://github.com/ministryofjustice/laa-data-claims-api), and allows users to submit escape case assessments to this data store.
 
-The plugin is provided by -  [laa-spring-boot-common](https://github.com/ministryofjustice/laa-spring-boot-common), where you can find
-more information regarding setup and usage.
+## Developer setup
 
+### Prerequisites
+- Java 25
+- Docker
 
-#### Creating a GitHub Token
+### Creating a GitHub Token
 
 1. Ensure you have created a classic GitHub Personal Access Token with the following permissions:
-   1. repo
-   2. write:packages
-   3. read:packages
+    1. repo
+    2. write:packages
+    3. read:packages
 2. The token **must be authorised with (MoJ) SSO**.
 3. Add the following parameters to `~/.gradle/gradle.properties`
 
@@ -35,15 +28,12 @@ project.ext.gitPackageKey = <your GitHub access token>
 
 ```
 
-#### Filling out .env
+### Filling out .env
 
 Using the `.env-template` file as a template, copy to a new .env file
 `cp .env-template .env`
 
 Be sure to fill out all values as they are required for pulling dependencies for the application to run
-
-
-## Developer setup
 
 ### Commit hooks
 Run `scripts/setup-hooks.sh` to install pre-commit hooks for Git. This will install prek pre commit hook into git, which helps to:
@@ -104,35 +94,63 @@ We use Snyk to help identify security vulnerabilities in our code and dependenci
 ### Run integration tests
 `./gradlew integrationTest`
 
+### Run E2E tests
+E2E tests use Playwright for UI automation testing.
+
+```bash
+./e2e.sh                              # Run all E2E tests
+./e2e.sh SearchTest                   # Run a specific test class
+./e2e.sh SearchTest.canSearchForClaim # Run a specific test
+./e2e.sh --allure-serve               # Run tests and serve Allure report
+```
+
+See [src/e2e/README.md](src/e2e/README.md) for detailed setup instructions, including MFA configuration and test data setup.
+
 ### Run application via Docker
 `docker compose up`
 
-#### Swagger UI
-- http://localhost:8080/swagger-ui/index.html
-
-#### API docs (JSON)
-- http://localhost:8080/v3/api-docs
+This starts the following services:
+- **WireMock** (port 8081): Mocks the Claims API and Provider API
+- **Redis** (port 6379): Session storage with persistent volume
 
 #### Actuator endpoints
 The following actuator endpoints have been configured:
 - http://localhost:8182/actuator
 - http://localhost:8182/actuator/health
 
-## GitHub workflow
-The following workflows have been provided:
+## GitHub workflows
 
-* Build and test PR - `build-test-pr.yml`
-* Build and deploy after PR merged - `pr-merge-main.yml` 
+* `feature.yml` - Feature branch pipeline: build -> deploy to ephemeral → test → security → deploy to dev
+* `main.yml` - Main branch pipeline: build → test → security → deploy to dev → UAT → staging → production 
 
 ## Additional information
 
+### Build plugin
+This project uses [laa-spring-boot-gradle-plugin](https://github.com/ministryofjustice/laa-ccms-spring-boot-common) which provides sensible defaults for:
+- Checkstyle
+- Dependency Management
+- Jacoco (code coverage)
+- Java
+- Spring Boot
+- Test Logger
+- Versions
+
 ### Libraries used
-- [Spring Boot Actuator](https://docs.spring.io/spring-boot/reference/actuator/index.html) - used to provide various endpoints to help monitor the application, such as view application health and information.
-- [Spring Boot Web](https://docs.spring.io/spring-boot/reference/web/index.html) - used to provide features for building the REST API implementation.
-- [Spring Data JPA](https://docs.spring.io/spring-data/jpa/reference/jpa.html) - used to simplify database access and interaction, by providing an abstraction over persistence technologies, to help reduce boilerplate code.
-- [Springdoc OpenAPI](https://springdoc.org/) - used to generate OpenAPI documentation. It automatically generates Swagger UI, JSON documentation based on your Spring REST APIs.
-- [Lombok](https://projectlombok.org/) - used to help to reduce boilerplate Java code by automatically generating common
-  methods like getters, setters, constructors etc. at compile-time using annotations.
-- [MapStruct](https://mapstruct.org/) - used for object mapping, specifically for converting between different Java object types, such as Data Transfer Objects (DTOs)
-  and Entity objects. It generates mapping code at compile code.
-- [H2](https://www.h2database.com/html/main.html) - used to provide an example database and should not be used in production.
+
+#### Spring Framework
+- [Spring Boot Actuator](https://docs.spring.io/spring-boot/reference/actuator/index.html) - provides endpoints for monitoring application health and information.
+- [Spring Boot Web](https://docs.spring.io/spring-boot/reference/web/index.html) - provides features for building the web application with Thymeleaf templating.
+- [Spring Data Redis](https://docs.spring.io/spring-data/redis/reference/index.html) - provides Redis-backed session management.
+- [Spring Security OAuth2](https://docs.spring.io/spring-security/reference/servlet/oauth2/index.html) - provides authentication via Azure Entra ID.
+
+#### Frontend
+- [GOV.UK Frontend](https://frontend.design-system.service.gov.uk/) - provides GOV.UK Design System components for accessible, consistent UI.
+- [MOJ Frontend](https://design-patterns.service.justice.gov.uk/) - extends GOV.UK Frontend with Ministry of Justice specific components.
+
+#### Code Generation
+- [Lombok](https://projectlombok.org/) - reduces boilerplate by generating getters, setters, constructors etc. at compile-time.
+- [MapStruct](https://mapstruct.org/) - generates type-safe mapping code between DTOs and entity objects at compile time.
+
+#### Observability
+- [Sentry](https://docs.sentry.io/platforms/java/guides/spring-boot/) - provides error tracking and performance monitoring.
+- [Micrometer](https://micrometer.io/) with [Prometheus](https://prometheus.io/) - provides application metrics.
