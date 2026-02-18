@@ -34,7 +34,7 @@ public abstract class ViewTestBase {
     public MockMvc mockMvc;
 
     @MockitoBean
-    private MaintenanceService maintenanceService;
+    protected MaintenanceService maintenanceService;
 
     @BeforeEach
     public void setup() {
