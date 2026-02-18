@@ -117,8 +117,7 @@ class IndexViewTest extends ViewTestBase {
         assertTableHeaderIsSortable(headers.get(5), "none", "Account", "/?page=1&sort=scheduleReference,asc");
         assertTableHeaderIsSortable(
                 headers.get(6), "none", "Category of law", "/?page=1&sort=calculatedFeeDetail.categoryOfLaw,asc");
-        assertTableHeaderIsSortable(
-                headers.get(7), "none", "Escape case", "/?page=1&sort=calculatedFeeDetail.escapeCaseFlag,asc");
+        assertTableHeaderIsNotSortable(headers.get(7), "Escape case");
     }
 
     @Test
