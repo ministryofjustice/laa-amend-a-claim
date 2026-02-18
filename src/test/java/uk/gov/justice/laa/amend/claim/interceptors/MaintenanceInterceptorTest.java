@@ -1,9 +1,8 @@
 package uk.gov.justice.laa.amend.claim.interceptors;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,7 +50,8 @@ class MaintenanceInterceptorTest {
 
         when(service.maintenanceApplies(request)).thenReturn(true);
 
-        assertFalse(interceptor.preHandle(request, response, handler));
-        verify(response).sendRedirect(request.getContextPath() + "/maintenance");
+        ResponseStatusException ex =
+                assertThrows(ResponseStatusException.class, () -> interceptor.preHandle(request, response, handler));
+        assertTrue(ex.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(503)));
     }
 }

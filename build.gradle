@@ -1,5 +1,5 @@
 plugins {
-    id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.0.5'
+    id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.0.9'
     id "com.diffplug.spotless" version "8.2.1"
     id "com.palantir.java-format-spotless" version "2.85.0"
     id "io.sentry.jvm.gradle" version "6.0.0"
@@ -71,6 +71,9 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
 
+    // Snyk vulnerability overrides
+    implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.18'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:11.0.18'
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'

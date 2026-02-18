@@ -5,7 +5,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerInterceptor;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
@@ -28,7 +30,6 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         }
 
         log.info("Maintenance on, forward: {} to maintenance page", path);
-        response.sendRedirect(request.getContextPath() + "/maintenance");
-        return false;
+        throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Maintenance is on");
     }
 }

@@ -26,7 +26,7 @@ public class ErrorViewTest extends ViewTestBase {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {400, 401, 403, 500, 503})
+    @ValueSource(ints = {400, 401, 403, 500})
     void testPage(int requestStatus) throws Exception {
         when(referenceNumberFactory.create()).thenReturn("123456");
 
