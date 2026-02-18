@@ -85,7 +85,7 @@ public class AssessmentOutcomeController {
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claimId", claimId);
         model.addAttribute("form", form);
-        model.addAttribute("claim", claim.toViewModel());
+        model.addAttribute("hasAssessment", claim.isHasAssessment());
 
         return "assessment-outcome";
     }

@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import java.util.Map;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -106,5 +107,11 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
         assertPageHasRadioButtons(doc);
         assertPageHasInlineRadioButtons(doc);
         assertPageDoesNotHaveBackLink(doc);
+    }
+
+    private Document renderDocumentWithAssessmentOutcome(Boolean hasAssessment, OutcomeType outcome) throws Exception {
+        claim.setHasAssessment(hasAssessment);
+        claim.setAssessmentOutcome(outcome);
+        return renderDocument(Map.of());
     }
 }
