@@ -143,6 +143,9 @@ jobs:
     name: Scan the web application
     runs-on: ubuntu-latest
     needs: unit-and-integration-tests
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -159,8 +162,10 @@ jobs:
         env:
           SPRING_PROFILE: local
           CLAIMS_API: http://localhost:8081
+          PROVIDER_API: http://localhost:8081
           SENTRY_ENVIRONMENT: local
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          REDIS_URL: http://localhost:6379
         run: |
           echo "Running application..."
           ./gradlew bootRun &
