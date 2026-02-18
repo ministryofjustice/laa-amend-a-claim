@@ -148,6 +148,8 @@ jobs:
         uses: actions/checkout@v6.0.2
         with:
           ref: ${{ inputs.branch }}
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5.0.0
       - name: Start app with local profile
         run: |
           export SPRING_PROFILES_ACTIVE=local
