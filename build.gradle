@@ -45,7 +45,7 @@ dependencies {
 
     // Data claims API
     // TODO: Revert to main
-    implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:fafb432-SNAPSHOT'
+    implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:37115e3-SNAPSHOT'
     // Removes 'unknown enum constant RequiredMode.REQUIRED' warning (springdoc is a transitive dependency of data-claims-api-models)
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1'
 

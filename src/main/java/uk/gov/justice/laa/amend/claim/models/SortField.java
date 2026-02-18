@@ -7,7 +7,11 @@ import lombok.Getter;
 public enum SortField {
     UNIQUE_FILE_NUMBER("uniqueFileNumber"),
     CASE_REFERENCE_NUMBER("caseReferenceNumber"),
-    SCHEDULE_REFERENCE("scheduleReference");
+    CLIENT_SURNAME("client.clientSurname"),
+    SUBMISSION_PERIOD("submission.submissionPeriod"),
+    SCHEDULE_REFERENCE("scheduleReference"),
+    CATEGORY_OF_LAW("calculatedFeeDetail.categoryOfLaw"),
+    ESCAPE_CASE_FLAG("calculatedFeeDetail.escapeCaseFlag");
 
     private final String value;
 

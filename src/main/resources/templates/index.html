@@ -91,15 +91,15 @@
 
                                         <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.CASE_REFERENCE_NUMBER}, 'index.results.caseReferenceNumber')}"></th:block>
 
-                                        <th scope="col" class="govuk-table__header" th:text="#{index.results.clientSurname}"></th>
+                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.CLIENT_SURNAME}, 'index.results.clientSurname')}"></th:block>
 
-                                        <th scope="col" class="govuk-table__header" th:text="#{index.results.dateSubmitted}"></th>
+                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.SUBMISSION_PERIOD}, 'index.results.dateSubmitted')}"></th:block>
 
                                         <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.SCHEDULE_REFERENCE}, 'index.results.account')}"></th:block>
 
-                                        <th scope="col" class="govuk-table__header" th:text="#{index.results.categoryOfLaw}"></th>
+                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.CATEGORY_OF_LAW}, 'index.results.categoryOfLaw')}"></th:block>
 
-                                        <th scope="col" class="govuk-table__header" th:text="#{index.results.escaped}"></th>
+                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.ESCAPE_CASE_FLAG}, 'index.results.escaped')}"></th:block>
                                     </tr>
                                 </thead>
                                 <tbody class="govuk-table__body">
@@ -117,7 +117,7 @@
                                         <td class="govuk-table__cell" th:text="${claim.submissionPeriodForDisplay}" th:data-sort-value="${claim.submissionPeriodForSorting}"></td>
                                         <td class="govuk-table__cell" th:text="${claim.accountNumber}"></td>
                                         <td class="govuk-table__cell" th:text="${claim.claim.categoryOfLaw}"></td>
-                                        <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped).resolve(#messages)}">
+                                        <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped).resolve(#messages)}" th:data-sort-value="${claim.claim.escaped}">
                                             <th:block th:if="${claim.claim.escaped}">
                                                 <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
                                             </th:block>
