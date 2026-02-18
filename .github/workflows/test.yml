@@ -146,6 +146,9 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+    permissions:
+      contents: read
+      issues: write
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
