@@ -24,7 +24,6 @@ public class ErrorPageController implements ErrorController {
 
     @RequestMapping("/error")
     public String handleError(HttpServletRequest request, HttpServletResponse response, Model model) {
-        Exception exception = (Exception) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
         int status = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE))
                 .map(x -> Integer.parseInt(x.toString()))
                 .orElse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -32,22 +31,27 @@ public class ErrorPageController implements ErrorController {
         if (status == HttpServletResponse.SC_NOT_FOUND) {
             response.setStatus(status);
             return "not-found";
-        } else if (status == HttpServletResponse.SC_SERVICE_UNAVAILABLE) {
-            response.setStatus(status);
-            model.addAttribute("maintenanceMessage", maintenanceService.getMessage());
-            model.addAttribute("maintenanceTitle", maintenanceService.getTitle());
-            return "maintenance";
-        } else {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            String referenceNumber = referenceNumberFactory.create();
-            model.addAttribute("referenceNumber", referenceNumber);
-            log.error(
-                    "Something went wrong. Reference: {}. Status: {}. Session ID: {}",
-                    referenceNumber,
-                    status,
-                    request.getSession().getId(),
-                    exception);
-            return "error";
         }
+
+        if (status == HttpServletResponse.SC_SERVICE_UNAVAILABLE) {
+            if (maintenanceService.maintenanceEnabled()) {
+                response.setStatus(status);
+                model.addAttribute("maintenanceMessage", maintenanceService.getMessage());
+                model.addAttribute("maintenanceTitle", maintenanceService.getTitle());
+                return "maintenance";
+            }
+        }
+
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        String referenceNumber = referenceNumberFactory.create();
+        model.addAttribute("referenceNumber", referenceNumber);
+        Exception exception = (Exception) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+        log.error(
+                "Something went wrong. Reference: {}. Status: {}. Session ID: {}",
+                referenceNumber,
+                status,
+                request.getSession().getId(),
+                exception);
+        return "error";
     }
 }
