@@ -197,6 +197,10 @@ jobs:
           
           echo "ERROR: Application did not start"           
           exit 1
+      - name: Dump rendered HTML
+        run: |
+          curl -s http://localhost:8080/?providerAccountNumber=0P322F > homepage.html
+          cat homepage.html
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.13.0 # https://github.com/zaproxy/action-full-scan
         with:
