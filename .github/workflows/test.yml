@@ -146,6 +146,10 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -159,17 +163,17 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5.0.0
       - name: Start app with local profile
-        env:
-          SPRING_PROFILES_ACTIVE: local
-          CLAIMS_API: http://localhost:8081
-          PROVIDER_API: http://localhost:8081
-          SENTRY_ENVIRONMENT: local
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          REDIS_URL: http://localhost:6379
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         run: |
+          export SPRING_PROFILES_ACTIVE=local
+          export CLAIMS_API=http://localhost:8081
+          export PROVIDER_API=http://localhost:8081
+          export SENTRY_ENVIRONMENT=local
+          export REDIS_URL=http://localhost:6379
+          export SENTRY_DSN=${SENTRY_DSN}
+          export AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
+          export AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}
+          export AZURE_TENANT_ID=${AZURE_TENANT_ID}
+          
           echo "Running application..."
           docker compose up -d wiremock redis
           ./gradlew bootRun &
