@@ -9,6 +9,7 @@ import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -36,7 +37,7 @@ public interface ClaimMapper {
     @Mapping(target = "allowedTotalVat", source = ".", qualifiedByName = "mapAllowedTotalVat")
     @Mapping(target = "allowedTotalInclVat", source = ".", qualifiedByName = "mapAllowedTotalInclVat")
     @Mapping(target = "hasAssessment", source = "hasAssessment")
-    @Mapping(target = "areaOfLaw", source = "areaOfLaw")
+    @Mapping(target = "areaOfLaw", expression = "java(mapAreaOfLaw(claimResponse))")
     @Mapping(target = "providerAccountNumber", ignore = true)
     @Mapping(target = "providerName", ignore = true)
     @Mapping(target = "submittedDate", ignore = true)
@@ -141,5 +142,16 @@ public interface ClaimMapper {
         if (claim != null) {
             claim.setProviderName(accountName);
         }
+    }
+
+    default AreaOfLaw mapAreaOfLaw(ClaimResponseV2 claimResponse) {
+        if (claimResponse.getAreaOfLaw() == null) {
+            return null;
+        }
+        return switch (claimResponse.getAreaOfLaw()) {
+            case CRIME_LOWER -> AreaOfLaw.CRIME_LOWER;
+            case LEGAL_HELP -> AreaOfLaw.LEGAL_HELP;
+            case MEDIATION -> AreaOfLaw.MEDIATION;
+        };
     }
 }

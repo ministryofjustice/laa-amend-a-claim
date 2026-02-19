@@ -10,6 +10,7 @@ import uk.gov.justice.laa.amend.claim.forms.annotations.ValidCaseReferenceNumber
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidProviderAccountNumber;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidUniqueFileNumber;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.SearchQuery;
 import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
@@ -33,12 +34,18 @@ public class SearchForm {
 
     private String caseReferenceNumber;
 
+    private AreaOfLaw areaOfLaw;
+
+    private Boolean escapeCase;
+
     public SearchForm(SearchQuery query) {
         this.providerAccountNumber = query.getProviderAccountNumber();
         this.submissionDateMonth = query.getSubmissionDateMonth();
         this.submissionDateYear = query.getSubmissionDateYear();
         this.uniqueFileNumber = query.getUniqueFileNumber();
         this.caseReferenceNumber = query.getCaseReferenceNumber();
+        this.areaOfLaw = query.getAreaOfLaw();
+        this.escapeCase = query.getEscapeCase();
     }
 
     public boolean anyNonEmpty() {
@@ -46,7 +53,9 @@ public class SearchForm {
                 || hasText(submissionDateMonth)
                 || hasText(submissionDateYear)
                 || hasText(uniqueFileNumber)
-                || hasText(caseReferenceNumber);
+                || hasText(caseReferenceNumber)
+                || areaOfLaw != null
+                || escapeCase != null;
     }
 
     public String getSubmissionPeriod() {

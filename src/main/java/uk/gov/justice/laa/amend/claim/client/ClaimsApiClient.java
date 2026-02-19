@@ -10,6 +10,7 @@ import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 import reactor.core.publisher.Mono;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
@@ -23,10 +24,11 @@ public interface ClaimsApiClient {
     @GetExchange(url = "/v2/claims", accept = MediaType.APPLICATION_JSON_VALUE)
     Mono<ClaimResultSetV2> searchClaims(
             @RequestParam(value = "office_code") String officeCode,
-            @RequestParam(value = "unique_file_number", required = false, defaultValue = "") String uniqueFileNumber,
-            @RequestParam(value = "case_reference_number", required = false, defaultValue = "")
-                    String caseReferenceNumber,
-            @RequestParam(value = "submission_period", required = false, defaultValue = "") String submissionPeriod,
+            @RequestParam(value = "unique_file_number", defaultValue = "") String uniqueFileNumber,
+            @RequestParam(value = "case_reference_number", defaultValue = "") String caseReferenceNumber,
+            @RequestParam(value = "submission_period", defaultValue = "") String submissionPeriod,
+            @RequestParam(value = "area_of_law", defaultValue = "") AreaOfLaw areaOfLaw,
+            @RequestParam(value = "escaped_case_flag", required = false) Boolean escapedCaseFlag,
             @RequestParam(value = "page", required = false) int page,
             @RequestParam(value = "size", required = false) int size,
             @RequestParam(value = "sort", required = false) String sort);

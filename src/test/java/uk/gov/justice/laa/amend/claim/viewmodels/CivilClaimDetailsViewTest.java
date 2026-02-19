@@ -26,10 +26,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 
 public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDetails, CivilClaimDetailsView> {
 
@@ -162,7 +162,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             expectedResult.put("providerName", "provider name");
             expectedResult.put("providerAccountNumber", "provider account number");
             expectedResult.put("submittedDate", submittedDate);
-            expectedResult.put("areaOfLaw", AreaOfLaw.CRIME_LOWER);
+            expectedResult.put("areaOfLaw", new ThymeleafMessage(AreaOfLaw.CRIME_LOWER.getMessageKey()));
             expectedResult.put("categoryOfLaw", "category of law");
             expectedResult.put("feeCode", "fee code");
             expectedResult.put("feeCodeDescription", "fee code description");

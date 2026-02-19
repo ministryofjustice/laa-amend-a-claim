@@ -80,6 +80,8 @@ public class HomePageController {
                     Optional.ofNullable(form.getUniqueFileNumber()),
                     Optional.ofNullable(form.getCaseReferenceNumber()),
                     Optional.ofNullable(form.getSubmissionPeriod()),
+                    Optional.ofNullable(form.getAreaOfLaw()),
+                    Optional.ofNullable(form.getEscapeCase()),
                     page,
                     DEFAULT_PAGE_SIZE,
                     sort);

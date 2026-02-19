@@ -9,6 +9,7 @@ import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
@@ -30,6 +31,8 @@ public class ClaimService {
             Optional<String> uniqueFileNumber,
             Optional<String> caseReferenceNumber,
             Optional<String> submissionPeriod,
+            Optional<AreaOfLaw> areaOfLaw,
+            Optional<Boolean> escapeCase,
             int page,
             int size,
             Sort sort) {
@@ -40,6 +43,8 @@ public class ClaimService {
                             uniqueFileNumber.orElse(null),
                             caseReferenceNumber.orElse(null),
                             submissionPeriod.orElse(null),
+                            areaOfLaw.orElse(null),
+                            escapeCase.orElse(null),
                             page - 1,
                             size,
                             Objects.toString(sort, null))

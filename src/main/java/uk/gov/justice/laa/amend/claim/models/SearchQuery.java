@@ -31,6 +31,8 @@ public class SearchQuery {
     private String submissionDateYear;
     private String uniqueFileNumber;
     private String caseReferenceNumber;
+    private AreaOfLaw areaOfLaw;
+    private Boolean escapeCase;
 
     public SearchQuery(SearchForm form, Sort sort) {
         this.sort = sort;
@@ -39,6 +41,8 @@ public class SearchQuery {
         this.submissionDateYear = form.getSubmissionDateYear();
         this.uniqueFileNumber = form.getUniqueFileNumber();
         this.caseReferenceNumber = form.getCaseReferenceNumber();
+        this.areaOfLaw = form.getAreaOfLaw();
+        this.escapeCase = form.getEscapeCase();
     }
 
     public void rejectUnknownParams(HttpServletRequest request) {
@@ -73,6 +77,8 @@ public class SearchQuery {
         addQueryParam(builder, "submissionDateYear", submissionDateYear);
         addQueryParam(builder, "uniqueFileNumber", uniqueFileNumber);
         addQueryParam(builder, "caseReferenceNumber", caseReferenceNumber);
+        addQueryParam(builder, "areaOfLaw", areaOfLaw != null ? areaOfLaw.name() : null);
+        addQueryParam(builder, "escapeCase", Objects.toString(escapeCase, null));
 
         addQueryParam(builder, "page", String.valueOf(page));
         addQueryParam(builder, "sort", Objects.toString(sort, null));

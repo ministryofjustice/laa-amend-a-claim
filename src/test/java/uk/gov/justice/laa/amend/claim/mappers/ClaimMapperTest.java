@@ -9,8 +9,6 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -507,11 +505,7 @@ class ClaimMapperTest {
         assertNull(claimField.getAssessed());
     }
 
-    // TODO: This test is not working. It is not passing in the parameter anywhere
-    @ParameterizedTest(name = "Map to Civil Claim when Area of Law: {0}")
-    @EnumSource(
-            value = AreaOfLaw.class,
-            names = {"CRIME_LOWER", "LEGAL_HELP"})
+    @Test
     void testMapToCivilClaim() {
         var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
         response.setUniqueFileNumber("UFN123");
@@ -554,7 +548,7 @@ class ClaimMapperTest {
         assertTrue(claim.getEscaped());
         assertEquals("MT1+MT2", claim.getMatterTypeCode());
         assertEquals(claimSummaryFeeId.toString(), claim.getClaimSummaryFeeId());
-        assertEquals(AreaOfLaw.LEGAL_HELP, claim.getAreaOfLaw());
+        assertEquals(uk.gov.justice.laa.amend.claim.models.AreaOfLaw.LEGAL_HELP, claim.getAreaOfLaw());
         assertNull(claim.getProviderName());
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }
