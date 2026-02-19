@@ -163,6 +163,8 @@ jobs:
       PROVIDER_API: http://localhost:8081
       SENTRY_ENVIRONMENT: local
       REDIS_URL: redis://localhost:6379
+      FEEDBACK_URL: /
+      LAA_URL: /
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -202,7 +204,7 @@ jobs:
           target: 'http://localhost:8080/'
           rules_file_name: '.zap/rules.tsv'
           allow_issue_writing: false
-          cmd_options: '-a'
+          cmd_options: '-a' # https://www.zaproxy.org/docs/docker/full-scan/#usage
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v6.0.0
         with:
