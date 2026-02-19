@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.config.security;
 
+import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.POLICY_DIRECTIVES;
 import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PUBLIC_PATHS;
 
 import java.util.List;
@@ -59,16 +60,7 @@ public class SecurityConfig {
                         .sessionConcurrency(concurrency ->
                                 concurrency.maximumSessions(1).expiredUrl("/logout-success?message=expired")))
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                        .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; "
-                                + "script-src 'self'; "
-                                + "style-src 'self'; "
-                                + "img-src 'self' data:; "
-                                + "font-src 'self'; "
-                                + "connect-src 'self'; "
-                                + "frame-ancestors 'none'; "
-                                + "base-uri 'self'; "
-                                + "form-action 'self'; "
-                                + "upgrade-insecure-requests")));
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(POLICY_DIRECTIVES)));
 
         return http.build();
     }

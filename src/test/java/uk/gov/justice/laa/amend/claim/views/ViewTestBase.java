@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -83,7 +84,8 @@ public abstract class ViewTestBase {
     }
 
     protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) throws Exception {
-        MockHttpServletRequestBuilder requestBuilder = post(mapping).params(params);
+        MockHttpServletRequestBuilder requestBuilder =
+                post(mapping).with(csrf()).params(params);
         return renderDocument(requestBuilder, 400);
     }
 
