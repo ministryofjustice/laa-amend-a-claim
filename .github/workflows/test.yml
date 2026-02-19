@@ -161,11 +161,11 @@ jobs:
       - name: Start app with local profile
         env:
           SPRING_PROFILE: local
-          CLAIMS_API: http://host.docker.internal:8081
-          PROVIDER_API: http://host.docker.internal:8081
+          CLAIMS_API: http://localhost:8081
+          PROVIDER_API: http://localhost:8081
           SENTRY_ENVIRONMENT: local
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          REDIS_URL: http://host.docker.internal:6379
+          REDIS_URL: http://localhost:6379
         run: |
           echo "Running application..."
           ./gradlew bootRun &
@@ -173,7 +173,7 @@ jobs:
         uses: zaproxy/action-full-scan@v0.13.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'http://host.docker.internal:8080/'
+          target: 'http://localhost:8080/'
           rules_file_name: '.zap/rules.tsv'
           allow_issue_writing: false
           fail_action: true
