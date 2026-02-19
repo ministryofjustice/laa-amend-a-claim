@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,6 +32,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class HomePageController {
 
     private final ClaimService claimService;
@@ -84,6 +86,7 @@ public class HomePageController {
                     page,
                     DEFAULT_PAGE_SIZE,
                     sort);
+            log.info("There are {} results", result.getContent().size());
             String redirectUrl = query.getRedirectUrl(sort);
             SearchResultView viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
             model.addAttribute("viewModel", viewModel);
