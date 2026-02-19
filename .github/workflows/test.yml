@@ -161,11 +161,11 @@ jobs:
       - name: Start app with local profile
         env:
           SPRING_PROFILE: local
-          CLAIMS_API: http://localhost:8081
-          PROVIDER_API: http://localhost:8081
+          CLAIMS_API: http://host.docker.internal:8081
+          PROVIDER_API: http://host.docker.internal:8081
           SENTRY_ENVIRONMENT: local
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          REDIS_URL: http://localhost:6379
+          REDIS_URL: http://host.docker.internal:6379
         run: |
           echo "Running application..."
           ./gradlew bootRun &
