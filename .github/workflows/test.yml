@@ -160,15 +160,12 @@ jobs:
         uses: gradle/actions/setup-gradle@v5.0.0
       - name: Start app with local profile
         env:
-          SPRING_PROFILE: local
+          SPRING_PROFILES_ACTIVE: local
           CLAIMS_API: http://localhost:8081
           PROVIDER_API: http://localhost:8081
           SENTRY_ENVIRONMENT: local
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           REDIS_URL: http://localhost:6379
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         run: |
           echo "Running application..."
           docker compose up -d wiremock redis
