@@ -173,15 +173,7 @@ jobs:
         uses: zaproxy/action-full-scan@v0.13.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          docker_name: 'ghcr.io/zaproxy/zaproxy:stable'
           target: 'http://host.docker.internal:8080/'
           rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a'
           allow_issue_writing: false
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v6.0.0
-        with:
-          name: e2e-test-results-${{ github.run_number }}
-          path: zap_scan
-          retention-days: 14
+          fail_action: true
