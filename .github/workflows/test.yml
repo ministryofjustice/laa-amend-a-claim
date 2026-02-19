@@ -176,9 +176,9 @@ jobs:
           export CLAIMS_API=http://localhost:8081
           export PROVIDER_API=http://localhost:8081
           export SENTRY_ENVIRONMENT=local
-          export REDIS_URL=http://localhost:6379
+          export REDIS_URL=redis://localhost:6379
           
-          echo "Running application..."
+          echo "INFO: Running application..."
           docker compose up -d wiremock redis
           ./gradlew bootRun &
           
