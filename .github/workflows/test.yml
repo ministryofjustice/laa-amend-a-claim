@@ -168,12 +168,17 @@ jobs:
           REDIS_URL: http://localhost:6379
         run: |
           echo "Running application..."
+          docker compose up -d wiremock redis
           ./gradlew bootRun &
+          echo "Waiting for application..."
+          until curl -s http://host.docker.internal:8182/actuator/health | grep '"status":"UP"'; do
+            sleep 5
+          done
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.13.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'http://localhost:8080/'
+          target: 'http://host.docker.internal:8080/'
           rules_file_name: '.zap/rules.tsv'
           allow_issue_writing: false
           fail_action: true
