@@ -201,10 +201,10 @@ jobs:
         uses: zaproxy/action-full-scan@v0.13.0 # https://github.com/zaproxy/action-full-scan
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'http://localhost:8080/submissions/3fa85f64-5717-4562-b3fc-2c963f66afa6/claims/0199c9a4-64ec-79c6-a292-e250278f5f71'
+          target: 'http://localhost:8080/?providerAccountNumber=0P322F'
           rules_file_name: '.zap/rules.tsv'
           allow_issue_writing: false
-          cmd_options: '-a -j -z "-config spider.maxDepth=10"' # https://www.zaproxy.org/docs/docker/full-scan/#usage
+          cmd_options: '-h' # https://www.zaproxy.org/docs/docker/full-scan/#usage
       - name: Upload logs
         uses: actions/upload-artifact@v6.0.0
         with:
