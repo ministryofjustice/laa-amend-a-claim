@@ -38,7 +38,8 @@ public class WireMockSetup {
                         "dateSubmitted": "2024-01-01",
                         "account": "ACC001",
                         "type": "CLAIM",
-                        "status": "PENDING"
+                        "status": "PENDING",
+                        "area_of_law": "LEGAL HELP"
                     }
                 ],
                 "totalElements": 1,
@@ -67,6 +68,7 @@ public class WireMockSetup {
                   "case_start_date": "2025-01-01",
                   "case_concluded_date": "2025-02-01",
                   "submission_period": "JAN-2025",
+                  "area_of_law": "LEGAL HELP",
                   "has_assessment": false,
                   "fee_calculation_response": {
                       "fee_code": "FEE",
