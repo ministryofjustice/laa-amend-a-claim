@@ -201,6 +201,10 @@ jobs:
         run: |
           curl -s http://localhost:8080/?providerAccountNumber=0P322F > homepage.html
           cat homepage.html
+      - name: Curl other pages
+        run: |
+          curl -I http://localhost:8080/submissions/3fa85f64-5717-4562-b3fc-2c963f66afa6/claims/0199c9a4-64ec-79c6-a292-e250278f5f71
+          curl -I http://localhost:8080/submissions/3fa85f64-5717-4562-b3fc-2c963f66afa6/claims/0199c9a4-64ec-79c6-a292-e250278f5f71/assessment-outcome
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.13.0 # https://github.com/zaproxy/action-full-scan
         with:
