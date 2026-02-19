@@ -86,7 +86,11 @@ public class HomePageController {
                     page,
                     DEFAULT_PAGE_SIZE,
                     sort);
-            log.info("There are {} results", result.getContent().size());
+            if (result != null) {
+                if (result.getContent() != null) {
+                    log.info("There are {} results", result.getContent().size());
+                }
+            }
             String redirectUrl = query.getRedirectUrl(sort);
             SearchResultView viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
             model.addAttribute("viewModel", viewModel);
