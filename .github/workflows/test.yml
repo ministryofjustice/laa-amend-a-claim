@@ -146,9 +146,6 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-    permissions:
-      contents: read
-      issues: write
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -180,6 +177,7 @@ jobs:
           target: 'http://host.docker.internal:8080/'
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a'
+          allow_issue_writing: false
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v6.0.0
