@@ -158,6 +158,11 @@ jobs:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      SPRING_PROFILES_ACTIVE: local
+      CLAIMS_API: http://localhost:8081
+      PROVIDER_API: http://localhost:8081
+      SENTRY_ENVIRONMENT: local
+      REDIS_URL: redis://localhost:6379
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -172,17 +177,11 @@ jobs:
         uses: gradle/actions/setup-gradle@v5.0.0
       - name: Start app with local profile
         run: |
-          export SPRING_PROFILES_ACTIVE=local
-          export CLAIMS_API=http://localhost:8081
-          export PROVIDER_API=http://localhost:8081
-          export SENTRY_ENVIRONMENT=local
-          export REDIS_URL=redis://localhost:6379
-          
           echo "INFO: Running application..."
           docker compose up -d wiremock redis
           ./gradlew bootRun &
           
-          url="http://host.docker.internal:8182/actuator/health"
+          url="http://localhost:8182/actuator/health"
           retries=20
           
           for i in $(seq 1 $retries); do
