@@ -169,10 +169,6 @@ jobs:
           export PROVIDER_API=http://localhost:8081
           export SENTRY_ENVIRONMENT=local
           export REDIS_URL=http://localhost:6379
-          export SENTRY_DSN=${SENTRY_DSN}
-          export AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
-          export AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}
-          export AZURE_TENANT_ID=${AZURE_TENANT_ID}
           
           echo "Running application..."
           docker compose up -d wiremock redis
