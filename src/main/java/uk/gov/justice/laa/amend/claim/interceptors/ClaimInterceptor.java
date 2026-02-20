@@ -43,7 +43,7 @@ public class ClaimInterceptor implements HandlerInterceptor {
             if (claim.getEscaped() == null || !claim.getEscaped()) {
                 return error(response, request, "Claim is not an escape case");
             }
-            if (claim.getStatus() == null || claim.getStatus() != ClaimStatus.VALID) {
+            if (claim.getStatus() != ClaimStatus.VALID) {
                 return error(response, request, "Claim does not have staus VALID");
             }
 
