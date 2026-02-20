@@ -14,8 +14,8 @@ import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.Pagination;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 
 @Mapper(componentModel = "spring", uses = ClaimMapper.class)
 public interface ClaimResultMapper {
@@ -27,7 +27,7 @@ public interface ClaimResultMapper {
      */
     @Mapping(target = "pagination", source = ".", qualifiedByName = "toPagination")
     @Mapping(target = "claims", expression = "java(mapClaims(claimResultSet, claimMapper))")
-    SearchResultView toDto(ClaimResultSet claimResultSet, @Context String href, @Context ClaimMapper claimMapper);
+    SearchResultView toDto(ClaimResultSetV2 claimResultSet, @Context String href, @Context ClaimMapper claimMapper);
 
     /**
      * Converts ClaimResultSet to a Pagination object.
@@ -36,7 +36,7 @@ public interface ClaimResultMapper {
      * @return The Pagination component.
      */
     @Named("toPagination")
-    default Pagination toPagination(ClaimResultSet claimResultSet, @Context String href) {
+    default Pagination toPagination(ClaimResultSetV2 claimResultSet, @Context String href) {
         return new Pagination(
                 claimResultSet.getTotalElements() != null ? claimResultSet.getTotalElements() : 0,
                 claimResultSet.getSize() != null ? claimResultSet.getSize() : DEFAULT_PAGE_SIZE,
@@ -44,8 +44,8 @@ public interface ClaimResultMapper {
                 href);
     }
 
-    default List<BaseClaimView<Claim>> mapClaims(ClaimResultSet claimResultSet, @Context ClaimMapper claimMapper) {
-        List<ClaimResponse> claims = claimResultSet.getContent();
+    default List<BaseClaimView<Claim>> mapClaims(ClaimResultSetV2 claimResultSet, @Context ClaimMapper claimMapper) {
+        List<ClaimResponseV2> claims = claimResultSet.getContent();
         if (claims == null) {
             return List.of();
         } else {

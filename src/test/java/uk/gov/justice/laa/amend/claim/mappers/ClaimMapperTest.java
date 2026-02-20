@@ -9,20 +9,17 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
@@ -36,15 +33,12 @@ class ClaimMapperTest {
 
     @Test
     void testMapTotalAmount() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setTotalAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getTotalAmount();
         assertEquals(AmendClaimConstants.Label.TOTAL, claimField.getKey());
@@ -55,15 +49,12 @@ class ClaimMapperTest {
 
     @Test
     void testMapFixedFee() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setFixedFeeAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getFixedFee();
         assertEquals(AmendClaimConstants.Label.FIXED_FEE, claimField.getKey());
@@ -74,16 +65,13 @@ class ClaimMapperTest {
 
     @Test
     void mapNetProfitCost() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         response.setNetProfitCostsAmount(BigDecimal.valueOf(100));
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setNetProfitCostsAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getNetProfitCost();
         assertEquals(AmendClaimConstants.Label.NET_PROFIT_COST, claimField.getKey());
@@ -94,13 +82,10 @@ class ClaimMapperTest {
 
     @Test
     void mapVatClaimedWhenFeeCalculationResponseIsNull() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         response.setIsVatApplicable(false);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
-
-        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getVatClaimed();
         assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
@@ -111,15 +96,12 @@ class ClaimMapperTest {
 
     @Test
     void mapVatClaimedWhenVatIndicatorIsNull() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         response.setIsVatApplicable(true);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
-
-        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getVatClaimed();
         assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
@@ -130,16 +112,13 @@ class ClaimMapperTest {
 
     @Test
     void mapVatClaimedWhenVatIndicatorIsFalse() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         response.setIsVatApplicable(true);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setVatIndicator(false);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
-
-        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getVatClaimed();
         assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
@@ -150,16 +129,13 @@ class ClaimMapperTest {
 
     @Test
     void mapVatClaimedWhenVatIndicatorIsTrue() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         response.setIsVatApplicable(true);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setVatIndicator(true);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
-
-        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getVatClaimed();
         assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
@@ -170,16 +146,13 @@ class ClaimMapperTest {
 
     @Test
     void mapNetDisbursementAmount() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         response.setNetDisbursementAmount(BigDecimal.valueOf(100));
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setDisbursementAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getNetDisbursementAmount();
         assertEquals(AmendClaimConstants.Label.NET_DISBURSEMENTS_COST, claimField.getKey());
@@ -190,16 +163,13 @@ class ClaimMapperTest {
 
     @Test
     void mapDisbursementVatAmount() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         response.setDisbursementsVatAmount(BigDecimal.valueOf(100));
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setDisbursementVatAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getDisbursementVatAmount();
         assertEquals(AmendClaimConstants.Label.DISBURSEMENT_VAT, claimField.getKey());
@@ -210,16 +180,13 @@ class ClaimMapperTest {
 
     @Test
     void mapCounselsCost() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
         response.setNetCounselCostsAmount(BigDecimal.valueOf(100));
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setNetCostOfCounselAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
-
-        CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getCounselsCost();
         assertEquals(AmendClaimConstants.Label.COUNSELS_COST, claimField.getKey());
@@ -230,16 +197,13 @@ class ClaimMapperTest {
 
     @Test
     void mapDetentionTravelWaitingCosts() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
         response.setDetentionTravelWaitingCostsAmount(BigDecimal.valueOf(100));
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setDetentionTravelAndWaitingCostsAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
-
-        CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getDetentionTravelWaitingCosts();
         assertEquals(AmendClaimConstants.Label.DETENTION_TRAVEL_COST, claimField.getKey());
@@ -250,16 +214,13 @@ class ClaimMapperTest {
 
     @Test
     void mapJrFormFillingCost() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
         response.setJrFormFillingAmount(BigDecimal.valueOf(100));
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setJrFormFillingAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
-
-        CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getJrFormFillingCost();
         assertEquals(AmendClaimConstants.Label.JR_FORM_FILLING, claimField.getKey());
@@ -270,7 +231,7 @@ class ClaimMapperTest {
 
     @Test
     void mapAdjournedHearingFee() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
         response.setAdjournedHearingFeeAmount(100);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         BoltOnPatch bolt = new BoltOnPatch();
@@ -278,10 +239,7 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
-
-        CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getAdjournedHearing();
         assertEquals(AmendClaimConstants.Label.ADJOURNED_FEE, claimField.getKey());
@@ -292,7 +250,7 @@ class ClaimMapperTest {
 
     @Test
     void mapCmrhTelephone() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
         response.setCmrhTelephoneCount(100);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         BoltOnPatch bolt = new BoltOnPatch();
@@ -300,10 +258,7 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
-
-        CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getCmrhTelephone();
         assertEquals(AmendClaimConstants.Label.CMRH_TELEPHONE, claimField.getKey());
@@ -314,7 +269,7 @@ class ClaimMapperTest {
 
     @Test
     void mapCmrhOral() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
         response.setCmrhOralCount(100);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         BoltOnPatch bolt = new BoltOnPatch();
@@ -322,10 +277,7 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
-
-        CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getCmrhOral();
         assertEquals(AmendClaimConstants.Label.CMRH_ORAL, claimField.getKey());
@@ -336,7 +288,7 @@ class ClaimMapperTest {
 
     @Test
     void mapHoInterview() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
         response.setHoInterview(100);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         BoltOnPatch bolt = new BoltOnPatch();
@@ -344,10 +296,7 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
-
-        CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getHoInterview();
         assertEquals(AmendClaimConstants.Label.HO_INTERVIEW, claimField.getKey());
@@ -358,7 +307,7 @@ class ClaimMapperTest {
 
     @Test
     void mapSubstantiveHearing() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
         response.setIsSubstantiveHearing(true);
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         BoltOnPatch bolt = new BoltOnPatch();
@@ -366,10 +315,7 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.LEGAL_HELP);
-
-        CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getSubstantiveHearing();
         assertEquals(AmendClaimConstants.Label.SUBSTANTIVE_HEARING, claimField.getKey());
@@ -380,16 +326,13 @@ class ClaimMapperTest {
 
     @Test
     void mapTravelCosts() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         response.setTravelWaitingCostsAmount(BigDecimal.valueOf(100));
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setNetTravelCostsAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getTravelCosts();
         assertEquals(AmendClaimConstants.Label.TRAVEL_COSTS, claimField.getKey());
@@ -400,16 +343,13 @@ class ClaimMapperTest {
 
     @Test
     void mapWaitingCosts() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         response.setNetWaitingCostsAmount(BigDecimal.valueOf(100));
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setNetWaitingCostsAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getWaitingCosts();
         assertEquals(AmendClaimConstants.Label.WAITING_COSTS, claimField.getKey());
@@ -420,12 +360,9 @@ class ClaimMapperTest {
 
     @Test
     void mapAssessedTotalVat() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         AssessedClaimField claimField = (AssessedClaimField) claim.getAssessedTotalVat();
         assertEquals(AmendClaimConstants.Label.ASSESSED_TOTAL_VAT, claimField.getKey());
@@ -436,12 +373,9 @@ class ClaimMapperTest {
 
     @Test
     void mapAssessedTotalInclVat() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         AssessedClaimField claimField = (AssessedClaimField) claim.getAssessedTotalInclVat();
         assertEquals(AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT, claimField.getKey());
@@ -452,16 +386,13 @@ class ClaimMapperTest {
 
     @Test
     void mapAllowedTotalVat() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         FeeCalculationPatch feeCalculationPatch = new FeeCalculationPatch();
         feeCalculationPatch.setCalculatedVatAmount(BigDecimal.valueOf(100));
         feeCalculationPatch.setDisbursementVatAmount(BigDecimal.valueOf(200));
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getAllowedTotalVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
@@ -472,12 +403,9 @@ class ClaimMapperTest {
 
     @Test
     void mapAllowedTotalVatWhenFeeCalculationIsNull() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getAllowedTotalVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
@@ -488,14 +416,11 @@ class ClaimMapperTest {
 
     @Test
     void mapAllowedTotalVatWhenCalculatedVatAmountAndDisbursementVatAmountAreNull() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         FeeCalculationPatch feeCalculationPatch = new FeeCalculationPatch();
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getAllowedTotalVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
@@ -506,15 +431,12 @@ class ClaimMapperTest {
 
     @Test
     void mapAllowedTotalVatWhenCalculatedVatAmountIsNull() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         FeeCalculationPatch feeCalculationPatch = new FeeCalculationPatch();
         feeCalculationPatch.setCalculatedVatAmount(BigDecimal.valueOf(100));
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getAllowedTotalVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
@@ -525,15 +447,12 @@ class ClaimMapperTest {
 
     @Test
     void mapAllowedTotalVatWhenDisbursementVatAmountIsNull() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         FeeCalculationPatch feeCalculationPatch = new FeeCalculationPatch();
         feeCalculationPatch.setDisbursementVatAmount(BigDecimal.valueOf(100));
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getAllowedTotalVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
@@ -544,15 +463,12 @@ class ClaimMapperTest {
 
     @Test
     void mapAllowedTotalInclVat() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         FeeCalculationPatch feeCalculationPatch = new FeeCalculationPatch();
         feeCalculationPatch.setTotalAmount(BigDecimal.valueOf(100));
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getAllowedTotalInclVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT, claimField.getKey());
@@ -563,12 +479,9 @@ class ClaimMapperTest {
 
     @Test
     void mapAllowedTotalInclVatWhenFeeCalculationIsNull() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getAllowedTotalInclVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT, claimField.getKey());
@@ -579,12 +492,9 @@ class ClaimMapperTest {
 
     @Test
     void mapAllowedTotalInclVatWhenTotalAmountIsNull() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
 
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
 
         ClaimField claimField = claim.getAllowedTotalInclVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT, claimField.getKey());
@@ -593,12 +503,9 @@ class ClaimMapperTest {
         assertNull(claimField.getAssessed());
     }
 
-    @ParameterizedTest(name = "Map to Civil Claim when Area of Law: {0}")
-    @EnumSource(
-            value = AreaOfLaw.class,
-            names = {"CRIME_LOWER", "LEGAL_HELP"})
+    @Test
     void testMapToCivilClaim() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
         response.setUniqueFileNumber("UFN123");
         response.setCaseReferenceNumber("CASE456");
         response.setClientSurname("Doe");
@@ -610,7 +517,6 @@ class ClaimMapperTest {
 
         SubmissionResponse submissionResponse = new SubmissionResponse();
         submissionResponse.setSubmissionId(UUID.randomUUID());
-        submissionResponse.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
         submissionResponse.setProviderUserId("User ID");
         submissionResponse.setSubmitted(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"));
 
@@ -641,7 +547,7 @@ class ClaimMapperTest {
         assertTrue(claim.getEscaped());
         assertEquals("MT1+MT2", claim.getMatterTypeCode());
         assertEquals(claimSummaryFeeId.toString(), claim.getClaimSummaryFeeId());
-        assertEquals("LEGAL HELP", claim.getAreaOfLaw());
+        assertEquals(uk.gov.justice.laa.amend.claim.models.AreaOfLaw.LEGAL_HELP, claim.getAreaOfLaw());
         assertNull(claim.getProviderName());
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
         assertEquals(ClaimStatus.VALID, claim.getStatus());
@@ -649,7 +555,7 @@ class ClaimMapperTest {
 
     @Test
     void testMapToCrimeClaim() {
-        ClaimResponse response = new ClaimResponse();
+        var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         response.setUniqueFileNumber("UFN123");
         response.setCaseReferenceNumber("CASE456");
         response.setClientSurname("Doe");
@@ -692,5 +598,11 @@ class ClaimMapperTest {
         assertEquals(ClaimStatus.VALID, claim.getStatus());
 
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
+    }
+
+    private static ClaimResponseV2 createClaimResponse(AreaOfLaw areaOfLaw) {
+        var response = new ClaimResponseV2();
+        response.setAreaOfLaw(areaOfLaw);
+        return response;
     }
 }

@@ -38,7 +38,8 @@ public class WireMockSetup {
                         "dateSubmitted": "2024-01-01",
                         "account": "ACC001",
                         "type": "CLAIM",
-                        "status": "PENDING"
+                        "status": "PENDING",
+                        "area_of_law": "LEGAL HELP"
                     }
                 ],
                 "totalElements": 1,
@@ -46,7 +47,7 @@ public class WireMockSetup {
                 "pageNumber": 0
             }
             """;
-        stubFor(get(urlPathMatching("/api/v1/claims.*"))
+        stubFor(get(urlPathMatching("/api/(v1|v2)/claims.*"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -67,6 +68,7 @@ public class WireMockSetup {
                   "case_start_date": "2025-01-01",
                   "case_concluded_date": "2025-02-01",
                   "submission_period": "JAN-2025",
+                  "area_of_law": "LEGAL HELP",
                   "has_assessment": false,
                   "fee_calculation_response": {
                       "fee_code": "FEE",
@@ -79,7 +81,7 @@ public class WireMockSetup {
               }\
             """, claimId, submissionId);
 
-        stubFor(get(urlPathMatching(String.format("/api/v1/submissions/%s/claims/%s", submissionId, claimId)))
+        stubFor(get(urlPathMatching(String.format("/api/(v1|v2)/submissions/%s/claims/%s", submissionId, claimId)))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -96,7 +98,7 @@ public class WireMockSetup {
             }\
             """, submissionId, officeAccountNumber);
 
-        stubFor(get(urlPathMatching(String.format("/api/v1/submissions/%s", submissionId)))
+        stubFor(get(urlPathMatching(String.format("/api/(v1|v2)/submissions/%s", submissionId)))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")

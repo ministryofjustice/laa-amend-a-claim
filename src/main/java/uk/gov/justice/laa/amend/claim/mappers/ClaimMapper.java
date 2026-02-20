@@ -1,22 +1,20 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
-import static uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw.CRIME_LOWER;
-
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
-import org.mapstruct.Context;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 @Mapper(
@@ -39,15 +37,14 @@ public interface ClaimMapper {
     @Mapping(target = "allowedTotalVat", source = ".", qualifiedByName = "mapAllowedTotalVat")
     @Mapping(target = "allowedTotalInclVat", source = ".", qualifiedByName = "mapAllowedTotalInclVat")
     @Mapping(target = "hasAssessment", source = "hasAssessment")
-    // Ignored and set later
-    @Mapping(target = "areaOfLaw", ignore = true)
+    @Mapping(target = "areaOfLaw", expression = "java(mapAreaOfLaw(claimResponse))")
     @Mapping(target = "providerAccountNumber", ignore = true)
     @Mapping(target = "providerName", ignore = true)
     @Mapping(target = "submittedDate", ignore = true)
     @Mapping(target = "assessmentOutcome", ignore = true)
     @Mapping(target = "lastAssessment", ignore = true)
     @Mapping(target = "claimFields", ignore = true)
-    ClaimDetails mapToCommonDetails(ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
+    ClaimDetails mapToCommonDetails(ClaimResponseV2 claimResponse);
 
     @Mapping(target = "submissionId", source = "submissionId")
     @Mapping(target = "claimId", source = "id")
@@ -63,7 +60,7 @@ public interface ClaimMapper {
     @Mapping(target = "submissionPeriod", expression = "java(mapSubmissionPeriod(claimResponse))")
     @Mapping(target = "categoryOfLaw", source = "feeCalculationResponse.categoryOfLaw")
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
-    Claim mapToClaim(ClaimResponse claimResponse);
+    Claim mapToClaim(ClaimResponseV2 claimResponse);
 
     @InheritConfiguration(name = "mapToCommonDetails")
     @Mapping(
@@ -78,46 +75,44 @@ public interface ClaimMapper {
     @Mapping(target = "substantiveHearing", source = "claimResponse", qualifiedByName = "mapSubstantiveHearing")
     @Mapping(target = "counselsCost", source = "claimResponse", qualifiedByName = "mapCounselsCost")
     @Mapping(target = "uniqueClientNumber", source = "uniqueClientNumber")
-    CivilClaimDetails mapToCivilClaimDetails(
-            ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
+    CivilClaimDetails mapToCivilClaimDetails(ClaimResponseV2 claimResponse);
 
     @InheritConfiguration(name = "mapToCommonDetails")
     @Mapping(target = "travelCosts", source = "claimResponse", qualifiedByName = "mapTravelCosts")
     @Mapping(target = "waitingCosts", source = "claimResponse", qualifiedByName = "mapWaitingCosts")
-    CrimeClaimDetails mapToCrimeClaimDetails(
-            ClaimResponse claimResponse, @Context SubmissionResponse submissionResponse);
+    CrimeClaimDetails mapToCrimeClaimDetails(ClaimResponseV2 claimResponse);
 
     @ObjectFactory
-    default ClaimDetails createClaimDetails(@Context SubmissionResponse submissionResponse) {
-        if (submissionResponse == null || submissionResponse.getAreaOfLaw() == null) {
-            throw new IllegalArgumentException("SubmissionResponse must not be null");
+    default ClaimDetails createClaimDetails(ClaimResponseV2 claimResponse) {
+        if (claimResponse != null && claimResponse.getAreaOfLaw() != null) {
+            return switch (claimResponse.getAreaOfLaw()) {
+                case CRIME_LOWER -> new CrimeClaimDetails();
+                case LEGAL_HELP, MEDIATION -> new CivilClaimDetails();
+            };
         }
-        return switch (submissionResponse.getAreaOfLaw()) {
-            case CRIME_LOWER -> new CrimeClaimDetails();
-            case LEGAL_HELP, MEDIATION -> new CivilClaimDetails();
-        };
+        throw new IllegalArgumentException("Both claimResponse and areaOfLaw must be non-null");
     }
 
-    default ClaimDetails mapToClaimDetails(ClaimResponse claimResponse, SubmissionResponse submissionResponse) {
-        if (claimResponse != null && submissionResponse != null && submissionResponse.getAreaOfLaw() != null) {
-            var claimDetails = createClaimDetailsFromResponse(claimResponse, submissionResponse);
+    default ClaimDetails mapToClaimDetails(ClaimResponseV2 claimResponse, SubmissionResponse submissionResponse) {
+        if (claimResponse != null && submissionResponse != null) {
+            var claimDetails = createClaimDetailsFromResponse(claimResponse);
             enrichWithSubmission(claimDetails, submissionResponse);
             return claimDetails;
         }
         throw new IllegalArgumentException("Both claimResponse and submissionResponse must be non-null");
     }
 
-    private ClaimDetails createClaimDetailsFromResponse(
-            ClaimResponse claimResponse, SubmissionResponse submissionResponse) {
-        var areaOfLaw = submissionResponse.getAreaOfLaw();
-        if (CRIME_LOWER == areaOfLaw) {
-            return mapToCrimeClaimDetails(claimResponse, submissionResponse);
-        } else {
-            return mapToCivilClaimDetails(claimResponse, submissionResponse);
+    private ClaimDetails createClaimDetailsFromResponse(ClaimResponseV2 claimResponse) {
+        if (claimResponse != null && claimResponse.getAreaOfLaw() != null) {
+            return switch (claimResponse.getAreaOfLaw()) {
+                case CRIME_LOWER -> mapToCrimeClaimDetails(claimResponse);
+                case LEGAL_HELP, MEDIATION -> mapToCivilClaimDetails(claimResponse);
+            };
         }
+        throw new IllegalArgumentException("Both claimResponse and areaOfLaw must be non-null");
     }
 
-    default YearMonth mapSubmissionPeriod(ClaimResponse claimResponse) {
+    default YearMonth mapSubmissionPeriod(ClaimResponseV2 claimResponse) {
         if (claimResponse.getSubmissionPeriod() != null) {
             try {
                 DateTimeFormatter formatter = new DateTimeFormatterBuilder()
@@ -134,8 +129,7 @@ public interface ClaimMapper {
     }
 
     private void enrichWithSubmission(ClaimDetails claim, SubmissionResponse submissionResponse) {
-        if (submissionResponse != null && submissionResponse.getAreaOfLaw() != null) {
-            claim.setAreaOfLaw(submissionResponse.getAreaOfLaw().getValue());
+        if (submissionResponse != null) {
             claim.setProviderAccountNumber(submissionResponse.getOfficeAccountNumber());
             claim.setSubmittedDate(
                     submissionResponse.getSubmitted() != null
@@ -148,5 +142,16 @@ public interface ClaimMapper {
         if (claim != null) {
             claim.setProviderName(accountName);
         }
+    }
+
+    default AreaOfLaw mapAreaOfLaw(ClaimResponseV2 claimResponse) {
+        if (claimResponse.getAreaOfLaw() == null) {
+            return null;
+        }
+        return switch (claimResponse.getAreaOfLaw()) {
+            case CRIME_LOWER -> AreaOfLaw.CRIME_LOWER;
+            case LEGAL_HELP -> AreaOfLaw.LEGAL_HELP;
+            case MEDIATION -> AreaOfLaw.MEDIATION;
+        };
     }
 }

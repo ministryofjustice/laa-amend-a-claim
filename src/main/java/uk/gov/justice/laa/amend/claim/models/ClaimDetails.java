@@ -14,12 +14,10 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class ClaimDetails extends Claim {
-    private String areaOfLaw;
     private String categoryOfLaw;
     private String matterTypeCode;
     private String scheduleReference;
     private String providerName;
-    private Boolean escaped;
     private Boolean vatApplicable;
     private String providerAccountNumber;
     private ClaimField vatClaimed;

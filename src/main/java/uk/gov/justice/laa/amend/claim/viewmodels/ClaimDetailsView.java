@@ -29,7 +29,11 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
                         : claim().getProviderName());
         rows.put("providerAccountNumber", claim().getProviderAccountNumber());
         rows.put("submittedDate", claim().getSubmittedDate());
-        rows.put("areaOfLaw", claim().getAreaOfLaw());
+        rows.put(
+                "areaOfLaw",
+                claim().getAreaOfLaw() != null
+                        ? new ThymeleafMessage(claim().getAreaOfLaw().getMessageKey())
+                        : null);
         rows.put("categoryOfLaw", claim().getCategoryOfLaw());
         rows.put("feeCode", claim().getFeeCode());
         rows.put("feeCodeDescription", claim().getFeeCodeDescription());

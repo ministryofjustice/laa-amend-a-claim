@@ -27,7 +27,6 @@ import uk.gov.justice.laa.amend.claim.models.SortField;
 import uk.gov.justice.laa.amend.claim.models.Sorts;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
 
 @Controller
 @RequiredArgsConstructor
@@ -76,11 +75,13 @@ public class HomePageController {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return "index";
             }
-            ClaimResultSet result = claimService.searchClaims(
+            var result = claimService.searchClaims(
                     form.getProviderAccountNumber(),
                     Optional.ofNullable(form.getUniqueFileNumber()),
                     Optional.ofNullable(form.getCaseReferenceNumber()),
                     Optional.ofNullable(form.getSubmissionPeriod()),
+                    Optional.ofNullable(form.getAreaOfLaw()),
+                    Optional.ofNullable(form.getEscapeCase()),
                     page,
                     DEFAULT_PAGE_SIZE,
                     sort);

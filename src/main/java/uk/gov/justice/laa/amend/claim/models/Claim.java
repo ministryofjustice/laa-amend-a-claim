@@ -33,6 +33,7 @@ public class Claim implements Serializable {
     private LocalDate caseStartDate;
 
     private LocalDate caseEndDate;
+    private AreaOfLaw areaOfLaw;
     private String categoryOfLaw;
     private Boolean escaped;
     private Boolean vatApplicable;

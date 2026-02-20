@@ -10,10 +10,11 @@ import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Sort;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
@@ -27,11 +28,13 @@ public class ClaimService {
     private final ClaimMapper claimMapper;
     private final ProviderApiClient providerApiClient;
 
-    public ClaimResultSet searchClaims(
+    public ClaimResultSetV2 searchClaims(
             String officeCode,
             Optional<String> uniqueFileNumber,
             Optional<String> caseReferenceNumber,
             Optional<String> submissionPeriod,
+            Optional<AreaOfLaw> areaOfLaw,
+            Optional<Boolean> escapeCase,
             int page,
             int size,
             Sort sort) {
@@ -42,6 +45,8 @@ public class ClaimService {
                             uniqueFileNumber.orElse(null),
                             caseReferenceNumber.orElse(null),
                             submissionPeriod.orElse(null),
+                            areaOfLaw.orElse(null),
+                            escapeCase.orElse(null),
                             page - 1,
                             size,
                             Objects.toString(sort, null),
@@ -53,7 +58,7 @@ public class ClaimService {
         }
     }
 
-    public ClaimResponse getClaim(UUID submissionId, UUID claimId) {
+    public ClaimResponseV2 getClaim(UUID submissionId, UUID claimId) {
         try {
             return claimsApiClient.getClaim(submissionId, claimId).block();
         } catch (Exception e) {
