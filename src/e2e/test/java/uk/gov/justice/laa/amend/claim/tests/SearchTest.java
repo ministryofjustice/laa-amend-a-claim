@@ -40,9 +40,17 @@ public class SearchTest extends BaseTest {
     private final String CLAIM_ID_1 = UUID.randomUUID().toString();
     private final String CLAIM_SUMMARY_FEE_ID_1 = UUID.randomUUID().toString();
     private final String CALCULATED_FEE_DETAIL_ID_1 = UUID.randomUUID().toString();
+    private final String OFFICE_ACCOUNT_NUMBER_1 = "123456";
+    private final String UFN_1 = "121019/001";
 
     // ---------------- Submission 2 (Does not have claims) ----------------
     private final String SUBMISSION_ID_2 = UUID.randomUUID().toString();
+    private final String OFFICE_ACCOUNT_NUMBER_2 = "234567";
+
+    // ---------------- Submission 3 (Has an invalid claim) ----------------
+    private final String SUBMISSION_ID_3 = UUID.randomUUID().toString();
+    private final String CLAIM_ID_3 = UUID.randomUUID().toString();
+    private final String OFFICE_ACCOUNT_NUMBER_3 = "345678";
 
     @Override
     protected List<Insert> inserts() {
@@ -54,7 +62,7 @@ public class SearchTest extends BaseTest {
                 SubmissionInsert.builder()
                         .id(SUBMISSION_ID_1)
                         .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber("123456")
+                        .officeAccountNumber(OFFICE_ACCOUNT_NUMBER_1)
                         .submissionPeriod("APR-2025")
                         .areaOfLaw("CRIME_LOWER")
                         .userId(USER_ID)
@@ -62,7 +70,15 @@ public class SearchTest extends BaseTest {
                 SubmissionInsert.builder()
                         .id(SUBMISSION_ID_2)
                         .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber("234567")
+                        .officeAccountNumber(OFFICE_ACCOUNT_NUMBER_2)
+                        .submissionPeriod("OCT-2025")
+                        .areaOfLaw("LEGAL_HELP")
+                        .userId(USER_ID)
+                        .build(),
+                SubmissionInsert.builder()
+                        .id(SUBMISSION_ID_3)
+                        .bulkSubmissionId(BULK_SUBMISSION_ID)
+                        .officeAccountNumber(OFFICE_ACCOUNT_NUMBER_3)
                         .submissionPeriod("OCT-2025")
                         .areaOfLaw("LEGAL_HELP")
                         .userId(USER_ID)
@@ -70,7 +86,14 @@ public class SearchTest extends BaseTest {
                 ClaimInsert.builder()
                         .id(CLAIM_ID_1)
                         .submissionId(SUBMISSION_ID_1)
-                        .uniqueFileNumber("121019/001")
+                        .uniqueFileNumber(UFN_1)
+                        .userId(USER_ID)
+                        .build(),
+                ClaimInsert.builder()
+                        .id(CLAIM_ID_3)
+                        .submissionId(SUBMISSION_ID_3)
+                        .status("INVALID")
+                        .uniqueFileNumber("121019/003")
                         .userId(USER_ID)
                         .build(),
                 ClaimSummaryFeeInsert.builder()
@@ -128,9 +151,9 @@ public class SearchTest extends BaseTest {
     void backToSearch() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim("123456", "04", "2025", "", "");
+        search.searchForClaim(OFFICE_ACCOUNT_NUMBER_1, "04", "2025", "", "");
 
-        search.clickViewForUfn("121019/001");
+        search.clickViewForUfn(UFN_1);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
 
@@ -139,5 +162,15 @@ public class SearchTest extends BaseTest {
                 page.url()
                         .contains(
                                 "/?providerAccountNumber=123456&submissionDateMonth=04&submissionDateYear=2025&page=1&sort=uniqueFileNumber,asc"));
+    }
+
+    @Test
+    @DisplayName("Search results should not include any claims with INVALID status")
+    void invalidClaimsAreNotReturned() {
+        SearchPage search = new SearchPage(page);
+
+        search.searchForClaim(OFFICE_ACCOUNT_NUMBER_3, "", "", "", "", false);
+
+        Assertions.assertFalse(search.hasResults());
     }
 }

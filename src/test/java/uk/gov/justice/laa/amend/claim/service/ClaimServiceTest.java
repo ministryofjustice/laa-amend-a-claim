@@ -32,6 +32,7 @@ import uk.gov.justice.laa.amend.claim.models.SortDirection;
 import uk.gov.justice.laa.amend.claim.models.SortField;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
@@ -65,7 +66,7 @@ class ClaimServiceTest {
         // Arrange
         var mockApiResponse = new ClaimResultSet(); // Replace with appropriate type or mock object
 
-        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc"))
+        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc", ClaimStatus.VALID))
                 .thenReturn(Mono.just(mockApiResponse));
         Sort sort = Sort.builder()
                 .field(SortField.UNIQUE_FILE_NUMBER)
@@ -80,7 +81,8 @@ class ClaimServiceTest {
         assertNotNull(result);
         assertEquals(mockApiResponse, result);
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc");
+        verify(claimsApiClient, times(1))
+                .searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc", ClaimStatus.VALID);
     }
 
     @Test
@@ -89,7 +91,7 @@ class ClaimServiceTest {
         // Arrange
         var mockApiResponse = new ClaimResultSet(); // Replace with appropriate type or mock object
 
-        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, null))
+        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, null, ClaimStatus.VALID))
                 .thenReturn(Mono.just(mockApiResponse));
 
         // Act
@@ -100,14 +102,14 @@ class ClaimServiceTest {
         assertNotNull(result);
         assertEquals(mockApiResponse, result);
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, 0, 10, null);
+        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, 0, 10, null, ClaimStatus.VALID);
     }
 
     @Test
     @DisplayName("Should throw RuntimeException when API client throws exception")
     void testSearchClaims_ApiClientThrowsException() {
         // Arrange
-        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc"))
+        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc", ClaimStatus.VALID))
                 .thenThrow(new RuntimeException("API Error"));
         Sort sort = Sort.builder()
                 .field(SortField.UNIQUE_FILE_NUMBER)
@@ -121,14 +123,15 @@ class ClaimServiceTest {
                         "0P322F", Optional.empty(), Optional.empty(), Optional.empty(), 1, 10, sort));
         assertTrue(exception.getMessage().contains("API Error"));
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc");
+        verify(claimsApiClient, times(1))
+                .searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc", ClaimStatus.VALID);
     }
 
     @Test
     @DisplayName("Should handle empty API response without exception")
     void testSearchClaims_EmptyResponse() {
         // Arrange
-        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc"))
+        when(claimsApiClient.searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc", ClaimStatus.VALID))
                 .thenReturn(Mono.empty());
         Sort sort = Sort.builder()
                 .field(SortField.UNIQUE_FILE_NUMBER)
@@ -142,7 +145,8 @@ class ClaimServiceTest {
         // Assert
         assertNull(result);
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc");
+        verify(claimsApiClient, times(1))
+                .searchClaims("0P322F", null, null, null, 0, 10, "uniqueFileNumber,asc", ClaimStatus.VALID);
     }
 
     @Test

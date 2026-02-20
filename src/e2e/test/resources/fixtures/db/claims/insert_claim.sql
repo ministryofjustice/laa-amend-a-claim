@@ -12,7 +12,7 @@ INSERT INTO claims.claim (
 ) VALUES (
   ?::uuid,
   ?::uuid,
-  'VALID',
+  ?,
   '0U733A/2018/02',
   1,
   'EF/4560/2018/4364684',

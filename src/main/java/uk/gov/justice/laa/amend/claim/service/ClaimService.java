@@ -14,6 +14,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
@@ -43,7 +44,8 @@ public class ClaimService {
                             submissionPeriod.orElse(null),
                             page - 1,
                             size,
-                            Objects.toString(sort, null))
+                            Objects.toString(sort, null),
+                            ClaimStatus.VALID)
                     .block();
         } catch (Exception e) {
             log.error("Error searching claims", e);
