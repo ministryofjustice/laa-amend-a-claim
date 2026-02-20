@@ -14,6 +14,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
@@ -29,7 +30,8 @@ public interface ClaimsApiClient {
             @RequestParam(value = "submission_period", required = false, defaultValue = "") String submissionPeriod,
             @RequestParam(value = "page", required = false) int page,
             @RequestParam(value = "size", required = false) int size,
-            @RequestParam(value = "sort", required = false) String sort);
+            @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "claim_statuses", required = false) ClaimStatus claimStatus);
 
     @GetExchange(url = "/submissions/{submissionId}/claims/{claimId}", accept = MediaType.APPLICATION_JSON_VALUE)
     Mono<ClaimResponse> getClaim(@PathVariable UUID submissionId, @PathVariable UUID claimId);
