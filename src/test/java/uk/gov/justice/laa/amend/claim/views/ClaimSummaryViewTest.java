@@ -22,7 +22,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
+import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimSummaryController;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;

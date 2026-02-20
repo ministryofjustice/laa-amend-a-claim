@@ -1,4 +1,6 @@
-package uk.gov.justice.laa.amend.claim.config;
+package uk.gov.justice.laa.amend.claim.config.security;
+
+import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.POLICY_DIRECTIVES;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,7 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -36,21 +37,11 @@ public class LocalSecurityConfig {
     public static String userId = "dummy-oid-12345";
 
     @Bean
-    public SecurityFilterChain securityFilterChainLocal(final HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChainLocal(final HttpSecurity http) {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                        .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; "
-                                + "script-src 'self'; "
-                                + "style-src 'self'; "
-                                + "img-src 'self' data:; "
-                                + "font-src 'self'; "
-                                + "connect-src 'self'; "
-                                + "frame-ancestors 'none'; "
-                                + "base-uri 'self'; "
-                                + "form-action 'self'; "
-                                + "upgrade-insecure-requests")))
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(POLICY_DIRECTIVES)))
                 .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class);
         return http.build();
     }
