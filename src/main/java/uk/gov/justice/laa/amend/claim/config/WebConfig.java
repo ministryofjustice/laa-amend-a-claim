@@ -30,6 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
     private static final String[] ALLOWED_URLS = {
         "/actuator/**",
         "/health",
+        "/ping",
         "/maintenance",
         "/error",
         "/assets/**",

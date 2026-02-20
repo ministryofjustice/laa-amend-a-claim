@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import java.util.Map;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -10,6 +11,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.AssessmentOutcomeController;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
 @ActiveProfiles("local")
@@ -57,5 +59,59 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
         assertPageHasInlineRadioButtons(doc);
 
         assertPageHasErrorSummary(doc, "assessment-outcome", "liability-for-vat");
+    }
+
+    @Test
+    void whenClaimHasAssessment_CancelRoutesToReviewAndAmend() throws Exception {
+        Document doc = renderDocumentWithAssessmentOutcome(true, OutcomeType.REDUCED_TO_FIXED_FEE);
+
+        assertPageHasTitle(doc, "Assessment outcome");
+
+        assertPageHasHeading(doc, "Assessment outcome");
+        assertPageHasPrimaryButton(doc, "Save changes");
+        assertPageHasSecondaryLink(doc, "Cancel");
+        assertPageCancelLinkValue(doc, "Cancel", "/submissions/submissionId/claims/claimId/review");
+        assertPageHasNoActiveServiceNavigationItems(doc);
+        assertPageHasRadioButtons(doc);
+        assertPageHasInlineRadioButtons(doc);
+        assertPageDoesNotHaveBackLink(doc);
+    }
+
+    @Test
+    void whenClaimHasNoSavedAssessment_OutcomeSelected_CancelRoutesToReview() throws Exception {
+        Document doc = renderDocumentWithAssessmentOutcome(false, OutcomeType.REDUCED_TO_FIXED_FEE);
+
+        assertPageHasTitle(doc, "Assessment outcome");
+
+        assertPageHasHeading(doc, "Assessment outcome");
+        assertPageHasPrimaryButton(doc, "Save changes");
+        assertPageHasSecondaryLink(doc, "Cancel");
+        assertPageCancelLinkValue(doc, "Cancel", "/submissions/submissionId/claims/claimId/review");
+        assertPageHasNoActiveServiceNavigationItems(doc);
+        assertPageHasRadioButtons(doc);
+        assertPageHasInlineRadioButtons(doc);
+        assertPageDoesNotHaveBackLink(doc);
+    }
+
+    @Test
+    void whenClaimHasNoSavedAssessment_NoOutcomeSelected_CancelRoutesToClaimDetails() throws Exception {
+        Document doc = renderDocumentWithAssessmentOutcome(false, null);
+
+        assertPageHasTitle(doc, "Assessment outcome");
+
+        assertPageHasHeading(doc, "Assessment outcome");
+        assertPageHasPrimaryButton(doc, "Save changes");
+        assertPageHasSecondaryLink(doc, "Cancel");
+        assertPageCancelLinkValue(doc, "Cancel", "/submissions/submissionId/claims/claimId");
+        assertPageHasNoActiveServiceNavigationItems(doc);
+        assertPageHasRadioButtons(doc);
+        assertPageHasInlineRadioButtons(doc);
+        assertPageDoesNotHaveBackLink(doc);
+    }
+
+    private Document renderDocumentWithAssessmentOutcome(Boolean hasAssessment, OutcomeType outcome) throws Exception {
+        claim.setHasAssessment(hasAssessment);
+        claim.setAssessmentOutcome(outcome);
+        return renderDocument(Map.of());
     }
 }
