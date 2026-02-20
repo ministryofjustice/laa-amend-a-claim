@@ -40,15 +40,15 @@ runs:
         # - Replace / and _ with -
         # - Remove special characters (keep only alphanumeric and hyphens)
         # - Replace multiple consecutive hyphens with single hyphen
-        # - Remove leading/trailing hyphens
         # - Truncate to 20 characters
+        # - Remove leading/trailing hyphens
         SANITIZED=$(echo "$BRANCH_NAME" \
           | tr '[:upper:]' '[:lower:]' \
           | sed 's/[^a-z0-9-]/-/g' \
           | sed 's/--*/-/g' \
           | sed 's/^-//' \
-          | sed 's/-$//' \
-          | cut -c1-20)
+          | cut -c1-20 \
+          | sed 's/-$//')
 
         # Create release name (prepend 'ephemeral-' to distinguish from static deployments)
         RELEASE_NAME="ephemeral-${SANITIZED}"
