@@ -14,6 +14,8 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -30,6 +32,7 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @ActiveProfiles("local")
 @WebMvcTest(ClaimSummaryController.class)
@@ -106,6 +109,22 @@ public class ClaimSummaryControllerTest {
                 .andExpect(model().attributeExists("claim"))
                 .andExpect(model().attribute("searchUrl", "/?providerAccountNumber=12345&page=1"))
                 .andExpect(request().sessionAttribute(claimId.toString(), claim));
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = ClaimStatus.class,
+            names = {"VALID"},
+            mode = EnumSource.Mode.EXCLUDE)
+    public void testOnPageLoadReturnsNotFoundForNonValidStatus(ClaimStatus status) throws Exception {
+        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+        claim.setStatus(status);
+
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+
+        String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+
+        mockMvc.perform(get(path).session(session)).andExpect(status().isNotFound());
     }
 
     @Test

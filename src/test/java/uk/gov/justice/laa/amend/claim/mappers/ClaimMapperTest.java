@@ -23,6 +23,7 @@ import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
@@ -32,9 +33,6 @@ class ClaimMapperTest {
 
     @Autowired
     private ClaimMapper mapper;
-
-    private final String submissionId = "foo";
-    private final String claimId = "bar";
 
     @Test
     void testMapTotalAmount() {
@@ -608,6 +606,7 @@ class ClaimMapperTest {
         response.setUniqueClientNumber("21121985/J/DOE");
         response.setCaseStartDate("2025-01-01");
         response.setCaseConcludedDate("2025-02-01");
+        response.setStatus(ClaimStatus.VALID);
 
         SubmissionResponse submissionResponse = new SubmissionResponse();
         submissionResponse.setSubmissionId(UUID.randomUUID());
@@ -643,8 +642,9 @@ class ClaimMapperTest {
         assertEquals("MT1+MT2", claim.getMatterTypeCode());
         assertEquals(claimSummaryFeeId.toString(), claim.getClaimSummaryFeeId());
         assertEquals("LEGAL HELP", claim.getAreaOfLaw());
-        assertEquals(null, claim.getProviderName());
+        assertNull(claim.getProviderName());
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
+        assertEquals(ClaimStatus.VALID, claim.getStatus());
     }
 
     @Test
@@ -656,6 +656,7 @@ class ClaimMapperTest {
         response.setClientForename("John");
         response.setCaseStartDate("2025-01-01");
         response.setCaseConcludedDate("2025-02-01");
+        response.setStatus(ClaimStatus.VALID);
 
         SubmissionResponse submissionResponse = new SubmissionResponse();
         submissionResponse.setSubmissionId(UUID.randomUUID());
@@ -688,6 +689,7 @@ class ClaimMapperTest {
         assertEquals("INVC", claim.getMatterTypeCode());
         assertEquals("PrisonCode", claim.getPoliceStationCourtPrisonId());
         assertEquals("SchemeId", claim.getSchemeId());
+        assertEquals(ClaimStatus.VALID, claim.getStatus());
 
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }
