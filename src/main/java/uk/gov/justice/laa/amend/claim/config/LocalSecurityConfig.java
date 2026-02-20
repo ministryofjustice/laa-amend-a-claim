@@ -81,7 +81,7 @@ public class LocalSecurityConfig {
                     throws ServletException, IOException {
 
                 Map<String, Object> claims = Map.of(
-                        "oid", userId,
+                        "oid", userId.toString(),
                         "email", "dummy-email@example.com",
                         "name", "Dummy Name");
 

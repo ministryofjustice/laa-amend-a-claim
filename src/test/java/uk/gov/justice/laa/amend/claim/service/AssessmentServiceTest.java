@@ -256,7 +256,7 @@ class AssessmentServiceTest {
         private void setupHighValueAssessmentLimitTest(BigDecimal assessedTotalInclVat) {
             CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
             claim.setClaimId(claimId.toString());
-            String userId = UUID.randomUUID().toString();
+            UUID userId = UUID.randomUUID();
             AssessmentPost assessment = new AssessmentPost();
             assessment.setAssessedTotalInclVat(assessedTotalInclVat);
 

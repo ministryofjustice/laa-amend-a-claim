@@ -63,7 +63,7 @@ class AssessmentMapperTest {
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalVat());
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalInclVat());
         assertEquals(true, assessment.getIsVatApplicable());
-        assertEquals(userId, assessment.getCreatedByUserId());
+        assertEquals(userId.toString(), assessment.getCreatedByUserId());
     }
 
     @Test
@@ -90,7 +90,7 @@ class AssessmentMapperTest {
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalVat());
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalInclVat());
         assertEquals(true, assessment.getIsVatApplicable());
-        assertEquals(userId, assessment.getCreatedByUserId());
+        assertEquals(userId.toString(), assessment.getCreatedByUserId());
     }
 
     @Test
