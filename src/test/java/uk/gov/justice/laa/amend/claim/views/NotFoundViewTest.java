@@ -19,7 +19,7 @@ public class NotFoundViewTest extends ViewTestBase {
     private ReferenceNumberFactory referenceNumberFactory;
 
     NotFoundViewTest() {
-        super("/error");
+        this.mapping = "/error";
     }
 
     @Test
@@ -33,9 +33,8 @@ public class NotFoundViewTest extends ViewTestBase {
         assertPageHasContent(doc, "If you entered a web address please check it was correct.");
 
         assertPageHasContent(
-                doc,
-                "Alternatively return to the Amend a claim for contracted work and extension homepage and try again.");
+                doc, "Alternatively return to the Amend a claim for contracted work homepage and try again.");
 
-        assertPageHasLink(doc, "homepage", "Amend a claim for contracted work and extension homepage", "/");
+        assertPageHasLink(doc, "homepage", "Amend a claim for contracted work homepage", "/");
     }
 }

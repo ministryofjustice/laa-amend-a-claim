@@ -15,9 +15,12 @@ import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.web.servlet.HandlerMapping;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 class ClaimInterceptorTest {
 
@@ -155,13 +158,37 @@ class ClaimInterceptorTest {
         verify(response).sendError(eq(404));
     }
 
-    @Test
-    void preHandle_shouldReturnTrue_whenEscapedCivilClaimFound() throws Exception {
+    @ParameterizedTest
+    @EnumSource(
+            value = ClaimStatus.class,
+            names = {"VALID"},
+            mode = EnumSource.Mode.EXCLUDE)
+    void preHandle_shouldReturn404_whenStatusIsNotValid(ClaimStatus status) throws Exception {
         Map<String, String> vars = Map.of(
                 "submissionId", submissionId.toString(),
                 "claimId", claimId.toString());
         ClaimDetails claim = new CivilClaimDetails();
         claim.setEscaped(true);
+        claim.setStatus(status);
+
+        when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE))
+                .thenReturn(vars);
+        when(request.getSession(false)).thenReturn(session);
+        when(session.getAttribute(claimId.toString())).thenReturn(claim);
+
+        assertFalse(interceptor.preHandle(request, response, handler));
+
+        verify(response).sendError(eq(404));
+    }
+
+    @Test
+    void preHandle_shouldReturnTrue_whenValidEscapedCivilClaimFound() throws Exception {
+        Map<String, String> vars = Map.of(
+                "submissionId", submissionId.toString(),
+                "claimId", claimId.toString());
+        ClaimDetails claim = new CivilClaimDetails();
+        claim.setEscaped(true);
+        claim.setStatus(ClaimStatus.VALID);
 
         when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE))
                 .thenReturn(vars);
@@ -174,12 +201,13 @@ class ClaimInterceptorTest {
     }
 
     @Test
-    void preHandle_shouldReturnTrue_whenEscapedCrimeClaimFound() throws Exception {
+    void preHandle_shouldReturnTrue_whenValidEscapedCrimeClaimFound() throws Exception {
         Map<String, String> vars = Map.of(
                 "submissionId", submissionId.toString(),
                 "claimId", claimId.toString());
         ClaimDetails claim = new CivilClaimDetails();
         claim.setEscaped(true);
+        claim.setStatus(ClaimStatus.VALID);
 
         when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE))
                 .thenReturn(vars);

@@ -5,6 +5,7 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSES
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,9 +33,9 @@ public class ClaimReviewController {
     public String onPageLoad(
             HttpServletRequest request,
             Model model,
-            @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId) {
-        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
+            @PathVariable(value = "submissionId") UUID submissionId,
+            @PathVariable(value = "claimId") UUID claimId) {
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
 
         if (claim.getAssessmentOutcome() == null) {
             return String.format("redirect:/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
@@ -48,17 +49,17 @@ public class ClaimReviewController {
             HttpSession session,
             Model model,
             @AuthenticationPrincipal OidcUser oidcUser,
-            @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId,
+            @PathVariable(value = "submissionId") UUID submissionId,
+            @PathVariable(value = "claimId") UUID claimId,
             HttpServletResponse response) {
-        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
         ClaimDetailsView<? extends ClaimDetails> viewModel = claim.toViewModel();
         if (viewModel.getErrors().isEmpty()) {
             String userId = oidcUser.getClaim("oid");
             try {
                 CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
-                session.removeAttribute(claimId);
-                String assessmentId = result.getId().toString();
+                session.removeAttribute(claimId.toString());
+                UUID assessmentId = result.getId();
                 session.setAttribute(ASSESSMENT_ID, assessmentId);
                 return String.format(
                         "redirect:/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
@@ -73,7 +74,7 @@ public class ClaimReviewController {
         }
     }
 
-    private String renderView(Model model, ClaimDetails claim, String submissionId, String claimId) {
+    private String renderView(Model model, ClaimDetails claim, UUID submissionId, UUID claimId) {
         return renderView(model, claim, claim.toViewModel(), submissionId, claimId, false, false);
     }
 
@@ -81,8 +82,8 @@ public class ClaimReviewController {
             Model model,
             ClaimDetails claim,
             ClaimDetailsView<? extends ClaimDetails> viewModel,
-            String submissionId,
-            String claimId,
+            UUID submissionId,
+            UUID claimId,
             boolean submissionFailed,
             boolean validationFailed) {
         // Populate with the right status of Claim fields based on outcome status and assessed values

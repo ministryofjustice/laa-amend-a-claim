@@ -15,6 +15,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
@@ -31,13 +32,14 @@ public interface ClaimsApiClient {
             @RequestParam(value = "escaped_case_flag", required = false) Boolean escapedCaseFlag,
             @RequestParam(value = "page", required = false) int page,
             @RequestParam(value = "size", required = false) int size,
-            @RequestParam(value = "sort", required = false) String sort);
+            @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "claim_statuses", required = false) ClaimStatus claimStatus);
 
     @GetExchange(url = "/v2/submissions/{submissionId}/claims/{claimId}", accept = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ClaimResponseV2> getClaim(@PathVariable String submissionId, @PathVariable String claimId);
+    Mono<ClaimResponseV2> getClaim(@PathVariable UUID submissionId, @PathVariable UUID claimId);
 
     @GetExchange(url = "/v1/submissions/{id}", accept = MediaType.APPLICATION_JSON_VALUE)
-    Mono<SubmissionResponse> getSubmission(@PathVariable String id);
+    Mono<SubmissionResponse> getSubmission(@PathVariable UUID id);
 
     @PostExchange(value = "/v1/claims/{claimId}/assessments", contentType = MediaType.APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<CreateAssessment201Response>> submitAssessment(

@@ -47,7 +47,7 @@ public class WireMockSetup {
                 "pageNumber": 0
             }
             """;
-        stubFor(get(urlPathMatching("/api/v1/claims.*"))
+        stubFor(get(urlPathMatching("/api/(v1|v2)/claims.*"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -81,7 +81,7 @@ public class WireMockSetup {
               }\
             """, claimId, submissionId);
 
-        stubFor(get(urlPathMatching(String.format("/api/v1/submissions/%s/claims/%s", submissionId, claimId)))
+        stubFor(get(urlPathMatching(String.format("/api/(v1|v2)/submissions/%s/claims/%s", submissionId, claimId)))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -98,7 +98,7 @@ public class WireMockSetup {
             }\
             """, submissionId, officeAccountNumber);
 
-        stubFor(get(urlPathMatching(String.format("/api/v1/submissions/%s", submissionId)))
+        stubFor(get(urlPathMatching(String.format("/api/(v1|v2)/submissions/%s", submissionId)))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")

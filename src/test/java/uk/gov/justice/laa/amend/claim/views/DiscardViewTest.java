@@ -14,7 +14,7 @@ import uk.gov.justice.laa.amend.claim.controllers.DiscardController;
 class DiscardViewTest extends ViewTestBase {
 
     DiscardViewTest() {
-        super("/submissions/submissionId/claims/claimId/discard");
+        this.mapping = String.format("/submissions/%s/claims/%s/discard", submissionId, claimId);
     }
 
     @Test
@@ -31,6 +31,10 @@ class DiscardViewTest extends ViewTestBase {
 
         assertPageHasPrimaryButton(doc, "Discard assessment");
 
-        assertPageHasLink(doc, "return-to-claim", "Return to claim", "/submissions/submissionId/claims/claimId/review");
+        assertPageHasLink(
+                doc,
+                "return-to-claim",
+                "Return to claim",
+                String.format("/submissions/%s/claims/%s/review", submissionId, claimId));
     }
 }

@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.math.BigDecimal;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,8 @@ public class ChangeAllowedTotalsController {
 
     @GetMapping()
     public String onPageLoad(
-            @PathVariable String claimId, @PathVariable String submissionId, Model model, HttpServletRequest request) {
-        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
+            @PathVariable UUID claimId, @PathVariable UUID submissionId, Model model, HttpServletRequest request) {
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
 
         if (claim.getAllowedTotalVat().isNotAssessable()
                 || claim.getAllowedTotalInclVat().isNotAssessable()) {
@@ -59,8 +60,8 @@ public class ChangeAllowedTotalsController {
 
     @PostMapping()
     public String onSubmit(
-            @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId,
+            @PathVariable(value = "submissionId") UUID submissionId,
+            @PathVariable(value = "claimId") UUID claimId,
             @Valid @ModelAttribute("form") AllowedTotalForm form,
             BindingResult bindingResult,
             HttpSession session,
@@ -72,7 +73,7 @@ public class ChangeAllowedTotalsController {
             return renderView(model, form, submissionId, claimId);
         }
 
-        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
 
         ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
         BigDecimal allowedTotalVat = setScale(form.getAllowedTotalVat());
@@ -93,18 +94,15 @@ public class ChangeAllowedTotalsController {
         }
 
         // Save updated Claim back to session
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
     }
 
-    private String renderView(Model model, AllowedTotalForm form, String submissionId, String claimId) {
+    private String renderView(Model model, AllowedTotalForm form, UUID submissionId, UUID claimId) {
         model.addAttribute("form", form);
-        model.addAttribute("redirectUrl", getRedirectUrl(submissionId, claimId));
+        String redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+        model.addAttribute("redirectUrl", redirectUrl);
         return "allowed-totals";
-    }
-
-    private String getRedirectUrl(String submissionId, String claimId) {
-        return String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
     }
 }
