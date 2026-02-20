@@ -42,7 +42,7 @@ public interface AssessmentMapper {
     @Mapping(target = "boltOnCmrhTelephoneFee", ignore = true)
     @Mapping(target = "boltOnSubstantiveHearingFee", ignore = true)
     @Mapping(target = "boltOnHomeOfficeInterviewFee", ignore = true)
-    @Mapping(target = "createdByUserId", expression = "java(userId)")
+    @Mapping(target = "createdByUserId", expression = "java(userId.toString())")
     @Mapping(target = "assessedTotalVat", expression = "java(mapAssessedTotalVat(claim))")
     @Mapping(target = "assessedTotalInclVat", expression = "java(mapAssessedTotalInclVat(claim))")
     @Mapping(target = "allowedTotalVat", expression = "java(mapAllowedTotalVat(claim))")
