@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.amend.claim.views;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -60,7 +59,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
     private OAuth2AuthorizedClientService authorizedClientService;
 
     ClaimSummaryViewTest() {
-        super("/submissions/submissionId/claims/claimId");
+        this.mapping = String.format("/submissions/%s/claims/%s", submissionId, claimId);
     }
 
     @Test
@@ -71,7 +70,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setCategoryOfLaw("TEST");
         claim.setMatterTypeCode("IMLB:AHQS");
 
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
         Document doc = renderDocument();
 
@@ -134,10 +133,9 @@ class ClaimSummaryViewTest extends ViewTestBase {
                         Instant.now(),
                         Instant.now().plusSeconds(3600)));
 
-        when(authorizedClientService.loadAuthorizedClient(eq("entra"), anyString()))
-                .thenReturn(mockClient);
+        when(authorizedClientService.loadAuthorizedClient(eq("entra"), any())).thenReturn(mockClient);
 
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
         var lastAssessment = new AssessmentInfo();
         lastAssessment.setLastAssessedBy("test");
@@ -200,7 +198,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         ClaimResponse claimResponse = new ClaimResponse();
         claimResponse.feeCalculationResponse(new FeeCalculationPatch().categoryOfLaw("CRIME"));
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
         Document doc = renderDocument();
 
@@ -248,7 +246,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
     void testNonEscapedClaimPage() throws Exception {
         claim.setEscaped(false);
 
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
         Document doc = renderDocument();
 
@@ -259,7 +257,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
     @Test
     void testPageWhenEmptyClaim() throws Exception {
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(new CrimeClaimDetails());
+        when(claimService.getClaimDetails(any(), any())).thenReturn(new CrimeClaimDetails());
 
         Document doc = renderDocument();
 
@@ -272,7 +270,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
     void testPageWithCachedSearchUrl() throws Exception {
         session.setAttribute("searchUrl", "/?providerAccountNumber=0P322F&page=1");
 
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
         Document doc = renderDocument();
 

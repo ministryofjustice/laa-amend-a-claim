@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import java.util.UUID;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -13,13 +14,16 @@ import uk.gov.justice.laa.amend.claim.controllers.ConfirmationController;
 @Import(LocalSecurityConfig.class)
 class ConfirmationViewTest extends ViewTestBase {
 
+    private final UUID assessmentId;
+
     ConfirmationViewTest() {
-        super("/submissions/123/claims/456/assessments/789");
+        assessmentId = UUID.randomUUID();
+        this.mapping = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
     }
 
     @Test
     void testPage() throws Exception {
-        session.setAttribute("assessmentId", "789");
+        session.setAttribute("assessmentId", assessmentId);
         Document doc = renderDocument();
 
         assertPageHasTitle(doc, "Assessment complete");
@@ -32,6 +36,10 @@ class ConfirmationViewTest extends ViewTestBase {
 
         assertPageHasLink(doc, "go-to-search", "Go to search", "/");
 
-        assertPageHasLink(doc, "view-assessed-claim", "View assessed claim", "/submissions/123/claims/456");
+        assertPageHasLink(
+                doc,
+                "view-assessed-claim",
+                "View assessed claim",
+                String.format("/submissions/%s/claims/%s", submissionId, claimId));
     }
 }
