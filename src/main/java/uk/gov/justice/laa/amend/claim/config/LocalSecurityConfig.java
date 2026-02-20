@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import lombok.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +34,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @EnableWebSecurity
 public class LocalSecurityConfig {
 
-    public static String userId = "dummy-oid-12345";
+    public static UUID userId = UUID.fromString("00000000-0000-0000-0000-000000000001");
 
     @Bean
     public SecurityFilterChain securityFilterChainLocal(final HttpSecurity http) throws Exception {
@@ -80,7 +81,7 @@ public class LocalSecurityConfig {
                     throws ServletException, IOException {
 
                 Map<String, Object> claims = Map.of(
-                        "oid", userId,
+                        "oid", userId.toString(),
                         "email", "dummy-email@example.com",
                         "name", "Dummy Name");
 

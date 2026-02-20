@@ -57,7 +57,7 @@ public class ClaimReviewController {
         if (viewModel.getErrors().isEmpty()) {
             String userId = oidcUser.getClaim("oid");
             try {
-                CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
+                CreateAssessment201Response result = assessmentService.submitAssessment(claim, UUID.fromString(userId));
                 session.removeAttribute(claimId.toString());
                 UUID assessmentId = result.getId();
                 session.setAttribute(ASSESSMENT_ID, assessmentId);

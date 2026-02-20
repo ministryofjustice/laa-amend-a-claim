@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 import java.util.function.Function;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
@@ -41,12 +42,12 @@ public interface AssessmentMapper {
     @Mapping(target = "boltOnCmrhTelephoneFee", ignore = true)
     @Mapping(target = "boltOnSubstantiveHearingFee", ignore = true)
     @Mapping(target = "boltOnHomeOfficeInterviewFee", ignore = true)
-    @Mapping(target = "createdByUserId", expression = "java(userId)")
+    @Mapping(target = "createdByUserId", expression = "java(userId.toString())")
     @Mapping(target = "assessedTotalVat", expression = "java(mapAssessedTotalVat(claim))")
     @Mapping(target = "assessedTotalInclVat", expression = "java(mapAssessedTotalInclVat(claim))")
     @Mapping(target = "allowedTotalVat", expression = "java(mapAllowedTotalVat(claim))")
     @Mapping(target = "allowedTotalInclVat", expression = "java(mapAllowedTotalInclVat(claim))")
-    AssessmentPost mapClaimToAssessment(ClaimDetails claim, @Context String userId);
+    AssessmentPost mapClaimToAssessment(ClaimDetails claim, @Context UUID userId);
 
     @InheritConfiguration(name = "mapClaimToAssessment")
     @Mapping(target = "netCostOfCounselAmount", expression = "java(mapNetCostOfCounselAmount(claim))")
@@ -59,12 +60,12 @@ public interface AssessmentMapper {
     @Mapping(target = "boltOnCmrhTelephoneFee", expression = "java(mapBoltOnCmrhTelephoneFee(claim))")
     @Mapping(target = "boltOnSubstantiveHearingFee", expression = "java(mapBoltOnSubstantiveHearingFee(claim))")
     @Mapping(target = "boltOnHomeOfficeInterviewFee", expression = "java(mapBoltOnHomeOfficeInterviewFee(claim))")
-    AssessmentPost mapCivilClaimToAssessment(CivilClaimDetails claim, @Context String userId);
+    AssessmentPost mapCivilClaimToAssessment(CivilClaimDetails claim, @Context UUID userId);
 
     @InheritConfiguration(name = "mapClaimToAssessment")
     @Mapping(target = "netTravelCostsAmount", expression = "java(mapNetTravelCostsAmount(claim))")
     @Mapping(target = "netWaitingCostsAmount", expression = "java(mapNetWaitingCostsAmount(claim))")
-    AssessmentPost mapCrimeClaimToAssessment(CrimeClaimDetails claim, @Context String userId);
+    AssessmentPost mapCrimeClaimToAssessment(CrimeClaimDetails claim, @Context UUID userId);
 
     @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     @Mapping(target = "assessmentOutcome", source = "lastAssessmentOutcome")

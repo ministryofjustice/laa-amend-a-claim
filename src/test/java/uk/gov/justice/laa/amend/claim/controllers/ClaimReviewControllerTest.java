@@ -104,7 +104,7 @@ public class ClaimReviewControllerTest {
     @Test
     public void testSuccessfulSubmitRedirectsToConfirmation() throws Exception {
         UUID assessmentId = UUID.randomUUID();
-        String userId = LocalSecurityConfig.userId;
+        UUID userId = LocalSecurityConfig.userId;
 
         CreateAssessment201Response response = new CreateAssessment201Response();
         response.setId(assessmentId);
@@ -126,7 +126,7 @@ public class ClaimReviewControllerTest {
 
     @Test
     public void testUnsuccessfulSubmitReloadsPageWithAlert() throws Exception {
-        String userId = LocalSecurityConfig.userId;
+        UUID userId = LocalSecurityConfig.userId;
 
         WebClientResponseException exception =
                 WebClientResponseException.create(500, "Something went wrong", null, null, null);
