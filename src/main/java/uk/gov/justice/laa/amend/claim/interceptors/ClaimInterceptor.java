@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @Component
 @Slf4j
@@ -41,6 +42,9 @@ public class ClaimInterceptor implements HandlerInterceptor {
             }
             if (claim.getEscaped() == null || !claim.getEscaped()) {
                 return error(response, request, "Claim is not an escape case");
+            }
+            if (claim.getStatus() == null || claim.getStatus() != ClaimStatus.VALID) {
+                return error(response, request, "Claim does not have staus VALID");
             }
 
             request.setAttribute(claimId, claim);
