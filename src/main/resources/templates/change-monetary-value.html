@@ -14,8 +14,6 @@
                     <div class="govuk-grid-column-two-thirds">
                         <form th:action="@{${action}}" th:object="${form}" method="post">
 
-                            <input type="hidden" name="cost" th:value="${cost}">
-
                             <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toMonetaryFormValueErrors(#fields.detailedErrors())})}"></th:block>
 
                             <div class="govuk-form-group">
