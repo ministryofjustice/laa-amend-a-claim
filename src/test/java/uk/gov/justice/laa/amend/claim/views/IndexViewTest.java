@@ -46,7 +46,7 @@ class IndexViewTest extends ViewTestBase {
     private SearchProperties searchProperties;
 
     IndexViewTest() {
-        super("/");
+        this.mapping = "/";
     }
 
     @Test

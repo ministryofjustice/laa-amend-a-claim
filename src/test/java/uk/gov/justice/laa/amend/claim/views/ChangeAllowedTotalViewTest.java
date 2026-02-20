@@ -16,7 +16,7 @@ import uk.gov.justice.laa.amend.claim.controllers.ChangeAllowedTotalsController;
 class ChangeAllowedTotalViewTest extends ViewTestBase {
 
     ChangeAllowedTotalViewTest() {
-        super("/submissions/submissionId/claims/claimId/allowed-totals");
+        this.mapping = String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId);
     }
 
     @Test

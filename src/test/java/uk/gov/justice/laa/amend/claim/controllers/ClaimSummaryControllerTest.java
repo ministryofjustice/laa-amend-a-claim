@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -15,6 +15,8 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -31,6 +33,7 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @ActiveProfiles("local")
 @WebMvcTest(ClaimSummaryController.class)
@@ -52,14 +55,14 @@ public class ClaimSummaryControllerTest {
     @MockitoBean
     private AssessmentService assessmentService;
 
-    private String submissionId;
-    private String claimId;
+    private UUID submissionId;
+    private UUID claimId;
     private MockHttpSession session;
 
     @BeforeEach
     void setUp() {
-        submissionId = UUID.randomUUID().toString();
-        claimId = UUID.randomUUID().toString();
+        submissionId = UUID.randomUUID();
+        claimId = UUID.randomUUID();
         session = new MockHttpSession();
     }
 
@@ -67,7 +70,7 @@ public class ClaimSummaryControllerTest {
     public void testOnPageLoadReturnsView() throws Exception {
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
         var lastAssessment = new AssessmentInfo();
         lastAssessment.setLastAssessedBy("test");
@@ -82,7 +85,7 @@ public class ClaimSummaryControllerTest {
                 .andExpect(view().name("claim-summary"))
                 .andExpect(model().attributeExists("claim"))
                 .andExpect(model().attribute("searchUrl", "/"))
-                .andExpect(request().sessionAttribute(claimId, claim));
+                .andExpect(request().sessionAttribute(claimId.toString(), claim));
     }
 
     @Test
@@ -91,7 +94,7 @@ public class ClaimSummaryControllerTest {
 
         session.setAttribute("searchUrl", "/?providerAccountNumber=12345&page=1");
 
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
         var lastAssessment = new AssessmentInfo();
         lastAssessment.setLastAssessedBy("test");
@@ -106,7 +109,23 @@ public class ClaimSummaryControllerTest {
                 .andExpect(view().name("claim-summary"))
                 .andExpect(model().attributeExists("claim"))
                 .andExpect(model().attribute("searchUrl", "/?providerAccountNumber=12345&page=1"))
-                .andExpect(request().sessionAttribute(claimId, claim));
+                .andExpect(request().sessionAttribute(claimId.toString(), claim));
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = ClaimStatus.class,
+            names = {"VALID"},
+            mode = EnumSource.Mode.EXCLUDE)
+    public void testOnPageLoadReturnsNotFoundForNonValidStatus(ClaimStatus status) throws Exception {
+        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+        claim.setStatus(status);
+
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+
+        String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+
+        mockMvc.perform(get(path).session(session)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -114,7 +133,7 @@ public class ClaimSummaryControllerTest {
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
         claim.setHasAssessment(true);
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 
@@ -130,7 +149,7 @@ public class ClaimSummaryControllerTest {
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
         claim.setHasAssessment(false);
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 

@@ -16,7 +16,7 @@ import uk.gov.justice.laa.amend.claim.controllers.ChangeMonetaryValueController;
 class ChangeMonetaryValueViewTest extends ViewTestBase {
 
     ChangeMonetaryValueViewTest() {
-        super("/submissions/submissionId/claims/claimId/profit-costs");
+        this.mapping = String.format("/submissions/%s/claims/%s/profit-costs", submissionId, claimId);
     }
 
     @Test

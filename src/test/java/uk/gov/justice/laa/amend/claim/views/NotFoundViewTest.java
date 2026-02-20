@@ -19,7 +19,7 @@ public class NotFoundViewTest extends ViewTestBase {
     private ReferenceNumberFactory referenceNumberFactory;
 
     NotFoundViewTest() {
-        super("/error");
+        this.mapping = "/error";
     }
 
     @Test

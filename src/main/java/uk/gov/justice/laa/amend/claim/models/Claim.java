@@ -11,6 +11,7 @@ import java.time.YearMonth;
 import lombok.Data;
 import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @Data
 public class Claim implements Serializable {
@@ -36,6 +37,7 @@ public class Claim implements Serializable {
     private Boolean escaped;
     private Boolean vatApplicable;
     private String scheduleReference;
+    private ClaimStatus status;
 
     public BaseClaimView<? extends Claim> toViewModel() {
         return new ClaimView(this);

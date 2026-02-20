@@ -22,7 +22,7 @@ public class ErrorViewTest extends ViewTestBase {
     private ReferenceNumberFactory referenceNumberFactory;
 
     ErrorViewTest() {
-        super("/error");
+        this.mapping = "/error";
     }
 
     @ParameterizedTest

@@ -34,6 +34,7 @@ import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 public class MockClaimsFunctions {
 
@@ -45,6 +46,7 @@ public class MockClaimsFunctions {
         claim.setSubmissionId(UUID.randomUUID().toString());
         claim.setClaimSummaryFeeId(UUID.randomUUID().toString());
         claim.setEscaped(true);
+        claim.setStatus(ClaimStatus.VALID);
 
         claim.setFixedFee(createFixedFeeField());
         claim.setNetProfitCost(createNetProfitCostField());
@@ -75,6 +77,7 @@ public class MockClaimsFunctions {
         claim.setSubmissionId(UUID.randomUUID().toString());
         claim.setClaimSummaryFeeId(UUID.randomUUID().toString());
         claim.setEscaped(true);
+        claim.setStatus(ClaimStatus.VALID);
 
         claim.setNetProfitCost(createNetProfitCostField());
         claim.setTravelCosts(createTravelCostField());

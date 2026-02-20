@@ -23,7 +23,7 @@ class MaintenanceViewTest extends ViewTestBase {
     private MaintenanceService maintenanceService;
 
     MaintenanceViewTest() {
-        super("/maintenance");
+        this.mapping = "/maintenance";
     }
 
     @Test

@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,9 +30,9 @@ public class AssessmentOutcomeController {
     public String setAssessmentOutcome(
             HttpServletRequest request,
             Model model,
-            @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId) {
-        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
+            @PathVariable(value = "submissionId") UUID submissionId,
+            @PathVariable(value = "claimId") UUID claimId) {
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
 
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
         form.setAssessmentOutcome(claim.getAssessmentOutcome());
@@ -46,15 +47,15 @@ public class AssessmentOutcomeController {
 
     @PostMapping("/assessment-outcome")
     public String selectAssessmentOutcome(
-            @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId,
+            @PathVariable(value = "submissionId") UUID submissionId,
+            @PathVariable(value = "claimId") UUID claimId,
             @Valid @ModelAttribute("form") AssessmentOutcomeForm form,
             BindingResult bindingResult,
             HttpSession session,
             Model model,
             HttpServletRequest request,
             HttpServletResponse response) {
-        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
 
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -75,13 +76,13 @@ public class AssessmentOutcomeController {
         }
 
         // Save updated Claim back to session
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
     }
 
     private String renderView(
-            Model model, AssessmentOutcomeForm form, String submissionId, String claimId, ClaimDetails claim) {
+            Model model, AssessmentOutcomeForm form, UUID submissionId, UUID claimId, ClaimDetails claim) {
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claimId", claimId);
         model.addAttribute("form", form);

@@ -13,7 +13,7 @@ import uk.gov.justice.laa.amend.claim.controllers.LogoutController;
 @Import(LocalSecurityConfig.class)
 public class SessionExpiredViewTest extends ViewTestBase {
     protected SessionExpiredViewTest() {
-        super("/logout-success?message=expired");
+        this.mapping = "/logout-success?message=expired";
     }
 
     @Test

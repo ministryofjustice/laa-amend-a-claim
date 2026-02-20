@@ -39,9 +39,9 @@ public class ConfirmationControllerTest {
 
     @Test
     public void testOnPageLoadReturnsViewWhenStoredAssessmentIdMatches() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
-        String assessmentId = UUID.randomUUID().toString();
+        UUID submissionId = UUID.randomUUID();
+        UUID claimId = UUID.randomUUID();
+        UUID assessmentId = UUID.randomUUID();
 
         session.setAttribute("assessmentId", assessmentId);
 
@@ -56,10 +56,10 @@ public class ConfirmationControllerTest {
 
     @Test
     public void testOnPageLoadReturnsNotFoundWhenStoredAssessmentIdDoesNotMatch() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
-        String assessmentId1 = UUID.randomUUID().toString();
-        String assessmentId2 = UUID.randomUUID().toString();
+        UUID submissionId = UUID.randomUUID();
+        UUID claimId = UUID.randomUUID();
+        UUID assessmentId1 = UUID.randomUUID();
+        UUID assessmentId2 = UUID.randomUUID();
 
         session.setAttribute("assessmentId", assessmentId1);
 
@@ -70,9 +70,9 @@ public class ConfirmationControllerTest {
 
     @Test
     public void testOnPageLoadReturnsNotFoundWhenNoStoredAssessmentId() throws Exception {
-        String submissionId = UUID.randomUUID().toString();
-        String claimId = UUID.randomUUID().toString();
-        String assessmentId = UUID.randomUUID().toString();
+        UUID submissionId = UUID.randomUUID();
+        UUID claimId = UUID.randomUUID();
+        UUID assessmentId = UUID.randomUUID();
 
         String uri = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
 

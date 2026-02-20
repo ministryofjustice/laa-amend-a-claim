@@ -82,8 +82,8 @@ public class ClaimReviewControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("review-and-amend"))
                 .andExpect(model().attributeExists("claim"))
-                .andExpect(model().attribute("claimId", claimId.toString()))
-                .andExpect(model().attribute("submissionId", submissionId.toString()))
+                .andExpect(model().attribute("claimId", claimId))
+                .andExpect(model().attribute("submissionId", submissionId))
                 .andExpect(model().attribute("submissionFailed", false))
                 .andExpect(model().attribute("validationFailed", false));
     }
@@ -120,7 +120,7 @@ public class ClaimReviewControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl))
                 .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()))
-                .andExpect(request().sessionAttribute("assessmentId", assessmentId.toString()));
+                .andExpect(request().sessionAttribute("assessmentId", assessmentId));
 
         verify(assessmentService).submitAssessment(claim, userId);
     }
@@ -140,8 +140,8 @@ public class ClaimReviewControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("review-and-amend"))
                 .andExpect(model().attributeExists("claim"))
-                .andExpect(model().attribute("claimId", claimId.toString()))
-                .andExpect(model().attribute("submissionId", submissionId.toString()))
+                .andExpect(model().attribute("claimId", claimId))
+                .andExpect(model().attribute("submissionId", submissionId))
                 .andExpect(model().attribute("submissionFailed", true))
                 .andExpect(model().attribute("validationFailed", false));
 
@@ -162,8 +162,8 @@ public class ClaimReviewControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("review-and-amend"))
                 .andExpect(model().attributeExists("claim"))
-                .andExpect(model().attribute("claimId", claimId.toString()))
-                .andExpect(model().attribute("submissionId", submissionId.toString()))
+                .andExpect(model().attribute("claimId", claimId))
+                .andExpect(model().attribute("submissionId", submissionId))
                 .andExpect(model().attribute("submissionFailed", false))
                 .andExpect(model().attribute("validationFailed", true));
     }
@@ -174,20 +174,20 @@ public class ClaimReviewControllerTest {
         session.clearAttributes();
         ClaimDetails claim1 = MockClaimsFunctions.createMockCivilClaim();
         claim1.setSubmissionId(submissionId.toString());
-        String claimId1 = UUID.randomUUID().toString();
-        claim1.setClaimId(claimId1);
+        UUID claimId1 = UUID.randomUUID();
+        claim1.setClaimId(claimId1.toString());
         claim1.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
         MockClaimsFunctions.updateStatus(claim1, OutcomeType.PAID_IN_FULL);
 
         ClaimDetails claim2 = MockClaimsFunctions.createMockCrimeClaim();
         claim2.setSubmissionId(submissionId.toString());
-        String claimId2 = UUID.randomUUID().toString();
-        claim2.setClaimId(claimId2);
+        UUID claimId2 = UUID.randomUUID();
+        claim2.setClaimId(claimId2.toString());
         claim2.setAssessmentOutcome(OutcomeType.NILLED);
         MockClaimsFunctions.updateStatus(claim2, claim2.getAssessmentOutcome());
 
-        session.setAttribute(claimId1, claim1);
-        session.setAttribute(claimId2, claim2);
+        session.setAttribute(claimId1.toString(), claim1);
+        session.setAttribute(claimId2.toString(), claim2);
 
         // Load first claim
         String path1 = String.format("/submissions/%s/claims/%s/review", submissionId, claimId1);
@@ -197,7 +197,7 @@ public class ClaimReviewControllerTest {
                 .andExpect(model().attribute("claimId", claimId1));
 
         // Verify both claims still in session
-        Assertions.assertNotNull(session.getAttribute(claimId1));
-        Assertions.assertNotNull(session.getAttribute(claimId2));
+        Assertions.assertNotNull(session.getAttribute(claimId1.toString()));
+        Assertions.assertNotNull(session.getAttribute(claimId2.toString()));
     }
 }
