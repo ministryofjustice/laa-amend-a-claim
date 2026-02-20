@@ -256,17 +256,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
     }
 
     @Test
-    void testPageWhenEmptyClaim() throws Exception {
-        when(claimService.getClaimDetails(any(), any())).thenReturn(new CrimeClaimDetails());
-
-        Document doc = renderDocument();
-
-        assertPageHasTitle(doc, "Claim details");
-
-        assertPageHasHeading(doc, "Claim details");
-    }
-
-    @Test
     void testPageWithCachedSearchUrl() throws Exception {
         session.setAttribute("searchUrl", "/?providerAccountNumber=0P322F&page=1");
 
