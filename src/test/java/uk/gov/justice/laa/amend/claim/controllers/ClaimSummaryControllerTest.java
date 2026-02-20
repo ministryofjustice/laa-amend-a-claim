@@ -51,14 +51,14 @@ public class ClaimSummaryControllerTest {
     @MockitoBean
     private AssessmentService assessmentService;
 
-    private String submissionId;
-    private String claimId;
+    private UUID submissionId;
+    private UUID claimId;
     private MockHttpSession session;
 
     @BeforeEach
     void setUp() {
-        submissionId = UUID.randomUUID().toString();
-        claimId = UUID.randomUUID().toString();
+        submissionId = UUID.randomUUID();
+        claimId = UUID.randomUUID();
         session = new MockHttpSession();
     }
 
@@ -81,7 +81,7 @@ public class ClaimSummaryControllerTest {
                 .andExpect(view().name("claim-summary"))
                 .andExpect(model().attributeExists("claim"))
                 .andExpect(model().attribute("searchUrl", "/"))
-                .andExpect(request().sessionAttribute(claimId, claim));
+                .andExpect(request().sessionAttribute(claimId.toString(), claim));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class ClaimSummaryControllerTest {
                 .andExpect(view().name("claim-summary"))
                 .andExpect(model().attributeExists("claim"))
                 .andExpect(model().attribute("searchUrl", "/?providerAccountNumber=12345&page=1"))
-                .andExpect(request().sessionAttribute(claimId, claim));
+                .andExpect(request().sessionAttribute(claimId.toString(), claim));
     }
 
     @Test

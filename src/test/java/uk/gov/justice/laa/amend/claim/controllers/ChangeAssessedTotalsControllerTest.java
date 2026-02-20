@@ -46,8 +46,8 @@ class ChangeAssessedTotalsControllerTest {
     private MaintenanceService maintenanceService;
 
     private MockHttpSession session;
-    private String claimId;
-    private String submissionId;
+    private UUID claimId;
+    private UUID submissionId;
     private CivilClaimDetails civilClaim;
     private CrimeClaimDetails crimeClaim;
     private final ClaimStatusHandler claimStatusHandler = new ClaimStatusHandler();
@@ -55,8 +55,8 @@ class ChangeAssessedTotalsControllerTest {
     @BeforeEach
     void setup() {
         session = new MockHttpSession();
-        submissionId = UUID.randomUUID().toString();
-        claimId = UUID.randomUUID().toString();
+        submissionId = UUID.randomUUID();
+        claimId = UUID.randomUUID();
         civilClaim = MockClaimsFunctions.createMockCivilClaim();
         crimeClaim = MockClaimsFunctions.createMockCrimeClaim();
     }
@@ -65,7 +65,7 @@ class ChangeAssessedTotalsControllerTest {
     void testGetReturnsView_CivilClaim() throws Exception {
         civilClaim.setAssessedTotalVat(AssessedClaimField.builder().build());
         civilClaim.setAssessedTotalInclVat(AssessedClaimField.builder().build());
-        session.setAttribute(claimId, civilClaim);
+        session.setAttribute(claimId.toString(), civilClaim);
 
         mockMvc.perform(get(buildPath()).session(session))
                 .andExpect(status().isOk())
@@ -78,7 +78,7 @@ class ChangeAssessedTotalsControllerTest {
     void testGetReturnsView_CrimeClaim() throws Exception {
         crimeClaim.setAssessedTotalVat(AssessedClaimField.builder().build());
         crimeClaim.setAssessedTotalInclVat(AssessedClaimField.builder().build());
-        session.setAttribute(claimId, crimeClaim);
+        session.setAttribute(claimId.toString(), crimeClaim);
 
         mockMvc.perform(get(buildPath()).session(session))
                 .andExpect(status().isOk())
@@ -95,7 +95,7 @@ class ChangeAssessedTotalsControllerTest {
         assessedTotalInclVat.setAssessable(false);
         civilClaim.setAssessedTotalVat(assessedTotalVat);
         civilClaim.setAssessedTotalInclVat(assessedTotalInclVat);
-        session.setAttribute(claimId, civilClaim);
+        session.setAttribute(claimId.toString(), civilClaim);
 
         mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isNotFound());
     }
@@ -108,7 +108,7 @@ class ChangeAssessedTotalsControllerTest {
         assessedTotalInclVat.setAssessable(false);
         crimeClaim.setAssessedTotalVat(assessedTotalVat);
         crimeClaim.setAssessedTotalInclVat(assessedTotalInclVat);
-        session.setAttribute(claimId, crimeClaim);
+        session.setAttribute(claimId.toString(), crimeClaim);
 
         mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isNotFound());
     }
@@ -118,7 +118,7 @@ class ChangeAssessedTotalsControllerTest {
         civilClaim.setAssessedTotalInclVat(MockClaimsFunctions.createAssessedTotalInclVatField());
         civilClaim.setAssessedTotalVat(MockClaimsFunctions.createAssessedTotalVatField());
 
-        session.setAttribute(claimId, civilClaim);
+        session.setAttribute(claimId.toString(), civilClaim);
 
         mockMvc.perform(get(buildPath()).session(session))
                 .andExpect(status().isOk())
@@ -132,7 +132,7 @@ class ChangeAssessedTotalsControllerTest {
         crimeClaim.setAssessedTotalInclVat(MockClaimsFunctions.createAssessedTotalInclVatField());
         crimeClaim.setAssessedTotalVat(MockClaimsFunctions.createAssessedTotalVatField());
 
-        session.setAttribute(claimId, crimeClaim);
+        session.setAttribute(claimId.toString(), crimeClaim);
 
         mockMvc.perform(get(buildPath()).session(session))
                 .andExpect(status().isOk())
@@ -158,7 +158,7 @@ class ChangeAssessedTotalsControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(buildRedirectPath()));
 
-        ClaimDetails updated = (ClaimDetails) session.getAttribute(claimId);
+        ClaimDetails updated = (ClaimDetails) session.getAttribute(claimId.toString());
 
         Assertions.assertNotNull(updated);
 
@@ -171,7 +171,7 @@ class ChangeAssessedTotalsControllerTest {
 
     @Test
     void testPostReturnsBadRequestForNegativeValue() throws Exception {
-        session.setAttribute(claimId, civilClaim);
+        session.setAttribute(claimId.toString(), civilClaim);
 
         mockMvc.perform(post(buildPath())
                         .session(session)
@@ -185,7 +185,7 @@ class ChangeAssessedTotalsControllerTest {
 
     @Test
     void testPostReturnsBadRequestFor3DecimalPlacesValue() throws Exception {
-        session.setAttribute(claimId, civilClaim);
+        session.setAttribute(claimId.toString(), civilClaim);
 
         mockMvc.perform(post(buildPath())
                         .session(session)

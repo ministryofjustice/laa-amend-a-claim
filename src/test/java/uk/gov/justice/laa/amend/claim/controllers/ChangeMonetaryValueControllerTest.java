@@ -51,15 +51,15 @@ class ChangeMonetaryValueControllerTest {
     @MockitoBean
     private MaintenanceService maintenanceService;
 
-    private String submissionId;
-    private String claimId;
+    private UUID submissionId;
+    private UUID claimId;
     private MockHttpSession session;
     private String redirectUrl;
 
     @BeforeEach
     void setup() {
-        submissionId = UUID.randomUUID().toString();
-        claimId = UUID.randomUUID().toString();
+        submissionId = UUID.randomUUID();
+        claimId = UUID.randomUUID();
         session = new MockHttpSession();
         redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
     }
@@ -130,7 +130,7 @@ class ChangeMonetaryValueControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl));
 
-        Claim updated = (Claim) session.getAttribute(claimId);
+        Claim updated = (Claim) session.getAttribute(claimId.toString());
 
         Assertions.assertNotNull(updated);
         Assertions.assertEquals(
