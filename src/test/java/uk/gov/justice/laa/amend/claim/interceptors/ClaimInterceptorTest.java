@@ -163,13 +163,13 @@ class ClaimInterceptorTest {
             value = ClaimStatus.class,
             names = {"VALID"},
             mode = EnumSource.Mode.EXCLUDE)
-    void preHandle_shouldReturn404_whenStatusIsNotValid(ClaimStatus claimStatus) throws Exception {
+    void preHandle_shouldReturn404_whenStatusIsNotValid(ClaimStatus status) throws Exception {
         Map<String, String> vars = Map.of(
                 "submissionId", submissionId.toString(),
                 "claimId", claimId.toString());
         ClaimDetails claim = new CivilClaimDetails();
         claim.setEscaped(true);
-        claim.setStatus(claimStatus);
+        claim.setStatus(status);
 
         when(request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE))
                 .thenReturn(vars);
