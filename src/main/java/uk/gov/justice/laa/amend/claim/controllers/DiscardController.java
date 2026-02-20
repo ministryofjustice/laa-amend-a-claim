@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.controllers;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,8 +20,8 @@ public class DiscardController {
     @GetMapping()
     public String onPageLoad(
             Model model,
-            @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId) {
+            @PathVariable(value = "submissionId") UUID submissionId,
+            @PathVariable(value = "claimId") UUID claimId) {
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claimId", claimId);
 
@@ -31,9 +32,9 @@ public class DiscardController {
     public String discard(
             HttpSession session,
             RedirectAttributes redirectAttributes,
-            @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId) {
-        session.removeAttribute(claimId);
+            @PathVariable(value = "submissionId") UUID submissionId,
+            @PathVariable(value = "claimId") UUID claimId) {
+        session.removeAttribute(claimId.toString());
         String searchUrl =
                 (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
 

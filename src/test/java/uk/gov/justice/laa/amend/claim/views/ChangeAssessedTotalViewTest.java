@@ -18,7 +18,7 @@ import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 class ChangeAssessedTotalViewTest extends ViewTestBase {
 
     ChangeAssessedTotalViewTest() {
-        super("/submissions/submissionId/claims/claimId/assessed-totals");
+        this.mapping = String.format("/submissions/%s/claims/%s/assessed-totals", submissionId, claimId);
     }
 
     @Override

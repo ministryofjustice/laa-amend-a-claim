@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -66,7 +66,7 @@ public class ClaimSummaryControllerTest {
     public void testOnPageLoadReturnsView() throws Exception {
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
         var lastAssessment = new AssessmentInfo();
         lastAssessment.setLastAssessedBy("test");
@@ -90,7 +90,7 @@ public class ClaimSummaryControllerTest {
 
         session.setAttribute("searchUrl", "/?providerAccountNumber=12345&page=1");
 
-        when(claimService.getClaimDetails(anyString(), anyString())).thenReturn(claim);
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
         var lastAssessment = new AssessmentInfo();
         lastAssessment.setLastAssessedBy("test");
@@ -113,7 +113,7 @@ public class ClaimSummaryControllerTest {
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
         claim.setHasAssessment(true);
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 
@@ -129,7 +129,7 @@ public class ClaimSummaryControllerTest {
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
         claim.setHasAssessment(false);
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
 

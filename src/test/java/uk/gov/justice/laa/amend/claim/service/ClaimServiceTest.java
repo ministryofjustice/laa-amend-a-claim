@@ -13,6 +13,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,6 +49,15 @@ class ClaimServiceTest {
 
     @InjectMocks
     private ClaimService claimService;
+
+    private UUID submissionId;
+    private UUID claimId;
+
+    @BeforeEach
+    void setUp() {
+        submissionId = UUID.randomUUID();
+        claimId = UUID.randomUUID();
+    }
 
     @Test
     @DisplayName("Should return sorted valid ClaimResultSet when API client provides valid response")
@@ -140,64 +151,64 @@ class ClaimServiceTest {
         // Arrange
         var mockApiResponse = new ClaimResponse(); // Replace with appropriate type or mock object
 
-        when(claimsApiClient.getClaim("submissionId", "claimId")).thenReturn(Mono.just(mockApiResponse));
+        when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.just(mockApiResponse));
 
         // Act
-        ClaimResponse result = claimService.getClaim("submissionId", "claimId");
+        ClaimResponse result = claimService.getClaim(submissionId, claimId);
 
         // Assert
         assertNotNull(result);
         assertEquals(mockApiResponse, result);
 
-        verify(claimsApiClient, times(1)).getClaim("submissionId", "claimId");
+        verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
     }
 
     @Test
     @DisplayName("Should throw RuntimeException when API client throws exception")
     void testGetClaim_ApiClientThrowsException() {
         // Arrange
-        when(claimsApiClient.getClaim("submissionId", "claimId")).thenThrow(new RuntimeException("API Error"));
+        when(claimsApiClient.getClaim(submissionId, claimId)).thenThrow(new RuntimeException("API Error"));
 
         // Act & Assert
         RuntimeException exception =
-                assertThrows(RuntimeException.class, () -> claimService.getClaim("submissionId", "claimId"));
+                assertThrows(RuntimeException.class, () -> claimService.getClaim(submissionId, claimId));
         assertTrue(exception.getMessage().contains("API Error"));
 
-        verify(claimsApiClient, times(1)).getClaim("submissionId", "claimId");
+        verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
     }
 
     @Test
     @DisplayName("Should throw Not Found exception when API client returns null")
     void testGetClaimDetails_ApiClientThrowsException() {
         // Arrange
-        when(claimsApiClient.getClaim("submissionId", "claimId")).thenReturn(Mono.empty());
+        when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.empty());
 
-        when(claimsApiClient.getSubmission("submissionId")).thenReturn(Mono.just(new SubmissionResponse()));
+        when(claimsApiClient.getSubmission(submissionId)).thenReturn(Mono.just(new SubmissionResponse()));
 
         // Act & Assert
-        ClaimNotFoundException exception = assertThrows(
-                ClaimNotFoundException.class, () -> claimService.getClaimDetails("submissionId", "claimId"));
+        ClaimNotFoundException exception =
+                assertThrows(ClaimNotFoundException.class, () -> claimService.getClaimDetails(submissionId, claimId));
         assertTrue(exception
                 .getMessage()
-                .contains(String.format("Claim with ID %s not found for submission %s", "claimId", "submissionId")));
+                .contains(String.format("Claim with ID %s not found for submission %s", claimId, submissionId)));
 
-        verify(claimsApiClient, times(1)).getClaim("submissionId", "claimId");
+        verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
     }
 
     @Test
     @DisplayName("Should return claim details")
     void testGetClaimDetails_Success() {
         // Arrange
-        when(claimsApiClient.getClaim("submissionId", "claimId")).thenReturn(Mono.just(new ClaimResponse()));
+        when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.just(new ClaimResponse()));
 
-        when(claimsApiClient.getSubmission("submissionId")).thenReturn(Mono.just(new SubmissionResponse()));
+        when(claimsApiClient.getSubmission(submissionId)).thenReturn(Mono.just(new SubmissionResponse()));
         when(claimMapper.mapToClaimDetails(any(), any())).thenReturn(new CivilClaimDetails());
         // Act & Assert
-        var response = claimService.getClaimDetails("submissionId", "claimId");
+        var response = claimService.getClaimDetails(submissionId, claimId);
         assertNotNull(response);
 
-        verify(claimsApiClient, times(1)).getClaim("submissionId", "claimId");
-        verify(claimsApiClient, times(1)).getSubmission("submissionId");
+        verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
+        verify(claimsApiClient, times(1)).getSubmission(submissionId);
     }
 
     @Test
@@ -212,13 +223,13 @@ class ClaimServiceTest {
         ProviderFirmOfficeDto providerOffice = mock(ProviderFirmOfficeDto.class, RETURNS_DEEP_STUBS);
         when(providerOffice.getFirm().getFirmName()).thenReturn("Test Firm");
 
-        when(claimsApiClient.getClaim("submissionId", "claimId")).thenReturn(Mono.just(claimResponse));
-        when(claimsApiClient.getSubmission("submissionId")).thenReturn(Mono.just(submissionResponse));
+        when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.just(claimResponse));
+        when(claimsApiClient.getSubmission(submissionId)).thenReturn(Mono.just(submissionResponse));
         when(claimMapper.mapToClaimDetails(claimResponse, submissionResponse)).thenReturn(claimDetails);
         when(providerApiClient.getProviderOffice("0P322F")).thenReturn(Mono.just(providerOffice));
 
         // Act
-        var result = claimService.getClaimDetails("submissionId", "claimId");
+        var result = claimService.getClaimDetails(submissionId, claimId);
 
         // Assert
         assertNotNull(result);

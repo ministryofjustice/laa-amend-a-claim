@@ -23,7 +23,7 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
     private AssessmentService assessmentService;
 
     AssessmentOutcomeViewTest() {
-        super("/submissions/submissionId/claims/claimId/assessment-outcome");
+        this.mapping = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
     }
 
     @Test
@@ -70,7 +70,8 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
         assertPageHasHeading(doc, "Assessment outcome");
         assertPageHasPrimaryButton(doc, "Save changes");
         assertPageHasSecondaryLink(doc, "Cancel");
-        assertPageCancelLinkValue(doc, "Cancel", "/submissions/submissionId/claims/claimId/review");
+        assertPageCancelLinkValue(
+                doc, "Cancel", String.format("/submissions/%s/claims/%s/review", submissionId, claimId));
         assertPageHasNoActiveServiceNavigationItems(doc);
         assertPageHasRadioButtons(doc);
         assertPageHasInlineRadioButtons(doc);
@@ -86,7 +87,8 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
         assertPageHasHeading(doc, "Assessment outcome");
         assertPageHasPrimaryButton(doc, "Save changes");
         assertPageHasSecondaryLink(doc, "Cancel");
-        assertPageCancelLinkValue(doc, "Cancel", "/submissions/submissionId/claims/claimId/review");
+        assertPageCancelLinkValue(
+                doc, "Cancel", String.format("/submissions/%s/claims/%s/review", submissionId, claimId));
         assertPageHasNoActiveServiceNavigationItems(doc);
         assertPageHasRadioButtons(doc);
         assertPageHasInlineRadioButtons(doc);
@@ -102,7 +104,7 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
         assertPageHasHeading(doc, "Assessment outcome");
         assertPageHasPrimaryButton(doc, "Save changes");
         assertPageHasSecondaryLink(doc, "Cancel");
-        assertPageCancelLinkValue(doc, "Cancel", "/submissions/submissionId/claims/claimId");
+        assertPageCancelLinkValue(doc, "Cancel", String.format("/submissions/%s/claims/%s", submissionId, claimId));
         assertPageHasNoActiveServiceNavigationItems(doc);
         assertPageHasRadioButtons(doc);
         assertPageHasInlineRadioButtons(doc);

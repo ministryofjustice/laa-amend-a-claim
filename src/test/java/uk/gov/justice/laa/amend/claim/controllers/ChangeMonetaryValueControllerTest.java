@@ -72,7 +72,7 @@ class ChangeMonetaryValueControllerTest {
     @MethodSource("validCosts")
     void testGetReturnsView(Cost cost) throws Exception {
         Claim claim = createClaimFor(cost);
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         mockMvc.perform(get(buildPath(cost.getPath())).session(session))
                 .andExpect(status().isOk())
@@ -85,7 +85,7 @@ class ChangeMonetaryValueControllerTest {
     @MethodSource("validCosts")
     void testGetReturns404_whenFieldIsNull(Cost cost) throws Exception {
         Claim claim = createClaimWithNullFieldFor(cost);
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         mockMvc.perform(get(buildPath(cost.getPath())).session(session)).andExpect(status().isNotFound());
     }
@@ -94,7 +94,7 @@ class ChangeMonetaryValueControllerTest {
     @MethodSource("validCosts")
     void testGetReturns404_whenFieldIsNotAssessable(Cost cost) throws Exception {
         Claim claim = createClaimWithUnassessableFieldFor(cost);
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         mockMvc.perform(get(buildPath(cost.getPath())).session(session)).andExpect(status().isNotFound());
     }
@@ -106,7 +106,7 @@ class ChangeMonetaryValueControllerTest {
         ClaimField claimField = cost.getAccessor().get(claim);
         Assertions.assertNotNull(claimField);
         claimField.setAssessed(BigDecimal.valueOf(100));
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         mockMvc.perform(get(buildPath(cost.getPath())).session(session))
                 .andExpect(status().isOk())
@@ -121,7 +121,7 @@ class ChangeMonetaryValueControllerTest {
         Claim claim = createClaimFor(cost);
         ClaimField claimField = cost.getAccessor().get(claim);
         Assertions.assertNotNull(claimField);
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         mockMvc.perform(post(buildPath(cost.getPath()))
                         .session(session)
@@ -141,7 +141,7 @@ class ChangeMonetaryValueControllerTest {
     @MethodSource("validCosts")
     void testPostReturnsBadRequestForInvalidValue(Cost cost) throws Exception {
         Claim claim = createClaimFor(cost);
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         mockMvc.perform(post(buildPath(cost.getPath()))
                         .session(session)
@@ -166,7 +166,7 @@ class ChangeMonetaryValueControllerTest {
     @Test
     void testGetReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
         CivilClaimDetails claim = new CivilClaimDetails();
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         mockMvc.perform(get(buildPath("travel-costs")).session(session)).andExpect(status().isNotFound());
     }
@@ -174,7 +174,7 @@ class ChangeMonetaryValueControllerTest {
     @Test
     void testPostReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
         CivilClaimDetails claim = new CivilClaimDetails();
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         mockMvc.perform(post(buildPath("travel-costs"))
                         .session(session)

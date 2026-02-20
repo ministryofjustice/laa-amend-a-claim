@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,8 +55,8 @@ class ChangeAssessedTotalsControllerTest {
     @BeforeEach
     void setup() {
         session = new MockHttpSession();
-        submissionId = "test-submission-456";
-        claimId = "test-civil-claim-123";
+        submissionId = UUID.randomUUID().toString();
+        claimId = UUID.randomUUID().toString();
         civilClaim = MockClaimsFunctions.createMockCivilClaim();
         crimeClaim = MockClaimsFunctions.createMockCrimeClaim();
     }
@@ -147,7 +148,7 @@ class ChangeAssessedTotalsControllerTest {
         Assertions.assertNotNull(crimeClaim.getAssessedTotalVat());
         Assertions.assertNotNull(crimeClaim.getAssessedTotalInclVat());
 
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
 
         mockMvc.perform(post(buildPath())
                         .session(session)

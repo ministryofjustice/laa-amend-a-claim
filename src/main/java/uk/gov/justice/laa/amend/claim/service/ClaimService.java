@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.service;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,7 @@ public class ClaimService {
         }
     }
 
-    public ClaimResponse getClaim(String submissionId, String claimId) {
+    public ClaimResponse getClaim(UUID submissionId, UUID claimId) {
         try {
             return claimsApiClient.getClaim(submissionId, claimId).block();
         } catch (Exception e) {
@@ -59,7 +60,7 @@ public class ClaimService {
         }
     }
 
-    public ClaimDetails getClaimDetails(String submissionId, String claimId) {
+    public ClaimDetails getClaimDetails(UUID submissionId, UUID claimId) {
         var claimResponse = getClaim(submissionId, claimId);
         var submissionResponse = getSubmission(submissionId);
         if (claimResponse == null || submissionResponse == null) {
@@ -73,7 +74,7 @@ public class ClaimService {
         return claimDetails;
     }
 
-    public SubmissionResponse getSubmission(String submissionId) {
+    public SubmissionResponse getSubmission(UUID submissionId) {
         try {
             return claimsApiClient.getSubmission(submissionId).block();
         } catch (Exception e) {

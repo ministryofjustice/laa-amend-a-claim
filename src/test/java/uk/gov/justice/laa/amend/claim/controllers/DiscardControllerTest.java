@@ -54,8 +54,8 @@ public class DiscardControllerTest {
         mockMvc.perform(get(uri).session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("discard"))
-                .andExpect(model().attribute("submissionId", submissionId.toString()))
-                .andExpect(model().attribute("claimId", claimId.toString()));
+                .andExpect(model().attribute("submissionId", submissionId))
+                .andExpect(model().attribute("claimId", claimId));
     }
 
     @Test

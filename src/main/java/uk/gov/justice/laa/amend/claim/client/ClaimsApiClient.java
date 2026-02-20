@@ -32,10 +32,10 @@ public interface ClaimsApiClient {
             @RequestParam(value = "sort", required = false) String sort);
 
     @GetExchange(url = "/submissions/{submissionId}/claims/{claimId}", accept = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ClaimResponse> getClaim(@PathVariable String submissionId, @PathVariable String claimId);
+    Mono<ClaimResponse> getClaim(@PathVariable UUID submissionId, @PathVariable UUID claimId);
 
     @GetExchange(url = "/submissions/{id}", accept = MediaType.APPLICATION_JSON_VALUE)
-    Mono<SubmissionResponse> getSubmission(@PathVariable String id);
+    Mono<SubmissionResponse> getSubmission(@PathVariable UUID id);
 
     @PostExchange(value = "/claims/{claimId}/assessments", contentType = MediaType.APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<CreateAssessment201Response>> submitAssessment(
