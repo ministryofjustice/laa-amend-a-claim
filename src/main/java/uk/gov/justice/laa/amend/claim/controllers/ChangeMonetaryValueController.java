@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,14 +36,14 @@ public class ChangeMonetaryValueController {
     @GetMapping("{cost}")
     public String getMonetaryValue(
             Model model,
-            @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId,
+            @PathVariable(value = "submissionId") UUID submissionId,
+            @PathVariable(value = "claimId") UUID claimId,
             @PathVariable(value = "cost") Cost cost,
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
         try {
-            ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
+            ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
             ClaimField claimField = cost.getAccessor().get(claim);
 
             if (claimField == null) {
@@ -73,8 +74,8 @@ public class ChangeMonetaryValueController {
     public String postMonetaryValue(
             HttpSession session,
             Model model,
-            @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId,
+            @PathVariable(value = "submissionId") UUID submissionId,
+            @PathVariable(value = "claimId") UUID claimId,
             @PathVariable(value = "cost") Cost cost,
             HttpServletRequest request,
             HttpServletResponse response,
@@ -82,7 +83,7 @@ public class ChangeMonetaryValueController {
             BindingResult bindingResult)
             throws IOException {
         try {
-            ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId);
+            ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
 
             if (bindingResult.hasErrors()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -93,7 +94,7 @@ public class ChangeMonetaryValueController {
             BigDecimal value = setScale(form.getValue());
             claimField.setAssessed(value);
             cost.getAccessor().set(claim, claimField);
-            session.setAttribute(claimId, claim);
+            session.setAttribute(claimId.toString(), claim);
 
             return "redirect:" + getRedirectUrl(submissionId, claimId);
         } catch (ClaimMismatchException e) {
@@ -102,7 +103,7 @@ public class ChangeMonetaryValueController {
         }
     }
 
-    private String renderView(Model model, MonetaryValueForm form, Cost cost, String submissionId, String claimId) {
+    private String renderView(Model model, MonetaryValueForm form, Cost cost, UUID submissionId, UUID claimId) {
         model.addAttribute("cost", cost);
         model.addAttribute("form", form);
         model.addAttribute("action", getAction(submissionId, claimId, cost));
@@ -110,11 +111,11 @@ public class ChangeMonetaryValueController {
         return "change-monetary-value";
     }
 
-    private String getAction(String submissionId, String claimId, Cost cost) {
+    private String getAction(UUID submissionId, UUID claimId, Cost cost) {
         return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost.getPath());
     }
 
-    private String getRedirectUrl(String submissionId, String claimId) {
+    private String getRedirectUrl(UUID submissionId, UUID claimId) {
         return String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
     }
 }

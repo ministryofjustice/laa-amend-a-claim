@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.controllers;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,8 +26,8 @@ public class ClaimSummaryController {
     public String onPageLoad(
             HttpSession session,
             Model model,
-            @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId) {
+            @PathVariable(value = "submissionId") UUID submissionId,
+            @PathVariable(value = "claimId") UUID claimId) {
         ClaimDetails claim = claimService.getClaimDetails(submissionId, claimId);
         if (claim.isHasAssessment()) {
             claim = assessmentService.getLatestAssessmentByClaim(claim);
@@ -36,7 +37,7 @@ public class ClaimSummaryController {
                 model.addAttribute("user", user);
             }
         }
-        session.setAttribute(claimId, claim);
+        session.setAttribute(claimId.toString(), claim);
         String searchUrl =
                 (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
         model.addAttribute("searchUrl", searchUrl);
@@ -48,10 +49,10 @@ public class ClaimSummaryController {
 
     @PostMapping("/submissions/{submissionId}/claims/{claimId}")
     public String onSubmit(
-            @PathVariable(value = "submissionId") String submissionId,
-            @PathVariable(value = "claimId") String claimId,
+            @PathVariable(value = "submissionId") UUID submissionId,
+            @PathVariable(value = "claimId") UUID claimId,
             HttpSession session) {
-        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId);
+        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId.toString());
 
         if (claim.isHasAssessment()) {
             return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);

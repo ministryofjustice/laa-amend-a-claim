@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -40,6 +41,8 @@ public abstract class ViewTestBase {
     public void setup() {
         session = new MockHttpSession();
         claim = MockClaimsFunctions.createMockCivilClaim();
+        claim.setSubmissionId(submissionId.toString());
+        claim.setClaimId(claimId.toString());
     }
 
     protected String mapping;
@@ -47,10 +50,12 @@ public abstract class ViewTestBase {
     protected MockHttpSession session;
     protected ClaimDetails claim;
 
-    protected final String claimId = "claimId";
+    protected UUID submissionId;
+    protected UUID claimId;
 
-    protected ViewTestBase(String mapping) {
-        this.mapping = mapping;
+    protected ViewTestBase() {
+        this.submissionId = UUID.randomUUID();
+        this.claimId = UUID.randomUUID();
     }
 
     protected Document renderDocument() throws Exception {
@@ -66,7 +71,7 @@ public abstract class ViewTestBase {
     }
 
     private Document renderDocument(MockHttpServletRequestBuilder requestBuilder, int expectedStatus) throws Exception {
-        session.setAttribute("claimId", claim);
+        session.setAttribute(claimId.toString(), claim);
         String html = mockMvc.perform(requestBuilder.session(session))
                 .andExpect(status().is(expectedStatus))
                 .andReturn()
