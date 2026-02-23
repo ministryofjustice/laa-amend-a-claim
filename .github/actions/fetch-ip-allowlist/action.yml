@@ -20,8 +20,8 @@ runs:
         INCLUDE_PINGDOM: ${{ inputs.include_pingdom }}
       run: |
         # Download the CIDR filter script and data file
-        curl -sO https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/main/filter_cidrs.py
-        curl -sO https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/main/laa-cidrs.yaml
+        curl -sO https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/CC-4327/filter_cidrs.py
+        curl -sO https://raw.githubusercontent.com/ministryofjustice/laa-ip-allowlist/CC-4327/laa-cidrs.yaml
 
         # Filter CIDRs for external staff access (MoJ VPN/egress IPs)
         CIDRS=$(python3 filter_cidrs.py --group external staff | tr '\n' ',' | sed 's/,$//')
