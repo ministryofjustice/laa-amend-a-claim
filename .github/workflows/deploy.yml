@@ -40,7 +40,13 @@ on:
         required: true
 
 jobs:
+  get-allowlist:
+    uses: ministryofjustice/laa-ip-allowlist/.github/workflows/generate-allowlist.yml@CC-4327
+    with:
+      groups: 'external staff'
+
   deploy:
+    needs: get-allowlist
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     permissions:
@@ -53,11 +59,11 @@ jobs:
         with:
           ref: ${{ inputs.branch }}
 
-      - name: Fetch IP Allowlist
-        id: ip-allowlist
-        uses: ./.github/actions/fetch-ip-allowlist
-        with:
-          include_pingdom: 'true'
+      - name: Fetch Pingdom IPs
+        id: pingdom
+        run: |
+          PINGDOM_CIDRS=$(curl -s https://my.pingdom.com/probes/ipv4 | tr -d ' ' | sed 's/$/\/32/' | tr '\n' ',' | sed 's/,$//')
+          echo "cidrs=${PINGDOM_CIDRS}" >> $GITHUB_OUTPUT
 
       - name: Authenticate to ECR
         id: ecr-auth
@@ -85,7 +91,7 @@ jobs:
             --set image.tag=${IMAGE_TAG} \
             --set namespace=${KUBE_NAMESPACE} \
             --set ingress.cloudPlatformHost=${KUBE_NAMESPACE}.apps.live.cloud-platform.service.justice.gov.uk \
-            --set "ipAllowlist=${{ steps.ip-allowlist.outputs.cidrs }}" \
+            --set "ipAllowlist={${IP_ALLOWLIST},${PINGDOM_CIDRS}}" \
             --set sentryEnvironment=${SENTRY_ENV} \
             --wait \
             --timeout 5m
@@ -97,3 +103,5 @@ jobs:
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
           INPUT_VALUES: ${{ inputs.values_file }}
           SENTRY_ENV: ${{ inputs.sentry_env }}
+          IP_ALLOWLIST: ${{ needs.get-allowlist.outputs.allowlist }}
+          PINGDOM_CIDRS: ${{ steps.pingdom.outputs.cidrs }}
