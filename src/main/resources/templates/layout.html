@@ -12,9 +12,7 @@
         <div class="govuk-width-container">
             <div class="govuk-phase-banner" id="feedback">
                 <p class="govuk-phase-banner__content">
-                    <strong class="govuk-tag govuk-phase-banner__content__tag">
-                        Alpha
-                    </strong>
+                    <strong class="govuk-tag govuk-phase-banner__content__tag" th:text="#{service.phase}"></strong>
                     <span class="govuk-phase-banner__text">
                         This is a new service. Your <a class="govuk-link" th:href="${@environment.getProperty('app.feedback-url')}">feedback</a> will help us to improve it.
                     </span>
