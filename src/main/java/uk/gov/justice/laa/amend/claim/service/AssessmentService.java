@@ -146,8 +146,4 @@ public class AssessmentService {
                     assessment.getAllowedTotalInclVat());
         }
     }
-
-    public void populateAssessmentValues(ClaimDetails claim, OutcomeType outcome) {
-        claimStatusHandler.updateFieldStatuses(claim, outcome);
-    }
 }
