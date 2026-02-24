@@ -76,6 +76,7 @@ public class AssessmentService {
         }
         if (shouldReapplyAssessment(claim, newOutcome)) {
             assessmentMapper.mapAssessmentToClaimDetails(claim);
+            claimStatusHandler.updateFieldStatuses(claim, newOutcome);
         }
         // Update AssessedStatus values for each based on OutcomeType
         claimStatusHandler.updateFieldStatuses(claim, newOutcome);
@@ -144,5 +145,9 @@ public class AssessmentService {
                     assessment.getAssessedTotalInclVat(),
                     assessment.getAllowedTotalInclVat());
         }
+    }
+
+    public void populateAssessmentValues(ClaimDetails claim, OutcomeType outcome) {
+        claimStatusHandler.updateFieldStatuses(claim, outcome);
     }
 }
