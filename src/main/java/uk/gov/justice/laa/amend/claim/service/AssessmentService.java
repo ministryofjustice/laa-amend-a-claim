@@ -76,7 +76,6 @@ public class AssessmentService {
         }
         if (shouldReapplyAssessment(claim, newOutcome)) {
             assessmentMapper.mapAssessmentToClaimDetails(claim);
-            claimStatusHandler.updateFieldStatuses(claim, newOutcome);
         }
         // Update AssessedStatus values for each based on OutcomeType
         claimStatusHandler.updateFieldStatuses(claim, newOutcome);
