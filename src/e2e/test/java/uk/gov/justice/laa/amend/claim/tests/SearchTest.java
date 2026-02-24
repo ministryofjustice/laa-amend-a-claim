@@ -140,6 +140,8 @@ public class SearchTest extends BaseTest {
                 config.getSubmissionYear(),
                 config.getUfn(),
                 config.getCrn(),
+                config.getAreaOfLaw(),
+                config.getEscapeCase(),
                 config.isExpectedResults());
 
         boolean hasResults = searchPage.hasResults();
@@ -151,7 +153,7 @@ public class SearchTest extends BaseTest {
     void backToSearch() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(OFFICE_ACCOUNT_NUMBER_1, "04", "2025", "", "");
+        search.searchForClaim(OFFICE_ACCOUNT_NUMBER_1, "04", "2025", "", "", "", "");
 
         search.clickViewForUfn(UFN_1);
 
@@ -169,7 +171,7 @@ public class SearchTest extends BaseTest {
     void invalidClaimsAreNotReturned() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(OFFICE_ACCOUNT_NUMBER_3, "", "", "", "", false);
+        search.searchForClaim(OFFICE_ACCOUNT_NUMBER_3, "", "", "", "", "", "", false);
 
         Assertions.assertFalse(search.hasResults());
     }

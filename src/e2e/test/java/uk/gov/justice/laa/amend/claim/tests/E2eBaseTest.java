@@ -103,7 +103,7 @@ public abstract class E2eBaseTest extends BaseTest {
     private void findClaim() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(PROVIDER_ACCOUNT, "", "", UFN, "");
+        search.searchForClaim(PROVIDER_ACCOUNT, "", "", UFN, "", "", "");
 
         search.clickViewForUfn(UFN);
     }

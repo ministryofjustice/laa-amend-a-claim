@@ -141,7 +141,7 @@ public class DiscardAssessmentTest extends BaseTest {
     private ReviewAndAmendPage goToReviewAndAmendPage() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(PROVIDER_ACCOUNT, MONTH, YEAR, UFN, "");
+        search.searchForClaim(PROVIDER_ACCOUNT, MONTH, YEAR, UFN, "", "", "");
 
         search.clickViewForUfn(UFN);
 

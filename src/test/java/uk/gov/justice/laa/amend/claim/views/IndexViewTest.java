@@ -59,7 +59,7 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasHint(doc, "search-hint", "Enter at least a provider account number to search.");
 
-        assertPageHasTextInput(doc, "provider-account-number", "Provider account number");
+        assertPageHasLabel(doc, "provider-account-number", "Provider account number");
 
         assertPageHasHint(doc, "provider-account-number-hint", "For example, 0P322F");
 
@@ -67,15 +67,19 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasHint(doc, "submission-date-hint", "For example, 3 2007");
 
-        assertPageHasTextInput(doc, "submission-date-month", "Month");
+        assertPageHasLabel(doc, "submission-date-month", "Month");
 
-        assertPageHasTextInput(doc, "submission-date-year", "Year");
+        assertPageHasLabel(doc, "submission-date-year", "Year");
 
-        assertPageHasTextInput(doc, "unique-file-number", "Unique file number (UFN)");
+        assertPageHasLabel(doc, "unique-file-number", "Unique file number (UFN)");
 
         assertPageHasHint(doc, "unique-file-number-hint", "For example, 120223/001");
 
-        assertPageHasTextInput(doc, "case-reference-number", "Case reference number (CRN)");
+        assertPageHasLabel(doc, "case-reference-number", "Case reference number (CRN)");
+
+        assertPageHasLabel(doc, "area-of-law", "Area of law");
+
+        assertPageHasLabel(doc, "escape-case", "Escape case");
 
         assertPageHasActiveServiceNavigationItem(doc, "Search");
     }

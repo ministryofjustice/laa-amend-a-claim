@@ -11,6 +11,8 @@ public class SearchPage extends LaaPage {
     private final Locator submissionYearInput;
     private final Locator ufnInput;
     private final Locator crnInput;
+    private final Locator areaOfLawSelect;
+    private final Locator escapeCaseSelect;
     private final Locator searchButton;
     private final Locator clearAllLink;
 
@@ -30,6 +32,8 @@ public class SearchPage extends LaaPage {
         this.submissionYearInput = page.locator("#submission-date-year");
         this.ufnInput = page.locator("#unique-file-number");
         this.crnInput = page.locator("#case-reference-number");
+        this.areaOfLawSelect = page.locator("#area-of-law");
+        this.escapeCaseSelect = page.locator("#escape-case");
 
         this.searchButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Search"));
 
@@ -50,16 +54,36 @@ public class SearchPage extends LaaPage {
     }
 
     public void enterSubmissionDate(String month, String year) {
-        if (month != null && !month.isEmpty()) submissionMonthInput.fill(month);
-        if (year != null && !year.isEmpty()) submissionYearInput.fill(year);
+        if (month != null && !month.isEmpty()) {
+            submissionMonthInput.fill(month);
+        }
+        if (year != null && !year.isEmpty()) {
+            submissionYearInput.fill(year);
+        }
     }
 
-    public void enterUFN(String ufn) {
-        if (ufn != null && !ufn.isEmpty()) ufnInput.fill(ufn);
+    public void enterUfn(String ufn) {
+        if (ufn != null && !ufn.isEmpty()) {
+            ufnInput.fill(ufn);
+        }
     }
 
-    public void enterCRN(String crn) {
-        if (crn != null && !crn.isEmpty()) crnInput.fill(crn);
+    public void enterCrn(String crn) {
+        if (crn != null && !crn.isEmpty()) {
+            crnInput.fill(crn);
+        }
+    }
+
+    public void selectAreaOfLaw(String areaOfLaw) {
+        if (areaOfLaw != null && !areaOfLaw.isEmpty()) {
+            areaOfLawSelect.selectOption(areaOfLaw);
+        }
+    }
+
+    public void selectEscapeCase(String escapeCase) {
+        if (escapeCase != null && !escapeCase.isEmpty()) {
+            escapeCaseSelect.selectOption(escapeCase);
+        }
     }
 
     public void clickSearch() {
@@ -72,17 +96,34 @@ public class SearchPage extends LaaPage {
 
     // ---- COMBINED SEARCH + WAIT FOR RESULTS ----
     public void searchForClaim(
-            String providerAccount, String month, String year, String ufn, String crn, boolean expectResults) {
+            String providerAccount,
+            String month,
+            String year,
+            String ufn,
+            String crn,
+            String areaOfLaw,
+            String escapeCase,
+            boolean expectResults) {
         enterProviderAccountNumber(providerAccount);
         enterSubmissionDate(month, year);
-        enterUFN(ufn);
-        enterCRN(crn);
+        enterUfn(ufn);
+        enterCrn(crn);
+        selectAreaOfLaw(areaOfLaw);
+        selectEscapeCase(escapeCase);
+
         clickSearch();
         waitForResults(expectResults);
     }
 
-    public void searchForClaim(String providerAccount, String month, String year, String ufn, String crn) {
-        searchForClaim(providerAccount, month, year, ufn, crn, true);
+    public void searchForClaim(
+            String providerAccount,
+            String month,
+            String year,
+            String ufn,
+            String crn,
+            String areaOfLaw,
+            String escapeCase) {
+        searchForClaim(providerAccount, month, year, ufn, crn, areaOfLaw, escapeCase, true);
     }
 
     public void waitForResults(boolean expectResults) {

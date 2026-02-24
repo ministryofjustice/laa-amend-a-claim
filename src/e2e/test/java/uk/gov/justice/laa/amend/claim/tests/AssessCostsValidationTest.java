@@ -112,7 +112,7 @@ public class AssessCostsValidationTest extends BaseTest {
 
     private void navigateToReviewAndAmend(String provider, String month, String year, String ufn) {
         SearchPage search = new SearchPage(page);
-        search.searchForClaim(provider, month, year, ufn, "");
+        search.searchForClaim(provider, month, year, ufn, "", "", "");
         search.clickViewForUfn(ufn);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
