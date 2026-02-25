@@ -35,7 +35,7 @@ class AssessmentMapperTest {
 
     @Test
     void testMapCivilClaimToAssessment() {
-        String userId = UUID.randomUUID().toString();
+        UUID userId = UUID.randomUUID();
 
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
         claim.setVatApplicable(true);
@@ -63,12 +63,12 @@ class AssessmentMapperTest {
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalVat());
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalInclVat());
         assertEquals(true, assessment.getIsVatApplicable());
-        assertEquals(userId, assessment.getCreatedByUserId());
+        assertEquals(userId.toString(), assessment.getCreatedByUserId());
     }
 
     @Test
     void testMapCrimeClaimToAssessment() {
-        String userId = UUID.randomUUID().toString();
+        UUID userId = UUID.randomUUID();
 
         CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
         claim.setVatApplicable(true);
@@ -90,7 +90,7 @@ class AssessmentMapperTest {
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalVat());
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalInclVat());
         assertEquals(true, assessment.getIsVatApplicable());
-        assertEquals(userId, assessment.getCreatedByUserId());
+        assertEquals(userId.toString(), assessment.getCreatedByUserId());
     }
 
     @Test

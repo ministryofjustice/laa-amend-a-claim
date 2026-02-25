@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.VALID_POLICE_STATION_FEE_CODES;
 
+import java.util.UUID;
 import java.util.stream.Stream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,7 +31,7 @@ public class CrimeClaimDetails extends ClaimDetails {
     }
 
     @Override
-    public AssessmentPost toAssessment(AssessmentMapper mapper, String userId) {
+    public AssessmentPost toAssessment(AssessmentMapper mapper, UUID userId) {
         return mapper.mapCrimeClaimToAssessment(this, userId);
     }
 

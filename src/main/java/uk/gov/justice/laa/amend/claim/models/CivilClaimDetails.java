@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import java.util.UUID;
 import java.util.stream.Stream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,7 +34,7 @@ public class CivilClaimDetails extends ClaimDetails {
     }
 
     @Override
-    public AssessmentPost toAssessment(AssessmentMapper mapper, String userId) {
+    public AssessmentPost toAssessment(AssessmentMapper mapper, UUID userId) {
         return mapper.mapCivilClaimToAssessment(this, userId);
     }
 

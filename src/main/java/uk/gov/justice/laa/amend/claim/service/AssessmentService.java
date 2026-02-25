@@ -81,7 +81,7 @@ public class AssessmentService {
         claimStatusHandler.updateFieldStatuses(claim, newOutcome);
     }
 
-    public CreateAssessment201Response submitAssessment(ClaimDetails claim, String userId) {
+    public CreateAssessment201Response submitAssessment(ClaimDetails claim, UUID userId) {
         AssessmentPost assessment = claim.toAssessment(assessmentMapper, userId);
 
         try {
