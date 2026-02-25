@@ -30,7 +30,7 @@ public class UserRetrievalService {
                 return client.getUser(userId, accessToken).block();
             }
         } catch (Exception ex) {
-            log.error("Error retrieving user {}", userId);
+            log.error("Error retrieving user {}", userId, ex);
         }
         return null;
     }
