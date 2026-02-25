@@ -103,6 +103,8 @@
   "local_authority_number": null,
   "submission_period": "MAR-2020",
   "area_of_law": "CRIME LOWER",
+  "office_code": "0P322F",
+  "date_submitted": "2025-01-10T14:30:00+02:00",
   "created_by_user_id": "todo",
   "has_assessment": false,
   "fee_calculation_response": {

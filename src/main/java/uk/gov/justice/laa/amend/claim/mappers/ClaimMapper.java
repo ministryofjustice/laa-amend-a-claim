@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -15,7 +16,6 @@ import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 @Mapper(
         componentModel = "spring",
@@ -38,9 +38,9 @@ public interface ClaimMapper {
     @Mapping(target = "allowedTotalInclVat", source = ".", qualifiedByName = "mapAllowedTotalInclVat")
     @Mapping(target = "hasAssessment", source = "hasAssessment")
     @Mapping(target = "areaOfLaw", expression = "java(mapAreaOfLaw(claimResponse))")
-    @Mapping(target = "providerAccountNumber", ignore = true)
+    @Mapping(target = "providerAccountNumber", source = "officeCode")
     @Mapping(target = "providerName", ignore = true)
-    @Mapping(target = "submittedDate", ignore = true)
+    @Mapping(target = "submittedDate", expression = "java(mapSubmittedDate(claimResponse))")
     @Mapping(target = "assessmentOutcome", ignore = true)
     @Mapping(target = "lastAssessment", ignore = true)
     @Mapping(target = "claimFields", ignore = true)
@@ -93,13 +93,11 @@ public interface ClaimMapper {
         throw new IllegalArgumentException("Both claimResponse and areaOfLaw must be non-null");
     }
 
-    default ClaimDetails mapToClaimDetails(ClaimResponseV2 claimResponse, SubmissionResponse submissionResponse) {
-        if (claimResponse != null && submissionResponse != null) {
-            var claimDetails = createClaimDetailsFromResponse(claimResponse);
-            enrichWithSubmission(claimDetails, submissionResponse);
-            return claimDetails;
+    default ClaimDetails mapToClaimDetails(ClaimResponseV2 claimResponse) {
+        if (claimResponse != null) {
+            return createClaimDetailsFromResponse(claimResponse);
         }
-        throw new IllegalArgumentException("Both claimResponse and submissionResponse must be non-null");
+        throw new IllegalArgumentException("claimResponse must be non-null");
     }
 
     private ClaimDetails createClaimDetailsFromResponse(ClaimResponseV2 claimResponse) {
@@ -128,16 +126,6 @@ public interface ClaimMapper {
         }
     }
 
-    private void enrichWithSubmission(ClaimDetails claim, SubmissionResponse submissionResponse) {
-        if (submissionResponse != null) {
-            claim.setProviderAccountNumber(submissionResponse.getOfficeAccountNumber());
-            claim.setSubmittedDate(
-                    submissionResponse.getSubmitted() != null
-                            ? submissionResponse.getSubmitted().toLocalDateTime()
-                            : null);
-        }
-    }
-
     default void enrichWithProviderName(ClaimDetails claim, String accountName) {
         if (claim != null) {
             claim.setProviderName(accountName);
@@ -153,5 +141,12 @@ public interface ClaimMapper {
             case LEGAL_HELP -> AreaOfLaw.LEGAL_HELP;
             case MEDIATION -> AreaOfLaw.MEDIATION;
         };
+    }
+
+    default LocalDateTime mapSubmittedDate(ClaimResponseV2 claimResponse) {
+        if (claimResponse.getDateSubmitted() != null) {
+            return claimResponse.getDateSubmitted().toLocalDateTime();
+        }
+        return null;
     }
 }

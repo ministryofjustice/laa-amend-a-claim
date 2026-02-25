@@ -33,7 +33,6 @@ import uk.gov.justice.laa.amend.claim.models.SortField;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -223,8 +222,6 @@ class ClaimServiceTest {
         // Arrange
         when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.empty());
 
-        when(claimsApiClient.getSubmission(submissionId)).thenReturn(Mono.just(new SubmissionResponse()));
-
         // Act & Assert
         ClaimNotFoundException exception =
                 assertThrows(ClaimNotFoundException.class, () -> claimService.getClaimDetails(submissionId, claimId));
@@ -241,14 +238,12 @@ class ClaimServiceTest {
         // Arrange
         when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.just(new ClaimResponseV2()));
 
-        when(claimsApiClient.getSubmission(submissionId)).thenReturn(Mono.just(new SubmissionResponse()));
-        when(claimMapper.mapToClaimDetails(any(), any())).thenReturn(new CivilClaimDetails());
+        when(claimMapper.mapToClaimDetails(any())).thenReturn(new CivilClaimDetails());
         // Act & Assert
         var response = claimService.getClaimDetails(submissionId, claimId);
         assertNotNull(response);
 
         verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
-        verify(claimsApiClient, times(1)).getSubmission(submissionId);
     }
 
     @Test
@@ -256,16 +251,14 @@ class ClaimServiceTest {
     void testGetClaimDetailsEnrichesProviderName() {
         // Arrange
         var claimResponse = new ClaimResponseV2();
-        SubmissionResponse submissionResponse = new SubmissionResponse();
-        submissionResponse.setOfficeAccountNumber("0P322F");
         CivilClaimDetails claimDetails = new CivilClaimDetails();
+        claimDetails.setProviderAccountNumber("0P322F");
 
         ProviderFirmOfficeDto providerOffice = mock(ProviderFirmOfficeDto.class, RETURNS_DEEP_STUBS);
         when(providerOffice.getFirm().getFirmName()).thenReturn("Test Firm");
 
         when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.just(claimResponse));
-        when(claimsApiClient.getSubmission(submissionId)).thenReturn(Mono.just(submissionResponse));
-        when(claimMapper.mapToClaimDetails(claimResponse, submissionResponse)).thenReturn(claimDetails);
+        when(claimMapper.mapToClaimDetails(claimResponse)).thenReturn(claimDetails);
         when(providerApiClient.getProviderOffice("0P322F")).thenReturn(Mono.just(providerOffice));
 
         // Act

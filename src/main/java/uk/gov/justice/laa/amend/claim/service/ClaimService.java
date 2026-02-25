@@ -16,7 +16,6 @@ import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
 @Service
@@ -69,25 +68,14 @@ public class ClaimService {
 
     public ClaimDetails getClaimDetails(UUID submissionId, UUID claimId) {
         var claimResponse = getClaim(submissionId, claimId);
-        var submissionResponse = getSubmission(submissionId);
-        if (claimResponse == null || submissionResponse == null) {
-            log.error("Claim or submission not found for submission {} and claim {}", submissionId, claimId);
+        if (claimResponse == null) {
+            log.error("Claim not found for submission {} and claim {}", submissionId, claimId);
             throw new ClaimNotFoundException(
                     String.format("Claim with ID %s not found for submission %s", claimId, submissionId));
         }
-        var officeCode = submissionResponse.getOfficeAccountNumber();
-        var claimDetails = claimMapper.mapToClaimDetails(claimResponse, submissionResponse);
-        claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(officeCode));
+        var claimDetails = claimMapper.mapToClaimDetails(claimResponse);
+        claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(claimDetails.getProviderAccountNumber()));
         return claimDetails;
-    }
-
-    public SubmissionResponse getSubmission(UUID submissionId) {
-        try {
-            return claimsApiClient.getSubmission(submissionId).block();
-        } catch (Exception e) {
-            log.error("Error getting submission {}", submissionId, e);
-            throw new RuntimeException(e);
-        }
     }
 
     /**

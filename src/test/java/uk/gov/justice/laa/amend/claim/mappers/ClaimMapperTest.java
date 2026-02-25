@@ -22,7 +22,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {ClaimMapperImpl.class, ClaimMapperHelper.class})
@@ -38,7 +37,7 @@ class ClaimMapperTest {
         feeCalc.setTotalAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getTotalAmount();
         assertEquals(AmendClaimConstants.Label.TOTAL, claimField.getKey());
@@ -54,7 +53,7 @@ class ClaimMapperTest {
         feeCalc.setFixedFeeAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getFixedFee();
         assertEquals(AmendClaimConstants.Label.FIXED_FEE, claimField.getKey());
@@ -71,7 +70,7 @@ class ClaimMapperTest {
         feeCalc.setNetProfitCostsAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getNetProfitCost();
         assertEquals(AmendClaimConstants.Label.NET_PROFIT_COST, claimField.getKey());
@@ -85,7 +84,7 @@ class ClaimMapperTest {
         var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
         response.setIsVatApplicable(false);
 
-        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getVatClaimed();
         assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
@@ -101,7 +100,7 @@ class ClaimMapperTest {
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getVatClaimed();
         assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
@@ -118,7 +117,7 @@ class ClaimMapperTest {
         feeCalc.setVatIndicator(false);
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getVatClaimed();
         assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
@@ -135,7 +134,7 @@ class ClaimMapperTest {
         feeCalc.setVatIndicator(true);
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getVatClaimed();
         assertEquals(AmendClaimConstants.Label.VAT, claimField.getKey());
@@ -152,7 +151,7 @@ class ClaimMapperTest {
         feeCalc.setDisbursementAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getNetDisbursementAmount();
         assertEquals(AmendClaimConstants.Label.NET_DISBURSEMENTS_COST, claimField.getKey());
@@ -169,7 +168,7 @@ class ClaimMapperTest {
         feeCalc.setDisbursementVatAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getDisbursementVatAmount();
         assertEquals(AmendClaimConstants.Label.DISBURSEMENT_VAT, claimField.getKey());
@@ -186,7 +185,7 @@ class ClaimMapperTest {
         feeCalc.setNetCostOfCounselAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getCounselsCost();
         assertEquals(AmendClaimConstants.Label.COUNSELS_COST, claimField.getKey());
@@ -203,7 +202,7 @@ class ClaimMapperTest {
         feeCalc.setDetentionTravelAndWaitingCostsAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getDetentionTravelWaitingCosts();
         assertEquals(AmendClaimConstants.Label.DETENTION_TRAVEL_COST, claimField.getKey());
@@ -220,7 +219,7 @@ class ClaimMapperTest {
         feeCalc.setJrFormFillingAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getJrFormFillingCost();
         assertEquals(AmendClaimConstants.Label.JR_FORM_FILLING, claimField.getKey());
@@ -239,7 +238,7 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getAdjournedHearing();
         assertEquals(AmendClaimConstants.Label.ADJOURNED_FEE, claimField.getKey());
@@ -258,7 +257,7 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getCmrhTelephone();
         assertEquals(AmendClaimConstants.Label.CMRH_TELEPHONE, claimField.getKey());
@@ -277,7 +276,7 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getCmrhOral();
         assertEquals(AmendClaimConstants.Label.CMRH_ORAL, claimField.getKey());
@@ -296,7 +295,7 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getHoInterview();
         assertEquals(AmendClaimConstants.Label.HO_INTERVIEW, claimField.getKey());
@@ -315,7 +314,7 @@ class ClaimMapperTest {
         feeCalc.setBoltOnDetails(bolt);
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getSubstantiveHearing();
         assertEquals(AmendClaimConstants.Label.SUBSTANTIVE_HEARING, claimField.getKey());
@@ -332,7 +331,7 @@ class ClaimMapperTest {
         feeCalc.setNetTravelCostsAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getTravelCosts();
         assertEquals(AmendClaimConstants.Label.TRAVEL_COSTS, claimField.getKey());
@@ -349,7 +348,7 @@ class ClaimMapperTest {
         feeCalc.setNetWaitingCostsAmount(BigDecimal.valueOf(120));
         response.setFeeCalculationResponse(feeCalc);
 
-        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getWaitingCosts();
         assertEquals(AmendClaimConstants.Label.WAITING_COSTS, claimField.getKey());
@@ -362,7 +361,7 @@ class ClaimMapperTest {
     void mapAssessedTotalVat() {
         var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
 
-        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
         AssessedClaimField claimField = (AssessedClaimField) claim.getAssessedTotalVat();
         assertEquals(AmendClaimConstants.Label.ASSESSED_TOTAL_VAT, claimField.getKey());
@@ -375,7 +374,7 @@ class ClaimMapperTest {
     void mapAssessedTotalInclVat() {
         var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
 
-        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
         AssessedClaimField claimField = (AssessedClaimField) claim.getAssessedTotalInclVat();
         assertEquals(AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT, claimField.getKey());
@@ -392,7 +391,7 @@ class ClaimMapperTest {
         feeCalculationPatch.setDisbursementVatAmount(BigDecimal.valueOf(200));
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getAllowedTotalVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
@@ -405,7 +404,7 @@ class ClaimMapperTest {
     void mapAllowedTotalVatWhenFeeCalculationIsNull() {
         var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
 
-        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getAllowedTotalVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
@@ -420,7 +419,7 @@ class ClaimMapperTest {
         FeeCalculationPatch feeCalculationPatch = new FeeCalculationPatch();
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getAllowedTotalVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
@@ -436,7 +435,7 @@ class ClaimMapperTest {
         feeCalculationPatch.setCalculatedVatAmount(BigDecimal.valueOf(100));
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getAllowedTotalVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
@@ -452,7 +451,7 @@ class ClaimMapperTest {
         feeCalculationPatch.setDisbursementVatAmount(BigDecimal.valueOf(100));
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getAllowedTotalVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_VAT, claimField.getKey());
@@ -468,7 +467,7 @@ class ClaimMapperTest {
         feeCalculationPatch.setTotalAmount(BigDecimal.valueOf(100));
         response.setFeeCalculationResponse(feeCalculationPatch);
 
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getAllowedTotalInclVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT, claimField.getKey());
@@ -481,7 +480,7 @@ class ClaimMapperTest {
     void mapAllowedTotalInclVatWhenFeeCalculationIsNull() {
         var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
 
-        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getAllowedTotalInclVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT, claimField.getKey());
@@ -494,7 +493,7 @@ class ClaimMapperTest {
     void mapAllowedTotalInclVatWhenTotalAmountIsNull() {
         var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
 
-        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, new SubmissionResponse());
+        var claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
         ClaimField claimField = claim.getAllowedTotalInclVat();
         assertEquals(AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT, claimField.getKey());
@@ -513,12 +512,9 @@ class ClaimMapperTest {
         response.setUniqueClientNumber("21121985/J/DOE");
         response.setCaseStartDate("2025-01-01");
         response.setCaseConcludedDate("2025-02-01");
+        response.setOfficeCode("0P322F");
+        response.setDateSubmitted(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"));
         response.setStatus(ClaimStatus.VALID);
-
-        SubmissionResponse submissionResponse = new SubmissionResponse();
-        submissionResponse.setSubmissionId(UUID.randomUUID());
-        submissionResponse.setProviderUserId("User ID");
-        submissionResponse.setSubmitted(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"));
 
         UUID claimSummaryFeeId = UUID.randomUUID();
 
@@ -534,7 +530,7 @@ class ClaimMapperTest {
 
         response.setMatterTypeCode("MT1+MT2");
 
-        CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        CivilClaimDetails claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
 
         assertEquals("UFN123", claim.getUniqueFileNumber());
         assertEquals("CASE456", claim.getCaseReferenceNumber());
@@ -548,6 +544,7 @@ class ClaimMapperTest {
         assertEquals("MT1+MT2", claim.getMatterTypeCode());
         assertEquals(claimSummaryFeeId.toString(), claim.getClaimSummaryFeeId());
         assertEquals(uk.gov.justice.laa.amend.claim.models.AreaOfLaw.LEGAL_HELP, claim.getAreaOfLaw());
+        assertEquals("0P322F", claim.getProviderAccountNumber());
         assertNull(claim.getProviderName());
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
         assertEquals(ClaimStatus.VALID, claim.getStatus());
@@ -562,13 +559,9 @@ class ClaimMapperTest {
         response.setClientForename("John");
         response.setCaseStartDate("2025-01-01");
         response.setCaseConcludedDate("2025-02-01");
+        response.setOfficeCode("0P322F");
+        response.setDateSubmitted(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"));
         response.setStatus(ClaimStatus.VALID);
-
-        SubmissionResponse submissionResponse = new SubmissionResponse();
-        submissionResponse.setSubmissionId(UUID.randomUUID());
-        submissionResponse.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
-        submissionResponse.setProviderUserId("User ID");
-        submissionResponse.setSubmitted(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"));
 
         FeeCalculationPatch feeCalc = new FeeCalculationPatch();
         feeCalc.setFeeCode("FeeCode");
@@ -582,7 +575,7 @@ class ClaimMapperTest {
         response.setMatterTypeCode("INVC");
         response.setPoliceStationCourtPrisonId("PrisonCode");
         response.setSchemeId("SchemeId");
-        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response, submissionResponse);
+        CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
         assertEquals("UFN123", claim.getUniqueFileNumber());
         assertEquals("CASE456", claim.getCaseReferenceNumber());
@@ -596,6 +589,7 @@ class ClaimMapperTest {
         assertEquals("PrisonCode", claim.getPoliceStationCourtPrisonId());
         assertEquals("SchemeId", claim.getSchemeId());
         assertEquals(ClaimStatus.VALID, claim.getStatus());
+        assertEquals("0P322F", claim.getProviderAccountNumber());
 
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }
