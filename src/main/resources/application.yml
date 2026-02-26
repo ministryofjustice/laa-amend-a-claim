@@ -57,8 +57,8 @@ app:
   laa-url: ${LAA_URL}
   email: AmendaBulkClaimTeam@justice.gov.uk
 
-config-map-roots:
-  feature-flags: ${FEATURE_FLAGS_ROOT:/config/featureFlags}
+feature-flags:
+  is-voiding-enabled: ${IS_VOIDING_ENABLED:false}
 
 management:
   server:
@@ -87,9 +87,6 @@ logging:
     org.apache.http.wire: DEBUG
     org.apache.http.headers: DEBUG
     org.springframework.session: INFO
-
-config-map-roots:
-  feature-flags: config/local/featureFlags
 
 ---
 spring:

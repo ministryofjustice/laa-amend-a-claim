@@ -173,6 +173,11 @@ env:
       secretKeyRef:
         name: laa-amend-a-claim-provider-api-token
         key: PROVIDER_TOKEN
+  - name: IS_VOIDING_ENABLED
+    valueFrom:
+      configMapKeyRef:
+        name: feature-flags
+        key: is-voiding-enabled
 
 autoscaling:
   enabled: false
@@ -182,17 +187,11 @@ autoscaling:
   targetMemoryUtilizationPercentage: 80
 
 volumes:
-  - name: feature-flags-config
-    configMap:
-      name: amend-a-bulk-claim-feature-flags
   - name: maintenance-config
     configMap:
       name: amend-a-bulk-claim-maintenance
 
 volumeMounts:
-  - name: feature-flags-config
-    mountPath: /config/featureFlags
-    readOnly: true
   - name: maintenance-config
     mountPath: /config/maintenance
     readOnly: true
