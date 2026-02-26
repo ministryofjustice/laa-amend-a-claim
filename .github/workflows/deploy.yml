@@ -27,6 +27,10 @@ on:
         type: string
         default: 'values.yaml'
         description: 'Environment-specific values file (e.g., values/staging.yaml)'
+      claim_api_environment_name:
+        required: true
+        type: string
+        description: 'Claims API environment name for Pact broker (e.g., main, stg, prod)'
     secrets:
       ECR_ROLE_TO_ASSUME:
         required: true
@@ -37,6 +41,10 @@ on:
       KUBE_TOKEN:
         required: true
       KUBE_CERT:
+        required: true
+      PACT_BROKER_USERNAME:
+        required: true
+      PACT_BROKER_PASSWORD:
         required: true
 
 jobs:
@@ -90,6 +98,15 @@ jobs:
           kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
           kube-sa: deploy-user
 
+      - name: Can I deploy?
+        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-can-i-deploy@v1
+        with:
+          pacticipant: 'laa-amend-a-claim'
+          environment: ${{ inputs.claim_api_environment_name }}
+          pact_broker_url: 'https://laa-data-pact-broker.apps.live.cloud-platform.service.justice.gov.uk/'
+          pact_broker_username: ${{ secrets.PACT_BROKER_USERNAME }}
+          pact_broker_password: ${{ secrets.PACT_BROKER_PASSWORD }}
+
       - name: Deploy to Cloud Platform with Helm
         run: |
           helm upgrade --install laa-amend-a-claim .helm/laa-amend-a-claim \
@@ -111,3 +128,12 @@ jobs:
           KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
           INPUT_VALUES: ${{ inputs.values_file }}
           SENTRY_ENV: ${{ inputs.sentry_env }}
+
+      - name: Record deployment to pact broker
+        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-record-deployment@v1
+        with:
+          pacticipant: 'laa-amend-a-claim'
+          environment: ${{ inputs.claim_api_environment_name }}
+          pact_broker_url: 'https://laa-data-pact-broker.apps.live.cloud-platform.service.justice.gov.uk/'
+          pact_broker_username: ${{ secrets.PACT_BROKER_USERNAME }}
+          pact_broker_password: ${{ secrets.PACT_BROKER_PASSWORD }}

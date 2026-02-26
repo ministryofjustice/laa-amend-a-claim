@@ -48,4 +48,7 @@ public interface ClaimsApiClient {
             @RequestParam(value = "page", required = false) int page,
             @RequestParam(value = "size", required = false) int size,
             @RequestParam(value = "sort", required = false) String sort);
+
+    @PostExchange(value = "/claims/{claimId}/void", contentType = MediaType.APPLICATION_JSON_VALUE)
+    Mono<ResponseEntity<VoidClaim201Response>> voidClaim(@PathVariable String claimId);
 }

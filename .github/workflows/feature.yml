@@ -22,6 +22,25 @@ jobs:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
+  pact-test:
+    name: Pact Test
+    needs: build
+    uses: ministryofjustice/laa-ccms-common-workflows/.github/workflows/pact-and-publish.yml@v1
+    permissions:
+      contents: write
+      packages: write
+    with:
+      pacticipant_name: "laa-amend-a-claim"
+      pact_test_task: "pactTest"
+      publish_pact_results: true
+      enable_can_i_merge: true
+      provider_name: "laa-data-claims-api"
+    secrets:
+      gh_token: ${{ secrets.GITHUB_TOKEN }}
+      pact_broker_url: 'https://laa-data-pact-broker.apps.live.cloud-platform.service.justice.gov.uk/'
+      pact_broker_username: ${{ secrets.PACT_BROKER_USERNAME }}
+      pact_broker_password: ${{ secrets.PACT_BROKER_PASSWORD }}
+
   deploy-ephemeral:
     name: Deploy Ephemeral Environment
     needs: build
@@ -74,7 +93,7 @@ jobs:
 
   deploy-dev:
     name: Deploy to Dev
-    needs: [ build, test ]
+    needs: [ build, test, pact-test ]
     uses: ./.github/workflows/deploy.yml
     with:
       branch: ${{ github.ref_name }}
@@ -83,9 +102,12 @@ jobs:
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
       values_file: values/dev.yaml
+      claim_api_environment_name: dev
     secrets:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
       KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
       KUBE_CERT: ${{ secrets.KUBE_CERT }}
+      PACT_BROKER_USERNAME: ${{ secrets.PACT_BROKER_USERNAME }}
+      PACT_BROKER_PASSWORD: ${{ secrets.PACT_BROKER_PASSWORD }}
