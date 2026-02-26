@@ -57,6 +57,9 @@ app:
   laa-url: ${LAA_URL}
   email: AmendaBulkClaimTeam@justice.gov.uk
 
+config-map-roots:
+  feature-flags: ${FEATURE_FLAGS_ROOT:/config/featureFlags}
+
 management:
   server:
     port: 8182
@@ -84,6 +87,9 @@ logging:
     org.apache.http.wire: DEBUG
     org.apache.http.headers: DEBUG
     org.springframework.session: INFO
+
+config-map-roots:
+  feature-flags: config/local/featureFlags
 
 ---
 spring:

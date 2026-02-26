@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.models.FeatureFlag;
 
@@ -11,8 +12,14 @@ import uk.gov.justice.laa.amend.claim.models.FeatureFlag;
 @Slf4j
 public class FeatureFlagService {
 
+    private final Path root;
+
+    public FeatureFlagService(@Value("${config-map-roots.feature-flags}") Path root) {
+        this.root = root;
+    }
+
     public boolean isEnabled(FeatureFlag featureFlag) {
-        var path = featureFlag.getPath();
+        var path = featureFlag.getPath(root);
         if (Files.exists(path)) {
             return readIsEnabled(path);
         }

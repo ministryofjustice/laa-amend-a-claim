@@ -191,7 +191,7 @@ volumes:
 
 volumeMounts:
   - name: feature-flags-config
-    mountPath: /config/feature-flags
+    mountPath: /config/featureFlags
     readOnly: true
   - name: maintenance-config
     mountPath: /config/maintenance
