@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/void")
@@ -39,7 +40,7 @@ public class VoidConfirmationController {
             return null;
         }
 
-        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId.toString());
+        var claim = getValidClaim(session, claimId);
         return renderView(model, claim, submissionId, claimId, false);
     }
 
@@ -56,7 +57,8 @@ public class VoidConfirmationController {
             return null;
         }
 
-        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId.toString());
+        var claim = getValidClaim(session, claimId);
+
         try {
             // TODO: BC-382: Submit the void request
 
@@ -79,5 +81,13 @@ public class VoidConfirmationController {
         model.addAttribute("submissionFailed", submissionFailed);
 
         return "void-confirmation";
+    }
+
+    private ClaimDetails getValidClaim(HttpSession session, UUID claimId) {
+        var claim = (ClaimDetails) session.getAttribute(claimId.toString());
+        if (claim.getStatus() != ClaimStatus.VALID) {
+            throw new IllegalStateException("Claim status is not VALID");
+        }
+        return claim;
     }
 }
