@@ -25,6 +25,11 @@ ignore:
         reason: Dependency within the com.palantir.java-format-spotless plugin (build-time only)
         expires: 2026-04-01
         created: 2026-03-02
+  'SNYK-JAVA-TOOLSJACKSONCORE-15365915':
+      - '*':
+          reason: Temporarily ignoring this until laa-spring-boot-gradle-plugin supports Jackson 3.1.x
+          expires: 2026-04-01
+          created: 2026-03-02
 patch: {}
 exclude:
   global:
