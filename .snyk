@@ -20,6 +20,11 @@ ignore:
   'snyk:lic:maven:com.github.spotbugs:spotbugs-annotations:LGPL-2.1':
     - '*':
         reason: Approved license
+  'SNYK-JAVA-COMFASTERXMLJACKSONCORE-15365924':
+    - '*':
+        reason: Dependency within the com.palantir.java-format-spotless plugin (build-time only)
+        expires: 2026-04-01
+        created: 2026-03-02
 patch: {}
 exclude:
   global:
