@@ -40,7 +40,6 @@ Run `scripts/setup-hooks.sh` to install pre-commit hooks for Git. This will inst
 - Run Spotless to automatically format Java files
 - Run Checkstyle validation
 - Scan for potential secrets in code
-- Scan for dependency vulnerabilities
 - Scan for code vulnerabilities
 
 Note: If Spotless detects formatting issues, the commit will fail. After Spotless applies the formatting, you can commit the changes again.

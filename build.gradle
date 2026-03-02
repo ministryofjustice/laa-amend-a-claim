@@ -1,7 +1,7 @@
 plugins {
-    id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.0.9'
+    id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.1.0'
     id "com.diffplug.spotless" version "8.2.1"
-    id "com.palantir.java-format-spotless" version "2.85.0"
+    id "com.palantir.java-format-spotless" version "2.89.0"
     id "io.sentry.jvm.gradle" version "6.0.0"
 }
 
@@ -42,28 +42,25 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.3.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-jackson'
 
-    // Data claims API
-    implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:d694928'
-    // Removes 'unknown enum constant RequiredMode.REQUIRED' warning (springdoc is a transitive dependency of data-claims-api-models)
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1'
+    // API models
+    implementation('uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:d694928') {
+        exclude group: "org.springdoc"
+        exclude group: "org.openapitools"
+    }
+    implementation("uk.gov.justice.laadata.providers:providers-api:1.23.0") {
+        exclude group: "com.fasterxml.jackson.core"
+    }
 
     implementation 'org.apache.commons:commons-lang3:3.20.0'
     implementation 'org.mapstruct:mapstruct:1.6.3'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.webjars.npm:govuk-frontend:5.14.0'
     implementation 'org.webjars.npm:ministryofjustice__frontend:7.1.0'
 
-    implementation 'io.netty:netty-codec-http:4.2.9.Final'
-    implementation 'io.netty:netty-codec-http2:4.2.9.Final'
-
-    implementation 'ch.qos.logback:logback-core:1.5.27'
-    implementation 'ch.qos.logback:logback-classic:1.5.27'
-
     implementation("io.vavr:vavr:0.11.0")
-    implementation("uk.gov.justice.laadata.providers:providers-api:1.23.0")
 
     // Sentry observability for Spring Boot 4
     implementation enforcedPlatform('io.sentry:sentry-bom:8.26.0')
@@ -75,13 +72,10 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
-    // Snyk vulnerability overrides
-    implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.18'
-    implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:11.0.18'
-
     // test dependencies
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:5.0.2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-jackson-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.assertj:assertj-core:3.27.7'

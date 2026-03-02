@@ -33,7 +33,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @EnableWebSecurity
 public class LocalSecurityConfig {
 
-    public static String userId = "dummy-oid-12345";
+    public static String userId = "00000000-0000-0000-0000-000000000000";
 
     @Bean
     public SecurityFilterChain securityFilterChainLocal(final HttpSecurity http) throws Exception {

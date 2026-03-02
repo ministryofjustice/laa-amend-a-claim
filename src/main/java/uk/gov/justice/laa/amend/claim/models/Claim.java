@@ -1,14 +1,14 @@
 package uk.gov.justice.laa.amend.claim.models;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.YearMonthDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.YearMonthSerializer;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import lombok.Data;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
+import tools.jackson.databind.ext.javatime.deser.YearMonthDeserializer;
+import tools.jackson.databind.ext.javatime.ser.YearMonthSerializer;
 import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
