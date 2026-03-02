@@ -38,6 +38,7 @@ public class Claim implements Serializable {
     private Boolean vatApplicable;
     private String scheduleReference;
     private ClaimStatus status;
+    private Boolean voided;
 
     public BaseClaimView<? extends Claim> toViewModel() {
         return new ClaimView(this);

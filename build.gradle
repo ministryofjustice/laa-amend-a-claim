@@ -45,10 +45,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jackson'
 
     // API models
-    implementation('uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:d694928') {
-        exclude group: "org.springdoc"
-        exclude group: "org.openapitools"
-    }
+    implementation ('uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:bb6f8c5-SNAPSHOT')
+
     implementation("uk.gov.justice.laadata.providers:providers-api:1.23.0") {
         exclude group: "com.fasterxml.jackson.core"
     }

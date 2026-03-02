@@ -97,7 +97,9 @@
 
                                         <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.SCHEDULE_REFERENCE}, 'index.results.account')}"></th:block>
 
-                                        <th scope="col" class="govuk-table__header" th:text="#{index.results.categoryOfLaw}"></th>
+                                        <th scope="col" class="govuk-table__header" th:text="#{index.results.categoryOfLaw}">
+
+                                        <th scope="col" class="govuk-table__header" th:text="#{index.results.voided}">
 
                                         <th scope="col" class="govuk-table__header" th:text="#{index.results.escaped}"></th>
                                     </tr>
@@ -117,6 +119,19 @@
                                         <td class="govuk-table__cell" th:text="${claim.submissionPeriodForDisplay}" th:data-sort-value="${claim.submissionPeriodForSorting}"></td>
                                         <td class="govuk-table__cell" th:text="${claim.accountNumber}"></td>
                                         <td class="govuk-table__cell" th:text="${claim.claim.categoryOfLaw}"></td>
+
+                                        <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.voided).resolve(#messages)}">
+                                            <th:block th:if="${claim.claim.voided}">
+                                                <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
+                                            </th:block>
+                                            <th:block th:unless="${claim.claim.voided}">
+                                                <span th:text="${value}"></span>
+                                            </th:block>
+                                        </td>
+
+
+
+
                                         <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped).resolve(#messages)}">
                                             <th:block th:if="${claim.claim.escaped}">
                                                 <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
