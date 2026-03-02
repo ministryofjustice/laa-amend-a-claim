@@ -18,15 +18,11 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     // 'Summary' rows for the 'Claim details' page
     default Map<String, Object> getSummaryRows() {
-        Map<String, Object> rows = new LinkedHashMap<>();
+        var rows = new LinkedHashMap<String, Object>();
         rows.put("clientName", getClientName());
         rows.put("ufn", claim().getUniqueFileNumber());
         addUcnSummaryRow(rows);
-        rows.put(
-                "providerName",
-                claim().getProviderName() == null
-                        ? new ThymeleafMessage("provider.firmName.notAvailable")
-                        : claim().getProviderName());
+        rows.put("providerName", getProviderName());
         rows.put("providerAccountNumber", claim().getProviderAccountNumber());
         rows.put("submittedDate", claim().getSubmittedDate());
         rows.put("areaOfLaw", claim().getAreaOfLaw());
@@ -40,6 +36,19 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("caseEndDate", claim().getCaseEndDate());
         rows.put("escaped", claim().getEscaped());
         rows.put("vatRequested", claim().getVatApplicable());
+        return rows;
+    }
+
+    default Map<String, Object> getVoidConfirmationRows() {
+        var rows = new LinkedHashMap<String, Object>();
+        rows.put("clientName", getClientName());
+        rows.put("ufn", claim().getUniqueFileNumber());
+        addUcnSummaryRow(rows);
+        rows.put("providerName", getProviderName());
+        rows.put("providerAccountNumber", claim().getProviderAccountNumber());
+        rows.put("submittedDate", claim().getSubmittedDate());
+        rows.put("categoryOfLaw", claim().getCategoryOfLaw());
+        rows.put("feeCodeDescription", claim().getFeeCodeDescription());
         return rows;
     }
 
@@ -124,5 +133,12 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     default String reviewAssessmentChangeUrl(String submissionId, String claimId, String question) {
         return String.format("/submissions/%s/claims/%s/assessment-outcome#%s", submissionId, claimId, question);
+    }
+
+    private Object getProviderName() {
+        if (claim().getProviderName() == null) {
+            return new ThymeleafMessage("provider.firmName.notAvailable");
+        }
+        return claim().getProviderName();
     }
 }
