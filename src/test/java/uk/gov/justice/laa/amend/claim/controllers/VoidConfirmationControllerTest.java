@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -79,7 +80,7 @@ public class VoidConfirmationControllerTest {
 
         // TODO: BC-382: Mock void request
 
-        mockMvc.perform(post(path).session(session))
+        mockMvc.perform(post(path).session(session).with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl))
                 .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
@@ -93,7 +94,7 @@ public class VoidConfirmationControllerTest {
 
         // TODO: BC-382: Mock void request
 
-        mockMvc.perform(post(path).session(session))
+        mockMvc.perform(post(path).session(session).with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(searchUrl))
                 .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
