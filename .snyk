@@ -20,12 +20,14 @@ ignore:
   'snyk:lic:maven:com.github.spotbugs:spotbugs-annotations:LGPL-2.1':
     - '*':
         reason: Approved license
+  SNYK-JAVA-COMFASTERXMLJACKSONCORE-15365924:
+    - '*':
+        reason: Dependency within the com.palantir.java-format-spotless plugin (build-time only)
 patch: {}
 exclude:
   global:
     - >-
       src/main/java/uk/gov/justice/laa/amend/claim/config/LocalSecurityConfig.java
-    - >-
-      src/main/java/uk/gov/justice/laa/amend/claim/config/E2eSecurityConfig.java
+    - src/main/java/uk/gov/justice/laa/amend/claim/config/E2eSecurityConfig.java
     - >-
       src/e2e/main/java/uk/gov/justice/laa/amend/claim/utils/OneTimePasswordUtils.java
