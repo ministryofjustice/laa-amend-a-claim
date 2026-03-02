@@ -1,7 +1,7 @@
 plugins {
-    id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.0.9'
+    id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.0.10'
     id "com.diffplug.spotless" version "8.2.1"
-    id "com.palantir.java-format-spotless" version "2.85.0"
+    id "com.palantir.java-format-spotless" version "2.89.0"
     id "io.sentry.jvm.gradle" version "6.0.0"
 }
 
@@ -76,8 +76,9 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
     // Snyk vulnerability overrides
-    implementation 'org.apache.tomcat.embed:tomcat-embed-core:11.0.18'
-    implementation 'org.apache.tomcat.embed:tomcat-embed-websocket:11.0.18'
+    implementation 'tools.jackson.core:jackson-databind:3.1.0'
+    implementation 'tools.jackson.core:jackson-core:3.1.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.21.1'
 
     // test dependencies
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:5.0.2'
