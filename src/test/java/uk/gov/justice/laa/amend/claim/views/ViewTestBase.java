@@ -289,9 +289,18 @@ public abstract class ViewTestBase {
         return matrix;
     }
 
-    protected List<List<Element>> getSummaryList(Document doc, String summaryCardTitle) {
+    protected List<List<Element>> getSummaryListInCard(Document doc, String summaryCardTitle) {
         Element summaryCard = getSummaryCard(doc, summaryCardTitle);
         Element summaryList = selectFirst(summaryCard, "dl.govuk-summary-list");
+        return extractElementsInSummaryList(summaryList);
+    }
+
+    protected List<List<Element>> getFirstSummaryList(Document doc) {
+        Element summaryList = selectFirst(doc, "dl.govuk-summary-list");
+        return extractElementsInSummaryList(summaryList);
+    }
+
+    private List<List<Element>> extractElementsInSummaryList(Element summaryList) {
         List<List<Element>> matrix = new ArrayList<>();
         for (Element row : summaryList.select(".govuk-summary-list__row")) {
             Element key = selectFirst(row, ".govuk-summary-list__key");

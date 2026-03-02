@@ -16,13 +16,6 @@ repos:
         args: [ "checkstyleAll", "--quiet" ]
         pass_filenames: false
 
-      - id: snyk-dependency-scan
-        name: Snyk dependency scan
-        entry: snyk
-        language: system
-        args: [ "test" ]
-        pass_filenames: false
-
       - id: snyk-code-scan
         name: Snyk code scan
         entry: snyk

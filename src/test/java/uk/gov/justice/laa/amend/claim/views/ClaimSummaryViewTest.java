@@ -82,7 +82,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         assertPageDoesNotHaveBackLink(doc);
 
-        List<List<Element>> summaryList1 = getSummaryList(doc, "Summary");
+        List<List<Element>> summaryList1 = getSummaryListInCard(doc, "Summary");
         Assertions.assertEquals(16, summaryList1.size());
         assertSummaryListRowContainsValues(summaryList1.getFirst(), "Client name", "John Doe");
         assertSummaryListRowContainsValues(summaryList1.get(1), "Unique file number (UFN)", "Not applicable");
@@ -101,7 +101,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList1.get(14), "Escape case", "Yes");
         assertSummaryListRowContainsValues(summaryList1.get(15), "VAT requested", "Not applicable");
 
-        List<List<Element>> summaryList2 = getSummaryList(doc, "Values");
+        List<List<Element>> summaryList2 = getSummaryListInCard(doc, "Values");
         Assertions.assertEquals(15, summaryList2.size());
         assertSummaryListRowContainsValues(summaryList2.get(1), "Fixed fee", "£200.00", "Not applicable");
         assertSummaryListRowContainsValues(summaryList2.get(2), "Profit costs", "Not applicable", "£100.00");
@@ -166,7 +166,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         assertPageHasSummaryCard(doc, "Summary");
 
-        List<List<Element>> summaryList2 = getSummaryList(doc, "Values");
+        List<List<Element>> summaryList2 = getSummaryListInCard(doc, "Values");
         Assertions.assertEquals(14, summaryList2.size());
         assertSummaryListRowContainsValues(summaryList2.get(1), "Fixed fee", "£200.00", "Not applicable", "£300.00");
         assertSummaryListRowContainsValues(summaryList2.get(2), "Profit costs", "Not applicable", "£100.00", "£300.00");
@@ -210,7 +210,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         assertPageDoesNotHaveBackLink(doc);
 
-        List<List<Element>> summaryList1 = getSummaryList(doc, "Summary");
+        List<List<Element>> summaryList1 = getSummaryListInCard(doc, "Summary");
         Assertions.assertEquals(16, summaryList1.size());
         assertSummaryListRowContainsValues(summaryList1.getFirst(), "Client name", "John Doe");
         assertSummaryListRowContainsValues(summaryList1.get(1), "Unique file number (UFN)", "Not applicable");
@@ -230,7 +230,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList1.get(14), "Escape case", "Yes");
         assertSummaryListRowContainsValues(summaryList1.get(15), "VAT requested", "Not applicable");
 
-        List<List<Element>> summaryList2 = getSummaryList(doc, "Values");
+        List<List<Element>> summaryList2 = getSummaryListInCard(doc, "Values");
         Assertions.assertEquals(9, summaryList2.size());
         assertSummaryListRowContainsValues(summaryList2.get(1), "Fixed fee", "£200.00", "Not applicable");
         assertSummaryListRowContainsValues(summaryList2.get(2), "Profit costs", "Not applicable", "£100.00");

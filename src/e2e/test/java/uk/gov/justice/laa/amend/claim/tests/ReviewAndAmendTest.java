@@ -103,7 +103,8 @@ public class ReviewAndAmendTest extends BaseTest {
                         .build());
     }
 
-    private void navigateToReviewAndAmend(String providerAccount, String month, String year, String ufn) {
+    private void navigateToReviewAndAmend(
+            String providerAccount, String month, String year, String ufn, String outcomeValue) {
         SearchPage search = new SearchPage(page);
         search.searchForClaim(providerAccount, month, year, ufn, "");
         search.clickViewForUfn(ufn);
@@ -114,13 +115,17 @@ public class ReviewAndAmendTest extends BaseTest {
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
 
         // Minimal inputs to proceed
-        outcome.selectAssessmentOutcome("assessed in full");
+        outcome.selectAssessmentOutcome(outcomeValue);
 
         // VAT is defaulted on your HTML (often "No" checked), and not needed for these tests.
         // If your app requires VAT explicitly, uncomment one line:
         // outcome.selectVatLiable(false);
 
         outcome.saveChanges();
+    }
+
+    private void navigateToReviewAndAmend(String providerAccount, String month, String year, String ufn) {
+        navigateToReviewAndAmend(providerAccount, month, year, ufn, "assessed in full");
     }
 
     @Test
@@ -156,6 +161,38 @@ public class ReviewAndAmendTest extends BaseTest {
 
         assertTrue(page.url().contains("/review"));
         review.assertSubmitTotalsRequiredErrors();
+    }
+
+    @Test
+    @DisplayName("Review & amend (Crime) - Reduced(Still escaped) - submit without profit costs shows error summary")
+    void crimeSubmitWithoutRequiredFieldsShowsErrors() {
+        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN, "reduced-still-escaped");
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+        review.saveChanges();
+        assertTrue(page.url().contains("/review"));
+        review.assertProfitCostRequiredErrors();
+    }
+
+    @Test
+    @DisplayName("Review & amend (Civil) - reduced to fixed fee (assessed) - submit without profit costs and total")
+    void civilSubmitWithoutRequiredFieldsShowsErrors() {
+        navigateToReviewAndAmend(
+                CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN, "reduced-to-fixed-fee-assessed");
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+        review.saveChanges();
+        assertTrue(page.url().contains("/review"));
+        review.assertProfitCostRequiredErrors();
+        review.assertSubmitTotalsRequiredErrors();
+    }
+
+    @Test
+    @DisplayName("Review & amend (Civil) - Reduced(Still escaped) - submit without profit costs shows error summary")
+    void civilSubmitWithoutAssessedTotalsShowsErrors() {
+        navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN, "reduced-still-escaped");
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+        review.saveChanges();
+        assertTrue(page.url().contains("/review"));
+        review.assertProfitCostRequiredErrors();
     }
 
     @Test

@@ -173,6 +173,11 @@ env:
       secretKeyRef:
         name: laa-amend-a-claim-provider-api-token
         key: PROVIDER_TOKEN
+  - name: IS_VOIDING_ENABLED
+    valueFrom:
+      configMapKeyRef:
+        name: feature-flags
+        key: is-voiding-enabled
 
 autoscaling:
   enabled: false

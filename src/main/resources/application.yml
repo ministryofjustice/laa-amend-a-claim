@@ -57,6 +57,9 @@ app:
   laa-url: ${LAA_URL}
   email: AmendaBulkClaimTeam@justice.gov.uk
 
+feature-flags:
+  is-voiding-enabled: ${IS_VOIDING_ENABLED:false}
+
 management:
   server:
     port: 8182

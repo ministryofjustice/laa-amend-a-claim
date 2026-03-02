@@ -58,7 +58,7 @@ public class ConfigurableMaintenanceService implements MaintenanceService {
         try {
             return Boolean.parseBoolean(Files.readString(ENABLED).trim());
         } catch (IOException e) {
-            log.info("Failed to read config map", e);
+            log.error("Failed to read config map", e);
             return true;
         }
     }

@@ -173,11 +173,19 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
 
     public void assertSubmitTotalsRequiredErrors() {
         waitForPageErrors();
+        assertErrorMessage("The submission must include an assessed total VAT");
+        assertErrorMessage("The submission must include an assessed total including VAT");
+        assertErrorMessage("The submission must include an allowed total VAT");
+        assertErrorMessage("The submission must include an allowed total including VAT");
+    }
 
-        assertThat(errorSummary).containsText("The submission must include an assessed total VAT");
-        assertThat(errorSummary).containsText("The submission must include an assessed total including VAT");
-        assertThat(errorSummary).containsText("The submission must include an allowed total VAT");
-        assertThat(errorSummary).containsText("The submission must include an allowed total including VAT");
+    private void assertErrorMessage(String message) {
+        assertThat(errorSummary).containsText(message);
+    }
+
+    public void assertProfitCostRequiredErrors() {
+        waitForPageErrors();
+        assertErrorMessage("The submission must include profit costs");
     }
 
     private void assertTableHasHeaders(Locator table, String... headers) {
