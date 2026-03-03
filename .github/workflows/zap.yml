@@ -1,7 +1,7 @@
 name: ZAP
 on:
-  schedule:
-    - cron: "0 0 * * *" # Daily at midnight
+#  schedule:
+#    - cron: "0 0 * * *" # Daily at midnight
   workflow_call:
     secrets:
       PAT_TOKEN:
@@ -13,6 +13,8 @@ on:
       AZURE_CLIENT_SECRET:
         required: true
       AZURE_TENANT_ID:
+        required: true
+      SLACK_WEBHOOK_URL:
         required: true
 jobs:
   zap_scan:
@@ -74,8 +76,17 @@ jobs:
           allow_issue_writing: false
           fail_action: true
       - name: Upload logs
+        if: always()
         uses: actions/upload-artifact@v6.0.0
         with:
           name: zap_output.log
           path: zap_output.log
           retention-days: 1
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: ":x: ZAP job failed! Check the workflow for details."
