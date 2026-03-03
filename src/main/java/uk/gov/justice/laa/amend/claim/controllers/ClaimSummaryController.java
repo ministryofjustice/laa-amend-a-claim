@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
+
 import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,10 +31,7 @@ public class ClaimSummaryController {
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}")
     public String onPageLoad(
-            HttpSession session,
-            Model model,
-            @PathVariable(value = "submissionId") UUID submissionId,
-            @PathVariable(value = "claimId") UUID claimId) {
+            HttpSession session, Model model, @PathVariable UUID submissionId, @PathVariable UUID claimId) {
         ClaimDetails claim = claimService.getClaimDetails(submissionId, claimId);
         if (claim.getStatus() != ClaimStatus.VALID) {
             log.error("Cannot assess claim {} as it has a non-valid status. Returning 404.", claimId);
@@ -58,11 +57,8 @@ public class ClaimSummaryController {
     }
 
     @PostMapping("/submissions/{submissionId}/claims/{claimId}")
-    public String onSubmit(
-            @PathVariable(value = "submissionId") UUID submissionId,
-            @PathVariable(value = "claimId") UUID claimId,
-            HttpSession session) {
-        ClaimDetails claim = (ClaimDetails) session.getAttribute(claimId.toString());
+    public String onSubmit(@PathVariable UUID submissionId, @PathVariable UUID claimId, HttpSession session) {
+        ClaimDetails claim = getValidEscapeCaseClaim(session, submissionId, claimId);
 
         if (claim.isHasAssessment()) {
             return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);

@@ -1,8 +1,8 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_ID;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.UUID;
@@ -29,11 +29,8 @@ public class ClaimReviewController {
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}/review")
     public String onPageLoad(
-            HttpServletRequest request,
-            Model model,
-            @PathVariable(value = "submissionId") UUID submissionId,
-            @PathVariable(value = "claimId") UUID claimId) {
-        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
+            HttpSession session, Model model, @PathVariable UUID submissionId, @PathVariable UUID claimId) {
+        var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
 
         if (claim.getAssessmentOutcome() == null) {
             return String.format("redirect:/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
@@ -43,14 +40,13 @@ public class ClaimReviewController {
 
     @PostMapping("/submissions/{submissionId}/claims/{claimId}/review")
     public String submit(
-            HttpServletRequest request,
             HttpSession session,
             Model model,
             @AuthenticationPrincipal OidcUser oidcUser,
-            @PathVariable(value = "submissionId") UUID submissionId,
-            @PathVariable(value = "claimId") UUID claimId,
+            @PathVariable UUID submissionId,
+            @PathVariable UUID claimId,
             HttpServletResponse response) {
-        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
+        var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
         ClaimDetailsView<? extends ClaimDetails> viewModel = claim.toViewModel();
         if (viewModel.getErrors().isEmpty()) {
             String userId = oidcUser.getClaim("oid");
