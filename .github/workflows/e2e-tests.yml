@@ -253,8 +253,24 @@ jobs:
           export SILAS_AUTH_ENABLED=false
           export DB_USER=${E2E_DB_USER}
           export DB_PASSWORD=${E2E_DB_PASSWORD}
-          export UI_BASE_URL=http://${AMEND_CLAIM_UI}:8084 
-          export DB_CONNECTION_URL=jdbc:postgresql://${DATA_CLAIMS_SERVICE}:5435/laa_data_claims_api_dev \
+          export UI_BASE_URL=http://${AMEND_CLAIM_UI}:8084
+          export DB_CONNECTION_URL=jdbc:postgresql://${DATA_CLAIMS_SERVICE}:5435/laa_data_claims_api_dev
+          
+          check () {
+            URL="${UI_BASE_URL}$1"
+            printf "\nChecking ${URL}\n"
+            curl -f "${URL}"
+          }
+          
+          echo "Checking scripts..."
+          check "/js/app.js"
+          check "/webjars/govuk-frontend/dist/govuk/govuk-frontend.min.js"
+          check "/webjars/ministryofjustice__frontend/moj/moj-frontend.min.js"
+          
+          echo "Checking styling..."
+          check "/css/styles.css"
+          check "/webjars/govuk-frontend/5.14.0/dist/govuk/govuk-frontend.min.css"
+          check "/webjars/ministryofjustice__frontend/7.1.0/moj/moj-frontend.min.css"
           
           echo "Running E2E tests..."
           ./gradlew clean test --no-daemon
