@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.controllers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -23,8 +24,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
@@ -115,7 +116,7 @@ public class ClaimReviewControllerTest {
         String redirectUrl =
                 String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
 
-        mockMvc.perform(post(path).session(session))
+        mockMvc.perform(post(path).session(session).with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl))
                 .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()))
@@ -135,7 +136,7 @@ public class ClaimReviewControllerTest {
 
         String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
 
-        mockMvc.perform(post(path).session(session))
+        mockMvc.perform(post(path).session(session).with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("review-and-amend"))
                 .andExpect(model().attributeExists("claim"))
@@ -157,7 +158,7 @@ public class ClaimReviewControllerTest {
 
         String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
 
-        mockMvc.perform(post(path).session(session))
+        mockMvc.perform(post(path).session(session).with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("review-and-amend"))
                 .andExpect(model().attributeExists("claim"))
