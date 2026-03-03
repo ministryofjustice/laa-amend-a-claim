@@ -257,20 +257,20 @@ jobs:
           export DB_CONNECTION_URL=jdbc:postgresql://${DATA_CLAIMS_SERVICE}:5435/laa_data_claims_api_dev
           
           check () {
-            echo "Checking $1"
-            curl -f "$1"
+            URL="${UI_BASE_URL}$1"
+            printf "\nChecking ${URL}\n"
+            curl -f "${URL}"
           }
           
           echo "Checking scripts..."
-          check "${UI_BASE_URL}/js/app.js"
-          check "${UI_BASE_URL}/webjars/govuk-frontend/dist/govuk/govuk-frontend.min.js"
-          check "${UI_BASE_URL}/webjars/ministryofjustice__frontend/moj/moj-frontend.min.js"
+          check "/js/app.js"
+          check "/webjars/govuk-frontend/dist/govuk/govuk-frontend.min.js"
+          check "/webjars/ministryofjustice__frontend/moj/moj-frontend.min.js"
           
           echo "Checking styling..."
-          check "${UI_BASE_URL}/css/styles.css"
-          check "${UI_BASE_URL}/webjars/govuk-frontend/5.14.0/dist/govuk/govuk-frontend.min.css"
-          check "${UI_BASE_URL}/webjars/ministryofjustice__frontend/7.1.0/moj/moj-frontend.min.css"
-          check "${UI_BASE_URL}/foo"
+          check "/css/styles.css"
+          check "/webjars/govuk-frontend/5.14.0/dist/govuk/govuk-frontend.min.css"
+          check "/webjars/ministryofjustice__frontend/7.1.0/moj/moj-frontend.min.css"
           
           echo "Running E2E tests..."
           ./gradlew clean test --no-daemon
