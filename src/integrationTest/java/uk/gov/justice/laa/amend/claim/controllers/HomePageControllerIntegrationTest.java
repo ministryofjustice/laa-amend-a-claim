@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -38,6 +39,7 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     @Test
     void testSearchWithEmptyFormReturnsBadRequest() throws Exception {
         mockMvc.perform(post("/")
+                        .with(csrf())
                         .formField("providerAccountNumber", "")
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
@@ -50,6 +52,7 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     @Test
     void testSearchWithInvalidProviderAccountNumberReturnsBadRequest() throws Exception {
         mockMvc.perform(post("/")
+                        .with(csrf())
                         .formField("providerAccountNumber", "invalid!")
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
@@ -62,6 +65,7 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     @Test
     void testSearchWithValidProviderAccountNumberReturnsResults() throws Exception {
         mockMvc.perform(post("/")
+                        .with(csrf())
                         .formField("providerAccountNumber", "0P322F")
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
@@ -82,6 +86,7 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     @Test
     void testSearchWithInvalidUniqueFileNumber() throws Exception {
         mockMvc.perform(post("/")
+                        .with(csrf())
                         .formField("providerAccountNumber", "0P322F")
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
@@ -94,6 +99,7 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     @Test
     void testSearchWithValidSubmissionDate() throws Exception {
         mockMvc.perform(post("/")
+                        .with(csrf())
                         .formField("providerAccountNumber", "0P322F")
                         .formField("submissionDateMonth", "12")
                         .formField("submissionDateYear", "2024")

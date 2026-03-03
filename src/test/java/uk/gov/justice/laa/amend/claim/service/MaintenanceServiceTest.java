@@ -32,7 +32,7 @@ public class MaintenanceServiceTest {
     private HttpServletRequest request;
 
     @InjectMocks
-    private MaintenanceService service;
+    private ConfigurableMaintenanceService service;
 
     @Captor
     private ArgumentCaptor<Path> pathCaptor;
