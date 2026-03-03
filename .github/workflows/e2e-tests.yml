@@ -270,6 +270,7 @@ jobs:
           check "${UI_BASE_URL}/css/styles.css"
           check "${UI_BASE_URL}/webjars/govuk-frontend/5.14.0/dist/govuk/govuk-frontend.min.css"
           check "${UI_BASE_URL}/webjars/ministryofjustice__frontend/7.1.0/moj/moj-frontend.min.css"
+          check "${UI_BASE_URL}/foo"
           
           echo "Running E2E tests..."
           ./gradlew clean test --no-daemon
