@@ -89,4 +89,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: ":x: ZAP job failed! Check the workflow for details."
+            text: >
+              :x: ZAP job failed!
+              Download the zap_scan report. Use zap_output.log for help debugging if needed. The artifacts are available here:
+              https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
