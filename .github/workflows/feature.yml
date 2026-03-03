@@ -22,18 +22,6 @@ jobs:
       ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
       PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
-  zap:
-    name: ZAP
-    needs: build
-    uses: ./.github/workflows/zap.yml
-    secrets:
-      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
   deploy-ephemeral:
     name: Deploy Ephemeral Environment
     needs: build
