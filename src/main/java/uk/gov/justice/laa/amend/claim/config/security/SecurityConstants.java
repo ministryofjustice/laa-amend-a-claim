@@ -16,4 +16,7 @@ public class SecurityConstants {
             + "base-uri 'self'; "
             + "form-action 'self'; "
             + "upgrade-insecure-requests";
+
+    public static final String PERMISSIONS_POLICY =
+            "camera=(), " + "microphone=(), " + "geolocation=(), " + "fullscreen=(self)";
 }

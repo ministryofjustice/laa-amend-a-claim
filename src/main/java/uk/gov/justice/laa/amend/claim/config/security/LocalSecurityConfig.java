@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.config.security;
 
+import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PERMISSIONS_POLICY;
 import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.POLICY_DIRECTIVES;
 
 import jakarta.servlet.FilterChain;
@@ -24,6 +25,8 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.header.writers.CrossOriginOpenerPolicyHeaderWriter;
+import org.springframework.security.web.header.writers.CrossOriginResourcePolicyHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -40,8 +43,15 @@ public class LocalSecurityConfig {
     public SecurityFilterChain securityFilterChainLocal(final HttpSecurity http) {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                        .contentSecurityPolicy(csp -> csp.policyDirectives(POLICY_DIRECTIVES)))
+                .headers(headers -> headers.addHeaderWriter(
+                                (result, response) -> response.setHeader("X-Content-Type-Options", "nosniff"))
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(POLICY_DIRECTIVES))
+                        .crossOriginOpenerPolicy(coop ->
+                                coop.policy(CrossOriginOpenerPolicyHeaderWriter.CrossOriginOpenerPolicy.SAME_ORIGIN))
+                        .crossOriginResourcePolicy(corp -> corp.policy(
+                                CrossOriginResourcePolicyHeaderWriter.CrossOriginResourcePolicy.SAME_ORIGIN))
+                        .permissionsPolicyHeader(pp -> pp.policy(PERMISSIONS_POLICY)))
                 .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class);
         return http.build();
     }
