@@ -77,17 +77,6 @@ We use Snyk to help identify security vulnerabilities in our code and dependenci
 4. `snyk auth` and log in through GitHub
 5. You should now be able to run `snyk test`, `snyk code test` etc. These are both executed as part of the pre-commit hooks. Exclusions and ignores can be defined in [.snyk](/.snyk) as required.
 
-### ZAP
-We also use ZAP to help identify security vulnerabilities. This job is run nightly in the [GitHub Actions](https://github.com/ministryofjustice/laa-amend-a-claim/actions/workflows/zap.yml). If the job fails, a Slack alert is sent to `#laa-amend-a-claim-alerts-non-prod`.
-
-The job configures the application to point the claims data and provider details APIs at WireMock.
-
-We specify the target as `/?providerAccountNumber=0P322F`. This exposes the 'View' links that allow ZAP to discover subsequent pages / URLs.
-
-The [context](zap.context) file tells ZAP what is in scope. This file was generated using the [ZAP](https://www.zaproxy.org/download/) application.
-
-Certain alerts can be ignored by updating the [rules](.zap/rules.tsv). Ensure the values are tab-separated otherwise the action will log that there was an `Error when reading the rules file`.
-
 ### Build and run application
 1. Run:
    1. `./run.sh` or `./run.sh local` to run the service with:
@@ -130,8 +119,22 @@ The following actuator endpoints have been configured:
 
 ## GitHub workflows
 
-* `feature.yml` - Feature branch pipeline: build -> deploy to ephemeral → test → security → deploy to dev
-* `main.yml` - Main branch pipeline: build → test → security → deploy to dev → UAT → staging → production 
+### `feature.yml`
+Feature branch pipeline: build -> deploy to ephemeral → test → security → deploy to dev
+
+### `main.yml`
+Main branch pipeline: build → test → security → deploy to dev → UAT → staging → production
+
+### `zap.yml`
+We use ZAP to help identify security vulnerabilities. This job is run nightly in the [GitHub Actions](https://github.com/ministryofjustice/laa-amend-a-claim/actions/workflows/zap.yml). If the job fails, a Slack alert is sent to `#laa-amend-a-claim-alerts-non-prod`. The job can also be invoked manually against a certain branch.
+
+The job configures the application to point the claims data and provider details APIs at WireMock.
+
+We specify the target as `/?providerAccountNumber=0P322F`. This exposes the 'View' links that allow ZAP to discover subsequent pages / URLs.
+
+The [context](zap.context) file tells ZAP what is in scope. This file was generated using the [ZAP](https://www.zaproxy.org/download/) application.
+
+Certain alerts can be ignored by updating the [rules](.zap/rules.tsv). Ensure the values are tab-separated otherwise the action will log that there was an `Error when reading the rules file`.
 
 ## Additional information
 
