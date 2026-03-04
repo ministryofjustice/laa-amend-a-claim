@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
+
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/void")
@@ -40,7 +41,8 @@ public class VoidConfirmationController {
             return null;
         }
 
-        var claim = getValidClaim(session, claimId);
+        var claim = getValidClaim(session, submissionId, claimId);
+
         return renderView(model, claim, submissionId, claimId, false);
     }
 
@@ -57,7 +59,7 @@ public class VoidConfirmationController {
             return null;
         }
 
-        var claim = getValidClaim(session, claimId);
+        var claim = getValidClaim(session, submissionId, claimId);
 
         try {
             // TODO: BC-382: Submit the void request
@@ -81,13 +83,5 @@ public class VoidConfirmationController {
         model.addAttribute("submissionFailed", submissionFailed);
 
         return "void-confirmation";
-    }
-
-    private ClaimDetails getValidClaim(HttpSession session, UUID claimId) {
-        var claim = (ClaimDetails) session.getAttribute(claimId.toString());
-        if (claim.getStatus() != ClaimStatus.VALID) {
-            throw new IllegalStateException("Claim status is not VALID");
-        }
-        return claim;
     }
 }

@@ -1,8 +1,8 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 
@@ -36,14 +35,14 @@ public class ChangeMonetaryValueController {
     @GetMapping("{cost}")
     public String getMonetaryValue(
             Model model,
-            @PathVariable(value = "submissionId") UUID submissionId,
-            @PathVariable(value = "claimId") UUID claimId,
-            @PathVariable(value = "cost") Cost cost,
-            HttpServletRequest request,
+            @PathVariable UUID submissionId,
+            @PathVariable UUID claimId,
+            @PathVariable Cost cost,
+            HttpSession session,
             HttpServletResponse response)
             throws IOException {
         try {
-            ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
+            var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
             ClaimField claimField = cost.getAccessor().get(claim);
 
             if (claimField == null) {
@@ -74,16 +73,15 @@ public class ChangeMonetaryValueController {
     public String postMonetaryValue(
             HttpSession session,
             Model model,
-            @PathVariable(value = "submissionId") UUID submissionId,
-            @PathVariable(value = "claimId") UUID claimId,
-            @PathVariable(value = "cost") Cost cost,
-            HttpServletRequest request,
+            @PathVariable UUID submissionId,
+            @PathVariable UUID claimId,
+            @PathVariable Cost cost,
             HttpServletResponse response,
             @Valid @ModelAttribute("form") MonetaryValueForm form,
             BindingResult bindingResult)
             throws IOException {
         try {
-            ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
+            var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
 
             if (bindingResult.hasErrors()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
