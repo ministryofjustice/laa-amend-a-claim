@@ -2,20 +2,12 @@ name: ZAP
 on:
   schedule:
     - cron: "0 0 * * *" # Daily at midnight
-  workflow_call:
-    secrets:
-      PAT_TOKEN:
-        required: true
-      SENTRY_DSN:
-        required: true
-      AZURE_CLIENT_ID:
-        required: true
-      AZURE_CLIENT_SECRET:
-        required: true
-      AZURE_TENANT_ID:
-        required: true
-      SLACK_WEBHOOK_URL:
-        required: true
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to run the workflow on (default: main)'
+        required: false
+        default: 'main'
 jobs:
   zap_scan:
     name: Scan the web application
