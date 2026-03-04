@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @Getter
 public enum SortField {
-    UNIQUE_FILE_NUMBER("uniqueFileNumber"),
-    CASE_REFERENCE_NUMBER("caseReferenceNumber"),
-    CLIENT_SURNAME("client.clientSurname"),
-    SUBMISSION_PERIOD("submission.submissionPeriod"),
-    SCHEDULE_REFERENCE("scheduleReference"),
-    CATEGORY_OF_LAW("calculatedFeeDetail.categoryOfLaw");
+    UNIQUE_FILE_NUMBER("unique_file_number"),
+    CASE_REFERENCE_NUMBER("case_reference_number"),
+    CLIENT_SURNAME("client_surname"),
+    SUBMISSION_PERIOD("submission_period"),
+    SCHEDULE_REFERENCE("schedule_reference"),
+    CATEGORY_OF_LAW("category_of_law");
 
     private final String value;
 

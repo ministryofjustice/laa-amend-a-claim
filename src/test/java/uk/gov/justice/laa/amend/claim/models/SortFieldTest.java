@@ -12,42 +12,42 @@ public class SortFieldTest {
     class FromValueTests {
         @Test
         void shouldConvertUniqueFileNumber() {
-            String str = "uniqueFileNumber";
+            String str = "unique_file_number";
             SortField result = SortField.fromValue(str);
             Assertions.assertEquals(SortField.UNIQUE_FILE_NUMBER, result);
         }
 
         @Test
         void shouldConvertCaseReferenceNumber() {
-            String str = "caseReferenceNumber";
+            String str = "case_reference_number";
             SortField result = SortField.fromValue(str);
             Assertions.assertEquals(SortField.CASE_REFERENCE_NUMBER, result);
         }
 
         @Test
         void shouldConvertClientSurname() {
-            String str = "client.clientSurname";
+            String str = "client_surname";
             SortField result = SortField.fromValue(str);
             Assertions.assertEquals(SortField.CLIENT_SURNAME, result);
         }
 
         @Test
         void shouldConvertSubmissionPeriod() {
-            String str = "submission.submissionPeriod";
+            String str = "submission_period";
             SortField result = SortField.fromValue(str);
             Assertions.assertEquals(SortField.SUBMISSION_PERIOD, result);
         }
 
         @Test
         void shouldConvertCategoryOfLaw() {
-            String str = "calculatedFeeDetail.categoryOfLaw";
+            String str = "category_of_law";
             SortField result = SortField.fromValue(str);
             Assertions.assertEquals(SortField.CATEGORY_OF_LAW, result);
         }
 
         @Test
         void shouldConvertScheduleReference() {
-            String str = "scheduleReference";
+            String str = "schedule_reference";
             SortField result = SortField.fromValue(str);
             Assertions.assertEquals(SortField.SCHEDULE_REFERENCE, result);
         }
