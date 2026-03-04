@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.client.VoidClaim201Response;
+import uk.gov.justice.laa.amend.claim.client.VoidClaimRequest;
 import uk.gov.justice.laa.amend.claim.config.ClaimsApiPactTestConfig;
 
 @SpringBootTest(
@@ -43,6 +44,11 @@ public final class VoidClaimSuccessPactTest extends AbstractPactTest {
                 .matchPath("/api/v1/claims/(" + UUID_REGEX + ")/void")
                 .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX)
                 .method("POST")
+                .body(LambdaDsl.newJsonBody(body -> {
+                            body.uuid("createdByUserId");
+                            body.stringType("assessmentReason", "Void reason");
+                        })
+                        .build())
                 .willRespondWith()
                 .status(201)
                 .headers(Map.of("Content-Type", "application/json"))
@@ -57,8 +63,9 @@ public final class VoidClaimSuccessPactTest extends AbstractPactTest {
     @DisplayName("Verify 201 response - claim voided successfully")
     @PactTestFor(pactMethod = "voidClaim201")
     void verify201Response() {
+        VoidClaimRequest request = new VoidClaimRequest(UUID.randomUUID(), "Void reason");
         ResponseEntity<VoidClaim201Response> response =
-                claimsApiClient.voidClaim(CLAIM_ID.toString()).block();
+                claimsApiClient.voidClaim(CLAIM_ID.toString(), request).block();
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
