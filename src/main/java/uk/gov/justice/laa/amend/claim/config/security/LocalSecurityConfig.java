@@ -25,6 +25,7 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.header.writers.CrossOriginEmbedderPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.CrossOriginOpenerPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.CrossOriginResourcePolicyHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -43,10 +44,10 @@ public class LocalSecurityConfig {
     public SecurityFilterChain securityFilterChainLocal(final HttpSecurity http) {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .headers(headers -> headers.addHeaderWriter(
-                                (result, response) -> response.setHeader("X-Content-Type-Options", "nosniff"))
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
                         .contentSecurityPolicy(csp -> csp.policyDirectives(POLICY_DIRECTIVES))
+                        .crossOriginEmbedderPolicy(coep -> coep.policy(
+                                CrossOriginEmbedderPolicyHeaderWriter.CrossOriginEmbedderPolicy.REQUIRE_CORP))
                         .crossOriginOpenerPolicy(coop ->
                                 coop.policy(CrossOriginOpenerPolicyHeaderWriter.CrossOriginOpenerPolicy.SAME_ORIGIN))
                         .crossOriginResourcePolicy(corp -> corp.policy(
