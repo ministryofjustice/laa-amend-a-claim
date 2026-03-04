@@ -43,6 +43,7 @@ public final class VoidClaimSuccessPactTest extends AbstractPactTest {
                 .uponReceiving("a request to void a valid claim")
                 .matchPath("/api/v1/claims/(" + UUID_REGEX + ")/void")
                 .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX)
+                .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
                 .method("POST")
                 .body(LambdaDsl.newJsonBody(body -> {
                             body.uuid("createdByUserId");
