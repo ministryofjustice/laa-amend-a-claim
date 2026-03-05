@@ -64,6 +64,24 @@ public class SortTest {
         }
 
         @Test
+        void shouldConvertSortToStringWhenDescendingOrder_status() {
+            Sort sort = Sort.builder()
+                    .field(SortField.VOIDED)
+                    .direction(SortDirection.DESCENDING)
+                    .build();
+            Assertions.assertEquals("status,desc", sort.toString());
+        }
+
+        @Test
+        void shouldConvertSortToStringWhenAscendingOrder_status() {
+            Sort sort = Sort.builder()
+                    .field(SortField.VOIDED)
+                    .direction(SortDirection.ASCENDING)
+                    .build();
+            Assertions.assertEquals("status,asc", sort.toString());
+        }
+
+        @Test
         void shouldConvertSortToStringWhenNoOrder() {
             Sort sort = Sort.builder()
                     .field(SortField.SCHEDULE_REFERENCE)

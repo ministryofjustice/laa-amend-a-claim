@@ -7,7 +7,8 @@ import lombok.Getter;
 public enum SortField {
     UNIQUE_FILE_NUMBER("uniqueFileNumber"),
     CASE_REFERENCE_NUMBER("caseReferenceNumber"),
-    SCHEDULE_REFERENCE("scheduleReference");
+    SCHEDULE_REFERENCE("scheduleReference"),
+    VOIDED("status");
 
     private final String value;
 
