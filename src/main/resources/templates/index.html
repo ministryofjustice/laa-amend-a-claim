@@ -97,7 +97,7 @@
 
                                         <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.SCHEDULE_REFERENCE}, 'index.results.account')}"></th:block>
 
-                                        <th scope="col" class="govuk-table__header" th:text="#{index.results.categoryOfLaw}">
+                                        <th scope="col" class="govuk-table__header" th:text="#{index.results.categoryOfLaw}"></th>
 
                                         <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.VOIDED}, 'index.results.voided')}"></th:block>
 
@@ -120,11 +120,11 @@
                                         <td class="govuk-table__cell" th:text="${claim.accountNumber}"></td>
                                         <td class="govuk-table__cell" th:text="${claim.claim.categoryOfLaw}"></td>
 
-                                        <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.voided).resolve(#messages)}">
-                                            <th:block th:if="${claim.claim.voided}">
+                                        <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.isVoided()).resolve(#messages)}">
+                                            <th:block th:if="${claim.claim.isVoided()}">
                                                 <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
                                             </th:block>
-                                            <th:block th:unless="${claim.claim.voided}">
+                                            <th:block th:unless="${claim.claim.isVoided()}">
                                                 <span th:text="${value}"></span>
                                             </th:block>
                                         </td>

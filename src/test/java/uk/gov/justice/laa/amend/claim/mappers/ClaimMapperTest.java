@@ -693,30 +693,4 @@ class ClaimMapperTest {
 
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }
-
-    @Test
-    void mapVoided_whenNotVoid() {
-        ClaimResponse response = new ClaimResponse();
-        response.setStatus(ClaimStatus.VALID);
-
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
-
-        assertEquals(false, claim.getVoided());
-    }
-
-    @Test
-    void mapVoided_whenVoid() {
-        ClaimResponse response = new ClaimResponse();
-        response.setStatus(ClaimStatus.VOID);
-
-        SubmissionResponse submissionResponse =
-                new SubmissionResponse().submissionId(UUID.randomUUID()).areaOfLaw(AreaOfLaw.CRIME_LOWER);
-
-        ClaimDetails claim = mapper.mapToClaimDetails(response, submissionResponse);
-
-        assertEquals(true, claim.getVoided());
-    }
 }

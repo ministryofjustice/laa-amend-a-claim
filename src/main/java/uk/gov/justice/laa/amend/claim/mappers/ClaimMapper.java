@@ -17,7 +17,6 @@ import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 
 @Mapper(
@@ -64,7 +63,6 @@ public interface ClaimMapper {
     @Mapping(target = "submissionPeriod", expression = "java(mapSubmissionPeriod(claimResponse))")
     @Mapping(target = "categoryOfLaw", source = "feeCalculationResponse.categoryOfLaw")
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
-    @Mapping(target = "voided", expression = "java(mapVoided(claimResponse))")
     Claim mapToClaim(ClaimResponse claimResponse);
 
     @InheritConfiguration(name = "mapToCommonDetails")
@@ -133,13 +131,6 @@ public interface ClaimMapper {
         } else {
             return null;
         }
-    }
-
-    default Boolean mapVoided(ClaimResponse claimResponse) {
-        if (claimResponse.getStatus() != null) {
-            return claimResponse.getStatus() == ClaimStatus.VOID;
-        }
-        return null;
     }
 
     private void enrichWithSubmission(ClaimDetails claim, SubmissionResponse submissionResponse) {
