@@ -39,7 +39,7 @@ public class WebClientConfig {
                 .defaultHeader(HttpHeaders.AUTHORIZATION, properties.getAccessToken())
                 .exchangeStrategies(strategies)
                 .build();
-
+        log.info("Claims API URL: {}", properties.getUrl());
         WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
         HttpServiceProxyFactory factory =
                 HttpServiceProxyFactory.builderFor(webClientAdapter).build();

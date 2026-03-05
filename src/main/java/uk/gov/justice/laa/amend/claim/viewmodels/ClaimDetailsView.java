@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.utils.DateUtils;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
 
@@ -112,16 +114,30 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default ThymeleafMessage lastEditedBy(MicrosoftApiUser user) {
+        var voidMessage = new ThymeleafMessage("claimSummary.void.message");
+        if (lastAssessment() == null) {
+            return voidMessage;
+        }
         LocalDateTime dateTime = lastAssessment().getLastAssessmentDate().toLocalDateTime();
         String date = DateUtils.displayDateTimeDateValue(dateTime);
         String time = DateUtils.displayDateTimeTimeValue(dateTime);
-        ThymeleafMessage outcome =
-                new ThymeleafMessage(lastAssessment().getLastAssessmentOutcome().getMessageKey());
+
+        List<Object> args = new ArrayList<>();
+        String editMessageKey;
         if (user != null && user.getName() != null) {
-            return new ThymeleafMessage("claimSummary.lastAssessmentText", user.getName(), date, time, outcome);
+            args.add(user.getName());
+            editMessageKey = "claimSummary.lastAssessmentText";
         } else {
-            return new ThymeleafMessage("claimSummary.lastAssessmentText.noUser", date, time, outcome);
+            editMessageKey = "claimSummary.lastAssessmentText.noUser";
         }
+
+        args.add(date);
+        args.add(time);
+
+        var outcome = lastAssessment().getLastAssessmentOutcome();
+        args.add(isVoidClaim() ? voidMessage : new ThymeleafMessage(outcome.getMessageKey()));
+
+        return new ThymeleafMessage(editMessageKey, args.toArray());
     }
 
     private Stream<ClaimFieldRow> toClaimFieldRows(Stream<ClaimField> claimFields) {
@@ -140,5 +156,9 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
             return new ThymeleafMessage("provider.firmName.notAvailable");
         }
         return claim().getProviderName();
+    }
+
+    default boolean isVoidClaim() {
+        return ClaimStatus.VOID == claim().getStatus();
     }
 }

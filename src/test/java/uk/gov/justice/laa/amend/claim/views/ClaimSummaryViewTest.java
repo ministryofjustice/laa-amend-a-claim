@@ -1,9 +1,13 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.DISPLAY_NAME;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -11,10 +15,13 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.stream.Stream;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -26,6 +33,7 @@ import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimSummaryController;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
+import uk.gov.justice.laa.amend.claim.models.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
@@ -36,6 +44,7 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
 @ActiveProfiles("local")
@@ -264,6 +273,66 @@ class ClaimSummaryViewTest extends ViewTestBase {
         Document doc = renderDocument();
 
         assertPageHasLink(doc, "back-to-search", "Back to search", "/?providerAccountNumber=0P322F&page=1");
+    }
+
+    @ParameterizedTest
+    @MethodSource("claimTypes")
+    void testVoidClaimPageWithEscapeAssessmentShowsVoidBanner(ClaimDetails claim) throws Exception {
+        createClaimSummary(claim);
+
+        claim.setStatus(ClaimStatus.VOID);
+        claim.setLastAssessment(MockClaimsFunctions.createAssessment(AssessmentTypeEnum.VOID));
+
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+
+        Document doc = renderDocument();
+
+        assertPageHasTitle(doc, "Claim details");
+        assertPageHasHeading(doc, "Claim details");
+
+        Element banner = doc.selectFirst(".moj-alert.moj-alert--error");
+        assertNotNull(banner, "Expected VOID banner to be visible");
+
+        assertTrue(
+                banner.text()
+                        .matches(".*This claim has been voided.*Last edited by " + DISPLAY_NAME
+                                + ".*You can no longer make changes\\..*"),
+                "VOID banner text is not in the expected order");
+
+        Element assessmentButton = doc.selectFirst("[data-testid=claim-details-assessment-button]");
+        assertNull(assessmentButton, "Expected assessment button to be hidden for VOID claims");
+
+        Element voidButton = getButtonByLabel(doc, "Void claim");
+        assertNull(voidButton, "Expected Void button to be hidden for VOID claims");
+    }
+
+    @ParameterizedTest
+    @MethodSource("claimTypes")
+    void testVoidClaimPageWithNoPreviousAssessmentShowsVoidBanner(ClaimDetails claim) throws Exception {
+        createClaimSummary(claim);
+
+        claim.setStatus(ClaimStatus.VOID);
+        claim.setLastAssessment(null);
+
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+
+        Document doc = renderDocument();
+
+        Element banner = doc.selectFirst(".moj-alert.moj-alert--error");
+        assertNotNull(banner, "Expected VOID banner to be visible even without previous assessment");
+        assertTrue(
+                banner.text().matches(".*This claim has been voided.*You can no longer make changes.*"),
+                "VOID banner text is not in the expected order");
+
+        Element assessmentButton = doc.selectFirst("[data-testid=claim-details-assessment-button]");
+        assertNull(assessmentButton, "Expected assessment button to be hidden for VOID claims");
+
+        Element voidButton = getButtonByLabel(doc, "Void claim");
+        assertNull(voidButton, "Expected Void button to be hidden for VOID claims");
+    }
+
+    private static Stream<ClaimDetails> claimTypes() {
+        return Stream.of(MockClaimsFunctions.createMockCivilClaim(), MockClaimsFunctions.createMockCrimeClaim());
     }
 
     private static void createClaimSummary(ClaimDetails claim) {
