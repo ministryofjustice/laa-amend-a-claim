@@ -10,7 +10,7 @@ public class SortTest {
     class ConstructorTests {
         @Test
         void shouldConvertStringToSortWhenAscendingOrder() {
-            String str = "uniqueFileNumber,asc";
+            String str = "unique_file_number,asc";
             Sort result = new Sort(str);
             Assertions.assertEquals(SortField.UNIQUE_FILE_NUMBER, result.getField());
             Assertions.assertEquals(SortDirection.ASCENDING, result.getDirection());
@@ -18,7 +18,7 @@ public class SortTest {
 
         @Test
         void shouldConvertStringToSortWhenDescendingOrder() {
-            String str = "caseReferenceNumber,desc";
+            String str = "case_reference_number,desc";
             Sort result = new Sort(str);
             Assertions.assertEquals(SortField.CASE_REFERENCE_NUMBER, result.getField());
             Assertions.assertEquals(SortDirection.DESCENDING, result.getDirection());
@@ -26,7 +26,7 @@ public class SortTest {
 
         @Test
         void shouldThrowExceptionForInvalidDirection() {
-            String str = "scheduleReference,foo";
+            String str = "schedule_reference,foo";
             Assertions.assertThrows(IllegalArgumentException.class, () -> new Sort(str));
         }
 
@@ -51,7 +51,7 @@ public class SortTest {
                     .field(SortField.UNIQUE_FILE_NUMBER)
                     .direction(SortDirection.ASCENDING)
                     .build();
-            Assertions.assertEquals("uniqueFileNumber,asc", sort.toString());
+            Assertions.assertEquals("unique_file_number,asc", sort.toString());
         }
 
         @Test
@@ -60,7 +60,7 @@ public class SortTest {
                     .field(SortField.CASE_REFERENCE_NUMBER)
                     .direction(SortDirection.DESCENDING)
                     .build();
-            Assertions.assertEquals("caseReferenceNumber,desc", sort.toString());
+            Assertions.assertEquals("case_reference_number,desc", sort.toString());
         }
 
         @Test

@@ -163,7 +163,7 @@ public class SearchTest extends BaseTest {
         assertTrue(
                 page.url()
                         .contains(
-                                "/?providerAccountNumber=123456&submissionDateMonth=04&submissionDateYear=2025&page=1&sort=uniqueFileNumber,asc"));
+                                "/?providerAccountNumber=123456&submissionDateMonth=04&submissionDateYear=2025&page=1&sort=unique_file_number,asc"));
     }
 
     @Test

@@ -47,14 +47,14 @@ public class WireMockSetup {
                 "pageNumber": 0
             }
             """;
-        stubFor(get(urlPathMatching("/api/v1/claims.*"))
+        stubFor(get(urlPathMatching("/api/v2/claims.*"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody(response)));
     }
 
-    public void setupGetClaimStub(String submissionId, String claimId) {
+    public void setupGetClaimStub(String submissionId, String claimId, String officeAccountNumber) {
         String response = String.format("""
             {
                   "id": "%s",
@@ -68,7 +68,9 @@ public class WireMockSetup {
                   "case_start_date": "2025-01-01",
                   "case_concluded_date": "2025-02-01",
                   "submission_period": "JAN-2025",
+                  "office_code": "%s",
                   "area_of_law": "LEGAL HELP",
+                  "date_submitted": "2025-01-10T14:30:00+02:00",
                   "has_assessment": false,
                   "fee_calculation_response": {
                       "fee_code": "FEE",
@@ -79,26 +81,9 @@ public class WireMockSetup {
                       }
                   }
               }\
-            """, claimId, submissionId);
+            """, claimId, submissionId, officeAccountNumber);
 
-        stubFor(get(urlPathMatching(String.format("/api/v1/submissions/%s/claims/%s", submissionId, claimId)))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(response)));
-    }
-
-    public void setupGetSubmissionStub(String submissionId, String officeAccountNumber) {
-        String response = String.format("""
-            {
-                "id": "%s",
-                "office_account_number": "%s",
-                "area_of_law": "LEGAL HELP",
-                "submitted": "2025-01-10T14:30:00+02:00"
-            }\
-            """, submissionId, officeAccountNumber);
-
-        stubFor(get(urlPathMatching(String.format("/api/v1/submissions/%s", submissionId)))
+        stubFor(get(urlPathMatching(String.format("/api/v2/submissions/%s/claims/%s", submissionId, claimId)))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
