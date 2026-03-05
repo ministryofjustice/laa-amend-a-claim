@@ -31,24 +31,37 @@ public class LocalSecurityConfigIntegrationTest extends RedisSetup {
         mockMvc.perform(get(url))
                 .andExpect(status().isOk())
                 .andExpect(header().exists("Content-Security-Policy"))
-                .andExpect(header().string("X-Frame-Options", "DENY"))
-                .andExpect(header().string("Cross-Origin-Opener-Policy", "same-origin"))
                 .andExpect(header().string("Cross-Origin-Embedder-Policy", "require-corp"))
+                .andExpect(header().string("Cross-Origin-Opener-Policy", "same-origin"))
                 .andExpect(header().string("Cross-Origin-Resource-Policy", "same-origin"))
+                .andExpect(header().string("Permissions-Policy", PERMISSIONS_POLICY))
                 .andExpect(header().string("X-Content-Type-Options", "nosniff"))
-                .andExpect(header().string("Permissions-Policy", PERMISSIONS_POLICY));
+                .andExpect(header().string("X-Frame-Options", "DENY"));
     }
 
     @Test
-    void responseOnPostHasCorrectHeaders() throws Exception {
+    void responseOnPostWithCsrfHasCorrectHeaders() throws Exception {
         mockMvc.perform(post("/").with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(header().exists("Content-Security-Policy"))
-                .andExpect(header().string("X-Frame-Options", "DENY"))
-                .andExpect(header().string("Cross-Origin-Opener-Policy", "same-origin"))
                 .andExpect(header().string("Cross-Origin-Embedder-Policy", "require-corp"))
+                .andExpect(header().string("Cross-Origin-Opener-Policy", "same-origin"))
                 .andExpect(header().string("Cross-Origin-Resource-Policy", "same-origin"))
+                .andExpect(header().string("Permissions-Policy", PERMISSIONS_POLICY))
                 .andExpect(header().string("X-Content-Type-Options", "nosniff"))
-                .andExpect(header().string("Permissions-Policy", PERMISSIONS_POLICY));
+                .andExpect(header().string("X-Frame-Options", "DENY"));
+    }
+
+    @Test
+    void responseOnPostWithoutCsrfHasCorrectHeaders() throws Exception {
+        mockMvc.perform(post("/"))
+                .andExpect(status().isForbidden())
+                .andExpect(header().exists("Content-Security-Policy"))
+                .andExpect(header().string("Cross-Origin-Embedder-Policy", "require-corp"))
+                .andExpect(header().string("Cross-Origin-Opener-Policy", "same-origin"))
+                .andExpect(header().string("Cross-Origin-Resource-Policy", "same-origin"))
+                .andExpect(header().string("Permissions-Policy", PERMISSIONS_POLICY))
+                .andExpect(header().string("X-Content-Type-Options", "nosniff"))
+                .andExpect(header().string("X-Frame-Options", "DENY"));
     }
 }
