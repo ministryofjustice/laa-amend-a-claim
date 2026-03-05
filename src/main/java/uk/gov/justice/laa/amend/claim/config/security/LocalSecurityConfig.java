@@ -44,7 +44,7 @@ public class LocalSecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
                         .contentSecurityPolicy(csp -> csp.policyDirectives(POLICY_DIRECTIVES)))
                 .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class)
-                .addFilterBefore(securityHeadersFilter(), AnonymousAuthenticationFilter.class);
+                .addFilterAfter(securityHeadersFilter(), AnonymousAuthenticationFilter.class);
         return http.build();
     }
 

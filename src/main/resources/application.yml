@@ -74,7 +74,6 @@ management:
 server:
   servlet:
     session:
-      timeout: 30m
       cookie:
         same-site: lax
 
