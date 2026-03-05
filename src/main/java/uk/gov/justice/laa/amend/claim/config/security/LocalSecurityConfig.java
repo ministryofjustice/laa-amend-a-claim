@@ -25,9 +25,6 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.header.writers.CrossOriginEmbedderPolicyHeaderWriter;
-import org.springframework.security.web.header.writers.CrossOriginOpenerPolicyHeaderWriter;
-import org.springframework.security.web.header.writers.CrossOriginResourcePolicyHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -45,15 +42,9 @@ public class LocalSecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                        .contentSecurityPolicy(csp -> csp.policyDirectives(POLICY_DIRECTIVES))
-                        .crossOriginEmbedderPolicy(coep -> coep.policy(
-                                CrossOriginEmbedderPolicyHeaderWriter.CrossOriginEmbedderPolicy.REQUIRE_CORP))
-                        .crossOriginOpenerPolicy(coop ->
-                                coop.policy(CrossOriginOpenerPolicyHeaderWriter.CrossOriginOpenerPolicy.SAME_ORIGIN))
-                        .crossOriginResourcePolicy(corp -> corp.policy(
-                                CrossOriginResourcePolicyHeaderWriter.CrossOriginResourcePolicy.SAME_ORIGIN))
-                        .permissionsPolicyHeader(pp -> pp.policy(PERMISSIONS_POLICY)))
-                .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class);
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(POLICY_DIRECTIVES)))
+                .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class)
+                .addFilterBefore(securityHeadersFilter(), AnonymousAuthenticationFilter.class);
         return http.build();
     }
 
@@ -96,6 +87,25 @@ public class LocalSecurityConfig {
                         );
 
                 SecurityContextHolder.getContext().setAuthentication(oauthToken);
+
+                filterChain.doFilter(request, response);
+            }
+        };
+    }
+
+    @Bean
+    public OncePerRequestFilter securityHeadersFilter() {
+        return new OncePerRequestFilter() {
+
+            @Override
+            protected void doFilterInternal(
+                    HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+                    throws ServletException, IOException {
+                response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+                response.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+                response.setHeader("Cross-Origin-Resource-Policy", "same-origin");
+                response.setHeader("X-Content-Type-Options", "nosniff");
+                response.setHeader("Permissions-Policy", PERMISSIONS_POLICY);
 
                 filterChain.doFilter(request, response);
             }
