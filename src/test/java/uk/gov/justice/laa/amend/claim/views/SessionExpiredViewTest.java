@@ -22,7 +22,7 @@ public class SessionExpiredViewTest extends ViewTestBase {
 
         assertPageHasTitle(doc, "You are now signed out of your account");
         assertPageHasContent(doc, "For your security, we signed you out");
-        assertPageHasContent(doc, "This is because you were inactive for 15 minutes.");
+        assertPageHasContent(doc, "This is because you were inactive for 45 minutes.");
         assertPageHasPrimaryButton(doc, "Sign in");
     }
 }
