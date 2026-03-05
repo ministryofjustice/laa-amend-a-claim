@@ -1,3 +1,4 @@
 40045	IGNORE	(Spring4Shell : False positive. We are on a Spring Framework version that is no longer affected by this vulnerability.)
 2	IGNORE	(Private IP Disclosure : False positive. ZAP has spotted something in favicon.svg that looks like an IP address.)
 90022	IGNORE	(Application Error Disclosure : False positive. Response status set to 500 on error page. Not disclosing sensitive information.)
+90027	IGNORE	(Cookie Slack Detector : False positive. Only occurs because LocalSecurityConfig defines a dummy OIDC user.)
