@@ -77,7 +77,6 @@ server:
       timeout: 30m
       cookie:
         same-site: lax
-        secure: true
 
 ---
 spring:

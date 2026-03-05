@@ -30,6 +30,8 @@ public class LocalSecurityConfigIntegrationTest extends RedisSetup {
     void responseOnGetHasCorrectHeaders(String url) throws Exception {
         mockMvc.perform(get(url))
                 .andExpect(status().isOk())
+                .andExpect(header().exists("Content-Security-Policy"))
+                .andExpect(header().string("X-Frame-Options", "DENY"))
                 .andExpect(header().string("Cross-Origin-Opener-Policy", "same-origin"))
                 .andExpect(header().string("Cross-Origin-Embedder-Policy", "require-corp"))
                 .andExpect(header().string("Cross-Origin-Resource-Policy", "same-origin"))
@@ -41,6 +43,8 @@ public class LocalSecurityConfigIntegrationTest extends RedisSetup {
     void responseOnPostHasCorrectHeaders() throws Exception {
         mockMvc.perform(post("/").with(csrf()))
                 .andExpect(status().isBadRequest())
+                .andExpect(header().exists("Content-Security-Policy"))
+                .andExpect(header().string("X-Frame-Options", "DENY"))
                 .andExpect(header().string("Cross-Origin-Opener-Policy", "same-origin"))
                 .andExpect(header().string("Cross-Origin-Embedder-Policy", "require-corp"))
                 .andExpect(header().string("Cross-Origin-Resource-Policy", "same-origin"))

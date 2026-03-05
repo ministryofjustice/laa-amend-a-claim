@@ -1,2 +1,3 @@
 40045	IGNORE	(Spring4Shell : False positive. We are on a Spring Framework version that is no longer affected by this vulnerability.)
 2	IGNORE	(Private IP Disclosure : False positive. ZAP has spotted something in favicon.svg that looks like an IP address.)
+90022	IGNORE	(Private IP Disclosure : False positive. ZAP has spotted something in favicon.svg that looks like an IP address.)
