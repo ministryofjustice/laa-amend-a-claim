@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.config;
+package uk.gov.justice.laa.amend.claim.config.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

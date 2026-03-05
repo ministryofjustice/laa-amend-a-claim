@@ -19,9 +19,9 @@ public class ConfirmationController {
     @GetMapping("/submissions/{submissionId}/claims/{claimId}/assessments/{assessmentId}")
     public String onPageLoad(
             Model model,
-            @PathVariable(value = "submissionId") UUID submissionId,
-            @PathVariable(value = "claimId") UUID claimId,
-            @PathVariable(value = "assessmentId") UUID assessmentId,
+            @PathVariable UUID submissionId,
+            @PathVariable UUID claimId,
+            @PathVariable UUID assessmentId,
             HttpSession session) {
         UUID submittedAssessmentId = (UUID) session.getAttribute(ASSESSMENT_ID);
         if (submittedAssessmentId != null && submittedAssessmentId.equals(assessmentId)) {

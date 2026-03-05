@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
-import jakarta.servlet.http.HttpServletRequest;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
+
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -28,11 +29,8 @@ public class AssessmentOutcomeController {
 
     @GetMapping("/assessment-outcome")
     public String setAssessmentOutcome(
-            HttpServletRequest request,
-            Model model,
-            @PathVariable(value = "submissionId") UUID submissionId,
-            @PathVariable(value = "claimId") UUID claimId) {
-        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
+            HttpSession session, Model model, @PathVariable UUID submissionId, @PathVariable UUID claimId) {
+        var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
 
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
         form.setAssessmentOutcome(claim.getAssessmentOutcome());
@@ -47,15 +45,14 @@ public class AssessmentOutcomeController {
 
     @PostMapping("/assessment-outcome")
     public String selectAssessmentOutcome(
-            @PathVariable(value = "submissionId") UUID submissionId,
-            @PathVariable(value = "claimId") UUID claimId,
+            @PathVariable UUID submissionId,
+            @PathVariable UUID claimId,
             @Valid @ModelAttribute("form") AssessmentOutcomeForm form,
             BindingResult bindingResult,
             HttpSession session,
             Model model,
-            HttpServletRequest request,
             HttpServletResponse response) {
-        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
+        var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
 
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
