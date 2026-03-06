@@ -36,7 +36,10 @@ public class ClaimSummaryController {
             HttpSession session, Model model, @PathVariable UUID submissionId, @PathVariable UUID claimId) {
         ClaimDetails claim = claimService.getClaimDetails(submissionId, claimId);
         if (!EnumSet.of(VALID, VOID).contains(claim.getStatus())) {
-            log.error("Cannot assess claim {} as it has a non-valid status. Returning 404.", claimId);
+            log.error(
+                    "Cannot assess claim {} as it has an invalid status {}. Returning 404.",
+                    claimId,
+                    claim.getStatus());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
