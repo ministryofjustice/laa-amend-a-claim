@@ -71,6 +71,12 @@ management:
     tags:
       application: ${spring.application.name}
 
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: lax
+
 ---
 spring:
   config:
