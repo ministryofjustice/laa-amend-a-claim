@@ -77,12 +77,7 @@ class AssessmentServiceTest {
         sort = "createdOn,desc";
         meterRegistry = new SimpleMeterRegistry();
         assessmentService = new AssessmentService(
-                claimsApiClient,
-                assessmentMapper,
-                claimStatusHandler,
-                meterRegistry,
-                HIGH_VALUE_ASSESSMENT_LIMIT,
-                featureFlagsConfig);
+                claimsApiClient, assessmentMapper, claimStatusHandler, meterRegistry, HIGH_VALUE_ASSESSMENT_LIMIT);
     }
 
     @Nested

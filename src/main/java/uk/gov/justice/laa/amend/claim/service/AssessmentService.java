@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
-import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -41,8 +40,7 @@ public class AssessmentService {
             AssessmentMapper assessmentMapper,
             ClaimStatusHandler claimStatusHandler,
             MeterRegistry meterRegistry,
-            @Value("${submission.high-value-assessment-limit}") BigDecimal highValueAssessmentLimit,
-            FeatureFlagsConfig featureFlagsConfig) {
+            @Value("${submission.high-value-assessment-limit}") BigDecimal highValueAssessmentLimit) {
         this.claimsApiClient = claimsApiClient;
         this.assessmentMapper = assessmentMapper;
         this.claimStatusHandler = claimStatusHandler;

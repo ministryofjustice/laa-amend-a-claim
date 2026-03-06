@@ -26,6 +26,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.MultiValueMap;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
@@ -39,6 +40,9 @@ public abstract class ViewTestBase {
 
     @MockitoBean
     private MaintenanceService maintenanceService;
+
+    @MockitoBean
+    protected FeatureFlagsConfig featureFlagsConfig;
 
     @BeforeEach
     public void setup() {

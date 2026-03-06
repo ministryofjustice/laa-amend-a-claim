@@ -152,7 +152,7 @@
     {
       "id": "0199a474-65d5-7f95-a1f3-290976326ecd",
       "submission_id": "ddc07f4f-563d-434d-bc6e-8e07577c7811",
-      "status": "READY_TO_PROCESS",
+      "status": "VOID",
       "schedule_reference": "0U733A/2018/02",
       "line_number": 2,
       "case_reference_number": "EF/4439/2017/3078011",
@@ -300,7 +300,7 @@
     {
       "id": "0199a474-6834-72db-866d-d540e41b0a99",
       "submission_id": "0199a474-518d-7794-97e0-65ccabfe692f",
-      "status": "READY_TO_PROCESS",
+      "status": "VOID",
       "schedule_reference": "0U733A/2018/02",
       "line_number": 4,
       "case_reference_number": "DM/4604/2019/4334501",
@@ -448,7 +448,7 @@
     {
       "id": "0199a474-6987-7233-a749-85f14de24111",
       "submission_id": "0199a474-518d-7794-97e0-65ccabfe692f",
-      "status": "READY_TO_PROCESS",
+      "status": "VALID",
       "schedule_reference": "0U733A/2018/02",
       "line_number": 5,
       "case_reference_number": "SJ/4546/18/3481072",
@@ -596,7 +596,7 @@
     {
       "id": "0199a474-6a80-7b13-aeb5-5e2108a48044",
       "submission_id": "0199a474-518d-7794-97e0-65ccabfe692f",
-      "status": "READY_TO_PROCESS",
+      "status": "VALID",
       "schedule_reference": "0U733A/2018/02",
       "line_number": 8,
       "case_reference_number": "EC/4570/2019/4114714",
@@ -744,7 +744,7 @@
     {
       "id": "0199a474-6b5b-7603-ad16-3b7fadad1071",
       "submission_id": "0199a474-518d-7794-97e0-65ccabfe692f",
-      "status": "READY_TO_PROCESS",
+      "status": "VALID",
       "schedule_reference": "0U733A/2018/02",
       "line_number": 10,
       "case_reference_number": "EC/4571/2018/4016343",
@@ -854,7 +854,7 @@
     {
       "id": "0199a474-6c1b-74eb-8f7a-0c9d4b649e71",
       "submission_id": "0199a474-518d-7794-97e0-65ccabfe692f",
-      "status": "READY_TO_PROCESS",
+      "status": "VALID",
       "schedule_reference": "0U733A/2018/02",
       "line_number": 12,
       "case_reference_number": "NB/4549/19/4620803",
@@ -964,7 +964,7 @@
     {
       "id": "0199a474-6cdc-7d10-83ca-c762803e7a48",
       "submission_id": "0199a474-518d-7794-97e0-65ccabfe692f",
-      "status": "READY_TO_PROCESS",
+      "status": "VALID",
       "schedule_reference": "0U733A/2018/02",
       "line_number": 13,
       "case_reference_number": "NT/4563/2019/4238506",
@@ -1074,7 +1074,7 @@
     {
       "id": "0199a474-6833-79f1-be13-03992c636c1d",
       "submission_id": "0199a474-518d-7794-97e0-65ccabfe692f",
-      "status": "READY_TO_PROCESS",
+      "status": "VALID",
       "schedule_reference": "0U733A/2018/02",
       "line_number": 3,
       "case_reference_number": "DM/4557/2019/4648695",
@@ -1184,7 +1184,7 @@
     {
       "id": "0199a474-6973-7355-85ce-8b04fa45ee17",
       "submission_id": "0199a474-518d-7794-97e0-65ccabfe692f",
-      "status": "READY_TO_PROCESS",
+      "status": "VALID",
       "schedule_reference": "0U733A/2018/02",
       "line_number": 6,
       "case_reference_number": "SJ/4512/18/3310795",

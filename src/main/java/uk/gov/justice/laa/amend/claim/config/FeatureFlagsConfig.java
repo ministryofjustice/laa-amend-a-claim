@@ -8,5 +8,5 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "feature-flags")
 public class FeatureFlagsConfig {
-    private boolean isVoidingEnabled;
+    private Boolean isVoidingEnabled;
 }
