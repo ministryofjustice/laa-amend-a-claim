@@ -119,6 +119,8 @@
 
                                         <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.CATEGORY_OF_LAW}, 'index.results.categoryOfLaw')}"></th:block>
 
+                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.VOIDED}, 'index.results.voided')}"></th:block>
+
                                         <th scope="col" class="govuk-table__header" th:text="#{index.results.escaped}"></th>
                                     </tr>
                                 </thead>
@@ -137,7 +139,17 @@
                                         <td class="govuk-table__cell" th:text="${claim.submissionPeriodForDisplay}" th:data-sort-value="${claim.submissionPeriodForSorting}"></td>
                                         <td class="govuk-table__cell" th:text="${claim.accountNumber}"></td>
                                         <td class="govuk-table__cell" th:text="${claim.claim.categoryOfLaw}"></td>
-                                        <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped).resolve(#messages)}" th:data-sort-value="${claim.claim.escaped}">
+
+                                        <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.isVoided()).resolve(#messages)}">
+                                            <th:block th:if="${claim.claim.isVoided()}">
+                                                <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
+                                            </th:block>
+                                            <th:block th:unless="${claim.claim.isVoided()}">
+                                                <span th:text="${value}"></span>
+                                            </th:block>
+                                        </td>
+
+                                        <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped).resolve(#messages)}">
                                             <th:block th:if="${claim.claim.escaped}">
                                                 <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
                                             </th:block>

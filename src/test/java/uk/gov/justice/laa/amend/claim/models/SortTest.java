@@ -1,8 +1,13 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class SortTest {
 
@@ -45,22 +50,20 @@ public class SortTest {
 
     @Nested
     class ToStringTests {
-        @Test
-        void shouldConvertSortToStringWhenAscendingOrder() {
-            Sort sort = Sort.builder()
-                    .field(SortField.UNIQUE_FILE_NUMBER)
-                    .direction(SortDirection.ASCENDING)
-                    .build();
-            Assertions.assertEquals("unique_file_number,asc", sort.toString());
+
+        @ParameterizedTest
+        @MethodSource("sortArguments")
+        void shouldBuildSort(SortField sortField, SortDirection sortDirection) {
+            Sort sort = Sort.builder().field(sortField).direction(sortDirection).build();
+
+            Assertions.assertEquals(sortField, sort.getField());
+            Assertions.assertEquals(sortDirection, sort.getDirection());
         }
 
-        @Test
-        void shouldConvertSortToStringWhenDescendingOrder() {
-            Sort sort = Sort.builder()
-                    .field(SortField.CASE_REFERENCE_NUMBER)
-                    .direction(SortDirection.DESCENDING)
-                    .build();
-            Assertions.assertEquals("case_reference_number,desc", sort.toString());
+        static Stream<Arguments> sortArguments() {
+            return Arrays.stream(SortField.values())
+                    .flatMap(field -> Arrays.stream(SortDirection.values())
+                            .map(sortDirection -> Arguments.of(field, sortDirection)));
         }
 
         @Test

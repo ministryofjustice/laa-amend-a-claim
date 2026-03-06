@@ -43,4 +43,11 @@ public class Claim implements Serializable {
     public BaseClaimView<? extends Claim> toViewModel() {
         return new ClaimView(this);
     }
+
+    public Boolean isVoided() {
+        if (status != null) {
+            return status == ClaimStatus.VOID;
+        }
+        return false;
+    }
 }

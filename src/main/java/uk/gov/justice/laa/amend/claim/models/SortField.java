@@ -10,7 +10,8 @@ public enum SortField {
     CLIENT_SURNAME("client_surname"),
     SUBMISSION_PERIOD("submission_period"),
     SCHEDULE_REFERENCE("schedule_reference"),
-    CATEGORY_OF_LAW("category_of_law");
+    CATEGORY_OF_LAW("category_of_law"),
+    VOIDED("status");
 
     private final String value;
 
