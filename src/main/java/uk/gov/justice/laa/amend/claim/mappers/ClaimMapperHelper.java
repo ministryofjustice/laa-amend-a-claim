@@ -31,14 +31,14 @@ import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
 @Component
 public class ClaimMapperHelper {
 
     @Named("mapTotalAmount")
-    public ClaimField mapTotalAmount(ClaimResponse claimResponse) {
+    public ClaimField mapTotalAmount(ClaimResponseV2 claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getTotalAmount()
                 : null;
@@ -46,7 +46,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapFixedFee")
-    public ClaimField mapFixedFee(ClaimResponse claimResponse) {
+    public ClaimField mapFixedFee(ClaimResponseV2 claimResponse) {
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getFixedFeeAmount()
                 : null;
@@ -54,7 +54,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapNetProfitCost")
-    public ClaimField mapNetProfitCost(ClaimResponse claimResponse) {
+    public ClaimField mapNetProfitCost(ClaimResponseV2 claimResponse) {
         BigDecimal submitted = claimResponse.getNetProfitCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetProfitCostsAmount()
@@ -63,7 +63,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapVatClaimed")
-    public ClaimField mapVatClaimed(ClaimResponse claimResponse) {
+    public ClaimField mapVatClaimed(ClaimResponseV2 claimResponse) {
         var submitted = claimResponse.getIsVatApplicable();
         var calculated = claimResponse.getFeeCalculationResponse() != null
                 && Boolean.TRUE.equals(claimResponse.getFeeCalculationResponse().getVatIndicator());
@@ -71,7 +71,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapNetDisbursementAmount")
-    public ClaimField mapNetDisbursementAmount(ClaimResponse claimResponse) {
+    public ClaimField mapNetDisbursementAmount(ClaimResponseV2 claimResponse) {
         BigDecimal submitted = claimResponse.getNetDisbursementAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getDisbursementAmount()
@@ -80,7 +80,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapDisbursementVatAmount")
-    public ClaimField mapDisbursementVatAmount(ClaimResponse claimResponse) {
+    public ClaimField mapDisbursementVatAmount(ClaimResponseV2 claimResponse) {
         BigDecimal submitted = claimResponse.getDisbursementsVatAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getDisbursementVatAmount()
@@ -89,7 +89,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapCounselsCost")
-    public ClaimField mapCounselsCost(ClaimResponse claimResponse) {
+    public ClaimField mapCounselsCost(ClaimResponseV2 claimResponse) {
         BigDecimal submitted = claimResponse.getNetCounselCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetCostOfCounselAmount()
@@ -98,7 +98,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapDetentionTravelWaitingCosts")
-    public ClaimField mapDetentionTravelWaitingCosts(ClaimResponse claimResponse) {
+    public ClaimField mapDetentionTravelWaitingCosts(ClaimResponseV2 claimResponse) {
         BigDecimal submitted = claimResponse.getDetentionTravelWaitingCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getDetentionTravelAndWaitingCostsAmount()
@@ -108,7 +108,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapJrFormFillingCost")
-    public ClaimField mapJrFormFillingCost(ClaimResponse claimResponse) {
+    public ClaimField mapJrFormFillingCost(ClaimResponseV2 claimResponse) {
         BigDecimal submitted = claimResponse.getJrFormFillingAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getJrFormFillingAmount()
@@ -117,7 +117,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapAdjournedHearingFee")
-    public ClaimField mapAdjournedHearingFee(ClaimResponse claimResponse) {
+    public ClaimField mapAdjournedHearingFee(ClaimResponseV2 claimResponse) {
         var submitted = claimResponse.getAdjournedHearingFeeAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                         && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
@@ -127,7 +127,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapCmrhTelephone")
-    public ClaimField mapCmrhTelephone(ClaimResponse claimResponse) {
+    public ClaimField mapCmrhTelephone(ClaimResponseV2 claimResponse) {
         var submitted = claimResponse.getCmrhTelephoneCount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                         && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
@@ -137,7 +137,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapCmrhOral")
-    public ClaimField mapCmrhOral(ClaimResponse claimResponse) {
+    public ClaimField mapCmrhOral(ClaimResponseV2 claimResponse) {
         var submitted = claimResponse.getCmrhOralCount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                         && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
@@ -147,7 +147,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapHoInterview")
-    public ClaimField mapHoInterview(ClaimResponse claimResponse) {
+    public ClaimField mapHoInterview(ClaimResponseV2 claimResponse) {
         var submitted = claimResponse.getHoInterview();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                         && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
@@ -157,7 +157,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapSubstantiveHearing")
-    public ClaimField mapSubstantiveHearing(ClaimResponse claimResponse) {
+    public ClaimField mapSubstantiveHearing(ClaimResponseV2 claimResponse) {
         var submitted = claimResponse.getIsSubstantiveHearing();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                         && claimResponse.getFeeCalculationResponse().getBoltOnDetails() != null
@@ -167,7 +167,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapTravelCosts")
-    public ClaimField mapTravelCosts(ClaimResponse claimResponse) {
+    public ClaimField mapTravelCosts(ClaimResponseV2 claimResponse) {
         var submitted = claimResponse.getTravelWaitingCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetTravelCostsAmount()
@@ -176,7 +176,7 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapWaitingCosts")
-    public ClaimField mapWaitingCosts(ClaimResponse claimResponse) {
+    public ClaimField mapWaitingCosts(ClaimResponseV2 claimResponse) {
         var submitted = claimResponse.getNetWaitingCostsAmount();
         BigDecimal calculated = claimResponse.getFeeCalculationResponse() != null
                 ? claimResponse.getFeeCalculationResponse().getNetWaitingCostsAmount()
@@ -195,14 +195,14 @@ public class ClaimMapperHelper {
     }
 
     @Named("mapAllowedTotalVat")
-    public ClaimField mapAllowedTotalVat(ClaimResponse claimResponse) {
+    public ClaimField mapAllowedTotalVat(ClaimResponseV2 claimResponse) {
         FeeCalculationPatch fee = claimResponse.getFeeCalculationResponse();
         BigDecimal calculated = fee != null ? add(fee.getCalculatedVatAmount(), fee.getDisbursementVatAmount()) : null;
         return new AllowedClaimField(ALLOWED_TOTAL_VAT, calculated);
     }
 
     @Named("mapAllowedTotalInclVat")
-    public ClaimField mapAllowedTotalInclVat(ClaimResponse claimResponse) {
+    public ClaimField mapAllowedTotalInclVat(ClaimResponseV2 claimResponse) {
         FeeCalculationPatch fee = claimResponse.getFeeCalculationResponse();
         BigDecimal calculated = fee != null ? fee.getTotalAmount() : null;
         return new AllowedClaimField(ALLOWED_TOTAL_INCL_VAT, calculated);

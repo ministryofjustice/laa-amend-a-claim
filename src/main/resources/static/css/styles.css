@@ -5,13 +5,20 @@
 
 .govuk-link--sort {
     display: inline-flex;
-    align-items: center;
+    align-items: flex-start;
+}
+
+/* Stop the sort arrow shrinking when label text fills the available space */
+.govuk-link--sort svg {
+    flex-shrink: 0;
+    padding: 0.1rem;
 }
 
 /* Hide back link unless JS is enabled */
 .govuk-back-link {
     display: none;
 }
+
 .js-enabled .govuk-back-link {
     display: inline-block;
 }
@@ -25,17 +32,17 @@
 }
 
 /* Row label column - set to accommodate the remaining size */
-.govuk-table__row-item{
+.govuk-table__row-item {
     width: 18rem;
 }
 
 /* Submitted, Calculated, Assessed columns - set to accommodate 'Not applicable' */
-.govuk-table__row-values{
+.govuk-table__row-values {
     width: 11rem;
 }
 
 /* Change button column - set to accommodate 'Change' (largest possible value) and create space for 'items' */
-.govuk-table__row-actions{
+.govuk-table__row-actions {
     width: 4.5rem;
 }
 

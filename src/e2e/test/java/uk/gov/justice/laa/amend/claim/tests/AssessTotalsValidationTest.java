@@ -69,7 +69,7 @@ public class AssessTotalsValidationTest extends BaseTest {
 
     private void navigateToReviewAndAmend() {
         SearchPage search = new SearchPage(page);
-        search.searchForClaim(PROVIDER_ACCOUNT, MONTH, YEAR, UFN, "");
+        search.searchForClaim(PROVIDER_ACCOUNT, MONTH, YEAR, UFN, "", "", "");
         search.clickViewForUfn(UFN);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);

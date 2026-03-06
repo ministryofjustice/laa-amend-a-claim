@@ -10,12 +10,12 @@ import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Sort;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
 @Service
@@ -27,11 +27,13 @@ public class ClaimService {
     private final ClaimMapper claimMapper;
     private final ProviderApiClient providerApiClient;
 
-    public ClaimResultSet searchClaims(
+    public ClaimResultSetV2 searchClaims(
             String officeCode,
             Optional<String> uniqueFileNumber,
             Optional<String> caseReferenceNumber,
             Optional<String> submissionPeriod,
+            Optional<AreaOfLaw> areaOfLaw,
+            Optional<Boolean> escapeCase,
             int page,
             int size,
             Sort sort) {
@@ -42,6 +44,8 @@ public class ClaimService {
                             uniqueFileNumber.orElse(null),
                             caseReferenceNumber.orElse(null),
                             submissionPeriod.orElse(null),
+                            areaOfLaw.orElse(null),
+                            escapeCase.orElse(null),
                             page - 1,
                             size,
                             Objects.toString(sort, null),
@@ -53,7 +57,7 @@ public class ClaimService {
         }
     }
 
-    public ClaimResponse getClaim(UUID submissionId, UUID claimId) {
+    public ClaimResponseV2 getClaim(UUID submissionId, UUID claimId) {
         try {
             return claimsApiClient.getClaim(submissionId, claimId).block();
         } catch (Exception e) {
@@ -64,25 +68,14 @@ public class ClaimService {
 
     public ClaimDetails getClaimDetails(UUID submissionId, UUID claimId) {
         var claimResponse = getClaim(submissionId, claimId);
-        var submissionResponse = getSubmission(submissionId);
-        if (claimResponse == null || submissionResponse == null) {
-            log.error("Claim or submission not found for submission {} and claim {}", submissionId, claimId);
+        if (claimResponse == null) {
+            log.error("Claim not found for submission {} and claim {}", submissionId, claimId);
             throw new ClaimNotFoundException(
                     String.format("Claim with ID %s not found for submission %s", claimId, submissionId));
         }
-        var officeCode = submissionResponse.getOfficeAccountNumber();
-        var claimDetails = claimMapper.mapToClaimDetails(claimResponse, submissionResponse);
-        claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(officeCode));
+        var claimDetails = claimMapper.mapToClaimDetails(claimResponse);
+        claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(claimDetails.getProviderAccountNumber()));
         return claimDetails;
-    }
-
-    public SubmissionResponse getSubmission(UUID submissionId) {
-        try {
-            return claimsApiClient.getSubmission(submissionId).block();
-        } catch (Exception e) {
-            log.error("Error getting submission {}", submissionId, e);
-            throw new RuntimeException(e);
-        }
     }
 
     /**

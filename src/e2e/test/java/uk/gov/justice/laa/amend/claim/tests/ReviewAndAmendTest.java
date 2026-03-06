@@ -106,7 +106,7 @@ public class ReviewAndAmendTest extends BaseTest {
     private void navigateToReviewAndAmend(
             String providerAccount, String month, String year, String ufn, String outcomeValue) {
         SearchPage search = new SearchPage(page);
-        search.searchForClaim(providerAccount, month, year, ufn, "");
+        search.searchForClaim(providerAccount, month, year, ufn, "", "", "");
         search.clickViewForUfn(ufn);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);

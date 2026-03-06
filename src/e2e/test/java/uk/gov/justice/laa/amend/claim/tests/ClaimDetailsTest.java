@@ -147,7 +147,7 @@ public class ClaimDetailsTest extends BaseTest {
     void addAssessmentOutcomeIsDisabledForNonEscapeClaim() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(CRIME_PROVIDER_ACCOUNT, "11", "2025", UNESCAPED_UFN, "");
+        search.searchForClaim(CRIME_PROVIDER_ACCOUNT, "11", "2025", UNESCAPED_UFN, "", "", "");
 
         search.clickViewForUfn(UNESCAPED_UFN);
 
@@ -170,7 +170,8 @@ public class ClaimDetailsTest extends BaseTest {
     void claimValuesMatchFixture(ClaimDetailsFixture claimDetailsFixture) {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(claimDetailsFixture.getProviderAccount(), "", "", claimDetailsFixture.getUfn(), "");
+        search.searchForClaim(
+                claimDetailsFixture.getProviderAccount(), "", "", claimDetailsFixture.getUfn(), "", "", "");
 
         search.clickViewForUfn(claimDetailsFixture.getUfn());
 

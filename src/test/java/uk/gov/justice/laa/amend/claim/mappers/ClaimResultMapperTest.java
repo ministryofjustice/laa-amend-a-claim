@@ -7,14 +7,14 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 
 class ClaimResultMapperTest {
 
     @Test
     void givenEmptyClaimResultSet_whenToDtoIsCalled_thenEmptyViewModelIsReturned() {
         // Arrange
-        ClaimResultSet claimResultSet = mock(ClaimResultSet.class);
+        var claimResultSet = mock(ClaimResultSetV2.class);
 
         when(claimResultSet.getTotalElements()).thenReturn(0);
         when(claimResultSet.getSize()).thenReturn(10);

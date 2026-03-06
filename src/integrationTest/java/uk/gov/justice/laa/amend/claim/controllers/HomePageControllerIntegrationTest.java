@@ -44,7 +44,9 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
                         .formField("uniqueFileNumber", "")
-                        .formField("caseReferenceNumber", ""))
+                        .formField("caseReferenceNumber", "")
+                        .formField("areaOfLaw", "")
+                        .formField("escapeCase", ""))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("index"));
     }
@@ -57,7 +59,9 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
                         .formField("uniqueFileNumber", "")
-                        .formField("caseReferenceNumber", ""))
+                        .formField("caseReferenceNumber", "")
+                        .formField("areaOfLaw", "")
+                        .formField("escapeCase", ""))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("index"));
     }
@@ -70,9 +74,11 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
                         .formField("uniqueFileNumber", "")
-                        .formField("caseReferenceNumber", ""))
+                        .formField("caseReferenceNumber", "")
+                        .formField("areaOfLaw", "")
+                        .formField("escapeCase", ""))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/?providerAccountNumber=0P322F&page=1&sort=uniqueFileNumber,asc"));
+                .andExpect(redirectedUrl("/?providerAccountNumber=0P322F&page=1&sort=unique_file_number,asc"));
     }
 
     @Test
@@ -108,6 +114,6 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(
                         redirectedUrl(
-                                "/?providerAccountNumber=0P322F&submissionDateMonth=12&submissionDateYear=2024&page=1&sort=uniqueFileNumber,asc"));
+                                "/?providerAccountNumber=0P322F&submissionDateMonth=12&submissionDateYear=2024&page=1&sort=unique_file_number,asc"));
     }
 }

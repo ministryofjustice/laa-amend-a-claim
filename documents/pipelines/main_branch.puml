@@ -1,0 +1,81 @@
+@startuml Main Branch Pipeline
+  title Main Branch Pipeline (main.yml)\nTrigger: push to main
+
+  skinparam ActivityBackgroundColor #E8F5E9
+  skinparam ActivityBorderColor #2E7D32
+  skinparam ArrowColor #1B5E20
+  skinparam NoteBackgroundColor #FFF9C4
+
+  start
+
+  :Push to **main**;
+
+  partition "Build (.github/workflows/build.yml)" {
+    :Checkout source code;
+    :Setup JDK 25 (Amazon Corretto);
+    :Gradle build (skip tests)\n""./gradlew build -x test -x integrationTest"";
+    :Upload JAR artifact (1-day retention);
+    :Publish to GitHub Packages\n""./gradlew publish"";
+    :Authenticate to ECR (OIDC);
+    :Build & push Docker image to ECR\nTag: **<commit-sha>**;
+  }
+
+  fork
+    partition "Test (.github/workflows/test.yml)" {
+      partition "Unit & Integration Tests" {
+        :""./gradlew test"" (unit tests);
+        :""./gradlew jacocoTestCoverageVerification""\n(coverage gate);
+        :""./gradlew integrationTest"";
+        :Upload test reports (14-day retention);
+      }
+      partition "E2E Tests (.github/workflows/e2e-tests.yml)" {
+        :Ensure self-hosted runner pod is available;
+        :Deploy E2E stack via Helm\n(app + claims API + PostgreSQL + Redis);
+        :Poll health endpoints until ready;
+        :Run Playwright E2E tests\non self-hosted runner;
+        :Generate Allure report;
+        :Upload E2E results (15-day retention);
+      }
+    }
+  fork again
+    partition "Security (.github/workflows/security.yml)" {
+      fork
+        :Snyk app dependency scan\n(severity: **low**)\nUpload SARIF to Code Scanning;
+      fork again
+        :Snyk Docker image scan\n(severity: **high**);
+      end fork
+    }
+  end fork
+
+  note right
+    Both **test** and **security**
+    must pass before any deploy
+  end note
+
+  partition "Deploy Dev" {
+    :Fetch IP allowlist (LAA CIDRs + Pingdom);
+    :Authenticate to ECR & K8s cluster;
+    :""helm upgrade --install laa-amend-a-claim""\n--values values/dev.yaml\n~--wait --timeout 5m;
+  }
+
+  partition "Deploy UAT" #E3F2FD {
+    :""helm upgrade --install laa-amend-a-claim""\n--values values/uat.yaml\n ~--wait --timeout 5m;
+  }
+
+  partition "Deploy Staging" #FFF3E0 {
+    :""helm upgrade --install laa-amend-a-claim""\n--values values/staging.yaml\n~--wait --timeout 5m;
+  }
+
+  partition "Deploy Production" #FFEBEE {
+    :""helm upgrade --install laa-amend-a-claim""\n--values values/production.yaml\n~--wait --timeout 5m;
+  }
+
+  note right
+    **Sequential promotion gate:**
+    dev → UAT → staging → production
+    Each must succeed before the next
+  end note
+
+  stop
+
+ @enduml

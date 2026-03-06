@@ -59,7 +59,7 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasHint(doc, "search-hint", "Enter at least a provider account number to search.");
 
-        assertPageHasTextInput(doc, "provider-account-number", "Provider account number");
+        assertPageHasLabel(doc, "provider-account-number", "Provider account number");
 
         assertPageHasHint(doc, "provider-account-number-hint", "For example, 0P322F");
 
@@ -67,15 +67,19 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasHint(doc, "submission-date-hint", "For example, 3 2007");
 
-        assertPageHasTextInput(doc, "submission-date-month", "Month");
+        assertPageHasLabel(doc, "submission-date-month", "Month");
 
-        assertPageHasTextInput(doc, "submission-date-year", "Year");
+        assertPageHasLabel(doc, "submission-date-year", "Year");
 
-        assertPageHasTextInput(doc, "unique-file-number", "Unique file number (UFN)");
+        assertPageHasLabel(doc, "unique-file-number", "Unique file number (UFN)");
 
         assertPageHasHint(doc, "unique-file-number-hint", "For example, 120223/001");
 
-        assertPageHasTextInput(doc, "case-reference-number", "Case reference number (CRN)");
+        assertPageHasLabel(doc, "case-reference-number", "Case reference number (CRN)");
+
+        assertPageHasLabel(doc, "area-of-law", "Area of law");
+
+        assertPageHasLabel(doc, "escape-case", "Escape case");
 
         assertPageHasActiveServiceNavigationItem(doc, "Search");
     }
@@ -109,13 +113,13 @@ class IndexViewTest extends ViewTestBase {
         Elements headers = getTableHeaders(doc);
 
         assertTableHeaderIsNotSortable(headers.get(0), "Claim");
-        assertTableHeaderIsSortable(headers.get(1), "ascending", "UFN", "/?page=1&sort=uniqueFileNumber,desc");
-        assertTableHeaderIsSortable(headers.get(2), "none", "CRN", "/?page=1&sort=caseReferenceNumber,asc");
-        assertTableHeaderIsNotSortable(headers.get(3), "Client surname");
-        assertTableHeaderIsNotSortable(headers.get(4), "Submission period");
-        assertTableHeaderIsSortable(headers.get(5), "none", "Account", "/?page=1&sort=scheduleReference,asc");
-        assertTableHeaderIsNotSortable(headers.get(6), "Category of law");
-        assertTableHeaderIsNotSortable(headers.get(7), "Voided");
+        assertTableHeaderIsSortable(headers.get(1), "ascending", "UFN", "/?page=1&sort=unique_file_number,desc");
+        assertTableHeaderIsSortable(headers.get(2), "none", "CRN", "/?page=1&sort=case_reference_number,asc");
+        assertTableHeaderIsSortable(headers.get(3), "none", "Client surname", "/?page=1&sort=client_surname,asc");
+        assertTableHeaderIsSortable(headers.get(4), "none", "Submission period", "/?page=1&sort=submission_period,asc");
+        assertTableHeaderIsSortable(headers.get(5), "none", "Account", "/?page=1&sort=schedule_reference,asc");
+        assertTableHeaderIsSortable(headers.get(6), "none", "Category of law", "/?page=1&sort=category_of_law,asc");
+        assertTableHeaderIsSortable(headers.get(7), "none", "Voided", "/?page=1&sort=status,asc");
         assertTableHeaderIsNotSortable(headers.get(8), "Escape case");
     }
 
