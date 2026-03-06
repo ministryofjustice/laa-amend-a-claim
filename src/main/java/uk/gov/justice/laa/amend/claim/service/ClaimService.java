@@ -17,12 +17,16 @@ import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ClaimService {
+
+    private static final String VOID_ASSESSMENT_REASON = "TODO";
 
     private final ClaimsApiClient claimsApiClient;
     private final ClaimMapper claimMapper;
@@ -79,6 +83,16 @@ public class ClaimService {
         var claimDetails = claimMapper.mapToClaimDetails(claimResponse);
         claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(claimDetails.getProviderAccountNumber()));
         return claimDetails;
+    }
+
+    public VoidClaim201Response voidClaim(UUID claimId, UUID userId) {
+        try {
+            var request = new VoidClaimRequest(userId, VOID_ASSESSMENT_REASON);
+            return claimsApiClient.voidClaim(claimId, request).block();
+        } catch (Exception e) {
+            log.error("Error voiding claim {}", claimId, e);
+            throw new RuntimeException(e);
+        }
     }
 
     /**
