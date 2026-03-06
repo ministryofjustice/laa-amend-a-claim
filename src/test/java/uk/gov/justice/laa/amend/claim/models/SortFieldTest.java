@@ -46,10 +46,10 @@ public class SortFieldTest {
         }
 
         @Test
-        void shouldConvertScheduleReference() {
-            String str = "schedule_reference";
+        void shouldConvertOfficeCode() {
+            String str = "office_code";
             SortField result = SortField.fromValue(str);
-            Assertions.assertEquals(SortField.SCHEDULE_REFERENCE, result);
+            Assertions.assertEquals(SortField.ACCOUNT, result);
         }
 
         @ParameterizedTest
