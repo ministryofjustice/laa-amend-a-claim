@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.header.HeaderWriterFilter;
 
 /**
  * Security configuration for E2E testing environments.
@@ -24,8 +23,7 @@ public class E2eSecurityConfig extends DummyUserSecurityConfig {
     public SecurityFilterChain securityFilterChainE2e(final HttpSecurity http) {
         http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class)
-                .addFilterAfter(securityHeadersFilter(), HeaderWriterFilter.class);
+                .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class);
         return http.build();
     }
 
