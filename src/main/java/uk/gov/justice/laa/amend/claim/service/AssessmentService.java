@@ -114,7 +114,7 @@ public class AssessmentService {
     }
 
     public ClaimDetails getLatestAssessmentByClaim(ClaimDetails claimDetails) {
-        // This will be replaced with filter in data-claims api after VOID api has been implemented
+        // This will be replaced with filter in data-claims api after VOID api has been implemented BC-500
         AssessmentResultSet assessmentResults = claimsApiClient
                 .getAssessments(UUID.fromString(claimDetails.getClaimId()), 0, 2, "createdOn,desc")
                 .block();
@@ -128,7 +128,7 @@ public class AssessmentService {
 
         // get latest escape case assessment
         if (featureFlagsConfig.isVoidingEnabled()) {
-            // Existing assessments may have null values. Until the migration completes,
+            // Existing assessments may have null values. Until the BC-500 completes,
             // treat null as an escape case.
             Optional<AssessmentGet> latestEscapeCaseAssessment = assessmentResults.getAssessments().stream()
                     .filter(a -> a.getAssessmentType() == null
