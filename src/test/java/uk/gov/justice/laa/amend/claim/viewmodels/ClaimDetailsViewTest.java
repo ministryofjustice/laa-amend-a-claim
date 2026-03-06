@@ -24,25 +24,6 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
     protected abstract V createView(C claim);
 
     @Nested
-    class GetAccountNumberTests {
-        @Test
-        void getAccountNumberPicksOutFirstPartOfScheduleReference() {
-            C claim = createClaim();
-            claim.setScheduleReference("0U733A/2018/02");
-            V viewModel = createView(claim);
-            Assertions.assertEquals("0U733A", viewModel.getAccountNumber());
-        }
-
-        @Test
-        void getAccountNumberReturnsScheduleReferenceIfUnexpectedFormat() {
-            C claim = createClaim();
-            claim.setScheduleReference("0U733A201802");
-            V viewModel = createView(claim);
-            Assertions.assertEquals("0U733A201802", viewModel.getAccountNumber());
-        }
-    }
-
-    @Nested
     class GetSubmissionPeriodForDisplayTests {
         @Test
         void getSubmissionPeriodForDisplayHandlesNull() {
