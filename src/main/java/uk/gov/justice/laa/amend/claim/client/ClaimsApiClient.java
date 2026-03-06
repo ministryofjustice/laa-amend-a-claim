@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.client;
 
+import java.util.List;
 import java.util.UUID;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public interface ClaimsApiClient {
             @RequestParam(value = "page", required = false) int page,
             @RequestParam(value = "size", required = false) int size,
             @RequestParam(value = "sort", required = false) String sort,
-            @RequestParam(value = "claim_statuses", required = false) ClaimStatus[] claimStatus);
+            @RequestParam(value = "claim_statuses", required = false) List<ClaimStatus> claimStatus);
 
     @GetExchange(url = "/v2/submissions/{submissionId}/claims/{claimId}", accept = MediaType.APPLICATION_JSON_VALUE)
     Mono<ClaimResponseV2> getClaim(@PathVariable UUID submissionId, @PathVariable UUID claimId);

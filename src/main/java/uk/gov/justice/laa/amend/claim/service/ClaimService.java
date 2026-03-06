@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +28,7 @@ public class ClaimService {
     private final ClaimMapper claimMapper;
     private final ProviderApiClient providerApiClient;
 
-    private static final ClaimStatus[] claimStatuses = {ClaimStatus.VALID, ClaimStatus.VOID};
+    private static final List<ClaimStatus> claimStatuses = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
 
     public ClaimResultSetV2 searchClaims(
             String officeCode,

@@ -12,6 +12,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +53,7 @@ class ClaimServiceTest {
 
     private UUID submissionId;
     private UUID claimId;
-    private ClaimStatus[] statuses = {ClaimStatus.VALID, ClaimStatus.VOID};
+    private List<ClaimStatus> statuses = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
 
     @BeforeEach
     void setUp() {
@@ -270,11 +271,11 @@ class ClaimServiceTest {
         verify(claimMapper, times(1)).enrichWithProviderName(claimDetails, "Test Firm");
     }
 
-    public ClaimStatus[] getStatuses() {
+    public List<ClaimStatus> getStatuses() {
         return statuses;
     }
 
-    public void setStatuses(ClaimStatus[] statuses) {
+    public void setStatuses(List<ClaimStatus> statuses) {
         this.statuses = statuses;
     }
 }
