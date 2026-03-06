@@ -4,18 +4,22 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentGet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
 /**
@@ -31,13 +35,15 @@ public class AssessmentService {
     private final Counter assessmentSubmissionCounter;
     private final Counter assessmentSubmissionFailureCounter;
     private final BigDecimal highValueAssessmentLimit;
+    private final FeatureFlagsConfig featureFlagsConfig;
 
     public AssessmentService(
             ClaimsApiClient claimsApiClient,
             AssessmentMapper assessmentMapper,
             ClaimStatusHandler claimStatusHandler,
             MeterRegistry meterRegistry,
-            @Value("${submission.high-value-assessment-limit}") BigDecimal highValueAssessmentLimit) {
+            @Value("${submission.high-value-assessment-limit}") BigDecimal highValueAssessmentLimit,
+            FeatureFlagsConfig featureFlagsConfig) {
         this.claimsApiClient = claimsApiClient;
         this.assessmentMapper = assessmentMapper;
         this.claimStatusHandler = claimStatusHandler;
@@ -48,6 +54,7 @@ public class AssessmentService {
                 .description("Total number of failed assessment submissions")
                 .register(meterRegistry);
         this.highValueAssessmentLimit = highValueAssessmentLimit;
+        this.featureFlagsConfig = featureFlagsConfig;
     }
 
     /**
@@ -107,15 +114,38 @@ public class AssessmentService {
     }
 
     public ClaimDetails getLatestAssessmentByClaim(ClaimDetails claimDetails) {
+        // This will be replaced with filter in data-claims api after VOID api has been implemented
         AssessmentResultSet assessmentResults = claimsApiClient
-                .getAssessments(UUID.fromString(claimDetails.getClaimId()), 0, 1, "createdOn,desc")
+                .getAssessments(UUID.fromString(claimDetails.getClaimId()), 0, 2, "createdOn,desc")
                 .block();
+
         if (assessmentResults == null || assessmentResults.getAssessments().isEmpty()) {
             throw new RuntimeException(
                     String.format("Failed to get assessments for claim ID: %s", claimDetails.getClaimId()));
         }
-        var assessment = assessmentResults.getAssessments().getFirst();
-        return assessmentMapper.mapAssessmentToClaimDetails(assessmentMapper.updateClaim(assessment, claimDetails));
+
+        AssessmentGet latestAssessment;
+
+        // get latest escape case assessment
+        if (featureFlagsConfig.isVoidingEnabled()) {
+            Optional<AssessmentGet> latestEscapeCaseAssessment = assessmentResults.getAssessments().stream()
+                    .filter(a -> a.getAssessmentType() == null
+                            || a.getAssessmentType() == AssessmentType.ESCAPE_CASE_ASSESSMENT)
+                    .findFirst();
+            if (latestEscapeCaseAssessment.isEmpty()) {
+                log.info(
+                        "No assessments found for claim ID: {} claimStatus: {}",
+                        claimDetails.getClaimId(),
+                        claimDetails.getStatus());
+                return claimDetails;
+            }
+            latestAssessment = latestEscapeCaseAssessment.get();
+        } else {
+            // get first assessment
+            latestAssessment = assessmentResults.getAssessments().getFirst();
+        }
+        return assessmentMapper.mapAssessmentToClaimDetails(
+                assessmentMapper.updateClaim(latestAssessment, claimDetails));
     }
 
     private boolean shouldReapplyAssessment(ClaimDetails claim, OutcomeType newOutcome) {
