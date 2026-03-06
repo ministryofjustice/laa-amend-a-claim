@@ -115,7 +115,7 @@ public class ClaimSummaryControllerTest {
     @ParameterizedTest
     @EnumSource(
             value = ClaimStatus.class,
-            names = {"VALID"},
+            names = {"VALID", "VOID"},
             mode = EnumSource.Mode.EXCLUDE)
     public void testOnPageLoadReturnsNotFoundForNonValidStatus(ClaimStatus status) throws Exception {
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
