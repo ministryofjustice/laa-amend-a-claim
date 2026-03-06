@@ -48,6 +48,6 @@ public class Claim implements Serializable {
         if (status != null) {
             return status == ClaimStatus.VOID;
         }
-        return null;
+        return false;
     }
 }
