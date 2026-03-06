@@ -65,7 +65,7 @@ public class AssessmentOutcomeTest extends BaseTest {
     private void navigateToAssessmentOutcome() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(PROVIDER_ACCOUNT, "04", "2025", UFN, "");
+        search.searchForClaim(PROVIDER_ACCOUNT, "04", "2025", UFN, "", "", "");
 
         search.clickViewForUfn(UFN);
 

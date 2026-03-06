@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
@@ -132,7 +133,7 @@ class AssessmentMapperTest {
         assessmentGet.setLastAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
 
         CivilClaimDetails claimDetails = MockClaimsFunctions.createMockCivilClaim();
-        claimDetails.setAreaOfLaw("LEGAL_HELP");
+        claimDetails.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
 
         // Act
         CivilClaimDetails result = mapper.mapToCivilClaim(assessmentGet, claimDetails);
@@ -195,7 +196,7 @@ class AssessmentMapperTest {
         assessmentGet.setNetWaitingCostsAmount(BigDecimal.valueOf(200));
 
         ClaimDetails claimDetails = MockClaimsFunctions.createMockCrimeClaim();
-        claimDetails.setAreaOfLaw("CRIME_LOWER");
+        claimDetails.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
         ClaimField allowedTotalVatField = AllowedClaimField.builder()
                 .key(ALLOWED_TOTAL_VAT)
                 .submitted(345)

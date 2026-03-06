@@ -25,7 +25,7 @@ public class SearchQueryTest {
                 .build();
         String result = query.getRedirectUrl(sort);
 
-        Assertions.assertEquals("/?providerAccountNumber=123&page=1&sort=uniqueFileNumber,asc", result);
+        Assertions.assertEquals("/?providerAccountNumber=123&page=1&sort=unique_file_number,asc", result);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class SearchQueryTest {
         String result = query.getRedirectUrl(sort);
 
         Assertions.assertEquals(
-                "/?providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&page=2&sort=uniqueFileNumber,asc",
+                "/?providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&page=2&sort=unique_file_number,asc",
                 result);
     }
 
@@ -66,7 +66,7 @@ public class SearchQueryTest {
         String result = query.getRedirectUrl(sort);
 
         Assertions.assertEquals(
-                "/?providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789&page=3&sort=uniqueFileNumber,asc",
+                "/?providerAccountNumber=123&submissionDateMonth=3&submissionDateYear=2007&uniqueFileNumber=456&caseReferenceNumber=789&page=3&sort=unique_file_number,asc",
                 result);
     }
 }
