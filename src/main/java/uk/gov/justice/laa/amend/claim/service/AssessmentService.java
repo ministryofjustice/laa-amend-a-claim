@@ -35,7 +35,6 @@ public class AssessmentService {
     private final Counter assessmentSubmissionCounter;
     private final Counter assessmentSubmissionFailureCounter;
     private final BigDecimal highValueAssessmentLimit;
-    private final FeatureFlagsConfig featureFlagsConfig;
 
     public AssessmentService(
             ClaimsApiClient claimsApiClient,
@@ -54,7 +53,6 @@ public class AssessmentService {
                 .description("Total number of failed assessment submissions")
                 .register(meterRegistry);
         this.highValueAssessmentLimit = highValueAssessmentLimit;
-        this.featureFlagsConfig = featureFlagsConfig;
     }
 
     /**
@@ -124,30 +122,31 @@ public class AssessmentService {
                     String.format("Failed to get assessments for claim ID: %s", claimDetails.getClaimId()));
         }
 
-        AssessmentGet latestAssessment;
+        var latestAssessment = assessmentResults.getAssessments().getFirst();
 
-        // get latest escape case assessment
-        if (featureFlagsConfig.isVoidingEnabled()) {
-            // Existing assessments may have null values. Until the BC-500 completes,
-            // treat null as an escape case.
-            Optional<AssessmentGet> latestEscapeCaseAssessment = assessmentResults.getAssessments().stream()
-                    .filter(a -> a.getAssessmentType() == null
-                            || a.getAssessmentType() == AssessmentType.ESCAPE_CASE_ASSESSMENT)
-                    .findFirst();
-            if (latestEscapeCaseAssessment.isEmpty()) {
-                log.info(
-                        "No assessments found for claim ID: {} claimStatus: {}",
-                        claimDetails.getClaimId(),
-                        claimDetails.getStatus());
-                return claimDetails;
-            }
-            latestAssessment = latestEscapeCaseAssessment.get();
-        } else {
-            // get first assessment
-            latestAssessment = assessmentResults.getAssessments().getFirst();
+        // User who updated the latest VOID or Escape Case
+        setLastUpdatedDateTime(claimDetails, latestAssessment);
+
+        // Existing assessments may have null values. Until the BC-500 completes,
+        // treat null as an escape case.
+        Optional<AssessmentGet> latestEscapeCaseAssessment = assessmentResults.getAssessments().stream()
+                .filter(a ->
+                        a.getAssessmentType() == null || a.getAssessmentType() == AssessmentType.ESCAPE_CASE_ASSESSMENT)
+                .findFirst();
+        if (latestEscapeCaseAssessment.isEmpty()) {
+            log.info(
+                    "No assessments found for claim ID: {} claimStatus: {}",
+                    claimDetails.getClaimId(),
+                    claimDetails.getStatus());
+            return claimDetails;
         }
         return assessmentMapper.mapAssessmentToClaimDetails(
-                assessmentMapper.updateClaim(latestAssessment, claimDetails));
+                assessmentMapper.updateClaim(latestEscapeCaseAssessment.get(), claimDetails));
+    }
+
+    private void setLastUpdatedDateTime(ClaimDetails claimDetails, AssessmentGet latestAssessment) {
+        claimDetails.setLastUpdatedUser(latestAssessment.getCreatedByUserId());
+        claimDetails.setLastUpdatedDateTime(latestAssessment.getCreatedOn());
     }
 
     private boolean shouldReapplyAssessment(ClaimDetails claim, OutcomeType newOutcome) {

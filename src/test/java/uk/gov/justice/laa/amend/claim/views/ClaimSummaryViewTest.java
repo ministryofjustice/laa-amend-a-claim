@@ -153,6 +153,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
         lastAssessment.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
         lastAssessment.setLastAssessmentOutcome(OutcomeType.NILLED);
         claim.setLastAssessment(lastAssessment);
+        claim.setLastUpdatedDateTime(lastAssessment.getLastAssessmentDate());
+        claim.setLastUpdatedUser(lastAssessment.getLastAssessedBy());
 
         when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
 
@@ -282,7 +284,10 @@ class ClaimSummaryViewTest extends ViewTestBase {
         createClaimSummary(claim);
 
         claim.setStatus(ClaimStatus.VOID);
-        claim.setLastAssessment(MockClaimsFunctions.createAssessment(AssessmentTypeEnum.VOID));
+        var lastAssessment = MockClaimsFunctions.createAssessment(AssessmentTypeEnum.VOID);
+        claim.setLastAssessment(lastAssessment);
+        claim.setLastUpdatedDateTime(lastAssessment.getLastAssessmentDate());
+        claim.setLastUpdatedUser(lastAssessment.getLastAssessedBy());
 
         when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
@@ -314,6 +319,10 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         claim.setStatus(ClaimStatus.VOID);
         claim.setLastAssessment(null);
+        var lastAssessment = MockClaimsFunctions.createAssessment(AssessmentTypeEnum.VOID);
+        claim.setLastAssessment(lastAssessment);
+        claim.setLastUpdatedDateTime(lastAssessment.getLastAssessmentDate());
+        claim.setLastUpdatedUser(lastAssessment.getLastAssessedBy());
 
         when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
@@ -322,9 +331,10 @@ class ClaimSummaryViewTest extends ViewTestBase {
         Element banner = doc.selectFirst(".moj-alert.moj-alert--error");
         assertNotNull(banner, "Expected VOID banner to be visible even without previous assessment");
         assertTrue(
-                banner.text().matches(".*This claim has been voided.*You can no longer make changes.*"),
+                banner.text()
+                        .matches(".*This claim has been voided.*Last edited by " + DISPLAY_NAME
+                                + ".*You can no longer make changes\\..*"),
                 "VOID banner text is not in the expected order");
-
         Element assessmentButton = doc.selectFirst("[data-testid=claim-details-assessment-button]");
         assertNull(assessmentButton, "Expected assessment button to be hidden for VOID claims");
 

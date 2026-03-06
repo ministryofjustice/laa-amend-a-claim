@@ -351,7 +351,6 @@ class AssessmentServiceTest {
 
         @Test
         void voidClaimWithEscapeCaseAssessmentsReturnValues() {
-            when(featureFlagsConfig.isVoidingEnabled()).thenReturn(true);
             ClaimDetails claim = new CrimeClaimDetails();
             claim.setClaimId(UUID.randomUUID().toString());
             claim.setStatus(ClaimStatus.VOID);
@@ -373,7 +372,6 @@ class AssessmentServiceTest {
 
         @Test
         void voidClaimWithNoPreviousAssessments() {
-            when(featureFlagsConfig.isVoidingEnabled()).thenReturn(true);
             ClaimDetails claim = new CrimeClaimDetails();
             claim.setClaimId(UUID.randomUUID().toString());
             claim.setStatus(ClaimStatus.VOID);

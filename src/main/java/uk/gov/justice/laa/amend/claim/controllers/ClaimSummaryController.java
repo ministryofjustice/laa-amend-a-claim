@@ -45,9 +45,8 @@ public class ClaimSummaryController {
 
         if (claim.isHasAssessment()) {
             claim = assessmentService.getLatestAssessmentByClaim(claim);
-            if (claim.getLastAssessment() != null) {
-                var user = userRetrievalService.getMicrosoftApiUser(
-                        claim.getLastAssessment().getLastAssessedBy());
+            if (claim.getLastUpdatedUser() != null) {
+                var user = userRetrievalService.getMicrosoftApiUser(claim.getLastUpdatedUser());
                 model.addAttribute("user", user);
             }
         }

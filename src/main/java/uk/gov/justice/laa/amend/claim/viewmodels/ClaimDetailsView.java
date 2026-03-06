@@ -118,11 +118,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default ThymeleafMessage lastEditedBy(MicrosoftApiUser user) {
-        var voidMessage = new ThymeleafMessage("claimSummary.void.message");
-        if (lastAssessment() == null) {
-            return voidMessage;
-        }
-        LocalDateTime dateTime = lastAssessment().getLastAssessmentDate().toLocalDateTime();
+        LocalDateTime dateTime = claim().getLastUpdatedDateTime().toLocalDateTime();
         String date = DateUtils.displayDateTimeDateValue(dateTime);
         String time = DateUtils.displayDateTimeTimeValue(dateTime);
 
@@ -134,12 +130,13 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         } else {
             editMessageKey = "claimSummary.lastAssessmentText.noUser";
         }
-
         args.add(date);
         args.add(time);
 
-        var outcome = lastAssessment().getLastAssessmentOutcome();
-        args.add(isVoidClaim() ? voidMessage : new ThymeleafMessage(outcome.getMessageKey()));
+        String messageKey = (lastAssessment() != null && !isVoidClaim())
+                ? lastAssessment().getLastAssessmentOutcome().getMessageKey()
+                : "claimSummary.void.message";
+        args.add(new ThymeleafMessage(messageKey));
 
         return new ThymeleafMessage(editMessageKey, args.toArray());
     }
