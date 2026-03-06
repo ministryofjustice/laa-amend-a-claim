@@ -2,12 +2,14 @@
   "priority": 1,
   "request": {
     "method": "GET",
-    "urlPattern": "/api/v1/submissions/(.*)/claims/(.*)"
+    "urlPattern": "/api/v2/submissions/(.*)/claims/(.*)"
   },
   "response": {
     "status": 200,
     "bodyFileName": "get-claim-response.json",
-    "transformers": ["response-template"],
+    "transformers": [
+      "response-template"
+    ],
     "headers": {
       "Content-Type": "application/json"
     }

@@ -163,7 +163,7 @@ public abstract class ViewTestBase {
         Assertions.assertEquals(expectedText, hint.text());
     }
 
-    protected void assertPageHasTextInput(Document doc, String id, String expectedLabel) {
+    protected void assertPageHasLabel(Document doc, String id, String expectedLabel) {
         Element label = selectFirst(doc, String.format("label[for=%s]", id));
         Assertions.assertEquals(expectedLabel, label.text());
     }

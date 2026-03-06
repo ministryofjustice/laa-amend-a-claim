@@ -1,9 +1,11 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import java.util.Arrays;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.thymeleaf.expression.Messages;
 
+@EqualsAndHashCode(callSuper = false)
 @Getter
 public class ThymeleafMessage extends ThymeleafString {
 

@@ -20,7 +20,7 @@ public class SortConverterTest {
 
     @Test
     void shouldConvertAscendingField() {
-        String source = "uniqueFileNumber,asc";
+        String source = "unique_file_number,asc";
         SortConverter converter = new SortConverter();
         Sort result = converter.convert(source);
         Assertions.assertEquals(SortField.UNIQUE_FILE_NUMBER, result.getField());
@@ -29,7 +29,7 @@ public class SortConverterTest {
 
     @Test
     void shouldConvertDescendingField() {
-        String source = "caseReferenceNumber,desc";
+        String source = "case_reference_number,desc";
         SortConverter converter = new SortConverter();
         Sort result = converter.convert(source);
         Assertions.assertEquals(SortField.CASE_REFERENCE_NUMBER, result.getField());
