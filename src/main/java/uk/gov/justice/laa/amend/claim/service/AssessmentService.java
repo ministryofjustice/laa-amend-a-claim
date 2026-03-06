@@ -128,6 +128,8 @@ public class AssessmentService {
 
         // get latest escape case assessment
         if (featureFlagsConfig.isVoidingEnabled()) {
+            // Existing assessments may have null values. Until the migration completes,
+            // treat null as an escape case.
             Optional<AssessmentGet> latestEscapeCaseAssessment = assessmentResults.getAssessments().stream()
                     .filter(a -> a.getAssessmentType() == null
                             || a.getAssessmentType() == AssessmentType.ESCAPE_CASE_ASSESSMENT)
