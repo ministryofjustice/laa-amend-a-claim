@@ -3,7 +3,7 @@ package uk.gov.justice.laa.amend.claim.config.security;
 public class SecurityConstants {
 
     public static final String[] PUBLIC_PATHS = {
-        "/actuator/**", "/logout", "/logout-success", "/css/**", "/assets/**", "/webjars/**", "/favicon.ico", "/ping"
+        "/actuator/**", "/logout", "/logout-success", "/css/**", "/js/**", "/assets/**", "/webjars/**", "/ping"
     };
 
     public static final String POLICY_DIRECTIVES = "default-src 'self'; "
@@ -16,4 +16,6 @@ public class SecurityConstants {
             + "base-uri 'self'; "
             + "form-action 'self'; "
             + "upgrade-insecure-requests";
+
+    public static final String PERMISSIONS_POLICY = "camera=(), microphone=(), geolocation=(), fullscreen=(self)";
 }

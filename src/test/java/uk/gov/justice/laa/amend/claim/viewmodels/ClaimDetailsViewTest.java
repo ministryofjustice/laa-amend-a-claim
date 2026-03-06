@@ -15,6 +15,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends ClaimDetailsView<C>> {
 
@@ -213,6 +214,8 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             assessmentInfo.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
             assessmentInfo.setLastAssessmentOutcome(OutcomeType.NILLED);
             claim.setLastAssessment(assessmentInfo);
+            claim.setLastUpdatedUser(assessmentInfo.getLastAssessedBy());
+            claim.setLastUpdatedDateTime(assessmentInfo.getLastAssessmentDate());
             V viewModel = createView(claim);
             MicrosoftApiUser user = new MicrosoftApiUser("id", "Bloggs, Joe", "Joe", "Bloggs");
 
@@ -235,6 +238,8 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             assessmentInfo.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
             assessmentInfo.setLastAssessmentOutcome(OutcomeType.NILLED);
             claim.setLastAssessment(assessmentInfo);
+            claim.setLastUpdatedUser(assessmentInfo.getLastAssessedBy());
+            claim.setLastUpdatedDateTime(assessmentInfo.getLastAssessmentDate());
             V viewModel = createView(claim);
             MicrosoftApiUser user = new MicrosoftApiUser("id", null, null, null);
 
@@ -256,6 +261,9 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             assessmentInfo.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
             assessmentInfo.setLastAssessmentOutcome(OutcomeType.NILLED);
             claim.setLastAssessment(assessmentInfo);
+            claim.setLastUpdatedUser(assessmentInfo.getLastAssessedBy());
+            claim.setLastUpdatedDateTime(assessmentInfo.getLastAssessmentDate());
+            claim.setStatus(ClaimStatus.VALID);
             V viewModel = createView(claim);
 
             ThymeleafMessage result = viewModel.lastEditedBy(null);
@@ -266,6 +274,29 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
             ThymeleafMessage param = (ThymeleafMessage) result.getParams()[2];
             Assertions.assertEquals("outcome.nilled", param.getKey());
             Assertions.assertEquals(0, param.getParams().length);
+        }
+
+        @Test
+        void displayLastEditedTextWhenClaimVoided() {
+            C claim = createClaim();
+            AssessmentInfo assessmentInfo = new AssessmentInfo();
+            LocalDateTime localDateTime = LocalDateTime.of(2025, 12, 18, 16, 11, 27);
+            assessmentInfo.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
+            assessmentInfo.setLastAssessmentOutcome(OutcomeType.NILLED);
+            claim.setLastAssessment(assessmentInfo);
+            claim.setLastUpdatedUser(assessmentInfo.getLastAssessedBy());
+            claim.setLastUpdatedDateTime(assessmentInfo.getLastAssessmentDate());
+            claim.setStatus(ClaimStatus.VOID);
+            V viewModel = createView(claim);
+            MicrosoftApiUser user = new MicrosoftApiUser("id", null, null, null);
+
+            ThymeleafMessage result = viewModel.lastEditedBy(user);
+
+            Assertions.assertEquals("claimSummary.lastAssessmentText.noUser", result.getKey());
+            Assertions.assertEquals("18 December 2025", result.getParams()[0]);
+            Assertions.assertEquals("16:11:27", result.getParams()[1]);
+            ThymeleafMessage param = (ThymeleafMessage) result.getParams()[2];
+            Assertions.assertEquals("claimSummary.void.message", param.getKey());
         }
     }
 }

@@ -11,7 +11,7 @@
 <main class="govuk-main-wrapper" id="main-content">
 
     <th:block th:if="${submissionFailed}">
-        <th:block th:replace="~{partials/error-alert :: errorAlert('voidConfirmation')}"></th:block>
+        <th:block th:replace="~{partials/error-alert :: errorAlert('voidConfirmation', null)}"></th:block>
     </th:block>
 
     <h1 class="govuk-heading-xl">

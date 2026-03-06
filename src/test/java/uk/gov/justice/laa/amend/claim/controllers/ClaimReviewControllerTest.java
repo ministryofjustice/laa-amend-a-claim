@@ -25,6 +25,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.config.security.DummyUserSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -105,7 +106,7 @@ public class ClaimReviewControllerTest {
     @Test
     public void testSuccessfulSubmitRedirectsToConfirmation() throws Exception {
         UUID assessmentId = UUID.randomUUID();
-        String userId = LocalSecurityConfig.userId;
+        String userId = DummyUserSecurityConfig.USER_ID;
 
         CreateAssessment201Response response = new CreateAssessment201Response();
         response.setId(assessmentId);
@@ -127,7 +128,7 @@ public class ClaimReviewControllerTest {
 
     @Test
     public void testUnsuccessfulSubmitReloadsPageWithAlert() throws Exception {
-        String userId = LocalSecurityConfig.userId;
+        String userId = DummyUserSecurityConfig.USER_ID;
 
         WebClientResponseException exception =
                 WebClientResponseException.create(500, "Something went wrong", null, null, null);
