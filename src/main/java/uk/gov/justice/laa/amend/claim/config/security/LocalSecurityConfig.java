@@ -18,16 +18,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.header.writers.CrossOriginEmbedderPolicyHeaderWriter;
-import org.springframework.security.web.header.writers.CrossOriginOpenerPolicyHeaderWriter;
-import org.springframework.security.web.header.writers.CrossOriginResourcePolicyHeaderWriter;
+import org.springframework.security.web.header.HeaderWriterFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -44,17 +41,8 @@ public class LocalSecurityConfig {
     public SecurityFilterChain securityFilterChainLocal(final HttpSecurity http) {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
-                        .contentSecurityPolicy(csp -> csp.policyDirectives(POLICY_DIRECTIVES))
-                        .crossOriginEmbedderPolicy(coep -> coep.policy(
-                                CrossOriginEmbedderPolicyHeaderWriter.CrossOriginEmbedderPolicy.REQUIRE_CORP))
-                        .crossOriginOpenerPolicy(coop ->
-                                coop.policy(CrossOriginOpenerPolicyHeaderWriter.CrossOriginOpenerPolicy.SAME_ORIGIN))
-                        .crossOriginResourcePolicy(corp -> corp.policy(
-                                CrossOriginResourcePolicyHeaderWriter.CrossOriginResourcePolicy.SAME_ORIGIN))
-                        .permissionsPolicyHeader(pp -> pp.policy(PERMISSIONS_POLICY)))
                 .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class)
-                .addFilterAfter(securityHeadersFilter(), AnonymousAuthenticationFilter.class);
+                .addFilterAfter(securityHeaderFilter(), HeaderWriterFilter.class);
         return http.build();
     }
 
@@ -72,7 +60,6 @@ public class LocalSecurityConfig {
         return source;
     }
 
-    @Bean
     public OncePerRequestFilter oidcUserService() {
         return new OncePerRequestFilter() {
             @Override
@@ -103,18 +90,19 @@ public class LocalSecurityConfig {
         };
     }
 
-    @Bean
-    public OncePerRequestFilter securityHeadersFilter() {
+    public OncePerRequestFilter securityHeaderFilter() {
         return new OncePerRequestFilter() {
             @Override
             protected void doFilterInternal(
-                    HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+                    @NonNull HttpServletRequest request,
+                    @NonNull HttpServletResponse response,
+                    @NonNull FilterChain filterChain)
                     throws ServletException, IOException {
                 response.setHeader("Content-Security-Policy", POLICY_DIRECTIVES);
-                response.setHeader("Permissions-Policy", PERMISSIONS_POLICY);
-                response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
                 response.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+                response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
                 response.setHeader("Cross-Origin-Resource-Policy", "same-origin");
+                response.setHeader("Permissions-Policy", PERMISSIONS_POLICY);
                 response.setHeader("X-Content-Type-Options", "nosniff");
                 response.setHeader("X-Frame-Options", "DENY");
                 filterChain.doFilter(request, response);
