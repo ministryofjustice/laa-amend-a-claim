@@ -32,6 +32,11 @@ ignore:
     - '*':
         reason: Temporarily ignoring this until laa-spring-boot-gradle-plugin supports Jackson 3.1.x
         expires: 2026-04-01T00:00:00.000Z
+  SNYK-ALPINE323-ZLIB-15435528:
+    - '*':
+        reason: Temporarily ignoring this until new version
+        expires: 2026-04-01T00:00:00.000Z
+
 patch: {}
 exclude:
   global:

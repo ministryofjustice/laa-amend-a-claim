@@ -12,6 +12,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,6 +53,7 @@ class ClaimServiceTest {
 
     private UUID submissionId;
     private UUID claimId;
+    private List<ClaimStatus> statuses = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
 
     @BeforeEach
     void setUp() {
@@ -66,7 +68,7 @@ class ClaimServiceTest {
         var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
 
         when(claimsApiClient.searchClaims(
-                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", ClaimStatus.VALID))
+                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", statuses))
                 .thenReturn(Mono.just(mockApiResponse));
         Sort sort = Sort.builder()
                 .field(SortField.UNIQUE_FILE_NUMBER)
@@ -90,8 +92,7 @@ class ClaimServiceTest {
         assertEquals(mockApiResponse, result);
 
         verify(claimsApiClient, times(1))
-                .searchClaims(
-                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", ClaimStatus.VALID);
+                .searchClaims("0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", statuses);
     }
 
     @Test
@@ -100,7 +101,7 @@ class ClaimServiceTest {
         // Arrange
         var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
 
-        when(claimsApiClient.searchClaims("0P322F", null, null, null, null, null, 0, 10, null, ClaimStatus.VALID))
+        when(claimsApiClient.searchClaims("0P322F", null, null, null, null, null, 0, 10, null, statuses))
                 .thenReturn(Mono.just(mockApiResponse));
 
         // Act
@@ -119,8 +120,7 @@ class ClaimServiceTest {
         assertNotNull(result);
         assertEquals(mockApiResponse, result);
 
-        verify(claimsApiClient, times(1))
-                .searchClaims("0P322F", null, null, null, null, null, 0, 10, null, ClaimStatus.VALID);
+        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, null, null, 0, 10, null, statuses);
     }
 
     @Test
@@ -128,7 +128,7 @@ class ClaimServiceTest {
     void testSearchClaims_ApiClientThrowsException() {
         // Arrange
         when(claimsApiClient.searchClaims(
-                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", ClaimStatus.VALID))
+                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", statuses))
                 .thenThrow(new RuntimeException("API Error"));
         Sort sort = Sort.builder()
                 .field(SortField.UNIQUE_FILE_NUMBER)
@@ -151,8 +151,7 @@ class ClaimServiceTest {
         assertTrue(exception.getMessage().contains("API Error"));
 
         verify(claimsApiClient, times(1))
-                .searchClaims(
-                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", ClaimStatus.VALID);
+                .searchClaims("0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", statuses);
     }
 
     @Test
@@ -160,7 +159,7 @@ class ClaimServiceTest {
     void testSearchClaims_EmptyResponse() {
         // Arrange
         when(claimsApiClient.searchClaims(
-                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", ClaimStatus.VALID))
+                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", statuses))
                 .thenReturn(Mono.empty());
         Sort sort = Sort.builder()
                 .field(SortField.UNIQUE_FILE_NUMBER)
@@ -183,8 +182,7 @@ class ClaimServiceTest {
         assertNull(result);
 
         verify(claimsApiClient, times(1))
-                .searchClaims(
-                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", ClaimStatus.VALID);
+                .searchClaims("0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", statuses);
     }
 
     @Test
@@ -271,5 +269,13 @@ class ClaimServiceTest {
         assertNotNull(result);
         verify(providerApiClient, times(1)).getProviderOffice("0P322F");
         verify(claimMapper, times(1)).enrichWithProviderName(claimDetails, "Test Firm");
+    }
+
+    public List<ClaimStatus> getStatuses() {
+        return statuses;
+    }
+
+    public void setStatuses(List<ClaimStatus> statuses) {
+        this.statuses = statuses;
     }
 }
