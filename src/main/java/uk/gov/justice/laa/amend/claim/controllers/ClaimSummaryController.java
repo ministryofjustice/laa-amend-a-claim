@@ -1,8 +1,11 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VALID;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VOID;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.EnumSet;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +21,6 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,16 +35,18 @@ public class ClaimSummaryController {
     public String onPageLoad(
             HttpSession session, Model model, @PathVariable UUID submissionId, @PathVariable UUID claimId) {
         ClaimDetails claim = claimService.getClaimDetails(submissionId, claimId);
-        if (claim.getStatus() != ClaimStatus.VALID) {
-            log.error("Cannot assess claim {} as it has a non-valid status. Returning 404.", claimId);
+        if (!EnumSet.of(VALID, VOID).contains(claim.getStatus())) {
+            log.error(
+                    "Cannot assess claim {} as it has an invalid status {}. Returning 404.",
+                    claimId,
+                    claim.getStatus());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
         if (claim.isHasAssessment()) {
             claim = assessmentService.getLatestAssessmentByClaim(claim);
-            if (claim.getLastAssessment() != null) {
-                var user = userRetrievalService.getMicrosoftApiUser(
-                        claim.getLastAssessment().getLastAssessedBy());
+            if (claim.getLastUpdatedUser() != null) {
+                var user = userRetrievalService.getMicrosoftApiUser(claim.getLastUpdatedUser());
                 model.addAttribute("user", user);
             }
         }

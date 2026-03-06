@@ -32,4 +32,5 @@ public class AssessmentInfo implements Serializable {
     private BigDecimal assessedTotalInclVat;
     private BigDecimal allowedTotalVat;
     private BigDecimal allowedTotalInclVat;
+    private AssessmentTypeEnum assessmentType;
 }

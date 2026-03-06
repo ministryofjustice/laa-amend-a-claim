@@ -4,6 +4,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.createUser;
 
 import jakarta.servlet.RequestDispatcher;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -73,7 +75,7 @@ public abstract class ViewTestBase {
 
     private Document renderDocument(MockHttpServletRequestBuilder requestBuilder, int expectedStatus) throws Exception {
         session.setAttribute(claimId.toString(), claim);
-        String html = mockMvc.perform(requestBuilder.session(session))
+        String html = mockMvc.perform(requestBuilder.session(session).requestAttr("user", createUser()))
                 .andExpect(status().is(expectedStatus))
                 .andReturn()
                 .getResponse()
@@ -400,5 +402,10 @@ public abstract class ViewTestBase {
 
     protected void assertTableHeaderIsNotSortable(Element header, String expectedText) {
         Assertions.assertEquals(expectedText, header.text());
+    }
+
+    public static Element getButtonByLabel(Document doc, String label) {
+        // Matches the button's own text, ignoring surrounding whitespace
+        return doc.selectFirst("button:matchesOwn(^\\s*" + Pattern.quote(label) + "\\s*$)");
     }
 }

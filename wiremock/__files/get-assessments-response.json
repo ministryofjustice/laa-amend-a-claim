@@ -2,7 +2,7 @@
   "assessments" : [ {
     "created_on" : "2025-11-27T18:38:17.806734Z",
     "id" : "019ac69b-e88d-7699-88a1-68bd3615f334",
-    "claim_id" : "019aa173-9766-75f4-beb1-ec8064a8ac9b",
+    "claim_id" : "{{request.path.[3]}}",
     "claim_summary_fee_id" : "019aa173-9774-7c7b-907d-089e2a0b9764",
     "assessment_outcome" : "REDUCED_TO_FIXED_FEE",
     "fixed_fee_amount" : 0,
@@ -24,6 +24,7 @@
     "allowed_total_vat" : 3456,
     "allowed_total_incl_vat" : 3500,
     "assessed_total_vat" : 3456,
-    "assessed_total_incl_vat" : 3500
+    "assessed_total_incl_vat" : 3500,
+    "assessment_type": "{{parameters.assessment_type}}"
   } ]
 }

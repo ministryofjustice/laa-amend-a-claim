@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -38,6 +39,8 @@ public abstract class ClaimDetails extends Claim {
     private String feeCodeDescription;
     private boolean hasAssessment;
     private AssessmentInfo lastAssessment;
+    private String lastUpdatedUser;
+    private OffsetDateTime lastUpdatedDateTime;
 
     public void applyOutcome(OutcomeType outcome) {
         getClaimFields().forEach(x -> x.applyOutcome(outcome));
