@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.client.config;
 
+import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -58,6 +59,7 @@ public class WebClientConfig {
                 .build();
 
         WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
+        webClientAdapter.setBlockTimeout(Duration.ofMillis(properties.getTimeout()));
         HttpServiceProxyFactory factory =
                 HttpServiceProxyFactory.builderFor(webClientAdapter).build();
         return factory.createClient(ProviderApiClient.class);

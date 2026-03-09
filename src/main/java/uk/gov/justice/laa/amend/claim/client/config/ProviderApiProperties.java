@@ -14,8 +14,12 @@ public class ProviderApiProperties {
     @NotBlank
     private final String accessToken;
 
-    public ProviderApiProperties(String url, String accessToken) {
+    @NotBlank
+    private final long timeout;
+
+    public ProviderApiProperties(String url, String accessToken, long timeout) {
         this.url = url;
         this.accessToken = accessToken;
+        this.timeout = timeout;
     }
 }

@@ -48,6 +48,7 @@ microsoft-graph-api:
 provider-api:
   url: ${PROVIDER_API}
   access-token: ${PROVIDER_TOKEN}
+  timeout: 5000
 search:
   sort-enabled: true
 submission:
