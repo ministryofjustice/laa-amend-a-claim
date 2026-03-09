@@ -128,12 +128,11 @@ public abstract class ViewTestBase {
         Assertions.assertEquals(expectedText, elements.getFirst().text());
     }
 
-    protected void assertPageHasPrimaryButtonDisabled(Document doc, String expectedText) {
-        Elements elements = doc.getElementsByClass("govuk-button");
-        Assertions.assertFalse(elements.isEmpty());
-        Element button = elements.getFirst();
-        Assertions.assertEquals(expectedText, button.text());
-        Assertions.assertTrue(button.hasAttr("disabled"));
+    protected void assertPageHasPrimaryButtonHidden(Document doc, String expectedText) {
+        Elements buttons = doc.getElementsByClass("govuk-button");
+        boolean found = buttons.stream().anyMatch(b -> expectedText.equals(b.text()));
+
+        Assertions.assertFalse(found, "Button with text '" + expectedText + "' should not be present");
     }
 
     protected void assertPageHasSecondaryButton(Document doc, String expectedText) {

@@ -117,11 +117,9 @@
                         <form method="post"
                               th:action="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}">
                             <div class="govuk-button-group">
-                                <th:block th:with="disabled=${!(claim.claim.escaped ?: false)}" th:if="${!claim.isVoidClaim}">
+                                <th:block th:if="${!claim.isVoidClaim and claim.claim.escaped}">
                                     <button class="govuk-button govuk-button--success"
                                             data-module="govuk-button"
-                                            th:attr="aria-disabled=${disabled}"
-                                            th:disabled="${disabled}"
                                             th:data-testid="claim-details-assessment-button"
                                             th:text="${claim.hasAssessment} ? #{claimSummary.update.assessmentButton} : #{claimSummary.assessmentButton}" type="submit">
                                     </button>

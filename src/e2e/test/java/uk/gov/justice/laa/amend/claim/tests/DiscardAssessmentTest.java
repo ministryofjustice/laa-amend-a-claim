@@ -148,8 +148,8 @@ public class DiscardAssessmentTest extends BaseTest {
         ClaimDetailsPage details = new ClaimDetailsPage(page);
 
         Assertions.assertFalse(
-                details.isAddAssessmentOutcomeDisabled(),
-                "Test data issue: expected escape claim (Add assessment outcome enabled) but it was disabled");
+                details.isAddAssessmentOutcomeHidden(),
+                "Test data issue: expected escape claim (Add assessment outcome enabled) but it was hidden");
 
         details.clickAddUpdateAssessmentOutcome();
 
