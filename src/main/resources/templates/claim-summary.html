@@ -127,7 +127,7 @@
                                     </button>
                                 </th:block>
 
-                                <th:block sec:authorize="hasRole('ROLE_CLAIM_AMENDMENTS_CASEWORKER')" th:if="${!claim.isVoidClaim}">
+                                <th:block th:if="${isVoidClaimPresent}">
                                     <button class="govuk-button govuk-button--warning"
                                             data-module="govuk-button"
                                             th:data-testid="claim-details-void-button"

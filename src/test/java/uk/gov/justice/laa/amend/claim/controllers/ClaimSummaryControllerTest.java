@@ -24,6 +24,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
@@ -54,6 +55,9 @@ public class ClaimSummaryControllerTest {
 
     @MockitoBean
     private AssessmentService assessmentService;
+
+    @MockitoBean
+    private FeatureFlagsConfig featureFlagsConfig;
 
     private UUID submissionId;
     private UUID claimId;

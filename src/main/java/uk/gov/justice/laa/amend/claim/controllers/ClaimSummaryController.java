@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
@@ -30,6 +31,7 @@ public class ClaimSummaryController {
     private final ClaimService claimService;
     private final AssessmentService assessmentService;
     private final UserRetrievalService userRetrievalService;
+    private final FeatureFlagsConfig featureFlagsConfig;
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}")
     public String onPageLoad(
@@ -57,6 +59,10 @@ public class ClaimSummaryController {
         model.addAttribute("claimId", claimId);
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claim", claim.toViewModel());
+
+        boolean isVoidClaimPresent = featureFlagsConfig.getIsVoidingEnabled() && !claim.isVoided();
+        model.addAttribute("isVoidClaimPresent", isVoidClaimPresent);
+
         return "claim-summary";
     }
 

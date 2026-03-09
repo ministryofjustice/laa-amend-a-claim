@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import static org.mockito.Mockito.when;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import org.jsoup.nodes.Document;
@@ -14,9 +16,7 @@ import uk.gov.justice.laa.amend.claim.controllers.VoidConfirmationController;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 @ActiveProfiles("local")
-@WebMvcTest(
-        controllers = VoidConfirmationController.class,
-        properties = {"feature-flags.is-voiding-enabled=true"})
+@WebMvcTest(VoidConfirmationController.class)
 @Import(LocalSecurityConfig.class)
 class VoidConfirmationViewTest extends ViewTestBase {
 
@@ -26,6 +26,8 @@ class VoidConfirmationViewTest extends ViewTestBase {
 
     @Test
     void testPageForCivilClaim() throws Exception {
+        when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
+
         var claim = MockClaimsFunctions.createMockCivilClaim();
         this.claim = claim;
         claim.setSubmissionId(submissionId.toString());
@@ -62,6 +64,8 @@ class VoidConfirmationViewTest extends ViewTestBase {
 
     @Test
     void testPageForCrimeClaim() throws Exception {
+        when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
+
         var claim = MockClaimsFunctions.createMockCrimeClaim();
         this.claim = claim;
         claim.setSubmissionId(submissionId.toString());
