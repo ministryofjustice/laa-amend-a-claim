@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,6 +20,7 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -27,9 +29,7 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @ActiveProfiles("local")
-@WebMvcTest(
-        controllers = VoidConfirmationController.class,
-        properties = {"feature-flags.is-voiding-enabled=true"})
+@WebMvcTest(controllers = VoidConfirmationController.class)
 @Import({LocalSecurityConfig.class, ThymeleafConfig.class})
 public class VoidConfirmationControllerTest {
 
@@ -41,6 +41,9 @@ public class VoidConfirmationControllerTest {
 
     @MockitoBean
     private AssessmentService assessmentService;
+
+    @MockitoBean
+    private FeatureFlagsConfig featureFlagsConfig;
 
     private UUID submissionId;
     private UUID claimId;
@@ -57,6 +60,7 @@ public class VoidConfirmationControllerTest {
         claim.setClaimId(claimId.toString());
         MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
         session.setAttribute(claimId.toString(), claim);
+        when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
     }
 
     @Test

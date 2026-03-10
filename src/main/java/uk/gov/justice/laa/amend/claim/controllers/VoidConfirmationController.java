@@ -7,26 +7,24 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
+@AllArgsConstructor
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/void")
 @Slf4j
 public class VoidConfirmationController {
 
-    private final boolean isVoidingEnabled;
-
-    public VoidConfirmationController(@Value("${feature-flags.is-voiding-enabled}") boolean isVoidingEnabled) {
-        this.isVoidingEnabled = isVoidingEnabled;
-    }
+    private final FeatureFlagsConfig featureFlagsConfig;
 
     @GetMapping
     public String onPageLoad(
@@ -36,7 +34,7 @@ public class VoidConfirmationController {
             @PathVariable UUID submissionId,
             @PathVariable UUID claimId)
             throws IOException {
-        if (!isVoidingEnabled) {
+        if (!featureFlagsConfig.getIsVoidingEnabled()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
@@ -54,7 +52,7 @@ public class VoidConfirmationController {
             @PathVariable UUID claimId,
             HttpServletResponse response)
             throws IOException {
-        if (!isVoidingEnabled) {
+        if (!featureFlagsConfig.getIsVoidingEnabled()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
