@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,7 +22,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
-import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
@@ -35,6 +32,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
+import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
 
 @ExtendWith(MockitoExtension.class)
 class ClaimServiceTest {
@@ -46,7 +44,7 @@ class ClaimServiceTest {
     private ClaimMapper claimMapper;
 
     @Mock
-    private ProviderApiClient providerApiClient;
+    private ProviderService providerService;
 
     @InjectMocks
     private ClaimService claimService;
@@ -251,31 +249,25 @@ class ClaimServiceTest {
     @DisplayName("Should enrich claim details with provider name from provider API")
     void testGetClaimDetailsEnrichesProviderName() {
         // Arrange
+        ProviderFirmOfficeDto providerFirm = new ProviderFirmOfficeDto();
+        ProviderFirmSummary providerFirmSummary = new ProviderFirmSummary();
+        providerFirmSummary.setFirmName("Test Firm");
+        providerFirm.setFirm(providerFirmSummary);
+
         var claimResponse = new ClaimResponseV2();
         CivilClaimDetails claimDetails = new CivilClaimDetails();
         claimDetails.setProviderAccountNumber("0P322F");
 
-        ProviderFirmOfficeDto providerOffice = mock(ProviderFirmOfficeDto.class, RETURNS_DEEP_STUBS);
-        when(providerOffice.getFirm().getFirmName()).thenReturn("Test Firm");
-
         when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.just(claimResponse));
         when(claimMapper.mapToClaimDetails(claimResponse)).thenReturn(claimDetails);
-        when(providerApiClient.getProviderOffice("0P322F")).thenReturn(Mono.just(providerOffice));
+        when(providerService.getProviderFirm("0P322F")).thenReturn(providerFirm);
 
         // Act
         var result = claimService.getClaimDetails(submissionId, claimId);
 
         // Assert
         assertNotNull(result);
-        verify(providerApiClient, times(1)).getProviderOffice("0P322F");
+        verify(providerService, times(1)).getProviderFirm("0P322F");
         verify(claimMapper, times(1)).enrichWithProviderName(claimDetails, "Test Firm");
-    }
-
-    public List<ClaimStatus> getStatuses() {
-        return statuses;
-    }
-
-    public void setStatuses(List<ClaimStatus> statuses) {
-        this.statuses = statuses;
     }
 }

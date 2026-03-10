@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
-import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
@@ -17,7 +16,6 @@ import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
-import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
 @Service
 @Slf4j
@@ -26,7 +24,7 @@ public class ClaimService {
 
     private final ClaimsApiClient claimsApiClient;
     private final ClaimMapper claimMapper;
-    private final ProviderApiClient providerApiClient;
+    private final ProviderService providerService;
 
     private static final List<ClaimStatus> claimStatuses = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
 
@@ -77,30 +75,10 @@ public class ClaimService {
                     String.format("Claim with ID %s not found for submission %s", claimId, submissionId));
         }
         var claimDetails = claimMapper.mapToClaimDetails(claimResponse);
-        claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(claimDetails.getProviderAccountNumber()));
-        return claimDetails;
-    }
-
-    /**
-     * Fetches provider firm name from Provider API
-     *
-     * @param officeAccountNumber the office account number
-     * @return firm name from API or office account number as fallback
-     */
-    private String getProviderFirmName(String officeAccountNumber) {
-        try {
-            ProviderFirmOfficeDto providerOffice =
-                    providerApiClient.getProviderOffice(officeAccountNumber).block();
-
-            if (providerOffice != null && providerOffice.getFirm() != null) {
-                return providerOffice.getFirm().getFirmName();
-            }
-        } catch (Exception e) {
-            log.warn(
-                    "Failed to fetch provider firm name for office account: {}. Error: {}",
-                    officeAccountNumber,
-                    e.getMessage());
+        var provider = providerService.getProviderFirm(claimDetails.getProviderAccountNumber());
+        if (provider != null && provider.getFirm() != null) {
+            claimMapper.enrichWithProviderName(claimDetails, provider.getFirm().getFirmName());
         }
-        return null;
+        return claimDetails;
     }
 }

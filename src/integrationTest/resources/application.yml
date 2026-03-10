@@ -26,6 +26,12 @@ microsoft-graph-api:
 provider-api:
   url: http://localhost:8089
   access-token: ""
+  start:
+    hour: 7
+    minute: 0
+  end:
+    hour: 21
+    minute: 30
 search:
   sort-enabled: true
 submission:
