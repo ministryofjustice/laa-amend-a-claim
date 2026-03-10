@@ -63,4 +63,22 @@ public class TimeUtilsTest {
 
         Assertions.assertFalse(TimeUtils.isInTimeRange(now, start, end));
     }
+
+    @Test
+    public void isInTimeRange_whenStartAndNowAreTheSame_returnsTrue() {
+        LocalTime now = LocalTime.of(15, 0);
+        LocalTime start = LocalTime.of(15, 0);
+        LocalTime end = LocalTime.of(16, 0);
+
+        Assertions.assertTrue(TimeUtils.isInTimeRange(now, start, end));
+    }
+
+    @Test
+    public void isInTimeRange_whenEndAndNowAreTheSame_returnsTrue() {
+        LocalTime now = LocalTime.of(16, 0);
+        LocalTime start = LocalTime.of(15, 0);
+        LocalTime end = LocalTime.of(16, 0);
+
+        Assertions.assertTrue(TimeUtils.isInTimeRange(now, start, end));
+    }
 }

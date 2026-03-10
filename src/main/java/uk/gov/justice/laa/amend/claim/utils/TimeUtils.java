@@ -11,8 +11,8 @@ public final class TimeUtils {
             return true;
         }
         if (start.isAfter(end)) {
-            return now.isAfter(start) || now.isBefore(end);
+            return !now.isBefore(start) || !now.isAfter(end);
         }
-        return now.isAfter(start) && now.isBefore(end);
+        return !now.isBefore(start) && !now.isAfter(end);
     }
 }
