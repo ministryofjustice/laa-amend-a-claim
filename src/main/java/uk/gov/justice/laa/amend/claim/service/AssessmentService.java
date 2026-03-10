@@ -135,7 +135,6 @@ public class AssessmentService {
 
         var latestEscapeCaseAssessment = assessments.stream()
                 .filter(Objects::nonNull)
-                .map(this::treatNullAsEscapeCase) // treating null as an escape case until migration completes
                 .filter(a -> a.getAssessmentType() == ESCAPE_CASE_ASSESSMENT)
                 .findFirst()
                 .orElse(null);
@@ -177,7 +176,13 @@ public class AssessmentService {
                     String.format("Failed to get assessments for claim ID: %s", claimDetails.getClaimId()));
         }
 
-        List<AssessmentGet> assessments = assessmentResults.getAssessments();
+        // Currently treats null as Escape case assessments until the migration completes for VOID assessments.
+        // This should be to just retrieve assessments from AssessmentResults after migration.
+        List<AssessmentGet> assessments = assessmentResults.getAssessments().stream()
+                .filter(Objects::nonNull)
+                .map(this::treatNullAsEscapeCase)
+                .toList();
+
         AssessmentGet firstAssessment = assessments.getFirst();
 
         // Validate first assessment based on claim status
