@@ -2,7 +2,6 @@ package uk.gov.justice.laa.amend.claim.service;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -10,10 +9,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalTime;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
@@ -31,12 +31,6 @@ class ProviderServiceTest {
     @Mock
     private ProviderApiProperties providerApiProperties;
 
-    @Mock
-    private TimeService timeService;
-
-    @InjectMocks
-    private ProviderService providerService;
-
     @Test
     void testGetProviderOfficeDuringInHours() {
         // Arrange
@@ -46,15 +40,17 @@ class ProviderServiceTest {
 
         when(providerApiProperties.getStart()).thenReturn(new TimeProperties(7, 0));
         when(providerApiProperties.getEnd()).thenReturn(new TimeProperties(21, 30));
-        when(timeService.isInTimeRange(any(), any())).thenReturn(true);
         when(providerApiClient.getProviderOffice(officeCode)).thenReturn(Mono.just(providerFirm));
+
+        Clock clock = Clock.fixed(Instant.parse("2026-03-10T12:00:00Z"), ZoneId.systemDefault());
+
+        ProviderService providerService = new ProviderService(providerApiClient, providerApiProperties, clock);
 
         // Act
         var result = providerService.getProviderFirm(officeCode);
 
         // Assert
         assertNotNull(result);
-        verify(timeService).isInTimeRange(LocalTime.of(7, 0), LocalTime.of(21, 30));
         verify(providerApiClient, times(1)).getProviderOffice(officeCode);
     }
 
@@ -65,14 +61,16 @@ class ProviderServiceTest {
 
         when(providerApiProperties.getStart()).thenReturn(new TimeProperties(7, 0));
         when(providerApiProperties.getEnd()).thenReturn(new TimeProperties(21, 30));
-        when(timeService.isInTimeRange(any(), any())).thenReturn(false);
+
+        Clock clock = Clock.fixed(Instant.parse("2026-03-10T06:00:00Z"), ZoneId.systemDefault());
+
+        ProviderService providerService = new ProviderService(providerApiClient, providerApiProperties, clock);
 
         // Act
         var result = providerService.getProviderFirm(officeCode);
 
         // Assert
         assertNull(result);
-        verify(timeService).isInTimeRange(LocalTime.of(7, 0), LocalTime.of(21, 30));
         verifyNoInteractions(providerApiClient);
     }
 
@@ -83,15 +81,16 @@ class ProviderServiceTest {
 
         when(providerApiProperties.getStart()).thenReturn(new TimeProperties(7, 0));
         when(providerApiProperties.getEnd()).thenReturn(new TimeProperties(21, 30));
-        when(timeService.isInTimeRange(any(), any())).thenReturn(true);
         when(providerApiClient.getProviderOffice(officeCode)).thenReturn(Mono.error(new RuntimeException("error")));
+
+        ProviderService providerService =
+                new ProviderService(providerApiClient, providerApiProperties, Clock.systemUTC());
 
         // Act
         var result = providerService.getProviderFirm(officeCode);
 
         // Assert
         assertNull(result);
-        verify(timeService).isInTimeRange(LocalTime.of(7, 0), LocalTime.of(21, 30));
         verify(providerApiClient, times(1)).getProviderOffice(officeCode);
     }
 }
