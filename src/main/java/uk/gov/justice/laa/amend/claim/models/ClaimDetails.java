@@ -17,10 +17,8 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 public abstract class ClaimDetails extends Claim {
     private String categoryOfLaw;
     private String matterTypeCode;
-    private String scheduleReference;
     private String providerName;
     private Boolean vatApplicable;
-    private String providerAccountNumber;
     private ClaimField vatClaimed;
     private ClaimField fixedFee;
     private ClaimField netProfitCost;
