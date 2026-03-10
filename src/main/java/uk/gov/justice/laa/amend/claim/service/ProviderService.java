@@ -35,6 +35,8 @@ public class ProviderService {
             } catch (Exception e) {
                 log.warn("Failed to fetch provider firm for office account: {}", officeAccountNumber, e);
             }
+        } else {
+            log.info("{}. Provider API is out of hours. Returning null.", officeAccountNumber);
         }
         return null;
     }

@@ -33,7 +33,6 @@ class ProviderServiceTest {
 
     @Test
     void testGetProviderOfficeDuringInHours() {
-        // Arrange
         String officeCode = "0P322F";
 
         ProviderFirmOfficeDto providerFirm = mock(ProviderFirmOfficeDto.class, RETURNS_DEEP_STUBS);
@@ -46,17 +45,14 @@ class ProviderServiceTest {
 
         ProviderService providerService = new ProviderService(providerApiClient, providerApiProperties, clock);
 
-        // Act
         var result = providerService.getProviderFirm(officeCode);
 
-        // Assert
         assertNotNull(result);
         verify(providerApiClient, times(1)).getProviderOffice(officeCode);
     }
 
     @Test
     void testGetProviderOfficeDuringOutOfHours() {
-        // Arrange
         String officeCode = "0P322F";
 
         when(providerApiProperties.getStart()).thenReturn(new TimeProperties(7, 0));
@@ -66,17 +62,14 @@ class ProviderServiceTest {
 
         ProviderService providerService = new ProviderService(providerApiClient, providerApiProperties, clock);
 
-        // Act
         var result = providerService.getProviderFirm(officeCode);
 
-        // Assert
         assertNull(result);
         verifyNoInteractions(providerApiClient);
     }
 
     @Test
     void testGetProviderOfficeWhenClientThrowsException() {
-        // Arrange
         String officeCode = "0P322F";
 
         when(providerApiProperties.getStart()).thenReturn(new TimeProperties(7, 0));
@@ -86,10 +79,8 @@ class ProviderServiceTest {
         ProviderService providerService =
                 new ProviderService(providerApiClient, providerApiProperties, Clock.systemUTC());
 
-        // Act
         var result = providerService.getProviderFirm(officeCode);
 
-        // Assert
         assertNull(result);
         verify(providerApiClient, times(1)).getProviderOffice(officeCode);
     }

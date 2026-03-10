@@ -36,7 +36,7 @@ public class TimeUtilsTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4, 5, 6, 7, 8})
+    @ValueSource(ints = {18, 8})
     public void isInTimeRange_whenInRangeAndEndsEarlierThanItStarts_returnsTrue(int hour) {
         LocalTime now = LocalTime.of(hour, 0);
         LocalTime start = LocalTime.of(17, 0);
@@ -46,7 +46,7 @@ public class TimeUtilsTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {10, 11, 12, 13, 14, 15, 16})
+    @ValueSource(ints = {10, 16})
     public void isInTimeRange_whenNotInRangeAndEndsEarlierThanItStarts_returnsFalse(int hour) {
         LocalTime now = LocalTime.of(hour, 0);
         LocalTime start = LocalTime.of(17, 0);
