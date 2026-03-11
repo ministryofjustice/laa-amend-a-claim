@@ -8,3 +8,8 @@ ingress:
 
 grafana:
   enabled: true
+
+alerting:
+  enabled: false
+  severity: "" # TODO: get severity value from Cloud Platform team
+  grafanaDashboard: https://grafana.live.cloud-platform.service.justice.gov.uk/d/laa-amend-a-claim-uat
