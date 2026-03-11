@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPath": "/api/v1/actuator/health"
+    "urlPath": "/actuator/health"
   },
   "response": {
     "status": 200,
