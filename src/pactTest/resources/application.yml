@@ -1,0 +1,36 @@
+spring:
+  profiles:
+    active: local
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.session.SessionAutoConfiguration
+  data:
+    redis:
+      url: redis://localhost:6379
+  session:
+    store-type: none
+
+management:
+  health:
+    redis:
+      enabled: false
+
+claims-api:
+  url: http://localhost:1234
+  access-token: e37da3d4-b8bc-4204-9528-deb6fa3bb39d
+microsoft-graph-api:
+  url: http://localhost:1234
+provider-api:
+  url: http://localhost:1234
+  access-token: e37da3d4-b8bc-4204-9528-deb6fa3bb39d
+search:
+  sort-enabled: true
+submission:
+  high-value-assessment-limit: 25000
+app:
+  feedback-url: http://localhost
+  laa-url: http://localhost
+  email: test@example.com
+sentry:
+  dsn: ""
