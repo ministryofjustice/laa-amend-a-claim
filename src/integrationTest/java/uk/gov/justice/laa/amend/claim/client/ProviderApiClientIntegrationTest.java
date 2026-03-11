@@ -35,7 +35,7 @@ public class ProviderApiClientIntegrationTest extends WireMockSetup {
             }\
             """;
 
-        stubFor(get(urlPathMatching("/api/v1/actuator/health"))
+        stubFor(get(urlPathMatching("/actuator/health"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/vnd.spring-boot.actuator.v3+json")
@@ -49,8 +49,7 @@ public class ProviderApiClientIntegrationTest extends WireMockSetup {
 
     @Test
     void testPingWhenServiceUnavailableResponse() {
-        stubFor(get(urlPathMatching("/api/v1/actuator/health"))
-                .willReturn(aResponse().withStatus(503)));
+        stubFor(get(urlPathMatching("/actuator/health")).willReturn(aResponse().withStatus(503)));
 
         Assertions.assertThrows(
                 WebClientResponseException.class, () -> providerApiClient.ping().block());

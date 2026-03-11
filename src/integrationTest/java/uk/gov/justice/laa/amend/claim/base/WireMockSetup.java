@@ -117,7 +117,7 @@ public class WireMockSetup {
             }\
             """;
 
-        stubFor(get(urlPathMatching("/api/v1/actuator/health"))
+        stubFor(get(urlPathMatching("/actuator/health"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/vnd.spring-boot.actuator.v3+json")

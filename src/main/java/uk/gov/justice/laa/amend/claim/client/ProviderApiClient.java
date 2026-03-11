@@ -8,12 +8,12 @@ import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.models.HealthDto;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
-@HttpExchange("/api/v1")
+@HttpExchange()
 public interface ProviderApiClient {
 
     @GetExchange(url = "/actuator/health", accept = MediaType.APPLICATION_JSON_VALUE)
     Mono<HealthDto> ping();
 
-    @GetExchange(url = "/provider-offices/{officeCode}", accept = MediaType.APPLICATION_JSON_VALUE)
+    @GetExchange(url = "/api/v1/provider-offices/{officeCode}", accept = MediaType.APPLICATION_JSON_VALUE)
     Mono<ProviderFirmOfficeDto> getProviderOffice(@PathVariable String officeCode);
 }
