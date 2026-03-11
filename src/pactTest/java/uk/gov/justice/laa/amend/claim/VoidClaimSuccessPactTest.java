@@ -46,8 +46,8 @@ public final class VoidClaimSuccessPactTest extends AbstractPactTest {
                 .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
                 .method("POST")
                 .body(LambdaDsl.newJsonBody(body -> {
-                            body.uuid("createdByUserId");
-                            body.stringType("assessmentReason", "Void reason");
+                            body.uuid("created_by_user_id");
+                            body.stringType("assessment_reason", "Void reason");
                         })
                         .build())
                 .willRespondWith()

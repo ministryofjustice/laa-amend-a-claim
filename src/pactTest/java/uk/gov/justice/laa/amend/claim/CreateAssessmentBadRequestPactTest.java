@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest;
+import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.config.ClaimsApiPactTestConfig;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentOutcome;
@@ -31,14 +31,14 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 @PactTestFor(providerName = AbstractPactTest.PROVIDER)
 @MockServerConfig(port = "1243")
 @Import(ClaimsApiPactTestConfig.class)
-@DisplayName("POST: /api/v1/claims/{claimId}/assessments - 400 PACT test")
+@DisplayName("POST: /api/v1/claims/{claimId}/assessments - 404 PACT test")
 public final class CreateAssessmentBadRequestPactTest extends AbstractPactTest {
 
     @Autowired
     ClaimsApiClient claimsApiClient;
 
     @Pact(consumer = CONSUMER)
-    public RequestResponsePact createAssessment400(PactDslWithProvider builder) {
+    public RequestResponsePact createAssessment404(PactDslWithProvider builder) {
         return builder.given("no claim exists")
                 .uponReceiving("a request to create an assessment for a non-existent claim")
                 .matchPath("/api/v1/claims/(" + UUID_REGEX + ")/assessments")
@@ -46,31 +46,44 @@ public final class CreateAssessmentBadRequestPactTest extends AbstractPactTest {
                 .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
                 .method("POST")
                 .body(LambdaDsl.newJsonBody(body -> {
-                            body.uuid("claimId");
-                            body.uuid("claimSummaryFeeId");
-                            body.stringType("assessmentOutcome", "PAID_IN_FULL");
-                            body.stringType("createdByUserId", "user-123");
-                            body.booleanType("isVatApplicable", true);
-                            body.decimalType("fixedFeeAmount", 100.00);
-                            body.decimalType("netProfitCostsAmount", 200.00);
-                            body.decimalType("disbursementAmount", 50.00);
-                            body.decimalType("disbursementVatAmount", 10.00);
-                            body.decimalType("assessedTotalVat", 60.00);
-                            body.decimalType("assessedTotalInclVat", 360.00);
-                            body.decimalType("allowedTotalVat", 60.00);
-                            body.decimalType("allowedTotalInclVat", 360.00);
+                            body.nullValue("id");
+                            body.uuid("claim_id");
+                            body.uuid("claim_summary_fee_id");
+                            body.stringType("assessment_outcome", "PAID_IN_FULL");
+                            body.stringType("created_by_user_id", "user-123");
+                            body.nullValue("assessment_reason");
+                            body.nullValue("assessment_type");
+                            body.booleanType("is_vat_applicable", true);
+                            body.decimalType("fixed_fee_amount", 100.00);
+                            body.decimalType("net_profit_costs_amount", 200.00);
+                            body.decimalType("disbursement_amount", 50.00);
+                            body.decimalType("disbursement_vat_amount", 10.00);
+                            body.decimalType("assessed_total_vat", 60.00);
+                            body.decimalType("assessed_total_incl_vat", 360.00);
+                            body.decimalType("allowed_total_vat", 60.00);
+                            body.decimalType("allowed_total_incl_vat", 360.00);
+                            body.nullValue("net_cost_of_counsel_amount");
+                            body.nullValue("net_travel_costs_amount");
+                            body.nullValue("net_waiting_costs_amount");
+                            body.nullValue("detention_travel_and_waiting_costs_amount");
+                            body.nullValue("jr_form_filling_amount");
+                            body.nullValue("bolt_on_adjourned_hearing_fee");
+                            body.nullValue("bolt_on_cmrh_oral_fee");
+                            body.nullValue("bolt_on_cmrh_telephone_fee");
+                            body.nullValue("bolt_on_home_office_interview_fee");
+                            body.nullValue("bolt_on_substantive_hearing_fee");
                         })
                         .build())
                 .willRespondWith()
-                .status(400)
+                .status(404)
                 .headers(Map.of("Content-Type", "application/json"))
                 .toPact();
     }
 
     @Test
-    @DisplayName("Verify 400 response - claim does not exist")
-    @PactTestFor(pactMethod = "createAssessment400")
-    void verify400Response() {
+    @DisplayName("Verify 404 response - claim does not exist")
+    @PactTestFor(pactMethod = "createAssessment404")
+    void verify404Response() {
         AssessmentPost assessment = new AssessmentPost();
         assessment.setClaimId(UUID.randomUUID());
         assessment.setClaimSummaryFeeId(UUID.randomUUID());
@@ -87,7 +100,9 @@ public final class CreateAssessmentBadRequestPactTest extends AbstractPactTest {
         assessment.setAllowedTotalInclVat(new BigDecimal("360.00"));
 
         assertThrows(
-                BadRequest.class,
-                () -> claimsApiClient.submitAssessment(CLAIM_ID.toString(), assessment).block());
+                NotFound.class,
+                () -> claimsApiClient
+                        .submitAssessment(CLAIM_ID.toString(), assessment)
+                        .block());
     }
 }

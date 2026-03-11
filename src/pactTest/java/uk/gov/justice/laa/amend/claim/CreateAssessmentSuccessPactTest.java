@@ -48,19 +48,32 @@ public final class CreateAssessmentSuccessPactTest extends AbstractPactTest {
                 .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
                 .method("POST")
                 .body(LambdaDsl.newJsonBody(body -> {
-                            body.uuid("claimId");
-                            body.uuid("claimSummaryFeeId");
-                            body.stringType("assessmentOutcome", "PAID_IN_FULL");
-                            body.stringType("createdByUserId", "user-123");
-                            body.booleanType("isVatApplicable", true);
-                            body.decimalType("fixedFeeAmount", 100.00);
-                            body.decimalType("netProfitCostsAmount", 200.00);
-                            body.decimalType("disbursementAmount", 50.00);
-                            body.decimalType("disbursementVatAmount", 10.00);
-                            body.decimalType("assessedTotalVat", 60.00);
-                            body.decimalType("assessedTotalInclVat", 360.00);
-                            body.decimalType("allowedTotalVat", 60.00);
-                            body.decimalType("allowedTotalInclVat", 360.00);
+                            body.nullValue("id");
+                            body.uuid("claim_id");
+                            body.uuid("claim_summary_fee_id");
+                            body.stringType("assessment_outcome", "PAID_IN_FULL");
+                            body.stringType("created_by_user_id", "user-123");
+                            body.nullValue("assessment_reason");
+                            body.nullValue("assessment_type");
+                            body.booleanType("is_vat_applicable", true);
+                            body.decimalType("fixed_fee_amount", 100.00);
+                            body.decimalType("net_profit_costs_amount", 200.00);
+                            body.decimalType("disbursement_amount", 50.00);
+                            body.decimalType("disbursement_vat_amount", 10.00);
+                            body.decimalType("assessed_total_vat", 60.00);
+                            body.decimalType("assessed_total_incl_vat", 360.00);
+                            body.decimalType("allowed_total_vat", 60.00);
+                            body.decimalType("allowed_total_incl_vat", 360.00);
+                            body.nullValue("net_cost_of_counsel_amount");
+                            body.nullValue("net_travel_costs_amount");
+                            body.nullValue("net_waiting_costs_amount");
+                            body.nullValue("detention_travel_and_waiting_costs_amount");
+                            body.nullValue("jr_form_filling_amount");
+                            body.nullValue("bolt_on_adjourned_hearing_fee");
+                            body.nullValue("bolt_on_cmrh_oral_fee");
+                            body.nullValue("bolt_on_cmrh_telephone_fee");
+                            body.nullValue("bolt_on_home_office_interview_fee");
+                            body.nullValue("bolt_on_substantive_hearing_fee");
                         })
                         .build())
                 .willRespondWith()
@@ -92,8 +105,9 @@ public final class CreateAssessmentSuccessPactTest extends AbstractPactTest {
         assessment.setAllowedTotalVat(new BigDecimal("60.00"));
         assessment.setAllowedTotalInclVat(new BigDecimal("360.00"));
 
-        ResponseEntity<CreateAssessment201Response> response =
-                claimsApiClient.submitAssessment(CLAIM_ID.toString(), assessment).block();
+        ResponseEntity<CreateAssessment201Response> response = claimsApiClient
+                .submitAssessment(CLAIM_ID.toString(), assessment)
+                .block();
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);

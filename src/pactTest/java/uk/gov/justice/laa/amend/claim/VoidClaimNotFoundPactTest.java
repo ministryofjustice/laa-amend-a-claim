@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.reactive.function.client.WebClientResponseException.BadRequest;
+import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.client.VoidClaimRequest;
 import uk.gov.justice.laa.amend.claim.config.ClaimsApiPactTestConfig;
@@ -29,14 +29,14 @@ import uk.gov.justice.laa.amend.claim.config.ClaimsApiPactTestConfig;
 @PactTestFor(providerName = AbstractPactTest.PROVIDER)
 @MockServerConfig(port = "1241")
 @Import(ClaimsApiPactTestConfig.class)
-@DisplayName("POST: /api/v1/claims/{claimId}/void - 400 PACT test")
+@DisplayName("POST: /api/v1/claims/{claimId}/void - 404 PACT test")
 public final class VoidClaimNotFoundPactTest extends AbstractPactTest {
 
     @Autowired
     ClaimsApiClient claimsApiClient;
 
     @Pact(consumer = CONSUMER)
-    public RequestResponsePact voidClaim400NoClaimExists(PactDslWithProvider builder) {
+    public RequestResponsePact voidClaim404NoClaimExists(PactDslWithProvider builder) {
         return builder.given("no claim exists")
                 .uponReceiving("a request to void a non-existent claim")
                 .matchPath("/api/v1/claims/(" + UUID_REGEX + ")/void")
@@ -44,23 +44,23 @@ public final class VoidClaimNotFoundPactTest extends AbstractPactTest {
                 .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
                 .method("POST")
                 .body(LambdaDsl.newJsonBody(body -> {
-                            body.uuid("createdByUserId");
-                            body.stringType("assessmentReason", "Void reason");
+                            body.uuid("created_by_user_id");
+                            body.stringType("assessment_reason", "Void reason");
                         })
                         .build())
                 .willRespondWith()
-                .status(400)
+                .status(404)
                 .headers(Map.of("Content-Type", "application/json"))
                 .toPact();
     }
 
     @Test
-    @DisplayName("Verify 400 response - claim does not exist")
-    @PactTestFor(pactMethod = "voidClaim400NoClaimExists")
-    void verify400Response() {
+    @DisplayName("Verify 404 response - claim does not exist")
+    @PactTestFor(pactMethod = "voidClaim404NoClaimExists")
+    void verify404Response() {
         VoidClaimRequest request = new VoidClaimRequest(UUID.randomUUID(), "Void reason");
         assertThrows(
-                BadRequest.class,
+                NotFound.class,
                 () -> claimsApiClient.voidClaim(CLAIM_ID.toString(), request).block());
     }
 }
