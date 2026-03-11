@@ -48,12 +48,6 @@ microsoft-graph-api:
 provider-api:
   url: ${PROVIDER_API}
   access-token: ${PROVIDER_TOKEN}
-  start:
-    hour: 7
-    minute: 0
-  end:
-    hour: 21
-    minute: 30
 search:
   sort-enabled: true
 submission:

@@ -33,6 +33,7 @@ class ClaimDetailsIntegrationTest extends WireMockSetup {
     @BeforeEach
     void setUp() {
         setupGetClaimStub(SUBMISSION_ID, CLAIM_ID, OFFICE_ACCOUNT_NUMBER);
+        setupGetProviderDetailsApiHealthStub();
         setupGetProviderOfficeStub(OFFICE_ACCOUNT_NUMBER, FIRM_NAME);
     }
 

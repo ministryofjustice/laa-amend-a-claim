@@ -4,22 +4,20 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.health.contributor.Status;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
-import uk.gov.justice.laa.amend.claim.client.config.ProviderApiProperties;
-import uk.gov.justice.laa.amend.claim.client.config.TimeProperties;
+import uk.gov.justice.laa.amend.claim.models.HealthDto;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,60 +26,71 @@ class ProviderServiceTest {
     @Mock
     private ProviderApiClient providerApiClient;
 
-    @Mock
-    private ProviderApiProperties providerApiProperties;
+    @InjectMocks
+    private ProviderService providerService;
 
     @Test
-    void testGetProviderOfficeDuringInHours() {
+    void testGetProviderFirmWhenDuringInHours() {
         String officeCode = "0P322F";
+
+        HealthDto health = new HealthDto();
+        health.setStatus(Status.UP);
 
         ProviderFirmOfficeDto providerFirm = mock(ProviderFirmOfficeDto.class, RETURNS_DEEP_STUBS);
 
-        when(providerApiProperties.getStart()).thenReturn(new TimeProperties(7, 0));
-        when(providerApiProperties.getEnd()).thenReturn(new TimeProperties(21, 30));
+        when(providerApiClient.ping()).thenReturn(Mono.just(health));
         when(providerApiClient.getProviderOffice(officeCode)).thenReturn(Mono.just(providerFirm));
-
-        Clock clock = Clock.fixed(Instant.parse("2026-03-10T12:00:00Z"), ZoneId.systemDefault());
-
-        ProviderService providerService = new ProviderService(providerApiClient, providerApiProperties, clock);
 
         var result = providerService.getProviderFirm(officeCode);
 
         assertNotNull(result);
+        verify(providerApiClient, times(1)).ping();
         verify(providerApiClient, times(1)).getProviderOffice(officeCode);
     }
 
     @Test
-    void testGetProviderOfficeDuringOutOfHours() {
+    void testGetProviderFirmWhenOutOfHours() {
         String officeCode = "0P322F";
 
-        when(providerApiProperties.getStart()).thenReturn(new TimeProperties(7, 0));
-        when(providerApiProperties.getEnd()).thenReturn(new TimeProperties(21, 30));
+        HealthDto health = new HealthDto();
+        health.setStatus(Status.DOWN);
 
-        Clock clock = Clock.fixed(Instant.parse("2026-03-10T06:00:00Z"), ZoneId.systemDefault());
-
-        ProviderService providerService = new ProviderService(providerApiClient, providerApiProperties, clock);
+        when(providerApiClient.ping()).thenReturn(Mono.just(health));
 
         var result = providerService.getProviderFirm(officeCode);
 
         assertNull(result);
-        verifyNoInteractions(providerApiClient);
+        verify(providerApiClient, times(1)).ping();
+        verify(providerApiClient, never()).getProviderOffice(officeCode);
     }
 
     @Test
-    void testGetProviderOfficeWhenClientThrowsException() {
+    void testGetProviderFirmWhenGetHealthThrowsException() {
         String officeCode = "0P322F";
 
-        when(providerApiProperties.getStart()).thenReturn(new TimeProperties(7, 0));
-        when(providerApiProperties.getEnd()).thenReturn(new TimeProperties(21, 30));
-        when(providerApiClient.getProviderOffice(officeCode)).thenReturn(Mono.error(new RuntimeException("error")));
-
-        ProviderService providerService =
-                new ProviderService(providerApiClient, providerApiProperties, Clock.systemUTC());
+        when(providerApiClient.ping()).thenReturn(Mono.error(new Exception("")));
 
         var result = providerService.getProviderFirm(officeCode);
 
         assertNull(result);
+        verify(providerApiClient, times(1)).ping();
+        verify(providerApiClient, never()).getProviderOffice(officeCode);
+    }
+
+    @Test
+    void testGetProviderFirmWhenGetProviderOfficeThrowsException() {
+        String officeCode = "0P322F";
+
+        HealthDto health = new HealthDto();
+        health.setStatus(Status.UP);
+
+        when(providerApiClient.ping()).thenReturn(Mono.just(health));
+        when(providerApiClient.getProviderOffice(officeCode)).thenReturn(Mono.error(new RuntimeException("error")));
+
+        var result = providerService.getProviderFirm(officeCode);
+
+        assertNull(result);
+        verify(providerApiClient, times(1)).ping();
         verify(providerApiClient, times(1)).getProviderOffice(officeCode);
     }
 }
