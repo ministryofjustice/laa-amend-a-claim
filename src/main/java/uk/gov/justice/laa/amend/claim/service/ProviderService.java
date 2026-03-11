@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.health.contributor.Status;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
+import uk.gov.justice.laa.amend.claim.models.HealthDto;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
 @Service
@@ -21,22 +22,22 @@ public class ProviderService {
      * @return firm name from API or office account number as fallback
      */
     public ProviderFirmOfficeDto getProviderFirm(String officeAccountNumber) {
-        if (isApiUp()) {
+        if (isAvailable()) {
             try {
                 return providerApiClient.getProviderOffice(officeAccountNumber).block();
             } catch (Exception e) {
                 log.warn("Failed to fetch provider firm for office account: {}", officeAccountNumber, e);
             }
         }
+        log.info("Provider details API is unavailable");
         return null;
     }
 
-    private boolean isApiUp() {
+    private boolean isAvailable() {
         try {
-            var response = providerApiClient.ping().block();
+            HealthDto response = providerApiClient.ping().block();
             return response != null && response.getStatus().equals(Status.UP);
         } catch (Exception e) {
-            log.info("Provider details API is out of hours.");
             return false;
         }
     }
