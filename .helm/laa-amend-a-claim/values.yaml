@@ -207,6 +207,11 @@ nodeSelector: {}
 redis:
   enabled: false
 
+alerting:
+  enabled: false
+  severity: "laa-amend-a-claim"
+  grafanaDashboard: ""
+
 tolerations: []
 
 affinity: {}
