@@ -29,16 +29,20 @@ public class ProviderService {
                 log.warn("Failed to fetch provider firm for office account: {}", officeAccountNumber, e);
             }
         }
-        log.info("Provider details API is unavailable");
         return null;
     }
 
     private boolean isAvailable() {
+        boolean available;
         try {
             HealthDto response = providerApiClient.ping().block();
-            return response != null && response.getStatus().equals(Status.UP);
+            available = response != null && response.getStatus().equals(Status.UP);
         } catch (Exception e) {
-            return false;
+            available = false;
         }
+        if (!available) {
+            log.info("Provider details API is unavailable");
+        }
+        return available;
     }
 }
