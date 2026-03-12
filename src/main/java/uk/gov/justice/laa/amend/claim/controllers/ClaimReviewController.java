@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
@@ -23,6 +24,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Res
 @Controller
 @RequiredArgsConstructor
 @Slf4j
+@HasRoleEscapeCaseCaseworker
 public class ClaimReviewController {
 
     private final AssessmentService assessmentService;

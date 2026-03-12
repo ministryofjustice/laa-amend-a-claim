@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
@@ -37,7 +38,9 @@ import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
+import uk.gov.justice.laa.amend.claim.models.Role;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @ActiveProfiles("local")
@@ -47,6 +50,9 @@ class ChangeMonetaryValueControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private DummyUserSecurityService dummyUserSecurityService;
 
     @MockitoBean
     private MaintenanceService maintenanceService;
@@ -62,6 +68,8 @@ class ChangeMonetaryValueControllerTest {
         claimId = UUID.randomUUID();
         session = new MockHttpSession();
         redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+
+        dummyUserSecurityService.setRoles(Set.of(Role.ROLE_ESCAPE_CASE_CASEWORKER));
     }
 
     private static Stream<Cost> validCosts() {
@@ -181,6 +189,20 @@ class ChangeMonetaryValueControllerTest {
                         .with(csrf())
                         .param("value", "1"))
                 .andExpect(status().isNotFound());
+    }
+
+    @ParameterizedTest
+    @MethodSource("validCosts")
+    void testGetRequiresRole(Cost cost) throws Exception {
+        dummyUserSecurityService.setRoles(Set.of());
+        mockMvc.perform(get(buildPath(cost.getPath())).session(session)).andExpect(status().isForbidden());
+    }
+
+    @ParameterizedTest
+    @MethodSource("validCosts")
+    void testPostRequiresRole(Cost cost) throws Exception {
+        dummyUserSecurityService.setRoles(Set.of());
+        mockMvc.perform(post(buildPath(cost.getPath())).session(session)).andExpect(status().isForbidden());
     }
 
     private Claim createClaimFor(Cost cost) {

@@ -17,6 +17,7 @@ import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.VoidConfirmationController;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
+import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 
 @ActiveProfiles("local")
@@ -24,7 +25,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 @Import(LocalSecurityConfig.class)
 class VoidConfirmationViewTest extends ViewTestBase {
 
-    private static final UUID USER_ID = UUID.fromString(LocalSecurityConfig.USER_ID);
+    private static final UUID USER_ID = UUID.fromString(DummyUserSecurityService.USER_ID);
 
     @MockitoBean
     ClaimService claimService;

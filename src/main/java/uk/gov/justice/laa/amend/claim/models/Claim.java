@@ -44,10 +44,11 @@ public class Claim implements Serializable {
         return new ClaimView(this);
     }
 
+    public Boolean isValid() {
+        return status == ClaimStatus.VALID;
+    }
+
     public Boolean isVoided() {
-        if (status != null) {
-            return status == ClaimStatus.VOID;
-        }
-        return false;
+        return status == ClaimStatus.VOID;
     }
 }
