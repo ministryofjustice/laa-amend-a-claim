@@ -4,8 +4,8 @@ import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.P
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -27,6 +27,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.header.HeaderWriterFilter;
+import uk.gov.justice.laa.amend.claim.models.Role;
 
 @Profile("!local & !ephemeral & !e2e")
 @Configuration
@@ -72,9 +73,12 @@ public class SecurityConfig extends CommonSecurityConfig {
     }
 
     public Set<GrantedAuthority> getAuthorities(Map<String, Object> attributes) {
-        List<String> roles = parseRawRoles(attributes.get("LAA_APP_ROLES"));
-        return new SimpleAuthorityMapper()
-                .mapAuthorities(roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
+        var roles = parseRawRoles(attributes.get("LAA_APP_ROLES")).stream()
+                .map(Role::fromRoleName)
+                .flatMap(Optional::stream)
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .toList();
+        return new SimpleAuthorityMapper().mapAuthorities(roles);
     }
 
     private List<String> parseRawRoles(Object rawRoles) {

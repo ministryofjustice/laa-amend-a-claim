@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;
 import uk.gov.justice.laa.amend.claim.config.security.SecurityConfig;
+import uk.gov.justice.laa.amend.claim.models.Role;
 
 public class SecurityConfigTest {
 
@@ -27,24 +28,39 @@ public class SecurityConfigTest {
 
         @Test
         void mapRolesToAuthoritiesWhenRolesAreCommaSeparated() {
-            Map<String, Object> attributes = Map.of("LAA_APP_ROLES", "USER,ADMIN");
+            Map<String, Object> attributes = Map.of(
+                    "LAA_APP_ROLES",
+                    "Amend a Claim - Claim Amendments Caseworker,Amend a Claim - Escape Case Caseworker");
 
             Set<GrantedAuthority> result = config.getAuthorities(attributes);
 
             assertThat(result)
                     .extracting(GrantedAuthority::getAuthority)
-                    .containsExactlyInAnyOrder("ROLE_USER", "ROLE_ADMIN");
+                    .containsExactlyInAnyOrder(
+                            Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER.name(), Role.ROLE_ESCAPE_CASE_CASEWORKER.name());
         }
 
         @Test
         void mapRolesToAuthoritiesWhenRolesAreInList() {
-            Map<String, Object> attributes = Map.of("LAA_APP_ROLES", List.of("USER", "ADMIN"));
+            Map<String, Object> attributes = Map.of(
+                    "LAA_APP_ROLES",
+                    List.of("Amend a Claim - Claim Amendments Caseworker", "Amend a Claim - Escape Case Caseworker"));
 
             Set<GrantedAuthority> result = config.getAuthorities(attributes);
 
             assertThat(result)
                     .extracting(GrantedAuthority::getAuthority)
-                    .containsExactlyInAnyOrder("ROLE_USER", "ROLE_ADMIN");
+                    .containsExactlyInAnyOrder(
+                            Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER.name(), Role.ROLE_ESCAPE_CASE_CASEWORKER.name());
+        }
+
+        @Test
+        void ignoresUnknownRoles() {
+            Map<String, Object> attributes = Map.of("LAA_APP_ROLES", List.of("A role that's not in the Role enum"));
+
+            Set<GrantedAuthority> result = config.getAuthorities(attributes);
+
+            assertThat(result).isEmpty();
         }
     }
 }

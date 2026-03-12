@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,8 +26,10 @@ import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.Role;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
+import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 
@@ -35,10 +38,13 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 @Import({LocalSecurityConfig.class, ThymeleafConfig.class})
 public class VoidConfirmationControllerTest {
 
-    private static final UUID USER_ID = UUID.fromString(LocalSecurityConfig.USER_ID);
+    private static final UUID USER_ID = UUID.fromString(DummyUserSecurityService.USER_ID);
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private DummyUserSecurityService dummyUserSecurityService;
 
     @MockitoBean
     private MaintenanceService maintenanceService;
@@ -65,6 +71,8 @@ public class VoidConfirmationControllerTest {
         MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
         session.setAttribute(claimId.toString(), claim);
         when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
+
+        dummyUserSecurityService.setRoles(Set.of(Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER));
     }
 
     @Test
@@ -73,8 +81,7 @@ public class VoidConfirmationControllerTest {
 
         when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
-        var path = String.format("/submissions/%s/claims/%s/void", submissionId, claimId);
-        mockMvc.perform(get(path).session(session))
+        mockMvc.perform(get(buildPath()).session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("void-confirmation"))
                 .andExpect(model().attributeExists("claim"))
@@ -85,12 +92,11 @@ public class VoidConfirmationControllerTest {
 
     @Test
     public void testSuccessfulSubmitRedirectsToSearch() throws Exception {
-        var path = String.format("/submissions/%s/claims/%s/void", submissionId, claimId);
         var redirectUrl = "/";
 
         when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
-        mockMvc.perform(post(path).session(session).with(csrf()))
+        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl))
                 .andExpect(flash().attribute("voided", true))
@@ -99,13 +105,12 @@ public class VoidConfirmationControllerTest {
 
     @Test
     public void testSuccessfulSubmitRedirectsToSearchInSession() throws Exception {
-        var path = String.format("/submissions/%s/claims/%s/void", submissionId, claimId);
         var searchUrl = "/?providerAccountNumber=123456";
         session.setAttribute("searchUrl", searchUrl);
 
         when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
-        mockMvc.perform(post(path).session(session).with(csrf()))
+        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(searchUrl))
                 .andExpect(flash().attribute("voided", true))
@@ -114,16 +119,30 @@ public class VoidConfirmationControllerTest {
 
     @Test
     public void testUnsuccessfulSubmitReloadsPageWithAlert() throws Exception {
-        var path = String.format("/submissions/%s/claims/%s/void", submissionId, claimId);
-
         when(claimService.voidClaim(claimId, USER_ID)).thenThrow(new RuntimeException());
 
-        mockMvc.perform(post(path).session(session).with(csrf()))
+        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
                 .andExpect(status().is4xxClientError())
                 .andExpect(view().name("void-confirmation"))
                 .andExpect(model().attributeExists("claim"))
                 .andExpect(model().attribute("claimId", claimId))
                 .andExpect(model().attribute("submissionId", submissionId))
                 .andExpect(model().attribute("submissionFailed", true));
+    }
+
+    @Test
+    void testGetRequiresRole() throws Exception {
+        dummyUserSecurityService.setRoles(Set.of());
+        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testPostRequiresRole() throws Exception {
+        dummyUserSecurityService.setRoles(Set.of());
+        mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
+    }
+
+    private String buildPath() {
+        return String.format("/submissions/%s/claims/%s/void", submissionId, claimId);
     }
 }
