@@ -26,5 +26,9 @@
     "assessed_total_vat" : null,
     "assessed_total_incl_vat" : null,
     "assessment_type": "{{parameters.assessment_type}}"
-  } ]
+  } ],
+  "total_pages": 12,
+  "total_elements": 120,
+  "number": 0,
+  "size": 5
 }

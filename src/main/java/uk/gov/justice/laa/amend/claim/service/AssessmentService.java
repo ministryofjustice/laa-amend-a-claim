@@ -176,6 +176,10 @@ public class AssessmentService {
                     String.format("Failed to get assessments for claim ID: %s", claimDetails.getClaimId()));
         }
 
+        log.info(
+                "Number of total assessments found: {} for claim Id: {}",
+                assessmentResults.getTotalElements(),
+                claimDetails.getClaimId());
         // Currently treats null as Escape case assessments until the migration completes for VOID assessments.
         // This should be to just retrieve assessments from AssessmentResults after migration.
         List<AssessmentGet> assessments = assessmentResults.getAssessments().stream()
