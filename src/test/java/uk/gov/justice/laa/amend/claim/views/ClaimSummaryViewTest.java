@@ -262,7 +262,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         Document doc = renderDocument();
 
-        assertPageHasPrimaryButtonDisabled(doc, "Add assessment outcome");
+        assertPageHasPrimaryButtonHidden(doc, "Add assessment outcome");
 
         assertPageHasLink(doc, "back-to-search", "Back to search", "/");
     }
