@@ -26,7 +26,7 @@ import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 @RequiredArgsConstructor
 public class ClaimService {
 
-    private static final String VOID_ASSESSMENT_REASON = "TODO";
+    private static final String VOID_ASSESSMENT_REASON = "Void assessment";
 
     private final ClaimsApiClient claimsApiClient;
     private final ClaimMapper claimMapper;

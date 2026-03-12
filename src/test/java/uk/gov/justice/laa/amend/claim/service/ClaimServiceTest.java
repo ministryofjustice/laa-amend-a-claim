@@ -278,7 +278,7 @@ class ClaimServiceTest {
 
     @Test
     void voidClaim() {
-        var request = new VoidClaimRequest(userId, "TODO");
+        var request = new VoidClaimRequest(userId, "Void assessment");
         var expectedResponse = new VoidClaim201Response(UUID.randomUUID());
         when(claimsApiClient.voidClaim(claimId, request)).thenReturn(Mono.just(expectedResponse));
 
