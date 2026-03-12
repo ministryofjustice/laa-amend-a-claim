@@ -27,7 +27,7 @@ public class ProviderApiClientIntegrationTest extends WireMockSetup {
         HealthDto health = providerApiClient.ping().block();
 
         Assertions.assertNotNull(health);
-        Assertions.assertEquals(Status.UP, health.getStatus());
+        Assertions.assertEquals(Status.UP, health.status());
     }
 
     @Test
@@ -47,7 +47,7 @@ public class ProviderApiClientIntegrationTest extends WireMockSetup {
         HealthDto health = providerApiClient.ping().block();
 
         Assertions.assertNotNull(health);
-        Assertions.assertEquals(Status.DOWN, health.getStatus());
+        Assertions.assertEquals(Status.DOWN, health.status());
     }
 
     @Test

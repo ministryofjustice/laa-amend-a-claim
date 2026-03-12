@@ -33,8 +33,7 @@ class ProviderServiceTest {
     void testGetProviderFirmWhenDuringInHours() {
         String officeCode = "0P322F";
 
-        HealthDto health = new HealthDto();
-        health.setStatus(Status.UP);
+        HealthDto health = new HealthDto(Status.UP);
 
         ProviderFirmOfficeDto providerFirm = mock(ProviderFirmOfficeDto.class, RETURNS_DEEP_STUBS);
 
@@ -52,8 +51,7 @@ class ProviderServiceTest {
     void testGetProviderFirmWhenOutOfHours() {
         String officeCode = "0P322F";
 
-        HealthDto health = new HealthDto();
-        health.setStatus(Status.DOWN);
+        HealthDto health = new HealthDto(Status.DOWN);
 
         when(providerApiClient.ping()).thenReturn(Mono.just(health));
 
@@ -81,8 +79,7 @@ class ProviderServiceTest {
     void testGetProviderFirmWhenGetProviderOfficeThrowsException() {
         String officeCode = "0P322F";
 
-        HealthDto health = new HealthDto();
-        health.setStatus(Status.UP);
+        HealthDto health = new HealthDto(Status.UP);
 
         when(providerApiClient.ping()).thenReturn(Mono.just(health));
         when(providerApiClient.getProviderOffice(officeCode)).thenReturn(Mono.error(new RuntimeException("error")));

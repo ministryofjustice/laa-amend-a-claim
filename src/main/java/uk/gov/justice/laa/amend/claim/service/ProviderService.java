@@ -36,7 +36,7 @@ public class ProviderService {
         boolean available;
         try {
             HealthDto response = providerApiClient.ping().block();
-            available = response != null && response.getStatus().equals(Status.UP);
+            available = response != null && response.status().equals(Status.UP);
         } catch (Exception e) {
             available = false;
         }
