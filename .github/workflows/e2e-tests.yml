@@ -269,7 +269,7 @@ jobs:
           
           echo "Checking styling..."
           check "/css/styles.css"
-          check "/webjars/govuk-frontend/5.14.0/dist/govuk/govuk-frontend.min.css"
+          check "/webjars/govuk-frontend/6.1.0/dist/govuk/govuk-frontend.min.css"
           check "/webjars/ministryofjustice__frontend/7.1.0/moj/moj-frontend.min.css"
           
           echo "Running E2E tests..."
