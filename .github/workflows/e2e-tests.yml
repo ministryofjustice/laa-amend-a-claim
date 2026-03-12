@@ -293,3 +293,35 @@ jobs:
             src/e2e/build/axe-reports/
           retention-days: 15
 
+  cleanup-e2e-environment:
+    name: Cleanup E2E Environment
+    needs: run-e2e-tests
+    if: always()
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      KUBE_CERT: ${{ secrets.KUBE_CERT }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+      RELEASE_NAME: e2e-${{ inputs.sanitized_release_name }}
+    steps:
+      - name: Authenticate to Kubernetes Cluster
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@768f673017edbb793cf052fa159c272d6c1f9177
+        with:
+          kube-cert: ${{ secrets.KUBE_CERT }}
+          kube-token: ${{ secrets.KUBE_TOKEN }}
+          kube-cluster: ${{ secrets.KUBE_CLUSTER }}
+          kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
+          kube-sa: deploy-user
+
+      - name: Remove E2E Helm Release
+        run: |
+          if helm list -n "${KUBE_NAMESPACE}" | grep -q "${RELEASE_NAME}"; then
+            echo "Cleaning up E2E release: ${RELEASE_NAME}"
+            helm uninstall "${RELEASE_NAME}" -n "${KUBE_NAMESPACE}"
+            echo "E2E environment cleaned up successfully"
+          else
+            echo "Release ${RELEASE_NAME} not found, nothing to clean up"
+          fi
+
