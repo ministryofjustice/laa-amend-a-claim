@@ -142,7 +142,7 @@ public class ClaimDetailsTest extends BaseTest {
 
     @Test
     @Story("Non-escape claim")
-    @DisplayName("Claim Details: Add assessment outcome is disabled for non-escape claims")
+    @DisplayName("Claim Details: Add assessment outcome is hidden for non-escape claims")
     @Severity(SeverityLevel.CRITICAL)
     void addAssessmentOutcomeIsDisabledForNonEscapeClaim() {
         SearchPage search = new SearchPage(page);
@@ -154,7 +154,7 @@ public class ClaimDetailsTest extends BaseTest {
         ClaimDetailsPage details = new ClaimDetailsPage(page);
 
         Assertions.assertTrue(
-                details.isAddAssessmentOutcomeDisabled(),
+                details.isAddAssessmentOutcomeHidden(),
                 "Expected Add assessment outcome button to be disabled for non-escape claim");
     }
 
@@ -178,12 +178,12 @@ public class ClaimDetailsTest extends BaseTest {
         ClaimDetailsPage details = new ClaimDetailsPage(page);
 
         Assertions.assertFalse(
-                details.isAddAssessmentOutcomeDisabled(),
+                details.isAddAssessmentOutcomeHidden(),
                 "Expected Add assessment outcome button to be enabled for escape claim");
 
         Assertions.assertEquals(
                 claimDetailsFixture.isAddAssessmentOutcomeDisabled(),
-                details.isAddAssessmentOutcomeDisabled(),
+                details.isAddAssessmentOutcomeHidden(),
                 "Add assessment outcome enabled/disabled state mismatch");
 
         details.assertAllValues(claimDetailsFixture.getValues());
