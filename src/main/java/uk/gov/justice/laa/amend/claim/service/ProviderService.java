@@ -16,10 +16,10 @@ public class ProviderService {
     private final ProviderApiClient providerApiClient;
 
     /**
-     * Fetches provider firm name from Provider API
+     * Fetches provider firm office from Provider API
      *
      * @param officeAccountNumber the office account number
-     * @return firm name from API or office account number as fallback
+     * @return firm office from API or null as fallback
      */
     public ProviderFirmOfficeDto getProviderFirm(String officeAccountNumber) {
         if (isAvailable()) {
