@@ -105,4 +105,22 @@ public class WireMockSetup {
                         .withHeader("Content-Type", "application/json")
                         .withBody(response)));
     }
+
+    public void setupGetProviderDetailsApiHealthStub() {
+        String response = """
+            {
+                "groups": [
+                    "liveness",
+                    "readiness"
+                ],
+                "status": "UP"
+            }\
+            """;
+
+        stubFor(get(urlPathMatching("/actuator/health"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/vnd.spring-boot.actuator.v3+json")
+                        .withBody(response)));
+    }
 }
