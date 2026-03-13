@@ -37,7 +37,7 @@ jobs:
           java-version: 25
           distribution: corretto
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v5.0.0
+        uses: gradle/actions/setup-gradle@v5.0.2
       - name: Start app with local profile
         run: |
           echo "INFO: Running application..."
@@ -69,14 +69,14 @@ jobs:
           fail_action: true
       - name: Upload logs
         if: always()
-        uses: actions/upload-artifact@v6.0.0
+        uses: actions/upload-artifact@v7.0.0
         with:
           name: zap_output.log
           path: zap_output.log
           retention-days: 1
       - name: Notify Slack on failure
         if: failure()
-        uses: slackapi/slack-github-action@v2.1.1
+        uses: slackapi/slack-github-action@v3.0.1
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
