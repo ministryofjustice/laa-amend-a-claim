@@ -56,5 +56,9 @@
       "assessed_total_incl_vat": 3500,
       "assessment_type": "ESCAPE_CASE_ASSESSMENT"
     }
-  ]
+  ],
+  "total_pages": 12,
+  "total_elements": 120,
+  "number": 0,
+  "size": 5
 }
