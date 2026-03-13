@@ -4,10 +4,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 
+@UserControllerAdvice.Enabled
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/bulk-upload")
@@ -36,7 +36,7 @@ public class BulkUploadController {
     @PostMapping()
     public String onSubmit(
             @RequestParam("file") MultipartFile file,
-            @AuthenticationPrincipal OidcUser oidcUser,
+            @ModelAttribute("userId") UUID userId,
             RedirectAttributes redirectAttributes,
             HttpServletResponse response)
             throws IOException {
@@ -45,7 +45,6 @@ public class BulkUploadController {
             return null;
         }
 
-        var userId = UUID.fromString(oidcUser.getClaim("oid"));
         var result = bulkUploadService.upload(file, userId);
 
         redirectAttributes.addFlashAttribute("result", result);

@@ -9,11 +9,10 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +22,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 @AllArgsConstructor
+@UserControllerAdvice.Enabled
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/void")
 @Slf4j
@@ -53,7 +53,7 @@ public class VoidConfirmationController {
     public String onSubmit(
             HttpSession session,
             Model model,
-            @AuthenticationPrincipal OidcUser oidcUser,
+            @ModelAttribute("userId") UUID userId,
             @PathVariable UUID submissionId,
             @PathVariable UUID claimId,
             RedirectAttributes redirectAttributes,
@@ -65,7 +65,6 @@ public class VoidConfirmationController {
         }
 
         var claim = getValidClaim(session, submissionId, claimId);
-        var userId = UUID.fromString(oidcUser.getClaim("oid"));
 
         try {
             claimService.voidClaim(claimId, userId);
