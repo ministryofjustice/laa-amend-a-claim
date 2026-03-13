@@ -32,4 +32,5 @@ submission:
   high-value-assessment-limit: 25000
 
 feature-flags:
+  is-bulk-upload-enable: true
   is-voiding-enabled: true

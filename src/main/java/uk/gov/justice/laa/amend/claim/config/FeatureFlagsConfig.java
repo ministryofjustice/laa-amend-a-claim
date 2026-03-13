@@ -8,5 +8,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "feature-flags")
 public class FeatureFlagsConfig {
+    private Boolean isBulkUploadEnabled;
     private Boolean isVoidingEnabled;
 }
