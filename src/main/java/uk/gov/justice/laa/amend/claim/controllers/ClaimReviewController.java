@@ -19,6 +19,7 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
+@UserControllerAdvice.Enabled
 @Controller
 @RequiredArgsConstructor
 @Slf4j
