@@ -126,13 +126,12 @@
                                 </th:block>
 
                                 <th:block th:if="${isVoidClaimPresent}">
-                                    <button class="govuk-button govuk-button--warning"
-                                            data-module="govuk-button"
-                                            th:data-testid="claim-details-void-button"
-                                            th:text="#{claimSummary.voidClaim}" type="submit">
-                                    </button>
+                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}/void(submissionId=${submissionId}, claimId=${claimId})}"
+                                       id="void-claim"
+                                       class="govuk-button govuk-button--warning"
+                                       data-module="govuk-button"
+                                       th:text="#{claimSummary.voidClaim}"></a>
                                 </th:block>
-
 
                                 <a th:href="@{${searchUrl}}" id="back-to-search"
                                    class="govuk-link govuk-link--no-visited-state"

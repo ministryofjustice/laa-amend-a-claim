@@ -8,11 +8,10 @@ import jakarta.servlet.http.HttpSession;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -20,6 +19,7 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
+@UserControllerAdvice.Enabled
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -42,16 +42,15 @@ public class ClaimReviewController {
     public String submit(
             HttpSession session,
             Model model,
-            @AuthenticationPrincipal OidcUser oidcUser,
+            @ModelAttribute("userId") UUID userId,
             @PathVariable UUID submissionId,
             @PathVariable UUID claimId,
             HttpServletResponse response) {
         var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
         ClaimDetailsView<? extends ClaimDetails> viewModel = claim.toViewModel();
         if (viewModel.getErrors().isEmpty()) {
-            String userId = oidcUser.getClaim("oid");
             try {
-                CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
+                CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId.toString());
                 session.removeAttribute(claimId.toString());
                 UUID assessmentId = result.getId();
                 session.setAttribute(ASSESSMENT_ID, assessmentId);

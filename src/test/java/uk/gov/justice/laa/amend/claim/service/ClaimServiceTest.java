@@ -34,10 +34,14 @@ import uk.gov.justice.laa.amend.claim.models.SortField;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
 @ExtendWith(MockitoExtension.class)
 class ClaimServiceTest {
+
+    private static final List<ClaimStatus> STATUSES = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
 
     @Mock
     private ClaimsApiClient claimsApiClient;
@@ -53,12 +57,13 @@ class ClaimServiceTest {
 
     private UUID submissionId;
     private UUID claimId;
-    private List<ClaimStatus> statuses = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
+    private UUID userId;
 
     @BeforeEach
     void setUp() {
         submissionId = UUID.randomUUID();
         claimId = UUID.randomUUID();
+        userId = UUID.randomUUID();
     }
 
     @Test
@@ -68,7 +73,7 @@ class ClaimServiceTest {
         var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
 
         when(claimsApiClient.searchClaims(
-                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", statuses))
+                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", STATUSES))
                 .thenReturn(Mono.just(mockApiResponse));
         Sort sort = Sort.builder()
                 .field(SortField.UNIQUE_FILE_NUMBER)
@@ -92,7 +97,7 @@ class ClaimServiceTest {
         assertEquals(mockApiResponse, result);
 
         verify(claimsApiClient, times(1))
-                .searchClaims("0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", statuses);
+                .searchClaims("0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", STATUSES);
     }
 
     @Test
@@ -101,7 +106,7 @@ class ClaimServiceTest {
         // Arrange
         var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
 
-        when(claimsApiClient.searchClaims("0P322F", null, null, null, null, null, 0, 10, null, statuses))
+        when(claimsApiClient.searchClaims("0P322F", null, null, null, null, null, 0, 10, null, STATUSES))
                 .thenReturn(Mono.just(mockApiResponse));
 
         // Act
@@ -120,7 +125,7 @@ class ClaimServiceTest {
         assertNotNull(result);
         assertEquals(mockApiResponse, result);
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, null, null, 0, 10, null, statuses);
+        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, null, null, 0, 10, null, STATUSES);
     }
 
     @Test
@@ -128,7 +133,7 @@ class ClaimServiceTest {
     void testSearchClaims_ApiClientThrowsException() {
         // Arrange
         when(claimsApiClient.searchClaims(
-                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", statuses))
+                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", STATUSES))
                 .thenThrow(new RuntimeException("API Error"));
         Sort sort = Sort.builder()
                 .field(SortField.UNIQUE_FILE_NUMBER)
@@ -151,7 +156,7 @@ class ClaimServiceTest {
         assertTrue(exception.getMessage().contains("API Error"));
 
         verify(claimsApiClient, times(1))
-                .searchClaims("0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", statuses);
+                .searchClaims("0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", STATUSES);
     }
 
     @Test
@@ -159,7 +164,7 @@ class ClaimServiceTest {
     void testSearchClaims_EmptyResponse() {
         // Arrange
         when(claimsApiClient.searchClaims(
-                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", statuses))
+                        "0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", STATUSES))
                 .thenReturn(Mono.empty());
         Sort sort = Sort.builder()
                 .field(SortField.UNIQUE_FILE_NUMBER)
@@ -182,7 +187,7 @@ class ClaimServiceTest {
         assertNull(result);
 
         verify(claimsApiClient, times(1))
-                .searchClaims("0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", statuses);
+                .searchClaims("0P322F", null, null, null, null, null, 0, 10, "unique_file_number,asc", STATUSES);
     }
 
     @Test
@@ -271,11 +276,14 @@ class ClaimServiceTest {
         verify(claimMapper, times(1)).enrichWithProviderName(claimDetails, "Test Firm");
     }
 
-    public List<ClaimStatus> getStatuses() {
-        return statuses;
-    }
+    @Test
+    void voidClaim() {
+        var request = new VoidClaimRequest(userId, "Void assessment");
+        var expectedResponse = new VoidClaim201Response(UUID.randomUUID());
+        when(claimsApiClient.voidClaim(claimId, request)).thenReturn(Mono.just(expectedResponse));
 
-    public void setStatuses(List<ClaimStatus> statuses) {
-        this.statuses = statuses;
+        var actualResponse = claimService.voidClaim(claimId, userId);
+
+        assertEquals(expectedResponse, actualResponse);
     }
 }
