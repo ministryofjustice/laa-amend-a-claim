@@ -28,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.exceptions.InvalidAssessmentException;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
@@ -73,7 +74,7 @@ class AssessmentServiceTest {
     void setUp() {
         claimId = UUID.randomUUID();
         page = 0;
-        size = 2;
+        size = 5;
         sort = "createdOn,desc";
         meterRegistry = new SimpleMeterRegistry();
         assessmentService = new AssessmentService(
@@ -355,7 +356,8 @@ class AssessmentServiceTest {
             previous.setAssessmentType(AssessmentType.ESCAPE_CASE_ASSESSMENT);
             AssessmentResultSet resultSet = new AssessmentResultSet();
             resultSet.setAssessments(List.of(latest, previous));
-            when(claimsApiClient.getAssessments(any(), eq(0), eq(2), any())).thenReturn(Mono.just(resultSet));
+            when(claimsApiClient.getAssessments(any(), eq(page), eq(size), any()))
+                    .thenReturn(Mono.just(resultSet));
 
             when(assessmentMapper.updateClaim(previous, claim)).thenReturn(claim);
             when(assessmentMapper.mapAssessmentToClaimDetails(claim)).thenReturn(claim);
@@ -376,11 +378,58 @@ class AssessmentServiceTest {
             latest.setAssessmentType(AssessmentType.VOID);
             AssessmentResultSet resultSet = new AssessmentResultSet();
             resultSet.setAssessments(List.of(latest));
-            when(claimsApiClient.getAssessments(any(), eq(0), eq(2), any())).thenReturn(Mono.just(resultSet));
+            when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any())).thenReturn(Mono.just(resultSet));
             ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claim);
-
             assertEquals(claim, result);
             verifyNoInteractions(assessmentMapper);
+        }
+
+        @Test
+        void getLatestAssessmentThrowsWhenNoAssessments() {
+            // Arrange
+            ClaimDetails claim = new CrimeClaimDetails();
+            claim.setClaimId(UUID.randomUUID().toString());
+            claim.setStatus(ClaimStatus.VALID);
+
+            AssessmentResultSet emptyResultSet = new AssessmentResultSet();
+            emptyResultSet.setAssessments(List.of());
+
+            when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any())).thenReturn(Mono.just(emptyResultSet));
+
+            assertThrows(RuntimeException.class, () -> assessmentService.getLatestAssessmentByClaim(claim));
+        }
+
+        @Test
+        void getLatestAssessmentThrowsWhenVoidClaimLatestNotVoid() {
+            ClaimDetails claim = new CrimeClaimDetails();
+            claim.setClaimId(UUID.randomUUID().toString());
+            claim.setStatus(ClaimStatus.VOID);
+
+            AssessmentGet latest = new AssessmentGet();
+            latest.setAssessmentType(AssessmentType.ESCAPE_CASE_ASSESSMENT);
+            AssessmentResultSet resultSet = new AssessmentResultSet();
+            resultSet.setAssessments(List.of(latest));
+
+            when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any())).thenReturn(Mono.just(resultSet));
+
+            assertThrows(InvalidAssessmentException.class, () -> assessmentService.getLatestAssessmentByClaim(claim));
+        }
+
+        @Test
+        void getLatestAssessmentThrowsWhenNonVoidLatestNotEscapeCase() {
+            ClaimDetails claim = new CrimeClaimDetails();
+            claim.setClaimId(UUID.randomUUID().toString());
+            claim.setStatus(ClaimStatus.VALID);
+
+            AssessmentGet latest = new AssessmentGet();
+            latest.setAssessmentType(AssessmentType.VOID);
+
+            AssessmentResultSet resultSet = new AssessmentResultSet();
+            resultSet.setAssessments(List.of(latest));
+
+            when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any())).thenReturn(Mono.just(resultSet));
+
+            assertThrows(InvalidAssessmentException.class, () -> assessmentService.getLatestAssessmentByClaim(claim));
         }
     }
 }

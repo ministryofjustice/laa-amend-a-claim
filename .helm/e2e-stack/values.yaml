@@ -199,6 +199,8 @@ laaAmendAClaim:
         configMapKeyRef:
           name: urls
           key: laa
+    - name: IS_BULK_UPLOAD_ENABLED
+      value: "true"
     - name: IS_VOIDING_ENABLED
       value: "true"
   resources:
