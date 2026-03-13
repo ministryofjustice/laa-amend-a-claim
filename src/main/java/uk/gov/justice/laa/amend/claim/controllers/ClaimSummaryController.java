@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -23,8 +23,8 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 
-@AllArgsConstructor
 @Controller
+@RequiredArgsConstructor
 @Slf4j
 public class ClaimSummaryController {
 

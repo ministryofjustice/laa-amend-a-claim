@@ -60,7 +60,7 @@ public class ClaimService {
                     .block();
         } catch (Exception e) {
             log.error("Error searching claims", e);
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -69,7 +69,7 @@ public class ClaimService {
             return claimsApiClient.getClaim(submissionId, claimId).block();
         } catch (Exception e) {
             log.error("Error getting claim {}", claimId, e);
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -91,7 +91,7 @@ public class ClaimService {
             return claimsApiClient.voidClaim(claimId, request).block();
         } catch (Exception e) {
             log.error("Error voiding claim {}", claimId, e);
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
