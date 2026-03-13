@@ -52,7 +52,7 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.6.3'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.webjars.npm:govuk-frontend:5.14.0'
+    implementation 'org.webjars.npm:govuk-frontend:6.1.0'
     implementation 'org.webjars.npm:ministryofjustice__frontend:7.1.0'
 
     implementation("io.vavr:vavr:0.11.0")
