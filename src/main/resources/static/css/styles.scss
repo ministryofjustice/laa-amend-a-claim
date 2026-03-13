@@ -1,9 +1,11 @@
 @import "webjars/govuk-frontend/6.1.0/dist/govuk/base";
 
 .govuk-table--small-text {
-    @include govuk-font-size($size: 16);
-    @include govuk-text-break-word($important: true);
     table-layout: fixed;
+    th, td {
+      @include govuk-font-size($size: 16);
+      @include govuk-text-break-word($important: true);
+    }
     th:nth-child(1),
     td:nth-child(1) {
       width: 5%; // Claim
