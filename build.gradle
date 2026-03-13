@@ -3,6 +3,8 @@ plugins {
     id "com.diffplug.spotless" version "8.2.1"
     id "com.palantir.java-format-spotless" version "2.89.0"
     id "io.sentry.jvm.gradle" version "6.0.0"
+    id "io.freefair.sass-java" version "9.2.0"
+    id "io.freefair.sass-webjars" version "9.2.0"
 }
 
 java {
@@ -106,4 +108,9 @@ tasks.register('checkstyleAll') {
 
 tasks.named('build') {
     dependsOn tasks.named('checkstyleAll')
+}
+
+tasks.named('compileSass') {
+    dependsOn tasks.named('collectExternalDependenciesForSentry')
+    dependsOn tasks.named('generateSentryDebugMetaPropertiesjava')
 }
