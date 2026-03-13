@@ -104,7 +104,7 @@ public class SecurityConfigIntegrationTest extends RedisSetup {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/", "/js/app.js", "/css/styles.scss"})
+    @ValueSource(strings = {"/", "/js/app.js", "/css/styles.css"})
     @WithMockUser(roles = "USER")
     void responseOnGetHasCorrectHeaders(String url) throws Exception {
         mockMvc.perform(get(url))
