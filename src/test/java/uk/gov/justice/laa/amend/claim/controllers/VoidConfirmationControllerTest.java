@@ -4,6 +4,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
@@ -25,13 +26,16 @@ import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.amend.claim.service.AssessmentService;
+import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 
 @ActiveProfiles("local")
 @WebMvcTest(controllers = VoidConfirmationController.class)
 @Import({LocalSecurityConfig.class, ThymeleafConfig.class})
 public class VoidConfirmationControllerTest {
+
+    private static final UUID USER_ID = UUID.fromString(LocalSecurityConfig.USER_ID);
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,7 +44,7 @@ public class VoidConfirmationControllerTest {
     private MaintenanceService maintenanceService;
 
     @MockitoBean
-    private AssessmentService assessmentService;
+    private ClaimService claimService;
 
     @MockitoBean
     private FeatureFlagsConfig featureFlagsConfig;
@@ -67,6 +71,8 @@ public class VoidConfirmationControllerTest {
     public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
         session.setAttribute(claimId.toString(), claim);
 
+        when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));
+
         var path = String.format("/submissions/%s/claims/%s/void", submissionId, claimId);
         mockMvc.perform(get(path).session(session))
                 .andExpect(status().isOk())
@@ -82,11 +88,12 @@ public class VoidConfirmationControllerTest {
         var path = String.format("/submissions/%s/claims/%s/void", submissionId, claimId);
         var redirectUrl = "/";
 
-        // TODO: BC-382: Mock void request
+        when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
         mockMvc.perform(post(path).session(session).with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl))
+                .andExpect(flash().attribute("voided", true))
                 .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
     }
 
@@ -96,16 +103,27 @@ public class VoidConfirmationControllerTest {
         var searchUrl = "/?providerAccountNumber=123456";
         session.setAttribute("searchUrl", searchUrl);
 
-        // TODO: BC-382: Mock void request
+        when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
         mockMvc.perform(post(path).session(session).with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(searchUrl))
+                .andExpect(flash().attribute("voided", true))
                 .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
     }
 
     @Test
-    public void testUnsuccessfulSubmitReloadsPageWithAlert() {
-        // TODO: BC-382: Mock void request to throw error and and test for submissionFailed
+    public void testUnsuccessfulSubmitReloadsPageWithAlert() throws Exception {
+        var path = String.format("/submissions/%s/claims/%s/void", submissionId, claimId);
+
+        when(claimService.voidClaim(claimId, USER_ID)).thenThrow(new RuntimeException());
+
+        mockMvc.perform(post(path).session(session).with(csrf()))
+                .andExpect(status().is4xxClientError())
+                .andExpect(view().name("void-confirmation"))
+                .andExpect(model().attributeExists("claim"))
+                .andExpect(model().attribute("claimId", claimId))
+                .andExpect(model().attribute("submissionId", submissionId))
+                .andExpect(model().attribute("submissionFailed", true));
     }
 }

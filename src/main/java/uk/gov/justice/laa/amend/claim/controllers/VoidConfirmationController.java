@@ -12,18 +12,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 @AllArgsConstructor
+@UserControllerAdvice.Enabled
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/void")
 @Slf4j
 public class VoidConfirmationController {
 
+    private final ClaimService claimService;
     private final FeatureFlagsConfig featureFlagsConfig;
 
     @GetMapping
@@ -48,8 +53,10 @@ public class VoidConfirmationController {
     public String onSubmit(
             HttpSession session,
             Model model,
+            @ModelAttribute("userId") UUID userId,
             @PathVariable UUID submissionId,
             @PathVariable UUID claimId,
+            RedirectAttributes redirectAttributes,
             HttpServletResponse response)
             throws IOException {
         if (!featureFlagsConfig.getIsVoidingEnabled()) {
@@ -60,11 +67,13 @@ public class VoidConfirmationController {
         var claim = getValidClaim(session, submissionId, claimId);
 
         try {
-            // TODO: BC-382: Submit the void request
+            claimService.voidClaim(claimId, userId);
 
             String searchUrl = (String)
                     Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
+            redirectAttributes.addFlashAttribute("voided", true);
             session.removeAttribute(claimId.toString());
+
             return "redirect:" + searchUrl;
         } catch (Exception ex) {
             log.error("Failed to void assessment for claim ID: {}", claimId, ex);

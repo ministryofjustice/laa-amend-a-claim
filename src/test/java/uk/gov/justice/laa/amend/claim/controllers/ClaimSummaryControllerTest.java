@@ -164,4 +164,40 @@ public class ClaimSummaryControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(expectedRedirectUrl));
     }
+
+    @Test
+    public void testIsVoidClaimPresentTrueForValidClaim() throws Exception {
+        when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
+
+        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+        claim.setStatus(ClaimStatus.VALID);
+
+        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+
+        String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+
+        mockMvc.perform(get(path).session(session))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("isVoidClaimPresent", true));
+    }
+
+    @Test
+    public void testIsVoidClaimPresentFalseForVoidClaim() throws Exception {
+        when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
+
+        var user = MockClaimsFunctions.createUser();
+        var claim = MockClaimsFunctions.createMockCivilClaim();
+        claim.setStatus(ClaimStatus.VOID);
+        claim.setLastUpdatedUser(user.getId());
+        claim.setLastUpdatedDateTime(OffsetDateTime.now());
+
+        when(userRetrievalService.getMicrosoftApiUser(user.getId())).thenReturn(user);
+        when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
+
+        String path = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+
+        mockMvc.perform(get(path).session(session))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("isVoidClaimPresent", false));
+    }
 }

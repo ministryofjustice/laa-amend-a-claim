@@ -184,4 +184,13 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasSuccessBanner(doc, "You discarded the assessment");
     }
+
+    @Test
+    void testPageAfterVoid() throws Exception {
+        Map<String, Object> variables = Map.of("voided", true);
+
+        Document doc = renderDocument(variables);
+
+        assertPageHasSuccessBanner(doc, "You voided the claim");
+    }
 }

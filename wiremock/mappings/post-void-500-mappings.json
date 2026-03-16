@@ -1,0 +1,10 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "POST",
+    "urlPattern": "/api/v1/claims/0199a474-6c1b-74eb-8f7a-0c9d4b649e71/void"
+  },
+  "response": {
+    "status": 500
+  }
+}
