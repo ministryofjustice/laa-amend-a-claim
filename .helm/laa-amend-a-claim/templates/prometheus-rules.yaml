@@ -1,0 +1,87 @@
+{{- if .Values.alerting.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  namespace: {{ .Release.Namespace }}
+  labels:
+    role: alert-rules
+  name: prometheus-custom-rules-laa-amend-a-claim
+spec:
+  groups:
+  - name: kubernetes-rules
+    rules:
+    - alert: KubeQuota-Exceeded
+      annotations:
+        message: Namespace quota has exceeded the limits.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubequotaexceeded
+        dashboard_url: {{ .Values.alerting.grafanaDashboard }}
+      expr: >-
+        kube_resourcequota{job="kube-state-metrics",namespace="{{ .Release.Namespace }}",type="used"}
+        / ignoring (instance, job, type)
+        (kube_resourcequota{job="kube-state-metrics",namespace="{{ .Release.Namespace }}",type="hard"} > 0)
+        > 0.9
+      for: 15s
+      labels:
+        severity: {{ .Values.alerting.severity }}
+
+    - alert: KubePodCrashLooping
+      annotations:
+        message: Pod has been restarting above limits for 1 hour.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepodcrashlooping
+        dashboard_url: {{ .Values.alerting.grafanaDashboard }}
+      expr: >-
+        rate(kube_pod_container_status_restarts_total{job="kube-state-metrics",namespace="{{ .Release.Namespace }}"}[15m])
+        * 60 * 5 > 0
+      for: 1h
+      labels:
+        severity: {{ .Values.alerting.severity }}
+
+    - alert: KubePodNotReady
+      annotations:
+        message: Pod has been in a non-ready state for more than 1 hour.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubepodnotready
+        dashboard_url: {{ .Values.alerting.grafanaDashboard }}
+      expr: >-
+        sum by (namespace, pod)
+        (kube_pod_status_phase{job="kube-state-metrics",namespace="{{ .Release.Namespace }}",phase=~"Pending|Unknown"})
+        > 0
+      for: 1h
+      labels:
+        severity: {{ .Values.alerting.severity }}
+
+    - alert: KubeDeploymentGenerationMismatch
+      annotations:
+        message: Deployment generation mismatch due to possible roll-back.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md#alert-name-kubedeploymentgenerationmismatch
+        dashboard_url: {{ .Values.alerting.grafanaDashboard }}
+      expr: >-
+        kube_deployment_status_observed_generation{job="kube-state-metrics",namespace="{{ .Release.Namespace }}"}
+        != kube_deployment_metadata_generation{job="kube-state-metrics",namespace="{{ .Release.Namespace }}"}
+      for: 15m
+      labels:
+        severity: {{ .Values.alerting.severity }}
+
+    - alert: KubeDeploymentReplicasMismatch
+      annotations:
+        message: Deployment has not matched the expected number of replicas.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/blob/master/runbook.md#alert-name-kubedeploymentreplicasmismatch
+        dashboard_url: {{ .Values.alerting.grafanaDashboard }}
+      expr: >-
+        kube_deployment_spec_replicas{job="kube-state-metrics",namespace="{{ .Release.Namespace }}"}
+        != kube_deployment_status_replicas_available{job="kube-state-metrics",namespace="{{ .Release.Namespace }}"}
+      for: 15m
+      labels:
+        severity: {{ .Values.alerting.severity }}
+
+    - alert: KubernetesContainerOOMKilled
+      annotations:
+        message: A container has been OOM killed.
+        runbook_url: https://github.com/kubernetes-monitoring/kubernetes-mixin/tree/master/runbook.md
+        dashboard_url: {{ .Values.alerting.grafanaDashboard }}
+      expr: >-
+        sum_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled",namespace="{{ .Release.Namespace }}"}[5m])
+        > 0
+      for: 0m
+      labels:
+        severity: {{ .Values.alerting.severity }}
+{{- end }}
