@@ -143,7 +143,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setUniqueFileNumber("unique file number");
             claim.setUniqueClientNumber("unique client number");
             claim.setProviderName("provider name");
-            claim.setProviderAccountNumber("provider account number");
+            claim.setOfficeCode("office code");
             claim.setSubmittedDate(submittedDate);
             claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
             claim.setCategoryOfLaw("category of law");
@@ -160,7 +160,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             expectedResult.put("ufn", "unique file number");
             expectedResult.put("ucn", "unique client number");
             expectedResult.put("providerName", "provider name");
-            expectedResult.put("providerAccountNumber", "provider account number");
+            expectedResult.put("officeCode", "office code");
             expectedResult.put("submittedDate", submittedDate);
             expectedResult.put("areaOfLaw", new ThymeleafMessage(AreaOfLaw.CRIME_LOWER.getMessageKey()));
             expectedResult.put("categoryOfLaw", "category of law");

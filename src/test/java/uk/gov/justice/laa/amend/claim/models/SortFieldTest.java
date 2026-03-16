@@ -49,7 +49,7 @@ public class SortFieldTest {
         void shouldConvertOfficeCode() {
             String str = "office_code";
             SortField result = SortField.fromValue(str);
-            Assertions.assertEquals(SortField.ACCOUNT, result);
+            Assertions.assertEquals(SortField.OFFICE_CODE, result);
         }
 
         @ParameterizedTest

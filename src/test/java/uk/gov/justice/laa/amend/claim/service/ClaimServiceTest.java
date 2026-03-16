@@ -258,7 +258,7 @@ class ClaimServiceTest {
         // Arrange
         var claimResponse = new ClaimResponseV2();
         CivilClaimDetails claimDetails = new CivilClaimDetails();
-        claimDetails.setProviderAccountNumber("0P322F");
+        claimDetails.setOfficeCode("0P322F");
 
         ProviderFirmOfficeDto providerOffice = mock(ProviderFirmOfficeDto.class, RETURNS_DEEP_STUBS);
         when(providerOffice.getFirm().getFirmName()).thenReturn("Test Firm");

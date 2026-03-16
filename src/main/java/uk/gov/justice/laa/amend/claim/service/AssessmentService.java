@@ -231,7 +231,7 @@ public class AssessmentService {
                             + " assessmentId {}, assessmentOutcome {}, assessedTotalInclVat {}, allowedTotalInclVat"
                             + " {}",
                     claim.getClaimId(),
-                    claim.getProviderAccountNumber(),
+                    claim.getOfficeCode(),
                     claim.getUniqueFileNumber(),
                     assessmentId,
                     claim.getAssessmentOutcome(),

@@ -45,7 +45,7 @@ class VoidConfirmationViewTest extends ViewTestBase {
         claim.setFeeCodeDescription("FCD");
         claim.setUniqueFileNumber("UFN");
         claim.setUniqueClientNumber("UCN");
-        claim.setProviderAccountNumber("0P322F");
+        claim.setOfficeCode("0P322F");
         claim.setProviderName("Provider Name");
         claim.setClientForename("John");
         claim.setClientSurname("Doe");
@@ -68,7 +68,7 @@ class VoidConfirmationViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList.get(1), "Unique file number (UFN)", "UFN");
         assertSummaryListRowContainsValues(summaryList.get(2), "Unique client number (UCN)", "UCN");
         assertSummaryListRowContainsValues(summaryList.get(3), "Provider name", "Provider Name");
-        assertSummaryListRowContainsValues(summaryList.get(4), "Provider account number", "0P322F");
+        assertSummaryListRowContainsValues(summaryList.get(4), "Office code", "0P322F");
         assertSummaryListRowContainsValues(summaryList.get(5), "Date submitted", "15 June 2020 at 09:30:00");
         assertSummaryListRowContainsValues(summaryList.get(6), "Category of law", "TEST");
         assertSummaryListRowContainsValues(summaryList.get(7), "Fee code description", "FCD");
@@ -84,7 +84,7 @@ class VoidConfirmationViewTest extends ViewTestBase {
         claim.setClaimId(claimId.toString());
         claim.setFeeCodeDescription("FCD");
         claim.setUniqueFileNumber("UFN");
-        claim.setProviderAccountNumber("0P322F");
+        claim.setOfficeCode("0P322F");
         claim.setProviderName("Provider Name");
         claim.setClientForename("John");
         claim.setClientSurname("Doe");
@@ -106,7 +106,7 @@ class VoidConfirmationViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList.getFirst(), "Client name", "John Doe");
         assertSummaryListRowContainsValues(summaryList.get(1), "Unique file number (UFN)", "UFN");
         assertSummaryListRowContainsValues(summaryList.get(2), "Provider name", "Provider Name");
-        assertSummaryListRowContainsValues(summaryList.get(3), "Provider account number", "0P322F");
+        assertSummaryListRowContainsValues(summaryList.get(3), "Office code", "0P322F");
         assertSummaryListRowContainsValues(summaryList.get(4), "Date submitted", "15 June 2020 at 09:30:00");
         assertSummaryListRowContainsValues(summaryList.get(5), "Category of law", "TEST");
         assertSummaryListRowContainsValues(summaryList.get(6), "Fee code description", "FCD");

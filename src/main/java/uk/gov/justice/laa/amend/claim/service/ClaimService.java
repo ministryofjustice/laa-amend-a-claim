@@ -81,7 +81,7 @@ public class ClaimService {
                     String.format("Claim with ID %s not found for submission %s", claimId, submissionId));
         }
         var claimDetails = claimMapper.mapToClaimDetails(claimResponse);
-        claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(claimDetails.getProviderAccountNumber()));
+        claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(claimDetails.getOfficeCode()));
         return claimDetails;
     }
 

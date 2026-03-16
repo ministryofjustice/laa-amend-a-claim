@@ -55,7 +55,7 @@ public interface ClaimMapper {
     @Mapping(target = "clientForename", source = "clientForename")
     @Mapping(target = "caseStartDate", source = "caseStartDate")
     @Mapping(target = "caseEndDate", source = "caseConcludedDate")
-    @Mapping(target = "providerAccountNumber", source = "officeCode")
+    @Mapping(target = "officeCode", source = "officeCode")
     @Mapping(target = "submissionPeriod", expression = "java(mapSubmissionPeriod(claimResponse))")
     @Mapping(target = "categoryOfLaw", source = "feeCalculationResponse.categoryOfLaw")
     @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")

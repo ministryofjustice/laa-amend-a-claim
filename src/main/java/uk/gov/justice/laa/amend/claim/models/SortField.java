@@ -9,7 +9,7 @@ public enum SortField {
     CASE_REFERENCE_NUMBER("case_reference_number"),
     CLIENT_SURNAME("client_surname"),
     SUBMISSION_PERIOD("submission_period"),
-    ACCOUNT("office_code"),
+    OFFICE_CODE("office_code"),
     CATEGORY_OF_LAW("category_of_law"),
     VOIDED("status");
 

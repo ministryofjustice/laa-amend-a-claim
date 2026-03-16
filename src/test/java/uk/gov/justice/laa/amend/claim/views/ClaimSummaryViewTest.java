@@ -98,7 +98,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList1.get(1), "Unique file number (UFN)", "Not applicable");
         assertSummaryListRowContainsValues(summaryList1.get(2), "Unique client number (UCN)", "Not applicable");
         assertSummaryListRowContainsValues(summaryList1.get(3), "Provider name", "Currently not available");
-        assertSummaryListRowContainsValues(summaryList1.get(4), "Provider account number", "0P322F");
+        assertSummaryListRowContainsValues(summaryList1.get(4), "Office code", "0P322F");
         assertSummaryListRowContainsValues(summaryList1.get(5), "Date submitted", "15 June 2020 at 09:30:00");
         assertSummaryListRowContainsValues(summaryList1.get(6), "Area of law", "Legal help");
         assertSummaryListRowContainsValues(summaryList1.get(7), "Category of law", "TEST");
@@ -227,7 +227,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList1.getFirst(), "Client name", "John Doe");
         assertSummaryListRowContainsValues(summaryList1.get(1), "Unique file number (UFN)", "Not applicable");
         assertSummaryListRowContainsValues(summaryList1.get(2), "Provider name", "Currently not available");
-        assertSummaryListRowContainsValues(summaryList1.get(3), "Provider account number", "0P322F");
+        assertSummaryListRowContainsValues(summaryList1.get(3), "Office code", "0P322F");
         assertSummaryListRowContainsValues(summaryList1.get(4), "Date submitted", "15 June 2020 at 09:30:00");
         assertSummaryListRowContainsValues(summaryList1.get(5), "Area of law", "Crime lower");
         assertSummaryListRowContainsValues(summaryList1.get(6), "Category of law", "Not applicable");
@@ -354,7 +354,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setEscaped(true);
         claim.setFeeCode("FC");
         claim.setFeeCodeDescription("FCD");
-        claim.setProviderAccountNumber("0P322F");
+        claim.setOfficeCode("0P322F");
         claim.setClientForename("John");
         claim.setClientSurname("Doe");
         claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
