@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -12,6 +13,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,7 +21,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
@@ -52,7 +53,7 @@ class ClaimServiceTest {
     @Mock
     private ProviderApiClient providerApiClient;
 
-    @InjectMocks
+    private SimpleMeterRegistry meterRegistry;
     private ClaimService claimService;
 
     private UUID submissionId;
@@ -64,6 +65,8 @@ class ClaimServiceTest {
         submissionId = UUID.randomUUID();
         claimId = UUID.randomUUID();
         userId = UUID.randomUUID();
+        meterRegistry = new SimpleMeterRegistry();
+        claimService = new ClaimService(claimsApiClient, claimMapper, providerApiClient, meterRegistry);
     }
 
     @Test
@@ -277,6 +280,7 @@ class ClaimServiceTest {
     }
 
     @Test
+    @DisplayName("Should return void response and increment success counter")
     void voidClaim() {
         var request = new VoidClaimRequest(userId, "Void assessment");
         var expectedResponse = new VoidClaim201Response(UUID.randomUUID());
@@ -285,5 +289,19 @@ class ClaimServiceTest {
         var actualResponse = claimService.voidClaim(claimId, userId);
 
         assertEquals(expectedResponse, actualResponse);
+        assertThat(meterRegistry.counter("claim.void").count()).isEqualTo(1.0);
+        assertThat(meterRegistry.counter("claim.void.failed").count()).isEqualTo(0.0);
+    }
+
+    @Test
+    @DisplayName("Should increment failure counter when void claim throws an exception")
+    void voidClaim_failure() {
+        var request = new VoidClaimRequest(userId, "Void assessment");
+        when(claimsApiClient.voidClaim(claimId, request)).thenThrow(new RuntimeException("API Error"));
+
+        assertThrows(RuntimeException.class, () -> claimService.voidClaim(claimId, userId));
+
+        assertThat(meterRegistry.counter("claim.void").count()).isEqualTo(0.0);
+        assertThat(meterRegistry.counter("claim.void.failed").count()).isEqualTo(1.0);
     }
 }
