@@ -132,13 +132,13 @@ public class VoidConfirmationControllerTest {
 
     @Test
     void testGetRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of());
+        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER));
         mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
     }
 
     @Test
     void testPostRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of());
+        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER));
         mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
     }
 

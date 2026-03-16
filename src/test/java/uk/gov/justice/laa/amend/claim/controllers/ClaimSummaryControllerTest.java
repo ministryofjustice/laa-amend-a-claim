@@ -213,7 +213,7 @@ public class ClaimSummaryControllerTest {
 
     @Test
     void testIsAssessmentButtonPresentFalseWithoutRole() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of());
+        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_ESCAPE_CASE_CASEWORKER));
 
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
         claim.setHasAssessment(false);
@@ -263,7 +263,7 @@ public class ClaimSummaryControllerTest {
 
     @Test
     void testIsVoidButtonPresentFalseWithoutRole() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of());
+        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_ESCAPE_CASE_CASEWORKER));
 
         when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
 

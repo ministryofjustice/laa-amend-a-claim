@@ -194,14 +194,14 @@ class ChangeMonetaryValueControllerTest {
     @ParameterizedTest
     @MethodSource("validCosts")
     void testGetRequiresRole(Cost cost) throws Exception {
-        dummyUserSecurityService.setRoles(Set.of());
+        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_ESCAPE_CASE_CASEWORKER));
         mockMvc.perform(get(buildPath(cost.getPath())).session(session)).andExpect(status().isForbidden());
     }
 
     @ParameterizedTest
     @MethodSource("validCosts")
     void testPostRequiresRole(Cost cost) throws Exception {
-        dummyUserSecurityService.setRoles(Set.of());
+        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_ESCAPE_CASE_CASEWORKER));
         mockMvc.perform(post(buildPath(cost.getPath())).session(session)).andExpect(status().isForbidden());
     }
 

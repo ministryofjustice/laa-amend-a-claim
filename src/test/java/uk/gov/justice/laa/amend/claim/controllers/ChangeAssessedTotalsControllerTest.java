@@ -207,13 +207,13 @@ class ChangeAssessedTotalsControllerTest {
 
     @Test
     void testGetRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of());
+        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_ESCAPE_CASE_CASEWORKER));
         mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
     }
 
     @Test
     void testPostRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of());
+        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_ESCAPE_CASE_CASEWORKER));
         mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
     }
 
