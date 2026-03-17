@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
+import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 
 import java.util.Set;
 import java.util.UUID;
@@ -19,7 +21,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
-import uk.gov.justice.laa.amend.claim.models.Role;
 import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
@@ -49,7 +50,7 @@ public class ConfirmationControllerTest {
         submissionId = UUID.randomUUID();
         assessmentId = UUID.randomUUID();
 
-        dummyUserSecurityService.setRoles(Set.of(Role.ROLE_ESCAPE_CASE_CASEWORKER));
+        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
     }
 
     @Test
@@ -82,13 +83,13 @@ public class ConfirmationControllerTest {
 
     @Test
     void testGetRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_ESCAPE_CASE_CASEWORKER));
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
         mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
     }
 
     @Test
     void testPostRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_ESCAPE_CASE_CASEWORKER));
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
         mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
     }
 
