@@ -15,7 +15,7 @@ public class SearchQueryTest {
     }
 
     @Test
-    void createRedirectUrlWhenAccountNumberPresent() {
+    void createRedirectUrlWhenOfficeCodePresent() {
         SearchQuery query = new SearchQuery();
         query.setOfficeCode("123");
 
@@ -29,7 +29,21 @@ public class SearchQueryTest {
     }
 
     @Test
-    void createRedirectUrlWhenAccountNumberAndDatePresent() {
+    void createRedirectUrlWhenAccountNumberPresent() {
+        SearchQuery query = new SearchQuery();
+        query.setProviderAccountNumber("123");
+
+        Sort sort = Sort.builder()
+                .field(SortField.UNIQUE_FILE_NUMBER)
+                .direction(SortDirection.ASCENDING)
+                .build();
+        String result = query.getRedirectUrl(sort);
+
+        Assertions.assertEquals("/?officeCode=123&page=1&sort=unique_file_number,asc", result);
+    }
+
+    @Test
+    void createRedirectUrlWhenOfficeCodeAndDatePresent() {
         SearchQuery query = new SearchQuery();
 
         query.setPage(2);
