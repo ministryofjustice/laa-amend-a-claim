@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
+import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeAssessedTotalsController;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
@@ -39,8 +39,8 @@ class ChangeAssessedTotalViewTest extends ViewTestBase {
         assertPageHasHint(doc, "assessed-total-vat-hint", "Enter the amount of assessed VAT for the claim");
         assertPageHasHint(doc, "assessed-total-incl-vat-hint", "Enter the total assessed value of the claim");
 
-        assertPageHasTextInput(doc, "assessed-total-vat", "Assessed total VAT");
-        assertPageHasTextInput(doc, "assessed-total-incl-vat", "Assessed total including VAT");
+        assertPageHasLabel(doc, "assessed-total-vat", "Assessed total VAT");
+        assertPageHasLabel(doc, "assessed-total-incl-vat", "Assessed total including VAT");
     }
 
     @Test

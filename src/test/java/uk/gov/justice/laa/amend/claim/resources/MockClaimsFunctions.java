@@ -19,10 +19,13 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
+import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
+import uk.gov.justice.laa.amend.claim.models.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
 import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
@@ -32,6 +35,7 @@ import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
+import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
@@ -39,6 +43,9 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 public class MockClaimsFunctions {
 
     private static final ClaimStatusHandler claimStatusHandler = new ClaimStatusHandler();
+    public static final String DISPLAY_NAME = "Test User";
+    public static final String GIVEN_NAME = "Test";
+    public static final String SURNAME = "User";
 
     public static CivilClaimDetails createMockCivilClaim() {
         CivilClaimDetails claim = new CivilClaimDetails();
@@ -234,5 +241,19 @@ public class MockClaimsFunctions {
                 .calculated(BigDecimal.valueOf(200))
                 .assessed(BigDecimal.valueOf(300))
                 .build();
+    }
+
+    public static AssessmentInfo createAssessment(AssessmentTypeEnum assessmentType) {
+        AssessmentInfo info = new AssessmentInfo();
+        info.setId(UUID.randomUUID());
+        info.setAssessmentType(assessmentType);
+        info.setLastAssessedBy("Tst User");
+        info.setLastAssessmentDate(OffsetDateTime.now());
+        info.setId(UUID.randomUUID());
+        return info;
+    }
+
+    public static MicrosoftApiUser createUser() {
+        return new MicrosoftApiUser(UUID.randomUUID().toString(), DISPLAY_NAME, GIVEN_NAME, SURNAME);
     }
 }

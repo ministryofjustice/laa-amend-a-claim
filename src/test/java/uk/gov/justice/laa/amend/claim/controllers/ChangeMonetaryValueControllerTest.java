@@ -13,9 +13,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
+import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
@@ -30,14 +33,15 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @ActiveProfiles("local")
@@ -47,6 +51,9 @@ class ChangeMonetaryValueControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private DummyUserSecurityService dummyUserSecurityService;
 
     @MockitoBean
     private MaintenanceService maintenanceService;
@@ -62,6 +69,8 @@ class ChangeMonetaryValueControllerTest {
         claimId = UUID.randomUUID();
         session = new MockHttpSession();
         redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+
+        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
     }
 
     private static Stream<Cost> validCosts() {
@@ -181,6 +190,20 @@ class ChangeMonetaryValueControllerTest {
                         .with(csrf())
                         .param("value", "1"))
                 .andExpect(status().isNotFound());
+    }
+
+    @ParameterizedTest
+    @MethodSource("validCosts")
+    void testGetRequiresRole(Cost cost) throws Exception {
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+        mockMvc.perform(get(buildPath(cost.getPath())).session(session)).andExpect(status().isForbidden());
+    }
+
+    @ParameterizedTest
+    @MethodSource("validCosts")
+    void testPostRequiresRole(Cost cost) throws Exception {
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+        mockMvc.perform(post(buildPath(cost.getPath())).session(session)).andExpect(status().isForbidden());
     }
 
     private Claim createClaimFor(Cost cost) {

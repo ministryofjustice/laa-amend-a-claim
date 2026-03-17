@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -10,12 +11,14 @@ import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Sort;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.SubmissionResponse;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
 @Service
@@ -23,15 +26,21 @@ import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 @RequiredArgsConstructor
 public class ClaimService {
 
+    private static final String VOID_ASSESSMENT_REASON = "Void assessment";
+
     private final ClaimsApiClient claimsApiClient;
     private final ClaimMapper claimMapper;
     private final ProviderApiClient providerApiClient;
 
-    public ClaimResultSet searchClaims(
+    private static final List<ClaimStatus> claimStatuses = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
+
+    public ClaimResultSetV2 searchClaims(
             String officeCode,
             Optional<String> uniqueFileNumber,
             Optional<String> caseReferenceNumber,
             Optional<String> submissionPeriod,
+            Optional<AreaOfLaw> areaOfLaw,
+            Optional<Boolean> escapeCase,
             int page,
             int size,
             Sort sort) {
@@ -42,46 +51,47 @@ public class ClaimService {
                             uniqueFileNumber.orElse(null),
                             caseReferenceNumber.orElse(null),
                             submissionPeriod.orElse(null),
+                            areaOfLaw.orElse(null),
+                            escapeCase.orElse(null),
                             page - 1,
                             size,
                             Objects.toString(sort, null),
-                            ClaimStatus.VALID)
+                            claimStatuses)
                     .block();
         } catch (Exception e) {
             log.error("Error searching claims", e);
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
-    public ClaimResponse getClaim(UUID submissionId, UUID claimId) {
+    public ClaimResponseV2 getClaim(UUID submissionId, UUID claimId) {
         try {
             return claimsApiClient.getClaim(submissionId, claimId).block();
         } catch (Exception e) {
             log.error("Error getting claim {}", claimId, e);
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
     public ClaimDetails getClaimDetails(UUID submissionId, UUID claimId) {
         var claimResponse = getClaim(submissionId, claimId);
-        var submissionResponse = getSubmission(submissionId);
-        if (claimResponse == null || submissionResponse == null) {
-            log.error("Claim or submission not found for submission {} and claim {}", submissionId, claimId);
+        if (claimResponse == null) {
+            log.error("Claim not found for submission {} and claim {}", submissionId, claimId);
             throw new ClaimNotFoundException(
                     String.format("Claim with ID %s not found for submission %s", claimId, submissionId));
         }
-        var officeCode = submissionResponse.getOfficeAccountNumber();
-        var claimDetails = claimMapper.mapToClaimDetails(claimResponse, submissionResponse);
-        claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(officeCode));
+        var claimDetails = claimMapper.mapToClaimDetails(claimResponse);
+        claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(claimDetails.getProviderAccountNumber()));
         return claimDetails;
     }
 
-    public SubmissionResponse getSubmission(UUID submissionId) {
+    public VoidClaim201Response voidClaim(UUID claimId, UUID userId) {
         try {
-            return claimsApiClient.getSubmission(submissionId).block();
+            var request = new VoidClaimRequest(userId, VOID_ASSESSMENT_REASON);
+            return claimsApiClient.voidClaim(claimId, request).block();
         } catch (Exception e) {
-            log.error("Error getting submission {}", submissionId, e);
-            throw new RuntimeException(e);
+            log.error("Error voiding claim {}", claimId, e);
+            throw e;
         }
     }
 

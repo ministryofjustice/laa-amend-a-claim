@@ -24,8 +24,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
-import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.SortDirection;
@@ -82,7 +82,7 @@ public class HomePageControllerTest {
                 .enabled(true)
                 .build();
 
-        mockMvc.perform(get("/?sort=caseReferenceNumber,desc"))
+        mockMvc.perform(get("/?sort=case_reference_number,desc"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
                 .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
@@ -112,7 +112,7 @@ public class HomePageControllerTest {
                 + "&uniqueFileNumber=123456/789"
                 + "&caseReferenceNumber=789"
                 + "&page=1"
-                + "&sort=uniqueFileNumber,asc";
+                + "&sort=unique_file_number,asc";
 
         mockMvc.perform(get("/").param("providerAccountNumber", "123456")
                         .param("submissionDateMonth", "3")
@@ -147,7 +147,7 @@ public class HomePageControllerTest {
     public void testOnPageLoadWithInvalidSortDirectionReturnsBadRequest() throws Exception {
         when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        mockMvc.perform(get("/?providerAccountNumber=123&page=1&sort=uniqueFileNumber,foo"))
+        mockMvc.perform(get("/?providerAccountNumber=123&page=1&sort=unique_file_number,foo"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -176,7 +176,7 @@ public class HomePageControllerTest {
     public void testOnSubmitReturnsViewForValidFormWithOneField() throws Exception {
         when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        String expectedRedirectUrl = "/?providerAccountNumber=123456&page=1&sort=uniqueFileNumber,asc";
+        String expectedRedirectUrl = "/?providerAccountNumber=123456&page=1&sort=unique_file_number,asc";
 
         mockMvc.perform(post("/").with(csrf()).param("providerAccountNumber", "123456"))
                 .andExpect(status().is3xxRedirection())
@@ -193,7 +193,7 @@ public class HomePageControllerTest {
                 + "&uniqueFileNumber=123456/789"
                 + "&caseReferenceNumber=789"
                 + "&page=1"
-                + "&sort=uniqueFileNumber,asc";
+                + "&sort=unique_file_number,asc";
 
         mockMvc.perform(post("/")
                         .with(csrf())

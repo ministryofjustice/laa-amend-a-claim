@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,23 +14,24 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.utils.DateUtils;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
 
     // 'Summary' rows for the 'Claim details' page
     default Map<String, Object> getSummaryRows() {
-        Map<String, Object> rows = new LinkedHashMap<>();
+        var rows = new LinkedHashMap<String, Object>();
         rows.put("clientName", getClientName());
         rows.put("ufn", claim().getUniqueFileNumber());
         addUcnSummaryRow(rows);
-        rows.put(
-                "providerName",
-                claim().getProviderName() == null
-                        ? new ThymeleafMessage("provider.firmName.notAvailable")
-                        : claim().getProviderName());
+        rows.put("providerName", getProviderName());
         rows.put("providerAccountNumber", claim().getProviderAccountNumber());
         rows.put("submittedDate", claim().getSubmittedDate());
-        rows.put("areaOfLaw", claim().getAreaOfLaw());
+        rows.put(
+                "areaOfLaw",
+                claim().getAreaOfLaw() != null
+                        ? new ThymeleafMessage(claim().getAreaOfLaw().getMessageKey())
+                        : null);
         rows.put("categoryOfLaw", claim().getCategoryOfLaw());
         rows.put("feeCode", claim().getFeeCode());
         rows.put("feeCodeDescription", claim().getFeeCodeDescription());
@@ -40,6 +42,19 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("caseEndDate", claim().getCaseEndDate());
         rows.put("escaped", claim().getEscaped());
         rows.put("vatRequested", claim().getVatApplicable());
+        return rows;
+    }
+
+    default Map<String, Object> getVoidConfirmationRows() {
+        var rows = new LinkedHashMap<String, Object>();
+        rows.put("clientName", getClientName());
+        rows.put("ufn", claim().getUniqueFileNumber());
+        addUcnSummaryRow(rows);
+        rows.put("providerName", getProviderName());
+        rows.put("providerAccountNumber", claim().getProviderAccountNumber());
+        rows.put("submittedDate", claim().getSubmittedDate());
+        rows.put("categoryOfLaw", claim().getCategoryOfLaw());
+        rows.put("feeCodeDescription", claim().getFeeCodeDescription());
         return rows;
     }
 
@@ -103,16 +118,27 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default ThymeleafMessage lastEditedBy(MicrosoftApiUser user) {
-        LocalDateTime dateTime = lastAssessment().getLastAssessmentDate().toLocalDateTime();
+        LocalDateTime dateTime = claim().getLastUpdatedDateTime().toLocalDateTime();
         String date = DateUtils.displayDateTimeDateValue(dateTime);
         String time = DateUtils.displayDateTimeTimeValue(dateTime);
-        ThymeleafMessage outcome =
-                new ThymeleafMessage(lastAssessment().getLastAssessmentOutcome().getMessageKey());
+
+        List<Object> args = new ArrayList<>();
+        String editMessageKey;
         if (user != null && user.getName() != null) {
-            return new ThymeleafMessage("claimSummary.lastAssessmentText", user.getName(), date, time, outcome);
+            args.add(user.getName());
+            editMessageKey = "claimSummary.lastAssessmentText";
         } else {
-            return new ThymeleafMessage("claimSummary.lastAssessmentText.noUser", date, time, outcome);
+            editMessageKey = "claimSummary.lastAssessmentText.noUser";
         }
+        args.add(date);
+        args.add(time);
+
+        String messageKey = (lastAssessment() != null && !isVoidClaim())
+                ? lastAssessment().getLastAssessmentOutcome().getMessageKey()
+                : "claimSummary.void.message";
+        args.add(new ThymeleafMessage(messageKey));
+
+        return new ThymeleafMessage(editMessageKey, args.toArray());
     }
 
     private Stream<ClaimFieldRow> toClaimFieldRows(Stream<ClaimField> claimFields) {
@@ -124,5 +150,16 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     default String reviewAssessmentChangeUrl(String submissionId, String claimId, String question) {
         return String.format("/submissions/%s/claims/%s/assessment-outcome#%s", submissionId, claimId, question);
+    }
+
+    private Object getProviderName() {
+        if (claim().getProviderName() == null) {
+            return new ThymeleafMessage("provider.firmName.notAvailable");
+        }
+        return claim().getProviderName();
+    }
+
+    default boolean isVoidClaim() {
+        return ClaimStatus.VOID == claim().getStatus();
     }
 }

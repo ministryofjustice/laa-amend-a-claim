@@ -11,17 +11,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/discard")
+@HasRoleEscapeCaseCaseworker
 public class DiscardController {
 
     @GetMapping()
-    public String onPageLoad(
-            Model model,
-            @PathVariable(value = "submissionId") UUID submissionId,
-            @PathVariable(value = "claimId") UUID claimId) {
+    public String onPageLoad(Model model, @PathVariable UUID submissionId, @PathVariable UUID claimId) {
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claimId", claimId);
 
@@ -32,8 +31,8 @@ public class DiscardController {
     public String discard(
             HttpSession session,
             RedirectAttributes redirectAttributes,
-            @PathVariable(value = "submissionId") UUID submissionId,
-            @PathVariable(value = "claimId") UUID claimId) {
+            @PathVariable UUID submissionId,
+            @PathVariable UUID claimId) {
         session.removeAttribute(claimId.toString());
         String searchUrl =
                 (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");

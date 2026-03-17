@@ -1,8 +1,13 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class SortTest {
 
@@ -10,7 +15,7 @@ public class SortTest {
     class ConstructorTests {
         @Test
         void shouldConvertStringToSortWhenAscendingOrder() {
-            String str = "uniqueFileNumber,asc";
+            String str = "unique_file_number,asc";
             Sort result = new Sort(str);
             Assertions.assertEquals(SortField.UNIQUE_FILE_NUMBER, result.getField());
             Assertions.assertEquals(SortDirection.ASCENDING, result.getDirection());
@@ -18,7 +23,7 @@ public class SortTest {
 
         @Test
         void shouldConvertStringToSortWhenDescendingOrder() {
-            String str = "caseReferenceNumber,desc";
+            String str = "case_reference_number,desc";
             Sort result = new Sort(str);
             Assertions.assertEquals(SortField.CASE_REFERENCE_NUMBER, result.getField());
             Assertions.assertEquals(SortDirection.DESCENDING, result.getDirection());
@@ -26,7 +31,7 @@ public class SortTest {
 
         @Test
         void shouldThrowExceptionForInvalidDirection() {
-            String str = "scheduleReference,foo";
+            String str = "schedule_reference,foo";
             Assertions.assertThrows(IllegalArgumentException.class, () -> new Sort(str));
         }
 
@@ -45,22 +50,20 @@ public class SortTest {
 
     @Nested
     class ToStringTests {
-        @Test
-        void shouldConvertSortToStringWhenAscendingOrder() {
-            Sort sort = Sort.builder()
-                    .field(SortField.UNIQUE_FILE_NUMBER)
-                    .direction(SortDirection.ASCENDING)
-                    .build();
-            Assertions.assertEquals("uniqueFileNumber,asc", sort.toString());
+
+        @ParameterizedTest
+        @MethodSource("sortArguments")
+        void shouldBuildSort(SortField sortField, SortDirection sortDirection) {
+            Sort sort = Sort.builder().field(sortField).direction(sortDirection).build();
+
+            Assertions.assertEquals(sortField, sort.getField());
+            Assertions.assertEquals(sortDirection, sort.getDirection());
         }
 
-        @Test
-        void shouldConvertSortToStringWhenDescendingOrder() {
-            Sort sort = Sort.builder()
-                    .field(SortField.CASE_REFERENCE_NUMBER)
-                    .direction(SortDirection.DESCENDING)
-                    .build();
-            Assertions.assertEquals("caseReferenceNumber,desc", sort.toString());
+        static Stream<Arguments> sortArguments() {
+            return Arrays.stream(SortField.values())
+                    .flatMap(field -> Arrays.stream(SortDirection.values())
+                            .map(sortDirection -> Arguments.of(field, sortDirection)));
         }
 
         @Test

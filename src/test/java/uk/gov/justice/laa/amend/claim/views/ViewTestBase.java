@@ -1,8 +1,10 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.createUser;
 
 import jakarta.servlet.RequestDispatcher;
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,6 +26,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.MultiValueMap;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
@@ -36,6 +40,9 @@ public abstract class ViewTestBase {
 
     @MockitoBean
     private MaintenanceService maintenanceService;
+
+    @MockitoBean
+    protected FeatureFlagsConfig featureFlagsConfig;
 
     @BeforeEach
     public void setup() {
@@ -72,7 +79,7 @@ public abstract class ViewTestBase {
 
     private Document renderDocument(MockHttpServletRequestBuilder requestBuilder, int expectedStatus) throws Exception {
         session.setAttribute(claimId.toString(), claim);
-        String html = mockMvc.perform(requestBuilder.session(session))
+        String html = mockMvc.perform(requestBuilder.session(session).requestAttr("user", createUser()))
                 .andExpect(status().is(expectedStatus))
                 .andReturn()
                 .getResponse()
@@ -88,7 +95,8 @@ public abstract class ViewTestBase {
     }
 
     protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) throws Exception {
-        MockHttpServletRequestBuilder requestBuilder = post(mapping).params(params);
+        MockHttpServletRequestBuilder requestBuilder =
+                post(mapping).with(csrf()).params(params);
         return renderDocument(requestBuilder, 400);
     }
 
@@ -124,12 +132,11 @@ public abstract class ViewTestBase {
         Assertions.assertEquals(expectedText, elements.getFirst().text());
     }
 
-    protected void assertPageHasPrimaryButtonDisabled(Document doc, String expectedText) {
-        Elements elements = doc.getElementsByClass("govuk-button");
-        Assertions.assertFalse(elements.isEmpty());
-        Element button = elements.getFirst();
-        Assertions.assertEquals(expectedText, button.text());
-        Assertions.assertTrue(button.hasAttr("disabled"));
+    protected void assertPageHasPrimaryButtonHidden(Document doc, String expectedText) {
+        Elements buttons = doc.getElementsByClass("govuk-button");
+        boolean found = buttons.stream().anyMatch(b -> expectedText.equals(b.text()));
+
+        Assertions.assertFalse(found, "Button with text '" + expectedText + "' should not be present");
     }
 
     protected void assertPageHasSecondaryButton(Document doc, String expectedText) {
@@ -161,7 +168,7 @@ public abstract class ViewTestBase {
         Assertions.assertEquals(expectedText, hint.text());
     }
 
-    protected void assertPageHasTextInput(Document doc, String id, String expectedLabel) {
+    protected void assertPageHasLabel(Document doc, String id, String expectedLabel) {
         Element label = selectFirst(doc, String.format("label[for=%s]", id));
         Assertions.assertEquals(expectedLabel, label.text());
     }
@@ -287,9 +294,18 @@ public abstract class ViewTestBase {
         return matrix;
     }
 
-    protected List<List<Element>> getSummaryList(Document doc, String summaryCardTitle) {
+    protected List<List<Element>> getSummaryListInCard(Document doc, String summaryCardTitle) {
         Element summaryCard = getSummaryCard(doc, summaryCardTitle);
         Element summaryList = selectFirst(summaryCard, "dl.govuk-summary-list");
+        return extractElementsInSummaryList(summaryList);
+    }
+
+    protected List<List<Element>> getFirstSummaryList(Document doc) {
+        Element summaryList = selectFirst(doc, "dl.govuk-summary-list");
+        return extractElementsInSummaryList(summaryList);
+    }
+
+    private List<List<Element>> extractElementsInSummaryList(Element summaryList) {
         List<List<Element>> matrix = new ArrayList<>();
         for (Element row : summaryList.select(".govuk-summary-list__row")) {
             Element key = selectFirst(row, ".govuk-summary-list__key");
@@ -389,5 +405,10 @@ public abstract class ViewTestBase {
 
     protected void assertTableHeaderIsNotSortable(Element header, String expectedText) {
         Assertions.assertEquals(expectedText, header.text());
+    }
+
+    public static Element getButtonByLabel(Document doc, String label) {
+        // Matches the button's own text, ignoring surrounding whitespace
+        return doc.selectFirst("button:matchesOwn(^\\s*" + Pattern.quote(label) + "\\s*$)");
     }
 }

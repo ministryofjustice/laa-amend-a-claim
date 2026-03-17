@@ -29,7 +29,7 @@ spring:
     redis:
       url: ${REDIS_URL}
   session:
-    timeout: 30m
+    timeout: 45m
 sentry:
   dsn: ${SENTRY_DSN}
   environment: ${SENTRY_ENVIRONMENT}
@@ -57,6 +57,10 @@ app:
   laa-url: ${LAA_URL}
   email: AmendaBulkClaimTeam@justice.gov.uk
 
+feature-flags:
+  is-bulk-upload-enabled: ${IS_BULK_UPLOAD_ENABLED:false}
+  is-voiding-enabled: ${IS_VOIDING_ENABLED:false}
+
 management:
   server:
     port: 8182
@@ -67,6 +71,12 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
+
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: lax
 
 ---
 spring:

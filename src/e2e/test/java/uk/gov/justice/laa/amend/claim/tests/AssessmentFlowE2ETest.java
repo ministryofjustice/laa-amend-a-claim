@@ -77,7 +77,7 @@ public class AssessmentFlowE2ETest extends BaseTest {
     void fullAssessmentFlow() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(PROVIDER_ACCOUNT, "03", "2020", UFN, "");
+        search.searchForClaim(PROVIDER_ACCOUNT, "03", "2020", UFN, "", "", "");
 
         search.clickViewForUfn(UFN);
 

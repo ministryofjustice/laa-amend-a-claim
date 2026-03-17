@@ -11,17 +11,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
+import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 
 @Controller
 @RequiredArgsConstructor
+@HasRoleEscapeCaseCaseworker
 public class ConfirmationController {
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}/assessments/{assessmentId}")
     public String onPageLoad(
             Model model,
-            @PathVariable(value = "submissionId") UUID submissionId,
-            @PathVariable(value = "claimId") UUID claimId,
-            @PathVariable(value = "assessmentId") UUID assessmentId,
+            @PathVariable UUID submissionId,
+            @PathVariable UUID claimId,
+            @PathVariable UUID assessmentId,
             HttpSession session) {
         UUID submittedAssessmentId = (UUID) session.getAttribute(ASSESSMENT_ID);
         if (submittedAssessmentId != null && submittedAssessmentId.equals(assessmentId)) {

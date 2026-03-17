@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -14,12 +15,10 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class ClaimDetails extends Claim {
-    private String areaOfLaw;
     private String categoryOfLaw;
     private String matterTypeCode;
     private String scheduleReference;
     private String providerName;
-    private Boolean escaped;
     private Boolean vatApplicable;
     private String providerAccountNumber;
     private ClaimField vatClaimed;
@@ -40,6 +39,8 @@ public abstract class ClaimDetails extends Claim {
     private String feeCodeDescription;
     private boolean hasAssessment;
     private AssessmentInfo lastAssessment;
+    private String lastUpdatedUser;
+    private OffsetDateTime lastUpdatedDateTime;
 
     public void applyOutcome(OutcomeType outcome) {
         getClaimFields().forEach(x -> x.applyOutcome(outcome));

@@ -11,8 +11,12 @@
         <main class="govuk-main-wrapper" id="main-content">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full">
-                    <th:block th:if="${claim.hasAssessment}">
+                    <th:block th:if="${claim.hasAssessment and !claim.isVoidClaim}">
                         <th:block th:replace="~{partials/information-alert :: informationAlert('claimSummary', ${claim.lastEditedBy(user).resolve(#messages)})}"></th:block>
+                    </th:block>
+
+                    <th:block th:if="${claim.isVoidClaim}">
+                        <th:block th:replace="~{partials/error-alert :: errorAlert('claimSummary.error', ${claim.lastEditedBy(user).resolve(#messages)})}"></th:block>
                     </th:block>
 
                     <h1 class="govuk-heading-l">
@@ -113,14 +117,20 @@
                         <form method="post"
                               th:action="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}">
                             <div class="govuk-button-group">
-                                <th:block th:with="disabled=${!(claim.claim.escaped ?: false)}">
-                                    <button class="govuk-button"
+                                <th:block th:if="${isAssessmentButtonPresent}">
+                                    <button class="govuk-button govuk-button--success"
                                             data-module="govuk-button"
-                                            th:attr="aria-disabled=${disabled}"
-                                            th:disabled="${disabled}"
                                             th:data-testid="claim-details-assessment-button"
                                             th:text="${claim.hasAssessment} ? #{claimSummary.update.assessmentButton} : #{claimSummary.assessmentButton}" type="submit">
                                     </button>
+                                </th:block>
+
+                                <th:block th:if="${isVoidButtonPresent}">
+                                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}/void(submissionId=${submissionId}, claimId=${claimId})}"
+                                       id="void-claim"
+                                       class="govuk-button govuk-button--warning"
+                                       data-module="govuk-button"
+                                       th:text="#{claimSummary.voidClaim}"></a>
                                 </th:block>
 
                                 <a th:href="@{${searchUrl}}" id="back-to-search"

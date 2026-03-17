@@ -30,3 +30,7 @@ search:
   sort-enabled: true
 submission:
   high-value-assessment-limit: 25000
+
+feature-flags:
+  is-bulk-upload-enabled: true
+  is-voiding-enabled: true

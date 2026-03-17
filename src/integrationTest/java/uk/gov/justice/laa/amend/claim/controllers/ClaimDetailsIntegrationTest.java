@@ -32,8 +32,7 @@ class ClaimDetailsIntegrationTest extends WireMockSetup {
 
     @BeforeEach
     void setUp() {
-        setupGetClaimStub(SUBMISSION_ID, CLAIM_ID);
-        setupGetSubmissionStub(SUBMISSION_ID, OFFICE_ACCOUNT_NUMBER);
+        setupGetClaimStub(SUBMISSION_ID, CLAIM_ID, OFFICE_ACCOUNT_NUMBER);
         setupGetProviderOfficeStub(OFFICE_ACCOUNT_NUMBER, FIRM_NAME);
     }
 

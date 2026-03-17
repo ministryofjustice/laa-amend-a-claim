@@ -1,8 +1,8 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -20,20 +20,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
+import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 import uk.gov.justice.laa.amend.claim.forms.AssessedTotalForm;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/assessed-totals")
 @Slf4j
+@HasRoleEscapeCaseCaseworker
 public class ChangeAssessedTotalsController {
 
     @GetMapping()
     public String onPageLoad(
-            @PathVariable UUID claimId, @PathVariable UUID submissionId, Model model, HttpServletRequest request) {
-        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
+            @PathVariable UUID claimId, @PathVariable UUID submissionId, Model model, HttpSession session) {
+        var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
 
         if (claim.getAssessedTotalVat().isNotAssessable()
                 || claim.getAssessedTotalInclVat().isNotAssessable()) {
@@ -58,20 +59,19 @@ public class ChangeAssessedTotalsController {
 
     @PostMapping()
     public String onSubmit(
-            @PathVariable(value = "submissionId") UUID submissionId,
-            @PathVariable(value = "claimId") UUID claimId,
+            @PathVariable UUID submissionId,
+            @PathVariable UUID claimId,
             @Valid @ModelAttribute("form") AssessedTotalForm form,
             BindingResult bindingResult,
             HttpSession session,
             Model model,
-            HttpServletRequest request,
             HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return renderView(model, form, submissionId, claimId);
         }
 
-        ClaimDetails claim = (ClaimDetails) request.getAttribute(claimId.toString());
+        var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
 
         ClaimField totalVatField = claim.getAssessedTotalVat();
         BigDecimal totalVat = setScale(form.getAssessedTotalVat());

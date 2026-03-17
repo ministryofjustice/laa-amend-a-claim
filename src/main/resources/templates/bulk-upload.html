@@ -1,0 +1,30 @@
+<!DOCTYPE html >
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=${'Bulk upload'},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${true}
+    )}">
+    <body>
+        <main class="govuk-main-wrapper" id="main-content">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <form th:action="@{/bulk-upload}" enctype="multipart/form-data" method="post">
+                        <div class="govuk-form-group">
+                            <label class="govuk-label" for="file-upload">
+                                Upload a file
+                            </label>
+                            <input class="govuk-file-upload" id="file-upload" name="file" type="file">
+                        </div>
+                        <div th:text="${result}"></div>
+                        <div class="govuk-button-group">
+                            <button class="govuk-button" type="submit" data-module="govuk-button">Upload</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

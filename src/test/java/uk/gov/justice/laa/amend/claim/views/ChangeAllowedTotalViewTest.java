@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
+import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeAllowedTotalsController;
 
 @ActiveProfiles("local")
@@ -30,8 +30,8 @@ class ChangeAllowedTotalViewTest extends ViewTestBase {
         assertPageHasHint(doc, "allowed-total-vat-hint", "Enter the amount of allowed VAT for the claim");
         assertPageHasHint(doc, "allowed-total-incl-vat-hint", "Enter the total allowed value of the claim");
 
-        assertPageHasTextInput(doc, "allowed-total-vat", "Allowed total VAT");
-        assertPageHasTextInput(doc, "allowed-total-incl-vat", "Allowed total including VAT");
+        assertPageHasLabel(doc, "allowed-total-vat", "Allowed total VAT");
+        assertPageHasLabel(doc, "allowed-total-incl-vat", "Allowed total including VAT");
     }
 
     @Test

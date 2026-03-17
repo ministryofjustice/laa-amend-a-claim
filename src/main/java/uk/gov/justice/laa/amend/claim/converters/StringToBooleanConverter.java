@@ -4,13 +4,13 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class YesNoToBooleanConverter implements Converter<String, Boolean> {
+public class StringToBooleanConverter implements Converter<String, Boolean> {
 
     @Override
     public Boolean convert(String source) {
         if (source == null || source.isEmpty()) {
             return null;
         }
-        return "yes".equalsIgnoreCase(source);
+        return "yes".equalsIgnoreCase(source) || Boolean.parseBoolean(source);
     }
 }

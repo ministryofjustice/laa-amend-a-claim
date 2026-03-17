@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{voidConfirmation.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${false}
+    )}">
+<body>
+<main class="govuk-main-wrapper" id="main-content">
+
+    <th:block th:if="${submissionFailed}">
+        <th:block th:replace="~{partials/error-alert :: errorAlert('voidConfirmation', null)}"></th:block>
+    </th:block>
+
+    <h1 class="govuk-heading-xl">
+        <span th:text="#{voidConfirmation.mainHeading}"></span>
+    </h1>
+
+    <dl class="govuk-summary-list govuk-summary-list--no-border">
+        <div class="govuk-summary-list__row" th:each="entry : ${claim.voidConfirmationRows}">
+            <dt class="govuk-summary-list__key" th:text="#{${'claimSummary.rows.' + entry.key}}"></dt>
+            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+        </div>
+    </dl>
+
+    <form th:action="@{/submissions/{submissionId}/claims/{claimId}/void(submissionId=${submissionId}, claimId=${claimId})}" method="post">
+        <div class="govuk-button-group">
+            <button class="govuk-button govuk-button--warning" type="submit" data-module="govuk-button" th:text="#{voidConfirmation.voidClaim}"></button>
+
+            <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
+               class="govuk-link govuk-link--no-visited-state"
+               th:text="#{service.cancel}"></a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

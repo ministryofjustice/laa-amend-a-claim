@@ -142,19 +142,19 @@ public class ClaimDetailsTest extends BaseTest {
 
     @Test
     @Story("Non-escape claim")
-    @DisplayName("Claim Details: Add assessment outcome is disabled for non-escape claims")
+    @DisplayName("Claim Details: Add assessment outcome is hidden for non-escape claims")
     @Severity(SeverityLevel.CRITICAL)
     void addAssessmentOutcomeIsDisabledForNonEscapeClaim() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(CRIME_PROVIDER_ACCOUNT, "11", "2025", UNESCAPED_UFN, "");
+        search.searchForClaim(CRIME_PROVIDER_ACCOUNT, "11", "2025", UNESCAPED_UFN, "", "", "");
 
         search.clickViewForUfn(UNESCAPED_UFN);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
 
         Assertions.assertTrue(
-                details.isAddAssessmentOutcomeDisabled(),
+                details.isAddAssessmentOutcomeHidden(),
                 "Expected Add assessment outcome button to be disabled for non-escape claim");
     }
 
@@ -170,19 +170,20 @@ public class ClaimDetailsTest extends BaseTest {
     void claimValuesMatchFixture(ClaimDetailsFixture claimDetailsFixture) {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(claimDetailsFixture.getProviderAccount(), "", "", claimDetailsFixture.getUfn(), "");
+        search.searchForClaim(
+                claimDetailsFixture.getProviderAccount(), "", "", claimDetailsFixture.getUfn(), "", "", "");
 
         search.clickViewForUfn(claimDetailsFixture.getUfn());
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
 
         Assertions.assertFalse(
-                details.isAddAssessmentOutcomeDisabled(),
+                details.isAddAssessmentOutcomeHidden(),
                 "Expected Add assessment outcome button to be enabled for escape claim");
 
         Assertions.assertEquals(
                 claimDetailsFixture.isAddAssessmentOutcomeDisabled(),
-                details.isAddAssessmentOutcomeDisabled(),
+                details.isAddAssessmentOutcomeHidden(),
                 "Add assessment outcome enabled/disabled state mismatch");
 
         details.assertAllValues(claimDetailsFixture.getValues());

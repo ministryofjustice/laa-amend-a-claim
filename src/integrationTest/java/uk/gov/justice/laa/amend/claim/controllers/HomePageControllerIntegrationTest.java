@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -38,11 +39,14 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     @Test
     void testSearchWithEmptyFormReturnsBadRequest() throws Exception {
         mockMvc.perform(post("/")
+                        .with(csrf())
                         .formField("providerAccountNumber", "")
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
                         .formField("uniqueFileNumber", "")
-                        .formField("caseReferenceNumber", ""))
+                        .formField("caseReferenceNumber", "")
+                        .formField("areaOfLaw", "")
+                        .formField("escapeCase", ""))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("index"));
     }
@@ -50,11 +54,14 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     @Test
     void testSearchWithInvalidProviderAccountNumberReturnsBadRequest() throws Exception {
         mockMvc.perform(post("/")
+                        .with(csrf())
                         .formField("providerAccountNumber", "invalid!")
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
                         .formField("uniqueFileNumber", "")
-                        .formField("caseReferenceNumber", ""))
+                        .formField("caseReferenceNumber", "")
+                        .formField("areaOfLaw", "")
+                        .formField("escapeCase", ""))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("index"));
     }
@@ -62,13 +69,16 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     @Test
     void testSearchWithValidProviderAccountNumberReturnsResults() throws Exception {
         mockMvc.perform(post("/")
+                        .with(csrf())
                         .formField("providerAccountNumber", "0P322F")
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
                         .formField("uniqueFileNumber", "")
-                        .formField("caseReferenceNumber", ""))
+                        .formField("caseReferenceNumber", "")
+                        .formField("areaOfLaw", "")
+                        .formField("escapeCase", ""))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/?providerAccountNumber=0P322F&page=1&sort=uniqueFileNumber,asc"));
+                .andExpect(redirectedUrl("/?providerAccountNumber=0P322F&page=1&sort=unique_file_number,asc"));
     }
 
     @Test
@@ -82,6 +92,7 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     @Test
     void testSearchWithInvalidUniqueFileNumber() throws Exception {
         mockMvc.perform(post("/")
+                        .with(csrf())
                         .formField("providerAccountNumber", "0P322F")
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
@@ -94,6 +105,7 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     @Test
     void testSearchWithValidSubmissionDate() throws Exception {
         mockMvc.perform(post("/")
+                        .with(csrf())
                         .formField("providerAccountNumber", "0P322F")
                         .formField("submissionDateMonth", "12")
                         .formField("submissionDateYear", "2024")
@@ -102,6 +114,6 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(
                         redirectedUrl(
-                                "/?providerAccountNumber=0P322F&submissionDateMonth=12&submissionDateYear=2024&page=1&sort=uniqueFileNumber,asc"));
+                                "/?providerAccountNumber=0P322F&submissionDateMonth=12&submissionDateYear=2024&page=1&sort=unique_file_number,asc"));
     }
 }

@@ -76,7 +76,7 @@ public class AssessedClaimDetailsTest extends BaseTest {
     void assessed() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(PROVIDER_ACCOUNT, "", "", UFN, "");
+        search.searchForClaim(PROVIDER_ACCOUNT, "", "", UFN, "", "", "");
 
         search.clickViewForUfn(UFN);
 

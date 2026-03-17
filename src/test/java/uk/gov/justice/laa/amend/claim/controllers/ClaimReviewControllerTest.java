@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.controllers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -10,7 +11,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
+import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
+import static uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService.USER_ID;
 
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,14 +28,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
+import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
@@ -41,6 +47,9 @@ public class ClaimReviewControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private DummyUserSecurityService dummyUserSecurityService;
 
     @MockitoBean
     private MaintenanceService maintenanceService;
@@ -66,6 +75,8 @@ public class ClaimReviewControllerTest {
         claim.setClaimId(claimId.toString());
         MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
         session.setAttribute(claimId.toString(), claim);
+
+        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
     }
 
     @Test
@@ -76,8 +87,7 @@ public class ClaimReviewControllerTest {
 
         session.setAttribute(claimId.toString(), claim);
 
-        String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
-        mockMvc.perform(get(path).session(session))
+        mockMvc.perform(get(buildPath()).session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("review-and-amend"))
                 .andExpect(model().attributeExists("claim"))
@@ -89,14 +99,13 @@ public class ClaimReviewControllerTest {
 
     @Test
     public void testOnPageLoadRedirectsToAssessmentOutcomeWhenNotPresent() throws Exception {
-        String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
         claim.setAssessmentOutcome(null);
         session.setAttribute(claimId.toString(), claim);
 
         String expectedRedirectUrl =
                 String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
 
-        mockMvc.perform(get(path).session(session))
+        mockMvc.perform(get(buildPath()).session(session))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(expectedRedirectUrl));
     }
@@ -104,38 +113,32 @@ public class ClaimReviewControllerTest {
     @Test
     public void testSuccessfulSubmitRedirectsToConfirmation() throws Exception {
         UUID assessmentId = UUID.randomUUID();
-        String userId = LocalSecurityConfig.userId;
 
         CreateAssessment201Response response = new CreateAssessment201Response();
         response.setId(assessmentId);
 
-        when(assessmentService.submitAssessment(claim, userId)).thenReturn(response);
+        when(assessmentService.submitAssessment(claim, USER_ID)).thenReturn(response);
 
-        String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
         String redirectUrl =
                 String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
 
-        mockMvc.perform(post(path).session(session))
+        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl))
                 .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()))
                 .andExpect(request().sessionAttribute("assessmentId", assessmentId));
 
-        verify(assessmentService).submitAssessment(claim, userId);
+        verify(assessmentService).submitAssessment(claim, USER_ID);
     }
 
     @Test
     public void testUnsuccessfulSubmitReloadsPageWithAlert() throws Exception {
-        String userId = LocalSecurityConfig.userId;
-
         WebClientResponseException exception =
                 WebClientResponseException.create(500, "Something went wrong", null, null, null);
 
         when(assessmentService.submitAssessment(any(), any())).thenThrow(exception);
 
-        String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
-
-        mockMvc.perform(post(path).session(session))
+        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("review-and-amend"))
                 .andExpect(model().attributeExists("claim"))
@@ -144,7 +147,7 @@ public class ClaimReviewControllerTest {
                 .andExpect(model().attribute("submissionFailed", true))
                 .andExpect(model().attribute("validationFailed", false));
 
-        verify(assessmentService).submitAssessment(claim, userId);
+        verify(assessmentService).submitAssessment(claim, USER_ID);
     }
 
     @Test
@@ -155,9 +158,7 @@ public class ClaimReviewControllerTest {
 
         session.setAttribute(claimId.toString(), claim);
 
-        String path = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
-
-        mockMvc.perform(post(path).session(session))
+        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("review-and-amend"))
                 .andExpect(model().attributeExists("claim"))
@@ -198,5 +199,21 @@ public class ClaimReviewControllerTest {
         // Verify both claims still in session
         Assertions.assertNotNull(session.getAttribute(claimId1.toString()));
         Assertions.assertNotNull(session.getAttribute(claimId2.toString()));
+    }
+
+    @Test
+    void testGetRequiresRole() throws Exception {
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testPostRequiresRole() throws Exception {
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+        mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
+    }
+
+    private String buildPath() {
+        return String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
     }
 }

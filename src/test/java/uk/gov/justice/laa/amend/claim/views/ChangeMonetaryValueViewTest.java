@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import uk.gov.justice.laa.amend.claim.config.LocalSecurityConfig;
+import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeMonetaryValueController;
 
 @ActiveProfiles("local")
@@ -30,7 +30,7 @@ class ChangeMonetaryValueViewTest extends ViewTestBase {
         assertPageHasHint(
                 doc, "value-hint", "Enter the assessed value for the providers' profit costs, excluding VAT.");
 
-        assertPageHasTextInput(doc, "value", "Assess profit costs");
+        assertPageHasLabel(doc, "value", "Assess profit costs");
     }
 
     @Test
