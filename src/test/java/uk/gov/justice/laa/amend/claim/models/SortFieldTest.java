@@ -45,13 +45,6 @@ public class SortFieldTest {
             Assertions.assertEquals(SortField.CATEGORY_OF_LAW, result);
         }
 
-        @Test
-        void shouldConvertScheduleReference() {
-            String str = "schedule_reference";
-            SortField result = SortField.fromValue(str);
-            Assertions.assertEquals(SortField.SCHEDULE_REFERENCE, result);
-        }
-
         @ParameterizedTest
         @ValueSource(strings = {"foo", "bar"})
         void shouldThrowExceptionForAnythingElse(String str) {

@@ -40,7 +40,7 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     void testSearchWithEmptyFormReturnsBadRequest() throws Exception {
         mockMvc.perform(post("/")
                         .with(csrf())
-                        .formField("providerAccountNumber", "")
+                        .formField("officeCode", "")
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
                         .formField("uniqueFileNumber", "")
@@ -52,10 +52,10 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     }
 
     @Test
-    void testSearchWithInvalidProviderAccountNumberReturnsBadRequest() throws Exception {
+    void testSearchWithInvalidOfficeCodeReturnsBadRequest() throws Exception {
         mockMvc.perform(post("/")
                         .with(csrf())
-                        .formField("providerAccountNumber", "invalid!")
+                        .formField("officeCode", "invalid!")
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
                         .formField("uniqueFileNumber", "")
@@ -67,10 +67,10 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     }
 
     @Test
-    void testSearchWithValidProviderAccountNumberReturnsResults() throws Exception {
+    void testSearchWithValidOfficeCodeReturnsResults() throws Exception {
         mockMvc.perform(post("/")
                         .with(csrf())
-                        .formField("providerAccountNumber", "0P322F")
+                        .formField("officeCode", "0P322F")
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
                         .formField("uniqueFileNumber", "")
@@ -78,12 +78,12 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
                         .formField("areaOfLaw", "")
                         .formField("escapeCase", ""))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/?providerAccountNumber=0P322F&page=1&sort=unique_file_number,asc"));
+                .andExpect(redirectedUrl("/?officeCode=0P322F&page=1&sort=unique_file_number,asc"));
     }
 
     @Test
     void testSearchWithPaginationParameters() throws Exception {
-        mockMvc.perform(get("/").param("page", "1").param("providerAccountNumber", "0P322F"))
+        mockMvc.perform(get("/").param("page", "1").param("officeCode", "0P322F"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"))
                 .andExpect(model().attributeExists("viewModel"));
@@ -93,7 +93,7 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     void testSearchWithInvalidUniqueFileNumber() throws Exception {
         mockMvc.perform(post("/")
                         .with(csrf())
-                        .formField("providerAccountNumber", "0P322F")
+                        .formField("officeCode", "0P322F")
                         .formField("submissionDateMonth", "")
                         .formField("submissionDateYear", "")
                         .formField("uniqueFileNumber", "invalid!")
@@ -106,7 +106,7 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
     void testSearchWithValidSubmissionDate() throws Exception {
         mockMvc.perform(post("/")
                         .with(csrf())
-                        .formField("providerAccountNumber", "0P322F")
+                        .formField("officeCode", "0P322F")
                         .formField("submissionDateMonth", "12")
                         .formField("submissionDateYear", "2024")
                         .formField("uniqueFileNumber", "")
@@ -114,6 +114,6 @@ class HomePageControllerIntegrationTest extends WireMockSetup {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(
                         redirectedUrl(
-                                "/?providerAccountNumber=0P322F&submissionDateMonth=12&submissionDateYear=2024&page=1&sort=unique_file_number,asc"));
+                                "/?officeCode=0P322F&submissionDateMonth=12&submissionDateYear=2024&page=1&sort=unique_file_number,asc"));
     }
 }

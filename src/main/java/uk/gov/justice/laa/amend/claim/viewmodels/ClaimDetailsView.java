@@ -25,7 +25,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("ufn", claim().getUniqueFileNumber());
         addUcnSummaryRow(rows);
         rows.put("providerName", getProviderName());
-        rows.put("providerAccountNumber", claim().getProviderAccountNumber());
+        rows.put("officeCode", claim().getOfficeCode());
         rows.put("submittedDate", claim().getSubmittedDate());
         rows.put(
                 "areaOfLaw",
@@ -51,7 +51,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         rows.put("ufn", claim().getUniqueFileNumber());
         addUcnSummaryRow(rows);
         rows.put("providerName", getProviderName());
-        rows.put("providerAccountNumber", claim().getProviderAccountNumber());
+        rows.put("officeCode", claim().getOfficeCode());
         rows.put("submittedDate", claim().getSubmittedDate());
         rows.put("categoryOfLaw", claim().getCategoryOfLaw());
         rows.put("feeCodeDescription", claim().getFeeCodeDescription());

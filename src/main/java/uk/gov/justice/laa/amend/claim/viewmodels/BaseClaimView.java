@@ -24,12 +24,6 @@ public interface BaseClaimView<T extends Claim> {
         }
     }
 
-    default String getAccountNumber() {
-        return claim().getScheduleReference() != null
-                ? claim().getScheduleReference().split("/")[0]
-                : null;
-    }
-
     default String getSubmissionPeriodForDisplay() {
         return claim().getSubmissionPeriod() != null
                 ? claim().getSubmissionPeriod().format(DateTimeFormatter.ofPattern(DEFAULT_PERIOD_FORMAT))

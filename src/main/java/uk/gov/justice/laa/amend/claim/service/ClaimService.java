@@ -99,7 +99,7 @@ public class ClaimService {
                     String.format("Claim with ID %s not found for submission %s", claimId, submissionId));
         }
         var claimDetails = claimMapper.mapToClaimDetails(claimResponse);
-        claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(claimDetails.getProviderAccountNumber()));
+        claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(claimDetails.getOfficeCode()));
         return claimDetails;
     }
 
@@ -119,22 +119,20 @@ public class ClaimService {
     /**
      * Fetches provider firm name from Provider API
      *
-     * @param officeAccountNumber the office account number
+     * @param officeCode the office account number
      * @return firm name from API or office account number as fallback
      */
-    private String getProviderFirmName(String officeAccountNumber) {
+    private String getProviderFirmName(String officeCode) {
         try {
             ProviderFirmOfficeDto providerOffice =
-                    providerApiClient.getProviderOffice(officeAccountNumber).block();
+                    providerApiClient.getProviderOffice(officeCode).block();
 
             if (providerOffice != null && providerOffice.getFirm() != null) {
                 return providerOffice.getFirm().getFirmName();
             }
         } catch (Exception e) {
             log.warn(
-                    "Failed to fetch provider firm name for office account: {}. Error: {}",
-                    officeAccountNumber,
-                    e.getMessage());
+                    "Failed to fetch provider firm name for office account: {}. Error: {}", officeCode, e.getMessage());
         }
         return null;
     }

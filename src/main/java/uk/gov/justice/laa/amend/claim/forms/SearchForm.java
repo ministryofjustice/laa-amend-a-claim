@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidCaseReferenceNumber;
-import uk.gov.justice.laa.amend.claim.forms.annotations.ValidProviderAccountNumber;
+import uk.gov.justice.laa.amend.claim.forms.annotations.ValidOfficeCode;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidUniqueFileNumber;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
@@ -18,13 +18,13 @@ import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ValidProviderAccountNumber
+@ValidOfficeCode
 @ValidSubmissionDate
 @ValidUniqueFileNumber
 @ValidCaseReferenceNumber
 public class SearchForm {
 
-    private String providerAccountNumber;
+    private String officeCode;
 
     private String submissionDateMonth;
 
@@ -39,7 +39,7 @@ public class SearchForm {
     private Boolean escapeCase;
 
     public SearchForm(SearchQuery query) {
-        this.providerAccountNumber = query.getProviderAccountNumber();
+        this.officeCode = query.getOfficeCode();
         this.submissionDateMonth = query.getSubmissionDateMonth();
         this.submissionDateYear = query.getSubmissionDateYear();
         this.uniqueFileNumber = query.getUniqueFileNumber();
@@ -49,7 +49,7 @@ public class SearchForm {
     }
 
     public boolean anyNonEmpty() {
-        return hasText(providerAccountNumber)
+        return hasText(officeCode)
                 || hasText(submissionDateMonth)
                 || hasText(submissionDateYear)
                 || hasText(uniqueFileNumber)

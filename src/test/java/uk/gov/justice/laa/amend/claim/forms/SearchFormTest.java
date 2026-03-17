@@ -11,62 +11,62 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class SearchFormTest extends FormTest {
 
     @Test
-    void testMissingProviderAccountNumber() {
+    void testMissingOfficeCode() {
         SearchForm form = new SearchForm();
 
-        form.setProviderAccountNumber("");
+        form.setOfficeCode("");
         form.setSubmissionDateMonth("");
         form.setSubmissionDateYear("");
         form.setUniqueFileNumber("");
         form.setCaseReferenceNumber("");
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
-        ConstraintViolation<SearchForm> violation = getViolation(violations, "providerAccountNumber");
+        ConstraintViolation<SearchForm> violation = getViolation(violations, "officeCode");
 
         Assertions.assertNotNull(violation);
-        Assertions.assertEquals("{index.providerAccountNumber.error.required}", violation.getMessage());
+        Assertions.assertEquals("{index.officeCode.error.required}", violation.getMessage());
     }
 
     @Test
-    void testInvalidProviderAccountNumber() {
+    void testInvalidOfficeCode() {
         SearchForm form = new SearchForm();
 
-        form.setProviderAccountNumber("!!!!!!");
+        form.setOfficeCode("!!!!!!");
         form.setSubmissionDateMonth("5");
         form.setSubmissionDateYear("2025");
         form.setUniqueFileNumber("120223/001");
         form.setCaseReferenceNumber("789");
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
-        ConstraintViolation<SearchForm> violation = getViolation(violations, "providerAccountNumber");
+        ConstraintViolation<SearchForm> violation = getViolation(violations, "officeCode");
 
         Assertions.assertNotNull(violation);
-        Assertions.assertEquals("{index.providerAccountNumber.error.invalid}", violation.getMessage());
+        Assertions.assertEquals("{index.officeCode.error.invalid}", violation.getMessage());
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"12345", "1234567"})
-    void testMalformattedProviderAccountNumber(String providerAccountNumber) {
+    void testMalformattedOfficeCode(String officeCode) {
         SearchForm form = new SearchForm();
 
-        form.setProviderAccountNumber(providerAccountNumber);
+        form.setOfficeCode(officeCode);
         form.setSubmissionDateMonth("5");
         form.setSubmissionDateYear("2025");
         form.setUniqueFileNumber("120223/001");
         form.setCaseReferenceNumber("789");
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
-        ConstraintViolation<SearchForm> violation = getViolation(violations, "providerAccountNumber");
+        ConstraintViolation<SearchForm> violation = getViolation(violations, "officeCode");
 
         Assertions.assertNotNull(violation);
-        Assertions.assertEquals("{index.providerAccountNumber.error.format}", violation.getMessage());
+        Assertions.assertEquals("{index.officeCode.error.format}", violation.getMessage());
     }
 
     @Test
     void testInvalidMonthAndYear() {
         SearchForm form = new SearchForm();
 
-        form.setProviderAccountNumber("0P322F");
+        form.setOfficeCode("0P322F");
         form.setSubmissionDateMonth("!");
         form.setSubmissionDateYear("!");
         form.setUniqueFileNumber("120223/001");
@@ -84,7 +84,7 @@ public class SearchFormTest extends FormTest {
     void testInvalidUniqueFileNumber() {
         SearchForm form = new SearchForm();
 
-        form.setProviderAccountNumber("0P322F");
+        form.setOfficeCode("0P322F");
         form.setSubmissionDateMonth("5");
         form.setSubmissionDateYear("2025");
         form.setUniqueFileNumber("!!!!!!/!!!");
@@ -102,7 +102,7 @@ public class SearchFormTest extends FormTest {
     void testMalformattedUniqueFileNumber(String uniqueFileNumber) {
         SearchForm form = new SearchForm();
 
-        form.setProviderAccountNumber("0P322F");
+        form.setOfficeCode("0P322F");
         form.setSubmissionDateMonth("5");
         form.setSubmissionDateYear("2025");
         form.setUniqueFileNumber(uniqueFileNumber);
@@ -119,7 +119,7 @@ public class SearchFormTest extends FormTest {
     void testInvalidCaseReferenceNumber() {
         SearchForm form = new SearchForm();
 
-        form.setProviderAccountNumber("0P322F");
+        form.setOfficeCode("0P322F");
         form.setSubmissionDateMonth("5");
         form.setSubmissionDateYear("2025");
         form.setUniqueFileNumber("120223/001");
@@ -136,7 +136,7 @@ public class SearchFormTest extends FormTest {
     void testMalformattedCaseReferenceNumber() {
         SearchForm form = new SearchForm();
 
-        form.setProviderAccountNumber("0P322F");
+        form.setOfficeCode("0P322F");
         form.setSubmissionDateMonth("5");
         form.setSubmissionDateYear("2025");
         form.setUniqueFileNumber("120223/001");
@@ -162,7 +162,7 @@ public class SearchFormTest extends FormTest {
         void testAllEmptyReturnsFalseWhenAllValuesAreEmpty() {
             SearchForm form = new SearchForm();
 
-            form.setProviderAccountNumber("");
+            form.setOfficeCode("");
             form.setSubmissionDateMonth("");
             form.setSubmissionDateYear("");
             form.setUniqueFileNumber("");
@@ -175,7 +175,7 @@ public class SearchFormTest extends FormTest {
         void testAllEmptyReturnsFalseWhenAllValuesAreBlank() {
             SearchForm form = new SearchForm();
 
-            form.setProviderAccountNumber(" ");
+            form.setOfficeCode(" ");
             form.setSubmissionDateMonth(" ");
             form.setSubmissionDateYear(" ");
             form.setUniqueFileNumber(" ");
@@ -188,7 +188,7 @@ public class SearchFormTest extends FormTest {
         void testAllEmptyReturnsTrueWhenOneValueIsNotNull() {
             SearchForm form = new SearchForm();
 
-            form.setProviderAccountNumber("123");
+            form.setOfficeCode("123");
 
             Assertions.assertTrue(form.anyNonEmpty());
         }
@@ -197,7 +197,7 @@ public class SearchFormTest extends FormTest {
         void testAllEmptyReturnsTrueWhenAllValuesAreNotNull() {
             SearchForm form = new SearchForm();
 
-            form.setProviderAccountNumber("123");
+            form.setOfficeCode("123");
             form.setSubmissionDateMonth("3");
             form.setSubmissionDateYear("2007");
             form.setUniqueFileNumber("456");

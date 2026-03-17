@@ -29,7 +29,7 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 @Feature("Discard Assessment Confirmation & Behaviour")
 public class DiscardAssessmentTest extends BaseTest {
 
-    private final String PROVIDER_ACCOUNT = "123456";
+    private final String OFFICE_CODE = "123456";
     private final String UFN = generateUfn();
     private final String MONTH = "04";
     private final String YEAR = "2025";
@@ -48,7 +48,7 @@ public class DiscardAssessmentTest extends BaseTest {
                 SubmissionInsert.builder()
                         .id(SUBMISSION_ID)
                         .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(PROVIDER_ACCOUNT)
+                        .officeAccountNumber(OFFICE_CODE)
                         .submissionPeriod("APR-2025")
                         .areaOfLaw("CRIME_LOWER")
                         .userId(USER_ID)
@@ -141,7 +141,7 @@ public class DiscardAssessmentTest extends BaseTest {
     private ReviewAndAmendPage goToReviewAndAmendPage() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(PROVIDER_ACCOUNT, MONTH, YEAR, UFN, "", "", "");
+        search.searchForClaim(OFFICE_CODE, MONTH, YEAR, UFN, "", "", "");
 
         search.clickViewForUfn(UFN);
 
