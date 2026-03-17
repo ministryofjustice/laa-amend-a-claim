@@ -10,6 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER;
+import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
+import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 
 import java.time.OffsetDateTime;
 import java.util.Set;
@@ -134,7 +137,7 @@ public class ClaimSummaryControllerTest {
 
     @Test
     public void testOnSubmitRedirectsWhenClaimHasAnAssessment() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of(Role.ROLE_ESCAPE_CASE_CASEWORKER));
+        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
 
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
@@ -150,7 +153,7 @@ public class ClaimSummaryControllerTest {
 
     @Test
     public void testOnSubmitRedirectsWhenClaimHasNoAssessment() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of(Role.ROLE_ESCAPE_CASE_CASEWORKER));
+        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
 
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
@@ -167,7 +170,7 @@ public class ClaimSummaryControllerTest {
 
     @Test
     void testIsAssessmentButtonPresentTrueForValidEscapeClaim() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of(Role.ROLE_ESCAPE_CASE_CASEWORKER));
+        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
 
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
         claim.setHasAssessment(false);
@@ -180,7 +183,7 @@ public class ClaimSummaryControllerTest {
 
     @Test
     void testIsAssessmentButtonPresentFalseForVoidClaim() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of(Role.ROLE_ESCAPE_CASE_CASEWORKER));
+        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
 
         var user = MockClaimsFunctions.createUser();
         var claim = MockClaimsFunctions.createMockCivilClaim();
@@ -198,7 +201,7 @@ public class ClaimSummaryControllerTest {
 
     @Test
     void testIsAssessmentButtonPresentFalseForNonEscapeClaim() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of(Role.ROLE_ESCAPE_CASE_CASEWORKER));
+        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
 
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
         claim.setHasAssessment(false);
@@ -213,7 +216,7 @@ public class ClaimSummaryControllerTest {
 
     @Test
     void testIsAssessmentButtonPresentFalseWithoutRole() throws Exception {
-        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_ESCAPE_CASE_CASEWORKER));
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
 
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
         claim.setHasAssessment(false);
@@ -263,13 +266,13 @@ public class ClaimSummaryControllerTest {
 
     @Test
     void testIsVoidButtonPresentFalseWithoutRole() throws Exception {
-        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_ESCAPE_CASE_CASEWORKER));
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_CLAIM_AMENDMENTS_CASEWORKER));
 
         when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
 
         var user = MockClaimsFunctions.createUser();
         var claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setStatus(ClaimStatus.VOID);
+        claim.setStatus(ClaimStatus.VALID);
         claim.setLastUpdatedUser(user.getId());
         claim.setLastUpdatedDateTime(OffsetDateTime.now());
 

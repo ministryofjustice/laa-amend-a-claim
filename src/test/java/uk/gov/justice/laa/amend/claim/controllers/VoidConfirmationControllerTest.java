@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER;
+import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 
 import java.util.Set;
 import java.util.UUID;
@@ -26,7 +28,6 @@ import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.Role;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
@@ -72,7 +73,7 @@ public class VoidConfirmationControllerTest {
         session.setAttribute(claimId.toString(), claim);
         when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
 
-        dummyUserSecurityService.setRoles(Set.of(Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER));
+        dummyUserSecurityService.setRoles(Set.of(ROLE_CLAIM_AMENDMENTS_CASEWORKER));
     }
 
     @Test
@@ -132,13 +133,13 @@ public class VoidConfirmationControllerTest {
 
     @Test
     void testGetRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER));
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_CLAIM_AMENDMENTS_CASEWORKER));
         mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
     }
 
     @Test
     void testPostRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(Role.allRolesApartFrom(Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER));
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_CLAIM_AMENDMENTS_CASEWORKER));
         mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
     }
 
