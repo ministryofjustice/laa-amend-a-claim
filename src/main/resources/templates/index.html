@@ -30,7 +30,7 @@
                             <div id="search-hint" class="govuk-hint" th:text="#{index.hint}"></div>
 
                             <div class="search-panel">
-                                <div th:replace="~{partials/text-input :: textInput('providerAccountNumber', 'provider-account-number', 'index.providerAccountNumber', 'govuk-!-width-one-half', 'text', true, 'govuk-label--s', true)}"></div>
+                                <div th:replace="~{partials/text-input :: textInput('officeCode', 'office-code', 'index.officeCode', 'govuk-!-width-one-half', 'text', true, 'govuk-label--s', true)}"></div>
 
                                 <div class="govuk-form-group" th:classappend="${#fields.hasErrors('submissionDateMonth') || #fields.hasErrors('submissionDateYear') ? 'govuk-form-group--error' : ''}">
                                     <fieldset class="govuk-fieldset" role="group" aria-describedby="submission-date-hint">

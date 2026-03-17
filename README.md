@@ -130,7 +130,7 @@ We use ZAP to help identify security vulnerabilities. This job is run nightly in
 
 The job configures the application to point the claims data and provider details APIs at WireMock.
 
-We specify the target as `/?providerAccountNumber=0P322F`. This exposes the 'View' links that allow ZAP to discover subsequent pages / URLs.
+We specify the target as `/?officeCode=0P322F`. This exposes the 'View' links that allow ZAP to discover subsequent pages / URLs.
 
 The [context](zap.context) file tells ZAP what is in scope. This file was generated using the [ZAP](https://www.zaproxy.org/download/) application.
 

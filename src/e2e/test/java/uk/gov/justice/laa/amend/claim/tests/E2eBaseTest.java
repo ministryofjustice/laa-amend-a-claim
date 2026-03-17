@@ -15,7 +15,7 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 
 public abstract class E2eBaseTest extends BaseTest {
 
-    protected final String PROVIDER_ACCOUNT = "123456";
+    protected final String OFFICE_CODE = "123456";
     protected final String UFN = generateUfn();
 
     protected void submitWithAddedProfitCostsAndAllowedTotals(String assessmentOutcome) {
@@ -103,7 +103,7 @@ public abstract class E2eBaseTest extends BaseTest {
     private void findClaim() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(PROVIDER_ACCOUNT, "", "", UFN, "", "", "");
+        search.searchForClaim(OFFICE_CODE, "", "", UFN, "", "", "");
 
         search.clickViewForUfn(UFN);
     }

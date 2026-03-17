@@ -30,7 +30,7 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 public class AssessCostsValidationTest extends BaseTest {
 
     // ---------------- Crime data ----------------
-    private final String CRIME_PROVIDER_ACCOUNT = "123456";
+    private final String CRIME_OFFICE_CODE = "123456";
     private final String CRIME_UFN = generateUfn();
     private final String CRIME_MONTH = "04";
     private final String CRIME_YEAR = "2025";
@@ -40,7 +40,7 @@ public class AssessCostsValidationTest extends BaseTest {
     private final String CRIME_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
 
     // ---------------- Civil data ----------------
-    private final String CIVIL_PROVIDER_ACCOUNT = "234567";
+    private final String CIVIL_OFFICE_CODE = "234567";
     private final String CIVIL_UFN = generateUfn();
     private final String CIVIL_MONTH = "06";
     private final String CIVIL_YEAR = "2025";
@@ -59,7 +59,7 @@ public class AssessCostsValidationTest extends BaseTest {
                 SubmissionInsert.builder()
                         .id(CRIME_SUBMISSION_ID)
                         .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(CRIME_PROVIDER_ACCOUNT)
+                        .officeAccountNumber(CRIME_OFFICE_CODE)
                         .submissionPeriod("APR-2025")
                         .areaOfLaw("CRIME_LOWER")
                         .userId(USER_ID)
@@ -67,7 +67,7 @@ public class AssessCostsValidationTest extends BaseTest {
                 SubmissionInsert.builder()
                         .id(CIVIL_SUBMISSION_ID)
                         .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(CIVIL_PROVIDER_ACCOUNT)
+                        .officeAccountNumber(CIVIL_OFFICE_CODE)
                         .submissionPeriod("JUN-2025")
                         .areaOfLaw("LEGAL_HELP")
                         .userId(USER_ID)
@@ -128,7 +128,7 @@ public class AssessCostsValidationTest extends BaseTest {
     @Test
     @DisplayName("Crime: Profit costs - letters cause number validation error")
     void crimeProfitCostsLettersShowsError() {
-        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.clickChangeProfitCosts();
@@ -143,7 +143,7 @@ public class AssessCostsValidationTest extends BaseTest {
     @Test
     @DisplayName("Crime: Disbursements - letters cause number validation error")
     void crimeDisbursementsLettersShowsError() {
-        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.clickChangeDisbursements();
@@ -158,7 +158,7 @@ public class AssessCostsValidationTest extends BaseTest {
     @Test
     @DisplayName("Crime: Disbursement VAT - letters cause number validation error")
     void crimeDisbursementVatLettersShowsError() {
-        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.clickChangeDisbursementsVat();
@@ -173,7 +173,7 @@ public class AssessCostsValidationTest extends BaseTest {
     @Test
     @DisplayName("Crime: Travel costs - letters cause number validation error")
     void crimeTravelCostsLettersShowsError() {
-        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.clickChangeTravelCosts();
@@ -188,7 +188,7 @@ public class AssessCostsValidationTest extends BaseTest {
     @Test
     @DisplayName("Crime: Waiting costs - letters cause number validation error")
     void crimeWaitingCostsLettersShowsError() {
-        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.clickChangeWaitingCosts();
@@ -203,7 +203,7 @@ public class AssessCostsValidationTest extends BaseTest {
     @Test
     @DisplayName("Civil: Detention travel and waiting costs - letters cause number validation error")
     void civilDetentionTravelWaitingLettersShowsError() {
-        navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.clickChangeDetentionTravelAndWaitingCosts();
@@ -218,7 +218,7 @@ public class AssessCostsValidationTest extends BaseTest {
     @Test
     @DisplayName("Civil: JR and form filling - letters cause number validation error")
     void civilJrFormFillingLettersShowsError() {
-        navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.clickChangeJrAndFormFilling();
@@ -233,7 +233,7 @@ public class AssessCostsValidationTest extends BaseTest {
     @Test
     @DisplayName("Civil: Counsel costs - letters cause number validation error")
     void civilCounselCostsLettersShowsError() {
-        navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.clickChangeCounselCosts();

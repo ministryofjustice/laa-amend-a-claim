@@ -20,8 +20,7 @@ public class ThymeleafUtilsTest {
                     new DetailedError(
                             "submissionDateYear", null, Stream.empty().toArray(), "Submission date year error"),
                     new DetailedError("uniqueFileNumber", null, Stream.empty().toArray(), "Unique file number error"),
-                    new DetailedError(
-                            "providerAccountNumber", null, Stream.empty().toArray(), "Provider account number error"),
+                    new DetailedError("officeCode", null, Stream.empty().toArray(), "Office code error"),
                     new DetailedError(
                             "submissionDateMonth", null, Stream.empty().toArray(), "Submission date month error"),
                     new DetailedError(
@@ -32,7 +31,7 @@ public class ThymeleafUtilsTest {
             List<SearchFormError> result = sut.toSearchFormErrors(errors);
 
             List<SearchFormError> expectedResult = List.of(
-                    new SearchFormError("providerAccountNumber", "Provider account number error"),
+                    new SearchFormError("officeCode", "Office code error"),
                     new SearchFormError("submissionDateMonth", "Submission date month error"),
                     new SearchFormError("submissionDateYear", "Submission date year error"),
                     new SearchFormError("uniqueFileNumber", "Unique file number error"),

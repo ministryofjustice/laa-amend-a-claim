@@ -26,7 +26,7 @@ public class SearchQuery {
     private int page = 1;
 
     private Sort sort;
-    private String providerAccountNumber;
+    private String officeCode;
     private String submissionDateMonth;
     private String submissionDateYear;
     private String uniqueFileNumber;
@@ -36,7 +36,7 @@ public class SearchQuery {
 
     public SearchQuery(SearchForm form, Sort sort) {
         this.sort = sort;
-        this.providerAccountNumber = form.getProviderAccountNumber();
+        this.officeCode = form.getOfficeCode();
         this.submissionDateMonth = form.getSubmissionDateMonth();
         this.submissionDateYear = form.getSubmissionDateYear();
         this.uniqueFileNumber = form.getUniqueFileNumber();
@@ -72,7 +72,7 @@ public class SearchQuery {
     private String getRedirectUrl(int page, Sort sort) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/");
 
-        addQueryParam(builder, "providerAccountNumber", providerAccountNumber);
+        addQueryParam(builder, "officeCode", officeCode);
         addQueryParam(builder, "submissionDateMonth", submissionDateMonth);
         addQueryParam(builder, "submissionDateYear", submissionDateYear);
         addQueryParam(builder, "uniqueFileNumber", uniqueFileNumber);

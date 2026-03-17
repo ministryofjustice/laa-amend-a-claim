@@ -4,8 +4,8 @@ import java.util.Set;
 
 public class AmendClaimConstants {
 
-    // Provider account number is alphanumeric e.g. 1T702E
-    public static final String PROVIDER_ACCOUNT_NUMBER_REGEX = "^[a-zA-Z0-9]*$";
+    // Office code is alphanumeric e.g. 1T702E
+    public static final String OFFICE_CODE_REGEX = "^[a-zA-Z0-9]*$";
     // Unique file number contains 6 numbers, a forward slash, then 3 numbers e.g. 070722/001
     public static final String UNIQUE_FILE_NUMBER_FORMAT_REGEX = "^[^/]{6}/[^/]{3}$";
     public static final String UNIQUE_FILE_NUMBER_CHARACTER_REGEX = "^[0-9/]*$";

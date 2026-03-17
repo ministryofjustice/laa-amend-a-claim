@@ -269,13 +269,13 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
     @Test
     void testPageWithCachedSearchUrl() throws Exception {
-        session.setAttribute("searchUrl", "/?providerAccountNumber=0P322F&page=1");
+        session.setAttribute("searchUrl", "/?officeCode=0P322F&page=1");
 
         when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
         Document doc = renderDocument();
 
-        assertPageHasLink(doc, "back-to-search", "Back to search", "/?providerAccountNumber=0P322F&page=1");
+        assertPageHasLink(doc, "back-to-search", "Back to search", "/?officeCode=0P322F&page=1");
     }
 
     @ParameterizedTest

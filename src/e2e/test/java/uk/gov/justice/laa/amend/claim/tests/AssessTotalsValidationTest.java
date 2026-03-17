@@ -23,7 +23,7 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 
 public class AssessTotalsValidationTest extends BaseTest {
 
-    private final String PROVIDER_ACCOUNT = "234567";
+    private final String OFFICE_CODE = "234567";
     private final String UFN = generateUfn();
     private final String MONTH = "06";
     private final String YEAR = "2025";
@@ -42,7 +42,7 @@ public class AssessTotalsValidationTest extends BaseTest {
                 SubmissionInsert.builder()
                         .id(SUBMISSION_ID)
                         .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(PROVIDER_ACCOUNT)
+                        .officeAccountNumber(OFFICE_CODE)
                         .submissionPeriod("JUN-2025")
                         .areaOfLaw("LEGAL_HELP")
                         .userId(USER_ID)
@@ -69,7 +69,7 @@ public class AssessTotalsValidationTest extends BaseTest {
 
     private void navigateToReviewAndAmend() {
         SearchPage search = new SearchPage(page);
-        search.searchForClaim(PROVIDER_ACCOUNT, MONTH, YEAR, UFN, "", "", "");
+        search.searchForClaim(OFFICE_CODE, MONTH, YEAR, UFN, "", "", "");
         search.clickViewForUfn(UFN);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);

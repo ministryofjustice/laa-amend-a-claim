@@ -227,7 +227,7 @@ public class AssessmentService {
         if (assessment.getAssessedTotalInclVat() != null
                 && assessment.getAssessedTotalInclVat().compareTo(highValueAssessmentLimit) >= 0) {
             log.warn(
-                    "HIGH_VALUE_ASSESSMENT: detected for claimId {}, providerAccountNumber {}, uniqueFileNumber {},"
+                    "HIGH_VALUE_ASSESSMENT: detected for claimId {}, officeCode {}, uniqueFileNumber {},"
                             + " assessmentId {}, assessmentOutcome {}, assessedTotalInclVat {}, allowedTotalInclVat"
                             + " {}",
                     claim.getClaimId(),

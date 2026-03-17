@@ -7,7 +7,7 @@ public class ClaimDetailsFixture {
 
     private boolean addAssessmentOutcomeDisabled;
     private String claimType;
-    private String providerAccount;
+    private String officeCode;
 
     private String ufn;
 
@@ -35,12 +35,12 @@ public class ClaimDetailsFixture {
         this.claimType = claimType;
     }
 
-    public String getProviderAccount() {
-        return providerAccount;
+    public String getOfficeCode() {
+        return officeCode;
     }
 
-    public void setProviderAccount(String providerAccount) {
-        this.providerAccount = providerAccount;
+    public void setOfficeCode(String officeCode) {
+        this.officeCode = officeCode;
     }
 
     public String getUfn() {
