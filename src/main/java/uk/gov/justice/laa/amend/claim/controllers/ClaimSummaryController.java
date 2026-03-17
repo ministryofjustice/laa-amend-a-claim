@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static java.lang.Boolean.TRUE;
 import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
@@ -68,8 +69,9 @@ public class ClaimSummaryController {
         model.addAttribute("submissionId", submissionId);
         model.addAttribute("claim", claim.toViewModel());
 
-        boolean isAssessmentButtonPresent =
-                request.isUserInRole(ROLE_ESCAPE_CASE_CASEWORKER.name()) && claim.isValid() && claim.getEscaped();
+        boolean isAssessmentButtonPresent = request.isUserInRole(ROLE_ESCAPE_CASE_CASEWORKER.name())
+                && claim.isValid()
+                && TRUE.equals(claim.getEscaped());
         model.addAttribute("isAssessmentButtonPresent", isAssessmentButtonPresent);
 
         boolean isVoidButtonPresent = request.isUserInRole(ROLE_CLAIM_AMENDMENTS_CASEWORKER.name())
