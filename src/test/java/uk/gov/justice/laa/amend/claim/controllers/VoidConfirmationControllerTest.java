@@ -106,7 +106,7 @@ public class VoidConfirmationControllerTest {
 
     @Test
     public void testSuccessfulSubmitRedirectsToSearchInSession() throws Exception {
-        var searchUrl = "/?providerAccountNumber=123456";
+        var searchUrl = "/?officeCode=123456";
         session.setAttribute("searchUrl", searchUrl);
 
         when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));

@@ -16,7 +16,7 @@ public class SearchFormError extends FormError {
     @Override
     protected Map<String, Integer> getFieldOrderMap() {
         return Map.of(
-                "providerAccountNumber", 1,
+                "officeCode", 1,
                 "submissionDateMonth", 2,
                 "submissionDateYear", 3,
                 "uniqueFileNumber", 4,

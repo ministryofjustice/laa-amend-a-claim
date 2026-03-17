@@ -103,7 +103,7 @@ public class ClaimSummaryControllerTest {
     public void testOnPageLoadWithCachedSearchUrlReturnsView() throws Exception {
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
-        session.setAttribute("searchUrl", "/?providerAccountNumber=12345&page=1");
+        session.setAttribute("searchUrl", "/?officeCode=12345&page=1");
 
         when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
@@ -117,7 +117,7 @@ public class ClaimSummaryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("claim-summary"))
                 .andExpect(model().attributeExists("claim"))
-                .andExpect(model().attribute("searchUrl", "/?providerAccountNumber=12345&page=1"))
+                .andExpect(model().attribute("searchUrl", "/?officeCode=12345&page=1"))
                 .andExpect(request().sessionAttribute(claimId.toString(), claim));
     }
 

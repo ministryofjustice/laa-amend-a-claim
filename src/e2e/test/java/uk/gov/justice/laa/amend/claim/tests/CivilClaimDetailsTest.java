@@ -32,7 +32,7 @@ public class CivilClaimDetailsTest extends E2eBaseTest {
                 SubmissionInsert.builder()
                         .id(SUBMISSION_ID)
                         .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(PROVIDER_ACCOUNT)
+                        .officeAccountNumber(OFFICE_CODE)
                         .submissionPeriod("APR-2025")
                         .areaOfLaw("LEGAL_HELP")
                         .userId(USER_ID)

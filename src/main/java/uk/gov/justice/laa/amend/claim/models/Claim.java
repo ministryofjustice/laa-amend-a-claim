@@ -37,7 +37,7 @@ public class Claim implements Serializable {
     private String categoryOfLaw;
     private Boolean escaped;
     private Boolean vatApplicable;
-    private String scheduleReference;
+    private String officeCode;
     private ClaimStatus status;
 
     public BaseClaimView<? extends Claim> toViewModel() {

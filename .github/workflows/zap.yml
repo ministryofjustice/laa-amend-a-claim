@@ -62,7 +62,7 @@ jobs:
         uses: zaproxy/action-full-scan@v0.13.0 # https://github.com/zaproxy/action-full-scan
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'http://localhost:8080/?providerAccountNumber=0P322F' # Exposes 'View' links for ZAP spider to discover
+          target: 'http://localhost:8080/?officeCode=0P322F' # Exposes 'View' links for ZAP spider to discover
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-z "-config spider.maxDepth=10" -n zap.context' # https://www.zaproxy.org/docs/docker/full-scan/#usage
           allow_issue_writing: false

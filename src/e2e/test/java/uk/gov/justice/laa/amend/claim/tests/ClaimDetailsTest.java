@@ -32,7 +32,7 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 public class ClaimDetailsTest extends BaseTest {
 
     // ---------------- Crime data ----------------
-    private final String CRIME_PROVIDER_ACCOUNT = "123456";
+    private final String CRIME_OFFICE_CODE = "123456";
     private final String CRIME_UFN = "031222/002";
     private final String CRIME_SUBMISSION_ID = UUID.randomUUID().toString();
     private final String CRIME_CLAIM_ID = UUID.randomUUID().toString();
@@ -40,7 +40,7 @@ public class ClaimDetailsTest extends BaseTest {
     private final String CRIME_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
 
     // ---------------- Civil data ----------------
-    private final String CIVIL_PROVIDER_ACCOUNT = "234567";
+    private final String CIVIL_OFFICE_CODE = "234567";
     private final String CIVIL_UFN = "121019/001";
     private final String CIVIL_SUBMISSION_ID = UUID.randomUUID().toString();
     private final String CIVIL_CLAIM_ID = UUID.randomUUID().toString();
@@ -63,7 +63,7 @@ public class ClaimDetailsTest extends BaseTest {
                 SubmissionInsert.builder()
                         .id(CRIME_SUBMISSION_ID)
                         .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(CRIME_PROVIDER_ACCOUNT)
+                        .officeAccountNumber(CRIME_OFFICE_CODE)
                         .submissionPeriod("NOV-2025")
                         .areaOfLaw("CRIME_LOWER")
                         .userId(USER_ID)
@@ -71,7 +71,7 @@ public class ClaimDetailsTest extends BaseTest {
                 SubmissionInsert.builder()
                         .id(CIVIL_SUBMISSION_ID)
                         .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(CIVIL_PROVIDER_ACCOUNT)
+                        .officeAccountNumber(CIVIL_OFFICE_CODE)
                         .submissionPeriod("JUN-2025")
                         .areaOfLaw("LEGAL_HELP")
                         .userId(USER_ID)
@@ -147,7 +147,7 @@ public class ClaimDetailsTest extends BaseTest {
     void addAssessmentOutcomeIsDisabledForNonEscapeClaim() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(CRIME_PROVIDER_ACCOUNT, "11", "2025", UNESCAPED_UFN, "", "", "");
+        search.searchForClaim(CRIME_OFFICE_CODE, "11", "2025", UNESCAPED_UFN, "", "", "");
 
         search.clickViewForUfn(UNESCAPED_UFN);
 
@@ -170,8 +170,7 @@ public class ClaimDetailsTest extends BaseTest {
     void claimValuesMatchFixture(ClaimDetailsFixture claimDetailsFixture) {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(
-                claimDetailsFixture.getProviderAccount(), "", "", claimDetailsFixture.getUfn(), "", "", "");
+        search.searchForClaim(claimDetailsFixture.getOfficeCode(), "", "", claimDetailsFixture.getUfn(), "", "", "");
 
         search.clickViewForUfn(claimDetailsFixture.getUfn());
 

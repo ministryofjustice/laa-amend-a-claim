@@ -29,7 +29,7 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 
 public class AssessmentFlowE2ETest extends BaseTest {
 
-    private final String PROVIDER_ACCOUNT = "123456";
+    private final String OFFICE_CODE = "123456";
     private final String UFN = generateUfn();
     private final String SUBMISSION_ID = UUID.randomUUID().toString();
     private final String CLAIM_ID = UUID.randomUUID().toString();
@@ -46,7 +46,7 @@ public class AssessmentFlowE2ETest extends BaseTest {
                 SubmissionInsert.builder()
                         .id(SUBMISSION_ID)
                         .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(PROVIDER_ACCOUNT)
+                        .officeAccountNumber(OFFICE_CODE)
                         .submissionPeriod("MAR-2020")
                         .areaOfLaw("CRIME_LOWER")
                         .userId(USER_ID)
@@ -77,7 +77,7 @@ public class AssessmentFlowE2ETest extends BaseTest {
     void fullAssessmentFlow() {
         SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(PROVIDER_ACCOUNT, "03", "2020", UFN, "", "", "");
+        search.searchForClaim(OFFICE_CODE, "03", "2020", UFN, "", "", "");
 
         search.clickViewForUfn(UFN);
 

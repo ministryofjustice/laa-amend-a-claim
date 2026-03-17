@@ -22,7 +22,7 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 public class ReviewAndAmendTest extends BaseTest {
 
     // ---------------- Crime data ----------------
-    private final String CRIME_PROVIDER_ACCOUNT = "123456";
+    private final String CRIME_OFFICE_CODE = "123456";
     private final String CRIME_UFN = generateUfn();
     private final String CRIME_MONTH = "04";
     private final String CRIME_YEAR = "2025";
@@ -32,7 +32,7 @@ public class ReviewAndAmendTest extends BaseTest {
     private final String CRIME_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
 
     // ---------------- Civil data ----------------
-    private final String CIVIL_PROVIDER_ACCOUNT = "234567";
+    private final String CIVIL_OFFICE_CODE = "234567";
     private final String CIVIL_UFN = generateUfn();
     private final String CIVIL_MONTH = "06";
     private final String CIVIL_YEAR = "2025";
@@ -51,7 +51,7 @@ public class ReviewAndAmendTest extends BaseTest {
                 SubmissionInsert.builder()
                         .id(CRIME_SUBMISSION_ID)
                         .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(CRIME_PROVIDER_ACCOUNT)
+                        .officeAccountNumber(CRIME_OFFICE_CODE)
                         .submissionPeriod("APR-2025")
                         .areaOfLaw("CRIME_LOWER")
                         .userId(USER_ID)
@@ -59,7 +59,7 @@ public class ReviewAndAmendTest extends BaseTest {
                 SubmissionInsert.builder()
                         .id(CIVIL_SUBMISSION_ID)
                         .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(CIVIL_PROVIDER_ACCOUNT)
+                        .officeAccountNumber(CIVIL_OFFICE_CODE)
                         .submissionPeriod("JUN-2025")
                         .areaOfLaw("LEGAL_HELP")
                         .userId(USER_ID)
@@ -104,9 +104,9 @@ public class ReviewAndAmendTest extends BaseTest {
     }
 
     private void navigateToReviewAndAmend(
-            String providerAccount, String month, String year, String ufn, String outcomeValue) {
+            String officeCode, String month, String year, String ufn, String outcomeValue) {
         SearchPage search = new SearchPage(page);
-        search.searchForClaim(providerAccount, month, year, ufn, "", "", "");
+        search.searchForClaim(officeCode, month, year, ufn, "", "", "");
         search.clickViewForUfn(ufn);
 
         ClaimDetailsPage details = new ClaimDetailsPage(page);
@@ -124,14 +124,14 @@ public class ReviewAndAmendTest extends BaseTest {
         outcome.saveChanges();
     }
 
-    private void navigateToReviewAndAmend(String providerAccount, String month, String year, String ufn) {
-        navigateToReviewAndAmend(providerAccount, month, year, ufn, "assessed in full");
+    private void navigateToReviewAndAmend(String officeCode, String month, String year, String ufn) {
+        navigateToReviewAndAmend(officeCode, month, year, ufn, "assessed in full");
     }
 
     @Test
     @DisplayName("Review & amend (Crime) loads correctly – headers + claim cost items")
     void crimeReviewAndAmendLoads() {
-        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
@@ -142,7 +142,7 @@ public class ReviewAndAmendTest extends BaseTest {
     @Test
     @DisplayName("Review & amend (Civil) loads correctly – headers + claim cost items")
     void civilReviewAndAmendLoads() {
-        navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
@@ -153,7 +153,7 @@ public class ReviewAndAmendTest extends BaseTest {
     @Test
     @DisplayName("Review & amend (Crime) submit without totals shows GOV.UK error summary")
     void crimeSubmitWithoutTotalsShowsErrors() {
-        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
@@ -166,7 +166,7 @@ public class ReviewAndAmendTest extends BaseTest {
     @Test
     @DisplayName("Review & amend (Crime) - Reduced(Still escaped) - submit without profit costs shows error summary")
     void crimeSubmitWithoutRequiredFieldsShowsErrors() {
-        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN, "reduced-still-escaped");
+        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN, "reduced-still-escaped");
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.saveChanges();
         assertTrue(page.url().contains("/review"));
@@ -177,7 +177,7 @@ public class ReviewAndAmendTest extends BaseTest {
     @DisplayName("Review & amend (Civil) - reduced to fixed fee (assessed) - submit without profit costs and total")
     void civilSubmitWithoutRequiredFieldsShowsErrors() {
         navigateToReviewAndAmend(
-                CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN, "reduced-to-fixed-fee-assessed");
+                CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN, "reduced-to-fixed-fee-assessed");
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.saveChanges();
         assertTrue(page.url().contains("/review"));
@@ -188,7 +188,7 @@ public class ReviewAndAmendTest extends BaseTest {
     @Test
     @DisplayName("Review & amend (Civil) - Reduced(Still escaped) - submit without profit costs shows error summary")
     void civilSubmitWithoutAssessedTotalsShowsErrors() {
-        navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN, "reduced-still-escaped");
+        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN, "reduced-still-escaped");
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
         review.saveChanges();
         assertTrue(page.url().contains("/review"));
@@ -198,7 +198,7 @@ public class ReviewAndAmendTest extends BaseTest {
     @Test
     @DisplayName("Review & amend (Crime) change assessment outcome – navigates correctly")
     void crimeChangeAssessmentOutcome() {
-        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
@@ -210,7 +210,7 @@ public class ReviewAndAmendTest extends BaseTest {
     @Test
     @DisplayName("Review & amend (Crime) change VAT liability – navigates correctly")
     void crimeChangeVatLiability() {
-        navigateToReviewAndAmend(CRIME_PROVIDER_ACCOUNT, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
@@ -222,7 +222,7 @@ public class ReviewAndAmendTest extends BaseTest {
     @Test
     @DisplayName("Review & amend (Civil) change assessment outcome – navigates correctly")
     void civilChangeAssessmentOutcome() {
-        navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
@@ -234,7 +234,7 @@ public class ReviewAndAmendTest extends BaseTest {
     @Test
     @DisplayName("Review & amend (Civil) change VAT liability – navigates correctly")
     void civilChangeVatLiability() {
-        navigateToReviewAndAmend(CIVIL_PROVIDER_ACCOUNT, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 

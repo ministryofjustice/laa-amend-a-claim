@@ -57,11 +57,11 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasHeading(doc, "Search for a claim");
 
-        assertPageHasHint(doc, "search-hint", "Enter at least a provider account number to search.");
+        assertPageHasHint(doc, "search-hint", "Enter at least an office code to search.");
 
-        assertPageHasLabel(doc, "provider-account-number", "Provider account number");
+        assertPageHasLabel(doc, "office-code", "Office code");
 
-        assertPageHasHint(doc, "provider-account-number-hint", "For example, 0P322F");
+        assertPageHasHint(doc, "office-code-hint", "For example, 0P322F");
 
         assertPageHasDateInput(doc, "Submission period");
 
@@ -117,10 +117,9 @@ class IndexViewTest extends ViewTestBase {
         assertTableHeaderIsSortable(headers.get(2), "none", "CRN", "/?page=1&sort=case_reference_number,asc");
         assertTableHeaderIsSortable(headers.get(3), "none", "Client surname", "/?page=1&sort=client_surname,asc");
         assertTableHeaderIsSortable(headers.get(4), "none", "Submission period", "/?page=1&sort=submission_period,asc");
-        assertTableHeaderIsSortable(headers.get(5), "none", "Account", "/?page=1&sort=schedule_reference,asc");
-        assertTableHeaderIsSortable(headers.get(6), "none", "Category of law", "/?page=1&sort=category_of_law,asc");
-        assertTableHeaderIsSortable(headers.get(7), "none", "Voided", "/?page=1&sort=status,asc");
-        assertTableHeaderIsNotSortable(headers.get(8), "Escape case");
+        assertTableHeaderIsSortable(headers.get(5), "none", "Category of law", "/?page=1&sort=category_of_law,asc");
+        assertTableHeaderIsSortable(headers.get(6), "none", "Voided", "/?page=1&sort=status,asc");
+        assertTableHeaderIsNotSortable(headers.get(7), "Escape case");
     }
 
     @Test
@@ -144,7 +143,7 @@ class IndexViewTest extends ViewTestBase {
     @Test
     void testPageWithErrors() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("providerAccountNumber", "!");
+        params.add("officeCode", "!");
         params.add("submissionDateMonth", "!");
         params.add("submissionDateYear", "!");
         params.add("uniqueFileNumber", "!");
@@ -154,7 +153,7 @@ class IndexViewTest extends ViewTestBase {
 
         assertPageHasErrorSummary(
                 doc,
-                "provider-account-number",
+                "office-code",
                 "submission-date-month", // date errors get combined
                 "unique-file-number",
                 "case-reference-number");

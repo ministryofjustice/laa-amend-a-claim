@@ -31,19 +31,19 @@ public class SortTest {
 
         @Test
         void shouldThrowExceptionForInvalidDirection() {
-            String str = "schedule_reference,foo";
+            String str = "unique_file_number,foo";
             Assertions.assertThrows(IllegalArgumentException.class, () -> new Sort(str));
         }
 
         @Test
         void shouldThrowExceptionForNonCommaSeparatedInput() {
-            String str = "foo";
+            String str = "unique_file_number";
             Assertions.assertThrows(IllegalArgumentException.class, () -> new Sort(str));
         }
 
         @Test
         void shouldThrowExceptionForInvalidInput() {
-            String str = "scheduleReference,desc,foo";
+            String str = "unique_file_number,desc,foo";
             Assertions.assertThrows(IllegalArgumentException.class, () -> new Sort(str));
         }
     }
@@ -69,7 +69,7 @@ public class SortTest {
         @Test
         void shouldConvertSortToStringWhenNoOrder() {
             Sort sort = Sort.builder()
-                    .field(SortField.SCHEDULE_REFERENCE)
+                    .field(SortField.UNIQUE_FILE_NUMBER)
                     .direction(SortDirection.NONE)
                     .build();
             Assertions.assertNull(sort.toString());
