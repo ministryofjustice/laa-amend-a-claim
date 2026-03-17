@@ -158,7 +158,7 @@
             "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
-          "expr": "round(\n  sum(increase(assessment_submissions_failed_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range]))\n  /\n  clamp_min(sum(increase(assessment_submissions_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range])), 1),\n  0.01\n)",
+          "expr": "round(\n  sum(increase(assessment_submissions_failed_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range]))\n  /\n  clamp_min(sum(increase(assessment_submissions_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range])) + sum(increase(assessment_submissions_failed_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range])), 1),\n  0.01\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -530,7 +530,7 @@
             "uid": "P5DCFC7561CCDE821"
           },
           "editorMode": "code",
-          "expr": "round(\n  sum(increase(claim_void_failed_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range]))\n  /\n  clamp_min(sum(increase(claim_void_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range])), 1),\n  0.01\n)",
+          "expr": "round(\n  sum(increase(claim_void_failed_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range]))\n  /\n  clamp_min(sum(increase(claim_void_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range])) + sum(increase(claim_void_failed_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range])), 1),\n  0.01\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
