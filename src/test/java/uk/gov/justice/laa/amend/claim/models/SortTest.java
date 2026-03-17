@@ -69,7 +69,7 @@ public class SortTest {
         @Test
         void shouldConvertSortToStringWhenNoOrder() {
             Sort sort = Sort.builder()
-                    .field(SortField.OFFICE_CODE)
+                    .field(SortField.UNIQUE_FILE_NUMBER)
                     .direction(SortDirection.NONE)
                     .build();
             Assertions.assertNull(sort.toString());

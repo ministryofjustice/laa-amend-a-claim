@@ -45,13 +45,6 @@ public class SortFieldTest {
             Assertions.assertEquals(SortField.CATEGORY_OF_LAW, result);
         }
 
-        @Test
-        void shouldConvertOfficeCode() {
-            String str = "office_code";
-            SortField result = SortField.fromValue(str);
-            Assertions.assertEquals(SortField.OFFICE_CODE, result);
-        }
-
         @ParameterizedTest
         @ValueSource(strings = {"foo", "bar"})
         void shouldThrowExceptionForAnythingElse(String str) {
