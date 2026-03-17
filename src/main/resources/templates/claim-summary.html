@@ -127,7 +127,7 @@
 
                                 <th:block th:if="${isVoidButtonPresent}">
                                     <a th:href="@{/submissions/{submissionId}/claims/{claimId}/void(submissionId=${submissionId}, claimId=${claimId})}"
-                                       id="void-claim"
+                                       th:data-testid="claim-details-void-button"
                                        class="govuk-button govuk-button--warning"
                                        data-module="govuk-button"
                                        th:text="#{claimSummary.voidClaim}"></a>
