@@ -57,6 +57,7 @@ dependencies {
     // Update version of CSS files in e2e-test.yml when bumping these dependencies
     implementation 'org.webjars.npm:govuk-frontend:6.1.0'
     implementation 'org.webjars.npm:ministryofjustice__frontend:7.1.0'
+    implementation("org.apache.commons:commons-csv:1.14.1")
 
     implementation("io.vavr:vavr:0.11.0")
 
