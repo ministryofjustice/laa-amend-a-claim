@@ -43,9 +43,8 @@ class AssessmentMapperTest {
 
         AssessmentPost assessment = mapper.mapCivilClaimToAssessment(claim, userId);
 
-        assertEquals(claim.getClaimId(), assessment.getClaimId().toString());
-        assertEquals(
-                claim.getClaimSummaryFeeId(), assessment.getClaimSummaryFeeId().toString());
+        assertEquals(claim.getClaimId(), assessment.getClaimId());
+        assertEquals(claim.getClaimSummaryFeeId(), assessment.getClaimSummaryFeeId());
         assertEquals(AssessmentOutcome.REDUCED_STILL_ESCAPED, assessment.getAssessmentOutcome());
         assertEquals(BigDecimal.valueOf(300), assessment.getFixedFeeAmount());
         assertEquals(BigDecimal.valueOf(300), assessment.getNetProfitCostsAmount());
@@ -76,9 +75,8 @@ class AssessmentMapperTest {
 
         AssessmentPost assessment = mapper.mapCrimeClaimToAssessment(claim, userId);
 
-        assertEquals(claim.getClaimId(), assessment.getClaimId().toString());
-        assertEquals(
-                claim.getClaimSummaryFeeId(), assessment.getClaimSummaryFeeId().toString());
+        assertEquals(claim.getClaimId(), assessment.getClaimId());
+        assertEquals(claim.getClaimSummaryFeeId(), assessment.getClaimSummaryFeeId());
         assertEquals(AssessmentOutcome.REDUCED_TO_FIXED_FEE, assessment.getAssessmentOutcome());
         assertEquals(BigDecimal.valueOf(300), assessment.getFixedFeeAmount());
         assertEquals(BigDecimal.valueOf(300), assessment.getNetProfitCostsAmount());

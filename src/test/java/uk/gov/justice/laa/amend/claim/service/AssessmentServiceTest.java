@@ -126,7 +126,7 @@ class AssessmentServiceTest {
 
         @Test
         void testCivilClaimAssessmentSubmittedToApiAndIncrementsSuccessCounter() {
-            String claimId = UUID.randomUUID().toString();
+            var claimId = UUID.randomUUID();
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
             String userId = UUID.randomUUID().toString();
@@ -154,7 +154,7 @@ class AssessmentServiceTest {
         @Test
         void testCrimeClaimAssessmentSubmittedToApiAndIncrementsSuccessCounter() {
             CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
-            claim.setClaimId(claimId.toString());
+            claim.setClaimId(claimId);
             String userId = UUID.randomUUID().toString();
             AssessmentPost assessment = new AssessmentPost();
 
@@ -162,8 +162,7 @@ class AssessmentServiceTest {
 
             ResponseEntity<CreateAssessment201Response> response = ResponseEntity.ok(new CreateAssessment201Response());
 
-            when(claimsApiClient.submitAssessment(claimId.toString(), assessment))
-                    .thenReturn(Mono.just(response));
+            when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
 
             CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
 
@@ -171,7 +170,7 @@ class AssessmentServiceTest {
             assertEquals(response.getBody(), result);
 
             verify(assessmentMapper).mapCrimeClaimToAssessment(claim, userId);
-            verify(claimsApiClient).submitAssessment(claimId.toString(), assessment);
+            verify(claimsApiClient).submitAssessment(claimId, assessment);
 
             assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(1.0);
             assertThat(meterRegistry.counter("assessment.submissions.failed").count())
@@ -180,7 +179,7 @@ class AssessmentServiceTest {
 
         @Test
         void testWhenApiReturnsEmptyAndIncrementsFailureCounter() {
-            String claimId = UUID.randomUUID().toString();
+            var claimId = UUID.randomUUID();
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
             String userId = UUID.randomUUID().toString();
@@ -202,7 +201,7 @@ class AssessmentServiceTest {
 
         @Test
         void testWhenApiReturns5xxStatusAndIncrementsFailureCounter() {
-            String claimId = UUID.randomUUID().toString();
+            var claimId = UUID.randomUUID();
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
             String userId = UUID.randomUUID().toString();
@@ -227,7 +226,7 @@ class AssessmentServiceTest {
 
         @Test
         void testWhenWebClientThrowsExceptionAndIncrementsFailureCounterOnce() {
-            String claimId = UUID.randomUUID().toString();
+            var claimId = UUID.randomUUID();
             CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
             claim.setClaimId(claimId);
             String userId = UUID.randomUUID().toString();
@@ -266,7 +265,7 @@ class AssessmentServiceTest {
 
         private void setupHighValueAssessmentLimitTest(BigDecimal assessedTotalInclVat) {
             CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
-            claim.setClaimId(claimId.toString());
+            claim.setClaimId(claimId);
             String userId = UUID.randomUUID().toString();
             AssessmentPost assessment = new AssessmentPost();
             assessment.setAssessedTotalInclVat(assessedTotalInclVat);
@@ -275,15 +274,14 @@ class AssessmentServiceTest {
 
             ResponseEntity<CreateAssessment201Response> response = ResponseEntity.ok(new CreateAssessment201Response());
 
-            when(claimsApiClient.submitAssessment(claimId.toString(), assessment))
-                    .thenReturn(Mono.just(response));
+            when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
 
             CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
 
             Assertions.assertNotNull(result);
             assertEquals(response.getBody(), result);
 
-            verify(claimsApiClient).submitAssessment(claimId.toString(), assessment);
+            verify(claimsApiClient).submitAssessment(claimId, assessment);
         }
     }
 
@@ -293,7 +291,7 @@ class AssessmentServiceTest {
         void shouldReturnMappedClaimDetailsWhenAssessmentExists() {
 
             var claimDetails = new CivilClaimDetails();
-            claimDetails.setClaimId(claimId.toString());
+            claimDetails.setClaimId(claimId);
 
             // Arrange
             AssessmentGet assessment = new AssessmentGet(); // dummy assessment
@@ -318,7 +316,7 @@ class AssessmentServiceTest {
         @Test
         void shouldThrowExceptionWhenAssessmentsAreEmpty() {
             var claimDetails = new CivilClaimDetails();
-            claimDetails.setClaimId(claimId.toString());
+            claimDetails.setClaimId(claimId);
             // Arrange
             AssessmentResultSet emptyResultSet = new AssessmentResultSet();
             emptyResultSet.setAssessments(List.of());
@@ -334,7 +332,7 @@ class AssessmentServiceTest {
         @Test
         void shouldThrowExceptionWhenResultIsNull() {
             var claimDetails = new CivilClaimDetails();
-            claimDetails.setClaimId(claimId.toString());
+            claimDetails.setClaimId(claimId);
             // Arrange
             when(claimsApiClient.getAssessments(claimId, page, size, sort)).thenReturn(Mono.empty());
 
@@ -348,7 +346,7 @@ class AssessmentServiceTest {
         @Test
         void voidClaimWithEscapeCaseAssessmentsReturnValues() {
             ClaimDetails claim = new CrimeClaimDetails();
-            claim.setClaimId(UUID.randomUUID().toString());
+            claim.setClaimId(UUID.randomUUID());
             claim.setStatus(ClaimStatus.VOID);
             AssessmentGet latest = new AssessmentGet();
             latest.setAssessmentType(AssessmentType.VOID);
@@ -370,11 +368,11 @@ class AssessmentServiceTest {
         @Test
         void voidClaimWithNoPreviousAssessments() {
             ClaimDetails claim = new CrimeClaimDetails();
-            claim.setClaimId(UUID.randomUUID().toString());
+            claim.setClaimId(UUID.randomUUID());
             claim.setStatus(ClaimStatus.VOID);
             AssessmentGet latest = new AssessmentGet();
             latest.setId(UUID.randomUUID());
-            latest.setClaimId(UUID.fromString(claim.getClaimId()));
+            latest.setClaimId(claim.getClaimId());
             latest.setAssessmentType(AssessmentType.VOID);
             AssessmentResultSet resultSet = new AssessmentResultSet();
             resultSet.setAssessments(List.of(latest));
@@ -388,7 +386,7 @@ class AssessmentServiceTest {
         void getLatestAssessmentThrowsWhenNoAssessments() {
             // Arrange
             ClaimDetails claim = new CrimeClaimDetails();
-            claim.setClaimId(UUID.randomUUID().toString());
+            claim.setClaimId(UUID.randomUUID());
             claim.setStatus(ClaimStatus.VALID);
 
             AssessmentResultSet emptyResultSet = new AssessmentResultSet();
@@ -402,7 +400,7 @@ class AssessmentServiceTest {
         @Test
         void getLatestAssessmentThrowsWhenVoidClaimLatestNotVoid() {
             ClaimDetails claim = new CrimeClaimDetails();
-            claim.setClaimId(UUID.randomUUID().toString());
+            claim.setClaimId(UUID.randomUUID());
             claim.setStatus(ClaimStatus.VOID);
 
             AssessmentGet latest = new AssessmentGet();
@@ -418,7 +416,7 @@ class AssessmentServiceTest {
         @Test
         void getLatestAssessmentThrowsWhenNonVoidLatestNotEscapeCase() {
             ClaimDetails claim = new CrimeClaimDetails();
-            claim.setClaimId(UUID.randomUUID().toString());
+            claim.setClaimId(UUID.randomUUID());
             claim.setStatus(ClaimStatus.VALID);
 
             AssessmentGet latest = new AssessmentGet();

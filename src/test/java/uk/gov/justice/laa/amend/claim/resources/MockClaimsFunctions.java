@@ -49,9 +49,9 @@ public class MockClaimsFunctions {
 
     public static CivilClaimDetails createMockCivilClaim() {
         CivilClaimDetails claim = new CivilClaimDetails();
-        claim.setClaimId(UUID.randomUUID().toString());
-        claim.setSubmissionId(UUID.randomUUID().toString());
-        claim.setClaimSummaryFeeId(UUID.randomUUID().toString());
+        claim.setClaimId(UUID.randomUUID());
+        claim.setSubmissionId(UUID.randomUUID());
+        claim.setClaimSummaryFeeId(UUID.randomUUID());
         claim.setEscaped(true);
         claim.setStatus(ClaimStatus.VALID);
 
@@ -80,9 +80,9 @@ public class MockClaimsFunctions {
 
     public static CrimeClaimDetails createMockCrimeClaim() {
         CrimeClaimDetails claim = new CrimeClaimDetails();
-        claim.setClaimId(UUID.randomUUID().toString());
-        claim.setSubmissionId(UUID.randomUUID().toString());
-        claim.setClaimSummaryFeeId(UUID.randomUUID().toString());
+        claim.setClaimId(UUID.randomUUID());
+        claim.setSubmissionId(UUID.randomUUID());
+        claim.setClaimSummaryFeeId(UUID.randomUUID());
         claim.setEscaped(true);
         claim.setStatus(ClaimStatus.VALID);
 

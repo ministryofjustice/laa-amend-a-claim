@@ -40,8 +40,8 @@ class VoidConfirmationViewTest extends ViewTestBase {
 
         var claim = MockClaimsFunctions.createMockCivilClaim();
         this.claim = claim;
-        claim.setSubmissionId(submissionId.toString());
-        claim.setClaimId(claimId.toString());
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
         claim.setFeeCodeDescription("FCD");
         claim.setUniqueFileNumber("UFN");
         claim.setUniqueClientNumber("UCN");
@@ -80,8 +80,8 @@ class VoidConfirmationViewTest extends ViewTestBase {
 
         var claim = MockClaimsFunctions.createMockCrimeClaim();
         this.claim = claim;
-        claim.setSubmissionId(submissionId.toString());
-        claim.setClaimId(claimId.toString());
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
         claim.setFeeCodeDescription("FCD");
         claim.setUniqueFileNumber("UFN");
         claim.setOfficeCode("0P322F");
