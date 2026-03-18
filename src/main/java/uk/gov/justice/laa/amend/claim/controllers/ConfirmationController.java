@@ -11,9 +11,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
+import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 
 @Controller
 @RequiredArgsConstructor
+@HasRoleEscapeCaseCaseworker
 public class ConfirmationController {
 
     @GetMapping("/submissions/{submissionId}/claims/{claimId}/assessments/{assessmentId}")

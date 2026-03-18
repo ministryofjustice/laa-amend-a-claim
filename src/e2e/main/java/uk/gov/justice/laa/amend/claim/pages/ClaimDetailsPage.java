@@ -52,11 +52,8 @@ public class ClaimDetailsPage extends LaaPage {
         backToSearchButton.click();
     }
 
-    public boolean isAddAssessmentOutcomeDisabled() {
-        String ariaDisabled = addAssessmentOutcomeButton.getAttribute("aria-disabled");
-        boolean aria = "true".equalsIgnoreCase(ariaDisabled);
-        boolean disabledAttr = addAssessmentOutcomeButton.isDisabled();
-        return aria || disabledAttr;
+    public boolean isAddAssessmentOutcomeHidden() {
+        return !addAssessmentOutcomeButton.isVisible();
     }
 
     private Locator valuesCard() {

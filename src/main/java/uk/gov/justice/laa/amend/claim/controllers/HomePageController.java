@@ -76,7 +76,7 @@ public class HomePageController {
                 return "index";
             }
             var result = claimService.searchClaims(
-                    form.getProviderAccountNumber(),
+                    form.getOfficeCode(),
                     Optional.ofNullable(form.getUniqueFileNumber()),
                     Optional.ofNullable(form.getCaseReferenceNumber()),
                     Optional.ofNullable(form.getSubmissionPeriod()),

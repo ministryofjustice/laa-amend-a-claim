@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 import uk.gov.justice.laa.amend.claim.forms.AssessmentOutcomeForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
@@ -23,6 +24,7 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}")
+@HasRoleEscapeCaseCaseworker
 public class AssessmentOutcomeController {
 
     private final AssessmentService assessmentService;

@@ -10,8 +10,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
+import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 
 import java.math.BigDecimal;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +36,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @ActiveProfiles("local")
@@ -42,6 +46,9 @@ class ChangeAllowedTotalsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private DummyUserSecurityService dummyUserSecurityService;
 
     @MockitoBean
     private MaintenanceService maintenanceService;
@@ -60,6 +67,8 @@ class ChangeAllowedTotalsControllerTest {
         claimId = UUID.randomUUID();
         civilClaim = MockClaimsFunctions.createMockCivilClaim();
         crimeClaim = MockClaimsFunctions.createMockCrimeClaim();
+
+        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
     }
 
     @Test
@@ -242,6 +251,18 @@ class ChangeAllowedTotalsControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("allowed-totals"))
                 .andExpect(model().hasErrors());
+    }
+
+    @Test
+    void testGetRequiresRole() throws Exception {
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testPostRequiresRole() throws Exception {
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+        mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
     }
 
     private String buildPath() {

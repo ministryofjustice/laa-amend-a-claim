@@ -1,10 +1,14 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
+import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +21,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
+import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @ActiveProfiles("local")
@@ -27,27 +32,32 @@ public class ConfirmationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private DummyUserSecurityService dummyUserSecurityService;
+
     @MockitoBean
     private MaintenanceService maintenanceService;
 
     private MockHttpSession session;
+    private UUID claimId;
+    private UUID submissionId;
+    private UUID assessmentId;
 
     @BeforeEach
     public void setup() {
         session = new MockHttpSession();
+        claimId = UUID.randomUUID();
+        submissionId = UUID.randomUUID();
+        assessmentId = UUID.randomUUID();
+
+        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
     }
 
     @Test
     public void testOnPageLoadReturnsViewWhenStoredAssessmentIdMatches() throws Exception {
-        UUID submissionId = UUID.randomUUID();
-        UUID claimId = UUID.randomUUID();
-        UUID assessmentId = UUID.randomUUID();
-
         session.setAttribute("assessmentId", assessmentId);
 
-        String uri = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
-
-        mockMvc.perform(get(uri).session(session))
+        mockMvc.perform(get(buildPath()).session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("confirmation"))
                 .andExpect(model().attribute("submissionId", submissionId))
@@ -56,26 +66,34 @@ public class ConfirmationControllerTest {
 
     @Test
     public void testOnPageLoadReturnsNotFoundWhenStoredAssessmentIdDoesNotMatch() throws Exception {
-        UUID submissionId = UUID.randomUUID();
-        UUID claimId = UUID.randomUUID();
         UUID assessmentId1 = UUID.randomUUID();
         UUID assessmentId2 = UUID.randomUUID();
 
         session.setAttribute("assessmentId", assessmentId1);
 
-        String uri = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId2);
+        String path = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId2);
 
-        mockMvc.perform(get(uri).session(session)).andExpect(status().isNotFound());
+        mockMvc.perform(get(path).session(session)).andExpect(status().isNotFound());
     }
 
     @Test
     public void testOnPageLoadReturnsNotFoundWhenNoStoredAssessmentId() throws Exception {
-        UUID submissionId = UUID.randomUUID();
-        UUID claimId = UUID.randomUUID();
-        UUID assessmentId = UUID.randomUUID();
+        mockMvc.perform(get(buildPath())).andExpect(status().isNotFound());
+    }
 
-        String uri = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
+    @Test
+    void testGetRequiresRole() throws Exception {
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
+    }
 
-        mockMvc.perform(get(uri)).andExpect(status().isNotFound());
+    @Test
+    void testPostRequiresRole() throws Exception {
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+        mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
+    }
+
+    private String buildPath() {
+        return String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
     }
 }

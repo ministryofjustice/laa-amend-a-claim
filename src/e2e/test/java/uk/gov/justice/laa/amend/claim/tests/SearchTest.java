@@ -135,7 +135,7 @@ public class SearchTest extends BaseTest {
         SearchPage searchPage = new SearchPage(page);
 
         searchPage.searchForClaim(
-                config.getProviderAccountNumber(),
+                config.getOfficeCode(),
                 config.getSubmissionMonth(),
                 config.getSubmissionYear(),
                 config.getUfn(),
@@ -163,7 +163,7 @@ public class SearchTest extends BaseTest {
         assertTrue(
                 page.url()
                         .contains(
-                                "/?providerAccountNumber=123456&submissionDateMonth=04&submissionDateYear=2025&page=1&sort=unique_file_number,asc"));
+                                "/?officeCode=123456&submissionDateMonth=04&submissionDateYear=2025&page=1&sort=unique_file_number,asc"));
     }
 
     @Test

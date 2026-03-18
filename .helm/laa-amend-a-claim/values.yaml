@@ -173,6 +173,11 @@ env:
       secretKeyRef:
         name: laa-amend-a-claim-provider-api-token
         key: PROVIDER_TOKEN
+  - name: IS_BULK_UPLOAD_ENABLED
+    valueFrom:
+      configMapKeyRef:
+        name: feature-flags
+        key: is-bulk-upload-enabled
   - name: IS_VOIDING_ENABLED
     valueFrom:
       configMapKeyRef:
@@ -201,6 +206,11 @@ nodeSelector: {}
 # Do not create a new redis pod (We use AWS ElastiCache for Redis for all non-ephemeral environments)
 redis:
   enabled: false
+
+alerting:
+  enabled: false
+  severity: "laa-amend-a-claim"
+  grafanaDashboard: ""
 
 tolerations: []
 

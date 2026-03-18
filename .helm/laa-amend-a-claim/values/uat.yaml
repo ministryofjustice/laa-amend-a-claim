@@ -8,3 +8,8 @@ ingress:
 
 grafana:
   enabled: true
+
+alerting:
+  enabled: true
+  severity: laa-amend-a-claim-uat
+  grafanaDashboard: https://grafana.live.cloud-platform.service.justice.gov.uk/d/laa-amend-a-claim-uat

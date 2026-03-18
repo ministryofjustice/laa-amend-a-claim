@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/discard")
+@HasRoleEscapeCaseCaseworker
 public class DiscardController {
 
     @GetMapping()

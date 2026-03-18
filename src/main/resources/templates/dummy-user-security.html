@@ -1,0 +1,47 @@
+<!DOCTYPE html >
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{dummyUserSecurity.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${false}
+    )}">
+    <body>
+        <main class="govuk-main-wrapper" id="main-content">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <form th:action="@{/dummy-user-security}" method="post">
+                        <fieldset class="govuk-fieldset">
+                            <div class="govuk-form-group">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                    <h1 class="govuk-fieldset__heading" th:text="#{dummyUserSecurity.rolesPrompt}"></h1>
+                                </legend>
+                                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                    <th:block th:each="role: ${T(uk.gov.justice.laa.amend.claim.models.Role).values()}">
+                                        <div class="govuk-checkboxes__item">
+                                            <input class="govuk-checkboxes__input"
+                                                   type="checkbox"
+                                                   name="roles"
+                                                   th:id="${'role-' + role.name()}"
+                                                   th:value="${role.name()}"
+                                                   th:checked="${#sets.contains(roles, role)}" />
+                                            <label class="govuk-label govuk-checkboxes__label"
+                                                   th:for="${'role-' + role.name()}"
+                                                   th:text="${role.name()}">
+                                            </label>
+                                        </div>
+                                    </th:block>
+                                </div>
+                            </div>
+
+                            <div class="govuk-button-group">
+                                <button class="govuk-button" data-module="govuk-button" type="submit" th:text="#{dummyUserSecurity.submit}"></button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

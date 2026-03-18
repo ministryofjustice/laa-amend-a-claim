@@ -26,6 +26,7 @@ public class SearchQuery {
     private int page = 1;
 
     private Sort sort;
+    private String officeCode;
     private String providerAccountNumber;
     private String submissionDateMonth;
     private String submissionDateYear;
@@ -36,13 +37,19 @@ public class SearchQuery {
 
     public SearchQuery(SearchForm form, Sort sort) {
         this.sort = sort;
-        this.providerAccountNumber = form.getProviderAccountNumber();
+        this.officeCode = form.getOfficeCode();
         this.submissionDateMonth = form.getSubmissionDateMonth();
         this.submissionDateYear = form.getSubmissionDateYear();
         this.uniqueFileNumber = form.getUniqueFileNumber();
         this.caseReferenceNumber = form.getCaseReferenceNumber();
         this.areaOfLaw = form.getAreaOfLaw();
         this.escapeCase = form.getEscapeCase();
+    }
+
+    // Temporarily support old parameter name providerAccountNumber to avoid issues when users already have this in
+    // session. BC-513 will remove this once the new name has been in use in prod.
+    public String getOfficeCode() {
+        return officeCode != null ? officeCode : providerAccountNumber;
     }
 
     public void rejectUnknownParams(HttpServletRequest request) {
@@ -72,7 +79,7 @@ public class SearchQuery {
     private String getRedirectUrl(int page, Sort sort) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/");
 
-        addQueryParam(builder, "providerAccountNumber", providerAccountNumber);
+        addQueryParam(builder, "officeCode", getOfficeCode());
         addQueryParam(builder, "submissionDateMonth", submissionDateMonth);
         addQueryParam(builder, "submissionDateYear", submissionDateYear);
         addQueryParam(builder, "uniqueFileNumber", uniqueFileNumber);
