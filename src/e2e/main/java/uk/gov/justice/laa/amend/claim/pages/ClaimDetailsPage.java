@@ -15,6 +15,7 @@ public class ClaimDetailsPage extends LaaPage {
     private final Locator addAssessmentOutcomeButton;
     private final Locator updateAssessmentOutcomeButton;
     private final Locator addUpdateAssessmentOutcomeButton;
+    private final Locator voidClaimButton;
     private final Locator infoAlert;
     private final Locator backToSearchButton;
 
@@ -29,23 +30,19 @@ public class ClaimDetailsPage extends LaaPage {
 
         this.addUpdateAssessmentOutcomeButton = page.getByTestId("claim-details-assessment-button");
 
+        this.voidClaimButton = page.getByTestId("claim-details-void-button");
+
         this.infoAlert = page.locator(".moj-alert--information");
 
         this.backToSearchButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Back to search"));
     }
 
     public void clickAddUpdateAssessmentOutcome() {
-        if (addUpdateAssessmentOutcomeButton.isVisible()) {
-            addUpdateAssessmentOutcomeButton.click();
-        }
+        addUpdateAssessmentOutcomeButton.click();
     }
 
-    public void clickAddAssessmentOutcome() {
-        addAssessmentOutcomeButton.click();
-    }
-
-    public void clickUpdateAssessmentOutcome() {
-        addAssessmentOutcomeButton.click();
+    public void clickVoidClaim() {
+        voidClaimButton.click();
     }
 
     public void clickBackToSearchButton() {
