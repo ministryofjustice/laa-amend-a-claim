@@ -66,7 +66,7 @@ public final class VoidClaimPactTest extends AbstractPactTest {
                         .build())
                 .willRespondWith()
                 .status(404)
-                .headers(Map.of("Content-Type", "application/json"))
+                .matchHeader("Content-Type", "application/(problem\\+)?json")
                 .toPact();
     }
 
