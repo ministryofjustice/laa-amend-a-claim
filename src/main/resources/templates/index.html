@@ -104,62 +104,63 @@
                                   ? #{index.results.searchResult}
                                   : #{index.results.searchResults(${viewModel.pagination.results.count})}">
                             </h2>
+                            <div class="moj-scrollable-pane" role="region" tabindex="0">
+                                <table class="govuk-table govuk-table--small-text-until-tablet search-table">
+                                    <thead class="govuk-table__head">
+                                        <tr class="govuk-table__row">
+                                            <th scope="col" class="govuk-table__header" th:text="#{index.results.claim}"></th>
 
-                            <table class="govuk-table govuk-table--small-text">
-                                <thead class="govuk-table__head">
-                                    <tr class="govuk-table__row">
-                                        <th scope="col" class="govuk-table__header" th:text="#{index.results.claim}"></th>
+                                            <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.UNIQUE_FILE_NUMBER}, 'index.results.uniqueFileNumber')}"></th:block>
 
-                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.UNIQUE_FILE_NUMBER}, 'index.results.uniqueFileNumber')}"></th:block>
+                                            <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.CASE_REFERENCE_NUMBER}, 'index.results.caseReferenceNumber')}"></th:block>
 
-                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.CASE_REFERENCE_NUMBER}, 'index.results.caseReferenceNumber')}"></th:block>
+                                            <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.CLIENT_SURNAME}, 'index.results.clientSurname')}"></th:block>
 
-                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.CLIENT_SURNAME}, 'index.results.clientSurname')}"></th:block>
+                                            <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.SUBMISSION_PERIOD}, 'index.results.dateSubmitted')}"></th:block>
 
-                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.SUBMISSION_PERIOD}, 'index.results.dateSubmitted')}"></th:block>
+                                            <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.CATEGORY_OF_LAW}, 'index.results.categoryOfLaw')}"></th:block>
 
-                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.CATEGORY_OF_LAW}, 'index.results.categoryOfLaw')}"></th:block>
+                                            <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.VOIDED}, 'index.results.voided')}"></th:block>
 
-                                        <th:block th:replace="~{partials/sortable-header :: sortableHeader(${query}, ${sorts}, ${SortField.VOIDED}, 'index.results.voided')}"></th:block>
+                                            <th scope="col" class="govuk-table__header" th:text="#{index.results.escaped}"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="govuk-table__body">
+                                        <tr class="govuk-table__row" th:each="claim : ${viewModel.claims}">
+                                            <td class="govuk-table__cell" th:data-submission-id="${claim.claim.submissionId}"
+                                                th:data-claim-id="${claim.claim.claimId}">
+                                                <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.claim.submissionId}, claimId=${claim.claim.claimId})}" class="govuk-link govuk-link--no-visited-state">
+                                                    <th:block th:text="#{index.view}"></th:block>
+                                                    <span class="govuk-visually-hidden" th:text=" #{index.view.hidden(${claim.clientName})}"></span>
+                                                </a>
+                                            </td>
+                                            <td class="govuk-table__cell" th:data-ufn="${claim.claim.uniqueFileNumber}" th:text="${claim.claim.uniqueFileNumber}"></td>
+                                            <td class="govuk-table__cell" th:text="${claim.claim.caseReferenceNumber}"></td>
+                                            <td class="govuk-table__cell" th:text="${claim.claim.clientSurname}"></td>
+                                            <td class="govuk-table__cell" th:text="${claim.submissionPeriodForDisplay}" th:data-sort-value="${claim.submissionPeriodForSorting}"></td>
+                                            <td class="govuk-table__cell" th:text="${claim.claim.categoryOfLaw}"></td>
 
-                                        <th scope="col" class="govuk-table__header" th:text="#{index.results.escaped}"></th>
-                                    </tr>
-                                </thead>
-                                <tbody class="govuk-table__body">
-                                    <tr class="govuk-table__row" th:each="claim : ${viewModel.claims}">
-                                        <td class="govuk-table__cell" th:data-submission-id="${claim.claim.submissionId}"
-                                            th:data-claim-id="${claim.claim.claimId}">
-                                            <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.claim.submissionId}, claimId=${claim.claim.claimId})}" class="govuk-link govuk-link--no-visited-state">
-                                                <th:block th:text="#{index.view}"></th:block>
-                                                <span class="govuk-visually-hidden" th:text=" #{index.view.hidden(${claim.clientName})}"></span>
-                                            </a>
-                                        </td>
-                                        <td class="govuk-table__cell" th:data-ufn="${claim.claim.uniqueFileNumber}" th:text="${claim.claim.uniqueFileNumber}"></td>
-                                        <td class="govuk-table__cell" th:text="${claim.claim.caseReferenceNumber}"></td>
-                                        <td class="govuk-table__cell" th:text="${claim.claim.clientSurname}"></td>
-                                        <td class="govuk-table__cell" th:text="${claim.submissionPeriodForDisplay}" th:data-sort-value="${claim.submissionPeriodForSorting}"></td>
-                                        <td class="govuk-table__cell" th:text="${claim.claim.categoryOfLaw}"></td>
+                                            <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.isVoided()).resolve(#messages)}">
+                                                <th:block th:if="${claim.claim.isVoided()}">
+                                                    <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
+                                                </th:block>
+                                                <th:block th:unless="${claim.claim.isVoided()}">
+                                                    <span th:text="${value}"></span>
+                                                </th:block>
+                                            </td>
 
-                                        <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.isVoided()).resolve(#messages)}">
-                                            <th:block th:if="${claim.claim.isVoided()}">
-                                                <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
-                                            </th:block>
-                                            <th:block th:unless="${claim.claim.isVoided()}">
-                                                <span th:text="${value}"></span>
-                                            </th:block>
-                                        </td>
-
-                                        <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped).resolve(#messages)}">
-                                            <th:block th:if="${claim.claim.escaped}">
-                                                <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
-                                            </th:block>
-                                            <th:block th:unless="${claim.claim.escaped}">
-                                                <span th:text="${value}"></span>
-                                            </th:block>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                            <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped).resolve(#messages)}">
+                                                <th:block th:if="${claim.claim.escaped}">
+                                                    <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
+                                                </th:block>
+                                                <th:block th:unless="${claim.claim.escaped}">
+                                                    <span th:text="${value}"></span>
+                                                </th:block>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
                             <th:block th:replace="~{partials/pagination :: pagination(${viewModel.pagination})}"></th:block>
                         </th:block>

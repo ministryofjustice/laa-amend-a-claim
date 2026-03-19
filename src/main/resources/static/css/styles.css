@@ -1,28 +1,15 @@
-@import "webjars/govuk-frontend/6.1.0/dist/govuk/base";
-
-.govuk-table--small-text {
-    table-layout: fixed;
-    th, td {
-      @include govuk-font-size($size: 16);
-      @include govuk-text-break-word($important: true);
-    }
-    th:nth-child(1),
-    td:nth-child(1) {
-      width: 5%; // Claim
-    }
-    th:nth-child(8),
-    td:nth-child(8) {
-      width: 7%; // Voided
-    }
-    th:nth-child(9),
-    td:nth-child(9) {
-      width: 7%; // Escape case
-    }
-}
-
 .search-panel {
     padding: 15px 20px 0px 20px;
     background-color: #f3f2f1;
+}
+
+.search-table {
+    td.govuk-table__cell:nth-child(2), /* UFN */
+    td.govuk-table__cell:nth-child(3) { /* CRN */
+        word-wrap: anywhere !important;
+        overflow-wrap: anywhere !important;
+        white-space: normal !important;
+    }
 }
 
 .govuk-link--sort {
