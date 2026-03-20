@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.client.config;
 
+import io.micrometer.observation.ObservationRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -24,8 +25,8 @@ import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 public class WebClientConfig {
 
     @Bean
-    public WebClient.Builder webClientBuilder() {
-        return WebClient.builder();
+    public WebClient.Builder webClientBuilder(ObservationRegistry observationRegistry) {
+        return WebClient.builder().observationRegistry(observationRegistry);
     }
 
     @Bean
