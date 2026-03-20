@@ -13,19 +13,19 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RedisSessionMetrics implements MeterBinder {
 
-  private static final String SESSION_KEY_PATTERN = "spring:session:sessions:*";
+    private static final String SESSION_KEY_PATTERN = "spring:session:sessions:*";
 
-  private final StringRedisTemplate stringRedisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 
-  @Override
-  public void bindTo(@NonNull MeterRegistry registry) {
-    Gauge.builder("redis.sessions.active", this, RedisSessionMetrics::activeSessionCount)
-        .description("Number of active Redis sessions")
-        .register(registry);
-  }
+    @Override
+    public void bindTo(@NonNull MeterRegistry registry) {
+        Gauge.builder("redis.sessions.active", this, RedisSessionMetrics::activeSessionCount)
+                .description("Number of active Redis sessions")
+                .register(registry);
+    }
 
-  double activeSessionCount() {
-    Set<String> keys = stringRedisTemplate.keys(SESSION_KEY_PATTERN);
-    return keys == null ? 0 : keys.size();
-  }
+    double activeSessionCount() {
+        Set<String> keys = stringRedisTemplate.keys(SESSION_KEY_PATTERN);
+        return keys == null ? 0 : keys.size();
+    }
 }
