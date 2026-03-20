@@ -10,7 +10,7 @@ public class RedisSetup {
     private static RedisServer redisServer;
 
     @BeforeAll
-    public static void setUp() throws IOException {
+    public static void setUpRedis() throws IOException {
         redisServer = new RedisServer();
         redisServer.start();
     }

@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.base.WireMockSetup.setupGetClaimStub;
+import static uk.gov.justice.laa.amend.claim.base.WireMockSetup.setupGetProviderOfficeStub;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,13 +16,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.ModelAndView;
-import uk.gov.justice.laa.amend.claim.base.WireMockSetup;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class ClaimDetailsIntegrationTest extends WireMockSetup {
+class ClaimDetailsIntegrationTest extends ControllerIntegrationTest {
 
     private static final String SUBMISSION_ID = "c8f2c0d4-97b1-4c4a-96f2-4dd62a4e6aa2";
     private static final String CLAIM_ID = "3f8a0ac4-2f63-4ed2-8bfb-2eb0fc0ba330";
