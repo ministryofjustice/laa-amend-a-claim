@@ -26,6 +26,19 @@ public class RedisSessionMetrics implements MeterBinder {
 
     double activeSessionCount() {
         Set<String> keys = stringRedisTemplate.keys(SESSION_KEY_PATTERN);
-        return keys == null ? 0 : keys.size();
+        if (keys == null) {
+            return 0;
+        }
+
+        int activeSessions = 0;
+        for (String key : keys) {
+            // Exclude Spring Session internal housekeeping keys such as
+            // "spring:session:sessions:expires:<id>" from the active session count.
+            if (!key.contains(":expires:")) {
+                activeSessions++;
+            }
+        }
+
+        return activeSessions;
     }
 }
