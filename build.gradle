@@ -53,6 +53,8 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.6.3'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // Update version of CSS files in e2e-test.yml when bumping these dependencies
     implementation 'org.webjars.npm:govuk-frontend:6.1.0'
     implementation 'org.webjars.npm:ministryofjustice__frontend:7.1.0'
 
@@ -133,7 +135,9 @@ tasks.register('pactTest', Test) {
 
     def pactsDir = layout.buildDirectory.dir("pacts").get().asFile
     doFirst {
-        if (pactsDir.exists()) { pactsDir.deleteDir() }
+        if (pactsDir.exists()) {
+            pactsDir.deleteDir()
+        }
     }
 
     testClassesDirs = sourceSets.pactTest.output.classesDirs
