@@ -84,9 +84,8 @@ public final class CreateAssessmentPactTest extends AbstractPactTest {
     void verify201Response() {
         AssessmentPost assessment = buildAssessmentPost();
 
-        ResponseEntity<CreateAssessment201Response> response = claimsApiClient
-                .submitAssessment(CLAIM_ID.toString(), assessment)
-                .block();
+        ResponseEntity<CreateAssessment201Response> response =
+                claimsApiClient.submitAssessment(CLAIM_ID, assessment).block();
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -102,9 +101,7 @@ public final class CreateAssessmentPactTest extends AbstractPactTest {
 
         assertThrows(
                 NotFound.class,
-                () -> claimsApiClient
-                        .submitAssessment(CLAIM_ID.toString(), assessment)
-                        .block());
+                () -> claimsApiClient.submitAssessment(CLAIM_ID, assessment).block());
     }
 
     private static void buildAssessmentRequestBody(au.com.dius.pact.consumer.dsl.LambdaDslJsonBody body) {

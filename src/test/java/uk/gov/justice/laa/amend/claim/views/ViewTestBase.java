@@ -48,8 +48,8 @@ public abstract class ViewTestBase {
     public void setup() {
         session = new MockHttpSession();
         claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setSubmissionId(submissionId.toString());
-        claim.setClaimId(claimId.toString());
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
     }
 
     protected String mapping;

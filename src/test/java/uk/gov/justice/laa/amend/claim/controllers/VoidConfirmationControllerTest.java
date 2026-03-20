@@ -67,8 +67,8 @@ public class VoidConfirmationControllerTest {
         claimId = UUID.randomUUID();
         session = new MockHttpSession();
         claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setSubmissionId(submissionId.toString());
-        claim.setClaimId(claimId.toString());
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
         MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
         session.setAttribute(claimId.toString(), claim);
         when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);

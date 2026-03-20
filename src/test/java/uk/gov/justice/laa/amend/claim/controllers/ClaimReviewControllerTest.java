@@ -71,8 +71,8 @@ public class ClaimReviewControllerTest {
         claimId = UUID.randomUUID();
         session = new MockHttpSession();
         claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setSubmissionId(submissionId.toString());
-        claim.setClaimId(claimId.toString());
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
         MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
         session.setAttribute(claimId.toString(), claim);
 
@@ -173,16 +173,16 @@ public class ClaimReviewControllerTest {
 
         session.clearAttributes();
         ClaimDetails claim1 = MockClaimsFunctions.createMockCivilClaim();
-        claim1.setSubmissionId(submissionId.toString());
+        claim1.setSubmissionId(submissionId);
         UUID claimId1 = UUID.randomUUID();
-        claim1.setClaimId(claimId1.toString());
+        claim1.setClaimId(claimId1);
         claim1.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
         MockClaimsFunctions.updateStatus(claim1, OutcomeType.PAID_IN_FULL);
 
         ClaimDetails claim2 = MockClaimsFunctions.createMockCrimeClaim();
-        claim2.setSubmissionId(submissionId.toString());
+        claim2.setSubmissionId(submissionId);
         UUID claimId2 = UUID.randomUUID();
-        claim2.setClaimId(claimId2.toString());
+        claim2.setClaimId(claimId2);
         claim2.setAssessmentOutcome(OutcomeType.NILLED);
         MockClaimsFunctions.updateStatus(claim2, claim2.getAssessmentOutcome());
 
