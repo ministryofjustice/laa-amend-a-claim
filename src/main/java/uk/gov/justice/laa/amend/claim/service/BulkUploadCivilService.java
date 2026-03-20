@@ -10,7 +10,7 @@ import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilClaim> {
 
     public BulkUploadCivilService(
-            CsvSchemaProvider<?> schemaProvider,
+            CsvSchemaProvider<BulkUploadCivilClaim> schemaProvider,
             CsvRowMapper<BulkUploadCivilClaim> rowMapper,
             CsvHeaderValidator csvHeaderValidator) {
         super(schemaProvider, rowMapper, csvHeaderValidator);

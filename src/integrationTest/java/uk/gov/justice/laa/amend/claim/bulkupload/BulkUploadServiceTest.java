@@ -42,20 +42,15 @@ class BulkUploadServiceTest {
 
     @Test
     @DisplayName("Parses 4,000 CSV rows end-to-end successfully")
-    void parsesThousandRows() throws Exception {
-
+    void parseCsvRowsSuccessfully() throws Exception {
         int rows = 4000;
         MockMultipartFile file = csvFileWithRows(rows);
         UUID userId = UUID.randomUUID();
 
-        long start = System.nanoTime();
         BulkUploadResult result = bulkUploadService.upload(file, userId);
-        long duration = (System.nanoTime() - start) / 1000000;
 
         assertThat(result).isNotNull();
         assertThat(result.status()).isEqualTo(BulkUploadStatus.SUCCESS);
-
-        System.out.println("Parsed " + rows + " rows in " + duration + " ms");
     }
 
     /**

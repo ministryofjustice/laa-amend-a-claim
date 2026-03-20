@@ -21,7 +21,7 @@ class BulkUploadServiceParsingErrorTest {
     private BulkUploadService<?> bulkUploadService;
 
     @Test
-    @DisplayName("Returns all parsing errors in result")
+    @DisplayName("Returns parsing errors for header in result")
     void returnParsingErrorsWhenHeaderInvalid() throws Exception {
         // CSV with missing required header and a bad row
         String csv = "UFN,Assessment Outcome,Profit Cost\n 0p322f,Reduced,notanumber\n 0A456H,Reduced,100.00\n";
@@ -38,7 +38,7 @@ class BulkUploadServiceParsingErrorTest {
     }
 
     @Test
-    @DisplayName("Returns all parsing errors in result")
+    @DisplayName("Returns all parsing errors for rows in result")
     void returnsAllParsingErrors() {
 
         String invalidCsv =

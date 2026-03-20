@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvHeaderValidator;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvRowMapper;
@@ -25,7 +26,7 @@ import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
 @Slf4j
 public abstract class BulkUploadService<T> {
 
-    protected final CsvSchemaProvider<?> schemaProvider;
+    protected final CsvSchemaProvider<T> schemaProvider;
     protected final CsvRowMapper<T> rowMapper;
     protected final CsvHeaderValidator csvHeaderValidator;
 
@@ -36,7 +37,7 @@ public abstract class BulkUploadService<T> {
             parseFile(file, rows, errors);
         } catch (Exception ex) {
             log.error("Error parsing file", ex);
-            errors.add(ex.getMessage());
+            errors.add(StringUtils.isNotBlank(ex.getMessage()) ? ex.getMessage() : "Error parsing file");
         }
         if (!errors.isEmpty()) {
             return new BulkUploadResult(PARSING_FAILURE, errors);
@@ -64,7 +65,7 @@ public abstract class BulkUploadService<T> {
             try {
                 csvHeaderValidator.validate(schemaProvider.getSchema(), parser.getHeaderNames());
             } catch (Exception ex) {
-                errors.add("Header error: " + ex.getMessage());
+                errors.add(ex.getMessage());
                 return;
             }
             int row = 1;
@@ -73,7 +74,7 @@ public abstract class BulkUploadService<T> {
                 try {
                     rows.add(rowMapper.mapRow(record, row));
                 } catch (Exception ex) {
-                    errors.add("Row " + row + ": " + ex.getMessage());
+                    errors.add(ex.getMessage());
                 }
             }
         }
