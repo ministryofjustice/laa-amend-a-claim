@@ -12,8 +12,7 @@ public class CsvHeaderValidator {
 
         for (CsvField field : schema.fields()) {
             if (field.required()) {
-                boolean found = actualHeaders.stream()
-                        .anyMatch(h -> h.equalsIgnoreCase(field.displayName()) || h.equalsIgnoreCase(field.key()));
+                boolean found = actualHeaders.stream().anyMatch(h -> h.equalsIgnoreCase(field.displayName()));
 
                 if (!found) {
                     missing.add(field.displayName());
