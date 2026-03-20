@@ -81,10 +81,10 @@ public abstract class BulkUploadService<T> {
     }
 
     protected BulkUploadResult validateRows(List<T> rows) {
-        return new BulkUploadResult(SUCCESS, List.of("Validation Successful for " + rows.size() + " rows"));
+        return new BulkUploadResult(SUCCESS, List.of());
     }
 
     protected BulkUploadResult submit(List<T> rows, UUID userId) {
-        return new BulkUploadResult(SUCCESS, List.of("Submission Successful for " + rows.size() + " rows"));
+        return new BulkUploadResult(SUCCESS, List.of());
     }
 }
