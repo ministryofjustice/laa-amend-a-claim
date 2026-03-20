@@ -5,6 +5,6 @@ import com.microsoft.playwright.Page;
 public class AssessTravelCostsPage extends LaaCostPage {
 
     public AssessTravelCostsPage(Page page) {
-        super(page, "Assess travel Costs");
+        super(page, "Assess travel costs");
     }
 }
