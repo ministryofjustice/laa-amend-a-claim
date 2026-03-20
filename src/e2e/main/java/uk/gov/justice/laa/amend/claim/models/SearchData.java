@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class SearchData {
-    private String providerAccountNumber;
+    private String officeCode;
     private String submissionMonth;
     private String submissionYear;
     private String ufn;

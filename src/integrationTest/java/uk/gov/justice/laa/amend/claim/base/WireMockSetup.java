@@ -54,7 +54,7 @@ public class WireMockSetup {
                         .withBody(response)));
     }
 
-    public void setupGetClaimStub(String submissionId, String claimId, String officeAccountNumber) {
+    public void setupGetClaimStub(String submissionId, String claimId, String officeCode) {
         String response = String.format("""
             {
                   "id": "%s",
@@ -81,7 +81,7 @@ public class WireMockSetup {
                       }
                   }
               }\
-            """, claimId, submissionId, officeAccountNumber);
+            """, claimId, submissionId, officeCode);
 
         stubFor(get(urlPathMatching(String.format("/api/v2/submissions/%s/claims/%s", submissionId, claimId)))
                 .willReturn(aResponse()
@@ -90,7 +90,7 @@ public class WireMockSetup {
                         .withBody(response)));
     }
 
-    public void setupGetProviderOfficeStub(String officeAccountNumber, String firmName) {
+    public void setupGetProviderOfficeStub(String officeCode, String firmName) {
         String response = String.format("""
             {
                 "firm": {
@@ -99,7 +99,7 @@ public class WireMockSetup {
             }\
             """, firmName);
 
-        stubFor(get(urlPathMatching(String.format("/api/v1/provider-offices/%s", officeAccountNumber)))
+        stubFor(get(urlPathMatching(String.format("/api/v1/provider-offices/%s", officeCode)))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")

@@ -6,7 +6,7 @@ import com.microsoft.playwright.options.AriaRole;
 
 public class SearchPage extends LaaPage {
 
-    private final Locator providerAccountNumberInput;
+    private final Locator officeCodeInput;
     private final Locator submissionMonthInput;
     private final Locator submissionYearInput;
     private final Locator ufnInput;
@@ -27,7 +27,7 @@ public class SearchPage extends LaaPage {
     public SearchPage(Page page) {
         super(page, "Search for a claim");
 
-        this.providerAccountNumberInput = page.locator("#provider-account-number");
+        this.officeCodeInput = page.locator("#office-code");
         this.submissionMonthInput = page.locator("#submission-date-month");
         this.submissionYearInput = page.locator("#submission-date-year");
         this.ufnInput = page.locator("#unique-file-number");
@@ -49,8 +49,8 @@ public class SearchPage extends LaaPage {
         this.noResultsMessage = page.locator("h2.govuk-heading-m:has-text('no results')");
     }
 
-    public void enterProviderAccountNumber(String number) {
-        providerAccountNumberInput.fill(number);
+    public void enterOfficeCode(String number) {
+        officeCodeInput.fill(number);
     }
 
     public void enterSubmissionDate(String month, String year) {
@@ -96,7 +96,7 @@ public class SearchPage extends LaaPage {
 
     // ---- COMBINED SEARCH + WAIT FOR RESULTS ----
     public void searchForClaim(
-            String providerAccount,
+            String officeCode,
             String month,
             String year,
             String ufn,
@@ -104,7 +104,7 @@ public class SearchPage extends LaaPage {
             String areaOfLaw,
             String escapeCase,
             boolean expectResults) {
-        enterProviderAccountNumber(providerAccount);
+        enterOfficeCode(officeCode);
         enterSubmissionDate(month, year);
         enterUfn(ufn);
         enterCrn(crn);
@@ -116,14 +116,8 @@ public class SearchPage extends LaaPage {
     }
 
     public void searchForClaim(
-            String providerAccount,
-            String month,
-            String year,
-            String ufn,
-            String crn,
-            String areaOfLaw,
-            String escapeCase) {
-        searchForClaim(providerAccount, month, year, ufn, crn, areaOfLaw, escapeCase, true);
+            String officeCode, String month, String year, String ufn, String crn, String areaOfLaw, String escapeCase) {
+        searchForClaim(officeCode, month, year, ufn, crn, areaOfLaw, escapeCase, true);
     }
 
     public void waitForResults(boolean expectResults) {

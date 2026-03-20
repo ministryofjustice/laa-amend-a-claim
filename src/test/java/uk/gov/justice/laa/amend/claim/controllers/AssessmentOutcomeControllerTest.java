@@ -7,7 +7,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
+import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +25,7 @@ import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
+import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @ActiveProfiles("local")
@@ -31,6 +35,9 @@ public class AssessmentOutcomeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private DummyUserSecurityService dummyUserSecurityService;
 
     @MockitoBean
     private AssessmentService assessmentService;
@@ -48,13 +55,12 @@ public class AssessmentOutcomeControllerTest {
         claimId = UUID.randomUUID();
         session = new MockHttpSession();
         session.setAttribute(claimId.toString(), MockClaimsFunctions.createMockCivilClaim());
+        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
     }
 
     @Test
     public void testGetAssessmentOutcome_ReturnsView() throws Exception {
-        String path = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
-
-        mockMvc.perform(get(path).session(session))
+        mockMvc.perform(get(buildPath()).session(session))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("form"))
                 .andExpect(view().name("assessment-outcome"));
@@ -62,9 +68,7 @@ public class AssessmentOutcomeControllerTest {
 
     @Test
     public void testOnSubmitReturnsBadRequestWithViewForInvalidForm() throws Exception {
-        String path = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
-
-        mockMvc.perform(post(path)
+        mockMvc.perform(post(buildPath())
                         .session(session)
                         .with(csrf())
                         .param("assessmentOutcome", "")
@@ -75,16 +79,30 @@ public class AssessmentOutcomeControllerTest {
 
     @Test
     public void testOnSubmitRedirects() throws Exception {
-        String path = String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
-
         String redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
 
-        mockMvc.perform(post(path)
+        mockMvc.perform(post(buildPath())
                         .session(session)
                         .with(csrf())
                         .param("assessmentOutcome", "paid-in-full")
                         .param("liabilityForVat", "true"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl));
+    }
+
+    @Test
+    void testGetRequiresRole() throws Exception {
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testPostRequiresRole() throws Exception {
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+        mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
+    }
+
+    private String buildPath() {
+        return String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
     }
 }

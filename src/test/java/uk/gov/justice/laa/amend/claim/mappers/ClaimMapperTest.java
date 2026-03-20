@@ -544,7 +544,7 @@ class ClaimMapperTest {
         assertEquals("MT1+MT2", claim.getMatterTypeCode());
         assertEquals(claimSummaryFeeId.toString(), claim.getClaimSummaryFeeId());
         assertEquals(uk.gov.justice.laa.amend.claim.models.AreaOfLaw.LEGAL_HELP, claim.getAreaOfLaw());
-        assertEquals("0P322F", claim.getProviderAccountNumber());
+        assertEquals("0P322F", claim.getOfficeCode());
         assertNull(claim.getProviderName());
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
         assertEquals(ClaimStatus.VALID, claim.getStatus());
@@ -589,7 +589,7 @@ class ClaimMapperTest {
         assertEquals("PrisonCode", claim.getPoliceStationCourtPrisonId());
         assertEquals("SchemeId", claim.getSchemeId());
         assertEquals(ClaimStatus.VALID, claim.getStatus());
-        assertEquals("0P322F", claim.getProviderAccountNumber());
+        assertEquals("0P322F", claim.getOfficeCode());
 
         assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
     }

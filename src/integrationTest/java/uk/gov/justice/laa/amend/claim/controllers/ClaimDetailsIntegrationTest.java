@@ -24,7 +24,7 @@ class ClaimDetailsIntegrationTest extends WireMockSetup {
 
     private static final String SUBMISSION_ID = "c8f2c0d4-97b1-4c4a-96f2-4dd62a4e6aa2";
     private static final String CLAIM_ID = "3f8a0ac4-2f63-4ed2-8bfb-2eb0fc0ba330";
-    private static final String OFFICE_ACCOUNT_NUMBER = "0P322F";
+    private static final String OFFICE_CODE = "0P322F";
     private static final String FIRM_NAME = "Test Firm";
 
     @Autowired
@@ -32,8 +32,8 @@ class ClaimDetailsIntegrationTest extends WireMockSetup {
 
     @BeforeEach
     void setUp() {
-        setupGetClaimStub(SUBMISSION_ID, CLAIM_ID, OFFICE_ACCOUNT_NUMBER);
-        setupGetProviderOfficeStub(OFFICE_ACCOUNT_NUMBER, FIRM_NAME);
+        setupGetClaimStub(SUBMISSION_ID, CLAIM_ID, OFFICE_CODE);
+        setupGetProviderOfficeStub(OFFICE_CODE, FIRM_NAME);
     }
 
     @Test

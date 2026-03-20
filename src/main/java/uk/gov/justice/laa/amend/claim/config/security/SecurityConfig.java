@@ -1,11 +1,14 @@
 package uk.gov.justice.laa.amend.claim.config.security;
 
 import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PUBLIC_PATHS;
+import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER;
+import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -27,11 +30,16 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.header.HeaderWriterFilter;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.models.Role;
 
 @Profile("!local & !ephemeral & !e2e")
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends CommonSecurityConfig {
+
+    private final FeatureFlagsConfig featureFlagsConfig;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
@@ -65,16 +73,22 @@ public class SecurityConfig extends CommonSecurityConfig {
             @Override
             public OidcUser loadUser(OidcUserRequest userRequest) {
                 OidcUser oidcUser = super.loadUser(userRequest);
-                Set<GrantedAuthority> authorities = getAuthorities(oidcUser.getAttributes());
+
+                Set<GrantedAuthority> authorities = featureFlagsConfig.getIsVoidingEnabled()
+                        ? getAuthorities(oidcUser.getAttributes())
+                        : allAuthorities();
                 return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
             }
         };
     }
 
     public Set<GrantedAuthority> getAuthorities(Map<String, Object> attributes) {
-        List<String> roles = parseRawRoles(attributes.get("LAA_APP_ROLES"));
-        return new SimpleAuthorityMapper()
-                .mapAuthorities(roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
+        var roles = parseRawRoles(attributes.get("LAA_APP_ROLES")).stream()
+                .map(Role::fromRoleName)
+                .flatMap(Optional::stream)
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .toList();
+        return new SimpleAuthorityMapper().mapAuthorities(roles);
     }
 
     private List<String> parseRawRoles(Object rawRoles) {
@@ -85,6 +99,13 @@ public class SecurityConfig extends CommonSecurityConfig {
         } else {
             return List.of();
         }
+    }
+
+    private static Set<GrantedAuthority> allAuthorities() {
+        var roles = Set.of(
+                new SimpleGrantedAuthority(ROLE_CLAIM_AMENDMENTS_CASEWORKER.name()),
+                new SimpleGrantedAuthority(ROLE_ESCAPE_CASE_CASEWORKER.name()));
+        return new SimpleAuthorityMapper().mapAuthorities(roles);
     }
 
     @Bean

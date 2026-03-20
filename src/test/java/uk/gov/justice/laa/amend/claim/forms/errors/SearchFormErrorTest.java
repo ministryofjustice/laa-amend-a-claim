@@ -12,7 +12,7 @@ public class SearchFormErrorTest {
         List<DetailedError> errors = List.of(
                 new DetailedError("submissionDateMonth", null, null, "message 2"),
                 new DetailedError("uniqueFileNumber", null, null, "message 4"),
-                new DetailedError("providerAccountNumber", null, null, "message 1"),
+                new DetailedError("officeCode", null, null, "message 1"),
                 new DetailedError("caseReferenceNumber", null, null, "message 5"),
                 new DetailedError("submissionDateYear", null, null, "message 3"));
 
@@ -20,7 +20,7 @@ public class SearchFormErrorTest {
                 errors.stream().map(SearchFormError::new).sorted().toList();
 
         List<SearchFormError> expectedResult = List.of(
-                new SearchFormError("providerAccountNumber", "message 1"),
+                new SearchFormError("officeCode", "message 1"),
                 new SearchFormError("submissionDateMonth", "message 2"),
                 new SearchFormError("submissionDateYear", "message 3"),
                 new SearchFormError("uniqueFileNumber", "message 4"),
@@ -32,7 +32,7 @@ public class SearchFormErrorTest {
     @Test
     void fieldIdsShouldBeCorrect() {
         List<SearchFormError> errors = List.of(
-                new SearchFormError("providerAccountNumber", "message 1"),
+                new SearchFormError("officeCode", "message 1"),
                 new SearchFormError("submissionDateMonth", "message 2"),
                 new SearchFormError("submissionDateYear", "message 3"),
                 new SearchFormError("uniqueFileNumber", "message 4"),
@@ -41,7 +41,7 @@ public class SearchFormErrorTest {
         List<String> result = errors.stream().map(FormError::getFieldId).toList();
 
         List<String> expectedResult = List.of(
-                "provider-account-number",
+                "office-code",
                 "submission-date-month",
                 "submission-date-year",
                 "unique-file-number",

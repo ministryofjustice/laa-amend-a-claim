@@ -18,6 +18,8 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
 
 @HttpExchange("/api")
 public interface ClaimsApiClient {
@@ -48,4 +50,7 @@ public interface ClaimsApiClient {
             @RequestParam(value = "page", required = false) int page,
             @RequestParam(value = "size", required = false) int size,
             @RequestParam(value = "sort", required = false) String sort);
+
+    @PostExchange(url = "/v1/claims/{claimId}/void", accept = MediaType.APPLICATION_JSON_VALUE)
+    Mono<VoidClaim201Response> voidClaim(@PathVariable UUID claimId, @RequestBody VoidClaimRequest body);
 }

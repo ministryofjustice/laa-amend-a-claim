@@ -9,7 +9,6 @@ public enum SortField {
     CASE_REFERENCE_NUMBER("case_reference_number"),
     CLIENT_SURNAME("client_surname"),
     SUBMISSION_PERIOD("submission_period"),
-    SCHEDULE_REFERENCE("schedule_reference"),
     CATEGORY_OF_LAW("category_of_law"),
     VOIDED("status");
 

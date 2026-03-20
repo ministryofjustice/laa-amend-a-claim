@@ -1,10 +1,11 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
@@ -16,17 +17,38 @@ import uk.gov.justice.laa.amend.claim.models.Sort;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class ClaimService {
+
+    private static final String VOID_ASSESSMENT_REASON = "Void assessment";
 
     private final ClaimsApiClient claimsApiClient;
     private final ClaimMapper claimMapper;
     private final ProviderService providerService;
+    private final Counter voidClaimCounter;
+    private final Counter voidClaimFailureCounter;
 
     private static final List<ClaimStatus> claimStatuses = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
+
+    public ClaimService(
+            ClaimsApiClient claimsApiClient,
+            ClaimMapper claimMapper,
+            ProviderService providerService,
+            MeterRegistry meterRegistry) {
+        this.claimsApiClient = claimsApiClient;
+        this.claimMapper = claimMapper;
+        this.providerService = providerService;
+        this.voidClaimCounter = Counter.builder("claim.void")
+                .description("Total number of successful void claim submissions")
+                .register(meterRegistry);
+        this.voidClaimFailureCounter = Counter.builder("claim.void.failed")
+                .description("Total number of failed void claim submissions")
+                .register(meterRegistry);
+    }
 
     public ClaimResultSetV2 searchClaims(
             String officeCode,
@@ -54,7 +76,7 @@ public class ClaimService {
                     .block();
         } catch (Exception e) {
             log.error("Error searching claims", e);
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -63,7 +85,7 @@ public class ClaimService {
             return claimsApiClient.getClaim(submissionId, claimId).block();
         } catch (Exception e) {
             log.error("Error getting claim {}", claimId, e);
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -75,10 +97,23 @@ public class ClaimService {
                     String.format("Claim with ID %s not found for submission %s", claimId, submissionId));
         }
         var claimDetails = claimMapper.mapToClaimDetails(claimResponse);
-        var provider = providerService.getProviderFirm(claimDetails.getProviderAccountNumber());
+        var provider = providerService.getProviderFirm(claimDetails.getOfficeCode());
         if (provider != null && provider.getFirm() != null) {
             claimMapper.enrichWithProviderName(claimDetails, provider.getFirm().getFirmName());
         }
         return claimDetails;
+    }
+
+    public VoidClaim201Response voidClaim(UUID claimId, UUID userId) {
+        try {
+            var request = new VoidClaimRequest(userId, VOID_ASSESSMENT_REASON);
+            var response = claimsApiClient.voidClaim(claimId, request).block();
+            voidClaimCounter.increment();
+            return response;
+        } catch (Exception e) {
+            log.error("Error voiding claim {}", claimId, e);
+            voidClaimFailureCounter.increment();
+            throw e;
+        }
     }
 }

@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.config.security;
 
+import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PUBLIC_PATHS;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -8,33 +10,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.header.HeaderWriterFilter;
+import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 
 @Profile({"local", "ephemeral"})
 @Configuration
 @EnableWebSecurity
-public class LocalSecurityConfig extends DummyUserSecurityConfig {
+public class LocalSecurityConfig extends CommonSecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChainLocal(final HttpSecurity http) {
+    public SecurityFilterChain securityFilterChainLocal(
+            HttpSecurity http, DummyUserSecurityService dummyUserSecurityService) {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .addFilterBefore(oidcUserService(), AnonymousAuthenticationFilter.class)
+                .authorizeHttpRequests(auth -> auth.requestMatchers(PUBLIC_PATHS)
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
+                .addFilterBefore(dummyUserSecurityService, AnonymousAuthenticationFilter.class)
                 .addFilterAfter(securityHeadersFilter(), HeaderWriterFilter.class);
         return http.build();
-    }
-
-    @Override
-    public String email() {
-        return "dummy-email@example.com";
-    }
-
-    @Override
-    public String name() {
-        return "Dummy Name";
-    }
-
-    @Override
-    public String tokenValue() {
-        return "dummy-token";
     }
 }
