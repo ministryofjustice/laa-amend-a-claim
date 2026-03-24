@@ -1,0 +1,65 @@
+name: Cleanup Stale Environments
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Daily at midnight UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  cleanup-stale:
+    name: Remove Stale Ephemeral & E2E Environments
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Authenticate to Kubernetes Cluster
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/authenticate_to_cluster@768f673017edbb793cf052fa159c272d6c1f9177
+        with:
+          kube-cert: ${{ secrets.KUBE_CERT }}
+          kube-token: ${{ secrets.KUBE_TOKEN }}
+          kube-cluster: ${{ secrets.KUBE_CLUSTER }}
+          kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
+          kube-sa: deploy-user
+
+      - name: Cleanup Stale Environments
+        env:
+          KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+        shell: python3 {0}
+        run: |
+          import json
+          import subprocess
+          from datetime import datetime, timedelta, timezone
+
+          MAX_AGE_DAYS = 7
+          namespace = "${{ secrets.KUBE_NAMESPACE }}"
+          cutoff = datetime.now(timezone.utc) - timedelta(days=MAX_AGE_DAYS)
+
+          print(f"Cutoff: {cutoff.strftime('%Y-%m-%d')} ({MAX_AGE_DAYS} days)")
+
+          result = subprocess.run(
+              ["helm", "list", "-n", namespace, "--output", "json"],
+              capture_output=True, text=True, check=True
+          )
+          releases = json.loads(result.stdout)
+
+          PROTECTED_RELEASES = {"e2e-github-runner"}
+          stale_prefixes = ("ephemeral-", "e2e-")
+          targets = [r for r in releases if r["name"].startswith(stale_prefixes) and r["name"] not in PROTECTED_RELEASES]
+
+          print(f"\n=== Processing {len(targets)} ephemeral/e2e release(s) ===")
+
+          for release in targets:
+              name = release["name"]
+              updated = datetime.strptime(release["updated"].split(".")[0], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+
+              if updated < cutoff:
+                  print(f"STALE: {name} (last updated: {updated.strftime('%Y-%m-%d')}) - removing")
+                  subprocess.run(["helm", "uninstall", name, "-n", namespace], check=True)
+              else:
+                  print(f"ACTIVE: {name} (last updated: {updated.strftime('%Y-%m-%d')}) - keeping")
+
+          print("\n=== Cleanup complete ===")
