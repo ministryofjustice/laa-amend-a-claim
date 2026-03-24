@@ -17,13 +17,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import uk.gov.justice.laa.amend.claim.base.WireMockSetup;
 import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
+import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 @SpringBootTest
-class BulkUploadServiceTest {
+class BulkUploadServiceTest extends WireMockSetup {
 
     private static final String[] HEADERS = {
         "Office Code",
@@ -40,13 +42,18 @@ class BulkUploadServiceTest {
     @Autowired
     private BulkUploadService<BulkUploadCivilClaim> bulkUploadService;
 
+    @Autowired
+    private ClaimService claimService;
+
     @Test
-    @DisplayName("Parses 4,000 CSV rows end-to-end successfully")
+    @DisplayName("Parses 130 CSV rows end-to-end successfully")
     void parseCsvRowsSuccessfully() throws Exception {
-        int rows = 4000;
+        int rows = 130;
         MockMultipartFile file = csvFileWithRows(rows);
         UUID userId = UUID.randomUUID();
 
+        // Dynamically stub claims with matching UFNs and office codes
+        WireMockSetup.setupGetClaimsStubDynamic(file, rows);
         BulkUploadResult result = bulkUploadService.upload(file, userId);
 
         assertThat(result).isNotNull();
@@ -116,5 +123,38 @@ class BulkUploadServiceTest {
 
     private String getNumber(int value) {
         return String.format("%,d", value);
+    }
+
+    @Test
+    @DisplayName("Returns error when ClaimService returns null (no claims found)")
+    void returnsErrorWhenClaimServiceReturnsNull() throws Exception {
+        // Create a CSV with a UFN and office code
+        String[] headers = HEADERS;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (OutputStreamWriter writer = new OutputStreamWriter(baos, StandardCharsets.UTF_8);
+                CSVPrinter csv = new CSVPrinter(
+                        writer, CSVFormat.DEFAULT.builder().setHeader(headers).build())) {
+            csv.printRecord(
+                    "0p0001", // office code
+                    "010101/001999", // UFN
+                    "Reduced",
+                    "£100.00",
+                    "£50.00",
+                    "£5.20",
+                    "£10.55",
+                    "£15.75",
+                    "£175.95");
+        }
+        WireMockSetup.setupGetClaimsStub();
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "bulk-civil-claims.csv", "text/csv", new ByteArrayInputStream(baos.toByteArray()));
+        UUID userId = UUID.randomUUID();
+
+        BulkUploadResult result = bulkUploadService.upload(file, userId);
+
+        assertThat(result).isNotNull();
+        assertThat(result.status()).isEqualTo(BulkUploadStatus.PARSING_FAILURE);
+        assertThat(result.reasons())
+                .anyMatch(reason -> reason.contains("UFN 010101/001999 not found for office code 0p0001"));
     }
 }

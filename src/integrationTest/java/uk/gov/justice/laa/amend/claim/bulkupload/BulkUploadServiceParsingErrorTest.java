@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
@@ -18,7 +19,7 @@ import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 class BulkUploadServiceParsingErrorTest {
 
     @Autowired
-    private BulkUploadService<?> bulkUploadService;
+    private BulkUploadService<BulkUploadCivilClaim> bulkUploadService;
 
     @Test
     @DisplayName("Returns parsing errors for header in result")

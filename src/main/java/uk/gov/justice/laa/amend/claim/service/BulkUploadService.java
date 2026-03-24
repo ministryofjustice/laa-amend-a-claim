@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvHeaderValidator;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvRowMapper;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvSchemaProvider;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Cost;
@@ -38,6 +39,8 @@ public abstract class BulkUploadService<T> {
     protected final CsvSchemaProvider<T> schemaProvider;
     protected final CsvRowMapper<T> rowMapper;
     protected final CsvHeaderValidator csvHeaderValidator;
+    protected final ClaimService claimService;
+    protected final ClaimMapper claimMapper;
 
     private final AssessmentService assessmentService;
 
@@ -95,6 +98,7 @@ public abstract class BulkUploadService<T> {
     }
 
     protected BulkUploadResult validateRows(List<T> rows) {
+
         return new BulkUploadResult(SUCCESS, List.of());
     }
 

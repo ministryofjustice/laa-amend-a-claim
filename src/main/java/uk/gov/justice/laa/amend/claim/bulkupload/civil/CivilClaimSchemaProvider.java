@@ -29,9 +29,9 @@ public class CivilClaimSchemaProvider implements CsvSchemaProvider<BulkUploadCiv
                 new CsvField("assessmentOutcome", ASSESSMENT_OUTCOME, true, String.class),
                 new CsvField("profitCost", PROFIT_COST, true, BigDecimal.class),
                 new CsvField("disbursements", DISBURSEMENTS, true, BigDecimal.class),
-                new CsvField("disbursementsVat", DISBURSEMENTS_VAT, true, BigDecimal.class),
-                new CsvField("counselCosts", COUNSEL_COSTS, true, BigDecimal.class),
-                new CsvField("totalAllowedVat", TOTAL_ALLOWED_VAT, true, BigDecimal.class),
-                new CsvField("totalAllowedInclVat", TOTAL_ALLOWED_INCLUDE_VAT, true, BigDecimal.class)));
+                new CsvField("disbursementsVat", DISBURSEMENTS_VAT, false, BigDecimal.class),
+                new CsvField("counselCosts", COUNSEL_COSTS, false, BigDecimal.class),
+                new CsvField("totalAllowedVat", TOTAL_ALLOWED_VAT, false, BigDecimal.class),
+                new CsvField("totalAllowedInclVat", TOTAL_ALLOWED_INCLUDE_VAT, false, BigDecimal.class)));
     }
 }

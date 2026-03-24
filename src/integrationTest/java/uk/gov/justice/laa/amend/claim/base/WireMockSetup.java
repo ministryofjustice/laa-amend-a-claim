@@ -1,14 +1,19 @@
 package uk.gov.justice.laa.amend.claim.base;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.springframework.mock.web.MockMultipartFile;
 
 public class WireMockSetup {
 
@@ -27,6 +32,54 @@ public class WireMockSetup {
         wireMockServer.stop();
     }
 
+    // Dynamically generate a stub for N claims with matching UFNs and office codes from the CSV file
+    public static void setupGetClaimsStubDynamic(MockMultipartFile file, int n) throws Exception {
+        // Parse the CSV to extract office codes and UFNs
+        List<String> lines = new String(file.getBytes(), UTF_8).lines().toList();
+        List<String[]> data = new java.util.ArrayList<>();
+        for (int i = 1; i < lines.size(); i++) { // skip header
+            String[] cols = lines.get(i).split(",");
+            if (cols.length >= 2) {
+                data.add(new String[] {cols[0].trim(), cols[1].trim()});
+            }
+        }
+        for (int i = 0; i < n && i < data.size(); i++) {
+            String officeCode = data.get(i)[0];
+            String ufn = data.get(i)[1];
+            setupGetClaimsStub(officeCode, ufn);
+        }
+    }
+
+    public static void setupGetClaimsStub(String officeCode, String ufn) {
+        String response = String.format("""
+             {
+                 "content": [
+                     {
+                         "unique_file_number": "%s",
+                         "case_reference_number": "REF123",
+                         "client_surname": "Smith",
+                         "date_submitted": "%s",
+                         "account": "ACC001",
+                         "type": "CLAIM",
+                         "office_code": "%s",
+                         "status": "VALID",
+                         "area_of_law": "LEGAL HELP"
+                     }
+                 ],
+                 "total_elements": 1,
+                 "total_pages": 1,
+                 "number": 0,
+                 "size": 1
+            }\
+            """, ufn, OffsetDateTime.now(), officeCode);
+        stubFor(get(urlPathMatching("/api/v2/claims.*"))
+                .withQueryParam("office_code", equalTo(officeCode.toUpperCase()))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(response)));
+    }
+
     public static void setupGetClaimsStub() {
         String response = """
             {
@@ -38,7 +91,7 @@ public class WireMockSetup {
                         "dateSubmitted": "2024-01-01",
                         "account": "ACC001",
                         "type": "CLAIM",
-                        "status": "PENDING",
+                        "status": "VALID",
                         "area_of_law": "LEGAL HELP"
                     }
                 ],
