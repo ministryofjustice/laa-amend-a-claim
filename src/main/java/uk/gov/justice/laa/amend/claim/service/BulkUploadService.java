@@ -52,15 +52,16 @@ public abstract class BulkUploadService<T> {
 
     private void parseFile(MultipartFile file, List<T> rows, List<String> errors) throws IOException {
         try (BufferedReader reader =
-                new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
-            CSVParser parser = CSVFormat.DEFAULT
-                    .builder()
-                    .setHeader()
-                    .setSkipHeaderRecord(true)
-                    .setTrim(true)
-                    .setIgnoreEmptyLines(true)
-                    .get()
-                    .parse(reader);
+                        new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+                CSVParser parser = CSVFormat.DEFAULT
+                        .builder()
+                        .setHeader()
+                        .setSkipHeaderRecord(true)
+                        .setTrim(true)
+                        .setIgnoreEmptyLines(true)
+                        .get()
+                        .parse(reader)) {
+
             // Header validation
             try {
                 csvHeaderValidator.validate(schemaProvider.getSchema(), parser.getHeaderNames());

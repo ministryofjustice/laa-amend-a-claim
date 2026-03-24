@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 
 @Data
 @NoArgsConstructor
@@ -18,4 +19,5 @@ public class BulkUploadCivilClaim {
     private BigDecimal counselCosts;
     private BigDecimal totalAllowedVat;
     private BigDecimal totalAllowedInclVat;
+    private CivilClaimDetails civilClaimDetails;
 }
