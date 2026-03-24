@@ -4,7 +4,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseBulkUploader;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 
+@HasRoleEscapeCaseBulkUploader
 @UserControllerAdvice.Enabled
 @Controller
 @RequiredArgsConstructor
@@ -24,7 +28,7 @@ public class BulkUploadController {
     private final BulkUploadService bulkUploadService;
     private final FeatureFlagsConfig featureFlagsConfig;
 
-    @GetMapping()
+    @GetMapping
     public String onPageLoad(HttpServletResponse response) throws IOException {
         if (!featureFlagsConfig.getIsBulkUploadEnabled()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -33,11 +37,12 @@ public class BulkUploadController {
         return "bulk-upload";
     }
 
-    @PostMapping()
+    @PostMapping
     public String onSubmit(
-            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "file", required = false) MultipartFile file,
             @ModelAttribute("userId") UUID userId,
             RedirectAttributes redirectAttributes,
+            Model model,
             HttpServletResponse response)
             throws IOException {
         if (!featureFlagsConfig.getIsBulkUploadEnabled()) {
@@ -45,10 +50,16 @@ public class BulkUploadController {
             return null;
         }
 
+        if (file == null || Strings.isBlank(file.getOriginalFilename())) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            model.addAttribute("fileError", "Please choose a file to upload");
+            return "bulk-upload";
+        }
+
         var result = bulkUploadService.upload(file, userId);
 
         redirectAttributes.addFlashAttribute("result", result);
 
-        return "redirect:/bulk-upload";
+        return "redirect:/bulk-upload-result";
     }
 }

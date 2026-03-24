@@ -86,6 +86,6 @@ public abstract class BulkUploadService<T> {
     }
 
     protected BulkUploadResult submit(List<T> rows, UUID userId) {
-        return new BulkUploadResult(SUCCESS, List.of());
+        return new BulkUploadResult(SUCCESS, List.of("This is a success message"));
     }
 }

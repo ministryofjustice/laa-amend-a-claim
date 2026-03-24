@@ -1,5 +1,5 @@
 <nav th:fragment="pagination(pagination)" class="govuk-pagination" aria-label="Pagination"
-     xmlns:th="http://www.thymeleaf.org">
+        xmlns:th="http://www.thymeleaf.org">
 
     <div th:if="${pagination.previous != null}" class="govuk-pagination__prev">
         <a class="govuk-link govuk-pagination__link" th:href="${pagination.previous.href}" rel="prev">

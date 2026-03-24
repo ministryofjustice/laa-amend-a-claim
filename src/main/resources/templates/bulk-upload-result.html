@@ -1,0 +1,61 @@
+<!DOCTYPE html >
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{bulkUploadResult.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${false}
+    )}">
+    <body>
+        <main class="govuk-main-wrapper" id="main-content">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <th:block th:if="${result != null}">
+                        <th:block th:if="${result.isSuccess()}">
+                            <div class="govuk-panel govuk-panel--confirmation">
+                                <h1 class="govuk-panel__title" th:text="#{bulkUploadResult.success}"></h1>
+                                <th:block th:each="reason : ${result.reasons}">
+                                    <div class="govuk-panel__body" th:text="${reason}"></div>
+                                </th:block>
+                            </div>
+                        </th:block>
+
+                        <th:block th:if="${result.isError()}">
+                            <div class="govuk-error-summary" data-module="govuk-error-summary">
+                                <div role="alert">
+                                    <h2 class="govuk-error-summary__title" th:text="#{bulkUploadResult.errorHeading}"></h2>
+                                    <div class="govuk-error-summary__body">
+                                        <ul class="govuk-list govuk-error-summary__list">
+                                            <li>
+                                                <a href="#error-summary-list" th:text="#{bulkUploadResult.errorSummary}"></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <dl class="govuk-summary-list" id="error-summary-list">
+                                <div class="govuk-summary-list__row" th:each="reason : ${result.reasons}">
+                                    <dd class="govuk-summary-list__value" th:text="${reason}"></dd>
+                                </div>
+                            </dl>
+                        </th:block>
+                    </th:block>
+
+                    <div class="govuk-button-group">
+                        <a th:href="@{/bulk-upload}" id="back-to-upload"
+                           class="govuk-button govuk-button--success"
+                           th:text="#{bulkUploadResult.backToUpload}">
+                        </a>
+
+                        <a th:href="@{/}" id="back-to-search"
+                           class="govuk-link govuk-link--no-visited-state"
+                           th:text="#{bulkUploadResult.backToSearch}">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

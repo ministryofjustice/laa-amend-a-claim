@@ -324,7 +324,7 @@ public abstract class ViewTestBase {
                 doc, ".govuk-summary-card:has(h2.govuk-summary-card__title:matchesOwn(^" + summaryCardTitle + "$))");
     }
 
-    private void assertCellContainsText(Element cell, String expectedText) {
+    protected void assertCellContainsText(Element cell, String expectedText) {
         Assertions.assertEquals(expectedText, cell.text(), "Cell does not contain expected text: " + expectedText);
     }
 

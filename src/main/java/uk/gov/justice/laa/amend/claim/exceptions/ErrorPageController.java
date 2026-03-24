@@ -1,9 +1,14 @@
 package uk.gov.justice.laa.amend.claim.exceptions;
 
-import jakarta.servlet.RequestDispatcher;
+import static jakarta.servlet.RequestDispatcher.ERROR_STATUS_CODE;
+import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.webmvc.error.ErrorController;
@@ -19,16 +24,16 @@ public class ErrorPageController implements ErrorController {
 
     private final ReferenceNumberFactory referenceNumberFactory;
 
-    @RequestMapping("/error")
+    @RequestMapping({"/error", "/not-found"})
     public String handleError(HttpServletRequest request, HttpServletResponse response, Model model) {
-        int status = Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE))
+        int status = Optional.ofNullable(request.getAttribute(ERROR_STATUS_CODE))
                 .map(x -> Integer.parseInt(x.toString()))
-                .orElse(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        if (status == HttpServletResponse.SC_NOT_FOUND) {
+                .orElse(SC_INTERNAL_SERVER_ERROR);
+        if (Set.of(SC_NOT_FOUND, SC_FORBIDDEN).contains(status)) {
             response.setStatus(status);
             return "not-found";
         } else {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setStatus(SC_INTERNAL_SERVER_ERROR);
             String referenceNumber = referenceNumberFactory.create();
             model.addAttribute("referenceNumber", referenceNumber);
             log.error(
