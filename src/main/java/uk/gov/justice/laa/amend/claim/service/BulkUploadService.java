@@ -78,7 +78,7 @@ public abstract class BulkUploadService<T> {
             return validationResult;
         }
 
-        var claims = IntStream.range(0, 2000).mapToObj(i -> stubClaimDetails()).toList();
+        var claims = IntStream.range(0, 2500).mapToObj(i -> stubClaimDetails()).toList();
 
         return submit(claims, userId);
     }
