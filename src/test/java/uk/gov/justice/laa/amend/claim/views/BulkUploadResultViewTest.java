@@ -39,6 +39,8 @@ public class BulkUploadResultViewTest extends ViewTestBase {
 
         assertPageHasHeading(doc, "Your file was uploaded successfully");
 
+        assertPageHasActiveServiceNavigationItem(doc, "Bulk upload");
+
         assertPageHasPanel(doc);
 
         assertPageHasContent(doc, "success reason");

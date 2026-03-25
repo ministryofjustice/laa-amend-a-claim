@@ -29,6 +29,8 @@ public class BulkUploadViewTest extends ViewTestBase {
 
         assertPageHasHeading(doc, "Bulk upload of escape claim assessments");
 
+        assertPageHasActiveServiceNavigationItem(doc, "Bulk upload");
+
         assertPageHasContent(doc, "Upload a CSV file containing the escape claim assessment data for multiple claims");
         assertPageHasContent(doc, "Upload a file");
         assertPageHasContent(doc, "You can upload a CSV file up to 10MB");
