@@ -33,6 +33,7 @@ import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
+import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 
 @ActiveProfiles("local")
 @WebMvcTest(BulkUploadController.class)
@@ -40,7 +41,7 @@ import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 public class BulkUploadControllerTest {
 
     private static final String PATH = "/bulk-upload";
-    private static final String REDIRECT_PATH = "/bulk-upload-result";
+    private static final String RESULT_PATH = "/bulk-upload/result";
     private static final UUID USER_ID = UUID.fromString(DummyUserSecurityService.USER_ID);
 
     @Autowired
@@ -79,7 +80,7 @@ public class BulkUploadControllerTest {
 
         mockMvc.perform(multipart(PATH).file(file).flashAttr("userId", USER_ID).with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(REDIRECT_PATH))
+                .andExpect(redirectedUrl(RESULT_PATH))
                 .andExpect(flash().attribute("result", result));
     }
 
@@ -88,7 +89,7 @@ public class BulkUploadControllerTest {
         mockMvc.perform(multipart(PATH).with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("bulk-upload"))
-                .andExpect(model().attribute("fileError", "Choose a file to upload"));
+                .andExpect(model().attribute("fileError", new ThymeleafMessage("bulkUpload.fileError.required")));
     }
 
     @Test
@@ -97,13 +98,32 @@ public class BulkUploadControllerTest {
         mockMvc.perform(multipart(PATH).file(file).with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("bulk-upload"))
-                .andExpect(model().attribute("fileError", "Choose a file to upload"));
+                .andExpect(model().attribute("fileError", new ThymeleafMessage("bulkUpload.fileError.required")));
+    }
+
+    @Test
+    void testResultOnPageLoadReturnsViewIfResultSet() throws Exception {
+        var result = new BulkUploadResult(SUCCESS, List.of("all is good"));
+        mockMvc.perform(get(RESULT_PATH).flashAttr("result", result))
+                .andExpect(status().isOk())
+                .andExpect(view().name("bulk-upload-result"));
+    }
+
+    @Test
+    void testResultOnPageLoadRedirectsIfResultUnset() throws Exception {
+        mockMvc.perform(get(RESULT_PATH)).andExpect(status().is3xxRedirection()).andExpect(redirectedUrl(PATH));
     }
 
     @Test
     void testGetRequiresRole() throws Exception {
         dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_BULK_UPLOADER));
         mockMvc.perform(get(PATH)).andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testResultGetRequiresRole() throws Exception {
+        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_BULK_UPLOADER));
+        mockMvc.perform(get(RESULT_PATH)).andExpect(status().isForbidden());
     }
 
     @Test

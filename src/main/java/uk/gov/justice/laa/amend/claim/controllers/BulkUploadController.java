@@ -38,6 +38,20 @@ public class BulkUploadController {
         return "bulk-upload";
     }
 
+    @GetMapping("/result")
+    public String onPageLoad(Model model, HttpServletResponse response) throws IOException {
+        if (!featureFlagsConfig.getIsBulkUploadEnabled()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+
+        if (!model.containsAttribute("result")) {
+            return "redirect:/bulk-upload";
+        }
+
+        return "bulk-upload-result";
+    }
+
     @PostMapping
     public String onSubmit(
             @RequestParam(value = "file", required = false) MultipartFile file,
@@ -61,6 +75,6 @@ public class BulkUploadController {
 
         redirectAttributes.addFlashAttribute("result", result);
 
-        return "redirect:/bulk-upload-result";
+        return "redirect:/bulk-upload/result";
     }
 }

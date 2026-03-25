@@ -6,7 +6,6 @@ import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadS
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
@@ -14,20 +13,22 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
-import uk.gov.justice.laa.amend.claim.controllers.BulkUploadResultController;
+import uk.gov.justice.laa.amend.claim.controllers.BulkUploadController;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
-import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
+import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 
 @ActiveProfiles("local")
-@WebMvcTest(BulkUploadResultController.class)
+@WebMvcTest(BulkUploadController.class)
 @Import(LocalSecurityConfig.class)
 public class BulkUploadResultViewTest extends ViewTestBase {
 
-    private static final UUID USER_ID = UUID.fromString(DummyUserSecurityService.USER_ID);
+    @MockitoBean
+    private BulkUploadService bulkUploadService;
 
     BulkUploadResultViewTest() {
-        this.mapping = "/bulk-upload-result";
+        this.mapping = "/bulk-upload/result";
     }
 
     @Test

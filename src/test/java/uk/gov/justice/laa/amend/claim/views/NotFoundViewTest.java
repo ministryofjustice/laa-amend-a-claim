@@ -26,7 +26,7 @@ public class NotFoundViewTest extends ViewTestBase {
     @ParameterizedTest
     @ValueSource(ints = {403, 404})
     void testPage(int requestStatus) throws Exception {
-        Document doc = renderErrorPage(requestStatus, requestStatus);
+        Document doc = renderErrorPage(requestStatus, 404);
 
         assertPageHasTitle(doc, "Page not found");
 
