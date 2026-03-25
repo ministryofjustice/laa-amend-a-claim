@@ -13,48 +13,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 
-import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
-import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
-import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 
-@ActiveProfiles("local")
 @WebMvcTest(controllers = VoidConfirmationController.class)
-@Import({LocalSecurityConfig.class, ThymeleafConfig.class})
-public class VoidConfirmationControllerTest {
+public class VoidConfirmationControllerTest extends BaseControllerTest {
 
     private static final UUID USER_ID = UUID.fromString(DummyUserSecurityService.USER_ID);
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private DummyUserSecurityService dummyUserSecurityService;
-
-    @MockitoBean
-    private MaintenanceService maintenanceService;
-
     @MockitoBean
     private ClaimService claimService;
-
-    @MockitoBean
-    private FeatureFlagsConfig featureFlagsConfig;
 
     private UUID submissionId;
     private UUID claimId;
@@ -72,8 +49,6 @@ public class VoidConfirmationControllerTest {
         MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
         session.setAttribute(claimId.toString(), claim);
         when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
-
-        dummyUserSecurityService.setRoles(Set.of(ROLE_CLAIM_AMENDMENTS_CASEWORKER));
     }
 
     @Test

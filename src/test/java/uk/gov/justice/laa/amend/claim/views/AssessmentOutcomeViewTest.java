@@ -4,19 +4,14 @@ import java.util.Map;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.AssessmentOutcomeController;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
-@ActiveProfiles("local")
 @WebMvcTest(AssessmentOutcomeController.class)
-@Import(LocalSecurityConfig.class)
 class AssessmentOutcomeViewTest extends ViewTestBase {
 
     @MockitoBean

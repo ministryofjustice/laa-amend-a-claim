@@ -21,40 +21,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
-import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Role;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
-import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
-import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
-@ActiveProfiles("local")
 @WebMvcTest(ClaimSummaryController.class)
-@Import({LocalSecurityConfig.class, ThymeleafConfig.class})
-public class ClaimSummaryControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private DummyUserSecurityService dummyUserSecurityService;
-
-    @MockitoBean
-    private MaintenanceService maintenanceService;
+public class ClaimSummaryControllerTest extends BaseControllerTest {
 
     @MockitoBean
     private ClaimService claimService;
@@ -64,9 +44,6 @@ public class ClaimSummaryControllerTest {
 
     @MockitoBean
     private AssessmentService assessmentService;
-
-    @MockitoBean
-    private FeatureFlagsConfig featureFlagsConfig;
 
     private UUID submissionId;
     private UUID claimId;

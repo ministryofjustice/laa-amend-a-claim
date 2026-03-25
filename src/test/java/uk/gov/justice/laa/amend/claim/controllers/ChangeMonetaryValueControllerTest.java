@@ -18,7 +18,6 @@ import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
@@ -26,37 +25,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
-import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
-@ActiveProfiles("local")
 @WebMvcTest(ChangeMonetaryValueController.class)
-@Import({LocalSecurityConfig.class, ThymeleafConfig.class})
-class ChangeMonetaryValueControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private DummyUserSecurityService dummyUserSecurityService;
-
-    @MockitoBean
-    private MaintenanceService maintenanceService;
+class ChangeMonetaryValueControllerTest extends BaseControllerTest {
 
     private UUID submissionId;
     private UUID claimId;
@@ -69,8 +48,6 @@ class ChangeMonetaryValueControllerTest {
         claimId = UUID.randomUUID();
         session = new MockHttpSession();
         redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
-
-        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
     }
 
     private static Stream<Cost> validCosts() {

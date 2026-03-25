@@ -8,27 +8,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
-import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafLiteralString;
 
-@ActiveProfiles("local")
 @WebMvcTest(MaintenancePageController.class)
-@Import({LocalSecurityConfig.class, ThymeleafConfig.class})
-public class MaintenancePageControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
-    private MaintenanceService maintenanceService;
+public class MaintenancePageControllerTest extends BaseControllerTest {
 
     @Test
     public void testOnPageLoadReturnsHomeWhenMaintenanceDisabled() throws Exception {

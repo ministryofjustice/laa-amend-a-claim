@@ -1,4 +1,6 @@
-<th:block th:fragment="textInput(name, id, messageKey, inputWidth, inputMode, showErrorMessage, labelClass, showHint)">
+<th:block th:fragment="textInput(name, id, messageKey, inputWidth, inputMode, showErrorMessage, labelClass, showHint)"
+        xmlns:th="http://www.thymeleaf.org">
+
     <div class="govuk-form-group" th:classappend="${#fields.hasErrors(name) ? 'govuk-form-group--error' : ''}">
         <label th:class="'govuk-label ' + ${labelClass}" th:for="${id}" th:text="#{${messageKey}}"></label>
         <th:block th:if="${showHint}">

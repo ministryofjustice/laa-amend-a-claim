@@ -1,4 +1,4 @@
-<th:block th:fragment="errorAlert(prefix, content)">
+<th:block th:fragment="errorAlert(prefix, content)" xmlns:th="http://www.thymeleaf.org">
     <div role="region" class="moj-alert moj-alert--error" th:with="key=${prefix} + '.alert.ariaLabel'" th:aria-label="#{${key}}" data-module="moj-alert">
         <div>
             <svg class="moj-alert__icon" role="presentation" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" height="30" width="30">
@@ -10,9 +10,6 @@
         <div class="moj-alert__content" th:if="${content != null}">
             <h2 class="moj-alert__heading" th:with="key=${prefix} + '.alert.h2'" th:text="#{${key}}"></h2>
             <span th:utext="${content}"></span>
-        </div>
-        <div class="moj-alert__action">
-            <button class="moj-alert__dismiss" hidden th:text="#{service.dismiss}"></button>
         </div>
     </div>
 </th:block>
