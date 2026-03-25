@@ -31,7 +31,7 @@
 
                             <label class="govuk-label govuk-label--l" for="file-upload" th:text="#{bulkUpload.fileLabel}"></label>
                             <div class="govuk-hint" th:text="#{bulkUpload.fileHint}"></div>
-                            <p th:if="${fileError}" class="govuk-error-message">
+                            <p th:if="${fileError}" class="govuk-error-message" id="file-upload-error">
                                 <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
                                 <span th:text="${fileError.resolve(#messages)}"></span>
                             </p>
