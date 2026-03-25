@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseBulkUploader;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
+import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 
 @HasRoleEscapeCaseBulkUploader
 @UserControllerAdvice.Enabled
@@ -52,7 +53,7 @@ public class BulkUploadController {
 
         if (file == null || Strings.isBlank(file.getOriginalFilename())) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            model.addAttribute("fileError", "Please choose a file to upload");
+            model.addAttribute("fileError", new ThymeleafMessage("bulkUpload.fileError.required"));
             return "bulk-upload";
         }
 

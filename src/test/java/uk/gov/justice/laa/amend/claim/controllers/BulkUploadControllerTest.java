@@ -88,7 +88,7 @@ public class BulkUploadControllerTest {
         mockMvc.perform(multipart(PATH).with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("bulk-upload"))
-                .andExpect(model().attribute("fileError", "Please choose a file to upload"));
+                .andExpect(model().attribute("fileError", "Choose a file to upload"));
     }
 
     @Test
@@ -97,7 +97,7 @@ public class BulkUploadControllerTest {
         mockMvc.perform(multipart(PATH).file(file).with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("bulk-upload"))
-                .andExpect(model().attribute("fileError", "Please choose a file to upload"));
+                .andExpect(model().attribute("fileError", "Choose a file to upload"));
     }
 
     @Test

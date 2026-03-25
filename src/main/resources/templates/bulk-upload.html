@@ -33,7 +33,7 @@
                             <div class="govuk-hint" th:text="#{bulkUpload.fileHint}"></div>
                             <p th:if="${fileError}" class="govuk-error-message">
                                 <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
-                                <span th:text="${fileError}"></span>
+                                <span th:text="${fileError.resolve(#messages)}"></span>
                             </p>
                             <div class="govuk-drop-zone" data-module="govuk-file-upload">
                                 <input class="govuk-file-upload"

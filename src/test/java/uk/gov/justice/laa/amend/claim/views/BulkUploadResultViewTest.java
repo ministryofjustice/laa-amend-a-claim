@@ -47,7 +47,7 @@ public class BulkUploadResultViewTest extends ViewTestBase {
 
         assertPageHasContent(doc, "success reason");
 
-        assertPageHasLink(doc, "back-to-upload", "Back to upload", "/bulk-upload");
+        assertPageHasLink(doc, "upload-another-file", "Upload another file", "/bulk-upload");
         assertPageHasLink(doc, "back-to-search", "Back to search", "/");
     }
 
@@ -66,7 +66,7 @@ public class BulkUploadResultViewTest extends ViewTestBase {
         assertCellContainsText(summaryList.get(0).get(1), errorReason1);
         assertCellContainsText(summaryList.get(1).get(1), errorReason2);
 
-        assertPageHasLink(doc, "back-to-upload", "Back to upload", "/bulk-upload");
+        assertPageHasLink(doc, "upload-another-file", "Upload another file", "/bulk-upload");
         assertPageHasLink(doc, "back-to-search", "Back to search", "/");
     }
 }
