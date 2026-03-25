@@ -17,33 +17,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
-import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.SortDirection;
 import uk.gov.justice.laa.amend.claim.models.SortField;
 import uk.gov.justice.laa.amend.claim.models.Sorts;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
-import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
-@ActiveProfiles("local")
 @WebMvcTest(HomePageController.class)
-@Import({LocalSecurityConfig.class, ThymeleafConfig.class})
-public class HomePageControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
-    private MaintenanceService maintenanceService;
+public class HomePageControllerTest extends BaseControllerTest {
 
     @MockitoBean
     private ClaimService claimService;

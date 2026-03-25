@@ -4,17 +4,12 @@ import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeAssessedTotalsController;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
-@ActiveProfiles("local")
 @WebMvcTest(ChangeAssessedTotalsController.class)
-@Import(LocalSecurityConfig.class)
 class ChangeAssessedTotalViewTest extends ViewTestBase {
 
     ChangeAssessedTotalViewTest() {

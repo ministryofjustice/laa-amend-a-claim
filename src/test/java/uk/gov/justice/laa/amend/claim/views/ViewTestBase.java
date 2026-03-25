@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
@@ -22,24 +23,32 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.Role;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
-@Import(ThymeleafConfig.class)
+@ActiveProfiles("local")
+@Import({LocalSecurityConfig.class, ThymeleafConfig.class})
 public abstract class ViewTestBase {
 
     @Autowired
-    public MockMvc mockMvc;
+    protected MockMvc mockMvc;
+
+    @Autowired
+    protected DummyUserSecurityService dummyUserSecurityService;
 
     @MockitoBean
-    private MaintenanceService maintenanceService;
+    protected MaintenanceService maintenanceService;
 
     @MockitoBean
     protected FeatureFlagsConfig featureFlagsConfig;
@@ -50,6 +59,8 @@ public abstract class ViewTestBase {
         claim = MockClaimsFunctions.createMockCivilClaim();
         claim.setSubmissionId(submissionId);
         claim.setClaimId(claimId);
+
+        dummyUserSecurityService.setRoles(Set.of(Role.values()));
     }
 
     protected String mapping;

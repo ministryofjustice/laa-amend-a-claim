@@ -11,17 +11,12 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.BulkUploadController;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 
-@ActiveProfiles("local")
 @WebMvcTest(BulkUploadController.class)
-@Import(LocalSecurityConfig.class)
 public class BulkUploadResultViewTest extends ViewTestBase {
 
     @MockitoBean

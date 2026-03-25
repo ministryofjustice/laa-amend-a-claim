@@ -15,44 +15,24 @@ import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWO
 import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 import static uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService.USER_ID;
 
-import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
-import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
-import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
-@ActiveProfiles("local")
 @WebMvcTest(ClaimReviewController.class)
-@Import({LocalSecurityConfig.class, ThymeleafConfig.class})
-public class ClaimReviewControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private DummyUserSecurityService dummyUserSecurityService;
-
-    @MockitoBean
-    private MaintenanceService maintenanceService;
+public class ClaimReviewControllerTest extends BaseControllerTest {
 
     @MockitoBean
     private AssessmentService assessmentService;
@@ -75,8 +55,6 @@ public class ClaimReviewControllerTest {
         claim.setClaimId(claimId);
         MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
         session.setAttribute(claimId.toString(), claim);
-
-        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
     }
 
     @Test

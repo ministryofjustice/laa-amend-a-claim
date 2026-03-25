@@ -3,16 +3,11 @@ package uk.gov.justice.laa.amend.claim.views;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeAllowedTotalsController;
 
-@ActiveProfiles("local")
 @WebMvcTest(ChangeAllowedTotalsController.class)
-@Import(LocalSecurityConfig.class)
 class ChangeAllowedTotalViewTest extends ViewTestBase {
 
     ChangeAllowedTotalViewTest() {

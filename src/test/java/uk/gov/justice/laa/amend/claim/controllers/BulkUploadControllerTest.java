@@ -15,55 +15,30 @@ import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_BULK_U
 import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
-import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
-import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 
-@ActiveProfiles("local")
 @WebMvcTest(BulkUploadController.class)
-@Import({LocalSecurityConfig.class, ThymeleafConfig.class})
-public class BulkUploadControllerTest {
+public class BulkUploadControllerTest extends BaseControllerTest {
 
     private static final String PATH = "/bulk-upload";
     private static final String RESULT_PATH = "/bulk-upload/result";
     private static final UUID USER_ID = UUID.fromString(DummyUserSecurityService.USER_ID);
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private DummyUserSecurityService dummyUserSecurityService;
-
     @MockitoBean
     private BulkUploadService bulkUploadService;
-
-    @MockitoBean
-    private FeatureFlagsConfig featureFlagsConfig;
-
-    @MockitoBean
-    private MaintenanceService maintenanceService;
 
     @BeforeEach
     void setup() {
         when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
-
-        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_BULK_UPLOADER));
     }
 
     @Test
