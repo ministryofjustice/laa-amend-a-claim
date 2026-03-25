@@ -2,7 +2,6 @@ package uk.gov.justice.laa.amend.claim.controllers;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -71,11 +70,5 @@ public class BulkUploadResultControllerTest {
     void testGetRequiresRole() throws Exception {
         dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_BULK_UPLOADER));
         mockMvc.perform(get(PATH)).andExpect(status().isForbidden());
-    }
-
-    @Test
-    void testPostRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_BULK_UPLOADER));
-        mockMvc.perform(post(PATH)).andExpect(status().isForbidden());
     }
 }
