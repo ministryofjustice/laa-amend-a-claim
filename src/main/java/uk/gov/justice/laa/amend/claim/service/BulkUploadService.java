@@ -78,7 +78,8 @@ public abstract class BulkUploadService<T> {
             return validationResult;
         }
 
-        var claims = IntStream.range(0, 2500).mapToObj(i -> stubClaimDetails()).toList();
+        // TODO: BC-534: This can be removed when we start mapping rows onto claims
+        var claims = IntStream.range(0, 1000).mapToObj(i -> stubClaimDetails()).toList();
 
         return submit(claims, userId);
     }
@@ -118,7 +119,7 @@ public abstract class BulkUploadService<T> {
         return new BulkUploadResult(SUCCESS, List.of());
     }
 
-    protected BulkUploadResult submit(List<? extends ClaimDetails> claimDetails, UUID userId) {
+    protected BulkUploadResult submit(List<ClaimDetails> claimDetails, UUID userId) {
         for (int row = 0; row < claimDetails.size(); ++row) {
             try {
                 var claim = claimDetails.get(row);
