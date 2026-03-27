@@ -1,6 +1,8 @@
 package uk.gov.justice.laa.amend.claim.forms.validators;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.MAX;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.MIN;
 
 import jakarta.validation.ConstraintValidatorContext;
 import java.math.BigDecimal;
@@ -8,9 +10,6 @@ import java.text.ParseException;
 import uk.gov.justice.laa.amend.claim.utils.NumberUtils;
 
 public class CurrencyValidator extends Validator {
-
-    private static final BigDecimal MIN = BigDecimal.ZERO;
-    private static final BigDecimal MAX = BigDecimal.valueOf(1_000_000);
 
     public boolean isValid(String value, ConstraintValidatorContext context, String fieldName, String prefix) {
         context.disableDefaultConstraintViolation();

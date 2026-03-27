@@ -145,7 +145,7 @@ class BulkUploadServiceTest extends WireMockSetup {
                     "£15.75",
                     "£175.95");
         }
-        WireMockSetup.setupGetClaimsStub();
+        WireMockSetup.setupGetEmptyClaimsStub();
         MockMultipartFile file = new MockMultipartFile(
                 "file", "bulk-civil-claims.csv", "text/csv", new ByteArrayInputStream(baos.toByteArray()));
         UUID userId = UUID.randomUUID();
@@ -153,8 +153,8 @@ class BulkUploadServiceTest extends WireMockSetup {
         BulkUploadResult result = bulkUploadService.upload(file, userId);
 
         assertThat(result).isNotNull();
-        assertThat(result.status()).isEqualTo(BulkUploadStatus.PARSING_FAILURE);
+        assertThat(result.status()).isEqualTo(BulkUploadStatus.VALIDATION_FAILURE);
         assertThat(result.reasons())
-                .anyMatch(reason -> reason.contains("UFN 010101/001999 not found for office code 0p0001"));
+                .anyMatch(reason -> reason.contains("Claim not found for UFN 010101/001999 and officeCode 0p0001"));
     }
 }

@@ -74,6 +74,7 @@ public class WireMockSetup {
             """, ufn, OffsetDateTime.now(), officeCode);
         stubFor(get(urlPathMatching("/api/v2/claims.*"))
                 .withQueryParam("office_code", equalTo(officeCode.toUpperCase()))
+                .withQueryParam("page", equalTo("0"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -97,6 +98,22 @@ public class WireMockSetup {
                 ],
                 "totalElements": 1,
                 "totalPages": 1,
+                "pageNumber": 0
+            }
+            """;
+        stubFor(get(urlPathMatching("/api/v2/claims.*"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(response)));
+    }
+
+    public static void setupGetEmptyClaimsStub() {
+        String response = """
+            {
+                "claims": [],
+                "totalElements": 0,
+                "totalPages": 0,
                 "pageNumber": 0
             }
             """;
