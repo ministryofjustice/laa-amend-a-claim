@@ -1,9 +1,9 @@
 plugins {
     id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.1.9'
-    id "com.diffplug.spotless" version "8.2.1"
-    id "com.palantir.java-format-spotless" version "2.89.0"
-    id "io.sentry.jvm.gradle" version "6.0.0"
-    id 'au.com.dius.pact' version '4.6.19'
+    id "com.diffplug.spotless" version "8.4.0"
+    id "com.palantir.java-format-spotless" version "2.90.0"
+    id "io.sentry.jvm.gradle" version "6.3.0"
+    id 'au.com.dius.pact' version '4.6.20'
 }
 
 java {
@@ -65,13 +65,13 @@ dependencies {
 
     // Update version of CSS files in e2e-test.yml when bumping these dependencies
     implementation 'org.webjars.npm:govuk-frontend:6.1.0'
-    implementation 'org.webjars.npm:ministryofjustice__frontend:7.1.0'
+    implementation 'org.webjars.npm:ministryofjustice__frontend:9.0.0'
     implementation("org.apache.commons:commons-csv:1.14.1")
 
-    implementation("io.vavr:vavr:0.11.0")
+    implementation("io.vavr:vavr:1.0.1")
 
     // Sentry observability for Spring Boot 4
-    implementation enforcedPlatform('io.sentry:sentry-bom:8.26.0')
+    implementation enforcedPlatform('io.sentry:sentry-bom:8.37.1')
     implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
@@ -80,7 +80,7 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
     // Pact consumer testing
-    testImplementation 'au.com.dius.pact.consumer:junit5:4.6.19'
+    testImplementation 'au.com.dius.pact.consumer:junit5:4.6.20'
     // test dependencies
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:5.0.2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
