@@ -18,6 +18,4 @@ grafana:
   enabled: true
 
 alerting:
-  enabled: true
-  severity: laa-amend-a-claim-dev
-  grafanaDashboard: https://grafana.live.cloud-platform.service.justice.gov.uk/d/laa-amend-a-claim-dev
+  enabled: false
