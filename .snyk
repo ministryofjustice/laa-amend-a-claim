@@ -37,9 +37,9 @@ ignore:
         reason: Temporarily ignoring this until new version
         expires: 2026-04-01T00:00:00.000Z
   SNYK-JAVA-ORGCODEHAUSPLEXUS-15766699:
-     - '*':
-          reason: Temporarily ignoring this until new version available
-          expires: 2026-04-15T00:00:00.000Z
+    - '*':
+        reason: Temporarily ignoring this until new version available
+        expires: 2026-04-15T00:00:00.000Z
 patch: {}
 exclude:
   global:
