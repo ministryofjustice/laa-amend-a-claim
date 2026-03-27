@@ -48,10 +48,7 @@ public interface AssessmentMapper {
     @Mapping(target = "assessedTotalInclVat", expression = "java(mapAssessedTotalInclVat(claim))")
     @Mapping(target = "allowedTotalVat", expression = "java(mapAllowedTotalVat(claim))")
     @Mapping(target = "allowedTotalInclVat", expression = "java(mapAllowedTotalInclVat(claim))")
-    @Mapping(
-            target = "assessmentType",
-            expression =
-                    "java(uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentType.ESCAPE_CASE_ASSESSMENT)")
+    @Mapping(target = "assessmentType", constant = "ESCAPE_CASE_ASSESSMENT")
     @Mapping(target = "assessmentReason", constant = ESCAPE_FEE_CASE_ASSESSMENT)
     AssessmentPost mapClaimToAssessment(ClaimDetails claim, @Context String userId);
 
