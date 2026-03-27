@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseBulkUploader;
+import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
@@ -26,7 +27,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 @RequestMapping("/bulk-upload")
 public class BulkUploadController {
 
-    private final BulkUploadService bulkUploadService;
+    private final BulkUploadService<BulkUploadCivilClaim> bulkUploadService;
     private final FeatureFlagsConfig featureFlagsConfig;
 
     @GetMapping
