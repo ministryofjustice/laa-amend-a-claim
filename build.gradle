@@ -30,6 +30,15 @@ repositories {
     mavenCentral()
 }
 
+configurations.configureEach {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'io.netty' && details.requested.name == 'netty-codec-http') {
+            details.useVersion '4.2.12.Final'
+            details.because 'Fixes HTTP Request Smuggling vulnerability (SNYK-JAVA-IONETTY-15789756)'
+        }
+    }
+}
+
 dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -69,10 +78,6 @@ dependencies {
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
-
-    // Upgrade to fix SNYK-JAVA-IONETTY-15789756
-    implementation('io.netty:netty-codec:4.2.12.Final')
-    implementation('io.netty:netty-handler-proxy:4.2.12.Final')
 
     // Pact consumer testing
     testImplementation 'au.com.dius.pact.consumer:junit5:4.6.19'
