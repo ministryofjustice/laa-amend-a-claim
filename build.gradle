@@ -1,5 +1,5 @@
 plugins {
-    id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.1.6'
+    id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.1.9'
     id "com.diffplug.spotless" version "8.2.1"
     id "com.palantir.java-format-spotless" version "2.89.0"
     id "io.sentry.jvm.gradle" version "6.0.0"

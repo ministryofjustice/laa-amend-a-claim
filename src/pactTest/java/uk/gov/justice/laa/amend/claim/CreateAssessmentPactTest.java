@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE;
 
 import au.com.dius.pact.consumer.dsl.LambdaDsl;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
@@ -110,7 +111,7 @@ public final class CreateAssessmentPactTest extends AbstractPactTest {
         body.uuid("claim_summary_fee_id");
         body.stringType("assessment_outcome", "PAID_IN_FULL");
         body.uuid("created_by_user_id");
-        body.nullValue("assessment_reason");
+        body.stringType("assessment_reason", ASSESSMENT_REASON_ESCAPE_CASE);
         body.nullValue("assessment_type");
         body.booleanType("is_vat_applicable", true);
         body.decimalType("fixed_fee_amount", 100.00);
@@ -148,6 +149,7 @@ public final class CreateAssessmentPactTest extends AbstractPactTest {
         assessment.setAssessedTotalInclVat(new BigDecimal("360.00"));
         assessment.setAllowedTotalVat(new BigDecimal("60.00"));
         assessment.setAllowedTotalInclVat(new BigDecimal("360.00"));
+        assessment.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
         return assessment;
     }
 }

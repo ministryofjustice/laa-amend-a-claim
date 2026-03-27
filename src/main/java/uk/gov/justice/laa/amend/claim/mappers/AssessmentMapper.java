@@ -24,8 +24,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 @Mapper(componentModel = "spring")
 public interface AssessmentMapper {
 
-    String ESCAPE_FEE_CASE_ASSESSMENT = "Escape Fee Case Assessment";
-
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "assessmentOutcome", expression = "java(mapAssessmentOutcome(claim))")
     @Mapping(target = "fixedFeeAmount", expression = "java(mapFixedFeeAmount(claim))")
@@ -36,6 +34,10 @@ public interface AssessmentMapper {
     @Mapping(target = "disbursementVatAmount", expression = "java(mapDisbursementVatAmount(claim))")
     @Mapping(target = "netCostOfCounselAmount", ignore = true)
     @Mapping(target = "detentionTravelAndWaitingCostsAmount", ignore = true)
+    @Mapping(
+            target = "assessmentReason",
+            expression =
+                    "java(uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE)")
     @Mapping(target = "isVatApplicable", source = "vatApplicable")
     @Mapping(target = "boltOnAdjournedHearingFee", ignore = true)
     @Mapping(target = "jrFormFillingAmount", ignore = true)
@@ -49,7 +51,6 @@ public interface AssessmentMapper {
     @Mapping(target = "allowedTotalVat", expression = "java(mapAllowedTotalVat(claim))")
     @Mapping(target = "allowedTotalInclVat", expression = "java(mapAllowedTotalInclVat(claim))")
     @Mapping(target = "assessmentType", constant = "ESCAPE_CASE_ASSESSMENT")
-    @Mapping(target = "assessmentReason", constant = ESCAPE_FEE_CASE_ASSESSMENT)
     AssessmentPost mapClaimToAssessment(ClaimDetails claim, @Context String userId);
 
     @InheritConfiguration(name = "mapClaimToAssessment")

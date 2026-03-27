@@ -99,13 +99,14 @@ jobs:
       - name: Build and Push Runner Image
         if: steps.check-runner.outputs.deploy-runner == 'true'
         id: build
-        uses: docker/build-push-action@v7.0.0
-        with:
-          context: ./scripts
-          file: ./scripts/Dockerfile.e2e-runner
-          push: true
-          tags: |
-            ${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:github-runner-${{ github.run_id }}
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-auth.outputs.image_registry }}
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: github-runner-${{ github.run_id }}
+        run: |
+          docker build --pull -f ./scripts/Dockerfile.e2e-runner --tag runner ./scripts
+          docker tag runner $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Deploy Runner
         if: steps.check-runner.outputs.deploy-runner == 'true'
