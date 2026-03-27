@@ -1,0 +1,53 @@
+{{- if .Values.ingress.enabled }}
+{{- $fullName := include "laa-amend-a-claim.fullname" . }}
+{{- $svcPort := .Values.service.port }}
+
+{{- range .Values.ingress.longTimeoutPaths }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-longtimeout-{{ .path | replace "/" "-" | trimPrefix "-" }}
+  labels:
+    {{- include "laa-amend-a-claim.labels" $ | nindent 4 }}
+  annotations:
+    external-dns.alpha.kubernetes.io/set-identifier: {{ $fullName }}-longtimeout-{{ .path | replace "/" "-" | trimPrefix "-" }}-{{ $.Values.namespace }}-{{ $.Values.ingress.cluster.name }}
+    external-dns.alpha.kubernetes.io/aws-weight: {{ $.Values.ingress.cluster.weight | quote }}
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "{{ .timeout }}"
+spec:
+  ingressClassName: {{ $.Values.ingress.className }}
+  {{- if and $.Values.ingress.laaHost (eq $.Values.ingress.laaHost.enabled true) }}
+  tls:
+    - hosts:
+        - {{ required "laaHost value must be provided when laaHost is enabled." $.Values.ingress.laaHost.value }}
+      secretName: {{ required "laaHost certSecretName must be provided when laaHost is present." $.Values.ingress.laaHost.certSecretName }}
+  {{- else if $.Values.ingress.cloudPlatformHost }}
+  tls:
+    - hosts:
+        - {{ $.Values.ingress.cloudPlatformHost }}
+  {{- end }}
+  rules:
+    {{- if and $.Values.ingress.laaHost (eq $.Values.ingress.laaHost.enabled true) }}
+    - host: {{ required "laaHost value must be provided when laaHost is enabled." $.Values.ingress.laaHost.value }}
+      http:
+        paths:
+          - path: {{ .path }}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+    {{- else if $.Values.ingress.cloudPlatformHost }}
+    - host: {{ $.Values.ingress.cloudPlatformHost }}
+      http:
+        paths:
+          - path: {{ .path }}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+    {{- end }}
+{{- end }}
+{{- end }}

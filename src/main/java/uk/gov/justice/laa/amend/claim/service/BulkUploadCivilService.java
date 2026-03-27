@@ -12,7 +12,8 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
     public BulkUploadCivilService(
             CsvSchemaProvider<BulkUploadCivilClaim> schemaProvider,
             CsvRowMapper<BulkUploadCivilClaim> rowMapper,
-            CsvHeaderValidator csvHeaderValidator) {
-        super(schemaProvider, rowMapper, csvHeaderValidator);
+            CsvHeaderValidator csvHeaderValidator,
+            AssessmentService assessmentService) {
+        super(schemaProvider, rowMapper, csvHeaderValidator, assessmentService);
     }
 }

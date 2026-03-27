@@ -25,7 +25,7 @@
                         </div>
                     </details>
 
-                    <form th:action="@{/bulk-upload}" enctype="multipart/form-data" method="post">
+                    <form id="bulk-upload-form" th:action="@{/bulk-upload}" enctype="multipart/form-data" method="post">
                         <div class="govuk-form-group"
                                 th:classappend="${fileError != null}? 'govuk-form-group--error'">
 
@@ -35,7 +35,7 @@
                                 <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
                                 <span th:text="${fileError.resolve(#messages)}"></span>
                             </p>
-                            <div class="govuk-drop-zone" data-module="govuk-file-upload">
+                            <div class="govuk-drop-zone" data-module="govuk-file-upload" id="drop-zone">
                                 <input class="govuk-file-upload"
                                        th:classappend="${fileError}? 'govuk-file-upload--error'"
                                        id="file-upload"
@@ -46,8 +46,18 @@
                             </div>
                         </div>
 
+                        <div class="loading-wrapper" id="loading-wrapper">
+                            <div class="loading-spinner"></div>
+                            <h2 class="govuk-heading-m govuk-!-text-align-centre govuk-!-padding-top-4" th:text="#{bulkUpload.uploading}"></h2>
+                        </div>
+
                         <div class="govuk-button-group">
-                            <button class="govuk-button" type="submit" data-module="govuk-button" th:text="#{bulkUpload.uploadButton}"></button>
+                            <button class="govuk-button"
+                                    id="bulk-upload-button"
+                                    type="submit"
+                                    data-module="govuk-button"
+                                    th:text="#{bulkUpload.uploadButton}">
+                            </button>
                             <a th:href="@{/}" id="back-to-search"
                                class="govuk-link govuk-link--no-visited-state"
                                th:text="#{bulkUpload.backToSearch}">

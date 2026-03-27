@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.service;
 
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.PARSING_FAILURE;
+import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.SUBMISSION_FAILURE;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.SUCCESS;
 
 import java.io.BufferedReader;
@@ -21,14 +22,19 @@ import uk.gov.justice.laa.amend.claim.bulkupload.CsvHeaderValidator;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvRowMapper;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvSchemaProvider;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
 @RequiredArgsConstructor
 @Slf4j
 public abstract class BulkUploadService<T> {
 
+    private static final int ROW_OFFSET = 2; // Header row + zero indexing
+
     protected final CsvSchemaProvider<T> schemaProvider;
     protected final CsvRowMapper<T> rowMapper;
     protected final CsvHeaderValidator csvHeaderValidator;
+
+    private final AssessmentService assessmentService;
 
     public BulkUploadResult upload(MultipartFile file, UUID userId) {
         List<T> rows = new ArrayList<>();
@@ -43,11 +49,13 @@ public abstract class BulkUploadService<T> {
             return new BulkUploadResult(PARSING_FAILURE, errors);
         }
         log.info("Parsed {} rows from file", rows.size());
+
         var validationResult = validateRows(rows);
         if (validationResult.status() != SUCCESS) {
             return validationResult;
         }
-        return submit(rows, userId);
+
+        return submit(List.of(), userId);
     }
 
     private void parseFile(MultipartFile file, List<T> rows, List<String> errors) throws IOException {
@@ -85,7 +93,27 @@ public abstract class BulkUploadService<T> {
         return new BulkUploadResult(SUCCESS, List.of());
     }
 
-    protected BulkUploadResult submit(List<T> rows, UUID userId) {
-        return new BulkUploadResult(SUCCESS, List.of("This is a success message"));
+    protected BulkUploadResult submit(List<ClaimDetails> claimDetails, UUID userId) {
+        for (int row = 0; row < claimDetails.size(); ++row) {
+            try {
+                var claim = claimDetails.get(row);
+                log.info(
+                        "Bulk upload in progress. Submitting assessment for row {}, claim {}, UFN {}",
+                        row + ROW_OFFSET,
+                        claim.getClaimId(),
+                        claim.getUniqueFileNumber());
+                assessmentService.submitAssessment(claim, userId.toString());
+            } catch (Exception ex) {
+                var message = String.format(
+                        "Row %s: Failed to submit assessment. %s prior rows in the file have already been"
+                                + " processed and do not need to be reuploaded.",
+                        row + ROW_OFFSET, row);
+                log.error(message, ex);
+                return new BulkUploadResult(SUBMISSION_FAILURE, List.of(message));
+            }
+        }
+        var successMessage = String.format("Successfully uploaded %s assessments", claimDetails.size());
+        log.info(successMessage);
+        return new BulkUploadResult(SUCCESS, List.of(successMessage));
     }
 }

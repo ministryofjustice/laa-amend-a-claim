@@ -19,3 +19,12 @@ document.querySelectorAll('[data-module="logout-link"]').forEach(function(link) 
         document.logoutForm.submit();
     });
 });
+
+
+document.querySelectorAll('[id=bulk-upload-form]').forEach(function (form) {
+    form.addEventListener('submit', function () {
+        form.querySelector('#bulk-upload-button').disabled = true;
+        form.querySelector('#loading-wrapper').style.display = "block";
+        form.querySelector('#drop-zone').style.display = "none";
+    });
+});
