@@ -4,12 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +26,6 @@ import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
-import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 @SpringBootTest
 class BulkUploadServiceTest extends WireMockSetup {
@@ -42,9 +45,6 @@ class BulkUploadServiceTest extends WireMockSetup {
     @Autowired
     private BulkUploadService<BulkUploadCivilClaim> bulkUploadService;
 
-    @Autowired
-    private ClaimService claimService;
-
     @Test
     @DisplayName("Parses 130 CSV rows end-to-end successfully")
     void parseCsvRowsSuccessfully() throws Exception {
@@ -54,6 +54,7 @@ class BulkUploadServiceTest extends WireMockSetup {
 
         // Dynamically stub claims with matching UFNs and office codes
         WireMockSetup.setupGetClaimsStubDynamic(file, rows);
+        WireMockSetup.setupPostAssessment202StubForAnyClaim();
         BulkUploadResult result = bulkUploadService.upload(file, userId);
 
         assertThat(result).isNotNull();
@@ -72,11 +73,16 @@ class BulkUploadServiceTest extends WireMockSetup {
                         writer, CSVFormat.DEFAULT.builder().setHeader(HEADERS).build())) {
 
             Random random = new Random();
+            String officeCode = generateRandomOfficeCode(random);
 
-            for (int i = 0; i < n; i++) {
+            List<String> ufns = Stream.generate(() -> generateRandomUfn(random))
+                    .distinct()
+                    .limit(n)
+                    .toList();
 
-                String officeCode = generateRandomOfficeCode(random);
-                String ufn = generateRandomUfn(random);
+            IntStream.range(0, n).forEach(i -> {
+                String ufn = ufns.get(i);
+
                 String assessment = (i % 2 == 0) ? "Reduced" : "Reduced To Fixed Fee";
 
                 String profitCost = "£" + getNumber(i * 10 + 100) + ".00";
@@ -86,17 +92,21 @@ class BulkUploadServiceTest extends WireMockSetup {
                 String totalAllowedVat = "£" + getNumber(i * 3 + 15) + ".75";
                 String totalAllowedInclVat = "£" + getNumber(i * 21 + 175) + ".95";
 
-                csv.printRecord(
-                        officeCode,
-                        ufn,
-                        assessment,
-                        profitCost,
-                        disbursements,
-                        disbVat,
-                        counsel,
-                        totalAllowedVat,
-                        totalAllowedInclVat);
-            }
+                try {
+                    csv.printRecord(
+                            officeCode,
+                            ufn,
+                            assessment,
+                            profitCost,
+                            disbursements,
+                            disbVat,
+                            counsel,
+                            totalAllowedVat,
+                            totalAllowedInclVat);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
 
         return new MockMultipartFile(
