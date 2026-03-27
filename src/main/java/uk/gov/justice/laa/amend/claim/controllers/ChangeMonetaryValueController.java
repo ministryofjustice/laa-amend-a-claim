@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 
@@ -45,17 +46,7 @@ public class ChangeMonetaryValueController {
             throws IOException {
         try {
             var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
-            ClaimField claimField = cost.getAccessor().get(claim);
-
-            if (claimField == null) {
-                log.warn("Could not find claim field {} in claim {}. Returning 404.", cost.getPath(), claimId);
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
-
-            if (claimField.isNotAssessable()) {
-                log.warn("This claim field is not modifiable for claim {}. Returning 404.", claimId);
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
+            var claimField = getCostClaimField(claim, cost, claimId);
 
             BigDecimal value = (BigDecimal) claimField.getAssessed();
 
@@ -84,7 +75,7 @@ public class ChangeMonetaryValueController {
             throws IOException {
         try {
             var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
-            ClaimField claimField = cost.getAccessor().get(claim);
+            var claimField = getCostClaimField(claim, cost, claimId);
 
             if (bindingResult.hasErrors()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -109,12 +100,7 @@ public class ChangeMonetaryValueController {
         model.addAttribute("form", form);
         model.addAttribute("action", getAction(submissionId, claimId, cost));
         model.addAttribute("redirectUrl", getRedirectUrl(submissionId, claimId));
-
-        var calculated = (BigDecimal) claimField.getCalculated();
-        model.addAttribute("calculated", calculated);
-
-        var submitted = (BigDecimal) claimField.getSubmitted();
-        model.addAttribute("submitted", submitted);
+        model.addAttribute("claimFieldRow", claimField.toClaimFieldRow());
 
         return "change-monetary-value";
     }
@@ -125,5 +111,21 @@ public class ChangeMonetaryValueController {
 
     private String getRedirectUrl(UUID submissionId, UUID claimId) {
         return String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+    }
+
+    private ClaimField getCostClaimField(ClaimDetails claim, Cost cost, UUID claimId) throws ClaimMismatchException {
+        var claimField = cost.getAccessor().get(claim);
+
+        if (claimField == null) {
+            log.warn("Could not find claim field {} in claim {}. Returning 404.", cost.getPath(), claimId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        if (claimField.isNotAssessable()) {
+            log.warn("This claim field is not modifiable for claim {}. Returning 404.", claimId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        return claimField;
     }
 }

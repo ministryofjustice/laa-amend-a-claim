@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
@@ -13,6 +14,7 @@ import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.amend.claim.utils.FormUtils;
 
+@EqualsAndHashCode
 @Getter
 @AllArgsConstructor
 public class ClaimFieldRow {

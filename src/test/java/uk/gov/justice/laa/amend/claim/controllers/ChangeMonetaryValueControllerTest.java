@@ -66,8 +66,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
                 .andExpect(view().name("change-monetary-value"))
                 .andExpect(model().attribute("cost", equalTo(cost)))
                 .andExpect(model().attribute("form", hasProperty("value", nullValue())))
-                .andExpect(model().attribute("calculated", claimField.getCalculated()))
-                .andExpect(model().attribute("submitted", claimField.getSubmitted()));
+                .andExpect(model().attribute("claimFieldRow", claimField.toClaimFieldRow()));
     }
 
     @ParameterizedTest

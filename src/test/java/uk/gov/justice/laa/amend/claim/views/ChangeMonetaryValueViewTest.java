@@ -28,7 +28,7 @@ class ChangeMonetaryValueViewTest extends ViewTestBase {
         List<List<Element>> summaryList = getFirstSummaryList(doc);
         Assertions.assertEquals(2, summaryList.size());
         assertSummaryListRowContainsValues(summaryList.getFirst(), "Calculated", "Not applicable");
-        assertSummaryListRowContainsValues(summaryList.get(1), "Requested", "Not applicable");
+        assertSummaryListRowContainsValues(summaryList.get(1), "Requested", "£100.00");
 
         assertPageHasLabel(doc, "value", "Assessed");
 
