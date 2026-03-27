@@ -15,7 +15,7 @@ java {
 }
 
 checkstyle {
-    toolVersion = '13.0.0'
+    toolVersion = '13.3.0'
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
 
@@ -28,6 +28,15 @@ spotless {
 
 repositories {
     mavenCentral()
+}
+
+configurations.configureEach {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'io.netty' && details.requested.name == 'netty-codec-http') {
+            details.useVersion '4.2.12.Final'
+            details.because 'Fixes HTTP Request Smuggling vulnerability (SNYK-JAVA-IONETTY-15789756)'
+        }
+    }
 }
 
 dependencies {
@@ -46,7 +55,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jackson'
 
     // API models
-    implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:4803269'
+    implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:1.0.17'
     implementation 'uk.gov.justice.laadata.providers:providers-api:1.23.0'
 
     implementation 'org.apache.commons:commons-lang3:3.20.0'
@@ -66,7 +75,6 @@ dependencies {
     implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
-
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'

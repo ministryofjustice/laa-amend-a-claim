@@ -25,7 +25,9 @@ INSERT INTO claims.assessment (
   created_by_user_id,
   created_on,
   updated_by_user_id,
-  updated_on
+  updated_on,
+  assessment_reason,
+  assessment_type
 ) VALUES (
   ?::uuid,
   ?::uuid,
@@ -53,5 +55,7 @@ INSERT INTO claims.assessment (
   ?,
   now(),
   ?,
-  now()
+  now(),
+  ?,
+  ?
 );

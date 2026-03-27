@@ -68,6 +68,8 @@ public class AssessedClaimDetailsTest extends BaseTest {
                         .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
                         .claimId(CLAIM_ID)
                         .userId(USER_ID)
+                        .assessmentType("ESCAPE_CASE_ASSESSMENT")
+                        .assessmentReason("Escape Fee Case Assessment")
                         .build());
     }
 
