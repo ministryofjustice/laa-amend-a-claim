@@ -12,6 +12,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_VOID;
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.List;
@@ -282,7 +283,7 @@ class ClaimServiceTest {
     @Test
     @DisplayName("Should return void response and increment success counter")
     void voidClaim() {
-        var request = new VoidClaimRequest(userId, "Void assessment");
+        var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
         var expectedResponse = new VoidClaim201Response(UUID.randomUUID());
         when(claimsApiClient.voidClaim(claimId, request)).thenReturn(Mono.just(expectedResponse));
 
@@ -296,7 +297,7 @@ class ClaimServiceTest {
     @Test
     @DisplayName("Should increment failure counter when void claim throws an exception")
     void voidClaim_failure() {
-        var request = new VoidClaimRequest(userId, "Void assessment");
+        var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
         when(claimsApiClient.voidClaim(claimId, request)).thenThrow(new RuntimeException("API Error"));
 
         assertThrows(RuntimeException.class, () -> claimService.voidClaim(claimId, userId));

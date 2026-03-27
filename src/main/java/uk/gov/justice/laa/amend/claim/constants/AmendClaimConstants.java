@@ -20,6 +20,9 @@ public class AmendClaimConstants {
     public static final String DEFAULT_PERIOD_FORMAT = "MMM yyyy";
     public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 
+    public static final String ASSESSMENT_REASON_ESCAPE_CASE = "Escape Fee Case Assessment";
+    public static final String ASSESSMENT_REASON_VOID = "Void";
+
     public static final String ASSESSMENT_OUTCOME_REQUIRED_ERROR = "{assessmentOutcome.assessmentOutcomeRequiredError}";
     public static final String LIABILITY_FOR_VAT_REQUIRED_ERROR = "{assessmentOutcome.liabilityForVatRequiredError}";
 

@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.mappers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
 
@@ -63,6 +64,7 @@ class AssessmentMapperTest {
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalVat());
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalInclVat());
         assertEquals(true, assessment.getIsVatApplicable());
+        assertEquals(ASSESSMENT_REASON_ESCAPE_CASE, assessment.getAssessmentReason());
         assertEquals(userId, assessment.getCreatedByUserId());
     }
 
@@ -89,6 +91,7 @@ class AssessmentMapperTest {
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalVat());
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalInclVat());
         assertEquals(true, assessment.getIsVatApplicable());
+        assertEquals(ASSESSMENT_REASON_ESCAPE_CASE, assessment.getAssessmentReason());
         assertEquals(userId, assessment.getCreatedByUserId());
     }
 
