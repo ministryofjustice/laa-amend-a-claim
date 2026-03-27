@@ -5,7 +5,14 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record AssessmentInsert(String id, String claimSummaryFeeId, String claimId, String userId) implements Insert {
+public record AssessmentInsert(
+        String id,
+        String claimSummaryFeeId,
+        String claimId,
+        String userId,
+        String assessmentReason,
+        String assessmentType)
+        implements Insert {
 
     @Override
     public String table() {
