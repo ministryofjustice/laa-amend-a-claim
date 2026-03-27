@@ -32,6 +32,11 @@ repositories {
 
 dependencies {
 
+    constraints {
+        implementation('io.netty:netty-codec:4.2.12.Final')
+        implementation('io.netty:netty-handler-proxy:4.2.12.Final')
+    }
+
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -85,13 +90,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     testImplementation 'org.jsoup:jsoup:1.22.1'
     testImplementation 'com.github.codemonstur:embedded-redis:1.4.3'
-}
-
-configurations.configureEach {
-    resolutionStrategy {
-        force 'io.netty:netty-codec:4.2.12.Final'
-        force 'io.netty:netty-handler-proxy:4.2.12.Final'
-    }
 }
 
 test {
