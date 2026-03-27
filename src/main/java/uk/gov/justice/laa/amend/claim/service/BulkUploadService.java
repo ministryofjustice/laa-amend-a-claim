@@ -125,7 +125,7 @@ public abstract class BulkUploadService<T> {
                 var claim = claimDetails.get(row);
                 log.info(
                         "Bulk upload in progress. Submitting assessment for row {}, claim {}, UFN {}",
-                        row,
+                        row + ROW_OFFSET,
                         claim.getClaimId(),
                         claim.getUniqueFileNumber());
                 assessmentService.submitAssessment(claim, userId.toString());
@@ -133,7 +133,7 @@ public abstract class BulkUploadService<T> {
                 var message = String.format(
                         "Row %s: Failed to submit assessment. %s prior rows in the file have already been"
                                 + " processed and do not need to be reuploaded.",
-                        row + 1, row);
+                        row + ROW_OFFSET, row);
                 log.error(message, ex);
                 return new BulkUploadResult(SUBMISSION_FAILURE, List.of(message));
             }
