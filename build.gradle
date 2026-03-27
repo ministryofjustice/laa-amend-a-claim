@@ -32,11 +32,6 @@ repositories {
 
 dependencies {
 
-    constraints {
-        implementation('io.netty:netty-codec:4.2.12.Final')
-        implementation('io.netty:netty-handler-proxy:4.2.12.Final')
-    }
-
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -74,6 +69,10 @@ dependencies {
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
+    // Upgrade to fix SNYK-JAVA-IONETTY-15789756
+    implementation('io.netty:netty-codec:4.2.12.Final')
+    implementation('io.netty:netty-handler-proxy:4.2.12.Final')
 
     // Pact consumer testing
     testImplementation 'au.com.dius.pact.consumer:junit5:4.6.19'
