@@ -1,6 +1,9 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import java.util.List;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.util.LinkedMultiValueMap;
@@ -22,10 +25,15 @@ class ChangeMonetaryValueViewTest extends ViewTestBase {
 
         assertPageHasHeading(doc, "Assess profit costs");
 
+        List<List<Element>> summaryList = getFirstSummaryList(doc);
+        Assertions.assertEquals(2, summaryList.size());
+        assertSummaryListRowContainsValues(summaryList.getFirst(), "Calculated", "Not applicable");
+        assertSummaryListRowContainsValues(summaryList.get(1), "Requested", "Not applicable");
+
+        assertPageHasLabel(doc, "value", "Assessed");
+
         assertPageHasHint(
                 doc, "value-hint", "Enter the assessed value for the providers' profit costs, excluding VAT.");
-
-        assertPageHasLabel(doc, "value", "Assess profit costs");
     }
 
     @Test

@@ -64,7 +64,7 @@ public class ChangeMonetaryValueController {
                 form.setValue(setScale(value).toString());
             }
 
-            return renderView(model, form, cost, submissionId, claimId);
+            return renderView(model, form, cost, claimField, submissionId, claimId);
         } catch (ClaimMismatchException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
@@ -84,13 +84,13 @@ public class ChangeMonetaryValueController {
             throws IOException {
         try {
             var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+            ClaimField claimField = cost.getAccessor().get(claim);
 
             if (bindingResult.hasErrors()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return renderView(model, form, cost, submissionId, claimId);
+                return renderView(model, form, cost, claimField, submissionId, claimId);
             }
 
-            ClaimField claimField = cost.getAccessor().get(claim);
             BigDecimal value = setScale(form.getValue());
             claimField.setAssessed(value);
             cost.getAccessor().set(claim, claimField);
@@ -103,11 +103,19 @@ public class ChangeMonetaryValueController {
         }
     }
 
-    private String renderView(Model model, MonetaryValueForm form, Cost cost, UUID submissionId, UUID claimId) {
+    private String renderView(
+            Model model, MonetaryValueForm form, Cost cost, ClaimField claimField, UUID submissionId, UUID claimId) {
         model.addAttribute("cost", cost);
         model.addAttribute("form", form);
         model.addAttribute("action", getAction(submissionId, claimId, cost));
         model.addAttribute("redirectUrl", getRedirectUrl(submissionId, claimId));
+
+        var calculated = (BigDecimal) claimField.getCalculated();
+        model.addAttribute("calculated", calculated);
+
+        var submitted = (BigDecimal) claimField.getSubmitted();
+        model.addAttribute("submitted", submitted);
+
         return "change-monetary-value";
     }
 
