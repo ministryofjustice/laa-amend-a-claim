@@ -69,10 +69,6 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
         clickChangeInRow("Assessment outcome", assessmentTable);
     }
 
-    public void clickLiableForVat() {
-        clickChangeInRow("Is this claim liable for VAT?", assessmentTable);
-    }
-
     public void clickChangeProfitCosts() {
         clickChangeInRow("Profit costs", claimCostsTable);
     }
@@ -136,15 +132,9 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
         assertTableHasHeaders(totalClaimValueTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalAllowedValueTable, "Item", "Calculated", "Requested", "Allowed");
 
-        assertAssessmentHasItems("Assessment outcome", "Is this claim liable for VAT?");
+        assertAssessmentHasItems("Assessment outcome");
         assertClaimCostsHasItems(
-                "Fixed fee",
-                "Profit costs",
-                "Disbursements",
-                "Disbursement VAT",
-                "Travel costs",
-                "Waiting costs",
-                "VAT");
+                "Fixed fee", "Profit costs", "Disbursements", "Disbursement VAT", "Travel costs", "Waiting costs");
         assertClaimCostsNotHasItems("Total");
         assertThat(saveButton).isVisible();
         assertThat(cancelButton).isVisible();
@@ -155,7 +145,7 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
         assertTableHasHeaders(totalClaimValueTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalAllowedValueTable, "Item", "Calculated", "Requested", "Allowed");
 
-        assertAssessmentHasItems("Assessment outcome", "Is this claim liable for VAT?");
+        assertAssessmentHasItems("Assessment outcome");
         assertClaimCostsHasItems(
                 "Fixed fee",
                 "Profit costs",
@@ -163,8 +153,7 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
                 "Disbursement VAT",
                 "Detention travel and waiting costs",
                 "JR and form filling",
-                "Counsel costs",
-                "VAT");
+                "Counsel costs");
         assertClaimCostsNotHasItems("Total");
 
         assertThat(saveButton).isVisible();

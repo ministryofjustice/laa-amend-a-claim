@@ -233,7 +233,7 @@ public class ClaimFieldRowTest {
         Assertions.assertEquals(field.getSubmitted(), result.getSubmitted());
         Assertions.assertEquals(field.getCalculated(), result.getCalculated());
         Assertions.assertEquals(field.getAssessed(), result.getAssessed());
-        Assertions.assertTrue(result.isAssessable());
+        Assertions.assertFalse(result.isAssessable());
         Assertions.assertEquals("/submissions/%s/claims/%s/assessment-outcome", result.getChangeUrl());
     }
 

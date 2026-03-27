@@ -24,7 +24,6 @@ public class AmendClaimConstants {
     public static final String ASSESSMENT_REASON_VOID = "Void";
 
     public static final String ASSESSMENT_OUTCOME_REQUIRED_ERROR = "{assessmentOutcome.assessmentOutcomeRequiredError}";
-    public static final String LIABILITY_FOR_VAT_REQUIRED_ERROR = "{assessmentOutcome.liabilityForVatRequiredError}";
 
     public static class Label {
         public static final String FIXED_FEE = "fixedFee";

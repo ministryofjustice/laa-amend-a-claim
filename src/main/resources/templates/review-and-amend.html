@@ -57,24 +57,6 @@
                     </td>
                 </tr>
 
-                <tr class="govuk-table__row">
-
-                    <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{claimSummary.rows.vatLiability}"></td>
-
-                    <td class="govuk-table__cell" colspan="3"
-                        th:text="${@ThymeleafUtils.getFormattedValue(claim.vatClaimed.getAssessed()).resolve(#messages)}"/>
-
-                    <td class="govuk-table__cell">
-                        <a
-                           th:href="${viewModel.reviewAssessmentChangeUrl(submissionId, claimId, 'liability-for-vat')}"
-                           th:data-testid="claim-field-vat-liability"
-                           class="govuk-link govuk-link--no-visited-state">
-                            <th:block th:text="#{service.change}"></th:block>
-                            <span class="govuk-visually-hidden" th:text="| #{claimSummary.rows.vatLiability}|"></span>
-                        </a>
-                    </td>
-
-                </tr>
                 </tbody>
             </table>
         </div>

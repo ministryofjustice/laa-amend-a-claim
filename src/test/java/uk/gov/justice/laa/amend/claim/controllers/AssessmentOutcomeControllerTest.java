@@ -47,11 +47,7 @@ public class AssessmentOutcomeControllerTest extends BaseControllerTest {
 
     @Test
     public void testOnSubmitReturnsBadRequestWithViewForInvalidForm() throws Exception {
-        mockMvc.perform(post(buildPath())
-                        .session(session)
-                        .with(csrf())
-                        .param("assessmentOutcome", "")
-                        .param("liabilityForVat", ""))
+        mockMvc.perform(post(buildPath()).session(session).with(csrf()).param("assessmentOutcome", ""))
                 .andExpect(status().isBadRequest())
                 .andExpect(view().name("assessment-outcome"));
     }
@@ -60,11 +56,7 @@ public class AssessmentOutcomeControllerTest extends BaseControllerTest {
     public void testOnSubmitRedirects() throws Exception {
         String redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
 
-        mockMvc.perform(post(buildPath())
-                        .session(session)
-                        .with(csrf())
-                        .param("assessmentOutcome", "paid-in-full")
-                        .param("liabilityForVat", "true"))
+        mockMvc.perform(post(buildPath()).session(session).with(csrf()).param("assessmentOutcome", "paid-in-full"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl));
     }
