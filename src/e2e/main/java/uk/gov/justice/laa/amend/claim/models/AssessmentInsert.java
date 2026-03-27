@@ -21,6 +21,6 @@ public record AssessmentInsert(
 
     @Override
     public List<Object> parameters() {
-        return Arrays.asList(id, claimSummaryFeeId, claimId, userId, userId);
+        return Arrays.asList(id, claimSummaryFeeId, claimId, userId, userId, assessmentReason, assessmentType);
     }
 }
