@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -546,7 +545,7 @@ class ClaimMapperTest {
         assertEquals(uk.gov.justice.laa.amend.claim.models.AreaOfLaw.LEGAL_HELP, claim.getAreaOfLaw());
         assertEquals("0P322F", claim.getOfficeCode());
         assertNull(claim.getProviderName());
-        assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
+        assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());
         assertEquals(ClaimStatus.VALID, claim.getStatus());
     }
 
@@ -591,7 +590,7 @@ class ClaimMapperTest {
         assertEquals(ClaimStatus.VALID, claim.getStatus());
         assertEquals("0P322F", claim.getOfficeCode());
 
-        assertEquals(LocalDateTime.of(2025, 1, 10, 14, 30, 0), claim.getSubmittedDate());
+        assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());
     }
 
     private static ClaimResponseV2 createClaimResponse(AreaOfLaw areaOfLaw) {
