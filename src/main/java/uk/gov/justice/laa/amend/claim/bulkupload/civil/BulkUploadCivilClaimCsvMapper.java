@@ -31,6 +31,7 @@ public class BulkUploadCivilClaimCsvMapper implements CsvRowMapper<BulkUploadCiv
         claim.setCounselCosts(getOptionalBigDecimal(record, COUNSEL_COSTS, rowNumber));
         claim.setTotalAllowedVat(getOptionalBigDecimal(record, TOTAL_ALLOWED_VAT, rowNumber));
         claim.setTotalAllowedInclVat(getOptionalBigDecimal(record, TOTAL_ALLOWED_INCLUDE_VAT, rowNumber));
+        claim.setRowNumber(rowNumber);
         return claim;
     }
 

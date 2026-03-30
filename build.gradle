@@ -69,7 +69,6 @@ dependencies {
     implementation("org.apache.commons:commons-csv:1.14.1")
 
     implementation("io.vavr:vavr:0.11.0")
-    implementation("io.netty:netty-codec-http:4.2.12.Final")
 
     // Sentry observability for Spring Boot 4
     implementation enforcedPlatform('io.sentry:sentry-bom:8.26.0')

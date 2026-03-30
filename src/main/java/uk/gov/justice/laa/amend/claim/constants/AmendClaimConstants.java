@@ -54,6 +54,6 @@ public class AmendClaimConstants {
 
     // We allow setting the assessed total values if it's a crime case and has a valid police station fee code
     public static final Set<String> VALID_POLICE_STATION_FEE_CODES = Set.of("INVC");
-    public static final BigDecimal MIN = BigDecimal.ZERO;
-    public static final BigDecimal MAX = BigDecimal.valueOf(1_000_000);
+    public static final BigDecimal MIN_CURRENCY = BigDecimal.ZERO;
+    public static final BigDecimal MAX_CURRENCY = BigDecimal.valueOf(1_000_000);
 }

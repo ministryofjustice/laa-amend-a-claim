@@ -32,8 +32,8 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
             CsvSchemaProvider<BulkUploadCivilClaim> schemaProvider,
             CsvRowMapper<BulkUploadCivilClaim> rowMapper,
             CsvHeaderValidator csvHeaderValidator,
-            BulkUploadHelper bulkUploadHelper,
             AssessmentService assessmentService,
+            BulkUploadHelper bulkUploadHelper,
             ClaimMapper claimMapper) {
         super(schemaProvider, rowMapper, csvHeaderValidator, assessmentService);
         this.bulkUploadHelper = bulkUploadHelper;
@@ -93,36 +93,18 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
         return civilClaimDetails;
     }
 
+    /**
+     * Map Row details into assessed values of ClaimDetails fields
+     */
     private void applyRowToClaimDetails(CivilClaimDetails details, BulkUploadCivilClaim row) {
-        if (details.getNetProfitCost() != null) {
-            details.getNetProfitCost().setAssessed(row.getProfitCost());
-        }
-
-        if (details.getDisbursementVatAmount() != null) {
-            details.getDisbursementVatAmount().setAssessed(row.getDisbursementsVat());
-        }
-
-        if (details.getNetDisbursementAmount() != null) {
-            details.getNetDisbursementAmount().setAssessed(row.getDisbursements());
-        }
-
-        if (details.getCounselsCost() != null) {
-            details.getCounselsCost().setAssessed(row.getCounselCosts());
-        }
-
-        if (details.getAllowedTotalVat() != null) {
-            details.getAllowedTotalVat().setAssessed(row.getTotalAllowedVat());
-        }
-        if (details.getAssessedTotalVat() != null) {
-            details.getAssessedTotalVat().setAssessed(row.getTotalAllowedVat());
-        }
-        if (details.getAssessedTotalInclVat() != null) {
-            details.getAssessedTotalInclVat().setAssessed(row.getTotalAllowedInclVat());
-        }
-        if (details.getAllowedTotalInclVat() != null) {
-            details.getAllowedTotalInclVat().setAssessed(row.getTotalAllowedInclVat());
-        }
-
+        details.getNetProfitCost().setAssessed(row.getProfitCost());
+        details.getDisbursementVatAmount().setAssessed(row.getDisbursementsVat());
+        details.getNetDisbursementAmount().setAssessed(row.getDisbursements());
+        details.getCounselsCost().setAssessed(row.getCounselCosts());
+        details.getAllowedTotalVat().setAssessed(row.getTotalAllowedVat());
+        details.getAssessedTotalVat().setAssessed(row.getTotalAllowedVat());
+        details.getAssessedTotalInclVat().setAssessed(row.getTotalAllowedInclVat());
+        details.getAllowedTotalInclVat().setAssessed(row.getTotalAllowedInclVat());
         details.setAssessmentOutcome(OutcomeType.fromCsvLabel(row.getAssessmentOutcome()));
     }
 }

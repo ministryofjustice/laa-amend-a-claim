@@ -31,7 +31,7 @@ public class WebClientConfig {
     @Bean
     public ClaimsApiClient claimsApiClient(WebClient.Builder webClientBuilder, ClaimsApiProperties properties) {
         ExchangeStrategies strategies = ExchangeStrategies.builder()
-                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024)) // 1 MB)
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024)) // 1 MB
                 .build();
 
         WebClient webClient = webClientBuilder

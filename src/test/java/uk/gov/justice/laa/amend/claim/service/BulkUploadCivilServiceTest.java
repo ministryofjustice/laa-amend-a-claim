@@ -42,7 +42,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 class BulkUploadCivilServiceTest {
 
     public static final String OFFICE_CODE = "0G448S";
-    public static final String UNIQUE_FILE_NUMBER = "20121102/678981";
+    public static final String UNIQUE_FILE_NUMBER = "131019/020";
 
     @Mock
     CsvSchemaProvider<BulkUploadCivilClaim> schemaProvider;
@@ -81,7 +81,7 @@ class BulkUploadCivilServiceTest {
         when(bulkUploadHelper.getAllClaims(anyList(), anyList())).thenReturn(List.of(claimResponse));
 
         // Mapper produces a CivilClaimDetails instance
-        when(claimMapper.mapToCivilClaimDetails(any())).thenReturn(new CivilClaimDetails());
+        when(claimMapper.mapToCivilClaimDetails(any())).thenReturn(buildEmptyDetails());
 
         // -------- act --------
         BulkUploadValidationOutcome outcome = service.validateRows(List.of(row));

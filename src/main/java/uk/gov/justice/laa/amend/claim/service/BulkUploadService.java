@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.amend.claim.service;
 
 import static uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadHelper.MAX_ROWS;
-import static uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadHelper.ROW_OFFSET;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.PARSING_FAILURE;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.SUBMISSION_FAILURE;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.SUCCESS;
@@ -31,6 +30,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 @Slf4j
 public abstract class BulkUploadService<T> {
 
+    private static final int ROW_OFFSET = 2;
     protected final CsvSchemaProvider<T> schemaProvider;
     protected final CsvRowMapper<T> rowMapper;
     protected final CsvHeaderValidator csvHeaderValidator;

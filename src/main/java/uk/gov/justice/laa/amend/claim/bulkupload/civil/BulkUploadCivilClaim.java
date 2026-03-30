@@ -1,21 +1,19 @@
 package uk.gov.justice.laa.amend.claim.bulkupload.civil;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.MAX;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.MIN;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.MAX_CURRENCY;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.MIN_CURRENCY;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.OFFICE_CODE_REGEX;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.UNIQUE_FILE_NUMBER_CHARACTER_REGEX;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.UNIQUE_FILE_NUMBER_FORMAT_REGEX;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class BulkUploadCivilClaim {
     private String officeCode;
     private String ufn;
@@ -28,15 +26,25 @@ public class BulkUploadCivilClaim {
     private BigDecimal totalAllowedInclVat;
     private int rowNumber;
 
+    public void setOfficeCode(String officeCode) {
+        this.officeCode = officeCode == null ? null : officeCode.toUpperCase();
+    }
+
     public List<String> validate() {
         List<String> errors = new ArrayList<>();
 
         if (StringUtils.isBlank(officeCode) || officeCode.length() != 6 || !officeCode.matches(OFFICE_CODE_REGEX)) {
-            errors.add("Row " + rowNumber + ": Invalid office code: " + officeCode);
+            errors.add(String.format("Row %d: Invalid office code %s", rowNumber, officeCode));
         }
 
-        if (StringUtils.isBlank(ufn) || !ufn.matches(UNIQUE_FILE_NUMBER_CHARACTER_REGEX)) {
-            errors.add("Row " + rowNumber + ": Invalid UFN: " + ufn);
+        if (StringUtils.isBlank(ufn)
+                || !ufn.matches(UNIQUE_FILE_NUMBER_CHARACTER_REGEX)
+                || !ufn.matches(UNIQUE_FILE_NUMBER_FORMAT_REGEX)) {
+            errors.add(String.format("Row %d: Invalid UFN %s", rowNumber, ufn));
+        }
+
+        if (OutcomeType.fromCsvLabel(assessmentOutcome) == null) {
+            errors.add(String.format("Row %d: Invalid Assessment Outcome %s", rowNumber, assessmentOutcome));
         }
 
         validateCurrency(profitCost, "Profit Cost", errors);
@@ -61,12 +69,12 @@ public class BulkUploadCivilClaim {
             errors.add(String.format("%s must be a number with up to 2 decimal places", prefix));
         }
 
-        if (value.compareTo(MIN) < 0) {
+        if (value.compareTo(MIN_CURRENCY) < 0) {
             errors.add(String.format("%s must not be negative", prefix));
         }
 
-        if (value.compareTo(MAX) >= 0) {
-            errors.add(String.format("%s must be less than %s", prefix, MAX));
+        if (value.compareTo(MAX_CURRENCY) >= 0) {
+            errors.add(String.format("%s must be less than %s", prefix, MAX_CURRENCY));
         }
     }
 }

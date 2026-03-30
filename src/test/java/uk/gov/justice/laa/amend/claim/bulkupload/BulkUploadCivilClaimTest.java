@@ -130,7 +130,7 @@ class BulkUploadCivilClaimTest {
     }
 
     @Test
-    void validate_shouldReturnMultipleErrors() {
+    void validateShouldReturnMultipleErrors() {
         BulkUploadCivilClaim row = newValidRow();
         row.setOfficeCode("BAD"); // invalid
         row.setUfn("BAD"); // invalid

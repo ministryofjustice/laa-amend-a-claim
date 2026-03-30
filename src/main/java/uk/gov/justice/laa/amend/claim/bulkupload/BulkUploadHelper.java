@@ -16,21 +16,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
-import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 
 @Component
 @RequiredArgsConstructor
 public class BulkUploadHelper {
-    public static final int ROW_OFFSET = 2;
-    public static final int MAX_ROWS = 1300;
+    public static final int MAX_ROWS = 10000;
 
     private final ClaimService claimService;
-
-    private final ClaimMapper claimMapper;
 
     /**
      * Process Claims for each office code and return the matched UFNs from file
@@ -70,17 +65,15 @@ public class BulkUploadHelper {
 
         IntStream.range(0, rows.size()).forEach(i -> {
             BulkUploadCivilClaim row = rows.get(i);
-            row.setRowNumber(i + ROW_OFFSET); // update row number (CSV header = line 1)
             String office = row.getOfficeCode();
             String ufn = row.getUfn();
 
-            Pair<String, String> key = Pair.of(office.trim(), ufn.trim());
+            Pair<String, String> key = Pair.of(office, ufn);
             // Duplicate Rows (officeCode + UFN)
             if (!appearedKeys.add(key)) {
                 errors.add(String.format(
-                        "Line %d: Duplicate row for office code %s and UFN %s", row.getRowNumber(), office, ufn));
+                        "Row %d: Duplicate row for office code %s and UFN %s", row.getRowNumber(), office, ufn));
             }
-            // Save mapping
             officeUfnToClaim.put(key, row);
         });
         return officeUfnToClaim;
@@ -100,30 +93,23 @@ public class BulkUploadHelper {
 
     private Stream<ClaimResponseV2> fetchClaimsPages(String officeCode, int pageSize) {
 
-        ClaimResultSetV2 first = safeFetch(officeCode, 1, pageSize);
-        if (first == null || first.getContent() == null) {
-            throw new RuntimeException("No claims found for office code " + officeCode);
-        }
-        if (first.getContent().isEmpty()) {
-            return Stream.empty();
-        }
-        int totalPages = Optional.ofNullable(first.getTotalPages()).orElse(1);
+        var firstPage = safeFetch(officeCode, 1, pageSize);
+        int totalPages = Optional.of(firstPage.totalPages()).orElse(1);
 
         // Stream first page
-        Stream<ClaimResponseV2> pageOne = first.getContent().stream();
+        Stream<ClaimResponseV2> pageOne = firstPage.claimResponseV2Stream();
 
         // Stream remaining pages
         Stream<ClaimResponseV2> others = IntStream.rangeClosed(2, totalPages)
                 .mapToObj(p -> safeFetch(officeCode, p, pageSize))
-                .filter(r -> r.getContent() != null)
-                .flatMap(r -> r.getContent().stream());
+                .flatMap(PageResult::claimResponseV2Stream);
 
         return Stream.concat(pageOne, others);
     }
 
-    private ClaimResultSetV2 safeFetch(String officeCode, int page, int pageSize) {
+    private PageResult safeFetch(String officeCode, int page, int pageSize) {
         try {
-            return claimService.searchClaims(
+            var result = claimService.searchClaims(
                     officeCode,
                     Optional.empty(),
                     Optional.empty(),
@@ -133,8 +119,19 @@ public class BulkUploadHelper {
                     page,
                     pageSize,
                     null);
+            if (result == null || result.getContent() == null) {
+                throw new RuntimeException("No claims found for office code " + officeCode);
+            }
+            int totalPages = Optional.ofNullable(result.getTotalPages()).orElse(1);
+
+            Stream<ClaimResponseV2> responseStream =
+                    (result.getContent().isEmpty()) ? Stream.empty() : result.getContent().stream();
+
+            return new PageResult(responseStream, totalPages);
         } catch (Exception e) {
             throw new RuntimeException("Error fetching claims for office code " + officeCode + " page " + page, e);
         }
     }
+
+    private record PageResult(Stream<ClaimResponseV2> claimResponseV2Stream, int totalPages) {}
 }
