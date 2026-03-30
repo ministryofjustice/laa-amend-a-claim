@@ -31,21 +31,6 @@ on:
         required: true
         type: string
         description: 'Claims API environment name for Pact broker (e.g., main, stg, prod)'
-    secrets:
-      ECR_ROLE_TO_ASSUME:
-        required: true
-      KUBE_NAMESPACE:
-        required: true
-      KUBE_CLUSTER:
-        required: true
-      KUBE_TOKEN:
-        required: true
-      KUBE_CERT:
-        required: true
-      PACT_BROKER_USERNAME:
-        required: true
-      PACT_BROKER_PASSWORD:
-        required: true
 
 jobs:
   deploy:
@@ -57,7 +42,7 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ inputs.branch }}
 
@@ -98,8 +83,14 @@ jobs:
           kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
           kube-sa: deploy-user
 
+      - name: Login to Docker Hub
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
       - name: Can I deploy?
-        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-can-i-deploy@v1
+        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-can-i-deploy@90aa22bf1f55a39b4f10c4f7168356f0669eed77 # v1
         with:
           pacticipant: 'laa-amend-a-claim'
           environment: ${{ inputs.claim_api_environment_name }}
@@ -130,7 +121,7 @@ jobs:
           SENTRY_ENV: ${{ inputs.sentry_env }}
 
       - name: Record deployment to pact broker
-        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-record-deployment@v1
+        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-record-deployment@90aa22bf1f55a39b4f10c4f7168356f0669eed77 # v1
         with:
           pacticipant: 'laa-amend-a-claim'
           environment: ${{ inputs.claim_api_environment_name }}

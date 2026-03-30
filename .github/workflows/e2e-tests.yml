@@ -22,23 +22,6 @@ on:
         type: string
         default: 'data-claims-api-1.0.17'
         description: 'data-claims-api image tag, retrieved from github build logs (needs to update with latest version)'
-    secrets:
-      ECR_ROLE_TO_ASSUME:
-        required: true
-      DATA_CLAIMS_API_IMAGE:
-        required: true
-      KUBE_NAMESPACE:
-        required: true
-      KUBE_CLUSTER:
-        required: true
-      KUBE_TOKEN:
-        required: true
-      KUBE_CERT:
-        required: true
-      E2E_DB_PASSWORD:
-        required: true
-      E2E_DB_USER:
-         required: true
 
 permissions:
   id-token: write
@@ -58,7 +41,7 @@ jobs:
       KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ inputs.branch }}
 
@@ -147,7 +130,7 @@ jobs:
       DATA_CLAIMS_SERVICE: e2e-${{ inputs.sanitized_release_name }}-claims-api
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ inputs.branch }}
 
@@ -160,7 +143,7 @@ jobs:
           role-session-name: ${{ github.run_id }}-e2e-deploy
 
       - name: Set up kubectl
-        uses: azure/setup-kubectl@v4.0.1
+        uses: azure/setup-kubectl@776406bce94f63e41d621b960d78ee25c8b76ede # v4.0.1
         with:
           version: v1.28.0
 
@@ -217,10 +200,10 @@ jobs:
       DATA_CLAIMS_SERVICE: e2e-${{ inputs.sanitized_release_name }}-claims-api
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v5.0.0
+        uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
 
       - name: Install Node dependencies
         working-directory: src/e2e
@@ -284,7 +267,7 @@ jobs:
 
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v6.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: e2e-test-results-${{ github.run_number }}
           path: |

@@ -28,16 +28,16 @@ jobs:
       LAA_URL: /
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ github.event.inputs.branch || 'main' }}
       - name: Set up JDK 25
-        uses: actions/setup-java@v5.2.0
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           java-version: 25
           distribution: corretto
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v5.0.0
+        uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
       - name: Start app with local profile
         run: |
           echo "INFO: Running application..."
@@ -59,7 +59,7 @@ jobs:
           echo "ERROR: Application did not start"           
           exit 1
       - name: ZAP Scan
-        uses: zaproxy/action-full-scan@v0.13.0 # https://github.com/zaproxy/action-full-scan
+        uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c # v0.13.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           target: 'http://localhost:8080/?officeCode=0P322F' # Exposes 'View' links for ZAP spider to discover
@@ -69,14 +69,14 @@ jobs:
           fail_action: true
       - name: Upload logs
         if: always()
-        uses: actions/upload-artifact@v6.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: zap_output.log
           path: zap_output.log
           retention-days: 1
       - name: Notify Slack on failure
         if: failure()
-        uses: slackapi/slack-github-action@v2.1.1
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook

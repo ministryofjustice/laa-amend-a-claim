@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -39,7 +38,7 @@ public interface ClaimMapper {
     @Mapping(target = "hasAssessment", source = "hasAssessment")
     @Mapping(target = "areaOfLaw", expression = "java(mapAreaOfLaw(claimResponse))")
     @Mapping(target = "providerName", ignore = true)
-    @Mapping(target = "submittedDate", expression = "java(mapSubmittedDate(claimResponse))")
+    @Mapping(target = "submittedDate", source = "dateSubmitted")
     @Mapping(target = "assessmentOutcome", ignore = true)
     @Mapping(target = "lastAssessment", ignore = true)
     @Mapping(target = "claimFields", ignore = true)
@@ -140,12 +139,5 @@ public interface ClaimMapper {
             case LEGAL_HELP -> AreaOfLaw.LEGAL_HELP;
             case MEDIATION -> AreaOfLaw.MEDIATION;
         };
-    }
-
-    default LocalDateTime mapSubmittedDate(ClaimResponseV2 claimResponse) {
-        if (claimResponse.getDateSubmitted() != null) {
-            return claimResponse.getDateSubmitted().toLocalDateTime();
-        }
-        return null;
     }
 }

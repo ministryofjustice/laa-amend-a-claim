@@ -13,17 +13,6 @@ on:
         required: false
         type: string
         default: 'eu-west-2'
-    secrets:
-      ECR_ROLE_TO_ASSUME:
-        required: true
-      KUBE_NAMESPACE:
-        required: true
-      KUBE_CLUSTER:
-        required: true
-      KUBE_TOKEN:
-        required: true
-      KUBE_CERT:
-        required: true
     outputs:
       sanitized_release_name:
         description: "The Docker image tag (commit SHA) - Cache test"
@@ -42,7 +31,7 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           ref: ${{ inputs.branch }}
 
@@ -111,7 +100,7 @@ jobs:
             --timeout 5m
 
       - name: Comment on PR with Environment URL
-        uses: actions/github-script@v8.0.0
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           HOSTNAME: ${{ steps.sanitize.outputs.hostname }}
           RELEASE_NAME: ${{ steps.sanitize.outputs.release_name }}

@@ -18,7 +18,8 @@ import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.updat
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -133,7 +134,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
     class GetSummaryRowsTests {
         @Test
         void createMapOfKeyValuePairs() {
-            LocalDateTime submittedDate = LocalDateTime.of(2000, 1, 1, 0, 0, 0);
+            OffsetDateTime submittedDate = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
             LocalDate caseStartDate = LocalDate.of(2001, 1, 1);
             LocalDate caseEndDate = LocalDate.of(2002, 1, 1);
 

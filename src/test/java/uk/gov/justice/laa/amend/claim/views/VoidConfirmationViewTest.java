@@ -2,7 +2,8 @@ package uk.gov.justice.laa.amend.claim.views;
 
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 import org.jsoup.nodes.Document;
@@ -44,7 +45,7 @@ class VoidConfirmationViewTest extends ViewTestBase {
         claim.setProviderName("Provider Name");
         claim.setClientForename("John");
         claim.setClientSurname("Doe");
-        claim.setSubmittedDate(LocalDateTime.of(2020, 6, 15, 9, 30, 0));
+        claim.setSubmittedDate(OffsetDateTime.of(2020, 6, 15, 9, 30, 0, 0, ZoneOffset.UTC));
         claim.setCategoryOfLaw("TEST");
 
         when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));
@@ -64,7 +65,7 @@ class VoidConfirmationViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList.get(2), "Unique client number (UCN)", "UCN");
         assertSummaryListRowContainsValues(summaryList.get(3), "Provider name", "Provider Name");
         assertSummaryListRowContainsValues(summaryList.get(4), "Office code", "0P322F");
-        assertSummaryListRowContainsValues(summaryList.get(5), "Date submitted", "15 June 2020 at 09:30:00");
+        assertSummaryListRowContainsValues(summaryList.get(5), "Date submitted", "15 June 2020 at 10:30:00");
         assertSummaryListRowContainsValues(summaryList.get(6), "Category of law", "TEST");
         assertSummaryListRowContainsValues(summaryList.get(7), "Fee code description", "FCD");
     }
@@ -83,7 +84,7 @@ class VoidConfirmationViewTest extends ViewTestBase {
         claim.setProviderName("Provider Name");
         claim.setClientForename("John");
         claim.setClientSurname("Doe");
-        claim.setSubmittedDate(LocalDateTime.of(2020, 6, 15, 9, 30, 0));
+        claim.setSubmittedDate(OffsetDateTime.of(2020, 6, 15, 9, 30, 0, 0, ZoneOffset.UTC));
         claim.setCategoryOfLaw("TEST");
 
         when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));
@@ -102,7 +103,7 @@ class VoidConfirmationViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList.get(1), "Unique file number (UFN)", "UFN");
         assertSummaryListRowContainsValues(summaryList.get(2), "Provider name", "Provider Name");
         assertSummaryListRowContainsValues(summaryList.get(3), "Office code", "0P322F");
-        assertSummaryListRowContainsValues(summaryList.get(4), "Date submitted", "15 June 2020 at 09:30:00");
+        assertSummaryListRowContainsValues(summaryList.get(4), "Date submitted", "15 June 2020 at 10:30:00");
         assertSummaryListRowContainsValues(summaryList.get(5), "Category of law", "TEST");
         assertSummaryListRowContainsValues(summaryList.get(6), "Fee code description", "FCD");
     }

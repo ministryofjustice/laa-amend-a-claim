@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -118,9 +117,8 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
     }
 
     default ThymeleafMessage lastEditedBy(MicrosoftApiUser user) {
-        LocalDateTime dateTime = claim().getLastUpdatedDateTime().toLocalDateTime();
-        String date = DateUtils.displayDateTimeDateValue(dateTime);
-        String time = DateUtils.displayDateTimeTimeValue(dateTime);
+        String date = DateUtils.displayDateTimeDateValue(claim().getLastUpdatedDateTime());
+        String time = DateUtils.displayDateTimeTimeValue(claim().getLastUpdatedDateTime());
 
         List<Object> args = new ArrayList<>();
         String editMessageKey;
