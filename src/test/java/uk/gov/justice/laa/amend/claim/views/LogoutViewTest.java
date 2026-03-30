@@ -3,14 +3,9 @@ package uk.gov.justice.laa.amend.claim.views;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.LogoutController;
 
-@ActiveProfiles("local")
 @WebMvcTest(LogoutController.class)
-@Import(LocalSecurityConfig.class)
 public class LogoutViewTest extends ViewTestBase {
     protected LogoutViewTest() {
         this.mapping = "/logout-success";

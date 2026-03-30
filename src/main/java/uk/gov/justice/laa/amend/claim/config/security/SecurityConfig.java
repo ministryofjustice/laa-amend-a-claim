@@ -1,9 +1,9 @@
 package uk.gov.justice.laa.amend.claim.config.security;
 
+import static java.util.stream.Collectors.toSet;
 import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PUBLIC_PATHS;
-import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER;
-import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -102,9 +102,9 @@ public class SecurityConfig extends CommonSecurityConfig {
     }
 
     private static Set<GrantedAuthority> allAuthorities() {
-        var roles = Set.of(
-                new SimpleGrantedAuthority(ROLE_CLAIM_AMENDMENTS_CASEWORKER.name()),
-                new SimpleGrantedAuthority(ROLE_ESCAPE_CASE_CASEWORKER.name()));
+        var roles = Arrays.stream(Role.values())
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .collect(toSet());
         return new SimpleAuthorityMapper().mapAuthorities(roles);
     }
 

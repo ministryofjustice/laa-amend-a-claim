@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_VOID;
+
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.util.List;
@@ -23,8 +25,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
 @Service
 @Slf4j
 public class ClaimService {
-
-    private static final String VOID_ASSESSMENT_REASON = "Void assessment";
 
     private final ClaimsApiClient claimsApiClient;
     private final ClaimMapper claimMapper;
@@ -106,7 +106,7 @@ public class ClaimService {
 
     public VoidClaim201Response voidClaim(UUID claimId, UUID userId) {
         try {
-            var request = new VoidClaimRequest(userId, VOID_ASSESSMENT_REASON);
+            var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
             var response = claimsApiClient.voidClaim(claimId, request).block();
             voidClaimCounter.increment();
             return response;

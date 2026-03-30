@@ -14,20 +14,12 @@ import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWO
 import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 
 import java.math.BigDecimal;
-import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
@@ -35,22 +27,9 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
-import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
-@ActiveProfiles("local")
 @WebMvcTest(ChangeAssessedTotalsController.class)
-@Import({LocalSecurityConfig.class, ThymeleafConfig.class})
-class ChangeAssessedTotalsControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private DummyUserSecurityService dummyUserSecurityService;
-
-    @MockitoBean
-    private MaintenanceService maintenanceService;
+class ChangeAssessedTotalsControllerTest extends BaseControllerTest {
 
     private MockHttpSession session;
     private UUID claimId;
@@ -66,8 +45,6 @@ class ChangeAssessedTotalsControllerTest {
         claimId = UUID.randomUUID();
         civilClaim = MockClaimsFunctions.createMockCivilClaim();
         crimeClaim = MockClaimsFunctions.createMockCrimeClaim();
-
-        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
     }
 
     @Test

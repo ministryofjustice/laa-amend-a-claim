@@ -1,5 +1,8 @@
 <section aria-label="Service information" class="govuk-service-navigation"
-         data-module="govuk-service-navigation" th:fragment="serviceNavigation(pageCategory)">
+         data-module="govuk-service-navigation" th:fragment="serviceNavigation(pageCategory)"
+         xmlns:th="http://www.thymeleaf.org"
+         xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
     <div class="govuk-width-container">
         <div class="govuk-service-navigation__container">
 			<span class="govuk-service-navigation__service-name">
@@ -13,8 +16,18 @@
                     <th:block th:replace="~{partials/service-navigation-item :: serviceNavigationItem(
                         pageCategory=${pageCategory},
                         itemCategory='search',
-                        text=#{service.navigation.search}
+                        text=#{service.navigation.search},
+                        path='/'
                     )}"></th:block>
+                    <th:block th:if="${featureFlagsConfig.isBulkUploadEnabled}"
+                            sec:authorize="${hasRole('ROLE_ESCAPE_CASE_BULK_UPLOADER')}">
+                        <th:block th:replace="~{partials/service-navigation-item :: serviceNavigationItem(
+                                pageCategory=${pageCategory},
+                                itemCategory='bulk-upload',
+                                text=#{service.navigation.bulkUpload},
+                                path='/bulk-upload',
+                    )}"></th:block>
+                    </th:block>
                 </ul>
             </nav>
         </div>

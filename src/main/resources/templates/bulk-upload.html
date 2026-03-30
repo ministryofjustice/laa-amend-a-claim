@@ -2,25 +2,66 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout :: layout(
-        title=${'Bulk upload'},
+        title=#{bulkUpload.title},
         mainContent=~{::#main-content},
-        pageCategory=${null},
-        showBackLink=${true}
+        pageCategory='bulk-upload',
+        showBackLink=${false}
     )}">
     <body>
         <main class="govuk-main-wrapper" id="main-content">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds">
-                    <form th:action="@{/bulk-upload}" enctype="multipart/form-data" method="post">
-                        <div class="govuk-form-group">
-                            <label class="govuk-label" for="file-upload">
-                                Upload a file
-                            </label>
-                            <input class="govuk-file-upload" id="file-upload" name="file" type="file">
+                    <h1 class="govuk-heading-xl">
+                        <span th:text="#{bulkUpload.heading}"></span>
+                    </h1>
+                    <div class="govuk-body" th:text="#{bulkUpload.description}"></div>
+
+                    <details class="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text" th:text="#{bulkUpload.csvFormatSummary}"></span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            TODO: To be populated by BC-483
                         </div>
-                        <div th:text="${result}"></div>
+                    </details>
+
+                    <form id="bulk-upload-form" th:action="@{/bulk-upload}" enctype="multipart/form-data" method="post">
+                        <div class="govuk-form-group"
+                                th:classappend="${fileError != null}? 'govuk-form-group--error'">
+
+                            <label class="govuk-label govuk-label--l" for="file-upload" th:text="#{bulkUpload.fileLabel}"></label>
+                            <div class="govuk-hint" th:text="#{bulkUpload.fileHint}"></div>
+                            <p th:if="${fileError}" class="govuk-error-message" id="file-upload-error">
+                                <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                                <span th:text="${fileError.resolve(#messages)}"></span>
+                            </p>
+                            <div class="govuk-drop-zone" data-module="govuk-file-upload" id="drop-zone">
+                                <input class="govuk-file-upload"
+                                       th:classappend="${fileError}? 'govuk-file-upload--error'"
+                                       id="file-upload"
+                                       name="file"
+                                       type="file"
+                                       aria-describedby="file-upload-error"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="loading-wrapper" id="loading-wrapper">
+                            <div class="loading-spinner"></div>
+                            <h2 class="govuk-heading-m govuk-!-text-align-centre govuk-!-padding-top-4" th:text="#{bulkUpload.uploading}"></h2>
+                        </div>
+
                         <div class="govuk-button-group">
-                            <button class="govuk-button" type="submit" data-module="govuk-button">Upload</button>
+                            <button class="govuk-button"
+                                    id="bulk-upload-button"
+                                    type="submit"
+                                    data-module="govuk-button"
+                                    th:text="#{bulkUpload.uploadButton}">
+                            </button>
+                            <a th:href="@{/}" id="back-to-search"
+                               class="govuk-link govuk-link--no-visited-state"
+                               th:text="#{bulkUpload.backToSearch}">
+                            </a>
                         </div>
                     </form>
                 </div>

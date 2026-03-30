@@ -15,7 +15,7 @@ public class WireMockSetup {
     private static WireMockServer wireMockServer;
 
     @BeforeAll
-    static void setupWireMock() {
+    public static void setupWireMock() {
         int port = 8089;
         wireMockServer = new WireMockServer(port);
         wireMockServer.start();
@@ -23,11 +23,11 @@ public class WireMockSetup {
     }
 
     @AfterAll
-    static void stopWireMock() {
+    public static void stopWireMock() {
         wireMockServer.stop();
     }
 
-    public void setupGetClaimsStub() {
+    public static void setupGetClaimsStub() {
         String response = """
             {
                 "claims": [
@@ -54,7 +54,7 @@ public class WireMockSetup {
                         .withBody(response)));
     }
 
-    public void setupGetClaimStub(String submissionId, String claimId, String officeCode) {
+    public static void setupGetClaimStub(String submissionId, String claimId, String officeCode) {
         String response = String.format("""
             {
                   "id": "%s",
@@ -90,7 +90,7 @@ public class WireMockSetup {
                         .withBody(response)));
     }
 
-    public void setupGetProviderOfficeStub(String officeCode, String firmName) {
+    public static void setupGetProviderOfficeStub(String officeCode, String firmName) {
         String response = String.format("""
             {
                 "firm": {

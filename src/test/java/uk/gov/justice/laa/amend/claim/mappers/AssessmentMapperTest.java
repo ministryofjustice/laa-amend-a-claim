@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.mappers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
 
@@ -43,9 +44,8 @@ class AssessmentMapperTest {
 
         AssessmentPost assessment = mapper.mapCivilClaimToAssessment(claim, userId);
 
-        assertEquals(claim.getClaimId(), assessment.getClaimId().toString());
-        assertEquals(
-                claim.getClaimSummaryFeeId(), assessment.getClaimSummaryFeeId().toString());
+        assertEquals(claim.getClaimId(), assessment.getClaimId());
+        assertEquals(claim.getClaimSummaryFeeId(), assessment.getClaimSummaryFeeId());
         assertEquals(AssessmentOutcome.REDUCED_STILL_ESCAPED, assessment.getAssessmentOutcome());
         assertEquals(BigDecimal.valueOf(300), assessment.getFixedFeeAmount());
         assertEquals(BigDecimal.valueOf(300), assessment.getNetProfitCostsAmount());
@@ -64,6 +64,7 @@ class AssessmentMapperTest {
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalVat());
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalInclVat());
         assertEquals(true, assessment.getIsVatApplicable());
+        assertEquals(ASSESSMENT_REASON_ESCAPE_CASE, assessment.getAssessmentReason());
         assertEquals(userId, assessment.getCreatedByUserId());
     }
 
@@ -76,9 +77,8 @@ class AssessmentMapperTest {
 
         AssessmentPost assessment = mapper.mapCrimeClaimToAssessment(claim, userId);
 
-        assertEquals(claim.getClaimId(), assessment.getClaimId().toString());
-        assertEquals(
-                claim.getClaimSummaryFeeId(), assessment.getClaimSummaryFeeId().toString());
+        assertEquals(claim.getClaimId(), assessment.getClaimId());
+        assertEquals(claim.getClaimSummaryFeeId(), assessment.getClaimSummaryFeeId());
         assertEquals(AssessmentOutcome.REDUCED_TO_FIXED_FEE, assessment.getAssessmentOutcome());
         assertEquals(BigDecimal.valueOf(300), assessment.getFixedFeeAmount());
         assertEquals(BigDecimal.valueOf(300), assessment.getNetProfitCostsAmount());
@@ -91,6 +91,7 @@ class AssessmentMapperTest {
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalVat());
         assertEquals(BigDecimal.valueOf(300), assessment.getAllowedTotalInclVat());
         assertEquals(true, assessment.getIsVatApplicable());
+        assertEquals(ASSESSMENT_REASON_ESCAPE_CASE, assessment.getAssessmentReason());
         assertEquals(userId, assessment.getCreatedByUserId());
     }
 

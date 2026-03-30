@@ -7,7 +7,8 @@ import java.util.Set;
 
 public enum Role {
     ROLE_CLAIM_AMENDMENTS_CASEWORKER("Amend a Claim - Claim Amendments Caseworker"),
-    ROLE_ESCAPE_CASE_CASEWORKER("Amend a Claim - Escape Case Caseworker");
+    ROLE_ESCAPE_CASE_CASEWORKER("Amend a Claim - Escape Case Caseworker"),
+    ROLE_ESCAPE_CASE_BULK_UPLOADER("Amend a Claim - Escape Case Assessment Bulk Uploader");
 
     private final String roleName;
 

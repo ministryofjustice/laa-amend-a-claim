@@ -10,19 +10,14 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.VoidConfirmationController;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 
-@ActiveProfiles("local")
 @WebMvcTest(VoidConfirmationController.class)
-@Import(LocalSecurityConfig.class)
 class VoidConfirmationViewTest extends ViewTestBase {
 
     private static final UUID USER_ID = UUID.fromString(DummyUserSecurityService.USER_ID);
@@ -40,8 +35,8 @@ class VoidConfirmationViewTest extends ViewTestBase {
 
         var claim = MockClaimsFunctions.createMockCivilClaim();
         this.claim = claim;
-        claim.setSubmissionId(submissionId.toString());
-        claim.setClaimId(claimId.toString());
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
         claim.setFeeCodeDescription("FCD");
         claim.setUniqueFileNumber("UFN");
         claim.setUniqueClientNumber("UCN");
@@ -80,8 +75,8 @@ class VoidConfirmationViewTest extends ViewTestBase {
 
         var claim = MockClaimsFunctions.createMockCrimeClaim();
         this.claim = claim;
-        claim.setSubmissionId(submissionId.toString());
-        claim.setClaimId(claimId.toString());
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
         claim.setFeeCodeDescription("FCD");
         claim.setUniqueFileNumber("UFN");
         claim.setOfficeCode("0P322F");

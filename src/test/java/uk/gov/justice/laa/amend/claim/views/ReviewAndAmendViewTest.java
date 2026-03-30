@@ -9,13 +9,10 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.controllers.ClaimReviewController;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
@@ -24,9 +21,7 @@ import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
-@ActiveProfiles("local")
 @WebMvcTest(ClaimReviewController.class)
-@Import(LocalSecurityConfig.class)
 class ReviewAndAmendViewTest extends ViewTestBase {
 
     @MockitoBean

@@ -72,14 +72,12 @@ jobs:
           ecr_role: ${{ secrets.ECR_ROLE_TO_ASSUME }}
           role-session-name: ${{ github.run_id }}-build
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.12.0
-
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v6.18.0
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:${{ steps.get_sha.outputs.sha }}
-          cache-from: type=registry,ref=${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:buildcache
-          cache-to: type=registry,ref=${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:buildcache,mode=max
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-auth.outputs.image_registry }}
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ steps.get_sha.outputs.sha }}
+        run: |
+          docker build --pull --tag app .
+          docker tag app $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

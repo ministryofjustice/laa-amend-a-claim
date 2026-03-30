@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.UUID;
 import lombok.Data;
 import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.annotation.JsonSerialize;
@@ -18,9 +19,9 @@ public class Claim implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private String submissionId;
-    private String claimId;
-    private String claimSummaryFeeId;
+    private UUID submissionId;
+    private UUID claimId;
+    private UUID claimSummaryFeeId;
     private String uniqueFileNumber;
     private String caseReferenceNumber;
     private String clientSurname;

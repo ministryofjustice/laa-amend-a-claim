@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_VOID;
 
 import au.com.dius.pact.consumer.dsl.LambdaDsl;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
@@ -74,7 +75,7 @@ public final class VoidClaimPactTest extends AbstractPactTest {
     @DisplayName("Verify 201 response - claim voided successfully")
     @PactTestFor(pactMethod = "voidClaim201")
     void verify201Response() {
-        VoidClaimRequest request = new VoidClaimRequest(UUID.randomUUID(), "Void reason");
+        VoidClaimRequest request = new VoidClaimRequest(UUID.randomUUID(), ASSESSMENT_REASON_VOID);
         VoidClaim201Response response =
                 claimsApiClient.voidClaim(CLAIM_ID, request).block();
 
@@ -86,7 +87,7 @@ public final class VoidClaimPactTest extends AbstractPactTest {
     @DisplayName("Verify 404 response - claim does not exist")
     @PactTestFor(pactMethod = "voidClaim404")
     void verify404Response() {
-        VoidClaimRequest request = new VoidClaimRequest(UUID.randomUUID(), "Void reason");
+        VoidClaimRequest request = new VoidClaimRequest(UUID.randomUUID(), ASSESSMENT_REASON_VOID);
         assertThrows(
                 NotFound.class,
                 () -> claimsApiClient.voidClaim(CLAIM_ID, request).block());
@@ -94,6 +95,6 @@ public final class VoidClaimPactTest extends AbstractPactTest {
 
     private static void buildVoidClaimRequestBody(au.com.dius.pact.consumer.dsl.LambdaDslJsonBody body) {
         body.uuid("created_by_user_id");
-        body.stringType("assessment_reason", "Void reason");
+        body.stringType("assessment_reason", ASSESSMENT_REASON_VOID);
     }
 }

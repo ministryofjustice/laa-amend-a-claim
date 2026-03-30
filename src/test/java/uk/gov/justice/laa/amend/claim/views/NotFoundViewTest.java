@@ -1,18 +1,14 @@
 package uk.gov.justice.laa.amend.claim.views;
 
 import org.jsoup.nodes.Document;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.exceptions.ErrorPageController;
 import uk.gov.justice.laa.amend.claim.factories.ReferenceNumberFactory;
 
-@ActiveProfiles("local")
 @WebMvcTest(ErrorPageController.class)
-@Import(LocalSecurityConfig.class)
 public class NotFoundViewTest extends ViewTestBase {
 
     @MockitoBean
@@ -22,9 +18,10 @@ public class NotFoundViewTest extends ViewTestBase {
         this.mapping = "/error";
     }
 
-    @Test
-    void testPage() throws Exception {
-        Document doc = renderErrorPage(404, 404);
+    @ParameterizedTest
+    @ValueSource(ints = {403, 404})
+    void testPage(int requestStatus) throws Exception {
+        Document doc = renderErrorPage(requestStatus, 404);
 
         assertPageHasTitle(doc, "Page not found");
 

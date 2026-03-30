@@ -125,7 +125,7 @@ public class AssessmentService {
     public ClaimDetails getLatestAssessmentByClaim(ClaimDetails claimDetails) {
         // Fetch the latest 5 records to find the most recent escape case
         AssessmentResultSet assessmentResults = claimsApiClient
-                .getAssessments(UUID.fromString(claimDetails.getClaimId()), 0, 5, "createdOn,desc")
+                .getAssessments(claimDetails.getClaimId(), 0, 5, "createdOn,desc")
                 .block();
 
         List<AssessmentGet> assessments = validateAndGetAssessments(assessmentResults, claimDetails);
