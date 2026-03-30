@@ -14,23 +14,30 @@ import uk.gov.justice.laa.amend.claim.bulkupload.CsvHeaderValidator;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvRowMapper;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvSchemaProvider;
 import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
+import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadValidationOutcome;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 
 @Service
 @Slf4j
 public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilClaim> {
     private final BulkUploadHelper bulkUploadHelper;
+    private final ClaimMapper claimMapper;
 
     public BulkUploadCivilService(
             CsvSchemaProvider<BulkUploadCivilClaim> schemaProvider,
             CsvRowMapper<BulkUploadCivilClaim> rowMapper,
             CsvHeaderValidator csvHeaderValidator,
             BulkUploadHelper bulkUploadHelper,
-            AssessmentService assessmentService) {
+            AssessmentService assessmentService,
+            ClaimMapper claimMapper) {
         super(schemaProvider, rowMapper, csvHeaderValidator, assessmentService);
         this.bulkUploadHelper = bulkUploadHelper;
+        this.claimMapper = claimMapper;
     }
 
     /**
@@ -67,7 +74,7 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
             }
 
             var claimResponseForRow = claimResponsesForRow.getFirst();
-            var assessedClaimForRow = bulkUploadHelper.mapToAssessedClaim(claimResponseForRow, row);
+            var assessedClaimForRow = mapToAssessedClaim(claimResponseForRow, row);
             claimsData.add(assessedClaimForRow);
         }
         if (!errors.isEmpty()) {
@@ -78,5 +85,44 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
             log.info(message);
             return new BulkUploadValidationOutcome(new BulkUploadResult(SUCCESS, List.of(message)), claimsData);
         }
+    }
+
+    private ClaimDetails mapToAssessedClaim(ClaimResponseV2 claim, BulkUploadCivilClaim row) {
+        var civilClaimDetails = claimMapper.mapToCivilClaimDetails(claim);
+        applyRowToClaimDetails(civilClaimDetails, row);
+        return civilClaimDetails;
+    }
+
+    private void applyRowToClaimDetails(CivilClaimDetails details, BulkUploadCivilClaim row) {
+        if (details.getNetProfitCost() != null) {
+            details.getNetProfitCost().setAssessed(row.getProfitCost());
+        }
+
+        if (details.getDisbursementVatAmount() != null) {
+            details.getDisbursementVatAmount().setAssessed(row.getDisbursementsVat());
+        }
+
+        if (details.getNetDisbursementAmount() != null) {
+            details.getNetDisbursementAmount().setAssessed(row.getDisbursements());
+        }
+
+        if (details.getCounselsCost() != null) {
+            details.getCounselsCost().setAssessed(row.getCounselCosts());
+        }
+
+        if (details.getAllowedTotalVat() != null) {
+            details.getAllowedTotalVat().setAssessed(row.getTotalAllowedVat());
+        }
+        if (details.getAssessedTotalVat() != null) {
+            details.getAssessedTotalVat().setAssessed(row.getTotalAllowedVat());
+        }
+        if (details.getAssessedTotalInclVat() != null) {
+            details.getAssessedTotalInclVat().setAssessed(row.getTotalAllowedInclVat());
+        }
+        if (details.getAllowedTotalInclVat() != null) {
+            details.getAllowedTotalInclVat().setAssessed(row.getTotalAllowedInclVat());
+        }
+
+        details.setAssessmentOutcome(OutcomeType.fromCsvLabel(row.getAssessmentOutcome()));
     }
 }

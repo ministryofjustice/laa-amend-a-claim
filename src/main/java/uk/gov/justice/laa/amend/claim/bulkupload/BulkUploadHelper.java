@@ -18,9 +18,6 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
@@ -87,45 +84,6 @@ public class BulkUploadHelper {
             officeUfnToClaim.put(key, row);
         });
         return officeUfnToClaim;
-    }
-
-    public ClaimDetails mapToAssessedClaim(ClaimResponseV2 claim, BulkUploadCivilClaim row) {
-        var civilClaimDetails = claimMapper.mapToCivilClaimDetails(claim);
-        applyRowToClaimDetails(civilClaimDetails, row);
-        return civilClaimDetails;
-    }
-
-    private void applyRowToClaimDetails(CivilClaimDetails details, BulkUploadCivilClaim row) {
-        if (details.getNetProfitCost() != null) {
-            details.getNetProfitCost().setAssessed(row.getProfitCost());
-        }
-
-        if (details.getDisbursementVatAmount() != null) {
-            details.getDisbursementVatAmount().setAssessed(row.getDisbursementsVat());
-        }
-
-        if (details.getNetDisbursementAmount() != null) {
-            details.getNetDisbursementAmount().setAssessed(row.getDisbursements());
-        }
-
-        if (details.getCounselsCost() != null) {
-            details.getCounselsCost().setAssessed(row.getCounselCosts());
-        }
-
-        if (details.getAllowedTotalVat() != null) {
-            details.getAllowedTotalVat().setAssessed(row.getTotalAllowedVat());
-        }
-        if (details.getAssessedTotalVat() != null) {
-            details.getAssessedTotalVat().setAssessed(row.getTotalAllowedVat());
-        }
-        if (details.getAssessedTotalInclVat() != null) {
-            details.getAssessedTotalInclVat().setAssessed(row.getTotalAllowedInclVat());
-        }
-        if (details.getAllowedTotalInclVat() != null) {
-            details.getAllowedTotalInclVat().setAssessed(row.getTotalAllowedInclVat());
-        }
-
-        details.setAssessmentOutcome(OutcomeType.fromCsvLabel(row.getAssessmentOutcome()));
     }
 
     private Predicate<ClaimResponseV2> ufnExistsInRowsPredicate(

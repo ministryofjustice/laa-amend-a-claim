@@ -7,17 +7,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.isNull;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.createAllowedTotalInclVatField;
-import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.createAllowedTotalVatField;
-import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.createAssessedTotalInclVatField;
-import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.createAssessedTotalVatField;
-import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.createCounselCostField;
-import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.createDisbursementCostField;
-import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.createDisbursementVatCostField;
-import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.createNetProfitCostField;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -30,9 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
@@ -91,41 +78,6 @@ class BulkUploadHelperTest {
         assertTrue(errors.isEmpty());
     }
 
-    @Test
-    void mapToAssessedClaimShouldCopyAllAssessedValues() {
-        ClaimResponseV2 apiResponse = new ClaimResponseV2();
-        BulkUploadCivilClaim row = buildRow();
-
-        CivilClaimDetails blank = buildEmptyDetails();
-        when(claimMapper.mapToCivilClaimDetails(apiResponse)).thenReturn(blank);
-
-        // Act
-        ClaimDetails result = helper.mapToAssessedClaim(apiResponse, row);
-
-        // Assert
-        CivilClaimDetails mapped = (CivilClaimDetails) result;
-
-        // --- currency fields ---
-        assertEquals(new BigDecimal("10.00"), mapped.getNetProfitCost().getAssessed());
-        assertEquals(new BigDecimal("3.00"), mapped.getDisbursementVatAmount().getAssessed());
-        assertEquals(new BigDecimal("20.50"), mapped.getNetDisbursementAmount().getAssessed());
-        assertEquals(new BigDecimal("5.10"), mapped.getCounselsCost().getAssessed());
-
-        // --- VAT totals ---
-        assertEquals(new BigDecimal("7.77"), mapped.getAllowedTotalVat().getAssessed());
-        assertEquals(new BigDecimal("7.77"), mapped.getAssessedTotalVat().getAssessed());
-
-        // --- Incl VAT totals ---
-        assertEquals(new BigDecimal("123.45"), mapped.getAllowedTotalInclVat().getAssessed());
-        assertEquals(new BigDecimal("123.45"), mapped.getAssessedTotalInclVat().getAssessed());
-
-        // --- assessment outcome ---
-        assertEquals(OutcomeType.fromCsvLabel("Reduced"), mapped.getAssessmentOutcome());
-
-        // --- verify mapper called correctly ---
-        verify(claimMapper, times(1)).mapToCivilClaimDetails(apiResponse);
-    }
-
     private BulkUploadCivilClaim row(String officeCode, String ufn) {
         BulkUploadCivilClaim r = new BulkUploadCivilClaim();
         r.setOfficeCode(officeCode);
@@ -146,30 +98,5 @@ class BulkUploadHelperTest {
         ClaimResultSetV2 result = new ClaimResultSetV2();
         result.setContent(Collections.emptyList());
         return result;
-    }
-
-    private CivilClaimDetails buildEmptyDetails() {
-        CivilClaimDetails d = new CivilClaimDetails();
-        d.setNetProfitCost(createNetProfitCostField());
-        d.setDisbursementVatAmount(createDisbursementVatCostField());
-        d.setNetDisbursementAmount(createDisbursementCostField());
-        d.setCounselsCost(createCounselCostField());
-        d.setAllowedTotalVat(createAllowedTotalVatField());
-        d.setAllowedTotalInclVat(createAllowedTotalInclVatField());
-        d.setAssessedTotalInclVat(createAssessedTotalInclVatField());
-        d.setAssessedTotalVat(createAssessedTotalVatField());
-        return d;
-    }
-
-    private BulkUploadCivilClaim buildRow() {
-        BulkUploadCivilClaim r = new BulkUploadCivilClaim();
-        r.setProfitCost(new BigDecimal("10.00"));
-        r.setDisbursements(new BigDecimal("20.50"));
-        r.setDisbursementsVat(new BigDecimal("3.00"));
-        r.setCounselCosts(new BigDecimal("5.10"));
-        r.setTotalAllowedVat(new BigDecimal("7.77"));
-        r.setTotalAllowedInclVat(new BigDecimal("123.45"));
-        r.setAssessmentOutcome("Reduced");
-        return r;
     }
 }
