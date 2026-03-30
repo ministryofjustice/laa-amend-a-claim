@@ -89,13 +89,13 @@ spec:
     rules:
     - alert: ProviderDetailsApiUnavailable
       annotations:
-        message: Provider Details API is returning errors during office hours.
+        message: Provider Details API has returned errors in the last 5 minutes during office hours.
         dashboard_url: {{ .Values.alerting.grafanaDashboard }}
       expr: >-
         (
           increase(http_client_requests_seconds_count{namespace="{{ .Release.Namespace }}", uri="/api/v1/provider-offices/{officeCode}", outcome!="SUCCESS"}[5m]) > 0
         )
-        and on() (hour() >= 7 and hour() <= 17)
+        and on() (hour() >= 7 and hour() <= 16)
         and on() (day_of_week() >= 1 and day_of_week() <= 5)
       for: 0m
       labels:

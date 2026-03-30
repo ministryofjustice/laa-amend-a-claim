@@ -16,14 +16,15 @@ public class ProviderService {
     /**
      * Fetches provider firm office from Provider API
      *
-     * @param officeAccountNumber the office account number
+     * @param officeCode the office code
      * @return firm office from API or null as fallback
      */
-    public ProviderFirmOfficeDto getProviderFirm(String officeAccountNumber) {
+    public ProviderFirmOfficeDto getProviderFirm(String officeCode) {
         try {
-            return providerApiClient.getProviderOffice(officeAccountNumber).block();
+            return providerApiClient.getProviderOffice(officeCode).block();
         } catch (Exception e) {
-            log.info("Failed to fetch provider firm for office account: {}", officeAccountNumber, e);
+            log.info("Failed to fetch provider firm for office code: {}. Error: {}", officeCode, e.getMessage());
+            log.debug("Provider API failure details for office code: {}", officeCode, e);
         }
         return null;
     }
