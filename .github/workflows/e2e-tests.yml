@@ -22,23 +22,6 @@ on:
         type: string
         default: 'data-claims-api-1.0.17'
         description: 'data-claims-api image tag, retrieved from github build logs (needs to update with latest version)'
-    secrets:
-      ECR_ROLE_TO_ASSUME:
-        required: true
-      DATA_CLAIMS_API_IMAGE:
-        required: true
-      KUBE_NAMESPACE:
-        required: true
-      KUBE_CLUSTER:
-        required: true
-      KUBE_TOKEN:
-        required: true
-      KUBE_CERT:
-        required: true
-      E2E_DB_PASSWORD:
-        required: true
-      E2E_DB_USER:
-         required: true
 
 permissions:
   id-token: write

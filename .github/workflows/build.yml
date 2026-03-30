@@ -7,11 +7,6 @@ on:
         required: false
         type: string
         default: 'main'
-    secrets:
-      ECR_ROLE_TO_ASSUME:
-        required: true
-      PAT_TOKEN:
-        required: true
     outputs:
       image_tag:
         description: "The Docker image tag (commit SHA) - Cache test"
@@ -72,12 +67,20 @@ jobs:
           ecr_role: ${{ secrets.ECR_ROLE_TO_ASSUME }}
           role-session-name: ${{ github.run_id }}-build
 
+      - name: Login to Docker Hub
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+
       - name: Build and Push Docker Image
-        env:
-          ECR_REGISTRY: ${{ steps.ecr-auth.outputs.image_registry }}
-          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ steps.get_sha.outputs.sha }}
-        run: |
-          docker build --pull --tag app .
-          docker tag app $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:${{ steps.get_sha.outputs.sha }}
+          cache-from: type=registry,ref=${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:buildcache
+          cache-to: type=registry,ref=${{ steps.ecr-auth.outputs.image_registry }}/${{ vars.ECR_REPOSITORY }}:buildcache,mode=max

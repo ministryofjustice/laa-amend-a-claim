@@ -16,11 +16,6 @@ on:
         type: string
         default: 'eu-west-2'
         description: 'AWS region for the ECR'
-    secrets:
-      SNYK_TOKEN:
-        required: true
-      ECR_ROLE_TO_ASSUME:
-        required: true
 
 permissions:
   contents: read
@@ -53,6 +48,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@55252c7a3a47fea1e0fdd923b269f4be8a5ad9a0
         with:
           sarif_file: snyk-app.sarif
+          category: snyk-app
 
   vulnerability-scan-docker:
     name: Vulnerability Scan - Docker
