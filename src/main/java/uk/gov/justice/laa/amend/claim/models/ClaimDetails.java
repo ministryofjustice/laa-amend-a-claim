@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.amend.claim.models;
 
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.function.Function;
@@ -32,7 +31,7 @@ public abstract class ClaimDetails extends Claim {
     private ClaimField allowedTotalInclVat;
 
     private OutcomeType assessmentOutcome;
-    private LocalDateTime submittedDate;
+    private OffsetDateTime submittedDate;
     private String feeCode;
     private String feeCodeDescription;
     private boolean hasAssessment;

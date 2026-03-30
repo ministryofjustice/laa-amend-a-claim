@@ -94,7 +94,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList1.get(2), "Unique client number (UCN)", "Not applicable");
         assertSummaryListRowContainsValues(summaryList1.get(3), "Provider name", "Currently not available");
         assertSummaryListRowContainsValues(summaryList1.get(4), "Office code", "0P322F");
-        assertSummaryListRowContainsValues(summaryList1.get(5), "Date submitted", "15 June 2020 at 09:30:00");
+        assertSummaryListRowContainsValues(summaryList1.get(5), "Date submitted", "15 June 2020 at 10:30:00");
         assertSummaryListRowContainsValues(summaryList1.get(6), "Area of law", "Legal help");
         assertSummaryListRowContainsValues(summaryList1.get(7), "Category of law", "TEST");
         assertSummaryListRowContainsValues(summaryList1.get(8), "Fee code", "FC");
@@ -223,7 +223,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         assertSummaryListRowContainsValues(summaryList1.get(1), "Unique file number (UFN)", "Not applicable");
         assertSummaryListRowContainsValues(summaryList1.get(2), "Provider name", "Currently not available");
         assertSummaryListRowContainsValues(summaryList1.get(3), "Office code", "0P322F");
-        assertSummaryListRowContainsValues(summaryList1.get(4), "Date submitted", "15 June 2020 at 09:30:00");
+        assertSummaryListRowContainsValues(summaryList1.get(4), "Date submitted", "15 June 2020 at 10:30:00");
         assertSummaryListRowContainsValues(summaryList1.get(5), "Area of law", "Crime lower");
         assertSummaryListRowContainsValues(summaryList1.get(6), "Category of law", "Not applicable");
         assertSummaryListRowContainsValues(summaryList1.get(7), "Fee code", "FC");
@@ -354,6 +354,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setClientSurname("Doe");
         claim.setCaseStartDate(LocalDate.of(2020, 1, 1));
         claim.setCaseEndDate(LocalDate.of(2020, 12, 31));
-        claim.setSubmittedDate(LocalDateTime.of(2020, 6, 15, 9, 30, 0));
+        claim.setSubmittedDate(OffsetDateTime.of(2020, 6, 15, 9, 30, 0, 0, ZoneOffset.UTC));
     }
 }

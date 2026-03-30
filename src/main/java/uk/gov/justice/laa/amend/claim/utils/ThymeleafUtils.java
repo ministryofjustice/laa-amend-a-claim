@@ -7,7 +7,6 @@ import static uk.gov.justice.laa.amend.claim.utils.DateUtils.displayDateValue;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -65,10 +64,9 @@ public class ThymeleafUtils {
             case Boolean b -> getFormattedBoolean(b);
             case String s -> new ThymeleafLiteralString(s);
             case ThymeleafMessage s -> s;
-            case OffsetDateTime o -> getFormattedValue(o.toLocalDateTime());
+            case OffsetDateTime o ->
+                new ThymeleafMessage("fulldate.format", displayDateTimeDateValue(o), displayDateTimeTimeValue(o));
             case LocalDate d -> new ThymeleafLiteralString(displayDateValue(d));
-            case LocalDateTime d ->
-                new ThymeleafMessage("fulldate.format", displayDateTimeDateValue(d), displayDateTimeTimeValue(d));
             default -> new ThymeleafLiteralString(value.toString());
         };
     }
