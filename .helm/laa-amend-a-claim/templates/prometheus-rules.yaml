@@ -93,11 +93,11 @@ spec:
         dashboard_url: {{ .Values.alerting.grafanaDashboard }}
       expr: >-
         (
-          sum(rate(http_client_requests_seconds_count{namespace="{{ .Release.Namespace }}", uri="/api/v1/provider-offices/{officeCode}", outcome!="SUCCESS"}[5m])) > 0
+          increase(http_client_requests_seconds_count{namespace="{{ .Release.Namespace }}", uri="/api/v1/provider-offices/{officeCode}", outcome!="SUCCESS"}[5m]) > 0
         )
-        and on() (hour() >= 8 and hour() <= 17)
+        and on() (hour() >= 7 and hour() <= 17)
         and on() (day_of_week() >= 1 and day_of_week() <= 5)
-      for: 5m
+      for: 0m
       labels:
         severity: {{ .Values.alerting.severity }}
 {{- end }}
