@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 public class DateUtils {
 
-    static final ZoneId LONDON_TIMEZONE = ZoneId.of("Europe/London");
+    private static final ZoneId LONDON_TIMEZONE = ZoneId.of("Europe/London");
 
     public static String displayDateValue(LocalDate value) {
         return value != null ? value.format(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)) : null;
