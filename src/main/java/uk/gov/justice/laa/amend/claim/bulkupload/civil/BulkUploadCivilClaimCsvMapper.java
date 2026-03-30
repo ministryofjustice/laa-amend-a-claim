@@ -6,7 +6,7 @@ import static uk.gov.justice.laa.amend.claim.bulkupload.civil.CivilClaimSchemaPr
 import static uk.gov.justice.laa.amend.claim.bulkupload.civil.CivilClaimSchemaProvider.DISBURSEMENTS_VAT;
 import static uk.gov.justice.laa.amend.claim.bulkupload.civil.CivilClaimSchemaProvider.OFFICE_CODE;
 import static uk.gov.justice.laa.amend.claim.bulkupload.civil.CivilClaimSchemaProvider.PROFIT_COST;
-import static uk.gov.justice.laa.amend.claim.bulkupload.civil.CivilClaimSchemaProvider.TOTAL_ALLOWED_INCLUDE_VAT;
+import static uk.gov.justice.laa.amend.claim.bulkupload.civil.CivilClaimSchemaProvider.TOTAL_ALLOWED_INCLUDING_VAT;
 import static uk.gov.justice.laa.amend.claim.bulkupload.civil.CivilClaimSchemaProvider.TOTAL_ALLOWED_VAT;
 import static uk.gov.justice.laa.amend.claim.bulkupload.civil.CivilClaimSchemaProvider.UFN;
 
@@ -30,7 +30,7 @@ public class BulkUploadCivilClaimCsvMapper implements CsvRowMapper<BulkUploadCiv
         claim.setDisbursementsVat(getOptionalBigDecimal(record, DISBURSEMENTS_VAT, rowNumber));
         claim.setCounselCosts(getOptionalBigDecimal(record, COUNSEL_COSTS, rowNumber));
         claim.setTotalAllowedVat(getOptionalBigDecimal(record, TOTAL_ALLOWED_VAT, rowNumber));
-        claim.setTotalAllowedInclVat(getOptionalBigDecimal(record, TOTAL_ALLOWED_INCLUDE_VAT, rowNumber));
+        claim.setTotalAllowedInclVat(getOptionalBigDecimal(record, TOTAL_ALLOWED_INCLUDING_VAT, rowNumber));
         claim.setRowNumber(rowNumber);
         return claim;
     }

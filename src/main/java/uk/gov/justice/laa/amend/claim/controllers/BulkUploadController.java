@@ -5,6 +5,11 @@ import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,6 +56,22 @@ public class BulkUploadController {
         }
 
         return "bulk-upload-result";
+    }
+
+    @GetMapping(value = "/example", produces = "text/csv")
+    public ResponseEntity<Resource> getCsvFile(HttpServletResponse response) throws IOException {
+        if (!featureFlagsConfig.getIsBulkUploadEnabled()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+
+        ClassPathResource csvFile = new ClassPathResource("data/example_bulk_upload.csv");
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"example_bulk_upload.csv\"")
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .contentLength(csvFile.contentLength())
+                .body(csvFile);
     }
 
     @PostMapping
