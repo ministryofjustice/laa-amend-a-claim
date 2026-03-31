@@ -179,9 +179,11 @@ class BulkUploadCivilServiceTest {
         // --- assert: errors sorted ascending by row number ---
         assertEquals(VALIDATION_FAILURE, outcome.result().status());
         List<BulkUploadError> errors = outcome.result().errors();
-        assertTrue(
-                errors.get(0).rowNumber() <= errors.get(1).rowNumber(),
-                "Errors should be sorted by row number ascending");
+        for (int i = 1; i < errors.size(); i++) {
+            assertTrue(
+                    errors.get(i - 1).rowNumber() <= errors.get(i).rowNumber(),
+                    "Errors should be sorted by row number ascending");
+        }
     }
 
     private CivilClaimDetails buildEmptyDetails() {
