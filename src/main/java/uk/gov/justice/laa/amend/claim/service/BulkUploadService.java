@@ -85,7 +85,10 @@ public abstract class BulkUploadService<T> {
             try {
                 csvHeaderValidator.validate(schemaProvider.getSchema(), parser.getHeaderNames());
             } catch (Exception ex) {
-                errors.add(new BulkUploadError(null, ex.getMessage()));
+                String message = StringUtils.isBlank(ex.getMessage())
+                        ? "Failed to validate CSV header."
+                        : ex.getMessage();
+                errors.add(new BulkUploadError(null, message));
                 return;
             }
 
