@@ -4,7 +4,6 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.AriaRole;
 
 public class AssessmentOutcomePage extends LaaInputPage {
 
@@ -12,11 +11,6 @@ public class AssessmentOutcomePage extends LaaInputPage {
     private final Locator reducedStillEscapedRadio;
     private final Locator reducedToFixedFeeRadio;
     private final Locator nilledRadio;
-
-    private final Locator vatGroup;
-    private final Locator vatLegend;
-    private final Locator vatYesRadio;
-    private final Locator vatNoRadio;
 
     private final Locator errorSummaryTitle;
     private final Locator errorSummaryLink;
@@ -31,12 +25,6 @@ public class AssessmentOutcomePage extends LaaInputPage {
                 page.getByLabel("Reduced to fixed fee (assessed)", new Page.GetByLabelOptions().setExact(true));
         this.nilledRadio = page.getByLabel("Nilled", new Page.GetByLabelOptions().setExact(true));
 
-        this.vatGroup =
-                page.getByRole(AriaRole.GROUP, new Page.GetByRoleOptions().setName("Is this claim liable for VAT?"));
-        this.vatLegend = page.getByText("Is this claim liable for VAT?");
-        this.vatYesRadio = vatGroup.getByLabel("Yes", new Locator.GetByLabelOptions().setExact(true));
-        this.vatNoRadio = vatGroup.getByLabel("No", new Locator.GetByLabelOptions().setExact(true));
-
         this.errorSummaryTitle = page.locator(".govuk-error-summary__title");
         this.errorSummaryLink = page.locator(".govuk-error-summary__list a");
     }
@@ -46,10 +34,6 @@ public class AssessmentOutcomePage extends LaaInputPage {
         assertThat(reducedStillEscapedRadio).isVisible();
         assertThat(reducedToFixedFeeRadio).isVisible();
         assertThat(nilledRadio).isVisible();
-
-        assertThat(vatLegend).isVisible();
-        assertThat(vatYesRadio).isVisible();
-        assertThat(vatNoRadio).isVisible();
 
         assertThat(saveButton).isVisible();
     }
@@ -88,17 +72,8 @@ public class AssessmentOutcomePage extends LaaInputPage {
         }
     }
 
-    public void selectVatLiable(boolean isLiable) {
-        if (isLiable) {
-            vatYesRadio.check();
-        } else {
-            vatNoRadio.check();
-        }
-    }
-
-    public void completeAssessment(String outcome, boolean vat) {
+    public void completeAssessment(String outcome) {
         selectAssessmentOutcome(outcome);
-        selectVatLiable(vat);
         saveChanges();
     }
 }

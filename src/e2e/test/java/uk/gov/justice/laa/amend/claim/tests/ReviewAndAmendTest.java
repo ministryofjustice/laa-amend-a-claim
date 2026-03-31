@@ -116,11 +116,6 @@ public class ReviewAndAmendTest extends BaseTest {
 
         // Minimal inputs to proceed
         outcome.selectAssessmentOutcome(outcomeValue);
-
-        // VAT is defaulted on your HTML (often "No" checked), and not needed for these tests.
-        // If your app requires VAT explicitly, uncomment one line:
-        // outcome.selectVatLiable(false);
-
         outcome.saveChanges();
     }
 
@@ -208,18 +203,6 @@ public class ReviewAndAmendTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("Review & amend (Crime) change VAT liability – navigates correctly")
-    void crimeChangeVatLiability() {
-        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
-
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-
-        review.clickLiableForVat();
-
-        assertTrue(page.url().contains("/assessment-outcome"));
-    }
-
-    @Test
     @DisplayName("Review & amend (Civil) change assessment outcome – navigates correctly")
     void civilChangeAssessmentOutcome() {
         navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
@@ -227,18 +210,6 @@ public class ReviewAndAmendTest extends BaseTest {
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
         review.clickAssessmentOutcome();
-
-        assertTrue(page.url().contains("/assessment-outcome"));
-    }
-
-    @Test
-    @DisplayName("Review & amend (Civil) change VAT liability – navigates correctly")
-    void civilChangeVatLiability() {
-        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
-
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-
-        review.clickLiableForVat();
 
         assertTrue(page.url().contains("/assessment-outcome"));
     }

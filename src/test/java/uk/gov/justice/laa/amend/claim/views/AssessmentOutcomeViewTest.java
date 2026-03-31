@@ -32,7 +32,6 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
         assertPageHasSecondaryLink(doc, "Cancel");
         assertPageHasNoActiveServiceNavigationItems(doc);
         assertPageHasRadioButtons(doc);
-        assertPageHasInlineRadioButtons(doc);
         assertPageDoesNotHaveBackLink(doc);
     }
 
@@ -40,7 +39,6 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
     void testPageErrors() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("assessmentOutcome", "");
-        params.add("liabilityForVat", "");
 
         Document doc = renderDocumentWithErrors(params);
 
@@ -51,9 +49,8 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
         assertPageHasSecondaryLink(doc, "Cancel");
         assertPageHasNoActiveServiceNavigationItems(doc);
         assertPageHasRadioButtons(doc);
-        assertPageHasInlineRadioButtons(doc);
 
-        assertPageHasErrorSummary(doc, "assessment-outcome", "liability-for-vat");
+        assertPageHasErrorSummary(doc, "assessment-outcome");
     }
 
     @Test
@@ -69,7 +66,6 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
                 doc, "Cancel", String.format("/submissions/%s/claims/%s/review", submissionId, claimId));
         assertPageHasNoActiveServiceNavigationItems(doc);
         assertPageHasRadioButtons(doc);
-        assertPageHasInlineRadioButtons(doc);
         assertPageDoesNotHaveBackLink(doc);
     }
 
@@ -86,7 +82,6 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
                 doc, "Cancel", String.format("/submissions/%s/claims/%s/review", submissionId, claimId));
         assertPageHasNoActiveServiceNavigationItems(doc);
         assertPageHasRadioButtons(doc);
-        assertPageHasInlineRadioButtons(doc);
         assertPageDoesNotHaveBackLink(doc);
     }
 
@@ -102,7 +97,6 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
         assertPageCancelLinkValue(doc, "Cancel", String.format("/submissions/%s/claims/%s", submissionId, claimId));
         assertPageHasNoActiveServiceNavigationItems(doc);
         assertPageHasRadioButtons(doc);
-        assertPageHasInlineRadioButtons(doc);
         assertPageDoesNotHaveBackLink(doc);
     }
 

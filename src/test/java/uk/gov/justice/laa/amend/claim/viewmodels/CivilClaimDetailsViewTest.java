@@ -480,7 +480,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             claim.setSubstantiveHearing(updateClaimFieldSubmittedValue(claim.getSubstantiveHearing(), true));
             List<ClaimFieldRow> result = viewModel.getReviewClaimFieldRows();
 
-            Assertions.assertEquals(13, result.size());
+            Assertions.assertEquals(12, result.size());
 
             Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
@@ -538,13 +538,6 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             Assertions.assertEquals(ADJOURNED_FEE, result.get(11).getKey());
             Assertions.assertEquals(BigDecimal.valueOf(100), result.get(11).getSubmitted());
             Assertions.assertEquals(BigDecimal.valueOf(200), result.get(11).getCalculated());
-
-            Assertions.assertEquals(VAT, result.get(12).getKey());
-            Assertions.assertEquals(true, result.get(12).getSubmitted());
-            Assertions.assertEquals(false, result.get(12).getCalculated());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/assessment-outcome",
-                    result.get(12).getChangeUrl());
         }
 
         @Test
@@ -559,7 +552,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimFieldRow> result = viewModel.getReviewClaimFieldRows();
 
-            Assertions.assertEquals(8, result.size());
+            Assertions.assertEquals(7, result.size());
 
             Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
@@ -597,13 +590,6 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
             Assertions.assertEquals(
                     "/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
-
-            Assertions.assertEquals(VAT, result.get(7).getKey());
-            Assertions.assertEquals(true, result.get(7).getSubmitted());
-            Assertions.assertEquals(false, result.get(7).getCalculated());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/assessment-outcome",
-                    result.get(7).getChangeUrl());
         }
 
         @Test
@@ -618,7 +604,7 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             CivilClaimDetailsView viewModel = createView(claim);
             List<ClaimFieldRow> result = viewModel.getReviewClaimFieldRows();
 
-            Assertions.assertEquals(8, result.size());
+            Assertions.assertEquals(7, result.size());
 
             Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
@@ -656,10 +642,6 @@ public class CivilClaimDetailsViewTest extends ClaimDetailsViewTest<CivilClaimDe
             Assertions.assertEquals(BigDecimal.valueOf(300), result.get(6).getAssessed());
             Assertions.assertEquals(
                     "/submissions/%s/claims/%s/counsel-costs", result.get(6).getChangeUrl());
-
-            Assertions.assertEquals(VAT, result.get(7).getKey());
-            Assertions.assertEquals(true, result.get(7).getSubmitted());
-            Assertions.assertEquals(false, result.get(7).getCalculated());
         }
     }
 

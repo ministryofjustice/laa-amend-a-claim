@@ -75,8 +75,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     // 'Claim costs' rows for the 'Review and amend' page
     default List<ClaimFieldRow> getReviewClaimFieldRows() {
-        Stream<ClaimField> rows = Stream.concat(claimFields(), Stream.of(claim().getVatClaimed()));
-        return toClaimFieldRows(rows).toList();
+        return toClaimFieldRows(claimFields()).toList();
     }
 
     // 'Total claim value' rows for the 'Review and amend' page

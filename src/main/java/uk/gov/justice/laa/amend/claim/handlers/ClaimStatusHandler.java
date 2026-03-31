@@ -6,7 +6,6 @@ import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
-import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 
 /**
  * Handles the mapping between different outcome types and their corresponding field assessment statuses.
@@ -36,7 +35,7 @@ public class ClaimStatusHandler {
     }
 
     private void handleNilledStatus(ClaimField field) {
-        field.setAssessable(field instanceof VatLiabilityClaimField);
+        field.setAssessable(false);
     }
 
     /**

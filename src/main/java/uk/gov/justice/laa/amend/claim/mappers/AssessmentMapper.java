@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
+import static java.util.Objects.nonNull;
+
 import java.math.BigDecimal;
 import java.util.function.Function;
 import org.mapstruct.AfterMapping;
@@ -38,7 +40,7 @@ public interface AssessmentMapper {
             target = "assessmentReason",
             expression =
                     "java(uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE)")
-    @Mapping(target = "isVatApplicable", source = "vatApplicable")
+    @Mapping(target = "isVatApplicable", expression = "java(deriveVatApplicable(claim))")
     @Mapping(target = "boltOnAdjournedHearingFee", ignore = true)
     @Mapping(target = "jrFormFillingAmount", ignore = true)
     @Mapping(target = "boltOnCmrhOralFee", ignore = true)
@@ -266,6 +268,11 @@ public interface AssessmentMapper {
      */
     default BigDecimal mapAssessedTotalInclVat(ClaimDetails claim) {
         return mapToBigDecimal(claim.getAssessedTotalInclVat());
+    }
+
+    default Boolean deriveVatApplicable(ClaimDetails claim) {
+        BigDecimal allowedVat = mapAllowedTotalVat(claim);
+        return nonNull(allowedVat) && allowedVat.compareTo(BigDecimal.ZERO) > 0;
     }
 
     default BigDecimal mapAllowedTotalVat(ClaimDetails claim) {

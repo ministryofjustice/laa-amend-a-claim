@@ -118,14 +118,14 @@ class ClaimStatusHandlerTest {
         }
 
         @Test
-        void shouldSetVatClaimedFieldToModifiable() {
+        void shouldSetVatClaimedFieldToNotModifiable() {
             ClaimField vatClaimedField = MockClaimsFunctions.createVatClaimedField();
             ClaimDetails civilClaimDetails = new CivilClaimDetails();
             civilClaimDetails.setVatClaimed(vatClaimedField);
 
             claimStatusHandler.updateFieldStatuses(civilClaimDetails, OutcomeType.NILLED);
 
-            assertThat(vatClaimedField.isAssessable()).isTrue();
+            assertThat(vatClaimedField.isAssessable()).isFalse();
         }
     }
 
