@@ -70,6 +70,7 @@ public abstract class BulkUploadService<T> {
                 CSVParser parser = CSVFormat.DEFAULT
                         .builder()
                         .setHeader()
+                        .setIgnoreHeaderCase(true)
                         .setSkipHeaderRecord(true)
                         .setTrim(true)
                         .setIgnoreEmptyLines(true)

@@ -35,7 +35,7 @@ public class BulkUploadResultViewTest extends ViewTestBase {
 
         Document doc = renderDocument(Map.of("result", result));
 
-        assertPageHasTitle(doc, "Bulk upload of escape claim assessments");
+        assertPageHasTitle(doc, "Bulk upload of civil escape claim assessments");
 
         assertPageHasHeading(doc, "Your file was uploaded successfully");
 
