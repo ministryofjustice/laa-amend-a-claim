@@ -63,7 +63,6 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-    // Update version of CSS files in e2e-test.yml when bumping these dependencies
     implementation 'org.webjars.npm:govuk-frontend:6.1.0'
     implementation 'org.webjars.npm:ministryofjustice__frontend:9.0.0'
     implementation("org.apache.commons:commons-csv:1.14.1")
