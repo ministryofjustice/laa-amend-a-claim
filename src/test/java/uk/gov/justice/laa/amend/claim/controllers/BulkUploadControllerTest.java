@@ -49,7 +49,7 @@ public class BulkUploadControllerTest extends BaseControllerTest {
     @Test
     void testSubmitRedirectsWithResult() throws Exception {
         var file = new MockMultipartFile("file", "file.csv", "text/csv", "a,b,c\n1,2,3".getBytes());
-        var result = new BulkUploadResult(SUCCESS, List.of());
+        var result = new BulkUploadResult(SUCCESS, List.of(), List.of());
 
         when(bulkUploadService.upload(file, USER_ID)).thenReturn(result);
 
@@ -78,7 +78,7 @@ public class BulkUploadControllerTest extends BaseControllerTest {
 
     @Test
     void testResultOnPageLoadReturnsViewIfResultSet() throws Exception {
-        var result = new BulkUploadResult(SUCCESS, List.of("all is good"));
+        var result = new BulkUploadResult(SUCCESS, List.of("all is good"), List.of());
         mockMvc.perform(get(RESULT_PATH).flashAttr("result", result))
                 .andExpect(status().isOk())
                 .andExpect(view().name("bulk-upload-result"));

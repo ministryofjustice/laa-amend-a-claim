@@ -8,7 +8,9 @@ import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.List;
 
-public record BulkUploadResult(BulkUploadStatus status, List<String> reasons) implements Serializable {
+public record BulkUploadResult(
+        BulkUploadStatus status, List<String> reasons, List<BulkUploadAssessmentSummary> uploadedAssessments)
+        implements Serializable {
 
     public enum BulkUploadStatus {
         SUCCESS,

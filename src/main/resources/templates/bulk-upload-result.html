@@ -19,6 +19,44 @@
                                     <div class="govuk-panel__body" th:text="${reason}"></div>
                                 </th:block>
                             </div>
+
+                            <th:block th:if="${not #lists.isEmpty(result.uploadedAssessments)}">
+                                <table class="govuk-table">
+                                    <caption class="govuk-table__caption govuk-table__caption--m"
+                                             th:text="#{bulkUploadResult.table.caption}"></caption>
+                                    <thead class="govuk-table__head">
+                                        <tr class="govuk-table__row">
+                                            <th scope="col" class="govuk-table__header"
+                                                th:text="#{bulkUploadResult.table.officeCode}"></th>
+                                            <th scope="col" class="govuk-table__header"
+                                                th:text="#{bulkUploadResult.table.ufn}"></th>
+                                            <th scope="col" class="govuk-table__header"
+                                                th:text="#{bulkUploadResult.table.assessmentResult}"></th>
+                                            <th scope="col" class="govuk-table__header"
+                                                th:text="#{bulkUploadResult.table.allowedTotal}"></th>
+                                            <th scope="col" class="govuk-table__header"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="govuk-table__body">
+                                        <tr class="govuk-table__row"
+                                            th:each="assessment : ${result.uploadedAssessments}">
+                                            <td class="govuk-table__cell"
+                                                th:text="${assessment.officeCode()}"></td>
+                                            <td class="govuk-table__cell"
+                                                th:text="${assessment.uniqueFileNumber()}"></td>
+                                            <td class="govuk-table__cell"
+                                                th:text="#{${assessment.assessmentOutcome.messageKey}}"></td>
+                                            <td class="govuk-table__cell"
+                                                th:text="${@ThymeleafUtils.getFormattedValue(assessment.allowedTotalInclVat()).resolve(#messages)}"></td>
+                                            <td class="govuk-table__cell">
+                                                <a class="govuk-link"
+                                                   th:href="@{/submissions/{sub}/claims/{cl}(sub=${assessment.submissionId()},cl=${assessment.claimId()})}"
+                                                   th:text="#{bulkUploadResult.table.viewClaim}"></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </th:block>
                         </th:block>
 
                         <th:block th:if="${result.isError()}">
