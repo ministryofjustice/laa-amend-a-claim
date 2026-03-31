@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY;
+
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -76,5 +78,9 @@ public abstract class ClaimDetails extends Claim {
 
     public Stream<ClaimField> getAllowedTotalFields() {
         return Stream.of(getAllowedTotalVat(), getAllowedTotalInclVat());
+    }
+
+    public boolean isContingencyAssessment() {
+        return ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY.equals(assessmentReason);
     }
 }

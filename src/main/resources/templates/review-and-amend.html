@@ -62,7 +62,7 @@
                     <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{claimSummary.rows.contingencyAssessment}"></td>
 
                     <td class="govuk-table__cell" colspan="3"
-                        th:text="${@ThymeleafUtils.getFormattedValue(T(uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants).ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY.equals(claim.getAssessmentReason())).resolve(#messages)}"/>
+                        th:text="${@ThymeleafUtils.getFormattedValue(claim.isContingencyAssessment()).resolve(#messages)}"/>
 
                     <td class="govuk-table__cell">
                         <a

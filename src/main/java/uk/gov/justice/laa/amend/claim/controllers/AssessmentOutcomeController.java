@@ -38,7 +38,7 @@ public class AssessmentOutcomeController {
 
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
         form.setAssessmentOutcome(claim.getAssessmentOutcome());
-        form.setContingencyAssessment(ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY.equals(claim.getAssessmentReason()));
+        form.setContingencyAssessment(claim.isContingencyAssessment());
 
         return renderView(model, form, submissionId, claimId, claim);
     }
