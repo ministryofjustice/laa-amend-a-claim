@@ -174,7 +174,7 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
             CrimeClaimDetailsView viewModel = createView(claim);
             List<ClaimFieldRow> result = viewModel.getReviewClaimFieldRows();
 
-            Assertions.assertEquals(7, result.size());
+            Assertions.assertEquals(6, result.size());
 
             Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
 
@@ -197,8 +197,6 @@ public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDe
             Assertions.assertEquals(WAITING_COSTS, result.get(5).getKey());
             Assertions.assertEquals(
                     "/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
-
-            Assertions.assertEquals(VAT, result.get(6).getKey());
         }
     }
 

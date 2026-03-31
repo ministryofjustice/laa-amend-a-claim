@@ -37,11 +37,6 @@ public class AssessmentOutcomeController {
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
         form.setAssessmentOutcome(claim.getAssessmentOutcome());
 
-        // Load VAT liability from vatClaimed
-        if (claim.getVatClaimed() != null && claim.getVatClaimed().getAssessed() != null) {
-            form.setLiabilityForVat((Boolean) claim.getVatClaimed().getAssessed());
-        }
-
         return renderView(model, form, submissionId, claimId, claim);
     }
 
@@ -68,11 +63,6 @@ public class AssessmentOutcomeController {
 
         // Set the assessment outcome
         claim.setAssessmentOutcome(newOutcome);
-
-        // Update VAT liability in vatClaimed
-        if (claim.getVatClaimed() != null) {
-            claim.getVatClaimed().setAssessed(form.getLiabilityForVat());
-        }
 
         // Save updated Claim back to session
         session.setAttribute(claimId.toString(), claim);

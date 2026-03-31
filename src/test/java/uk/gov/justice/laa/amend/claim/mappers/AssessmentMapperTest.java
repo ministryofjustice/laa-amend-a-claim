@@ -40,7 +40,6 @@ class AssessmentMapperTest {
         String userId = UUID.randomUUID().toString();
 
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setVatApplicable(true);
 
         AssessmentPost assessment = mapper.mapCivilClaimToAssessment(claim, userId);
 
@@ -73,7 +72,6 @@ class AssessmentMapperTest {
         String userId = UUID.randomUUID().toString();
 
         CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
-        claim.setVatApplicable(true);
 
         AssessmentPost assessment = mapper.mapCrimeClaimToAssessment(claim, userId);
 
@@ -93,6 +91,34 @@ class AssessmentMapperTest {
         assertEquals(true, assessment.getIsVatApplicable());
         assertEquals(ASSESSMENT_REASON_ESCAPE_CASE, assessment.getAssessmentReason());
         assertEquals(userId, assessment.getCreatedByUserId());
+    }
+
+    @Test
+    void testVatApplicableIsFalseWhenAllowedTotalVatIsZero() {
+        String userId = UUID.randomUUID().toString();
+
+        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+        claim.setAllowedTotalVat(AllowedClaimField.builder()
+                .key(ALLOWED_TOTAL_VAT)
+                .assessed(BigDecimal.ZERO)
+                .build());
+
+        AssessmentPost assessment = mapper.mapCivilClaimToAssessment(claim, userId);
+
+        assertEquals(false, assessment.getIsVatApplicable());
+    }
+
+    @Test
+    void testVatApplicableIsFalseWhenAllowedTotalVatIsNull() {
+        String userId = UUID.randomUUID().toString();
+
+        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+        claim.setAllowedTotalVat(
+                AllowedClaimField.builder().key(ALLOWED_TOTAL_VAT).build());
+
+        AssessmentPost assessment = mapper.mapCivilClaimToAssessment(claim, userId);
+
+        assertEquals(false, assessment.getIsVatApplicable());
     }
 
     @Test

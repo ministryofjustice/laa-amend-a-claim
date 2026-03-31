@@ -115,7 +115,6 @@ public abstract class E2eBaseTest extends BaseTest {
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
         outcome.selectAssessmentOutcome(assessmentOutcome);
-        outcome.selectVatLiable(true);
         outcome.saveChanges();
     }
 

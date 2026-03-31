@@ -27,7 +27,7 @@ public class VatLiabilityClaimField extends ClaimField {
 
     @Override
     public void setAssessableToDefault() {
-        this.assessable = true;
+        this.assessable = false;
     }
 
     @Override
