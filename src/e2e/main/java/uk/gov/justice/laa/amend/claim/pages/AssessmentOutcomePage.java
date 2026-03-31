@@ -4,6 +4,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.AriaRole;
 
 public class AssessmentOutcomePage extends LaaInputPage {
 
@@ -11,6 +12,11 @@ public class AssessmentOutcomePage extends LaaInputPage {
     private final Locator reducedStillEscapedRadio;
     private final Locator reducedToFixedFeeRadio;
     private final Locator nilledRadio;
+
+    private final Locator contingencyAssessmentGroup;
+    private final Locator contingencyAssessmentLegend;
+    private final Locator contingencyAssessmentYesRadio;
+    private final Locator contingencyAssessmentNoRadio;
 
     private final Locator errorSummaryTitle;
     private final Locator errorSummaryLink;
@@ -25,6 +31,16 @@ public class AssessmentOutcomePage extends LaaInputPage {
                 page.getByLabel("Reduced to fixed fee (assessed)", new Page.GetByLabelOptions().setExact(true));
         this.nilledRadio = page.getByLabel("Nilled", new Page.GetByLabelOptions().setExact(true));
 
+        this.contingencyAssessmentGroup = page.getByRole(
+                AriaRole.GROUP,
+                new Page.GetByRoleOptions().setName("Was this claim assessed as part of the contingency process?"));
+        this.contingencyAssessmentLegend =
+                page.getByText("Was this claim assessed as part of the contingency process?");
+        this.contingencyAssessmentYesRadio =
+                contingencyAssessmentGroup.getByLabel("Yes", new Locator.GetByLabelOptions().setExact(true));
+        this.contingencyAssessmentNoRadio =
+                contingencyAssessmentGroup.getByLabel("No", new Locator.GetByLabelOptions().setExact(true));
+
         this.errorSummaryTitle = page.locator(".govuk-error-summary__title");
         this.errorSummaryLink = page.locator(".govuk-error-summary__list a");
     }
@@ -34,6 +50,10 @@ public class AssessmentOutcomePage extends LaaInputPage {
         assertThat(reducedStillEscapedRadio).isVisible();
         assertThat(reducedToFixedFeeRadio).isVisible();
         assertThat(nilledRadio).isVisible();
+
+        assertThat(contingencyAssessmentLegend).isVisible();
+        assertThat(contingencyAssessmentYesRadio).isVisible();
+        assertThat(contingencyAssessmentNoRadio).isVisible();
 
         assertThat(saveButton).isVisible();
     }
@@ -72,8 +92,17 @@ public class AssessmentOutcomePage extends LaaInputPage {
         }
     }
 
-    public void completeAssessment(String outcome) {
+    public void selectContingencyAssessment(boolean isContingencyAssessment) {
+        if (isContingencyAssessment) {
+            contingencyAssessmentYesRadio.check();
+        } else {
+            contingencyAssessmentNoRadio.check();
+        }
+    }
+
+    public void completeAssessment(String outcome, boolean isContingencyAssessment) {
         selectAssessmentOutcome(outcome);
+        selectContingencyAssessment(isContingencyAssessment);
         saveChanges();
     }
 }

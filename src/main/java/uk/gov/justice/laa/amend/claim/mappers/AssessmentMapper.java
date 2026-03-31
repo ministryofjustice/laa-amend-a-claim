@@ -36,10 +36,7 @@ public interface AssessmentMapper {
     @Mapping(target = "disbursementVatAmount", expression = "java(mapDisbursementVatAmount(claim))")
     @Mapping(target = "netCostOfCounselAmount", ignore = true)
     @Mapping(target = "detentionTravelAndWaitingCostsAmount", ignore = true)
-    @Mapping(
-            target = "assessmentReason",
-            expression =
-                    "java(uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE)")
+    @Mapping(target = "assessmentReason", source = "assessmentReason")
     @Mapping(target = "isVatApplicable", expression = "java(deriveVatApplicable(claim))")
     @Mapping(target = "boltOnAdjournedHearingFee", ignore = true)
     @Mapping(target = "jrFormFillingAmount", ignore = true)
@@ -154,6 +151,7 @@ public interface AssessmentMapper {
      */
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "assessmentOutcome", source = "assessmentOutcome", qualifiedByName = "mapToOutcome")
+    @Mapping(target = "assessmentReason", source = "assessmentReason")
     @Mapping(target = "lastAssessment", source = "assessmentGet", qualifiedByName = "toAssessmentInfo")
     ClaimDetails updateClaim(AssessmentGet assessmentGet, @MappingTarget ClaimDetails claimDetails);
 

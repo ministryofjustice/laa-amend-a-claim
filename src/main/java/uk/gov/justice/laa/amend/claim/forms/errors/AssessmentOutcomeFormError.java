@@ -15,6 +15,8 @@ public class AssessmentOutcomeFormError extends FormError {
 
     @Override
     protected Map<String, Integer> getFieldOrderMap() {
-        return Map.of("assessmentOutcome", 1);
+        return Map.of(
+                "assessmentOutcome", 1,
+                "contingencyAssessment", 2);
     }
 }

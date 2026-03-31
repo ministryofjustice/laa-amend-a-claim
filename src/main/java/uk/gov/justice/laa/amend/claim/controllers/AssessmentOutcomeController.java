@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,6 +38,7 @@ public class AssessmentOutcomeController {
 
         AssessmentOutcomeForm form = new AssessmentOutcomeForm();
         form.setAssessmentOutcome(claim.getAssessmentOutcome());
+        form.setContingencyAssessment(ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY.equals(claim.getAssessmentReason()));
 
         return renderView(model, form, submissionId, claimId, claim);
     }
@@ -63,6 +66,13 @@ public class AssessmentOutcomeController {
 
         // Set the assessment outcome
         claim.setAssessmentOutcome(newOutcome);
+
+        // Set the assessment reason
+        if (Boolean.TRUE.equals(form.getContingencyAssessment())) {
+            claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY);
+        } else {
+            claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
+        }
 
         // Save updated Claim back to session
         session.setAttribute(claimId.toString(), claim);

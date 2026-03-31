@@ -57,6 +57,14 @@ class ReviewAndAmendViewTest extends ViewTestBase {
                 "Assessed in full",
                 String.format(
                         "/submissions/%s/claims/%s/assessment-outcome#assessment-outcome", submissionId, claimId));
+
+        assertTableRowContainsValuesWithChangeLink(
+                assessmentTable.get(1),
+                "Was this claim assessed as part of the contingency process?",
+                "No",
+                String.format(
+                        "/submissions/%s/claims/%s/assessment-outcome#contingency-assessment", submissionId, claimId));
+
         List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
         assertTableRowContainsValuesWithNoChangeLink(
                 claimCostsTable.getFirst(), "Fixed fee", "£200.00", "Not applicable", "£300.00");
@@ -159,6 +167,13 @@ class ReviewAndAmendViewTest extends ViewTestBase {
                 "Assessed in full",
                 String.format(
                         "/submissions/%s/claims/%s/assessment-outcome#assessment-outcome", submissionId, claimId));
+        assertTableRowContainsValuesWithChangeLink(
+                assessmentTable.get(1),
+                "Was this claim assessed as part of the contingency process?",
+                "No",
+                String.format(
+                        "/submissions/%s/claims/%s/assessment-outcome#contingency-assessment", submissionId, claimId));
+
         List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
         Assertions.assertEquals(6, claimCostsTable.size());
         assertTableRowContainsValuesWithNoChangeLink(
@@ -270,6 +285,13 @@ class ReviewAndAmendViewTest extends ViewTestBase {
                 "Reduced (still escaped)",
                 String.format(
                         "/submissions/%s/claims/%s/assessment-outcome#assessment-outcome", submissionId, claimId));
+        assertTableRowContainsValuesWithChangeLink(
+                assessmentTable.get(1),
+                "Was this claim assessed as part of the contingency process?",
+                "No",
+                String.format(
+                        "/submissions/%s/claims/%s/assessment-outcome#contingency-assessment", submissionId, claimId));
+
         List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
         Assertions.assertEquals(6, claimCostsTable.size());
         assertTableRowContainsValuesWithNoChangeLink(
@@ -375,6 +397,13 @@ class ReviewAndAmendViewTest extends ViewTestBase {
                 "Reduced (still escaped)",
                 String.format(
                         "/submissions/%s/claims/%s/assessment-outcome#assessment-outcome", submissionId, claimId));
+        assertTableRowContainsValuesWithChangeLink(
+                assessmentTable.get(1),
+                "Was this claim assessed as part of the contingency process?",
+                "No",
+                String.format(
+                        "/submissions/%s/claims/%s/assessment-outcome#contingency-assessment", submissionId, claimId));
+
         List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
         Assertions.assertEquals(12, claimCostsTable.size());
         assertTableRowContainsValuesWithNoChangeLink(
@@ -539,6 +568,13 @@ class ReviewAndAmendViewTest extends ViewTestBase {
                 "Assessed in full",
                 String.format(
                         "/submissions/%s/claims/%s/assessment-outcome#assessment-outcome", submissionId, claimId));
+        assertTableRowContainsValuesWithChangeLink(
+                assessmentTable.get(1),
+                "Was this claim assessed as part of the contingency process?",
+                "No",
+                String.format(
+                        "/submissions/%s/claims/%s/assessment-outcome#contingency-assessment", submissionId, claimId));
+
         List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
         Assertions.assertEquals(12, claimCostsTable.size());
         assertTableRowContainsValuesWithNoChangeLink(
@@ -667,6 +703,13 @@ class ReviewAndAmendViewTest extends ViewTestBase {
                 "Assessed in full",
                 String.format(
                         "/submissions/%s/claims/%s/assessment-outcome#assessment-outcome", submissionId, claimId));
+        assertTableRowContainsValuesWithChangeLink(
+                assessmentTable.get(1),
+                "Was this claim assessed as part of the contingency process?",
+                "No",
+                String.format(
+                        "/submissions/%s/claims/%s/assessment-outcome#contingency-assessment", submissionId, claimId));
+
         List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
         Assertions.assertEquals(7, claimCostsTable.size());
         assertTableRowContainsValuesWithNoChangeLink(

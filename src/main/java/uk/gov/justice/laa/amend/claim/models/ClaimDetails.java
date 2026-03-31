@@ -31,6 +31,7 @@ public abstract class ClaimDetails extends Claim {
     private ClaimField allowedTotalInclVat;
 
     private OutcomeType assessmentOutcome;
+    private String assessmentReason;
     private OffsetDateTime submittedDate;
     private String feeCode;
     private String feeCodeDescription;

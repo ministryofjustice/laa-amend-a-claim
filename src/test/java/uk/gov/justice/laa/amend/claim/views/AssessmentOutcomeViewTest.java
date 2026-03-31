@@ -39,6 +39,7 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
     void testPageErrors() throws Exception {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("assessmentOutcome", "");
+        params.add("contingencyAssessment", "");
 
         Document doc = renderDocumentWithErrors(params);
 
@@ -50,7 +51,7 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
         assertPageHasNoActiveServiceNavigationItems(doc);
         assertPageHasRadioButtons(doc);
 
-        assertPageHasErrorSummary(doc, "assessment-outcome");
+        assertPageHasErrorSummary(doc, "assessment-outcome", "contingency-assessment");
     }
 
     @Test

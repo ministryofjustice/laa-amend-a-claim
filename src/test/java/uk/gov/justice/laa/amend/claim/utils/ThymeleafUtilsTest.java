@@ -77,7 +77,7 @@ public class ThymeleafUtilsTest {
             List<DetailedError> errors = List.of(
                     new DetailedError("assessmentOutcome", null, Stream.empty().toArray(), "Assessment outcome error"),
                     new DetailedError(
-                            "liabilityForVat", null, Stream.empty().toArray(), "liability for VAT number error"));
+                            "contingencyAssessment", null, Stream.empty().toArray(), "Contingency assessment error"));
 
             ThymeleafUtils sut = new ThymeleafUtils();
 
@@ -85,7 +85,7 @@ public class ThymeleafUtilsTest {
 
             List<AssessmentOutcomeFormError> expectedResult = List.of(
                     new AssessmentOutcomeFormError("assessmentOutcome", "Assessment outcome error"),
-                    new AssessmentOutcomeFormError("liabilityForVat", "liability for VAT number error"));
+                    new AssessmentOutcomeFormError("contingencyAssessment", "Contingency assessment error"));
 
             Assertions.assertEquals(expectedResult, result);
         }

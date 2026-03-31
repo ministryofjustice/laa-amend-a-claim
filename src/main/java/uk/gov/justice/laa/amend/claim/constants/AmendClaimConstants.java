@@ -22,9 +22,12 @@ public class AmendClaimConstants {
     public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 
     public static final String ASSESSMENT_REASON_ESCAPE_CASE = "Escape Fee Case Assessment";
+    public static final String ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY = "Escape Fee Case Assessment (Contingency)";
     public static final String ASSESSMENT_REASON_VOID = "Void";
 
     public static final String ASSESSMENT_OUTCOME_REQUIRED_ERROR = "{assessmentOutcome.assessmentOutcomeRequiredError}";
+    public static final String CONTINGENCY_ASSESSMENT_REQUIRED_ERROR =
+            "{assessmentOutcome.contingencyAssessmentRequiredError}";
 
     public static class Label {
         public static final String FIXED_FEE = "fixedFee";

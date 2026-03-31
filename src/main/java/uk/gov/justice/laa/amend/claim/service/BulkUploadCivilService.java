@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.service;
 
 import static java.util.stream.Collectors.groupingBy;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.SUCCESS;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.VALIDATION_FAILURE;
 
@@ -97,6 +98,7 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
      * Map Row details into assessed values of ClaimDetails fields
      */
     private void applyRowToClaimDetails(CivilClaimDetails details, BulkUploadCivilClaim row) {
+        details.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY);
         details.getNetProfitCost().setAssessed(row.getProfitCost());
         details.getDisbursementVatAmount().setAssessed(row.getDisbursementsVat());
         details.getNetDisbursementAmount().setAssessed(row.getDisbursements());
