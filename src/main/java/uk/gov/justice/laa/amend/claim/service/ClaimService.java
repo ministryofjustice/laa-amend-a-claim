@@ -11,7 +11,6 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
-import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
@@ -22,7 +21,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
-import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 
 @Service
 @Slf4j
@@ -30,7 +28,7 @@ public class ClaimService {
 
     private final ClaimsApiClient claimsApiClient;
     private final ClaimMapper claimMapper;
-    private final ProviderApiClient providerApiClient;
+    private final ProviderService providerService;
     private final Counter voidClaimCounter;
     private final Counter voidClaimFailureCounter;
 
@@ -39,11 +37,11 @@ public class ClaimService {
     public ClaimService(
             ClaimsApiClient claimsApiClient,
             ClaimMapper claimMapper,
-            ProviderApiClient providerApiClient,
+            ProviderService providerService,
             MeterRegistry meterRegistry) {
         this.claimsApiClient = claimsApiClient;
         this.claimMapper = claimMapper;
-        this.providerApiClient = providerApiClient;
+        this.providerService = providerService;
         this.voidClaimCounter = Counter.builder("claim.void")
                 .description("Total number of successful void claim submissions")
                 .register(meterRegistry);
@@ -99,7 +97,10 @@ public class ClaimService {
                     String.format("Claim with ID %s not found for submission %s", claimId, submissionId));
         }
         var claimDetails = claimMapper.mapToClaimDetails(claimResponse);
-        claimMapper.enrichWithProviderName(claimDetails, getProviderFirmName(claimDetails.getOfficeCode()));
+        var provider = providerService.getProviderFirm(claimDetails.getOfficeCode());
+        if (provider != null && provider.getFirm() != null) {
+            claimMapper.enrichWithProviderName(claimDetails, provider.getFirm().getFirmName());
+        }
         return claimDetails;
     }
 
@@ -114,26 +115,5 @@ public class ClaimService {
             voidClaimFailureCounter.increment();
             throw e;
         }
-    }
-
-    /**
-     * Fetches provider firm name from Provider API
-     *
-     * @param officeCode the office account number
-     * @return firm name from API or office account number as fallback
-     */
-    private String getProviderFirmName(String officeCode) {
-        try {
-            ProviderFirmOfficeDto providerOffice =
-                    providerApiClient.getProviderOffice(officeCode).block();
-
-            if (providerOffice != null && providerOffice.getFirm() != null) {
-                return providerOffice.getFirm().getFirmName();
-            }
-        } catch (Exception e) {
-            log.warn(
-                    "Failed to fetch provider firm name for office account: {}. Error: {}", officeCode, e.getMessage());
-        }
-        return null;
     }
 }

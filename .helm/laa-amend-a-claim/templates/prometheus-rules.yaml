@@ -84,4 +84,20 @@ spec:
       for: 0m
       labels:
         severity: {{ .Values.alerting.severity }}
+
+  - name: application-rules
+    rules:
+    - alert: ProviderDetailsApiUnavailable
+      annotations:
+        message: Provider Details API has returned errors in the last 5 minutes during office hours.
+        dashboard_url: {{ .Values.alerting.grafanaDashboard }}
+      expr: >-
+        (
+          increase(http_client_requests_seconds_count{namespace="{{ .Release.Namespace }}", uri="/api/v1/provider-offices/{officeCode}", outcome!="SUCCESS"}[5m]) > 0
+        )
+        and on() (hour() >= 6) and on() (hour() < 20 or (hour() == 20 and minute() < 30)) # 06:00-20:30 UTC (07:00-21:30 BST)
+        and on() (day_of_week() >= 1 and day_of_week() <= 5)
+      for: 0m
+      labels:
+        severity: {{ .Values.alerting.severity }}
 {{- end }}
