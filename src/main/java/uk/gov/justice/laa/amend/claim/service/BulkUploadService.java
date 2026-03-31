@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import static uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadHelper.MAX_ROWS;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.PARSING_FAILURE;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.SUBMISSION_FAILURE;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.SUCCESS;
@@ -22,14 +23,14 @@ import uk.gov.justice.laa.amend.claim.bulkupload.CsvHeaderValidator;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvRowMapper;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvSchemaProvider;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
+import uk.gov.justice.laa.amend.claim.models.BulkUploadValidationOutcome;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
 @RequiredArgsConstructor
 @Slf4j
 public abstract class BulkUploadService<T> {
 
-    private static final int ROW_OFFSET = 2; // Header row + zero indexing
-
+    private static final int ROW_OFFSET = 2;
     protected final CsvSchemaProvider<T> schemaProvider;
     protected final CsvRowMapper<T> rowMapper;
     protected final CsvHeaderValidator csvHeaderValidator;
@@ -50,12 +51,17 @@ public abstract class BulkUploadService<T> {
         }
         log.info("Parsed {} rows from file", rows.size());
 
-        var validationResult = validateRows(rows);
-        if (validationResult.status() != SUCCESS) {
-            return validationResult;
+        if (rows.size() > MAX_ROWS) {
+            return new BulkUploadResult(
+                    PARSING_FAILURE, List.of("File contains too many rows. Maximum allowed is " + MAX_ROWS));
         }
 
-        return submit(List.of(), userId);
+        var validationOutcome = validateRows(rows);
+        if (validationOutcome.result().status() != SUCCESS) {
+            return validationOutcome.result();
+        }
+
+        return submit(validationOutcome.claimDetailsList(), userId);
     }
 
     private void parseFile(MultipartFile file, List<T> rows, List<String> errors) throws IOException {
@@ -77,6 +83,7 @@ public abstract class BulkUploadService<T> {
                 errors.add(ex.getMessage());
                 return;
             }
+
             int row = 1;
             for (CSVRecord record : parser) {
                 row++;
@@ -89,11 +96,9 @@ public abstract class BulkUploadService<T> {
         }
     }
 
-    protected BulkUploadResult validateRows(List<T> rows) {
-        return new BulkUploadResult(SUCCESS, List.of());
-    }
+    protected abstract BulkUploadValidationOutcome validateRows(List<T> rows);
 
-    protected BulkUploadResult submit(List<ClaimDetails> claimDetails, UUID userId) {
+    protected BulkUploadResult submit(List<? extends ClaimDetails> claimDetails, UUID userId) {
         for (int row = 0; row < claimDetails.size(); ++row) {
             try {
                 var claim = claimDetails.get(row);

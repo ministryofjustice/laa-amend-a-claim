@@ -4,17 +4,19 @@ import lombok.Getter;
 
 @Getter
 public enum OutcomeType {
-    PAID_IN_FULL("outcome.paidInFull", "paid-in-full"),
-    REDUCED("outcome.reduced", "reduced-still-escaped"),
-    REDUCED_TO_FIXED_FEE("outcome.reducedToFixedFee", "reduced-to-fixed-fee-assessed"),
-    NILLED("outcome.nilled", "nilled");
+    PAID_IN_FULL("outcome.paidInFull", "paid-in-full", "Paid in Full"),
+    REDUCED("outcome.reduced", "reduced-still-escaped", "Reduced"),
+    REDUCED_TO_FIXED_FEE("outcome.reducedToFixedFee", "reduced-to-fixed-fee-assessed", "Reduced to Fixed Fee"),
+    NILLED("outcome.nilled", "nilled", "Nilled");
 
     private final String messageKey;
     private final String formValue;
+    private final String csvLabel;
 
-    OutcomeType(String messageKey, String formValue) {
+    OutcomeType(String messageKey, String formValue, String csvLabel) {
         this.messageKey = messageKey;
         this.formValue = formValue;
+        this.csvLabel = csvLabel;
     }
 
     /**
@@ -30,6 +32,22 @@ public enum OutcomeType {
         for (OutcomeType type : values()) {
             if (type.formValue.equals(formValue)) {
                 return type;
+            }
+        }
+        return null;
+    }
+
+    public static OutcomeType fromCsvLabel(String csvLabel) {
+        if (csvLabel == null) {
+            return null;
+        }
+        if (csvLabel.equalsIgnoreCase("Reduced to Fixed Fee")
+                || csvLabel.equalsIgnoreCase("Reduced to Fixed Fee - Assessed")) {
+            return REDUCED_TO_FIXED_FEE;
+        }
+        for (OutcomeType outcome : values()) {
+            if (outcome.getCsvLabel().equalsIgnoreCase(csvLabel)) {
+                return outcome;
             }
         }
         return null;

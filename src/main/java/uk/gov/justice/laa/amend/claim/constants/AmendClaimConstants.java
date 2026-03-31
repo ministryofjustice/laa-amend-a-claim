@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.constants;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 public class AmendClaimConstants {
@@ -52,4 +53,6 @@ public class AmendClaimConstants {
 
     // We allow setting the assessed total values if it's a crime case and has a valid police station fee code
     public static final Set<String> VALID_POLICE_STATION_FEE_CODES = Set.of("INVC");
+    public static final BigDecimal MIN_CURRENCY = BigDecimal.ZERO;
+    public static final BigDecimal MAX_CURRENCY = BigDecimal.valueOf(1_000_000);
 }

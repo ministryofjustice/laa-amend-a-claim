@@ -4,12 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.junit.jupiter.api.DisplayName;
@@ -17,13 +21,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import uk.gov.justice.laa.amend.claim.base.WireMockSetup;
 import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 
 @SpringBootTest
-class BulkUploadServiceTest {
+class BulkUploadServiceTest extends WireMockSetup {
 
     private static final String[] HEADERS = {
         "Office Code",
@@ -41,12 +46,15 @@ class BulkUploadServiceTest {
     private BulkUploadService<BulkUploadCivilClaim> bulkUploadService;
 
     @Test
-    @DisplayName("Parses 4,000 CSV rows end-to-end successfully")
+    @DisplayName("Parses 130 CSV rows end-to-end successfully")
     void parseCsvRowsSuccessfully() throws Exception {
-        int rows = 4000;
+        int rows = 130;
         MockMultipartFile file = csvFileWithRows(rows);
         UUID userId = UUID.randomUUID();
 
+        // Dynamically stub claims with matching UFNs and office codes
+        WireMockSetup.setupGetClaimsStubDynamic(file, rows);
+        WireMockSetup.setupPostAssessment202StubForAnyClaim();
         BulkUploadResult result = bulkUploadService.upload(file, userId);
 
         assertThat(result).isNotNull();
@@ -65,11 +73,16 @@ class BulkUploadServiceTest {
                         writer, CSVFormat.DEFAULT.builder().setHeader(HEADERS).build())) {
 
             Random random = new Random();
+            String officeCode = generateRandomOfficeCode(random);
 
-            for (int i = 0; i < n; i++) {
+            List<String> ufns = Stream.generate(() -> generateRandomUfn(random))
+                    .distinct()
+                    .limit(n)
+                    .toList();
 
-                String officeCode = generateRandomOfficeCode(random);
-                String ufn = generateRandomUfn(random);
+            IntStream.range(0, n).forEach(i -> {
+                String ufn = ufns.get(i);
+
                 String assessment = (i % 2 == 0) ? "Reduced" : "Reduced To Fixed Fee";
 
                 String profitCost = "£" + getNumber(i * 10 + 100) + ".00";
@@ -79,17 +92,21 @@ class BulkUploadServiceTest {
                 String totalAllowedVat = "£" + getNumber(i * 3 + 15) + ".75";
                 String totalAllowedInclVat = "£" + getNumber(i * 21 + 175) + ".95";
 
-                csv.printRecord(
-                        officeCode,
-                        ufn,
-                        assessment,
-                        profitCost,
-                        disbursements,
-                        disbVat,
-                        counsel,
-                        totalAllowedVat,
-                        totalAllowedInclVat);
-            }
+                try {
+                    csv.printRecord(
+                            officeCode,
+                            ufn,
+                            assessment,
+                            profitCost,
+                            disbursements,
+                            disbVat,
+                            counsel,
+                            totalAllowedVat,
+                            totalAllowedInclVat);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
 
         return new MockMultipartFile(
@@ -116,5 +133,38 @@ class BulkUploadServiceTest {
 
     private String getNumber(int value) {
         return String.format("%,d", value);
+    }
+
+    @Test
+    @DisplayName("Returns error when ClaimService returns null (no claims found)")
+    void returnsErrorWhenClaimServiceReturnsNull() throws Exception {
+        // Create a CSV with a UFN and office code
+        String[] headers = HEADERS;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (OutputStreamWriter writer = new OutputStreamWriter(baos, StandardCharsets.UTF_8);
+                CSVPrinter csv = new CSVPrinter(
+                        writer, CSVFormat.DEFAULT.builder().setHeader(headers).build())) {
+            csv.printRecord(
+                    "0p0001", // office code
+                    "010101/001999", // UFN
+                    "Reduced",
+                    "£100.00",
+                    "£50.00",
+                    "£5.20",
+                    "£10.55",
+                    "£15.75",
+                    "£175.95");
+        }
+        WireMockSetup.setupGetEmptyClaimsStub();
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "bulk-civil-claims.csv", "text/csv", new ByteArrayInputStream(baos.toByteArray()));
+        UUID userId = UUID.randomUUID();
+
+        BulkUploadResult result = bulkUploadService.upload(file, userId);
+
+        assertThat(result).isNotNull();
+        assertThat(result.status()).isEqualTo(BulkUploadStatus.VALIDATION_FAILURE);
+        assertThat(result.reasons())
+                .anyMatch(reason -> reason.contains("Claim not found for UFN 010101/001999 and officeCode 0p0001"));
     }
 }

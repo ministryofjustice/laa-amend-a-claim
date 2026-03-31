@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvRowMapper;
+import uk.gov.justice.laa.amend.claim.utils.NumberUtils;
 
 @Component
 public class BulkUploadCivilClaimCsvMapper implements CsvRowMapper<BulkUploadCivilClaim> {
@@ -30,6 +31,7 @@ public class BulkUploadCivilClaimCsvMapper implements CsvRowMapper<BulkUploadCiv
         claim.setCounselCosts(getOptionalBigDecimal(record, COUNSEL_COSTS, rowNumber));
         claim.setTotalAllowedVat(getOptionalBigDecimal(record, TOTAL_ALLOWED_VAT, rowNumber));
         claim.setTotalAllowedInclVat(getOptionalBigDecimal(record, TOTAL_ALLOWED_INCLUDE_VAT, rowNumber));
+        claim.setRowNumber(rowNumber);
         return claim;
     }
 
@@ -48,10 +50,10 @@ public class BulkUploadCivilClaimCsvMapper implements CsvRowMapper<BulkUploadCiv
                 return null;
             }
 
-            String normalized = value.replaceAll("[£,]", "") // remove currency symbols and commas
+            String normalized = value.replaceAll("£", "") // remove currency symbols
                     .trim();
 
-            return new BigDecimal(normalized);
+            return NumberUtils.parse(normalized);
         } catch (Exception ex) {
             throw new IllegalArgumentException("Row " + rowNumber + ": Invalid number in " + header);
         }
