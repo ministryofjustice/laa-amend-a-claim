@@ -38,13 +38,13 @@
                             <table class="govuk-table" id="error-summary-list">
                                 <thead class="govuk-table__head">
                                     <tr class="govuk-table__row">
-                                        <th scope="col" class="govuk-table__header">Row</th>
-                                        <th scope="col" class="govuk-table__header">Error</th>
+                                        <th scope="col" class="govuk-table__header" th:text="#{bulkUploadResult.errorTable.rowHeader}"></th>
+                                        <th scope="col" class="govuk-table__header" th:text="#{bulkUploadResult.errorTable.errorHeader}"></th>
                                     </tr>
                                 </thead>
                                 <tbody class="govuk-table__body">
                                     <tr class="govuk-table__row" th:each="error : ${result.errors}">
-                                        <td class="govuk-table__cell" th:text="${error.rowNumber} ?: 'N/A'"></td>
+                                        <td class="govuk-table__cell" th:text="${error.rowNumber} ?: #{bulkUploadResult.errorTable.noRow}"></td>
                                         <td class="govuk-table__cell" th:text="${error.message}"></td>
                                     </tr>
                                 </tbody>
