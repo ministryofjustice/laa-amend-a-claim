@@ -143,7 +143,7 @@ jobs:
           role-session-name: ${{ github.run_id }}-e2e-deploy
 
       - name: Set up kubectl
-        uses: azure/setup-kubectl@776406bce94f63e41d621b960d78ee25c8b76ede # v4.0.1
+        uses: azure/setup-kubectl@15650b3ad78fff148532a140b8a4c821796b2d7b # v5.0.0
         with:
           version: v1.28.0
 
@@ -203,7 +203,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
+        uses: gradle/actions/setup-gradle@39e147cb9de83bb9910b8ef8bd7fff0ee20fcd6f # v6.0.1
 
       - name: Install Node dependencies
         working-directory: src/e2e
@@ -245,7 +245,10 @@ jobs:
             printf "\nChecking ${URL}\n"
             curl -f "${URL}"
           }
-          
+
+          GOVUK_VERSION=$(grep "webjars.npm:govuk-frontend" ../../build.gradle | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          MOJ_VERSION=$(grep "webjars.npm:ministryofjustice__frontend" ../../build.gradle | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+
           echo "Checking scripts..."
           check "/js/app.js"
           check "/webjars/govuk-frontend/dist/govuk/govuk-frontend.min.js"
@@ -253,8 +256,8 @@ jobs:
           
           echo "Checking styling..."
           check "/css/styles.css"
-          check "/webjars/govuk-frontend/6.1.0/dist/govuk/govuk-frontend.min.css"
-          check "/webjars/ministryofjustice__frontend/7.1.0/moj/moj-frontend.min.css"
+          check "/webjars/govuk-frontend/${GOVUK_VERSION}/dist/govuk/govuk-frontend.min.css"
+          check "/webjars/ministryofjustice__frontend/${MOJ_VERSION}/moj/moj-frontend.min.css"
           
           echo "Running E2E tests..."
           ./gradlew clean test --no-daemon
@@ -267,7 +270,7 @@ jobs:
 
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: e2e-test-results-${{ github.run_number }}
           path: |
