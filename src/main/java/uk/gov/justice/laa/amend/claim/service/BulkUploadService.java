@@ -118,7 +118,7 @@ public abstract class BulkUploadService<T> {
                         "Failed to submit assessment. %s prior rows in the file have already been"
                                 + " processed and do not need to be reuploaded.",
                         row);
-                log.error(message, ex);
+                log.error(String.format("Row %s: %s", row + ROW_OFFSET, message), ex);
                 return new BulkUploadResult(
                         SUBMISSION_FAILURE, List.of(new BulkUploadError(row + ROW_OFFSET, message)));
             }
