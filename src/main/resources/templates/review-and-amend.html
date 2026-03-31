@@ -57,6 +57,25 @@
                     </td>
                 </tr>
 
+                <tr class="govuk-table__row">
+
+                    <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{claimSummary.rows.contingencyAssessment}"></td>
+
+                    <td class="govuk-table__cell" colspan="3"
+                        th:text="${@ThymeleafUtils.getFormattedValue(claim.isContingencyAssessment()).resolve(#messages)}"/>
+
+                    <td class="govuk-table__cell">
+                        <a
+                                th:href="${viewModel.reviewAssessmentChangeUrl(submissionId, claimId, 'contingency-assessment')}"
+                                th:data-testid="claim-field-contingency-assessment"
+                                class="govuk-link govuk-link--no-visited-state">
+                            <th:block th:text="#{service.change}"></th:block>
+                            <span class="govuk-visually-hidden" th:text="| #{claimSummary.rows.contingencyAssessment}|"></span>
+                        </a>
+                    </td>
+
+                </tr>
+
                 </tbody>
             </table>
         </div>

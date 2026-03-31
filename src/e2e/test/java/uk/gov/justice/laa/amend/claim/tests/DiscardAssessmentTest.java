@@ -154,7 +154,7 @@ public class DiscardAssessmentTest extends BaseTest {
         details.clickAddUpdateAssessmentOutcome();
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.completeAssessment("assessed in full");
+        outcome.completeAssessment("assessed in full", true);
 
         return new ReviewAndAmendPage(page);
     }

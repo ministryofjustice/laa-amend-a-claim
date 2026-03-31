@@ -69,6 +69,10 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
         clickChangeInRow("Assessment outcome", assessmentTable);
     }
 
+    public void clickContingencyAssessment() {
+        clickChangeInRow("Was this claim assessed as part of the contingency process?", assessmentTable);
+    }
+
     public void clickChangeProfitCosts() {
         clickChangeInRow("Profit costs", claimCostsTable);
     }
@@ -132,7 +136,7 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
         assertTableHasHeaders(totalClaimValueTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalAllowedValueTable, "Item", "Calculated", "Requested", "Allowed");
 
-        assertAssessmentHasItems("Assessment outcome");
+        assertAssessmentHasItems("Assessment outcome", "Was this claim assessed as part of the contingency process?");
         assertClaimCostsHasItems(
                 "Fixed fee", "Profit costs", "Disbursements", "Disbursement VAT", "Travel costs", "Waiting costs");
         assertClaimCostsNotHasItems("Total");
@@ -145,7 +149,7 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
         assertTableHasHeaders(totalClaimValueTable, "Item", "Calculated", "Requested", "Assessed");
         assertTableHasHeaders(totalAllowedValueTable, "Item", "Calculated", "Requested", "Allowed");
 
-        assertAssessmentHasItems("Assessment outcome");
+        assertAssessmentHasItems("Assessment outcome", "Was this claim assessed as part of the contingency process?");
         assertClaimCostsHasItems(
                 "Fixed fee",
                 "Profit costs",
