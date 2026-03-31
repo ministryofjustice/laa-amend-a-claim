@@ -29,7 +29,7 @@ class BulkUploadCivilClaimTest {
     void validateShouldReturnNoErrorsForValidRow() {
         BulkUploadCivilClaim row = newValidRow();
 
-        List<String> errors = row.validate();
+        List<BulkUploadError> errors = row.validate();
 
         assertTrue(errors.isEmpty(), "Expected no validation errors");
     }
@@ -39,10 +39,10 @@ class BulkUploadCivilClaimTest {
         BulkUploadCivilClaim row = newValidRow();
         row.setOfficeCode("");
 
-        List<String> errors = row.validate();
+        List<BulkUploadError> errors = row.validate();
 
         assertEquals(1, errors.size());
-        assertTrue(errors.getFirst().contains("Invalid office code"));
+        assertTrue(errors.getFirst().message().contains("Invalid office code"));
     }
 
     @Test
@@ -50,10 +50,10 @@ class BulkUploadCivilClaimTest {
         BulkUploadCivilClaim row = newValidRow();
         row.setOfficeCode("ABC12"); // only 5 chars
 
-        List<String> errors = row.validate();
+        List<BulkUploadError> errors = row.validate();
 
         assertEquals(1, errors.size());
-        assertTrue(errors.getFirst().contains("Invalid office code"));
+        assertTrue(errors.getFirst().message().contains("Invalid office code"));
     }
 
     @Test
@@ -61,10 +61,10 @@ class BulkUploadCivilClaimTest {
         BulkUploadCivilClaim row = newValidRow();
         row.setOfficeCode("###123"); // invalid regex
 
-        List<String> errors = row.validate();
+        List<BulkUploadError> errors = row.validate();
 
         assertEquals(1, errors.size());
-        assertTrue(errors.getFirst().contains("Invalid office code"));
+        assertTrue(errors.getFirst().message().contains("Invalid office code"));
     }
 
     @Test
@@ -72,10 +72,10 @@ class BulkUploadCivilClaimTest {
         BulkUploadCivilClaim row = newValidRow();
         row.setUfn("");
 
-        List<String> errors = row.validate();
+        List<BulkUploadError> errors = row.validate();
 
         assertEquals(1, errors.size());
-        assertTrue(errors.getFirst().contains("Invalid UFN"));
+        assertTrue(errors.getFirst().message().contains("Invalid UFN"));
     }
 
     @Test
@@ -83,10 +83,10 @@ class BulkUploadCivilClaimTest {
         BulkUploadCivilClaim row = newValidRow();
         row.setUfn("BAD_UFN");
 
-        List<String> errors = row.validate();
+        List<BulkUploadError> errors = row.validate();
 
         assertEquals(1, errors.size());
-        assertTrue(errors.getFirst().contains("Invalid UFN"));
+        assertTrue(errors.getFirst().message().contains("Invalid UFN"));
     }
 
     @Test
@@ -94,9 +94,9 @@ class BulkUploadCivilClaimTest {
         BulkUploadCivilClaim row = newValidRow();
         row.setProfitCost(null);
 
-        List<String> errors = row.validate();
+        List<BulkUploadError> errors = row.validate();
 
-        assertTrue(errors.stream().anyMatch(e -> e.contains("Invalid Profit Cost")));
+        assertTrue(errors.stream().anyMatch(e -> e.message().contains("Invalid Profit Cost")));
     }
 
     @Test
@@ -104,9 +104,9 @@ class BulkUploadCivilClaimTest {
         BulkUploadCivilClaim row = newValidRow();
         row.setProfitCost(new BigDecimal("10.999"));
 
-        List<String> errors = row.validate();
+        List<BulkUploadError> errors = row.validate();
 
-        assertTrue(errors.stream().anyMatch(e -> e.contains("must be a number with up to 2 decimal places")));
+        assertTrue(errors.stream().anyMatch(e -> e.message().contains("must be a number with up to 2 decimal places")));
     }
 
     @Test
@@ -114,9 +114,9 @@ class BulkUploadCivilClaimTest {
         BulkUploadCivilClaim row = newValidRow();
         row.setProfitCost(new BigDecimal("-1.00"));
 
-        List<String> errors = row.validate();
+        List<BulkUploadError> errors = row.validate();
 
-        assertTrue(errors.stream().anyMatch(e -> e.contains("must not be negative")));
+        assertTrue(errors.stream().anyMatch(e -> e.message().contains("must not be negative")));
     }
 
     @Test
@@ -124,9 +124,9 @@ class BulkUploadCivilClaimTest {
         BulkUploadCivilClaim row = newValidRow();
         row.setProfitCost(new BigDecimal("100000000")); // MAX or above
 
-        List<String> errors = row.validate();
+        List<BulkUploadError> errors = row.validate();
 
-        assertTrue(errors.stream().anyMatch(e -> e.contains("must be less than")));
+        assertTrue(errors.stream().anyMatch(e -> e.message().contains("must be less than")));
     }
 
     @Test
@@ -137,8 +137,19 @@ class BulkUploadCivilClaimTest {
         row.setProfitCost(new BigDecimal("-1")); // invalid
         row.setDisbursements(null); // invalid
 
-        List<String> errors = row.validate();
+        List<BulkUploadError> errors = row.validate();
 
         assertTrue(errors.size() >= 4, "Should contain multiple errors");
+    }
+
+    @Test
+    void validateShouldIncludeRowNumberOnAllErrors() {
+        BulkUploadCivilClaim row = newValidRow();
+        row.setRowNumber(7);
+        row.setOfficeCode("BAD");
+
+        List<BulkUploadError> errors = row.validate();
+
+        assertTrue(errors.stream().allMatch(e -> e.rowNumber() == 7));
     }
 }

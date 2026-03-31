@@ -45,7 +45,7 @@ public class BulkUploadHelper {
         return claims;
     }
 
-    public List<ClaimResponseV2> getAllClaims(List<BulkUploadCivilClaim> rows, List<String> errors) {
+    public List<ClaimResponseV2> getAllClaims(List<BulkUploadCivilClaim> rows, List<BulkUploadError> errors) {
         var officeCodes = rows.stream().map(BulkUploadCivilClaim::getOfficeCode).collect(Collectors.toSet());
         var officeCodeUfnRows = getOfficeCodeUfnRows(rows, errors);
         return officeCodes.stream()
@@ -58,7 +58,7 @@ public class BulkUploadHelper {
      * Map officeCode with UFN and row index from given rows of csv
      */
     public Map<Pair<String, String>, BulkUploadCivilClaim> getOfficeCodeUfnRows(
-            List<BulkUploadCivilClaim> rows, List<String> errors) {
+            List<BulkUploadCivilClaim> rows, List<BulkUploadError> errors) {
 
         var officeUfnToClaim = new HashMap<Pair<String, String>, BulkUploadCivilClaim>();
         Set<Pair<String, String>> appearedKeys = new HashSet<>();
@@ -71,8 +71,8 @@ public class BulkUploadHelper {
             Pair<String, String> key = Pair.of(office, ufn);
             // Duplicate Rows (officeCode + UFN)
             if (!appearedKeys.add(key)) {
-                errors.add(String.format(
-                        "Row %d: Duplicate row for office code %s and UFN %s", row.getRowNumber(), office, ufn));
+                errors.add(new BulkUploadError(
+                        row.getRowNumber(), String.format("Duplicate row for office code %s and UFN %s", office, ufn)));
             }
             officeUfnToClaim.put(key, row);
         });

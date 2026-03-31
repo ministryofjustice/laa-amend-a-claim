@@ -15,8 +15,8 @@
                         <th:block th:if="${result.isSuccess()}">
                             <div class="govuk-panel govuk-panel--confirmation">
                                 <h1 class="govuk-panel__title" th:text="#{bulkUploadResult.success}"></h1>
-                                <th:block th:each="reason : ${result.reasons}">
-                                    <div class="govuk-panel__body" th:text="${reason}"></div>
+                                <th:block th:each="error : ${result.errors}">
+                                    <div class="govuk-panel__body" th:text="${error.message}"></div>
                                 </th:block>
                             </div>
                         </th:block>
@@ -35,11 +35,20 @@
                                 </div>
                             </div>
 
-                            <dl class="govuk-summary-list" id="error-summary-list">
-                                <div class="govuk-summary-list__row" th:each="reason : ${result.reasons}">
-                                    <dd class="govuk-summary-list__value" th:text="${reason}"></dd>
-                                </div>
-                            </dl>
+                            <table class="govuk-table" id="error-summary-list">
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th scope="col" class="govuk-table__header">Row</th>
+                                        <th scope="col" class="govuk-table__header">Error</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="govuk-table__body">
+                                    <tr class="govuk-table__row" th:each="error : ${result.errors}">
+                                        <td class="govuk-table__cell" th:text="${error.rowNumber} ?: 'N/A'"></td>
+                                        <td class="govuk-table__cell" th:text="${error.message}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </th:block>
                     </th:block>
 
