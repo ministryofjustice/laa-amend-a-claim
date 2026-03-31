@@ -29,6 +29,8 @@ jobs:
       packages: write
     with:
       pacticipant_name: "laa-amend-a-claim"
+      java_version: '25'
+      java_distribution: 'corretto'
       pact_test_task: "pactTest"
       publish_pact_results: true
       enable_can_i_merge: true
