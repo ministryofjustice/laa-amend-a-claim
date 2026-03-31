@@ -51,7 +51,7 @@ jobs:
 
   security:
     name: Security
-    needs: [ build, test ]
+    needs: build
     uses: ./.github/workflows/snyk-docker-scan.yml
     with:
       branch: ${{ github.ref_name }}
