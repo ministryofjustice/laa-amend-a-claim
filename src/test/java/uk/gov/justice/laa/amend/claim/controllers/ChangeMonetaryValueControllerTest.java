@@ -57,14 +57,16 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
     @ParameterizedTest
     @MethodSource("validCosts")
     void testGetReturnsView(Cost cost) throws Exception {
-        Claim claim = createClaimFor(cost);
+        var claim = createClaimFor(cost);
+        var claimField = cost.getAccessor().get(claim);
         session.setAttribute(claimId.toString(), claim);
 
         mockMvc.perform(get(buildPath(cost.getPath())).session(session))
                 .andExpect(status().isOk())
                 .andExpect(view().name("change-monetary-value"))
                 .andExpect(model().attribute("cost", equalTo(cost)))
-                .andExpect(model().attribute("form", hasProperty("value", nullValue())));
+                .andExpect(model().attribute("form", hasProperty("value", nullValue())))
+                .andExpect(model().attribute("claimFieldRow", claimField.toClaimFieldRow()));
     }
 
     @ParameterizedTest

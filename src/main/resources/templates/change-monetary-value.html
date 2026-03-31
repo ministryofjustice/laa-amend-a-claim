@@ -16,10 +16,21 @@
 
                             <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toMonetaryFormValueErrors(#fields.detailedErrors())})}"></th:block>
 
+                            <h1 class="govuk-heading-xl" th:with="heading=${#strings.concat(prefix, '.heading')}" th:text="#{${heading}}"></h1>
+
+                            <dl class="govuk-summary-list">
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key" th:text="#{changeMonetaryValue.calculated}"></dt>
+                                    <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(claimFieldRow.calculated).resolve(#messages)}"></dd>
+                                </div>
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key" th:text="#{changeMonetaryValue.submitted}"></dt>
+                                    <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(claimFieldRow.submitted).resolve(#messages)}"></dd>
+                                </div>
+                            </dl>
+
                             <div class="govuk-form-group">
-                                <h1 class="govuk-label-wrapper">
-                                    <label th:with="heading=${#strings.concat(prefix, '.heading')}" class="govuk-label govuk-label--xl" for="value" th:text="#{${heading}}"></label>
-                                </h1>
+                                <label class="govuk-label govuk-label--s" for="value" th:text="#{changeMonetaryValue.assessed}"></label>
 
                                 <th:block th:if="${#messages.msgOrNull(prefix + '.hint') != null}">
                                     <div th:with="hint=${#strings.concat(prefix, '.hint')}" id="value-hint" class="govuk-hint" th:text="#{${hint}}"></div>

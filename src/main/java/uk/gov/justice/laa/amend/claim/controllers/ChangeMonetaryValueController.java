@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 
@@ -45,17 +46,7 @@ public class ChangeMonetaryValueController {
             throws IOException {
         try {
             var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
-            ClaimField claimField = cost.getAccessor().get(claim);
-
-            if (claimField == null) {
-                log.warn("Could not find claim field {} in claim {}. Returning 404.", cost.getPath(), claimId);
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
-
-            if (claimField.isNotAssessable()) {
-                log.warn("This claim field is not modifiable for claim {}. Returning 404.", claimId);
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            }
+            var claimField = getCostClaimField(claim, cost, claimId);
 
             BigDecimal value = (BigDecimal) claimField.getAssessed();
 
@@ -64,7 +55,7 @@ public class ChangeMonetaryValueController {
                 form.setValue(setScale(value).toString());
             }
 
-            return renderView(model, form, cost, submissionId, claimId);
+            return renderView(model, form, cost, claimField, submissionId, claimId);
         } catch (ClaimMismatchException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
@@ -84,13 +75,13 @@ public class ChangeMonetaryValueController {
             throws IOException {
         try {
             var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+            var claimField = getCostClaimField(claim, cost, claimId);
 
             if (bindingResult.hasErrors()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return renderView(model, form, cost, submissionId, claimId);
+                return renderView(model, form, cost, claimField, submissionId, claimId);
             }
 
-            ClaimField claimField = cost.getAccessor().get(claim);
             BigDecimal value = setScale(form.getValue());
             claimField.setAssessed(value);
             cost.getAccessor().set(claim, claimField);
@@ -103,11 +94,14 @@ public class ChangeMonetaryValueController {
         }
     }
 
-    private String renderView(Model model, MonetaryValueForm form, Cost cost, UUID submissionId, UUID claimId) {
+    private String renderView(
+            Model model, MonetaryValueForm form, Cost cost, ClaimField claimField, UUID submissionId, UUID claimId) {
         model.addAttribute("cost", cost);
         model.addAttribute("form", form);
         model.addAttribute("action", getAction(submissionId, claimId, cost));
         model.addAttribute("redirectUrl", getRedirectUrl(submissionId, claimId));
+        model.addAttribute("claimFieldRow", claimField.toClaimFieldRow());
+
         return "change-monetary-value";
     }
 
@@ -117,5 +111,21 @@ public class ChangeMonetaryValueController {
 
     private String getRedirectUrl(UUID submissionId, UUID claimId) {
         return String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+    }
+
+    private ClaimField getCostClaimField(ClaimDetails claim, Cost cost, UUID claimId) throws ClaimMismatchException {
+        var claimField = cost.getAccessor().get(claim);
+
+        if (claimField == null) {
+            log.warn("Could not find claim field {} in claim {}. Returning 404.", cost.getPath(), claimId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        if (claimField.isNotAssessable()) {
+            log.warn("This claim field is not modifiable for claim {}. Returning 404.", claimId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        return claimField;
     }
 }
