@@ -26,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadError;
 import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadHelper;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvHeaderValidator;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvRowMapper;
@@ -150,8 +151,39 @@ class BulkUploadCivilServiceTest {
 
         // --- assert ---
         assertEquals(VALIDATION_FAILURE, outcome.result().status());
-        String error = outcome.result().reasons().getFirst();
-        assertTrue(error.contains("Duplicate Escaped Civil Claim"));
+        BulkUploadError error = outcome.result().errors().getFirst();
+        assertTrue(error.message().contains("Duplicate Escaped Civil Claim"));
+    }
+
+    @Test
+    void validateRowsShouldReturnErrorsSortedByRowNumber() {
+        // --- arrange: two rows with invalid office codes, row 5 before row 2 in iteration ---
+        BulkUploadCivilClaim row2 = mock(BulkUploadCivilClaim.class);
+        BulkUploadCivilClaim row5 = mock(BulkUploadCivilClaim.class);
+
+        when(row2.getRowNumber()).thenReturn(2);
+        when(row2.getOfficeCode()).thenReturn(OFFICE_CODE);
+        when(row2.getUfn()).thenReturn(UNIQUE_FILE_NUMBER);
+        when(row2.validate()).thenReturn(List.of(new BulkUploadError(2, "error on row 2")));
+
+        when(row5.getRowNumber()).thenReturn(5);
+        when(row5.getOfficeCode()).thenReturn(OFFICE_CODE);
+        when(row5.getUfn()).thenReturn("999999/999");
+        when(row5.validate()).thenReturn(List.of(new BulkUploadError(5, "error on row 5")));
+
+        when(bulkUploadHelper.getAllClaims(anyList(), anyList())).thenReturn(List.of());
+
+        // --- act: pass row5 first, then row2 ---
+        BulkUploadValidationOutcome outcome = service.validateRows(List.of(row5, row2));
+
+        // --- assert: errors sorted ascending by row number ---
+        assertEquals(VALIDATION_FAILURE, outcome.result().status());
+        List<BulkUploadError> errors = outcome.result().errors();
+        for (int i = 1; i < errors.size(); i++) {
+            assertTrue(
+                    errors.get(i - 1).rowNumber() <= errors.get(i).rowNumber(),
+                    "Errors should be sorted by row number ascending");
+        }
     }
 
     private CivilClaimDetails buildEmptyDetails() {

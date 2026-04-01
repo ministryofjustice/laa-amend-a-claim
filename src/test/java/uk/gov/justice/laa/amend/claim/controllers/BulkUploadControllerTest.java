@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadError;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
@@ -82,7 +83,7 @@ public class BulkUploadControllerTest extends BaseControllerTest {
 
     @Test
     void testResultOnPageLoadReturnsViewIfResultSet() throws Exception {
-        var result = new BulkUploadResult(SUCCESS, List.of("all is good"));
+        var result = new BulkUploadResult(SUCCESS, List.of(new BulkUploadError(null, "all is good")));
         mockMvc.perform(get(RESULT_PATH).flashAttr("result", result))
                 .andExpect(status().isOk())
                 .andExpect(view().name("bulk-upload-result"));

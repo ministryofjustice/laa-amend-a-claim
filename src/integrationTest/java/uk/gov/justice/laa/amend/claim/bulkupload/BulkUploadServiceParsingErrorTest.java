@@ -32,10 +32,10 @@ class BulkUploadServiceParsingErrorTest extends WireMockSetup {
         UUID userId = UUID.randomUUID();
         BulkUploadResult result = bulkUploadService.upload(file, userId);
         assertThat(result.status()).isEqualTo(BulkUploadStatus.PARSING_FAILURE);
-        List<String> errors = result.reasons();
+        List<BulkUploadError> errors = result.errors();
         assertThat(errors).isNotEmpty();
         // Should contain header error
-        assertThat(errors.stream().anyMatch(e -> e.toLowerCase().contains("header")))
+        assertThat(errors.stream().anyMatch(e -> e.message().toLowerCase().contains("header")))
                 .isTrue();
     }
 
@@ -62,12 +62,11 @@ class BulkUploadServiceParsingErrorTest extends WireMockSetup {
         UUID userId = UUID.randomUUID();
         BulkUploadResult result = bulkUploadService.upload(file, userId);
         assertThat(result.status()).isEqualTo(BulkUploadStatus.PARSING_FAILURE);
-        List<String> errors = result.reasons();
+        List<BulkUploadError> errors = result.errors();
         assertThat(errors).isNotEmpty();
         assertThat(errors.size()).isEqualTo(9);
         // Should contain row errors
-        assertThat(errors.stream().anyMatch(e -> e.toLowerCase().contains("row")))
-                .isTrue();
+        assertThat(errors.stream().anyMatch(e -> e.rowNumber() != null)).isTrue();
     }
 
     @Test
@@ -93,7 +92,7 @@ class BulkUploadServiceParsingErrorTest extends WireMockSetup {
 
         assertThat(result.status()).isEqualTo(BulkUploadStatus.VALIDATION_FAILURE);
 
-        List<String> errors = result.reasons();
+        List<BulkUploadError> errors = result.errors();
 
         assertThat(errors).isNotEmpty();
 
@@ -101,11 +100,10 @@ class BulkUploadServiceParsingErrorTest extends WireMockSetup {
         assertThat(errors.size()).isGreaterThan(5);
 
         // Contains row-level validation errors
-        assertThat(errors.stream().anyMatch(e -> e.toLowerCase().contains("row")))
-                .isTrue();
+        assertThat(errors.stream().anyMatch(e -> e.rowNumber() != null)).isTrue();
 
         // Contains duplicate detection errors
-        assertThat(errors.stream().anyMatch(e -> e.toLowerCase().contains("duplicate")))
+        assertThat(errors.stream().anyMatch(e -> e.message().toLowerCase().contains("duplicate")))
                 .isTrue();
     }
 }

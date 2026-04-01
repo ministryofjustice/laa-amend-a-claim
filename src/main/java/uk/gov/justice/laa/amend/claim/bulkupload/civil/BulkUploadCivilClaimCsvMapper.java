@@ -38,7 +38,7 @@ public class BulkUploadCivilClaimCsvMapper implements CsvRowMapper<BulkUploadCiv
     private String getRequiredString(CSVRecord record, String header, int rowNumber) {
         String value = record.get(header);
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("Row " + rowNumber + ": " + header + " is required.");
+            throw new IllegalArgumentException(header + " is required.");
         }
         return value.trim();
     }
@@ -55,7 +55,7 @@ public class BulkUploadCivilClaimCsvMapper implements CsvRowMapper<BulkUploadCiv
 
             return NumberUtils.parse(normalized);
         } catch (Exception ex) {
-            throw new IllegalArgumentException("Row " + rowNumber + ": Invalid number in " + header);
+            throw new IllegalArgumentException("Invalid number in " + header);
         }
     }
 }

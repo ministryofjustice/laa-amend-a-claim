@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadError;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 
 @Data
@@ -30,21 +31,22 @@ public class BulkUploadCivilClaim {
         this.officeCode = officeCode == null ? null : officeCode.toUpperCase();
     }
 
-    public List<String> validate() {
-        List<String> errors = new ArrayList<>();
+    public List<BulkUploadError> validate() {
+        List<BulkUploadError> errors = new ArrayList<>();
 
         if (StringUtils.isBlank(officeCode) || officeCode.length() != 6 || !officeCode.matches(OFFICE_CODE_REGEX)) {
-            errors.add(String.format("Row %d: Invalid office code %s", rowNumber, officeCode));
+            errors.add(new BulkUploadError(rowNumber, String.format("Invalid office code %s", officeCode)));
         }
 
         if (StringUtils.isBlank(ufn)
                 || !ufn.matches(UNIQUE_FILE_NUMBER_CHARACTER_REGEX)
                 || !ufn.matches(UNIQUE_FILE_NUMBER_FORMAT_REGEX)) {
-            errors.add(String.format("Row %d: Invalid UFN %s", rowNumber, ufn));
+            errors.add(new BulkUploadError(rowNumber, String.format("Invalid UFN %s", ufn)));
         }
 
         if (OutcomeType.fromCsvLabel(assessmentOutcome) == null) {
-            errors.add(String.format("Row %d: Invalid Assessment Outcome %s", rowNumber, assessmentOutcome));
+            errors.add(
+                    new BulkUploadError(rowNumber, String.format("Invalid Assessment Outcome %s", assessmentOutcome)));
         }
 
         validateCurrency(profitCost, "Profit Cost", errors);
@@ -57,24 +59,25 @@ public class BulkUploadCivilClaim {
         return errors;
     }
 
-    private void validateCurrency(BigDecimal value, String fieldName, List<String> errors) {
-        String prefix = String.format("Row %d: Invalid %s", rowNumber, fieldName);
+    private void validateCurrency(BigDecimal value, String fieldName, List<BulkUploadError> errors) {
+        String prefix = String.format("Invalid %s", fieldName);
 
         if (value == null) {
-            errors.add(prefix);
+            errors.add(new BulkUploadError(rowNumber, prefix));
             return;
         }
 
         if (value.scale() > 2) {
-            errors.add(String.format("%s must be a number with up to 2 decimal places", prefix));
+            errors.add(new BulkUploadError(
+                    rowNumber, String.format("%s must be a number with up to 2 decimal places", prefix)));
         }
 
         if (value.compareTo(MIN_CURRENCY) < 0) {
-            errors.add(String.format("%s must not be negative", prefix));
+            errors.add(new BulkUploadError(rowNumber, String.format("%s must not be negative", prefix)));
         }
 
         if (value.compareTo(MAX_CURRENCY) >= 0) {
-            errors.add(String.format("%s must be less than %s", prefix, MAX_CURRENCY));
+            errors.add(new BulkUploadError(rowNumber, String.format("%s must be less than %s", prefix, MAX_CURRENCY)));
         }
     }
 }
