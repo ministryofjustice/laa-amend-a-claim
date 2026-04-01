@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import static java.util.Comparator.naturalOrder;
+import static java.util.Comparator.nullsFirst;
 import static uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadHelper.MAX_ROWS;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.PARSING_FAILURE;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.SUBMISSION_FAILURE;
@@ -50,8 +52,7 @@ public abstract class BulkUploadService<T> {
                     null, StringUtils.isNotBlank(ex.getMessage()) ? ex.getMessage() : "Error parsing file"));
         }
         if (!errors.isEmpty()) {
-            sortByRowNumber(errors);
-            return new BulkUploadResult(PARSING_FAILURE, errors);
+            return new BulkUploadResult(PARSING_FAILURE, sortedByRowNumber(errors));
         }
         log.info("Parsed {} rows from file", rows.size());
 
@@ -85,9 +86,8 @@ public abstract class BulkUploadService<T> {
             try {
                 csvHeaderValidator.validate(schemaProvider.getSchema(), parser.getHeaderNames());
             } catch (Exception ex) {
-                String message = StringUtils.isBlank(ex.getMessage())
-                        ? "Failed to validate CSV header."
-                        : ex.getMessage();
+                String message =
+                        StringUtils.isBlank(ex.getMessage()) ? "Failed to validate CSV header." : ex.getMessage();
                 errors.add(new BulkUploadError(null, message));
                 return;
             }
@@ -131,7 +131,9 @@ public abstract class BulkUploadService<T> {
         return new BulkUploadResult(SUCCESS, List.of(new BulkUploadError(null, successMessage)));
     }
 
-    protected static void sortByRowNumber(List<BulkUploadError> errors) {
-        errors.sort(Comparator.comparing(BulkUploadError::rowNumber, Comparator.nullsFirst(Comparator.naturalOrder())));
+    protected static List<BulkUploadError> sortedByRowNumber(List<BulkUploadError> errors) {
+        return errors.stream()
+                .sorted(Comparator.comparing(BulkUploadError::rowNumber, nullsFirst(naturalOrder())))
+                .toList();
     }
 }
