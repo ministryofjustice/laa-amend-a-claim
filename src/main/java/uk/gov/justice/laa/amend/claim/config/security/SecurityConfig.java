@@ -9,9 +9,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,7 +31,7 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.security.web.header.HeaderWriterFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.Role;
 
@@ -62,10 +64,17 @@ public class SecurityConfig extends CommonSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .invalidSessionUrl("/logout-success?message=expired")
                         .sessionConcurrency(concurrency ->
-                                concurrency.maximumSessions(1).expiredUrl("/logout-success?message=expired")))
-                .addFilterAfter(securityHeadersFilter(), HeaderWriterFilter.class);
+                                concurrency.maximumSessions(1).expiredUrl("/logout-success?message=expired")));
 
         return http.build();
+    }
+
+    @Bean
+    public FilterRegistrationBean<OncePerRequestFilter> securityHeadersFilter() {
+        FilterRegistrationBean<OncePerRequestFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(createSecurityHeadersFilter());
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return registration;
     }
 
     private OidcUserService oidcUserService() {

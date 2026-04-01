@@ -32,7 +32,7 @@ public abstract class CommonSecurityConfig {
         return source;
     }
 
-    public OncePerRequestFilter securityHeadersFilter() {
+    public OncePerRequestFilter createSecurityHeadersFilter() {
         return new OncePerRequestFilter() {
             @Override
             protected void doFilterInternal(
