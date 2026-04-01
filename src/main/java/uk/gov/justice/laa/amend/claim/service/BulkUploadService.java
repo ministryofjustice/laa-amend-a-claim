@@ -138,9 +138,8 @@ public abstract class BulkUploadService<T> {
                         SUBMISSION_FAILURE, List.of(new BulkUploadError(row + ROW_OFFSET, message)), List.of());
             }
         }
-        var successMessage = String.format("Successfully uploaded %s assessments", claimDetails.size());
-        log.info(successMessage);
-        return new BulkUploadResult(SUCCESS, List.of(new BulkUploadError(null, successMessage)), summaries);
+        log.info("Successfully uploaded {} assessments", claimDetails.size());
+        return new BulkUploadResult(SUCCESS, List.of(), summaries);
     }
 
     protected static List<BulkUploadError> sortedByRowNumber(List<BulkUploadError> errors) {

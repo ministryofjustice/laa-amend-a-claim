@@ -35,8 +35,7 @@ public class BulkUploadResultViewTest extends ViewTestBase {
     void testSuccessResultIsRendered() throws Exception {
         when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
 
-        var successReason = "success reason";
-        var result = new BulkUploadResult(SUCCESS, List.of(new BulkUploadError(null, successReason)), List.of());
+        var result = new BulkUploadResult(SUCCESS, List.of(), List.of());
 
         Document doc = renderDocument(Map.of("result", result));
 
@@ -48,7 +47,7 @@ public class BulkUploadResultViewTest extends ViewTestBase {
 
         assertPageHasPanel(doc);
 
-        assertPageHasContent(doc, "success reason");
+        assertPageHasContent(doc, "0 assessments uploaded");
 
         assertPageHasLink(doc, "upload-another-file", "Upload another file", "/bulk-upload");
         assertPageHasLink(doc, "back-to-search", "Back to search", "/");
@@ -94,6 +93,7 @@ public class BulkUploadResultViewTest extends ViewTestBase {
         Document doc = renderDocument(Map.of("result", result));
 
         assertPageHasTable(doc);
+        assertPageHasContent(doc, "1 assessments uploaded");
         assertPageHasContent(doc, "010101/001001");
         assertPageHasContent(doc, "0P0001");
         assertPageHasContent(doc, "Reduced");
@@ -120,8 +120,7 @@ public class BulkUploadResultViewTest extends ViewTestBase {
     void testSuccessResultWithNoAssessmentsDoesNotShowTable() throws Exception {
         when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
 
-        var result = new BulkUploadResult(
-                SUCCESS, List.of(new BulkUploadError(null, "Successfully uploaded 0 assessments")), List.of());
+        var result = new BulkUploadResult(SUCCESS, List.of(), List.of());
 
         Document doc = renderDocument(Map.of("result", result));
 

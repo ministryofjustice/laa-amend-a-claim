@@ -15,9 +15,8 @@
                         <th:block th:if="${result.isSuccess()}">
                             <div class="govuk-panel govuk-panel--confirmation">
                                 <h1 class="govuk-panel__title" th:text="#{bulkUploadResult.success}"></h1>
-                                <th:block th:each="error : ${result.errors}">
-                                    <div class="govuk-panel__body" th:text="${error.message}"></div>
-                                </th:block>
+                                <div class="govuk-panel__body"
+                                     th:text="#{bulkUploadResult.successCount(${#lists.size(result.uploadedAssessments)})}"></div>
                             </div>
 
                             <th:block th:if="${not #lists.isEmpty(result.uploadedAssessments)}">
