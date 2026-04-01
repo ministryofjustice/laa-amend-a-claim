@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.resources;
 
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
@@ -70,6 +71,7 @@ public class MockClaimsFunctions {
         claim.setSubstantiveHearing(createSubstantiveHearingField());
         claim.setVatClaimed(createVatClaimedField());
         claim.setAssessmentOutcome(OutcomeType.REDUCED);
+        claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
 
         claim.setAssessedTotalVat(createAssessedTotalVatField());
         claim.setAssessedTotalInclVat(createAssessedTotalInclVatField());
@@ -101,6 +103,7 @@ public class MockClaimsFunctions {
         claim.setAllowedTotalVat(createAllowedTotalVatField());
         claim.setAllowedTotalInclVat(createAllowedTotalInclVatField());
         claim.setAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
+        claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
 
         return claim;
     }

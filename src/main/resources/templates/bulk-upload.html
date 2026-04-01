@@ -18,10 +18,28 @@
 
                     <details class="govuk-details">
                         <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text" th:text="#{bulkUpload.csvFormatSummary}"></span>
+                            <span class="govuk-details__summary-text" th:text="#{bulkUpload.csvFormat.summary}"></span>
                         </summary>
                         <div class="govuk-details__text">
-                            TODO: To be populated by BC-483
+                            <p class="govuk-body" th:text="#{bulkUpload.csvFormat.leadInLine}"></p>
+                            <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+                                <li th:text="#{bulkUpload.csvFormat.officeCodeColumn}"></li>
+                                <li th:text="#{bulkUpload.csvFormat.ufnColumn}"></li>
+                                <li th:text="#{bulkUpload.csvFormat.assessmentOutcomeColumn}"></li>
+                                <li th:text="#{bulkUpload.csvFormat.profitCostColumn}"></li>
+                                <li th:text="#{bulkUpload.csvFormat.disbursementsColumn}"></li>
+                                <li th:text="#{bulkUpload.csvFormat.disbursementsVatColumn}"></li>
+                                <li th:text="#{bulkUpload.csvFormat.counselCostsColumn}"></li>
+                                <li th:text="#{bulkUpload.csvFormat.totalAllowedVatColumn}"></li>
+                                <li th:text="#{bulkUpload.csvFormat.totalAllowedIncludingVatColumn}"></li>
+                                <li th:text="#{bulkUpload.csvFormat.uniqueOfficeCodeAndUfn}"></li>
+                                <li th:text="#{bulkUpload.csvFormat.monetaryValues}"></li>
+                            </ul>
+                            <a th:href="@{/bulk-upload/example}"
+                               th:text="#{bulkUpload.csvFormat.exampleLink}"
+                               class="govuk-link govuk-link--no-visited-state"
+                               id="bulk-upload-example-link">
+                            </a>
                         </div>
                     </details>
 

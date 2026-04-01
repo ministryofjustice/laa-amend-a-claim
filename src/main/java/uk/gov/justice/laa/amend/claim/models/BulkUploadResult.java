@@ -7,9 +7,10 @@ import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadS
 import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.List;
+import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadError;
 
 public record BulkUploadResult(
-        BulkUploadStatus status, List<String> reasons, List<BulkUploadAssessmentSummary> uploadedAssessments)
+        BulkUploadStatus status, List<BulkUploadError> errors, List<BulkUploadAssessmentSummary> uploadedAssessments)
         implements Serializable {
 
     public enum BulkUploadStatus {

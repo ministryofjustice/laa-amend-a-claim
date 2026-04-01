@@ -60,6 +60,34 @@
                                 </fieldset>
                             </div>
 
+                            <div class="govuk-form-group">
+                                <fieldset class="govuk-fieldset">
+                                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m" th:text="#{assessmentOutcome.contingencyAssessmentHeading}"></legend>
+
+                                    <div th:classappend="${#fields.hasErrors('contingencyAssessment')} ? 'govuk-form-group--error'">
+                                        <p th:if="${#fields.hasErrors('contingencyAssessment')}" class="govuk-error-message">
+                                            <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                                            <th:block th:errors=" *{contingencyAssessment}"></th:block>
+                                        </p>
+
+                                        <div class="govuk-radios" data-module="govuk-radios">
+                                            <div class="govuk-radios__item">
+                                                <input class="govuk-radios__input" id="contingency-assessment" name="contingencyAssessment" type="radio" value="yes"
+                                                       th:checked="${form.contingencyAssessment != null && form.contingencyAssessment}">
+                                                <label class="govuk-label govuk-radios__label" for="contingency-assessment" th:text="#{service.yes}">
+                                                </label>
+                                            </div>
+                                            <div class="govuk-radios__item">
+                                                <input class="govuk-radios__input" id="contingency-assessment-2" name="contingencyAssessment" type="radio" value="no"
+                                                       th:checked="${form.contingencyAssessment != null && !form.contingencyAssessment}">
+                                                <label class="govuk-label govuk-radios__label" for="contingency-assessment-2" th:text="#{service.no}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+
                             <th:block th:if="${form.getAssessmentOutcome() != null }">
                                 <div class="govuk-button-group">
                                     <button class="govuk-button" type="submit" th:text="#{assessmentOutcome.saveChanges}"></button>

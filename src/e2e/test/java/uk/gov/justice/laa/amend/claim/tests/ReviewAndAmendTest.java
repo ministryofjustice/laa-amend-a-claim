@@ -199,7 +199,19 @@ public class ReviewAndAmendTest extends BaseTest {
 
         review.clickAssessmentOutcome();
 
-        assertTrue(page.url().contains("/assessment-outcome"));
+        assertTrue(page.url().contains("/assessment-outcome#assessment-outcome"));
+    }
+
+    @Test
+    @DisplayName("Review & amend (Crime) change contingency assessment – navigates correctly")
+    void crimeChangeContingencyAssessment() {
+        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+
+        review.clickContingencyAssessment();
+
+        assertTrue(page.url().contains("/assessment-outcome#contingency-assessment"));
     }
 
     @Test
@@ -211,6 +223,18 @@ public class ReviewAndAmendTest extends BaseTest {
 
         review.clickAssessmentOutcome();
 
-        assertTrue(page.url().contains("/assessment-outcome"));
+        assertTrue(page.url().contains("/assessment-outcome#assessment-outcome"));
+    }
+
+    @Test
+    @DisplayName("Review & amend (Civil) change contingency assessment – navigates correctly")
+    void civilChangeContingencyAssessment() {
+        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+
+        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+
+        review.clickContingencyAssessment();
+
+        assertTrue(page.url().contains("/assessment-outcome#contingency-assessment"));
     }
 }

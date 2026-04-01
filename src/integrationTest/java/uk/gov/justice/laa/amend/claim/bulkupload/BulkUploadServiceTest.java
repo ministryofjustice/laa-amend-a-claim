@@ -164,7 +164,8 @@ class BulkUploadServiceTest extends WireMockSetup {
 
         assertThat(result).isNotNull();
         assertThat(result.status()).isEqualTo(BulkUploadStatus.VALIDATION_FAILURE);
-        assertThat(result.reasons())
-                .anyMatch(reason -> reason.contains("Claim not found for UFN 010101/001999 and officeCode 0p0001"));
+        assertThat(result.errors())
+                .anyMatch(error ->
+                        error.message().contains("Claim not found for UFN 010101/001999 and officeCode 0p0001"));
     }
 }

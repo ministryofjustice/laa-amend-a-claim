@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadError;
 import uk.gov.justice.laa.amend.claim.controllers.BulkUploadController;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadAssessmentSummary;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
@@ -35,11 +36,11 @@ public class BulkUploadResultViewTest extends ViewTestBase {
         when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
 
         var successReason = "success reason";
-        var result = new BulkUploadResult(SUCCESS, List.of(successReason), List.of());
+        var result = new BulkUploadResult(SUCCESS, List.of(new BulkUploadError(null, successReason)), List.of());
 
         Document doc = renderDocument(Map.of("result", result));
 
-        assertPageHasTitle(doc, "Bulk upload of escape claim assessments");
+        assertPageHasTitle(doc, "Bulk upload of civil escape claim assessments");
 
         assertPageHasHeading(doc, "Your file was uploaded successfully");
 
@@ -59,14 +60,17 @@ public class BulkUploadResultViewTest extends ViewTestBase {
 
         var errorReason1 = "error reason 1";
         var errorReason2 = "error reason 2";
-        var result = new BulkUploadResult(PARSING_FAILURE, List.of(errorReason1, errorReason2), List.of());
+        var result = new BulkUploadResult(
+                PARSING_FAILURE,
+                List.of(new BulkUploadError(null, errorReason1), new BulkUploadError(3, errorReason2)),
+                List.of());
 
         Document doc = renderDocument(Map.of("result", result));
 
-        List<List<Element>> summaryList = getFirstSummaryList(doc);
-        Assertions.assertEquals(2, summaryList.size());
-        assertCellContainsText(summaryList.get(0).get(1), errorReason1);
-        assertCellContainsText(summaryList.get(1).get(1), errorReason2);
+        Elements rows = doc.select("#error-summary-list tbody tr");
+        Assertions.assertEquals(2, rows.size());
+        Assertions.assertEquals(errorReason1, rows.get(0).select("td").get(1).text());
+        Assertions.assertEquals(errorReason2, rows.get(1).select("td").get(1).text());
 
         assertPageHasLink(doc, "upload-another-file", "Upload another file", "/bulk-upload");
         assertPageHasLink(doc, "back-to-search", "Back to search", "/");
@@ -85,7 +89,7 @@ public class BulkUploadResultViewTest extends ViewTestBase {
                 "0P0001",
                 OutcomeType.REDUCED,
                 new java.math.BigDecimal("1234.56"));
-        var result = new BulkUploadResult(SUCCESS, List.of("Successfully uploaded 1 assessments"), List.of(summary));
+        var result = new BulkUploadResult(SUCCESS, List.of(), List.of(summary));
 
         Document doc = renderDocument(Map.of("result", result));
 
@@ -116,7 +120,8 @@ public class BulkUploadResultViewTest extends ViewTestBase {
     void testSuccessResultWithNoAssessmentsDoesNotShowTable() throws Exception {
         when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
 
-        var result = new BulkUploadResult(SUCCESS, List.of("Successfully uploaded 0 assessments"), List.of());
+        var result = new BulkUploadResult(
+                SUCCESS, List.of(new BulkUploadError(null, "Successfully uploaded 0 assessments")), List.of());
 
         Document doc = renderDocument(Map.of("result", result));
 

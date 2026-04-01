@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.service;
 
 import static java.util.stream.Collectors.groupingBy;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.SUCCESS;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.VALIDATION_FAILURE;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadError;
 import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadHelper;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvHeaderValidator;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvRowMapper;
@@ -45,7 +47,7 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
      */
     @Override
     protected BulkUploadValidationOutcome validateRows(List<BulkUploadCivilClaim> rows) {
-        List<String> errors = new ArrayList<>();
+        List<BulkUploadError> errors = new ArrayList<>();
         List<ClaimDetails> claimsData = new ArrayList<>();
 
         var apiClaimResponseObjects = bulkUploadHelper.getAllClaims(rows, errors);
@@ -55,21 +57,25 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
             var claimResponsesForRow = claimsByOfficeCodeAndUfn.get(Pair.of(row.getOfficeCode(), row.getUfn()));
 
             // Row validation
-            List<String> rowErrors = row.validate();
+            List<BulkUploadError> rowErrors = row.validate();
             if (!rowErrors.isEmpty()) {
                 errors.addAll(rowErrors);
             }
 
             if (claimResponsesForRow == null) {
-                errors.add(String.format(
-                        "Row %d: Escaped Civil Claim not found for UFN %s and officeCode %s",
-                        row.getRowNumber(), row.getUfn(), row.getOfficeCode()));
+                errors.add(new BulkUploadError(
+                        row.getRowNumber(),
+                        String.format(
+                                "Escaped Civil Claim not found for UFN %s and officeCode %s",
+                                row.getUfn(), row.getOfficeCode())));
                 continue;
             }
             if (claimResponsesForRow.size() > 1) {
-                errors.add(String.format(
-                        "Row %d: Duplicate Escaped Civil Claim found for UFN %s and officeCode %s",
-                        row.getRowNumber(), row.getUfn(), row.getOfficeCode()));
+                errors.add(new BulkUploadError(
+                        row.getRowNumber(),
+                        String.format(
+                                "Duplicate Escaped Civil Claim found for UFN %s and officeCode %s",
+                                row.getUfn(), row.getOfficeCode())));
                 continue;
             }
 
@@ -80,12 +86,12 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
         if (!errors.isEmpty()) {
             log.info("Failed validation with {} errors", errors.size());
             return new BulkUploadValidationOutcome(
-                    new BulkUploadResult(VALIDATION_FAILURE, errors, List.of()), List.of());
+                    new BulkUploadResult(VALIDATION_FAILURE, sortedByRowNumber(errors), List.of()), List.of());
         } else {
             String message = String.format("Successfully validated %d rows", rows.size());
             log.info(message);
             return new BulkUploadValidationOutcome(
-                    new BulkUploadResult(SUCCESS, List.of(message), List.of()), claimsData);
+                    new BulkUploadResult(SUCCESS, List.of(new BulkUploadError(null, message)), List.of()), claimsData);
         }
     }
 
@@ -99,6 +105,7 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
      * Map Row details into assessed values of ClaimDetails fields
      */
     private void applyRowToClaimDetails(CivilClaimDetails details, BulkUploadCivilClaim row) {
+        details.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY);
         details.getNetProfitCost().setAssessed(row.getProfitCost());
         details.getDisbursementVatAmount().setAssessed(row.getDisbursementsVat());
         details.getNetDisbursementAmount().setAssessed(row.getDisbursements());

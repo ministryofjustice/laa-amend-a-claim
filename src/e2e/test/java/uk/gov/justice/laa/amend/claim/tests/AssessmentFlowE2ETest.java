@@ -86,6 +86,7 @@ public class AssessmentFlowE2ETest extends BaseTest {
 
         AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
         outcome.selectAssessmentOutcome("assessed in full");
+        outcome.selectContingencyAssessment(true);
         outcome.saveChanges();
 
         ReviewAndAmendPage review = new ReviewAndAmendPage(page);

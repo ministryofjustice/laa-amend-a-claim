@@ -36,7 +36,7 @@ class BulkUploadHelperTest {
     @Test
     void getOfficeCodeToUfnIdxValidRowsShouldMapRowsCorrectly() {
         List<BulkUploadCivilClaim> rows = new ArrayList<>();
-        List<String> errors = new ArrayList<>();
+        List<BulkUploadError> errors = new ArrayList<>();
 
         BulkUploadCivilClaim row1 = row("123456", "131019/020", 1);
         BulkUploadCivilClaim row2 = row("123456", "131019/024", 2);
@@ -83,7 +83,7 @@ class BulkUploadHelperTest {
                         null))
                 .thenReturn(emptyList());
 
-        List<String> errors = new ArrayList<>();
+        List<BulkUploadError> errors = new ArrayList<>();
         BulkUploadCivilClaim row = row(officeCode, "20220101/020244", 1);
         List<BulkUploadCivilClaim> rows = List.of(row);
         var response = helper.getAllClaims(rows, errors);
