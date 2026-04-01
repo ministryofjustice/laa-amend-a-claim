@@ -19,39 +19,32 @@ import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @Component
 @RequiredArgsConstructor
 public class BulkUploadHelper {
     public static final int MAX_ROWS = 10000;
+    public static final int PAGE_SIZE = 200;
 
     private final ClaimService claimService;
-
-    /**
-     * Process Claims for each office code and return the matched UFNs from file
-     */
-    private List<ClaimResponseV2> processAllClaimsForOfficeCodeAndUpdateRow(
-            String officeCode, Map<Pair<String, String>, BulkUploadCivilClaim> officeCodeUfnRows) {
-        int pageSize = 200;
-
-        List<ClaimResponseV2> claims = new ArrayList<>();
-        fetchClaimsPages(officeCode, pageSize)
-                .filter(ufnExistsInRowsPredicate(officeCodeUfnRows))
-                .forEach(claim -> {
-                    String ufn = claim.getUniqueFileNumber();
-                    BulkUploadCivilClaim row = officeCodeUfnRows.get(Pair.of(officeCode, ufn));
-                    claims.add(claim);
-                });
-        return claims;
-    }
 
     public List<ClaimResponseV2> getAllClaims(List<BulkUploadCivilClaim> rows, List<BulkUploadError> errors) {
         var officeCodes = rows.stream().map(BulkUploadCivilClaim::getOfficeCode).collect(Collectors.toSet());
         var officeCodeUfnRows = getOfficeCodeUfnRows(rows, errors);
         return officeCodes.stream()
-                .map(officeCode -> processAllClaimsForOfficeCodeAndUpdateRow(officeCode, officeCodeUfnRows))
+                .map(officeCode -> getAllClaims(officeCode, officeCodeUfnRows))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
+    }
+
+    private List<ClaimResponseV2> getAllClaims(
+            String officeCode, Map<Pair<String, String>, BulkUploadCivilClaim> officeCodeUfnRows) {
+        List<ClaimResponseV2> claims = new ArrayList<>();
+        fetchValidClaims(officeCode)
+                .filter(ufnExistsInRowsPredicate(officeCodeUfnRows))
+                .forEach(claims::add);
+        return claims;
     }
 
     /**
@@ -91,9 +84,9 @@ public class BulkUploadHelper {
         };
     }
 
-    private Stream<ClaimResponseV2> fetchClaimsPages(String officeCode, int pageSize) {
+    private Stream<ClaimResponseV2> fetchValidClaims(String officeCode) {
 
-        var firstPage = safeFetch(officeCode, 1, pageSize);
+        var firstPage = safeFetch(officeCode, 1, PAGE_SIZE);
         int totalPages = Optional.of(firstPage.totalPages()).orElse(1);
 
         // Stream first page
@@ -101,7 +94,7 @@ public class BulkUploadHelper {
 
         // Stream remaining pages
         Stream<ClaimResponseV2> others = IntStream.rangeClosed(2, totalPages)
-                .mapToObj(p -> safeFetch(officeCode, p, pageSize))
+                .mapToObj(p -> safeFetch(officeCode, p, PAGE_SIZE))
                 .flatMap(PageResult::claimResponseV2Stream);
 
         return Stream.concat(pageOne, others);
@@ -116,6 +109,7 @@ public class BulkUploadHelper {
                     Optional.empty(),
                     Optional.of(AreaOfLaw.LEGAL_HELP),
                     Optional.of(true),
+                    List.of(ClaimStatus.VALID),
                     page,
                     pageSize,
                     null);
