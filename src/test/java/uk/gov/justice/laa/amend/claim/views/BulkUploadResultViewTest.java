@@ -2,7 +2,6 @@ package uk.gov.justice.laa.amend.claim.views;
 
 import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.PARSING_FAILURE;
-import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.SUCCESS;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,7 @@ public class BulkUploadResultViewTest extends ViewTestBase {
     void testSuccessResultIsRendered() throws Exception {
         when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
 
-        var result = new BulkUploadResult(SUCCESS, List.of(), List.of());
+        var result = BulkUploadResult.success(List.of());
 
         Document doc = renderDocument(Map.of("result", result));
 
@@ -59,10 +58,9 @@ public class BulkUploadResultViewTest extends ViewTestBase {
 
         var errorReason1 = "error reason 1";
         var errorReason2 = "error reason 2";
-        var result = new BulkUploadResult(
+        var result = BulkUploadResult.failure(
                 PARSING_FAILURE,
-                List.of(new BulkUploadError(null, errorReason1), new BulkUploadError(3, errorReason2)),
-                List.of());
+                List.of(new BulkUploadError(null, errorReason1), new BulkUploadError(3, errorReason2)));
 
         Document doc = renderDocument(Map.of("result", result));
 
@@ -88,7 +86,7 @@ public class BulkUploadResultViewTest extends ViewTestBase {
                 "0P0001",
                 OutcomeType.REDUCED,
                 new java.math.BigDecimal("1234.56"));
-        var result = new BulkUploadResult(SUCCESS, List.of(), List.of(summary));
+        var result = BulkUploadResult.success(List.of(summary));
 
         Document doc = renderDocument(Map.of("result", result));
 
@@ -120,7 +118,7 @@ public class BulkUploadResultViewTest extends ViewTestBase {
     void testSuccessResultWithNoAssessmentsDoesNotShowTable() throws Exception {
         when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
 
-        var result = new BulkUploadResult(SUCCESS, List.of(), List.of());
+        var result = BulkUploadResult.success(List.of());
 
         Document doc = renderDocument(Map.of("result", result));
 

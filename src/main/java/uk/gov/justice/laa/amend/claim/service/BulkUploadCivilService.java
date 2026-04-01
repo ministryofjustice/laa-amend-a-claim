@@ -2,7 +2,6 @@ package uk.gov.justice.laa.amend.claim.service;
 
 import static java.util.stream.Collectors.groupingBy;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY;
-import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.SUCCESS;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.VALIDATION_FAILURE;
 
 import java.util.ArrayList;
@@ -86,12 +85,10 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
         if (!errors.isEmpty()) {
             log.info("Failed validation with {} errors", errors.size());
             return new BulkUploadValidationOutcome(
-                    new BulkUploadResult(VALIDATION_FAILURE, sortedByRowNumber(errors), List.of()), List.of());
+                    BulkUploadResult.failure(VALIDATION_FAILURE, sortedByRowNumber(errors)), List.of());
         } else {
-            String message = String.format("Successfully validated %d rows", rows.size());
-            log.info(message);
-            return new BulkUploadValidationOutcome(
-                    new BulkUploadResult(SUCCESS, List.of(new BulkUploadError(null, message)), List.of()), claimsData);
+            log.info("Successfully validated {} rows", rows.size());
+            return new BulkUploadValidationOutcome(BulkUploadResult.success(List.of()), claimsData);
         }
     }
 

@@ -51,6 +51,7 @@
                                                 th:text="${@ThymeleafUtils.getFormattedValue(assessment.allowedTotalInclVat()).resolve(#messages)}"></td>
                                             <td class="govuk-table__cell">
                                                 <a class="govuk-link"
+                                                   target="_blank"
                                                    th:href="@{/submissions/{sub}/claims/{cl}(sub=${assessment.submissionId()},cl=${assessment.claimId()})}"
                                                    th:text="#{bulkUploadResult.table.viewClaim}"></a>
                                             </td>

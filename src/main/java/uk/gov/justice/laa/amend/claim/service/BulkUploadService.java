@@ -54,15 +54,14 @@ public abstract class BulkUploadService<T> {
                     null, StringUtils.isNotBlank(ex.getMessage()) ? ex.getMessage() : "Error parsing file"));
         }
         if (!errors.isEmpty()) {
-            return new BulkUploadResult(PARSING_FAILURE, sortedByRowNumber(errors), List.of());
+            return BulkUploadResult.failure(PARSING_FAILURE, sortedByRowNumber(errors));
         }
         log.info("Parsed {} rows from file", rows.size());
 
         if (rows.size() > MAX_ROWS) {
-            return new BulkUploadResult(
+            return BulkUploadResult.failure(
                     PARSING_FAILURE,
-                    List.of(new BulkUploadError(null, "File contains too many rows. Maximum allowed is " + MAX_ROWS)),
-                    List.of());
+                    List.of(new BulkUploadError(null, "File contains too many rows. Maximum allowed is " + MAX_ROWS)));
         }
 
         var validationOutcome = validateRows(rows);
@@ -134,12 +133,12 @@ public abstract class BulkUploadService<T> {
                                 + " processed and do not need to be reuploaded.",
                         row);
                 log.error(String.format("Row %s: %s", row + ROW_OFFSET, message), ex);
-                return new BulkUploadResult(
-                        SUBMISSION_FAILURE, List.of(new BulkUploadError(row + ROW_OFFSET, message)), List.of());
+                return BulkUploadResult.failure(
+                        SUBMISSION_FAILURE, List.of(new BulkUploadError(row + ROW_OFFSET, message)));
             }
         }
         log.info("Successfully uploaded {} assessments", claimDetails.size());
-        return new BulkUploadResult(SUCCESS, List.of(), summaries);
+        return BulkUploadResult.success(summaries);
     }
 
     protected static List<BulkUploadError> sortedByRowNumber(List<BulkUploadError> errors) {

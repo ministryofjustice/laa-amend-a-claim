@@ -20,6 +20,14 @@ public record BulkUploadResult(
         SUBMISSION_FAILURE
     }
 
+    public static BulkUploadResult success(List<BulkUploadAssessmentSummary> uploadedAssessments) {
+        return new BulkUploadResult(BulkUploadStatus.SUCCESS, List.of(), uploadedAssessments);
+    }
+
+    public static BulkUploadResult failure(BulkUploadStatus status, List<BulkUploadError> errors) {
+        return new BulkUploadResult(status, errors, List.of());
+    }
+
     public boolean isSuccess() {
         return status == BulkUploadStatus.SUCCESS;
     }
