@@ -6,6 +6,7 @@ import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.WaitForSelectorState;
+import java.util.List;
 import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 import uk.gov.justice.laa.amend.claim.pages.LoginPage;
 
@@ -28,7 +29,9 @@ public class BrowserSession {
         if (!initialized) {
             playwright = Playwright.create();
             browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(EnvConfig.headless()));
-            context = browser.newContext();
+
+            var contextOptions = new Browser.NewContextOptions().setPermissions(List.of("local-network-access"));
+            context = browser.newContext(contextOptions);
 
             if (isSilasAuthenticationDisabled()) {
                 System.out.println("Running in local profile - skipping login");
