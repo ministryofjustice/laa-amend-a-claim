@@ -167,3 +167,44 @@ This project uses [laa-spring-boot-gradle-plugin](https://github.com/ministryofj
 #### Observability
 - [Sentry](https://docs.sentry.io/platforms/java/guides/spring-boot/) - provides error tracking and performance monitoring.
 - [Micrometer](https://micrometer.io/) with [Prometheus](https://prometheus.io/) - provides application metrics.
+
+### Logging Configuration
+
+This application uses **ECS (Elastic Common Schema) structured logging** for production environments and console logging for local development.
+
+#### Structured Logging (Default/Production)
+
+By default, the application outputs logs in ECS JSON format with distributed tracing support:
+```json
+{
+  "@timestamp": "2026-03-06T16:25:18.992904Z",
+  "ecs": {
+    "version": "8.11"
+  },
+  "log": {
+    "level": "INFO",
+    "logger": "uk.gov.justice.laa.amend.claim.example.ExampleController"
+  },
+  "message": "This is an example log message",
+  "process": {
+    "pid": 49402,
+    "thread": {
+      "name": "http-nio-8080-exec-2"
+    }
+  },
+  "service": {
+    "environment": "local",
+    "name": "laa-amend-a-claim",
+    "node": {
+      "name": "unknown"
+    },
+    "version": "1.0.0"
+  },
+  "spanId": "fe4586c5fd5f7021",
+  "traceId": "69aaffee8d19869cfe4586c5fd5f7021"
+}
+```
+#### logback-spring.xml Conflicts
+
+Adding `logback-spring.xml` will:
+- Override the profile-based logging configuration in `application.yml`
