@@ -23,7 +23,7 @@ jobs:
   pact-test:
     name: Pact Test
     needs: build
-    uses: ministryofjustice/laa-ccms-common-workflows/.github/workflows/pact-and-publish.yml@68d8f5aeccd47fa5baa1fe6c63269569b682e656 # v2.0.0
+    uses: ministryofjustice/laa-ccms-common-workflows/.github/workflows/pact-and-publish.yml@26b7b1b8b725075e9b45ca45766c607cbd2cd919 # v2.1.0
     permissions:
       contents: write
       packages: write

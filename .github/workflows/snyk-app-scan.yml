@@ -28,7 +28,7 @@ jobs:
           distribution: corretto
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@39e147cb9de83bb9910b8ef8bd7fff0ee20fcd6f # v6.0.1
+        uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
 
       - name: Install Snyk CLI
         run: npm install -g snyk
@@ -40,7 +40,7 @@ jobs:
 
       - name: Upload result to GitHub Code Scanning
         if: always()
-        uses: github/codeql-action/upload-sarif@a899987af240c0578ed84ce13c02319a693e168f
+        uses: github/codeql-action/upload-sarif@34950e1b113b30df4edee1a6d3a605242df0c40b
         with:
           sarif_file: snyk-app.sarif
           category: snyk-app
