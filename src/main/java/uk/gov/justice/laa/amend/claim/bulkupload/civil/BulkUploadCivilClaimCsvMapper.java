@@ -40,12 +40,17 @@ public class BulkUploadCivilClaimCsvMapper implements CsvRowMapper<BulkUploadCiv
     }
 
     private String getRequiredString(CSVRecord record, String header, int rowNumber, List<BulkUploadError> errors) {
-        String value = record.get(header);
-        if (value == null || value.isBlank()) {
-            errors.add(new BulkUploadError(rowNumber, header + " is required"));
+        try {
+            String value = record.get(header);
+            if (value == null || value.isBlank()) {
+                errors.add(new BulkUploadError(rowNumber, header + " is required"));
+                return null;
+            }
+            return value.trim();
+        } catch (Exception ex) {
+            errors.add(new BulkUploadError(rowNumber, "Invalid string in " + header));
             return null;
         }
-        return value.trim();
     }
 
     private BigDecimal getRequiredBigDecimal(
