@@ -32,10 +32,10 @@ public interface ClaimsApiClient {
             @RequestParam(value = "submission_period", defaultValue = "") String submissionPeriod,
             @RequestParam(value = "area_of_law", defaultValue = "") AreaOfLaw areaOfLaw,
             @RequestParam(value = "escaped_case_flag", required = false) Boolean escapedCaseFlag,
+            @RequestParam(value = "claim_statuses", required = false) List<ClaimStatus> claimStatuses,
             @RequestParam(value = "page", required = false) int page,
             @RequestParam(value = "size", required = false) int size,
-            @RequestParam(value = "sort", required = false) String sort,
-            @RequestParam(value = "claim_statuses", required = false) List<ClaimStatus> claimStatus);
+            @RequestParam(value = "sort", required = false) String sort);
 
     @GetExchange(url = "/v2/submissions/{submissionId}/claims/{claimId}", accept = MediaType.APPLICATION_JSON_VALUE)
     Mono<ClaimResponseV2> getClaim(@PathVariable UUID submissionId, @PathVariable UUID claimId);

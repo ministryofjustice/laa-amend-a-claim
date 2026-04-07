@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -27,10 +28,13 @@ import uk.gov.justice.laa.amend.claim.models.SortField;
 import uk.gov.justice.laa.amend.claim.models.Sorts;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @Controller
 @RequiredArgsConstructor
 public class HomePageController {
+
+    public static final List<ClaimStatus> CLAIM_STATUSES = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
 
     private final ClaimService claimService;
     private final ClaimResultMapper claimResultMapper;
@@ -82,6 +86,7 @@ public class HomePageController {
                     Optional.ofNullable(form.getSubmissionPeriod()),
                     Optional.ofNullable(form.getAreaOfLaw()),
                     Optional.ofNullable(form.getEscapeCase()),
+                    CLAIM_STATUSES,
                     page,
                     DEFAULT_PAGE_SIZE,
                     sort);
