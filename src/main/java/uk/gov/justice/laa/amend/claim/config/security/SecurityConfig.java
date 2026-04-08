@@ -1,9 +1,7 @@
 package uk.gov.justice.laa.amend.claim.config.security;
 
-import static java.util.stream.Collectors.toSet;
 import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PUBLIC_PATHS;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,7 +28,6 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.header.HeaderWriterFilter;
-import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.Role;
 
 @Profile("!local & !ephemeral & !e2e")
@@ -38,8 +35,6 @@ import uk.gov.justice.laa.amend.claim.models.Role;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends CommonSecurityConfig {
-
-    private final FeatureFlagsConfig featureFlagsConfig;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
@@ -73,10 +68,7 @@ public class SecurityConfig extends CommonSecurityConfig {
             @Override
             public OidcUser loadUser(OidcUserRequest userRequest) {
                 OidcUser oidcUser = super.loadUser(userRequest);
-
-                Set<GrantedAuthority> authorities = featureFlagsConfig.getIsVoidingEnabled()
-                        ? getAuthorities(oidcUser.getAttributes())
-                        : allAuthorities();
+                Set<GrantedAuthority> authorities = getAuthorities(oidcUser.getAttributes());
                 return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
             }
         };
@@ -99,13 +91,6 @@ public class SecurityConfig extends CommonSecurityConfig {
         } else {
             return List.of();
         }
-    }
-
-    private static Set<GrantedAuthority> allAuthorities() {
-        var roles = Arrays.stream(Role.values())
-                .map(role -> new SimpleGrantedAuthority(role.name()))
-                .collect(toSet());
-        return new SimpleAuthorityMapper().mapAuthorities(roles);
     }
 
     @Bean

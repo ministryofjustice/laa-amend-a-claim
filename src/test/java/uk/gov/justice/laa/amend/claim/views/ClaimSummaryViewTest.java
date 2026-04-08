@@ -276,8 +276,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
     @ParameterizedTest
     @MethodSource("claimTypes")
     void testVoidClaimPageWithEscapeAssessmentShowsVoidBanner(ClaimDetails claim) throws Exception {
-        when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
-
         createClaimSummary(claim);
 
         claim.setStatus(ClaimStatus.VOID);
@@ -312,8 +310,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
     @ParameterizedTest
     @MethodSource("claimTypes")
     void testVoidClaimPageWithNoPreviousAssessmentShowsVoidBanner(ClaimDetails claim) throws Exception {
-        when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
-
         createClaimSummary(claim);
 
         claim.setStatus(ClaimStatus.VOID);

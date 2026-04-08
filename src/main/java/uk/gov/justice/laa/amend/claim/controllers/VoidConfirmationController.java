@@ -35,19 +35,9 @@ public class VoidConfirmationController {
 
     @GetMapping
     public String onPageLoad(
-            HttpSession session,
-            Model model,
-            HttpServletResponse response,
-            @PathVariable UUID submissionId,
-            @PathVariable UUID claimId)
+            HttpSession session, Model model, @PathVariable UUID submissionId, @PathVariable UUID claimId)
             throws IOException {
-        if (!featureFlagsConfig.getIsVoidingEnabled()) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
-
         var claim = getValidClaim(session, submissionId, claimId);
-
         return renderView(model, claim, submissionId, claimId, false);
     }
 
@@ -59,13 +49,7 @@ public class VoidConfirmationController {
             @PathVariable UUID submissionId,
             @PathVariable UUID claimId,
             RedirectAttributes redirectAttributes,
-            HttpServletResponse response)
-            throws IOException {
-        if (!featureFlagsConfig.getIsVoidingEnabled()) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return null;
-        }
-
+            HttpServletResponse response) {
         var claim = getValidClaim(session, submissionId, claimId);
 
         try {

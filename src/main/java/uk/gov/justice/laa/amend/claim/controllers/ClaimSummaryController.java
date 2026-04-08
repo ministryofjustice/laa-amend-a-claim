@@ -74,9 +74,7 @@ public class ClaimSummaryController {
                 && TRUE.equals(claim.getEscaped());
         model.addAttribute("isAssessmentButtonPresent", isAssessmentButtonPresent);
 
-        boolean isVoidButtonPresent = request.isUserInRole(ROLE_CLAIM_AMENDMENTS_CASEWORKER.name())
-                && featureFlagsConfig.getIsVoidingEnabled()
-                && claim.isValid();
+        boolean isVoidButtonPresent = request.isUserInRole(ROLE_CLAIM_AMENDMENTS_CASEWORKER.name()) && claim.isValid();
         model.addAttribute("isVoidButtonPresent", isVoidButtonPresent);
 
         return "claim-summary";
