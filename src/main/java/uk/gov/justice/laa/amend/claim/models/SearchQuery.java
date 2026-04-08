@@ -27,7 +27,6 @@ public class SearchQuery {
 
     private Sort sort;
     private String officeCode;
-    private String providerAccountNumber;
     private String submissionDateMonth;
     private String submissionDateYear;
     private String uniqueFileNumber;
@@ -44,12 +43,6 @@ public class SearchQuery {
         this.caseReferenceNumber = form.getCaseReferenceNumber();
         this.areaOfLaw = form.getAreaOfLaw();
         this.escapeCase = form.getEscapeCase();
-    }
-
-    // Temporarily support old parameter name providerAccountNumber to avoid issues when users already have this in
-    // session. BC-513 will remove this once the new name has been in use in prod.
-    public String getOfficeCode() {
-        return officeCode != null ? officeCode : providerAccountNumber;
     }
 
     public void rejectUnknownParams(HttpServletRequest request) {
