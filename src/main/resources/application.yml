@@ -61,7 +61,6 @@ app:
 
 feature-flags:
   is-bulk-upload-enabled: ${IS_BULK_UPLOAD_ENABLED:false}
-  is-voiding-enabled: ${IS_VOIDING_ENABLED:false}
 
 management:
   server:

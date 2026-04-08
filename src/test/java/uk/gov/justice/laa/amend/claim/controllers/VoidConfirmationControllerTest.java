@@ -48,7 +48,6 @@ public class VoidConfirmationControllerTest extends BaseControllerTest {
         claim.setClaimId(claimId);
         MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
         session.setAttribute(claimId.toString(), claim);
-        when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
     }
 
     @Test

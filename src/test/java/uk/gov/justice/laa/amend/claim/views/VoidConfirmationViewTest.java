@@ -32,8 +32,6 @@ class VoidConfirmationViewTest extends ViewTestBase {
 
     @Test
     void testPageForCivilClaim() throws Exception {
-        when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
-
         var claim = MockClaimsFunctions.createMockCivilClaim();
         this.claim = claim;
         claim.setSubmissionId(submissionId);
@@ -72,8 +70,6 @@ class VoidConfirmationViewTest extends ViewTestBase {
 
     @Test
     void testPageForCrimeClaim() throws Exception {
-        when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
-
         var claim = MockClaimsFunctions.createMockCrimeClaim();
         this.claim = claim;
         claim.setSubmissionId(submissionId);

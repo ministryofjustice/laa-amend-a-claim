@@ -23,9 +23,7 @@ public class SecurityConfigTest {
 
         @BeforeEach
         void setUp() {
-            var featureFlagsConfig = new FeatureFlagsConfig();
-            featureFlagsConfig.setIsVoidingEnabled(true);
-            config = new SecurityConfig(featureFlagsConfig);
+            config = new SecurityConfig();
         }
 
         @Test
