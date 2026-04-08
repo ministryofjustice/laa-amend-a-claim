@@ -41,6 +41,10 @@ configurations.configureEach {
 
 dependencies {
 
+    // Upgrade to fix SNYK-JAVA-TOOLSJACKSONCORE-15907550
+    implementation 'tools.jackson.core:jackson-core:3.1.1'
+    implementation 'tools.jackson.core:jackson-databind:3.1.1'
+
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
