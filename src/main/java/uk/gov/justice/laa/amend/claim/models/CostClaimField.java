@@ -3,12 +3,14 @@ package uk.gov.justice.laa.amend.claim.models;
 import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
 @Getter
+@NoArgsConstructor
 public class CostClaimField extends ClaimField {
 
-    protected final Cost cost;
+    protected Cost cost;
 
     @Builder
     public CostClaimField(String key, Object submitted, Object calculated, Object assessed, Cost cost) {

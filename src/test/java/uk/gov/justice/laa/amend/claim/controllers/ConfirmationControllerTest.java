@@ -32,7 +32,7 @@ public class ConfirmationControllerTest extends BaseControllerTest {
 
     @Test
     public void testOnPageLoadReturnsViewWhenStoredAssessmentIdMatches() throws Exception {
-        session.setAttribute("assessmentId", assessmentId);
+        session.setAttribute("assessmentId", assessmentId.toString());
 
         mockMvc.perform(get(buildPath()).session(session))
                 .andExpect(status().isOk())
@@ -46,7 +46,7 @@ public class ConfirmationControllerTest extends BaseControllerTest {
         UUID assessmentId1 = UUID.randomUUID();
         UUID assessmentId2 = UUID.randomUUID();
 
-        session.setAttribute("assessmentId", assessmentId1);
+        session.setAttribute("assessmentId", assessmentId1.toString());
 
         String path = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId2);
 

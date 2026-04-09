@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -52,6 +53,7 @@ public abstract class ClaimDetails extends Claim {
 
     public abstract AssessmentPost toAssessment(AssessmentMapper mapper, String userId);
 
+    @JsonIgnore
     public Stream<@NotNull ClaimField> getClaimFields() {
         return Stream.concat(commonClaimFields(), specificClaimFields()).filter(Objects::nonNull);
     }
@@ -72,10 +74,12 @@ public abstract class ClaimDetails extends Claim {
 
     protected abstract Stream<ClaimField> specificClaimFields();
 
+    @JsonIgnore
     public Stream<ClaimField> getAssessedTotalFields() {
         return Stream.of(getAssessedTotalVat(), getAssessedTotalInclVat());
     }
 
+    @JsonIgnore
     public Stream<ClaimField> getAllowedTotalFields() {
         return Stream.of(getAllowedTotalVat(), getAllowedTotalInclVat());
     }

@@ -18,7 +18,7 @@ class ConfirmationViewTest extends ViewTestBase {
 
     @Test
     void testPage() throws Exception {
-        session.setAttribute("assessmentId", assessmentId);
+        session.setAttribute("assessmentId", assessmentId.toString());
         Document doc = renderDocument();
 
         assertPageHasTitle(doc, "Assessment complete");

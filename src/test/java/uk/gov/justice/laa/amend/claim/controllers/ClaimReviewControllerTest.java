@@ -104,7 +104,7 @@ public class ClaimReviewControllerTest extends BaseControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(redirectUrl))
                 .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()))
-                .andExpect(request().sessionAttribute("assessmentId", assessmentId));
+                .andExpect(request().sessionAttribute("assessmentId", assessmentId.toString()));
 
         verify(assessmentService).submitAssessment(claim, USER_ID);
     }

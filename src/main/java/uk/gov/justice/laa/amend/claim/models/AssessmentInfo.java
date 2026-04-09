@@ -1,13 +1,12 @@
 package uk.gov.justice.laa.amend.claim.models;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import lombok.Data;
 
 @Data
-public class AssessmentInfo implements Serializable {
+public class AssessmentInfo {
     private OffsetDateTime lastAssessmentDate;
     private String lastAssessedBy;
     private OutcomeType lastAssessmentOutcome;

@@ -55,7 +55,7 @@ public class ClaimReviewController {
                 CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId.toString());
                 session.removeAttribute(claimId.toString());
                 UUID assessmentId = result.getId();
-                session.setAttribute(ASSESSMENT_ID, assessmentId);
+                session.setAttribute(ASSESSMENT_ID, assessmentId.toString());
                 return String.format(
                         "redirect:/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
             } catch (Exception e) {
