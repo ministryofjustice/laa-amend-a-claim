@@ -96,11 +96,7 @@ public abstract class BulkUploadService<T> {
             int row = 1;
             for (CSVRecord record : parser) {
                 row++;
-                try {
-                    rows.add(rowMapper.mapRow(record, row));
-                } catch (Exception ex) {
-                    errors.add(new BulkUploadError(row, ex.getMessage()));
-                }
+                rows.add(rowMapper.mapRow(record, row, errors));
             }
         }
     }

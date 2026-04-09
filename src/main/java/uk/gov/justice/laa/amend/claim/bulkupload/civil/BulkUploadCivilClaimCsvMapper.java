@@ -11,42 +11,54 @@ import static uk.gov.justice.laa.amend.claim.bulkupload.civil.CivilClaimSchemaPr
 import static uk.gov.justice.laa.amend.claim.bulkupload.civil.CivilClaimSchemaProvider.UFN;
 
 import java.math.BigDecimal;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.stereotype.Component;
+import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadError;
 import uk.gov.justice.laa.amend.claim.bulkupload.CsvRowMapper;
 import uk.gov.justice.laa.amend.claim.utils.NumberUtils;
 
+@Slf4j
 @Component
 public class BulkUploadCivilClaimCsvMapper implements CsvRowMapper<BulkUploadCivilClaim> {
 
     @Override
-    public BulkUploadCivilClaim mapRow(CSVRecord record, int rowNumber) {
+    public BulkUploadCivilClaim mapRow(CSVRecord record, int rowNumber, List<BulkUploadError> errors) {
         BulkUploadCivilClaim claim = new BulkUploadCivilClaim();
-        claim.setOfficeCode(getRequiredString(record, OFFICE_CODE, rowNumber));
-        claim.setUfn(getRequiredString(record, UFN, rowNumber));
-        claim.setAssessmentOutcome(getRequiredString(record, ASSESSMENT_OUTCOME, rowNumber));
-        claim.setProfitCost(getOptionalBigDecimal(record, PROFIT_COST, rowNumber));
-        claim.setDisbursements(getOptionalBigDecimal(record, DISBURSEMENTS, rowNumber));
-        claim.setDisbursementsVat(getOptionalBigDecimal(record, DISBURSEMENTS_VAT, rowNumber));
-        claim.setCounselCosts(getOptionalBigDecimal(record, COUNSEL_COSTS, rowNumber));
-        claim.setTotalAllowedVat(getOptionalBigDecimal(record, TOTAL_ALLOWED_VAT, rowNumber));
-        claim.setTotalAllowedInclVat(getOptionalBigDecimal(record, TOTAL_ALLOWED_INCLUDING_VAT, rowNumber));
+        claim.setOfficeCode(getRequiredString(record, OFFICE_CODE, rowNumber, errors));
+        claim.setUfn(getRequiredString(record, UFN, rowNumber, errors));
+        claim.setAssessmentOutcome(getRequiredString(record, ASSESSMENT_OUTCOME, rowNumber, errors));
+        claim.setProfitCost(getRequiredBigDecimal(record, PROFIT_COST, rowNumber, errors));
+        claim.setDisbursements(getRequiredBigDecimal(record, DISBURSEMENTS, rowNumber, errors));
+        claim.setDisbursementsVat(getRequiredBigDecimal(record, DISBURSEMENTS_VAT, rowNumber, errors));
+        claim.setCounselCosts(getRequiredBigDecimal(record, COUNSEL_COSTS, rowNumber, errors));
+        claim.setTotalAllowedVat(getRequiredBigDecimal(record, TOTAL_ALLOWED_VAT, rowNumber, errors));
+        claim.setTotalAllowedInclVat(getRequiredBigDecimal(record, TOTAL_ALLOWED_INCLUDING_VAT, rowNumber, errors));
         claim.setRowNumber(rowNumber);
         return claim;
     }
 
-    private String getRequiredString(CSVRecord record, String header, int rowNumber) {
-        String value = record.get(header);
-        if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException(header + " is required.");
-        }
-        return value.trim();
-    }
-
-    private BigDecimal getOptionalBigDecimal(CSVRecord record, String header, int rowNumber) {
+    private String getRequiredString(CSVRecord record, String header, int rowNumber, List<BulkUploadError> errors) {
         try {
             String value = record.get(header);
             if (value == null || value.isBlank()) {
+                errors.add(new BulkUploadError(rowNumber, header + " is required"));
+                return null;
+            }
+            return value.trim();
+        } catch (Exception ex) {
+            errors.add(new BulkUploadError(rowNumber, "Invalid string in " + header));
+            return null;
+        }
+    }
+
+    private BigDecimal getRequiredBigDecimal(
+            CSVRecord record, String header, int rowNumber, List<BulkUploadError> errors) {
+        try {
+            String value = record.get(header);
+            if (value == null || value.isBlank()) {
+                errors.add(new BulkUploadError(rowNumber, header + " is required"));
                 return null;
             }
 
@@ -55,7 +67,8 @@ public class BulkUploadCivilClaimCsvMapper implements CsvRowMapper<BulkUploadCiv
 
             return NumberUtils.parse(normalized);
         } catch (Exception ex) {
-            throw new IllegalArgumentException("Invalid number in " + header);
+            errors.add(new BulkUploadError(rowNumber, "Invalid number in " + header));
+            return null;
         }
     }
 }
