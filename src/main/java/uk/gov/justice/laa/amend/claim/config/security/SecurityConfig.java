@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,6 +34,7 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.OncePerRequestFilter;
 import uk.gov.justice.laa.amend.claim.models.Role;
 
+@Slf4j
 @Profile("!local & !ephemeral & !e2e")
 @Configuration
 @EnableWebSecurity
@@ -48,8 +51,11 @@ public class SecurityConfig extends CommonSecurityConfig {
                         .anyRequest()
                         .authenticated())
                 .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
-                        .successHandler((request, response, authentication) -> {
-                            response.sendRedirect("/");
+                        .successHandler((_, response, _) -> response.sendRedirect("/"))
+                        .loginPage("/auth")
+                        .failureHandler((_, response, exception) -> {
+                            log.error("Authentication Failure", exception);
+                            response.sendRedirect("/error");
                         }))
                 .logout(logout -> logout.logoutUrl("/logout")
                         .logoutSuccessUrl("/logout-success")
@@ -59,7 +65,8 @@ public class SecurityConfig extends CommonSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .invalidSessionUrl("/logout-success?message=expired")
                         .sessionConcurrency(concurrency ->
-                                concurrency.maximumSessions(1).expiredUrl("/logout-success?message=expired")));
+                                concurrency.maximumSessions(1).expiredUrl("/logout-success?message=expired")))
+                .httpBasic(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
