@@ -82,6 +82,10 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
+    // Required for tracing information
+    implementation 'org.springframework.boot:spring-boot-micrometer-tracing-brave'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+
     // Pact consumer testing
     testImplementation 'au.com.dius.pact.consumer:junit5:4.6.20'
     // test dependencies

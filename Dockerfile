@@ -1,5 +1,5 @@
 # Specify java runtime base image
-FROM amazoncorretto:25-alpine
+FROM amazoncorretto:25.0.2-alpine3.23
 
 # Define a volume to safely store temporary files across restarts
 VOLUME /tmp
