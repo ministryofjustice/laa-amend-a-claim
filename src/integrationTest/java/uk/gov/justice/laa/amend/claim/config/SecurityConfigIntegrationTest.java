@@ -81,10 +81,10 @@ public class SecurityConfigIntegrationTest extends RedisSetup {
     }
 
     @Test
-    void unauthenticatedUsersRedirectToLogin() throws Exception {
+    void unauthenticatedUsersRedirectToAuth() throws Exception {
         mockMvc.perform(get("/test-only"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));
+                .andExpect(redirectedUrl("/auth"));
     }
 
     @Test
@@ -94,13 +94,13 @@ public class SecurityConfigIntegrationTest extends RedisSetup {
     }
 
     @Test
-    void failedOauthRedirectsToLoginErrorPage() throws Exception {
+    void failedOauthRedirectsToErrorPage() throws Exception {
         when(oauth2UserService.loadUser(any()))
                 .thenThrow(new OAuth2AuthenticationException(new OAuth2Error("invalid_token")));
 
         mockMvc.perform(get("/login/oauth2/code/id"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login?error"));
+                .andExpect(redirectedUrl("/error"));
     }
 
     @ParameterizedTest

@@ -13,6 +13,7 @@ public class SecurityConstants {
         "/ping",
         "/error",
         "/not-found",
+        "/auth"
     };
 
     public static final String POLICY_DIRECTIVES = "default-src 'self'; "
