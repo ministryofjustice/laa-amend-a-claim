@@ -25,8 +25,8 @@ public class ConfirmationController {
             @PathVariable UUID claimId,
             @PathVariable UUID assessmentId,
             HttpSession session) {
-        String submittedAssessmentId = (String) session.getAttribute(ASSESSMENT_ID);
-        if (submittedAssessmentId != null && submittedAssessmentId.equals(assessmentId.toString())) {
+        UUID submittedAssessmentId = (UUID) session.getAttribute(ASSESSMENT_ID);
+        if (submittedAssessmentId != null && submittedAssessmentId.equals(assessmentId)) {
             model.addAttribute("submissionId", submissionId);
             model.addAttribute("claimId", claimId);
 

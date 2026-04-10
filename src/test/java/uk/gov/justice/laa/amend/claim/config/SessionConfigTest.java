@@ -88,13 +88,13 @@ class SessionConfigTest {
     }
 
     @Test
-    void roundTripsStringAttributeAsObject() {
-        String original = UUID.randomUUID().toString();
+    void roundTripsUuidAsObject() {
+        UUID original = UUID.randomUUID();
 
         byte[] serialized = serializer.serialize(original);
         Object deserialized = serializer.deserialize(serialized);
 
-        assertThat(deserialized).isInstanceOf(String.class);
+        assertThat(deserialized).isInstanceOf(UUID.class);
         assertThat(deserialized).isEqualTo(original);
     }
 
