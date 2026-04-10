@@ -23,6 +23,9 @@ public class AmendClaimConstants {
 
     public static final String ASSESSMENT_REASON_ESCAPE_CASE = "Escape Fee Case Assessment";
     public static final String ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY = "Escape Fee Case Assessment (Contingency)";
+    public static final String ASSESSMENT_REASON_STAGE_DISBURSEMENT = "Stage Disbursement Assessment";
+    public static final String ASSESSMENT_REASON_STAGE_DISBURSEMENT_CONTINGENCY =
+            "Stage Disbursement Assessment (Contingency)";
     public static final String ASSESSMENT_REASON_VOID = "Void";
 
     public static final String ASSESSMENT_OUTCOME_REQUIRED_ERROR = "{assessmentOutcome.assessmentOutcomeRequiredError}";
@@ -53,6 +56,9 @@ public class AmendClaimConstants {
     }
 
     public static final String ASSESSMENT_ID = "assessmentId";
+
+    public static final Set<String> STAGE_DISBURSEMENT_FEE_CODES =
+            Set.of("MHLDIS", "EDUDIS", "ICASD", "ICISD", "ICSSD", "ILHSD");
 
     // We allow setting the assessed total values if it's a crime case and has a valid police station fee code
     public static final Set<String> VALID_POLICE_STATION_FEE_CODES = Set.of("INVC");
