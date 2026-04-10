@@ -2,9 +2,11 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
 @Getter
+@NoArgsConstructor
 public class AssessedClaimField extends ClaimField {
 
     @Builder
