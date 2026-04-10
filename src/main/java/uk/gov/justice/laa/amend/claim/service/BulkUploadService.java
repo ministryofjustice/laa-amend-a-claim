@@ -42,6 +42,12 @@ public abstract class BulkUploadService<T> {
     private final AssessmentService assessmentService;
 
     public BulkUploadResult upload(MultipartFile file, UUID userId) {
+        var result = handleUpload(file, userId);
+        logFailures(result);
+        return result;
+    }
+
+    private BulkUploadResult handleUpload(MultipartFile file, UUID userId) {
         List<T> rows = new ArrayList<>();
         List<BulkUploadError> errors = new ArrayList<>();
         try {
@@ -118,7 +124,6 @@ public abstract class BulkUploadService<T> {
                         "Failed to submit assessment. %s prior rows in the file have already been"
                                 + " processed and do not need to be reuploaded.",
                         row);
-                log.error(String.format("Row %s: %s", row + ROW_OFFSET, message), ex);
                 return new BulkUploadResult(
                         SUBMISSION_FAILURE, List.of(new BulkUploadError(row + ROW_OFFSET, message)));
             }
@@ -132,5 +137,11 @@ public abstract class BulkUploadService<T> {
         return errors.stream()
                 .sorted(Comparator.comparing(BulkUploadError::rowNumber, nullsFirst(naturalOrder())))
                 .toList();
+    }
+
+    private static void logFailures(BulkUploadResult result) {
+        if (result.status() != SUCCESS) {
+            log.error("Bulk upload failure: {}", result);
+        }
     }
 }

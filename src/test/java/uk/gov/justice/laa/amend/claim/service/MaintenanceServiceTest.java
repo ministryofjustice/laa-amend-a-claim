@@ -205,7 +205,7 @@ public class MaintenanceServiceTest {
 
             mockedFiles.when(() -> Files.readString(any())).thenReturn("true").thenThrow(new IOException());
 
-            Assertions.assertThrows(IOException.class, () -> service.maintenanceApplies(request));
+            Assertions.assertThrows(RuntimeException.class, () -> service.maintenanceApplies(request));
 
             mockedFiles.verify(() -> Files.readString(pathCaptor.capture()), times(2));
 
