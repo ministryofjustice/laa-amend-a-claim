@@ -36,6 +36,10 @@ configurations.configureEach {
             details.useVersion '4.2.12.Final'
             details.because 'Fixes HTTP Request Smuggling vulnerability (SNYK-JAVA-IONETTY-15789756)'
         }
+        if (details.requested.group == 'org.apache.tomcat.embed') {
+            details.useVersion '11.0.21'
+            details.because 'Fixes Improper Encoding/Escaping (SNYK-JAVA-ORGAPACHETOMCATEMBED-15989812) and Improper Authentication (SNYK-JAVA-ORGAPACHETOMCATEMBED-15989820)'
+        }
     }
 }
 
