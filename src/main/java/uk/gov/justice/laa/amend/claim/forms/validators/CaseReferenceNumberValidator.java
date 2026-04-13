@@ -18,6 +18,11 @@ public class CaseReferenceNumberValidator extends Validator
         context.disableDefaultConstraintViolation();
 
         if (!isBlank(form.getCaseReferenceNumber())) {
+            if (form.getCaseReferenceNumber().length() < 3) {
+                addViolation(context, FIELD, "{index.caseReferenceNumber.error.minimumLength}");
+                return false;
+            }
+
             if (form.getCaseReferenceNumber().length() > 30) {
                 addViolation(context, FIELD, "{index.caseReferenceNumber.error.format}");
                 return false;

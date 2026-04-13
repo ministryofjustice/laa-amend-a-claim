@@ -123,7 +123,7 @@ public class SearchFormTest extends FormTest {
         form.setSubmissionDateMonth("5");
         form.setSubmissionDateYear("2025");
         form.setUniqueFileNumber("120223/001");
-        form.setCaseReferenceNumber("!");
+        form.setCaseReferenceNumber("!!!");
 
         Set<ConstraintViolation<SearchForm>> violations = validator.validate(form);
         ConstraintViolation<SearchForm> violation = getViolation(violations, "caseReferenceNumber");
