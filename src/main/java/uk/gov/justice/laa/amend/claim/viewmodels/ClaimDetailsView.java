@@ -131,7 +131,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         args.add(time);
 
         String messageKey = (lastAssessment() != null && !isVoidClaim())
-                ? lastAssessment().getLastAssessmentOutcome().getMessageKey()
+                ? lastAssessment().lastAssessmentOutcome().getMessageKey()
                 : "claimSummary.void.message";
         args.add(new ThymeleafMessage(messageKey));
 

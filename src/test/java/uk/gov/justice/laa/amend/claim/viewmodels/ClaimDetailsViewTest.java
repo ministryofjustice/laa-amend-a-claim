@@ -190,14 +190,15 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         @Test
         void displayLastEditedTextWhenUserValuesAreNonNull() {
             C claim = createClaim();
-            AssessmentInfo assessmentInfo = new AssessmentInfo();
-            // UTC 14:30:00 on a BST day (June) = London 15:30:00
-            LocalDateTime localDateTime = LocalDateTime.of(2025, 6, 15, 14, 30, 0);
-            assessmentInfo.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
-            assessmentInfo.setLastAssessmentOutcome(OutcomeType.NILLED);
+            var assessmentInfo = AssessmentInfo.builder()
+                    // UTC 14:30:00 on a BST day (June) = London 15:30:00
+                    .lastAssessmentDate(OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC))
+                    .lastAssessmentOutcome(OutcomeType.NILLED)
+                    .build();
+
             claim.setLastAssessment(assessmentInfo);
-            claim.setLastUpdatedUser(assessmentInfo.getLastAssessedBy());
-            claim.setLastUpdatedDateTime(assessmentInfo.getLastAssessmentDate());
+            claim.setLastUpdatedUser(assessmentInfo.lastAssessedBy());
+            claim.setLastUpdatedDateTime(assessmentInfo.lastAssessmentDate());
             V viewModel = createView(claim);
             MicrosoftApiUser user = new MicrosoftApiUser("id", "Bloggs, Joe", "Joe", "Bloggs");
 
@@ -215,14 +216,14 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         @Test
         void displayLastEditedTextWhenUserValuesAreNull() {
             C claim = createClaim();
-            AssessmentInfo assessmentInfo = new AssessmentInfo();
-            // UTC 14:30:00 on a BST day (June) = London 15:30:00
-            LocalDateTime localDateTime = LocalDateTime.of(2025, 6, 15, 14, 30, 0);
-            assessmentInfo.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
-            assessmentInfo.setLastAssessmentOutcome(OutcomeType.NILLED);
+            var assessmentInfo = AssessmentInfo.builder()
+                    // UTC 14:30:00 on a BST day (June) = London 15:30:00
+                    .lastAssessmentDate(OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC))
+                    .lastAssessmentOutcome(OutcomeType.NILLED)
+                    .build();
             claim.setLastAssessment(assessmentInfo);
-            claim.setLastUpdatedUser(assessmentInfo.getLastAssessedBy());
-            claim.setLastUpdatedDateTime(assessmentInfo.getLastAssessmentDate());
+            claim.setLastUpdatedUser(assessmentInfo.lastAssessedBy());
+            claim.setLastUpdatedDateTime(assessmentInfo.lastAssessmentDate());
             V viewModel = createView(claim);
             MicrosoftApiUser user = new MicrosoftApiUser("id", null, null, null);
 
@@ -239,14 +240,14 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         @Test
         void displayLastEditedTextWhenUserIsNull() {
             C claim = createClaim();
-            AssessmentInfo assessmentInfo = new AssessmentInfo();
-            // UTC 14:30:00 on a BST day (June) = London 15:30:00
-            LocalDateTime localDateTime = LocalDateTime.of(2025, 6, 15, 14, 30, 0);
-            assessmentInfo.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
-            assessmentInfo.setLastAssessmentOutcome(OutcomeType.NILLED);
+            var assessmentInfo = AssessmentInfo.builder()
+                    // UTC 14:30:00 on a BST day (June) = London 15:30:00
+                    .lastAssessmentDate(OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC))
+                    .lastAssessmentOutcome(OutcomeType.NILLED)
+                    .build();
             claim.setLastAssessment(assessmentInfo);
-            claim.setLastUpdatedUser(assessmentInfo.getLastAssessedBy());
-            claim.setLastUpdatedDateTime(assessmentInfo.getLastAssessmentDate());
+            claim.setLastUpdatedUser(assessmentInfo.lastAssessedBy());
+            claim.setLastUpdatedDateTime(assessmentInfo.lastAssessmentDate());
             claim.setStatus(ClaimStatus.VALID);
             V viewModel = createView(claim);
 
@@ -263,14 +264,14 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
         @Test
         void displayLastEditedTextWhenClaimVoided() {
             C claim = createClaim();
-            AssessmentInfo assessmentInfo = new AssessmentInfo();
-            // UTC 14:30:00 on a BST day (June) = London 15:30:00
-            LocalDateTime localDateTime = LocalDateTime.of(2025, 6, 15, 14, 30, 0);
-            assessmentInfo.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
-            assessmentInfo.setLastAssessmentOutcome(OutcomeType.NILLED);
+            var assessmentInfo = AssessmentInfo.builder()
+                    // UTC 14:30:00 on a BST day (June) = London 15:30:00
+                    .lastAssessmentDate(OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC))
+                    .lastAssessmentOutcome(OutcomeType.NILLED)
+                    .build();
             claim.setLastAssessment(assessmentInfo);
-            claim.setLastUpdatedUser(assessmentInfo.getLastAssessedBy());
-            claim.setLastUpdatedDateTime(assessmentInfo.getLastAssessmentDate());
+            claim.setLastUpdatedUser(assessmentInfo.lastAssessedBy());
+            claim.setLastUpdatedDateTime(assessmentInfo.lastAssessmentDate());
             claim.setStatus(ClaimStatus.VOID);
             V viewModel = createView(claim);
             MicrosoftApiUser user = new MicrosoftApiUser("id", null, null, null);

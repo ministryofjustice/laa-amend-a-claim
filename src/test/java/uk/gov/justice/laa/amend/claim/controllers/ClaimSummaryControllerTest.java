@@ -62,9 +62,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
 
         when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
-        var lastAssessment = new AssessmentInfo();
-        lastAssessment.setLastAssessedBy("test");
-        lastAssessment.setLastAssessmentDate(OffsetDateTime.now());
+        var lastAssessment = AssessmentInfo.builder()
+                .lastAssessedBy("test")
+                .lastAssessmentDate(OffsetDateTime.now())
+                .build();
         claim.setLastAssessment(lastAssessment);
         when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
 
@@ -84,9 +85,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
 
         when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
-        var lastAssessment = new AssessmentInfo();
-        lastAssessment.setLastAssessedBy("test");
-        lastAssessment.setLastAssessmentDate(OffsetDateTime.now());
+        var lastAssessment = AssessmentInfo.builder()
+                .lastAssessedBy("test")
+                .lastAssessmentDate(OffsetDateTime.now())
+                .build();
         claim.setLastAssessment(lastAssessment);
         when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
 
