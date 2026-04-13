@@ -32,7 +32,6 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
     steps:
       # Checkout and setup
@@ -53,8 +52,6 @@ jobs:
       # Run tests
       - name: Run unit tests
         run: ./gradlew test
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Test coverage verification
         run: ./gradlew jacocoTestCoverageVerification

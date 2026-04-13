@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}

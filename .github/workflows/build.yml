@@ -45,7 +45,7 @@ jobs:
       - name: Build JAR (without tests)
         run: ./gradlew build -x test -x integrationTest
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
