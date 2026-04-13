@@ -44,6 +44,12 @@ public abstract class BulkUploadService<T> {
     private final AssessmentService assessmentService;
 
     public BulkUploadResult upload(MultipartFile file, UUID userId) {
+        var result = handleUpload(file, userId);
+        logFailures(result);
+        return result;
+    }
+
+    private BulkUploadResult handleUpload(MultipartFile file, UUID userId) {
         List<T> rows = new ArrayList<>();
         List<BulkUploadError> errors = new ArrayList<>();
         try {
@@ -98,11 +104,7 @@ public abstract class BulkUploadService<T> {
             int row = 1;
             for (CSVRecord record : parser) {
                 row++;
-                try {
-                    rows.add(rowMapper.mapRow(record, row));
-                } catch (Exception ex) {
-                    errors.add(new BulkUploadError(row, ex.getMessage()));
-                }
+                rows.add(rowMapper.mapRow(record, row, errors));
             }
         }
     }
@@ -145,5 +147,11 @@ public abstract class BulkUploadService<T> {
         return errors.stream()
                 .sorted(Comparator.comparing(BulkUploadError::rowNumber, nullsFirst(naturalOrder())))
                 .toList();
+    }
+
+    private static void logFailures(BulkUploadResult result) {
+        if (result.status() != SUCCESS) {
+            log.error("Bulk upload failure: {}", result);
+        }
     }
 }

@@ -3,8 +3,10 @@ package uk.gov.justice.laa.amend.claim.models;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TOTAL;
 
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
+@NoArgsConstructor
 public class CalculatedTotalClaimField extends ClaimField {
 
     @Builder

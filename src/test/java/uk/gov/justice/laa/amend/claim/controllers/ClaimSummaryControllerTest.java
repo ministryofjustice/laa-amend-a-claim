@@ -209,8 +209,6 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     void testIsVoidButtonPresentTrueForValidClaim() throws Exception {
         dummyUserSecurityService.setRoles(Set.of(Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER));
 
-        when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
-
         CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
         claim.setStatus(ClaimStatus.VALID);
 
@@ -224,8 +222,6 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     @Test
     void testIsVoidButtonPresentFalseForVoidClaim() throws Exception {
         dummyUserSecurityService.setRoles(Set.of(Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER));
-
-        when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
 
         var user = MockClaimsFunctions.createUser();
         var claim = MockClaimsFunctions.createMockCivilClaim();
@@ -244,8 +240,6 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     @Test
     void testIsVoidButtonPresentFalseWithoutRole() throws Exception {
         dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_CLAIM_AMENDMENTS_CASEWORKER));
-
-        when(featureFlagsConfig.getIsVoidingEnabled()).thenReturn(true);
 
         var user = MockClaimsFunctions.createUser();
         var claim = MockClaimsFunctions.createMockCivilClaim();

@@ -62,18 +62,7 @@
                         </th:block>
 
                         <th:block th:if="${result.isError()}">
-                            <div class="govuk-error-summary" data-module="govuk-error-summary">
-                                <div role="alert">
-                                    <h2 class="govuk-error-summary__title" th:text="#{bulkUploadResult.errorHeading}"></h2>
-                                    <div class="govuk-error-summary__body">
-                                        <ul class="govuk-list govuk-error-summary__list">
-                                            <li>
-                                                <a href="#error-summary-list" th:text="#{bulkUploadResult.errorSummary}"></a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
+                            <th:block th:replace="~{partials/error-alert :: errorAlert('bulkUploadResult.error', #{bulkUploadResult.error.alert.content})}"></th:block>
 
                             <table class="govuk-table" id="error-summary-list">
                                 <thead class="govuk-table__head">

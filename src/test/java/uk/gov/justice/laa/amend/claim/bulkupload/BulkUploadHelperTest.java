@@ -1,10 +1,10 @@
 package uk.gov.justice.laa.amend.claim.bulkupload;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VALID;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -53,10 +53,13 @@ class BulkUploadHelperTest {
 
     @Test
     void getAllClaimsShouldMatchClaimsAndReturnClaims() {
-        String officeCode = "123456";
+        var officeCode = "123456";
+        var ufn = "20220101/020244";
         // Mock claim returned from paging API
         ClaimResponseV2 claim = new ClaimResponseV2();
-        claim.setUniqueFileNumber("20220101/020244");
+        claim.setOfficeCode(officeCode);
+        claim.setUniqueFileNumber(ufn);
+        claim.setStatus(VALID);
 
         when(claimService.searchClaims(
                         officeCode,
@@ -65,6 +68,7 @@ class BulkUploadHelperTest {
                         Optional.empty(),
                         Optional.of(AreaOfLaw.LEGAL_HELP),
                         Optional.of(true),
+                        List.of(VALID),
                         1,
                         200,
                         null))
@@ -78,17 +82,18 @@ class BulkUploadHelperTest {
                         Optional.empty(),
                         Optional.of(AreaOfLaw.LEGAL_HELP),
                         Optional.of(true),
+                        List.of(VALID),
                         2,
                         200,
                         null))
                 .thenReturn(emptyList());
 
         List<BulkUploadError> errors = new ArrayList<>();
-        BulkUploadCivilClaim row = row(officeCode, "20220101/020244", 1);
+        BulkUploadCivilClaim row = row(officeCode, ufn, 1);
         List<BulkUploadCivilClaim> rows = List.of(row);
         var response = helper.getAllClaims(rows, errors);
 
-        assertNotNull(response);
+        assertEquals(List.of(claim), response);
         assertTrue(errors.isEmpty());
     }
 

@@ -36,10 +36,18 @@ configurations.configureEach {
             details.useVersion '4.2.12.Final'
             details.because 'Fixes HTTP Request Smuggling vulnerability (SNYK-JAVA-IONETTY-15789756)'
         }
+        if (details.requested.group == 'org.apache.tomcat.embed') {
+            details.useVersion '11.0.21'
+            details.because 'Fixes Improper Encoding/Escaping (SNYK-JAVA-ORGAPACHETOMCATEMBED-15989812) and Improper Authentication (SNYK-JAVA-ORGAPACHETOMCATEMBED-15989820)'
+        }
     }
 }
 
 dependencies {
+
+    // Upgrade to fix SNYK-JAVA-TOOLSJACKSONCORE-15907550
+    implementation 'tools.jackson.core:jackson-core:3.1.1'
+    implementation 'tools.jackson.core:jackson-databind:3.1.1'
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
@@ -77,6 +85,10 @@ dependencies {
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
+    // Required for tracing information
+    implementation 'org.springframework.boot:spring-boot-micrometer-tracing-brave'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
 
     // Pact consumer testing
     testImplementation 'au.com.dius.pact.consumer:junit5:4.6.20'

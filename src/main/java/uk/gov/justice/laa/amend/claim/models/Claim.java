@@ -1,7 +1,5 @@
 package uk.gov.justice.laa.amend.claim.models;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.UUID;
@@ -15,9 +13,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @Data
-public class Claim implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class Claim {
 
     private UUID submissionId;
     private UUID claimId;

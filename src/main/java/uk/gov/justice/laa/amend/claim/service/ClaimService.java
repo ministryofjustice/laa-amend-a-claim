@@ -32,8 +32,6 @@ public class ClaimService {
     private final Counter voidClaimCounter;
     private final Counter voidClaimFailureCounter;
 
-    private static final List<ClaimStatus> claimStatuses = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
-
     public ClaimService(
             ClaimsApiClient claimsApiClient,
             ClaimMapper claimMapper,
@@ -57,6 +55,7 @@ public class ClaimService {
             Optional<String> submissionPeriod,
             Optional<AreaOfLaw> areaOfLaw,
             Optional<Boolean> escapeCase,
+            List<ClaimStatus> claimStatuses,
             int page,
             int size,
             Sort sort) {
@@ -69,10 +68,10 @@ public class ClaimService {
                             submissionPeriod.orElse(null),
                             areaOfLaw.orElse(null),
                             escapeCase.orElse(null),
+                            claimStatuses,
                             page - 1,
                             size,
-                            Objects.toString(sort, null),
-                            claimStatuses)
+                            Objects.toString(sort, null))
                     .block();
         } catch (Exception e) {
             log.error("Error searching claims", e);

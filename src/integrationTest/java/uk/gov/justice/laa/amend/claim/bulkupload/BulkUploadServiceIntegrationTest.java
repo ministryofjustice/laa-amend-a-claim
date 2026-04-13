@@ -28,7 +28,7 @@ import uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 
 @SpringBootTest
-class BulkUploadServiceTest extends WireMockSetup {
+class BulkUploadServiceIntegrationTest extends WireMockSetup {
 
     private static final String[] HEADERS = {
         "Office Code",
@@ -37,9 +37,9 @@ class BulkUploadServiceTest extends WireMockSetup {
         "Profit Cost",
         "Disbursements",
         "Disbursements VAT",
-        "Counsel costs",
-        "Total allowed vat",
-        "Total allowed include vat"
+        "Counsel Costs",
+        "Total Allowed VAT",
+        "Total Allowed Including VAT"
     };
 
     @Autowired
@@ -114,8 +114,8 @@ class BulkUploadServiceTest extends WireMockSetup {
     }
 
     private String generateRandomOfficeCode(Random random) {
-        String chars = "0123456789abcdefghijklmnopqrstuvwxyz";
-        StringBuilder sb = new StringBuilder("0p");
+        String chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        StringBuilder sb = new StringBuilder("0P");
         for (int i = 0; i < 4; i++) {
             sb.append(chars.charAt(random.nextInt(chars.length())));
         }
@@ -123,12 +123,12 @@ class BulkUploadServiceTest extends WireMockSetup {
     }
 
     /**
-     * Generates UFN in format DDMMYY/001XYZ (randomised for tests)
+     * Generates UFN in format DDMMYY/XYZ (randomized for tests)
      */
     private String generateRandomUfn(Random random) {
         String date = LocalDate.now().format(DateTimeFormatter.ofPattern("ddMMyy"));
         int randomBlock = random.nextInt(900) + 100; // 100–999
-        return date + "/001" + randomBlock;
+        return date + "/" + randomBlock;
     }
 
     private String getNumber(int value) {
@@ -139,14 +139,13 @@ class BulkUploadServiceTest extends WireMockSetup {
     @DisplayName("Returns error when ClaimService returns null (no claims found)")
     void returnsErrorWhenClaimServiceReturnsNull() throws Exception {
         // Create a CSV with a UFN and office code
-        String[] headers = HEADERS;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try (OutputStreamWriter writer = new OutputStreamWriter(baos, StandardCharsets.UTF_8);
                 CSVPrinter csv = new CSVPrinter(
-                        writer, CSVFormat.DEFAULT.builder().setHeader(headers).build())) {
+                        writer, CSVFormat.DEFAULT.builder().setHeader(HEADERS).get())) {
             csv.printRecord(
                     "0p0001", // office code
-                    "010101/001999", // UFN
+                    "010101/001", // UFN
                     "Reduced",
                     "£100.00",
                     "£50.00",
@@ -165,7 +164,7 @@ class BulkUploadServiceTest extends WireMockSetup {
         assertThat(result).isNotNull();
         assertThat(result.status()).isEqualTo(BulkUploadStatus.VALIDATION_FAILURE);
         assertThat(result.errors())
-                .anyMatch(error ->
-                        error.message().contains("Claim not found for UFN 010101/001999 and officeCode 0p0001"));
+                .anyMatch(error -> error.message()
+                        .contains("Escaped Civil Claim not found for UFN 010101/001 and officeCode 0P0001"));
     }
 }

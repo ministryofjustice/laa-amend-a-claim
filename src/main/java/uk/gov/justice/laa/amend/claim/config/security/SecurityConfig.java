@@ -1,19 +1,21 @@
 package uk.gov.justice.laa.amend.claim.config.security;
 
-import static java.util.stream.Collectors.toSet;
 import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PUBLIC_PATHS;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,17 +31,15 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.security.web.header.HeaderWriterFilter;
-import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import org.springframework.web.filter.OncePerRequestFilter;
 import uk.gov.justice.laa.amend.claim.models.Role;
 
+@Slf4j
 @Profile("!local & !ephemeral & !e2e")
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends CommonSecurityConfig {
-
-    private final FeatureFlagsConfig featureFlagsConfig;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
@@ -51,8 +51,11 @@ public class SecurityConfig extends CommonSecurityConfig {
                         .anyRequest()
                         .authenticated())
                 .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
-                        .successHandler((request, response, authentication) -> {
-                            response.sendRedirect("/");
+                        .successHandler((_, response, _) -> response.sendRedirect("/"))
+                        .loginPage("/auth")
+                        .failureHandler((_, response, exception) -> {
+                            log.error("Authentication Failure", exception);
+                            response.sendRedirect("/error");
                         }))
                 .logout(logout -> logout.logoutUrl("/logout")
                         .logoutSuccessUrl("/logout-success")
@@ -63,9 +66,17 @@ public class SecurityConfig extends CommonSecurityConfig {
                         .invalidSessionUrl("/logout-success?message=expired")
                         .sessionConcurrency(concurrency ->
                                 concurrency.maximumSessions(1).expiredUrl("/logout-success?message=expired")))
-                .addFilterAfter(securityHeadersFilter(), HeaderWriterFilter.class);
+                .httpBasic(AbstractHttpConfigurer::disable);
 
         return http.build();
+    }
+
+    @Bean
+    public FilterRegistrationBean<OncePerRequestFilter> securityHeadersFilter() {
+        FilterRegistrationBean<OncePerRequestFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(createSecurityHeadersFilter());
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return registration;
     }
 
     private OidcUserService oidcUserService() {
@@ -73,10 +84,7 @@ public class SecurityConfig extends CommonSecurityConfig {
             @Override
             public OidcUser loadUser(OidcUserRequest userRequest) {
                 OidcUser oidcUser = super.loadUser(userRequest);
-
-                Set<GrantedAuthority> authorities = featureFlagsConfig.getIsVoidingEnabled()
-                        ? getAuthorities(oidcUser.getAttributes())
-                        : allAuthorities();
+                Set<GrantedAuthority> authorities = getAuthorities(oidcUser.getAttributes());
                 return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
             }
         };
@@ -99,13 +107,6 @@ public class SecurityConfig extends CommonSecurityConfig {
         } else {
             return List.of();
         }
-    }
-
-    private static Set<GrantedAuthority> allAuthorities() {
-        var roles = Arrays.stream(Role.values())
-                .map(role -> new SimpleGrantedAuthority(role.name()))
-                .collect(toSet());
-        return new SimpleAuthorityMapper().mapAuthorities(roles);
     }
 
     @Bean

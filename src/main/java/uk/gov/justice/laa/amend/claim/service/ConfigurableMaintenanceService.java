@@ -27,23 +27,28 @@ public class ConfigurableMaintenanceService implements MaintenanceService {
     private static final Path PASSWORD = ROOT.resolve("bypassPassword");
 
     @Override
-    public boolean maintenanceApplies(HttpServletRequest request) throws IOException {
+    public boolean maintenanceApplies(HttpServletRequest request) {
         return maintenanceEnabled() && !hasBypassCookie(request);
     }
 
-    private boolean hasBypassCookie(HttpServletRequest request) throws IOException {
-        log.info("Maintenance on, checking for cookie");
+    private boolean hasBypassCookie(HttpServletRequest request) {
+        log.debug("Maintenance on, checking for cookie");
 
         if (request.getCookies() == null) {
-            log.info("Maintenance on, no cookies");
+            log.debug("Maintenance on, no cookies");
             return false;
         }
 
-        String bypassPassword = readBypassValue();
-        log.info("Maintenance on, bypassPassword: {}", bypassPassword);
+        var bypassPassword = readBypassValue();
 
-        return Arrays.stream(request.getCookies())
+        var hasBypassCookie = Arrays.stream(request.getCookies())
                 .anyMatch(cookie -> cookie.getValue().equals(bypassPassword));
+
+        if (hasBypassCookie) {
+            log.info("Maintenance on, bypass cookie present");
+        }
+
+        return hasBypassCookie;
     }
 
     @Override
@@ -63,8 +68,12 @@ public class ConfigurableMaintenanceService implements MaintenanceService {
         }
     }
 
-    private String readBypassValue() throws IOException {
-        return Files.readString(PASSWORD).trim();
+    private String readBypassValue() {
+        try {
+            return Files.readString(PASSWORD).trim();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

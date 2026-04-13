@@ -49,6 +49,16 @@ class CaseReferenceNumberValidatorTest {
     }
 
     @Test
+    void testLessThanThreeCharactersIsInvalid() {
+        SearchForm form = new SearchForm();
+        form.setCaseReferenceNumber("12");
+
+        assertFalse(validator.isValid(form, constraintValidatorContext));
+        verify(constraintValidatorContext)
+                .buildConstraintViolationWithTemplate("{index.caseReferenceNumber.error.minimumLength}");
+    }
+
+    @Test
     void testMoreThanThirtyCharactersIsInvalid() {
         SearchForm form = new SearchForm();
         form.setCaseReferenceNumber("1234567890123456789012345678901");
@@ -61,7 +71,7 @@ class CaseReferenceNumberValidatorTest {
     @Test
     void testInvalidCharactersIsInvalid() {
         SearchForm form = new SearchForm();
-        form.setCaseReferenceNumber("!");
+        form.setCaseReferenceNumber("!!!");
 
         assertFalse(validator.isValid(form, constraintValidatorContext));
         verify(constraintValidatorContext)

@@ -20,14 +20,14 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws IOException {
         String path = request.getRequestURI();
-        log.info("MaintenanceInterceptor path: {}", path);
+        log.debug("MaintenanceInterceptor path: {}", path);
 
         if (!maintenanceService.maintenanceApplies(request)) {
-            log.info("Maintenance off, allow: {}", path);
+            log.debug("Maintenance off, allow: {}", path);
             return true;
         }
 
-        log.info("Maintenance on, forward: {} to maintenance page", path);
+        log.debug("Maintenance on, forward: {} to maintenance page", path);
         response.sendRedirect(request.getContextPath() + "/maintenance");
         return false;
     }

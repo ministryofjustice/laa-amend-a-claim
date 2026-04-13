@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.mock.web.MockMultipartFile;
+import wiremock.com.google.common.collect.ImmutableMap;
 
 public class WireMockSetup {
 
@@ -63,27 +64,18 @@ public class WireMockSetup {
         for (int i = 0; i < n && i < data.size(); i++) {
             String ufn = data.get(i)[1];
 
-            Map<String, Object> claim = Map.of(
-                    "id",
-                    UUID.randomUUID().toString(),
-                    "unique_file_number",
-                    ufn,
-                    "case_reference_number",
-                    "REF-" + i,
-                    "client_surname",
-                    "Surname-" + i,
-                    "date_submitted",
-                    OffsetDateTime.now().minusDays(i).toString(),
-                    "account",
-                    "ACC" + i,
-                    "type",
-                    "CLAIM",
-                    "office_code",
-                    officeCode,
-                    "status",
-                    "VALID",
-                    "area_of_law",
-                    "LEGAL HELP");
+            var claim = ImmutableMap.<String, Object>builder()
+                    .put("id", UUID.randomUUID().toString())
+                    .put("unique_file_number", ufn)
+                    .put("case_reference_number", "REF-" + i)
+                    .put("client_surname", "Surname-" + i)
+                    .put("date_submitted", OffsetDateTime.now().minusDays(i).toString())
+                    .put("account", "ACC" + i)
+                    .put("type", "CLAIM")
+                    .put("office_code", officeCode)
+                    .put("status", "VALID")
+                    .put("area_of_law", "LEGAL HELP")
+                    .build();
 
             claims.add(claim);
         }
@@ -144,7 +136,8 @@ public class WireMockSetup {
             {
                 "claims": [
                     {
-                        "uniqueFileNumber": "123456",
+                        "office_code": "123456",
+                        "uniqueFileNumber": "012345/012",
                         "caseReferenceNumber": "REF123",
                         "clientSurname": "Smith",
                         "dateSubmitted": "2024-01-01",
@@ -156,7 +149,7 @@ public class WireMockSetup {
                 ],
                 "totalElements": 1,
                 "totalPages": 1,
-                "pageNumber": 0
+                "number": 0
             }
             """;
         stubFor(get(urlPathMatching("/api/v2/claims.*"))
@@ -172,7 +165,7 @@ public class WireMockSetup {
                 "claims": [],
                 "totalElements": 0,
                 "totalPages": 0,
-                "pageNumber": 0
+                "number": 0
             }
             """;
         stubFor(get(urlPathMatching("/api/v2/claims.*"))
