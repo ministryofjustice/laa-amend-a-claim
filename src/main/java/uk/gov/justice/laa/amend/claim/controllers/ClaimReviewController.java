@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_ID;
-import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -35,7 +35,7 @@ public class ClaimReviewController {
       Model model,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+    var claim = getValidAssessableClaim(session, submissionId, claimId);
 
     if (claim.getAssessmentOutcome() == null) {
       return String.format(
@@ -52,7 +52,7 @@ public class ClaimReviewController {
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId,
       HttpServletResponse response) {
-    var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+    var claim = getValidAssessableClaim(session, submissionId, claimId);
     ClaimDetailsView<? extends ClaimDetails> viewModel = claim.toViewModel();
     if (viewModel.getErrors().isEmpty()) {
       try {

@@ -36,14 +36,12 @@ public class SessionUtils {
     return claim;
   }
 
-  public static ClaimDetails getValidEscapeCaseClaim(
+  public static ClaimDetails getValidAssessableClaim(
       HttpSession session, UUID submissionId, UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
-
-    if (claim.getEscaped() == null || !claim.getEscaped()) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Claim is not an escape case");
+    if (!claim.isEscapedCase() && !claim.isStageDisbursement()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Claim is not assessable");
     }
-
     return claim;
   }
 }

@@ -77,7 +77,7 @@ public final class CreateAssessmentPactTest extends AbstractPactTest {
         .body(LambdaDsl.newJsonBody(CreateAssessmentPactTest::buildAssessmentRequestBody).build())
         .willRespondWith()
         .status(404)
-        .matchHeader("Content-Type", "application/(problem\\+)?json")
+        .matchHeader("Content-Type", "application/(problem\\+)?json", "application/problem+json")
         .toPact();
   }
 

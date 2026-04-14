@@ -1,11 +1,15 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import static java.util.Objects.nonNull;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_STAGE_DISBURSEMENT_CONTINGENCY;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.STAGE_DISBURSEMENT_FEE_CODES;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import lombok.Data;
@@ -84,7 +88,16 @@ public abstract class ClaimDetails extends Claim {
     return Stream.of(getAllowedTotalVat(), getAllowedTotalInclVat());
   }
 
+  public boolean isEscapedCase() {
+    return Optional.ofNullable(getEscaped()).orElse(false);
+  }
+
+  public boolean isStageDisbursement() {
+    return nonNull(feeCode) && STAGE_DISBURSEMENT_FEE_CODES.contains(feeCode);
+  }
+
   public boolean isContingencyAssessment() {
-    return ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY.equals(assessmentReason);
+    return ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY.equals(assessmentReason)
+        || ASSESSMENT_REASON_STAGE_DISBURSEMENT_CONTINGENCY.equals(assessmentReason);
   }
 }

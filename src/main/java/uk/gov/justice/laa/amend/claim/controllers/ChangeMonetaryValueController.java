@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
-import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -45,7 +45,7 @@ public class ChangeMonetaryValueController {
       HttpServletResponse response)
       throws IOException {
     try {
-      var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+      var claim = getValidAssessableClaim(session, submissionId, claimId);
       var claimField = getCostClaimField(claim, cost, claimId);
 
       BigDecimal value = (BigDecimal) claimField.getAssessed();
@@ -74,7 +74,7 @@ public class ChangeMonetaryValueController {
       BindingResult bindingResult)
       throws IOException {
     try {
-      var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+      var claim = getValidAssessableClaim(session, submissionId, claimId);
       var claimField = getCostClaimField(claim, cost, claimId);
 
       if (bindingResult.hasErrors()) {
