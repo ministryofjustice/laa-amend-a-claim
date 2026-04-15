@@ -25,6 +25,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentOutcome;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
 @SpringBootTest(
@@ -112,7 +113,7 @@ public final class CreateAssessmentPactTest extends AbstractPactTest {
         body.stringType("assessment_outcome", "PAID_IN_FULL");
         body.uuid("created_by_user_id");
         body.stringType("assessment_reason", ASSESSMENT_REASON_ESCAPE_CASE);
-        body.nullValue("assessment_type");
+        body.stringType("assessment_type", "ESCAPE_CASE_ASSESSMENT");
         body.booleanType("is_vat_applicable", true);
         body.decimalType("fixed_fee_amount", 100.00);
         body.decimalType("net_profit_costs_amount", 200.00);
@@ -150,6 +151,7 @@ public final class CreateAssessmentPactTest extends AbstractPactTest {
         assessment.setAllowedTotalVat(new BigDecimal("60.00"));
         assessment.setAllowedTotalInclVat(new BigDecimal("360.00"));
         assessment.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
+        assessment.setAssessmentType(AssessmentType.ESCAPE_CASE_ASSESSMENT);
         return assessment;
     }
 }
