@@ -286,14 +286,13 @@ class AssessmentServiceTest {
     }
 
     @Nested
-    class GetAssessmentsTest {
+    class GetLatestAssessmentByClaimTest {
         @Test
         void shouldReturnMappedClaimDetailsWhenAssessmentExists() {
 
             var claimDetails = new CivilClaimDetails();
             claimDetails.setClaimId(claimId);
 
-            // Arrange
             AssessmentGet assessment = new AssessmentGet(); // dummy assessment
             assessment.setAssessmentType(AssessmentType.ESCAPE_CASE_ASSESSMENT);
             AssessmentResultSet resultSet = new AssessmentResultSet();
@@ -301,13 +300,13 @@ class AssessmentServiceTest {
             when(claimsApiClient.getAssessments(claimId, page, size, sort)).thenReturn(Mono.just(resultSet));
 
             ClaimDetails mappedDetails = new CivilClaimDetails();
-            AssessmentInfo assessmentInfo = new AssessmentInfo();
+            AssessmentInfo assessmentInfo = AssessmentInfo.builder().build();
             mappedDetails.setLastAssessment(assessmentInfo);
             when(assessmentMapper.updateClaim(assessment, claimDetails)).thenReturn(mappedDetails);
             when(assessmentMapper.mapAssessmentToClaimDetails(mappedDetails)).thenReturn(mappedDetails);
-            // Act
+
             ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claimDetails);
-            // Assert
+
             assertEquals(result, mappedDetails);
             verify(claimsApiClient).getAssessments(claimId, page, size, sort);
             verify(assessmentMapper).mapAssessmentToClaimDetails(mappedDetails);
@@ -317,12 +316,11 @@ class AssessmentServiceTest {
         void shouldThrowExceptionWhenAssessmentsAreEmpty() {
             var claimDetails = new CivilClaimDetails();
             claimDetails.setClaimId(claimId);
-            // Arrange
+
             AssessmentResultSet emptyResultSet = new AssessmentResultSet();
             emptyResultSet.setAssessments(List.of());
             when(claimsApiClient.getAssessments(claimId, page, size, sort)).thenReturn(Mono.just(emptyResultSet));
 
-            // Act & Assert
             RuntimeException ex = assertThrows(
                     RuntimeException.class, () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
 
@@ -333,10 +331,9 @@ class AssessmentServiceTest {
         void shouldThrowExceptionWhenResultIsNull() {
             var claimDetails = new CivilClaimDetails();
             claimDetails.setClaimId(claimId);
-            // Arrange
+
             when(claimsApiClient.getAssessments(claimId, page, size, sort)).thenReturn(Mono.empty());
 
-            // Act & Assert
             RuntimeException ex = assertThrows(
                     RuntimeException.class, () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
 
@@ -348,10 +345,10 @@ class AssessmentServiceTest {
             ClaimDetails claim = new CrimeClaimDetails();
             claim.setClaimId(UUID.randomUUID());
             claim.setStatus(ClaimStatus.VOID);
-            AssessmentGet latest = new AssessmentGet();
-            latest.setAssessmentType(AssessmentType.VOID);
-            AssessmentGet previous = new AssessmentGet();
-            previous.setAssessmentType(AssessmentType.ESCAPE_CASE_ASSESSMENT);
+
+            var latest = createAssessmentGet(AssessmentType.VOID);
+            var previous = createAssessmentGet(AssessmentType.ESCAPE_CASE_ASSESSMENT);
+
             AssessmentResultSet resultSet = new AssessmentResultSet();
             resultSet.setAssessments(List.of(latest, previous));
             when(claimsApiClient.getAssessments(any(), eq(page), eq(size), any()))
@@ -370,10 +367,11 @@ class AssessmentServiceTest {
             ClaimDetails claim = new CrimeClaimDetails();
             claim.setClaimId(UUID.randomUUID());
             claim.setStatus(ClaimStatus.VOID);
-            AssessmentGet latest = new AssessmentGet();
+
+            var latest = createAssessmentGet(AssessmentType.VOID);
             latest.setId(UUID.randomUUID());
             latest.setClaimId(claim.getClaimId());
-            latest.setAssessmentType(AssessmentType.VOID);
+
             AssessmentResultSet resultSet = new AssessmentResultSet();
             resultSet.setAssessments(List.of(latest));
             when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any())).thenReturn(Mono.just(resultSet));
@@ -384,7 +382,6 @@ class AssessmentServiceTest {
 
         @Test
         void getLatestAssessmentThrowsWhenNoAssessments() {
-            // Arrange
             ClaimDetails claim = new CrimeClaimDetails();
             claim.setClaimId(UUID.randomUUID());
             claim.setStatus(ClaimStatus.VALID);
@@ -403,8 +400,7 @@ class AssessmentServiceTest {
             claim.setClaimId(UUID.randomUUID());
             claim.setStatus(ClaimStatus.VOID);
 
-            AssessmentGet latest = new AssessmentGet();
-            latest.setAssessmentType(AssessmentType.ESCAPE_CASE_ASSESSMENT);
+            var latest = createAssessmentGet(AssessmentType.ESCAPE_CASE_ASSESSMENT);
             AssessmentResultSet resultSet = new AssessmentResultSet();
             resultSet.setAssessments(List.of(latest));
 
@@ -429,5 +425,9 @@ class AssessmentServiceTest {
 
             assertThrows(InvalidAssessmentException.class, () -> assessmentService.getLatestAssessmentByClaim(claim));
         }
+    }
+
+    private AssessmentGet createAssessmentGet(AssessmentType assessmentType) {
+        return AssessmentGet.builder().assessmentType(assessmentType).build();
     }
 }

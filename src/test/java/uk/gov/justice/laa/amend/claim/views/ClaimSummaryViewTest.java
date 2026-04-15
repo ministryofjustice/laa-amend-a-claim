@@ -142,14 +142,14 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
         when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
-        var lastAssessment = new AssessmentInfo();
-        lastAssessment.setLastAssessedBy("test");
-        LocalDateTime localDateTime = LocalDateTime.of(2025, 12, 18, 16, 11, 27);
-        lastAssessment.setLastAssessmentDate(OffsetDateTime.of(localDateTime, ZoneOffset.UTC));
-        lastAssessment.setLastAssessmentOutcome(OutcomeType.NILLED);
+        var lastAssessment = AssessmentInfo.builder()
+                .lastAssessedBy("test")
+                .lastAssessmentDate(OffsetDateTime.of(LocalDateTime.of(2025, 12, 18, 16, 11, 27), ZoneOffset.UTC))
+                .lastAssessmentOutcome(OutcomeType.NILLED)
+                .build();
         claim.setLastAssessment(lastAssessment);
-        claim.setLastUpdatedDateTime(lastAssessment.getLastAssessmentDate());
-        claim.setLastUpdatedUser(lastAssessment.getLastAssessedBy());
+        claim.setLastUpdatedDateTime(lastAssessment.lastAssessmentDate());
+        claim.setLastUpdatedUser(lastAssessment.lastAssessedBy());
 
         when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
 
@@ -281,8 +281,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setStatus(ClaimStatus.VOID);
         var lastAssessment = MockClaimsFunctions.createAssessment(AssessmentTypeEnum.VOID);
         claim.setLastAssessment(lastAssessment);
-        claim.setLastUpdatedDateTime(lastAssessment.getLastAssessmentDate());
-        claim.setLastUpdatedUser(lastAssessment.getLastAssessedBy());
+        claim.setLastUpdatedDateTime(lastAssessment.lastAssessmentDate());
+        claim.setLastUpdatedUser(lastAssessment.lastAssessedBy());
 
         when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
@@ -316,8 +316,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
         claim.setLastAssessment(null);
         var lastAssessment = MockClaimsFunctions.createAssessment(AssessmentTypeEnum.VOID);
         claim.setLastAssessment(lastAssessment);
-        claim.setLastUpdatedDateTime(lastAssessment.getLastAssessmentDate());
-        claim.setLastUpdatedUser(lastAssessment.getLastAssessedBy());
+        claim.setLastUpdatedDateTime(lastAssessment.lastAssessmentDate());
+        claim.setLastUpdatedUser(lastAssessment.lastAssessedBy());
 
         when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 

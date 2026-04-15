@@ -247,13 +247,12 @@ public class MockClaimsFunctions {
     }
 
     public static AssessmentInfo createAssessment(AssessmentTypeEnum assessmentType) {
-        AssessmentInfo info = new AssessmentInfo();
-        info.setId(UUID.randomUUID());
-        info.setAssessmentType(assessmentType);
-        info.setLastAssessedBy("Tst User");
-        info.setLastAssessmentDate(OffsetDateTime.now());
-        info.setId(UUID.randomUUID());
-        return info;
+        return AssessmentInfo.builder()
+                .id(UUID.randomUUID())
+                .assessmentType(assessmentType)
+                .lastAssessedBy("Test User")
+                .lastAssessmentDate(OffsetDateTime.now())
+                .build();
     }
 
     public static MicrosoftApiUser createUser() {

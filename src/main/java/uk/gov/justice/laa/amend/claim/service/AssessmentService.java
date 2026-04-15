@@ -220,7 +220,7 @@ public class AssessmentService {
         if (last == null) {
             return false;
         }
-        return Objects.equals(newOutcome, last.getLastAssessmentOutcome());
+        return Objects.equals(newOutcome, last.lastAssessmentOutcome());
     }
 
     private void checkForHighValueAssessment(ClaimDetails claim, AssessmentPost assessment, UUID assessmentId) {

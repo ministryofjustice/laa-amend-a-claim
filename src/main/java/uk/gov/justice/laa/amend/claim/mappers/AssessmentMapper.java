@@ -101,33 +101,33 @@ public interface AssessmentMapper {
 
     @AfterMapping
     default void mapToClaimAfterMapping(AssessmentInfo source, @MappingTarget ClaimDetails target) {
-        map(source, target.getVatClaimed(), AssessmentInfo::getIsVatApplicable);
-        map(source, target.getFixedFee(), AssessmentInfo::getFixedFeeAmount);
-        map(source, target.getNetDisbursementAmount(), AssessmentInfo::getDisbursementAmount);
-        map(source, target.getDisbursementVatAmount(), AssessmentInfo::getDisbursementVatAmount);
-        map(source, target.getNetProfitCost(), AssessmentInfo::getNetProfitCostsAmount);
-        map(source, target.getAssessedTotalVat(), AssessmentInfo::getAssessedTotalVat);
-        map(source, target.getAssessedTotalInclVat(), AssessmentInfo::getAssessedTotalInclVat);
-        map(source, target.getAllowedTotalVat(), AssessmentInfo::getAllowedTotalVat);
-        map(source, target.getAllowedTotalInclVat(), AssessmentInfo::getAllowedTotalInclVat);
+        map(source, target.getVatClaimed(), AssessmentInfo::isVatApplicable);
+        map(source, target.getFixedFee(), AssessmentInfo::fixedFeeAmount);
+        map(source, target.getNetDisbursementAmount(), AssessmentInfo::disbursementAmount);
+        map(source, target.getDisbursementVatAmount(), AssessmentInfo::disbursementVatAmount);
+        map(source, target.getNetProfitCost(), AssessmentInfo::netProfitCostsAmount);
+        map(source, target.getAssessedTotalVat(), AssessmentInfo::assessedTotalVat);
+        map(source, target.getAssessedTotalInclVat(), AssessmentInfo::assessedTotalInclVat);
+        map(source, target.getAllowedTotalVat(), AssessmentInfo::allowedTotalVat);
+        map(source, target.getAllowedTotalInclVat(), AssessmentInfo::allowedTotalInclVat);
     }
 
     @AfterMapping
     default void mapToCivilClaimAfterMapping(AssessmentInfo source, @MappingTarget CivilClaimDetails target) {
-        map(source, target.getJrFormFillingCost(), AssessmentInfo::getJrFormFillingAmount);
-        map(source, target.getDetentionTravelWaitingCosts(), AssessmentInfo::getDetentionTravelAndWaitingCostsAmount);
-        map(source, target.getCounselsCost(), AssessmentInfo::getNetCostOfCounselAmount);
-        map(source, target.getHoInterview(), AssessmentInfo::getBoltOnHomeOfficeInterviewFee);
-        map(source, target.getCmrhOral(), AssessmentInfo::getBoltOnCmrhOralFee);
-        map(source, target.getCmrhTelephone(), AssessmentInfo::getBoltOnCmrhTelephoneFee);
-        map(source, target.getAdjournedHearing(), AssessmentInfo::getBoltOnAdjournedHearingFee);
-        map(source, target.getSubstantiveHearing(), AssessmentInfo::getBoltOnSubstantiveHearingFee);
+        map(source, target.getJrFormFillingCost(), AssessmentInfo::jrFormFillingAmount);
+        map(source, target.getDetentionTravelWaitingCosts(), AssessmentInfo::detentionTravelAndWaitingCostsAmount);
+        map(source, target.getCounselsCost(), AssessmentInfo::netCostOfCounselAmount);
+        map(source, target.getHoInterview(), AssessmentInfo::boltOnHomeOfficeInterviewFee);
+        map(source, target.getCmrhOral(), AssessmentInfo::boltOnCmrhOralFee);
+        map(source, target.getCmrhTelephone(), AssessmentInfo::boltOnCmrhTelephoneFee);
+        map(source, target.getAdjournedHearing(), AssessmentInfo::boltOnAdjournedHearingFee);
+        map(source, target.getSubstantiveHearing(), AssessmentInfo::boltOnSubstantiveHearingFee);
     }
 
     @AfterMapping
     default void mapToCrimeClaimAfterMapping(AssessmentInfo source, @MappingTarget CrimeClaimDetails target) {
-        map(source, target.getTravelCosts(), AssessmentInfo::getNetTravelCostsAmount);
-        map(source, target.getWaitingCosts(), AssessmentInfo::getNetWaitingCostsAmount);
+        map(source, target.getTravelCosts(), AssessmentInfo::netTravelCostsAmount);
+        map(source, target.getWaitingCosts(), AssessmentInfo::netWaitingCostsAmount);
     }
 
     private void map(AssessmentInfo source, ClaimField target, Function<AssessmentInfo, Object> f) {

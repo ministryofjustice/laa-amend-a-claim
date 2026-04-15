@@ -143,28 +143,27 @@ class AssessmentMapperTest {
 
     @Test
     void shouldMapAssessmentToCivilClaimDetails() {
-        // Arrange
-        AssessmentInfo assessmentGet = new AssessmentInfo();
-        assessmentGet.setIsVatApplicable(true);
-        assessmentGet.setFixedFeeAmount(BigDecimal.valueOf(100));
-        assessmentGet.setDisbursementAmount(BigDecimal.valueOf(50));
-        assessmentGet.setDisbursementVatAmount(BigDecimal.valueOf(10));
-        assessmentGet.setNetProfitCostsAmount(BigDecimal.valueOf(200));
-        assessmentGet.setAssessedTotalVat(BigDecimal.valueOf(6));
-        assessmentGet.setAssessedTotalInclVat(BigDecimal.valueOf(7));
-        assessmentGet.setAllowedTotalInclVat(BigDecimal.valueOf(300));
-        assessmentGet.setAllowedTotalVat(BigDecimal.valueOf(20));
-        assessmentGet.setLastAssessedBy("user123");
-        assessmentGet.setLastAssessmentDate(OffsetDateTime.now());
-        assessmentGet.setJrFormFillingAmount(BigDecimal.valueOf(100));
-        assessmentGet.setLastAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
+        var assessment = AssessmentInfo.builder()
+                .isVatApplicable(true)
+                .fixedFeeAmount(BigDecimal.valueOf(100))
+                .disbursementAmount(BigDecimal.valueOf(50))
+                .disbursementVatAmount(BigDecimal.valueOf(10))
+                .netProfitCostsAmount(BigDecimal.valueOf(200))
+                .assessedTotalVat(BigDecimal.valueOf(6))
+                .assessedTotalInclVat(BigDecimal.valueOf(7))
+                .allowedTotalInclVat(BigDecimal.valueOf(300))
+                .allowedTotalVat(BigDecimal.valueOf(20))
+                .lastAssessedBy("user123")
+                .lastAssessmentDate(OffsetDateTime.now())
+                .jrFormFillingAmount(BigDecimal.valueOf(100))
+                .lastAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE)
+                .build();
 
         CivilClaimDetails claimDetails = MockClaimsFunctions.createMockCivilClaim();
         claimDetails.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
 
-        // Act
-        CivilClaimDetails result = mapper.mapToCivilClaim(assessmentGet, claimDetails);
-        // Assert
+        CivilClaimDetails result = mapper.mapToCivilClaim(assessment, claimDetails);
+
         assertNotNull(result.getVatClaimed().getAssessed());
         assertEquals(new BigDecimal("100"), result.getFixedFee().getAssessed());
         assertEquals(new BigDecimal("50"), result.getNetDisbursementAmount().getAssessed());
@@ -181,10 +180,11 @@ class AssessmentMapperTest {
     void updateClaimShouldUpdateLastAssessment() {
         // Given
         var assessmentDate = OffsetDateTime.now();
-        AssessmentInfo existing = new AssessmentInfo();
-        existing.setLastAssessmentOutcome(OutcomeType.PAID_IN_FULL);
-        existing.setLastAssessmentDate(assessmentDate);
-        existing.setLastAssessedBy("u1");
+        AssessmentInfo existing = AssessmentInfo.builder()
+                .lastAssessmentOutcome(OutcomeType.PAID_IN_FULL)
+                .lastAssessmentDate(assessmentDate)
+                .lastAssessedBy("u1")
+                .build();
         ClaimDetails target = new CivilClaimDetails();
         target.setLastAssessment(existing);
 
@@ -205,22 +205,22 @@ class AssessmentMapperTest {
 
     @Test
     void shouldMapAssessmentToCrimeClaimDetails() {
-        // Arrange
-        AssessmentInfo assessmentGet = new AssessmentInfo();
-        assessmentGet.setIsVatApplicable(true);
-        assessmentGet.setFixedFeeAmount(BigDecimal.valueOf(100));
-        assessmentGet.setDisbursementAmount(BigDecimal.valueOf(50));
-        assessmentGet.setDisbursementVatAmount(BigDecimal.valueOf(10));
-        assessmentGet.setNetProfitCostsAmount(BigDecimal.valueOf(200));
-        assessmentGet.setAssessedTotalVat(BigDecimal.valueOf(6));
-        assessmentGet.setAssessedTotalInclVat(BigDecimal.valueOf(7));
-        assessmentGet.setAllowedTotalInclVat(BigDecimal.valueOf(300));
-        assessmentGet.setAllowedTotalVat(BigDecimal.valueOf(20));
-        assessmentGet.setLastAssessedBy("user123");
-        assessmentGet.setLastAssessmentDate(OffsetDateTime.now());
-        assessmentGet.setLastAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
-        assessmentGet.setNetTravelCostsAmount(BigDecimal.valueOf(100));
-        assessmentGet.setNetWaitingCostsAmount(BigDecimal.valueOf(200));
+        var assessment = AssessmentInfo.builder()
+                .isVatApplicable(true)
+                .fixedFeeAmount(BigDecimal.valueOf(100))
+                .disbursementAmount(BigDecimal.valueOf(50))
+                .disbursementVatAmount(BigDecimal.valueOf(10))
+                .netProfitCostsAmount(BigDecimal.valueOf(200))
+                .assessedTotalVat(BigDecimal.valueOf(6))
+                .assessedTotalInclVat(BigDecimal.valueOf(7))
+                .allowedTotalInclVat(BigDecimal.valueOf(300))
+                .allowedTotalVat(BigDecimal.valueOf(20))
+                .lastAssessedBy("user123")
+                .lastAssessmentDate(OffsetDateTime.now())
+                .lastAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE)
+                .netTravelCostsAmount(BigDecimal.valueOf(100))
+                .netWaitingCostsAmount(BigDecimal.valueOf(200))
+                .build();
 
         ClaimDetails claimDetails = MockClaimsFunctions.createMockCrimeClaim();
         claimDetails.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
@@ -236,18 +236,17 @@ class AssessmentMapperTest {
                 .build();
         claimDetails.setAllowedTotalVat(allowedTotalVatField);
         claimDetails.setAllowedTotalInclVat(allowedTotalInclVatField);
-        claimDetails.setLastAssessment(assessmentGet);
-        // Act
+        claimDetails.setLastAssessment(assessment);
+
         ClaimDetails result = mapper.mapAssessmentToClaimDetails(claimDetails);
 
-        // Assert
         assertNotNull(result.getVatClaimed().getAssessed());
         assertEquals(new BigDecimal("100"), result.getFixedFee().getAssessed());
         assertEquals(new BigDecimal("50"), result.getNetDisbursementAmount().getAssessed());
         assertEquals(new BigDecimal("10"), result.getDisbursementVatAmount().getAssessed());
         assertEquals(new BigDecimal("200"), result.getNetProfitCost().getAssessed());
         assertNotNull(result.getVatClaimed().getAssessed());
-        assertEquals("user123", result.getLastAssessment().getLastAssessedBy());
+        assertEquals("user123", result.getLastAssessment().lastAssessedBy());
         assertEquals(new BigDecimal("6"), result.getAssessedTotalVat().getAssessed());
         assertEquals(new BigDecimal("7"), result.getAssessedTotalInclVat().getAssessed());
         assertEquals(BigDecimal.valueOf(300), result.getAllowedTotalInclVat().getAssessed());
@@ -259,6 +258,6 @@ class AssessmentMapperTest {
                 BigDecimal.valueOf(200),
                 ((CrimeClaimDetails) result).getWaitingCosts().getAssessed());
         assertEquals(
-                OutcomeType.REDUCED_TO_FIXED_FEE, result.getLastAssessment().getLastAssessmentOutcome());
+                OutcomeType.REDUCED_TO_FIXED_FEE, result.getLastAssessment().lastAssessmentOutcome());
     }
 }
