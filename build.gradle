@@ -15,7 +15,7 @@ java {
 }
 
 checkstyle {
-    toolVersion = '13.3.0'
+    toolVersion = '13.4.0'
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
 }
 
@@ -39,6 +39,10 @@ configurations.configureEach {
         if (details.requested.group == 'org.apache.tomcat.embed') {
             details.useVersion '11.0.21'
             details.because 'Fixes Improper Encoding/Escaping (SNYK-JAVA-ORGAPACHETOMCATEMBED-15989812) and Improper Authentication (SNYK-JAVA-ORGAPACHETOMCATEMBED-15989820)'
+        }
+        if (details.requested.group == 'org.codehaus.plexus' && details.requested.name == 'plexus-utils') {
+            details.useVersion '4.0.3'
+            details.because 'Fixes Directory Traversal (SNYK-JAVA-ORGCODEHAUSPLEXUS-15766699)'
         }
     }
 }
