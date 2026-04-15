@@ -34,8 +34,9 @@ spring:
       max-file-size: 10MB
 
 sentry:
-  dsn: ${SENTRY_DSN}
-  environment: ${SENTRY_ENVIRONMENT}
+  enabled: ${SENTRY_ENABLED:true}
+  dsn: ${SENTRY_DSN:}
+  environment: ${SENTRY_ENVIRONMENT:}
   logs:
     enabled: true
 springdoc:
