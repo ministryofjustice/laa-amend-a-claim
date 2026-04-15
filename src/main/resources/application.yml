@@ -62,6 +62,7 @@ app:
 
 feature-flags:
   is-bulk-upload-enabled: ${IS_BULK_UPLOAD_ENABLED:false}
+  is-claim-history-enabled: ${IS_CLAIM_HISTORY_ENABLED:false}
   is-stage-disbursement-enabled: ${IS_STAGE_DISBURSEMENT_ENABLED:false}
 
 management:

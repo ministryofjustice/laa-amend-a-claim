@@ -19,7 +19,7 @@ class ConfirmationViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPage() throws Exception {
+  void testPage() {
     session.setAttribute("assessmentId", assessmentId);
     Document doc = renderDocument();
 

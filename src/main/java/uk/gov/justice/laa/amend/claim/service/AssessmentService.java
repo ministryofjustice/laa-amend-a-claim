@@ -16,6 +16,7 @@ import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.exceptions.InvalidAssessmentException;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
+import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentGet;
@@ -145,6 +146,15 @@ public class AssessmentService {
 
     return assessmentMapper.mapAssessmentToClaimDetails(
         assessmentMapper.updateClaim(latestNonVoidAssessment, claimDetails));
+  }
+
+  public List<AssessmentInfo> getLatestAssessmentsByClaim(UUID claimId, int limit) {
+    var response = claimsApiClient.getAssessments(claimId, 0, limit, "createdOn,desc").block();
+
+    Objects.requireNonNull(response);
+    Objects.requireNonNull(response.getAssessments());
+
+    return response.getAssessments().stream().map(assessmentMapper::mapAssessment).toList();
   }
 
   /**

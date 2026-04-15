@@ -12,7 +12,7 @@ public class LogoutViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPage() throws Exception {
+  void testPage() {
     Document doc = renderDocument();
 
     assertPageHasTitle(doc, "You are now signed out of your account");

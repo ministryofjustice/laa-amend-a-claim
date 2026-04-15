@@ -27,11 +27,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
-import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.exceptions.InvalidAssessmentException;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
+import uk.gov.justice.laa.amend.claim.models.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
@@ -54,8 +54,6 @@ class AssessmentServiceTest {
   @Mock private ClaimStatusHandler claimStatusHandler;
 
   @Mock private AssessmentMapper assessmentMapper;
-
-  @Mock private FeatureFlagsConfig featureFlagsConfig;
 
   private SimpleMeterRegistry meterRegistry;
 
@@ -439,6 +437,39 @@ class AssessmentServiceTest {
       assertThrows(
           InvalidAssessmentException.class,
           () -> assessmentService.getLatestAssessmentByClaim(claim));
+    }
+  }
+
+  @Nested
+  class GetLatestAssessmentsByClaimTest {
+    @Test
+    void shouldReturnLatestAssessments() {
+      final var assessmentsLimit = 5;
+
+      var escapeCaseAssessment = createAssessmentGet(AssessmentType.ESCAPE_CASE_ASSESSMENT);
+      var voidAssessment = createAssessmentGet(AssessmentType.VOID);
+      var resultSet =
+          AssessmentResultSet.builder()
+              .assessments(List.of(escapeCaseAssessment, voidAssessment))
+              .build();
+
+      when(claimsApiClient.getAssessments(claimId, 0, assessmentsLimit, sort))
+          .thenReturn(Mono.just(resultSet));
+
+      var escapeCaseAssessmentInfo =
+          AssessmentInfo.builder()
+              .assessmentType(AssessmentTypeEnum.ESCAPE_CASE_ASSESSMENT)
+              .build();
+      when(assessmentMapper.mapAssessment(escapeCaseAssessment))
+          .thenReturn(escapeCaseAssessmentInfo);
+
+      var voidAssessmentInfo =
+          AssessmentInfo.builder().assessmentType(AssessmentTypeEnum.VOID).build();
+      when(assessmentMapper.mapAssessment(voidAssessment)).thenReturn(voidAssessmentInfo);
+
+      var result = assessmentService.getLatestAssessmentsByClaim(claimId, 5);
+
+      assertEquals(List.of(escapeCaseAssessmentInfo, voidAssessmentInfo), result);
     }
   }
 

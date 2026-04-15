@@ -18,7 +18,7 @@ class ChangeMonetaryValueViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPage() throws Exception {
+  void testPage() {
     Document doc = renderDocument();
 
     assertPageHasTitle(doc, "Assess profit costs");
@@ -39,7 +39,7 @@ class ChangeMonetaryValueViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPageWithErrors() throws Exception {
+  void testPageWithErrors() {
     MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
     params.add("value", "-1");
 

@@ -41,7 +41,7 @@ class IndexViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPage() throws Exception {
+  void testPage() {
     Document doc = renderDocument();
 
     assertPageHasTitle(doc, "Search for a claim");
@@ -76,7 +76,7 @@ class IndexViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPageWithPagination() throws Exception {
+  void testPageWithPagination() {
     int currentPage = 2;
     String url = String.format("/?page=%d", currentPage);
     int numberOfResultsPerPage = 10;
@@ -95,7 +95,7 @@ class IndexViewTest extends ViewTestBase {
     Map<String, Object> variables = Map.of("viewModel", viewModel);
     Document doc = renderDocument(variables);
 
-    assertPageHasH2(doc, "20 search results");
+    assertH2Exists(doc, "20 search results");
 
     assertPageHasTable(doc);
 
@@ -119,7 +119,7 @@ class IndexViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPageWithOneResult() throws Exception {
+  void testPageWithOneResult() {
     when(searchProperties.isSortEnabled()).thenReturn(true);
 
     ClaimView claimViewModel = new ClaimView(MockClaimsFunctions.createMockCivilClaim());
@@ -133,11 +133,11 @@ class IndexViewTest extends ViewTestBase {
     Map<String, Object> variables = Map.of("viewModel", viewModel);
     Document doc = renderDocument(variables);
 
-    assertPageHasH2(doc, "1 search result");
+    assertH2Exists(doc, "1 search result");
   }
 
   @Test
-  void testPageWithErrors() throws Exception {
+  void testPageWithErrors() {
     MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
     params.add("officeCode", "!");
     params.add("submissionDateMonth", "!");
@@ -156,7 +156,7 @@ class IndexViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPageWithNoResultsFound() throws Exception {
+  void testPageWithNoResultsFound() {
     SearchResultView viewModel = new SearchResultView();
     viewModel.setClaims(List.of());
     Pagination pagination = new Pagination(10, 10, 1, "/");
@@ -166,13 +166,13 @@ class IndexViewTest extends ViewTestBase {
 
     Document doc = renderDocument(variables);
 
-    assertPageHasH2(doc, "There are no results that match the search criteria");
+    assertH2Exists(doc, "There are no results that match the search criteria");
 
     assertPageHasContent(doc, "Check you've entered the correct details");
   }
 
   @Test
-  void testPageAfterDiscard() throws Exception {
+  void testPageAfterDiscard() {
     Map<String, Object> variables = Map.of("discarded", true);
 
     Document doc = renderDocument(variables);
@@ -181,7 +181,7 @@ class IndexViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPageAfterVoid() throws Exception {
+  void testPageAfterVoid() {
     Map<String, Object> variables = Map.of("voided", true);
 
     Document doc = renderDocument(variables);

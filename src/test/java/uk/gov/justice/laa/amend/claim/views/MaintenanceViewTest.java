@@ -21,7 +21,7 @@ class MaintenanceViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPage() throws Exception {
+  void testPage() {
     when(maintenanceService.maintenanceApplies(any())).thenReturn(true);
     when(maintenanceService.getTitle())
         .thenReturn(new ThymeleafLiteralString("Service maintenance"));

@@ -27,7 +27,7 @@ public class BulkUploadResultViewTest extends ViewTestBase {
   }
 
   @Test
-  void testSuccessResultIsRendered() throws Exception {
+  void testSuccessResultIsRendered() {
     when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
 
     var successReason = "success reason";
@@ -50,7 +50,7 @@ public class BulkUploadResultViewTest extends ViewTestBase {
   }
 
   @Test
-  void testErrorResultIsRendered() throws Exception {
+  void testErrorResultIsRendered() {
     when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
 
     var errorReason1 = "error reason 1";

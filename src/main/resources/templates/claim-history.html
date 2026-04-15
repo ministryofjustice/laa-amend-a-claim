@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{claimSummary.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${false}
+    )}">
+<body>
+<main class="govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <th:block th:replace="~{partials/claim-details-header :: claimDetailsHeader(currentPage='history')}"></th:block>
+
+            <h2 class="govuk-heading-m" th:text="#{claimDetails.claimHistory}"></h2>
+
+            <div class="moj-timeline">
+                <div class="moj-timeline__item" th:each="event : ${events}">
+                    <div class="moj-timeline__header">
+                        <h2 class="moj-timeline__title" th:text="${event.type().resolve(#messages)}"></h2>
+                        <p class="moj-timeline__byline" th:text="${event.user().resolve(#messages)}"></p>
+                    </div>
+                    <p class="moj-timeline__date">
+                        <time th:datetime="${event.eventDateTime().toInstant().toString()}"
+                              th:text="${@ThymeleafUtils.getFormattedValue(event.eventDateTime).resolve(#messages)}"></time>
+                    </p>
+                    <div class="moj-timeline__description">
+                        <p th:each="description : ${event.descriptions}" th:text="${description.resolve(#messages)}"></p>
+                    </div>
+                </div>
+            </div>
+
+            <th:block th:replace="~{partials/claim-details-footer :: claimDetailsFooter()}"></th:block>
+        </div>
+    </div>
+</main>
+</body>
+</html>

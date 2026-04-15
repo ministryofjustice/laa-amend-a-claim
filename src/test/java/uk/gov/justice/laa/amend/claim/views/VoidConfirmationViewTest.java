@@ -30,7 +30,7 @@ class VoidConfirmationViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPageForCivilClaim() throws Exception {
+  void testPageForCivilClaim() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     this.claim = claim;
     claim.setSubmissionId(submissionId);
@@ -70,7 +70,7 @@ class VoidConfirmationViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPageForCrimeClaim() throws Exception {
+  void testPageForCrimeClaim() {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     this.claim = claim;
     claim.setSubmissionId(submissionId);
