@@ -1,36 +1,4 @@
 services:
-  amend-ui:
-    container_name: amend-a-claim-app
-    profiles:
-      - application
-    depends_on:
-      - amend-redis
-    build:
-      context: .
-      dockerfile: Dockerfile_assemble
-      args:
-        - BUILD_SOURCE=internal
-      secrets:
-        - github_actor
-        - github_token
-    ports:
-      - "8090:8080"
-    environment:
-      AZURE_CLIENT_ID: ${AMEND_SILAS_CLIENT_ID}
-      AZURE_CLIENT_SECRET: ${AMEND_SILAS_CLIENT_SECRET}
-      AZURE_TENANT_ID: ${AMEND_SILAS_TENANT_ID}
-      BASE_URL_HOMEPAGE: http://localhost:8090
-      FEEDBACK_URL: https://www.smartsurvey.co.uk/s/AaBC_Beta_DevTest
-      LAA_URL: https://dev.your-legal-aid-services.service.justice.gov.uk
-      SENTRY_ENABLED: false # Disabled for docker environment
-      REDIS_URL: redis://amend-redis:6379
-      CLAIMS_API: http://host.docker.internal:8080
-      CLAIMS_TOKEN: f67f968e-b479-4e61-b66e-f57984931e56
-      PROVIDER_API: ${PROVIDER_DETAILS_API_HOSTNAME}
-      PROVIDER_TOKEN: ${PROVIDER_DETAILS_API_ACCESS_TOKEN}
-      SPRING_PROFILES_ACTIVE: local
-      IS_BULK_UPLOAD_ENABLED: true
-
   wiremock:
     image: wiremock/wiremock:2.35.0
     container_name: wiremock
