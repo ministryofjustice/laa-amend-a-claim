@@ -40,10 +40,10 @@ public class MicrosoftGraphApiClientIntegrationTest extends WireMockSetup {
         MicrosoftApiUser user = microsoftGraphApiClient.getUser("abc", "123").block();
 
         Assertions.assertNotNull(user);
-        Assertions.assertEquals("dummy-id", user.getId());
-        Assertions.assertEquals("User, Dummy", user.getDisplayName());
-        Assertions.assertEquals("Dummy", user.getGivenName());
-        Assertions.assertEquals("User", user.getSurname());
+        Assertions.assertEquals("dummy-id", user.id());
+        Assertions.assertEquals("User, Dummy", user.displayName());
+        Assertions.assertEquals("Dummy", user.givenName());
+        Assertions.assertEquals("User", user.surname());
     }
 
     @Test
@@ -64,8 +64,8 @@ public class MicrosoftGraphApiClientIntegrationTest extends WireMockSetup {
         MicrosoftApiUser user = microsoftGraphApiClient.getUser("abc", "123").block();
 
         Assertions.assertNotNull(user);
-        Assertions.assertNull(user.getId());
-        Assertions.assertNull(user.getDisplayName());
+        Assertions.assertNull(user.id());
+        Assertions.assertNull(user.displayName());
     }
 
     @Test
