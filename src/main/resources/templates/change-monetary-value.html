@@ -14,7 +14,9 @@
                     <div class="govuk-grid-column-two-thirds">
                         <form th:action="@{${action}}" th:object="${form}" method="post">
 
-                            <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toMonetaryFormValueErrors(#fields.detailedErrors())})}"></th:block>
+                            <th:block th:with="formErrors=${@ThymeleafUtils.toMonetaryFormValueErrors(#fields.detailedErrors())}">
+                                <th:block th:replace="~{partials/error-summary :: error-summary(${formErrors})}"></th:block>
+                            </th:block>
 
                             <h1 class="govuk-heading-xl" th:with="heading=${#strings.concat(prefix, '.heading')}" th:text="#{${heading}}"></h1>
 

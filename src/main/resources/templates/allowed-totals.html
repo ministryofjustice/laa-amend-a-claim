@@ -15,7 +15,9 @@
                           th:object="${form}"
                           method="post">
 
-                        <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toAllowedTotalFormErrors(#fields.detailedErrors())})}"></th:block>
+                        <th:block th:with="formErrors=${@ThymeleafUtils.toAllowedTotalFormErrors(#fields.detailedErrors())}">
+                            <th:block th:replace="~{partials/error-summary :: error-summary(${formErrors})}"></th:block>
+                        </th:block>
 
                         <fieldset class="govuk-fieldset">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">

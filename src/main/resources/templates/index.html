@@ -13,7 +13,9 @@
                 <div class="govuk-grid-column-full">
                     <form th:action="@{/}" th:object="${form}" method="post">
 
-                        <th:block th:replace="~{partials/error-summary :: error-summary(${@ThymeleafUtils.toSearchFormErrors(#fields.detailedErrors())})}"></th:block>
+                        <th:block th:with="formErrors=${@ThymeleafUtils.toSearchFormErrors(#fields.detailedErrors())}">
+                            <th:block th:replace="~{partials/error-summary :: error-summary(${formErrors})}"></th:block>
+                        </th:block>
 
                         <th:block th:if="${discarded}">
                             <th:block th:replace="~{partials/success-alert :: successAlert('index.discarded')}"></th:block>

@@ -44,6 +44,11 @@ configurations.configureEach {
             details.useVersion '4.0.3'
             details.because 'Fixes Directory Traversal (SNYK-JAVA-ORGCODEHAUSPLEXUS-15766699)'
         }
+        if (details.requested.group == 'org.thymeleaf'
+                && (details.requested.name == 'thymeleaf' || details.requested.name == 'thymeleaf-spring6')) {
+            details.useVersion '3.1.4.RELEASE'
+            details.because 'Fixes Template Injection (SNYK-JAVA-ORGTHYMELEAF-16078370, 16078372, 16078377, 16078379)'
+        }
     }
 }
 
