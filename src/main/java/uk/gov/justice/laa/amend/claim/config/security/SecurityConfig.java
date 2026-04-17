@@ -67,7 +67,7 @@ public class SecurityConfig extends CommonSecurityConfig {
                     .logoutSuccessUrl("/logout-success")
                     .invalidateHttpSession(true)
                     .clearAuthentication(true)
-                    .deleteCookies("SESSION"))
+                    .deleteCookies("LAASESSION"))
         .sessionManagement(
             session ->
                 session

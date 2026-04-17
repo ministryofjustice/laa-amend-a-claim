@@ -23,13 +23,14 @@ services:
       FEEDBACK_URL: https://www.smartsurvey.co.uk/s/AaBC_Beta_DevTest
       LAA_URL: https://dev.your-legal-aid-services.service.justice.gov.uk
       SENTRY_ENABLED: false # Disabled for docker environment
-      REDIS_URL: redis://localhost:6380
+      REDIS_URL: redis://amend-redis:6379
       CLAIMS_API: http://host.docker.internal:8080
       CLAIMS_TOKEN: f67f968e-b479-4e61-b66e-f57984931e56
       PROVIDER_API: ${PROVIDER_DETAILS_API_HOSTNAME}
       PROVIDER_TOKEN: ${PROVIDER_DETAILS_API_ACCESS_TOKEN}
-      SPRING_PROFILES_ACTIVE: local
+      SPRING_PROFILES_ACTIVE: docker
       IS_BULK_UPLOAD_ENABLED: true
+      IS_STAGE_DISBURSEMENT_ENABLED: true
   amend-redis:
     image: redis:8-alpine
     container_name: amend-redis

@@ -80,6 +80,7 @@ server:
   servlet:
     session:
       cookie:
+        name: LAASESSION
         same-site: lax
       tracking-modes: cookie
 
@@ -103,7 +104,7 @@ logging:
 spring:
   config:
     activate:
-      on-profile: local | e2e
+      on-profile: local | e2e | docker
 
 logging:
   structured:
