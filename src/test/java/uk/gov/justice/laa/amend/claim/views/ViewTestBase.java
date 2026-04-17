@@ -28,7 +28,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.MultiValueMap;
-import uk.gov.justice.laa.amend.claim.config.AppProperties;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
@@ -39,7 +38,7 @@ import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @ActiveProfiles("local")
-@Import({LocalSecurityConfig.class, ThymeleafConfig.class, AppProperties.class})
+@Import({LocalSecurityConfig.class, ThymeleafConfig.class})
 public abstract class ViewTestBase {
 
     @Autowired
