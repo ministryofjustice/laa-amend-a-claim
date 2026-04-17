@@ -7,7 +7,7 @@ services:
       - amend-redis
     build:
       context: .
-      dockerfile: Dockerfile_assemble
+      dockerfile: Dockerfile_internal
       args:
         - BUILD_SOURCE=internal
       secrets:
