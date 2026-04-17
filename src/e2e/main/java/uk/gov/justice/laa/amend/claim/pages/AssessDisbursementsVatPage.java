@@ -4,7 +4,7 @@ import com.microsoft.playwright.Page;
 
 public class AssessDisbursementsVatPage extends LaaCostPage {
 
-    public AssessDisbursementsVatPage(Page page) {
-        super(page, "Assess disbursements VAT");
-    }
+  public AssessDisbursementsVatPage(Page page) {
+    super(page, "Assess disbursements VAT");
+  }
 }

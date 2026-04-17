@@ -21,220 +21,222 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 
 public class ReviewAndAmendTest extends BaseTest {
 
-    // ---------------- Crime data ----------------
-    private final String CRIME_OFFICE_CODE = "123456";
-    private final String CRIME_UFN = generateUfn();
-    private final String CRIME_MONTH = "04";
-    private final String CRIME_YEAR = "2025";
-    private final String CRIME_SUBMISSION_ID = UUID.randomUUID().toString();
-    private final String CRIME_CLAIM_ID = UUID.randomUUID().toString();
-    private final String CRIME_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-    private final String CRIME_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
+  // ---------------- Crime data ----------------
+  private final String CRIME_OFFICE_CODE = "123456";
+  private final String CRIME_UFN = generateUfn();
+  private final String CRIME_MONTH = "04";
+  private final String CRIME_YEAR = "2025";
+  private final String CRIME_SUBMISSION_ID = UUID.randomUUID().toString();
+  private final String CRIME_CLAIM_ID = UUID.randomUUID().toString();
+  private final String CRIME_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
+  private final String CRIME_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
 
-    // ---------------- Civil data ----------------
-    private final String CIVIL_OFFICE_CODE = "234567";
-    private final String CIVIL_UFN = generateUfn();
-    private final String CIVIL_MONTH = "06";
-    private final String CIVIL_YEAR = "2025";
-    private final String CIVIL_SUBMISSION_ID = UUID.randomUUID().toString();
-    private final String CIVIL_CLAIM_ID = UUID.randomUUID().toString();
-    private final String CIVIL_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-    private final String CIVIL_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
+  // ---------------- Civil data ----------------
+  private final String CIVIL_OFFICE_CODE = "234567";
+  private final String CIVIL_UFN = generateUfn();
+  private final String CIVIL_MONTH = "06";
+  private final String CIVIL_YEAR = "2025";
+  private final String CIVIL_SUBMISSION_ID = UUID.randomUUID().toString();
+  private final String CIVIL_CLAIM_ID = UUID.randomUUID().toString();
+  private final String CIVIL_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
+  private final String CIVIL_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
 
-    @Override
-    protected List<Insert> inserts() {
-        return List.of(
-                BulkSubmissionInsert.builder()
-                        .id(BULK_SUBMISSION_ID)
-                        .userId(USER_ID)
-                        .build(),
-                SubmissionInsert.builder()
-                        .id(CRIME_SUBMISSION_ID)
-                        .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(CRIME_OFFICE_CODE)
-                        .submissionPeriod("APR-2025")
-                        .areaOfLaw("CRIME_LOWER")
-                        .userId(USER_ID)
-                        .build(),
-                SubmissionInsert.builder()
-                        .id(CIVIL_SUBMISSION_ID)
-                        .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(CIVIL_OFFICE_CODE)
-                        .submissionPeriod("JUN-2025")
-                        .areaOfLaw("LEGAL_HELP")
-                        .userId(USER_ID)
-                        .build(),
-                ClaimInsert.builder()
-                        .id(CRIME_CLAIM_ID)
-                        .submissionId(CRIME_SUBMISSION_ID)
-                        .uniqueFileNumber(CRIME_UFN)
-                        .userId(USER_ID)
-                        .build(),
-                ClaimInsert.builder()
-                        .id(CIVIL_CLAIM_ID)
-                        .submissionId(CIVIL_SUBMISSION_ID)
-                        .uniqueFileNumber(CIVIL_UFN)
-                        .userId(USER_ID)
-                        .build(),
-                ClaimSummaryFeeInsert.builder()
-                        .id(CRIME_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CRIME_CLAIM_ID)
-                        .userId(USER_ID)
-                        .build(),
-                ClaimSummaryFeeInsert.builder()
-                        .id(CIVIL_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CIVIL_CLAIM_ID)
-                        .userId(USER_ID)
-                        .build(),
-                CalculatedFeeDetailInsert.builder()
-                        .id(CRIME_CALCULATED_FEE_DETAIL_ID)
-                        .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CRIME_CLAIM_ID)
-                        .feeCode("INVC")
-                        .escaped(true)
-                        .userId(USER_ID)
-                        .build(),
-                CalculatedFeeDetailInsert.builder()
-                        .id(CIVIL_CALCULATED_FEE_DETAIL_ID)
-                        .claimSummaryFeeId(CIVIL_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CIVIL_CLAIM_ID)
-                        .escaped(true)
-                        .userId(USER_ID)
-                        .build());
-    }
+  @Override
+  protected List<Insert> inserts() {
+    return List.of(
+        BulkSubmissionInsert.builder().id(BULK_SUBMISSION_ID).userId(USER_ID).build(),
+        SubmissionInsert.builder()
+            .id(CRIME_SUBMISSION_ID)
+            .bulkSubmissionId(BULK_SUBMISSION_ID)
+            .officeAccountNumber(CRIME_OFFICE_CODE)
+            .submissionPeriod("APR-2025")
+            .areaOfLaw("CRIME_LOWER")
+            .userId(USER_ID)
+            .build(),
+        SubmissionInsert.builder()
+            .id(CIVIL_SUBMISSION_ID)
+            .bulkSubmissionId(BULK_SUBMISSION_ID)
+            .officeAccountNumber(CIVIL_OFFICE_CODE)
+            .submissionPeriod("JUN-2025")
+            .areaOfLaw("LEGAL_HELP")
+            .userId(USER_ID)
+            .build(),
+        ClaimInsert.builder()
+            .id(CRIME_CLAIM_ID)
+            .submissionId(CRIME_SUBMISSION_ID)
+            .uniqueFileNumber(CRIME_UFN)
+            .userId(USER_ID)
+            .build(),
+        ClaimInsert.builder()
+            .id(CIVIL_CLAIM_ID)
+            .submissionId(CIVIL_SUBMISSION_ID)
+            .uniqueFileNumber(CIVIL_UFN)
+            .userId(USER_ID)
+            .build(),
+        ClaimSummaryFeeInsert.builder()
+            .id(CRIME_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CRIME_CLAIM_ID)
+            .userId(USER_ID)
+            .build(),
+        ClaimSummaryFeeInsert.builder()
+            .id(CIVIL_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CIVIL_CLAIM_ID)
+            .userId(USER_ID)
+            .build(),
+        CalculatedFeeDetailInsert.builder()
+            .id(CRIME_CALCULATED_FEE_DETAIL_ID)
+            .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CRIME_CLAIM_ID)
+            .feeCode("INVC")
+            .escaped(true)
+            .userId(USER_ID)
+            .build(),
+        CalculatedFeeDetailInsert.builder()
+            .id(CIVIL_CALCULATED_FEE_DETAIL_ID)
+            .claimSummaryFeeId(CIVIL_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CIVIL_CLAIM_ID)
+            .escaped(true)
+            .userId(USER_ID)
+            .build());
+  }
 
-    private void navigateToReviewAndAmend(
-            String officeCode, String month, String year, String ufn, String outcomeValue) {
-        SearchPage search = new SearchPage(page);
-        search.searchForClaim(officeCode, month, year, ufn, "", "", "");
-        search.clickViewForUfn(ufn);
+  private void navigateToReviewAndAmend(
+      String officeCode, String month, String year, String ufn, String outcomeValue) {
+    SearchPage search = new SearchPage(page);
+    search.searchForClaim(officeCode, month, year, ufn, "", "", "");
+    search.clickViewForUfn(ufn);
 
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.clickAddUpdateAssessmentOutcome();
+    ClaimDetailsPage details = new ClaimDetailsPage(page);
+    details.clickAddUpdateAssessmentOutcome();
 
-        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
+    AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
 
-        // Minimal inputs to proceed
-        outcome.selectAssessmentOutcome(outcomeValue);
-        outcome.saveChanges();
-    }
+    // Minimal inputs to proceed
+    outcome.selectAssessmentOutcome(outcomeValue);
+    outcome.saveChanges();
+  }
 
-    private void navigateToReviewAndAmend(String officeCode, String month, String year, String ufn) {
-        navigateToReviewAndAmend(officeCode, month, year, ufn, "assessed in full");
-    }
+  private void navigateToReviewAndAmend(String officeCode, String month, String year, String ufn) {
+    navigateToReviewAndAmend(officeCode, month, year, ufn, "assessed in full");
+  }
 
-    @Test
-    @DisplayName("Review & amend (Crime) loads correctly – headers + claim cost items")
-    void crimeReviewAndAmendLoads() {
-        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+  @Test
+  @DisplayName("Review & amend (Crime) loads correctly – headers + claim cost items")
+  void crimeReviewAndAmendLoads() {
+    navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
-        assertTrue(page.url().contains("/review"));
-        review.assertCrimePageLoadedHeadersAndItems();
-    }
+    assertTrue(page.url().contains("/review"));
+    review.assertCrimePageLoadedHeadersAndItems();
+  }
 
-    @Test
-    @DisplayName("Review & amend (Civil) loads correctly – headers + claim cost items")
-    void civilReviewAndAmendLoads() {
-        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+  @Test
+  @DisplayName("Review & amend (Civil) loads correctly – headers + claim cost items")
+  void civilReviewAndAmendLoads() {
+    navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
-        assertTrue(page.url().contains("/review"));
-        review.assertCivilPageLoadedHeadersAndItems();
-    }
+    assertTrue(page.url().contains("/review"));
+    review.assertCivilPageLoadedHeadersAndItems();
+  }
 
-    @Test
-    @DisplayName("Review & amend (Crime) submit without totals shows GOV.UK error summary")
-    void crimeSubmitWithoutTotalsShowsErrors() {
-        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+  @Test
+  @DisplayName("Review & amend (Crime) submit without totals shows GOV.UK error summary")
+  void crimeSubmitWithoutTotalsShowsErrors() {
+    navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
-        review.saveChanges();
+    review.saveChanges();
 
-        assertTrue(page.url().contains("/review"));
-        review.assertSubmitTotalsRequiredErrors();
-    }
+    assertTrue(page.url().contains("/review"));
+    review.assertSubmitTotalsRequiredErrors();
+  }
 
-    @Test
-    @DisplayName("Review & amend (Crime) - Reduced(Still escaped) - submit without profit costs shows error summary")
-    void crimeSubmitWithoutRequiredFieldsShowsErrors() {
-        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN, "reduced-still-escaped");
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.saveChanges();
-        assertTrue(page.url().contains("/review"));
-        review.assertProfitCostRequiredErrors();
-    }
+  @Test
+  @DisplayName(
+      "Review & amend (Crime) - Reduced(Still escaped) - submit without profit costs shows error summary")
+  void crimeSubmitWithoutRequiredFieldsShowsErrors() {
+    navigateToReviewAndAmend(
+        CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN, "reduced-still-escaped");
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    review.saveChanges();
+    assertTrue(page.url().contains("/review"));
+    review.assertProfitCostRequiredErrors();
+  }
 
-    @Test
-    @DisplayName("Review & amend (Civil) - reduced to fixed fee (assessed) - submit without profit costs and total")
-    void civilSubmitWithoutRequiredFieldsShowsErrors() {
-        navigateToReviewAndAmend(
-                CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN, "reduced-to-fixed-fee-assessed");
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.saveChanges();
-        assertTrue(page.url().contains("/review"));
-        review.assertProfitCostRequiredErrors();
-        review.assertSubmitTotalsRequiredErrors();
-    }
+  @Test
+  @DisplayName(
+      "Review & amend (Civil) - reduced to fixed fee (assessed) - submit without profit costs and total")
+  void civilSubmitWithoutRequiredFieldsShowsErrors() {
+    navigateToReviewAndAmend(
+        CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN, "reduced-to-fixed-fee-assessed");
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    review.saveChanges();
+    assertTrue(page.url().contains("/review"));
+    review.assertProfitCostRequiredErrors();
+    review.assertSubmitTotalsRequiredErrors();
+  }
 
-    @Test
-    @DisplayName("Review & amend (Civil) - Reduced(Still escaped) - submit without profit costs shows error summary")
-    void civilSubmitWithoutAssessedTotalsShowsErrors() {
-        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN, "reduced-still-escaped");
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.saveChanges();
-        assertTrue(page.url().contains("/review"));
-        review.assertProfitCostRequiredErrors();
-    }
+  @Test
+  @DisplayName(
+      "Review & amend (Civil) - Reduced(Still escaped) - submit without profit costs shows error summary")
+  void civilSubmitWithoutAssessedTotalsShowsErrors() {
+    navigateToReviewAndAmend(
+        CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN, "reduced-still-escaped");
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    review.saveChanges();
+    assertTrue(page.url().contains("/review"));
+    review.assertProfitCostRequiredErrors();
+  }
 
-    @Test
-    @DisplayName("Review & amend (Crime) change assessment outcome – navigates correctly")
-    void crimeChangeAssessmentOutcome() {
-        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+  @Test
+  @DisplayName("Review & amend (Crime) change assessment outcome – navigates correctly")
+  void crimeChangeAssessmentOutcome() {
+    navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
-        review.clickAssessmentOutcome();
+    review.clickAssessmentOutcome();
 
-        assertTrue(page.url().contains("/assessment-outcome#assessment-outcome"));
-    }
+    assertTrue(page.url().contains("/assessment-outcome#assessment-outcome"));
+  }
 
-    @Test
-    @DisplayName("Review & amend (Crime) change contingency assessment – navigates correctly")
-    void crimeChangeContingencyAssessment() {
-        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+  @Test
+  @DisplayName("Review & amend (Crime) change contingency assessment – navigates correctly")
+  void crimeChangeContingencyAssessment() {
+    navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
-        review.clickContingencyAssessment();
+    review.clickContingencyAssessment();
 
-        assertTrue(page.url().contains("/assessment-outcome#contingency-assessment"));
-    }
+    assertTrue(page.url().contains("/assessment-outcome#contingency-assessment"));
+  }
 
-    @Test
-    @DisplayName("Review & amend (Civil) change assessment outcome – navigates correctly")
-    void civilChangeAssessmentOutcome() {
-        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+  @Test
+  @DisplayName("Review & amend (Civil) change assessment outcome – navigates correctly")
+  void civilChangeAssessmentOutcome() {
+    navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
-        review.clickAssessmentOutcome();
+    review.clickAssessmentOutcome();
 
-        assertTrue(page.url().contains("/assessment-outcome#assessment-outcome"));
-    }
+    assertTrue(page.url().contains("/assessment-outcome#assessment-outcome"));
+  }
 
-    @Test
-    @DisplayName("Review & amend (Civil) change contingency assessment – navigates correctly")
-    void civilChangeContingencyAssessment() {
-        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+  @Test
+  @DisplayName("Review & amend (Civil) change contingency assessment – navigates correctly")
+  void civilChangeContingencyAssessment() {
+    navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
-        review.clickContingencyAssessment();
+    review.clickContingencyAssessment();
 
-        assertTrue(page.url().contains("/assessment-outcome#contingency-assessment"));
-    }
+    assertTrue(page.url().contains("/assessment-outcome#contingency-assessment"));
+  }
 }

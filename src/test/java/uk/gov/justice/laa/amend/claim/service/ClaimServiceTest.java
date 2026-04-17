@@ -41,272 +41,290 @@ import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
 @ExtendWith(MockitoExtension.class)
 class ClaimServiceTest {
 
-    private static final List<ClaimStatus> STATUSES = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
+  private static final List<ClaimStatus> STATUSES = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
 
-    @Mock
-    private ClaimsApiClient claimsApiClient;
+  @Mock private ClaimsApiClient claimsApiClient;
 
-    @Mock
-    private ClaimMapper claimMapper;
+  @Mock private ClaimMapper claimMapper;
 
-    @Mock
-    private ProviderService providerService;
+  @Mock private ProviderService providerService;
 
-    private SimpleMeterRegistry meterRegistry;
-    private ClaimService claimService;
+  private SimpleMeterRegistry meterRegistry;
+  private ClaimService claimService;
 
-    private UUID submissionId;
-    private UUID claimId;
-    private UUID userId;
+  private UUID submissionId;
+  private UUID claimId;
+  private UUID userId;
 
-    @BeforeEach
-    void setUp() {
-        submissionId = UUID.randomUUID();
-        claimId = UUID.randomUUID();
-        userId = UUID.randomUUID();
-        meterRegistry = new SimpleMeterRegistry();
-        claimService = new ClaimService(claimsApiClient, claimMapper, providerService, meterRegistry);
-    }
+  @BeforeEach
+  void setUp() {
+    submissionId = UUID.randomUUID();
+    claimId = UUID.randomUUID();
+    userId = UUID.randomUUID();
+    meterRegistry = new SimpleMeterRegistry();
+    claimService = new ClaimService(claimsApiClient, claimMapper, providerService, meterRegistry);
+  }
 
-    @Test
-    @DisplayName("Should return sorted valid ClaimResultSet when API client provides valid response")
-    void testSortedSearchClaims_ValidResponse() {
-        // Arrange
-        var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
+  @Test
+  @DisplayName("Should return sorted valid ClaimResultSet when API client provides valid response")
+  void testSortedSearchClaims_ValidResponse() {
+    // Arrange
+    var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
 
-        when(claimsApiClient.searchClaims(
-                        "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc"))
-                .thenReturn(Mono.just(mockApiResponse));
-        Sort sort = Sort.builder()
-                .field(SortField.UNIQUE_FILE_NUMBER)
-                .direction(SortDirection.ASCENDING)
-                .build();
+    when(claimsApiClient.searchClaims(
+            "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc"))
+        .thenReturn(Mono.just(mockApiResponse));
+    Sort sort =
+        Sort.builder()
+            .field(SortField.UNIQUE_FILE_NUMBER)
+            .direction(SortDirection.ASCENDING)
+            .build();
 
-        // Act
-        var result = claimService.searchClaims(
-                "0p322f",
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                STATUSES,
-                1,
-                10,
-                sort);
+    // Act
+    var result =
+        claimService.searchClaims(
+            "0p322f",
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            STATUSES,
+            1,
+            10,
+            sort);
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(mockApiResponse, result);
+    // Assert
+    assertNotNull(result);
+    assertEquals(mockApiResponse, result);
 
-        verify(claimsApiClient, times(1))
-                .searchClaims("0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc");
-    }
+    verify(claimsApiClient, times(1))
+        .searchClaims(
+            "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc");
+  }
 
-    @Test
-    @DisplayName("Should return valid unsorted ClaimResultSet when API client provides valid response")
-    void testUnsortedSearchClaims_ValidResponse() {
-        // Arrange
-        var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
+  @Test
+  @DisplayName(
+      "Should return valid unsorted ClaimResultSet when API client provides valid response")
+  void testUnsortedSearchClaims_ValidResponse() {
+    // Arrange
+    var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
 
-        when(claimsApiClient.searchClaims("0P322F", null, null, null, null, null, STATUSES, 0, 10, null))
-                .thenReturn(Mono.just(mockApiResponse));
+    when(claimsApiClient.searchClaims(
+            "0P322F", null, null, null, null, null, STATUSES, 0, 10, null))
+        .thenReturn(Mono.just(mockApiResponse));
 
-        // Act
-        var result = claimService.searchClaims(
-                "0p322f",
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                STATUSES,
-                1,
-                10,
-                null);
+    // Act
+    var result =
+        claimService.searchClaims(
+            "0p322f",
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            STATUSES,
+            1,
+            10,
+            null);
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(mockApiResponse, result);
+    // Assert
+    assertNotNull(result);
+    assertEquals(mockApiResponse, result);
 
-        verify(claimsApiClient, times(1)).searchClaims("0P322F", null, null, null, null, null, STATUSES, 0, 10, null);
-    }
+    verify(claimsApiClient, times(1))
+        .searchClaims("0P322F", null, null, null, null, null, STATUSES, 0, 10, null);
+  }
 
-    @Test
-    @DisplayName("Should throw RuntimeException when API client throws exception")
-    void testSearchClaims_ApiClientThrowsException() {
-        // Arrange
-        when(claimsApiClient.searchClaims(
-                        "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc"))
-                .thenThrow(new RuntimeException("API Error"));
-        Sort sort = Sort.builder()
-                .field(SortField.UNIQUE_FILE_NUMBER)
-                .direction(SortDirection.ASCENDING)
-                .build();
+  @Test
+  @DisplayName("Should throw RuntimeException when API client throws exception")
+  void testSearchClaims_ApiClientThrowsException() {
+    // Arrange
+    when(claimsApiClient.searchClaims(
+            "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc"))
+        .thenThrow(new RuntimeException("API Error"));
+    Sort sort =
+        Sort.builder()
+            .field(SortField.UNIQUE_FILE_NUMBER)
+            .direction(SortDirection.ASCENDING)
+            .build();
 
-        // Act & Assert
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
-                () -> claimService.searchClaims(
-                        "0P322F",
-                        Optional.empty(),
-                        Optional.empty(),
-                        Optional.empty(),
-                        Optional.empty(),
-                        Optional.empty(),
-                        STATUSES,
-                        1,
-                        10,
-                        sort));
-        assertTrue(exception.getMessage().contains("API Error"));
+    // Act & Assert
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class,
+            () ->
+                claimService.searchClaims(
+                    "0P322F",
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    STATUSES,
+                    1,
+                    10,
+                    sort));
+    assertTrue(exception.getMessage().contains("API Error"));
 
-        verify(claimsApiClient, times(1))
-                .searchClaims("0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc");
-    }
+    verify(claimsApiClient, times(1))
+        .searchClaims(
+            "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc");
+  }
 
-    @Test
-    @DisplayName("Should handle empty API response without exception")
-    void testSearchClaims_EmptyResponse() {
-        // Arrange
-        when(claimsApiClient.searchClaims(
-                        "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc"))
-                .thenReturn(Mono.empty());
-        Sort sort = Sort.builder()
-                .field(SortField.UNIQUE_FILE_NUMBER)
-                .direction(SortDirection.ASCENDING)
-                .build();
+  @Test
+  @DisplayName("Should handle empty API response without exception")
+  void testSearchClaims_EmptyResponse() {
+    // Arrange
+    when(claimsApiClient.searchClaims(
+            "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc"))
+        .thenReturn(Mono.empty());
+    Sort sort =
+        Sort.builder()
+            .field(SortField.UNIQUE_FILE_NUMBER)
+            .direction(SortDirection.ASCENDING)
+            .build();
 
-        // Act
-        var result = claimService.searchClaims(
-                "0P322F",
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                STATUSES,
-                1,
-                10,
-                sort);
+    // Act
+    var result =
+        claimService.searchClaims(
+            "0P322F",
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            STATUSES,
+            1,
+            10,
+            sort);
 
-        // Assert
-        assertNull(result);
+    // Assert
+    assertNull(result);
 
-        verify(claimsApiClient, times(1))
-                .searchClaims("0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc");
-    }
+    verify(claimsApiClient, times(1))
+        .searchClaims(
+            "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc");
+  }
 
-    @Test
-    @DisplayName("Should return valid ClaimResponse when API client provides valid response")
-    void testGetClaim_ValidResponse() {
-        // Arrange
-        var mockApiResponse = new ClaimResponseV2(); // Replace with appropriate type or mock object
+  @Test
+  @DisplayName("Should return valid ClaimResponse when API client provides valid response")
+  void testGetClaim_ValidResponse() {
+    // Arrange
+    var mockApiResponse = new ClaimResponseV2(); // Replace with appropriate type or mock object
 
-        when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.just(mockApiResponse));
+    when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.just(mockApiResponse));
 
-        // Act
-        var result = claimService.getClaim(submissionId, claimId);
+    // Act
+    var result = claimService.getClaim(submissionId, claimId);
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(mockApiResponse, result);
+    // Assert
+    assertNotNull(result);
+    assertEquals(mockApiResponse, result);
 
-        verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
-    }
+    verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
+  }
 
-    @Test
-    @DisplayName("Should throw RuntimeException when API client throws exception")
-    void testGetClaim_ApiClientThrowsException() {
-        // Arrange
-        when(claimsApiClient.getClaim(submissionId, claimId)).thenThrow(new RuntimeException("API Error"));
+  @Test
+  @DisplayName("Should throw RuntimeException when API client throws exception")
+  void testGetClaim_ApiClientThrowsException() {
+    // Arrange
+    when(claimsApiClient.getClaim(submissionId, claimId))
+        .thenThrow(new RuntimeException("API Error"));
 
-        // Act & Assert
-        RuntimeException exception =
-                assertThrows(RuntimeException.class, () -> claimService.getClaim(submissionId, claimId));
-        assertTrue(exception.getMessage().contains("API Error"));
+    // Act & Assert
+    RuntimeException exception =
+        assertThrows(RuntimeException.class, () -> claimService.getClaim(submissionId, claimId));
+    assertTrue(exception.getMessage().contains("API Error"));
 
-        verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
-    }
+    verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
+  }
 
-    @Test
-    @DisplayName("Should throw Not Found exception when API client returns null")
-    void testGetClaimDetails_ApiClientThrowsException() {
-        // Arrange
-        when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.empty());
+  @Test
+  @DisplayName("Should throw Not Found exception when API client returns null")
+  void testGetClaimDetails_ApiClientThrowsException() {
+    // Arrange
+    when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.empty());
 
-        // Act & Assert
-        ClaimNotFoundException exception =
-                assertThrows(ClaimNotFoundException.class, () -> claimService.getClaimDetails(submissionId, claimId));
-        assertTrue(exception
-                .getMessage()
-                .contains(String.format("Claim with ID %s not found for submission %s", claimId, submissionId)));
+    // Act & Assert
+    ClaimNotFoundException exception =
+        assertThrows(
+            ClaimNotFoundException.class,
+            () -> claimService.getClaimDetails(submissionId, claimId));
+    assertTrue(
+        exception
+            .getMessage()
+            .contains(
+                String.format(
+                    "Claim with ID %s not found for submission %s", claimId, submissionId)));
 
-        verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
-    }
+    verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
+  }
 
-    @Test
-    @DisplayName("Should return claim details")
-    void testGetClaimDetails_Success() {
-        // Arrange
-        when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.just(new ClaimResponseV2()));
+  @Test
+  @DisplayName("Should return claim details")
+  void testGetClaimDetails_Success() {
+    // Arrange
+    when(claimsApiClient.getClaim(submissionId, claimId))
+        .thenReturn(Mono.just(new ClaimResponseV2()));
 
-        when(claimMapper.mapToClaimDetails(any())).thenReturn(new CivilClaimDetails());
-        // Act & Assert
-        var response = claimService.getClaimDetails(submissionId, claimId);
-        assertNotNull(response);
+    when(claimMapper.mapToClaimDetails(any())).thenReturn(new CivilClaimDetails());
+    // Act & Assert
+    var response = claimService.getClaimDetails(submissionId, claimId);
+    assertNotNull(response);
 
-        verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
-    }
+    verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
+  }
 
-    @Test
-    @DisplayName("Should enrich claim details with provider name from provider API")
-    void testGetClaimDetailsEnrichesProviderName() {
-        // Arrange
-        ProviderFirmOfficeDto providerFirm = new ProviderFirmOfficeDto();
-        ProviderFirmSummary providerFirmSummary = new ProviderFirmSummary();
-        providerFirmSummary.setFirmName("Test Firm");
-        providerFirm.setFirm(providerFirmSummary);
+  @Test
+  @DisplayName("Should enrich claim details with provider name from provider API")
+  void testGetClaimDetailsEnrichesProviderName() {
+    // Arrange
+    ProviderFirmOfficeDto providerFirm = new ProviderFirmOfficeDto();
+    ProviderFirmSummary providerFirmSummary = new ProviderFirmSummary();
+    providerFirmSummary.setFirmName("Test Firm");
+    providerFirm.setFirm(providerFirmSummary);
 
-        var claimResponse = new ClaimResponseV2();
-        CivilClaimDetails claimDetails = new CivilClaimDetails();
-        claimDetails.setOfficeCode("0P322F");
+    var claimResponse = new ClaimResponseV2();
+    CivilClaimDetails claimDetails = new CivilClaimDetails();
+    claimDetails.setOfficeCode("0P322F");
 
-        when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.just(claimResponse));
-        when(claimMapper.mapToClaimDetails(claimResponse)).thenReturn(claimDetails);
-        when(providerService.getProviderFirm("0P322F")).thenReturn(providerFirm);
+    when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.just(claimResponse));
+    when(claimMapper.mapToClaimDetails(claimResponse)).thenReturn(claimDetails);
+    when(providerService.getProviderFirm("0P322F")).thenReturn(providerFirm);
 
-        // Act
-        var result = claimService.getClaimDetails(submissionId, claimId);
+    // Act
+    var result = claimService.getClaimDetails(submissionId, claimId);
 
-        // Assert
-        assertNotNull(result);
-        verify(providerService, times(1)).getProviderFirm("0P322F");
-        verify(claimMapper, times(1)).enrichWithProviderName(claimDetails, "Test Firm");
-    }
+    // Assert
+    assertNotNull(result);
+    verify(providerService, times(1)).getProviderFirm("0P322F");
+    verify(claimMapper, times(1)).enrichWithProviderName(claimDetails, "Test Firm");
+  }
 
-    @Test
-    @DisplayName("Should return void response and increment success counter")
-    void voidClaim() {
-        var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
-        var expectedResponse = new VoidClaim201Response(UUID.randomUUID());
-        when(claimsApiClient.voidClaim(claimId, request)).thenReturn(Mono.just(expectedResponse));
+  @Test
+  @DisplayName("Should return void response and increment success counter")
+  void voidClaim() {
+    var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
+    var expectedResponse = new VoidClaim201Response(UUID.randomUUID());
+    when(claimsApiClient.voidClaim(claimId, request)).thenReturn(Mono.just(expectedResponse));
 
-        var actualResponse = claimService.voidClaim(claimId, userId);
+    var actualResponse = claimService.voidClaim(claimId, userId);
 
-        assertEquals(expectedResponse, actualResponse);
-        assertThat(meterRegistry.counter("claim.void").count()).isEqualTo(1.0);
-        assertThat(meterRegistry.counter("claim.void.failed").count()).isEqualTo(0.0);
-    }
+    assertEquals(expectedResponse, actualResponse);
+    assertThat(meterRegistry.counter("claim.void").count()).isEqualTo(1.0);
+    assertThat(meterRegistry.counter("claim.void.failed").count()).isEqualTo(0.0);
+  }
 
-    @Test
-    @DisplayName("Should increment failure counter when void claim throws an exception")
-    void voidClaim_failure() {
-        var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
-        when(claimsApiClient.voidClaim(claimId, request)).thenThrow(new RuntimeException("API Error"));
+  @Test
+  @DisplayName("Should increment failure counter when void claim throws an exception")
+  void voidClaim_failure() {
+    var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
+    when(claimsApiClient.voidClaim(claimId, request)).thenThrow(new RuntimeException("API Error"));
 
-        assertThrows(RuntimeException.class, () -> claimService.voidClaim(claimId, userId));
+    assertThrows(RuntimeException.class, () -> claimService.voidClaim(claimId, userId));
 
-        assertThat(meterRegistry.counter("claim.void").count()).isEqualTo(0.0);
-        assertThat(meterRegistry.counter("claim.void.failed").count()).isEqualTo(1.0);
-    }
+    assertThat(meterRegistry.counter("claim.void").count()).isEqualTo(0.0);
+    assertThat(meterRegistry.counter("claim.void.failed").count()).isEqualTo(1.0);
+  }
 }

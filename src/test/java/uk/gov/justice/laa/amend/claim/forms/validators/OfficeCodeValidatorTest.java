@@ -16,72 +16,78 @@ import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 
 class OfficeCodeValidatorTest {
 
-    private OfficeCodeValidator validator;
-    private ConstraintValidatorContext constraintValidatorContext;
+  private OfficeCodeValidator validator;
+  private ConstraintValidatorContext constraintValidatorContext;
 
-    @BeforeEach
-    void setUp() {
-        validator = new OfficeCodeValidator();
-        constraintValidatorContext = mock(ConstraintValidatorContext.class);
-        ConstraintViolationBuilder builder = mock(ConstraintViolationBuilder.class);
-        NodeBuilderCustomizableContext nodeBuilderCustomizableContext = mock(NodeBuilderCustomizableContext.class);
+  @BeforeEach
+  void setUp() {
+    validator = new OfficeCodeValidator();
+    constraintValidatorContext = mock(ConstraintValidatorContext.class);
+    ConstraintViolationBuilder builder = mock(ConstraintViolationBuilder.class);
+    NodeBuilderCustomizableContext nodeBuilderCustomizableContext =
+        mock(NodeBuilderCustomizableContext.class);
 
-        when(constraintValidatorContext.buildConstraintViolationWithTemplate(anyString()))
-                .thenReturn(builder);
-        when(builder.addPropertyNode(anyString())).thenReturn(nodeBuilderCustomizableContext);
-        when(builder.addConstraintViolation()).thenReturn(constraintValidatorContext);
-    }
+    when(constraintValidatorContext.buildConstraintViolationWithTemplate(anyString()))
+        .thenReturn(builder);
+    when(builder.addPropertyNode(anyString())).thenReturn(nodeBuilderCustomizableContext);
+    when(builder.addConstraintViolation()).thenReturn(constraintValidatorContext);
+  }
 
-    @Test
-    void testNullIsInvalid() {
-        SearchForm form = new SearchForm();
-        form.setOfficeCode(null);
+  @Test
+  void testNullIsInvalid() {
+    SearchForm form = new SearchForm();
+    form.setOfficeCode(null);
 
-        assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.officeCode.error.required}");
-    }
+    assertFalse(validator.isValid(form, constraintValidatorContext));
+    verify(constraintValidatorContext)
+        .buildConstraintViolationWithTemplate("{index.officeCode.error.required}");
+  }
 
-    @Test
-    void testBlankIsInvalid() {
-        SearchForm form = new SearchForm();
-        form.setOfficeCode("");
+  @Test
+  void testBlankIsInvalid() {
+    SearchForm form = new SearchForm();
+    form.setOfficeCode("");
 
-        assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.officeCode.error.required}");
-    }
+    assertFalse(validator.isValid(form, constraintValidatorContext));
+    verify(constraintValidatorContext)
+        .buildConstraintViolationWithTemplate("{index.officeCode.error.required}");
+  }
 
-    @Test
-    void testFewerThanSixCharactersIsInvalid() {
-        SearchForm form = new SearchForm();
-        form.setOfficeCode("12345");
+  @Test
+  void testFewerThanSixCharactersIsInvalid() {
+    SearchForm form = new SearchForm();
+    form.setOfficeCode("12345");
 
-        assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.officeCode.error.format}");
-    }
+    assertFalse(validator.isValid(form, constraintValidatorContext));
+    verify(constraintValidatorContext)
+        .buildConstraintViolationWithTemplate("{index.officeCode.error.format}");
+  }
 
-    @Test
-    void testMoreThanSixCharactersIsInvalid() {
-        SearchForm form = new SearchForm();
-        form.setOfficeCode("1234567");
+  @Test
+  void testMoreThanSixCharactersIsInvalid() {
+    SearchForm form = new SearchForm();
+    form.setOfficeCode("1234567");
 
-        assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.officeCode.error.format}");
-    }
+    assertFalse(validator.isValid(form, constraintValidatorContext));
+    verify(constraintValidatorContext)
+        .buildConstraintViolationWithTemplate("{index.officeCode.error.format}");
+  }
 
-    @Test
-    void testInvalidCharactersIsInvalid() {
-        SearchForm form = new SearchForm();
-        form.setOfficeCode("!!!!!!");
+  @Test
+  void testInvalidCharactersIsInvalid() {
+    SearchForm form = new SearchForm();
+    form.setOfficeCode("!!!!!!");
 
-        assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext).buildConstraintViolationWithTemplate("{index.officeCode.error.invalid}");
-    }
+    assertFalse(validator.isValid(form, constraintValidatorContext));
+    verify(constraintValidatorContext)
+        .buildConstraintViolationWithTemplate("{index.officeCode.error.invalid}");
+  }
 
-    @Test
-    void testValidInputIsValid() {
-        SearchForm form = new SearchForm();
-        form.setOfficeCode("123456");
+  @Test
+  void testValidInputIsValid() {
+    SearchForm form = new SearchForm();
+    form.setOfficeCode("123456");
 
-        assertTrue(validator.isValid(form, constraintValidatorContext));
-    }
+    assertTrue(validator.isValid(form, constraintValidatorContext));
+  }
 }

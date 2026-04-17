@@ -9,25 +9,25 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 @NoArgsConstructor
 public class CalculatedTotalClaimField extends ClaimField {
 
-    @Builder
-    public CalculatedTotalClaimField(Object calculated, Object assessed) {
-        super(TOTAL, null, calculated, assessed);
-    }
+  @Builder
+  public CalculatedTotalClaimField(Object calculated, Object assessed) {
+    super(TOTAL, null, calculated, assessed);
+  }
 
-    public CalculatedTotalClaimField(Object calculated) {
-        this(calculated, null);
-    }
+  public CalculatedTotalClaimField(Object calculated) {
+    this(calculated, null);
+  }
 
-    @Override
-    public void applyOutcome(OutcomeType outcome) {}
+  @Override
+  public void applyOutcome(OutcomeType outcome) {}
 
-    @Override
-    public void setAssessableToDefault() {
-        this.assessable = false;
-    }
+  @Override
+  public void setAssessableToDefault() {
+    this.assessable = false;
+  }
 
-    @Override
-    public ClaimFieldRow toClaimFieldRow() {
-        return ClaimFieldRow.from(this);
-    }
+  @Override
+  public ClaimFieldRow toClaimFieldRow() {
+    return ClaimFieldRow.from(this);
+  }
 }

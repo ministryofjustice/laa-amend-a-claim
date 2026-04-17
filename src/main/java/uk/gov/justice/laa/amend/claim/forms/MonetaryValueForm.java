@@ -14,6 +14,6 @@ import uk.gov.justice.laa.amend.claim.models.Cost;
 @ValidMonetaryValue
 public class MonetaryValueForm {
 
-    private String value;
-    private Cost cost;
+  private String value;
+  private Cost cost;
 }

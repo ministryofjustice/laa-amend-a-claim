@@ -19,37 +19,35 @@ import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 @ExtendWith(MockitoExtension.class)
 class MaintenanceInterceptorTest {
 
-    @InjectMocks
-    private MaintenanceInterceptor interceptor;
+  @InjectMocks private MaintenanceInterceptor interceptor;
 
-    @Mock
-    private MaintenanceService service;
+  @Mock private MaintenanceService service;
 
-    private HttpServletRequest request;
-    private HttpServletResponse response;
-    private Object handler;
+  private HttpServletRequest request;
+  private HttpServletResponse response;
+  private Object handler;
 
-    @BeforeEach
-    void setup() {
-        request = mock(HttpServletRequest.class);
-        response = mock(HttpServletResponse.class);
-        handler = new Object();
-    }
+  @BeforeEach
+  void setup() {
+    request = mock(HttpServletRequest.class);
+    response = mock(HttpServletResponse.class);
+    handler = new Object();
+  }
 
-    @Test
-    void preHandle_shouldReturnHome_whenMaintenanceIsNotApplied() throws Exception {
+  @Test
+  void preHandle_shouldReturnHome_whenMaintenanceIsNotApplied() throws Exception {
 
-        when(service.maintenanceApplies(request)).thenReturn(false);
+    when(service.maintenanceApplies(request)).thenReturn(false);
 
-        assertTrue(interceptor.preHandle(request, response, handler));
-    }
+    assertTrue(interceptor.preHandle(request, response, handler));
+  }
 
-    @Test
-    void preHandle_shouldReturnRedirect_whenMaintenanceIsApplied() throws Exception {
+  @Test
+  void preHandle_shouldReturnRedirect_whenMaintenanceIsApplied() throws Exception {
 
-        when(service.maintenanceApplies(request)).thenReturn(true);
+    when(service.maintenanceApplies(request)).thenReturn(true);
 
-        assertFalse(interceptor.preHandle(request, response, handler));
-        verify(response).sendRedirect(request.getContextPath() + "/maintenance");
-    }
+    assertFalse(interceptor.preHandle(request, response, handler));
+    verify(response).sendRedirect(request.getContextPath() + "/maintenance");
+  }
 }

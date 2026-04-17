@@ -16,12 +16,12 @@ import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 @SpringBootTest
 public class MicrosoftGraphApiClientIntegrationTest extends WireMockSetup {
 
-    @Autowired
-    private MicrosoftGraphApiClient microsoftGraphApiClient;
+  @Autowired private MicrosoftGraphApiClient microsoftGraphApiClient;
 
-    @Test
-    void testGetUserWhenOkResponse() {
-        String response = """
+  @Test
+  void testGetUserWhenOkResponse() {
+    String response =
+        """
             {
                 "id": "dummy-id",
                 "displayName": "User, Dummy",
@@ -31,79 +31,90 @@ public class MicrosoftGraphApiClientIntegrationTest extends WireMockSetup {
             }
             """;
 
-        stubFor(get(urlPathMatching("/v1.0/users/abc"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(response)));
+    stubFor(
+        get(urlPathMatching("/v1.0/users/abc"))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(response)));
 
-        MicrosoftApiUser user = microsoftGraphApiClient.getUser("abc", "123").block();
+    MicrosoftApiUser user = microsoftGraphApiClient.getUser("abc", "123").block();
 
-        Assertions.assertNotNull(user);
-        Assertions.assertEquals("dummy-id", user.id());
-        Assertions.assertEquals("User, Dummy", user.displayName());
-        Assertions.assertEquals("Dummy", user.givenName());
-        Assertions.assertEquals("User", user.surname());
-    }
+    Assertions.assertNotNull(user);
+    Assertions.assertEquals("dummy-id", user.id());
+    Assertions.assertEquals("User, Dummy", user.displayName());
+    Assertions.assertEquals("Dummy", user.givenName());
+    Assertions.assertEquals("User", user.surname());
+  }
 
-    @Test
-    void testGetUserWhenOkResponseWithInvalidBody() {
-        String response = """
+  @Test
+  void testGetUserWhenOkResponseWithInvalidBody() {
+    String response =
+        """
             {
                 "foo": "bar"
             }\
             """;
 
-        stubFor(get(urlPathMatching("/v1.0/users/abc"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Authorization", "123")
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(response)));
+    stubFor(
+        get(urlPathMatching("/v1.0/users/abc"))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Authorization", "123")
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(response)));
 
-        MicrosoftApiUser user = microsoftGraphApiClient.getUser("abc", "123").block();
+    MicrosoftApiUser user = microsoftGraphApiClient.getUser("abc", "123").block();
 
-        Assertions.assertNotNull(user);
-        Assertions.assertNull(user.id());
-        Assertions.assertNull(user.displayName());
-    }
+    Assertions.assertNotNull(user);
+    Assertions.assertNull(user.id());
+    Assertions.assertNull(user.displayName());
+  }
 
-    @Test
-    void testGetUserWhen400Response() {
-        stubFor(get(urlPathMatching("/v1.0/users/abc"))
-                .willReturn(aResponse()
-                        .withStatus(400)
-                        .withHeader("Authorization", "123")
-                        .withHeader("Content-Type", "application/json")));
+  @Test
+  void testGetUserWhen400Response() {
+    stubFor(
+        get(urlPathMatching("/v1.0/users/abc"))
+            .willReturn(
+                aResponse()
+                    .withStatus(400)
+                    .withHeader("Authorization", "123")
+                    .withHeader("Content-Type", "application/json")));
 
-        Assertions.assertThrows(
-                WebClientResponseException.class,
-                () -> microsoftGraphApiClient.getUser("abc", "123").block());
-    }
+    Assertions.assertThrows(
+        WebClientResponseException.class,
+        () -> microsoftGraphApiClient.getUser("abc", "123").block());
+  }
 
-    @Test
-    void testGetUserWhen403Response() {
-        stubFor(get(urlPathMatching("/v1.0/users/abc"))
-                .willReturn(aResponse()
-                        .withStatus(403)
-                        .withHeader("Authorization", "123")
-                        .withHeader("Content-Type", "application/json")));
+  @Test
+  void testGetUserWhen403Response() {
+    stubFor(
+        get(urlPathMatching("/v1.0/users/abc"))
+            .willReturn(
+                aResponse()
+                    .withStatus(403)
+                    .withHeader("Authorization", "123")
+                    .withHeader("Content-Type", "application/json")));
 
-        Assertions.assertThrows(
-                WebClientResponseException.class,
-                () -> microsoftGraphApiClient.getUser("abc", "123").block());
-    }
+    Assertions.assertThrows(
+        WebClientResponseException.class,
+        () -> microsoftGraphApiClient.getUser("abc", "123").block());
+  }
 
-    @Test
-    void testGetUserWhen500Response() {
-        stubFor(get(urlPathMatching("/v1.0/users/abc"))
-                .willReturn(aResponse()
-                        .withStatus(500)
-                        .withHeader("Authorization", "123")
-                        .withHeader("Content-Type", "application/json")));
+  @Test
+  void testGetUserWhen500Response() {
+    stubFor(
+        get(urlPathMatching("/v1.0/users/abc"))
+            .willReturn(
+                aResponse()
+                    .withStatus(500)
+                    .withHeader("Authorization", "123")
+                    .withHeader("Content-Type", "application/json")));
 
-        Assertions.assertThrows(
-                WebClientResponseException.class,
-                () -> microsoftGraphApiClient.getUser("abc", "123").block());
-    }
+    Assertions.assertThrows(
+        WebClientResponseException.class,
+        () -> microsoftGraphApiClient.getUser("abc", "123").block());
+  }
 }

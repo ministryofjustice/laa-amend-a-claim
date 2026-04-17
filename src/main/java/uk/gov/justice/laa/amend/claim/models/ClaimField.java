@@ -9,57 +9,57 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public abstract class ClaimField {
 
-    protected String key;
-    protected Object submitted;
-    protected Object calculated;
-    protected Object assessed;
-    protected boolean assessable;
+  protected String key;
+  protected Object submitted;
+  protected Object calculated;
+  protected Object assessed;
+  protected boolean assessable;
 
-    public ClaimField(String key, Object submitted, Object calculated, Object assessed) {
-        this.key = key;
-        this.submitted = submitted;
-        this.calculated = calculated;
-        this.assessed = assessed;
-        setAssessableToDefault();
-    }
+  public ClaimField(String key, Object submitted, Object calculated, Object assessed) {
+    this.key = key;
+    this.submitted = submitted;
+    this.calculated = calculated;
+    this.assessed = assessed;
+    setAssessableToDefault();
+  }
 
-    public boolean hasSubmittedValue() {
-        return !hasNoSubmittedValue();
-    }
+  public boolean hasSubmittedValue() {
+    return !hasNoSubmittedValue();
+  }
 
-    private boolean hasNoSubmittedValue() {
-        return switch (this.getSubmitted()) {
-            case null -> true;
-            case BigDecimal bigDecimal -> BigDecimal.ZERO.compareTo(bigDecimal) == 0;
-            case Integer i -> i == 0;
-            case Boolean b -> !b;
-            default -> false;
-        };
-    }
+  private boolean hasNoSubmittedValue() {
+    return switch (this.getSubmitted()) {
+      case null -> true;
+      case BigDecimal bigDecimal -> BigDecimal.ZERO.compareTo(bigDecimal) == 0;
+      case Integer i -> i == 0;
+      case Boolean b -> !b;
+      default -> false;
+    };
+  }
 
-    public abstract void setAssessableToDefault();
+  public abstract void setAssessableToDefault();
 
-    public boolean isNotAssessable() {
-        return !isAssessable();
-    }
+  public boolean isNotAssessable() {
+    return !isAssessable();
+  }
 
-    public abstract ClaimFieldRow toClaimFieldRow();
+  public abstract ClaimFieldRow toClaimFieldRow();
 
-    public abstract void applyOutcome(OutcomeType outcome);
+  public abstract void applyOutcome(OutcomeType outcome);
 
-    protected void setNilled() {
-        setAssessed(BigDecimal.ZERO);
-    }
+  protected void setNilled() {
+    setAssessed(BigDecimal.ZERO);
+  }
 
-    protected void setAssessedToNull() {
-        setAssessed(null);
-    }
+  protected void setAssessedToNull() {
+    setAssessed(null);
+  }
 
-    protected void setAssessedToCalculated() {
-        setAssessed(this.getCalculated());
-    }
+  protected void setAssessedToCalculated() {
+    setAssessed(this.getCalculated());
+  }
 
-    protected void setAssessedToSubmitted() {
-        setAssessed(this.getSubmitted());
-    }
+  protected void setAssessedToSubmitted() {
+    setAssessed(this.getSubmitted());
+  }
 }

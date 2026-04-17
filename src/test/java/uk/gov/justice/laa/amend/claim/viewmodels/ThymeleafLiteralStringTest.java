@@ -10,21 +10,21 @@ import org.thymeleaf.expression.Messages;
 
 class ThymeleafLiteralStringTest {
 
-    private Messages messages;
+  private Messages messages;
 
-    @BeforeEach
-    void setUp() {
-        messages = mock(Messages.class);
-    }
+  @BeforeEach
+  void setUp() {
+    messages = mock(Messages.class);
+  }
 
-    @Test
-    void resolve_shouldReturnValue() {
-        ThymeleafLiteralString tls = new ThymeleafLiteralString("value");
+  @Test
+  void resolve_shouldReturnValue() {
+    ThymeleafLiteralString tls = new ThymeleafLiteralString("value");
 
-        String result = tls.resolve(messages);
+    String result = tls.resolve(messages);
 
-        assertThat(result).isEqualTo("value");
+    assertThat(result).isEqualTo("value");
 
-        verifyNoInteractions(messages);
-    }
+    verifyNoInteractions(messages);
+  }
 }

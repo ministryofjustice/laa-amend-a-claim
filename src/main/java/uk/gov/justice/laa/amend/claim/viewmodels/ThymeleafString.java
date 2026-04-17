@@ -4,5 +4,5 @@ import org.thymeleaf.expression.Messages;
 
 public abstract class ThymeleafString {
 
-    public abstract String resolve(Messages messages);
+  public abstract String resolve(Messages messages);
 }

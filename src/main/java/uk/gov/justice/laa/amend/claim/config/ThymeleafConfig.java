@@ -7,8 +7,8 @@ import uk.gov.justice.laa.amend.claim.utils.ThymeleafUtils;
 @Configuration
 public class ThymeleafConfig {
 
-    @Bean(name = "ThymeleafUtils")
-    public ThymeleafUtils thymeleafUtils() {
-        return new ThymeleafUtils();
-    }
+  @Bean(name = "ThymeleafUtils")
+  public ThymeleafUtils thymeleafUtils() {
+    return new ThymeleafUtils();
+  }
 }

@@ -1,7 +1,6 @@
 plugins {
     id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.2.3'
     id "com.diffplug.spotless" version "8.4.0"
-    id "com.palantir.java-format-spotless" version "2.90.0"
     id "io.sentry.jvm.gradle" version "6.4.0"
     id 'au.com.dius.pact' version '4.6.20'
 }
@@ -21,8 +20,11 @@ checkstyle {
 
 spotless {
     java {
+        target 'src/**/java/**/*.java'
         importOrder()
         removeUnusedImports()
+        cleanthat()
+        googleJavaFormat()
     }
 }
 

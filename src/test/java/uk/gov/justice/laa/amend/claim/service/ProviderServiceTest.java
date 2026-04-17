@@ -20,35 +20,34 @@ import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 @ExtendWith(MockitoExtension.class)
 class ProviderServiceTest {
 
-    @Mock
-    private ProviderApiClient providerApiClient;
+  @Mock private ProviderApiClient providerApiClient;
 
-    @InjectMocks
-    private ProviderService providerService;
+  @InjectMocks private ProviderService providerService;
 
-    @Test
-    void testGetProviderFirmSuccess() {
-        String officeCode = "0P322F";
+  @Test
+  void testGetProviderFirmSuccess() {
+    String officeCode = "0P322F";
 
-        ProviderFirmOfficeDto providerFirm = mock(ProviderFirmOfficeDto.class, RETURNS_DEEP_STUBS);
+    ProviderFirmOfficeDto providerFirm = mock(ProviderFirmOfficeDto.class, RETURNS_DEEP_STUBS);
 
-        when(providerApiClient.getProviderOffice(officeCode)).thenReturn(Mono.just(providerFirm));
+    when(providerApiClient.getProviderOffice(officeCode)).thenReturn(Mono.just(providerFirm));
 
-        var result = providerService.getProviderFirm(officeCode);
+    var result = providerService.getProviderFirm(officeCode);
 
-        assertNotNull(result);
-        verify(providerApiClient, times(1)).getProviderOffice(officeCode);
-    }
+    assertNotNull(result);
+    verify(providerApiClient, times(1)).getProviderOffice(officeCode);
+  }
 
-    @Test
-    void testGetProviderFirmWhenExceptionReturnsNull() {
-        String officeCode = "0P322F";
+  @Test
+  void testGetProviderFirmWhenExceptionReturnsNull() {
+    String officeCode = "0P322F";
 
-        when(providerApiClient.getProviderOffice(officeCode)).thenReturn(Mono.error(new RuntimeException("error")));
+    when(providerApiClient.getProviderOffice(officeCode))
+        .thenReturn(Mono.error(new RuntimeException("error")));
 
-        var result = providerService.getProviderFirm(officeCode);
+    var result = providerService.getProviderFirm(officeCode);
 
-        assertNull(result);
-        verify(providerApiClient, times(1)).getProviderOffice(officeCode);
-    }
+    assertNull(result);
+    verify(providerApiClient, times(1)).getProviderOffice(officeCode);
+  }
 }

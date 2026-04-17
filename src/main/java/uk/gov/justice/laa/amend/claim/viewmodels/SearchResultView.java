@@ -6,6 +6,6 @@ import uk.gov.justice.laa.amend.claim.models.Claim;
 
 @Data
 public class SearchResultView {
-    private List<BaseClaimView<Claim>> claims;
-    private Pagination pagination;
+  private List<BaseClaimView<Claim>> claims;
+  private Pagination pagination;
 }

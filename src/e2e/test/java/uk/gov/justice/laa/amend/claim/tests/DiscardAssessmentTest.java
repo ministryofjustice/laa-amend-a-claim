@@ -29,133 +29,132 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 @Feature("Discard Assessment Confirmation & Behaviour")
 public class DiscardAssessmentTest extends BaseTest {
 
-    private final String OFFICE_CODE = "123456";
-    private final String UFN = generateUfn();
-    private final String MONTH = "04";
-    private final String YEAR = "2025";
-    private final String SUBMISSION_ID = UUID.randomUUID().toString();
-    private final String CLAIM_ID = UUID.randomUUID().toString();
-    private final String CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-    private final String CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
+  private final String OFFICE_CODE = "123456";
+  private final String UFN = generateUfn();
+  private final String MONTH = "04";
+  private final String YEAR = "2025";
+  private final String SUBMISSION_ID = UUID.randomUUID().toString();
+  private final String CLAIM_ID = UUID.randomUUID().toString();
+  private final String CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
+  private final String CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
 
-    @Override
-    protected List<Insert> inserts() {
-        return List.of(
-                BulkSubmissionInsert.builder()
-                        .id(BULK_SUBMISSION_ID)
-                        .userId(USER_ID)
-                        .build(),
-                SubmissionInsert.builder()
-                        .id(SUBMISSION_ID)
-                        .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(OFFICE_CODE)
-                        .submissionPeriod("APR-2025")
-                        .areaOfLaw("CRIME_LOWER")
-                        .userId(USER_ID)
-                        .build(),
-                ClaimInsert.builder()
-                        .id(CLAIM_ID)
-                        .submissionId(SUBMISSION_ID)
-                        .uniqueFileNumber(UFN)
-                        .userId(USER_ID)
-                        .build(),
-                ClaimSummaryFeeInsert.builder()
-                        .id(CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CLAIM_ID)
-                        .userId(USER_ID)
-                        .build(),
-                CalculatedFeeDetailInsert.builder()
-                        .id(CALCULATED_FEE_DETAIL_ID)
-                        .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CLAIM_ID)
-                        .escaped(true)
-                        .userId(USER_ID)
-                        .build());
-    }
+  @Override
+  protected List<Insert> inserts() {
+    return List.of(
+        BulkSubmissionInsert.builder().id(BULK_SUBMISSION_ID).userId(USER_ID).build(),
+        SubmissionInsert.builder()
+            .id(SUBMISSION_ID)
+            .bulkSubmissionId(BULK_SUBMISSION_ID)
+            .officeAccountNumber(OFFICE_CODE)
+            .submissionPeriod("APR-2025")
+            .areaOfLaw("CRIME_LOWER")
+            .userId(USER_ID)
+            .build(),
+        ClaimInsert.builder()
+            .id(CLAIM_ID)
+            .submissionId(SUBMISSION_ID)
+            .uniqueFileNumber(UFN)
+            .userId(USER_ID)
+            .build(),
+        ClaimSummaryFeeInsert.builder()
+            .id(CLAIM_SUMMARY_FEE_ID)
+            .claimId(CLAIM_ID)
+            .userId(USER_ID)
+            .build(),
+        CalculatedFeeDetailInsert.builder()
+            .id(CALCULATED_FEE_DETAIL_ID)
+            .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
+            .claimId(CLAIM_ID)
+            .escaped(true)
+            .userId(USER_ID)
+            .build());
+  }
 
-    @Test
-    @Story("AC 1 - Screen display")
-    @DisplayName("Discard Assessment: Screen displays correct heading, button, and return link")
-    @Severity(SeverityLevel.CRITICAL)
-    void discardAssessmentScreenDisplaysCorrectly() {
+  @Test
+  @Story("AC 1 - Screen display")
+  @DisplayName("Discard Assessment: Screen displays correct heading, button, and return link")
+  @Severity(SeverityLevel.CRITICAL)
+  void discardAssessmentScreenDisplaysCorrectly() {
 
-        DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
+    DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
 
-        Assertions.assertTrue(discard.isDiscardAssessmentButtonVisible(), "Discard Assessment button must be visible");
+    Assertions.assertTrue(
+        discard.isDiscardAssessmentButtonVisible(), "Discard Assessment button must be visible");
 
-        Assertions.assertTrue(discard.isReturnToClaimLinkVisible(), "Return to Claim link must be visible");
-    }
+    Assertions.assertTrue(
+        discard.isReturnToClaimLinkVisible(), "Return to Claim link must be visible");
+  }
 
-    @Test
-    @Story("AC 2 - Discard assessment button")
-    @DisplayName("Discard Assessment: Clicking discard redirects to search page with success banner")
-    @Severity(SeverityLevel.CRITICAL)
-    void discardAssessmentRedirectsToSearchWithBanner() {
+  @Test
+  @Story("AC 2 - Discard assessment button")
+  @DisplayName("Discard Assessment: Clicking discard redirects to search page with success banner")
+  @Severity(SeverityLevel.CRITICAL)
+  void discardAssessmentRedirectsToSearchWithBanner() {
 
-        DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
-        discard.clickDiscardAssessment();
+    DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
+    discard.clickDiscardAssessment();
 
-        SearchPage searchAfterDiscard = new SearchPage(page);
+    SearchPage searchAfterDiscard = new SearchPage(page);
 
-        Assertions.assertTrue(
-                searchAfterDiscard.isSuccessBannerVisible(),
-                "Success notification banner should appear after discarding");
+    Assertions.assertTrue(
+        searchAfterDiscard.isSuccessBannerVisible(),
+        "Success notification banner should appear after discarding");
 
-        Assertions.assertEquals(
-                "You discarded the assessment",
-                searchAfterDiscard.getSuccessBannerHeading(),
-                "Success banner heading must match expected text");
-    }
+    Assertions.assertEquals(
+        "You discarded the assessment",
+        searchAfterDiscard.getSuccessBannerHeading(),
+        "Success banner heading must match expected text");
+  }
 
-    @Test
-    @Story("AC 3 - Return to Claim link")
-    @DisplayName("Discard Assessment: Return to Claim navigates back to Review and Amend screen")
-    @Severity(SeverityLevel.CRITICAL)
-    void returnToClaimNavigatesBackToReviewScreen() {
+  @Test
+  @Story("AC 3 - Return to Claim link")
+  @DisplayName("Discard Assessment: Return to Claim navigates back to Review and Amend screen")
+  @Severity(SeverityLevel.CRITICAL)
+  void returnToClaimNavigatesBackToReviewScreen() {
 
-        DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
-        discard.clickReturnToClaim();
+    DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
+    discard.clickReturnToClaim();
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-    }
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+  }
 
-    @Test
-    @Story("AC 4 - Discard changes on Review and Amend")
-    @DisplayName("Review & Amend: Discard changes navigates to Discard Assessment screen")
-    @Severity(SeverityLevel.CRITICAL)
-    void reviewAndAmendDiscardNavigatesToDiscardScreen() {
+  @Test
+  @Story("AC 4 - Discard changes on Review and Amend")
+  @DisplayName("Review & Amend: Discard changes navigates to Discard Assessment screen")
+  @Severity(SeverityLevel.CRITICAL)
+  void reviewAndAmendDiscardNavigatesToDiscardScreen() {
 
-        ReviewAndAmendPage review = goToReviewAndAmendPage();
-        review.cancel();
+    ReviewAndAmendPage review = goToReviewAndAmendPage();
+    review.cancel();
 
-        DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
-    }
+    DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
+  }
 
-    private DiscardAssessmentPage goToDiscardAssessmentScreen() {
-        ReviewAndAmendPage review = goToReviewAndAmendPage();
-        review.cancel();
+  private DiscardAssessmentPage goToDiscardAssessmentScreen() {
+    ReviewAndAmendPage review = goToReviewAndAmendPage();
+    review.cancel();
 
-        return new DiscardAssessmentPage(page);
-    }
+    return new DiscardAssessmentPage(page);
+  }
 
-    private ReviewAndAmendPage goToReviewAndAmendPage() {
-        SearchPage search = new SearchPage(page);
+  private ReviewAndAmendPage goToReviewAndAmendPage() {
+    SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(OFFICE_CODE, MONTH, YEAR, UFN, "", "", "");
+    search.searchForClaim(OFFICE_CODE, MONTH, YEAR, UFN, "", "", "");
 
-        search.clickViewForUfn(UFN);
+    search.clickViewForUfn(UFN);
 
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
+    ClaimDetailsPage details = new ClaimDetailsPage(page);
 
-        Assertions.assertFalse(
-                details.isAddAssessmentOutcomeHidden(),
-                "Test data issue: expected escape claim (Add assessment outcome enabled) but it was hidden");
+    Assertions.assertFalse(
+        details.isAddAssessmentOutcomeHidden(),
+        "Test data issue: expected escape claim (Add assessment outcome enabled) but it was hidden");
 
-        details.clickAddUpdateAssessmentOutcome();
+    details.clickAddUpdateAssessmentOutcome();
 
-        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.completeAssessment("assessed in full", true);
+    AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
+    outcome.completeAssessment("assessed in full", true);
 
-        return new ReviewAndAmendPage(page);
-    }
+    return new ReviewAndAmendPage(page);
+  }
 }

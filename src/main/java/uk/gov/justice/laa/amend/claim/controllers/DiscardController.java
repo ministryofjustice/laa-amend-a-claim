@@ -19,26 +19,26 @@ import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 @HasRoleEscapeCaseCaseworker
 public class DiscardController {
 
-    @GetMapping()
-    public String onPageLoad(Model model, @PathVariable UUID submissionId, @PathVariable UUID claimId) {
-        model.addAttribute("submissionId", submissionId);
-        model.addAttribute("claimId", claimId);
+  @GetMapping()
+  public String onPageLoad(
+      Model model, @PathVariable UUID submissionId, @PathVariable UUID claimId) {
+    model.addAttribute("submissionId", submissionId);
+    model.addAttribute("claimId", claimId);
 
-        return "discard";
-    }
+    return "discard";
+  }
 
-    @PostMapping()
-    public String discard(
-            HttpSession session,
-            RedirectAttributes redirectAttributes,
-            @PathVariable UUID submissionId,
-            @PathVariable UUID claimId) {
-        session.removeAttribute(claimId.toString());
-        String searchUrl =
-                (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
+  @PostMapping()
+  public String discard(
+      HttpSession session,
+      RedirectAttributes redirectAttributes,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    session.removeAttribute(claimId.toString());
+    String searchUrl = (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
 
-        redirectAttributes.addFlashAttribute("discarded", true);
+    redirectAttributes.addFlashAttribute("discarded", true);
 
-        return String.format("redirect:%s", searchUrl);
-    }
+    return String.format("redirect:%s", searchUrl);
+  }
 }

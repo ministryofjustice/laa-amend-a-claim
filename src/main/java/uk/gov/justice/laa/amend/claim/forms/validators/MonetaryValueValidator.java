@@ -8,10 +8,10 @@ import uk.gov.justice.laa.amend.claim.forms.annotations.ValidMonetaryValue;
 
 @AllArgsConstructor
 public class MonetaryValueValidator extends CurrencyValidator
-        implements ConstraintValidator<ValidMonetaryValue, MonetaryValueForm> {
+    implements ConstraintValidator<ValidMonetaryValue, MonetaryValueForm> {
 
-    @Override
-    public boolean isValid(MonetaryValueForm form, ConstraintValidatorContext context) {
-        return isValid(form.getValue(), context, "value", form.getCost().getPrefix());
-    }
+  @Override
+  public boolean isValid(MonetaryValueForm form, ConstraintValidatorContext context) {
+    return isValid(form.getValue(), context, "value", form.getCost().getPrefix());
+  }
 }

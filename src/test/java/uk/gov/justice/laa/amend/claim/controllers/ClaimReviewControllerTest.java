@@ -34,164 +34,169 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Res
 @WebMvcTest(ClaimReviewController.class)
 public class ClaimReviewControllerTest extends BaseControllerTest {
 
-    @MockitoBean
-    private AssessmentService assessmentService;
+  @MockitoBean private AssessmentService assessmentService;
 
-    private UUID submissionId;
-    private UUID claimId;
-    private MockHttpSession session;
-    private ClaimDetails claim;
+  private UUID submissionId;
+  private UUID claimId;
+  private MockHttpSession session;
+  private ClaimDetails claim;
 
-    @MockitoBean
-    private ClaimStatusHandler claimStatusHandler;
+  @MockitoBean private ClaimStatusHandler claimStatusHandler;
 
-    @BeforeEach
-    void setup() {
-        submissionId = UUID.randomUUID();
-        claimId = UUID.randomUUID();
-        session = new MockHttpSession();
-        claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setSubmissionId(submissionId);
-        claim.setClaimId(claimId);
-        MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
-        session.setAttribute(claimId.toString(), claim);
-    }
+  @BeforeEach
+  void setup() {
+    submissionId = UUID.randomUUID();
+    claimId = UUID.randomUUID();
+    session = new MockHttpSession();
+    claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
+    session.setAttribute(claimId.toString(), claim);
+  }
 
-    @Test
-    public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
-        // Given outcome for claim has been selected
-        claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
-        MockClaimsFunctions.updateStatus(claim, OutcomeType.PAID_IN_FULL);
+  @Test
+  public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
+    // Given outcome for claim has been selected
+    claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
+    MockClaimsFunctions.updateStatus(claim, OutcomeType.PAID_IN_FULL);
 
-        session.setAttribute(claimId.toString(), claim);
+    session.setAttribute(claimId.toString(), claim);
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("review-and-amend"))
-                .andExpect(model().attributeExists("claim"))
-                .andExpect(model().attribute("claimId", claimId))
-                .andExpect(model().attribute("submissionId", submissionId))
-                .andExpect(model().attribute("submissionFailed", false))
-                .andExpect(model().attribute("validationFailed", false));
-    }
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("review-and-amend"))
+        .andExpect(model().attributeExists("claim"))
+        .andExpect(model().attribute("claimId", claimId))
+        .andExpect(model().attribute("submissionId", submissionId))
+        .andExpect(model().attribute("submissionFailed", false))
+        .andExpect(model().attribute("validationFailed", false));
+  }
 
-    @Test
-    public void testOnPageLoadRedirectsToAssessmentOutcomeWhenNotPresent() throws Exception {
-        claim.setAssessmentOutcome(null);
-        session.setAttribute(claimId.toString(), claim);
+  @Test
+  public void testOnPageLoadRedirectsToAssessmentOutcomeWhenNotPresent() throws Exception {
+    claim.setAssessmentOutcome(null);
+    session.setAttribute(claimId.toString(), claim);
 
-        String expectedRedirectUrl =
-                String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
+    String expectedRedirectUrl =
+        String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(expectedRedirectUrl));
-    }
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(expectedRedirectUrl));
+  }
 
-    @Test
-    public void testSuccessfulSubmitRedirectsToConfirmation() throws Exception {
-        UUID assessmentId = UUID.randomUUID();
+  @Test
+  public void testSuccessfulSubmitRedirectsToConfirmation() throws Exception {
+    UUID assessmentId = UUID.randomUUID();
 
-        CreateAssessment201Response response = new CreateAssessment201Response();
-        response.setId(assessmentId);
+    CreateAssessment201Response response = new CreateAssessment201Response();
+    response.setId(assessmentId);
 
-        when(assessmentService.submitAssessment(claim, USER_ID)).thenReturn(response);
+    when(assessmentService.submitAssessment(claim, USER_ID)).thenReturn(response);
 
-        String redirectUrl =
-                String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
+    String redirectUrl =
+        String.format(
+            "/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
 
-        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl))
-                .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()))
-                .andExpect(request().sessionAttribute("assessmentId", assessmentId));
+    mockMvc
+        .perform(post(buildPath()).session(session).with(csrf()))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(redirectUrl))
+        .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()))
+        .andExpect(request().sessionAttribute("assessmentId", assessmentId));
 
-        verify(assessmentService).submitAssessment(claim, USER_ID);
-    }
+    verify(assessmentService).submitAssessment(claim, USER_ID);
+  }
 
-    @Test
-    public void testUnsuccessfulSubmitReloadsPageWithAlert() throws Exception {
-        WebClientResponseException exception =
-                WebClientResponseException.create(500, "Something went wrong", null, null, null);
+  @Test
+  public void testUnsuccessfulSubmitReloadsPageWithAlert() throws Exception {
+    WebClientResponseException exception =
+        WebClientResponseException.create(500, "Something went wrong", null, null, null);
 
-        when(assessmentService.submitAssessment(any(), any())).thenThrow(exception);
+    when(assessmentService.submitAssessment(any(), any())).thenThrow(exception);
 
-        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("review-and-amend"))
-                .andExpect(model().attributeExists("claim"))
-                .andExpect(model().attribute("claimId", claimId))
-                .andExpect(model().attribute("submissionId", submissionId))
-                .andExpect(model().attribute("submissionFailed", true))
-                .andExpect(model().attribute("validationFailed", false));
+    mockMvc
+        .perform(post(buildPath()).session(session).with(csrf()))
+        .andExpect(status().isBadRequest())
+        .andExpect(view().name("review-and-amend"))
+        .andExpect(model().attributeExists("claim"))
+        .andExpect(model().attribute("claimId", claimId))
+        .andExpect(model().attribute("submissionId", submissionId))
+        .andExpect(model().attribute("submissionFailed", true))
+        .andExpect(model().attribute("validationFailed", false));
 
-        verify(assessmentService).submitAssessment(claim, USER_ID);
-    }
+    verify(assessmentService).submitAssessment(claim, USER_ID);
+  }
 
-    @Test
-    public void testUnsuccessfulValidationReloadsPageWithErrorSummary() throws Exception {
-        ClaimField claimField = MockClaimsFunctions.createNetProfitCostField();
-        claimField.setAssessed(null);
-        claim.setNetProfitCost(claimField);
+  @Test
+  public void testUnsuccessfulValidationReloadsPageWithErrorSummary() throws Exception {
+    ClaimField claimField = MockClaimsFunctions.createNetProfitCostField();
+    claimField.setAssessed(null);
+    claim.setNetProfitCost(claimField);
 
-        session.setAttribute(claimId.toString(), claim);
+    session.setAttribute(claimId.toString(), claim);
 
-        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("review-and-amend"))
-                .andExpect(model().attributeExists("claim"))
-                .andExpect(model().attribute("claimId", claimId))
-                .andExpect(model().attribute("submissionId", submissionId))
-                .andExpect(model().attribute("submissionFailed", false))
-                .andExpect(model().attribute("validationFailed", true));
-    }
+    mockMvc
+        .perform(post(buildPath()).session(session).with(csrf()))
+        .andExpect(status().isBadRequest())
+        .andExpect(view().name("review-and-amend"))
+        .andExpect(model().attributeExists("claim"))
+        .andExpect(model().attribute("claimId", claimId))
+        .andExpect(model().attribute("submissionId", submissionId))
+        .andExpect(model().attribute("submissionFailed", false))
+        .andExpect(model().attribute("validationFailed", true));
+  }
 
-    @Test
-    public void testOnPageLoadWithMultipleClaimsInSession() throws Exception {
+  @Test
+  public void testOnPageLoadWithMultipleClaimsInSession() throws Exception {
 
-        session.clearAttributes();
-        ClaimDetails claim1 = MockClaimsFunctions.createMockCivilClaim();
-        claim1.setSubmissionId(submissionId);
-        UUID claimId1 = UUID.randomUUID();
-        claim1.setClaimId(claimId1);
-        claim1.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
-        MockClaimsFunctions.updateStatus(claim1, OutcomeType.PAID_IN_FULL);
+    session.clearAttributes();
+    ClaimDetails claim1 = MockClaimsFunctions.createMockCivilClaim();
+    claim1.setSubmissionId(submissionId);
+    UUID claimId1 = UUID.randomUUID();
+    claim1.setClaimId(claimId1);
+    claim1.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
+    MockClaimsFunctions.updateStatus(claim1, OutcomeType.PAID_IN_FULL);
 
-        ClaimDetails claim2 = MockClaimsFunctions.createMockCrimeClaim();
-        claim2.setSubmissionId(submissionId);
-        UUID claimId2 = UUID.randomUUID();
-        claim2.setClaimId(claimId2);
-        claim2.setAssessmentOutcome(OutcomeType.NILLED);
-        MockClaimsFunctions.updateStatus(claim2, claim2.getAssessmentOutcome());
+    ClaimDetails claim2 = MockClaimsFunctions.createMockCrimeClaim();
+    claim2.setSubmissionId(submissionId);
+    UUID claimId2 = UUID.randomUUID();
+    claim2.setClaimId(claimId2);
+    claim2.setAssessmentOutcome(OutcomeType.NILLED);
+    MockClaimsFunctions.updateStatus(claim2, claim2.getAssessmentOutcome());
 
-        session.setAttribute(claimId1.toString(), claim1);
-        session.setAttribute(claimId2.toString(), claim2);
+    session.setAttribute(claimId1.toString(), claim1);
+    session.setAttribute(claimId2.toString(), claim2);
 
-        // Load first claim
-        String path1 = String.format("/submissions/%s/claims/%s/review", submissionId, claimId1);
+    // Load first claim
+    String path1 = String.format("/submissions/%s/claims/%s/review", submissionId, claimId1);
 
-        mockMvc.perform(get(path1).session(session))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("claimId", claimId1));
+    mockMvc
+        .perform(get(path1).session(session))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("claimId", claimId1));
 
-        // Verify both claims still in session
-        Assertions.assertNotNull(session.getAttribute(claimId1.toString()));
-        Assertions.assertNotNull(session.getAttribute(claimId2.toString()));
-    }
+    // Verify both claims still in session
+    Assertions.assertNotNull(session.getAttribute(claimId1.toString()));
+    Assertions.assertNotNull(session.getAttribute(claimId2.toString()));
+  }
 
-    @Test
-    void testGetRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
-        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
-    }
+  @Test
+  void testGetRequiresRole() throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+    mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
+  }
 
-    @Test
-    void testPostRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
-        mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
-    }
+  @Test
+  void testPostRequiresRole() throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+    mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
+  }
 
-    private String buildPath() {
-        return String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
-    }
+  private String buildPath() {
+    return String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+  }
 }

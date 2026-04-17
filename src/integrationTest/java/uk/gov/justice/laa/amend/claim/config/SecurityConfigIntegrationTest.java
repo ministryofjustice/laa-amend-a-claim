@@ -39,96 +39,96 @@ import uk.gov.justice.laa.amend.claim.base.RedisSetup;
 @ActiveProfiles("test")
 public class SecurityConfigIntegrationTest extends RedisSetup {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @MockitoBean
-    private ClientRegistrationRepository clientRegistrationRepository;
+  @MockitoBean private ClientRegistrationRepository clientRegistrationRepository;
 
-    @MockitoBean
-    private OAuth2AuthorizedClientRepository authorizedClientRepository;
+  @MockitoBean private OAuth2AuthorizedClientRepository authorizedClientRepository;
 
-    @MockitoBean
-    private OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService;
+  @MockitoBean private OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService;
 
-    @TestConfiguration
-    static class TestControllerConfig {
-        @RestController
-        @EnableMethodSecurity
-        static class TestController {
-            @GetMapping("/test-only")
-            public String root() {
-                return "ok";
-            }
+  @TestConfiguration
+  static class TestControllerConfig {
+    @RestController
+    @EnableMethodSecurity
+    static class TestController {
+      @GetMapping("/test-only")
+      public String root() {
+        return "ok";
+      }
 
-            @GetMapping("/test-only/denied")
-            @PreAuthorize("hasRole('NON_EXISTENT_ROLE')")
-            public String denied() {
-                return "should never reach here";
-            }
-        }
+      @GetMapping("/test-only/denied")
+      @PreAuthorize("hasRole('NON_EXISTENT_ROLE')")
+      public String denied() {
+        return "should never reach here";
+      }
     }
+  }
 
-    @Test
-    void actuatorEndpointsArePermittedWithoutAuth() throws Exception {
-        mockMvc.perform(get("/actuator/health")).andExpect(status().isOk());
-    }
+  @Test
+  void actuatorEndpointsArePermittedWithoutAuth() throws Exception {
+    mockMvc.perform(get("/actuator/health")).andExpect(status().isOk());
+  }
 
-    @Test
-    @WithMockUser(roles = "USER")
-    void authenticatedEndpointsAccessibleWithValidRole() throws Exception {
-        mockMvc.perform(get("/test-only")).andExpect(status().isOk());
-    }
+  @Test
+  @WithMockUser(roles = "USER")
+  void authenticatedEndpointsAccessibleWithValidRole() throws Exception {
+    mockMvc.perform(get("/test-only")).andExpect(status().isOk());
+  }
 
-    @Test
-    void unauthenticatedUsersRedirectToAuth() throws Exception {
-        mockMvc.perform(get("/test-only"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/auth"));
-    }
+  @Test
+  void unauthenticatedUsersRedirectToAuth() throws Exception {
+    mockMvc
+        .perform(get("/test-only"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/auth"));
+  }
 
-    @Test
-    @WithMockUser(roles = "USER")
-    void incorrectRoleReturnsForbidden() throws Exception {
-        mockMvc.perform(get("/test-only/denied")).andExpect(status().isForbidden());
-    }
+  @Test
+  @WithMockUser(roles = "USER")
+  void incorrectRoleReturnsForbidden() throws Exception {
+    mockMvc.perform(get("/test-only/denied")).andExpect(status().isForbidden());
+  }
 
-    @Test
-    void failedOauthRedirectsToErrorPage() throws Exception {
-        when(oauth2UserService.loadUser(any()))
-                .thenThrow(new OAuth2AuthenticationException(new OAuth2Error("invalid_token")));
+  @Test
+  void failedOauthRedirectsToErrorPage() throws Exception {
+    when(oauth2UserService.loadUser(any()))
+        .thenThrow(new OAuth2AuthenticationException(new OAuth2Error("invalid_token")));
 
-        mockMvc.perform(get("/login/oauth2/code/id"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/error"));
-    }
+    mockMvc
+        .perform(get("/login/oauth2/code/id"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/error"));
+  }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"/", "/js/app.js", "/css/styles.css"})
-    @WithMockUser(roles = "USER")
-    void responseOnGetHasCorrectHeaders(String url) throws Exception {
-        mockMvc.perform(get(url))
-                .andExpect(status().isOk())
-                .andExpect(header().exists("Content-Security-Policy"))
-                .andExpect(header().string("Cross-Origin-Embedder-Policy", "require-corp"))
-                .andExpect(header().string("Cross-Origin-Opener-Policy", "same-origin"))
-                .andExpect(header().string("Cross-Origin-Resource-Policy", "same-origin"))
-                .andExpect(header().string("Permissions-Policy", PERMISSIONS_POLICY))
-                .andExpect(header().string("X-Content-Type-Options", "nosniff"))
-                .andExpect(header().string("X-Frame-Options", "DENY"));
-    }
+  @ParameterizedTest
+  @ValueSource(strings = {"/", "/js/app.js", "/css/styles.css"})
+  @WithMockUser(roles = "USER")
+  void responseOnGetHasCorrectHeaders(String url) throws Exception {
+    mockMvc
+        .perform(get(url))
+        .andExpect(status().isOk())
+        .andExpect(header().exists("Content-Security-Policy"))
+        .andExpect(header().string("Cross-Origin-Embedder-Policy", "require-corp"))
+        .andExpect(header().string("Cross-Origin-Opener-Policy", "same-origin"))
+        .andExpect(header().string("Cross-Origin-Resource-Policy", "same-origin"))
+        .andExpect(header().string("Permissions-Policy", PERMISSIONS_POLICY))
+        .andExpect(header().string("X-Content-Type-Options", "nosniff"))
+        .andExpect(header().string("X-Frame-Options", "DENY"));
+  }
 
-    @Test
-    @WithMockUser(roles = "USER")
-    void responseOnPostHasCorrectHeaders() throws Exception {
-        mockMvc.perform(post("/").with(csrf()))
-                .andExpect(status().isBadRequest())
-                .andExpect(header().exists("Content-Security-Policy"))
-                .andExpect(header().string("Cross-Origin-Embedder-Policy", "require-corp"))
-                .andExpect(header().string("Cross-Origin-Opener-Policy", "same-origin"))
-                .andExpect(header().string("Cross-Origin-Resource-Policy", "same-origin"))
-                .andExpect(header().string("Permissions-Policy", PERMISSIONS_POLICY))
-                .andExpect(header().string("X-Content-Type-Options", "nosniff"))
-                .andExpect(header().string("X-Frame-Options", "DENY"));
-    }
+  @Test
+  @WithMockUser(roles = "USER")
+  void responseOnPostHasCorrectHeaders() throws Exception {
+    mockMvc
+        .perform(post("/").with(csrf()))
+        .andExpect(status().isBadRequest())
+        .andExpect(header().exists("Content-Security-Policy"))
+        .andExpect(header().string("Cross-Origin-Embedder-Policy", "require-corp"))
+        .andExpect(header().string("Cross-Origin-Opener-Policy", "same-origin"))
+        .andExpect(header().string("Cross-Origin-Resource-Policy", "same-origin"))
+        .andExpect(header().string("Permissions-Policy", PERMISSIONS_POLICY))
+        .andExpect(header().string("X-Content-Type-Options", "nosniff"))
+        .andExpect(header().string("X-Frame-Options", "DENY"));
+  }
 }

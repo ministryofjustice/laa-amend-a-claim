@@ -31,160 +31,158 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 @Feature("Assessment Outcome Button State")
 public class ClaimDetailsTest extends BaseTest {
 
-    // ---------------- Crime data ----------------
-    private final String CRIME_OFFICE_CODE = "123456";
-    private final String CRIME_UFN = "031222/002";
-    private final String CRIME_SUBMISSION_ID = UUID.randomUUID().toString();
-    private final String CRIME_CLAIM_ID = UUID.randomUUID().toString();
-    private final String CRIME_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-    private final String CRIME_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
+  // ---------------- Crime data ----------------
+  private final String CRIME_OFFICE_CODE = "123456";
+  private final String CRIME_UFN = "031222/002";
+  private final String CRIME_SUBMISSION_ID = UUID.randomUUID().toString();
+  private final String CRIME_CLAIM_ID = UUID.randomUUID().toString();
+  private final String CRIME_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
+  private final String CRIME_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
 
-    // ---------------- Civil data ----------------
-    private final String CIVIL_OFFICE_CODE = "234567";
-    private final String CIVIL_UFN = "121019/001";
-    private final String CIVIL_SUBMISSION_ID = UUID.randomUUID().toString();
-    private final String CIVIL_CLAIM_ID = UUID.randomUUID().toString();
-    private final String CIVIL_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-    private final String CIVIL_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
+  // ---------------- Civil data ----------------
+  private final String CIVIL_OFFICE_CODE = "234567";
+  private final String CIVIL_UFN = "121019/001";
+  private final String CIVIL_SUBMISSION_ID = UUID.randomUUID().toString();
+  private final String CIVIL_CLAIM_ID = UUID.randomUUID().toString();
+  private final String CIVIL_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
+  private final String CIVIL_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
 
-    // ---------------- Unescaped data ----------------
-    private final String UNESCAPED_UFN = generateUfn();
-    private final String UNESCAPED_CLAIM_ID = UUID.randomUUID().toString();
-    private final String UNESCAPED_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-    private final String UNESCAPED_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
+  // ---------------- Unescaped data ----------------
+  private final String UNESCAPED_UFN = generateUfn();
+  private final String UNESCAPED_CLAIM_ID = UUID.randomUUID().toString();
+  private final String UNESCAPED_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
+  private final String UNESCAPED_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
 
-    @Override
-    protected List<Insert> inserts() {
-        return List.of(
-                BulkSubmissionInsert.builder()
-                        .id(BULK_SUBMISSION_ID)
-                        .userId(USER_ID)
-                        .build(),
-                SubmissionInsert.builder()
-                        .id(CRIME_SUBMISSION_ID)
-                        .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(CRIME_OFFICE_CODE)
-                        .submissionPeriod("NOV-2025")
-                        .areaOfLaw("CRIME_LOWER")
-                        .userId(USER_ID)
-                        .build(),
-                SubmissionInsert.builder()
-                        .id(CIVIL_SUBMISSION_ID)
-                        .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(CIVIL_OFFICE_CODE)
-                        .submissionPeriod("JUN-2025")
-                        .areaOfLaw("LEGAL_HELP")
-                        .userId(USER_ID)
-                        .build(),
-                ClaimInsert.builder()
-                        .id(CRIME_CLAIM_ID)
-                        .submissionId(CRIME_SUBMISSION_ID)
-                        .uniqueFileNumber(CRIME_UFN)
-                        .userId(USER_ID)
-                        .build(),
-                ClaimInsert.builder()
-                        .id(CIVIL_CLAIM_ID)
-                        .submissionId(CIVIL_SUBMISSION_ID)
-                        .uniqueFileNumber(CIVIL_UFN)
-                        .userId(USER_ID)
-                        .build(),
-                ClaimInsert.builder()
-                        .id(UNESCAPED_CLAIM_ID)
-                        .submissionId(CRIME_SUBMISSION_ID)
-                        .uniqueFileNumber(UNESCAPED_UFN)
-                        .userId(USER_ID)
-                        .build(),
-                ClaimSummaryFeeInsert.builder()
-                        .id(CRIME_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CRIME_CLAIM_ID)
-                        .userId(USER_ID)
-                        .build(),
-                ClaimSummaryFeeInsert.builder()
-                        .id(CIVIL_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CIVIL_CLAIM_ID)
-                        .userId(USER_ID)
-                        .build(),
-                ClaimSummaryFeeInsert.builder()
-                        .id(UNESCAPED_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(UNESCAPED_CLAIM_ID)
-                        .userId(USER_ID)
-                        .build(),
-                CalculatedFeeDetailInsert.builder()
-                        .id(CRIME_CALCULATED_FEE_DETAIL_ID)
-                        .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CRIME_CLAIM_ID)
-                        .escaped(true)
-                        .userId(USER_ID)
-                        .build(),
-                CalculatedFeeDetailInsert.builder()
-                        .id(CIVIL_CALCULATED_FEE_DETAIL_ID)
-                        .claimSummaryFeeId(CIVIL_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CIVIL_CLAIM_ID)
-                        .escaped(true)
-                        .userId(USER_ID)
-                        .build(),
-                CalculatedFeeDetailInsert.builder()
-                        .id(UNESCAPED_CALCULATED_FEE_DETAIL_ID)
-                        .claimSummaryFeeId(UNESCAPED_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(UNESCAPED_CLAIM_ID)
-                        .escaped(false)
-                        .userId(USER_ID)
-                        .build());
-    }
+  @Override
+  protected List<Insert> inserts() {
+    return List.of(
+        BulkSubmissionInsert.builder().id(BULK_SUBMISSION_ID).userId(USER_ID).build(),
+        SubmissionInsert.builder()
+            .id(CRIME_SUBMISSION_ID)
+            .bulkSubmissionId(BULK_SUBMISSION_ID)
+            .officeAccountNumber(CRIME_OFFICE_CODE)
+            .submissionPeriod("NOV-2025")
+            .areaOfLaw("CRIME_LOWER")
+            .userId(USER_ID)
+            .build(),
+        SubmissionInsert.builder()
+            .id(CIVIL_SUBMISSION_ID)
+            .bulkSubmissionId(BULK_SUBMISSION_ID)
+            .officeAccountNumber(CIVIL_OFFICE_CODE)
+            .submissionPeriod("JUN-2025")
+            .areaOfLaw("LEGAL_HELP")
+            .userId(USER_ID)
+            .build(),
+        ClaimInsert.builder()
+            .id(CRIME_CLAIM_ID)
+            .submissionId(CRIME_SUBMISSION_ID)
+            .uniqueFileNumber(CRIME_UFN)
+            .userId(USER_ID)
+            .build(),
+        ClaimInsert.builder()
+            .id(CIVIL_CLAIM_ID)
+            .submissionId(CIVIL_SUBMISSION_ID)
+            .uniqueFileNumber(CIVIL_UFN)
+            .userId(USER_ID)
+            .build(),
+        ClaimInsert.builder()
+            .id(UNESCAPED_CLAIM_ID)
+            .submissionId(CRIME_SUBMISSION_ID)
+            .uniqueFileNumber(UNESCAPED_UFN)
+            .userId(USER_ID)
+            .build(),
+        ClaimSummaryFeeInsert.builder()
+            .id(CRIME_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CRIME_CLAIM_ID)
+            .userId(USER_ID)
+            .build(),
+        ClaimSummaryFeeInsert.builder()
+            .id(CIVIL_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CIVIL_CLAIM_ID)
+            .userId(USER_ID)
+            .build(),
+        ClaimSummaryFeeInsert.builder()
+            .id(UNESCAPED_CLAIM_SUMMARY_FEE_ID)
+            .claimId(UNESCAPED_CLAIM_ID)
+            .userId(USER_ID)
+            .build(),
+        CalculatedFeeDetailInsert.builder()
+            .id(CRIME_CALCULATED_FEE_DETAIL_ID)
+            .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CRIME_CLAIM_ID)
+            .escaped(true)
+            .userId(USER_ID)
+            .build(),
+        CalculatedFeeDetailInsert.builder()
+            .id(CIVIL_CALCULATED_FEE_DETAIL_ID)
+            .claimSummaryFeeId(CIVIL_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CIVIL_CLAIM_ID)
+            .escaped(true)
+            .userId(USER_ID)
+            .build(),
+        CalculatedFeeDetailInsert.builder()
+            .id(UNESCAPED_CALCULATED_FEE_DETAIL_ID)
+            .claimSummaryFeeId(UNESCAPED_CLAIM_SUMMARY_FEE_ID)
+            .claimId(UNESCAPED_CLAIM_ID)
+            .escaped(false)
+            .userId(USER_ID)
+            .build());
+  }
 
-    static Stream<ClaimDetailsFixture> detailsCases() {
-        return Stream.of(
-                // crime
-                loadFixture("fixtures/claim-details/crime-111018-001.json"),
-                // civil
-                loadFixture("fixtures/claim-details/civil-121019-001.json"));
-    }
+  static Stream<ClaimDetailsFixture> detailsCases() {
+    return Stream.of(
+        // crime
+        loadFixture("fixtures/claim-details/crime-111018-001.json"),
+        // civil
+        loadFixture("fixtures/claim-details/civil-121019-001.json"));
+  }
 
-    @Test
-    @Story("Non-escape claim")
-    @DisplayName("Claim Details: Add assessment outcome is hidden for non-escape claims")
-    @Severity(SeverityLevel.CRITICAL)
-    void addAssessmentOutcomeIsDisabledForNonEscapeClaim() {
-        SearchPage search = new SearchPage(page);
+  @Test
+  @Story("Non-escape claim")
+  @DisplayName("Claim Details: Add assessment outcome is hidden for non-escape claims")
+  @Severity(SeverityLevel.CRITICAL)
+  void addAssessmentOutcomeIsDisabledForNonEscapeClaim() {
+    SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(CRIME_OFFICE_CODE, "11", "2025", UNESCAPED_UFN, "", "", "");
+    search.searchForClaim(CRIME_OFFICE_CODE, "11", "2025", UNESCAPED_UFN, "", "", "");
 
-        search.clickViewForUfn(UNESCAPED_UFN);
+    search.clickViewForUfn(UNESCAPED_UFN);
 
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
+    ClaimDetailsPage details = new ClaimDetailsPage(page);
 
-        Assertions.assertTrue(
-                details.isAddAssessmentOutcomeHidden(),
-                "Expected Add assessment outcome button to be disabled for non-escape claim");
-    }
+    Assertions.assertTrue(
+        details.isAddAssessmentOutcomeHidden(),
+        "Expected Add assessment outcome button to be disabled for non-escape claim");
+  }
 
-    /**
-     * Verifying Totals has been removed from test data, until we fix test data
-     *
-     * @param claimDetailsFixture
-     */
-    @ParameterizedTest(name = "[{index}] {0} Claim: Values match fixture")
-    @MethodSource("detailsCases")
-    @DisplayName("Claim Details: Values match fixture")
-    @Severity(SeverityLevel.CRITICAL)
-    void claimValuesMatchFixture(ClaimDetailsFixture claimDetailsFixture) {
-        SearchPage search = new SearchPage(page);
+  /**
+   * Verifying Totals has been removed from test data, until we fix test data
+   *
+   * @param claimDetailsFixture
+   */
+  @ParameterizedTest(name = "[{index}] {0} Claim: Values match fixture")
+  @MethodSource("detailsCases")
+  @DisplayName("Claim Details: Values match fixture")
+  @Severity(SeverityLevel.CRITICAL)
+  void claimValuesMatchFixture(ClaimDetailsFixture claimDetailsFixture) {
+    SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(claimDetailsFixture.getOfficeCode(), "", "", claimDetailsFixture.getUfn(), "", "", "");
+    search.searchForClaim(
+        claimDetailsFixture.getOfficeCode(), "", "", claimDetailsFixture.getUfn(), "", "", "");
 
-        search.clickViewForUfn(claimDetailsFixture.getUfn());
+    search.clickViewForUfn(claimDetailsFixture.getUfn());
 
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
+    ClaimDetailsPage details = new ClaimDetailsPage(page);
 
-        Assertions.assertFalse(
-                details.isAddAssessmentOutcomeHidden(),
-                "Expected Add assessment outcome button to be enabled for escape claim");
+    Assertions.assertFalse(
+        details.isAddAssessmentOutcomeHidden(),
+        "Expected Add assessment outcome button to be enabled for escape claim");
 
-        Assertions.assertEquals(
-                claimDetailsFixture.isAddAssessmentOutcomeDisabled(),
-                details.isAddAssessmentOutcomeHidden(),
-                "Add assessment outcome enabled/disabled state mismatch");
+    Assertions.assertEquals(
+        claimDetailsFixture.isAddAssessmentOutcomeDisabled(),
+        details.isAddAssessmentOutcomeHidden(),
+        "Add assessment outcome enabled/disabled state mismatch");
 
-        details.assertAllValues(claimDetailsFixture.getValues());
-    }
+    details.assertAllValues(claimDetailsFixture.getValues());
+  }
 }

@@ -11,24 +11,24 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 
 class ClaimResultMapperTest {
 
-    @Test
-    void givenEmptyClaimResultSet_whenToDtoIsCalled_thenEmptyViewModelIsReturned() {
-        // Arrange
-        var claimResultSet = mock(ClaimResultSetV2.class);
+  @Test
+  void givenEmptyClaimResultSet_whenToDtoIsCalled_thenEmptyViewModelIsReturned() {
+    // Arrange
+    var claimResultSet = mock(ClaimResultSetV2.class);
 
-        when(claimResultSet.getTotalElements()).thenReturn(0);
-        when(claimResultSet.getSize()).thenReturn(10);
-        when(claimResultSet.getNumber()).thenReturn(1);
-        when(claimResultSet.getContent()).thenReturn(List.of());
+    when(claimResultSet.getTotalElements()).thenReturn(0);
+    when(claimResultSet.getSize()).thenReturn(10);
+    when(claimResultSet.getNumber()).thenReturn(1);
+    when(claimResultSet.getContent()).thenReturn(List.of());
 
-        ClaimResultMapper mapper = new ClaimResultMapperImpl();
-        ClaimMapper claimMapper = new ClaimMapperImpl();
+    ClaimResultMapper mapper = new ClaimResultMapperImpl();
+    ClaimMapper claimMapper = new ClaimMapperImpl();
 
-        // Act
-        SearchResultView resultViewModel = mapper.toDto(claimResultSet, "/", claimMapper);
+    // Act
+    SearchResultView resultViewModel = mapper.toDto(claimResultSet, "/", claimMapper);
 
-        assertEquals(0, resultViewModel.getPagination().getResults().getCount());
-        assertEquals(0, resultViewModel.getPagination().getItems().size());
-        assertEquals(0, resultViewModel.getClaims().size());
-    }
+    assertEquals(0, resultViewModel.getPagination().getResults().getCount());
+    assertEquals(0, resultViewModel.getPagination().getItems().size());
+    assertEquals(0, resultViewModel.getClaims().size());
+  }
 }

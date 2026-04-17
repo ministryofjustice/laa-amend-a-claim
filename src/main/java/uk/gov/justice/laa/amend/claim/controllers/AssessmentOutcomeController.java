@@ -29,64 +29,71 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 @HasRoleEscapeCaseCaseworker
 public class AssessmentOutcomeController {
 
-    private final AssessmentService assessmentService;
+  private final AssessmentService assessmentService;
 
-    @GetMapping("/assessment-outcome")
-    public String setAssessmentOutcome(
-            HttpSession session, Model model, @PathVariable UUID submissionId, @PathVariable UUID claimId) {
-        var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+  @GetMapping("/assessment-outcome")
+  public String setAssessmentOutcome(
+      HttpSession session,
+      Model model,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
 
-        AssessmentOutcomeForm form = new AssessmentOutcomeForm();
-        form.setAssessmentOutcome(claim.getAssessmentOutcome());
-        form.setContingencyAssessment(claim.isContingencyAssessment());
+    AssessmentOutcomeForm form = new AssessmentOutcomeForm();
+    form.setAssessmentOutcome(claim.getAssessmentOutcome());
+    form.setContingencyAssessment(claim.isContingencyAssessment());
 
-        return renderView(model, form, submissionId, claimId, claim);
+    return renderView(model, form, submissionId, claimId, claim);
+  }
+
+  @PostMapping("/assessment-outcome")
+  public String selectAssessmentOutcome(
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId,
+      @Valid @ModelAttribute("form") AssessmentOutcomeForm form,
+      BindingResult bindingResult,
+      HttpSession session,
+      Model model,
+      HttpServletResponse response) {
+    var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+
+    if (bindingResult.hasErrors()) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return renderView(model, form, submissionId, claimId, claim);
     }
 
-    @PostMapping("/assessment-outcome")
-    public String selectAssessmentOutcome(
-            @PathVariable UUID submissionId,
-            @PathVariable UUID claimId,
-            @Valid @ModelAttribute("form") AssessmentOutcomeForm form,
-            BindingResult bindingResult,
-            HttpSession session,
-            Model model,
-            HttpServletResponse response) {
-        var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+    OutcomeType newOutcome = form.getAssessmentOutcome();
 
-        if (bindingResult.hasErrors()) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return renderView(model, form, submissionId, claimId, claim);
-        }
+    // Apply business logic based on outcome change
+    assessmentService.applyAssessmentOutcome(claim, newOutcome);
 
-        OutcomeType newOutcome = form.getAssessmentOutcome();
+    // Set the assessment outcome
+    claim.setAssessmentOutcome(newOutcome);
 
-        // Apply business logic based on outcome change
-        assessmentService.applyAssessmentOutcome(claim, newOutcome);
-
-        // Set the assessment outcome
-        claim.setAssessmentOutcome(newOutcome);
-
-        // Set the assessment reason
-        if (Boolean.TRUE.equals(form.getContingencyAssessment())) {
-            claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY);
-        } else {
-            claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
-        }
-
-        // Save updated Claim back to session
-        session.setAttribute(claimId.toString(), claim);
-
-        return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
+    // Set the assessment reason
+    if (Boolean.TRUE.equals(form.getContingencyAssessment())) {
+      claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY);
+    } else {
+      claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
     }
 
-    private String renderView(
-            Model model, AssessmentOutcomeForm form, UUID submissionId, UUID claimId, ClaimDetails claim) {
-        model.addAttribute("submissionId", submissionId);
-        model.addAttribute("claimId", claimId);
-        model.addAttribute("form", form);
-        model.addAttribute("hasAssessment", claim.isHasAssessment());
+    // Save updated Claim back to session
+    session.setAttribute(claimId.toString(), claim);
 
-        return "assessment-outcome";
-    }
+    return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
+  }
+
+  private String renderView(
+      Model model,
+      AssessmentOutcomeForm form,
+      UUID submissionId,
+      UUID claimId,
+      ClaimDetails claim) {
+    model.addAttribute("submissionId", submissionId);
+    model.addAttribute("claimId", claimId);
+    model.addAttribute("form", form);
+    model.addAttribute("hasAssessment", claim.isHasAssessment());
+
+    return "assessment-outcome";
+  }
 }

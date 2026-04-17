@@ -11,10 +11,10 @@ import uk.gov.justice.laa.amend.claim.config.AppConfig;
 @EnableConfigurationProperties(AppConfig.class)
 public class AppConfigControllerAdvice {
 
-    private final AppConfig appConfig;
+  private final AppConfig appConfig;
 
-    @ModelAttribute("app")
-    public AppConfig app() {
-        return appConfig;
-    }
+  @ModelAttribute("app")
+  public AppConfig app() {
+    return appConfig;
+  }
 }

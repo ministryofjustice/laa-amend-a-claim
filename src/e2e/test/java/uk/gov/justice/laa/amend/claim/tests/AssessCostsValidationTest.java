@@ -29,219 +29,217 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 
 public class AssessCostsValidationTest extends BaseTest {
 
-    // ---------------- Crime data ----------------
-    private final String CRIME_OFFICE_CODE = "123456";
-    private final String CRIME_UFN = generateUfn();
-    private final String CRIME_MONTH = "04";
-    private final String CRIME_YEAR = "2025";
-    private final String CRIME_SUBMISSION_ID = UUID.randomUUID().toString();
-    private final String CRIME_CLAIM_ID = UUID.randomUUID().toString();
-    private final String CRIME_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-    private final String CRIME_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
+  // ---------------- Crime data ----------------
+  private final String CRIME_OFFICE_CODE = "123456";
+  private final String CRIME_UFN = generateUfn();
+  private final String CRIME_MONTH = "04";
+  private final String CRIME_YEAR = "2025";
+  private final String CRIME_SUBMISSION_ID = UUID.randomUUID().toString();
+  private final String CRIME_CLAIM_ID = UUID.randomUUID().toString();
+  private final String CRIME_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
+  private final String CRIME_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
 
-    // ---------------- Civil data ----------------
-    private final String CIVIL_OFFICE_CODE = "234567";
-    private final String CIVIL_UFN = generateUfn();
-    private final String CIVIL_MONTH = "06";
-    private final String CIVIL_YEAR = "2025";
-    private final String CIVIL_SUBMISSION_ID = UUID.randomUUID().toString();
-    private final String CIVIL_CLAIM_ID = UUID.randomUUID().toString();
-    private final String CIVIL_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-    private final String CIVIL_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
+  // ---------------- Civil data ----------------
+  private final String CIVIL_OFFICE_CODE = "234567";
+  private final String CIVIL_UFN = generateUfn();
+  private final String CIVIL_MONTH = "06";
+  private final String CIVIL_YEAR = "2025";
+  private final String CIVIL_SUBMISSION_ID = UUID.randomUUID().toString();
+  private final String CIVIL_CLAIM_ID = UUID.randomUUID().toString();
+  private final String CIVIL_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
+  private final String CIVIL_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
 
-    @Override
-    protected List<Insert> inserts() {
-        return List.of(
-                BulkSubmissionInsert.builder()
-                        .id(BULK_SUBMISSION_ID)
-                        .userId(USER_ID)
-                        .build(),
-                SubmissionInsert.builder()
-                        .id(CRIME_SUBMISSION_ID)
-                        .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(CRIME_OFFICE_CODE)
-                        .submissionPeriod("APR-2025")
-                        .areaOfLaw("CRIME_LOWER")
-                        .userId(USER_ID)
-                        .build(),
-                SubmissionInsert.builder()
-                        .id(CIVIL_SUBMISSION_ID)
-                        .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(CIVIL_OFFICE_CODE)
-                        .submissionPeriod("JUN-2025")
-                        .areaOfLaw("LEGAL_HELP")
-                        .userId(USER_ID)
-                        .build(),
-                ClaimInsert.builder()
-                        .id(CRIME_CLAIM_ID)
-                        .submissionId(CRIME_SUBMISSION_ID)
-                        .uniqueFileNumber(CRIME_UFN)
-                        .userId(USER_ID)
-                        .build(),
-                ClaimInsert.builder()
-                        .id(CIVIL_CLAIM_ID)
-                        .submissionId(CIVIL_SUBMISSION_ID)
-                        .uniqueFileNumber(CIVIL_UFN)
-                        .userId(USER_ID)
-                        .build(),
-                ClaimSummaryFeeInsert.builder()
-                        .id(CRIME_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CRIME_CLAIM_ID)
-                        .userId(USER_ID)
-                        .build(),
-                ClaimSummaryFeeInsert.builder()
-                        .id(CIVIL_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CIVIL_CLAIM_ID)
-                        .userId(USER_ID)
-                        .build(),
-                CalculatedFeeDetailInsert.builder()
-                        .id(CRIME_CALCULATED_FEE_DETAIL_ID)
-                        .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CRIME_CLAIM_ID)
-                        .escaped(true)
-                        .userId(USER_ID)
-                        .build(),
-                CalculatedFeeDetailInsert.builder()
-                        .id(CIVIL_CALCULATED_FEE_DETAIL_ID)
-                        .claimSummaryFeeId(CIVIL_CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CIVIL_CLAIM_ID)
-                        .escaped(true)
-                        .userId(USER_ID)
-                        .build());
-    }
+  @Override
+  protected List<Insert> inserts() {
+    return List.of(
+        BulkSubmissionInsert.builder().id(BULK_SUBMISSION_ID).userId(USER_ID).build(),
+        SubmissionInsert.builder()
+            .id(CRIME_SUBMISSION_ID)
+            .bulkSubmissionId(BULK_SUBMISSION_ID)
+            .officeAccountNumber(CRIME_OFFICE_CODE)
+            .submissionPeriod("APR-2025")
+            .areaOfLaw("CRIME_LOWER")
+            .userId(USER_ID)
+            .build(),
+        SubmissionInsert.builder()
+            .id(CIVIL_SUBMISSION_ID)
+            .bulkSubmissionId(BULK_SUBMISSION_ID)
+            .officeAccountNumber(CIVIL_OFFICE_CODE)
+            .submissionPeriod("JUN-2025")
+            .areaOfLaw("LEGAL_HELP")
+            .userId(USER_ID)
+            .build(),
+        ClaimInsert.builder()
+            .id(CRIME_CLAIM_ID)
+            .submissionId(CRIME_SUBMISSION_ID)
+            .uniqueFileNumber(CRIME_UFN)
+            .userId(USER_ID)
+            .build(),
+        ClaimInsert.builder()
+            .id(CIVIL_CLAIM_ID)
+            .submissionId(CIVIL_SUBMISSION_ID)
+            .uniqueFileNumber(CIVIL_UFN)
+            .userId(USER_ID)
+            .build(),
+        ClaimSummaryFeeInsert.builder()
+            .id(CRIME_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CRIME_CLAIM_ID)
+            .userId(USER_ID)
+            .build(),
+        ClaimSummaryFeeInsert.builder()
+            .id(CIVIL_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CIVIL_CLAIM_ID)
+            .userId(USER_ID)
+            .build(),
+        CalculatedFeeDetailInsert.builder()
+            .id(CRIME_CALCULATED_FEE_DETAIL_ID)
+            .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CRIME_CLAIM_ID)
+            .escaped(true)
+            .userId(USER_ID)
+            .build(),
+        CalculatedFeeDetailInsert.builder()
+            .id(CIVIL_CALCULATED_FEE_DETAIL_ID)
+            .claimSummaryFeeId(CIVIL_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CIVIL_CLAIM_ID)
+            .escaped(true)
+            .userId(USER_ID)
+            .build());
+  }
 
-    private void navigateToReviewAndAmend(String provider, String month, String year, String ufn) {
-        SearchPage search = new SearchPage(page);
-        search.searchForClaim(provider, month, year, ufn, "", "", "");
-        search.clickViewForUfn(ufn);
+  private void navigateToReviewAndAmend(String provider, String month, String year, String ufn) {
+    SearchPage search = new SearchPage(page);
+    search.searchForClaim(provider, month, year, ufn, "", "", "");
+    search.clickViewForUfn(ufn);
 
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
-        details.clickAddUpdateAssessmentOutcome();
+    ClaimDetailsPage details = new ClaimDetailsPage(page);
+    details.clickAddUpdateAssessmentOutcome();
 
-        AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
-        outcome.selectAssessmentOutcome("assessed in full");
-        outcome.saveChanges();
+    AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
+    outcome.selectAssessmentOutcome("assessed in full");
+    outcome.saveChanges();
 
-        assertTrue(page.url().contains("/review"));
-    }
+    assertTrue(page.url().contains("/review"));
+  }
 
-    @Test
-    @DisplayName("Crime: Profit costs - letters cause number validation error")
-    void crimeProfitCostsLettersShowsError() {
-        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+  @Test
+  @DisplayName("Crime: Profit costs - letters cause number validation error")
+  void crimeProfitCostsLettersShowsError() {
+    navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.clickChangeProfitCosts();
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    review.clickChangeProfitCosts();
 
-        AssessProfitCostsPage profit = new AssessProfitCostsPage(page);
-        profit.setAssessedValue("dasad");
-        profit.saveChanges();
+    AssessProfitCostsPage profit = new AssessProfitCostsPage(page);
+    profit.setAssessedValue("dasad");
+    profit.saveChanges();
 
-        profit.assertMustBeNumberWithUpTo2DpError();
-    }
+    profit.assertMustBeNumberWithUpTo2DpError();
+  }
 
-    @Test
-    @DisplayName("Crime: Disbursements - letters cause number validation error")
-    void crimeDisbursementsLettersShowsError() {
-        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+  @Test
+  @DisplayName("Crime: Disbursements - letters cause number validation error")
+  void crimeDisbursementsLettersShowsError() {
+    navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.clickChangeDisbursements();
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    review.clickChangeDisbursements();
 
-        AssessDisbursementsPage disb = new AssessDisbursementsPage(page);
-        disb.setAssessedValue("dasad");
-        disb.saveChanges();
+    AssessDisbursementsPage disb = new AssessDisbursementsPage(page);
+    disb.setAssessedValue("dasad");
+    disb.saveChanges();
 
-        disb.assertMustBeNumberWithUpTo2DpError();
-    }
+    disb.assertMustBeNumberWithUpTo2DpError();
+  }
 
-    @Test
-    @DisplayName("Crime: Disbursement VAT - letters cause number validation error")
-    void crimeDisbursementVatLettersShowsError() {
-        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+  @Test
+  @DisplayName("Crime: Disbursement VAT - letters cause number validation error")
+  void crimeDisbursementVatLettersShowsError() {
+    navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.clickChangeDisbursementsVat();
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    review.clickChangeDisbursementsVat();
 
-        AssessDisbursementsVatPage disbVat = new AssessDisbursementsVatPage(page);
-        disbVat.setAssessedValue("dasad");
-        disbVat.saveChanges();
+    AssessDisbursementsVatPage disbVat = new AssessDisbursementsVatPage(page);
+    disbVat.setAssessedValue("dasad");
+    disbVat.saveChanges();
 
-        disbVat.assertMustBeNumberWithUpTo2DpError();
-    }
+    disbVat.assertMustBeNumberWithUpTo2DpError();
+  }
 
-    @Test
-    @DisplayName("Crime: Travel costs - letters cause number validation error")
-    void crimeTravelCostsLettersShowsError() {
-        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+  @Test
+  @DisplayName("Crime: Travel costs - letters cause number validation error")
+  void crimeTravelCostsLettersShowsError() {
+    navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.clickChangeTravelCosts();
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    review.clickChangeTravelCosts();
 
-        AssessTravelCostsPage travel = new AssessTravelCostsPage(page);
-        travel.setAssessedValue("dasad");
-        travel.saveChanges();
+    AssessTravelCostsPage travel = new AssessTravelCostsPage(page);
+    travel.setAssessedValue("dasad");
+    travel.saveChanges();
 
-        travel.assertMustBeNumberWithUpTo2DpError();
-    }
+    travel.assertMustBeNumberWithUpTo2DpError();
+  }
 
-    @Test
-    @DisplayName("Crime: Waiting costs - letters cause number validation error")
-    void crimeWaitingCostsLettersShowsError() {
-        navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
+  @Test
+  @DisplayName("Crime: Waiting costs - letters cause number validation error")
+  void crimeWaitingCostsLettersShowsError() {
+    navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.clickChangeWaitingCosts();
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    review.clickChangeWaitingCosts();
 
-        AssessWaitingCostsPage waiting = new AssessWaitingCostsPage(page);
-        waiting.setAssessedValue("dasad");
-        waiting.saveChanges();
+    AssessWaitingCostsPage waiting = new AssessWaitingCostsPage(page);
+    waiting.setAssessedValue("dasad");
+    waiting.saveChanges();
 
-        waiting.assertMustBeNumberWithUpTo2DpError();
-    }
+    waiting.assertMustBeNumberWithUpTo2DpError();
+  }
 
-    @Test
-    @DisplayName("Civil: Detention travel and waiting costs - letters cause number validation error")
-    void civilDetentionTravelWaitingLettersShowsError() {
-        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+  @Test
+  @DisplayName("Civil: Detention travel and waiting costs - letters cause number validation error")
+  void civilDetentionTravelWaitingLettersShowsError() {
+    navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.clickChangeDetentionTravelAndWaitingCosts();
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    review.clickChangeDetentionTravelAndWaitingCosts();
 
-        AssessDetentionTravelAndWaitingCostsPage detention = new AssessDetentionTravelAndWaitingCostsPage(page);
-        detention.setAssessedValue("dasad");
-        detention.saveChanges();
+    AssessDetentionTravelAndWaitingCostsPage detention =
+        new AssessDetentionTravelAndWaitingCostsPage(page);
+    detention.setAssessedValue("dasad");
+    detention.saveChanges();
 
-        detention.assertMustBeNumberWithUpTo2DpError();
-    }
+    detention.assertMustBeNumberWithUpTo2DpError();
+  }
 
-    @Test
-    @DisplayName("Civil: JR and form filling - letters cause number validation error")
-    void civilJrFormFillingLettersShowsError() {
-        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+  @Test
+  @DisplayName("Civil: JR and form filling - letters cause number validation error")
+  void civilJrFormFillingLettersShowsError() {
+    navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.clickChangeJrAndFormFilling();
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    review.clickChangeJrAndFormFilling();
 
-        AssessJrFormFillingCostsPage jr = new AssessJrFormFillingCostsPage(page);
-        jr.setAssessedValue("dasad");
-        jr.saveChanges();
+    AssessJrFormFillingCostsPage jr = new AssessJrFormFillingCostsPage(page);
+    jr.setAssessedValue("dasad");
+    jr.saveChanges();
 
-        jr.assertMustBeNumberWithUpTo2DpError();
-    }
+    jr.assertMustBeNumberWithUpTo2DpError();
+  }
 
-    @Test
-    @DisplayName("Civil: Counsel costs - letters cause number validation error")
-    void civilCounselCostsLettersShowsError() {
-        navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
+  @Test
+  @DisplayName("Civil: Counsel costs - letters cause number validation error")
+  void civilCounselCostsLettersShowsError() {
+    navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
-        ReviewAndAmendPage review = new ReviewAndAmendPage(page);
-        review.clickChangeCounselCosts();
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+    review.clickChangeCounselCosts();
 
-        AssessCounselCostsPage counsel = new AssessCounselCostsPage(page);
-        counsel.setAssessedValue("dasad");
-        counsel.saveChanges();
+    AssessCounselCostsPage counsel = new AssessCounselCostsPage(page);
+    counsel.setAssessedValue("dasad");
+    counsel.saveChanges();
 
-        counsel.assertMustBeNumberWithUpTo2DpError();
-    }
+    counsel.assertMustBeNumberWithUpTo2DpError();
+  }
 }

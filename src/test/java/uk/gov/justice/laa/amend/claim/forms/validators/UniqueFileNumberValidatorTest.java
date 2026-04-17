@@ -18,74 +18,75 @@ import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 
 class UniqueFileNumberValidatorTest {
 
-    private UniqueFileNumberValidator validator;
-    private ConstraintValidatorContext constraintValidatorContext;
+  private UniqueFileNumberValidator validator;
+  private ConstraintValidatorContext constraintValidatorContext;
 
-    @BeforeEach
-    void setUp() {
-        validator = new UniqueFileNumberValidator();
-        constraintValidatorContext = mock(ConstraintValidatorContext.class);
-        ConstraintViolationBuilder builder = mock(ConstraintViolationBuilder.class);
-        NodeBuilderCustomizableContext nodeBuilderCustomizableContext = mock(NodeBuilderCustomizableContext.class);
+  @BeforeEach
+  void setUp() {
+    validator = new UniqueFileNumberValidator();
+    constraintValidatorContext = mock(ConstraintValidatorContext.class);
+    ConstraintViolationBuilder builder = mock(ConstraintViolationBuilder.class);
+    NodeBuilderCustomizableContext nodeBuilderCustomizableContext =
+        mock(NodeBuilderCustomizableContext.class);
 
-        when(constraintValidatorContext.buildConstraintViolationWithTemplate(anyString()))
-                .thenReturn(builder);
-        when(builder.addPropertyNode(anyString())).thenReturn(nodeBuilderCustomizableContext);
-        when(builder.addConstraintViolation()).thenReturn(constraintValidatorContext);
-    }
+    when(constraintValidatorContext.buildConstraintViolationWithTemplate(anyString()))
+        .thenReturn(builder);
+    when(builder.addPropertyNode(anyString())).thenReturn(nodeBuilderCustomizableContext);
+    when(builder.addConstraintViolation()).thenReturn(constraintValidatorContext);
+  }
 
-    @Test
-    void testNullIsValid() {
-        SearchForm form = new SearchForm();
-        form.setUniqueFileNumber(null);
+  @Test
+  void testNullIsValid() {
+    SearchForm form = new SearchForm();
+    form.setUniqueFileNumber(null);
 
-        assertTrue(validator.isValid(form, constraintValidatorContext));
-    }
+    assertTrue(validator.isValid(form, constraintValidatorContext));
+  }
 
-    @Test
-    void testBlankIsValid() {
-        SearchForm form = new SearchForm();
-        form.setUniqueFileNumber("");
+  @Test
+  void testBlankIsValid() {
+    SearchForm form = new SearchForm();
+    form.setUniqueFileNumber("");
 
-        assertTrue(validator.isValid(form, constraintValidatorContext));
-    }
+    assertTrue(validator.isValid(form, constraintValidatorContext));
+  }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"123", "123/456789", "1/2/3"})
-    void testInvalidFormatIsInvalid(String value) {
-        SearchForm form = new SearchForm();
-        form.setUniqueFileNumber(value);
+  @ParameterizedTest
+  @ValueSource(strings = {"123", "123/456789", "1/2/3"})
+  void testInvalidFormatIsInvalid(String value) {
+    SearchForm form = new SearchForm();
+    form.setUniqueFileNumber(value);
 
-        assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext)
-                .buildConstraintViolationWithTemplate("{index.uniqueFileNumber.error.format}");
-    }
+    assertFalse(validator.isValid(form, constraintValidatorContext));
+    verify(constraintValidatorContext)
+        .buildConstraintViolationWithTemplate("{index.uniqueFileNumber.error.format}");
+  }
 
-    @Test
-    void testInvalidCharactersIsInvalid() {
-        SearchForm form = new SearchForm();
-        form.setUniqueFileNumber("!!!!!!/!!!");
+  @Test
+  void testInvalidCharactersIsInvalid() {
+    SearchForm form = new SearchForm();
+    form.setUniqueFileNumber("!!!!!!/!!!");
 
-        assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext)
-                .buildConstraintViolationWithTemplate("{index.uniqueFileNumber.error.invalid}");
-    }
+    assertFalse(validator.isValid(form, constraintValidatorContext));
+    verify(constraintValidatorContext)
+        .buildConstraintViolationWithTemplate("{index.uniqueFileNumber.error.invalid}");
+  }
 
-    @Test
-    void testAllForwardSlashesIsInvalid() {
-        SearchForm form = new SearchForm();
-        form.setUniqueFileNumber("//////////");
+  @Test
+  void testAllForwardSlashesIsInvalid() {
+    SearchForm form = new SearchForm();
+    form.setUniqueFileNumber("//////////");
 
-        assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext)
-                .buildConstraintViolationWithTemplate("{index.uniqueFileNumber.error.format}");
-    }
+    assertFalse(validator.isValid(form, constraintValidatorContext));
+    verify(constraintValidatorContext)
+        .buildConstraintViolationWithTemplate("{index.uniqueFileNumber.error.format}");
+  }
 
-    @Test
-    void testValidInputIsValid() {
-        SearchForm form = new SearchForm();
-        form.setUniqueFileNumber("123456/789");
+  @Test
+  void testValidInputIsValid() {
+    SearchForm form = new SearchForm();
+    form.setUniqueFileNumber("123456/789");
 
-        assertTrue(validator.isValid(form, constraintValidatorContext));
-    }
+    assertTrue(validator.isValid(form, constraintValidatorContext));
+  }
 }

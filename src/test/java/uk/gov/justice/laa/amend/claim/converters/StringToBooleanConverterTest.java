@@ -9,25 +9,25 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class StringToBooleanConverterTest {
 
-    private final StringToBooleanConverter converter = new StringToBooleanConverter();
+  private final StringToBooleanConverter converter = new StringToBooleanConverter();
 
-    private static Stream<Arguments> provideArguments() {
-        return Stream.of(
-                Arguments.of("true", true),
-                Arguments.of("True", true),
-                Arguments.of("false", false),
-                Arguments.of("False", false),
-                Arguments.of("yes", true),
-                Arguments.of("Yes", true),
-                Arguments.of("no", false),
-                Arguments.of("No", false),
-                Arguments.of(null, null),
-                Arguments.of("", null));
-    }
+  private static Stream<Arguments> provideArguments() {
+    return Stream.of(
+        Arguments.of("true", true),
+        Arguments.of("True", true),
+        Arguments.of("false", false),
+        Arguments.of("False", false),
+        Arguments.of("yes", true),
+        Arguments.of("Yes", true),
+        Arguments.of("no", false),
+        Arguments.of("No", false),
+        Arguments.of(null, null),
+        Arguments.of("", null));
+  }
 
-    @MethodSource("provideArguments")
-    @ParameterizedTest
-    void convertsStringToBoolean(String input, Boolean expected) {
-        assertEquals(expected, converter.convert(input));
-    }
+  @MethodSource("provideArguments")
+  @ParameterizedTest
+  void convertsStringToBoolean(String input, Boolean expected) {
+    assertEquals(expected, converter.convert(input));
+  }
 }

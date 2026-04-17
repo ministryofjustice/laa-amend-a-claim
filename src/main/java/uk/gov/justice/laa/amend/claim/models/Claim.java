@@ -15,37 +15,37 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 @Data
 public class Claim {
 
-    private UUID submissionId;
-    private UUID claimId;
-    private UUID claimSummaryFeeId;
-    private String uniqueFileNumber;
-    private String caseReferenceNumber;
-    private String clientSurname;
-    private String clientForename;
+  private UUID submissionId;
+  private UUID claimId;
+  private UUID claimSummaryFeeId;
+  private String uniqueFileNumber;
+  private String caseReferenceNumber;
+  private String clientSurname;
+  private String clientForename;
 
-    @JsonSerialize(using = YearMonthSerializer.class)
-    @JsonDeserialize(using = YearMonthDeserializer.class)
-    private YearMonth submissionPeriod;
+  @JsonSerialize(using = YearMonthSerializer.class)
+  @JsonDeserialize(using = YearMonthDeserializer.class)
+  private YearMonth submissionPeriod;
 
-    private LocalDate caseStartDate;
+  private LocalDate caseStartDate;
 
-    private LocalDate caseEndDate;
-    private AreaOfLaw areaOfLaw;
-    private String categoryOfLaw;
-    private Boolean escaped;
-    private Boolean vatApplicable;
-    private String officeCode;
-    private ClaimStatus status;
+  private LocalDate caseEndDate;
+  private AreaOfLaw areaOfLaw;
+  private String categoryOfLaw;
+  private Boolean escaped;
+  private Boolean vatApplicable;
+  private String officeCode;
+  private ClaimStatus status;
 
-    public BaseClaimView<? extends Claim> toViewModel() {
-        return new ClaimView(this);
-    }
+  public BaseClaimView<? extends Claim> toViewModel() {
+    return new ClaimView(this);
+  }
 
-    public Boolean isValid() {
-        return status == ClaimStatus.VALID;
-    }
+  public Boolean isValid() {
+    return status == ClaimStatus.VALID;
+  }
 
-    public Boolean isVoided() {
-        return status == ClaimStatus.VOID;
-    }
+  public Boolean isVoided() {
+    return status == ClaimStatus.VOID;
+  }
 }

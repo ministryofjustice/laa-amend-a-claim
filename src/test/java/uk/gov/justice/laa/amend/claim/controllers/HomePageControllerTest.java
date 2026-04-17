@@ -30,172 +30,185 @@ import uk.gov.justice.laa.amend.claim.service.ClaimService;
 @WebMvcTest(HomePageController.class)
 public class HomePageControllerTest extends BaseControllerTest {
 
-    @MockitoBean
-    private ClaimService claimService;
+  @MockitoBean private ClaimService claimService;
 
-    @MockitoBean
-    private ClaimResultMapper claimResultMapper;
+  @MockitoBean private ClaimResultMapper claimResultMapper;
 
-    @MockitoBean
-    private ClaimMapper claimMapper;
+  @MockitoBean private ClaimMapper claimMapper;
 
-    @MockitoBean
-    private SearchProperties searchProperties;
+  @MockitoBean private SearchProperties searchProperties;
 
-    @Test
-    public void testOnPageLoadReturnsView() throws Exception {
-        when(searchProperties.isSortEnabled()).thenReturn(true);
+  @Test
+  public void testOnPageLoadReturnsView() throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        Sorts expectedSorts = Sorts.builder()
-                .value(Map.of(SortField.UNIQUE_FILE_NUMBER, SortDirection.ASCENDING))
-                .enabled(true)
-                .build();
+    Sorts expectedSorts =
+        Sorts.builder()
+            .value(Map.of(SortField.UNIQUE_FILE_NUMBER, SortDirection.ASCENDING))
+            .enabled(true)
+            .build();
 
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"))
-                .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
-                .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
-    }
+    mockMvc
+        .perform(get("/"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("index"))
+        .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
+        .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
+  }
 
-    @Test
-    public void testOnPageLoadReturnsViewWithDefinedSort() throws Exception {
-        when(searchProperties.isSortEnabled()).thenReturn(true);
+  @Test
+  public void testOnPageLoadReturnsViewWithDefinedSort() throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        Sorts expectedSorts = Sorts.builder()
-                .value(Map.of(SortField.CASE_REFERENCE_NUMBER, SortDirection.DESCENDING))
-                .enabled(true)
-                .build();
+    Sorts expectedSorts =
+        Sorts.builder()
+            .value(Map.of(SortField.CASE_REFERENCE_NUMBER, SortDirection.DESCENDING))
+            .enabled(true)
+            .build();
 
-        mockMvc.perform(get("/?sort=case_reference_number,desc"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"))
-                .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
-                .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
-    }
+    mockMvc
+        .perform(get("/?sort=case_reference_number,desc"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("index"))
+        .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
+        .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
+  }
 
-    @Test
-    public void testOnPageLoadReturnsViewWithSortingDisabled() throws Exception {
-        when(searchProperties.isSortEnabled()).thenReturn(false);
+  @Test
+  public void testOnPageLoadReturnsViewWithSortingDisabled() throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(false);
 
-        Sorts expectedSorts = Sorts.builder().enabled(false).build();
+    Sorts expectedSorts = Sorts.builder().enabled(false).build();
 
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"))
-                .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
-                .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
-    }
+    mockMvc
+        .perform(get("/"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("index"))
+        .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
+        .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
+  }
 
-    @Test
-    public void testOnPageLoadWithParamsReturnsView() throws Exception {
-        when(searchProperties.isSortEnabled()).thenReturn(true);
+  @Test
+  public void testOnPageLoadWithParamsReturnsView() throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        String expectedSearchUrl = "/?officeCode=123456"
-                + "&submissionDateMonth=3"
-                + "&submissionDateYear=2007"
-                + "&uniqueFileNumber=123456/789"
-                + "&caseReferenceNumber=789"
-                + "&page=1"
-                + "&sort=unique_file_number,asc";
+    String expectedSearchUrl =
+        "/?officeCode=123456"
+            + "&submissionDateMonth=3"
+            + "&submissionDateYear=2007"
+            + "&uniqueFileNumber=123456/789"
+            + "&caseReferenceNumber=789"
+            + "&page=1"
+            + "&sort=unique_file_number,asc";
 
-        mockMvc.perform(get("/").param("officeCode", "123456")
-                        .param("submissionDateMonth", "3")
-                        .param("submissionDateYear", "2007")
-                        .param("uniqueFileNumber", "123456/789")
-                        .param("caseReferenceNumber", "789"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"))
-                .andExpect(model().attribute("form", hasProperty("officeCode", is("123456"))))
-                .andExpect(model().attribute("form", hasProperty("submissionDateMonth", is("3"))))
-                .andExpect(model().attribute("form", hasProperty("submissionDateYear", is("2007"))))
-                .andExpect(model().attribute("form", hasProperty("uniqueFileNumber", is("123456/789"))))
-                .andExpect(model().attribute("form", hasProperty("caseReferenceNumber", is("789"))))
-                .andExpect(request().sessionAttribute("searchUrl", expectedSearchUrl));
-    }
+    mockMvc
+        .perform(
+            get("/")
+                .param("officeCode", "123456")
+                .param("submissionDateMonth", "3")
+                .param("submissionDateYear", "2007")
+                .param("uniqueFileNumber", "123456/789")
+                .param("caseReferenceNumber", "789"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("index"))
+        .andExpect(model().attribute("form", hasProperty("officeCode", is("123456"))))
+        .andExpect(model().attribute("form", hasProperty("submissionDateMonth", is("3"))))
+        .andExpect(model().attribute("form", hasProperty("submissionDateYear", is("2007"))))
+        .andExpect(model().attribute("form", hasProperty("uniqueFileNumber", is("123456/789"))))
+        .andExpect(model().attribute("form", hasProperty("caseReferenceNumber", is("789"))))
+        .andExpect(request().sessionAttribute("searchUrl", expectedSearchUrl));
+  }
 
-    @Test
-    public void testOnPageLoadWithUnknownParamsReturnsBadRequest() throws Exception {
-        when(searchProperties.isSortEnabled()).thenReturn(true);
+  @Test
+  public void testOnPageLoadWithUnknownParamsReturnsBadRequest() throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        mockMvc.perform(get("/").param("foo", "bar")).andExpect(status().isBadRequest());
-    }
+    mockMvc.perform(get("/").param("foo", "bar")).andExpect(status().isBadRequest());
+  }
 
-    @Test
-    public void testOnPageLoadWithInvalidSortFieldReturnsBadRequest() throws Exception {
-        when(searchProperties.isSortEnabled()).thenReturn(true);
+  @Test
+  public void testOnPageLoadWithInvalidSortFieldReturnsBadRequest() throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        mockMvc.perform(get("/?officeCode=123&page=1&sort=foo,asc")).andExpect(status().isBadRequest());
-    }
+    mockMvc.perform(get("/?officeCode=123&page=1&sort=foo,asc")).andExpect(status().isBadRequest());
+  }
 
-    @Test
-    public void testOnPageLoadWithInvalidSortDirectionReturnsBadRequest() throws Exception {
-        when(searchProperties.isSortEnabled()).thenReturn(true);
+  @Test
+  public void testOnPageLoadWithInvalidSortDirectionReturnsBadRequest() throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        mockMvc.perform(get("/?officeCode=123&page=1&sort=unique_file_number,foo"))
-                .andExpect(status().isBadRequest());
-    }
+    mockMvc
+        .perform(get("/?officeCode=123&page=1&sort=unique_file_number,foo"))
+        .andExpect(status().isBadRequest());
+  }
 
-    @Test
-    public void testOnPageLoadWithInvalidParamsReturnsBadRequest() throws Exception {
-        when(searchProperties.isSortEnabled()).thenReturn(true);
+  @Test
+  public void testOnPageLoadWithInvalidParamsReturnsBadRequest() throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        mockMvc.perform(get("/").param("officeCode", "12345").param("uniqueFileNumber", "§§§"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("There is a problem")));
-    }
+    mockMvc
+        .perform(get("/").param("officeCode", "12345").param("uniqueFileNumber", "§§§"))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string(containsString("There is a problem")));
+  }
 
-    @Test
-    public void testOnSubmitReturnsBadRequestWithViewForInvalidForm() throws Exception {
-        when(searchProperties.isSortEnabled()).thenReturn(true);
+  @Test
+  public void testOnSubmitReturnsBadRequestWithViewForInvalidForm() throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        mockMvc.perform(post("/").with(csrf()).param("officeCode", "").param("uniqueFileNumber", "123"))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("index"));
-    }
+    mockMvc
+        .perform(post("/").with(csrf()).param("officeCode", "").param("uniqueFileNumber", "123"))
+        .andExpect(status().isBadRequest())
+        .andExpect(view().name("index"));
+  }
 
-    @Test
-    public void testOnSubmitReturnsViewForValidFormWithOneField() throws Exception {
-        when(searchProperties.isSortEnabled()).thenReturn(true);
+  @Test
+  public void testOnSubmitReturnsViewForValidFormWithOneField() throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        String expectedRedirectUrl = "/?officeCode=123456&page=1&sort=unique_file_number,asc";
+    String expectedRedirectUrl = "/?officeCode=123456&page=1&sort=unique_file_number,asc";
 
-        mockMvc.perform(post("/").with(csrf()).param("officeCode", "123456"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(expectedRedirectUrl));
-    }
+    mockMvc
+        .perform(post("/").with(csrf()).param("officeCode", "123456"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(expectedRedirectUrl));
+  }
 
-    @Test
-    public void testOnSubmitReturnsViewForValidFormWithAllFields() throws Exception {
-        when(searchProperties.isSortEnabled()).thenReturn(true);
+  @Test
+  public void testOnSubmitReturnsViewForValidFormWithAllFields() throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        String expectedRedirectUrl = "/?officeCode=123456"
-                + "&submissionDateMonth=3"
-                + "&submissionDateYear=2007"
-                + "&uniqueFileNumber=123456/789"
-                + "&caseReferenceNumber=789"
-                + "&page=1"
-                + "&sort=unique_file_number,asc";
+    String expectedRedirectUrl =
+        "/?officeCode=123456"
+            + "&submissionDateMonth=3"
+            + "&submissionDateYear=2007"
+            + "&uniqueFileNumber=123456/789"
+            + "&caseReferenceNumber=789"
+            + "&page=1"
+            + "&sort=unique_file_number,asc";
 
-        mockMvc.perform(post("/")
-                        .with(csrf())
-                        .param("officeCode", "123456")
-                        .param("submissionDateMonth", "3")
-                        .param("submissionDateYear", "2007")
-                        .param("uniqueFileNumber", "123456/789")
-                        .param("caseReferenceNumber", "789"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(expectedRedirectUrl));
-    }
+    mockMvc
+        .perform(
+            post("/")
+                .with(csrf())
+                .param("officeCode", "123456")
+                .param("submissionDateMonth", "3")
+                .param("submissionDateYear", "2007")
+                .param("uniqueFileNumber", "123456/789")
+                .param("caseReferenceNumber", "789"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(expectedRedirectUrl));
+  }
 
-    @Test
-    public void testOnSubmitReturnsViewForValidFormWithSortingDisabled() throws Exception {
-        when(searchProperties.isSortEnabled()).thenReturn(false);
+  @Test
+  public void testOnSubmitReturnsViewForValidFormWithSortingDisabled() throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(false);
 
-        String expectedRedirectUrl = "/?officeCode=123456&page=1";
+    String expectedRedirectUrl = "/?officeCode=123456&page=1";
 
-        mockMvc.perform(post("/").with(csrf()).param("officeCode", "123456"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(expectedRedirectUrl));
-    }
+    mockMvc
+        .perform(post("/").with(csrf()).param("officeCode", "123456"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(expectedRedirectUrl));
+  }
 }

@@ -28,96 +28,102 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 @WebMvcTest(controllers = VoidConfirmationController.class)
 public class VoidConfirmationControllerTest extends BaseControllerTest {
 
-    private static final UUID USER_ID = UUID.fromString(DummyUserSecurityService.USER_ID);
+  private static final UUID USER_ID = UUID.fromString(DummyUserSecurityService.USER_ID);
 
-    @MockitoBean
-    private ClaimService claimService;
+  @MockitoBean private ClaimService claimService;
 
-    private UUID submissionId;
-    private UUID claimId;
-    private MockHttpSession session;
-    private ClaimDetails claim;
+  private UUID submissionId;
+  private UUID claimId;
+  private MockHttpSession session;
+  private ClaimDetails claim;
 
-    @BeforeEach
-    void setup() {
-        submissionId = UUID.randomUUID();
-        claimId = UUID.randomUUID();
-        session = new MockHttpSession();
-        claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setSubmissionId(submissionId);
-        claim.setClaimId(claimId);
-        MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
-        session.setAttribute(claimId.toString(), claim);
-    }
+  @BeforeEach
+  void setup() {
+    submissionId = UUID.randomUUID();
+    claimId = UUID.randomUUID();
+    session = new MockHttpSession();
+    claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
+    session.setAttribute(claimId.toString(), claim);
+  }
 
-    @Test
-    public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
-        session.setAttribute(claimId.toString(), claim);
+  @Test
+  public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
+    session.setAttribute(claimId.toString(), claim);
 
-        when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));
+    when(claimService.voidClaim(claimId, USER_ID))
+        .thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("void-confirmation"))
-                .andExpect(model().attributeExists("claim"))
-                .andExpect(model().attribute("claimId", claimId))
-                .andExpect(model().attribute("submissionId", submissionId))
-                .andExpect(model().attribute("submissionFailed", false));
-    }
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("void-confirmation"))
+        .andExpect(model().attributeExists("claim"))
+        .andExpect(model().attribute("claimId", claimId))
+        .andExpect(model().attribute("submissionId", submissionId))
+        .andExpect(model().attribute("submissionFailed", false));
+  }
 
-    @Test
-    public void testSuccessfulSubmitRedirectsToSearch() throws Exception {
-        var redirectUrl = "/";
+  @Test
+  public void testSuccessfulSubmitRedirectsToSearch() throws Exception {
+    var redirectUrl = "/";
 
-        when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));
+    when(claimService.voidClaim(claimId, USER_ID))
+        .thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
-        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl))
-                .andExpect(flash().attribute("voided", true))
-                .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
-    }
+    mockMvc
+        .perform(post(buildPath()).session(session).with(csrf()))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(redirectUrl))
+        .andExpect(flash().attribute("voided", true))
+        .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
+  }
 
-    @Test
-    public void testSuccessfulSubmitRedirectsToSearchInSession() throws Exception {
-        var searchUrl = "/?officeCode=123456";
-        session.setAttribute("searchUrl", searchUrl);
+  @Test
+  public void testSuccessfulSubmitRedirectsToSearchInSession() throws Exception {
+    var searchUrl = "/?officeCode=123456";
+    session.setAttribute("searchUrl", searchUrl);
 
-        when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));
+    when(claimService.voidClaim(claimId, USER_ID))
+        .thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
-        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(searchUrl))
-                .andExpect(flash().attribute("voided", true))
-                .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
-    }
+    mockMvc
+        .perform(post(buildPath()).session(session).with(csrf()))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(searchUrl))
+        .andExpect(flash().attribute("voided", true))
+        .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
+  }
 
-    @Test
-    public void testUnsuccessfulSubmitReloadsPageWithAlert() throws Exception {
-        when(claimService.voidClaim(claimId, USER_ID)).thenThrow(new RuntimeException());
+  @Test
+  public void testUnsuccessfulSubmitReloadsPageWithAlert() throws Exception {
+    when(claimService.voidClaim(claimId, USER_ID)).thenThrow(new RuntimeException());
 
-        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
-                .andExpect(status().is4xxClientError())
-                .andExpect(view().name("void-confirmation"))
-                .andExpect(model().attributeExists("claim"))
-                .andExpect(model().attribute("claimId", claimId))
-                .andExpect(model().attribute("submissionId", submissionId))
-                .andExpect(model().attribute("submissionFailed", true));
-    }
+    mockMvc
+        .perform(post(buildPath()).session(session).with(csrf()))
+        .andExpect(status().is4xxClientError())
+        .andExpect(view().name("void-confirmation"))
+        .andExpect(model().attributeExists("claim"))
+        .andExpect(model().attribute("claimId", claimId))
+        .andExpect(model().attribute("submissionId", submissionId))
+        .andExpect(model().attribute("submissionFailed", true));
+  }
 
-    @Test
-    void testGetRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_CLAIM_AMENDMENTS_CASEWORKER));
-        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
-    }
+  @Test
+  void testGetRequiresRole() throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_CLAIM_AMENDMENTS_CASEWORKER));
+    mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
+  }
 
-    @Test
-    void testPostRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_CLAIM_AMENDMENTS_CASEWORKER));
-        mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
-    }
+  @Test
+  void testPostRequiresRole() throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_CLAIM_AMENDMENTS_CASEWORKER));
+    mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
+  }
 
-    private String buildPath() {
-        return String.format("/submissions/%s/claims/%s/void", submissionId, claimId);
-    }
+  private String buildPath() {
+    return String.format("/submissions/%s/claims/%s/void", submissionId, claimId);
+  }
 }

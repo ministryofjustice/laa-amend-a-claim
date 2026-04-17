@@ -17,47 +17,48 @@ import uk.gov.justice.laa.amend.claim.config.EnvConfig;
 
 public abstract class LaaPage {
 
-    protected final Page page;
-    protected final Locator heading;
-    protected final AxeBuilder axeBuilder;
-    private final String directory;
+  protected final Page page;
+  protected final Locator heading;
+  protected final AxeBuilder axeBuilder;
+  private final String directory;
 
-    public LaaPage(Page page, String heading) {
-        this.page = page;
+  public LaaPage(Page page, String heading) {
+    this.page = page;
 
-        this.heading = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName(heading));
+    this.heading = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName(heading));
 
-        this.axeBuilder = new AxeBuilder(page).exclude(".govuk-phase-banner").exclude(".govuk-back-link");
+    this.axeBuilder =
+        new AxeBuilder(page).exclude(".govuk-phase-banner").exclude(".govuk-back-link");
 
-        this.directory = EnvConfig.axeReportsDirectory();
+    this.directory = EnvConfig.axeReportsDirectory();
 
-        new File(directory).mkdirs();
+    new File(directory).mkdirs();
 
-        waitForPage();
+    waitForPage();
+  }
+
+  private void waitForPage() {
+    heading.waitFor();
+    assertThat(heading).isVisible();
+    generateAxeReport(200);
+  }
+
+  protected void generateErrorSummaryAxeReport() {
+    generateAxeReport(400);
+  }
+
+  private void generateAxeReport(int status) {
+    try {
+      String fileName = heading.textContent().trim().replace(" ", "_");
+      String path = String.format("%s/%s_%d.json", directory, fileName, status);
+      if (Files.notExists(Paths.get(path))) {
+        AxeResults axeResults = axeBuilder.analyze();
+        Reporter reporter = new Reporter();
+        reporter.JSONStringify(axeResults, path);
+        assertTrue(axeResults.violationFree());
+      }
+    } catch (RuntimeException | IOException e) {
+      System.err.println(e.getMessage());
     }
-
-    private void waitForPage() {
-        heading.waitFor();
-        assertThat(heading).isVisible();
-        generateAxeReport(200);
-    }
-
-    protected void generateErrorSummaryAxeReport() {
-        generateAxeReport(400);
-    }
-
-    private void generateAxeReport(int status) {
-        try {
-            String fileName = heading.textContent().trim().replace(" ", "_");
-            String path = String.format("%s/%s_%d.json", directory, fileName, status);
-            if (Files.notExists(Paths.get(path))) {
-                AxeResults axeResults = axeBuilder.analyze();
-                Reporter reporter = new Reporter();
-                reporter.JSONStringify(axeResults, path);
-                assertTrue(axeResults.violationFree());
-            }
-        } catch (RuntimeException | IOException e) {
-            System.err.println(e.getMessage());
-        }
-    }
+  }
 }

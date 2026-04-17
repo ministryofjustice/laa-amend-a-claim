@@ -14,9 +14,9 @@ import uk.gov.justice.laa.amend.claim.forms.validators.CaseReferenceNumberValida
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidCaseReferenceNumber {
-    String message() default "";
+  String message() default "";
 
-    Class<?>[] groups() default {};
+  Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+  Class<? extends Payload>[] payload() default {};
 }

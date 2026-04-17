@@ -10,6 +10,6 @@ import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 @HttpExchange("/api/v1")
 public interface ProviderApiClient {
 
-    @GetExchange(url = "/provider-offices/{officeCode}", accept = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ProviderFirmOfficeDto> getProviderOffice(@PathVariable String officeCode);
+  @GetExchange(url = "/provider-offices/{officeCode}", accept = MediaType.APPLICATION_JSON_VALUE)
+  Mono<ProviderFirmOfficeDto> getProviderOffice(@PathVariable String officeCode);
 }

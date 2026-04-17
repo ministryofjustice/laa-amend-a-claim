@@ -14,30 +14,33 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafLiteralString;
 @WebMvcTest(MaintenancePageController.class)
 public class MaintenancePageControllerTest extends BaseControllerTest {
 
-    @Test
-    public void testOnPageLoadReturnsHomeWhenMaintenanceDisabled() throws Exception {
-        when(maintenanceService.maintenanceApplies(any())).thenReturn(false);
+  @Test
+  public void testOnPageLoadReturnsHomeWhenMaintenanceDisabled() throws Exception {
+    when(maintenanceService.maintenanceApplies(any())).thenReturn(false);
 
-        mockMvc.perform(get("/maintenance"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/"));
-    }
+    mockMvc
+        .perform(get("/maintenance"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(view().name("redirect:/"));
+  }
 
-    @Test
-    public void testOnPageLoadReturnsViewWhenMaintenanceEnabled() throws Exception {
-        when(maintenanceService.maintenanceApplies(any())).thenReturn(true);
+  @Test
+  public void testOnPageLoadReturnsViewWhenMaintenanceEnabled() throws Exception {
+    when(maintenanceService.maintenanceApplies(any())).thenReturn(true);
 
-        ThymeleafLiteralString pageMessage = new ThymeleafLiteralString("Service undergoing maintenance");
-        ThymeleafLiteralString pageTitle = new ThymeleafLiteralString("Service maintenance");
+    ThymeleafLiteralString pageMessage =
+        new ThymeleafLiteralString("Service undergoing maintenance");
+    ThymeleafLiteralString pageTitle = new ThymeleafLiteralString("Service maintenance");
 
-        when(maintenanceService.getMessage()).thenReturn(pageMessage);
+    when(maintenanceService.getMessage()).thenReturn(pageMessage);
 
-        when(maintenanceService.getTitle()).thenReturn(pageTitle);
+    when(maintenanceService.getTitle()).thenReturn(pageTitle);
 
-        mockMvc.perform(get("/maintenance"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("maintenance"))
-                .andExpect(model().attribute("maintenanceMessage", pageMessage))
-                .andExpect(model().attribute("maintenanceTitle", pageTitle));
-    }
+    mockMvc
+        .perform(get("/maintenance"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("maintenance"))
+        .andExpect(model().attribute("maintenanceMessage", pageMessage))
+        .andExpect(model().attribute("maintenanceTitle", pageTitle));
+  }
 }

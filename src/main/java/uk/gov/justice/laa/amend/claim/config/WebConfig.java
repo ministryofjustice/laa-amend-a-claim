@@ -11,28 +11,29 @@ import uk.gov.justice.laa.amend.claim.interceptors.MaintenanceInterceptor;
 @AllArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    private MaintenanceInterceptor maintenanceInterceptor;
+  private MaintenanceInterceptor maintenanceInterceptor;
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(maintenanceInterceptor)
-                .order(Ordered.HIGHEST_PRECEDENCE)
-                .addPathPatterns("/**")
-                .excludePathPatterns(ALLOWED_URLS);
-    }
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry
+        .addInterceptor(maintenanceInterceptor)
+        .order(Ordered.HIGHEST_PRECEDENCE)
+        .addPathPatterns("/**")
+        .excludePathPatterns(ALLOWED_URLS);
+  }
 
-    private static final String[] ALLOWED_URLS = {
-        "/actuator/**",
-        "/health",
-        "/ping",
-        "/maintenance",
-        "/error",
-        "/assets/**",
-        "/css/**",
-        "/static/**",
-        "/public/**",
-        "/js/**",
-        "/webjars/**",
-        "images/**"
-    };
+  private static final String[] ALLOWED_URLS = {
+    "/actuator/**",
+    "/health",
+    "/ping",
+    "/maintenance",
+    "/error",
+    "/assets/**",
+    "/css/**",
+    "/static/**",
+    "/public/**",
+    "/js/**",
+    "/webjars/**",
+    "images/**"
+  };
 }

@@ -20,100 +20,111 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class HomePageControllerIntegrationTest extends ControllerIntegrationTest {
 
-    @BeforeEach
-    void setUp() {
-        setupGetClaimsStub();
-    }
+  @BeforeEach
+  void setUp() {
+    setupGetClaimsStub();
+  }
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @Test
-    void testGetHomePageLoadsSuccessfully() throws Exception {
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"))
-                .andExpect(model().attributeExists("form"));
-    }
+  @Test
+  void testGetHomePageLoadsSuccessfully() throws Exception {
+    mockMvc
+        .perform(get("/"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("index"))
+        .andExpect(model().attributeExists("form"));
+  }
 
-    @Test
-    void testSearchWithEmptyFormReturnsBadRequest() throws Exception {
-        mockMvc.perform(post("/")
-                        .with(csrf())
-                        .formField("officeCode", "")
-                        .formField("submissionDateMonth", "")
-                        .formField("submissionDateYear", "")
-                        .formField("uniqueFileNumber", "")
-                        .formField("caseReferenceNumber", "")
-                        .formField("areaOfLaw", "")
-                        .formField("escapeCase", ""))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("index"));
-    }
+  @Test
+  void testSearchWithEmptyFormReturnsBadRequest() throws Exception {
+    mockMvc
+        .perform(
+            post("/")
+                .with(csrf())
+                .formField("officeCode", "")
+                .formField("submissionDateMonth", "")
+                .formField("submissionDateYear", "")
+                .formField("uniqueFileNumber", "")
+                .formField("caseReferenceNumber", "")
+                .formField("areaOfLaw", "")
+                .formField("escapeCase", ""))
+        .andExpect(status().isBadRequest())
+        .andExpect(view().name("index"));
+  }
 
-    @Test
-    void testSearchWithInvalidOfficeCodeReturnsBadRequest() throws Exception {
-        mockMvc.perform(post("/")
-                        .with(csrf())
-                        .formField("officeCode", "invalid!")
-                        .formField("submissionDateMonth", "")
-                        .formField("submissionDateYear", "")
-                        .formField("uniqueFileNumber", "")
-                        .formField("caseReferenceNumber", "")
-                        .formField("areaOfLaw", "")
-                        .formField("escapeCase", ""))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("index"));
-    }
+  @Test
+  void testSearchWithInvalidOfficeCodeReturnsBadRequest() throws Exception {
+    mockMvc
+        .perform(
+            post("/")
+                .with(csrf())
+                .formField("officeCode", "invalid!")
+                .formField("submissionDateMonth", "")
+                .formField("submissionDateYear", "")
+                .formField("uniqueFileNumber", "")
+                .formField("caseReferenceNumber", "")
+                .formField("areaOfLaw", "")
+                .formField("escapeCase", ""))
+        .andExpect(status().isBadRequest())
+        .andExpect(view().name("index"));
+  }
 
-    @Test
-    void testSearchWithValidOfficeCodeReturnsResults() throws Exception {
-        mockMvc.perform(post("/")
-                        .with(csrf())
-                        .formField("officeCode", "0P322F")
-                        .formField("submissionDateMonth", "")
-                        .formField("submissionDateYear", "")
-                        .formField("uniqueFileNumber", "")
-                        .formField("caseReferenceNumber", "")
-                        .formField("areaOfLaw", "")
-                        .formField("escapeCase", ""))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/?officeCode=0P322F&page=1&sort=unique_file_number,asc"));
-    }
+  @Test
+  void testSearchWithValidOfficeCodeReturnsResults() throws Exception {
+    mockMvc
+        .perform(
+            post("/")
+                .with(csrf())
+                .formField("officeCode", "0P322F")
+                .formField("submissionDateMonth", "")
+                .formField("submissionDateYear", "")
+                .formField("uniqueFileNumber", "")
+                .formField("caseReferenceNumber", "")
+                .formField("areaOfLaw", "")
+                .formField("escapeCase", ""))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/?officeCode=0P322F&page=1&sort=unique_file_number,asc"));
+  }
 
-    @Test
-    void testSearchWithPaginationParameters() throws Exception {
-        mockMvc.perform(get("/").param("page", "1").param("officeCode", "0P322F"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"))
-                .andExpect(model().attributeExists("viewModel"));
-    }
+  @Test
+  void testSearchWithPaginationParameters() throws Exception {
+    mockMvc
+        .perform(get("/").param("page", "1").param("officeCode", "0P322F"))
+        .andExpect(status().isOk())
+        .andExpect(view().name("index"))
+        .andExpect(model().attributeExists("viewModel"));
+  }
 
-    @Test
-    void testSearchWithInvalidUniqueFileNumber() throws Exception {
-        mockMvc.perform(post("/")
-                        .with(csrf())
-                        .formField("officeCode", "0P322F")
-                        .formField("submissionDateMonth", "")
-                        .formField("submissionDateYear", "")
-                        .formField("uniqueFileNumber", "invalid!")
-                        .formField("caseReferenceNumber", ""))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("index"));
-    }
+  @Test
+  void testSearchWithInvalidUniqueFileNumber() throws Exception {
+    mockMvc
+        .perform(
+            post("/")
+                .with(csrf())
+                .formField("officeCode", "0P322F")
+                .formField("submissionDateMonth", "")
+                .formField("submissionDateYear", "")
+                .formField("uniqueFileNumber", "invalid!")
+                .formField("caseReferenceNumber", ""))
+        .andExpect(status().isBadRequest())
+        .andExpect(view().name("index"));
+  }
 
-    @Test
-    void testSearchWithValidSubmissionDate() throws Exception {
-        mockMvc.perform(post("/")
-                        .with(csrf())
-                        .formField("officeCode", "0P322F")
-                        .formField("submissionDateMonth", "12")
-                        .formField("submissionDateYear", "2024")
-                        .formField("uniqueFileNumber", "")
-                        .formField("caseReferenceNumber", ""))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(
-                        redirectedUrl(
-                                "/?officeCode=0P322F&submissionDateMonth=12&submissionDateYear=2024&page=1&sort=unique_file_number,asc"));
-    }
+  @Test
+  void testSearchWithValidSubmissionDate() throws Exception {
+    mockMvc
+        .perform(
+            post("/")
+                .with(csrf())
+                .formField("officeCode", "0P322F")
+                .formField("submissionDateMonth", "12")
+                .formField("submissionDateYear", "2024")
+                .formField("uniqueFileNumber", "")
+                .formField("caseReferenceNumber", ""))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(
+            redirectedUrl(
+                "/?officeCode=0P322F&submissionDateMonth=12&submissionDateYear=2024&page=1&sort=unique_file_number,asc"));
+  }
 }

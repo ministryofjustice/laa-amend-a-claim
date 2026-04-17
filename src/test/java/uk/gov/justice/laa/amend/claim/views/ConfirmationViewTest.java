@@ -9,32 +9,34 @@ import uk.gov.justice.laa.amend.claim.controllers.ConfirmationController;
 @WebMvcTest(ConfirmationController.class)
 class ConfirmationViewTest extends ViewTestBase {
 
-    private final UUID assessmentId;
+  private final UUID assessmentId;
 
-    ConfirmationViewTest() {
-        assessmentId = UUID.randomUUID();
-        this.mapping = String.format("/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
-    }
+  ConfirmationViewTest() {
+    assessmentId = UUID.randomUUID();
+    this.mapping =
+        String.format(
+            "/submissions/%s/claims/%s/assessments/%s", submissionId, claimId, assessmentId);
+  }
 
-    @Test
-    void testPage() throws Exception {
-        session.setAttribute("assessmentId", assessmentId);
-        Document doc = renderDocument();
+  @Test
+  void testPage() throws Exception {
+    session.setAttribute("assessmentId", assessmentId);
+    Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Assessment complete");
+    assertPageHasTitle(doc, "Assessment complete");
 
-        assertPageHasHeading(doc, "Assessment complete");
+    assertPageHasHeading(doc, "Assessment complete");
 
-        assertPageHasPanel(doc);
+    assertPageHasPanel(doc);
 
-        assertPageHasContent(doc, "Your changes have been submitted");
+    assertPageHasContent(doc, "Your changes have been submitted");
 
-        assertPageHasLink(doc, "go-to-search", "Go to search", "/");
+    assertPageHasLink(doc, "go-to-search", "Go to search", "/");
 
-        assertPageHasLink(
-                doc,
-                "view-assessed-claim",
-                "View assessed claim",
-                String.format("/submissions/%s/claims/%s", submissionId, claimId));
-    }
+    assertPageHasLink(
+        doc,
+        "view-assessed-claim",
+        "View assessed claim",
+        String.format("/submissions/%s/claims/%s", submissionId, claimId));
+  }
 }

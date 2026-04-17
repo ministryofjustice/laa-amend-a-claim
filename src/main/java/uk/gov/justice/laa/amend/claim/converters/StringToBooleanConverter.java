@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class StringToBooleanConverter implements Converter<String, Boolean> {
 
-    @Override
-    public Boolean convert(String source) {
-        if (source == null || source.isEmpty()) {
-            return null;
-        }
-        return "yes".equalsIgnoreCase(source) || Boolean.parseBoolean(source);
+  @Override
+  public Boolean convert(String source) {
+    if (source == null || source.isEmpty()) {
+      return null;
     }
+    return "yes".equalsIgnoreCase(source) || Boolean.parseBoolean(source);
+  }
 }
