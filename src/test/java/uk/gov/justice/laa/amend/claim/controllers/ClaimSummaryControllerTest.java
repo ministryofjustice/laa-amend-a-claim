@@ -167,10 +167,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
         var user = MockClaimsFunctions.createUser();
         var claim = MockClaimsFunctions.createMockCivilClaim();
         claim.setStatus(ClaimStatus.VOID);
-        claim.setLastUpdatedUser(user.getId());
+        claim.setLastUpdatedUser(user.id());
         claim.setLastUpdatedDateTime(OffsetDateTime.now());
 
-        when(userRetrievalService.getMicrosoftApiUser(user.getId())).thenReturn(user);
+        when(userRetrievalService.getMicrosoftApiUser(user.id())).thenReturn(user);
         when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
 
         mockMvc.perform(get(buildPath()).session(session))
@@ -228,10 +228,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
         var user = MockClaimsFunctions.createUser();
         var claim = MockClaimsFunctions.createMockCivilClaim();
         claim.setStatus(ClaimStatus.VOID);
-        claim.setLastUpdatedUser(user.getId());
+        claim.setLastUpdatedUser(user.id());
         claim.setLastUpdatedDateTime(OffsetDateTime.now());
 
-        when(userRetrievalService.getMicrosoftApiUser(user.getId())).thenReturn(user);
+        when(userRetrievalService.getMicrosoftApiUser(user.id())).thenReturn(user);
         when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
 
         mockMvc.perform(get(buildPath()).session(session))
@@ -246,10 +246,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
         var user = MockClaimsFunctions.createUser();
         var claim = MockClaimsFunctions.createMockCivilClaim();
         claim.setStatus(ClaimStatus.VALID);
-        claim.setLastUpdatedUser(user.getId());
+        claim.setLastUpdatedUser(user.id());
         claim.setLastUpdatedDateTime(OffsetDateTime.now());
 
-        when(userRetrievalService.getMicrosoftApiUser(user.getId())).thenReturn(user);
+        when(userRetrievalService.getMicrosoftApiUser(user.id())).thenReturn(user);
         when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
 
         mockMvc.perform(get(buildPath()).session(session))

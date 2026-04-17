@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
@@ -120,12 +121,11 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
         String time = DateUtils.displayDateTimeTimeValue(claim().getLastUpdatedDateTime());
 
         List<Object> args = new ArrayList<>();
-        String editMessageKey;
-        if (user != null && user.getName() != null) {
-            args.add(user.getName());
+        String editMessageKey = "claimSummary.lastAssessmentText.noUser";
+        Optional<String> userName = Optional.ofNullable(user).map(MicrosoftApiUser::name);
+        if (userName.isPresent()) {
+            args.add(userName.get());
             editMessageKey = "claimSummary.lastAssessmentText";
-        } else {
-            editMessageKey = "claimSummary.lastAssessmentText.noUser";
         }
         args.add(date);
         args.add(time);
