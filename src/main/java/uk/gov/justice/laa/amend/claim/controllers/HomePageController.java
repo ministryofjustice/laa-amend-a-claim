@@ -34,82 +34,86 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 @RequiredArgsConstructor
 public class HomePageController {
 
-    public static final List<ClaimStatus> CLAIM_STATUSES = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
+  public static final List<ClaimStatus> CLAIM_STATUSES =
+      List.of(ClaimStatus.VALID, ClaimStatus.VOID);
 
-    private final ClaimService claimService;
-    private final ClaimResultMapper claimResultMapper;
-    private final ClaimMapper claimMapper;
-    private final SearchProperties searchProperties;
-    private final Validator validator;
+  private final ClaimService claimService;
+  private final ClaimResultMapper claimResultMapper;
+  private final ClaimMapper claimMapper;
+  private final SearchProperties searchProperties;
+  private final Validator validator;
 
-    @GetMapping("/")
-    public String onPageLoad(
-            Model model,
-            SearchQuery query,
-            HttpSession session,
-            HttpServletRequest request,
-            Errors errors,
-            HttpServletResponse response) {
-        query.rejectUnknownParams(request);
+  @GetMapping("/")
+  public String onPageLoad(
+      Model model,
+      SearchQuery query,
+      HttpSession session,
+      HttpServletRequest request,
+      Errors errors,
+      HttpServletResponse response) {
+    query.rejectUnknownParams(request);
 
-        SearchForm form = new SearchForm(query);
+    SearchForm form = new SearchForm(query);
 
-        model.addAttribute("form", form);
-        model.addAttribute("query", query);
-        model.addAttribute("SortField", SortField.class);
+    model.addAttribute("form", form);
+    model.addAttribute("query", query);
+    model.addAttribute("SortField", SortField.class);
 
-        Sorts sorts;
-        Sort sort = query.getSort();
-        int page = query.getPage();
-        if (searchProperties.isSortEnabled()) {
-            if (sort == null) {
-                sort = Sort.defaults();
-            }
-            sorts = new Sorts(sort);
-        } else {
-            sort = null;
-            sorts = Sorts.disabled();
-        }
-        model.addAttribute("sorts", sorts);
+    Sorts sorts;
+    Sort sort = query.getSort();
+    int page = query.getPage();
+    if (searchProperties.isSortEnabled()) {
+      if (sort == null) {
+        sort = Sort.defaults();
+      }
+      sorts = new Sorts(sort);
+    } else {
+      sort = null;
+      sorts = Sorts.disabled();
+    }
+    model.addAttribute("sorts", sorts);
 
-        if (form.anyNonEmpty()) {
-            ValidationUtils.invokeValidator(validator, form, errors);
-            if (errors.hasErrors()) {
-                model.addAttribute("org.springframework.validation.BindingResult.form", errors);
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return "index";
-            }
-            var result = claimService.searchClaims(
-                    form.getOfficeCode(),
-                    Optional.ofNullable(form.getUniqueFileNumber()),
-                    Optional.ofNullable(form.getCaseReferenceNumber()),
-                    Optional.ofNullable(form.getSubmissionPeriod()),
-                    Optional.ofNullable(form.getAreaOfLaw()),
-                    Optional.ofNullable(form.getEscapeCase()),
-                    CLAIM_STATUSES,
-                    page,
-                    DEFAULT_PAGE_SIZE,
-                    sort);
-            String redirectUrl = query.getRedirectUrl(sort);
-            SearchResultView viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
-            model.addAttribute("viewModel", viewModel);
-            session.setAttribute("searchUrl", redirectUrl);
-        }
-
+    if (form.anyNonEmpty()) {
+      ValidationUtils.invokeValidator(validator, form, errors);
+      if (errors.hasErrors()) {
+        model.addAttribute("org.springframework.validation.BindingResult.form", errors);
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         return "index";
+      }
+      var result =
+          claimService.searchClaims(
+              form.getOfficeCode(),
+              Optional.ofNullable(form.getUniqueFileNumber()),
+              Optional.ofNullable(form.getCaseReferenceNumber()),
+              Optional.ofNullable(form.getSubmissionPeriod()),
+              Optional.ofNullable(form.getAreaOfLaw()),
+              Optional.ofNullable(form.getEscapeCase()),
+              CLAIM_STATUSES,
+              page,
+              DEFAULT_PAGE_SIZE,
+              sort);
+      String redirectUrl = query.getRedirectUrl(sort);
+      SearchResultView viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
+      model.addAttribute("viewModel", viewModel);
+      session.setAttribute("searchUrl", redirectUrl);
     }
 
-    @PostMapping("/")
-    public String onSubmit(
-            @Valid @ModelAttribute("form") SearchForm form, BindingResult bindingResult, HttpServletResponse response) {
-        if (bindingResult.hasErrors()) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return "index";
-        }
+    return "index";
+  }
 
-        Sort sort = searchProperties.isSortEnabled() ? Sort.defaults() : null;
-        SearchQuery query = new SearchQuery(form, sort);
-        String redirectUrl = query.getRedirectUrl();
-        return "redirect:" + redirectUrl;
+  @PostMapping("/")
+  public String onSubmit(
+      @Valid @ModelAttribute("form") SearchForm form,
+      BindingResult bindingResult,
+      HttpServletResponse response) {
+    if (bindingResult.hasErrors()) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return "index";
     }
+
+    Sort sort = searchProperties.isSortEnabled() ? Sort.defaults() : null;
+    SearchQuery query = new SearchQuery(form, sort);
+    String redirectUrl = query.getRedirectUrl();
+    return "redirect:" + redirectUrl;
+  }
 }

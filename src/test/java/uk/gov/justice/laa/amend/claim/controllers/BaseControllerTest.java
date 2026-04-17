@@ -20,20 +20,16 @@ import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 @Import({LocalSecurityConfig.class, ThymeleafConfig.class})
 public abstract class BaseControllerTest {
 
-    @Autowired
-    protected MockMvc mockMvc;
+  @Autowired protected MockMvc mockMvc;
 
-    @Autowired
-    protected DummyUserSecurityService dummyUserSecurityService;
+  @Autowired protected DummyUserSecurityService dummyUserSecurityService;
 
-    @MockitoBean
-    protected FeatureFlagsConfig featureFlagsConfig;
+  @MockitoBean protected FeatureFlagsConfig featureFlagsConfig;
 
-    @MockitoBean
-    protected MaintenanceService maintenanceService;
+  @MockitoBean protected MaintenanceService maintenanceService;
 
-    @BeforeEach
-    public void beforeEach() {
-        dummyUserSecurityService.setRoles(Set.of(Role.values()));
-    }
+  @BeforeEach
+  public void beforeEach() {
+    dummyUserSecurityService.setRoles(Set.of(Role.values()));
+  }
 }

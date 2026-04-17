@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/auth")
 public class AuthRedirectController {
 
-    /**
-     * Replacement for Spring's default login page (/login) to which a user could navigate manually. A user could still
-     * navigate to /auth, but would be immediately redirected to the login flow so will not see any internal page.
-     */
-    @GetMapping
-    public void authRedirect(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/oauth2/authorization/azure");
-    }
+  /**
+   * Replacement for Spring's default login page (/login) to which a user could navigate manually. A
+   * user could still navigate to /auth, but would be immediately redirected to the login flow so
+   * will not see any internal page.
+   */
+  @GetMapping
+  public void authRedirect(HttpServletResponse response) throws IOException {
+    response.sendRedirect("/oauth2/authorization/azure");
+  }
 }

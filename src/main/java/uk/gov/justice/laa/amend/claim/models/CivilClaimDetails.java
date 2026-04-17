@@ -12,41 +12,41 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 @Data
 public class CivilClaimDetails extends ClaimDetails {
 
-    private ClaimField detentionTravelWaitingCosts;
-    private ClaimField jrFormFillingCost;
-    private ClaimField adjournedHearing;
-    private ClaimField cmrhTelephone;
-    private ClaimField cmrhOral;
-    private ClaimField hoInterview;
-    private ClaimField substantiveHearing;
-    private ClaimField counselsCost;
-    private String uniqueClientNumber;
+  private ClaimField detentionTravelWaitingCosts;
+  private ClaimField jrFormFillingCost;
+  private ClaimField adjournedHearing;
+  private ClaimField cmrhTelephone;
+  private ClaimField cmrhOral;
+  private ClaimField hoInterview;
+  private ClaimField substantiveHearing;
+  private ClaimField counselsCost;
+  private String uniqueClientNumber;
 
-    @Override
-    public boolean isAssessedTotalFieldAssessable() {
-        return false;
-    }
+  @Override
+  public boolean isAssessedTotalFieldAssessable() {
+    return false;
+  }
 
-    @Override
-    public ClaimDetailsView<? extends Claim> toViewModel() {
-        return new CivilClaimDetailsView(this);
-    }
+  @Override
+  public ClaimDetailsView<? extends Claim> toViewModel() {
+    return new CivilClaimDetailsView(this);
+  }
 
-    @Override
-    public AssessmentPost toAssessment(AssessmentMapper mapper, String userId) {
-        return mapper.mapCivilClaimToAssessment(this, userId);
-    }
+  @Override
+  public AssessmentPost toAssessment(AssessmentMapper mapper, String userId) {
+    return mapper.mapCivilClaimToAssessment(this, userId);
+  }
 
-    @Override
-    protected Stream<ClaimField> specificClaimFields() {
-        return Stream.of(
-                getHoInterview(),
-                getSubstantiveHearing(),
-                getCounselsCost(),
-                getJrFormFillingCost(),
-                getAdjournedHearing(),
-                getCmrhOral(),
-                getCmrhTelephone(),
-                getDetentionTravelWaitingCosts());
-    }
+  @Override
+  protected Stream<ClaimField> specificClaimFields() {
+    return Stream.of(
+        getHoInterview(),
+        getSubstantiveHearing(),
+        getCounselsCost(),
+        getJrFormFillingCost(),
+        getAdjournedHearing(),
+        getCmrhOral(),
+        getCmrhTelephone(),
+        getDetentionTravelWaitingCosts());
+  }
 }

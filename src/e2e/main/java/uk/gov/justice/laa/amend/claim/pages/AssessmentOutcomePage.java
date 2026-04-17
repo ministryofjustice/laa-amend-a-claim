@@ -8,101 +8,106 @@ import com.microsoft.playwright.options.AriaRole;
 
 public class AssessmentOutcomePage extends LaaInputPage {
 
-    private final Locator assessedInFullRadio;
-    private final Locator reducedStillEscapedRadio;
-    private final Locator reducedToFixedFeeRadio;
-    private final Locator nilledRadio;
+  private final Locator assessedInFullRadio;
+  private final Locator reducedStillEscapedRadio;
+  private final Locator reducedToFixedFeeRadio;
+  private final Locator nilledRadio;
 
-    private final Locator contingencyAssessmentGroup;
-    private final Locator contingencyAssessmentLegend;
-    private final Locator contingencyAssessmentYesRadio;
-    private final Locator contingencyAssessmentNoRadio;
+  private final Locator contingencyAssessmentGroup;
+  private final Locator contingencyAssessmentLegend;
+  private final Locator contingencyAssessmentYesRadio;
+  private final Locator contingencyAssessmentNoRadio;
 
-    private final Locator errorSummaryTitle;
-    private final Locator errorSummaryLink;
+  private final Locator errorSummaryTitle;
+  private final Locator errorSummaryLink;
 
-    public AssessmentOutcomePage(Page page) {
-        super(page, "Assessment Outcome");
+  public AssessmentOutcomePage(Page page) {
+    super(page, "Assessment Outcome");
 
-        this.assessedInFullRadio = page.getByLabel("Assessed in full", new Page.GetByLabelOptions().setExact(true));
-        this.reducedStillEscapedRadio =
-                page.getByLabel("Reduced (still escaped)", new Page.GetByLabelOptions().setExact(true));
-        this.reducedToFixedFeeRadio =
-                page.getByLabel("Reduced to fixed fee (assessed)", new Page.GetByLabelOptions().setExact(true));
-        this.nilledRadio = page.getByLabel("Nilled", new Page.GetByLabelOptions().setExact(true));
+    this.assessedInFullRadio =
+        page.getByLabel("Assessed in full", new Page.GetByLabelOptions().setExact(true));
+    this.reducedStillEscapedRadio =
+        page.getByLabel("Reduced (still escaped)", new Page.GetByLabelOptions().setExact(true));
+    this.reducedToFixedFeeRadio =
+        page.getByLabel(
+            "Reduced to fixed fee (assessed)", new Page.GetByLabelOptions().setExact(true));
+    this.nilledRadio = page.getByLabel("Nilled", new Page.GetByLabelOptions().setExact(true));
 
-        this.contingencyAssessmentGroup = page.getByRole(
-                AriaRole.GROUP,
-                new Page.GetByRoleOptions().setName("Was this claim assessed as part of the contingency process?"));
-        this.contingencyAssessmentLegend =
-                page.getByText("Was this claim assessed as part of the contingency process?");
-        this.contingencyAssessmentYesRadio =
-                contingencyAssessmentGroup.getByLabel("Yes", new Locator.GetByLabelOptions().setExact(true));
-        this.contingencyAssessmentNoRadio =
-                contingencyAssessmentGroup.getByLabel("No", new Locator.GetByLabelOptions().setExact(true));
+    this.contingencyAssessmentGroup =
+        page.getByRole(
+            AriaRole.GROUP,
+            new Page.GetByRoleOptions()
+                .setName("Was this claim assessed as part of the contingency process?"));
+    this.contingencyAssessmentLegend =
+        page.getByText("Was this claim assessed as part of the contingency process?");
+    this.contingencyAssessmentYesRadio =
+        contingencyAssessmentGroup.getByLabel(
+            "Yes", new Locator.GetByLabelOptions().setExact(true));
+    this.contingencyAssessmentNoRadio =
+        contingencyAssessmentGroup.getByLabel("No", new Locator.GetByLabelOptions().setExact(true));
 
-        this.errorSummaryTitle = page.locator(".govuk-error-summary__title");
-        this.errorSummaryLink = page.locator(".govuk-error-summary__list a");
+    this.errorSummaryTitle = page.locator(".govuk-error-summary__title");
+    this.errorSummaryLink = page.locator(".govuk-error-summary__list a");
+  }
+
+  public void assertPageLoaded() {
+    assertThat(assessedInFullRadio).isVisible();
+    assertThat(reducedStillEscapedRadio).isVisible();
+    assertThat(reducedToFixedFeeRadio).isVisible();
+    assertThat(nilledRadio).isVisible();
+
+    assertThat(contingencyAssessmentLegend).isVisible();
+    assertThat(contingencyAssessmentYesRadio).isVisible();
+    assertThat(contingencyAssessmentNoRadio).isVisible();
+
+    assertThat(saveButton).isVisible();
+  }
+
+  public void assertAssessmentOutcomeRequiredError() {
+    waitForPageErrors();
+
+    assertThat(errorSummaryTitle).containsText("There is a problem");
+    assertThat(errorSummaryLink).containsText("Select the assessment outcome");
+    assertThat(inlineErrors).containsText("Select the assessment outcome");
+  }
+
+  public void selectAssessmentOutcome(String outcome) {
+    switch (outcome.toLowerCase()) {
+      case "assessed in full":
+      case "paid-in-full":
+        assessedInFullRadio.check();
+        break;
+
+      case "reduced (still escaped)":
+      case "reduced-still-escaped":
+        reducedStillEscapedRadio.check();
+        break;
+
+      case "reduced to fixed fee (assessed)":
+      case "reduced-to-fixed-fee-assessed":
+        reducedToFixedFeeRadio.check();
+        break;
+
+      case "nilled":
+        nilledRadio.check();
+        break;
+
+      default:
+        throw new IllegalArgumentException("Unknown assessment outcome: " + outcome);
     }
+  }
 
-    public void assertPageLoaded() {
-        assertThat(assessedInFullRadio).isVisible();
-        assertThat(reducedStillEscapedRadio).isVisible();
-        assertThat(reducedToFixedFeeRadio).isVisible();
-        assertThat(nilledRadio).isVisible();
-
-        assertThat(contingencyAssessmentLegend).isVisible();
-        assertThat(contingencyAssessmentYesRadio).isVisible();
-        assertThat(contingencyAssessmentNoRadio).isVisible();
-
-        assertThat(saveButton).isVisible();
+  public void selectContingencyAssessment(boolean isContingencyAssessment) {
+    if (isContingencyAssessment) {
+      contingencyAssessmentYesRadio.check();
+    } else {
+      contingencyAssessmentNoRadio.check();
     }
+  }
 
-    public void assertAssessmentOutcomeRequiredError() {
-        waitForPageErrors();
-
-        assertThat(errorSummaryTitle).containsText("There is a problem");
-        assertThat(errorSummaryLink).containsText("Select the assessment outcome");
-        assertThat(inlineErrors).containsText("Select the assessment outcome");
-    }
-
-    public void selectAssessmentOutcome(String outcome) {
-        switch (outcome.toLowerCase()) {
-            case "assessed in full":
-            case "paid-in-full":
-                assessedInFullRadio.check();
-                break;
-
-            case "reduced (still escaped)":
-            case "reduced-still-escaped":
-                reducedStillEscapedRadio.check();
-                break;
-
-            case "reduced to fixed fee (assessed)":
-            case "reduced-to-fixed-fee-assessed":
-                reducedToFixedFeeRadio.check();
-                break;
-
-            case "nilled":
-                nilledRadio.check();
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unknown assessment outcome: " + outcome);
-        }
-    }
-
-    public void selectContingencyAssessment(boolean isContingencyAssessment) {
-        if (isContingencyAssessment) {
-            contingencyAssessmentYesRadio.check();
-        } else {
-            contingencyAssessmentNoRadio.check();
-        }
-    }
-
-    public void completeAssessment(String outcome, boolean isContingencyAssessment) {
-        selectAssessmentOutcome(outcome);
-        selectContingencyAssessment(isContingencyAssessment);
-        saveChanges();
-    }
+  public void completeAssessment(String outcome, boolean isContingencyAssessment) {
+    selectAssessmentOutcome(outcome);
+    selectContingencyAssessment(isContingencyAssessment);
+    saveChanges();
+  }
 }

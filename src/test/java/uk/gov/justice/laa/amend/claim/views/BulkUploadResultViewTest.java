@@ -20,54 +20,54 @@ import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 @WebMvcTest(BulkUploadController.class)
 public class BulkUploadResultViewTest extends ViewTestBase {
 
-    @MockitoBean
-    private BulkUploadService bulkUploadService;
+  @MockitoBean private BulkUploadService bulkUploadService;
 
-    BulkUploadResultViewTest() {
-        this.mapping = "/bulk-upload/result";
-    }
+  BulkUploadResultViewTest() {
+    this.mapping = "/bulk-upload/result";
+  }
 
-    @Test
-    void testSuccessResultIsRendered() throws Exception {
-        when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
+  @Test
+  void testSuccessResultIsRendered() throws Exception {
+    when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
 
-        var successReason = "success reason";
-        var result = new BulkUploadResult(SUCCESS, List.of(new BulkUploadError(null, successReason)));
+    var successReason = "success reason";
+    var result = new BulkUploadResult(SUCCESS, List.of(new BulkUploadError(null, successReason)));
 
-        Document doc = renderDocument(Map.of("result", result));
+    Document doc = renderDocument(Map.of("result", result));
 
-        assertPageHasTitle(doc, "Bulk upload of civil escape claim assessments");
+    assertPageHasTitle(doc, "Bulk upload of civil escape claim assessments");
 
-        assertPageHasHeading(doc, "Your file was uploaded successfully");
+    assertPageHasHeading(doc, "Your file was uploaded successfully");
 
-        assertPageHasActiveServiceNavigationItem(doc, "Bulk upload");
+    assertPageHasActiveServiceNavigationItem(doc, "Bulk upload");
 
-        assertPageHasPanel(doc);
+    assertPageHasPanel(doc);
 
-        assertPageHasContent(doc, "success reason");
+    assertPageHasContent(doc, "success reason");
 
-        assertPageHasLink(doc, "upload-another-file", "Upload another file", "/bulk-upload");
-        assertPageHasLink(doc, "back-to-search", "Back to search", "/");
-    }
+    assertPageHasLink(doc, "upload-another-file", "Upload another file", "/bulk-upload");
+    assertPageHasLink(doc, "back-to-search", "Back to search", "/");
+  }
 
-    @Test
-    void testErrorResultIsRendered() throws Exception {
-        when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
+  @Test
+  void testErrorResultIsRendered() throws Exception {
+    when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
 
-        var errorReason1 = "error reason 1";
-        var errorReason2 = "error reason 2";
-        var result = new BulkUploadResult(
-                PARSING_FAILURE,
-                List.of(new BulkUploadError(null, errorReason1), new BulkUploadError(3, errorReason2)));
+    var errorReason1 = "error reason 1";
+    var errorReason2 = "error reason 2";
+    var result =
+        new BulkUploadResult(
+            PARSING_FAILURE,
+            List.of(new BulkUploadError(null, errorReason1), new BulkUploadError(3, errorReason2)));
 
-        Document doc = renderDocument(Map.of("result", result));
+    Document doc = renderDocument(Map.of("result", result));
 
-        Elements rows = doc.select("#error-summary-list tbody tr");
-        Assertions.assertEquals(2, rows.size());
-        Assertions.assertEquals(errorReason1, rows.get(0).select("td").get(1).text());
-        Assertions.assertEquals(errorReason2, rows.get(1).select("td").get(1).text());
+    Elements rows = doc.select("#error-summary-list tbody tr");
+    Assertions.assertEquals(2, rows.size());
+    Assertions.assertEquals(errorReason1, rows.get(0).select("td").get(1).text());
+    Assertions.assertEquals(errorReason2, rows.get(1).select("td").get(1).text());
 
-        assertPageHasLink(doc, "upload-another-file", "Upload another file", "/bulk-upload");
-        assertPageHasLink(doc, "back-to-search", "Back to search", "/");
-    }
+    assertPageHasLink(doc, "upload-another-file", "Upload another file", "/bulk-upload");
+    assertPageHasLink(doc, "back-to-search", "Back to search", "/");
+  }
 }

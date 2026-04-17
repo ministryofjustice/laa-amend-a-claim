@@ -7,17 +7,17 @@ import uk.gov.justice.laa.amend.claim.controllers.LogoutController;
 
 @WebMvcTest(LogoutController.class)
 public class LogoutViewTest extends ViewTestBase {
-    protected LogoutViewTest() {
-        this.mapping = "/logout-success";
-    }
+  protected LogoutViewTest() {
+    this.mapping = "/logout-success";
+  }
 
-    @Test
-    void testPage() throws Exception {
-        Document doc = renderDocument();
+  @Test
+  void testPage() throws Exception {
+    Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "You are now signed out of your account");
-        assertPageHasHeading(doc, "You are now signed out of your account");
-        assertPageHasContent(doc, "Sign in to continue using the service.");
-        assertPageHasPrimaryButton(doc, "Sign in");
-    }
+    assertPageHasTitle(doc, "You are now signed out of your account");
+    assertPageHasHeading(doc, "You are now signed out of your account");
+    assertPageHasContent(doc, "Sign in to continue using the service.");
+    assertPageHasPrimaryButton(doc, "Sign in");
+  }
 }

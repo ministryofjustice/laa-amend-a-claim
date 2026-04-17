@@ -6,21 +6,22 @@ import lombok.Builder;
 
 @Builder
 public record AssessmentInsert(
-        String id,
-        String claimSummaryFeeId,
-        String claimId,
-        String userId,
-        String assessmentReason,
-        String assessmentType)
-        implements Insert {
+    String id,
+    String claimSummaryFeeId,
+    String claimId,
+    String userId,
+    String assessmentReason,
+    String assessmentType)
+    implements Insert {
 
-    @Override
-    public String table() {
-        return "assessment";
-    }
+  @Override
+  public String table() {
+    return "assessment";
+  }
 
-    @Override
-    public List<Object> parameters() {
-        return Arrays.asList(id, claimSummaryFeeId, claimId, userId, userId, assessmentReason, assessmentType);
-    }
+  @Override
+  public List<Object> parameters() {
+    return Arrays.asList(
+        id, claimSummaryFeeId, claimId, userId, userId, assessmentReason, assessmentType);
+  }
 }

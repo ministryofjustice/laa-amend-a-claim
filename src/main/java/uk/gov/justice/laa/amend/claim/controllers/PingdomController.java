@@ -11,14 +11,14 @@ import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 @AllArgsConstructor
 public class PingdomController {
 
-    private final MaintenanceService maintenanceService;
+  private final MaintenanceService maintenanceService;
 
-    @GetMapping("/ping")
-    public ResponseEntity<Map<String, String>> healthCheck() {
-        if (maintenanceService.maintenanceEnabled()) {
-            return ResponseEntity.status(503).body(Map.of("status", "MAINTENANCE"));
-        }
-
-        return ResponseEntity.ok(Map.of("status", "UP"));
+  @GetMapping("/ping")
+  public ResponseEntity<Map<String, String>> healthCheck() {
+    if (maintenanceService.maintenanceEnabled()) {
+      return ResponseEntity.status(503).body(Map.of("status", "MAINTENANCE"));
     }
+
+    return ResponseEntity.ok(Map.of("status", "UP"));
+  }
 }

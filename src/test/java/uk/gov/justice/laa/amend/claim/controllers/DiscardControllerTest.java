@@ -22,61 +22,66 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 @WebMvcTest(DiscardController.class)
 public class DiscardControllerTest extends BaseControllerTest {
 
-    private UUID submissionId;
-    private UUID claimId;
-    private MockHttpSession session;
+  private UUID submissionId;
+  private UUID claimId;
+  private MockHttpSession session;
 
-    @BeforeEach
-    void setup() {
-        submissionId = UUID.randomUUID();
-        claimId = UUID.randomUUID();
-        session = new MockHttpSession();
-        session.setAttribute(claimId.toString(), MockClaimsFunctions.createMockCivilClaim());
-    }
+  @BeforeEach
+  void setup() {
+    submissionId = UUID.randomUUID();
+    claimId = UUID.randomUUID();
+    session = new MockHttpSession();
+    session.setAttribute(claimId.toString(), MockClaimsFunctions.createMockCivilClaim());
+  }
 
-    @Test
-    public void testOnPageLoadReturnsView() throws Exception {
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("discard"))
-                .andExpect(model().attribute("submissionId", submissionId))
-                .andExpect(model().attribute("claimId", claimId));
-    }
+  @Test
+  public void testOnPageLoadReturnsView() throws Exception {
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("discard"))
+        .andExpect(model().attribute("submissionId", submissionId))
+        .andExpect(model().attribute("claimId", claimId));
+  }
 
-    @Test
-    public void testDiscardRemovesClaimFromSessionAndRedirectsWhenSearchUrlIsCached() throws Exception {
-        String searchUrl = "/?page=1";
-        session.setAttribute("searchUrl", searchUrl);
+  @Test
+  public void testDiscardRemovesClaimFromSessionAndRedirectsWhenSearchUrlIsCached()
+      throws Exception {
+    String searchUrl = "/?page=1";
+    session.setAttribute("searchUrl", searchUrl);
 
-        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(searchUrl))
-                .andExpect(flash().attribute("discarded", true))
-                .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
-    }
+    mockMvc
+        .perform(post(buildPath()).session(session).with(csrf()))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(searchUrl))
+        .andExpect(flash().attribute("discarded", true))
+        .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
+  }
 
-    @Test
-    public void testDiscardRemovesClaimFromSessionAndRedirectsWhenSearchUrlIsNotCached() throws Exception {
-        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"))
-                .andExpect(flash().attribute("discarded", true))
-                .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
-    }
+  @Test
+  public void testDiscardRemovesClaimFromSessionAndRedirectsWhenSearchUrlIsNotCached()
+      throws Exception {
+    mockMvc
+        .perform(post(buildPath()).session(session).with(csrf()))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/"))
+        .andExpect(flash().attribute("discarded", true))
+        .andExpect(request().sessionAttributeDoesNotExist(claimId.toString()));
+  }
 
-    @Test
-    void testGetRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
-        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
-    }
+  @Test
+  void testGetRequiresRole() throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+    mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
+  }
 
-    @Test
-    void testPostRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
-        mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
-    }
+  @Test
+  void testPostRequiresRole() throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+    mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
+  }
 
-    private String buildPath() {
-        return String.format("/submissions/%s/claims/%s/discard", submissionId, claimId);
-    }
+  private String buildPath() {
+    return String.format("/submissions/%s/claims/%s/discard", submissionId, claimId);
+  }
 }

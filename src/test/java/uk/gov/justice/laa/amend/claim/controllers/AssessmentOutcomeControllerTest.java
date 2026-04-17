@@ -22,66 +22,70 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 @WebMvcTest(AssessmentOutcomeController.class)
 public class AssessmentOutcomeControllerTest extends BaseControllerTest {
 
-    @MockitoBean
-    private AssessmentService assessmentService;
+  @MockitoBean private AssessmentService assessmentService;
 
-    private UUID submissionId;
-    private UUID claimId;
-    private MockHttpSession session;
+  private UUID submissionId;
+  private UUID claimId;
+  private MockHttpSession session;
 
-    @BeforeEach
-    void setup() {
-        submissionId = UUID.randomUUID();
-        claimId = UUID.randomUUID();
-        session = new MockHttpSession();
-        session.setAttribute(claimId.toString(), MockClaimsFunctions.createMockCivilClaim());
-    }
+  @BeforeEach
+  void setup() {
+    submissionId = UUID.randomUUID();
+    claimId = UUID.randomUUID();
+    session = new MockHttpSession();
+    session.setAttribute(claimId.toString(), MockClaimsFunctions.createMockCivilClaim());
+  }
 
-    @Test
-    public void testGetAssessmentOutcome_ReturnsView() throws Exception {
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("form"))
-                .andExpect(view().name("assessment-outcome"));
-    }
+  @Test
+  public void testGetAssessmentOutcome_ReturnsView() throws Exception {
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists("form"))
+        .andExpect(view().name("assessment-outcome"));
+  }
 
-    @Test
-    public void testOnSubmitReturnsBadRequestWithViewForInvalidForm() throws Exception {
-        mockMvc.perform(post(buildPath())
-                        .session(session)
-                        .with(csrf())
-                        .param("assessmentOutcome", "")
-                        .param("contingencyAssessment", ""))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("assessment-outcome"));
-    }
+  @Test
+  public void testOnSubmitReturnsBadRequestWithViewForInvalidForm() throws Exception {
+    mockMvc
+        .perform(
+            post(buildPath())
+                .session(session)
+                .with(csrf())
+                .param("assessmentOutcome", "")
+                .param("contingencyAssessment", ""))
+        .andExpect(status().isBadRequest())
+        .andExpect(view().name("assessment-outcome"));
+  }
 
-    @Test
-    public void testOnSubmitRedirects() throws Exception {
-        String redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+  @Test
+  public void testOnSubmitRedirects() throws Exception {
+    String redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
 
-        mockMvc.perform(post(buildPath())
-                        .session(session)
-                        .with(csrf())
-                        .param("assessmentOutcome", "paid-in-full")
-                        .param("contingencyAssessment", "true"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl));
-    }
+    mockMvc
+        .perform(
+            post(buildPath())
+                .session(session)
+                .with(csrf())
+                .param("assessmentOutcome", "paid-in-full")
+                .param("contingencyAssessment", "true"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(redirectUrl));
+  }
 
-    @Test
-    void testGetRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
-        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
-    }
+  @Test
+  void testGetRequiresRole() throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+    mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
+  }
 
-    @Test
-    void testPostRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
-        mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
-    }
+  @Test
+  void testPostRequiresRole() throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+    mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
+  }
 
-    private String buildPath() {
-        return String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
-    }
+  private String buildPath() {
+    return String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
+  }
 }

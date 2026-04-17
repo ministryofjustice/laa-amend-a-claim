@@ -14,25 +14,26 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafLiteralString;
 @WebMvcTest(MaintenancePageController.class)
 class MaintenanceViewTest extends ViewTestBase {
 
-    @Autowired
-    private MaintenanceService maintenanceService;
+  @Autowired private MaintenanceService maintenanceService;
 
-    MaintenanceViewTest() {
-        this.mapping = "/maintenance";
-    }
+  MaintenanceViewTest() {
+    this.mapping = "/maintenance";
+  }
 
-    @Test
-    void testPage() throws Exception {
-        when(maintenanceService.maintenanceApplies(any())).thenReturn(true);
-        when(maintenanceService.getTitle()).thenReturn(new ThymeleafLiteralString("Service maintenance"));
-        when(maintenanceService.getMessage()).thenReturn(new ThymeleafLiteralString("Expected return: 9:00"));
+  @Test
+  void testPage() throws Exception {
+    when(maintenanceService.maintenanceApplies(any())).thenReturn(true);
+    when(maintenanceService.getTitle())
+        .thenReturn(new ThymeleafLiteralString("Service maintenance"));
+    when(maintenanceService.getMessage())
+        .thenReturn(new ThymeleafLiteralString("Expected return: 9:00"));
 
-        Document doc = renderDocument();
+    Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Service maintenance");
-        assertPageHasHeading(doc, "Service maintenance");
-        assertPageBodyText(doc, "Expected return: 9:00");
+    assertPageHasTitle(doc, "Service maintenance");
+    assertPageHasHeading(doc, "Service maintenance");
+    assertPageBodyText(doc, "Expected return: 9:00");
 
-        assertPageHasNoActiveServiceNavigationItems(doc);
-    }
+    assertPageHasNoActiveServiceNavigationItems(doc);
+  }
 }

@@ -10,19 +10,18 @@ import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadError;
 
 public record BulkUploadResult(BulkUploadStatus status, List<BulkUploadError> errors) {
 
-    public enum BulkUploadStatus {
-        SUCCESS,
-        PARSING_FAILURE,
-        VALIDATION_FAILURE,
-        SUBMISSION_FAILURE
-    }
+  public enum BulkUploadStatus {
+    SUCCESS,
+    PARSING_FAILURE,
+    VALIDATION_FAILURE,
+    SUBMISSION_FAILURE
+  }
 
-    public boolean isSuccess() {
-        return status == BulkUploadStatus.SUCCESS;
-    }
+  public boolean isSuccess() {
+    return status == BulkUploadStatus.SUCCESS;
+  }
 
-    public boolean isError() {
-        return EnumSet.of(PARSING_FAILURE, VALIDATION_FAILURE, SUBMISSION_FAILURE)
-                .contains(status);
-    }
+  public boolean isError() {
+    return EnumSet.of(PARSING_FAILURE, VALIDATION_FAILURE, SUBMISSION_FAILURE).contains(status);
+  }
 }

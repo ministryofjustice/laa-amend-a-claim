@@ -19,23 +19,21 @@ import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 @EnableWebSecurity
 public class LocalSecurityConfig extends CommonSecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChainLocal(
-            HttpSecurity http, DummyUserSecurityService dummyUserSecurityService) {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth.requestMatchers(PUBLIC_PATHS)
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
-                .addFilterBefore(dummyUserSecurityService, AnonymousAuthenticationFilter.class);
-        return http.build();
-    }
+  @Bean
+  public SecurityFilterChain securityFilterChainLocal(
+      HttpSecurity http, DummyUserSecurityService dummyUserSecurityService) {
+    http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .authorizeHttpRequests(
+            auth -> auth.requestMatchers(PUBLIC_PATHS).permitAll().anyRequest().authenticated())
+        .addFilterBefore(dummyUserSecurityService, AnonymousAuthenticationFilter.class);
+    return http.build();
+  }
 
-    @Bean
-    public FilterRegistrationBean<OncePerRequestFilter> securityHeadersFilter() {
-        FilterRegistrationBean<OncePerRequestFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(createSecurityHeadersFilter());
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return registration;
-    }
+  @Bean
+  public FilterRegistrationBean<OncePerRequestFilter> securityHeadersFilter() {
+    FilterRegistrationBean<OncePerRequestFilter> registration = new FilterRegistrationBean<>();
+    registration.setFilter(createSecurityHeadersFilter());
+    registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+    return registration;
+  }
 }

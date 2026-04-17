@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class PaginationLink {
-    private final String text;
-    private final String href;
+  private final String text;
+  private final String href;
 }

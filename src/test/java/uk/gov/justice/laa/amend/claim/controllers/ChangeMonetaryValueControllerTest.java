@@ -37,188 +37,196 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 @WebMvcTest(ChangeMonetaryValueController.class)
 class ChangeMonetaryValueControllerTest extends BaseControllerTest {
 
-    private UUID submissionId;
-    private UUID claimId;
-    private MockHttpSession session;
-    private String redirectUrl;
+  private UUID submissionId;
+  private UUID claimId;
+  private MockHttpSession session;
+  private String redirectUrl;
 
-    @BeforeEach
-    void setup() {
-        submissionId = UUID.randomUUID();
-        claimId = UUID.randomUUID();
-        session = new MockHttpSession();
-        redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+  @BeforeEach
+  void setup() {
+    submissionId = UUID.randomUUID();
+    claimId = UUID.randomUUID();
+    session = new MockHttpSession();
+    redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+  }
+
+  private static Stream<Cost> validCosts() {
+    return Arrays.stream(Cost.values());
+  }
+
+  @ParameterizedTest
+  @MethodSource("validCosts")
+  void testGetReturnsView(Cost cost) throws Exception {
+    var claim = createClaimFor(cost);
+    var claimField = cost.getAccessor().get(claim);
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc
+        .perform(get(buildPath(cost.getPath())).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("change-monetary-value"))
+        .andExpect(model().attribute("cost", equalTo(cost)))
+        .andExpect(model().attribute("form", hasProperty("value", nullValue())))
+        .andExpect(model().attribute("claimFieldRow", claimField.toClaimFieldRow()));
+  }
+
+  @ParameterizedTest
+  @MethodSource("validCosts")
+  void testGetReturns404_whenFieldIsNull(Cost cost) throws Exception {
+    Claim claim = createClaimWithNullFieldFor(cost);
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc
+        .perform(get(buildPath(cost.getPath())).session(session))
+        .andExpect(status().isNotFound());
+  }
+
+  @ParameterizedTest
+  @MethodSource("validCosts")
+  void testGetReturns404_whenFieldIsNotAssessable(Cost cost) throws Exception {
+    Claim claim = createClaimWithUnassessableFieldFor(cost);
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc
+        .perform(get(buildPath(cost.getPath())).session(session))
+        .andExpect(status().isNotFound());
+  }
+
+  @ParameterizedTest
+  @MethodSource("validCosts")
+  void testGetReturnsViewWhenQuestionAlreadyAnswered(Cost cost) throws Exception {
+    Claim claim = createClaimFor(cost);
+    ClaimField claimField = cost.getAccessor().get(claim);
+    Assertions.assertNotNull(claimField);
+    claimField.setAssessed(BigDecimal.valueOf(100));
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc
+        .perform(get(buildPath(cost.getPath())).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("change-monetary-value"))
+        .andExpect(model().attribute("cost", equalTo(cost)))
+        .andExpect(model().attribute("form", hasProperty("value", is("100.00"))));
+  }
+
+  @ParameterizedTest
+  @MethodSource("validCosts")
+  void testPostSavesValueAndRedirects(Cost cost) throws Exception {
+    Claim claim = createClaimFor(cost);
+    ClaimField claimField = cost.getAccessor().get(claim);
+    Assertions.assertNotNull(claimField);
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc
+        .perform(
+            post(buildPath(cost.getPath())).session(session).with(csrf()).param("value", "100"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(redirectUrl));
+
+    Claim updated = (Claim) session.getAttribute(claimId.toString());
+
+    Assertions.assertNotNull(updated);
+    Assertions.assertEquals(
+        new BigDecimal("100.00"), cost.getAccessor().get(updated).getAssessed());
+  }
+
+  @ParameterizedTest
+  @MethodSource("validCosts")
+  void testPostReturnsBadRequestForInvalidValue(Cost cost) throws Exception {
+    Claim claim = createClaimFor(cost);
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc
+        .perform(post(buildPath(cost.getPath())).session(session).with(csrf()).param("value", "-1"))
+        .andExpect(status().isBadRequest())
+        .andExpect(view().name("change-monetary-value"))
+        .andExpect(content().string(containsString("must not be negative")));
+  }
+
+  @Test
+  void testGetReturnsNotFoundWhenInvalidCost() throws Exception {
+    mockMvc.perform(get(buildPath("foo")).session(session)).andExpect(status().isNotFound());
+  }
+
+  @Test
+  void testPostReturnsNotFoundWhenInvalidCost() throws Exception {
+    mockMvc
+        .perform(post(buildPath("foo")).session(session).with(csrf()).param("value", "1"))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void testGetReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
+    CivilClaimDetails claim = new CivilClaimDetails();
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc
+        .perform(get(buildPath("travel-costs")).session(session))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void testPostReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
+    CivilClaimDetails claim = new CivilClaimDetails();
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc
+        .perform(post(buildPath("travel-costs")).session(session).with(csrf()).param("value", "1"))
+        .andExpect(status().isNotFound());
+  }
+
+  @ParameterizedTest
+  @MethodSource("validCosts")
+  void testGetRequiresRole(Cost cost) throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+    mockMvc
+        .perform(get(buildPath(cost.getPath())).session(session))
+        .andExpect(status().isForbidden());
+  }
+
+  @ParameterizedTest
+  @MethodSource("validCosts")
+  void testPostRequiresRole(Cost cost) throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+    mockMvc
+        .perform(post(buildPath(cost.getPath())).session(session))
+        .andExpect(status().isForbidden());
+  }
+
+  private Claim createClaimFor(Cost cost) {
+    Claim claim = createClaim(cost);
+    ClaimField claimField = CostClaimField.builder().cost(cost).build();
+    cost.getAccessor().set(claim, claimField);
+    return claim;
+  }
+
+  private Claim createClaimWithNullFieldFor(Cost cost) {
+    Claim claim = createClaim(cost);
+    cost.getAccessor().set(claim, null);
+    return claim;
+  }
+
+  private Claim createClaimWithUnassessableFieldFor(Cost cost) {
+    Claim claim = createClaim(cost);
+    ClaimField claimField = CostClaimField.builder().cost(cost).build();
+    claimField.setAssessable(false);
+    cost.getAccessor().set(claim, claimField);
+    return claim;
+  }
+
+  private Claim createClaim(Cost cost) {
+    Class<?> targetClass = cost.getAccessor().type();
+    Claim claim;
+    if (CivilClaimDetails.class.equals(targetClass)) {
+      claim = MockClaimsFunctions.createMockCivilClaim();
+    } else {
+      claim = MockClaimsFunctions.createMockCrimeClaim();
     }
+    cost.getAccessor().set(claim, null);
+    return claim;
+  }
 
-    private static Stream<Cost> validCosts() {
-        return Arrays.stream(Cost.values());
-    }
-
-    @ParameterizedTest
-    @MethodSource("validCosts")
-    void testGetReturnsView(Cost cost) throws Exception {
-        var claim = createClaimFor(cost);
-        var claimField = cost.getAccessor().get(claim);
-        session.setAttribute(claimId.toString(), claim);
-
-        mockMvc.perform(get(buildPath(cost.getPath())).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("cost", equalTo(cost)))
-                .andExpect(model().attribute("form", hasProperty("value", nullValue())))
-                .andExpect(model().attribute("claimFieldRow", claimField.toClaimFieldRow()));
-    }
-
-    @ParameterizedTest
-    @MethodSource("validCosts")
-    void testGetReturns404_whenFieldIsNull(Cost cost) throws Exception {
-        Claim claim = createClaimWithNullFieldFor(cost);
-        session.setAttribute(claimId.toString(), claim);
-
-        mockMvc.perform(get(buildPath(cost.getPath())).session(session)).andExpect(status().isNotFound());
-    }
-
-    @ParameterizedTest
-    @MethodSource("validCosts")
-    void testGetReturns404_whenFieldIsNotAssessable(Cost cost) throws Exception {
-        Claim claim = createClaimWithUnassessableFieldFor(cost);
-        session.setAttribute(claimId.toString(), claim);
-
-        mockMvc.perform(get(buildPath(cost.getPath())).session(session)).andExpect(status().isNotFound());
-    }
-
-    @ParameterizedTest
-    @MethodSource("validCosts")
-    void testGetReturnsViewWhenQuestionAlreadyAnswered(Cost cost) throws Exception {
-        Claim claim = createClaimFor(cost);
-        ClaimField claimField = cost.getAccessor().get(claim);
-        Assertions.assertNotNull(claimField);
-        claimField.setAssessed(BigDecimal.valueOf(100));
-        session.setAttribute(claimId.toString(), claim);
-
-        mockMvc.perform(get(buildPath(cost.getPath())).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(model().attribute("cost", equalTo(cost)))
-                .andExpect(model().attribute("form", hasProperty("value", is("100.00"))));
-    }
-
-    @ParameterizedTest
-    @MethodSource("validCosts")
-    void testPostSavesValueAndRedirects(Cost cost) throws Exception {
-        Claim claim = createClaimFor(cost);
-        ClaimField claimField = cost.getAccessor().get(claim);
-        Assertions.assertNotNull(claimField);
-        session.setAttribute(claimId.toString(), claim);
-
-        mockMvc.perform(post(buildPath(cost.getPath()))
-                        .session(session)
-                        .with(csrf())
-                        .param("value", "100"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(redirectUrl));
-
-        Claim updated = (Claim) session.getAttribute(claimId.toString());
-
-        Assertions.assertNotNull(updated);
-        Assertions.assertEquals(
-                new BigDecimal("100.00"), cost.getAccessor().get(updated).getAssessed());
-    }
-
-    @ParameterizedTest
-    @MethodSource("validCosts")
-    void testPostReturnsBadRequestForInvalidValue(Cost cost) throws Exception {
-        Claim claim = createClaimFor(cost);
-        session.setAttribute(claimId.toString(), claim);
-
-        mockMvc.perform(post(buildPath(cost.getPath()))
-                        .session(session)
-                        .with(csrf())
-                        .param("value", "-1"))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("change-monetary-value"))
-                .andExpect(content().string(containsString("must not be negative")));
-    }
-
-    @Test
-    void testGetReturnsNotFoundWhenInvalidCost() throws Exception {
-        mockMvc.perform(get(buildPath("foo")).session(session)).andExpect(status().isNotFound());
-    }
-
-    @Test
-    void testPostReturnsNotFoundWhenInvalidCost() throws Exception {
-        mockMvc.perform(post(buildPath("foo")).session(session).with(csrf()).param("value", "1"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void testGetReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
-        CivilClaimDetails claim = new CivilClaimDetails();
-        session.setAttribute(claimId.toString(), claim);
-
-        mockMvc.perform(get(buildPath("travel-costs")).session(session)).andExpect(status().isNotFound());
-    }
-
-    @Test
-    void testPostReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
-        CivilClaimDetails claim = new CivilClaimDetails();
-        session.setAttribute(claimId.toString(), claim);
-
-        mockMvc.perform(post(buildPath("travel-costs"))
-                        .session(session)
-                        .with(csrf())
-                        .param("value", "1"))
-                .andExpect(status().isNotFound());
-    }
-
-    @ParameterizedTest
-    @MethodSource("validCosts")
-    void testGetRequiresRole(Cost cost) throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
-        mockMvc.perform(get(buildPath(cost.getPath())).session(session)).andExpect(status().isForbidden());
-    }
-
-    @ParameterizedTest
-    @MethodSource("validCosts")
-    void testPostRequiresRole(Cost cost) throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
-        mockMvc.perform(post(buildPath(cost.getPath())).session(session)).andExpect(status().isForbidden());
-    }
-
-    private Claim createClaimFor(Cost cost) {
-        Claim claim = createClaim(cost);
-        ClaimField claimField = CostClaimField.builder().cost(cost).build();
-        cost.getAccessor().set(claim, claimField);
-        return claim;
-    }
-
-    private Claim createClaimWithNullFieldFor(Cost cost) {
-        Claim claim = createClaim(cost);
-        cost.getAccessor().set(claim, null);
-        return claim;
-    }
-
-    private Claim createClaimWithUnassessableFieldFor(Cost cost) {
-        Claim claim = createClaim(cost);
-        ClaimField claimField = CostClaimField.builder().cost(cost).build();
-        claimField.setAssessable(false);
-        cost.getAccessor().set(claim, claimField);
-        return claim;
-    }
-
-    private Claim createClaim(Cost cost) {
-        Class<?> targetClass = cost.getAccessor().type();
-        Claim claim;
-        if (CivilClaimDetails.class.equals(targetClass)) {
-            claim = MockClaimsFunctions.createMockCivilClaim();
-        } else {
-            claim = MockClaimsFunctions.createMockCrimeClaim();
-        }
-        cost.getAccessor().set(claim, null);
-        return claim;
-    }
-
-    private String buildPath(String cost) {
-        return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost);
-    }
+  private String buildPath(String cost) {
+    return String.format("/submissions/%s/claims/%s/%s", submissionId, claimId, cost);
+  }
 }

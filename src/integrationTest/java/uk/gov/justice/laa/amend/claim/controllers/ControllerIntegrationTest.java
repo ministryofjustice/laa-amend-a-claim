@@ -8,15 +8,15 @@ import uk.gov.justice.laa.amend.claim.base.WireMockSetup;
 
 public abstract class ControllerIntegrationTest {
 
-    @BeforeAll
-    static void beforeAll() throws IOException {
-        RedisSetup.setUpRedis();
-        WireMockSetup.setupWireMock();
-    }
+  @BeforeAll
+  static void beforeAll() throws IOException {
+    RedisSetup.setUpRedis();
+    WireMockSetup.setupWireMock();
+  }
 
-    @AfterAll
-    static void afterAll() throws IOException {
-        RedisSetup.tearDown();
-        WireMockSetup.stopWireMock();
-    }
+  @AfterAll
+  static void afterAll() throws IOException {
+    RedisSetup.tearDown();
+    WireMockSetup.stopWireMock();
+  }
 }

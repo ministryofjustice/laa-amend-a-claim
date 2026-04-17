@@ -23,64 +23,67 @@ import wiremock.com.google.common.collect.ImmutableMap;
 
 public class WireMockSetup {
 
-    private static WireMockServer wireMockServer;
+  private static WireMockServer wireMockServer;
 
-    @BeforeAll
-    public static void setupWireMock() {
-        int port = 8089;
-        wireMockServer = new WireMockServer(port);
-        wireMockServer.start();
-        WireMock.configureFor("localhost", port);
+  @BeforeAll
+  public static void setupWireMock() {
+    int port = 8089;
+    wireMockServer = new WireMockServer(port);
+    wireMockServer.start();
+    WireMock.configureFor("localhost", port);
+  }
+
+  @AfterAll
+  public static void stopWireMock() {
+    wireMockServer.stop();
+  }
+
+  // Dynamically generate a stub for N claims with matching UFNs and office codes from the CSV file
+  public static void setupGetClaimsStubDynamic(MockMultipartFile file, int n) throws Exception {
+
+    List<String> lines = new String(file.getBytes(), UTF_8).lines().toList();
+
+    // Extract (officeCode, ufn) pairs using streams
+    List<String[]> data =
+        lines.stream()
+            .skip(1) // skip header
+            .map(l -> l.split(",")) // split into columns
+            .filter(cols -> cols.length >= 2) // keep only valid rows
+            .map(cols -> new String[] {cols[0].trim(), cols[1].trim()})
+            .toList();
+
+    if (data.isEmpty()) {
+      return;
     }
 
-    @AfterAll
-    public static void stopWireMock() {
-        wireMockServer.stop();
+    // Use the first office code only
+    String officeCode = data.getFirst()[0];
+
+    // Build the list of claims using N UFNs
+    List<Map<String, Object>> claims = new ArrayList<>();
+
+    for (int i = 0; i < n && i < data.size(); i++) {
+      String ufn = data.get(i)[1];
+
+      var claim =
+          ImmutableMap.<String, Object>builder()
+              .put("id", UUID.randomUUID().toString())
+              .put("unique_file_number", ufn)
+              .put("case_reference_number", "REF-" + i)
+              .put("client_surname", "Surname-" + i)
+              .put("date_submitted", OffsetDateTime.now().minusDays(i).toString())
+              .put("account", "ACC" + i)
+              .put("type", "CLAIM")
+              .put("office_code", officeCode)
+              .put("status", "VALID")
+              .put("area_of_law", "LEGAL HELP")
+              .build();
+
+      claims.add(claim);
     }
 
-    // Dynamically generate a stub for N claims with matching UFNs and office codes from the CSV file
-    public static void setupGetClaimsStubDynamic(MockMultipartFile file, int n) throws Exception {
-
-        List<String> lines = new String(file.getBytes(), UTF_8).lines().toList();
-
-        // Extract (officeCode, ufn) pairs using streams
-        List<String[]> data = lines.stream()
-                .skip(1) // skip header
-                .map(l -> l.split(",")) // split into columns
-                .filter(cols -> cols.length >= 2) // keep only valid rows
-                .map(cols -> new String[] {cols[0].trim(), cols[1].trim()})
-                .toList();
-
-        if (data.isEmpty()) {
-            return;
-        }
-
-        // Use the first office code only
-        String officeCode = data.getFirst()[0];
-
-        // Build the list of claims using N UFNs
-        List<Map<String, Object>> claims = new ArrayList<>();
-
-        for (int i = 0; i < n && i < data.size(); i++) {
-            String ufn = data.get(i)[1];
-
-            var claim = ImmutableMap.<String, Object>builder()
-                    .put("id", UUID.randomUUID().toString())
-                    .put("unique_file_number", ufn)
-                    .put("case_reference_number", "REF-" + i)
-                    .put("client_surname", "Surname-" + i)
-                    .put("date_submitted", OffsetDateTime.now().minusDays(i).toString())
-                    .put("account", "ACC" + i)
-                    .put("type", "CLAIM")
-                    .put("office_code", officeCode)
-                    .put("status", "VALID")
-                    .put("area_of_law", "LEGAL HELP")
-                    .build();
-
-            claims.add(claim);
-        }
-
-        String response = """
+    String response =
+        """
             {
                 "content": %s,
                 "total_elements": %d,
@@ -88,20 +91,25 @@ public class WireMockSetup {
                 "number": 0,
                 "size": %d
             }
-            """.formatted(new ObjectMapper().writeValueAsString(claims), claims.size(), claims.size());
+            """
+            .formatted(new ObjectMapper().writeValueAsString(claims), claims.size(), claims.size());
 
-        // Single stub
-        stubFor(get(urlPathMatching("/api/v2/claims.*"))
-                .withQueryParam("office_code", equalTo(officeCode.toUpperCase()))
-                .withQueryParam("page", equalTo("0"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(response)));
-    }
+    // Single stub
+    stubFor(
+        get(urlPathMatching("/api/v2/claims.*"))
+            .withQueryParam("office_code", equalTo(officeCode.toUpperCase()))
+            .withQueryParam("page", equalTo("0"))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(response)));
+  }
 
-    public static void setupGetClaimsStub(String officeCode, String ufn) {
-        String response = String.format("""
+  public static void setupGetClaimsStub(String officeCode, String ufn) {
+    String response =
+        String.format(
+            """
              {
                  "content": [
                      {
@@ -121,18 +129,22 @@ public class WireMockSetup {
                  "number": 0,
                  "size": 1
             }\
-            """, ufn, OffsetDateTime.now(), officeCode);
-        stubFor(get(urlPathMatching("/api/v2/claims.*"))
-                .withQueryParam("office_code", equalTo(officeCode.toUpperCase()))
-                .withQueryParam("page", equalTo("0"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(response)));
-    }
+            """,
+            ufn, OffsetDateTime.now(), officeCode);
+    stubFor(
+        get(urlPathMatching("/api/v2/claims.*"))
+            .withQueryParam("office_code", equalTo(officeCode.toUpperCase()))
+            .withQueryParam("page", equalTo("0"))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(response)));
+  }
 
-    public static void setupGetClaimsStub() {
-        String response = """
+  public static void setupGetClaimsStub() {
+    String response =
+        """
             {
                 "claims": [
                     {
@@ -152,15 +164,18 @@ public class WireMockSetup {
                 "number": 0
             }
             """;
-        stubFor(get(urlPathMatching("/api/v2/claims.*"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(response)));
-    }
+    stubFor(
+        get(urlPathMatching("/api/v2/claims.*"))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(response)));
+  }
 
-    public static void setupGetEmptyClaimsStub() {
-        String response = """
+  public static void setupGetEmptyClaimsStub() {
+    String response =
+        """
             {
                 "claims": [],
                 "totalElements": 0,
@@ -168,15 +183,19 @@ public class WireMockSetup {
                 "number": 0
             }
             """;
-        stubFor(get(urlPathMatching("/api/v2/claims.*"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(response)));
-    }
+    stubFor(
+        get(urlPathMatching("/api/v2/claims.*"))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(response)));
+  }
 
-    public static void setupGetClaimStub(String submissionId, String claimId, String officeCode) {
-        String response = String.format("""
+  public static void setupGetClaimStub(String submissionId, String claimId, String officeCode) {
+    String response =
+        String.format(
+            """
             {
                   "id": "%s",
                   "submission_id": "%s",
@@ -202,41 +221,53 @@ public class WireMockSetup {
                       }
                   }
               }\
-            """, claimId, submissionId, officeCode);
+            """,
+            claimId, submissionId, officeCode);
 
-        stubFor(get(urlPathMatching(String.format("/api/v2/submissions/%s/claims/%s", submissionId, claimId)))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(response)));
-    }
+    stubFor(
+        get(urlPathMatching(
+                String.format("/api/v2/submissions/%s/claims/%s", submissionId, claimId)))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(response)));
+  }
 
-    public static void setupGetProviderOfficeStub(String officeCode, String firmName) {
-        String response = String.format("""
+  public static void setupGetProviderOfficeStub(String officeCode, String firmName) {
+    String response =
+        String.format(
+            """
             {
                 "firm": {
                     "firmName": "%s"
                 }
             }\
-            """, firmName);
+            """,
+            firmName);
 
-        stubFor(get(urlPathMatching(String.format("/api/v1/provider-offices/%s", officeCode)))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(response)));
-    }
+    stubFor(
+        get(urlPathMatching(String.format("/api/v1/provider-offices/%s", officeCode)))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(response)));
+  }
 
-    public static void setupPostAssessment202StubForAnyClaim() {
-        stubFor(post(urlPathMatching("/api/v1/claims/[a-fA-F0-9\\-]+/assessments"))
-                .willReturn(aResponse()
-                        .withStatus(202)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("""
+  public static void setupPostAssessment202StubForAnyClaim() {
+    stubFor(
+        post(urlPathMatching("/api/v1/claims/[a-fA-F0-9\\-]+/assessments"))
+            .willReturn(
+                aResponse()
+                    .withStatus(202)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(
+                        """
                                 {
                                     "message": "Assessment accepted for processing",
                                     "status": 202
                                 }
                             """)));
-    }
+  }
 }

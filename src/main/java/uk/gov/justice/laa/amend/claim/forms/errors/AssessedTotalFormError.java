@@ -5,18 +5,18 @@ import org.thymeleaf.spring6.util.DetailedError;
 
 public class AssessedTotalFormError extends FormError {
 
-    public AssessedTotalFormError(DetailedError error) {
-        super(error);
-    }
+  public AssessedTotalFormError(DetailedError error) {
+    super(error);
+  }
 
-    public AssessedTotalFormError(String fieldName, String message) {
-        super(fieldName, message);
-    }
+  public AssessedTotalFormError(String fieldName, String message) {
+    super(fieldName, message);
+  }
 
-    @Override
-    protected Map<String, Integer> getFieldOrderMap() {
-        return Map.of(
-                "assessedTotalVat", 1,
-                "assessedTotalInclVat", 2);
-    }
+  @Override
+  protected Map<String, Integer> getFieldOrderMap() {
+    return Map.of(
+        "assessedTotalVat", 1,
+        "assessedTotalInclVat", 2);
+  }
 }

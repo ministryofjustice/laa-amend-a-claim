@@ -35,144 +35,143 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 @Feature("Search")
 public class SearchTest extends BaseTest {
 
-    // ---------------- Submission 1 (Has claims) ----------------
-    private final String SUBMISSION_ID_1 = UUID.randomUUID().toString();
-    private final String CLAIM_ID_1 = UUID.randomUUID().toString();
-    private final String CLAIM_SUMMARY_FEE_ID_1 = UUID.randomUUID().toString();
-    private final String CALCULATED_FEE_DETAIL_ID_1 = UUID.randomUUID().toString();
-    private final String OFFICE_ACCOUNT_NUMBER_1 = "123456";
-    private final String UFN_1 = "121019/001";
+  // ---------------- Submission 1 (Has claims) ----------------
+  private final String SUBMISSION_ID_1 = UUID.randomUUID().toString();
+  private final String CLAIM_ID_1 = UUID.randomUUID().toString();
+  private final String CLAIM_SUMMARY_FEE_ID_1 = UUID.randomUUID().toString();
+  private final String CALCULATED_FEE_DETAIL_ID_1 = UUID.randomUUID().toString();
+  private final String OFFICE_ACCOUNT_NUMBER_1 = "123456";
+  private final String UFN_1 = "121019/001";
 
-    // ---------------- Submission 2 (Does not have claims) ----------------
-    private final String SUBMISSION_ID_2 = UUID.randomUUID().toString();
-    private final String OFFICE_ACCOUNT_NUMBER_2 = "234567";
+  // ---------------- Submission 2 (Does not have claims) ----------------
+  private final String SUBMISSION_ID_2 = UUID.randomUUID().toString();
+  private final String OFFICE_ACCOUNT_NUMBER_2 = "234567";
 
-    // ---------------- Submission 3 (Has an invalid claim) ----------------
-    private final String SUBMISSION_ID_3 = UUID.randomUUID().toString();
-    private final String CLAIM_ID_3 = UUID.randomUUID().toString();
-    private final String OFFICE_ACCOUNT_NUMBER_3 = "345678";
+  // ---------------- Submission 3 (Has an invalid claim) ----------------
+  private final String SUBMISSION_ID_3 = UUID.randomUUID().toString();
+  private final String CLAIM_ID_3 = UUID.randomUUID().toString();
+  private final String OFFICE_ACCOUNT_NUMBER_3 = "345678";
 
-    @Override
-    protected List<Insert> inserts() {
-        return List.of(
-                BulkSubmissionInsert.builder()
-                        .id(BULK_SUBMISSION_ID)
-                        .userId(USER_ID)
-                        .build(),
-                SubmissionInsert.builder()
-                        .id(SUBMISSION_ID_1)
-                        .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(OFFICE_ACCOUNT_NUMBER_1)
-                        .submissionPeriod("APR-2025")
-                        .areaOfLaw("CRIME_LOWER")
-                        .userId(USER_ID)
-                        .build(),
-                SubmissionInsert.builder()
-                        .id(SUBMISSION_ID_2)
-                        .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(OFFICE_ACCOUNT_NUMBER_2)
-                        .submissionPeriod("OCT-2025")
-                        .areaOfLaw("LEGAL_HELP")
-                        .userId(USER_ID)
-                        .build(),
-                SubmissionInsert.builder()
-                        .id(SUBMISSION_ID_3)
-                        .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(OFFICE_ACCOUNT_NUMBER_3)
-                        .submissionPeriod("OCT-2025")
-                        .areaOfLaw("LEGAL_HELP")
-                        .userId(USER_ID)
-                        .build(),
-                ClaimInsert.builder()
-                        .id(CLAIM_ID_1)
-                        .submissionId(SUBMISSION_ID_1)
-                        .uniqueFileNumber(UFN_1)
-                        .userId(USER_ID)
-                        .build(),
-                ClaimInsert.builder()
-                        .id(CLAIM_ID_3)
-                        .submissionId(SUBMISSION_ID_3)
-                        .status("INVALID")
-                        .uniqueFileNumber("121019/003")
-                        .userId(USER_ID)
-                        .build(),
-                ClaimSummaryFeeInsert.builder()
-                        .id(CLAIM_SUMMARY_FEE_ID_1)
-                        .claimId(CLAIM_ID_1)
-                        .userId(USER_ID)
-                        .build(),
-                CalculatedFeeDetailInsert.builder()
-                        .id(CALCULATED_FEE_DETAIL_ID_1)
-                        .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID_1)
-                        .claimId(CLAIM_ID_1)
-                        .escaped(true)
-                        .userId(USER_ID)
-                        .build());
+  @Override
+  protected List<Insert> inserts() {
+    return List.of(
+        BulkSubmissionInsert.builder().id(BULK_SUBMISSION_ID).userId(USER_ID).build(),
+        SubmissionInsert.builder()
+            .id(SUBMISSION_ID_1)
+            .bulkSubmissionId(BULK_SUBMISSION_ID)
+            .officeAccountNumber(OFFICE_ACCOUNT_NUMBER_1)
+            .submissionPeriod("APR-2025")
+            .areaOfLaw("CRIME_LOWER")
+            .userId(USER_ID)
+            .build(),
+        SubmissionInsert.builder()
+            .id(SUBMISSION_ID_2)
+            .bulkSubmissionId(BULK_SUBMISSION_ID)
+            .officeAccountNumber(OFFICE_ACCOUNT_NUMBER_2)
+            .submissionPeriod("OCT-2025")
+            .areaOfLaw("LEGAL_HELP")
+            .userId(USER_ID)
+            .build(),
+        SubmissionInsert.builder()
+            .id(SUBMISSION_ID_3)
+            .bulkSubmissionId(BULK_SUBMISSION_ID)
+            .officeAccountNumber(OFFICE_ACCOUNT_NUMBER_3)
+            .submissionPeriod("OCT-2025")
+            .areaOfLaw("LEGAL_HELP")
+            .userId(USER_ID)
+            .build(),
+        ClaimInsert.builder()
+            .id(CLAIM_ID_1)
+            .submissionId(SUBMISSION_ID_1)
+            .uniqueFileNumber(UFN_1)
+            .userId(USER_ID)
+            .build(),
+        ClaimInsert.builder()
+            .id(CLAIM_ID_3)
+            .submissionId(SUBMISSION_ID_3)
+            .status("INVALID")
+            .uniqueFileNumber("121019/003")
+            .userId(USER_ID)
+            .build(),
+        ClaimSummaryFeeInsert.builder()
+            .id(CLAIM_SUMMARY_FEE_ID_1)
+            .claimId(CLAIM_ID_1)
+            .userId(USER_ID)
+            .build(),
+        CalculatedFeeDetailInsert.builder()
+            .id(CALCULATED_FEE_DETAIL_ID_1)
+            .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID_1)
+            .claimId(CLAIM_ID_1)
+            .escaped(true)
+            .userId(USER_ID)
+            .build());
+  }
+
+  private static Stream<Arguments> searchConfigProvider() {
+    return loadSearchConfigs().stream().map(Arguments::of);
+  }
+
+  private static List<SearchData> loadSearchConfigs() {
+    ObjectMapper mapper = new ObjectMapper();
+    try (InputStream is =
+        SearchTest.class.getClassLoader().getResourceAsStream("search-config.json")) {
+      if (is == null) {
+        throw new RuntimeException("search-config.json not found in test resources");
+      }
+      return mapper.readValue(is, new TypeReference<List<SearchData>>() {});
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to load search config", e);
     }
+  }
 
-    private static Stream<Arguments> searchConfigProvider() {
-        return loadSearchConfigs().stream().map(Arguments::of);
-    }
+  @ParameterizedTest
+  @MethodSource("searchConfigProvider")
+  @Story("Search for claim")
+  @Severity(SeverityLevel.CRITICAL)
+  @DisplayName("Search: submit form and results available")
+  void canSearchForClaim(SearchData config) {
+    SearchPage searchPage = new SearchPage(page);
 
-    private static List<SearchData> loadSearchConfigs() {
-        ObjectMapper mapper = new ObjectMapper();
-        try (InputStream is = SearchTest.class.getClassLoader().getResourceAsStream("search-config.json")) {
-            if (is == null) {
-                throw new RuntimeException("search-config.json not found in test resources");
-            }
-            return mapper.readValue(is, new TypeReference<List<SearchData>>() {});
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load search config", e);
-        }
-    }
+    searchPage.searchForClaim(
+        config.getOfficeCode(),
+        config.getSubmissionMonth(),
+        config.getSubmissionYear(),
+        config.getUfn(),
+        config.getCrn(),
+        config.getAreaOfLaw(),
+        config.getEscapeCase(),
+        config.isExpectedResults());
 
-    @ParameterizedTest
-    @MethodSource("searchConfigProvider")
-    @Story("Search for claim")
-    @Severity(SeverityLevel.CRITICAL)
-    @DisplayName("Search: submit form and results available")
-    void canSearchForClaim(SearchData config) {
-        SearchPage searchPage = new SearchPage(page);
+    boolean hasResults = searchPage.hasResults();
+    Assertions.assertEquals(
+        config.isExpectedResults(), hasResults, "Results presence should match expected.");
+  }
 
-        searchPage.searchForClaim(
-                config.getOfficeCode(),
-                config.getSubmissionMonth(),
-                config.getSubmissionYear(),
-                config.getUfn(),
-                config.getCrn(),
-                config.getAreaOfLaw(),
-                config.getEscapeCase(),
-                config.isExpectedResults());
+  @Test
+  @DisplayName("Search values retained upon 'Back to search' click")
+  void backToSearch() {
+    SearchPage search = new SearchPage(page);
 
-        boolean hasResults = searchPage.hasResults();
-        Assertions.assertEquals(config.isExpectedResults(), hasResults, "Results presence should match expected.");
-    }
+    search.searchForClaim(OFFICE_ACCOUNT_NUMBER_1, "04", "2025", "", "", "", "");
 
-    @Test
-    @DisplayName("Search values retained upon 'Back to search' click")
-    void backToSearch() {
-        SearchPage search = new SearchPage(page);
+    search.clickViewForUfn(UFN_1);
 
-        search.searchForClaim(OFFICE_ACCOUNT_NUMBER_1, "04", "2025", "", "", "", "");
+    ClaimDetailsPage details = new ClaimDetailsPage(page);
 
-        search.clickViewForUfn(UFN_1);
+    details.clickBackToSearchButton();
+    assertTrue(
+        page.url()
+            .contains(
+                "/?officeCode=123456&submissionDateMonth=04&submissionDateYear=2025&page=1&sort=unique_file_number,asc"));
+  }
 
-        ClaimDetailsPage details = new ClaimDetailsPage(page);
+  @Test
+  @DisplayName("Search results should not include any claims with INVALID status")
+  void invalidClaimsAreNotReturned() {
+    SearchPage search = new SearchPage(page);
 
-        details.clickBackToSearchButton();
-        assertTrue(
-                page.url()
-                        .contains(
-                                "/?officeCode=123456&submissionDateMonth=04&submissionDateYear=2025&page=1&sort=unique_file_number,asc"));
-    }
+    search.searchForClaim(OFFICE_ACCOUNT_NUMBER_3, "", "", "", "", "", "", false);
 
-    @Test
-    @DisplayName("Search results should not include any claims with INVALID status")
-    void invalidClaimsAreNotReturned() {
-        SearchPage search = new SearchPage(page);
-
-        search.searchForClaim(OFFICE_ACCOUNT_NUMBER_3, "", "", "", "", "", "", false);
-
-        Assertions.assertFalse(search.hasResults());
-    }
+    Assertions.assertFalse(search.hasResults());
+  }
 }

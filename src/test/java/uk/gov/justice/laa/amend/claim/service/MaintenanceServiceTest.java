@@ -28,219 +28,215 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 @ExtendWith(MockitoExtension.class)
 public class MaintenanceServiceTest {
 
-    @Mock
-    private HttpServletRequest request;
+  @Mock private HttpServletRequest request;
 
-    @InjectMocks
-    private ConfigurableMaintenanceService service;
+  @InjectMocks private ConfigurableMaintenanceService service;
 
-    @Captor
-    private ArgumentCaptor<Path> pathCaptor;
+  @Captor private ArgumentCaptor<Path> pathCaptor;
 
-    @Test
-    void getMessageWhenMessageExistsInConfig() {
-        try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+  @Test
+  void getMessageWhenMessageExistsInConfig() {
+    try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
 
-            mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
+      mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
 
-            mockedFiles.when(() -> Files.readString(any())).thenReturn("Foo");
+      mockedFiles.when(() -> Files.readString(any())).thenReturn("Foo");
 
-            ThymeleafLiteralString result = (ThymeleafLiteralString) service.getMessage();
+      ThymeleafLiteralString result = (ThymeleafLiteralString) service.getMessage();
 
-            Assertions.assertEquals("Foo", result.getValue());
+      Assertions.assertEquals("Foo", result.getValue());
 
-            mockedFiles.verify(() -> Files.readString(pathCaptor.capture()));
+      mockedFiles.verify(() -> Files.readString(pathCaptor.capture()));
 
-            Assertions.assertEquals(
-                    "/config/maintenance/message", pathCaptor.getValue().toString());
-        }
+      Assertions.assertEquals("/config/maintenance/message", pathCaptor.getValue().toString());
     }
+  }
 
-    @Test
-    void getMessageWhenMessageDoesExistInConfig() {
-        try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+  @Test
+  void getMessageWhenMessageDoesExistInConfig() {
+    try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
 
-            mockedFiles.when(() -> Files.exists(any())).thenReturn(false);
+      mockedFiles.when(() -> Files.exists(any())).thenReturn(false);
 
-            ThymeleafMessage result = (ThymeleafMessage) service.getMessage();
+      ThymeleafMessage result = (ThymeleafMessage) service.getMessage();
 
-            Assertions.assertEquals("maintenance.default.message", result.getKey());
-        }
+      Assertions.assertEquals("maintenance.default.message", result.getKey());
     }
+  }
 
-    @Test
-    void getTitleWhenTitleExistsInConfig() {
-        try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+  @Test
+  void getTitleWhenTitleExistsInConfig() {
+    try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
 
-            mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
+      mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
 
-            mockedFiles.when(() -> Files.readString(any())).thenReturn("Foo");
+      mockedFiles.when(() -> Files.readString(any())).thenReturn("Foo");
 
-            ThymeleafLiteralString result = (ThymeleafLiteralString) service.getTitle();
+      ThymeleafLiteralString result = (ThymeleafLiteralString) service.getTitle();
 
-            Assertions.assertEquals("Foo", result.getValue());
+      Assertions.assertEquals("Foo", result.getValue());
 
-            mockedFiles.verify(() -> Files.readString(pathCaptor.capture()));
+      mockedFiles.verify(() -> Files.readString(pathCaptor.capture()));
 
-            Assertions.assertEquals(
-                    "/config/maintenance/title", pathCaptor.getValue().toString());
-        }
+      Assertions.assertEquals("/config/maintenance/title", pathCaptor.getValue().toString());
     }
+  }
 
-    @Test
-    void getTitleWhenTitleDoesExistInConfig() {
-        try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+  @Test
+  void getTitleWhenTitleDoesExistInConfig() {
+    try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
 
-            mockedFiles.when(() -> Files.exists(any())).thenReturn(false);
+      mockedFiles.when(() -> Files.exists(any())).thenReturn(false);
 
-            ThymeleafMessage result = (ThymeleafMessage) service.getTitle();
+      ThymeleafMessage result = (ThymeleafMessage) service.getTitle();
 
-            Assertions.assertEquals("maintenance.default.title", result.getKey());
-        }
+      Assertions.assertEquals("maintenance.default.title", result.getKey());
     }
+  }
 
-    @Test
-    void maintenanceAppliesWhenEnabledDoesNotExistInConfig() throws IOException {
-        try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
-            mockedFiles.when(() -> Files.exists(any())).thenReturn(false);
+  @Test
+  void maintenanceAppliesWhenEnabledDoesNotExistInConfig() throws IOException {
+    try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+      mockedFiles.when(() -> Files.exists(any())).thenReturn(false);
 
-            boolean result = service.maintenanceApplies(request);
+      boolean result = service.maintenanceApplies(request);
 
-            Assertions.assertFalse(result);
-        }
+      Assertions.assertFalse(result);
     }
+  }
 
-    @Test
-    void maintenanceAppliesWhenEnabledDoesExistInConfigAndIsDisabled() throws IOException {
-        try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
-            mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
+  @Test
+  void maintenanceAppliesWhenEnabledDoesExistInConfigAndIsDisabled() throws IOException {
+    try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+      mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
 
-            mockedFiles.when(() -> Files.readString(any())).thenReturn("false");
+      mockedFiles.when(() -> Files.readString(any())).thenReturn("false");
 
-            boolean result = service.maintenanceApplies(request);
+      boolean result = service.maintenanceApplies(request);
 
-            Assertions.assertFalse(result);
+      Assertions.assertFalse(result);
 
-            mockedFiles.verify(() -> Files.readString(pathCaptor.capture()));
+      mockedFiles.verify(() -> Files.readString(pathCaptor.capture()));
 
-            Assertions.assertEquals(
-                    "/config/maintenance/enabled", pathCaptor.getValue().toString());
-        }
+      Assertions.assertEquals("/config/maintenance/enabled", pathCaptor.getValue().toString());
     }
+  }
 
-    @Test
-    void maintenanceAppliesWhenEnabledDoesExistInConfigAndIsEnabledAndNullCookies() throws IOException {
-        try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
-            mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
+  @Test
+  void maintenanceAppliesWhenEnabledDoesExistInConfigAndIsEnabledAndNullCookies()
+      throws IOException {
+    try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+      mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
 
-            mockedFiles.when(() -> Files.readString(any())).thenReturn("true");
+      mockedFiles.when(() -> Files.readString(any())).thenReturn("true");
 
-            when(request.getCookies()).thenReturn(null);
+      when(request.getCookies()).thenReturn(null);
 
-            boolean result = service.maintenanceApplies(request);
+      boolean result = service.maintenanceApplies(request);
 
-            Assertions.assertTrue(result);
+      Assertions.assertTrue(result);
 
-            mockedFiles.verify(() -> Files.readString(pathCaptor.capture()));
+      mockedFiles.verify(() -> Files.readString(pathCaptor.capture()));
 
-            Assertions.assertEquals(
-                    "/config/maintenance/enabled", pathCaptor.getValue().toString());
-        }
+      Assertions.assertEquals("/config/maintenance/enabled", pathCaptor.getValue().toString());
     }
+  }
 
-    @Test
-    void maintenanceAppliesWhenEnabledDoesExistInConfigAndIsEnabledAndHasNoBypassCookie() throws IOException {
-        try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
-            mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
+  @Test
+  void maintenanceAppliesWhenEnabledDoesExistInConfigAndIsEnabledAndHasNoBypassCookie()
+      throws IOException {
+    try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+      mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
 
-            mockedFiles.when(() -> Files.readString(any())).thenReturn("true").thenReturn("password");
+      mockedFiles.when(() -> Files.readString(any())).thenReturn("true").thenReturn("password");
 
-            when(request.getCookies()).thenReturn(new Cookie[] {});
+      when(request.getCookies()).thenReturn(new Cookie[] {});
 
-            boolean result = service.maintenanceApplies(request);
+      boolean result = service.maintenanceApplies(request);
 
-            Assertions.assertTrue(result);
+      Assertions.assertTrue(result);
 
-            mockedFiles.verify(() -> Files.readString(pathCaptor.capture()), times(2));
+      mockedFiles.verify(() -> Files.readString(pathCaptor.capture()), times(2));
 
-            List<Path> paths = pathCaptor.getAllValues();
+      List<Path> paths = pathCaptor.getAllValues();
 
-            Assertions.assertEquals("/config/maintenance/enabled", paths.get(0).toString());
-            Assertions.assertEquals(
-                    "/config/maintenance/bypassPassword", paths.get(1).toString());
-        }
+      Assertions.assertEquals("/config/maintenance/enabled", paths.get(0).toString());
+      Assertions.assertEquals("/config/maintenance/bypassPassword", paths.get(1).toString());
     }
+  }
 
-    @Test
-    void maintenanceAppliesWhenEnabledDoesExistInConfigAndIsEnabledAndHasBypassCookie() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setCookies(new MockCookie("bypass_cookie", "password"));
+  @Test
+  void maintenanceAppliesWhenEnabledDoesExistInConfigAndIsEnabledAndHasBypassCookie()
+      throws IOException {
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.setCookies(new MockCookie("bypass_cookie", "password"));
 
-        try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
-            mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
+    try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+      mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
 
-            mockedFiles.when(() -> Files.readString(any())).thenReturn("true").thenReturn("password");
+      mockedFiles.when(() -> Files.readString(any())).thenReturn("true").thenReturn("password");
 
-            boolean result = service.maintenanceApplies(request);
+      boolean result = service.maintenanceApplies(request);
 
-            Assertions.assertFalse(result);
+      Assertions.assertFalse(result);
 
-            mockedFiles.verify(() -> Files.readString(pathCaptor.capture()), times(2));
+      mockedFiles.verify(() -> Files.readString(pathCaptor.capture()), times(2));
 
-            List<Path> paths = pathCaptor.getAllValues();
+      List<Path> paths = pathCaptor.getAllValues();
 
-            Assertions.assertEquals("/config/maintenance/enabled", paths.get(0).toString());
-            Assertions.assertEquals(
-                    "/config/maintenance/bypassPassword", paths.get(1).toString());
-        }
+      Assertions.assertEquals("/config/maintenance/enabled", paths.get(0).toString());
+      Assertions.assertEquals("/config/maintenance/bypassPassword", paths.get(1).toString());
     }
+  }
 
-    @Test
-    void maintenanceAppliesThrowsExceptionWhenEnabledDoesExistInConfigAndIsEnabledButFailsToGetPasswordFromConfig() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setCookies(new MockCookie("bypass_cookie", "password"));
+  @Test
+  void
+      maintenanceAppliesThrowsExceptionWhenEnabledDoesExistInConfigAndIsEnabledButFailsToGetPasswordFromConfig() {
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.setCookies(new MockCookie("bypass_cookie", "password"));
 
-        try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
-            mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
+    try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+      mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
 
-            mockedFiles.when(() -> Files.readString(any())).thenReturn("true").thenThrow(new IOException());
+      mockedFiles
+          .when(() -> Files.readString(any()))
+          .thenReturn("true")
+          .thenThrow(new IOException());
 
-            Assertions.assertThrows(RuntimeException.class, () -> service.maintenanceApplies(request));
+      Assertions.assertThrows(RuntimeException.class, () -> service.maintenanceApplies(request));
 
-            mockedFiles.verify(() -> Files.readString(pathCaptor.capture()), times(2));
+      mockedFiles.verify(() -> Files.readString(pathCaptor.capture()), times(2));
 
-            List<Path> paths = pathCaptor.getAllValues();
+      List<Path> paths = pathCaptor.getAllValues();
 
-            Assertions.assertEquals("/config/maintenance/enabled", paths.get(0).toString());
-            Assertions.assertEquals(
-                    "/config/maintenance/bypassPassword", paths.get(1).toString());
-        }
+      Assertions.assertEquals("/config/maintenance/enabled", paths.get(0).toString());
+      Assertions.assertEquals("/config/maintenance/bypassPassword", paths.get(1).toString());
     }
+  }
 
-    @Test
-    void maintenanceAppliesWhenEnabledCheckFailsAndHasBypassCookie() throws IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setCookies(new MockCookie("bypass_cookie", "password"));
+  @Test
+  void maintenanceAppliesWhenEnabledCheckFailsAndHasBypassCookie() throws IOException {
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    request.setCookies(new MockCookie("bypass_cookie", "password"));
 
-        try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
-            mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
+    try (MockedStatic<Files> mockedFiles = mockStatic(Files.class)) {
+      mockedFiles.when(() -> Files.exists(any())).thenReturn(true);
 
-            mockedFiles
-                    .when(() -> Files.readString(any()))
-                    .thenThrow(new IOException())
-                    .thenReturn("password");
+      mockedFiles
+          .when(() -> Files.readString(any()))
+          .thenThrow(new IOException())
+          .thenReturn("password");
 
-            boolean result = service.maintenanceApplies(request);
+      boolean result = service.maintenanceApplies(request);
 
-            Assertions.assertFalse(result);
+      Assertions.assertFalse(result);
 
-            mockedFiles.verify(() -> Files.readString(pathCaptor.capture()), times(2));
+      mockedFiles.verify(() -> Files.readString(pathCaptor.capture()), times(2));
 
-            List<Path> paths = pathCaptor.getAllValues();
+      List<Path> paths = pathCaptor.getAllValues();
 
-            Assertions.assertEquals("/config/maintenance/enabled", paths.get(0).toString());
-            Assertions.assertEquals(
-                    "/config/maintenance/bypassPassword", paths.get(1).toString());
-        }
+      Assertions.assertEquals("/config/maintenance/enabled", paths.get(0).toString());
+      Assertions.assertEquals("/config/maintenance/bypassPassword", paths.get(1).toString());
     }
+  }
 }

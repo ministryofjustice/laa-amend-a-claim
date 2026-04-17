@@ -4,13 +4,13 @@ import lombok.Getter;
 
 @Getter
 public enum AreaOfLaw {
-    CRIME_LOWER("areaOfLaw.crimeLower"),
-    LEGAL_HELP("areaOfLaw.legalHelp"),
-    MEDIATION("areaOfLaw.mediation");
+  CRIME_LOWER("areaOfLaw.crimeLower"),
+  LEGAL_HELP("areaOfLaw.legalHelp"),
+  MEDIATION("areaOfLaw.mediation");
 
-    private final String messageKey;
+  private final String messageKey;
 
-    AreaOfLaw(final String messageKey) {
-        this.messageKey = messageKey;
-    }
+  AreaOfLaw(final String messageKey) {
+    this.messageKey = messageKey;
+  }
 }

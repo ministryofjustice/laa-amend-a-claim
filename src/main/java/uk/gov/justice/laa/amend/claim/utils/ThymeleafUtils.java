@@ -26,53 +26,59 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafString;
 @AllArgsConstructor
 public class ThymeleafUtils {
 
-    public List<SearchFormError> toSearchFormErrors(List<DetailedError> errors) {
-        return mapErrors(errors, SearchFormError::new, SearchFormError::getMessage);
-    }
+  public List<SearchFormError> toSearchFormErrors(List<DetailedError> errors) {
+    return mapErrors(errors, SearchFormError::new, SearchFormError::getMessage);
+  }
 
-    public List<AssessmentOutcomeFormError> toAssessmentOutcomeErrors(List<DetailedError> errors) {
-        return mapErrors(errors, AssessmentOutcomeFormError::new, AssessmentOutcomeFormError::getMessage);
-    }
+  public List<AssessmentOutcomeFormError> toAssessmentOutcomeErrors(List<DetailedError> errors) {
+    return mapErrors(
+        errors, AssessmentOutcomeFormError::new, AssessmentOutcomeFormError::getMessage);
+  }
 
-    public List<MonetaryValueFormError> toMonetaryFormValueErrors(List<DetailedError> errors) {
-        return mapErrors(errors, MonetaryValueFormError::new, MonetaryValueFormError::getMessage);
-    }
+  public List<MonetaryValueFormError> toMonetaryFormValueErrors(List<DetailedError> errors) {
+    return mapErrors(errors, MonetaryValueFormError::new, MonetaryValueFormError::getMessage);
+  }
 
-    public List<AssessedTotalFormError> toAssessedTotalFormErrors(List<DetailedError> errors) {
-        return mapErrors(errors, AssessedTotalFormError::new, AssessedTotalFormError::getMessage);
-    }
+  public List<AssessedTotalFormError> toAssessedTotalFormErrors(List<DetailedError> errors) {
+    return mapErrors(errors, AssessedTotalFormError::new, AssessedTotalFormError::getMessage);
+  }
 
-    public List<AllowedTotalFormError> toAllowedTotalFormErrors(List<DetailedError> errors) {
-        return mapErrors(errors, AllowedTotalFormError::new, AllowedTotalFormError::getMessage);
-    }
+  public List<AllowedTotalFormError> toAllowedTotalFormErrors(List<DetailedError> errors) {
+    return mapErrors(errors, AllowedTotalFormError::new, AllowedTotalFormError::getMessage);
+  }
 
-    private <T> List<T> mapErrors(
-            List<DetailedError> errors, Function<DetailedError, T> mapper, Function<T, String> keyExtractor) {
-        return errors.stream()
-                .map(mapper)
-                .sorted()
-                .collect(Collectors.collectingAndThen(
-                        Collectors.toMap(keyExtractor, Function.identity(), (e1, e2) -> e1, LinkedHashMap::new),
-                        map -> map.values().stream().toList()));
-    }
+  private <T> List<T> mapErrors(
+      List<DetailedError> errors,
+      Function<DetailedError, T> mapper,
+      Function<T, String> keyExtractor) {
+    return errors.stream()
+        .map(mapper)
+        .sorted()
+        .collect(
+            Collectors.collectingAndThen(
+                Collectors.toMap(
+                    keyExtractor, Function.identity(), (e1, e2) -> e1, LinkedHashMap::new),
+                map -> map.values().stream().toList()));
+  }
 
-    public ThymeleafString getFormattedValue(Object value) {
-        return switch (value) {
-            case null -> new ThymeleafMessage("service.noData");
-            case BigDecimal bigDecimal -> new ThymeleafLiteralString(formatCurrency(bigDecimal));
-            case Integer i -> new ThymeleafLiteralString(i.toString());
-            case Boolean b -> getFormattedBoolean(b);
-            case String s -> new ThymeleafLiteralString(s);
-            case ThymeleafMessage s -> s;
-            case OffsetDateTime o ->
-                new ThymeleafMessage("fulldate.format", displayDateTimeDateValue(o), displayDateTimeTimeValue(o));
-            case LocalDate d -> new ThymeleafLiteralString(displayDateValue(d));
-            default -> new ThymeleafLiteralString(value.toString());
-        };
-    }
+  public ThymeleafString getFormattedValue(Object value) {
+    return switch (value) {
+      case null -> new ThymeleafMessage("service.noData");
+      case BigDecimal bigDecimal -> new ThymeleafLiteralString(formatCurrency(bigDecimal));
+      case Integer i -> new ThymeleafLiteralString(i.toString());
+      case Boolean b -> getFormattedBoolean(b);
+      case String s -> new ThymeleafLiteralString(s);
+      case ThymeleafMessage s -> s;
+      case OffsetDateTime o ->
+          new ThymeleafMessage(
+              "fulldate.format", displayDateTimeDateValue(o), displayDateTimeTimeValue(o));
+      case LocalDate d -> new ThymeleafLiteralString(displayDateValue(d));
+      default -> new ThymeleafLiteralString(value.toString());
+    };
+  }
 
-    public ThymeleafString getFormattedBoolean(Boolean value) {
-        String key = (value != null && value) ? "service.yes" : "service.no";
-        return new ThymeleafMessage(key);
-    }
+  public ThymeleafString getFormattedBoolean(Boolean value) {
+    String key = (value != null && value) ? "service.yes" : "service.no";
+    return new ThymeleafMessage(key);
+  }
 }

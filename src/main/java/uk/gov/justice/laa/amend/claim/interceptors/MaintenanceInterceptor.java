@@ -14,21 +14,21 @@ import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 @RequiredArgsConstructor
 public class MaintenanceInterceptor implements HandlerInterceptor {
 
-    private final MaintenanceService maintenanceService;
+  private final MaintenanceService maintenanceService;
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws IOException {
-        String path = request.getRequestURI();
-        log.debug("MaintenanceInterceptor path: {}", path);
+  @Override
+  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+      throws IOException {
+    String path = request.getRequestURI();
+    log.debug("MaintenanceInterceptor path: {}", path);
 
-        if (!maintenanceService.maintenanceApplies(request)) {
-            log.debug("Maintenance off, allow: {}", path);
-            return true;
-        }
-
-        log.debug("Maintenance on, forward: {} to maintenance page", path);
-        response.sendRedirect(request.getContextPath() + "/maintenance");
-        return false;
+    if (!maintenanceService.maintenanceApplies(request)) {
+      log.debug("Maintenance off, allow: {}", path);
+      return true;
     }
+
+    log.debug("Maintenance on, forward: {} to maintenance page", path);
+    response.sendRedirect(request.getContextPath() + "/maintenance");
+    return false;
+  }
 }

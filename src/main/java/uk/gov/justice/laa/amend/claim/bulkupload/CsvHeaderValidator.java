@@ -6,22 +6,23 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CsvHeaderValidator {
-    public void validate(CsvSchema schema, List<String> actualHeaders) {
+  public void validate(CsvSchema schema, List<String> actualHeaders) {
 
-        List<String> missing = new ArrayList<>();
+    List<String> missing = new ArrayList<>();
 
-        for (CsvField field : schema.fields()) {
-            if (field.required()) {
-                boolean found = actualHeaders.stream().anyMatch(h -> h.equalsIgnoreCase(field.displayName()));
+    for (CsvField field : schema.fields()) {
+      if (field.required()) {
+        boolean found =
+            actualHeaders.stream().anyMatch(h -> h.equalsIgnoreCase(field.displayName()));
 
-                if (!found) {
-                    missing.add(field.displayName());
-                }
-            }
+        if (!found) {
+          missing.add(field.displayName());
         }
-
-        if (!missing.isEmpty()) {
-            throw new IllegalArgumentException("Missing required headers: " + String.join(", ", missing));
-        }
+      }
     }
+
+    if (!missing.isEmpty()) {
+      throw new IllegalArgumentException("Missing required headers: " + String.join(", ", missing));
+    }
+  }
 }

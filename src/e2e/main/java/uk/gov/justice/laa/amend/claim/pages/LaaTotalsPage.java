@@ -7,45 +7,42 @@ import com.microsoft.playwright.Page;
 
 public abstract class LaaTotalsPage extends LaaInputPage {
 
-    protected Locator totalVatInput;
-    protected Locator totalInclVatInput;
+  protected Locator totalVatInput;
+  protected Locator totalInclVatInput;
 
-    protected String totalVatError;
-    protected String totalInclVatError;
+  protected String totalVatError;
+  protected String totalInclVatError;
 
-    public LaaTotalsPage(Page page, String heading) {
-        super(page, heading);
-    }
+  public LaaTotalsPage(Page page, String heading) {
+    super(page, heading);
+  }
 
-    public void setTotalVat(String amount) {
-        totalVatInput.fill(amount);
-    }
+  public void setTotalVat(String amount) {
+    totalVatInput.fill(amount);
+  }
 
-    public void setTotalInclVat(String amount) {
-        totalInclVatInput.fill(amount);
-    }
+  public void setTotalInclVat(String amount) {
+    totalInclVatInput.fill(amount);
+  }
 
-    public void assertRequiredErrorsShown() {
-        assertErrorsShown(totalVatError, totalInclVatError);
-    }
+  public void assertRequiredErrorsShown() {
+    assertErrorsShown(totalVatError, totalInclVatError);
+  }
 
-    public void assertNumericErrorsShown() {
-        assertErrorsShown("The total VAT must be", "The total value must");
-    }
+  public void assertNumericErrorsShown() {
+    assertErrorsShown("The total VAT must be", "The total value must");
+  }
 
-    private void assertErrorsShown(String totalVatError, String totalInclVatError) {
-        waitForPageErrors();
+  private void assertErrorsShown(String totalVatError, String totalInclVatError) {
+    waitForPageErrors();
 
-        assertThat(errorSummary).containsText(totalVatError);
-        assertThat(errorSummary).containsText(totalInclVatError);
+    assertThat(errorSummary).containsText(totalVatError);
+    assertThat(errorSummary).containsText(totalInclVatError);
 
-        assertThat(inlineErrors
-                        .filter(new Locator.FilterOptions().setHasText(totalVatError))
-                        .first())
-                .isVisible();
-        assertThat(inlineErrors
-                        .filter(new Locator.FilterOptions().setHasText(totalInclVatError))
-                        .first())
-                .isVisible();
-    }
+    assertThat(inlineErrors.filter(new Locator.FilterOptions().setHasText(totalVatError)).first())
+        .isVisible();
+    assertThat(
+            inlineErrors.filter(new Locator.FilterOptions().setHasText(totalInclVatError)).first())
+        .isVisible();
+  }
 }

@@ -12,9 +12,9 @@ import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 @Getter
 public class AssessmentOutcomeForm {
 
-    @NotNull(message = ASSESSMENT_OUTCOME_REQUIRED_ERROR)
-    private OutcomeType assessmentOutcome;
+  @NotNull(message = ASSESSMENT_OUTCOME_REQUIRED_ERROR)
+  private OutcomeType assessmentOutcome;
 
-    @NotNull(message = CONTINGENCY_ASSESSMENT_REQUIRED_ERROR)
-    private Boolean contingencyAssessment;
+  @NotNull(message = CONTINGENCY_ASSESSMENT_REQUIRED_ERROR)
+  private Boolean contingencyAssessment;
 }

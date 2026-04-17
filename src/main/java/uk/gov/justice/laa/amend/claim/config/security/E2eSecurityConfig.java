@@ -13,24 +13,22 @@ import org.springframework.security.web.authentication.AnonymousAuthenticationFi
 import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 
 /**
- * Security configuration for E2E testing environments.
- * This configuration disables CSP to allow Playwright tests to interact with the UI without
- * Content Security Policy restrictions interfering with test automation.
+ * Security configuration for E2E testing environments. This configuration disables CSP to allow
+ * Playwright tests to interact with the UI without Content Security Policy restrictions interfering
+ * with test automation.
  */
 @Profile("e2e")
 @Configuration
 @EnableWebSecurity
 public class E2eSecurityConfig extends CommonSecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChainE2e(
-            HttpSecurity http, DummyUserSecurityService dummyUserSecurityService) {
-        http.authorizeHttpRequests(auth -> auth.requestMatchers(PUBLIC_PATHS)
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
-                .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(dummyUserSecurityService, AnonymousAuthenticationFilter.class);
-        return http.build();
-    }
+  @Bean
+  public SecurityFilterChain securityFilterChainE2e(
+      HttpSecurity http, DummyUserSecurityService dummyUserSecurityService) {
+    http.authorizeHttpRequests(
+            auth -> auth.requestMatchers(PUBLIC_PATHS).permitAll().anyRequest().authenticated())
+        .csrf(AbstractHttpConfigurer::disable)
+        .addFilterBefore(dummyUserSecurityService, AnonymousAuthenticationFilter.class);
+    return http.build();
+  }
 }

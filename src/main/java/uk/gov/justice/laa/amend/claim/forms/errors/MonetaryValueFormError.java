@@ -5,16 +5,16 @@ import org.thymeleaf.spring6.util.DetailedError;
 
 public class MonetaryValueFormError extends FormError {
 
-    public MonetaryValueFormError(DetailedError error) {
-        super(error);
-    }
+  public MonetaryValueFormError(DetailedError error) {
+    super(error);
+  }
 
-    public MonetaryValueFormError(String fieldName, String message) {
-        super(fieldName, message);
-    }
+  public MonetaryValueFormError(String fieldName, String message) {
+    super(fieldName, message);
+  }
 
-    @Override
-    protected Map<String, Integer> getFieldOrderMap() {
-        return Map.of("value", 1);
-    }
+  @Override
+  protected Map<String, Integer> getFieldOrderMap() {
+    return Map.of("value", 1);
+  }
 }

@@ -41,84 +41,98 @@ import uk.gov.justice.laa.amend.claim.models.Role;
 @RequiredArgsConstructor
 public class SecurityConfig extends CommonSecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                // this is the default CSRF configuration, but we're using it explicitly here so Snyk can see it
-                .csrf((csrf) -> csrf.csrfTokenRepository(new HttpSessionCsrfTokenRepository()))
-                .authorizeHttpRequests(auth -> auth.requestMatchers(PUBLIC_PATHS)
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
-                .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
-                        .successHandler((_, response, _) -> response.sendRedirect("/"))
-                        .loginPage("/auth")
-                        .failureHandler((_, response, exception) -> {
-                            log.error("Authentication Failure", exception);
-                            response.sendRedirect("/error");
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        // this is the default CSRF configuration, but we're using it explicitly here so Snyk can
+        // see it
+        .csrf((csrf) -> csrf.csrfTokenRepository(new HttpSessionCsrfTokenRepository()))
+        .authorizeHttpRequests(
+            auth -> auth.requestMatchers(PUBLIC_PATHS).permitAll().anyRequest().authenticated())
+        .oauth2Login(
+            oauth2 ->
+                oauth2
+                    .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
+                    .successHandler((request, response, auth) -> response.sendRedirect("/"))
+                    .loginPage("/auth")
+                    .failureHandler(
+                        (request, response, exception) -> {
+                          log.error("Authentication Failure", exception);
+                          response.sendRedirect("/error");
                         }))
-                .logout(logout -> logout.logoutUrl("/logout")
-                        .logoutSuccessUrl("/logout-success")
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .deleteCookies("SESSION"))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                        .invalidSessionUrl("/logout-success?message=expired")
-                        .sessionConcurrency(concurrency ->
-                                concurrency.maximumSessions(1).expiredUrl("/logout-success?message=expired")))
-                .httpBasic(AbstractHttpConfigurer::disable);
+        .logout(
+            logout ->
+                logout
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/logout-success")
+                    .invalidateHttpSession(true)
+                    .clearAuthentication(true)
+                    .deleteCookies("SESSION"))
+        .sessionManagement(
+            session ->
+                session
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .invalidSessionUrl("/logout-success?message=expired")
+                    .sessionConcurrency(
+                        concurrency ->
+                            concurrency
+                                .maximumSessions(1)
+                                .expiredUrl("/logout-success?message=expired")))
+        .httpBasic(AbstractHttpConfigurer::disable);
 
-        return http.build();
-    }
+    return http.build();
+  }
 
-    @Bean
-    public FilterRegistrationBean<OncePerRequestFilter> securityHeadersFilter() {
-        FilterRegistrationBean<OncePerRequestFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(createSecurityHeadersFilter());
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return registration;
-    }
+  @Bean
+  public FilterRegistrationBean<OncePerRequestFilter> securityHeadersFilter() {
+    FilterRegistrationBean<OncePerRequestFilter> registration = new FilterRegistrationBean<>();
+    registration.setFilter(createSecurityHeadersFilter());
+    registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+    return registration;
+  }
 
-    private OidcUserService oidcUserService() {
-        return new OidcUserService() {
-            @Override
-            public OidcUser loadUser(OidcUserRequest userRequest) {
-                OidcUser oidcUser = super.loadUser(userRequest);
-                Set<GrantedAuthority> authorities = getAuthorities(oidcUser.getAttributes());
-                return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
-            }
-        };
-    }
+  private OidcUserService oidcUserService() {
+    return new OidcUserService() {
+      @Override
+      public OidcUser loadUser(OidcUserRequest userRequest) {
+        OidcUser oidcUser = super.loadUser(userRequest);
+        Set<GrantedAuthority> authorities = getAuthorities(oidcUser.getAttributes());
+        return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
+      }
+    };
+  }
 
-    public Set<GrantedAuthority> getAuthorities(Map<String, Object> attributes) {
-        var roles = parseRawRoles(attributes.get("LAA_APP_ROLES")).stream()
-                .map(Role::fromRoleName)
-                .flatMap(Optional::stream)
-                .map(role -> new SimpleGrantedAuthority(role.name()))
-                .toList();
-        return new SimpleAuthorityMapper().mapAuthorities(roles);
-    }
+  public Set<GrantedAuthority> getAuthorities(Map<String, Object> attributes) {
+    var roles =
+        parseRawRoles(attributes.get("LAA_APP_ROLES")).stream()
+            .map(Role::fromRoleName)
+            .flatMap(Optional::stream)
+            .map(role -> new SimpleGrantedAuthority(role.name()))
+            .toList();
+    return new SimpleAuthorityMapper().mapAuthorities(roles);
+  }
 
-    private List<String> parseRawRoles(Object rawRoles) {
-        if (rawRoles instanceof List<?> list) {
-            return list.stream().map(Object::toString).toList();
-        } else if (rawRoles instanceof String str) {
-            return List.of(str.split(","));
-        } else {
-            return List.of();
-        }
+  private List<String> parseRawRoles(Object rawRoles) {
+    if (rawRoles instanceof List<?> list) {
+      return list.stream().map(Object::toString).toList();
+    } else if (rawRoles instanceof String str) {
+      return List.of(str.split(","));
+    } else {
+      return List.of();
     }
+  }
 
-    @Bean
-    public OAuth2AuthorizedClientRepository authorizedClientRepository() {
-        // Stores authorized clients in the HTTP session
-        return new HttpSessionOAuth2AuthorizedClientRepository();
-    }
+  @Bean
+  public OAuth2AuthorizedClientRepository authorizedClientRepository() {
+    // Stores authorized clients in the HTTP session
+    return new HttpSessionOAuth2AuthorizedClientRepository();
+  }
 
-    @Bean
-    public OAuth2AuthorizedClientManager authorizedClientManager(
-            ClientRegistrationRepository clientRegistrationRepository,
-            OAuth2AuthorizedClientRepository authorizedClientRepository) {
-        return new DefaultOAuth2AuthorizedClientManager(clientRegistrationRepository, authorizedClientRepository);
-    }
+  @Bean
+  public OAuth2AuthorizedClientManager authorizedClientManager(
+      ClientRegistrationRepository clientRegistrationRepository,
+      OAuth2AuthorizedClientRepository authorizedClientRepository) {
+    return new DefaultOAuth2AuthorizedClientManager(
+        clientRegistrationRepository, authorizedClientRepository);
+  }
 }

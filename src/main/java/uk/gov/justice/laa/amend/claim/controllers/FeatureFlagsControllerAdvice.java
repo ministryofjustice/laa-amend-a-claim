@@ -9,10 +9,10 @@ import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 @ControllerAdvice
 public class FeatureFlagsControllerAdvice {
 
-    private final FeatureFlagsConfig featureFlagsConfig;
+  private final FeatureFlagsConfig featureFlagsConfig;
 
-    @ModelAttribute("featureFlagsConfig")
-    public FeatureFlagsConfig featureFlagsConfig() {
-        return featureFlagsConfig;
-    }
+  @ModelAttribute("featureFlagsConfig")
+  public FeatureFlagsConfig featureFlagsConfig() {
+    return featureFlagsConfig;
+  }
 }

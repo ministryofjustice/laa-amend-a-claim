@@ -12,23 +12,23 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafString;
 @Profile("local")
 public class LocalMaintenanceService implements MaintenanceService {
 
-    @Override
-    public boolean maintenanceApplies(HttpServletRequest request) {
-        return false;
-    }
+  @Override
+  public boolean maintenanceApplies(HttpServletRequest request) {
+    return false;
+  }
 
-    @Override
-    public boolean maintenanceEnabled() {
-        return false;
-    }
+  @Override
+  public boolean maintenanceEnabled() {
+    return false;
+  }
 
-    @Override
-    public ThymeleafString getMessage() {
-        return new ThymeleafMessage("maintenance.default.message");
-    }
+  @Override
+  public ThymeleafString getMessage() {
+    return new ThymeleafMessage("maintenance.default.message");
+  }
 
-    @Override
-    public ThymeleafString getTitle() {
-        return new ThymeleafMessage("maintenance.default.title");
-    }
+  @Override
+  public ThymeleafString getTitle() {
+    return new ThymeleafMessage("maintenance.default.title");
+  }
 }

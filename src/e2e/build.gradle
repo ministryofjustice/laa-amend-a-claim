@@ -15,14 +15,6 @@ java {
     }
 }
 
-spotless {
-    java {
-        palantirJavaFormat()
-        importOrder()
-        removeUnusedImports()
-    }
-}
-
 sourceSets {
     main {
         java.srcDir 'main/java'

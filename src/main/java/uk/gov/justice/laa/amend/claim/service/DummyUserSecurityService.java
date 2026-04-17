@@ -26,44 +26,45 @@ import uk.gov.justice.laa.amend.claim.models.Role;
 @Service
 public class DummyUserSecurityService extends OncePerRequestFilter {
 
-    public static final String USER_ID = "00000000-0000-0000-0000-000000000000";
-    public static final String EMAIL = "dummy-email@example.com";
-    public static final String NAME = "Dummy Name";
-    public static final String TOKEN_VALUE = "dummy-token";
+  public static final String USER_ID = "00000000-0000-0000-0000-000000000000";
+  public static final String EMAIL = "dummy-email@example.com";
+  public static final String NAME = "Dummy Name";
+  public static final String TOKEN_VALUE = "dummy-token";
 
-    @Getter
-    @Setter
-    // Default to all roles, but allow this to be configured
-    private Set<Role> roles = Set.of(Role.values());
+  @Getter @Setter
+  // Default to all roles, but allow this to be configured
+  private Set<Role> roles = Set.of(Role.values());
 
-    @Override
-    public void doFilterInternal(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
+  @Override
+  public void doFilterInternal(
+      @NonNull HttpServletRequest request,
+      @NonNull HttpServletResponse response,
+      @NonNull FilterChain filterChain)
+      throws ServletException, IOException {
 
-        Map<String, Object> claims = Map.of(
-                "oid", USER_ID,
-                "email", EMAIL,
-                "name", NAME);
+    Map<String, Object> claims =
+        Map.of(
+            "oid", USER_ID,
+            "email", EMAIL,
+            "name", NAME);
 
-        OidcIdToken token =
-                new OidcIdToken(TOKEN_VALUE, Instant.now(), Instant.now().plusSeconds(3600), claims);
+    OidcIdToken token =
+        new OidcIdToken(TOKEN_VALUE, Instant.now(), Instant.now().plusSeconds(3600), claims);
 
-        var authorities = new SimpleAuthorityMapper()
-                .mapAuthorities(roles.stream()
-                        .map(role -> new SimpleGrantedAuthority(role.name()))
-                        .toList());
+    var authorities =
+        new SimpleAuthorityMapper()
+            .mapAuthorities(
+                roles.stream().map(role -> new SimpleGrantedAuthority(role.name())).toList());
 
-        DefaultOidcUser oidcUser = new DefaultOidcUser(authorities, token, "email");
+    DefaultOidcUser oidcUser = new DefaultOidcUser(authorities, token, "email");
 
-        OAuth2AuthenticationToken oauthToken = new OAuth2AuthenticationToken(
-                oidcUser, authorities, "test" // registrationId
-                );
+    OAuth2AuthenticationToken oauthToken =
+        new OAuth2AuthenticationToken(
+            oidcUser, authorities, "test" // registrationId
+            );
 
-        SecurityContextHolder.getContext().setAuthentication(oauthToken);
+    SecurityContextHolder.getContext().setAuthentication(oauthToken);
 
-        filterChain.doFilter(request, response);
-    }
+    filterChain.doFilter(request, response);
+  }
 }

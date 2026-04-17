@@ -5,11 +5,11 @@ import com.microsoft.playwright.Page;
 
 public abstract class LaaInputPage extends LaaErrorSummaryPage {
 
-    protected Locator inlineErrors;
+  protected Locator inlineErrors;
 
-    public LaaInputPage(Page page, String heading) {
-        super(page, heading);
+  public LaaInputPage(Page page, String heading) {
+    super(page, heading);
 
-        this.inlineErrors = page.locator(".govuk-error-message");
-    }
+    this.inlineErrors = page.locator(".govuk-error-message");
+  }
 }

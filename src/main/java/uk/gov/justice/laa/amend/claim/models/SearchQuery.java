@@ -22,73 +22,79 @@ import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 @NoArgsConstructor
 public class SearchQuery {
 
-    @Min(1)
-    private int page = 1;
+  @Min(1)
+  private int page = 1;
 
-    private Sort sort;
-    private String officeCode;
-    private String submissionDateMonth;
-    private String submissionDateYear;
-    private String uniqueFileNumber;
-    private String caseReferenceNumber;
-    private AreaOfLaw areaOfLaw;
-    private Boolean escapeCase;
+  private Sort sort;
+  private String officeCode;
+  private String submissionDateMonth;
+  private String submissionDateYear;
+  private String uniqueFileNumber;
+  private String caseReferenceNumber;
+  private AreaOfLaw areaOfLaw;
+  private Boolean escapeCase;
 
-    public SearchQuery(SearchForm form, Sort sort) {
-        this.sort = sort;
-        this.officeCode = form.getOfficeCode();
-        this.submissionDateMonth = form.getSubmissionDateMonth();
-        this.submissionDateYear = form.getSubmissionDateYear();
-        this.uniqueFileNumber = form.getUniqueFileNumber();
-        this.caseReferenceNumber = form.getCaseReferenceNumber();
-        this.areaOfLaw = form.getAreaOfLaw();
-        this.escapeCase = form.getEscapeCase();
+  public SearchQuery(SearchForm form, Sort sort) {
+    this.sort = sort;
+    this.officeCode = form.getOfficeCode();
+    this.submissionDateMonth = form.getSubmissionDateMonth();
+    this.submissionDateYear = form.getSubmissionDateYear();
+    this.uniqueFileNumber = form.getUniqueFileNumber();
+    this.caseReferenceNumber = form.getCaseReferenceNumber();
+    this.areaOfLaw = form.getAreaOfLaw();
+    this.escapeCase = form.getEscapeCase();
+  }
+
+  public void rejectUnknownParams(HttpServletRequest request) {
+    Set<String> allowed =
+        Arrays.stream(this.getClass().getDeclaredFields())
+            .map(Field::getName)
+            .collect(Collectors.toSet());
+
+    request
+        .getParameterMap()
+        .keySet()
+        .forEach(
+            param -> {
+              if (!allowed.contains(param)) {
+                throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Unknown query parameter: " + param);
+              }
+            });
+  }
+
+  public String getRedirectUrl() {
+    return getRedirectUrl(page, sort);
+  }
+
+  public String getRedirectUrl(SortField field, SortDirection direction) {
+    return getRedirectUrl(1, new Sort(field, direction));
+  }
+
+  public String getRedirectUrl(Sort sort) {
+    return getRedirectUrl(page, sort);
+  }
+
+  private String getRedirectUrl(int page, Sort sort) {
+    UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/");
+
+    addQueryParam(builder, "officeCode", getOfficeCode());
+    addQueryParam(builder, "submissionDateMonth", submissionDateMonth);
+    addQueryParam(builder, "submissionDateYear", submissionDateYear);
+    addQueryParam(builder, "uniqueFileNumber", uniqueFileNumber);
+    addQueryParam(builder, "caseReferenceNumber", caseReferenceNumber);
+    addQueryParam(builder, "areaOfLaw", areaOfLaw != null ? areaOfLaw.name() : null);
+    addQueryParam(builder, "escapeCase", Objects.toString(escapeCase, null));
+
+    addQueryParam(builder, "page", String.valueOf(page));
+    addQueryParam(builder, "sort", Objects.toString(sort, null));
+
+    return builder.build().toUriString();
+  }
+
+  private void addQueryParam(UriComponentsBuilder builder, String key, String value) {
+    if (hasText(value)) {
+      builder.queryParam(key, value);
     }
-
-    public void rejectUnknownParams(HttpServletRequest request) {
-        Set<String> allowed = Arrays.stream(this.getClass().getDeclaredFields())
-                .map(Field::getName)
-                .collect(Collectors.toSet());
-
-        request.getParameterMap().keySet().forEach(param -> {
-            if (!allowed.contains(param)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown query parameter: " + param);
-            }
-        });
-    }
-
-    public String getRedirectUrl() {
-        return getRedirectUrl(page, sort);
-    }
-
-    public String getRedirectUrl(SortField field, SortDirection direction) {
-        return getRedirectUrl(1, new Sort(field, direction));
-    }
-
-    public String getRedirectUrl(Sort sort) {
-        return getRedirectUrl(page, sort);
-    }
-
-    private String getRedirectUrl(int page, Sort sort) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/");
-
-        addQueryParam(builder, "officeCode", getOfficeCode());
-        addQueryParam(builder, "submissionDateMonth", submissionDateMonth);
-        addQueryParam(builder, "submissionDateYear", submissionDateYear);
-        addQueryParam(builder, "uniqueFileNumber", uniqueFileNumber);
-        addQueryParam(builder, "caseReferenceNumber", caseReferenceNumber);
-        addQueryParam(builder, "areaOfLaw", areaOfLaw != null ? areaOfLaw.name() : null);
-        addQueryParam(builder, "escapeCase", Objects.toString(escapeCase, null));
-
-        addQueryParam(builder, "page", String.valueOf(page));
-        addQueryParam(builder, "sort", Objects.toString(sort, null));
-
-        return builder.build().toUriString();
-    }
-
-    private void addQueryParam(UriComponentsBuilder builder, String key, String value) {
-        if (hasText(value)) {
-            builder.queryParam(key, value);
-        }
-    }
+  }
 }

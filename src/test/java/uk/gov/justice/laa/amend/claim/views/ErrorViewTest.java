@@ -18,35 +18,35 @@ import uk.gov.justice.laa.amend.claim.factories.ReferenceNumberFactory;
 @Import(LocalSecurityConfig.class)
 public class ErrorViewTest extends ViewTestBase {
 
-    @MockitoBean
-    private ReferenceNumberFactory referenceNumberFactory;
+  @MockitoBean private ReferenceNumberFactory referenceNumberFactory;
 
-    ErrorViewTest() {
-        this.mapping = "/error";
-    }
+  ErrorViewTest() {
+    this.mapping = "/error";
+  }
 
-    @ParameterizedTest
-    @ValueSource(ints = {400, 401, 413, 500, 503})
-    void testPage(int requestStatus) throws Exception {
-        when(referenceNumberFactory.create()).thenReturn("123456");
+  @ParameterizedTest
+  @ValueSource(ints = {400, 401, 413, 500, 503})
+  void testPage(int requestStatus) throws Exception {
+    when(referenceNumberFactory.create()).thenReturn("123456");
 
-        Document doc = renderErrorPage(requestStatus, 500);
+    Document doc = renderErrorPage(requestStatus, 500);
 
-        assertPageHasTitle(doc, "Sorry, there's a problem with this service");
+    assertPageHasTitle(doc, "Sorry, there's a problem with this service");
 
-        assertPageHasHeading(doc, "Sorry, there's a problem with this service");
+    assertPageHasHeading(doc, "Sorry, there's a problem with this service");
 
-        assertPageHasContent(doc, "Try again later.");
+    assertPageHasContent(doc, "Try again later.");
 
-        assertPageHasContent(doc, "This error has been logged and forwarded for investigation.");
+    assertPageHasContent(doc, "This error has been logged and forwarded for investigation.");
 
-        assertPageHasContent(
-                doc, "Contact the Amend a Bulk Claim digital team quoting reference 123456 if you have any questions.");
+    assertPageHasContent(
+        doc,
+        "Contact the Amend a Bulk Claim digital team quoting reference 123456 if you have any questions.");
 
-        assertPageHasLink(
-                doc,
-                "email",
-                "Amend a Bulk Claim digital team",
-                "mailto:someone@example.com?subject=AaBC issue reference: 123456");
-    }
+    assertPageHasLink(
+        doc,
+        "email",
+        "Amend a Bulk Claim digital team",
+        "mailto:someone@example.com?subject=AaBC issue reference: 123456");
+  }
 }

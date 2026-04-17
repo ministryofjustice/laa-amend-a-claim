@@ -33,62 +33,65 @@ import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 @Slf4j
 public class ClaimSummaryController {
 
-    private final ClaimService claimService;
-    private final AssessmentService assessmentService;
-    private final UserRetrievalService userRetrievalService;
-    private final FeatureFlagsConfig featureFlagsConfig;
+  private final ClaimService claimService;
+  private final AssessmentService assessmentService;
+  private final UserRetrievalService userRetrievalService;
+  private final FeatureFlagsConfig featureFlagsConfig;
 
-    @GetMapping("/submissions/{submissionId}/claims/{claimId}")
-    public String onPageLoad(
-            HttpServletRequest request,
-            HttpSession session,
-            Model model,
-            @PathVariable UUID submissionId,
-            @PathVariable UUID claimId) {
-        ClaimDetails claim = claimService.getClaimDetails(submissionId, claimId);
-        if (!EnumSet.of(VALID, VOID).contains(claim.getStatus())) {
-            log.error(
-                    "Cannot assess claim {} as it has an invalid status {}. Returning 404.",
-                    claimId,
-                    claim.getStatus());
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        if (claim.isHasAssessment()) {
-            claim = assessmentService.getLatestAssessmentByClaim(claim);
-            if (claim.getLastUpdatedUser() != null) {
-                var user = userRetrievalService.getMicrosoftApiUser(claim.getLastUpdatedUser());
-                model.addAttribute("user", user);
-            }
-        }
-        session.setAttribute(claimId.toString(), claim);
-        String searchUrl =
-                (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
-        model.addAttribute("searchUrl", searchUrl);
-        model.addAttribute("claimId", claimId);
-        model.addAttribute("submissionId", submissionId);
-        model.addAttribute("claim", claim.toViewModel());
-
-        boolean isAssessmentButtonPresent = request.isUserInRole(ROLE_ESCAPE_CASE_CASEWORKER.name())
-                && claim.isValid()
-                && TRUE.equals(claim.getEscaped());
-        model.addAttribute("isAssessmentButtonPresent", isAssessmentButtonPresent);
-
-        boolean isVoidButtonPresent = request.isUserInRole(ROLE_CLAIM_AMENDMENTS_CASEWORKER.name()) && claim.isValid();
-        model.addAttribute("isVoidButtonPresent", isVoidButtonPresent);
-
-        return "claim-summary";
+  @GetMapping("/submissions/{submissionId}/claims/{claimId}")
+  public String onPageLoad(
+      HttpServletRequest request,
+      HttpSession session,
+      Model model,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    ClaimDetails claim = claimService.getClaimDetails(submissionId, claimId);
+    if (!EnumSet.of(VALID, VOID).contains(claim.getStatus())) {
+      log.error(
+          "Cannot assess claim {} as it has an invalid status {}. Returning 404.",
+          claimId,
+          claim.getStatus());
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    @HasRoleEscapeCaseCaseworker
-    @PostMapping("/submissions/{submissionId}/claims/{claimId}")
-    public String onSubmit(@PathVariable UUID submissionId, @PathVariable UUID claimId, HttpSession session) {
-        ClaimDetails claim = getValidEscapeCaseClaim(session, submissionId, claimId);
-
-        if (claim.isHasAssessment()) {
-            return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
-        }
-
-        return String.format("redirect:/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
+    if (claim.isHasAssessment()) {
+      claim = assessmentService.getLatestAssessmentByClaim(claim);
+      if (claim.getLastUpdatedUser() != null) {
+        var user = userRetrievalService.getMicrosoftApiUser(claim.getLastUpdatedUser());
+        model.addAttribute("user", user);
+      }
     }
+    session.setAttribute(claimId.toString(), claim);
+    String searchUrl = (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
+    model.addAttribute("searchUrl", searchUrl);
+    model.addAttribute("claimId", claimId);
+    model.addAttribute("submissionId", submissionId);
+    model.addAttribute("claim", claim.toViewModel());
+
+    boolean isAssessmentButtonPresent =
+        request.isUserInRole(ROLE_ESCAPE_CASE_CASEWORKER.name())
+            && claim.isValid()
+            && TRUE.equals(claim.getEscaped());
+    model.addAttribute("isAssessmentButtonPresent", isAssessmentButtonPresent);
+
+    boolean isVoidButtonPresent =
+        request.isUserInRole(ROLE_CLAIM_AMENDMENTS_CASEWORKER.name()) && claim.isValid();
+    model.addAttribute("isVoidButtonPresent", isVoidButtonPresent);
+
+    return "claim-summary";
+  }
+
+  @HasRoleEscapeCaseCaseworker
+  @PostMapping("/submissions/{submissionId}/claims/{claimId}")
+  public String onSubmit(
+      @PathVariable UUID submissionId, @PathVariable UUID claimId, HttpSession session) {
+    ClaimDetails claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+
+    if (claim.isHasAssessment()) {
+      return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
+    }
+
+    return String.format(
+        "redirect:/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
+  }
 }

@@ -24,33 +24,38 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
 @HttpExchange("/api")
 public interface ClaimsApiClient {
 
-    @GetExchange(url = "/v2/claims", accept = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ClaimResultSetV2> searchClaims(
-            @RequestParam(value = "office_code") String officeCode,
-            @RequestParam(value = "unique_file_number", defaultValue = "") String uniqueFileNumber,
-            @RequestParam(value = "case_reference_number", defaultValue = "") String caseReferenceNumber,
-            @RequestParam(value = "submission_period", defaultValue = "") String submissionPeriod,
-            @RequestParam(value = "area_of_law", defaultValue = "") AreaOfLaw areaOfLaw,
-            @RequestParam(value = "escaped_case_flag", required = false) Boolean escapedCaseFlag,
-            @RequestParam(value = "claim_statuses", required = false) List<ClaimStatus> claimStatuses,
-            @RequestParam(value = "page", required = false) int page,
-            @RequestParam(value = "size", required = false) int size,
-            @RequestParam(value = "sort", required = false) String sort);
+  @GetExchange(url = "/v2/claims", accept = MediaType.APPLICATION_JSON_VALUE)
+  Mono<ClaimResultSetV2> searchClaims(
+      @RequestParam(value = "office_code") String officeCode,
+      @RequestParam(value = "unique_file_number", defaultValue = "") String uniqueFileNumber,
+      @RequestParam(value = "case_reference_number", defaultValue = "") String caseReferenceNumber,
+      @RequestParam(value = "submission_period", defaultValue = "") String submissionPeriod,
+      @RequestParam(value = "area_of_law", defaultValue = "") AreaOfLaw areaOfLaw,
+      @RequestParam(value = "escaped_case_flag", required = false) Boolean escapedCaseFlag,
+      @RequestParam(value = "claim_statuses", required = false) List<ClaimStatus> claimStatuses,
+      @RequestParam(value = "page", required = false) int page,
+      @RequestParam(value = "size", required = false) int size,
+      @RequestParam(value = "sort", required = false) String sort);
 
-    @GetExchange(url = "/v2/submissions/{submissionId}/claims/{claimId}", accept = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ClaimResponseV2> getClaim(@PathVariable UUID submissionId, @PathVariable UUID claimId);
+  @GetExchange(
+      url = "/v2/submissions/{submissionId}/claims/{claimId}",
+      accept = MediaType.APPLICATION_JSON_VALUE)
+  Mono<ClaimResponseV2> getClaim(@PathVariable UUID submissionId, @PathVariable UUID claimId);
 
-    @PostExchange(value = "/v1/claims/{claimId}/assessments", contentType = MediaType.APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<CreateAssessment201Response>> submitAssessment(
-            @PathVariable UUID claimId, @RequestBody AssessmentPost body);
+  @PostExchange(
+      value = "/v1/claims/{claimId}/assessments",
+      contentType = MediaType.APPLICATION_JSON_VALUE)
+  Mono<ResponseEntity<CreateAssessment201Response>> submitAssessment(
+      @PathVariable UUID claimId, @RequestBody AssessmentPost body);
 
-    @GetExchange(url = "/v1/claims/{claimId}/assessments", accept = MediaType.APPLICATION_JSON_VALUE)
-    Mono<AssessmentResultSet> getAssessments(
-            @PathVariable UUID claimId,
-            @RequestParam(value = "page", required = false) int page,
-            @RequestParam(value = "size", required = false) int size,
-            @RequestParam(value = "sort", required = false) String sort);
+  @GetExchange(url = "/v1/claims/{claimId}/assessments", accept = MediaType.APPLICATION_JSON_VALUE)
+  Mono<AssessmentResultSet> getAssessments(
+      @PathVariable UUID claimId,
+      @RequestParam(value = "page", required = false) int page,
+      @RequestParam(value = "size", required = false) int size,
+      @RequestParam(value = "sort", required = false) String sort);
 
-    @PostExchange(url = "/v1/claims/{claimId}/void", accept = MediaType.APPLICATION_JSON_VALUE)
-    Mono<VoidClaim201Response> voidClaim(@PathVariable UUID claimId, @RequestBody VoidClaimRequest body);
+  @PostExchange(url = "/v1/claims/{claimId}/void", accept = MediaType.APPLICATION_JSON_VALUE)
+  Mono<VoidClaim201Response> voidClaim(
+      @PathVariable UUID claimId, @RequestBody VoidClaimRequest body);
 }

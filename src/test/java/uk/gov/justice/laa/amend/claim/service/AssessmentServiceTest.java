@@ -47,387 +47,402 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Res
 @ExtendWith(MockitoExtension.class)
 class AssessmentServiceTest {
 
-    private static final BigDecimal HIGH_VALUE_ASSESSMENT_LIMIT = new BigDecimal("25000");
+  private static final BigDecimal HIGH_VALUE_ASSESSMENT_LIMIT = new BigDecimal("25000");
 
-    @Mock
-    private ClaimsApiClient claimsApiClient;
+  @Mock private ClaimsApiClient claimsApiClient;
 
-    @Mock
-    private ClaimStatusHandler claimStatusHandler;
+  @Mock private ClaimStatusHandler claimStatusHandler;
 
-    @Mock
-    private AssessmentMapper assessmentMapper;
+  @Mock private AssessmentMapper assessmentMapper;
 
-    @Mock
-    private FeatureFlagsConfig featureFlagsConfig;
+  @Mock private FeatureFlagsConfig featureFlagsConfig;
 
-    private SimpleMeterRegistry meterRegistry;
+  private SimpleMeterRegistry meterRegistry;
 
-    private AssessmentService assessmentService;
+  private AssessmentService assessmentService;
 
-    private UUID claimId;
-    private int page;
-    private int size;
-    private String sort;
+  private UUID claimId;
+  private int page;
+  private int size;
+  private String sort;
 
-    @BeforeEach
-    void setUp() {
-        claimId = UUID.randomUUID();
-        page = 0;
-        size = 5;
-        sort = "createdOn,desc";
-        meterRegistry = new SimpleMeterRegistry();
-        assessmentService = new AssessmentService(
-                claimsApiClient, assessmentMapper, claimStatusHandler, meterRegistry, HIGH_VALUE_ASSESSMENT_LIMIT);
+  @BeforeEach
+  void setUp() {
+    claimId = UUID.randomUUID();
+    page = 0;
+    size = 5;
+    sort = "createdOn,desc";
+    meterRegistry = new SimpleMeterRegistry();
+    assessmentService =
+        new AssessmentService(
+            claimsApiClient,
+            assessmentMapper,
+            claimStatusHandler,
+            meterRegistry,
+            HIGH_VALUE_ASSESSMENT_LIMIT);
+  }
+
+  @Nested
+  class ApplyAssessmentOutcome {
+
+    @Test
+    void testNilledOutcome() {
+      ClaimDetails claim = mock(ClaimDetails.class);
+
+      assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
+
+      verify(claim).applyOutcome(OutcomeType.NILLED);
     }
 
-    @Nested
-    class ApplyAssessmentOutcome {
+    @Test
+    void testReducedToFixedFeeOutcome() {
+      ClaimDetails claim = mock(ClaimDetails.class);
 
-        @Test
-        void testNilledOutcome() {
-            ClaimDetails claim = mock(ClaimDetails.class);
+      assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
 
-            assessmentService.applyAssessmentOutcome(claim, OutcomeType.NILLED);
-
-            verify(claim).applyOutcome(OutcomeType.NILLED);
-        }
-
-        @Test
-        void testReducedToFixedFeeOutcome() {
-            ClaimDetails claim = mock(ClaimDetails.class);
-
-            assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED_TO_FIXED_FEE);
-
-            verify(claim).applyOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
-        }
-
-        @Test
-        void testReducedOutcome() {
-            ClaimDetails claim = mock(ClaimDetails.class);
-
-            assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
-
-            verify(claim).applyOutcome(OutcomeType.REDUCED);
-        }
-
-        @Test
-        void testPaidInFullOutcome() {
-            ClaimDetails claim = mock(ClaimDetails.class);
-
-            assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
-
-            verify(claim).applyOutcome(OutcomeType.PAID_IN_FULL);
-        }
+      verify(claim).applyOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
     }
 
-    @Nested
-    class SubmitAssessmentTests {
+    @Test
+    void testReducedOutcome() {
+      ClaimDetails claim = mock(ClaimDetails.class);
 
-        @Test
-        void testCivilClaimAssessmentSubmittedToApiAndIncrementsSuccessCounter() {
-            var claimId = UUID.randomUUID();
-            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-            claim.setClaimId(claimId);
-            String userId = UUID.randomUUID().toString();
-            AssessmentPost assessment = new AssessmentPost();
+      assessmentService.applyAssessmentOutcome(claim, OutcomeType.REDUCED);
 
-            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
-
-            ResponseEntity<CreateAssessment201Response> response = ResponseEntity.ok(new CreateAssessment201Response());
-
-            when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
-
-            CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
-
-            Assertions.assertNotNull(result);
-            assertEquals(response.getBody(), result);
-
-            verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
-            verify(claimsApiClient).submitAssessment(claimId, assessment);
-
-            assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(1.0);
-            assertThat(meterRegistry.counter("assessment.submissions.failed").count())
-                    .isEqualTo(0.0);
-        }
-
-        @Test
-        void testCrimeClaimAssessmentSubmittedToApiAndIncrementsSuccessCounter() {
-            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
-            claim.setClaimId(claimId);
-            String userId = UUID.randomUUID().toString();
-            AssessmentPost assessment = new AssessmentPost();
-
-            when(assessmentMapper.mapCrimeClaimToAssessment(claim, userId)).thenReturn(assessment);
-
-            ResponseEntity<CreateAssessment201Response> response = ResponseEntity.ok(new CreateAssessment201Response());
-
-            when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
-
-            CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
-
-            Assertions.assertNotNull(result);
-            assertEquals(response.getBody(), result);
-
-            verify(assessmentMapper).mapCrimeClaimToAssessment(claim, userId);
-            verify(claimsApiClient).submitAssessment(claimId, assessment);
-
-            assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(1.0);
-            assertThat(meterRegistry.counter("assessment.submissions.failed").count())
-                    .isEqualTo(0.0);
-        }
-
-        @Test
-        void testWhenApiReturnsEmptyAndIncrementsFailureCounter() {
-            var claimId = UUID.randomUUID();
-            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-            claim.setClaimId(claimId);
-            String userId = UUID.randomUUID().toString();
-            AssessmentPost assessment = new AssessmentPost();
-
-            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
-
-            when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.empty());
-
-            assertThrows(RuntimeException.class, () -> assessmentService.submitAssessment(claim, userId));
-
-            verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
-            verify(claimsApiClient).submitAssessment(claimId, assessment);
-
-            assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
-            assertThat(meterRegistry.counter("assessment.submissions.failed").count())
-                    .isEqualTo(1.0);
-        }
-
-        @Test
-        void testWhenApiReturns5xxStatusAndIncrementsFailureCounter() {
-            var claimId = UUID.randomUUID();
-            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-            claim.setClaimId(claimId);
-            String userId = UUID.randomUUID().toString();
-            AssessmentPost assessment = new AssessmentPost();
-
-            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
-
-            ResponseEntity<CreateAssessment201Response> response =
-                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CreateAssessment201Response());
-
-            when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
-
-            assertThrows(RuntimeException.class, () -> assessmentService.submitAssessment(claim, userId));
-
-            verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
-            verify(claimsApiClient).submitAssessment(claimId, assessment);
-
-            assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
-            assertThat(meterRegistry.counter("assessment.submissions.failed").count())
-                    .isEqualTo(1.0);
-        }
-
-        @Test
-        void testWhenWebClientThrowsExceptionAndIncrementsFailureCounterOnce() {
-            var claimId = UUID.randomUUID();
-            CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-            claim.setClaimId(claimId);
-            String userId = UUID.randomUUID().toString();
-            AssessmentPost assessment = new AssessmentPost();
-
-            when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
-
-            when(claimsApiClient.submitAssessment(claimId, assessment))
-                    .thenReturn(Mono.error(new RuntimeException("Network error")));
-
-            assertThrows(RuntimeException.class, () -> assessmentService.submitAssessment(claim, userId));
-
-            verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
-            verify(claimsApiClient).submitAssessment(claimId, assessment);
-
-            assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
-            assertThat(meterRegistry.counter("assessment.submissions.failed").count())
-                    .isEqualTo(1.0);
-        }
-
-        @ExtendWith(OutputCaptureExtension.class)
-        @Test
-        void testHighValueAssessmentSubmittedWillLogWarning(CapturedOutput output) {
-            setupHighValueAssessmentLimitTest(HIGH_VALUE_ASSESSMENT_LIMIT);
-
-            assertThat(output.getOut()).contains("HIGH_VALUE_ASSESSMENT");
-        }
-
-        @ExtendWith(OutputCaptureExtension.class)
-        @Test
-        void testLowValueAssessmentSubmittedWillNotLogWarning(CapturedOutput output) {
-            setupHighValueAssessmentLimitTest(HIGH_VALUE_ASSESSMENT_LIMIT.subtract(BigDecimal.ONE));
-
-            assertThat(output.getOut()).doesNotContain("HIGH_VALUE_ASSESSMENT");
-        }
-
-        private void setupHighValueAssessmentLimitTest(BigDecimal assessedTotalInclVat) {
-            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
-            claim.setClaimId(claimId);
-            String userId = UUID.randomUUID().toString();
-            AssessmentPost assessment = new AssessmentPost();
-            assessment.setAssessedTotalInclVat(assessedTotalInclVat);
-
-            when(assessmentMapper.mapCrimeClaimToAssessment(claim, userId)).thenReturn(assessment);
-
-            ResponseEntity<CreateAssessment201Response> response = ResponseEntity.ok(new CreateAssessment201Response());
-
-            when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
-
-            CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
-
-            Assertions.assertNotNull(result);
-            assertEquals(response.getBody(), result);
-
-            verify(claimsApiClient).submitAssessment(claimId, assessment);
-        }
+      verify(claim).applyOutcome(OutcomeType.REDUCED);
     }
 
-    @Nested
-    class GetLatestAssessmentByClaimTest {
-        @Test
-        void shouldReturnMappedClaimDetailsWhenAssessmentExists() {
+    @Test
+    void testPaidInFullOutcome() {
+      ClaimDetails claim = mock(ClaimDetails.class);
 
-            var claimDetails = new CivilClaimDetails();
-            claimDetails.setClaimId(claimId);
+      assessmentService.applyAssessmentOutcome(claim, OutcomeType.PAID_IN_FULL);
 
-            AssessmentGet assessment = new AssessmentGet(); // dummy assessment
-            assessment.setAssessmentType(AssessmentType.ESCAPE_CASE_ASSESSMENT);
-            AssessmentResultSet resultSet = new AssessmentResultSet();
-            resultSet.setAssessments(List.of(assessment));
-            when(claimsApiClient.getAssessments(claimId, page, size, sort)).thenReturn(Mono.just(resultSet));
+      verify(claim).applyOutcome(OutcomeType.PAID_IN_FULL);
+    }
+  }
 
-            ClaimDetails mappedDetails = new CivilClaimDetails();
-            AssessmentInfo assessmentInfo = AssessmentInfo.builder().build();
-            mappedDetails.setLastAssessment(assessmentInfo);
-            when(assessmentMapper.updateClaim(assessment, claimDetails)).thenReturn(mappedDetails);
-            when(assessmentMapper.mapAssessmentToClaimDetails(mappedDetails)).thenReturn(mappedDetails);
+  @Nested
+  class SubmitAssessmentTests {
 
-            ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claimDetails);
+    @Test
+    void testCivilClaimAssessmentSubmittedToApiAndIncrementsSuccessCounter() {
+      var claimId = UUID.randomUUID();
+      CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+      claim.setClaimId(claimId);
+      String userId = UUID.randomUUID().toString();
+      AssessmentPost assessment = new AssessmentPost();
 
-            assertEquals(result, mappedDetails);
-            verify(claimsApiClient).getAssessments(claimId, page, size, sort);
-            verify(assessmentMapper).mapAssessmentToClaimDetails(mappedDetails);
-        }
+      when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
 
-        @Test
-        void shouldThrowExceptionWhenAssessmentsAreEmpty() {
-            var claimDetails = new CivilClaimDetails();
-            claimDetails.setClaimId(claimId);
+      ResponseEntity<CreateAssessment201Response> response =
+          ResponseEntity.ok(new CreateAssessment201Response());
 
-            AssessmentResultSet emptyResultSet = new AssessmentResultSet();
-            emptyResultSet.setAssessments(List.of());
-            when(claimsApiClient.getAssessments(claimId, page, size, sort)).thenReturn(Mono.just(emptyResultSet));
+      when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
 
-            RuntimeException ex = assertThrows(
-                    RuntimeException.class, () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
+      CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
 
-            assertThat(ex.getMessage()).contains("Failed to get assessments");
-        }
+      Assertions.assertNotNull(result);
+      assertEquals(response.getBody(), result);
 
-        @Test
-        void shouldThrowExceptionWhenResultIsNull() {
-            var claimDetails = new CivilClaimDetails();
-            claimDetails.setClaimId(claimId);
+      verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
+      verify(claimsApiClient).submitAssessment(claimId, assessment);
 
-            when(claimsApiClient.getAssessments(claimId, page, size, sort)).thenReturn(Mono.empty());
-
-            RuntimeException ex = assertThrows(
-                    RuntimeException.class, () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
-
-            assertThat(ex.getMessage()).contains("Failed to get assessments");
-        }
-
-        @Test
-        void voidClaimWithEscapeCaseAssessmentsReturnValues() {
-            ClaimDetails claim = new CrimeClaimDetails();
-            claim.setClaimId(UUID.randomUUID());
-            claim.setStatus(ClaimStatus.VOID);
-
-            var latest = createAssessmentGet(AssessmentType.VOID);
-            var previous = createAssessmentGet(AssessmentType.ESCAPE_CASE_ASSESSMENT);
-
-            AssessmentResultSet resultSet = new AssessmentResultSet();
-            resultSet.setAssessments(List.of(latest, previous));
-            when(claimsApiClient.getAssessments(any(), eq(page), eq(size), any()))
-                    .thenReturn(Mono.just(resultSet));
-
-            when(assessmentMapper.updateClaim(previous, claim)).thenReturn(claim);
-            when(assessmentMapper.mapAssessmentToClaimDetails(claim)).thenReturn(claim);
-            ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claim);
-
-            assertEquals(claim, result);
-            verify(assessmentMapper).updateClaim(previous, claim);
-        }
-
-        @Test
-        void voidClaimWithNoPreviousAssessments() {
-            ClaimDetails claim = new CrimeClaimDetails();
-            claim.setClaimId(UUID.randomUUID());
-            claim.setStatus(ClaimStatus.VOID);
-
-            var latest = createAssessmentGet(AssessmentType.VOID);
-            latest.setId(UUID.randomUUID());
-            latest.setClaimId(claim.getClaimId());
-
-            AssessmentResultSet resultSet = new AssessmentResultSet();
-            resultSet.setAssessments(List.of(latest));
-            when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any())).thenReturn(Mono.just(resultSet));
-            ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claim);
-            assertEquals(claim, result);
-            verifyNoInteractions(assessmentMapper);
-        }
-
-        @Test
-        void getLatestAssessmentThrowsWhenNoAssessments() {
-            ClaimDetails claim = new CrimeClaimDetails();
-            claim.setClaimId(UUID.randomUUID());
-            claim.setStatus(ClaimStatus.VALID);
-
-            AssessmentResultSet emptyResultSet = new AssessmentResultSet();
-            emptyResultSet.setAssessments(List.of());
-
-            when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any())).thenReturn(Mono.just(emptyResultSet));
-
-            assertThrows(RuntimeException.class, () -> assessmentService.getLatestAssessmentByClaim(claim));
-        }
-
-        @Test
-        void getLatestAssessmentThrowsWhenVoidClaimLatestNotVoid() {
-            ClaimDetails claim = new CrimeClaimDetails();
-            claim.setClaimId(UUID.randomUUID());
-            claim.setStatus(ClaimStatus.VOID);
-
-            var latest = createAssessmentGet(AssessmentType.ESCAPE_CASE_ASSESSMENT);
-            AssessmentResultSet resultSet = new AssessmentResultSet();
-            resultSet.setAssessments(List.of(latest));
-
-            when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any())).thenReturn(Mono.just(resultSet));
-
-            assertThrows(InvalidAssessmentException.class, () -> assessmentService.getLatestAssessmentByClaim(claim));
-        }
-
-        @Test
-        void getLatestAssessmentThrowsWhenNonVoidLatestNotEscapeCase() {
-            ClaimDetails claim = new CrimeClaimDetails();
-            claim.setClaimId(UUID.randomUUID());
-            claim.setStatus(ClaimStatus.VALID);
-
-            AssessmentGet latest = new AssessmentGet();
-            latest.setAssessmentType(AssessmentType.VOID);
-
-            AssessmentResultSet resultSet = new AssessmentResultSet();
-            resultSet.setAssessments(List.of(latest));
-
-            when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any())).thenReturn(Mono.just(resultSet));
-
-            assertThrows(InvalidAssessmentException.class, () -> assessmentService.getLatestAssessmentByClaim(claim));
-        }
+      assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(1.0);
+      assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(0.0);
     }
 
-    private AssessmentGet createAssessmentGet(AssessmentType assessmentType) {
-        return AssessmentGet.builder().assessmentType(assessmentType).build();
+    @Test
+    void testCrimeClaimAssessmentSubmittedToApiAndIncrementsSuccessCounter() {
+      CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
+      claim.setClaimId(claimId);
+      String userId = UUID.randomUUID().toString();
+      AssessmentPost assessment = new AssessmentPost();
+
+      when(assessmentMapper.mapCrimeClaimToAssessment(claim, userId)).thenReturn(assessment);
+
+      ResponseEntity<CreateAssessment201Response> response =
+          ResponseEntity.ok(new CreateAssessment201Response());
+
+      when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
+
+      CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
+
+      Assertions.assertNotNull(result);
+      assertEquals(response.getBody(), result);
+
+      verify(assessmentMapper).mapCrimeClaimToAssessment(claim, userId);
+      verify(claimsApiClient).submitAssessment(claimId, assessment);
+
+      assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(1.0);
+      assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(0.0);
     }
+
+    @Test
+    void testWhenApiReturnsEmptyAndIncrementsFailureCounter() {
+      var claimId = UUID.randomUUID();
+      CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+      claim.setClaimId(claimId);
+      String userId = UUID.randomUUID().toString();
+      AssessmentPost assessment = new AssessmentPost();
+
+      when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
+
+      when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.empty());
+
+      assertThrows(RuntimeException.class, () -> assessmentService.submitAssessment(claim, userId));
+
+      verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
+      verify(claimsApiClient).submitAssessment(claimId, assessment);
+
+      assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
+      assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(1.0);
+    }
+
+    @Test
+    void testWhenApiReturns5xxStatusAndIncrementsFailureCounter() {
+      var claimId = UUID.randomUUID();
+      CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+      claim.setClaimId(claimId);
+      String userId = UUID.randomUUID().toString();
+      AssessmentPost assessment = new AssessmentPost();
+
+      when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
+
+      ResponseEntity<CreateAssessment201Response> response =
+          ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+              .body(new CreateAssessment201Response());
+
+      when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
+
+      assertThrows(RuntimeException.class, () -> assessmentService.submitAssessment(claim, userId));
+
+      verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
+      verify(claimsApiClient).submitAssessment(claimId, assessment);
+
+      assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
+      assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(1.0);
+    }
+
+    @Test
+    void testWhenWebClientThrowsExceptionAndIncrementsFailureCounterOnce() {
+      var claimId = UUID.randomUUID();
+      CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+      claim.setClaimId(claimId);
+      String userId = UUID.randomUUID().toString();
+      AssessmentPost assessment = new AssessmentPost();
+
+      when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
+
+      when(claimsApiClient.submitAssessment(claimId, assessment))
+          .thenReturn(Mono.error(new RuntimeException("Network error")));
+
+      assertThrows(RuntimeException.class, () -> assessmentService.submitAssessment(claim, userId));
+
+      verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
+      verify(claimsApiClient).submitAssessment(claimId, assessment);
+
+      assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
+      assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(1.0);
+    }
+
+    @ExtendWith(OutputCaptureExtension.class)
+    @Test
+    void testHighValueAssessmentSubmittedWillLogWarning(CapturedOutput output) {
+      setupHighValueAssessmentLimitTest(HIGH_VALUE_ASSESSMENT_LIMIT);
+
+      assertThat(output.getOut()).contains("HIGH_VALUE_ASSESSMENT");
+    }
+
+    @ExtendWith(OutputCaptureExtension.class)
+    @Test
+    void testLowValueAssessmentSubmittedWillNotLogWarning(CapturedOutput output) {
+      setupHighValueAssessmentLimitTest(HIGH_VALUE_ASSESSMENT_LIMIT.subtract(BigDecimal.ONE));
+
+      assertThat(output.getOut()).doesNotContain("HIGH_VALUE_ASSESSMENT");
+    }
+
+    private void setupHighValueAssessmentLimitTest(BigDecimal assessedTotalInclVat) {
+      CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
+      claim.setClaimId(claimId);
+      String userId = UUID.randomUUID().toString();
+      AssessmentPost assessment = new AssessmentPost();
+      assessment.setAssessedTotalInclVat(assessedTotalInclVat);
+
+      when(assessmentMapper.mapCrimeClaimToAssessment(claim, userId)).thenReturn(assessment);
+
+      ResponseEntity<CreateAssessment201Response> response =
+          ResponseEntity.ok(new CreateAssessment201Response());
+
+      when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
+
+      CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
+
+      Assertions.assertNotNull(result);
+      assertEquals(response.getBody(), result);
+
+      verify(claimsApiClient).submitAssessment(claimId, assessment);
+    }
+  }
+
+  @Nested
+  class GetLatestAssessmentByClaimTest {
+    @Test
+    void shouldReturnMappedClaimDetailsWhenAssessmentExists() {
+
+      var claimDetails = new CivilClaimDetails();
+      claimDetails.setClaimId(claimId);
+
+      AssessmentGet assessment = new AssessmentGet(); // dummy assessment
+      assessment.setAssessmentType(AssessmentType.ESCAPE_CASE_ASSESSMENT);
+      AssessmentResultSet resultSet = new AssessmentResultSet();
+      resultSet.setAssessments(List.of(assessment));
+      when(claimsApiClient.getAssessments(claimId, page, size, sort))
+          .thenReturn(Mono.just(resultSet));
+
+      ClaimDetails mappedDetails = new CivilClaimDetails();
+      AssessmentInfo assessmentInfo = AssessmentInfo.builder().build();
+      mappedDetails.setLastAssessment(assessmentInfo);
+      when(assessmentMapper.updateClaim(assessment, claimDetails)).thenReturn(mappedDetails);
+      when(assessmentMapper.mapAssessmentToClaimDetails(mappedDetails)).thenReturn(mappedDetails);
+
+      ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claimDetails);
+
+      assertEquals(result, mappedDetails);
+      verify(claimsApiClient).getAssessments(claimId, page, size, sort);
+      verify(assessmentMapper).mapAssessmentToClaimDetails(mappedDetails);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAssessmentsAreEmpty() {
+      var claimDetails = new CivilClaimDetails();
+      claimDetails.setClaimId(claimId);
+
+      AssessmentResultSet emptyResultSet = new AssessmentResultSet();
+      emptyResultSet.setAssessments(List.of());
+      when(claimsApiClient.getAssessments(claimId, page, size, sort))
+          .thenReturn(Mono.just(emptyResultSet));
+
+      RuntimeException ex =
+          assertThrows(
+              RuntimeException.class,
+              () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
+
+      assertThat(ex.getMessage()).contains("Failed to get assessments");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenResultIsNull() {
+      var claimDetails = new CivilClaimDetails();
+      claimDetails.setClaimId(claimId);
+
+      when(claimsApiClient.getAssessments(claimId, page, size, sort)).thenReturn(Mono.empty());
+
+      RuntimeException ex =
+          assertThrows(
+              RuntimeException.class,
+              () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
+
+      assertThat(ex.getMessage()).contains("Failed to get assessments");
+    }
+
+    @Test
+    void voidClaimWithEscapeCaseAssessmentsReturnValues() {
+      ClaimDetails claim = new CrimeClaimDetails();
+      claim.setClaimId(UUID.randomUUID());
+      claim.setStatus(ClaimStatus.VOID);
+
+      var latest = createAssessmentGet(AssessmentType.VOID);
+      var previous = createAssessmentGet(AssessmentType.ESCAPE_CASE_ASSESSMENT);
+
+      AssessmentResultSet resultSet = new AssessmentResultSet();
+      resultSet.setAssessments(List.of(latest, previous));
+      when(claimsApiClient.getAssessments(any(), eq(page), eq(size), any()))
+          .thenReturn(Mono.just(resultSet));
+
+      when(assessmentMapper.updateClaim(previous, claim)).thenReturn(claim);
+      when(assessmentMapper.mapAssessmentToClaimDetails(claim)).thenReturn(claim);
+      ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claim);
+
+      assertEquals(claim, result);
+      verify(assessmentMapper).updateClaim(previous, claim);
+    }
+
+    @Test
+    void voidClaimWithNoPreviousAssessments() {
+      ClaimDetails claim = new CrimeClaimDetails();
+      claim.setClaimId(UUID.randomUUID());
+      claim.setStatus(ClaimStatus.VOID);
+
+      var latest = createAssessmentGet(AssessmentType.VOID);
+      latest.setId(UUID.randomUUID());
+      latest.setClaimId(claim.getClaimId());
+
+      AssessmentResultSet resultSet = new AssessmentResultSet();
+      resultSet.setAssessments(List.of(latest));
+      when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any()))
+          .thenReturn(Mono.just(resultSet));
+      ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claim);
+      assertEquals(claim, result);
+      verifyNoInteractions(assessmentMapper);
+    }
+
+    @Test
+    void getLatestAssessmentThrowsWhenNoAssessments() {
+      ClaimDetails claim = new CrimeClaimDetails();
+      claim.setClaimId(UUID.randomUUID());
+      claim.setStatus(ClaimStatus.VALID);
+
+      AssessmentResultSet emptyResultSet = new AssessmentResultSet();
+      emptyResultSet.setAssessments(List.of());
+
+      when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any()))
+          .thenReturn(Mono.just(emptyResultSet));
+
+      assertThrows(
+          RuntimeException.class, () -> assessmentService.getLatestAssessmentByClaim(claim));
+    }
+
+    @Test
+    void getLatestAssessmentThrowsWhenVoidClaimLatestNotVoid() {
+      ClaimDetails claim = new CrimeClaimDetails();
+      claim.setClaimId(UUID.randomUUID());
+      claim.setStatus(ClaimStatus.VOID);
+
+      var latest = createAssessmentGet(AssessmentType.ESCAPE_CASE_ASSESSMENT);
+      AssessmentResultSet resultSet = new AssessmentResultSet();
+      resultSet.setAssessments(List.of(latest));
+
+      when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any()))
+          .thenReturn(Mono.just(resultSet));
+
+      assertThrows(
+          InvalidAssessmentException.class,
+          () -> assessmentService.getLatestAssessmentByClaim(claim));
+    }
+
+    @Test
+    void getLatestAssessmentThrowsWhenNonVoidLatestNotEscapeCase() {
+      ClaimDetails claim = new CrimeClaimDetails();
+      claim.setClaimId(UUID.randomUUID());
+      claim.setStatus(ClaimStatus.VALID);
+
+      AssessmentGet latest = new AssessmentGet();
+      latest.setAssessmentType(AssessmentType.VOID);
+
+      AssessmentResultSet resultSet = new AssessmentResultSet();
+      resultSet.setAssessments(List.of(latest));
+
+      when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any()))
+          .thenReturn(Mono.just(resultSet));
+
+      assertThrows(
+          InvalidAssessmentException.class,
+          () -> assessmentService.getLatestAssessmentByClaim(claim));
+    }
+  }
+
+  private AssessmentGet createAssessmentGet(AssessmentType assessmentType) {
+    return AssessmentGet.builder().assessmentType(assessmentType).build();
+  }
 }

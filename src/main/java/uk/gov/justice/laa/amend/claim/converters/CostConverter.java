@@ -9,12 +9,12 @@ import uk.gov.justice.laa.amend.claim.models.Cost;
 @Component
 public class CostConverter implements Converter<String, Cost> {
 
-    @Override
-    public Cost convert(String source) {
-        try {
-            return Cost.fromPath(source);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        }
+  @Override
+  public Cost convert(String source) {
+    try {
+      return Cost.fromPath(source);
+    } catch (IllegalArgumentException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
     }
+  }
 }
