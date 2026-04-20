@@ -181,6 +181,11 @@ env:
       configMapKeyRef:
         name: feature-flags
         key: is-bulk-upload-enabled
+  - name: IS_STAGE_DISBURSEMENT_ENABLED
+    valueFrom:
+      configMapKeyRef:
+        name: feature-flags
+        key: is-stage-disbursement-enabled
 
 autoscaling:
   enabled: false
