@@ -3,7 +3,7 @@ package uk.gov.justice.laa.amend.claim.controllers;
 import static java.lang.Boolean.TRUE;
 import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
-import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VALID;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VOID;
 
@@ -68,10 +68,14 @@ public class ClaimSummaryController {
     model.addAttribute("submissionId", submissionId);
     model.addAttribute("claim", claim.toViewModel());
 
+    boolean isEscapedCase = claim.isEscapedCase();
+    boolean isStageDisbursement =
+        claim.isStageDisbursement()
+            && TRUE.equals(featureFlagsConfig.getIsStageDisbursementEnabled());
     boolean isAssessmentButtonPresent =
         request.isUserInRole(ROLE_ESCAPE_CASE_CASEWORKER.name())
             && claim.isValid()
-            && TRUE.equals(claim.getEscaped());
+            && (isEscapedCase || isStageDisbursement);
     model.addAttribute("isAssessmentButtonPresent", isAssessmentButtonPresent);
 
     boolean isVoidButtonPresent =
@@ -85,7 +89,7 @@ public class ClaimSummaryController {
   @PostMapping("/submissions/{submissionId}/claims/{claimId}")
   public String onSubmit(
       @PathVariable UUID submissionId, @PathVariable UUID claimId, HttpSession session) {
-    ClaimDetails claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+    ClaimDetails claim = getValidAssessableClaim(session, submissionId, claimId);
 
     if (claim.isHasAssessment()) {
       return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);

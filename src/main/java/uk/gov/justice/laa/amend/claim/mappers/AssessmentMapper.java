@@ -22,6 +22,7 @@ import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentGet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentOutcome;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentType;
 
 @Mapper(componentModel = "spring")
 public interface AssessmentMapper {
@@ -49,7 +50,7 @@ public interface AssessmentMapper {
   @Mapping(target = "assessedTotalInclVat", expression = "java(mapAssessedTotalInclVat(claim))")
   @Mapping(target = "allowedTotalVat", expression = "java(mapAllowedTotalVat(claim))")
   @Mapping(target = "allowedTotalInclVat", expression = "java(mapAllowedTotalInclVat(claim))")
-  @Mapping(target = "assessmentType", constant = "ESCAPE_CASE_ASSESSMENT")
+  @Mapping(target = "assessmentType", expression = "java(deriveAssessmentType(claim))")
   AssessmentPost mapClaimToAssessment(ClaimDetails claim, @Context String userId);
 
   @InheritConfiguration(name = "mapClaimToAssessment")
@@ -183,6 +184,13 @@ public interface AssessmentMapper {
       case CivilClaimDetails civil -> mapToCivilClaim(claimDetails.getLastAssessment(), civil);
       default -> throw new IllegalArgumentException("Unsupported Claim details");
     };
+  }
+
+  default AssessmentType deriveAssessmentType(ClaimDetails claim) {
+    if (claim.isStageDisbursement()) {
+      return AssessmentType.STAGE_DISBURSEMENT_ASSESSMENT;
+    }
+    return AssessmentType.ESCAPE_CASE_ASSESSMENT;
   }
 
   default AssessmentOutcome mapAssessmentOutcome(ClaimDetails claim) {

@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
-import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -37,7 +37,7 @@ public class ChangeAssessedTotalsController {
       @PathVariable UUID submissionId,
       Model model,
       HttpSession session) {
-    var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+    var claim = getValidAssessableClaim(session, submissionId, claimId);
 
     if (claim.getAssessedTotalVat().isNotAssessable()
         || claim.getAssessedTotalInclVat().isNotAssessable()) {
@@ -74,7 +74,7 @@ public class ChangeAssessedTotalsController {
       return renderView(model, form, submissionId, claimId);
     }
 
-    var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+    var claim = getValidAssessableClaim(session, submissionId, claimId);
 
     ClaimField totalVatField = claim.getAssessedTotalVat();
     BigDecimal totalVat = setScale(form.getAssessedTotalVat());

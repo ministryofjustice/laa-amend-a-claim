@@ -2,7 +2,9 @@ package uk.gov.justice.laa.amend.claim.controllers;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY;
-import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_STAGE_DISBURSEMENT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_STAGE_DISBURSEMENT_CONTINGENCY;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -37,7 +39,7 @@ public class AssessmentOutcomeController {
       Model model,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+    var claim = getValidAssessableClaim(session, submissionId, claimId);
 
     AssessmentOutcomeForm form = new AssessmentOutcomeForm();
     form.setAssessmentOutcome(claim.getAssessmentOutcome());
@@ -55,7 +57,7 @@ public class AssessmentOutcomeController {
       HttpSession session,
       Model model,
       HttpServletResponse response) {
-    var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+    var claim = getValidAssessableClaim(session, submissionId, claimId);
 
     if (bindingResult.hasErrors()) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -64,20 +66,21 @@ public class AssessmentOutcomeController {
 
     OutcomeType newOutcome = form.getAssessmentOutcome();
 
-    // Apply business logic based on outcome change
     assessmentService.applyAssessmentOutcome(claim, newOutcome);
-
-    // Set the assessment outcome
     claim.setAssessmentOutcome(newOutcome);
 
-    // Set the assessment reason
-    if (Boolean.TRUE.equals(form.getContingencyAssessment())) {
-      claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY);
+    if (claim.isStageDisbursement()) {
+      claim.setAssessmentReason(
+          Boolean.TRUE.equals(form.getContingencyAssessment())
+              ? ASSESSMENT_REASON_STAGE_DISBURSEMENT_CONTINGENCY
+              : ASSESSMENT_REASON_STAGE_DISBURSEMENT);
     } else {
-      claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
+      claim.setAssessmentReason(
+          Boolean.TRUE.equals(form.getContingencyAssessment())
+              ? ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY
+              : ASSESSMENT_REASON_ESCAPE_CASE);
     }
 
-    // Save updated Claim back to session
     session.setAttribute(claimId.toString(), claim);
 
     return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);

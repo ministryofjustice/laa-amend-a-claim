@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -7,6 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_STAGE_DISBURSEMENT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_STAGE_DISBURSEMENT_CONTINGENCY;
 import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 
@@ -16,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
@@ -71,6 +78,83 @@ public class AssessmentOutcomeControllerTest extends BaseControllerTest {
                 .param("contingencyAssessment", "true"))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(redirectUrl));
+  }
+
+  @Test
+  public void testOnSubmitSetsEscapeCaseReasonForEscapedClaim() throws Exception {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setEscaped(true);
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc.perform(
+        post(buildPath())
+            .session(session)
+            .with(csrf())
+            .param("assessmentOutcome", "paid-in-full")
+            .param("contingencyAssessment", "false"));
+
+    var updatedClaim = (CivilClaimDetails) session.getAttribute(claimId.toString());
+    assertNotNull(updatedClaim);
+    assertThat(updatedClaim.getAssessmentReason()).isEqualTo(ASSESSMENT_REASON_ESCAPE_CASE);
+  }
+
+  @Test
+  public void testOnSubmitSetsEscapeCaseContingencyReasonForEscapedClaim() throws Exception {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setEscaped(true);
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc.perform(
+        post(buildPath())
+            .session(session)
+            .with(csrf())
+            .param("assessmentOutcome", "paid-in-full")
+            .param("contingencyAssessment", "true"));
+
+    var updatedClaim = (CivilClaimDetails) session.getAttribute(claimId.toString());
+    assertNotNull(updatedClaim);
+    assertThat(updatedClaim.getAssessmentReason())
+        .isEqualTo(ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY);
+  }
+
+  @Test
+  public void testOnSubmitSetsStageDisbursementReasonForStageDisbursementClaim() throws Exception {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setEscaped(false);
+    claim.setFeeCode("ILHSD");
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc.perform(
+        post(buildPath())
+            .session(session)
+            .with(csrf())
+            .param("assessmentOutcome", "paid-in-full")
+            .param("contingencyAssessment", "false"));
+
+    var updatedClaim = (CivilClaimDetails) session.getAttribute(claimId.toString());
+    assertNotNull(updatedClaim);
+    assertThat(updatedClaim.getAssessmentReason()).isEqualTo(ASSESSMENT_REASON_STAGE_DISBURSEMENT);
+  }
+
+  @Test
+  public void testOnSubmitSetsStageDisbursementContingencyReasonForStageDisbursementClaim()
+      throws Exception {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setEscaped(false);
+    claim.setFeeCode("ILHSD");
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc.perform(
+        post(buildPath())
+            .session(session)
+            .with(csrf())
+            .param("assessmentOutcome", "paid-in-full")
+            .param("contingencyAssessment", "true"));
+
+    var updatedClaim = (CivilClaimDetails) session.getAttribute(claimId.toString());
+    assertNotNull(updatedClaim);
+    assertThat(updatedClaim.getAssessmentReason())
+        .isEqualTo(ASSESSMENT_REASON_STAGE_DISBURSEMENT_CONTINGENCY);
   }
 
   @Test
