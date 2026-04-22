@@ -80,13 +80,13 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
 
       Assertions.assertEquals(2, result.size());
 
-      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(0).getAssessed());
+      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(0).assessed());
       Assertions.assertEquals(
-          "/submissions/%s/claims/%s/assessed-totals", result.get(0).getChangeUrl());
+          "/submissions/%s/claims/%s/assessed-totals", result.get(0).changeUrl());
 
-      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(1).getAssessed());
+      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(1).assessed());
       Assertions.assertEquals(
-          "/submissions/%s/claims/%s/assessed-totals", result.get(1).getChangeUrl());
+          "/submissions/%s/claims/%s/assessed-totals", result.get(1).changeUrl());
     }
   }
 
@@ -117,13 +117,13 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
 
       List<ClaimFieldRow> result = viewModel.getAllowedTotals();
 
-      Assertions.assertEquals(BigDecimal.ZERO, result.get(0).getCalculated());
+      Assertions.assertEquals(BigDecimal.ZERO, result.get(0).calculated());
       Assertions.assertEquals(
-          "/submissions/%s/claims/%s/allowed-totals", result.get(0).getChangeUrl());
+          "/submissions/%s/claims/%s/allowed-totals", result.get(0).changeUrl());
 
-      Assertions.assertEquals(BigDecimal.ZERO, result.get(1).getCalculated());
+      Assertions.assertEquals(BigDecimal.ZERO, result.get(1).calculated());
       Assertions.assertEquals(
-          "/submissions/%s/claims/%s/allowed-totals", result.get(1).getChangeUrl());
+          "/submissions/%s/claims/%s/allowed-totals", result.get(1).changeUrl());
     }
 
     @Test
@@ -140,13 +140,13 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
 
       List<ClaimFieldRow> result = viewModel.getAllowedTotals();
 
-      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(0).getAssessed());
+      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(0).assessed());
       Assertions.assertEquals(
-          "/submissions/%s/claims/%s/allowed-totals", result.get(0).getChangeUrl());
+          "/submissions/%s/claims/%s/allowed-totals", result.get(0).changeUrl());
 
-      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(1).getAssessed());
+      Assertions.assertEquals(BigDecimal.valueOf(300), result.get(1).assessed());
       Assertions.assertEquals(
-          "/submissions/%s/claims/%s/allowed-totals", result.get(1).getChangeUrl());
+          "/submissions/%s/claims/%s/allowed-totals", result.get(1).changeUrl());
     }
   }
 

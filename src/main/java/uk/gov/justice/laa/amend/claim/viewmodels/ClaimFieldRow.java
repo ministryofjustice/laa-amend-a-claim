@@ -2,9 +2,6 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
@@ -14,17 +11,13 @@ import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.amend.claim.utils.FormUtils;
 
-@EqualsAndHashCode
-@Getter
-@AllArgsConstructor
-public class ClaimFieldRow {
-
-  private final String key;
-  private Object submitted;
-  private Object calculated;
-  private Object assessed;
-  private final boolean assessable;
-  private final String changeUrl;
+public record ClaimFieldRow(
+    String key,
+    Object submitted,
+    Object calculated,
+    Object assessed,
+    boolean assessable,
+    String changeUrl) {
 
   public static ClaimFieldRow from(AllowedClaimField claimField) {
     return new ClaimFieldRow(
@@ -135,14 +128,14 @@ public class ClaimFieldRow {
   }
 
   public boolean isAssessableAndUnassessed() {
-    return isAssessable() && !isAssessed();
+    return assessable && !hasAssessedValue();
   }
 
   public boolean isAssessableAndAssessed() {
-    return isAssessable() && isAssessed();
+    return assessable && hasAssessedValue();
   }
 
-  public boolean isAssessed() {
+  public boolean hasAssessedValue() {
     return assessed != null;
   }
 }
