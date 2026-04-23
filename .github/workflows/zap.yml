@@ -44,7 +44,7 @@ jobs:
           docker compose up -d wiremock redis
           ./gradlew bootRun > zap_output.log 2>&1 &
 
-          url="http://localhost:8182/actuator/health"
+          url="http://localhost:8282/actuator/health"
           retries=30
 
           for i in $(seq 1 $retries); do

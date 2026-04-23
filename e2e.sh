@@ -59,7 +59,7 @@ wait_for() {
     sleep 1
   done
 }
-wait_for "http://localhost:8182/actuator/health" "UP"
+wait_for "http://localhost:8282/actuator/health" "UP"
 wait_for "http://localhost:8082/v3/api-docs" "openapi"
 
 echo "[INFO] Installing node dependencies..."

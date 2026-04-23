@@ -108,8 +108,8 @@ This starts the following services:
 
 #### Actuator endpoints
 The following actuator endpoints have been configured:
-- http://localhost:8182/actuator
-- http://localhost:8182/actuator/health
+- http://localhost:8282/actuator
+- http://localhost:8282/actuator/health
 
 ## GitHub workflows
 
