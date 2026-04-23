@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface Insert {
 
-    String table();
+  String table();
 
-    String id();
+  String id();
 
-    List<Object> parameters();
+  List<Object> parameters();
 }

@@ -9,30 +9,31 @@ import uk.gov.justice.laa.amend.claim.utils.FormUtils;
 @Data
 @AllArgsConstructor
 public abstract class FormError implements Comparable<FormError> {
-    private String fieldName;
-    private String message;
+  private String fieldName;
+  private String message;
 
-    public FormError(DetailedError error) {
-        this.fieldName = error.getFieldName();
-        this.message = error.getMessage();
+  public FormError(DetailedError error) {
+    this.fieldName = error.getFieldName();
+    this.message = error.getMessage();
+  }
+
+  public String getFieldId() {
+    return FormUtils.toFieldId(fieldName);
+  }
+
+  @Override
+  public int compareTo(FormError other) {
+    if (other == null) {
+      return 1;
+    } else {
+      return Integer.compare(
+          getFieldOrder(this.getFieldName()), getFieldOrder(other.getFieldName()));
     }
+  }
 
-    public String getFieldId() {
-        return FormUtils.toFieldId(fieldName);
-    }
+  private int getFieldOrder(String fieldName) {
+    return getFieldOrderMap().getOrDefault(fieldName, Integer.MAX_VALUE);
+  }
 
-    @Override
-    public int compareTo(FormError other) {
-        if (other == null) {
-            return 1;
-        } else {
-            return Integer.compare(getFieldOrder(this.getFieldName()), getFieldOrder(other.getFieldName()));
-        }
-    }
-
-    private int getFieldOrder(String fieldName) {
-        return getFieldOrderMap().getOrDefault(fieldName, Integer.MAX_VALUE);
-    }
-
-    protected abstract Map<String, Integer> getFieldOrderMap();
+  protected abstract Map<String, Integer> getFieldOrderMap();
 }

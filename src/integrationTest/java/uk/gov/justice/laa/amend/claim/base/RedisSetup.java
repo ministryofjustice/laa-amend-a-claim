@@ -7,16 +7,16 @@ import redis.embedded.RedisServer;
 
 public class RedisSetup {
 
-    private static RedisServer redisServer;
+  private static RedisServer redisServer;
 
-    @BeforeAll
-    public static void setUpRedis() throws IOException {
-        redisServer = new RedisServer();
-        redisServer.start();
-    }
+  @BeforeAll
+  public static void setUpRedis() throws IOException {
+    redisServer = new RedisServer();
+    redisServer.start();
+  }
 
-    @AfterAll
-    public static void tearDown() throws IOException {
-        redisServer.stop();
-    }
+  @AfterAll
+  public static void tearDown() throws IOException {
+    redisServer.stop();
+  }
 }

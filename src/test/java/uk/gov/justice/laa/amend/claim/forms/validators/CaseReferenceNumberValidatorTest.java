@@ -16,73 +16,74 @@ import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 
 class CaseReferenceNumberValidatorTest {
 
-    private CaseReferenceNumberValidator validator;
-    private ConstraintValidatorContext constraintValidatorContext;
+  private CaseReferenceNumberValidator validator;
+  private ConstraintValidatorContext constraintValidatorContext;
 
-    @BeforeEach
-    void setUp() {
-        validator = new CaseReferenceNumberValidator();
-        constraintValidatorContext = mock(ConstraintValidatorContext.class);
-        ConstraintViolationBuilder builder = mock(ConstraintViolationBuilder.class);
-        NodeBuilderCustomizableContext nodeBuilderCustomizableContext = mock(NodeBuilderCustomizableContext.class);
+  @BeforeEach
+  void setUp() {
+    validator = new CaseReferenceNumberValidator();
+    constraintValidatorContext = mock(ConstraintValidatorContext.class);
+    ConstraintViolationBuilder builder = mock(ConstraintViolationBuilder.class);
+    NodeBuilderCustomizableContext nodeBuilderCustomizableContext =
+        mock(NodeBuilderCustomizableContext.class);
 
-        when(constraintValidatorContext.buildConstraintViolationWithTemplate(anyString()))
-                .thenReturn(builder);
-        when(builder.addPropertyNode(anyString())).thenReturn(nodeBuilderCustomizableContext);
-        when(builder.addConstraintViolation()).thenReturn(constraintValidatorContext);
-    }
+    when(constraintValidatorContext.buildConstraintViolationWithTemplate(anyString()))
+        .thenReturn(builder);
+    when(builder.addPropertyNode(anyString())).thenReturn(nodeBuilderCustomizableContext);
+    when(builder.addConstraintViolation()).thenReturn(constraintValidatorContext);
+  }
 
-    @Test
-    void testNullIsValid() {
-        SearchForm form = new SearchForm();
-        form.setCaseReferenceNumber(null);
+  @Test
+  void testNullIsValid() {
+    SearchForm form = new SearchForm();
+    form.setCaseReferenceNumber(null);
 
-        assertTrue(validator.isValid(form, constraintValidatorContext));
-    }
+    assertTrue(validator.isValid(form, constraintValidatorContext));
+  }
 
-    @Test
-    void testBlankIsValid() {
-        SearchForm form = new SearchForm();
-        form.setCaseReferenceNumber("");
+  @Test
+  void testBlankIsValid() {
+    SearchForm form = new SearchForm();
+    form.setCaseReferenceNumber("");
 
-        assertTrue(validator.isValid(form, constraintValidatorContext));
-    }
+    assertTrue(validator.isValid(form, constraintValidatorContext));
+  }
 
-    @Test
-    void testLessThanThreeCharactersIsInvalid() {
-        SearchForm form = new SearchForm();
-        form.setCaseReferenceNumber("12");
+  @Test
+  void testLessThanThreeCharactersIsInvalid() {
+    SearchForm form = new SearchForm();
+    form.setCaseReferenceNumber("12");
 
-        assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext)
-                .buildConstraintViolationWithTemplate("{index.caseReferenceNumber.error.minimumLength}");
-    }
+    assertFalse(validator.isValid(form, constraintValidatorContext));
+    verify(constraintValidatorContext)
+        .buildConstraintViolationWithTemplate("{index.caseReferenceNumber.error.minimumLength}");
+  }
 
-    @Test
-    void testMoreThanThirtyCharactersIsInvalid() {
-        SearchForm form = new SearchForm();
-        form.setCaseReferenceNumber("1234567890123456789012345678901");
+  @Test
+  void testMoreThanThirtyCharactersIsInvalid() {
+    SearchForm form = new SearchForm();
+    form.setCaseReferenceNumber("1234567890123456789012345678901");
 
-        assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext)
-                .buildConstraintViolationWithTemplate("{index.caseReferenceNumber.error.format}");
-    }
+    assertFalse(validator.isValid(form, constraintValidatorContext));
+    verify(constraintValidatorContext)
+        .buildConstraintViolationWithTemplate("{index.caseReferenceNumber.error.format}");
+  }
 
-    @Test
-    void testInvalidCharactersIsInvalid() {
-        SearchForm form = new SearchForm();
-        form.setCaseReferenceNumber("!!!");
+  @Test
+  void testInvalidCharactersIsInvalid() {
+    SearchForm form = new SearchForm();
+    form.setCaseReferenceNumber("!!!");
 
-        assertFalse(validator.isValid(form, constraintValidatorContext));
-        verify(constraintValidatorContext)
-                .buildConstraintViolationWithTemplate("{index.caseReferenceNumber.error.invalid}");
-    }
+    assertFalse(validator.isValid(form, constraintValidatorContext));
+    verify(constraintValidatorContext)
+        .buildConstraintViolationWithTemplate("{index.caseReferenceNumber.error.invalid}");
+  }
 
-    @Test
-    void testValidInputIsValid() {
-        SearchForm form = new SearchForm();
-        form.setCaseReferenceNumber("123456");
+  @Test
+  void testValidInputIsValid() {
+    SearchForm form = new SearchForm();
+    form.setCaseReferenceNumber("123456");
 
-        assertTrue(validator.isValid(form, constraintValidatorContext));
-    }
+    assertTrue(validator.isValid(form, constraintValidatorContext));
+  }
 }

@@ -5,21 +5,21 @@ import org.thymeleaf.spring6.util.DetailedError;
 
 public class SearchFormError extends FormError {
 
-    public SearchFormError(DetailedError error) {
-        super(error);
-    }
+  public SearchFormError(DetailedError error) {
+    super(error);
+  }
 
-    public SearchFormError(String fieldName, String message) {
-        super(fieldName, message);
-    }
+  public SearchFormError(String fieldName, String message) {
+    super(fieldName, message);
+  }
 
-    @Override
-    protected Map<String, Integer> getFieldOrderMap() {
-        return Map.of(
-                "officeCode", 1,
-                "submissionDateMonth", 2,
-                "submissionDateYear", 3,
-                "uniqueFileNumber", 4,
-                "caseReferenceNumber", 5);
-    }
+  @Override
+  protected Map<String, Integer> getFieldOrderMap() {
+    return Map.of(
+        "officeCode", 1,
+        "submissionDateMonth", 2,
+        "submissionDateYear", 3,
+        "uniqueFileNumber", 4,
+        "caseReferenceNumber", 5);
+  }
 }

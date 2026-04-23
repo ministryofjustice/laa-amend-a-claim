@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
-import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidEscapeCaseClaim;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -31,78 +31,79 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 @HasRoleEscapeCaseCaseworker
 public class ChangeAllowedTotalsController {
 
-    @GetMapping()
-    public String onPageLoad(
-            @PathVariable UUID claimId, @PathVariable UUID submissionId, Model model, HttpSession session) {
-        var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
+  @GetMapping()
+  public String onPageLoad(
+      @PathVariable UUID claimId,
+      @PathVariable UUID submissionId,
+      Model model,
+      HttpSession session) {
+    var claim = getValidAssessableClaim(session, submissionId, claimId);
 
-        if (claim.getAllowedTotalVat().isNotAssessable()
-                || claim.getAllowedTotalInclVat().isNotAssessable()) {
-            log.warn("The allowed totals are not modifiable for claim {}. Returning 404.", claimId);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        AllowedTotalForm allowedTotalForm = new AllowedTotalForm();
-
-        BigDecimal allowedTotalVat = (BigDecimal) claim.getAllowedTotalVat().getAssessed();
-        if (allowedTotalVat != null) {
-            allowedTotalForm.setAllowedTotalVat(setScale(allowedTotalVat).toString());
-        }
-
-        BigDecimal allowedTotalInclVat =
-                (BigDecimal) claim.getAllowedTotalInclVat().getAssessed();
-        if (allowedTotalInclVat != null) {
-            allowedTotalForm.setAllowedTotalInclVat(
-                    setScale(allowedTotalInclVat).toString());
-        }
-
-        return renderView(model, allowedTotalForm, submissionId, claimId);
+    if (claim.getAllowedTotalVat().isNotAssessable()
+        || claim.getAllowedTotalInclVat().isNotAssessable()) {
+      log.warn("The allowed totals are not modifiable for claim {}. Returning 404.", claimId);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping()
-    public String onSubmit(
-            @PathVariable UUID submissionId,
-            @PathVariable UUID claimId,
-            @Valid @ModelAttribute("form") AllowedTotalForm form,
-            BindingResult bindingResult,
-            HttpSession session,
-            Model model,
-            HttpServletResponse response) {
-        if (bindingResult.hasErrors()) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return renderView(model, form, submissionId, claimId);
-        }
+    AllowedTotalForm allowedTotalForm = new AllowedTotalForm();
 
-        var claim = getValidEscapeCaseClaim(session, submissionId, claimId);
-
-        ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
-        BigDecimal allowedTotalVat = setScale(form.getAllowedTotalVat());
-        allowedTotalVatField.setAssessed(allowedTotalVat);
-
-        ClaimField allowedTotalInclVatField = claim.getAllowedTotalInclVat();
-        BigDecimal allowedTotalInclVat = setScale(form.getAllowedTotalInclVat());
-        allowedTotalInclVatField.setAssessed(allowedTotalInclVat);
-
-        ClaimField assessedTotalVatField = claim.getAssessedTotalVat();
-        if (assessedTotalVatField.isNotAssessable()) {
-            assessedTotalVatField.setAssessed(allowedTotalVat);
-        }
-
-        ClaimField assessedTotalInclVatField = claim.getAssessedTotalInclVat();
-        if (assessedTotalInclVatField.isNotAssessable()) {
-            assessedTotalInclVatField.setAssessed(allowedTotalInclVat);
-        }
-
-        // Save updated Claim back to session
-        session.setAttribute(claimId.toString(), claim);
-
-        return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
+    BigDecimal allowedTotalVat = (BigDecimal) claim.getAllowedTotalVat().getAssessed();
+    if (allowedTotalVat != null) {
+      allowedTotalForm.setAllowedTotalVat(setScale(allowedTotalVat).toString());
     }
 
-    private String renderView(Model model, AllowedTotalForm form, UUID submissionId, UUID claimId) {
-        model.addAttribute("form", form);
-        String redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
-        model.addAttribute("redirectUrl", redirectUrl);
-        return "allowed-totals";
+    BigDecimal allowedTotalInclVat = (BigDecimal) claim.getAllowedTotalInclVat().getAssessed();
+    if (allowedTotalInclVat != null) {
+      allowedTotalForm.setAllowedTotalInclVat(setScale(allowedTotalInclVat).toString());
     }
+
+    return renderView(model, allowedTotalForm, submissionId, claimId);
+  }
+
+  @PostMapping()
+  public String onSubmit(
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId,
+      @Valid @ModelAttribute("form") AllowedTotalForm form,
+      BindingResult bindingResult,
+      HttpSession session,
+      Model model,
+      HttpServletResponse response) {
+    if (bindingResult.hasErrors()) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return renderView(model, form, submissionId, claimId);
+    }
+
+    var claim = getValidAssessableClaim(session, submissionId, claimId);
+
+    ClaimField allowedTotalVatField = claim.getAllowedTotalVat();
+    BigDecimal allowedTotalVat = setScale(form.getAllowedTotalVat());
+    allowedTotalVatField.setAssessed(allowedTotalVat);
+
+    ClaimField allowedTotalInclVatField = claim.getAllowedTotalInclVat();
+    BigDecimal allowedTotalInclVat = setScale(form.getAllowedTotalInclVat());
+    allowedTotalInclVatField.setAssessed(allowedTotalInclVat);
+
+    ClaimField assessedTotalVatField = claim.getAssessedTotalVat();
+    if (assessedTotalVatField.isNotAssessable()) {
+      assessedTotalVatField.setAssessed(allowedTotalVat);
+    }
+
+    ClaimField assessedTotalInclVatField = claim.getAssessedTotalInclVat();
+    if (assessedTotalInclVatField.isNotAssessable()) {
+      assessedTotalInclVatField.setAssessed(allowedTotalInclVat);
+    }
+
+    // Save updated Claim back to session
+    session.setAttribute(claimId.toString(), claim);
+
+    return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
+  }
+
+  private String renderView(Model model, AllowedTotalForm form, UUID submissionId, UUID claimId) {
+    model.addAttribute("form", form);
+    String redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+    model.addAttribute("redirectUrl", redirectUrl);
+    return "allowed-totals";
+  }
 }

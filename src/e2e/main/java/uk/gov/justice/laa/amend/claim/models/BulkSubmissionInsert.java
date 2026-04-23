@@ -7,13 +7,13 @@ import lombok.Builder;
 @Builder
 public record BulkSubmissionInsert(String id, String userId) implements Insert {
 
-    @Override
-    public String table() {
-        return "bulk_submission";
-    }
+  @Override
+  public String table() {
+    return "bulk_submission";
+  }
 
-    @Override
-    public List<Object> parameters() {
-        return Arrays.asList(id, userId, userId);
-    }
+  @Override
+  public List<Object> parameters() {
+    return Arrays.asList(id, userId, userId);
+  }
 }

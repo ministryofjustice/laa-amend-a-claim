@@ -11,17 +11,17 @@ import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 @AllArgsConstructor
 public class MaintenancePageController {
 
-    private final MaintenanceService maintenanceService;
+  private final MaintenanceService maintenanceService;
 
-    @GetMapping("/maintenance")
-    public String onPageLoad(Model model, HttpServletRequest request) {
+  @GetMapping("/maintenance")
+  public String onPageLoad(Model model, HttpServletRequest request) {
 
-        if (!maintenanceService.maintenanceApplies(request)) {
-            return "redirect:/";
-        }
-
-        model.addAttribute("maintenanceMessage", maintenanceService.getMessage());
-        model.addAttribute("maintenanceTitle", maintenanceService.getTitle());
-        return "maintenance";
+    if (!maintenanceService.maintenanceApplies(request)) {
+      return "redirect:/";
     }
+
+    model.addAttribute("maintenanceMessage", maintenanceService.getMessage());
+    model.addAttribute("maintenanceTitle", maintenanceService.getTitle());
+    return "maintenance";
+  }
 }

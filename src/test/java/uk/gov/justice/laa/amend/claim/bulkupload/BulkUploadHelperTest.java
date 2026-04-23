@@ -24,99 +24,99 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 
 class BulkUploadHelperTest {
 
-    private ClaimService claimService;
-    private BulkUploadHelper helper;
+  private ClaimService claimService;
+  private BulkUploadHelper helper;
 
-    @BeforeEach
-    void setup() {
-        claimService = mock(ClaimService.class);
-        helper = new BulkUploadHelper(claimService);
-    }
+  @BeforeEach
+  void setup() {
+    claimService = mock(ClaimService.class);
+    helper = new BulkUploadHelper(claimService);
+  }
 
-    @Test
-    void getOfficeCodeToUfnIdxValidRowsShouldMapRowsCorrectly() {
-        List<BulkUploadCivilClaim> rows = new ArrayList<>();
-        List<BulkUploadError> errors = new ArrayList<>();
+  @Test
+  void getOfficeCodeToUfnIdxValidRowsShouldMapRowsCorrectly() {
+    List<BulkUploadCivilClaim> rows = new ArrayList<>();
+    List<BulkUploadError> errors = new ArrayList<>();
 
-        BulkUploadCivilClaim row1 = row("123456", "131019/020", 1);
-        BulkUploadCivilClaim row2 = row("123456", "131019/024", 2);
-        rows.add(row1);
-        rows.add(row2);
+    BulkUploadCivilClaim row1 = row("123456", "131019/020", 1);
+    BulkUploadCivilClaim row2 = row("123456", "131019/024", 2);
+    rows.add(row1);
+    rows.add(row2);
 
-        Map<Pair<String, String>, BulkUploadCivilClaim> map = helper.getOfficeCodeUfnRows(rows, errors);
+    Map<Pair<String, String>, BulkUploadCivilClaim> map = helper.getOfficeCodeUfnRows(rows, errors);
 
-        assertTrue(errors.isEmpty());
-        assertEquals(2, map.size());
-        assertEquals(1, map.get(Pair.of("123456", "131019/020")).getRowNumber());
-        assertEquals(2, map.get(Pair.of("123456", "131019/024")).getRowNumber());
-    }
+    assertTrue(errors.isEmpty());
+    assertEquals(2, map.size());
+    assertEquals(1, map.get(Pair.of("123456", "131019/020")).getRowNumber());
+    assertEquals(2, map.get(Pair.of("123456", "131019/024")).getRowNumber());
+  }
 
-    @Test
-    void getAllClaimsShouldMatchClaimsAndReturnClaims() {
-        var officeCode = "123456";
-        var ufn = "20220101/020244";
-        // Mock claim returned from paging API
-        ClaimResponseV2 claim = new ClaimResponseV2();
-        claim.setOfficeCode(officeCode);
-        claim.setUniqueFileNumber(ufn);
-        claim.setStatus(VALID);
+  @Test
+  void getAllClaimsShouldMatchClaimsAndReturnClaims() {
+    var officeCode = "123456";
+    var ufn = "20220101/020244";
+    // Mock claim returned from paging API
+    ClaimResponseV2 claim = new ClaimResponseV2();
+    claim.setOfficeCode(officeCode);
+    claim.setUniqueFileNumber(ufn);
+    claim.setStatus(VALID);
 
-        when(claimService.searchClaims(
-                        officeCode,
-                        Optional.empty(),
-                        Optional.empty(),
-                        Optional.empty(),
-                        Optional.of(AreaOfLaw.LEGAL_HELP),
-                        Optional.of(true),
-                        List.of(VALID),
-                        1,
-                        200,
-                        null))
-                .thenReturn(claimList(claim));
+    when(claimService.searchClaims(
+            officeCode,
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.of(AreaOfLaw.LEGAL_HELP),
+            Optional.of(true),
+            List.of(VALID),
+            1,
+            200,
+            null))
+        .thenReturn(claimList(claim));
 
-        // After page 1, return empty content (stop)
-        when(claimService.searchClaims(
-                        officeCode,
-                        Optional.empty(),
-                        Optional.empty(),
-                        Optional.empty(),
-                        Optional.of(AreaOfLaw.LEGAL_HELP),
-                        Optional.of(true),
-                        List.of(VALID),
-                        2,
-                        200,
-                        null))
-                .thenReturn(emptyList());
+    // After page 1, return empty content (stop)
+    when(claimService.searchClaims(
+            officeCode,
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.of(AreaOfLaw.LEGAL_HELP),
+            Optional.of(true),
+            List.of(VALID),
+            2,
+            200,
+            null))
+        .thenReturn(emptyList());
 
-        List<BulkUploadError> errors = new ArrayList<>();
-        BulkUploadCivilClaim row = row(officeCode, ufn, 1);
-        List<BulkUploadCivilClaim> rows = List.of(row);
-        var response = helper.getAllClaims(rows, errors);
+    List<BulkUploadError> errors = new ArrayList<>();
+    BulkUploadCivilClaim row = row(officeCode, ufn, 1);
+    List<BulkUploadCivilClaim> rows = List.of(row);
+    var response = helper.getAllClaims(rows, errors);
 
-        assertEquals(List.of(claim), response);
-        assertTrue(errors.isEmpty());
-    }
+    assertEquals(List.of(claim), response);
+    assertTrue(errors.isEmpty());
+  }
 
-    private BulkUploadCivilClaim row(String officeCode, String ufn, int rowNumber) {
-        BulkUploadCivilClaim r = new BulkUploadCivilClaim();
-        r.setOfficeCode(officeCode);
-        r.setUfn(ufn);
-        r.setCounselCosts(BigDecimal.valueOf(100));
-        r.setDisbursements(BigDecimal.valueOf(200));
-        r.setAssessmentOutcome("Reduced to Fixed fee");
-        r.setRowNumber(rowNumber);
-        return r;
-    }
+  private BulkUploadCivilClaim row(String officeCode, String ufn, int rowNumber) {
+    BulkUploadCivilClaim r = new BulkUploadCivilClaim();
+    r.setOfficeCode(officeCode);
+    r.setUfn(ufn);
+    r.setCounselCosts(BigDecimal.valueOf(100));
+    r.setDisbursements(BigDecimal.valueOf(200));
+    r.setAssessmentOutcome("Reduced to Fixed fee");
+    r.setRowNumber(rowNumber);
+    return r;
+  }
 
-    private ClaimResultSetV2 claimList(ClaimResponseV2... claims) {
-        ClaimResultSetV2 result = new ClaimResultSetV2();
-        result.setContent(Arrays.asList(claims));
-        return result;
-    }
+  private ClaimResultSetV2 claimList(ClaimResponseV2... claims) {
+    ClaimResultSetV2 result = new ClaimResultSetV2();
+    result.setContent(Arrays.asList(claims));
+    return result;
+  }
 
-    private ClaimResultSetV2 emptyList() {
-        ClaimResultSetV2 result = new ClaimResultSetV2();
-        result.setContent(Collections.emptyList());
-        return result;
-    }
+  private ClaimResultSetV2 emptyList() {
+    ClaimResultSetV2 result = new ClaimResultSetV2();
+    result.setContent(Collections.emptyList());
+    return result;
+  }
 }

@@ -12,37 +12,36 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 @UtilityClass
 public class SessionUtils {
 
-    public static ClaimDetails getClaim(HttpSession session, UUID submissionId, UUID claimId) {
-        if (session == null) {
-            throw new NoClaimInSessionException(submissionId, claimId, "Session not found");
-        }
-
-        var claim = (ClaimDetails) session.getAttribute(claimId.toString());
-
-        if (claim == null) {
-            throw new NoClaimInSessionException(submissionId, claimId, "Claim not found");
-        }
-
-        return claim;
+  public static ClaimDetails getClaim(HttpSession session, UUID submissionId, UUID claimId) {
+    if (session == null) {
+      throw new NoClaimInSessionException(submissionId, claimId, "Session not found");
     }
 
-    public static ClaimDetails getValidClaim(HttpSession session, UUID submissionId, UUID claimId) {
-        var claim = getClaim(session, submissionId, claimId);
+    var claim = (ClaimDetails) session.getAttribute(claimId.toString());
 
-        if (claim.getStatus() != ClaimStatus.VALID) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Claim status is not VALID");
-        }
-
-        return claim;
+    if (claim == null) {
+      throw new NoClaimInSessionException(submissionId, claimId, "Claim not found");
     }
 
-    public static ClaimDetails getValidEscapeCaseClaim(HttpSession session, UUID submissionId, UUID claimId) {
-        var claim = getValidClaim(session, submissionId, claimId);
+    return claim;
+  }
 
-        if (claim.getEscaped() == null || !claim.getEscaped()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Claim is not an escape case");
-        }
+  public static ClaimDetails getValidClaim(HttpSession session, UUID submissionId, UUID claimId) {
+    var claim = getClaim(session, submissionId, claimId);
 
-        return claim;
+    if (claim.getStatus() != ClaimStatus.VALID) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Claim status is not VALID");
     }
+
+    return claim;
+  }
+
+  public static ClaimDetails getValidAssessableClaim(
+      HttpSession session, UUID submissionId, UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
+    if (!claim.isEscapedCase() && !claim.isStageDisbursement()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Claim is not assessable");
+    }
+    return claim;
+  }
 }

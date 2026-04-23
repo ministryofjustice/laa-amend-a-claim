@@ -43,220 +43,219 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 public class MockClaimsFunctions {
 
-    private static final ClaimStatusHandler claimStatusHandler = new ClaimStatusHandler();
-    public static final String DISPLAY_NAME = "Test User";
-    public static final String GIVEN_NAME = "Test";
-    public static final String SURNAME = "User";
+  private static final ClaimStatusHandler claimStatusHandler = new ClaimStatusHandler();
+  public static final String DISPLAY_NAME = "Test User";
+  public static final String GIVEN_NAME = "Test";
+  public static final String SURNAME = "User";
 
-    public static CivilClaimDetails createMockCivilClaim() {
-        CivilClaimDetails claim = new CivilClaimDetails();
-        claim.setClaimId(UUID.randomUUID());
-        claim.setSubmissionId(UUID.randomUUID());
-        claim.setClaimSummaryFeeId(UUID.randomUUID());
-        claim.setEscaped(true);
-        claim.setStatus(ClaimStatus.VALID);
+  public static CivilClaimDetails createMockCivilClaim() {
+    CivilClaimDetails claim = new CivilClaimDetails();
+    claim.setClaimId(UUID.randomUUID());
+    claim.setSubmissionId(UUID.randomUUID());
+    claim.setClaimSummaryFeeId(UUID.randomUUID());
+    claim.setEscaped(true);
+    claim.setStatus(ClaimStatus.VALID);
 
-        claim.setFixedFee(createFixedFeeField());
-        claim.setNetProfitCost(createNetProfitCostField());
-        claim.setNetDisbursementAmount(createDisbursementCostField());
-        claim.setDisbursementVatAmount(createDisbursementVatCostField());
-        claim.setTotalAmount(createTotalAmountField());
-        claim.setCounselsCost(createCounselCostField());
-        claim.setDetentionTravelWaitingCosts(createDetentionCostField());
-        claim.setJrFormFillingCost(createJrFormFillingCostField());
-        claim.setAdjournedHearing(createAdjournedHearingField());
-        claim.setCmrhTelephone(createCmrhTelephoneField());
-        claim.setCmrhOral(createCmrhOralField());
-        claim.setHoInterview(createHoInterviewField());
-        claim.setSubstantiveHearing(createSubstantiveHearingField());
-        claim.setVatClaimed(createVatClaimedField());
-        claim.setAssessmentOutcome(OutcomeType.REDUCED);
-        claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
+    claim.setFixedFee(createFixedFeeField());
+    claim.setNetProfitCost(createNetProfitCostField());
+    claim.setNetDisbursementAmount(createDisbursementCostField());
+    claim.setDisbursementVatAmount(createDisbursementVatCostField());
+    claim.setTotalAmount(createTotalAmountField());
+    claim.setCounselsCost(createCounselCostField());
+    claim.setDetentionTravelWaitingCosts(createDetentionCostField());
+    claim.setJrFormFillingCost(createJrFormFillingCostField());
+    claim.setAdjournedHearing(createAdjournedHearingField());
+    claim.setCmrhTelephone(createCmrhTelephoneField());
+    claim.setCmrhOral(createCmrhOralField());
+    claim.setHoInterview(createHoInterviewField());
+    claim.setSubstantiveHearing(createSubstantiveHearingField());
+    claim.setVatClaimed(createVatClaimedField());
+    claim.setAssessmentOutcome(OutcomeType.REDUCED);
+    claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
 
-        claim.setAssessedTotalVat(createAssessedTotalVatField());
-        claim.setAssessedTotalInclVat(createAssessedTotalInclVatField());
-        claim.setAllowedTotalVat(createAllowedTotalVatField());
-        claim.setAllowedTotalInclVat(createAllowedTotalInclVatField());
-        return claim;
-    }
+    claim.setAssessedTotalVat(createAssessedTotalVatField());
+    claim.setAssessedTotalInclVat(createAssessedTotalInclVatField());
+    claim.setAllowedTotalVat(createAllowedTotalVatField());
+    claim.setAllowedTotalInclVat(createAllowedTotalInclVatField());
+    return claim;
+  }
 
-    public static CrimeClaimDetails createMockCrimeClaim() {
-        CrimeClaimDetails claim = new CrimeClaimDetails();
-        claim.setClaimId(UUID.randomUUID());
-        claim.setSubmissionId(UUID.randomUUID());
-        claim.setClaimSummaryFeeId(UUID.randomUUID());
-        claim.setEscaped(true);
-        claim.setStatus(ClaimStatus.VALID);
+  public static CrimeClaimDetails createMockCrimeClaim() {
+    CrimeClaimDetails claim = new CrimeClaimDetails();
+    claim.setClaimId(UUID.randomUUID());
+    claim.setSubmissionId(UUID.randomUUID());
+    claim.setClaimSummaryFeeId(UUID.randomUUID());
+    claim.setEscaped(true);
+    claim.setStatus(ClaimStatus.VALID);
 
-        claim.setNetProfitCost(createNetProfitCostField());
-        claim.setTravelCosts(createTravelCostField());
-        claim.setWaitingCosts(createWaitingCostField());
-        claim.setFixedFee(createFixedFeeField());
-        claim.setNetDisbursementAmount(createDisbursementCostField());
-        claim.setDisbursementVatAmount(createDisbursementVatCostField());
-        claim.setVatClaimed(createVatClaimedField());
-        claim.setTotalAmount(createTotalAmountField());
+    claim.setNetProfitCost(createNetProfitCostField());
+    claim.setTravelCosts(createTravelCostField());
+    claim.setWaitingCosts(createWaitingCostField());
+    claim.setFixedFee(createFixedFeeField());
+    claim.setNetDisbursementAmount(createDisbursementCostField());
+    claim.setDisbursementVatAmount(createDisbursementVatCostField());
+    claim.setVatClaimed(createVatClaimedField());
+    claim.setTotalAmount(createTotalAmountField());
 
-        claim.setAssessedTotalVat(createAssessedTotalVatField());
-        claim.setAssessedTotalInclVat(createAssessedTotalInclVatField());
+    claim.setAssessedTotalVat(createAssessedTotalVatField());
+    claim.setAssessedTotalInclVat(createAssessedTotalInclVatField());
 
-        claim.setAllowedTotalVat(createAllowedTotalVatField());
-        claim.setAllowedTotalInclVat(createAllowedTotalInclVatField());
-        claim.setAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
-        claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
+    claim.setAllowedTotalVat(createAllowedTotalVatField());
+    claim.setAllowedTotalInclVat(createAllowedTotalInclVatField());
+    claim.setAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
+    claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
 
-        return claim;
-    }
+    return claim;
+  }
 
-    public static void updateStatus(ClaimDetails claim, OutcomeType outcome) {
-        claimStatusHandler.updateFieldStatuses(claim, outcome);
-    }
+  public static void updateStatus(ClaimDetails claim, OutcomeType outcome) {
+    claimStatusHandler.updateFieldStatuses(claim, outcome);
+  }
 
-    public static ClaimField updateClaimFieldSubmittedValue(ClaimField claimField, Object submitted) {
-        claimField.setSubmitted(submitted);
-        return claimField;
-    }
+  public static ClaimField updateClaimFieldSubmittedValue(ClaimField claimField, Object submitted) {
+    claimField.setSubmitted(submitted);
+    return claimField;
+  }
 
-    public static CostClaimField createNetProfitCostField() {
-        CostClaimField field = createCostField(NET_PROFIT_COST, Cost.PROFIT_COSTS);
-        field.setCalculated(null);
-        return field;
-    }
+  public static CostClaimField createNetProfitCostField() {
+    CostClaimField field = createCostField(NET_PROFIT_COST, Cost.PROFIT_COSTS);
+    field.setCalculated(null);
+    return field;
+  }
 
-    public static CostClaimField createDisbursementCostField() {
-        return createCostField(NET_DISBURSEMENTS_COST, Cost.DISBURSEMENTS);
-    }
+  public static CostClaimField createDisbursementCostField() {
+    return createCostField(NET_DISBURSEMENTS_COST, Cost.DISBURSEMENTS);
+  }
 
-    public static CostClaimField createDisbursementVatCostField() {
-        return createCostField(DISBURSEMENT_VAT, Cost.DISBURSEMENTS_VAT);
-    }
+  public static CostClaimField createDisbursementVatCostField() {
+    return createCostField(DISBURSEMENT_VAT, Cost.DISBURSEMENTS_VAT);
+  }
 
-    public static CostClaimField createCounselCostField() {
-        return createCostField(COUNSELS_COST, Cost.COUNSEL_COSTS);
-    }
+  public static CostClaimField createCounselCostField() {
+    return createCostField(COUNSELS_COST, Cost.COUNSEL_COSTS);
+  }
 
-    public static CostClaimField createTravelCostField() {
-        return createCostField(TRAVEL_COSTS, Cost.TRAVEL_COSTS);
-    }
+  public static CostClaimField createTravelCostField() {
+    return createCostField(TRAVEL_COSTS, Cost.TRAVEL_COSTS);
+  }
 
-    public static CostClaimField createWaitingCostField() {
-        return createCostField(WAITING_COSTS, Cost.WAITING_COSTS);
-    }
+  public static CostClaimField createWaitingCostField() {
+    return createCostField(WAITING_COSTS, Cost.WAITING_COSTS);
+  }
 
-    public static CostClaimField createJrFormFillingCostField() {
-        return createCostField(JR_FORM_FILLING, Cost.JR_FORM_FILLING_COSTS);
-    }
+  public static CostClaimField createJrFormFillingCostField() {
+    return createCostField(JR_FORM_FILLING, Cost.JR_FORM_FILLING_COSTS);
+  }
 
-    public static CostClaimField createDetentionCostField() {
-        return createCostField(DETENTION_TRAVEL_COST, Cost.DETENTION_TRAVEL_AND_WAITING_COSTS);
-    }
+  public static CostClaimField createDetentionCostField() {
+    return createCostField(DETENTION_TRAVEL_COST, Cost.DETENTION_TRAVEL_AND_WAITING_COSTS);
+  }
 
-    private static CostClaimField createCostField(String key, Cost cost) {
-        return CostClaimField.builder()
-                .key(key)
-                .submitted(BigDecimal.valueOf(100))
-                .calculated(BigDecimal.valueOf(200))
-                .assessed(BigDecimal.valueOf(300))
-                .cost(cost)
-                .build();
-    }
+  private static CostClaimField createCostField(String key, Cost cost) {
+    return CostClaimField.builder()
+        .key(key)
+        .submitted(BigDecimal.valueOf(100))
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .cost(cost)
+        .build();
+  }
 
-    public static FixedFeeClaimField createFixedFeeField() {
-        return FixedFeeClaimField.builder()
-                .calculated(BigDecimal.valueOf(200))
-                .assessed(BigDecimal.valueOf(300))
-                .build();
-    }
+  public static FixedFeeClaimField createFixedFeeField() {
+    return FixedFeeClaimField.builder()
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
 
-    public static CalculatedTotalClaimField createTotalAmountField() {
-        return CalculatedTotalClaimField.builder()
-                .calculated(BigDecimal.valueOf(200))
-                .assessed(BigDecimal.valueOf(300))
-                .build();
-    }
+  public static CalculatedTotalClaimField createTotalAmountField() {
+    return CalculatedTotalClaimField.builder()
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
 
-    public static VatLiabilityClaimField createVatClaimedField() {
-        return VatLiabilityClaimField.builder()
-                .submitted(true)
-                .calculated(false)
-                .assessed(true)
-                .build();
-    }
+  public static VatLiabilityClaimField createVatClaimedField() {
+    return VatLiabilityClaimField.builder()
+        .submitted(true)
+        .calculated(false)
+        .assessed(true)
+        .build();
+  }
 
-    public static BoltOnClaimField createAdjournedHearingField() {
-        return createBoltOnField(ADJOURNED_FEE);
-    }
+  public static BoltOnClaimField createAdjournedHearingField() {
+    return createBoltOnField(ADJOURNED_FEE);
+  }
 
-    public static BoltOnClaimField createCmrhOralField() {
-        return createBoltOnField(CMRH_ORAL);
-    }
+  public static BoltOnClaimField createCmrhOralField() {
+    return createBoltOnField(CMRH_ORAL);
+  }
 
-    public static BoltOnClaimField createCmrhTelephoneField() {
-        return createBoltOnField(CMRH_TELEPHONE);
-    }
+  public static BoltOnClaimField createCmrhTelephoneField() {
+    return createBoltOnField(CMRH_TELEPHONE);
+  }
 
-    public static BoltOnClaimField createHoInterviewField() {
-        return createBoltOnField(HO_INTERVIEW);
-    }
+  public static BoltOnClaimField createHoInterviewField() {
+    return createBoltOnField(HO_INTERVIEW);
+  }
 
-    public static BoltOnClaimField createSubstantiveHearingField() {
-        return createBoltOnField(SUBSTANTIVE_HEARING);
-    }
+  public static BoltOnClaimField createSubstantiveHearingField() {
+    return createBoltOnField(SUBSTANTIVE_HEARING);
+  }
 
-    private static BoltOnClaimField createBoltOnField(String key) {
-        return BoltOnClaimField.builder()
-                .key(key)
-                .submitted(BigDecimal.valueOf(100))
-                .calculated(BigDecimal.valueOf(200))
-                .assessed(BigDecimal.valueOf(300))
-                .build();
-    }
+  private static BoltOnClaimField createBoltOnField(String key) {
+    return BoltOnClaimField.builder()
+        .key(key)
+        .submitted(BigDecimal.valueOf(100))
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
 
-    public static AssessedClaimField createAssessedTotalVatField() {
-        return createAssessedTotalField(ASSESSED_TOTAL_VAT);
-    }
+  public static AssessedClaimField createAssessedTotalVatField() {
+    return createAssessedTotalField(ASSESSED_TOTAL_VAT);
+  }
 
-    public static AssessedClaimField createAssessedTotalInclVatField() {
-        return createAssessedTotalField(ASSESSED_TOTAL_INCL_VAT);
-    }
+  public static AssessedClaimField createAssessedTotalInclVatField() {
+    return createAssessedTotalField(ASSESSED_TOTAL_INCL_VAT);
+  }
 
-    private static AssessedClaimField createAssessedTotalField(String key) {
-        return AssessedClaimField.builder()
-                .key(key)
-                .submitted(BigDecimal.valueOf(100))
-                .calculated(BigDecimal.valueOf(200))
-                .assessed(BigDecimal.valueOf(300))
-                .build();
-    }
+  private static AssessedClaimField createAssessedTotalField(String key) {
+    return AssessedClaimField.builder()
+        .key(key)
+        .submitted(BigDecimal.valueOf(100))
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
 
-    public static AllowedClaimField createAllowedTotalVatField() {
-        return createAllowedTotalField(ALLOWED_TOTAL_VAT);
-    }
+  public static AllowedClaimField createAllowedTotalVatField() {
+    return createAllowedTotalField(ALLOWED_TOTAL_VAT);
+  }
 
-    public static AllowedClaimField createAllowedTotalInclVatField() {
-        return createAllowedTotalField(ALLOWED_TOTAL_INCL_VAT);
-    }
+  public static AllowedClaimField createAllowedTotalInclVatField() {
+    return createAllowedTotalField(ALLOWED_TOTAL_INCL_VAT);
+  }
 
-    private static AllowedClaimField createAllowedTotalField(String key) {
-        return AllowedClaimField.builder()
-                .key(key)
-                .submitted(BigDecimal.valueOf(100))
-                .calculated(BigDecimal.valueOf(200))
-                .assessed(BigDecimal.valueOf(300))
-                .build();
-    }
+  private static AllowedClaimField createAllowedTotalField(String key) {
+    return AllowedClaimField.builder()
+        .key(key)
+        .submitted(BigDecimal.valueOf(100))
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
 
-    public static AssessmentInfo createAssessment(AssessmentTypeEnum assessmentType) {
-        AssessmentInfo info = new AssessmentInfo();
-        info.setId(UUID.randomUUID());
-        info.setAssessmentType(assessmentType);
-        info.setLastAssessedBy("Tst User");
-        info.setLastAssessmentDate(OffsetDateTime.now());
-        info.setId(UUID.randomUUID());
-        return info;
-    }
+  public static AssessmentInfo createAssessment(AssessmentTypeEnum assessmentType) {
+    return AssessmentInfo.builder()
+        .id(UUID.randomUUID())
+        .assessmentType(assessmentType)
+        .lastAssessedBy("Test User")
+        .lastAssessmentDate(OffsetDateTime.now())
+        .build();
+  }
 
-    public static MicrosoftApiUser createUser() {
-        return new MicrosoftApiUser(UUID.randomUUID().toString(), DISPLAY_NAME, GIVEN_NAME, SURNAME);
-    }
+  public static MicrosoftApiUser createUser() {
+    return new MicrosoftApiUser(UUID.randomUUID().toString(), DISPLAY_NAME, GIVEN_NAME, SURNAME);
+  }
 }

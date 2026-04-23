@@ -6,23 +6,28 @@ import lombok.Builder;
 
 @Builder
 public record ClaimInsert(
-        String id, String submissionId, String status, String uniqueFileNumber, String userId, Boolean hasAssessment)
-        implements Insert {
+    String id,
+    String submissionId,
+    String status,
+    String uniqueFileNumber,
+    String userId,
+    Boolean hasAssessment)
+    implements Insert {
 
-    @Override
-    public String table() {
-        return "claim";
-    }
+  @Override
+  public String table() {
+    return "claim";
+  }
 
-    @Override
-    public List<Object> parameters() {
-        return Arrays.asList(
-                id,
-                submissionId,
-                status != null ? status : "VALID",
-                uniqueFileNumber,
-                userId,
-                userId,
-                hasAssessment != null ? hasAssessment : false);
-    }
+  @Override
+  public List<Object> parameters() {
+    return Arrays.asList(
+        id,
+        submissionId,
+        status != null ? status : "VALID",
+        uniqueFileNumber,
+        userId,
+        userId,
+        hasAssessment != null ? hasAssessment : false);
+  }
 }

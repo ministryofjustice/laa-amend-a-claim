@@ -21,86 +21,89 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 @WebMvcTest(VoidConfirmationController.class)
 class VoidConfirmationViewTest extends ViewTestBase {
 
-    private static final UUID USER_ID = UUID.fromString(DummyUserSecurityService.USER_ID);
+  private static final UUID USER_ID = UUID.fromString(DummyUserSecurityService.USER_ID);
 
-    @MockitoBean
-    ClaimService claimService;
+  @MockitoBean ClaimService claimService;
 
-    VoidConfirmationViewTest() {
-        this.mapping = String.format("/submissions/%s/claims/%s/void", submissionId, claimId);
-    }
+  VoidConfirmationViewTest() {
+    this.mapping = String.format("/submissions/%s/claims/%s/void", submissionId, claimId);
+  }
 
-    @Test
-    void testPageForCivilClaim() throws Exception {
-        var claim = MockClaimsFunctions.createMockCivilClaim();
-        this.claim = claim;
-        claim.setSubmissionId(submissionId);
-        claim.setClaimId(claimId);
-        claim.setFeeCodeDescription("FCD");
-        claim.setUniqueFileNumber("UFN");
-        claim.setUniqueClientNumber("UCN");
-        claim.setOfficeCode("0P322F");
-        claim.setProviderName("Provider Name");
-        claim.setClientForename("John");
-        claim.setClientSurname("Doe");
-        claim.setSubmittedDate(OffsetDateTime.of(2020, 6, 15, 9, 30, 0, 0, ZoneOffset.UTC));
-        claim.setCategoryOfLaw("TEST");
+  @Test
+  void testPageForCivilClaim() throws Exception {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setFeeCodeDescription("FCD");
+    claim.setUniqueFileNumber("UFN");
+    claim.setUniqueClientNumber("UCN");
+    claim.setOfficeCode("0P322F");
+    claim.setProviderName("Provider Name");
+    claim.setClientForename("John");
+    claim.setClientSurname("Doe");
+    claim.setSubmittedDate(OffsetDateTime.of(2020, 6, 15, 9, 30, 0, 0, ZoneOffset.UTC));
+    claim.setCategoryOfLaw("TEST");
 
-        when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));
+    when(claimService.voidClaim(claimId, USER_ID))
+        .thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
-        Document doc = renderDocument();
+    Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Confirm you want to void this claim");
+    assertPageHasTitle(doc, "Confirm you want to void this claim");
 
-        assertPageHasHeading(doc, "Confirm you want to void this claim");
+    assertPageHasHeading(doc, "Confirm you want to void this claim");
 
-        assertPageDoesNotHaveBackLink(doc);
+    assertPageDoesNotHaveBackLink(doc);
 
-        List<List<Element>> summaryList = getFirstSummaryList(doc);
-        Assertions.assertEquals(8, summaryList.size());
-        assertSummaryListRowContainsValues(summaryList.getFirst(), "Client name", "John Doe");
-        assertSummaryListRowContainsValues(summaryList.get(1), "Unique file number (UFN)", "UFN");
-        assertSummaryListRowContainsValues(summaryList.get(2), "Unique client number (UCN)", "UCN");
-        assertSummaryListRowContainsValues(summaryList.get(3), "Provider name", "Provider Name");
-        assertSummaryListRowContainsValues(summaryList.get(4), "Office code", "0P322F");
-        assertSummaryListRowContainsValues(summaryList.get(5), "Date submitted", "15 June 2020 at 10:30:00");
-        assertSummaryListRowContainsValues(summaryList.get(6), "Category of law", "TEST");
-        assertSummaryListRowContainsValues(summaryList.get(7), "Fee code description", "FCD");
-    }
+    List<List<Element>> summaryList = getFirstSummaryList(doc);
+    Assertions.assertEquals(8, summaryList.size());
+    assertSummaryListRowContainsValues(summaryList.getFirst(), "Client name", "John Doe");
+    assertSummaryListRowContainsValues(summaryList.get(1), "Unique file number (UFN)", "UFN");
+    assertSummaryListRowContainsValues(summaryList.get(2), "Unique client number (UCN)", "UCN");
+    assertSummaryListRowContainsValues(summaryList.get(3), "Provider name", "Provider Name");
+    assertSummaryListRowContainsValues(summaryList.get(4), "Office code", "0P322F");
+    assertSummaryListRowContainsValues(
+        summaryList.get(5), "Date submitted", "15 June 2020 at 10:30:00");
+    assertSummaryListRowContainsValues(summaryList.get(6), "Category of law", "TEST");
+    assertSummaryListRowContainsValues(summaryList.get(7), "Fee code description", "FCD");
+  }
 
-    @Test
-    void testPageForCrimeClaim() throws Exception {
-        var claim = MockClaimsFunctions.createMockCrimeClaim();
-        this.claim = claim;
-        claim.setSubmissionId(submissionId);
-        claim.setClaimId(claimId);
-        claim.setFeeCodeDescription("FCD");
-        claim.setUniqueFileNumber("UFN");
-        claim.setOfficeCode("0P322F");
-        claim.setProviderName("Provider Name");
-        claim.setClientForename("John");
-        claim.setClientSurname("Doe");
-        claim.setSubmittedDate(OffsetDateTime.of(2020, 6, 15, 9, 30, 0, 0, ZoneOffset.UTC));
-        claim.setCategoryOfLaw("TEST");
+  @Test
+  void testPageForCrimeClaim() throws Exception {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setFeeCodeDescription("FCD");
+    claim.setUniqueFileNumber("UFN");
+    claim.setOfficeCode("0P322F");
+    claim.setProviderName("Provider Name");
+    claim.setClientForename("John");
+    claim.setClientSurname("Doe");
+    claim.setSubmittedDate(OffsetDateTime.of(2020, 6, 15, 9, 30, 0, 0, ZoneOffset.UTC));
+    claim.setCategoryOfLaw("TEST");
 
-        when(claimService.voidClaim(claimId, USER_ID)).thenReturn(new VoidClaim201Response(UUID.randomUUID()));
+    when(claimService.voidClaim(claimId, USER_ID))
+        .thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 
-        Document doc = renderDocument();
+    Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Confirm you want to void this claim");
+    assertPageHasTitle(doc, "Confirm you want to void this claim");
 
-        assertPageHasHeading(doc, "Confirm you want to void this claim");
+    assertPageHasHeading(doc, "Confirm you want to void this claim");
 
-        assertPageDoesNotHaveBackLink(doc);
+    assertPageDoesNotHaveBackLink(doc);
 
-        List<List<Element>> summaryList = getFirstSummaryList(doc);
-        Assertions.assertEquals(7, summaryList.size());
-        assertSummaryListRowContainsValues(summaryList.getFirst(), "Client name", "John Doe");
-        assertSummaryListRowContainsValues(summaryList.get(1), "Unique file number (UFN)", "UFN");
-        assertSummaryListRowContainsValues(summaryList.get(2), "Provider name", "Provider Name");
-        assertSummaryListRowContainsValues(summaryList.get(3), "Office code", "0P322F");
-        assertSummaryListRowContainsValues(summaryList.get(4), "Date submitted", "15 June 2020 at 10:30:00");
-        assertSummaryListRowContainsValues(summaryList.get(5), "Category of law", "TEST");
-        assertSummaryListRowContainsValues(summaryList.get(6), "Fee code description", "FCD");
-    }
+    List<List<Element>> summaryList = getFirstSummaryList(doc);
+    Assertions.assertEquals(7, summaryList.size());
+    assertSummaryListRowContainsValues(summaryList.getFirst(), "Client name", "John Doe");
+    assertSummaryListRowContainsValues(summaryList.get(1), "Unique file number (UFN)", "UFN");
+    assertSummaryListRowContainsValues(summaryList.get(2), "Provider name", "Provider Name");
+    assertSummaryListRowContainsValues(summaryList.get(3), "Office code", "0P322F");
+    assertSummaryListRowContainsValues(
+        summaryList.get(4), "Date submitted", "15 June 2020 at 10:30:00");
+    assertSummaryListRowContainsValues(summaryList.get(5), "Category of law", "TEST");
+    assertSummaryListRowContainsValues(summaryList.get(6), "Fee code description", "FCD");
+  }
 }

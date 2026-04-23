@@ -8,10 +8,10 @@ import org.thymeleaf.expression.Messages;
 @Getter
 public class ThymeleafLiteralString extends ThymeleafString {
 
-    private final String value;
+  private final String value;
 
-    @Override
-    public String resolve(Messages messages) {
-        return value;
-    }
+  @Override
+  public String resolve(Messages messages) {
+    return value;
+  }
 }

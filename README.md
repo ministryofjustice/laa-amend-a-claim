@@ -52,14 +52,8 @@ prek run --all-files
 
 ### Code formatting
 Configure code formatting:
-- We use [palantir-java-format](https://github.com/palantir/palantir-java-format) for consistent code formatting
-- Install and enable the "palantir-java-format" plugin in IntelliJ IDEA
-- Configure the plugin:
-   1. Go to Settings → Other → Palantir Java Formatter and enable it
-   2. Navigate to Settings → Code Style → Java
-   3. Set the following values:
-      - Class count to use import with '*': 999
-      - Names count to use static import with '*': 999
+- We use [google-java-format](https://github.com/google/google-java-format) for consistent code formatting
+- Install and enable the "google-java-format" plugin in IntelliJ IDEA
 
 Import layout should be as follows:
 

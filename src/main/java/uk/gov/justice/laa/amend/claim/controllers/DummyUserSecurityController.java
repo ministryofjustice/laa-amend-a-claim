@@ -19,17 +19,17 @@ import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 @Controller
 public class DummyUserSecurityController {
 
-    private final DummyUserSecurityService service;
+  private final DummyUserSecurityService service;
 
-    @GetMapping()
-    public String onPageLoad(Model model) {
-        model.addAttribute("roles", service.getRoles());
-        return "dummy-user-security";
-    }
+  @GetMapping()
+  public String onPageLoad(Model model) {
+    model.addAttribute("roles", service.getRoles());
+    return "dummy-user-security";
+  }
 
-    @PostMapping()
-    public String submit(@RequestParam(value = "roles", required = false) Set<Role> roles) {
-        service.setRoles(Optional.ofNullable(roles).orElse(Set.of()));
-        return "redirect:/dummy-user-security";
-    }
+  @PostMapping()
+  public String submit(@RequestParam(value = "roles", required = false) Set<Role> roles) {
+    service.setRoles(Optional.ofNullable(roles).orElse(Set.of()));
+    return "redirect:/dummy-user-security";
+  }
 }

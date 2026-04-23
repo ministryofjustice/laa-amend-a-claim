@@ -36,226 +36,273 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 @WebMvcTest(ClaimSummaryController.class)
 public class ClaimSummaryControllerTest extends BaseControllerTest {
 
-    @MockitoBean
-    private ClaimService claimService;
+  @MockitoBean private ClaimService claimService;
 
-    @MockitoBean
-    private UserRetrievalService userRetrievalService;
+  @MockitoBean private UserRetrievalService userRetrievalService;
 
-    @MockitoBean
-    private AssessmentService assessmentService;
+  @MockitoBean private AssessmentService assessmentService;
 
-    private UUID submissionId;
-    private UUID claimId;
-    private MockHttpSession session;
+  private UUID submissionId;
+  private UUID claimId;
+  private MockHttpSession session;
 
-    @BeforeEach
-    void setUp() {
-        submissionId = UUID.randomUUID();
-        claimId = UUID.randomUUID();
-        session = new MockHttpSession();
-    }
+  @BeforeEach
+  void setUp() {
+    submissionId = UUID.randomUUID();
+    claimId = UUID.randomUUID();
+    session = new MockHttpSession();
+  }
 
-    @Test
-    public void testOnPageLoadReturnsView() throws Exception {
-        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+  @Test
+  public void testOnPageLoadReturnsView() throws Exception {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
-        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
-        var lastAssessment = new AssessmentInfo();
-        lastAssessment.setLastAssessedBy("test");
-        lastAssessment.setLastAssessmentDate(OffsetDateTime.now());
-        claim.setLastAssessment(lastAssessment);
-        when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    var lastAssessment =
+        AssessmentInfo.builder()
+            .lastAssessedBy("test")
+            .lastAssessmentDate(OffsetDateTime.now())
+            .build();
+    claim.setLastAssessment(lastAssessment);
+    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("claim-summary"))
-                .andExpect(model().attributeExists("claim"))
-                .andExpect(model().attribute("searchUrl", "/"))
-                .andExpect(request().sessionAttribute(claimId.toString(), claim));
-    }
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("claim-summary"))
+        .andExpect(model().attributeExists("claim"))
+        .andExpect(model().attribute("searchUrl", "/"))
+        .andExpect(request().sessionAttribute(claimId.toString(), claim));
+  }
 
-    @Test
-    public void testOnPageLoadWithCachedSearchUrlReturnsView() throws Exception {
-        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+  @Test
+  public void testOnPageLoadWithCachedSearchUrlReturnsView() throws Exception {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
-        session.setAttribute("searchUrl", "/?officeCode=12345&page=1");
+    session.setAttribute("searchUrl", "/?officeCode=12345&page=1");
 
-        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
-        var lastAssessment = new AssessmentInfo();
-        lastAssessment.setLastAssessedBy("test");
-        lastAssessment.setLastAssessmentDate(OffsetDateTime.now());
-        claim.setLastAssessment(lastAssessment);
-        when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    var lastAssessment =
+        AssessmentInfo.builder()
+            .lastAssessedBy("test")
+            .lastAssessmentDate(OffsetDateTime.now())
+            .build();
+    claim.setLastAssessment(lastAssessment);
+    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("claim-summary"))
-                .andExpect(model().attributeExists("claim"))
-                .andExpect(model().attribute("searchUrl", "/?officeCode=12345&page=1"))
-                .andExpect(request().sessionAttribute(claimId.toString(), claim));
-    }
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("claim-summary"))
+        .andExpect(model().attributeExists("claim"))
+        .andExpect(model().attribute("searchUrl", "/?officeCode=12345&page=1"))
+        .andExpect(request().sessionAttribute(claimId.toString(), claim));
+  }
 
-    @ParameterizedTest
-    @EnumSource(
-            value = ClaimStatus.class,
-            names = {"VALID", "VOID"},
-            mode = EnumSource.Mode.EXCLUDE)
-    public void testOnPageLoadReturnsNotFoundForNonValidStatus(ClaimStatus status) throws Exception {
-        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setStatus(status);
+  @ParameterizedTest
+  @EnumSource(
+      value = ClaimStatus.class,
+      names = {"VALID", "VOID"},
+      mode = EnumSource.Mode.EXCLUDE)
+  public void testOnPageLoadReturnsNotFoundForNonValidStatus(ClaimStatus status) throws Exception {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setStatus(status);
 
-        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
-        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isNotFound());
-    }
+    mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isNotFound());
+  }
 
-    @Test
-    public void testOnSubmitRedirectsWhenClaimHasAnAssessment() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
+  @Test
+  public void testOnSubmitRedirectsWhenClaimHasAnAssessment() throws Exception {
+    dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
 
-        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
-        claim.setHasAssessment(true);
-        session.setAttribute(claimId.toString(), claim);
+    claim.setHasAssessment(true);
+    session.setAttribute(claimId.toString(), claim);
 
-        String expectedRedirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+    String expectedRedirectUrl =
+        String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
 
-        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(expectedRedirectUrl));
-    }
+    mockMvc
+        .perform(post(buildPath()).session(session).with(csrf()))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(expectedRedirectUrl));
+  }
 
-    @Test
-    public void testOnSubmitRedirectsWhenClaimHasNoAssessment() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
+  @Test
+  public void testOnSubmitRedirectsWhenClaimHasNoAssessment() throws Exception {
+    dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
 
-        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
-        claim.setHasAssessment(false);
-        session.setAttribute(claimId.toString(), claim);
+    claim.setHasAssessment(false);
+    session.setAttribute(claimId.toString(), claim);
 
-        String expectedRedirectUrl =
-                String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
+    String expectedRedirectUrl =
+        String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
 
-        mockMvc.perform(post(buildPath()).session(session).with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(expectedRedirectUrl));
-    }
+    mockMvc
+        .perform(post(buildPath()).session(session).with(csrf()))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(expectedRedirectUrl));
+  }
 
-    @Test
-    void testIsAssessmentButtonPresentTrueForValidEscapeClaim() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
+  @Test
+  void testIsAssessmentButtonPresentTrueForValidEscapeClaim() throws Exception {
+    dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
 
-        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setHasAssessment(false);
-        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setHasAssessment(false);
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("isAssessmentButtonPresent", true));
-    }
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("isAssessmentButtonPresent", true));
+  }
 
-    @Test
-    void testIsAssessmentButtonPresentFalseForVoidClaim() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
+  @Test
+  void testIsAssessmentButtonPresentFalseForVoidClaim() throws Exception {
+    dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
 
-        var user = MockClaimsFunctions.createUser();
-        var claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setStatus(ClaimStatus.VOID);
-        claim.setLastUpdatedUser(user.getId());
-        claim.setLastUpdatedDateTime(OffsetDateTime.now());
+    var user = MockClaimsFunctions.createUser();
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setStatus(ClaimStatus.VOID);
+    claim.setLastUpdatedUser(user.id());
+    claim.setLastUpdatedDateTime(OffsetDateTime.now());
 
-        when(userRetrievalService.getMicrosoftApiUser(user.getId())).thenReturn(user);
-        when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
+    when(userRetrievalService.getMicrosoftApiUser(user.id())).thenReturn(user);
+    when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("isAssessmentButtonPresent", false));
-    }
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("isAssessmentButtonPresent", false));
+  }
 
-    @Test
-    void testIsAssessmentButtonPresentFalseForNonEscapeClaim() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
+  @Test
+  void testIsAssessmentButtonPresentFalseForNonEscapeClaim() throws Exception {
+    dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
 
-        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setHasAssessment(false);
-        claim.setEscaped(false);
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setHasAssessment(false);
+    claim.setEscaped(false);
 
-        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("isAssessmentButtonPresent", false));
-    }
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("isAssessmentButtonPresent", false));
+  }
 
-    @Test
-    void testIsAssessmentButtonPresentFalseWithoutRole() throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+  @Test
+  void testIsAssessmentButtonPresentFalseWithoutRole() throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
 
-        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setHasAssessment(false);
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setHasAssessment(false);
 
-        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("isAssessmentButtonPresent", false));
-    }
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("isAssessmentButtonPresent", false));
+  }
 
-    @Test
-    void testIsVoidButtonPresentTrueForValidClaim() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of(Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER));
+  @Test
+  void testIsAssessmentButtonPresentTrueForStageDisbursementClaimWhenEnabled() throws Exception {
+    dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
+    when(featureFlagsConfig.getIsStageDisbursementEnabled()).thenReturn(true);
 
-        CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setStatus(ClaimStatus.VALID);
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setEscaped(false);
+    claim.setFeeCode("ILHSD");
+    claim.setHasAssessment(false);
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
-        when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("isAssessmentButtonPresent", true));
+  }
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("isVoidButtonPresent", true));
-    }
+  @Test
+  void testIsAssessmentButtonPresentFalseForStageDisbursementClaimWhenDisabled() throws Exception {
+    dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
+    when(featureFlagsConfig.getIsStageDisbursementEnabled()).thenReturn(false);
 
-    @Test
-    void testIsVoidButtonPresentFalseForVoidClaim() throws Exception {
-        dummyUserSecurityService.setRoles(Set.of(Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER));
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setEscaped(false);
+    claim.setFeeCode("ILHSD");
+    claim.setHasAssessment(false);
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
-        var user = MockClaimsFunctions.createUser();
-        var claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setStatus(ClaimStatus.VOID);
-        claim.setLastUpdatedUser(user.getId());
-        claim.setLastUpdatedDateTime(OffsetDateTime.now());
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("isAssessmentButtonPresent", false));
+  }
 
-        when(userRetrievalService.getMicrosoftApiUser(user.getId())).thenReturn(user);
-        when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
+  @Test
+  void testIsVoidButtonPresentTrueForValidClaim() throws Exception {
+    dummyUserSecurityService.setRoles(Set.of(Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER));
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("isVoidButtonPresent", false));
-    }
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setStatus(ClaimStatus.VALID);
 
-    @Test
-    void testIsVoidButtonPresentFalseWithoutRole() throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_CLAIM_AMENDMENTS_CASEWORKER));
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
-        var user = MockClaimsFunctions.createUser();
-        var claim = MockClaimsFunctions.createMockCivilClaim();
-        claim.setStatus(ClaimStatus.VALID);
-        claim.setLastUpdatedUser(user.getId());
-        claim.setLastUpdatedDateTime(OffsetDateTime.now());
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("isVoidButtonPresent", true));
+  }
 
-        when(userRetrievalService.getMicrosoftApiUser(user.getId())).thenReturn(user);
-        when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
+  @Test
+  void testIsVoidButtonPresentFalseForVoidClaim() throws Exception {
+    dummyUserSecurityService.setRoles(Set.of(Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER));
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("isVoidButtonPresent", false));
-    }
+    var user = MockClaimsFunctions.createUser();
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setStatus(ClaimStatus.VOID);
+    claim.setLastUpdatedUser(user.id());
+    claim.setLastUpdatedDateTime(OffsetDateTime.now());
 
-    private String buildPath() {
-        return String.format("/submissions/%s/claims/%s", submissionId, claimId);
-    }
+    when(userRetrievalService.getMicrosoftApiUser(user.id())).thenReturn(user);
+    when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
+
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("isVoidButtonPresent", false));
+  }
+
+  @Test
+  void testIsVoidButtonPresentFalseWithoutRole() throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_CLAIM_AMENDMENTS_CASEWORKER));
+
+    var user = MockClaimsFunctions.createUser();
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setStatus(ClaimStatus.VALID);
+    claim.setLastUpdatedUser(user.id());
+    claim.setLastUpdatedDateTime(OffsetDateTime.now());
+
+    when(userRetrievalService.getMicrosoftApiUser(user.id())).thenReturn(user);
+    when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
+
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("isVoidButtonPresent", false));
+  }
+
+  private String buildPath() {
+    return String.format("/submissions/%s/claims/%s", submissionId, claimId);
+  }
 }

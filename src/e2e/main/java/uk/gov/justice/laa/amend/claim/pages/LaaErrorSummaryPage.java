@@ -8,31 +8,33 @@ import com.microsoft.playwright.options.AriaRole;
 
 public abstract class LaaErrorSummaryPage extends LaaPage {
 
-    protected Locator saveButton;
-    protected Locator cancelButton;
+  protected Locator saveButton;
+  protected Locator cancelButton;
 
-    protected Locator errorSummary;
+  protected Locator errorSummary;
 
-    public LaaErrorSummaryPage(Page page, String heading) {
-        super(page, heading);
+  public LaaErrorSummaryPage(Page page, String heading) {
+    super(page, heading);
 
-        this.saveButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Save changes"));
+    this.saveButton =
+        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Save changes"));
 
-        this.cancelButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Cancel"));
+    this.cancelButton =
+        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Cancel"));
 
-        this.errorSummary = page.locator(".govuk-error-summary");
-    }
+    this.errorSummary = page.locator(".govuk-error-summary");
+  }
 
-    public void saveChanges() {
-        saveButton.click();
-    }
+  public void saveChanges() {
+    saveButton.click();
+  }
 
-    public void cancel() {
-        cancelButton.click();
-    }
+  public void cancel() {
+    cancelButton.click();
+  }
 
-    public void waitForPageErrors() {
-        assertThat(errorSummary).isVisible();
-        generateErrorSummaryAxeReport();
-    }
+  public void waitForPageErrors() {
+    assertThat(errorSummary).isVisible();
+    generateErrorSummaryAxeReport();
+  }
 }

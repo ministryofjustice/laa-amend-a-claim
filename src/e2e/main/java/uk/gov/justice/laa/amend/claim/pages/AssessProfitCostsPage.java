@@ -4,7 +4,7 @@ import com.microsoft.playwright.Page;
 
 public class AssessProfitCostsPage extends LaaCostPage {
 
-    public AssessProfitCostsPage(Page page) {
-        super(page, "Assess Profit Costs");
-    }
+  public AssessProfitCostsPage(Page page) {
+    super(page, "Assess Profit Costs");
+  }
 }

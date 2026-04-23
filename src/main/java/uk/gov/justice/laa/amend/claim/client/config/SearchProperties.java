@@ -8,5 +8,5 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "search")
 public class SearchProperties {
-    private boolean sortEnabled;
+  private boolean sortEnabled;
 }

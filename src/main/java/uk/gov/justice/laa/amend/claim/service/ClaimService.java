@@ -26,93 +26,95 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
 @Slf4j
 public class ClaimService {
 
-    private final ClaimsApiClient claimsApiClient;
-    private final ClaimMapper claimMapper;
-    private final ProviderService providerService;
-    private final Counter voidClaimCounter;
-    private final Counter voidClaimFailureCounter;
+  private final ClaimsApiClient claimsApiClient;
+  private final ClaimMapper claimMapper;
+  private final ProviderService providerService;
+  private final Counter voidClaimCounter;
+  private final Counter voidClaimFailureCounter;
 
-    public ClaimService(
-            ClaimsApiClient claimsApiClient,
-            ClaimMapper claimMapper,
-            ProviderService providerService,
-            MeterRegistry meterRegistry) {
-        this.claimsApiClient = claimsApiClient;
-        this.claimMapper = claimMapper;
-        this.providerService = providerService;
-        this.voidClaimCounter = Counter.builder("claim.void")
-                .description("Total number of successful void claim submissions")
-                .register(meterRegistry);
-        this.voidClaimFailureCounter = Counter.builder("claim.void.failed")
-                .description("Total number of failed void claim submissions")
-                .register(meterRegistry);
-    }
+  public ClaimService(
+      ClaimsApiClient claimsApiClient,
+      ClaimMapper claimMapper,
+      ProviderService providerService,
+      MeterRegistry meterRegistry) {
+    this.claimsApiClient = claimsApiClient;
+    this.claimMapper = claimMapper;
+    this.providerService = providerService;
+    this.voidClaimCounter =
+        Counter.builder("claim.void")
+            .description("Total number of successful void claim submissions")
+            .register(meterRegistry);
+    this.voidClaimFailureCounter =
+        Counter.builder("claim.void.failed")
+            .description("Total number of failed void claim submissions")
+            .register(meterRegistry);
+  }
 
-    public ClaimResultSetV2 searchClaims(
-            String officeCode,
-            Optional<String> uniqueFileNumber,
-            Optional<String> caseReferenceNumber,
-            Optional<String> submissionPeriod,
-            Optional<AreaOfLaw> areaOfLaw,
-            Optional<Boolean> escapeCase,
-            List<ClaimStatus> claimStatuses,
-            int page,
-            int size,
-            Sort sort) {
-        try {
-            return claimsApiClient
-                    .searchClaims(
-                            officeCode.toUpperCase(),
-                            uniqueFileNumber.orElse(null),
-                            caseReferenceNumber.orElse(null),
-                            submissionPeriod.orElse(null),
-                            areaOfLaw.orElse(null),
-                            escapeCase.orElse(null),
-                            claimStatuses,
-                            page - 1,
-                            size,
-                            Objects.toString(sort, null))
-                    .block();
-        } catch (Exception e) {
-            log.error("Error searching claims", e);
-            throw e;
-        }
+  public ClaimResultSetV2 searchClaims(
+      String officeCode,
+      Optional<String> uniqueFileNumber,
+      Optional<String> caseReferenceNumber,
+      Optional<String> submissionPeriod,
+      Optional<AreaOfLaw> areaOfLaw,
+      Optional<Boolean> escapeCase,
+      List<ClaimStatus> claimStatuses,
+      int page,
+      int size,
+      Sort sort) {
+    try {
+      return claimsApiClient
+          .searchClaims(
+              officeCode.toUpperCase(),
+              uniqueFileNumber.orElse(null),
+              caseReferenceNumber.orElse(null),
+              submissionPeriod.orElse(null),
+              areaOfLaw.orElse(null),
+              escapeCase.orElse(null),
+              claimStatuses,
+              page - 1,
+              size,
+              Objects.toString(sort, null))
+          .block();
+    } catch (Exception e) {
+      log.error("Error searching claims", e);
+      throw e;
     }
+  }
 
-    public ClaimResponseV2 getClaim(UUID submissionId, UUID claimId) {
-        try {
-            return claimsApiClient.getClaim(submissionId, claimId).block();
-        } catch (Exception e) {
-            log.error("Error getting claim {}", claimId, e);
-            throw e;
-        }
+  public ClaimResponseV2 getClaim(UUID submissionId, UUID claimId) {
+    try {
+      return claimsApiClient.getClaim(submissionId, claimId).block();
+    } catch (Exception e) {
+      log.error("Error getting claim {}", claimId, e);
+      throw e;
     }
+  }
 
-    public ClaimDetails getClaimDetails(UUID submissionId, UUID claimId) {
-        var claimResponse = getClaim(submissionId, claimId);
-        if (claimResponse == null) {
-            log.error("Claim not found for submission {} and claim {}", submissionId, claimId);
-            throw new ClaimNotFoundException(
-                    String.format("Claim with ID %s not found for submission %s", claimId, submissionId));
-        }
-        var claimDetails = claimMapper.mapToClaimDetails(claimResponse);
-        var provider = providerService.getProviderFirm(claimDetails.getOfficeCode());
-        if (provider != null && provider.getFirm() != null) {
-            claimMapper.enrichWithProviderName(claimDetails, provider.getFirm().getFirmName());
-        }
-        return claimDetails;
+  public ClaimDetails getClaimDetails(UUID submissionId, UUID claimId) {
+    var claimResponse = getClaim(submissionId, claimId);
+    if (claimResponse == null) {
+      log.error("Claim not found for submission {} and claim {}", submissionId, claimId);
+      throw new ClaimNotFoundException(
+          String.format("Claim with ID %s not found for submission %s", claimId, submissionId));
     }
+    var claimDetails = claimMapper.mapToClaimDetails(claimResponse);
+    var provider = providerService.getProviderFirm(claimDetails.getOfficeCode());
+    if (provider != null && provider.getFirm() != null) {
+      claimMapper.enrichWithProviderName(claimDetails, provider.getFirm().getFirmName());
+    }
+    return claimDetails;
+  }
 
-    public VoidClaim201Response voidClaim(UUID claimId, UUID userId) {
-        try {
-            var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
-            var response = claimsApiClient.voidClaim(claimId, request).block();
-            voidClaimCounter.increment();
-            return response;
-        } catch (Exception e) {
-            log.error("Error voiding claim {}", claimId, e);
-            voidClaimFailureCounter.increment();
-            throw e;
-        }
+  public VoidClaim201Response voidClaim(UUID claimId, UUID userId) {
+    try {
+      var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
+      var response = claimsApiClient.voidClaim(claimId, request).block();
+      voidClaimCounter.increment();
+      return response;
+    } catch (Exception e) {
+      log.error("Error voiding claim {}", claimId, e);
+      voidClaimFailureCounter.increment();
+      throw e;
     }
+  }
 }

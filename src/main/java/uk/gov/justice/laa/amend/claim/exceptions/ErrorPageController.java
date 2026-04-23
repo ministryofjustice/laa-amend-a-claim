@@ -22,33 +22,34 @@ import uk.gov.justice.laa.amend.claim.factories.ReferenceNumberFactory;
 @Slf4j
 public class ErrorPageController implements ErrorController {
 
-    private static final Set<Integer> NOT_FOUND_STATUS_CODES = Set.of(SC_NOT_FOUND, SC_FORBIDDEN);
+  private static final Set<Integer> NOT_FOUND_STATUS_CODES = Set.of(SC_NOT_FOUND, SC_FORBIDDEN);
 
-    private final ReferenceNumberFactory referenceNumberFactory;
+  private final ReferenceNumberFactory referenceNumberFactory;
 
-    @RequestMapping("/error")
-    public String handleError(HttpServletRequest request, HttpServletResponse response, Model model) {
-        int status = Optional.ofNullable(request.getAttribute(ERROR_STATUS_CODE))
-                .map(x -> Integer.parseInt(x.toString()))
-                .orElse(SC_INTERNAL_SERVER_ERROR);
-        if (NOT_FOUND_STATUS_CODES.contains(status)) {
-            return handleNotFound(response);
-        } else {
-            response.setStatus(SC_INTERNAL_SERVER_ERROR);
-            String referenceNumber = referenceNumberFactory.create();
-            model.addAttribute("referenceNumber", referenceNumber);
-            log.error(
-                    "Something went wrong. Reference: {}. Status: {}. Session ID: {}",
-                    referenceNumber,
-                    status,
-                    request.getSession().getId());
-            return "error";
-        }
+  @RequestMapping("/error")
+  public String handleError(HttpServletRequest request, HttpServletResponse response, Model model) {
+    int status =
+        Optional.ofNullable(request.getAttribute(ERROR_STATUS_CODE))
+            .map(x -> Integer.parseInt(x.toString()))
+            .orElse(SC_INTERNAL_SERVER_ERROR);
+    if (NOT_FOUND_STATUS_CODES.contains(status)) {
+      return handleNotFound(response);
+    } else {
+      response.setStatus(SC_INTERNAL_SERVER_ERROR);
+      String referenceNumber = referenceNumberFactory.create();
+      model.addAttribute("referenceNumber", referenceNumber);
+      log.error(
+          "Something went wrong. Reference: {}. Status: {}. Session ID: {}",
+          referenceNumber,
+          status,
+          request.getSession().getId());
+      return "error";
     }
+  }
 
-    @RequestMapping("not-found")
-    public String handleNotFound(HttpServletResponse response) {
-        response.setStatus(SC_NOT_FOUND);
-        return "not-found";
-    }
+  @RequestMapping("not-found")
+  public String handleNotFound(HttpServletResponse response) {
+    response.setStatus(SC_NOT_FOUND);
+    return "not-found";
+  }
 }

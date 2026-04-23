@@ -24,41 +24,41 @@ import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 @ValidCaseReferenceNumber
 public class SearchForm {
 
-    private String officeCode;
+  private String officeCode;
 
-    private String submissionDateMonth;
+  private String submissionDateMonth;
 
-    private String submissionDateYear;
+  private String submissionDateYear;
 
-    private String uniqueFileNumber;
+  private String uniqueFileNumber;
 
-    private String caseReferenceNumber;
+  private String caseReferenceNumber;
 
-    private AreaOfLaw areaOfLaw;
+  private AreaOfLaw areaOfLaw;
 
-    private Boolean escapeCase;
+  private Boolean escapeCase;
 
-    public SearchForm(SearchQuery query) {
-        this.officeCode = query.getOfficeCode();
-        this.submissionDateMonth = query.getSubmissionDateMonth();
-        this.submissionDateYear = query.getSubmissionDateYear();
-        this.uniqueFileNumber = query.getUniqueFileNumber();
-        this.caseReferenceNumber = query.getCaseReferenceNumber();
-        this.areaOfLaw = query.getAreaOfLaw();
-        this.escapeCase = query.getEscapeCase();
-    }
+  public SearchForm(SearchQuery query) {
+    this.officeCode = query.getOfficeCode();
+    this.submissionDateMonth = query.getSubmissionDateMonth();
+    this.submissionDateYear = query.getSubmissionDateYear();
+    this.uniqueFileNumber = query.getUniqueFileNumber();
+    this.caseReferenceNumber = query.getCaseReferenceNumber();
+    this.areaOfLaw = query.getAreaOfLaw();
+    this.escapeCase = query.getEscapeCase();
+  }
 
-    public boolean anyNonEmpty() {
-        return hasText(officeCode)
-                || hasText(submissionDateMonth)
-                || hasText(submissionDateYear)
-                || hasText(uniqueFileNumber)
-                || hasText(caseReferenceNumber)
-                || areaOfLaw != null
-                || escapeCase != null;
-    }
+  public boolean anyNonEmpty() {
+    return hasText(officeCode)
+        || hasText(submissionDateMonth)
+        || hasText(submissionDateYear)
+        || hasText(uniqueFileNumber)
+        || hasText(caseReferenceNumber)
+        || areaOfLaw != null
+        || escapeCase != null;
+  }
 
-    public String getSubmissionPeriod() {
-        return DateUtils.toSubmissionPeriod(submissionDateMonth, submissionDateYear);
-    }
+  public String getSubmissionPeriod() {
+    return DateUtils.toSubmissionPeriod(submissionDateMonth, submissionDateYear);
+  }
 }

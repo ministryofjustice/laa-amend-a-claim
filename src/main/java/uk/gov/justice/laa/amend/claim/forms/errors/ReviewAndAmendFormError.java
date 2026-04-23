@@ -4,12 +4,12 @@ import java.util.Map;
 
 public class ReviewAndAmendFormError extends FormError {
 
-    public ReviewAndAmendFormError(String id, String message) {
-        super(id, message);
-    }
+  public ReviewAndAmendFormError(String id, String message) {
+    super(id, message);
+  }
 
-    @Override
-    protected Map<String, Integer> getFieldOrderMap() {
-        return Map.of();
-    }
+  @Override
+  protected Map<String, Integer> getFieldOrderMap() {
+    return Map.of();
+  }
 }

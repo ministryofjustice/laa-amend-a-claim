@@ -13,6 +13,6 @@ import uk.gov.justice.laa.amend.claim.forms.annotations.ValidAssessedTotal;
 @ValidAssessedTotal
 public class AssessedTotalForm {
 
-    private String assessedTotalVat;
-    private String assessedTotalInclVat;
+  private String assessedTotalVat;
+  private String assessedTotalInclVat;
 }

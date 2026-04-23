@@ -6,35 +6,36 @@ import com.microsoft.playwright.options.AriaRole;
 
 public class PageHelper {
 
-    public static Locator cardByTitle(String title, Page page) {
-        return page.locator(".govuk-summary-card")
-                .filter(new Locator.FilterOptions()
-                        .setHas(page.locator("h2.govuk-summary-card__title")
-                                .filter(new Locator.FilterOptions().setHasText(title))))
-                .first();
-    }
+  public static Locator cardByTitle(String title, Page page) {
+    return page.locator(".govuk-summary-card")
+        .filter(
+            new Locator.FilterOptions()
+                .setHas(
+                    page.locator("h2.govuk-summary-card__title")
+                        .filter(new Locator.FilterOptions().setHasText(title))))
+        .first();
+  }
 
-    public static Locator tableByCard(Locator card) {
-        return card.locator("table.govuk-table");
-    }
+  public static Locator tableByCard(Locator card) {
+    return card.locator("table.govuk-table");
+  }
 
-    public static Locator summaryListByCard(Locator card) {
-        return card.locator("dl.govuk-summary-list");
-    }
+  public static Locator summaryListByCard(Locator card) {
+    return card.locator("dl.govuk-summary-list");
+  }
 
-    /**
-     * This is to get row by a given label and selector
-     */
-    public static Locator tableRowByLabel(Locator card, String label) {
-        Locator table = tableByCard(card);
-        return table.getByRole(AriaRole.ROW, new Locator.GetByRoleOptions().setName(label))
-                .first();
-    }
+  /** This is to get row by a given label and selector */
+  public static Locator tableRowByLabel(Locator card, String label) {
+    Locator table = tableByCard(card);
+    return table.getByRole(AriaRole.ROW, new Locator.GetByRoleOptions().setName(label)).first();
+  }
 
-    public static Locator summaryListRowByLabel(Locator card, String label) {
-        Locator summaryList = summaryListByCard(card);
-        return summaryList
-                .locator(String.format(".govuk-summary-list__row:has(.govuk-summary-list__key:text-is('%s'))", label))
-                .first();
-    }
+  public static Locator summaryListRowByLabel(Locator card, String label) {
+    Locator summaryList = summaryListByCard(card);
+    return summaryList
+        .locator(
+            String.format(
+                ".govuk-summary-list__row:has(.govuk-summary-list__key:text-is('%s'))", label))
+        .first();
+  }
 }

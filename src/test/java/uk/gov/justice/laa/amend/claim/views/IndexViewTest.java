@@ -28,163 +28,164 @@ import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
 @WebMvcTest(HomePageController.class)
 class IndexViewTest extends ViewTestBase {
 
-    @MockitoBean
-    private ClaimService claimService;
+  @MockitoBean private ClaimService claimService;
 
-    @MockitoBean
-    private ClaimResultMapper claimResultMapper;
+  @MockitoBean private ClaimResultMapper claimResultMapper;
 
-    @MockitoBean
-    private ClaimMapper claimMapper;
+  @MockitoBean private ClaimMapper claimMapper;
 
-    @MockitoBean
-    private SearchProperties searchProperties;
+  @MockitoBean private SearchProperties searchProperties;
 
-    IndexViewTest() {
-        this.mapping = "/";
-    }
+  IndexViewTest() {
+    this.mapping = "/";
+  }
 
-    @Test
-    void testPage() throws Exception {
-        Document doc = renderDocument();
+  @Test
+  void testPage() throws Exception {
+    Document doc = renderDocument();
 
-        assertPageHasTitle(doc, "Search for a claim");
+    assertPageHasTitle(doc, "Search for a claim");
 
-        assertPageHasHeading(doc, "Search for a claim");
+    assertPageHasHeading(doc, "Search for a claim");
 
-        assertPageHasHint(doc, "search-hint", "Enter at least an office code to search.");
+    assertPageHasHint(doc, "search-hint", "Enter at least an office code to search.");
 
-        assertPageHasLabel(doc, "office-code", "Office code");
+    assertPageHasLabel(doc, "office-code", "Office code");
 
-        assertPageHasHint(doc, "office-code-hint", "For example, 0P322F");
+    assertPageHasHint(doc, "office-code-hint", "For example, 0P322F");
 
-        assertPageHasDateInput(doc, "Submission period");
+    assertPageHasDateInput(doc, "Submission period");
 
-        assertPageHasHint(doc, "submission-date-hint", "For example, 3 2007");
+    assertPageHasHint(doc, "submission-date-hint", "For example, 3 2007");
 
-        assertPageHasLabel(doc, "submission-date-month", "Month");
+    assertPageHasLabel(doc, "submission-date-month", "Month");
 
-        assertPageHasLabel(doc, "submission-date-year", "Year");
+    assertPageHasLabel(doc, "submission-date-year", "Year");
 
-        assertPageHasLabel(doc, "unique-file-number", "Unique file number (UFN)");
+    assertPageHasLabel(doc, "unique-file-number", "Unique file number (UFN)");
 
-        assertPageHasHint(doc, "unique-file-number-hint", "For example, 120223/001");
+    assertPageHasHint(doc, "unique-file-number-hint", "For example, 120223/001");
 
-        assertPageHasLabel(doc, "case-reference-number", "Case reference number (CRN)");
+    assertPageHasLabel(doc, "case-reference-number", "Case reference number (CRN)");
 
-        assertPageHasLabel(doc, "area-of-law", "Area of law");
+    assertPageHasLabel(doc, "area-of-law", "Area of law");
 
-        assertPageHasLabel(doc, "escape-case", "Escape case");
+    assertPageHasLabel(doc, "escape-case", "Escape case");
 
-        assertPageHasActiveServiceNavigationItem(doc, "Search");
-    }
+    assertPageHasActiveServiceNavigationItem(doc, "Search");
+  }
 
-    @Test
-    void testPageWithPagination() throws Exception {
-        int currentPage = 2;
-        String url = String.format("/?page=%d", currentPage);
-        int numberOfResultsPerPage = 10;
-        this.mapping = url;
-        when(searchProperties.isSortEnabled()).thenReturn(true);
+  @Test
+  void testPageWithPagination() throws Exception {
+    int currentPage = 2;
+    String url = String.format("/?page=%d", currentPage);
+    int numberOfResultsPerPage = 10;
+    this.mapping = url;
+    when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        ClaimView claimViewModel = new ClaimView(MockClaimsFunctions.createMockCivilClaim());
-        List<BaseClaimView<Claim>> claims =
-                new ArrayList<>(Collections.nCopies(numberOfResultsPerPage, claimViewModel));
+    ClaimView claimViewModel = new ClaimView(MockClaimsFunctions.createMockCivilClaim());
+    List<BaseClaimView<Claim>> claims =
+        new ArrayList<>(Collections.nCopies(numberOfResultsPerPage, claimViewModel));
 
-        SearchResultView viewModel = new SearchResultView();
-        viewModel.setClaims(claims);
-        Pagination pagination = new Pagination(20, numberOfResultsPerPage, currentPage, url);
-        viewModel.setPagination(pagination);
+    SearchResultView viewModel = new SearchResultView();
+    viewModel.setClaims(claims);
+    Pagination pagination = new Pagination(20, numberOfResultsPerPage, currentPage, url);
+    viewModel.setPagination(pagination);
 
-        Map<String, Object> variables = Map.of("viewModel", viewModel);
-        Document doc = renderDocument(variables);
+    Map<String, Object> variables = Map.of("viewModel", viewModel);
+    Document doc = renderDocument(variables);
 
-        assertPageHasH2(doc, "20 search results");
+    assertPageHasH2(doc, "20 search results");
 
-        assertPageHasTable(doc);
+    assertPageHasTable(doc);
 
-        assertPageHasPagination(doc);
+    assertPageHasPagination(doc);
 
-        Elements headers = getTableHeaders(doc);
+    Elements headers = getTableHeaders(doc);
 
-        assertTableHeaderIsNotSortable(headers.get(0), "Claim");
-        assertTableHeaderIsSortable(headers.get(1), "ascending", "UFN", "/?page=1&sort=unique_file_number,desc");
-        assertTableHeaderIsSortable(headers.get(2), "none", "CRN", "/?page=1&sort=case_reference_number,asc");
-        assertTableHeaderIsSortable(headers.get(3), "none", "Client surname", "/?page=1&sort=client_surname,asc");
-        assertTableHeaderIsSortable(headers.get(4), "none", "Submission period", "/?page=1&sort=submission_period,asc");
-        assertTableHeaderIsSortable(headers.get(5), "none", "Category of law", "/?page=1&sort=category_of_law,asc");
-        assertTableHeaderIsSortable(headers.get(6), "none", "Voided", "/?page=1&sort=status,asc");
-        assertTableHeaderIsNotSortable(headers.get(7), "Escape case");
-    }
+    assertTableHeaderIsNotSortable(headers.get(0), "Claim");
+    assertTableHeaderIsSortable(
+        headers.get(1), "ascending", "UFN", "/?page=1&sort=unique_file_number,desc");
+    assertTableHeaderIsSortable(
+        headers.get(2), "none", "CRN", "/?page=1&sort=case_reference_number,asc");
+    assertTableHeaderIsSortable(
+        headers.get(3), "none", "Client surname", "/?page=1&sort=client_surname,asc");
+    assertTableHeaderIsSortable(
+        headers.get(4), "none", "Submission period", "/?page=1&sort=submission_period,asc");
+    assertTableHeaderIsSortable(
+        headers.get(5), "none", "Category of law", "/?page=1&sort=category_of_law,asc");
+    assertTableHeaderIsSortable(headers.get(6), "none", "Voided", "/?page=1&sort=status,asc");
+    assertTableHeaderIsNotSortable(headers.get(7), "Escape case");
+  }
 
-    @Test
-    void testPageWithOneResult() throws Exception {
-        when(searchProperties.isSortEnabled()).thenReturn(true);
+  @Test
+  void testPageWithOneResult() throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(true);
 
-        ClaimView claimViewModel = new ClaimView(MockClaimsFunctions.createMockCivilClaim());
-        List<BaseClaimView<Claim>> claims = List.of(claimViewModel);
+    ClaimView claimViewModel = new ClaimView(MockClaimsFunctions.createMockCivilClaim());
+    List<BaseClaimView<Claim>> claims = List.of(claimViewModel);
 
-        SearchResultView viewModel = new SearchResultView();
-        viewModel.setClaims(claims);
-        Pagination pagination = new Pagination(1, 10, 1, "/");
-        viewModel.setPagination(pagination);
+    SearchResultView viewModel = new SearchResultView();
+    viewModel.setClaims(claims);
+    Pagination pagination = new Pagination(1, 10, 1, "/");
+    viewModel.setPagination(pagination);
 
-        Map<String, Object> variables = Map.of("viewModel", viewModel);
-        Document doc = renderDocument(variables);
+    Map<String, Object> variables = Map.of("viewModel", viewModel);
+    Document doc = renderDocument(variables);
 
-        assertPageHasH2(doc, "1 search result");
-    }
+    assertPageHasH2(doc, "1 search result");
+  }
 
-    @Test
-    void testPageWithErrors() throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("officeCode", "!");
-        params.add("submissionDateMonth", "!");
-        params.add("submissionDateYear", "!");
-        params.add("uniqueFileNumber", "!");
-        params.add("caseReferenceNumber", "!");
+  @Test
+  void testPageWithErrors() throws Exception {
+    MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+    params.add("officeCode", "!");
+    params.add("submissionDateMonth", "!");
+    params.add("submissionDateYear", "!");
+    params.add("uniqueFileNumber", "!");
+    params.add("caseReferenceNumber", "!");
 
-        Document doc = renderDocumentWithErrors(params);
+    Document doc = renderDocumentWithErrors(params);
 
-        assertPageHasErrorSummary(
-                doc,
-                "office-code",
-                "submission-date-month", // date errors get combined
-                "unique-file-number",
-                "case-reference-number");
-    }
+    assertPageHasErrorSummary(
+        doc,
+        "office-code",
+        "submission-date-month", // date errors get combined
+        "unique-file-number",
+        "case-reference-number");
+  }
 
-    @Test
-    void testPageWithNoResultsFound() throws Exception {
-        SearchResultView viewModel = new SearchResultView();
-        viewModel.setClaims(List.of());
-        Pagination pagination = new Pagination(10, 10, 1, "/");
-        viewModel.setPagination(pagination);
+  @Test
+  void testPageWithNoResultsFound() throws Exception {
+    SearchResultView viewModel = new SearchResultView();
+    viewModel.setClaims(List.of());
+    Pagination pagination = new Pagination(10, 10, 1, "/");
+    viewModel.setPagination(pagination);
 
-        Map<String, Object> variables = Map.of("viewModel", viewModel);
+    Map<String, Object> variables = Map.of("viewModel", viewModel);
 
-        Document doc = renderDocument(variables);
+    Document doc = renderDocument(variables);
 
-        assertPageHasH2(doc, "There are no results that match the search criteria");
+    assertPageHasH2(doc, "There are no results that match the search criteria");
 
-        assertPageHasContent(doc, "Check you've entered the correct details");
-    }
+    assertPageHasContent(doc, "Check you've entered the correct details");
+  }
 
-    @Test
-    void testPageAfterDiscard() throws Exception {
-        Map<String, Object> variables = Map.of("discarded", true);
+  @Test
+  void testPageAfterDiscard() throws Exception {
+    Map<String, Object> variables = Map.of("discarded", true);
 
-        Document doc = renderDocument(variables);
+    Document doc = renderDocument(variables);
 
-        assertPageHasSuccessBanner(doc, "You discarded the assessment");
-    }
+    assertPageHasSuccessBanner(doc, "You discarded the assessment");
+  }
 
-    @Test
-    void testPageAfterVoid() throws Exception {
-        Map<String, Object> variables = Map.of("voided", true);
+  @Test
+  void testPageAfterVoid() throws Exception {
+    Map<String, Object> variables = Map.of("voided", true);
 
-        Document doc = renderDocument(variables);
+    Document doc = renderDocument(variables);
 
-        assertPageHasSuccessBanner(doc, "You voided the claim");
-    }
+    assertPageHasSuccessBanner(doc, "You voided the claim");
+  }
 }

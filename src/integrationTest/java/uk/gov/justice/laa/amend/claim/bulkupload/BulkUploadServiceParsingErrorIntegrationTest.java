@@ -18,39 +18,41 @@ import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 @SpringBootTest
 class BulkUploadServiceParsingErrorIntegrationTest extends WireMockSetup {
 
-    private static final UUID USER_ID = UUID.randomUUID();
+  private static final UUID USER_ID = UUID.randomUUID();
 
-    @Autowired
-    private BulkUploadService<BulkUploadCivilClaim> bulkUploadService;
+  @Autowired private BulkUploadService<BulkUploadCivilClaim> bulkUploadService;
 
-    @Test
-    @DisplayName("Returns parsing errors for header in result")
-    void returnParsingErrorsWhenHeaderInvalid() throws Exception {
-        // CSV with missing required header and a bad row
-        String csv = """
+  @Test
+  @DisplayName("Returns parsing errors for header in result")
+  void returnParsingErrorsWhenHeaderInvalid() throws Exception {
+    // CSV with missing required header and a bad row
+    String csv =
+        """
             UFN,Assessment Outcome,Profit Cost
             0p322f,Reduced,notanumber
             0A456H,Reduced,100.00
             """;
 
-        MockMultipartFile file =
-                new MockMultipartFile("file", "test.csv", "text/csv", csv.getBytes(StandardCharsets.UTF_8));
+    MockMultipartFile file =
+        new MockMultipartFile("file", "test.csv", "text/csv", csv.getBytes(StandardCharsets.UTF_8));
 
-        BulkUploadResult result = bulkUploadService.upload(file, USER_ID);
+    BulkUploadResult result = bulkUploadService.upload(file, USER_ID);
 
-        assertThat(result.status()).isEqualTo(BulkUploadStatus.PARSING_FAILURE);
-        assertThat(result.errors())
-                .containsExactly(new BulkUploadError(
-                        null,
-                        "Missing required headers: Office Code, Disbursements, Disbursements VAT, Counsel"
-                                + " Costs, Total Allowed VAT, Total Allowed Including VAT"));
-    }
+    assertThat(result.status()).isEqualTo(BulkUploadStatus.PARSING_FAILURE);
+    assertThat(result.errors())
+        .containsExactly(
+            new BulkUploadError(
+                null,
+                "Missing required headers: Office Code, Disbursements, Disbursements VAT, Counsel"
+                    + " Costs, Total Allowed VAT, Total Allowed Including VAT"));
+  }
 
-    @Test
-    @DisplayName("Returns all parsing errors for rows in result")
-    void returnsAllParsingErrors() {
+  @Test
+  @DisplayName("Returns all parsing errors for rows in result")
+  void returnsAllParsingErrors() {
 
-        String invalidCsv = """
+    String invalidCsv =
+        """
             Office Code,UFN,Assessment Outcome,Profit Cost,Disbursements,Disbursements VAT,Counsel Costs,Total Allowed VAT,Total Allowed Including VAT
             0p1ab3,120223/001101,Reduced,12.65,50.00,"£10,245",88,100,1,234.56
             0p9zq7,120223/001274,Reduced To Fixed Fee,ten,£33.20,12.5.7,£0.00,--44,###
@@ -64,69 +66,73 @@ class BulkUploadServiceParsingErrorIntegrationTest extends WireMockSetup {
             0pmm4d,120223/001753,Reduced To Fixed Fee,£,£,£,£,£,£
             """;
 
-        MockMultipartFile file =
-                new MockMultipartFile("file", "test.csv", "text/csv", invalidCsv.getBytes(StandardCharsets.UTF_8));
+    MockMultipartFile file =
+        new MockMultipartFile(
+            "file", "test.csv", "text/csv", invalidCsv.getBytes(StandardCharsets.UTF_8));
 
-        BulkUploadResult result = bulkUploadService.upload(file, USER_ID);
+    BulkUploadResult result = bulkUploadService.upload(file, USER_ID);
 
-        assertThat(result.status()).isEqualTo(BulkUploadStatus.PARSING_FAILURE);
-        assertThat(result.errors())
-                .containsExactly(
-                        new BulkUploadError(3, "Invalid number in Profit Cost"),
-                        new BulkUploadError(3, "Invalid number in Disbursements VAT"),
-                        new BulkUploadError(3, "Invalid number in Total Allowed VAT"),
-                        new BulkUploadError(3, "Invalid number in Total Allowed Including VAT"),
-                        new BulkUploadError(4, "Invalid number in Total Allowed Including VAT"),
-                        new BulkUploadError(5, "Profit Cost is required"),
-                        new BulkUploadError(5, "Invalid number in Counsel Costs"),
-                        new BulkUploadError(6, "Invalid number in Profit Cost"),
-                        new BulkUploadError(6, "Invalid number in Counsel Costs"),
-                        new BulkUploadError(6, "Invalid number in Total Allowed VAT"),
-                        new BulkUploadError(6, "Invalid number in Total Allowed Including VAT"),
-                        new BulkUploadError(7, "Invalid number in Disbursements VAT"),
-                        new BulkUploadError(7, "Invalid number in Total Allowed Including VAT"),
-                        new BulkUploadError(8, "Invalid number in Profit Cost"),
-                        new BulkUploadError(8, "Invalid number in Total Allowed Including VAT"),
-                        new BulkUploadError(9, "Invalid number in Profit Cost"),
-                        new BulkUploadError(9, "Invalid number in Counsel Costs"),
-                        new BulkUploadError(9, "Invalid number in Total Allowed VAT"),
-                        new BulkUploadError(10, "Invalid number in Counsel Costs"),
-                        new BulkUploadError(10, "Invalid number in Total Allowed VAT"),
-                        new BulkUploadError(11, "Invalid number in Profit Cost"),
-                        new BulkUploadError(11, "Invalid number in Disbursements"),
-                        new BulkUploadError(11, "Invalid number in Disbursements VAT"),
-                        new BulkUploadError(11, "Invalid number in Counsel Costs"),
-                        new BulkUploadError(11, "Invalid number in Total Allowed VAT"),
-                        new BulkUploadError(11, "Invalid number in Total Allowed Including VAT"));
-    }
+    assertThat(result.status()).isEqualTo(BulkUploadStatus.PARSING_FAILURE);
+    assertThat(result.errors())
+        .containsExactly(
+            new BulkUploadError(3, "Invalid number in Profit Cost"),
+            new BulkUploadError(3, "Invalid number in Disbursements VAT"),
+            new BulkUploadError(3, "Invalid number in Total Allowed VAT"),
+            new BulkUploadError(3, "Invalid number in Total Allowed Including VAT"),
+            new BulkUploadError(4, "Invalid number in Total Allowed Including VAT"),
+            new BulkUploadError(5, "Profit Cost is required"),
+            new BulkUploadError(5, "Invalid number in Counsel Costs"),
+            new BulkUploadError(6, "Invalid number in Profit Cost"),
+            new BulkUploadError(6, "Invalid number in Counsel Costs"),
+            new BulkUploadError(6, "Invalid number in Total Allowed VAT"),
+            new BulkUploadError(6, "Invalid number in Total Allowed Including VAT"),
+            new BulkUploadError(7, "Invalid number in Disbursements VAT"),
+            new BulkUploadError(7, "Invalid number in Total Allowed Including VAT"),
+            new BulkUploadError(8, "Invalid number in Profit Cost"),
+            new BulkUploadError(8, "Invalid number in Total Allowed Including VAT"),
+            new BulkUploadError(9, "Invalid number in Profit Cost"),
+            new BulkUploadError(9, "Invalid number in Counsel Costs"),
+            new BulkUploadError(9, "Invalid number in Total Allowed VAT"),
+            new BulkUploadError(10, "Invalid number in Counsel Costs"),
+            new BulkUploadError(10, "Invalid number in Total Allowed VAT"),
+            new BulkUploadError(11, "Invalid number in Profit Cost"),
+            new BulkUploadError(11, "Invalid number in Disbursements"),
+            new BulkUploadError(11, "Invalid number in Disbursements VAT"),
+            new BulkUploadError(11, "Invalid number in Counsel Costs"),
+            new BulkUploadError(11, "Invalid number in Total Allowed VAT"),
+            new BulkUploadError(11, "Invalid number in Total Allowed Including VAT"));
+  }
 
-    @Test
-    @DisplayName("Returns all validation errors for rows in result")
-    void returnsAllValidationErrors() {
+  @Test
+  @DisplayName("Returns all validation errors for rows in result")
+  void returnsAllValidationErrors() {
 
-        String invalidCsv = """
+    String invalidCsv =
+        """
             Office Code,UFN,Assessment Outcome,Profit Cost,Disbursements,Disbursements VAT,Counsel Costs,Total Allowed VAT,Total Allowed Including VAT
             123456,012345/012,Reduced,12.65,50.00,10.25,88.00,100.00,1234.56
             123456,Badly formatted UFN,Reduced To Fixed Fee,10.00,33.20,12.57,0.00,66.00,144.32
             123456,012345/012,Reduced,12.65,50.00,10.25,88.00,100.00,1234.56
             """; // Final row is duplicate row of the first (same officeCode + UFN)
 
-        MockMultipartFile file =
-                new MockMultipartFile("file", "test.csv", "text/csv", invalidCsv.getBytes(StandardCharsets.UTF_8));
-        setupGetClaimsStub();
+    MockMultipartFile file =
+        new MockMultipartFile(
+            "file", "test.csv", "text/csv", invalidCsv.getBytes(StandardCharsets.UTF_8));
+    setupGetClaimsStub();
 
-        BulkUploadResult result = bulkUploadService.upload(file, USER_ID);
+    BulkUploadResult result = bulkUploadService.upload(file, USER_ID);
 
-        assertThat(result.status()).isEqualTo(BulkUploadStatus.VALIDATION_FAILURE);
-        assertThat(result.errors())
-                .containsExactly(
-                        new BulkUploadError(
-                                2, "Escaped Civil Claim not found for UFN 012345/012 and officeCode 123456"),
-                        new BulkUploadError(3, "Invalid UFN Badly formatted UFN"),
-                        new BulkUploadError(
-                                3, "Escaped Civil Claim not found for UFN Badly formatted UFN and officeCode 123456"),
-                        new BulkUploadError(4, "Duplicate row for office code 123456 and UFN 012345/012"),
-                        new BulkUploadError(
-                                4, "Escaped Civil Claim not found for UFN 012345/012 and officeCode 123456"));
-    }
+    assertThat(result.status()).isEqualTo(BulkUploadStatus.VALIDATION_FAILURE);
+    assertThat(result.errors())
+        .containsExactly(
+            new BulkUploadError(
+                2, "Escaped Civil Claim not found for UFN 012345/012 and officeCode 123456"),
+            new BulkUploadError(3, "Invalid UFN Badly formatted UFN"),
+            new BulkUploadError(
+                3,
+                "Escaped Civil Claim not found for UFN Badly formatted UFN and officeCode 123456"),
+            new BulkUploadError(4, "Duplicate row for office code 123456 and UFN 012345/012"),
+            new BulkUploadError(
+                4, "Escaped Civil Claim not found for UFN 012345/012 and officeCode 123456"));
+  }
 }

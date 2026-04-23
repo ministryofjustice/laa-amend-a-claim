@@ -6,33 +6,33 @@ import java.time.format.DateTimeFormatter;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 
 public interface BaseClaimView<T extends Claim> {
-    T claim();
+  T claim();
 
-    default T getClaim() {
-        return claim();
-    }
+  default T getClaim() {
+    return claim();
+  }
 
-    default String getClientName() {
-        String clientForename = claim().getClientForename();
-        String clientSurname = claim().getClientSurname();
-        if (clientForename != null & clientSurname != null) {
-            return String.format("%s %s", clientForename, clientSurname);
-        } else if (clientForename != null) {
-            return clientForename;
-        } else {
-            return clientSurname;
-        }
+  default String getClientName() {
+    String clientForename = claim().getClientForename();
+    String clientSurname = claim().getClientSurname();
+    if (clientForename != null & clientSurname != null) {
+      return String.format("%s %s", clientForename, clientSurname);
+    } else if (clientForename != null) {
+      return clientForename;
+    } else {
+      return clientSurname;
     }
+  }
 
-    default String getSubmissionPeriodForDisplay() {
-        return claim().getSubmissionPeriod() != null
-                ? claim().getSubmissionPeriod().format(DateTimeFormatter.ofPattern(DEFAULT_PERIOD_FORMAT))
-                : null;
-    }
+  default String getSubmissionPeriodForDisplay() {
+    return claim().getSubmissionPeriod() != null
+        ? claim().getSubmissionPeriod().format(DateTimeFormatter.ofPattern(DEFAULT_PERIOD_FORMAT))
+        : null;
+  }
 
-    default long getSubmissionPeriodForSorting() {
-        return claim().getSubmissionPeriod() != null
-                ? claim().getSubmissionPeriod().atDay(1).toEpochDay()
-                : 0;
-    }
+  default long getSubmissionPeriodForSorting() {
+    return claim().getSubmissionPeriod() != null
+        ? claim().getSubmissionPeriod().atDay(1).toEpochDay()
+        : 0;
+  }
 }

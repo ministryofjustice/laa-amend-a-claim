@@ -3,33 +3,32 @@ package uk.gov.justice.laa.amend.claim.models;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
-import lombok.Data;
+import lombok.Builder;
 
-@Data
-public class AssessmentInfo {
-    private OffsetDateTime lastAssessmentDate;
-    private String lastAssessedBy;
-    private OutcomeType lastAssessmentOutcome;
-    private UUID id;
-    private UUID claimId;
-    private BigDecimal fixedFeeAmount;
-    private BigDecimal netProfitCostsAmount;
-    private BigDecimal disbursementAmount;
-    private BigDecimal disbursementVatAmount;
-    private BigDecimal netCostOfCounselAmount;
-    private BigDecimal netTravelCostsAmount;
-    private BigDecimal netWaitingCostsAmount;
-    private BigDecimal detentionTravelAndWaitingCostsAmount;
-    private BigDecimal jrFormFillingAmount;
-    private BigDecimal boltOnAdjournedHearingFee;
-    private BigDecimal boltOnCmrhTelephoneFee;
-    private BigDecimal boltOnCmrhOralFee;
-    private BigDecimal boltOnHomeOfficeInterviewFee;
-    private BigDecimal boltOnSubstantiveHearingFee;
-    private Boolean isVatApplicable;
-    private BigDecimal assessedTotalVat;
-    private BigDecimal assessedTotalInclVat;
-    private BigDecimal allowedTotalVat;
-    private BigDecimal allowedTotalInclVat;
-    private AssessmentTypeEnum assessmentType;
-}
+@Builder
+public record AssessmentInfo(
+    OffsetDateTime lastAssessmentDate,
+    String lastAssessedBy,
+    OutcomeType lastAssessmentOutcome,
+    UUID id,
+    UUID claimId,
+    BigDecimal fixedFeeAmount,
+    BigDecimal netProfitCostsAmount,
+    BigDecimal disbursementAmount,
+    BigDecimal disbursementVatAmount,
+    BigDecimal netCostOfCounselAmount,
+    BigDecimal netTravelCostsAmount,
+    BigDecimal netWaitingCostsAmount,
+    BigDecimal detentionTravelAndWaitingCostsAmount,
+    BigDecimal jrFormFillingAmount,
+    BigDecimal boltOnAdjournedHearingFee,
+    BigDecimal boltOnCmrhTelephoneFee,
+    BigDecimal boltOnCmrhOralFee,
+    BigDecimal boltOnHomeOfficeInterviewFee,
+    BigDecimal boltOnSubstantiveHearingFee,
+    Boolean isVatApplicable,
+    BigDecimal assessedTotalVat,
+    BigDecimal assessedTotalInclVat,
+    BigDecimal allowedTotalVat,
+    BigDecimal allowedTotalInclVat,
+    AssessmentTypeEnum assessmentType) {}

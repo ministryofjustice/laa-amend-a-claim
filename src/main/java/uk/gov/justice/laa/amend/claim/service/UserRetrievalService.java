@@ -14,24 +14,23 @@ import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 @Slf4j
 public class UserRetrievalService {
 
-    private final MicrosoftGraphApiClient client;
+  private final MicrosoftGraphApiClient client;
 
-    private final OAuth2AuthorizedClientManager authorizedClientManager;
+  private final OAuth2AuthorizedClientManager authorizedClientManager;
 
-    public MicrosoftApiUser getMicrosoftApiUser(String userId) {
-        OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("graph")
-                .principal("system")
-                .build();
+  public MicrosoftApiUser getMicrosoftApiUser(String userId) {
+    OAuth2AuthorizeRequest authorizeRequest =
+        OAuth2AuthorizeRequest.withClientRegistrationId("graph").principal("system").build();
 
-        try {
-            OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
-            if (authorizedClient != null) {
-                String accessToken = authorizedClient.getAccessToken().getTokenValue();
-                return client.getUser(userId, accessToken).block();
-            }
-        } catch (Exception ex) {
-            log.error("Error retrieving user {}", userId, ex);
-        }
-        return null;
+    try {
+      OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
+      if (authorizedClient != null) {
+        String accessToken = authorizedClient.getAccessToken().getTokenValue();
+        return client.getUser(userId, accessToken).block();
+      }
+    } catch (Exception ex) {
+      log.error("Error retrieving user {}", userId, ex);
     }
+    return null;
+  }
 }

@@ -23,36 +23,37 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 @AutoConfigureMockMvc
 class ClaimDetailsIntegrationTest extends ControllerIntegrationTest {
 
-    private static final String SUBMISSION_ID = "c8f2c0d4-97b1-4c4a-96f2-4dd62a4e6aa2";
-    private static final String CLAIM_ID = "3f8a0ac4-2f63-4ed2-8bfb-2eb0fc0ba330";
-    private static final String OFFICE_CODE = "0P322F";
-    private static final String FIRM_NAME = "Test Firm";
+  private static final String SUBMISSION_ID = "c8f2c0d4-97b1-4c4a-96f2-4dd62a4e6aa2";
+  private static final String CLAIM_ID = "3f8a0ac4-2f63-4ed2-8bfb-2eb0fc0ba330";
+  private static final String OFFICE_CODE = "0P322F";
+  private static final String FIRM_NAME = "Test Firm";
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @BeforeEach
-    void setUp() {
-        setupGetClaimStub(SUBMISSION_ID, CLAIM_ID, OFFICE_CODE);
-        setupGetProviderOfficeStub(OFFICE_CODE, FIRM_NAME);
-    }
+  @BeforeEach
+  void setUp() {
+    setupGetClaimStub(SUBMISSION_ID, CLAIM_ID, OFFICE_CODE);
+    setupGetProviderOfficeStub(OFFICE_CODE, FIRM_NAME);
+  }
 
-    @Test
-    void testClaimDetailsPageLoadsSuccessfully() throws Exception {
-        var result = mockMvc.perform(get("/submissions/{submissionId}/claims/{claimId}", SUBMISSION_ID, CLAIM_ID))
-                .andExpect(status().isOk())
-                .andExpect(view().name("claim-summary"))
-                .andExpect(model().attributeExists("claim"))
-                .andExpect(model().attributeExists("submissionId"))
-                .andExpect(model().attributeExists("claimId"))
-                .andReturn();
+  @Test
+  void testClaimDetailsPageLoadsSuccessfully() throws Exception {
+    var result =
+        mockMvc
+            .perform(get("/submissions/{submissionId}/claims/{claimId}", SUBMISSION_ID, CLAIM_ID))
+            .andExpect(status().isOk())
+            .andExpect(view().name("claim-summary"))
+            .andExpect(model().attributeExists("claim"))
+            .andExpect(model().attributeExists("submissionId"))
+            .andExpect(model().attributeExists("claimId"))
+            .andReturn();
 
-        ModelAndView modelAndView = result.getModelAndView();
-        Assertions.assertNotNull(modelAndView);
-        @SuppressWarnings("unchecked")
-        ClaimDetailsView<ClaimDetails> claim =
-                (ClaimDetailsView<ClaimDetails>) modelAndView.getModel().get("claim");
-        assertThat(claim).isNotNull();
-        assertThat(claim.claim().getProviderName()).isEqualTo(FIRM_NAME);
-    }
+    ModelAndView modelAndView = result.getModelAndView();
+    Assertions.assertNotNull(modelAndView);
+    @SuppressWarnings("unchecked")
+    ClaimDetailsView<ClaimDetails> claim =
+        (ClaimDetailsView<ClaimDetails>) modelAndView.getModel().get("claim");
+    assertThat(claim).isNotNull();
+    assertThat(claim.claim().getProviderName()).isEqualTo(FIRM_NAME);
+  }
 }

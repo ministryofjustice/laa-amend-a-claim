@@ -32,7 +32,7 @@
     <!-- https://checkstyle.org/filters/suppressionfilter.html -->
     <module name="SuppressionFilter">
         <property name="file" value="${org.checkstyle.google.suppressionfilter.config}"
-                  default="checkstyle-suppressions.xml"/>
+                  default="checkstyle-suppressions.xml" />
         <property name="optional" value="true"/>
     </module>
 
@@ -196,22 +196,22 @@
                      value="Parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="LambdaParameterName">
-            <property name="format" value="^(_|[a-z]([a-z0-9][a-zA-Z0-9]*)?)$"/>
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
             <message key="name.invalidPattern"
                      value="Lambda parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="CatchParameterName">
-            <property name="format" value="^(_|[a-z]([a-z0-9][a-zA-Z0-9]*)?)$"/>
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
             <message key="name.invalidPattern"
                      value="Catch parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="LocalVariableName">
-            <property name="format" value="^(_|[a-z]([a-z0-9][a-zA-Z0-9]*)?)$"/>
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
             <message key="name.invalidPattern"
                      value="Local variable name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="PatternVariableName">
-            <property name="format" value="^(_|[a-z]([a-z0-9][a-zA-Z0-9]*)?)$"/>
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
             <message key="name.invalidPattern"
                      value="Pattern variable name ''{0}'' must match pattern ''{1}''."/>
         </module>
@@ -252,12 +252,12 @@
                      value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
         </module>
         <module name="Indentation">
-            <property name="basicOffset" value="4"/>
-            <property name="braceAdjustment" value="0"/>
-            <property name="caseIndent" value="4"/>
+            <property name="basicOffset" value="2"/>
+            <property name="braceAdjustment" value="2"/>
+            <property name="caseIndent" value="2"/>
             <property name="throwsIndent" value="4"/>
             <property name="lineWrappingIndentation" value="4"/>
-            <property name="arrayInitIndent" value="4"/>
+            <property name="arrayInitIndent" value="2"/>
         </module>
         <module name="AbbreviationAsWordInName">
             <property name="ignoreFinal" value="false"/>
@@ -270,6 +270,12 @@
         <module name="NoWhitespaceBeforeCaseDefaultColon"/>
         <module name="OverloadMethodsDeclarationOrder"/>
         <module name="VariableDeclarationUsageDistance"/>
+        <module name="CustomImportOrder">
+            <property name="sortImportsInGroupAlphabetically" value="true"/>
+            <property name="separateLineBetweenGroups" value="true"/>
+            <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE"/>
+            <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF"/>
+        </module>
         <module name="MethodParamPad">
             <property name="tokens"
                       value="CTOR_DEF, LITERAL_NEW, METHOD_CALL, METHOD_DEF,
@@ -310,7 +316,6 @@
         <module name="NonEmptyAtclauseDescription"/>
         <module name="InvalidJavadocPosition"/>
         <module name="JavadocTagContinuationIndentation"/>
-
         <module name="MethodName">
             <property name="format" value="^[a-z][a-z0-9]\w*$"/>
             <message key="name.invalidPattern"
@@ -326,14 +331,14 @@
         <!-- https://checkstyle.org/filters/suppressionxpathfilter.html -->
         <module name="SuppressionXpathFilter">
             <property name="file" value="${org.checkstyle.google.suppressionxpathfilter.config}"
-                      default="checkstyle-xpath-suppressions.xml"/>
+                      default="checkstyle-xpath-suppressions.xml" />
             <property name="optional" value="true"/>
         </module>
-        <module name="SuppressWarningsHolder"/>
+        <module name="SuppressWarningsHolder" />
         <module name="SuppressionCommentFilter">
-            <property name="offCommentFormat" value="CHECKSTYLE.OFF\: ([\w\|]+)"/>
-            <property name="onCommentFormat" value="CHECKSTYLE.ON\: ([\w\|]+)"/>
-            <property name="checkFormat" value="$1"/>
+            <property name="offCommentFormat" value="CHECKSTYLE.OFF\: ([\w\|]+)" />
+            <property name="onCommentFormat" value="CHECKSTYLE.ON\: ([\w\|]+)" />
+            <property name="checkFormat" value="$1" />
         </module>
         <module name="SuppressWithNearbyCommentFilter">
             <property name="commentFormat" value="CHECKSTYLE.SUPPRESS\: ([\w\|]+)"/>

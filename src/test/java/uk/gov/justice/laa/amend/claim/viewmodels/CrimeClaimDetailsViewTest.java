@@ -25,223 +25,215 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
-public class CrimeClaimDetailsViewTest extends ClaimDetailsViewTest<CrimeClaimDetails, CrimeClaimDetailsView> {
+public class CrimeClaimDetailsViewTest
+    extends ClaimDetailsViewTest<CrimeClaimDetails, CrimeClaimDetailsView> {
 
-    @Override
-    protected CrimeClaimDetails createClaim() {
-        return new CrimeClaimDetails();
+  @Override
+  protected CrimeClaimDetails createClaim() {
+    return new CrimeClaimDetails();
+  }
+
+  @Override
+  protected CrimeClaimDetailsView createView(CrimeClaimDetails claim) {
+    return new CrimeClaimDetailsView(claim);
+  }
+
+  @Nested
+  class GetSummaryRowsTests {
+    @Test
+    void createMapOfKeyValuePairs() {
+      OffsetDateTime submittedDate = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
+      LocalDate caseStartDate = LocalDate.of(2001, 1, 1);
+      LocalDate caseEndDate = LocalDate.of(2002, 1, 1);
+
+      CrimeClaimDetails claim = createClaim();
+      claim.setClientForename("John");
+      claim.setClientSurname("Smith");
+      claim.setUniqueFileNumber("unique file number");
+      claim.setCaseReferenceNumber("case reference number");
+      claim.setProviderName("provider name");
+      claim.setOfficeCode("office code");
+      claim.setSubmittedDate(submittedDate);
+      claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+      claim.setCategoryOfLaw("category of law");
+      claim.setFeeCode("fee code");
+      claim.setFeeCodeDescription("fee code description");
+      claim.setPoliceStationCourtPrisonId("police station court prison id");
+      claim.setSchemeId("scheme id");
+      claim.setMatterTypeCode("matter type code");
+      claim.setCaseStartDate(caseStartDate);
+      claim.setCaseEndDate(caseEndDate);
+      claim.setEscaped(true);
+      claim.setVatApplicable(false);
+
+      Map<String, Object> expectedResult = new LinkedHashMap<>();
+      expectedResult.put("clientName", "John Smith");
+      expectedResult.put("ufn", "unique file number");
+      expectedResult.put("providerName", "provider name");
+      expectedResult.put("officeCode", "office code");
+      expectedResult.put("submittedDate", submittedDate);
+      expectedResult.put("areaOfLaw", new ThymeleafMessage(AreaOfLaw.CRIME_LOWER.getMessageKey()));
+      expectedResult.put("categoryOfLaw", "category of law");
+      expectedResult.put("feeCode", "fee code");
+      expectedResult.put("feeCodeDescription", "fee code description");
+      expectedResult.put("policeStationCourtPrisonId", "police station court prison id");
+      expectedResult.put("schemeId", "scheme id");
+      expectedResult.put("legalMatterCode", "matter type code");
+      expectedResult.put("caseStartDate", caseStartDate);
+      expectedResult.put("caseEndDate", caseEndDate);
+      expectedResult.put("escaped", true);
+      expectedResult.put("vatRequested", false);
+
+      CrimeClaimDetailsView viewModel = createView(claim);
+      Map<String, Object> result = viewModel.getSummaryRows();
+      Assertions.assertEquals(expectedResult, result);
+    }
+  }
+
+  @Nested
+  class GetSummaryClaimFieldRowsTests {
+    @Test
+    void rowsRenderedForClaimValuesWhenClaimHasAnAssessment() {
+      CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
+      claim.setHasAssessment(true);
+
+      CrimeClaimDetailsView viewModel = createView(claim);
+      List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
+
+      Assertions.assertEquals(7, result.size());
+
+      Assertions.assertEquals(FIXED_FEE, result.get(0).key());
+
+      Assertions.assertEquals(NET_PROFIT_COST, result.get(1).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).changeUrl());
+
+      Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).changeUrl());
+
+      Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).key());
+      Assertions.assertEquals(
+          "/submissions/%s/claims/%s/disbursements-vat", result.get(3).changeUrl());
+
+      Assertions.assertEquals(TRAVEL_COSTS, result.get(4).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).changeUrl());
+
+      Assertions.assertEquals(WAITING_COSTS, result.get(5).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).changeUrl());
+
+      Assertions.assertEquals(VAT, result.get(6).key());
     }
 
-    @Override
-    protected CrimeClaimDetailsView createView(CrimeClaimDetails claim) {
-        return new CrimeClaimDetailsView(claim);
+    @Test
+    void rowsRenderedForClaimValuesWhenClaimDoesNotHaveAnAssessment() {
+      CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
+      claim.setTotalAmount(CalculatedTotalClaimField.builder().build());
+      claim.setHasAssessment(false);
+
+      CrimeClaimDetailsView viewModel = createView(claim);
+      List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
+
+      Assertions.assertEquals(8, result.size());
+
+      Assertions.assertEquals(FIXED_FEE, result.get(0).key());
+
+      Assertions.assertEquals(NET_PROFIT_COST, result.get(1).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).changeUrl());
+
+      Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).changeUrl());
+
+      Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).key());
+      Assertions.assertEquals(
+          "/submissions/%s/claims/%s/disbursements-vat", result.get(3).changeUrl());
+
+      Assertions.assertEquals(TRAVEL_COSTS, result.get(4).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).changeUrl());
+
+      Assertions.assertEquals(WAITING_COSTS, result.get(5).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).changeUrl());
+
+      Assertions.assertEquals(VAT, result.get(6).key());
+
+      Assertions.assertEquals(TOTAL, result.get(7).key());
     }
+  }
 
-    @Nested
-    class GetSummaryRowsTests {
-        @Test
-        void createMapOfKeyValuePairs() {
-            OffsetDateTime submittedDate = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
-            LocalDate caseStartDate = LocalDate.of(2001, 1, 1);
-            LocalDate caseEndDate = LocalDate.of(2002, 1, 1);
+  @Nested
+  class GetReviewClaimFieldRowsTests {
+    @Test
+    void rowsRenderedForClaimValues() {
+      CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
 
-            CrimeClaimDetails claim = createClaim();
-            claim.setClientForename("John");
-            claim.setClientSurname("Smith");
-            claim.setUniqueFileNumber("unique file number");
-            claim.setCaseReferenceNumber("case reference number");
-            claim.setProviderName("provider name");
-            claim.setOfficeCode("office code");
-            claim.setSubmittedDate(submittedDate);
-            claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
-            claim.setCategoryOfLaw("category of law");
-            claim.setFeeCode("fee code");
-            claim.setFeeCodeDescription("fee code description");
-            claim.setPoliceStationCourtPrisonId("police station court prison id");
-            claim.setSchemeId("scheme id");
-            claim.setMatterTypeCode("matter type code");
-            claim.setCaseStartDate(caseStartDate);
-            claim.setCaseEndDate(caseEndDate);
-            claim.setEscaped(true);
-            claim.setVatApplicable(false);
+      CrimeClaimDetailsView viewModel = createView(claim);
+      List<ClaimFieldRow> result = viewModel.getReviewClaimFieldRows();
 
-            Map<String, Object> expectedResult = new LinkedHashMap<>();
-            expectedResult.put("clientName", "John Smith");
-            expectedResult.put("ufn", "unique file number");
-            expectedResult.put("providerName", "provider name");
-            expectedResult.put("officeCode", "office code");
-            expectedResult.put("submittedDate", submittedDate);
-            expectedResult.put("areaOfLaw", new ThymeleafMessage(AreaOfLaw.CRIME_LOWER.getMessageKey()));
-            expectedResult.put("categoryOfLaw", "category of law");
-            expectedResult.put("feeCode", "fee code");
-            expectedResult.put("feeCodeDescription", "fee code description");
-            expectedResult.put("policeStationCourtPrisonId", "police station court prison id");
-            expectedResult.put("schemeId", "scheme id");
-            expectedResult.put("legalMatterCode", "matter type code");
-            expectedResult.put("caseStartDate", caseStartDate);
-            expectedResult.put("caseEndDate", caseEndDate);
-            expectedResult.put("escaped", true);
-            expectedResult.put("vatRequested", false);
+      Assertions.assertEquals(6, result.size());
 
-            CrimeClaimDetailsView viewModel = createView(claim);
-            Map<String, Object> result = viewModel.getSummaryRows();
-            Assertions.assertEquals(expectedResult, result);
-        }
+      Assertions.assertEquals(FIXED_FEE, result.get(0).key());
+
+      Assertions.assertEquals(NET_PROFIT_COST, result.get(1).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).changeUrl());
+
+      Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).changeUrl());
+
+      Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).key());
+      Assertions.assertEquals(
+          "/submissions/%s/claims/%s/disbursements-vat", result.get(3).changeUrl());
+
+      Assertions.assertEquals(TRAVEL_COSTS, result.get(4).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).changeUrl());
+
+      Assertions.assertEquals(WAITING_COSTS, result.get(5).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).changeUrl());
     }
+  }
 
-    @Nested
-    class GetSummaryClaimFieldRowsTests {
-        @Test
-        void rowsRenderedForClaimValuesWhenClaimHasAnAssessment() {
-            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
-            claim.setHasAssessment(true);
+  @Nested
+  class GetErrorTests {
 
-            CrimeClaimDetailsView viewModel = createView(claim);
-            List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
+    @Test
+    void convertFieldsThatNeedAmendingIntoErrors() {
+      ClaimField netProfitCostField = MockClaimsFunctions.createNetProfitCostField();
+      ClaimField travelCostsField = MockClaimsFunctions.createTravelCostField();
+      ClaimField waitingCostsField = MockClaimsFunctions.createWaitingCostField();
+      netProfitCostField.setAssessed(null);
+      travelCostsField.setAssessed(null);
+      waitingCostsField.setAssessed(null);
 
-            Assertions.assertEquals(7, result.size());
+      ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
+      ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
+      assessedTotalVatField.setAssessed(null);
+      assessedTotalInclVatField.setAssessed(null);
+      ClaimField allowedTotalVatField = MockClaimsFunctions.createAllowedTotalVatField();
+      ClaimField allowedTotalInclVatField = MockClaimsFunctions.createAllowedTotalInclVatField();
+      allowedTotalVatField.setAssessed(null);
+      allowedTotalInclVatField.setAssessed(null);
 
-            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
+      CrimeClaimDetails claim = new CrimeClaimDetails();
+      claim.setNetProfitCost(netProfitCostField);
+      claim.setTravelCosts(travelCostsField);
+      claim.setWaitingCosts(waitingCostsField);
+      claim.setAssessedTotalVat(assessedTotalVatField);
+      claim.setAssessedTotalInclVat(assessedTotalInclVatField);
+      claim.setAllowedTotalVat(allowedTotalVatField);
+      claim.setAllowedTotalInclVat(allowedTotalInclVatField);
 
-            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+      CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
 
-            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+      List<ReviewAndAmendFormError> expectedErrors =
+          List.of(
+              new ReviewAndAmendFormError("profit-cost", "claimSummary.rows.profitCost.error"),
+              new ReviewAndAmendFormError(
+                  "assessed-total-vat", "claimSummary.rows.assessedTotalVat.error"),
+              new ReviewAndAmendFormError(
+                  "assessed-total-incl-vat", "claimSummary.rows.assessedTotalInclVat.error"),
+              new ReviewAndAmendFormError(
+                  "allowed-total-vat", "claimSummary.rows.allowedTotalVat.error"),
+              new ReviewAndAmendFormError(
+                  "allowed-total-incl-vat", "claimSummary.rows.allowedTotalInclVat.error"));
 
-            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
-
-            Assertions.assertEquals(TRAVEL_COSTS, result.get(4).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
-
-            Assertions.assertEquals(WAITING_COSTS, result.get(5).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
-
-            Assertions.assertEquals(VAT, result.get(6).getKey());
-        }
-
-        @Test
-        void rowsRenderedForClaimValuesWhenClaimDoesNotHaveAnAssessment() {
-            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
-            claim.setTotalAmount(CalculatedTotalClaimField.builder().build());
-            claim.setHasAssessment(false);
-
-            CrimeClaimDetailsView viewModel = createView(claim);
-            List<ClaimFieldRow> result = viewModel.getSummaryClaimFieldRows();
-
-            Assertions.assertEquals(8, result.size());
-
-            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
-
-            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
-
-            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
-
-            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
-
-            Assertions.assertEquals(TRAVEL_COSTS, result.get(4).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
-
-            Assertions.assertEquals(WAITING_COSTS, result.get(5).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
-
-            Assertions.assertEquals(VAT, result.get(6).getKey());
-
-            Assertions.assertEquals(TOTAL, result.get(7).getKey());
-        }
+      Assertions.assertEquals(expectedErrors, viewModel.getErrors());
     }
-
-    @Nested
-    class GetReviewClaimFieldRowsTests {
-        @Test
-        void rowsRenderedForClaimValues() {
-            CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
-
-            CrimeClaimDetailsView viewModel = createView(claim);
-            List<ClaimFieldRow> result = viewModel.getReviewClaimFieldRows();
-
-            Assertions.assertEquals(6, result.size());
-
-            Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
-
-            Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
-
-            Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
-
-            Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
-
-            Assertions.assertEquals(TRAVEL_COSTS, result.get(4).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
-
-            Assertions.assertEquals(WAITING_COSTS, result.get(5).getKey());
-            Assertions.assertEquals(
-                    "/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
-        }
-    }
-
-    @Nested
-    class GetErrorTests {
-
-        @Test
-        void convertFieldsThatNeedAmendingIntoErrors() {
-            ClaimField netProfitCostField = MockClaimsFunctions.createNetProfitCostField();
-            ClaimField travelCostsField = MockClaimsFunctions.createTravelCostField();
-            ClaimField waitingCostsField = MockClaimsFunctions.createWaitingCostField();
-            netProfitCostField.setAssessed(null);
-            travelCostsField.setAssessed(null);
-            waitingCostsField.setAssessed(null);
-
-            ClaimField assessedTotalVatField = MockClaimsFunctions.createAssessedTotalVatField();
-            ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
-            assessedTotalVatField.setAssessed(null);
-            assessedTotalInclVatField.setAssessed(null);
-            ClaimField allowedTotalVatField = MockClaimsFunctions.createAllowedTotalVatField();
-            ClaimField allowedTotalInclVatField = MockClaimsFunctions.createAllowedTotalInclVatField();
-            allowedTotalVatField.setAssessed(null);
-            allowedTotalInclVatField.setAssessed(null);
-
-            CrimeClaimDetails claim = new CrimeClaimDetails();
-            claim.setNetProfitCost(netProfitCostField);
-            claim.setTravelCosts(travelCostsField);
-            claim.setWaitingCosts(waitingCostsField);
-            claim.setAssessedTotalVat(assessedTotalVatField);
-            claim.setAssessedTotalInclVat(assessedTotalInclVatField);
-            claim.setAllowedTotalVat(allowedTotalVatField);
-            claim.setAllowedTotalInclVat(allowedTotalInclVatField);
-
-            CrimeClaimDetailsView viewModel = new CrimeClaimDetailsView(claim);
-
-            List<ReviewAndAmendFormError> expectedErrors = List.of(
-                    new ReviewAndAmendFormError("profit-cost", "claimSummary.rows.profitCost.error"),
-                    new ReviewAndAmendFormError("assessed-total-vat", "claimSummary.rows.assessedTotalVat.error"),
-                    new ReviewAndAmendFormError(
-                            "assessed-total-incl-vat", "claimSummary.rows.assessedTotalInclVat.error"),
-                    new ReviewAndAmendFormError("allowed-total-vat", "claimSummary.rows.allowedTotalVat.error"),
-                    new ReviewAndAmendFormError(
-                            "allowed-total-incl-vat", "claimSummary.rows.allowedTotalInclVat.error"));
-
-            Assertions.assertEquals(expectedErrors, viewModel.getErrors());
-        }
-    }
+  }
 }

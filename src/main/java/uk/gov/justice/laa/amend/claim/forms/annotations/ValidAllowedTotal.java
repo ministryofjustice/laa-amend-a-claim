@@ -14,9 +14,9 @@ import uk.gov.justice.laa.amend.claim.forms.validators.AllowedTotalsValueValidat
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidAllowedTotal {
-    String message() default "";
+  String message() default "";
 
-    Class<?>[] groups() default {};
+  Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+  Class<? extends Payload>[] payload() default {};
 }

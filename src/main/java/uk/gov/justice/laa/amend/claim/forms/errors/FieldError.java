@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class FieldError {
-    private FieldErrorType type;
-    private String message;
+  private FieldErrorType type;
+  private String message;
 }

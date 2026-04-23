@@ -6,14 +6,13 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record BulkUploadAssessmentSummary(
-        UUID submissionId,
-        UUID claimId,
-        String uniqueFileNumber,
-        String officeCode,
-        OutcomeType assessmentOutcome,
-        BigDecimal allowedTotalInclVat)
-        implements Serializable {
+    UUID submissionId,
+    UUID claimId,
+    String uniqueFileNumber,
+    String officeCode,
+    OutcomeType assessmentOutcome,
+    BigDecimal allowedTotalInclVat)
+    implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 }

@@ -21,84 +21,84 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 @Feature("Assessed claim")
 public class AssessedClaimDetailsTest extends BaseTest {
 
-    private final String OFFICE_CODE = "123456";
-    private final String UFN = "031222/003";
-    private final String SUBMISSION_ID = UUID.randomUUID().toString();
-    private final String CLAIM_ID = UUID.randomUUID().toString();
-    private final String CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-    private final String CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
-    private final String ASSESSMENT_ID = UUID.randomUUID().toString();
+  private final String OFFICE_CODE = "123456";
+  private final String UFN = "031222/003";
+  private final String SUBMISSION_ID = UUID.randomUUID().toString();
+  private final String CLAIM_ID = UUID.randomUUID().toString();
+  private final String CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
+  private final String CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
+  private final String ASSESSMENT_ID = UUID.randomUUID().toString();
 
-    @Override
-    protected List<Insert> inserts() {
-        return List.of(
-                BulkSubmissionInsert.builder()
-                        .id(BULK_SUBMISSION_ID)
-                        .userId(USER_ID)
-                        .build(),
-                SubmissionInsert.builder()
-                        .id(SUBMISSION_ID)
-                        .bulkSubmissionId(BULK_SUBMISSION_ID)
-                        .officeAccountNumber(OFFICE_CODE)
-                        .submissionPeriod("APR-2025")
-                        .areaOfLaw("LEGAL_HELP")
-                        .userId(USER_ID)
-                        .build(),
-                ClaimInsert.builder()
-                        .id(CLAIM_ID)
-                        .submissionId(SUBMISSION_ID)
-                        .uniqueFileNumber(UFN)
-                        .userId(USER_ID)
-                        .hasAssessment(true)
-                        .build(),
-                ClaimSummaryFeeInsert.builder()
-                        .id(CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CLAIM_ID)
-                        .userId(USER_ID)
-                        .build(),
-                CalculatedFeeDetailInsert.builder()
-                        .id(CALCULATED_FEE_DETAIL_ID)
-                        .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CLAIM_ID)
-                        .escaped(true)
-                        .userId(USER_ID)
-                        .build(),
-                AssessmentInsert.builder()
-                        .id(ASSESSMENT_ID)
-                        .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
-                        .claimId(CLAIM_ID)
-                        .userId(USER_ID)
-                        .assessmentType("ESCAPE_CASE_ASSESSMENT")
-                        .assessmentReason("Escape Fee Case Assessment")
-                        .build());
-    }
+  @Override
+  protected List<Insert> inserts() {
+    return List.of(
+        BulkSubmissionInsert.builder().id(BULK_SUBMISSION_ID).userId(USER_ID).build(),
+        SubmissionInsert.builder()
+            .id(SUBMISSION_ID)
+            .bulkSubmissionId(BULK_SUBMISSION_ID)
+            .officeAccountNumber(OFFICE_CODE)
+            .submissionPeriod("APR-2025")
+            .areaOfLaw("LEGAL_HELP")
+            .userId(USER_ID)
+            .build(),
+        ClaimInsert.builder()
+            .id(CLAIM_ID)
+            .submissionId(SUBMISSION_ID)
+            .uniqueFileNumber(UFN)
+            .userId(USER_ID)
+            .hasAssessment(true)
+            .build(),
+        ClaimSummaryFeeInsert.builder()
+            .id(CLAIM_SUMMARY_FEE_ID)
+            .claimId(CLAIM_ID)
+            .userId(USER_ID)
+            .build(),
+        CalculatedFeeDetailInsert.builder()
+            .id(CALCULATED_FEE_DETAIL_ID)
+            .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
+            .claimId(CLAIM_ID)
+            .escaped(true)
+            .userId(USER_ID)
+            .build(),
+        AssessmentInsert.builder()
+            .id(ASSESSMENT_ID)
+            .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
+            .claimId(CLAIM_ID)
+            .userId(USER_ID)
+            .assessmentType("ESCAPE_CASE_ASSESSMENT")
+            .assessmentReason("Escape Fee Case Assessment")
+            .build());
+  }
 
-    @Test
-    @DisplayName("E2E: Assessed ClaimDetails")
-    void assessed() {
-        SearchPage search = new SearchPage(page);
+  @Test
+  @DisplayName("E2E: Assessed ClaimDetails")
+  void assessed() {
+    SearchPage search = new SearchPage(page);
 
-        search.searchForClaim(OFFICE_CODE, "", "", UFN, "", "", "");
+    search.searchForClaim(OFFICE_CODE, "", "", UFN, "", "", "");
 
-        search.clickViewForUfn(UFN);
+    search.clickViewForUfn(UFN);
 
-        ClaimDetailsPage claimDetails = new ClaimDetailsPage(page);
-        claimDetails.assertInfoAlertIsPresent();
-        claimDetails.assertUpdateAssessmentOutcomeButtonIsPresent();
+    ClaimDetailsPage claimDetails = new ClaimDetailsPage(page);
+    claimDetails.assertInfoAlertIsPresent();
+    claimDetails.assertUpdateAssessmentOutcomeButtonIsPresent();
 
-        claimDetails.assertCost("Fixed fee", "£239.35", "Not applicable", "£1,000.00");
-        claimDetails.assertCost("Profit costs", "Not applicable", "£750.00", "£2,000.00");
-        claimDetails.assertCost("Disbursements", "£400.00", "£400.00", "Not applicable");
-        claimDetails.assertCost("Disbursement VAT", "£80.00", "£80.00", "Not applicable");
-        claimDetails.assertCost("Detention travel and waiting costs", "£0.00", "£0.00", "£0.00");
-        claimDetails.assertCost("JR and form filling", "£0.00", "£0.00", "£0.00");
-        claimDetails.assertCost("Counsel costs", "£0.00", "£0.00", "£0.00");
-        claimDetails.assertCost("VAT", "Yes", "Yes", "No");
+    claimDetails.assertCost("Fixed fee", "£239.35", "Not applicable", "£1,000.00");
+    claimDetails.assertCost("Profit costs", "Not applicable", "£750.00", "£2,000.00");
+    claimDetails.assertCost("Disbursements", "£400.00", "£400.00", "Not applicable");
+    claimDetails.assertCost("Disbursement VAT", "£80.00", "£80.00", "Not applicable");
+    claimDetails.assertCost("Detention travel and waiting costs", "£0.00", "£0.00", "£0.00");
+    claimDetails.assertCost("JR and form filling", "£0.00", "£0.00", "£0.00");
+    claimDetails.assertCost("Counsel costs", "£0.00", "£0.00", "£0.00");
+    claimDetails.assertCost("VAT", "Yes", "Yes", "No");
 
-        claimDetails.assertAssessedTotals("Assessed total VAT", "Not applicable", "Not applicable", "£3,000.00");
-        claimDetails.assertAssessedTotals("Assessed total incl VAT", "Not applicable", "Not applicable", "£4,000.00");
+    claimDetails.assertAssessedTotals(
+        "Assessed total VAT", "Not applicable", "Not applicable", "£3,000.00");
+    claimDetails.assertAssessedTotals(
+        "Assessed total incl VAT", "Not applicable", "Not applicable", "£4,000.00");
 
-        claimDetails.assertAllowedTotals("Allowed total VAT", "£127.87", "Not applicable", "£5,000.00");
-        claimDetails.assertAllowedTotals("Allowed total incl VAT", "£767.22", "Not applicable", "£6,000.00");
-    }
+    claimDetails.assertAllowedTotals("Allowed total VAT", "£127.87", "Not applicable", "£5,000.00");
+    claimDetails.assertAllowedTotals(
+        "Allowed total incl VAT", "£767.22", "Not applicable", "£6,000.00");
+  }
 }

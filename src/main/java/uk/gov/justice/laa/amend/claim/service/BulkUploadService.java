@@ -36,122 +36,133 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 @Slf4j
 public abstract class BulkUploadService<T> {
 
-    private static final int ROW_OFFSET = 2;
-    protected final CsvSchemaProvider<T> schemaProvider;
-    protected final CsvRowMapper<T> rowMapper;
-    protected final CsvHeaderValidator csvHeaderValidator;
+  private static final int ROW_OFFSET = 2;
+  protected final CsvSchemaProvider<T> schemaProvider;
+  protected final CsvRowMapper<T> rowMapper;
+  protected final CsvHeaderValidator csvHeaderValidator;
 
-    private final AssessmentService assessmentService;
+  private final AssessmentService assessmentService;
 
-    public BulkUploadResult upload(MultipartFile file, UUID userId) {
-        var result = handleUpload(file, userId);
-        logFailures(result);
-        return result;
+  public BulkUploadResult upload(MultipartFile file, UUID userId) {
+    var result = handleUpload(file, userId);
+    logFailures(result);
+    return result;
+  }
+
+  private BulkUploadResult handleUpload(MultipartFile file, UUID userId) {
+    List<T> rows = new ArrayList<>();
+    List<BulkUploadError> errors = new ArrayList<>();
+    try {
+      parseFile(file, rows, errors);
+    } catch (Exception ex) {
+      log.error("Error parsing file", ex);
+      errors.add(
+          new BulkUploadError(
+              null,
+              StringUtils.isNotBlank(ex.getMessage()) ? ex.getMessage() : "Error parsing file"));
+    }
+    if (!errors.isEmpty()) {
+      return new BulkUploadResult(PARSING_FAILURE, sortedByRowNumber(errors));
+    }
+    log.info("Parsed {} rows from file", rows.size());
+
+    if (rows.size() > MAX_ROWS) {
+      return BulkUploadResult.failure(
+          PARSING_FAILURE,
+          List.of(
+              new BulkUploadError(
+                  null, "File contains too many rows. Maximum allowed is " + MAX_ROWS)));
     }
 
-    private BulkUploadResult handleUpload(MultipartFile file, UUID userId) {
-        List<T> rows = new ArrayList<>();
-        List<BulkUploadError> errors = new ArrayList<>();
-        try {
-            parseFile(file, rows, errors);
-        } catch (Exception ex) {
-            log.error("Error parsing file", ex);
-            errors.add(new BulkUploadError(
-                    null, StringUtils.isNotBlank(ex.getMessage()) ? ex.getMessage() : "Error parsing file"));
-        }
-        if (!errors.isEmpty()) {
-            return BulkUploadResult.failure(PARSING_FAILURE, sortedByRowNumber(errors));
-        }
-        log.info("Parsed {} rows from file", rows.size());
-
-        if (rows.size() > MAX_ROWS) {
-            return BulkUploadResult.failure(
-                    PARSING_FAILURE,
-                    List.of(new BulkUploadError(null, "File contains too many rows. Maximum allowed is " + MAX_ROWS)));
-        }
-
-        var validationOutcome = validateRows(rows);
-        if (validationOutcome.result().status() != SUCCESS) {
-            return validationOutcome.result();
-        }
-
-        return submit(validationOutcome.claimDetailsList(), userId);
+    var validationOutcome = validateRows(rows);
+    if (validationOutcome.result().status() != SUCCESS) {
+      return validationOutcome.result();
     }
 
-    private void parseFile(MultipartFile file, List<T> rows, List<BulkUploadError> errors) throws IOException {
-        try (BufferedReader reader =
-                        new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
-                CSVParser parser = CSVFormat.DEFAULT
-                        .builder()
-                        .setHeader()
-                        .setIgnoreHeaderCase(true)
-                        .setSkipHeaderRecord(true)
-                        .setTrim(true)
-                        .setIgnoreEmptyLines(true)
-                        .get()
-                        .parse(reader)) {
+    return submit(validationOutcome.claimDetailsList(), userId);
+  }
 
-            // Header validation
-            try {
-                csvHeaderValidator.validate(schemaProvider.getSchema(), parser.getHeaderNames());
-            } catch (Exception ex) {
-                String message =
-                        StringUtils.isBlank(ex.getMessage()) ? "Failed to validate CSV header." : ex.getMessage();
-                errors.add(new BulkUploadError(null, message));
-                return;
-            }
+  private void parseFile(MultipartFile file, List<T> rows, List<BulkUploadError> errors)
+      throws IOException {
+    try (BufferedReader reader =
+            new BufferedReader(
+                new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+        CSVParser parser =
+            CSVFormat.DEFAULT
+                .builder()
+                .setHeader()
+                .setIgnoreHeaderCase(true)
+                .setSkipHeaderRecord(true)
+                .setTrim(true)
+                .setIgnoreEmptyLines(true)
+                .get()
+                .parse(reader)) {
 
-            int row = 1;
-            for (CSVRecord record : parser) {
-                row++;
-                rows.add(rowMapper.mapRow(record, row, errors));
-            }
-        }
+      // Header validation
+      try {
+        csvHeaderValidator.validate(schemaProvider.getSchema(), parser.getHeaderNames());
+      } catch (Exception ex) {
+        String message =
+            StringUtils.isBlank(ex.getMessage())
+                ? "Failed to validate CSV header."
+                : ex.getMessage();
+        errors.add(new BulkUploadError(null, message));
+        return;
+      }
+
+      int row = 1;
+      for (CSVRecord record : parser) {
+        row++;
+        rows.add(rowMapper.mapRow(record, row, errors));
+      }
     }
+  }
 
-    protected abstract BulkUploadValidationOutcome validateRows(List<T> rows);
+  protected abstract BulkUploadValidationOutcome validateRows(List<T> rows);
 
-    protected BulkUploadResult submit(List<? extends ClaimDetails> claimDetails, UUID userId) {
-        List<BulkUploadAssessmentSummary> summaries = new ArrayList<>();
-        for (int row = 0; row < claimDetails.size(); ++row) {
-            try {
-                var claim = claimDetails.get(row);
-                log.info(
-                        "Bulk upload in progress. Submitting assessment for row {}, claim {}, UFN {}",
-                        row + ROW_OFFSET,
-                        claim.getClaimId(),
-                        claim.getUniqueFileNumber());
-                assessmentService.submitAssessment(claim, userId.toString());
-                summaries.add(new BulkUploadAssessmentSummary(
-                        claim.getSubmissionId(),
-                        claim.getClaimId(),
-                        claim.getUniqueFileNumber(),
-                        claim.getOfficeCode(),
-                        claim.getAssessmentOutcome(),
-                        (BigDecimal) claim.getAllowedTotalInclVat().getAssessed()));
-            } catch (Exception ex) {
-                var message = String.format(
-                        "Failed to submit assessment. %s prior rows in the file have already been"
-                                + " processed and do not need to be reuploaded.",
-                        row);
-                log.error(String.format("Row %s: %s", row + ROW_OFFSET, message), ex);
-                return BulkUploadResult.failure(
-                        SUBMISSION_FAILURE, List.of(new BulkUploadError(row + ROW_OFFSET, message)));
-            }
-        }
-        log.info("Successfully uploaded {} assessments", claimDetails.size());
-        return BulkUploadResult.success(summaries);
+  protected BulkUploadResult submit(List<? extends ClaimDetails> claimDetails, UUID userId) {
+    List<BulkUploadAssessmentSummary> summaries = new ArrayList<>();
+    for (int row = 0; row < claimDetails.size(); ++row) {
+      try {
+        var claim = claimDetails.get(row);
+        log.info(
+            "Bulk upload in progress. Submitting assessment for row {}, claim {}, UFN {}",
+            row + ROW_OFFSET,
+            claim.getClaimId(),
+            claim.getUniqueFileNumber());
+        assessmentService.submitAssessment(claim, userId.toString());
+        summaries.add(
+            new BulkUploadAssessmentSummary(
+                claim.getSubmissionId(),
+                claim.getClaimId(),
+                claim.getUniqueFileNumber(),
+                claim.getOfficeCode(),
+                claim.getAssessmentOutcome(),
+                (BigDecimal) claim.getAllowedTotalInclVat().getAssessed()));
+      } catch (Exception ex) {
+        var message =
+            String.format(
+                "Failed to submit assessment. %s prior rows in the file have already been"
+                    + " processed and do not need to be reuploaded.",
+                row);
+        log.error(String.format("Row %s: %s", row + ROW_OFFSET, message), ex);
+        return BulkUploadResult.failure(
+            SUBMISSION_FAILURE, List.of(new BulkUploadError(row + ROW_OFFSET, message)));
+      }
     }
+    log.info("Successfully uploaded {} assessments", claimDetails.size());
+    return BulkUploadResult.success(summaries);
+  }
 
-    protected static List<BulkUploadError> sortedByRowNumber(List<BulkUploadError> errors) {
-        return errors.stream()
-                .sorted(Comparator.comparing(BulkUploadError::rowNumber, nullsFirst(naturalOrder())))
-                .toList();
-    }
+  protected static List<BulkUploadError> sortedByRowNumber(List<BulkUploadError> errors) {
+    return errors.stream()
+        .sorted(Comparator.comparing(BulkUploadError::rowNumber, nullsFirst(naturalOrder())))
+        .toList();
+  }
 
-    private static void logFailures(BulkUploadResult result) {
-        if (result.status() != SUCCESS) {
-            log.error("Bulk upload failure: {}", result);
-        }
+  private static void logFailures(BulkUploadResult result) {
+    if (result.status() != SUCCESS) {
+      log.error("Bulk upload failure: {}", result);
     }
+  }
 }

@@ -32,221 +32,228 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 @WebMvcTest(ChangeAllowedTotalsController.class)
 class ChangeAllowedTotalsControllerTest extends BaseControllerTest {
 
-    private MockHttpSession session;
-    private UUID claimId;
-    private UUID submissionId;
-    private CivilClaimDetails civilClaim;
-    private CrimeClaimDetails crimeClaim;
-    private final ClaimStatusHandler claimStatusHandler = new ClaimStatusHandler();
+  private MockHttpSession session;
+  private UUID claimId;
+  private UUID submissionId;
+  private CivilClaimDetails civilClaim;
+  private CrimeClaimDetails crimeClaim;
+  private final ClaimStatusHandler claimStatusHandler = new ClaimStatusHandler();
 
-    @BeforeEach
-    void setup() {
-        session = new MockHttpSession();
-        submissionId = UUID.randomUUID();
-        claimId = UUID.randomUUID();
-        civilClaim = MockClaimsFunctions.createMockCivilClaim();
-        crimeClaim = MockClaimsFunctions.createMockCrimeClaim();
-    }
+  @BeforeEach
+  void setup() {
+    session = new MockHttpSession();
+    submissionId = UUID.randomUUID();
+    claimId = UUID.randomUUID();
+    civilClaim = MockClaimsFunctions.createMockCivilClaim();
+    crimeClaim = MockClaimsFunctions.createMockCrimeClaim();
+  }
 
-    @Test
-    void testGetReturnsView_CivilClaim() throws Exception {
-        civilClaim.setAllowedTotalVat(AllowedClaimField.builder().build());
-        civilClaim.setAllowedTotalInclVat(AllowedClaimField.builder().build());
-        session.setAttribute(claimId.toString(), civilClaim);
+  @Test
+  void testGetReturnsView_CivilClaim() throws Exception {
+    civilClaim.setAllowedTotalVat(AllowedClaimField.builder().build());
+    civilClaim.setAllowedTotalInclVat(AllowedClaimField.builder().build());
+    session.setAttribute(claimId.toString(), civilClaim);
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("allowed-totals"))
-                .andExpect(model().attribute("form", hasProperty("allowedTotalVat", nullValue())))
-                .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", nullValue())));
-    }
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("allowed-totals"))
+        .andExpect(model().attribute("form", hasProperty("allowedTotalVat", nullValue())))
+        .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", nullValue())));
+  }
 
-    @Test
-    void testGetReturnsView_CrimeClaim() throws Exception {
-        crimeClaim.setAllowedTotalVat(AllowedClaimField.builder().build());
-        crimeClaim.setAllowedTotalInclVat(AllowedClaimField.builder().build());
-        session.setAttribute(claimId.toString(), crimeClaim);
+  @Test
+  void testGetReturnsView_CrimeClaim() throws Exception {
+    crimeClaim.setAllowedTotalVat(AllowedClaimField.builder().build());
+    crimeClaim.setAllowedTotalInclVat(AllowedClaimField.builder().build());
+    session.setAttribute(claimId.toString(), crimeClaim);
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("allowed-totals"))
-                .andExpect(model().attribute("form", hasProperty("allowedTotalVat", nullValue())))
-                .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", nullValue())));
-    }
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("allowed-totals"))
+        .andExpect(model().attribute("form", hasProperty("allowedTotalVat", nullValue())))
+        .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", nullValue())));
+  }
 
-    @Test
-    void testGetRedirectsWhenFieldIsNotAssessable_CivilClaim() throws Exception {
-        ClaimField allowedTotalVat = AssessedClaimField.builder().build();
-        ClaimField allowedTotalInclVat = AssessedClaimField.builder().build();
-        allowedTotalVat.setAssessable(false);
-        allowedTotalInclVat.setAssessable(false);
-        civilClaim.setAllowedTotalVat(allowedTotalVat);
-        civilClaim.setAllowedTotalInclVat(allowedTotalInclVat);
-        session.setAttribute(claimId.toString(), civilClaim);
+  @Test
+  void testGetRedirectsWhenFieldIsNotAssessable_CivilClaim() throws Exception {
+    ClaimField allowedTotalVat = AssessedClaimField.builder().build();
+    ClaimField allowedTotalInclVat = AssessedClaimField.builder().build();
+    allowedTotalVat.setAssessable(false);
+    allowedTotalInclVat.setAssessable(false);
+    civilClaim.setAllowedTotalVat(allowedTotalVat);
+    civilClaim.setAllowedTotalInclVat(allowedTotalInclVat);
+    session.setAttribute(claimId.toString(), civilClaim);
 
-        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isNotFound());
-    }
+    mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isNotFound());
+  }
 
-    @Test
-    void testGetRedirectsWhenFieldIsNotAssessable_CrimeClaim() throws Exception {
-        ClaimField allowedTotalVat = AssessedClaimField.builder().build();
-        ClaimField allowedTotalInclVat = AssessedClaimField.builder().build();
-        allowedTotalVat.setAssessable(false);
-        allowedTotalInclVat.setAssessable(false);
-        crimeClaim.setAllowedTotalVat(allowedTotalVat);
-        crimeClaim.setAllowedTotalInclVat(allowedTotalInclVat);
-        session.setAttribute(claimId.toString(), crimeClaim);
+  @Test
+  void testGetRedirectsWhenFieldIsNotAssessable_CrimeClaim() throws Exception {
+    ClaimField allowedTotalVat = AssessedClaimField.builder().build();
+    ClaimField allowedTotalInclVat = AssessedClaimField.builder().build();
+    allowedTotalVat.setAssessable(false);
+    allowedTotalInclVat.setAssessable(false);
+    crimeClaim.setAllowedTotalVat(allowedTotalVat);
+    crimeClaim.setAllowedTotalInclVat(allowedTotalInclVat);
+    session.setAttribute(claimId.toString(), crimeClaim);
 
-        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isNotFound());
-    }
+    mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isNotFound());
+  }
 
-    @Test
-    void testGetReturnsViewWhenQuestionAlreadyAnswered_CivilClaim() throws Exception {
-        civilClaim.setAllowedTotalInclVat(MockClaimsFunctions.createAllowedTotalInclVatField());
-        civilClaim.setAllowedTotalVat(MockClaimsFunctions.createAllowedTotalVatField());
+  @Test
+  void testGetReturnsViewWhenQuestionAlreadyAnswered_CivilClaim() throws Exception {
+    civilClaim.setAllowedTotalInclVat(MockClaimsFunctions.createAllowedTotalInclVatField());
+    civilClaim.setAllowedTotalVat(MockClaimsFunctions.createAllowedTotalVatField());
 
-        session.setAttribute(claimId.toString(), civilClaim);
+    session.setAttribute(claimId.toString(), civilClaim);
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("allowed-totals"))
-                .andExpect(model().attribute("form", hasProperty("allowedTotalVat", is("300.00"))))
-                .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", is("300.00"))));
-    }
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("allowed-totals"))
+        .andExpect(model().attribute("form", hasProperty("allowedTotalVat", is("300.00"))))
+        .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", is("300.00"))));
+  }
 
-    @Test
-    void testGetReturnsViewWhenQuestionAlreadyAnswered_CrimeClaim() throws Exception {
-        crimeClaim.setAllowedTotalInclVat(MockClaimsFunctions.createAllowedTotalInclVatField());
-        crimeClaim.setAllowedTotalVat(MockClaimsFunctions.createAllowedTotalVatField());
+  @Test
+  void testGetReturnsViewWhenQuestionAlreadyAnswered_CrimeClaim() throws Exception {
+    crimeClaim.setAllowedTotalInclVat(MockClaimsFunctions.createAllowedTotalInclVatField());
+    crimeClaim.setAllowedTotalVat(MockClaimsFunctions.createAllowedTotalVatField());
 
-        session.setAttribute(claimId.toString(), crimeClaim);
+    session.setAttribute(claimId.toString(), crimeClaim);
 
-        mockMvc.perform(get(buildPath()).session(session))
-                .andExpect(status().isOk())
-                .andExpect(view().name("allowed-totals"))
-                .andExpect(model().attribute("form", hasProperty("allowedTotalVat", is("300.00"))))
-                .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", is("300.00"))));
-    }
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("allowed-totals"))
+        .andExpect(model().attribute("form", hasProperty("allowedTotalVat", is("300.00"))))
+        .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", is("300.00"))));
+  }
 
-    @Test
-    void testPostSavesValuesAndRedirectsWhenAssessedTotalsAreAssessable() throws Exception {
-        ClaimDetails claim = crimeClaim;
-        // Given the Claim Field status has been set based on outcome
-        claimStatusHandler.updateFieldStatuses(claim, claim.getAssessmentOutcome());
+  @Test
+  void testPostSavesValuesAndRedirectsWhenAssessedTotalsAreAssessable() throws Exception {
+    ClaimDetails claim = crimeClaim;
+    // Given the Claim Field status has been set based on outcome
+    claimStatusHandler.updateFieldStatuses(claim, claim.getAssessmentOutcome());
 
-        Assertions.assertNotNull(crimeClaim.getAllowedTotalVat());
-        Assertions.assertNotNull(crimeClaim.getAllowedTotalInclVat());
+    Assertions.assertNotNull(crimeClaim.getAllowedTotalVat());
+    Assertions.assertNotNull(crimeClaim.getAllowedTotalInclVat());
 
-        session.setAttribute(claimId.toString(), claim);
+    session.setAttribute(claimId.toString(), claim);
 
-        mockMvc.perform(post(buildPath())
-                        .session(session)
-                        .with(csrf())
-                        .param("allowedTotalVat", "700")
-                        .param("allowedTotalInclVat", "800"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(buildRedirectPath()));
+    mockMvc
+        .perform(
+            post(buildPath())
+                .session(session)
+                .with(csrf())
+                .param("allowedTotalVat", "700")
+                .param("allowedTotalInclVat", "800"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildRedirectPath()));
 
-        ClaimDetails updated = (ClaimDetails) session.getAttribute(claimId.toString());
+    ClaimDetails updated = (ClaimDetails) session.getAttribute(claimId.toString());
 
-        Assertions.assertNotNull(updated);
+    Assertions.assertNotNull(updated);
 
-        Assertions.assertEquals(
-                new BigDecimal("700.00"), updated.getAllowedTotalVat().getAssessed());
-        Assertions.assertEquals(
-                new BigDecimal("800.00"), updated.getAllowedTotalInclVat().getAssessed());
+    Assertions.assertEquals(new BigDecimal("700.00"), updated.getAllowedTotalVat().getAssessed());
+    Assertions.assertEquals(
+        new BigDecimal("800.00"), updated.getAllowedTotalInclVat().getAssessed());
 
-        Assertions.assertEquals(
-                new BigDecimal("300"), updated.getAssessedTotalVat().getAssessed());
-        Assertions.assertEquals(
-                new BigDecimal("300"), updated.getAssessedTotalInclVat().getAssessed());
-    }
+    Assertions.assertEquals(new BigDecimal("300"), updated.getAssessedTotalVat().getAssessed());
+    Assertions.assertEquals(new BigDecimal("300"), updated.getAssessedTotalInclVat().getAssessed());
+  }
 
-    @Test
-    void testPostSavesValuesAndRedirectsWhenAssessedTotalsAreNotAssessable() throws Exception {
-        ClaimDetails claim = crimeClaim;
-        // Given the Claim Field status has been set based on outcome
-        claimStatusHandler.updateFieldStatuses(claim, claim.getAssessmentOutcome());
+  @Test
+  void testPostSavesValuesAndRedirectsWhenAssessedTotalsAreNotAssessable() throws Exception {
+    ClaimDetails claim = crimeClaim;
+    // Given the Claim Field status has been set based on outcome
+    claimStatusHandler.updateFieldStatuses(claim, claim.getAssessmentOutcome());
 
-        ClaimField assessedTotalVat = claim.getAssessedTotalVat();
-        ClaimField assessedTotalInclVat = claim.getAssessedTotalInclVat();
+    ClaimField assessedTotalVat = claim.getAssessedTotalVat();
+    ClaimField assessedTotalInclVat = claim.getAssessedTotalInclVat();
 
-        assessedTotalVat.setAssessable(false);
-        assessedTotalInclVat.setAssessable(false);
+    assessedTotalVat.setAssessable(false);
+    assessedTotalInclVat.setAssessable(false);
 
-        Assertions.assertNotNull(crimeClaim.getAllowedTotalVat());
-        Assertions.assertNotNull(crimeClaim.getAllowedTotalInclVat());
+    Assertions.assertNotNull(crimeClaim.getAllowedTotalVat());
+    Assertions.assertNotNull(crimeClaim.getAllowedTotalInclVat());
 
-        session.setAttribute(claimId.toString(), claim);
+    session.setAttribute(claimId.toString(), claim);
 
-        mockMvc.perform(post(buildPath())
-                        .session(session)
-                        .with(csrf())
-                        .param("allowedTotalVat", "700")
-                        .param("allowedTotalInclVat", "800"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(buildRedirectPath()));
+    mockMvc
+        .perform(
+            post(buildPath())
+                .session(session)
+                .with(csrf())
+                .param("allowedTotalVat", "700")
+                .param("allowedTotalInclVat", "800"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildRedirectPath()));
 
-        ClaimDetails updated = (ClaimDetails) session.getAttribute(claimId.toString());
+    ClaimDetails updated = (ClaimDetails) session.getAttribute(claimId.toString());
 
-        Assertions.assertNotNull(updated);
+    Assertions.assertNotNull(updated);
 
-        Assertions.assertEquals(
-                new BigDecimal("700.00"), updated.getAllowedTotalVat().getAssessed());
-        Assertions.assertEquals(
-                new BigDecimal("800.00"), updated.getAllowedTotalInclVat().getAssessed());
+    Assertions.assertEquals(new BigDecimal("700.00"), updated.getAllowedTotalVat().getAssessed());
+    Assertions.assertEquals(
+        new BigDecimal("800.00"), updated.getAllowedTotalInclVat().getAssessed());
 
-        Assertions.assertEquals(
-                new BigDecimal("700.00"), updated.getAssessedTotalVat().getAssessed());
-        Assertions.assertEquals(
-                new BigDecimal("800.00"), updated.getAssessedTotalInclVat().getAssessed());
-    }
+    Assertions.assertEquals(new BigDecimal("700.00"), updated.getAssessedTotalVat().getAssessed());
+    Assertions.assertEquals(
+        new BigDecimal("800.00"), updated.getAssessedTotalInclVat().getAssessed());
+  }
 
-    @Test
-    void testPostReturnsBadRequestForNegativeValue() throws Exception {
-        session.setAttribute(claimId.toString(), civilClaim);
+  @Test
+  void testPostReturnsBadRequestForNegativeValue() throws Exception {
+    session.setAttribute(claimId.toString(), civilClaim);
 
-        mockMvc.perform(post(buildPath())
-                        .session(session)
-                        .with(csrf())
-                        .param("allowedTotalVat", "-1")
-                        .param("allowedTotalInclVat", "-1"))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("allowed-totals"))
-                .andExpect(model().hasErrors());
-    }
+    mockMvc
+        .perform(
+            post(buildPath())
+                .session(session)
+                .with(csrf())
+                .param("allowedTotalVat", "-1")
+                .param("allowedTotalInclVat", "-1"))
+        .andExpect(status().isBadRequest())
+        .andExpect(view().name("allowed-totals"))
+        .andExpect(model().hasErrors());
+  }
 
-    @Test
-    void testPostReturnsBadRequestFor3DecimalPlacesValue() throws Exception {
-        session.setAttribute(claimId.toString(), civilClaim);
+  @Test
+  void testPostReturnsBadRequestFor3DecimalPlacesValue() throws Exception {
+    session.setAttribute(claimId.toString(), civilClaim);
 
-        mockMvc.perform(post(buildPath())
-                        .session(session)
-                        .with(csrf())
-                        .param("allowedTotalVat", "100.000")
-                        .param("allowedTotalInclVat", "100.000"))
-                .andExpect(status().isBadRequest())
-                .andExpect(view().name("allowed-totals"))
-                .andExpect(model().hasErrors());
-    }
+    mockMvc
+        .perform(
+            post(buildPath())
+                .session(session)
+                .with(csrf())
+                .param("allowedTotalVat", "100.000")
+                .param("allowedTotalInclVat", "100.000"))
+        .andExpect(status().isBadRequest())
+        .andExpect(view().name("allowed-totals"))
+        .andExpect(model().hasErrors());
+  }
 
-    @Test
-    void testGetRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
-        mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
-    }
+  @Test
+  void testGetRequiresRole() throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+    mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isForbidden());
+  }
 
-    @Test
-    void testPostRequiresRole() throws Exception {
-        dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
-        mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
-    }
+  @Test
+  void testPostRequiresRole() throws Exception {
+    dummyUserSecurityService.setRoles(allRolesApartFrom(ROLE_ESCAPE_CASE_CASEWORKER));
+    mockMvc.perform(post(buildPath()).session(session)).andExpect(status().isForbidden());
+  }
 
-    private String buildPath() {
-        return String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId);
-    }
+  private String buildPath() {
+    return String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId);
+  }
 
-    private String buildRedirectPath() {
-        return String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
-    }
+  private String buildRedirectPath() {
+    return String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+  }
 }
