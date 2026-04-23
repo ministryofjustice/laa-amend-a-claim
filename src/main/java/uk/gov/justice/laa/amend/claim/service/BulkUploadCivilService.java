@@ -91,7 +91,7 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
     if (!errors.isEmpty()) {
       log.info("Failed validation with {} errors", errors.size());
       return new BulkUploadValidationOutcome(
-          new BulkUploadResult(VALIDATION_FAILURE, sortedByRowNumber(errors)), List.of());
+          BulkUploadResult.failure(VALIDATION_FAILURE, sortedByRowNumber(errors)), List.of());
     } else {
       log.info("Successfully validated {} rows", rows.size());
       return new BulkUploadValidationOutcome(BulkUploadResult.success(List.of()), claimsData);

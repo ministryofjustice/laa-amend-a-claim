@@ -62,7 +62,7 @@ public abstract class BulkUploadService<T> {
               StringUtils.isNotBlank(ex.getMessage()) ? ex.getMessage() : "Error parsing file"));
     }
     if (!errors.isEmpty()) {
-      return new BulkUploadResult(PARSING_FAILURE, sortedByRowNumber(errors));
+      return BulkUploadResult.failure(PARSING_FAILURE, sortedByRowNumber(errors));
     }
     log.info("Parsed {} rows from file", rows.size());
 
