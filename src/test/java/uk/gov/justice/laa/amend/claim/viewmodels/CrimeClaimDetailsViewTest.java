@@ -102,29 +102,25 @@ public class CrimeClaimDetailsViewTest
 
       Assertions.assertEquals(7, result.size());
 
-      Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
+      Assertions.assertEquals(FIXED_FEE, result.get(0).key());
 
-      Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
+      Assertions.assertEquals(NET_PROFIT_COST, result.get(1).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).changeUrl());
+
+      Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).changeUrl());
+
+      Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).key());
       Assertions.assertEquals(
-          "/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+          "/submissions/%s/claims/%s/disbursements-vat", result.get(3).changeUrl());
 
-      Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+      Assertions.assertEquals(TRAVEL_COSTS, result.get(4).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).changeUrl());
 
-      Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+      Assertions.assertEquals(WAITING_COSTS, result.get(5).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).changeUrl());
 
-      Assertions.assertEquals(TRAVEL_COSTS, result.get(4).getKey());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
-
-      Assertions.assertEquals(WAITING_COSTS, result.get(5).getKey());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
-
-      Assertions.assertEquals(VAT, result.get(6).getKey());
+      Assertions.assertEquals(VAT, result.get(6).key());
     }
 
     @Test
@@ -138,31 +134,27 @@ public class CrimeClaimDetailsViewTest
 
       Assertions.assertEquals(8, result.size());
 
-      Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
+      Assertions.assertEquals(FIXED_FEE, result.get(0).key());
 
-      Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
+      Assertions.assertEquals(NET_PROFIT_COST, result.get(1).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).changeUrl());
+
+      Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).changeUrl());
+
+      Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).key());
       Assertions.assertEquals(
-          "/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+          "/submissions/%s/claims/%s/disbursements-vat", result.get(3).changeUrl());
 
-      Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+      Assertions.assertEquals(TRAVEL_COSTS, result.get(4).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).changeUrl());
 
-      Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+      Assertions.assertEquals(WAITING_COSTS, result.get(5).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).changeUrl());
 
-      Assertions.assertEquals(TRAVEL_COSTS, result.get(4).getKey());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
+      Assertions.assertEquals(VAT, result.get(6).key());
 
-      Assertions.assertEquals(WAITING_COSTS, result.get(5).getKey());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
-
-      Assertions.assertEquals(VAT, result.get(6).getKey());
-
-      Assertions.assertEquals(TOTAL, result.get(7).getKey());
+      Assertions.assertEquals(TOTAL, result.get(7).key());
     }
   }
 
@@ -177,27 +169,23 @@ public class CrimeClaimDetailsViewTest
 
       Assertions.assertEquals(6, result.size());
 
-      Assertions.assertEquals(FIXED_FEE, result.get(0).getKey());
+      Assertions.assertEquals(FIXED_FEE, result.get(0).key());
 
-      Assertions.assertEquals(NET_PROFIT_COST, result.get(1).getKey());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/profit-costs", result.get(1).getChangeUrl());
+      Assertions.assertEquals(NET_PROFIT_COST, result.get(1).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/profit-costs", result.get(1).changeUrl());
 
-      Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).getKey());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/disbursements", result.get(2).getChangeUrl());
+      Assertions.assertEquals(NET_DISBURSEMENTS_COST, result.get(2).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/disbursements", result.get(2).changeUrl());
 
-      Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).getKey());
+      Assertions.assertEquals(DISBURSEMENT_VAT, result.get(3).key());
       Assertions.assertEquals(
-          "/submissions/%s/claims/%s/disbursements-vat", result.get(3).getChangeUrl());
+          "/submissions/%s/claims/%s/disbursements-vat", result.get(3).changeUrl());
 
-      Assertions.assertEquals(TRAVEL_COSTS, result.get(4).getKey());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/travel-costs", result.get(4).getChangeUrl());
+      Assertions.assertEquals(TRAVEL_COSTS, result.get(4).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/travel-costs", result.get(4).changeUrl());
 
-      Assertions.assertEquals(WAITING_COSTS, result.get(5).getKey());
-      Assertions.assertEquals(
-          "/submissions/%s/claims/%s/waiting-costs", result.get(5).getChangeUrl());
+      Assertions.assertEquals(WAITING_COSTS, result.get(5).key());
+      Assertions.assertEquals("/submissions/%s/claims/%s/waiting-costs", result.get(5).changeUrl());
     }
   }
 
