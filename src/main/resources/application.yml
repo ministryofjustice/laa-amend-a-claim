@@ -80,7 +80,7 @@ server:
   servlet:
     session:
       cookie:
-        name: LAASESSION
+        name: AACSESSION
         same-site: lax
       tracking-modes: cookie
 
