@@ -55,6 +55,10 @@ configurations.configureEach {
             details.useVersion '7.0.7'
             details.because 'Fixes HTTP Request Smuggling (SNYK-JAVA-ORGSPRINGFRAMEWORK-16109603, SNYK-JAVA-ORGSPRINGFRAMEWORK-16109604)'
         }
+        if (details.requested.group == 'org.springframework.security' && details.requested.name.startsWith('spring-security-')) {
+            details.useVersion '7.0.5'
+            details.because 'Fixes Access Control Bypass (SNYK-JAVA-ORGSPRINGFRAMEWORKSECURITY-16120588, 16121326) and User Impersonation (SNYK-JAVA-ORGSPRINGFRAMEWORKSECURITY-16121020)'
+        }
     }
 }
 
