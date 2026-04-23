@@ -1,0 +1,30 @@
+<th:block th:fragment="claimDetailsHeader(currentPage)" xmlns:th="http://www.thymeleaf.org">
+    <th:block th:if="${claim.hasAssessment and !claim.isVoidClaim}">
+        <th:block th:replace="~{partials/information-alert :: informationAlert('claimSummary', ${claim.lastEditedBy(user).resolve(#messages)})}"></th:block>
+    </th:block>
+
+    <th:block th:if="${claim.isVoidClaim}">
+        <th:block th:replace="~{partials/error-alert :: errorAlert('claimSummary.error', ${claim.lastEditedBy(user).resolve(#messages)})}"></th:block>
+    </th:block>
+
+    <h1 class="govuk-heading-l">
+        <span th:text="#{claimDetails.mainHeading}"></span>
+    </h1>
+
+    <nav class="moj-sub-navigation" aria-label="Sub navigation" th:if="${featureFlagsConfig.isClaimHistoryEnabled}">
+        <ul class="moj-sub-navigation__list">
+            <li class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link"
+                   th:attr="aria-current=${currentPage == 'overview'} ? 'page' : null"
+                   th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
+                   th:text="#{claimDetails.overview}"></a>
+            </li>
+            <li class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link"
+                   th:attr="aria-current=${currentPage == 'history'} ? 'page' : null"
+                   th:href="@{/submissions/{submissionId}/claims/{claimId}/history(submissionId=${submissionId}, claimId=${claimId})}"
+                   th:text="#{claimDetails.claimHistory}"></a>
+            </li>
+        </ul>
+    </nav>
+</th:block>

@@ -1,8 +1,5 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
-import static java.lang.Boolean.TRUE;
-import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER;
-import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VALID;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VOID;
@@ -10,7 +7,6 @@ import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VOI
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.EnumSet;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +27,7 @@ import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-public class ClaimSummaryController {
+public class ClaimSummaryController extends ClaimDetailsBaseController {
 
   private final ClaimService claimService;
   private final AssessmentService assessmentService;
@@ -48,7 +44,7 @@ public class ClaimSummaryController {
     ClaimDetails claim = claimService.getClaimDetails(submissionId, claimId);
     if (!EnumSet.of(VALID, VOID).contains(claim.getStatus())) {
       log.error(
-          "Cannot assess claim {} as it has an invalid status {}. Returning 404.",
+          "Cannot view claim {} as it has an invalid status {}. Returning 404.",
           claimId,
           claim.getStatus());
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -57,30 +53,14 @@ public class ClaimSummaryController {
     if (claim.isHasAssessment()) {
       claim = assessmentService.getLatestAssessmentByClaim(claim);
       if (claim.getLastUpdatedUser() != null) {
-        var user = userRetrievalService.getMicrosoftApiUser(claim.getLastUpdatedUser());
+        var user = userRetrievalService.getUser(claim.getLastUpdatedUser());
         model.addAttribute("user", user);
       }
     }
     session.setAttribute(claimId.toString(), claim);
-    String searchUrl = (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
-    model.addAttribute("searchUrl", searchUrl);
-    model.addAttribute("claimId", claimId);
-    model.addAttribute("submissionId", submissionId);
-    model.addAttribute("claim", claim.toViewModel());
 
-    boolean isEscapedCase = claim.isEscapedCase();
-    boolean isStageDisbursement =
-        claim.isStageDisbursement()
-            && TRUE.equals(featureFlagsConfig.getIsStageDisbursementEnabled());
-    boolean isAssessmentButtonPresent =
-        request.isUserInRole(ROLE_ESCAPE_CASE_CASEWORKER.name())
-            && claim.isValid()
-            && (isEscapedCase || isStageDisbursement);
-    model.addAttribute("isAssessmentButtonPresent", isAssessmentButtonPresent);
-
-    boolean isVoidButtonPresent =
-        request.isUserInRole(ROLE_CLAIM_AMENDMENTS_CASEWORKER.name()) && claim.isValid();
-    model.addAttribute("isVoidButtonPresent", isVoidButtonPresent);
+    setCommonModelAttributes(
+        model, session, request, submissionId, claimId, claim, featureFlagsConfig);
 
     return "claim-summary";
   }

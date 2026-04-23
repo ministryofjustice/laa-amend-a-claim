@@ -33,7 +33,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
   }
 
   @Test
-  void testCivilClaimPage() throws Exception {
+  void testCivilClaimPage() {
     claim = MockClaimsFunctions.createMockCivilClaim();
     OutcomeType outcome = OutcomeType.PAID_IN_FULL;
     claim.setAssessmentOutcome(outcome);
@@ -146,7 +146,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
   }
 
   @Test
-  void testCrimeClaimPage() throws Exception {
+  void testCrimeClaimPage() {
     claim = MockClaimsFunctions.createMockCrimeClaim();
     OutcomeType outcome = OutcomeType.PAID_IN_FULL;
     claim.setAssessmentOutcome(outcome);
@@ -243,7 +243,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
   }
 
   @Test
-  void testCrimeClaimPageWithAddLinks() throws Exception {
+  void testCrimeClaimPageWithAddLinks() {
     claim = MockClaimsFunctions.createMockCrimeClaim();
 
     ClaimField netProfitCostField = MockClaimsFunctions.createNetProfitCostField();
@@ -368,7 +368,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
   }
 
   @Test
-  void testCivilClaimPageWithMissingAssessedTotals() throws Exception {
+  void testCivilClaimPageWithMissingAssessedTotals() {
     claim = MockClaimsFunctions.createMockCivilClaim();
 
     ClaimField assessedTotalVat = MockClaimsFunctions.createAssessedTotalVatField();
@@ -495,7 +495,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPageWithSubmissionError() throws Exception {
+  void testPageWithSubmissionError() {
     MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
     WebClientResponseException exception =
@@ -509,7 +509,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPageWithValidationError() throws Exception {
+  void testPageWithValidationError() {
     ClaimField claimField = MockClaimsFunctions.createNetProfitCostField();
     claimField.setAssessed(null);
     claim.setNetProfitCost(claimField);
@@ -526,7 +526,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
   }
 
   @Test
-  void testCivilClaimPageWithBoltOnsWithNullCalculatedValue() throws Exception {
+  void testCivilClaimPageWithBoltOnsWithNullCalculatedValue() {
     ClaimField cmrhOralField = MockClaimsFunctions.createCmrhOralField();
     ClaimField cmrhTelephoneField = MockClaimsFunctions.createCmrhTelephoneField();
     ClaimField hoInterviewField = MockClaimsFunctions.createHoInterviewField();
@@ -681,7 +681,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
   }
 
   @Test
-  void testCivilClaimPageWithBoltOnsWithNullSubmittedValue() throws Exception {
+  void testCivilClaimPageWithBoltOnsWithNullSubmittedValue() {
 
     ClaimField cmrhOralField = MockClaimsFunctions.createCmrhOralField();
     ClaimField cmrhTelephoneField = MockClaimsFunctions.createCmrhTelephoneField();

@@ -186,6 +186,11 @@ env:
       configMapKeyRef:
         name: feature-flags
         key: is-stage-disbursement-enabled
+  - name: IS_CLAIM_HISTORY_ENABLED
+    valueFrom:
+      configMapKeyRef:
+        name: feature-flags
+        key: is-claim-history-enabled
 
 autoscaling:
   enabled: false

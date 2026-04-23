@@ -9,5 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "feature-flags")
 public class FeatureFlagsConfig {
   private Boolean isBulkUploadEnabled;
+  private Boolean isClaimHistoryEnabled;
   private Boolean isStageDisbursementEnabled;
 }

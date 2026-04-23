@@ -22,7 +22,7 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPage() throws Exception {
+  void testPage() {
     Document doc = renderDocument();
 
     assertPageHasTitle(doc, "Assessment outcome");
@@ -36,7 +36,7 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPageErrors() throws Exception {
+  void testPageErrors() {
     MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
     params.add("assessmentOutcome", "");
     params.add("contingencyAssessment", "");
@@ -55,7 +55,7 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
   }
 
   @Test
-  void whenClaimHasAssessment_CancelRoutesToReviewAndAmend() throws Exception {
+  void whenClaimHasAssessment_CancelRoutesToReviewAndAmend() {
     Document doc = renderDocumentWithAssessmentOutcome(true, OutcomeType.REDUCED_TO_FIXED_FEE);
 
     assertPageHasTitle(doc, "Assessment outcome");
@@ -71,7 +71,7 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
   }
 
   @Test
-  void whenClaimHasNoSavedAssessment_OutcomeSelected_CancelRoutesToReview() throws Exception {
+  void whenClaimHasNoSavedAssessment_OutcomeSelected_CancelRoutesToReview() {
     Document doc = renderDocumentWithAssessmentOutcome(false, OutcomeType.REDUCED_TO_FIXED_FEE);
 
     assertPageHasTitle(doc, "Assessment outcome");
@@ -87,8 +87,7 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
   }
 
   @Test
-  void whenClaimHasNoSavedAssessment_NoOutcomeSelected_CancelRoutesToClaimDetails()
-      throws Exception {
+  void whenClaimHasNoSavedAssessment_NoOutcomeSelected_CancelRoutesToClaimDetails() {
     Document doc = renderDocumentWithAssessmentOutcome(false, null);
 
     assertPageHasTitle(doc, "Assessment outcome");
@@ -103,8 +102,7 @@ class AssessmentOutcomeViewTest extends ViewTestBase {
     assertPageDoesNotHaveBackLink(doc);
   }
 
-  private Document renderDocumentWithAssessmentOutcome(Boolean hasAssessment, OutcomeType outcome)
-      throws Exception {
+  private Document renderDocumentWithAssessmentOutcome(Boolean hasAssessment, OutcomeType outcome) {
     claim.setHasAssessment(hasAssessment);
     claim.setAssessmentOutcome(outcome);
     return renderDocument(Map.of());

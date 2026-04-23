@@ -24,13 +24,13 @@ import uk.gov.justice.laa.amend.claim.client.MicrosoftGraphApiClient;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 
 @ExtendWith(MockitoExtension.class)
-public class UserRetrievalServiceTest {
+public class MicrosoftUserRetrievalServiceTest {
 
   @Mock private MicrosoftGraphApiClient microsoftGraphApiClient;
 
   @Mock private OAuth2AuthorizedClientManager authorizedClientManager;
 
-  @InjectMocks private UserRetrievalService userRetrievalService;
+  @InjectMocks private MicrosoftUserRetrievalService userRetrievalService;
 
   @Test
   void testGetMicrosoftApiUserReturnsUser() {
@@ -63,7 +63,7 @@ public class UserRetrievalServiceTest {
     when(microsoftGraphApiClient.getUser(anyString(), anyString())).thenReturn(Mono.just(user));
 
     // Act
-    MicrosoftApiUser result = userRetrievalService.getMicrosoftApiUser(userId);
+    var result = userRetrievalService.getUser(userId);
 
     // Assert
     assertNotNull(result);
@@ -78,7 +78,7 @@ public class UserRetrievalServiceTest {
     when(authorizedClientManager.authorize(any())).thenReturn(null);
 
     // Act
-    MicrosoftApiUser result = userRetrievalService.getMicrosoftApiUser("test-user");
+    var result = userRetrievalService.getUser("test-user");
 
     // Assert
     assertNull(result);
@@ -92,7 +92,7 @@ public class UserRetrievalServiceTest {
             new IllegalArgumentException("Could not find ClientRegistration with id 'test'"));
 
     // Act
-    MicrosoftApiUser result = userRetrievalService.getMicrosoftApiUser("test-user");
+    var result = userRetrievalService.getUser("test-user");
 
     // Assert
     assertNull(result);
@@ -128,7 +128,7 @@ public class UserRetrievalServiceTest {
         .thenReturn(Mono.error(new Exception("Error")));
 
     // Act
-    MicrosoftApiUser result = userRetrievalService.getMicrosoftApiUser(userId);
+    var result = userRetrievalService.getUser(userId);
 
     // Assert
     assertNull(result);
@@ -165,7 +165,7 @@ public class UserRetrievalServiceTest {
     when(microsoftGraphApiClient.getUser(anyString(), anyString())).thenReturn(Mono.empty());
 
     // Act
-    MicrosoftApiUser result = userRetrievalService.getMicrosoftApiUser(userId);
+    var result = userRetrievalService.getUser(userId);
 
     // Assert
     assertNull(result);

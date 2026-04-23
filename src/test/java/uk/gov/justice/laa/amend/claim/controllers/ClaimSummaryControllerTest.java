@@ -30,7 +30,7 @@ import uk.gov.justice.laa.amend.claim.models.Role;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
-import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
+import uk.gov.justice.laa.amend.claim.service.MicrosoftUserRetrievalService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @WebMvcTest(ClaimSummaryController.class)
@@ -38,7 +38,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
 
   @MockitoBean private ClaimService claimService;
 
-  @MockitoBean private UserRetrievalService userRetrievalService;
+  @MockitoBean private MicrosoftUserRetrievalService userRetrievalService;
 
   @MockitoBean private AssessmentService assessmentService;
 
@@ -175,7 +175,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     claim.setLastUpdatedUser(user.id());
     claim.setLastUpdatedDateTime(OffsetDateTime.now());
 
-    when(userRetrievalService.getMicrosoftApiUser(user.id())).thenReturn(user);
+    when(userRetrievalService.getUser(user.id())).thenReturn(user);
     when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
 
     mockMvc
@@ -274,7 +274,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     claim.setLastUpdatedUser(user.id());
     claim.setLastUpdatedDateTime(OffsetDateTime.now());
 
-    when(userRetrievalService.getMicrosoftApiUser(user.id())).thenReturn(user);
+    when(userRetrievalService.getUser(user.id())).thenReturn(user);
     when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
 
     mockMvc
@@ -293,7 +293,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     claim.setLastUpdatedUser(user.id());
     claim.setLastUpdatedDateTime(OffsetDateTime.now());
 
-    when(userRetrievalService.getMicrosoftApiUser(user.id())).thenReturn(user);
+    when(userRetrievalService.getUser(user.id())).thenReturn(user);
     when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
 
     mockMvc

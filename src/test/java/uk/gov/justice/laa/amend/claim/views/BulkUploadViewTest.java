@@ -6,20 +6,21 @@ import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 import uk.gov.justice.laa.amend.claim.controllers.BulkUploadController;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 
 @WebMvcTest(BulkUploadController.class)
 public class BulkUploadViewTest extends ViewTestBase {
 
-  @MockitoBean private BulkUploadService bulkUploadService;
+  @MockitoBean private BulkUploadService<BulkUploadCivilClaim> bulkUploadService;
 
   BulkUploadViewTest() {
     this.mapping = "/bulk-upload";
   }
 
   @Test
-  void testPage() throws Exception {
+  void testPage() {
     when(featureFlagsConfig.getIsBulkUploadEnabled()).thenReturn(true);
 
     Document doc = renderDocument();

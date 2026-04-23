@@ -13,7 +13,7 @@ class DiscardViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPage() throws Exception {
+  void testPage() {
     Document doc = renderDocument();
 
     assertPageHasTitle(doc, "Confirm you want to discard this assessment");

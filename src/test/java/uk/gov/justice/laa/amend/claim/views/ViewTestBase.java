@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import org.assertj.core.api.ThrowingConsumer;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -72,11 +74,11 @@ public abstract class ViewTestBase {
     this.claimId = UUID.randomUUID();
   }
 
-  protected Document renderDocument() throws Exception {
+  protected Document renderDocument() {
     return renderDocument(Map.of());
   }
 
-  protected Document renderDocument(Map<String, Object> variables) throws Exception {
+  protected Document renderDocument(Map<String, Object> variables) {
     MockHttpServletRequestBuilder requestBuilder = get(mapping);
     for (Map.Entry<String, Object> entry : variables.entrySet()) {
       requestBuilder = requestBuilder.flashAttr(entry.getKey(), entry.getValue());
@@ -84,28 +86,32 @@ public abstract class ViewTestBase {
     return renderDocument(requestBuilder, 200);
   }
 
-  private Document renderDocument(MockHttpServletRequestBuilder requestBuilder, int expectedStatus)
-      throws Exception {
+  private Document renderDocument(
+      MockHttpServletRequestBuilder requestBuilder, int expectedStatus) {
     session.setAttribute(claimId.toString(), claim);
-    String html =
-        mockMvc
-            .perform(requestBuilder.session(session).requestAttr("user", createUser()))
-            .andExpect(status().is(expectedStatus))
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
 
-    return Jsoup.parse(html);
+    try {
+      String html =
+          mockMvc
+              .perform(requestBuilder.session(session).requestAttr("user", createUser()))
+              .andExpect(status().is(expectedStatus))
+              .andReturn()
+              .getResponse()
+              .getContentAsString();
+
+      return Jsoup.parse(html);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  protected Document renderErrorPage(int requestStatus, int responseStatus) throws Exception {
+  protected Document renderErrorPage(int requestStatus, int responseStatus) {
     MockHttpServletRequestBuilder requestBuilder =
         get(mapping).requestAttr(RequestDispatcher.ERROR_STATUS_CODE, requestStatus);
     return renderDocument(requestBuilder, responseStatus);
   }
 
-  protected Document renderDocumentWithErrors(MultiValueMap<String, String> params)
-      throws Exception {
+  protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) {
     MockHttpServletRequestBuilder requestBuilder = post(mapping).with(csrf()).params(params);
     return renderDocument(requestBuilder, 400);
   }
@@ -203,7 +209,29 @@ public abstract class ViewTestBase {
         elements.isEmpty(), "Expected page to have no active service navigation items");
   }
 
-  private Element selectFirst(Element element, String cssQuery) {
+  protected void assertPageHasActiveSubNavigationItem(
+      Document doc, String expectedText, String expectedHref) {
+    assertElementExists(
+        doc,
+        ".moj-sub-navigation__item a[aria-current=page]",
+        link -> {
+          assertThat(link.text()).isEqualTo(expectedText);
+          assertThat(link.attr("href")).isEqualTo(expectedHref);
+        });
+  }
+
+  protected void assertPageHasInactiveSubNavigationItem(
+      Document doc, String expectedText, String expectedHref) {
+    assertElementExists(
+        doc,
+        ".moj-sub-navigation__item a:not([aria-current=page])",
+        link -> {
+          assertThat(link.text()).isEqualTo(expectedText);
+          assertThat(link.attr("href")).isEqualTo(expectedHref);
+        });
+  }
+
+  protected Element selectFirst(Element element, String cssQuery) {
     Element result = element.selectFirst(cssQuery);
     Assertions.assertNotNull(
         element, String.format("Expected page to have element with CSS query '%s'", cssQuery));
@@ -214,23 +242,32 @@ public abstract class ViewTestBase {
     return selectFirst(element, String.format("#%s", id));
   }
 
-  protected void assertPageHasH2(Document doc, String expectedText) {
-    Element heading = selectFirst(doc, "h2");
-    Assertions.assertEquals(expectedText, heading.text());
+  protected void assertH2Exists(Element parent, String expectedText) {
+    assertElementExists(
+        parent,
+        "h2",
+        h2 -> {
+          assertThat(h2.text()).isEqualTo(expectedText);
+        });
+  }
+
+  protected void assertParagraphExists(Element parent, String expectedText) {
+    assertElementExists(
+        parent,
+        "p",
+        p -> {
+          assertThat(p.text()).isEqualTo(expectedText);
+        });
   }
 
   protected void assertPageHasSummaryCard(Document doc, String expectedText) {
-    Elements cards = doc.getElementsByClass("govuk-summary-card");
-
-    boolean cardFound =
-        cards.stream()
-            .anyMatch(
-                card -> {
-                  String text = card.select(".govuk-summary-card__title").text().trim();
-                  return text.equals(expectedText);
-                });
-
-    Assertions.assertTrue(cardFound);
+    assertElementExists(
+        doc,
+        ".govuk-summary-card",
+        card -> {
+          var text = card.select(".govuk-summary-card__title").text().trim();
+          assertThat(text).isEqualTo(expectedText);
+        });
   }
 
   protected void assertPageHasContent(Document doc, String expectedText) {
@@ -431,6 +468,13 @@ public abstract class ViewTestBase {
 
   protected void assertTableHeaderIsNotSortable(Element header, String expectedText) {
     Assertions.assertEquals(expectedText, header.text());
+  }
+
+  protected static void assertElementExists(
+      Element parentElement, String cssQuery, ThrowingConsumer<Element> assertions) {
+    var elements = parentElement.selectStream(cssQuery).toList();
+    assertThat(elements).isNotEmpty();
+    assertThat(elements).anySatisfy(assertions);
   }
 
   public static Element getButtonByLabel(Document doc, String label) {

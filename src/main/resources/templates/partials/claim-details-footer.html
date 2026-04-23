@@ -1,0 +1,27 @@
+<th:block th:fragment="claimDetailsFooter()" xmlns:th="http://www.thymeleaf.org">
+    <form method="post"
+          th:action="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}">
+        <div class="govuk-button-group">
+            <th:block th:if="${isAssessmentButtonPresent}">
+                <button class="govuk-button govuk-button--success"
+                        data-module="govuk-button"
+                        th:data-testid="claim-details-assessment-button"
+                        th:text="${claim.hasAssessment} ? #{claimSummary.update.assessmentButton} : #{claimSummary.assessmentButton}" type="submit">
+                </button>
+            </th:block>
+
+            <th:block th:if="${isVoidButtonPresent}">
+                <a th:href="@{/submissions/{submissionId}/claims/{claimId}/void(submissionId=${submissionId}, claimId=${claimId})}"
+                   th:data-testid="claim-details-void-button"
+                   class="govuk-button govuk-button--warning"
+                   data-module="govuk-button"
+                   th:text="#{claimSummary.voidClaim}"></a>
+            </th:block>
+
+            <a th:href="@{${searchUrl}}" id="back-to-search"
+               class="govuk-link govuk-link--no-visited-state"
+               th:text="#{claimSummary.backToSearch}">
+            </a>
+        </div>
+    </form>
+</th:block>

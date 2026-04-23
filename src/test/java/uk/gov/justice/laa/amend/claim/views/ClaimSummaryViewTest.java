@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -40,7 +41,7 @@ import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
-import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
+import uk.gov.justice.laa.amend.claim.service.MicrosoftUserRetrievalService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
@@ -54,7 +55,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
   @MockitoBean private AssessmentService assessmentService;
 
-  @MockitoBean private UserRetrievalService userRetrievalService;
+  @MockitoBean private MicrosoftUserRetrievalService userRetrievalService;
 
   @MockitoBean private OAuth2AuthorizedClientService authorizedClientService;
 
@@ -62,8 +63,13 @@ class ClaimSummaryViewTest extends ViewTestBase {
     this.mapping = String.format("/submissions/%s/claims/%s", submissionId, claimId);
   }
 
+  @BeforeEach
+  void setUp() {
+    when(featureFlagsConfig.getIsClaimHistoryEnabled()).thenReturn(true);
+  }
+
   @Test
-  void testCivilClaimPage() throws Exception {
+  void testCivilClaimPage() {
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
     createClaimSummary(claim);
     claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
@@ -73,14 +79,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
     Document doc = renderDocument();
-
-    assertPageHasTitle(doc, "Claim details");
-
-    assertPageHasHeading(doc, "Claim details");
-
-    assertPageHasNoActiveServiceNavigationItems(doc);
-
-    assertPageDoesNotHaveBackLink(doc);
+    assertCommonPageContent(doc);
 
     List<List<Element>> summaryList1 = getSummaryListInCard(doc, "Summary");
     Assertions.assertEquals(16, summaryList1.size());
@@ -132,7 +131,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
   }
 
   @Test
-  void testAssessedClaimPage() throws Exception {
+  void testAssessedClaimPage() {
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setHasAssessment(true);
 
@@ -162,23 +161,16 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
     when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
 
-    when(userRetrievalService.getMicrosoftApiUser(any()))
+    when(userRetrievalService.getUser(any()))
         .thenReturn(new MicrosoftApiUser("test-id", "Bloggs, Joe", "Joe", "Bloggs"));
 
     Document doc = renderDocument();
-
-    assertPageHasTitle(doc, "Claim details");
-
-    assertPageHasHeading(doc, "Claim details");
+    assertCommonPageContent(doc);
 
     assertPageHasInformationAlert(
         doc,
         "This claim has been assessed",
         "Last edited by Joe Bloggs on 18 December 2025 at 16:11:27 Nilled.");
-
-    assertPageHasNoActiveServiceNavigationItems(doc);
-
-    assertPageDoesNotHaveBackLink(doc);
 
     assertPageHasSummaryCard(doc, "Summary");
 
@@ -212,7 +204,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
   }
 
   @Test
-  void testCrimeClaimPage() throws Exception {
+  void testCrimeClaimPage() {
     CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
     createClaimSummary(claim);
     claim.setMatterTypeCode("IMLB");
@@ -225,14 +217,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
     Document doc = renderDocument();
-
-    assertPageHasTitle(doc, "Claim details");
-
-    assertPageHasHeading(doc, "Claim details");
-
-    assertPageHasNoActiveServiceNavigationItems(doc);
-
-    assertPageDoesNotHaveBackLink(doc);
+    assertCommonPageContent(doc);
 
     List<List<Element>> summaryList1 = getSummaryListInCard(doc, "Summary");
     Assertions.assertEquals(16, summaryList1.size());
@@ -273,7 +258,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
   }
 
   @Test
-  void testNonEscapedClaimPage() throws Exception {
+  void testNonEscapedClaimPage() {
     claim.setEscaped(false);
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
@@ -286,7 +271,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPageWithCachedSearchUrl() throws Exception {
+  void testPageWithCachedSearchUrl() {
     session.setAttribute("searchUrl", "/?officeCode=0P322F&page=1");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
@@ -298,7 +283,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
   @ParameterizedTest
   @MethodSource("claimTypes")
-  void testVoidClaimPageWithEscapeAssessmentShowsVoidBanner(ClaimDetails claim) throws Exception {
+  void testVoidClaimPageWithEscapeAssessmentShowsVoidBanner(ClaimDetails claim) {
     createClaimSummary(claim);
 
     claim.setStatus(ClaimStatus.VOID);
@@ -335,8 +320,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
   @ParameterizedTest
   @MethodSource("claimTypes")
-  void testVoidClaimPageWithNoPreviousAssessmentShowsVoidBanner(ClaimDetails claim)
-      throws Exception {
+  void testVoidClaimPageWithNoPreviousAssessmentShowsVoidBanner(ClaimDetails claim) {
     createClaimSummary(claim);
 
     claim.setStatus(ClaimStatus.VOID);
@@ -365,6 +349,20 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
     Element voidButton = getButtonByLabel(doc, "Void claim");
     assertNull(voidButton, "Expected Void button to be hidden for VOID claims");
+  }
+
+  private void assertCommonPageContent(Document doc) {
+    assertPageHasTitle(doc, "Claim details");
+
+    assertPageHasHeading(doc, "Claim details");
+
+    assertPageHasNoActiveServiceNavigationItems(doc);
+    assertPageHasActiveSubNavigationItem(doc, "Overview", mapping);
+    assertPageHasInactiveSubNavigationItem(doc, "Claim history", mapping + "/history");
+
+    assertH2Exists(doc, "Overview");
+
+    assertPageDoesNotHaveBackLink(doc);
   }
 
   private static Stream<ClaimDetails> claimTypes() {

@@ -15,7 +15,7 @@ class ChangeAllowedTotalViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPage() throws Exception {
+  void testPage() {
     Document doc = renderDocument();
 
     assertPageHasTitle(doc, "Assess total allowed value");
@@ -32,7 +32,7 @@ class ChangeAllowedTotalViewTest extends ViewTestBase {
   }
 
   @Test
-  void testPageWithErrors() throws Exception {
+  void testPageWithErrors() {
     MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
     params.add("value", "-1");
 
