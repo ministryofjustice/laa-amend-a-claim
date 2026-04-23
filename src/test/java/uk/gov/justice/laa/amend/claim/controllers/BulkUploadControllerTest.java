@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.SUCCESS;
 import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_BULK_UPLOADER;
 import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
 
@@ -24,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadError;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
@@ -53,7 +51,7 @@ public class BulkUploadControllerTest extends BaseControllerTest {
   @Test
   void testSubmitRedirectsWithResult() throws Exception {
     var file = new MockMultipartFile("file", "file.csv", "text/csv", "a,b,c\n1,2,3".getBytes());
-    var result = new BulkUploadResult(SUCCESS, List.of());
+    var result = BulkUploadResult.success(List.of());
 
     when(bulkUploadService.upload(file, USER_ID)).thenReturn(result);
 
@@ -87,7 +85,7 @@ public class BulkUploadControllerTest extends BaseControllerTest {
 
   @Test
   void testResultOnPageLoadReturnsViewIfResultSet() throws Exception {
-    var result = new BulkUploadResult(SUCCESS, List.of(new BulkUploadError(null, "all is good")));
+    var result = BulkUploadResult.success(List.of());
     mockMvc
         .perform(get(RESULT_PATH).flashAttr("result", result))
         .andExpect(status().isOk())
