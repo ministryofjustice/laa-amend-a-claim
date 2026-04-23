@@ -1,0 +1,28 @@
+# Gradle build outputs and caches
+.gradle/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker files (no need to copy these into the image)
+Dockerfile
+.dockerignore
+
+# Docs and markdown
+*.md
+README*
+
+# Test reports
+reports/
+test-results/
