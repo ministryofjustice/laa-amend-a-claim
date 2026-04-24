@@ -39,7 +39,7 @@ services:
     container_name: amend-redis
     restart: always
     ports:
-      - "6380:6379" #Updated to 6380 to avoid conflict with SaBC Redis instance
+      - "6390:6379" #Updated to 6390 to avoid conflict with SaBC Redis instance
     command: redis-server --appendonly yes
     volumes:
       - amend_redis_data:/data
