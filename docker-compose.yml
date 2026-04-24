@@ -14,7 +14,9 @@ services:
         - github_actor
         - github_token
     ports:
-      - "8090:8080"
+      - "8090:8090"
+      - "8190:8190"
+      - "5090:5005"
     environment:
       AZURE_CLIENT_ID: ${AMEND_SILAS_CLIENT_ID}
       AZURE_CLIENT_SECRET: ${AMEND_SILAS_CLIENT_SECRET}
@@ -31,6 +33,7 @@ services:
       SPRING_PROFILES_ACTIVE: docker
       IS_BULK_UPLOAD_ENABLED: true
       IS_STAGE_DISBURSEMENT_ENABLED: true
+      JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
   amend-redis:
     image: redis:8-alpine
     container_name: amend-redis

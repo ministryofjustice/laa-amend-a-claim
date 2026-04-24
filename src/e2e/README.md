@@ -23,7 +23,7 @@ It uses Playwright (Java), JUnit 5 and Allure. The E2E project is isolated under
 
 Example .env contents:
 
-* UI_BASE_URL=http://localhost:8080
+* UI_BASE_URL=http://localhost:8090
 * P_USERNAME=<your test@devl.justice.gov.uk email>
 * P_PASSWORD=<your test@devl.justice.gov.uk password>
 * MFA_SECRET=<see below instructions>

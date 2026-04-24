@@ -79,7 +79,7 @@ We use Snyk to help identify security vulnerabilities in our code and dependenci
    2. `./run.sh dev` to run the service with:
       1. An integration with the claims API in UAT
       2. A security configuration that enforces Entra login with CSRF enabled (note you will need a test developer account to log in through Entra)
-2. Navigate to the landing page at [http://localhost:8080/](http://localhost:8080/)
+2. Navigate to the landing page at [http://localhost:8090/](http://localhost:8090/)
 
 ### Build application
 `./gradlew clean build`
