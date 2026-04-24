@@ -68,7 +68,7 @@ feature-flags:
 
 management:
   server:
-    port: 8182
+    port: 8282
   endpoints:
     web:
       exposure:

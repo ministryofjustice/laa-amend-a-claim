@@ -43,7 +43,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 8080
-  managementPort: 8182
+  managementPort: 8282
 
 serviceMonitor:
   enabled: true
