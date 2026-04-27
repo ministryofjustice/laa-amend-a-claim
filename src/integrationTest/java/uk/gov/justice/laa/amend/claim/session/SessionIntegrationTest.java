@@ -16,7 +16,7 @@ import uk.gov.justice.laa.amend.claim.base.RedisSetup;
 import uk.gov.justice.laa.amend.claim.service.SessionService;
 
 @SpringBootTest
-public class SessionIntegrationTest extends RedisSetup {
+public class SessionIntegrationTest {
 
   private static final String SESSION_PATTERN = "spring:session:sessions:*";
   @Autowired private StringRedisTemplate redisTemplate;
