@@ -41,7 +41,11 @@ public class DummyUserSecurityService extends OncePerRequestFilter {
       @NonNull HttpServletResponse response,
       @NonNull FilterChain filterChain)
       throws ServletException, IOException {
+    SecurityContextHolder.getContext().setAuthentication(createAuthToken(roles));
+    filterChain.doFilter(request, response);
+  }
 
+  public static OAuth2AuthenticationToken createAuthToken(Set<Role> roles) {
     Map<String, Object> claims =
         Map.of(
             "oid", USER_ID,
@@ -57,14 +61,8 @@ public class DummyUserSecurityService extends OncePerRequestFilter {
                 roles.stream().map(role -> new SimpleGrantedAuthority(role.name())).toList());
 
     DefaultOidcUser oidcUser = new DefaultOidcUser(authorities, token, "email");
-
-    OAuth2AuthenticationToken oauthToken =
-        new OAuth2AuthenticationToken(
-            oidcUser, authorities, "test" // registrationId
-            );
-
-    SecurityContextHolder.getContext().setAuthentication(oauthToken);
-
-    filterChain.doFilter(request, response);
+    return new OAuth2AuthenticationToken(
+        oidcUser, authorities, "test" // registrationId
+        );
   }
 }

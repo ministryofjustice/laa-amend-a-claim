@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.config;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,7 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.justice.laa.amend.claim.config.security.SecurityConstants.PERMISSIONS_POLICY;
+import static uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService.createAuthToken;
 
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -106,7 +109,7 @@ public class SecurityConfigIntegrationTest extends RedisSetup {
   @WithMockUser(roles = "USER")
   void responseOnGetHasCorrectHeaders(String url) throws Exception {
     mockMvc
-        .perform(get(url))
+        .perform(get(url).with(authentication(createAuthToken(Set.of()))))
         .andExpect(status().isOk())
         .andExpect(header().exists("Content-Security-Policy"))
         .andExpect(header().string("Cross-Origin-Embedder-Policy", "require-corp"))
@@ -121,7 +124,7 @@ public class SecurityConfigIntegrationTest extends RedisSetup {
   @WithMockUser(roles = "USER")
   void responseOnPostHasCorrectHeaders() throws Exception {
     mockMvc
-        .perform(post("/").with(csrf()))
+        .perform(post("/").with(csrf()).with(authentication(createAuthToken(Set.of()))))
         .andExpect(status().isBadRequest())
         .andExpect(header().exists("Content-Security-Policy"))
         .andExpect(header().string("Cross-Origin-Embedder-Policy", "require-corp"))

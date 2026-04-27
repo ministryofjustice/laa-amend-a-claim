@@ -34,30 +34,9 @@ repositories {
 
 configurations.configureEach {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == 'io.netty' && details.requested.name == 'netty-codec-http') {
-            details.useVersion '4.2.12.Final'
-            details.because 'Fixes HTTP Request Smuggling vulnerability (SNYK-JAVA-IONETTY-15789756)'
-        }
-        if (details.requested.group == 'org.apache.tomcat.embed') {
-            details.useVersion '11.0.21'
-            details.because 'Fixes Improper Encoding/Escaping (SNYK-JAVA-ORGAPACHETOMCATEMBED-15989812) and Improper Authentication (SNYK-JAVA-ORGAPACHETOMCATEMBED-15989820)'
-        }
         if (details.requested.group == 'org.codehaus.plexus' && details.requested.name == 'plexus-utils') {
             details.useVersion '4.0.3'
             details.because 'Fixes Directory Traversal (SNYK-JAVA-ORGCODEHAUSPLEXUS-15766699)'
-        }
-        if (details.requested.group == 'org.thymeleaf'
-                && (details.requested.name == 'thymeleaf' || details.requested.name == 'thymeleaf-spring6')) {
-            details.useVersion '3.1.4.RELEASE'
-            details.because 'Fixes Template Injection (SNYK-JAVA-ORGTHYMELEAF-16078370, 16078372, 16078377, 16078379)'
-        }
-        if (details.requested.group == 'org.springframework' && details.requested.name.startsWith('spring-')) {
-            details.useVersion '7.0.7'
-            details.because 'Fixes HTTP Request Smuggling (SNYK-JAVA-ORGSPRINGFRAMEWORK-16109603, SNYK-JAVA-ORGSPRINGFRAMEWORK-16109604)'
-        }
-        if (details.requested.group == 'org.springframework.security' && details.requested.name.startsWith('spring-security-')) {
-            details.useVersion '7.0.5'
-            details.because 'Fixes Access Control Bypass (SNYK-JAVA-ORGSPRINGFRAMEWORKSECURITY-16120588, 16121326) and User Impersonation (SNYK-JAVA-ORGSPRINGFRAMEWORKSECURITY-16121020)'
         }
     }
 }
@@ -76,7 +55,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.session:spring-session-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.4.RELEASE'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-jackson'
