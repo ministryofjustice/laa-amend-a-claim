@@ -20,22 +20,6 @@ ignore:
   'snyk:lic:maven:com.github.spotbugs:spotbugs-annotations:LGPL-2.1':
     - '*':
         reason: Approved license
-  SNYK-JAVA-TOOLSJACKSONCORE-15365915:
-    - '*':
-        reason: Temporarily ignoring this until laa-spring-boot-gradle-plugin supports Jackson 3.1.x
-        expires: 2026-04-01T00:00:00.000Z
-  SNYK-JAVA-TOOLSJACKSONCORE-15371178:
-    - '*':
-        reason: Temporarily ignoring this until laa-spring-boot-gradle-plugin supports Jackson 3.1.x
-        expires: 2026-04-01T00:00:00.000Z
-  SNYK-ALPINE323-ZLIB-15435528:
-    - '*':
-        reason: Temporarily ignoring this until new version
-        expires: 2026-04-01T00:00:00.000Z
-  SNYK-JAVA-ORGCODEHAUSPLEXUS-15766699:
-    - '*':
-        reason: Temporarily ignoring this until new version available
-        expires: 2026-04-15T00:00:00.000Z
 patch: {}
 exclude:
   global:
