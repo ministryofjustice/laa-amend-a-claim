@@ -41,24 +41,22 @@
         </div>
 
         <th:block sec:authorize="isAuthenticated()">
-            <th:block sec:authorize="principal instanceof T(org.springframework.security.oauth2.core.oidc.user.OidcUser)">
-                <div class="moj-header__content">
-                    <nav class="moj-header__navigation" aria-label="Account navigation">
-                        <ul class="moj-header__navigation-list">
-                            <li class="moj-header__navigation-item" id="account">
-                                <span sec:authentication="principal.attributes['preferred_username']"></span>
-                            </li>
+            <div class="moj-header__content">
+                <nav class="moj-header__navigation" aria-label="Account navigation">
+                    <ul class="moj-header__navigation-list">
+                        <li class="moj-header__navigation-item" id="account">
+                            <span sec:authentication="principal.attributes['preferred_username']"></span>
+                        </li>
 
-                            <li class="moj-header__navigation-item moj-header__navigation-item-bold">
-                                <form th:action="@{/logout}" method="post" th:hidden="true" name="logoutForm">
-                                    <input type="submit" value="Logout" />
-                                </form>
-                                <a class="moj-header__navigation-link" href="#" data-module="logout-link" th:text="#{service.signOut}"></a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </th:block>
+                        <li class="moj-header__navigation-item moj-header__navigation-item-bold">
+                            <form th:action="@{/logout}" method="post" th:hidden="true" name="logoutForm">
+                                <input type="submit" value="Logout" />
+                            </form>
+                            <a class="moj-header__navigation-link" href="#" data-module="logout-link" th:text="#{service.signOut}"></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </th:block>
 
     </div>
