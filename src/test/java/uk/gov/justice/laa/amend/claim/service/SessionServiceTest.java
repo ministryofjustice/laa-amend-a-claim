@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -7,8 +9,6 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisKeyCommands;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.StringRedisTemplate;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class SessionServiceTest {
 

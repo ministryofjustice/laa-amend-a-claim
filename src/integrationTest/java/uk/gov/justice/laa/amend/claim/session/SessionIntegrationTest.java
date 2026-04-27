@@ -1,5 +1,10 @@
 package uk.gov.justice.laa.amend.claim.session;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +14,6 @@ import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import uk.gov.justice.laa.amend.claim.base.RedisSetup;
 import uk.gov.justice.laa.amend.claim.service.SessionService;
-
-import java.time.Duration;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 public class SessionIntegrationTest extends RedisSetup {
