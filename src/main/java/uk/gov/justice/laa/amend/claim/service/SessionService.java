@@ -1,12 +1,9 @@
 package uk.gov.justice.laa.amend.claim.service;
 
 import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 public class SessionService {
@@ -16,18 +13,18 @@ public class SessionService {
         this.redisTemplate = redisTemplate;
     }
     public int getActiveSessionCount() {
-        return countSessions("spring:session:sessions:*");
+        return countSessions();
     }
 
-    private int countSessions(String pattern) {
+    private int countSessions() {
         ScanOptions options = ScanOptions.scanOptions()
-                .match(pattern)
+                .match("spring:session:sessions:*")
                 .count(1000)
                 .build();
 
         int count = 0;
 
-        try (Cursor<byte[]> cursor = redisTemplate.getConnectionFactory().getConnection().scan(options)) {
+        try (Cursor<byte[]> cursor = redisTemplate.getConnectionFactory().getConnection().keyCommands().scan(options)) {
             while (cursor.hasNext()) {
                 cursor.next();
                 count ++;
