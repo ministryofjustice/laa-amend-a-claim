@@ -12,10 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import uk.gov.justice.laa.amend.claim.base.RedisSetup;
 import uk.gov.justice.laa.amend.claim.service.SessionService;
 
 @SpringBootTest
-public class SessionIntegrationTest {
+public class SessionIntegrationTest extends RedisSetup {
 
   private static final String SESSION_PATTERN = "spring:session:sessions:*";
   @Autowired private StringRedisTemplate redisTemplate;
