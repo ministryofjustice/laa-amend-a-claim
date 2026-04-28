@@ -107,6 +107,12 @@ spring:
     activate:
       on-profile: local | e2e | docker
 
+server:
+  port: 8090
+management:
+  server:
+    port: 8190
+
 logging:
   structured:
     format:

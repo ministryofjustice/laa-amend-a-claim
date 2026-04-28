@@ -10,7 +10,7 @@ public class EnvConfig {
   }
 
   public static String baseUrl() {
-    return getOrDefault("UI_BASE_URL", "http://localhost:8080/");
+    return getOrDefault("UI_BASE_URL", "http://localhost:8090/");
   }
 
   public static String username() {
