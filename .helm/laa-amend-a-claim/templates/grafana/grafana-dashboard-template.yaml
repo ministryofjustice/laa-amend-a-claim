@@ -86,7 +86,7 @@
           {
             "disableTextWrap": false,
             "editorMode": "builder",
-            "expr": "active_sessions_count",
+            "expr": "max(active_sessions_count{namespace=\"{{ .Release.Namespace }}\"})",
             "fullMetaSearch": false,
             "includeNullMetadata": true,
             "legendFormat": "__auto",
@@ -198,7 +198,7 @@
         "targets": [
           {
             "editorMode": "code",
-            "expr": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
+            "expr": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"{{ .Release.Namespace }}\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
             "legendFormat": "Submission failures",
             "range": true,
             "refId": "A"
@@ -266,7 +266,7 @@
               "uid": "P5DCFC7561CCDE821"
             },
             "editorMode": "code",
-            "expr": "round(\n  sum(\n    increase(\n      assessment_submissions_total{\n        namespace=\"laa-amend-a-claim-dev\",\n        service=\"laa-amend-a-claim\"\n      }[$__range]\n    )\n  )\n)",
+            "expr": "round(\n  sum(\n    increase(\n      assessment_submissions_total{\n        namespace=\"{{ .Release.Namespace }}\",\n        service=\"laa-amend-a-claim\"\n      }[$__range]\n    )\n  )\n)",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -335,7 +335,7 @@
               "uid": "P5DCFC7561CCDE821"
             },
             "editorMode": "code",
-            "expr": "round(\n  sum(increase(assessment_submissions_failed_total{namespace=\"laa-amend-a-claim-dev\",service=\"laa-amend-a-claim\"}[$__range]))\n  /\n  clamp_min(sum(increase(assessment_submissions_total{namespace=\"laa-amend-a-claim-dev\",service=\"laa-amend-a-claim\"}[$__range])) + sum(increase(assessment_submissions_failed_total{namespace=\"laa-amend-a-claim-dev\",service=\"laa-amend-a-claim\"}[$__range])), 1),\n  0.01\n)",
+            "expr": "round(\n  sum(increase(assessment_submissions_failed_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range]))\n  /\n  clamp_min(sum(increase(assessment_submissions_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range])) + sum(increase(assessment_submissions_failed_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range])), 1),\n  0.01\n)",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -406,7 +406,7 @@
             {
               "matcher": {
                 "id": "byName",
-                "options": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)"
+                "options": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"{{ .Release.Namespace }}\",\n      service=\"laa-amend-a-claim\"\n    }\n)"
               },
               "properties": [
                 {
@@ -448,7 +448,7 @@
               "uid": "P5DCFC7561CCDE821"
             },
             "editorMode": "code",
-            "expr": "sum(\n    assessment_submissions_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
+            "expr": "sum(\n    assessment_submissions_total{\n      namespace=\"{{ .Release.Namespace }}\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
             "legendFormat": "Successful assessments",
             "range": true,
             "refId": "A"
@@ -529,7 +529,7 @@
               "uid": "P5DCFC7561CCDE821"
             },
             "editorMode": "code",
-            "expr": "round(\n  sum(\n    increase(\n      claim_void_total{\n        namespace=\"laa-amend-a-claim-dev\",\n        service=\"laa-amend-a-claim\"\n      }[$__range]\n    )\n  )\n)",
+            "expr": "round(\n  sum(\n    increase(\n      claim_void_total{\n        namespace=\"{{ .Release.Namespace }}\",\n        service=\"laa-amend-a-claim\"\n      }[$__range]\n    )\n  )\n)",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -598,7 +598,7 @@
               "uid": "P5DCFC7561CCDE821"
             },
             "editorMode": "code",
-            "expr": "round(\n  sum(increase(claim_void_failed_total{namespace=\"laa-amend-a-claim-dev\",service=\"laa-amend-a-claim\"}[$__range]))\n  /\n  clamp_min(sum(increase(claim_void_total{namespace=\"laa-amend-a-claim-dev\",service=\"laa-amend-a-claim\"}[$__range])) + sum(increase(claim_void_failed_total{namespace=\"laa-amend-a-claim-dev\",service=\"laa-amend-a-claim\"}[$__range])), 1),\n  0.01\n)",
+            "expr": "round(\n  sum(increase(claim_void_failed_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range]))\n  /\n  clamp_min(sum(increase(claim_void_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range])) + sum(increase(claim_void_failed_total{namespace=\"{{ .Release.Namespace }}\",service=\"laa-amend-a-claim\"}[$__range])), 1),\n  0.01\n)",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -695,7 +695,7 @@
               "uid": "P5DCFC7561CCDE821"
             },
             "editorMode": "code",
-            "expr": "sum(\n    claim_void_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
+            "expr": "sum(\n    claim_void_total{\n      namespace=\"{{ .Release.Namespace }}\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
             "legendFormat": "Successful voids",
             "range": true,
             "refId": "A"
@@ -808,7 +808,7 @@
               "uid": "P5DCFC7561CCDE821"
             },
             "editorMode": "code",
-            "expr": "sum(\n    claim_void_failed_total{\n      namespace=\"laa-amend-a-claim-dev\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
+            "expr": "sum(\n    claim_void_failed_total{\n      namespace=\"{{ .Release.Namespace }}\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
             "legendFormat": "Void failures",
             "range": true,
             "refId": "A"
@@ -1215,7 +1215,7 @@
               "uid": "P5DCFC7561CCDE821"
             },
             "editorMode": "code",
-            "expr": "sum by (uri, method) (\n  rate(\n    http_server_requests_seconds_sum{\n      namespace=\"laa-amend-a-claim-dev\",\n      container=\"$container\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)\n/\nsum by (uri, method) (\n  rate(\n    http_server_requests_seconds_count{\n      namespace=\"laa-amend-a-claim-dev\",\n      container=\"$container\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)",
+            "expr": "sum by (uri, method) (\n  rate(\n    http_server_requests_seconds_sum{\n      namespace=\"{{ .Release.Namespace }}\",\n      container=\"$container\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)\n/\nsum by (uri, method) (\n  rate(\n    http_server_requests_seconds_count{\n      namespace=\"{{ .Release.Namespace }}\",\n      container=\"$container\",\n      status=~\"2..\"\n    }[$__rate_interval]\n  )\n)",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
