@@ -1390,7 +1390,7 @@
             },
             "editorMode": "code",
             "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Eden Space'}/1000000",
-            "legendFormat": "{{instance}}",
+            "legendFormat": "{{`{{instance}}`}}",
             "range": true,
             "refId": "A"
           }
@@ -1454,7 +1454,7 @@
             },
             "editorMode": "code",
             "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container', area='heap', id='Survivor Space', namespace='laa-amend-a-claim-dev'} / 1000000",
-            "legendFormat": "{{instance}}",
+            "legendFormat": "{{`{{instance}}`}}",
             "range": true,
             "refId": "A"
           }
@@ -1517,7 +1517,7 @@
             },
             "editorMode": "code",
             "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Tenured Gen',} /1000000",
-            "legendFormat": "{{instance}}",
+            "legendFormat": "{{`{{instance}}`}}",
             "range": true,
             "refId": "A"
           }
@@ -1614,7 +1614,7 @@
             },
             "editorMode": "code",
             "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Eden Space'}/1000000",
-            "legendFormat": "{{instance}}",
+            "legendFormat": "{{`{{instance}}`}}",
             "range": true,
             "refId": "A"
           }
@@ -1711,7 +1711,7 @@
             },
             "editorMode": "code",
             "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Survivor Space'}/1000000",
-            "legendFormat": "{{instance}}",
+            "legendFormat": "{{`{{instance}}`}}",
             "range": true,
             "refId": "A"
           }
@@ -1808,7 +1808,7 @@
             },
             "editorMode": "code",
             "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Tenured Gen',} /1000000",
-            "legendFormat": "{{instance}}",
+            "legendFormat": "{{`{{instance}}`}}",
             "range": true,
             "refId": "A"
           }
