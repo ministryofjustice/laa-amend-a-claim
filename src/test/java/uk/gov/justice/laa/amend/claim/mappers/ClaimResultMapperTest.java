@@ -27,8 +27,8 @@ class ClaimResultMapperTest {
     // Act
     SearchResultView resultViewModel = mapper.toDto(claimResultSet, "/", claimMapper);
 
-    assertEquals(0, resultViewModel.getPagination().getResults().getCount());
-    assertEquals(0, resultViewModel.getPagination().getItems().size());
-    assertEquals(0, resultViewModel.getClaims().size());
+    assertEquals(0, resultViewModel.pagination().getResults().getCount());
+    assertEquals(0, resultViewModel.pagination().getItems().size());
+    assertEquals(0, resultViewModel.claims().size());
   }
 }
