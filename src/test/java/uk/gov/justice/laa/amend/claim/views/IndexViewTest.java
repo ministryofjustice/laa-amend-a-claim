@@ -87,10 +87,8 @@ class IndexViewTest extends ViewTestBase {
     List<BaseClaimView<Claim>> claims =
         new ArrayList<>(Collections.nCopies(numberOfResultsPerPage, claimViewModel));
 
-    SearchResultView viewModel = new SearchResultView();
-    viewModel.setClaims(claims);
     Pagination pagination = new Pagination(20, numberOfResultsPerPage, currentPage, url);
-    viewModel.setPagination(pagination);
+    SearchResultView viewModel = new SearchResultView(claims, pagination);
 
     Map<String, Object> variables = Map.of("viewModel", viewModel);
     Document doc = renderDocument(variables);
@@ -125,10 +123,8 @@ class IndexViewTest extends ViewTestBase {
     ClaimView claimViewModel = new ClaimView(MockClaimsFunctions.createMockCivilClaim());
     List<BaseClaimView<Claim>> claims = List.of(claimViewModel);
 
-    SearchResultView viewModel = new SearchResultView();
-    viewModel.setClaims(claims);
     Pagination pagination = new Pagination(1, 10, 1, "/");
-    viewModel.setPagination(pagination);
+    SearchResultView viewModel = new SearchResultView(claims, pagination);
 
     Map<String, Object> variables = Map.of("viewModel", viewModel);
     Document doc = renderDocument(variables);
@@ -157,10 +153,8 @@ class IndexViewTest extends ViewTestBase {
 
   @Test
   void testPageWithNoResultsFound() {
-    SearchResultView viewModel = new SearchResultView();
-    viewModel.setClaims(List.of());
     Pagination pagination = new Pagination(10, 10, 1, "/");
-    viewModel.setPagination(pagination);
+    SearchResultView viewModel = new SearchResultView(List.of(), pagination);
 
     Map<String, Object> variables = Map.of("viewModel", viewModel);
 
