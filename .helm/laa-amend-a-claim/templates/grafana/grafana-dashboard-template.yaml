@@ -199,11 +199,11 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "P5DCFC7561CCDE821"
+            "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(\n    assessment_submissions_total{\n      namespace=\"{{ .Release.Namespace }}\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
-          "legendFormat": "Successful assessments",
+          "expr": "max(active_sessions_count{namespace=\"{{ .Release.Namespace }}\"})",
+          "legendFormat": "Active Sessions Count",
           "range": true,
           "refId": "A"
         }
