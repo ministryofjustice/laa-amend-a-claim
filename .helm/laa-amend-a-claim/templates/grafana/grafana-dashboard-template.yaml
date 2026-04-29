@@ -59,7 +59,7 @@
         },
         "gridPos": {
           "h": 8,
-          "w": 12,
+          "w": 4,
           "x": 0,
           "y": 0
         },
@@ -84,128 +84,19 @@
         "pluginVersion": "11.5.6+security-01",
         "targets": [
           {
-            "disableTextWrap": false,
-            "editorMode": "builder",
-            "expr": "max(active_sessions_count{namespace=\"{{ .Release.Namespace }}\"})",
-            "fullMetaSearch": false,
-            "includeNullMetadata": true,
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A",
-            "useBackend": false
-          }
-        ],
-        "title": "active scions count",
-        "type": "stat"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
             },
-            "custom": {
-              "axisBorderShow": false,
-              "axisCenteredZero": false,
-              "axisColorMode": "text",
-              "axisLabel": "",
-              "axisPlacement": "auto",
-              "barAlignment": 0,
-              "barWidthFactor": 0.6,
-              "drawStyle": "line",
-              "fillOpacity": 0,
-              "gradientMode": "none",
-              "hideFrom": {
-                "legend": false,
-                "tooltip": false,
-                "viz": false
-              },
-              "insertNulls": false,
-              "lineInterpolation": "linear",
-              "lineWidth": 1,
-              "pointSize": 5,
-              "scaleDistribution": {
-                "type": "linear"
-              },
-              "showPoints": "auto",
-              "spanNulls": false,
-              "stacking": {
-                "group": "A",
-                "mode": "none"
-              },
-              "thresholdsStyle": {
-                "mode": "off"
-              }
-            },
-            "mappings": [ ],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": [
-            {
-              "matcher": {
-                "id": "byName",
-                "options": "Submission failures"
-              },
-              "properties": [
-                {
-                  "id": "color",
-                  "value": {
-                    "fixedColor": "red",
-                    "mode": "fixed"
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 8,
-          "x": 16,
-          "y": 0
-        },
-        "id": 50,
-        "options": {
-          "legend": {
-            "calcs": [ ],
-            "displayMode": "list",
-            "placement": "bottom",
-            "showLegend": true
-          },
-          "tooltip": {
-            "hideZeros": false,
-            "mode": "single",
-            "sort": "none"
-          }
-        },
-        "pluginVersion": "11.5.6+security-01",
-        "targets": [
-          {
             "editorMode": "code",
-            "expr": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"{{ .Release.Namespace }}\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
-            "legendFormat": "Submission failures",
+            "expr": "max(active_sessions_count{namespace=\"{{ .Release.Namespace }}\"})",
+            "legendFormat": "__auto",
             "range": true,
             "refId": "A"
           }
         ],
-        "title": "Failed submissions",
-        "type": "timeseries"
+        "title": "Active Sessions Count",
+        "type": "stat"
       },
       {
         "datasource": {
@@ -238,7 +129,7 @@
           "h": 8,
           "w": 4,
           "x": 0,
-          "y": 8
+          "y": 0
         },
         "id": 49,
         "options": {
@@ -307,7 +198,7 @@
           "h": 8,
           "w": 4,
           "x": 4,
-          "y": 8
+          "y": 9
         },
         "id": 47,
         "options": {
@@ -424,7 +315,7 @@
           "h": 8,
           "w": 8,
           "x": 8,
-          "y": 8
+          "y": 9
         },
         "id": 48,
         "options": {
@@ -458,12 +349,121 @@
         "type": "timeseries"
       },
       {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 0,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [ ],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Submission failures"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "red",
+                    "mode": "fixed"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 16,
+          "y": 9
+        },
+        "id": 50,
+        "options": {
+          "legend": {
+            "calcs": [ ],
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true
+          },
+          "tooltip": {
+            "hideZeros": false,
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.5.6+security-01",
+        "targets": [
+          {
+            "editorMode": "code",
+            "expr": "sum(\n    assessment_submissions_failed_total{\n      namespace=\"{{ .Release.Namespace }}\",\n      service=\"laa-amend-a-claim\"\n    }\n)",
+            "legendFormat": "Submission failures",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Failed submissions",
+        "type": "timeseries"
+      },
+      {
         "collapsed": false,
         "gridPos": {
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 16
+          "y": 17
         },
         "id": 55,
         "panels": [ ],
@@ -501,7 +501,7 @@
           "h": 8,
           "w": 4,
           "x": 0,
-          "y": 17
+          "y": 18
         },
         "id": 51,
         "options": {
@@ -570,7 +570,7 @@
           "h": 8,
           "w": 4,
           "x": 4,
-          "y": 17
+          "y": 18
         },
         "id": 52,
         "options": {
@@ -671,7 +671,7 @@
           "h": 8,
           "w": 8,
           "x": 8,
-          "y": 17
+          "y": 18
         },
         "id": 53,
         "options": {
@@ -784,7 +784,7 @@
           "h": 8,
           "w": 8,
           "x": 16,
-          "y": 17
+          "y": 18
         },
         "id": 54,
         "options": {
@@ -823,7 +823,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 25
+          "y": 26
         },
         "id": 40,
         "panels": [ ],
@@ -861,7 +861,7 @@
           "h": 6,
           "w": 3,
           "x": 0,
-          "y": 26
+          "y": 27
         },
         "id": 2,
         "options": {
@@ -887,7 +887,7 @@
               "uid": "prometheus"
             },
             "editorMode": "builder",
-            "expr": "sum(kube_pod_container_info{namespace='laa-amend-a-claim-dev', container='$container'})",
+            "expr": "sum(kube_pod_container_info{namespace='{{ .Release.Namespace }}', container='$container'})",
             "legendFormat": "Total",
             "range": true,
             "refId": "A"
@@ -898,7 +898,7 @@
               "uid": "prometheus"
             },
             "editorMode": "code",
-            "expr": "sum({namespace='laa-amend-a-claim-dev', container='$container', phase='Running',pod=~'.*deployment.*'} + 0)",
+            "expr": "sum({namespace='{{ .Release.Namespace }}', container='$container', phase='Running',pod=~'.*deployment.*'} + 0)",
             "hide": false,
             "legendFormat": "Running",
             "range": true,
@@ -910,7 +910,7 @@
               "uid": "prometheus"
             },
             "editorMode": "builder",
-            "expr": "sum({namespace='laa-amend-a-claim-dev', container='$container',phase='Pending',pod=~'.*deployment.*'} + 0)",
+            "expr": "sum({namespace='{{ .Release.Namespace }}', container='$container',phase='Pending',pod=~'.*deployment.*'} + 0)",
             "hide": false,
             "legendFormat": "Pending",
             "range": true,
@@ -922,7 +922,7 @@
               "uid": "prometheus"
             },
             "editorMode": "code",
-            "expr": "sum({namespace='laa-amend-a-claim-dev', container='$container',phase='Failed',pod=~'.*deployment.*'} + 0)",
+            "expr": "sum({namespace='{{ .Release.Namespace }}', container='$container',phase='Failed',pod=~'.*deployment.*'} + 0)",
             "hide": false,
             "legendFormat": "Failed",
             "range": true,
@@ -996,7 +996,7 @@
           "h": 10,
           "w": 10,
           "x": 3,
-          "y": 26
+          "y": 27
         },
         "id": 46,
         "options": {
@@ -1020,7 +1020,7 @@
               "uid": "P5DCFC7561CCDE821"
             },
             "editorMode": "code",
-            "expr": "sum by(instance) (increase(http_server_requests_seconds_count{namespace='laa-amend-a-claim-dev',container='$container'}[$__rate_interval])) ",
+            "expr": "sum by(instance) (increase(http_server_requests_seconds_count{namespace='{{ .Release.Namespace }}',container='$container'}[$__rate_interval])) ",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -1093,7 +1093,7 @@
           "h": 10,
           "w": 11,
           "x": 13,
-          "y": 26
+          "y": 27
         },
         "id": 4,
         "options": {
@@ -1117,7 +1117,7 @@
               "uid": "P5DCFC7561CCDE821"
             },
             "editorMode": "code",
-            "expr": "sum by(uri, method) (increase(http_server_requests_seconds_count{namespace='laa-amend-a-claim-dev',container='$container', uri!~'.*actuator.*|.*swagger.*|.*v3.*|.*providers.*'}[$__rate_interval])) ",
+            "expr": "sum by(uri, method) (increase(http_server_requests_seconds_count{namespace='{{ .Release.Namespace }}',container='$container', uri!~'.*actuator.*|.*swagger.*|.*v3.*|.*providers.*'}[$__rate_interval])) ",
             "legendFormat": "{{`{{app}}`}}",
             "range": true,
             "refId": "A"
@@ -1191,7 +1191,7 @@
           "h": 10,
           "w": 12,
           "x": 0,
-          "y": 36
+          "y": 37
         },
         "id": 42,
         "options": {
@@ -1289,7 +1289,7 @@
           "h": 10,
           "w": 12,
           "x": 12,
-          "y": 36
+          "y": 37
         },
         "id": 44,
         "options": {
@@ -1313,7 +1313,7 @@
               "uid": "P5DCFC7561CCDE821"
             },
             "editorMode": "code",
-            "expr": "max by(uri, method) (http_server_requests_seconds_max{namespace='laa-amend-a-claim-dev',container='$container'}) ",
+            "expr": "max by(uri, method) (http_server_requests_seconds_max{namespace='{{ .Release.Namespace }}',container='$container'}) ",
             "legendFormat": "__auto",
             "range": true,
             "refId": "A"
@@ -1328,7 +1328,7 @@
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 46
+          "y": 47
         },
         "id": 36,
         "panels": [ ],
@@ -1363,7 +1363,7 @@
           "h": 6,
           "w": 8,
           "x": 0,
-          "y": 47
+          "y": 48
         },
         "id": 18,
         "options": {
@@ -1389,7 +1389,7 @@
               "uid": "prometheus"
             },
             "editorMode": "code",
-            "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Eden Space'}/1000000",
+            "expr": "jvm_memory_max_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Eden Space'}/1000000",
             "legendFormat": "{{`{{instance}}`}}",
             "range": true,
             "refId": "A"
@@ -1426,7 +1426,7 @@
           "h": 6,
           "w": 8,
           "x": 8,
-          "y": 47
+          "y": 48
         },
         "id": 16,
         "options": {
@@ -1453,7 +1453,7 @@
               "uid": "prometheus"
             },
             "editorMode": "code",
-            "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container', area='heap', id='Survivor Space', namespace='laa-amend-a-claim-dev'} / 1000000",
+            "expr": "jvm_memory_max_bytes{namespace='{{ .Release.Namespace }}',container='$container', area='heap', id='Survivor Space', namespace='{{ .Release.Namespace }}'} / 1000000",
             "legendFormat": "{{`{{instance}}`}}",
             "range": true,
             "refId": "A"
@@ -1490,7 +1490,7 @@
           "h": 6,
           "w": 8,
           "x": 16,
-          "y": 47
+          "y": 48
         },
         "id": 14,
         "options": {
@@ -1516,7 +1516,7 @@
               "uid": "prometheus"
             },
             "editorMode": "code",
-            "expr": "jvm_memory_max_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Tenured Gen',} /1000000",
+            "expr": "jvm_memory_max_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Tenured Gen',} /1000000",
             "legendFormat": "{{`{{instance}}`}}",
             "range": true,
             "refId": "A"
@@ -1589,7 +1589,7 @@
           "h": 10,
           "w": 8,
           "x": 0,
-          "y": 53
+          "y": 54
         },
         "id": 8,
         "options": {
@@ -1613,7 +1613,7 @@
               "uid": "prometheus"
             },
             "editorMode": "code",
-            "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Eden Space'}/1000000",
+            "expr": "jvm_memory_used_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Eden Space'}/1000000",
             "legendFormat": "{{`{{instance}}`}}",
             "range": true,
             "refId": "A"
@@ -1686,7 +1686,7 @@
           "h": 10,
           "w": 8,
           "x": 8,
-          "y": 53
+          "y": 54
         },
         "id": 10,
         "options": {
@@ -1710,7 +1710,7 @@
               "uid": "prometheus"
             },
             "editorMode": "code",
-            "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Survivor Space'}/1000000",
+            "expr": "jvm_memory_used_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Survivor Space'}/1000000",
             "legendFormat": "{{`{{instance}}`}}",
             "range": true,
             "refId": "A"
@@ -1783,7 +1783,7 @@
           "h": 10,
           "w": 8,
           "x": 16,
-          "y": 53
+          "y": 54
         },
         "id": 12,
         "options": {
@@ -1807,7 +1807,7 @@
               "uid": "prometheus"
             },
             "editorMode": "code",
-            "expr": "jvm_memory_used_bytes{namespace='laa-amend-a-claim-dev',container='$container',area='heap',id='Tenured Gen',} /1000000",
+            "expr": "jvm_memory_used_bytes{namespace='{{ .Release.Namespace }}',container='$container',area='heap',id='Tenured Gen',} /1000000",
             "legendFormat": "{{`{{instance}}`}}",
             "range": true,
             "refId": "A"
