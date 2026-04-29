@@ -69,8 +69,8 @@ class PaginationTest {
 
     assertThat(result.getPrevious()).isNull();
 
-    assertThat(result.getNext().getText()).isEqualTo("Next");
-    assertThat(result.getNext().getHref()).isEqualTo("/foo?page=2");
+    assertThat(result.getNext().text()).isEqualTo("Next");
+    assertThat(result.getNext().href()).isEqualTo("/foo?page=2");
   }
 
   @Test
@@ -95,8 +95,8 @@ class PaginationTest {
     assertThat(result.getResults().getTo()).isEqualTo(6);
     assertThat(result.getResults().getText()).isEqualTo("results");
 
-    assertThat(result.getPrevious().getText()).isEqualTo("Previous");
-    assertThat(result.getPrevious().getHref()).isEqualTo("/foo?page=1");
+    assertThat(result.getPrevious().text()).isEqualTo("Previous");
+    assertThat(result.getPrevious().href()).isEqualTo("/foo?page=1");
 
     assertThat(result.getNext()).isNull();
   }
@@ -138,11 +138,11 @@ class PaginationTest {
     assertThat(result.getResults().getTo()).isEqualTo(6);
     assertThat(result.getResults().getText()).isEqualTo("results");
 
-    assertThat(result.getPrevious().getText()).isEqualTo("Previous");
-    assertThat(result.getPrevious().getHref()).isEqualTo("/foo?page=1");
+    assertThat(result.getPrevious().text()).isEqualTo("Previous");
+    assertThat(result.getPrevious().href()).isEqualTo("/foo?page=1");
 
-    assertThat(result.getNext().getText()).isEqualTo("Next");
-    assertThat(result.getNext().getHref()).isEqualTo("/foo?page=3");
+    assertThat(result.getNext().text()).isEqualTo("Next");
+    assertThat(result.getNext().href()).isEqualTo("/foo?page=3");
   }
 
   @Test
@@ -192,24 +192,24 @@ class PaginationTest {
     assertThat(result.getResults().getTo()).isEqualTo(15);
     assertThat(result.getResults().getText()).isEqualTo("results");
 
-    assertThat(result.getPrevious().getText()).isEqualTo("Previous");
-    assertThat(result.getPrevious().getHref()).isEqualTo("/foo?page=4");
+    assertThat(result.getPrevious().text()).isEqualTo("Previous");
+    assertThat(result.getPrevious().href()).isEqualTo("/foo?page=4");
 
-    assertThat(result.getNext().getText()).isEqualTo("Next");
-    assertThat(result.getNext().getHref()).isEqualTo("/foo?page=6");
+    assertThat(result.getNext().text()).isEqualTo("Next");
+    assertThat(result.getNext().href()).isEqualTo("/foo?page=6");
   }
 
   @Test
   void shouldHandleHrefWithNoPageQueryParameter() {
     Pagination result = new Pagination(6, 3, 1, "/foo");
 
-    assertThat(result.getNext().getHref()).isEqualTo("/foo?page=2");
+    assertThat(result.getNext().href()).isEqualTo("/foo?page=2");
   }
 
   @Test
   void shouldHandleHrefWithOtherQueryParameter() {
     Pagination result = new Pagination(6, 3, 1, "/foo?key=value");
 
-    assertThat(result.getNext().getHref()).isEqualTo("/foo?key=value&page=2");
+    assertThat(result.getNext().href()).isEqualTo("/foo?key=value&page=2");
   }
 }
