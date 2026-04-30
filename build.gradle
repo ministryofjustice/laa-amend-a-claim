@@ -2,7 +2,7 @@ plugins {
     id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.2.6'
     id "com.diffplug.spotless" version "8.4.0"
     id "io.sentry.jvm.gradle" version "6.4.0"
-    id 'au.com.dius.pact' version '4.6.20'
+    id 'au.com.dius.pact' version '4.7.0'
 }
 
 java {
@@ -76,7 +76,7 @@ dependencies {
     implementation("io.vavr:vavr:1.0.1")
 
     // Sentry observability for Spring Boot 4
-    implementation enforcedPlatform('io.sentry:sentry-bom:8.38.0')
+    implementation enforcedPlatform('io.sentry:sentry-bom:8.40.0')
     implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
@@ -89,7 +89,7 @@ dependencies {
     implementation 'io.micrometer:micrometer-tracing-bridge-brave'
 
     // Pact consumer testing
-    testImplementation 'au.com.dius.pact.consumer:junit5:4.6.20'
+    testImplementation 'au.com.dius.pact.consumer:junit5:4.7.0'
     // test dependencies
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:5.0.2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -101,7 +101,7 @@ dependencies {
     testImplementation 'org.jmockit:jmockit:1.50'
     testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-    testImplementation 'org.jsoup:jsoup:1.22.1'
+    testImplementation 'org.jsoup:jsoup:1.22.2'
     testImplementation 'com.github.codemonstur:embedded-redis:1.4.3'
 }
 
