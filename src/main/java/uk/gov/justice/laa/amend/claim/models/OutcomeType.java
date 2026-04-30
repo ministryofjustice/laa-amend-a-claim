@@ -20,12 +20,6 @@ public enum OutcomeType {
     this.csvLabel = csvLabel;
   }
 
-  /**
-   * Parses a form value string to an OutcomeType enum.
-   *
-   * @param formValue the form value (e.g., "reduced-to-fixed-fee-assessed")
-   * @return the corresponding OutcomeType, or null if not found
-   */
   public static OutcomeType fromFormValue(String formValue) {
     if (formValue == null) {
       return null;

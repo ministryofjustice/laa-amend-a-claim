@@ -24,7 +24,6 @@ public class PageHelper {
     return card.locator("dl.govuk-summary-list");
   }
 
-  /** This is to get row by a given label and selector */
   public static Locator tableRowByLabel(Locator card, String label) {
     Locator table = tableByCard(card);
     return table.getByRole(AriaRole.ROW, new Locator.GetByRoleOptions().setName(label)).first();

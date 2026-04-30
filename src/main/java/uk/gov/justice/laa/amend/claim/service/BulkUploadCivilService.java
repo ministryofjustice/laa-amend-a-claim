@@ -41,10 +41,6 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
     this.claimMapper = claimMapper;
   }
 
-  /**
-   * Validate rows and return a list of assessed claim details objects in
-   * BulkUploadValidationOutcome
-   */
   @Override
   protected BulkUploadValidationOutcome validateRows(List<BulkUploadCivilClaim> rows) {
     List<BulkUploadError> errors = new ArrayList<>();
@@ -104,7 +100,7 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
     return civilClaimDetails;
   }
 
-  /** Map Row details into assessed values of ClaimDetails fields */
+  /** Map Row details into assessed values of ClaimDetails fields. */
   private void applyRowToClaimDetails(CivilClaimDetails details, BulkUploadCivilClaim row) {
     details.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY);
     details.getNetProfitCost().setAssessed(row.getProfitCost());

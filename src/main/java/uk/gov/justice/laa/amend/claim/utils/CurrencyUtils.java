@@ -8,7 +8,6 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import lombok.experimental.UtilityClass;
 
-/** Utility class for formatting currency. */
 @UtilityClass
 public class CurrencyUtils {
 

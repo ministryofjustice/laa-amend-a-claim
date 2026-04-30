@@ -2,7 +2,6 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import lombok.Getter;
 
-/** View model for handling pagination results. */
 @Getter
 public class PaginationResults {
   private int count;
@@ -10,14 +9,6 @@ public class PaginationResults {
   private int to;
   private String text;
 
-  /**
-   * Constructor for the pagination results.
-   *
-   * @param totalNumberOfResults The total number of results
-   * @param numberOfResultsPerPage The number of results per page
-   * @param currentPage The current page
-   * @param totalNumberOfPages The total number of pages
-   */
   public PaginationResults(
       int totalNumberOfResults,
       int numberOfResultsPerPage,

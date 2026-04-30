@@ -16,7 +16,7 @@ import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 public class ClaimStatusHandler {
 
   /**
-   * Updates all claim field statuses based on the outcome type
+   * Updates all claim field statuses based on the outcome type.
    *
    * @param claim Claim details containing the fields to update
    * @param outcome Outcome type determining the status changes

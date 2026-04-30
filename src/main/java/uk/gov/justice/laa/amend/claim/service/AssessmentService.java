@@ -25,7 +25,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
 
-/** Service for amending claim values when the assessment outcome change. */
 @Service
 @Slf4j
 public class AssessmentService {
@@ -57,13 +56,6 @@ public class AssessmentService {
     this.highValueAssessmentLimit = highValueAssessmentLimit;
   }
 
-  /**
-   * Applies business logic based on the assessment outcome. This method should be called whenever
-   * the assessment outcome changes.
-   *
-   * @param claim the claim summary to update
-   * @param newOutcome the new assessment outcome
-   */
   public <T extends ClaimDetails> void applyAssessmentOutcome(T claim, OutcomeType newOutcome) {
     if (claim == null || newOutcome == null) {
       return;

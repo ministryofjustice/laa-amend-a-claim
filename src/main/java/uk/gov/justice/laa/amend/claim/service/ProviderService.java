@@ -13,12 +13,6 @@ public class ProviderService {
 
   private final ProviderApiClient providerApiClient;
 
-  /**
-   * Fetches provider firm office from Provider API
-   *
-   * @param officeCode the office code
-   * @return firm office from API or null as fallback
-   */
   public ProviderFirmOfficeDto getProviderFirm(String officeCode) {
     try {
       return providerApiClient.getProviderOffice(officeCode).block();
