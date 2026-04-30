@@ -28,7 +28,7 @@ sourceSets {
 
 dependencies {
     implementation 'com.microsoft.playwright:playwright:1.59.0'
-    implementation 'com.deque.html.axe-core:playwright:4.11.1'
+    implementation 'com.deque.html.axe-core:playwright:4.11.2'
     testImplementation 'org.webjars.npm:axe-html-reporter:2.2.11'
     implementation 'io.github.cdimascio:dotenv-java:3.2.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.21.2'
@@ -44,8 +44,8 @@ dependencies {
     testImplementation 'org.postgresql:postgresql:42.7.10'
 
     // Lombok
-    compileOnly 'org.projectlombok:lombok:1.18.44'
-    annotationProcessor 'org.projectlombok:lombok:1.18.44'
+    compileOnly 'org.projectlombok:lombok:1.18.46'
+    annotationProcessor 'org.projectlombok:lombok:1.18.46'
 }
 
 tasks.withType(Test).configureEach {
