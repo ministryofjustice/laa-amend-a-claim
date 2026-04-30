@@ -3,9 +3,6 @@
 
 replicaCount: 4
 
-metrics:
-  mainReleaseName: staging
-
 ingress:
   className: "modsec-non-prod"
 

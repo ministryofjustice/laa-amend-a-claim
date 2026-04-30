@@ -1945,8 +1945,8 @@
     "list": [
       {
         "current": {
-          "text": "{{ .Values.metrics.mainReleaseName }}-{{ .Chart.Name }}",
-          "value": "{{ .Values.metrics.mainReleaseName }}-{{ .Chart.Name }}"
+          "text": "laa-amend-a-claim",
+          "value": "laa-amend-a-claim"
         },
         "definition": "label_values(kube_pod_container_info{namespace=\"{{ .Release.Namespace }}\"},container)",
         "description": "",
@@ -1959,7 +1959,7 @@
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
-        "regex": "/.*{{ .Chart.Name }}/",
+        "regex": "/.*laa-amend-a-claim/",
         "type": "query"
       }
     ]

@@ -4,9 +4,6 @@
 
 replicaCount: 3
 
-metrics:
-  mainReleaseName: production
-
 image:
   repository: nginx  # Override with ECR repository at deploy time
   pullPolicy: IfNotPresent
