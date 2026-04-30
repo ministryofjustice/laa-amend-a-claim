@@ -119,7 +119,7 @@ class BulkUploadServiceIntegrationTest extends WireMockSetup {
     return sb.toString();
   }
 
-  /** Generates UFN in format DDMMYY/XYZ (randomized for tests) */
+  /** Generates UFN in format DDMMYY/XYZ (randomized for tests). */
   private String generateRandomUfn(Random random) {
     String date = LocalDate.now().format(DateTimeFormatter.ofPattern("ddMMyy"));
     int randomBlock = random.nextInt(900) + 100; // 100–999

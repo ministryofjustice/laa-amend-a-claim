@@ -49,7 +49,7 @@ public class BulkUploadHelper {
     return claims;
   }
 
-  /** Map officeCode with UFN and row index from given rows of csv */
+  /** Map officeCode with UFN and row index from given rows of csv. */
   public Map<Pair<String, String>, BulkUploadCivilClaim> getOfficeCodeUfnRows(
       List<BulkUploadCivilClaim> rows, List<BulkUploadError> errors) {
 

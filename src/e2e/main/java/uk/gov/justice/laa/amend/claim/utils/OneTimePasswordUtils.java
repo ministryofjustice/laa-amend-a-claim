@@ -11,7 +11,7 @@ public class OneTimePasswordUtils {
    * Generates a 6-digit TOTP code using a Base32-encoded secret (RFC 6238 compliant). The secret
    * must be provided securely from environment variables.
    */
-  public static String generateTOTP(String base32Secret) {
+  public static String generateTotp(String base32Secret) {
     try {
       // Derive key dynamically, not hardcoded
       byte[] keyBytes = decodeBase32(base32Secret);

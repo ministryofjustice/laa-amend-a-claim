@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 
-/** View model for handling pagination. */
 @Getter
 public class Pagination {
   List<PaginationItem> items;

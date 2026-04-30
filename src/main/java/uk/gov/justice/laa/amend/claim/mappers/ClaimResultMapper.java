@@ -20,24 +20,11 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 @Mapper(componentModel = "spring", uses = ClaimMapper.class)
 public interface ClaimResultMapper {
 
-  /**
-   * Maps ClaimResultSet to a SearchResultViewModel.
-   *
-   * @param claimResultSet The ClaimResultSet input.
-   * @return A SearchResultViewModel.
-   */
   @Mapping(target = "pagination", source = ".", qualifiedByName = "toPagination")
   @Mapping(target = "claims", expression = "java(mapClaims(claimResultSet, claimMapper))")
   SearchResultView toDto(
       ClaimResultSetV2 claimResultSet, @Context String href, @Context ClaimMapper claimMapper);
 
-  /**
-   * Converts ClaimResultSet to a Pagination object. Handles pagination-related data and safety
-   * checks for null values.
-   *
-   * @param claimResultSet The ClaimResultSet input.
-   * @return The Pagination component.
-   */
   @Named("toPagination")
   default Pagination toPagination(ClaimResultSetV2 claimResultSet, @Context String href) {
     return new Pagination(

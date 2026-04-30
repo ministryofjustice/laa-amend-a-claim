@@ -151,7 +151,6 @@ public interface AssessmentMapper {
     target.setAssessed(f.apply(source));
   }
 
-  /** Maps AssessmentGet response object into AssessmentInfo */
   @Named("toAssessmentInfo")
   @Mapping(target = "lastAssessedBy", source = "createdByUserId")
   @Mapping(target = "lastAssessmentDate", source = "createdOn")
@@ -275,6 +274,8 @@ public interface AssessmentMapper {
   }
 
   /**
+   * Map the assessed total VAT.
+   *
    * @param claim the claim being mapped to an Assessment
    * @return the assessed total VAT, unless this is not modifiable in the UI (i.e. null) in which
    *     case we return the allowed total VAT
@@ -284,6 +285,8 @@ public interface AssessmentMapper {
   }
 
   /**
+   * Map the assessed total including VAT.
+   *
    * @param claim the claim being mapped to an Assessment
    * @return the assessed total (including VAT), unless this is not modifiable in the UI (i.e. null)
    *     in which case we return the allowed total (including VAT)

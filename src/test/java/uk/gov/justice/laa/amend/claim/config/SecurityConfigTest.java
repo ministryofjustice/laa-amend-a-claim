@@ -14,7 +14,6 @@ import uk.gov.justice.laa.amend.claim.models.Role;
 
 public class SecurityConfigTest {
 
-  /** Authority mapping tests */
   @Nested
   class SecurityConfigGetAuthoritiesTest {
     private SecurityConfig config;

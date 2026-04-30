@@ -54,7 +54,7 @@ public class LoginPage {
     page.waitForSelector(otcInput, new Page.WaitForSelectorOptions().setTimeout(120_000));
 
     // MFA secret is securely loaded from the environment via EnvConfig
-    String code = OneTimePasswordUtils.generateTOTP(secret);
+    String code = OneTimePasswordUtils.generateTotp(secret);
     System.out.println("[INFO] Generated MFA code securely.");
 
     page.fill(otcInput, code);
