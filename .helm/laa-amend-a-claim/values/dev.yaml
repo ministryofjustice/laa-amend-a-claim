@@ -3,6 +3,9 @@
 
 replicaCount: 1
 
+metrics:
+  mainReleaseName: development
+
 ingress:
   className: "modsec-non-prod"
 

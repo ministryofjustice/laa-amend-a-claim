@@ -3,6 +3,9 @@
 
 replicaCount: 2
 
+metrics:
+  mainReleaseName: uat
+  
 ingress:
   className: "modsec-non-prod"
 
