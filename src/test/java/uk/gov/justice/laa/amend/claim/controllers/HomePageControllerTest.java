@@ -127,19 +127,35 @@ public class HomePageControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void testOnPageLoadWithInvalidSortFieldReturnsBadRequest() throws Exception {
+  public void testOnPageLoadWithInvalidSortFieldRedirectsToCleanUrl() throws Exception {
     when(searchProperties.isSortEnabled()).thenReturn(true);
 
-    mockMvc.perform(get("/?officeCode=123&page=1&sort=foo,asc")).andExpect(status().isBadRequest());
+    mockMvc
+        .perform(get("/?officeCode=123&page=1&sort=foo,asc"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/?officeCode=123&page=1"));
   }
 
   @Test
-  public void testOnPageLoadWithInvalidSortDirectionReturnsBadRequest() throws Exception {
+  public void testOnPageLoadWithInvalidSortDirectionRedirectsToCleanUrl() throws Exception {
     when(searchProperties.isSortEnabled()).thenReturn(true);
 
     mockMvc
         .perform(get("/?officeCode=123&page=1&sort=unique_file_number,foo"))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/?officeCode=123&page=1"));
+  }
+
+  @Test
+  public void testOnPageLoadWithLegacyCamelCaseSortRedirectsPreservingOtherParams()
+      throws Exception {
+    when(searchProperties.isSortEnabled()).thenReturn(true);
+
+    mockMvc
+        .perform(
+            get("/?officeCode=123456&uniqueFileNumber=123456/789&page=1&sort=uniqueFileNumber,asc"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/?officeCode=123456&uniqueFileNumber=123456/789&page=1"));
   }
 
   @Test

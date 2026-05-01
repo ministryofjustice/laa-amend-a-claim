@@ -112,6 +112,14 @@ class HomePageControllerIntegrationTest extends ControllerIntegrationTest {
   }
 
   @Test
+  void testGetWithLegacyCamelCaseSortRedirectsToCleanUrl() throws Exception {
+    mockMvc
+        .perform(get("/").param("officeCode", "0P322F").param("sort", "uniqueFileNumber,asc"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/?officeCode=0P322F&page=1"));
+  }
+
+  @Test
   void testSearchWithValidSubmissionDate() throws Exception {
     mockMvc
         .perform(

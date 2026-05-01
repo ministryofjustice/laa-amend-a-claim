@@ -9,15 +9,19 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
@@ -115,5 +119,15 @@ public class HomePageController {
     SearchQuery query = new SearchQuery(form, sort);
     String redirectUrl = query.getRedirectUrl();
     return "redirect:" + redirectUrl;
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public String handleSearchQueryBindingError(MethodArgumentNotValidException ex) {
+    if (ex.getBindingResult().getTarget() instanceof SearchQuery query
+        && ex.getBindingResult().getFieldErrors().stream()
+            .anyMatch(fe -> "sort".equals(fe.getField()))) {
+      return "redirect:" + query.getRedirectUrl(null);
+    }
+    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request parameters");
   }
 }
