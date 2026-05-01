@@ -204,7 +204,7 @@ laaAmendAClaim:
     - name: IS_CLAIM_HISTORY_ENABLED
       value: "true"
     - name: IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED
-      value: "true"
+      value: "false"
   resources:
     requests:
       memory: "512Mi"
