@@ -97,7 +97,8 @@ public class ClaimReviewController {
     model.addAttribute("submissionFailed", submissionFailed);
     model.addAttribute("validationFailed", validationFailed);
 
-    boolean isSwapColumns = TRUE.equals(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled());
+    boolean isSwapColumns =
+        TRUE.equals(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled());
     model.addAttribute("isSwapColumns", isSwapColumns);
     return "review-and-amend";
   }
