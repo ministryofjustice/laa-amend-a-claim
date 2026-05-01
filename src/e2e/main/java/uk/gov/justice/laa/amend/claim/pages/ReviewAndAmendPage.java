@@ -134,7 +134,7 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
 
   public void assertCrimePageLoadedHeadersAndItems() {
     assertTableHasHeaders(claimCostsTable, "Item", "Requested", "Calculated", "Assessed");
-    assertTableHasHeaders(totalClaimValueTable, "Item", "Requested", "Calculated","Assessed");
+    assertTableHasHeaders(totalClaimValueTable, "Item", "Requested", "Calculated", "Assessed");
     assertTableHasHeaders(totalAllowedValueTable, "Item", "Requested", "Calculated", "Allowed");
 
     assertAssessmentHasItems(
@@ -152,9 +152,9 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
   }
 
   public void assertCivilPageLoadedHeadersAndItems() {
-    assertTableHasHeaders(claimCostsTable, "Item",  "Requested", "Calculated", "Assessed");
+    assertTableHasHeaders(claimCostsTable, "Item", "Requested", "Calculated", "Assessed");
     assertTableHasHeaders(totalClaimValueTable, "Item", "Requested", "Calculated", "Assessed");
-    assertTableHasHeaders(totalAllowedValueTable, "Item", "Requested", "Calculated","Allowed");
+    assertTableHasHeaders(totalAllowedValueTable, "Item", "Requested", "Calculated", "Allowed");
 
     assertAssessmentHasItems(
         "Assessment outcome", "Was this claim assessed as part of the contingency process?");

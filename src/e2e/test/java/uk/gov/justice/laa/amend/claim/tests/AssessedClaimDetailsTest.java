@@ -83,7 +83,7 @@ public class AssessedClaimDetailsTest extends BaseTest {
     claimDetails.assertInfoAlertIsPresent();
     claimDetails.assertUpdateAssessmentOutcomeButtonIsPresent();
 
-    claimDetails.assertCost("Fixed fee",  "Not applicable", "£239.35","£1,000.00");
+    claimDetails.assertCost("Fixed fee", "Not applicable", "£239.35", "£1,000.00");
     claimDetails.assertCost("Profit costs", "£750.00", "Not applicable", "£2,000.00");
     claimDetails.assertCost("Disbursements", "£400.00", "£400.00", "Not applicable");
     claimDetails.assertCost("Disbursement VAT", "£80.00", "£80.00", "Not applicable");
@@ -97,7 +97,7 @@ public class AssessedClaimDetailsTest extends BaseTest {
     claimDetails.assertAssessedTotals(
         "Assessed total incl VAT", "Not applicable", "Not applicable", "£4,000.00");
 
-    claimDetails.assertAllowedTotals("Allowed total VAT", "Not applicable","£127.87",  "£5,000.00");
+    claimDetails.assertAllowedTotals("Allowed total VAT", "Not applicable", "£127.87", "£5,000.00");
     claimDetails.assertAllowedTotals(
         "Allowed total incl VAT", "Not applicable", "£767.22", "£6,000.00");
   }

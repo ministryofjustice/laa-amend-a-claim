@@ -198,7 +198,7 @@ public class ClaimDetailsPage extends LaaPage {
   }
 
   public void assertAssessedTotals(
-      String label,  String submitted, String calculated, String assessed) {
+      String label, String submitted, String calculated, String assessed) {
     assertTableRow("Total claim value", label, submitted, calculated, assessed);
   }
 
