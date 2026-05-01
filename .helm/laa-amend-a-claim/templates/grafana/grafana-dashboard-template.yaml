@@ -1959,7 +1959,7 @@
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
-        "regex": "/.*laa-amend-a-claim/",
+        "regex": "",
         "type": "query"
       }
     ]
