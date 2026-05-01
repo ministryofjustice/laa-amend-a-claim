@@ -41,5 +41,8 @@ public abstract class ClaimDetailsBaseController {
     boolean isVoidButtonPresent =
         request.isUserInRole(ROLE_CLAIM_AMENDMENTS_CASEWORKER.name()) && claim.isValid();
     model.addAttribute("isVoidButtonPresent", isVoidButtonPresent);
+
+    boolean isSwapColumns = TRUE.equals(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled());
+    model.addAttribute("isSwapColumns", isSwapColumns);
   }
 }

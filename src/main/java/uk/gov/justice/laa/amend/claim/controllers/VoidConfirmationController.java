@@ -31,7 +31,6 @@ import uk.gov.justice.laa.amend.claim.service.ClaimService;
 public class VoidConfirmationController {
 
   private final ClaimService claimService;
-  private final FeatureFlagsConfig featureFlagsConfig;
 
   @GetMapping
   public String onPageLoad(
