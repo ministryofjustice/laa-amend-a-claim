@@ -144,9 +144,9 @@ public abstract class E2eBaseTest extends BaseTest {
         "Assessed total incl VAT", "Not applicable", "Not applicable", assessedTotalInclVat);
 
     claimDetails.assertAllowedTotals(
-        "Allowed total VAT", "£127.87", "Not applicable", allowedTotalVat);
+        "Allowed total VAT", "Not applicable", "£127.87", allowedTotalVat);
     claimDetails.assertAllowedTotals(
-        "Allowed total incl VAT", "£767.22", "Not applicable", allowedTotalInclVat);
+        "Allowed total incl VAT", "Not applicable", "£767.22", allowedTotalInclVat);
   }
 
   private void addProfitCosts(ReviewAndAmendPage review, String profitCosts) {
