@@ -38,14 +38,14 @@
                                 <dl class="govuk-summary-list">
                                     <div class="govuk-summary-list__row">
                                         <dt class="govuk-summary-list__key" th:text="#{claimSummary.item}"></dt>
-                                        <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimSummary.calculated}"></dd>
-                                        <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimSummary.submitted}"></dd>
+                                        <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="${isSwapColumns} ? #{claimSummary.submitted} : #{claimSummary.calculated}"></dd>
+                                        <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="${isSwapColumns} ? #{claimSummary.calculated} : #{claimSummary.submitted}"></dd>
                                         <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:if="${claim.hasAssessment}" th:text="#{claimSummary.assessed}"></dd>
                                     </div>
                                     <div class="govuk-summary-list__row" th:each="row : ${claim.summaryClaimFieldRows}">
                                         <dt class="govuk-summary-list__key" th:text="#{${row.label}}"></dt>
-                                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
-                                        <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${isSwapColumns} ? ${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)} : ${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
+                                        <dd class="govuk-summary-list__value" th:text="${isSwapColumns} ? ${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)} : ${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></dd>
                                         <dd class="govuk-summary-list__value" th:if="${claim.hasAssessment}" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></dd>
                                     </div>
                                 </dl>
@@ -62,16 +62,16 @@
                                         <thead class="govuk-table__head">
                                         <tr class="govuk-table__row">
                                             <th class="govuk-table__header" scope="col" th:text="#{claimSummary.item}"></th>
-                                            <th class="govuk-table__header" scope="col" th:text="#{claimSummary.calculated}"></th>
-                                            <th class="govuk-table__header" scope="col" th:text="#{claimSummary.submitted}"></th>
+                                            <th class="govuk-table__header" scope="col" th:text="${isSwapColumns} ? #{claimSummary.submitted} : #{claimSummary.calculated}"></th>
+                                            <th class="govuk-table__header" scope="col" th:text="${isSwapColumns} ? #{claimSummary.calculated} : #{claimSummary.submitted}"></th>
                                             <th class="govuk-table__header" scope="col" th:text="#{claimSummary.assessed}"></th>
                                         </tr>
                                         </thead>
                                         <tbody class="govuk-table__body">
                                         <tr class="govuk-table__row" th:each="row : ${claim.assessedTotals}">
                                             <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
-                                            <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
-                                            <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
+                                            <td class="govuk-table__cell" th:text="${isSwapColumns} ? ${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)} : ${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
+                                            <td class="govuk-table__cell" th:text="${isSwapColumns} ? ${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)} : ${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
                                             <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></td>
                                         </tr>
                                         </tbody>
@@ -88,16 +88,16 @@
                                         <thead class="govuk-table__head">
                                         <tr class="govuk-table__row">
                                             <th class="govuk-table__header" scope="col" th:text="#{claimSummary.item}"></th>
-                                            <th class="govuk-table__header" scope="col" th:text="#{claimSummary.calculated}"></th>
-                                            <th class="govuk-table__header" scope="col" th:text="#{claimSummary.submitted}"></th>
+                                            <th class="govuk-table__header" scope="col" th:text="${isSwapColumns} ? #{claimSummary.submitted} : #{claimSummary.calculated}"></th>
+                                            <th class="govuk-table__header" scope="col" th:text="${isSwapColumns} ? #{claimSummary.calculated} : #{claimSummary.submitted}"></th>
                                             <th class="govuk-table__header" scope="col" th:text="#{claimSummary.allowed}"></th>
                                         </tr>
                                         </thead>
                                         <tbody class="govuk-table__body">
                                         <tr class="govuk-table__row" th:each="row : ${claim.allowedTotals}">
                                             <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${row.label}}"></td>
-                                            <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
-                                            <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
+                                            <td class="govuk-table__cell" th:text="${isSwapColumns} ? ${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)} : ${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
+                                            <td class="govuk-table__cell" th:text="${isSwapColumns} ? ${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)} : ${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
                                             <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></td>
                                         </tr>
                                         </tbody>

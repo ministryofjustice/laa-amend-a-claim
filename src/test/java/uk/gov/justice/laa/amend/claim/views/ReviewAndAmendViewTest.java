@@ -7,6 +7,7 @@ import java.util.List;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -30,6 +31,11 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
   ReviewAndAmendViewTest() {
     this.mapping = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
+  }
+
+  @BeforeEach
+  void setUp() {
+    when(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled()).thenReturn(true);
   }
 
   @Test
@@ -67,80 +73,80 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
     List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.getFirst(), "Fixed fee", "£200.00", "Not applicable", "£300.00");
+        claimCostsTable.getFirst(), "Fixed fee", "Not applicable", "£200.00", "£300.00");
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(1),
         "Profit costs",
-        "Not applicable",
         "£100.00",
+        "Not applicable",
         "£300.00",
         String.format("/submissions/%s/claims/%s/profit-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(2),
         "Disbursements",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(3),
         "Disbursement VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements-vat", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(4),
         "Detention travel and waiting costs",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format(
             "/submissions/%s/claims/%s/detention-travel-and-waiting-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(5),
         "JR and form filling",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/jr-form-filling-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(6),
         "Counsel costs",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/counsel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(7), "Oral CMRH", "£200.00", "£100.00", "£300.00");
+        claimCostsTable.get(7), "Oral CMRH", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(8), "Telephone CMRH", "£200.00", "£100.00", "£300.00");
+        claimCostsTable.get(8), "Telephone CMRH", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(9), "Home office interview", "£200.00", "£100.00", "£300.00");
+        claimCostsTable.get(9), "Home office interview", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(10), "Substantive hearing", "£200.00", "£100.00", "£300.00");
+        claimCostsTable.get(10), "Substantive hearing", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(11), "Adjourned hearing fee", "£200.00", "£100.00", "£300.00");
+        claimCostsTable.get(11), "Adjourned hearing fee", "£100.00", "£200.00", "£300.00");
 
     List<List<Element>> totalClaimValueTable = getTable(doc, "Total claim value");
     assertTableRowContainsValuesWithNoChangeLink(
-        totalClaimValueTable.getFirst(), "Assessed total VAT", "£200.00", "£100.00", "£300.00");
+        totalClaimValueTable.getFirst(), "Assessed total VAT", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        totalClaimValueTable.get(1), "Assessed total incl VAT", "£200.00", "£100.00", "£300.00");
+        totalClaimValueTable.get(1), "Assessed total incl VAT", "£100.00", "£200.00", "£300.00");
 
     List<List<Element>> totalAllowedValueTable = getTable(doc, "Total allowed value");
     assertTableRowContainsValuesWithChangeLink(
         totalAllowedValueTable.getFirst(),
         "Allowed total VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         totalAllowedValueTable.get(1),
         "Allowed total incl VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId));
   }
@@ -180,64 +186,64 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
     Assertions.assertEquals(6, claimCostsTable.size());
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.getFirst(), "Fixed fee", "£200.00", "Not applicable", "£300.00");
+        claimCostsTable.getFirst(), "Fixed fee", "Not applicable", "£200.00", "£300.00");
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(1),
         "Profit costs",
-        "Not applicable",
         "£100.00",
+        "Not applicable",
         "£300.00",
         String.format("/submissions/%s/claims/%s/profit-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(2),
         "Disbursements",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(3),
         "Disbursement VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements-vat", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(4),
         "Travel costs",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/travel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(5),
         "Waiting costs",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/waiting-costs", submissionId, claimId));
 
     List<List<Element>> totalClaimValueTable = getTable(doc, "Total claim value");
     Assertions.assertEquals(2, totalClaimValueTable.size());
     assertTableRowContainsValuesWithNoChangeLink(
-        totalClaimValueTable.getFirst(), "Assessed total VAT", "£200.00", "£100.00", "£300.00");
+        totalClaimValueTable.getFirst(), "Assessed total VAT", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        totalClaimValueTable.get(1), "Assessed total incl VAT", "£200.00", "£100.00", "£300.00");
+        totalClaimValueTable.get(1), "Assessed total incl VAT", "£100.00", "£200.00", "£300.00");
 
     List<List<Element>> totalAllowedValueTable = getTable(doc, "Total allowed value");
     Assertions.assertEquals(2, totalAllowedValueTable.size());
     assertTableRowContainsValuesWithChangeLink(
         totalAllowedValueTable.getFirst(),
         "Allowed total VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         totalAllowedValueTable.get(1),
         "Allowed total incl VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId));
   }
@@ -300,39 +306,39 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
     Assertions.assertEquals(6, claimCostsTable.size());
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.getFirst(), "Fixed fee", "£200.00", "Not applicable", "£300.00");
+        claimCostsTable.getFirst(), "Fixed fee", "Not applicable", "£200.00", "£300.00");
     assertTableRowContainsValuesWithAddLink(
         claimCostsTable.get(1),
         "Profit costs",
-        "Not applicable",
         "£100.00",
+        "Not applicable",
         String.format("/submissions/%s/claims/%s/profit-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(2),
         "Disbursements",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(3),
         "Disbursement VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements-vat", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(4),
         "Travel costs",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/travel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(5),
         "Waiting costs",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/waiting-costs", submissionId, claimId));
 
@@ -341,14 +347,14 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     assertTableRowContainsValuesWithAddLink(
         totalClaimValueTable.getFirst(),
         "Assessed total VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         String.format("/submissions/%s/claims/%s/assessed-totals", submissionId, claimId));
     assertTableRowContainsValuesWithAddLink(
         totalClaimValueTable.get(1),
         "Assessed total incl VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         String.format("/submissions/%s/claims/%s/assessed-totals", submissionId, claimId));
 
     List<List<Element>> totalAllowedValueTable = getTable(doc, "Total allowed value");
@@ -356,14 +362,14 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     assertTableRowContainsValuesWithAddLink(
         totalAllowedValueTable.getFirst(),
         "Allowed total VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId));
     assertTableRowContainsValuesWithAddLink(
         totalAllowedValueTable.get(1),
         "Allowed total incl VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId));
   }
 
@@ -414,82 +420,82 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
     Assertions.assertEquals(12, claimCostsTable.size());
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.getFirst(), "Fixed fee", "£200.00", "Not applicable", "£300.00");
+        claimCostsTable.getFirst(), "Fixed fee", "Not applicable", "£200.00", "£300.00");
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(1),
         "Profit costs",
-        "Not applicable",
         "£100.00",
+        "Not applicable",
         "£300.00",
         String.format("/submissions/%s/claims/%s/profit-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(2),
         "Disbursements",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(3),
         "Disbursement VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements-vat", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(4),
         "Detention travel and waiting costs",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format(
             "/submissions/%s/claims/%s/detention-travel-and-waiting-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(5),
         "JR and form filling",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/jr-form-filling-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(6),
         "Counsel costs",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/counsel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(7), "Oral CMRH", "£200.00", "£100.00", "£300.00");
+        claimCostsTable.get(7), "Oral CMRH", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(8), "Telephone CMRH", "£200.00", "£100.00", "£300.00");
+        claimCostsTable.get(8), "Telephone CMRH", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(9), "Home office interview", "£200.00", "£100.00", "£300.00");
+        claimCostsTable.get(9), "Home office interview", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(10), "Substantive hearing", "£200.00", "£100.00", "£300.00");
+        claimCostsTable.get(10), "Substantive hearing", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(11), "Adjourned hearing fee", "£200.00", "£100.00", "£300.00");
+        claimCostsTable.get(11), "Adjourned hearing fee", "£100.00", "£200.00", "£300.00");
 
     List<List<Element>> totalClaimValueTable = getTable(doc, "Total claim value");
     Assertions.assertEquals(2, totalClaimValueTable.size());
     assertTableRowContainsValuesWithNoChangeLink(
-        totalClaimValueTable.getFirst(), "Assessed total VAT", "£200.00", "£100.00", "");
+        totalClaimValueTable.getFirst(), "Assessed total VAT", "£100.00", "£200.00", "");
     assertTableRowContainsValuesWithNoChangeLink(
-        totalClaimValueTable.get(1), "Assessed total incl VAT", "£200.00", "£100.00", "");
+        totalClaimValueTable.get(1), "Assessed total incl VAT", "£100.00", "£200.00", "");
 
     List<List<Element>> totalAllowedValueTable = getTable(doc, "Total allowed value");
     Assertions.assertEquals(2, totalAllowedValueTable.size());
     assertTableRowContainsValuesWithChangeLink(
         totalAllowedValueTable.getFirst(),
         "Allowed total VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         totalAllowedValueTable.get(1),
         "Allowed total incl VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId));
   }
@@ -588,94 +594,94 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
     Assertions.assertEquals(12, claimCostsTable.size());
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.getFirst(), "Fixed fee", "£200.00", "Not applicable", "£300.00");
+        claimCostsTable.getFirst(), "Fixed fee", "Not applicable", "£200.00", "£300.00");
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(1),
         "Profit costs",
-        "Not applicable",
         "£100.00",
+        "Not applicable",
         "£300.00",
         String.format("/submissions/%s/claims/%s/profit-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(2),
         "Disbursements",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(3),
         "Disbursement VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements-vat", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(4),
         "Detention travel and waiting costs",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format(
             "/submissions/%s/claims/%s/detention-travel-and-waiting-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(5),
         "JR and form filling",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/jr-form-filling-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(6),
         "Counsel costs",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/counsel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(7), "Oral CMRH", "Not applicable", "£100.00", "Not applicable");
+        claimCostsTable.get(7), "Oral CMRH", "£100.00", "Not applicable", "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(8), "Telephone CMRH", "Not applicable", "£100.00", "Not applicable");
+        claimCostsTable.get(8), "Telephone CMRH", "£100.00", "Not applicable", "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(9),
         "Home office interview",
-        "Not applicable",
         "£100.00",
+        "Not applicable",
         "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(10),
         "Substantive hearing",
-        "Not applicable",
         "£100.00",
+        "Not applicable",
         "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(11),
         "Adjourned hearing fee",
-        "Not applicable",
         "£100.00",
+        "Not applicable",
         "Not applicable");
 
     List<List<Element>> totalClaimValueTable = getTable(doc, "Total claim value");
     Assertions.assertEquals(2, totalClaimValueTable.size());
     assertTableRowContainsValuesWithNoChangeLink(
-        totalClaimValueTable.getFirst(), "Assessed total VAT", "£200.00", "£100.00", "£300.00");
+        totalClaimValueTable.getFirst(), "Assessed total VAT", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        totalClaimValueTable.get(1), "Assessed total incl VAT", "£200.00", "£100.00", "£300.00");
+        totalClaimValueTable.get(1), "Assessed total incl VAT", "£100.00", "£200.00", "£300.00");
 
     List<List<Element>> totalAllowedValueTable = getTable(doc, "Total allowed value");
     Assertions.assertEquals(2, totalAllowedValueTable.size());
     assertTableRowContainsValuesWithChangeLink(
         totalAllowedValueTable.getFirst(),
         "Allowed total VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         totalAllowedValueTable.get(1),
         "Allowed total incl VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId));
   }
@@ -738,72 +744,72 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     List<List<Element>> claimCostsTable = getTable(doc, "Claim costs");
     Assertions.assertEquals(7, claimCostsTable.size());
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.getFirst(), "Fixed fee", "£200.00", "Not applicable", "£300.00");
+        claimCostsTable.getFirst(), "Fixed fee", "Not applicable", "£200.00", "£300.00");
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(1),
         "Profit costs",
-        "Not applicable",
         "£100.00",
+        "Not applicable",
         "£300.00",
         String.format("/submissions/%s/claims/%s/profit-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(2),
         "Disbursements",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(3),
         "Disbursement VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements-vat", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(4),
         "Detention travel and waiting costs",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format(
             "/submissions/%s/claims/%s/detention-travel-and-waiting-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(5),
         "JR and form filling",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/jr-form-filling-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(6),
         "Counsel costs",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/counsel-costs", submissionId, claimId));
 
     List<List<Element>> totalClaimValueTable = getTable(doc, "Total claim value");
     Assertions.assertEquals(2, totalClaimValueTable.size());
     assertTableRowContainsValuesWithNoChangeLink(
-        totalClaimValueTable.getFirst(), "Assessed total VAT", "£200.00", "£100.00", "£300.00");
+        totalClaimValueTable.getFirst(), "Assessed total VAT", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        totalClaimValueTable.get(1), "Assessed total incl VAT", "£200.00", "£100.00", "£300.00");
+        totalClaimValueTable.get(1), "Assessed total incl VAT", "£100.00", "£200.00", "£300.00");
 
     List<List<Element>> totalAllowedValueTable = getTable(doc, "Total allowed value");
     Assertions.assertEquals(2, totalAllowedValueTable.size());
     assertTableRowContainsValuesWithChangeLink(
         totalAllowedValueTable.getFirst(),
         "Allowed total VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         totalAllowedValueTable.get(1),
         "Allowed total incl VAT",
-        "£200.00",
         "£100.00",
+        "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/allowed-totals", submissionId, claimId));
   }

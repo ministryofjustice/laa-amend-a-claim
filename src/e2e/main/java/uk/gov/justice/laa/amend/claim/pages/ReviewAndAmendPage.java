@@ -133,9 +133,9 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
   }
 
   public void assertCrimePageLoadedHeadersAndItems() {
-    assertTableHasHeaders(claimCostsTable, "Item", "Calculated", "Requested", "Assessed");
-    assertTableHasHeaders(totalClaimValueTable, "Item", "Calculated", "Requested", "Assessed");
-    assertTableHasHeaders(totalAllowedValueTable, "Item", "Calculated", "Requested", "Allowed");
+    assertTableHasHeaders(claimCostsTable, "Item", "Requested", "Calculated", "Assessed");
+    assertTableHasHeaders(totalClaimValueTable, "Item", "Requested", "Calculated", "Assessed");
+    assertTableHasHeaders(totalAllowedValueTable, "Item", "Requested", "Calculated", "Allowed");
 
     assertAssessmentHasItems(
         "Assessment outcome", "Was this claim assessed as part of the contingency process?");
@@ -152,9 +152,9 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
   }
 
   public void assertCivilPageLoadedHeadersAndItems() {
-    assertTableHasHeaders(claimCostsTable, "Item", "Calculated", "Requested", "Assessed");
-    assertTableHasHeaders(totalClaimValueTable, "Item", "Calculated", "Requested", "Assessed");
-    assertTableHasHeaders(totalAllowedValueTable, "Item", "Calculated", "Requested", "Allowed");
+    assertTableHasHeaders(claimCostsTable, "Item", "Requested", "Calculated", "Assessed");
+    assertTableHasHeaders(totalClaimValueTable, "Item", "Requested", "Calculated", "Assessed");
+    assertTableHasHeaders(totalAllowedValueTable, "Item", "Requested", "Calculated", "Allowed");
 
     assertAssessmentHasItems(
         "Assessment outcome", "Was this claim assessed as part of the contingency process?");
@@ -238,9 +238,9 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
     List<Locator> rows = totalAllowedValueTable.locator("tbody tr").all();
 
     List<Locator> allowedTotalVatRow = rows.get(0).locator("td").all();
-    assertThat(allowedTotalVatRow.get(1)).containsText(allowedTotalVat);
+    assertThat(allowedTotalVatRow.get(2)).containsText(allowedTotalVat);
 
     List<Locator> allowedTotalInclVatRow = rows.get(1).locator("td").all();
-    assertThat(allowedTotalInclVatRow.get(1)).containsText(allowedTotalInclVat);
+    assertThat(allowedTotalInclVatRow.get(2)).containsText(allowedTotalInclVat);
   }
 }

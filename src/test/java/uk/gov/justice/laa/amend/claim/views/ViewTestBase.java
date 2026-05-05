@@ -407,10 +407,10 @@ public abstract class ViewTestBase {
   }
 
   protected void assertTableRowContainsValuesWithNoChangeLink(
-      List<Element> row, String label, String calculated, String requested, String assessed) {
+      List<Element> row, String label, String requested, String calculated, String assessed) {
     assertCellContainsText(row.getFirst(), label);
-    assertCellContainsText(row.get(1), calculated);
-    assertCellContainsText(row.get(2), requested);
+    assertCellContainsText(row.get(1), requested);
+    assertCellContainsText(row.get(2), calculated);
     assertCellContainsText(row.get(3), assessed);
     assertCellIsEmpty(row.get(4));
   }

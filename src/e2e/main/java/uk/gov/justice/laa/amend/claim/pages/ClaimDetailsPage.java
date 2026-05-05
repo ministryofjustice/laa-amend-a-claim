@@ -143,8 +143,8 @@ public class ClaimDetailsPage extends LaaPage {
         throw new AssertionError("Missing Values row for item: " + item);
       }
 
-      String expectedCalculated = pair[0];
-      String expectedRequested = pair[1];
+      String expectedCalculated = pair[1];
+      String expectedRequested = pair[0];
 
       String actualCalculated = getCalculatedValue(item);
       String actualRequested = getRequestedValue(item);
@@ -188,41 +188,41 @@ public class ClaimDetailsPage extends LaaPage {
     return sb.toString();
   }
 
-  public void assertCost(String label, String calculated, String submitted, String assessed) {
-    assertSummaryListRow("Values", label, calculated, submitted, assessed);
+  public void assertCost(String label, String submitted, String calculated, String assessed) {
+    assertSummaryListRow("Values", label, submitted, calculated, assessed);
   }
 
   public void assertAllowedTotals(
-      String label, String calculated, String submitted, String allowed) {
-    assertTableRow("Total allowed value", label, calculated, submitted, allowed);
+      String label, String submitted, String calculated, String allowed) {
+    assertTableRow("Total allowed value", label, submitted, calculated, allowed);
   }
 
   public void assertAssessedTotals(
-      String label, String calculated, String submitted, String assessed) {
-    assertTableRow("Total claim value", label, calculated, submitted, assessed);
+      String label, String submitted, String calculated, String assessed) {
+    assertTableRow("Total claim value", label, submitted, calculated, assessed);
   }
 
   private void assertTableRow(
-      String title, String label, String calculated, String submitted, String assessed) {
+      String title, String label, String submitted, String calculated, String assessed) {
     Locator card = cardByTitle(title, page);
     Locator row = tableRowByLabel(card, label);
 
-    // Check calculated value
-    assertTableCellValue(row, 1, calculated);
     // Check submitted value
-    assertTableCellValue(row, 2, submitted);
+    assertTableCellValue(row, 1, submitted);
+    // Check calculated value
+    assertTableCellValue(row, 2, calculated);
     // Check allowed value
     assertTableCellValue(row, 3, assessed);
   }
 
   private void assertSummaryListRow(
-      String title, String label, String calculated, String submitted, String assessed) {
+      String title, String label, String submitted, String calculated, String assessed) {
     Locator card = cardByTitle(title, page);
     Locator row = summaryListRowByLabel(card, label);
-    // Check calculated value
-    assertSummaryListValue(row, 0, calculated);
     // Check submitted value
-    assertSummaryListValue(row, 1, submitted);
+    assertSummaryListValue(row, 0, submitted);
+    // Check calculated value
+    assertSummaryListValue(row, 1, calculated);
     // Check allowed value
     assertSummaryListValue(row, 2, assessed);
   }

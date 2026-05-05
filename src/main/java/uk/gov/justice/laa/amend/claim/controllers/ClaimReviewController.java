@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static java.lang.Boolean.TRUE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_ID;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
@@ -28,6 +30,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Res
 public class ClaimReviewController {
 
   private final AssessmentService assessmentService;
+  private final FeatureFlagsConfig featureFlagsConfig;
 
   @GetMapping("/submissions/{submissionId}/claims/{claimId}/review")
   public String onPageLoad(
@@ -94,6 +97,9 @@ public class ClaimReviewController {
     model.addAttribute("submissionFailed", submissionFailed);
     model.addAttribute("validationFailed", validationFailed);
 
+    boolean isSwapColumns =
+        TRUE.equals(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled());
+    model.addAttribute("isSwapColumns", isSwapColumns);
     return "review-and-amend";
   }
 }
