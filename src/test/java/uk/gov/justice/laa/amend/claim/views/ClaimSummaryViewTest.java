@@ -66,6 +66,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
   @BeforeEach
   void setUp() {
     when(featureFlagsConfig.getIsClaimHistoryEnabled()).thenReturn(true);
+    when(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled()).thenReturn(true);
   }
 
   @Test
@@ -107,27 +108,27 @@ class ClaimSummaryViewTest extends ViewTestBase {
     List<List<Element>> summaryList2 = getSummaryListInCard(doc, "Values");
     Assertions.assertEquals(15, summaryList2.size());
     assertSummaryListRowContainsValues(
-        summaryList2.get(1), "Fixed fee", "£200.00", "Not applicable");
+        summaryList2.get(1), "Fixed fee", "Not applicable", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(2), "Profit costs", "Not applicable", "£100.00");
-    assertSummaryListRowContainsValues(summaryList2.get(3), "Disbursements", "£200.00", "£100.00");
+        summaryList2.get(2), "Profit costs", "£100.00", "Not applicable");
+    assertSummaryListRowContainsValues(summaryList2.get(3), "Disbursements", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(4), "Disbursement VAT", "£200.00", "£100.00");
+        summaryList2.get(4), "Disbursement VAT", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(5), "Detention travel and waiting costs", "£200.00", "£100.00");
+        summaryList2.get(5), "Detention travel and waiting costs", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(6), "JR and form filling", "£200.00", "£100.00");
-    assertSummaryListRowContainsValues(summaryList2.get(7), "Counsel costs", "£200.00", "£100.00");
-    assertSummaryListRowContainsValues(summaryList2.get(8), "Oral CMRH", "£200.00", "£100.00");
-    assertSummaryListRowContainsValues(summaryList2.get(9), "Telephone CMRH", "£200.00", "£100.00");
+        summaryList2.get(6), "JR and form filling", "£100.00", "£200.00");
+    assertSummaryListRowContainsValues(summaryList2.get(7), "Counsel costs", "£100.00", "£200.00");
+    assertSummaryListRowContainsValues(summaryList2.get(8), "Oral CMRH", "£100.00", "£200.00");
+    assertSummaryListRowContainsValues(summaryList2.get(9), "Telephone CMRH", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(10), "Home office interview", "£200.00", "£100.00");
+        summaryList2.get(10), "Home office interview", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(11), "Substantive hearing", "£200.00", "£100.00");
+        summaryList2.get(11), "Substantive hearing", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(12), "Adjourned hearing fee", "£200.00", "£100.00");
-    assertSummaryListRowContainsValues(summaryList2.get(13), "VAT", "No", "Yes");
-    assertSummaryListRowContainsValues(summaryList2.get(14), "Total", "£200.00", "Not applicable");
+        summaryList2.get(12), "Adjourned hearing fee", "£100.00", "£200.00");
+    assertSummaryListRowContainsValues(summaryList2.get(13), "VAT", "Yes", "No");
+    assertSummaryListRowContainsValues(summaryList2.get(14), "Total", "Not applicable", "£200.00");
   }
 
   @Test
@@ -177,30 +178,30 @@ class ClaimSummaryViewTest extends ViewTestBase {
     List<List<Element>> summaryList2 = getSummaryListInCard(doc, "Values");
     Assertions.assertEquals(14, summaryList2.size());
     assertSummaryListRowContainsValues(
-        summaryList2.get(1), "Fixed fee", "£200.00", "Not applicable", "£300.00");
+        summaryList2.get(1), "Fixed fee", "Not applicable", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(2), "Profit costs", "Not applicable", "£100.00", "£300.00");
+        summaryList2.get(2), "Profit costs", "£100.00", "Not applicable", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(3), "Disbursements", "£200.00", "£100.00", "£300.00");
+        summaryList2.get(3), "Disbursements", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(4), "Disbursement VAT", "£200.00", "£100.00", "£300.00");
+        summaryList2.get(4), "Disbursement VAT", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(5), "Detention travel and waiting costs", "£200.00", "£100.00", "£300.00");
+        summaryList2.get(5), "Detention travel and waiting costs", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(6), "JR and form filling", "£200.00", "£100.00", "£300.00");
+        summaryList2.get(6), "JR and form filling", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(7), "Counsel costs", "£200.00", "£100.00", "£300.00");
+        summaryList2.get(7), "Counsel costs", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(8), "Oral CMRH", "£200.00", "£100.00", "£300.00");
+        summaryList2.get(8), "Oral CMRH", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(9), "Telephone CMRH", "£200.00", "£100.00", "£300.00");
+        summaryList2.get(9), "Telephone CMRH", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(10), "Home office interview", "£200.00", "£100.00", "£300.00");
+        summaryList2.get(10), "Home office interview", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(11), "Substantive hearing", "£200.00", "£100.00", "£300.00");
+        summaryList2.get(11), "Substantive hearing", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(12), "Adjourned hearing fee", "£200.00", "£100.00", "£300.00");
-    assertSummaryListRowContainsValues(summaryList2.get(13), "VAT", "No", "Yes", "Yes");
+        summaryList2.get(12), "Adjourned hearing fee", "£100.00", "£200.00", "£300.00");
+    assertSummaryListRowContainsValues(summaryList2.get(13), "VAT", "Yes", "No", "Yes");
   }
 
   @Test
@@ -245,16 +246,16 @@ class ClaimSummaryViewTest extends ViewTestBase {
     List<List<Element>> summaryList2 = getSummaryListInCard(doc, "Values");
     Assertions.assertEquals(9, summaryList2.size());
     assertSummaryListRowContainsValues(
-        summaryList2.get(1), "Fixed fee", "£200.00", "Not applicable");
+        summaryList2.get(1), "Fixed fee", "Not applicable", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(2), "Profit costs", "Not applicable", "£100.00");
-    assertSummaryListRowContainsValues(summaryList2.get(3), "Disbursements", "£200.00", "£100.00");
+        summaryList2.get(2), "Profit costs", "£100.00", "Not applicable");
+    assertSummaryListRowContainsValues(summaryList2.get(3), "Disbursements", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(4), "Disbursement VAT", "£200.00", "£100.00");
-    assertSummaryListRowContainsValues(summaryList2.get(5), "Travel costs", "£200.00", "£100.00");
-    assertSummaryListRowContainsValues(summaryList2.get(6), "Waiting costs", "£200.00", "£100.00");
-    assertSummaryListRowContainsValues(summaryList2.get(7), "VAT", "No", "Yes");
-    assertSummaryListRowContainsValues(summaryList2.get(8), "Total", "£200.00", "Not applicable");
+        summaryList2.get(4), "Disbursement VAT", "£100.00", "£200.00");
+    assertSummaryListRowContainsValues(summaryList2.get(5), "Travel costs", "£100.00", "£200.00");
+    assertSummaryListRowContainsValues(summaryList2.get(6), "Waiting costs", "£100.00", "£200.00");
+    assertSummaryListRowContainsValues(summaryList2.get(7), "VAT", "Yes", "No");
+    assertSummaryListRowContainsValues(summaryList2.get(8), "Total", "Not applicable", "£200.00");
   }
 
   @Test
