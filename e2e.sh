@@ -27,7 +27,7 @@ export SPRING_PROFILES_ACTIVE="e2e"
 export SILAS_AUTH_ENABLED=false
 export IS_BULK_UPLOAD_ENABLED=true
 export IS_CLAIM_HISTORY_ENABLED=true
-export IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED=false
+export IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED=true
 
 echo "[INFO] Starting API application..."
 pushd ../laa-data-claims-api >/dev/null
