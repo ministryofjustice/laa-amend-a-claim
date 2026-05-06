@@ -151,7 +151,7 @@ public class ThymeleafUtilsTest {
       ThymeleafMessage message = (ThymeleafMessage) result;
       Assertions.assertEquals("fulldate.format", message.getKey());
       Assertions.assertEquals("18 December 2025", message.getParams()[0]);
-      Assertions.assertEquals("16:11:27", message.getParams()[1]);
+      Assertions.assertEquals("4:11 PM", message.getParams()[1]);
     }
 
     @Test
@@ -167,7 +167,7 @@ public class ThymeleafUtilsTest {
       ThymeleafMessage message = (ThymeleafMessage) result;
       Assertions.assertEquals("fulldate.format", message.getKey());
       Assertions.assertEquals("15 June 2025", message.getParams()[0]);
-      Assertions.assertEquals("15:30:00", message.getParams()[1]);
+      Assertions.assertEquals("3:30 PM", message.getParams()[1]);
     }
   }
 }

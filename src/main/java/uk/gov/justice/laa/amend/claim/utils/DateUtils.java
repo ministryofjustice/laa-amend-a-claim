@@ -26,7 +26,7 @@ public class DateUtils {
 
   public static String displayDateTimeTimeValue(OffsetDateTime value) {
     return value != null
-        ? displayDateTimeValue(toLondonLocalDateTime(value), DEFAULT_TIME_FORMAT)
+        ? displayDateTimeValue(toLondonLocalDateTime(value), DEFAULT_TIME_FORMAT).toUpperCase()
         : null;
   }
 

@@ -64,7 +64,7 @@ class VoidConfirmationViewTest extends ViewTestBase {
     assertSummaryListRowContainsValues(summaryList.get(3), "Provider name", "Provider Name");
     assertSummaryListRowContainsValues(summaryList.get(4), "Office code", "0P322F");
     assertSummaryListRowContainsValues(
-        summaryList.get(5), "Date submitted", "15 June 2020 at 10:30:00");
+        summaryList.get(5), "Date submitted", "15 June 2020 at 10:30 AM");
     assertSummaryListRowContainsValues(summaryList.get(6), "Category of law", "TEST");
     assertSummaryListRowContainsValues(summaryList.get(7), "Fee code description", "FCD");
   }
@@ -102,7 +102,7 @@ class VoidConfirmationViewTest extends ViewTestBase {
     assertSummaryListRowContainsValues(summaryList.get(2), "Provider name", "Provider Name");
     assertSummaryListRowContainsValues(summaryList.get(3), "Office code", "0P322F");
     assertSummaryListRowContainsValues(
-        summaryList.get(4), "Date submitted", "15 June 2020 at 10:30:00");
+        summaryList.get(4), "Date submitted", "15 June 2020 at 10:30 AM");
     assertSummaryListRowContainsValues(summaryList.get(5), "Category of law", "TEST");
     assertSummaryListRowContainsValues(summaryList.get(6), "Fee code description", "FCD");
   }
