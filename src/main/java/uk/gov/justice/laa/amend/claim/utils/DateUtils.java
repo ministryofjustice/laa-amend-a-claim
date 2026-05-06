@@ -26,7 +26,7 @@ public class DateUtils {
 
   public static String displayDateTimeTimeValue(OffsetDateTime value) {
     return value != null
-        ? displayDateTimeValue(toLondonLocalDateTime(value), DEFAULT_TIME_FORMAT)
+        ? displayDateTimeValue(toLondonLocalDateTime(value), DEFAULT_TIME_FORMAT).toLowerCase()
         : null;
   }
 
@@ -35,7 +35,7 @@ public class DateUtils {
   }
 
   private static String displayDateTimeValue(LocalDateTime value, String format) {
-    return value != null ? value.format(DateTimeFormatter.ofPattern(format)).toLowerCase() : null;
+    return value != null ? value.format(DateTimeFormatter.ofPattern(format)) : null;
   }
 
   public static String toSubmissionPeriod(String month, String year) {
