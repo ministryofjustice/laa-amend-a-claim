@@ -25,9 +25,8 @@ import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
-import uk.gov.justice.laa.amend.claim.models.SearchQuery;
-import uk.gov.justice.laa.amend.claim.models.sorting.SearchSort;
-import uk.gov.justice.laa.amend.claim.models.sorting.SearchSortField;
+import uk.gov.justice.laa.amend.claim.models.search.SearchQuery;
+import uk.gov.justice.laa.amend.claim.models.search.SearchSortField;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
@@ -60,11 +59,6 @@ public class HomePageController {
     model.addAttribute("query", query);
     model.addAttribute("SortField", SearchSortField.class);
 
-    SearchSort sort = query.getSort();
-    if (sort == null) {
-      sort = SearchSort.defaults();
-    }
-
     if (form.anyNonEmpty()) {
       ValidationUtils.invokeValidator(validator, form, errors);
       if (errors.hasErrors()) {
@@ -83,8 +77,8 @@ public class HomePageController {
               CLAIM_STATUSES,
               query.getPage(),
               DEFAULT_PAGE_SIZE,
-              sort);
-      String redirectUrl = query.getRedirectUrl(sort);
+              query.getSort());
+      String redirectUrl = query.getRedirectUrl(query.getSort());
       SearchResultView viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
       model.addAttribute("viewModel", viewModel);
       session.setAttribute("searchUrl", redirectUrl);
@@ -103,8 +97,7 @@ public class HomePageController {
       return "index";
     }
 
-    var sort = SearchSort.defaults();
-    SearchQuery query = new SearchQuery(form, sort);
+    SearchQuery query = new SearchQuery(form);
     String redirectUrl = query.getRedirectUrl();
     return "redirect:" + redirectUrl;
   }

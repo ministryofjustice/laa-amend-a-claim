@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.models;
+package uk.gov.justice.laa.amend.claim.models.search;
 
 import static org.springframework.util.StringUtils.hasText;
 
@@ -16,8 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
-import uk.gov.justice.laa.amend.claim.models.sorting.SearchSort;
-import uk.gov.justice.laa.amend.claim.models.sorting.SearchSortField;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.sorting.SortDirection;
 
 @Getter
@@ -28,7 +27,7 @@ public class SearchQuery {
   @Min(1)
   private int page = 1;
 
-  private SearchSort sort;
+  private SearchSort sort = SearchSort.defaults();
   private String officeCode;
   private String submissionDateMonth;
   private String submissionDateYear;
@@ -37,8 +36,7 @@ public class SearchQuery {
   private AreaOfLaw areaOfLaw;
   private Boolean escapeCase;
 
-  public SearchQuery(SearchForm form, SearchSort sort) {
-    this.sort = sort;
+  public SearchQuery(SearchForm form) {
     this.officeCode = form.getOfficeCode();
     this.submissionDateMonth = form.getSubmissionDateMonth();
     this.submissionDateYear = form.getSubmissionDateYear();

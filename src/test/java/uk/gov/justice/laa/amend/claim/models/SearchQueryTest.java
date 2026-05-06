@@ -2,8 +2,9 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.models.sorting.SearchSort;
-import uk.gov.justice.laa.amend.claim.models.sorting.SearchSortField;
+import uk.gov.justice.laa.amend.claim.models.search.SearchQuery;
+import uk.gov.justice.laa.amend.claim.models.search.SearchSort;
+import uk.gov.justice.laa.amend.claim.models.search.SearchSortField;
 import uk.gov.justice.laa.amend.claim.models.sorting.SortDirection;
 
 public class SearchQueryTest {

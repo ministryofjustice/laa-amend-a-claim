@@ -11,7 +11,7 @@ import uk.gov.justice.laa.amend.claim.forms.annotations.ValidOfficeCode;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidUniqueFileNumber;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
-import uk.gov.justice.laa.amend.claim.models.SearchQuery;
+import uk.gov.justice.laa.amend.claim.models.search.SearchQuery;
 import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
 @Getter

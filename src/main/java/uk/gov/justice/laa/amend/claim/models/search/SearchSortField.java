@@ -1,7 +1,8 @@
-package uk.gov.justice.laa.amend.claim.models.sorting;
+package uk.gov.justice.laa.amend.claim.models.search;
 
 import java.util.Arrays;
 import lombok.Getter;
+import uk.gov.justice.laa.amend.claim.models.sorting.SortField;
 
 @Getter
 public enum SearchSortField implements SortField {
