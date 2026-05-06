@@ -32,6 +32,9 @@ repositories {
     mavenCentral()
 }
 
+// Upgrade to fix HTTP Request Smuggling (SNYK-JAVA-IONETTY-16425695)
+ext['netty.version'] = '4.2.13.Final'
+
 configurations.configureEach {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
         if (details.requested.group == 'org.codehaus.plexus' && details.requested.name == 'plexus-utils') {
