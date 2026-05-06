@@ -102,7 +102,7 @@ public class DateUtilsTest {
 
     @Test
     void formatsTimeInBstDuringBst() {
-      // June is BST (UTC+1): UTC 14:30:00 = London 15:30:00
+      // June is BST (UTC+1): UTC 14:30:00 = London 3:30pm
       OffsetDateTime utcDateTime =
           OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC);
       Assertions.assertEquals("3:30pm", DateUtils.displayDateTimeTimeValue(utcDateTime));
@@ -110,7 +110,7 @@ public class DateUtilsTest {
 
     @Test
     void formatsTimeInBstCrossingMidnight() {
-      // June is BST (UTC+1): UTC 23:30:00 on the 15th = London 00:30:00 on the 16th
+      // June is BST (UTC+1): UTC 23:30:00 on the 15th = London 12:30am on the 16th
       OffsetDateTime utcDateTime =
           OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 23, 30, 0), ZoneOffset.UTC);
       Assertions.assertEquals("12:30am", DateUtils.displayDateTimeTimeValue(utcDateTime));
