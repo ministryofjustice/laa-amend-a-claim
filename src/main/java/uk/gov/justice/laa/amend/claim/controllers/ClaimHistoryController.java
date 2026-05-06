@@ -31,7 +31,6 @@ public class ClaimHistoryController extends ClaimDetailsBaseController {
       Model model,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId)
-
       throws IOException {
     if (!featureFlagsConfig.getIsClaimHistoryEnabled()) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
