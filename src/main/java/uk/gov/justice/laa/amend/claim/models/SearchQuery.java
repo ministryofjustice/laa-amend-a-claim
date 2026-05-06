@@ -16,6 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
+import uk.gov.justice.laa.amend.claim.models.sorting.SearchSort;
+import uk.gov.justice.laa.amend.claim.models.sorting.SearchSortField;
+import uk.gov.justice.laa.amend.claim.models.sorting.SortDirection;
 
 @Getter
 @Setter
@@ -25,7 +28,7 @@ public class SearchQuery {
   @Min(1)
   private int page = 1;
 
-  private Sort sort;
+  private SearchSort sort;
   private String officeCode;
   private String submissionDateMonth;
   private String submissionDateYear;
@@ -34,7 +37,7 @@ public class SearchQuery {
   private AreaOfLaw areaOfLaw;
   private Boolean escapeCase;
 
-  public SearchQuery(SearchForm form, Sort sort) {
+  public SearchQuery(SearchForm form, SearchSort sort) {
     this.sort = sort;
     this.officeCode = form.getOfficeCode();
     this.submissionDateMonth = form.getSubmissionDateMonth();
@@ -67,15 +70,15 @@ public class SearchQuery {
     return getRedirectUrl(page, sort);
   }
 
-  public String getRedirectUrl(SortField field, SortDirection direction) {
-    return getRedirectUrl(1, new Sort(field, direction));
+  public String getRedirectUrl(SearchSortField field, SortDirection direction) {
+    return getRedirectUrl(1, SearchSort.builder().field(field).direction(direction).build());
   }
 
-  public String getRedirectUrl(Sort sort) {
+  public String getRedirectUrl(SearchSort sort) {
     return getRedirectUrl(page, sort);
   }
 
-  private String getRedirectUrl(int page, Sort sort) {
+  private String getRedirectUrl(int page, SearchSort sort) {
     UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/");
 
     addQueryParam(builder, "officeCode", getOfficeCode());

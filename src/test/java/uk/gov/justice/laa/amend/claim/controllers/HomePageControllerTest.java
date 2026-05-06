@@ -1,10 +1,8 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -15,16 +13,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
-import uk.gov.justice.laa.amend.claim.models.SortDirection;
-import uk.gov.justice.laa.amend.claim.models.SortField;
-import uk.gov.justice.laa.amend.claim.models.Sorts;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 @WebMvcTest(HomePageController.class)
@@ -36,62 +29,17 @@ public class HomePageControllerTest extends BaseControllerTest {
 
   @MockitoBean private ClaimMapper claimMapper;
 
-  @MockitoBean private SearchProperties searchProperties;
-
   @Test
   public void testOnPageLoadReturnsView() throws Exception {
-    when(searchProperties.isSortEnabled()).thenReturn(true);
-
-    Sorts expectedSorts =
-        Sorts.builder()
-            .value(Map.of(SortField.UNIQUE_FILE_NUMBER, SortDirection.ASCENDING))
-            .enabled(true)
-            .build();
-
     mockMvc
         .perform(get("/"))
         .andExpect(status().isOk())
         .andExpect(view().name("index"))
-        .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
-        .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
-  }
-
-  @Test
-  public void testOnPageLoadReturnsViewWithDefinedSort() throws Exception {
-    when(searchProperties.isSortEnabled()).thenReturn(true);
-
-    Sorts expectedSorts =
-        Sorts.builder()
-            .value(Map.of(SortField.CASE_REFERENCE_NUMBER, SortDirection.DESCENDING))
-            .enabled(true)
-            .build();
-
-    mockMvc
-        .perform(get("/?sort=case_reference_number,desc"))
-        .andExpect(status().isOk())
-        .andExpect(view().name("index"))
-        .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
-        .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
-  }
-
-  @Test
-  public void testOnPageLoadReturnsViewWithSortingDisabled() throws Exception {
-    when(searchProperties.isSortEnabled()).thenReturn(false);
-
-    Sorts expectedSorts = Sorts.builder().enabled(false).build();
-
-    mockMvc
-        .perform(get("/"))
-        .andExpect(status().isOk())
-        .andExpect(view().name("index"))
-        .andExpect(model().attribute("sorts", equalTo(expectedSorts)))
         .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
   }
 
   @Test
   public void testOnPageLoadWithParamsReturnsView() throws Exception {
-    when(searchProperties.isSortEnabled()).thenReturn(true);
-
     String expectedSearchUrl =
         "/?officeCode=123456"
             + "&submissionDateMonth=3"
@@ -121,15 +69,11 @@ public class HomePageControllerTest extends BaseControllerTest {
 
   @Test
   public void testOnPageLoadWithUnknownParamsReturnsBadRequest() throws Exception {
-    when(searchProperties.isSortEnabled()).thenReturn(true);
-
     mockMvc.perform(get("/").param("foo", "bar")).andExpect(status().isBadRequest());
   }
 
   @Test
   public void testOnPageLoadWithInvalidSortFieldRedirectsToCleanUrl() throws Exception {
-    when(searchProperties.isSortEnabled()).thenReturn(true);
-
     mockMvc
         .perform(get("/?officeCode=123&page=1&sort=foo,asc"))
         .andExpect(status().is3xxRedirection())
@@ -138,8 +82,6 @@ public class HomePageControllerTest extends BaseControllerTest {
 
   @Test
   public void testOnPageLoadWithInvalidSortDirectionRedirectsToCleanUrl() throws Exception {
-    when(searchProperties.isSortEnabled()).thenReturn(true);
-
     mockMvc
         .perform(get("/?officeCode=123&page=1&sort=unique_file_number,foo"))
         .andExpect(status().is3xxRedirection())
@@ -149,8 +91,6 @@ public class HomePageControllerTest extends BaseControllerTest {
   @Test
   public void testOnPageLoadWithLegacyCamelCaseSortRedirectsPreservingOtherParams()
       throws Exception {
-    when(searchProperties.isSortEnabled()).thenReturn(true);
-
     mockMvc
         .perform(
             get("/?officeCode=123456&uniqueFileNumber=123456/789&page=1&sort=uniqueFileNumber,asc"))
@@ -160,8 +100,6 @@ public class HomePageControllerTest extends BaseControllerTest {
 
   @Test
   public void testOnPageLoadWithInvalidParamsReturnsBadRequest() throws Exception {
-    when(searchProperties.isSortEnabled()).thenReturn(true);
-
     mockMvc
         .perform(get("/").param("officeCode", "12345").param("uniqueFileNumber", "§§§"))
         .andExpect(status().isBadRequest())
@@ -170,8 +108,6 @@ public class HomePageControllerTest extends BaseControllerTest {
 
   @Test
   public void testOnSubmitReturnsBadRequestWithViewForInvalidForm() throws Exception {
-    when(searchProperties.isSortEnabled()).thenReturn(true);
-
     mockMvc
         .perform(post("/").with(csrf()).param("officeCode", "").param("uniqueFileNumber", "123"))
         .andExpect(status().isBadRequest())
@@ -180,8 +116,6 @@ public class HomePageControllerTest extends BaseControllerTest {
 
   @Test
   public void testOnSubmitReturnsViewForValidFormWithOneField() throws Exception {
-    when(searchProperties.isSortEnabled()).thenReturn(true);
-
     String expectedRedirectUrl = "/?officeCode=123456&page=1&sort=unique_file_number,asc";
 
     mockMvc
@@ -192,8 +126,6 @@ public class HomePageControllerTest extends BaseControllerTest {
 
   @Test
   public void testOnSubmitReturnsViewForValidFormWithAllFields() throws Exception {
-    when(searchProperties.isSortEnabled()).thenReturn(true);
-
     String expectedRedirectUrl =
         "/?officeCode=123456"
             + "&submissionDateMonth=3"
@@ -212,18 +144,6 @@ public class HomePageControllerTest extends BaseControllerTest {
                 .param("submissionDateYear", "2007")
                 .param("uniqueFileNumber", "123456/789")
                 .param("caseReferenceNumber", "789"))
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(expectedRedirectUrl));
-  }
-
-  @Test
-  public void testOnSubmitReturnsViewForValidFormWithSortingDisabled() throws Exception {
-    when(searchProperties.isSortEnabled()).thenReturn(false);
-
-    String expectedRedirectUrl = "/?officeCode=123456&page=1";
-
-    mockMvc
-        .perform(post("/").with(csrf()).param("officeCode", "123456"))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(expectedRedirectUrl));
   }

@@ -22,14 +22,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
-import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.SearchQuery;
-import uk.gov.justice.laa.amend.claim.models.Sort;
-import uk.gov.justice.laa.amend.claim.models.SortField;
-import uk.gov.justice.laa.amend.claim.models.Sorts;
+import uk.gov.justice.laa.amend.claim.models.sorting.SearchSort;
+import uk.gov.justice.laa.amend.claim.models.sorting.SearchSortField;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
@@ -44,7 +42,6 @@ public class HomePageController {
   private final ClaimService claimService;
   private final ClaimResultMapper claimResultMapper;
   private final ClaimMapper claimMapper;
-  private final SearchProperties searchProperties;
   private final Validator validator;
 
   @GetMapping("/")
@@ -61,21 +58,12 @@ public class HomePageController {
 
     model.addAttribute("form", form);
     model.addAttribute("query", query);
-    model.addAttribute("SortField", SortField.class);
+    model.addAttribute("SortField", SearchSortField.class);
 
-    Sorts sorts;
-    Sort sort = query.getSort();
-    int page = query.getPage();
-    if (searchProperties.isSortEnabled()) {
-      if (sort == null) {
-        sort = Sort.defaults();
-      }
-      sorts = new Sorts(sort);
-    } else {
-      sort = null;
-      sorts = Sorts.disabled();
+    SearchSort sort = query.getSort();
+    if (sort == null) {
+      sort = SearchSort.defaults();
     }
-    model.addAttribute("sorts", sorts);
 
     if (form.anyNonEmpty()) {
       ValidationUtils.invokeValidator(validator, form, errors);
@@ -93,7 +81,7 @@ public class HomePageController {
               Optional.ofNullable(form.getAreaOfLaw()),
               Optional.ofNullable(form.getEscapeCase()),
               CLAIM_STATUSES,
-              page,
+              query.getPage(),
               DEFAULT_PAGE_SIZE,
               sort);
       String redirectUrl = query.getRedirectUrl(sort);
@@ -115,7 +103,7 @@ public class HomePageController {
       return "index";
     }
 
-    Sort sort = searchProperties.isSortEnabled() ? Sort.defaults() : null;
+    var sort = SearchSort.defaults();
     SearchQuery query = new SearchQuery(form, sort);
     String redirectUrl = query.getRedirectUrl();
     return "redirect:" + redirectUrl;

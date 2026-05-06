@@ -1,10 +1,10 @@
-package uk.gov.justice.laa.amend.claim.models;
+package uk.gov.justice.laa.amend.claim.models.sorting;
 
 import java.util.Arrays;
 import lombok.Getter;
 
 @Getter
-public enum SortField {
+public enum SearchSortField implements SortField {
   UNIQUE_FILE_NUMBER("unique_file_number"),
   CASE_REFERENCE_NUMBER("case_reference_number"),
   CLIENT_SURNAME("client_surname"),
@@ -14,11 +14,11 @@ public enum SortField {
 
   private final String value;
 
-  SortField(String value) {
+  SearchSortField(String value) {
     this.value = value;
   }
 
-  public static SortField fromValue(String value) {
+  public static SearchSortField fromValue(String value) {
     return Arrays.stream(values())
         .filter(sortField -> sortField.value.equals(value))
         .findFirst()

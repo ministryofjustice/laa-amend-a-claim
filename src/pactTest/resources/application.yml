@@ -24,8 +24,6 @@ microsoft-graph-api:
 provider-api:
   url: http://localhost:1234
   access-token: e37da3d4-b8bc-4204-9528-deb6fa3bb39d
-search:
-  sort-enabled: true
 submission:
   high-value-assessment-limit: 25000
 app:

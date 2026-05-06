@@ -4,15 +4,15 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-import uk.gov.justice.laa.amend.claim.models.Sort;
+import uk.gov.justice.laa.amend.claim.models.sorting.SearchSort;
 
 @Component
-public class SortConverter implements Converter<String, Sort> {
+public class SearchSortConverter implements Converter<String, SearchSort> {
 
   @Override
-  public Sort convert(String source) {
+  public SearchSort convert(String source) {
     try {
-      return new Sort(source);
+      return new SearchSort(source);
     } catch (IllegalArgumentException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
     }

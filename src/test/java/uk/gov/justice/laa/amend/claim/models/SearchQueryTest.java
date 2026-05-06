@@ -2,6 +2,9 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.amend.claim.models.sorting.SearchSort;
+import uk.gov.justice.laa.amend.claim.models.sorting.SearchSortField;
+import uk.gov.justice.laa.amend.claim.models.sorting.SortDirection;
 
 public class SearchQueryTest {
 
@@ -19,9 +22,9 @@ public class SearchQueryTest {
     SearchQuery query = new SearchQuery();
     query.setOfficeCode("123");
 
-    Sort sort =
-        Sort.builder()
-            .field(SortField.UNIQUE_FILE_NUMBER)
+    var sort =
+        SearchSort.builder()
+            .field(SearchSortField.UNIQUE_FILE_NUMBER)
             .direction(SortDirection.ASCENDING)
             .build();
     String result = query.getRedirectUrl(sort);
@@ -38,9 +41,9 @@ public class SearchQueryTest {
     query.setSubmissionDateMonth("3");
     query.setSubmissionDateYear("2007");
 
-    Sort sort =
-        Sort.builder()
-            .field(SortField.UNIQUE_FILE_NUMBER)
+    var sort =
+        SearchSort.builder()
+            .field(SearchSortField.UNIQUE_FILE_NUMBER)
             .direction(SortDirection.ASCENDING)
             .build();
     String result = query.getRedirectUrl(sort);
@@ -61,9 +64,9 @@ public class SearchQueryTest {
     query.setUniqueFileNumber("456");
     query.setCaseReferenceNumber("789");
 
-    Sort sort =
-        Sort.builder()
-            .field(SortField.UNIQUE_FILE_NUMBER)
+    var sort =
+        SearchSort.builder()
+            .field(SearchSortField.UNIQUE_FILE_NUMBER)
             .direction(SortDirection.ASCENDING)
             .build();
     String result = query.getRedirectUrl(sort);
