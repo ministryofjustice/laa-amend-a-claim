@@ -97,7 +97,7 @@ public class DateUtilsTest {
       // December is GMT (UTC+0), so London time == UTC time
       OffsetDateTime utcDateTime =
           OffsetDateTime.of(LocalDateTime.of(2025, 12, 18, 16, 11, 27), ZoneOffset.UTC);
-      Assertions.assertEquals("4:11 PM", DateUtils.displayDateTimeTimeValue(utcDateTime));
+      Assertions.assertEquals("4:11pm", DateUtils.displayDateTimeTimeValue(utcDateTime));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class DateUtilsTest {
       // June is BST (UTC+1): UTC 14:30:00 = London 15:30:00
       OffsetDateTime utcDateTime =
           OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC);
-      Assertions.assertEquals("3:30 PM", DateUtils.displayDateTimeTimeValue(utcDateTime));
+      Assertions.assertEquals("3:30pm", DateUtils.displayDateTimeTimeValue(utcDateTime));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class DateUtilsTest {
       // June is BST (UTC+1): UTC 23:30:00 on the 15th = London 00:30:00 on the 16th
       OffsetDateTime utcDateTime =
           OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 23, 30, 0), ZoneOffset.UTC);
-      Assertions.assertEquals("12:30 AM", DateUtils.displayDateTimeTimeValue(utcDateTime));
+      Assertions.assertEquals("12:30am", DateUtils.displayDateTimeTimeValue(utcDateTime));
     }
   }
 }

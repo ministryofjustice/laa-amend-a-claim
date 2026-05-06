@@ -192,7 +192,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
       C claim = createClaim();
       var assessmentInfo =
           AssessmentInfo.builder()
-              // UTC 14:30:00 on a BST day (June) = London 3:30 PM
+              // UTC 14:30:00 on a BST day (June) = London 3:30pm
               .lastAssessmentDate(
                   OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC))
               .lastAssessmentOutcome(OutcomeType.NILLED)
@@ -209,7 +209,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
       Assertions.assertEquals("claimSummary.lastAssessmentText", result.getKey());
       Assertions.assertEquals("Joe Bloggs", result.getParams()[0]);
       Assertions.assertEquals("15 June 2025", result.getParams()[1]);
-      Assertions.assertEquals("3:30 PM", result.getParams()[2]);
+      Assertions.assertEquals("3:30pm", result.getParams()[2]);
       ThymeleafMessage param = (ThymeleafMessage) result.getParams()[3];
       Assertions.assertEquals("outcome.nilled", param.getKey());
       Assertions.assertEquals(0, param.getParams().length);
@@ -220,7 +220,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
       C claim = createClaim();
       var assessmentInfo =
           AssessmentInfo.builder()
-              // UTC 14:30:00 on a BST day (June) = London 3:30 PM
+              // UTC 14:30:00 on a BST day (June) = London 3:30pm
               .lastAssessmentDate(
                   OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC))
               .lastAssessmentOutcome(OutcomeType.NILLED)
@@ -235,7 +235,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
 
       Assertions.assertEquals("claimSummary.lastAssessmentText.noUser", result.getKey());
       Assertions.assertEquals("15 June 2025", result.getParams()[0]);
-      Assertions.assertEquals("3:30 PM", result.getParams()[1]);
+      Assertions.assertEquals("3:30pm", result.getParams()[1]);
       ThymeleafMessage param = (ThymeleafMessage) result.getParams()[2];
       Assertions.assertEquals("outcome.nilled", param.getKey());
       Assertions.assertEquals(0, param.getParams().length);
@@ -246,7 +246,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
       C claim = createClaim();
       var assessmentInfo =
           AssessmentInfo.builder()
-              // UTC 14:30:00 on a BST day (June) = London 3:30 PM
+              // UTC 14:30:00 on a BST day (June) = London 3:30pm
               .lastAssessmentDate(
                   OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC))
               .lastAssessmentOutcome(OutcomeType.NILLED)
@@ -261,7 +261,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
 
       Assertions.assertEquals("claimSummary.lastAssessmentText.noUser", result.getKey());
       Assertions.assertEquals("15 June 2025", result.getParams()[0]);
-      Assertions.assertEquals("3:30 PM", result.getParams()[1]);
+      Assertions.assertEquals("3:30pm", result.getParams()[1]);
       ThymeleafMessage param = (ThymeleafMessage) result.getParams()[2];
       Assertions.assertEquals("outcome.nilled", param.getKey());
       Assertions.assertEquals(0, param.getParams().length);
@@ -272,7 +272,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
       C claim = createClaim();
       var assessmentInfo =
           AssessmentInfo.builder()
-              // UTC 14:30:00 on a BST day (June) = London 3:30 PM
+              // UTC 14:30:00 on a BST day (June) = London 3:30pm
               .lastAssessmentDate(
                   OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC))
               .lastAssessmentOutcome(OutcomeType.NILLED)
@@ -288,7 +288,7 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
 
       Assertions.assertEquals("claimSummary.lastAssessmentText.noUser", result.getKey());
       Assertions.assertEquals("15 June 2025", result.getParams()[0]);
-      Assertions.assertEquals("3:30 PM", result.getParams()[1]);
+      Assertions.assertEquals("3:30pm", result.getParams()[1]);
       ThymeleafMessage param = (ThymeleafMessage) result.getParams()[2];
       Assertions.assertEquals("claimSummary.void.message", param.getKey());
     }
