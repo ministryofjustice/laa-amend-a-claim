@@ -216,9 +216,8 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void testIsAssessmentButtonPresentTrueForStageDisbursementClaimWhenEnabled() throws Exception {
+  void testIsAssessmentButtonPresentTrueForStageDisbursementClaim() throws Exception {
     dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
-    when(featureFlagsConfig.getIsStageDisbursementEnabled()).thenReturn(true);
 
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setEscaped(false);
@@ -230,23 +229,6 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
         .andExpect(model().attribute("isAssessmentButtonPresent", true));
-  }
-
-  @Test
-  void testIsAssessmentButtonPresentFalseForStageDisbursementClaimWhenDisabled() throws Exception {
-    dummyUserSecurityService.setRoles(Set.of(ROLE_ESCAPE_CASE_CASEWORKER));
-    when(featureFlagsConfig.getIsStageDisbursementEnabled()).thenReturn(false);
-
-    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
-    claim.setEscaped(false);
-    claim.setFeeCode("ILHSD");
-    claim.setHasAssessment(false);
-    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-
-    mockMvc
-        .perform(get(buildPath()).session(session))
-        .andExpect(status().isOk())
-        .andExpect(model().attribute("isAssessmentButtonPresent", false));
   }
 
   @Test
