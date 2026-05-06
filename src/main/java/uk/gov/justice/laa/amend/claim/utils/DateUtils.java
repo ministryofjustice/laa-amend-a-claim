@@ -9,6 +9,7 @@ import java.time.OffsetDateTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class DateUtils {
 
@@ -35,7 +36,9 @@ public class DateUtils {
   }
 
   private static String displayDateTimeValue(LocalDateTime value, String format) {
-    return value != null ? value.format(DateTimeFormatter.ofPattern(format)) : null;
+    return value != null
+        ? value.format(DateTimeFormatter.ofPattern(format)).toLowerCase()
+        : null;
   }
 
   public static String toSubmissionPeriod(String month, String year) {
