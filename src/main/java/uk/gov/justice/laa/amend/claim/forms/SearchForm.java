@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.forms;
 import static org.springframework.util.StringUtils.hasText;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ValidOfficeCode

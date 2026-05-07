@@ -1,33 +1,26 @@
 package uk.gov.justice.laa.amend.claim.models.search;
 
-import static org.springframework.util.StringUtils.hasText;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Min;
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.models.PageQuery;
 import uk.gov.justice.laa.amend.claim.models.sorting.SortDirection;
 
+@Builder
 @Getter
-@Setter
-@NoArgsConstructor
-public class SearchQuery {
+public class SearchQuery implements PageQuery<SearchSortField, SearchSort> {
 
   @Min(1)
-  private int page = 1;
+  private Integer page;
 
-  private SearchSort sort = SearchSort.defaults();
+  private SearchSort sort;
+
   private String officeCode;
   private String submissionDateMonth;
   private String submissionDateYear;
@@ -36,47 +29,51 @@ public class SearchQuery {
   private AreaOfLaw areaOfLaw;
   private Boolean escapeCase;
 
-  public SearchQuery(SearchForm form) {
-    this.officeCode = form.getOfficeCode();
-    this.submissionDateMonth = form.getSubmissionDateMonth();
-    this.submissionDateYear = form.getSubmissionDateYear();
-    this.uniqueFileNumber = form.getUniqueFileNumber();
-    this.caseReferenceNumber = form.getCaseReferenceNumber();
-    this.areaOfLaw = form.getAreaOfLaw();
-    this.escapeCase = form.getEscapeCase();
+  public SearchQuery(
+      Integer page,
+      SearchSort sort,
+      String officeCode,
+      String submissionDateMonth,
+      String submissionDateYear,
+      String uniqueFileNumber,
+      String caseReferenceNumber,
+      AreaOfLaw areaOfLaw,
+      Boolean escapeCase) {
+    this.page = Objects.requireNonNullElse(page, 1);
+    this.sort = Objects.requireNonNullElse(sort, SearchSort.defaults());
+
+    this.officeCode = officeCode;
+    this.submissionDateMonth = submissionDateMonth;
+    this.submissionDateYear = submissionDateYear;
+    this.uniqueFileNumber = uniqueFileNumber;
+    this.caseReferenceNumber = caseReferenceNumber;
+    this.areaOfLaw = areaOfLaw;
+    this.escapeCase = escapeCase;
   }
 
-  public void rejectUnknownParams(HttpServletRequest request) {
-    Set<String> allowed =
-        Arrays.stream(this.getClass().getDeclaredFields())
-            .map(Field::getName)
-            .collect(Collectors.toSet());
-
-    request
-        .getParameterMap()
-        .keySet()
-        .forEach(
-            param -> {
-              if (!allowed.contains(param)) {
-                throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Unknown query parameter: " + param);
-              }
-            });
+  public Integer getSize() {
+    return DEFAULT_PAGE_SIZE;
   }
 
-  public String getRedirectUrl() {
-    return getRedirectUrl(page, sort);
+  public static SearchQuery from(SearchForm form) {
+    return SearchQuery.builder()
+        .officeCode(form.getOfficeCode())
+        .submissionDateMonth(form.getSubmissionDateMonth())
+        .submissionDateYear(form.getSubmissionDateYear())
+        .uniqueFileNumber(form.getUniqueFileNumber())
+        .caseReferenceNumber(form.getCaseReferenceNumber())
+        .areaOfLaw(form.getAreaOfLaw())
+        .escapeCase(form.getEscapeCase())
+        .build();
   }
 
+  @Override
   public String getRedirectUrl(SearchSortField field, SortDirection direction) {
     return getRedirectUrl(1, SearchSort.builder().field(field).direction(direction).build());
   }
 
-  public String getRedirectUrl(SearchSort sort) {
-    return getRedirectUrl(page, sort);
-  }
-
-  private String getRedirectUrl(int page, SearchSort sort) {
+  @Override
+  public String getRedirectUrl(int page, SearchSort sort) {
     UriComponentsBuilder builder = UriComponentsBuilder.fromPath("/");
 
     addQueryParam(builder, "officeCode", getOfficeCode());
@@ -91,11 +88,5 @@ public class SearchQuery {
     addQueryParam(builder, "sort", Objects.toString(sort, null));
 
     return builder.build().toUriString();
-  }
-
-  private void addQueryParam(UriComponentsBuilder builder, String key, String value) {
-    if (hasText(value)) {
-      builder.queryParam(key, value);
-    }
   }
 }

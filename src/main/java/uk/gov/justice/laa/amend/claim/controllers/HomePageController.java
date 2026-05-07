@@ -1,7 +1,5 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -25,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.search.SearchQuery;
 import uk.gov.justice.laa.amend.claim.models.search.SearchSortField;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
@@ -76,9 +75,9 @@ public class HomePageController {
               Optional.ofNullable(form.getEscapeCase()),
               CLAIM_STATUSES,
               query.getPage(),
-              DEFAULT_PAGE_SIZE,
+              query.getSize(),
               query.getSort());
-      String redirectUrl = query.getRedirectUrl(query.getSort());
+      String redirectUrl = query.getRedirectUrl();
       SearchResultView viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
       model.addAttribute("viewModel", viewModel);
       session.setAttribute("searchUrl", redirectUrl);
@@ -96,18 +95,34 @@ public class HomePageController {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       return "index";
     }
-
-    SearchQuery query = new SearchQuery(form);
-    String redirectUrl = query.getRedirectUrl();
-    return "redirect:" + redirectUrl;
+    return "redirect:" + SearchQuery.from(form).getRedirectUrl();
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public String handleSearchQueryBindingError(MethodArgumentNotValidException ex) {
-    if (ex.getBindingResult().getTarget() instanceof SearchQuery query
+  public String handleSearchQueryBindingError(
+      MethodArgumentNotValidException ex, HttpServletRequest request) {
+    if (ex.getBindingResult().getObjectName().equals("searchQuery")
         && ex.getBindingResult().getFieldErrors().stream()
             .anyMatch(fe -> "sort".equals(fe.getField()))) {
-      return "redirect:" + query.getRedirectUrl(null);
+
+      // Reconstruct the remainder of the search query so we can attempt to redirect the user
+      // to a useful page.
+      var builder =
+          SearchQuery.builder()
+              .page(1) // If sort is invalid then the page number is no longer meaningful
+              .officeCode(request.getParameter("officeCode"))
+              .submissionDateMonth(request.getParameter("submissionDateMonth"))
+              .submissionDateYear(request.getParameter("submissionDateYear"))
+              .uniqueFileNumber(request.getParameter("uniqueFileNumber"))
+              .caseReferenceNumber(request.getParameter("caseReferenceNumber"));
+      Optional.ofNullable(request.getParameter("page"))
+          .ifPresent(page -> builder.page(Integer.valueOf(page)));
+      Optional.ofNullable(request.getParameter("areaOfLaw"))
+          .ifPresent(areaOfLaw -> builder.areaOfLaw(AreaOfLaw.valueOf(areaOfLaw)));
+      Optional.ofNullable(request.getParameter("escapeCase"))
+          .ifPresent(escapeCase -> builder.escapeCase(Boolean.valueOf(escapeCase)));
+
+      return "redirect:" + builder.build().getRedirectUrl();
     }
     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request parameters");
   }
