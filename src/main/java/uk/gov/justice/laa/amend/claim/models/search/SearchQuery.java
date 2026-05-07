@@ -16,7 +16,9 @@ import uk.gov.justice.laa.amend.claim.models.sorting.SortDirection;
 @Getter
 public class SearchQuery implements PageQuery<SearchSortField, SearchSort> {
 
-  @Min(1)
+  private static final int DEFAULT_PAGE = 1;
+
+  @Min(DEFAULT_PAGE)
   private Integer page;
 
   private SearchSort sort;
@@ -39,7 +41,7 @@ public class SearchQuery implements PageQuery<SearchSortField, SearchSort> {
       String caseReferenceNumber,
       AreaOfLaw areaOfLaw,
       Boolean escapeCase) {
-    this.page = Objects.requireNonNullElse(page, 1);
+    this.page = Objects.requireNonNullElse(page, DEFAULT_PAGE);
     this.sort = Objects.requireNonNullElse(sort, SearchSort.defaults());
 
     this.officeCode = officeCode;
@@ -69,7 +71,8 @@ public class SearchQuery implements PageQuery<SearchSortField, SearchSort> {
 
   @Override
   public String getRedirectUrl(SearchSortField field, SortDirection direction) {
-    return getRedirectUrl(1, SearchSort.builder().field(field).direction(direction).build());
+    return getRedirectUrl(
+        DEFAULT_PAGE, SearchSort.builder().field(field).direction(direction).build());
   }
 
   @Override
