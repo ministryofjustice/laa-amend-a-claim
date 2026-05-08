@@ -132,7 +132,7 @@ public class ClaimHistoryServiceTest {
         new ClaimHistoryEvent(
             CLAIM_CREATED_AND_ESCAPED, CREATED_DATE_TIME, PROVIDER_NAME, Optional.empty());
 
-    assertThat(claimHistory.latestAssessmentUser()).contains(STAGE_DISBURSEMENT_ASSESSED_USER);
+    assertThat(claimHistory.latestAssessmentUser()).contains(VOIDED_USER);
     assertThat(claimHistory.events())
         .containsExactly(
             voidedEvent, assessedStageDisbursementEvent, assessedEscapeCaseEvent, createdEvent);

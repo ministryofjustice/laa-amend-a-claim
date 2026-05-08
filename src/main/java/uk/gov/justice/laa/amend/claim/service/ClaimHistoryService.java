@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
-import uk.gov.justice.laa.amend.claim.models.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistory;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistoryEvent;
@@ -52,11 +51,7 @@ public class ClaimHistoryService {
             .toList();
 
     var latestAssessmentUser =
-        assessments.stream()
-            .filter(assessment -> assessment.assessmentType() != AssessmentTypeEnum.VOID)
-            .findFirst()
-            .map(AssessmentInfo::lastAssessedBy)
-            .map(userIdToUser::get);
+        assessments.stream().findFirst().map(AssessmentInfo::lastAssessedBy).map(userIdToUser::get);
 
     return new ClaimHistory(events, latestAssessmentUser);
   }
