@@ -76,21 +76,21 @@ class ClaimHistoryViewTest extends ViewTestBase {
         timelineItems.getFirst(),
         "Claim voided",
         "by Joe Bloggs",
-        "16 May 2026 at 11:40:00",
+        "16 May 2026 at 11:40am",
         "Claim voided");
 
     assertTimelineItemContent(
         timelineItems.get(1),
         "Claim assessed (Escape case assessment)",
         "by Joe Bloggs",
-        "15 May 2026 at 11:40:00",
+        "15 May 2026 at 11:40am",
         "Escape case assessment submitted with outcome Assessed in full");
 
     assertTimelineItemContent(
         timelineItems.get(2),
         "Claim created",
         "by Joe Bloggs",
-        "14 April 2026 at 10:30:00",
+        "14 April 2026 at 10:30am",
         List.of(
             "Claim uploaded to Submit a Bulk Claim",
             "Claim financial values calculated by Fee Scheme Platform",
@@ -116,7 +116,7 @@ class ClaimHistoryViewTest extends ViewTestBase {
         timelineItems.getFirst(),
         "Claim created",
         "User not currently available",
-        "14 April 2026 at 10:30:00",
+        "14 April 2026 at 10:30am",
         List.of(
             "Claim uploaded to Submit a Bulk Claim",
             "Claim financial values calculated by Fee Scheme Platform"));

@@ -93,7 +93,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         summaryList1.get(3), "Provider name", "Currently not available");
     assertSummaryListRowContainsValues(summaryList1.get(4), "Office code", "0P322F");
     assertSummaryListRowContainsValues(
-        summaryList1.get(5), "Date submitted", "15 June 2020 at 10:30:00");
+        summaryList1.get(5), "Date submitted", "15 June 2020 at 10:30am");
     assertSummaryListRowContainsValues(summaryList1.get(6), "Area of law", "Legal help");
     assertSummaryListRowContainsValues(summaryList1.get(7), "Category of law", "TEST");
     assertSummaryListRowContainsValues(summaryList1.get(8), "Fee code", "FC");
@@ -171,7 +171,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
     assertPageHasInformationAlert(
         doc,
         "This claim has been assessed",
-        "Last edited by Joe Bloggs on 18 December 2025 at 16:11:27 Nilled.");
+        "Last edited by Joe Bloggs on 18 December 2025 at 4:11pm Nilled.");
 
     assertPageHasSummaryCard(doc, "Summary");
 
@@ -229,7 +229,7 @@ class ClaimSummaryViewTest extends ViewTestBase {
         summaryList1.get(2), "Provider name", "Currently not available");
     assertSummaryListRowContainsValues(summaryList1.get(3), "Office code", "0P322F");
     assertSummaryListRowContainsValues(
-        summaryList1.get(4), "Date submitted", "15 June 2020 at 10:30:00");
+        summaryList1.get(4), "Date submitted", "15 June 2020 at 10:30am");
     assertSummaryListRowContainsValues(summaryList1.get(5), "Area of law", "Crime lower");
     assertSummaryListRowContainsValues(summaryList1.get(6), "Category of law", "Not applicable");
     assertSummaryListRowContainsValues(summaryList1.get(7), "Fee code", "FC");
