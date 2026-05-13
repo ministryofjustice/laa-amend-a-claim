@@ -62,23 +62,50 @@ public class ClaimService {
       int size,
       Sort sort) {
     try {
-      return claimsApiClient
-          .searchClaims(
-              officeCode.toUpperCase(),
-              uniqueFileNumber.orElse(null),
-              caseReferenceNumber.orElse(null),
-              submissionPeriod.orElse(null),
-              areaOfLaw.orElse(null),
-              escapeCase.orElse(null),
-              claimStatuses,
-              page - 1,
-              size,
-              Objects.toString(sort, null))
-          .block();
+      ClaimResultSetV2 firstSet =
+          claimsApiClient
+              .searchClaims(
+                  officeCode.toUpperCase(),
+                  uniqueFileNumber.orElse(null),
+                  caseReferenceNumber.orElse(null),
+                  submissionPeriod.orElse(null),
+                  areaOfLaw.orElse(null),
+                  escapeCase.orElse(null),
+                  claimStatuses,
+                  null,
+                  page - 1,
+                  size,
+                  Objects.toString(sort, null))
+              .block();
+      if (uniqueFileNumber.isPresent() && isEmpty(firstSet)) {
+        firstSet =
+            claimsApiClient
+                .searchClaims(
+                    officeCode.toUpperCase(),
+                    null,
+                    caseReferenceNumber.orElse(null),
+                    submissionPeriod.orElse(null),
+                    areaOfLaw.orElse(null),
+                    escapeCase.orElse(null),
+                    claimStatuses,
+                    uniqueFileNumber.orElse(null),
+                    page - 1,
+                    size,
+                    Objects.toString(sort, null))
+                .block();
+      }
+      return firstSet;
     } catch (Exception e) {
       log.error("Error searching claims", e);
       throw e;
     }
+  }
+
+  private boolean isEmpty(ClaimResultSetV2 resultSet) {
+    return resultSet == null
+        || resultSet.getContent() == null
+        || resultSet.getContent().isEmpty()
+        || Objects.equals(resultSet.getTotalPages(), 0);
   }
 
   public ClaimResponseV2 getClaim(UUID submissionId, UUID claimId) {

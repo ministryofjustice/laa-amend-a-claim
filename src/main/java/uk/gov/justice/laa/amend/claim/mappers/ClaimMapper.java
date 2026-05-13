@@ -68,6 +68,7 @@ public interface ClaimMapper {
   @Mapping(target = "submissionPeriod", expression = "java(mapSubmissionPeriod(claimResponse))")
   @Mapping(target = "categoryOfLaw", source = "feeCalculationResponse.categoryOfLaw")
   @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
+  @Mapping(target = "uniqueCaseId", source = "uniqueCaseId")
   Claim mapToClaim(ClaimResponseV2 claimResponse);
 
   @InheritConfiguration(name = "mapToCommonDetails")
