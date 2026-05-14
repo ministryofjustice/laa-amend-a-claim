@@ -1,7 +1,5 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAULT_PAGE_SIZE;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -22,14 +20,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
-import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
-import uk.gov.justice.laa.amend.claim.models.SearchQuery;
-import uk.gov.justice.laa.amend.claim.models.Sort;
-import uk.gov.justice.laa.amend.claim.models.SortField;
-import uk.gov.justice.laa.amend.claim.models.Sorts;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.models.search.SearchQuery;
+import uk.gov.justice.laa.amend.claim.models.search.SearchSortField;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
@@ -44,7 +40,6 @@ public class HomePageController {
   private final ClaimService claimService;
   private final ClaimResultMapper claimResultMapper;
   private final ClaimMapper claimMapper;
-  private final SearchProperties searchProperties;
   private final Validator validator;
 
   @GetMapping("/")
@@ -61,21 +56,7 @@ public class HomePageController {
 
     model.addAttribute("form", form);
     model.addAttribute("query", query);
-    model.addAttribute("SortField", SortField.class);
-
-    Sorts sorts;
-    Sort sort = query.getSort();
-    int page = query.getPage();
-    if (searchProperties.isSortEnabled()) {
-      if (sort == null) {
-        sort = Sort.defaults();
-      }
-      sorts = new Sorts(sort);
-    } else {
-      sort = null;
-      sorts = Sorts.disabled();
-    }
-    model.addAttribute("sorts", sorts);
+    model.addAttribute("SortField", SearchSortField.class);
 
     if (form.anyNonEmpty()) {
       ValidationUtils.invokeValidator(validator, form, errors);
@@ -93,10 +74,10 @@ public class HomePageController {
               Optional.ofNullable(form.getAreaOfLaw()),
               Optional.ofNullable(form.getEscapeCase()),
               CLAIM_STATUSES,
-              page,
-              DEFAULT_PAGE_SIZE,
-              sort);
-      String redirectUrl = query.getRedirectUrl(sort);
+              query.getPage(),
+              query.getSize(),
+              query.getSort());
+      String redirectUrl = query.getRedirectUrl();
       SearchResultView viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
       model.addAttribute("viewModel", viewModel);
       session.setAttribute("searchUrl", redirectUrl);
@@ -114,19 +95,34 @@ public class HomePageController {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       return "index";
     }
-
-    Sort sort = searchProperties.isSortEnabled() ? Sort.defaults() : null;
-    SearchQuery query = new SearchQuery(form, sort);
-    String redirectUrl = query.getRedirectUrl();
-    return "redirect:" + redirectUrl;
+    return "redirect:" + SearchQuery.from(form).getRedirectUrl();
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public String handleSearchQueryBindingError(MethodArgumentNotValidException ex) {
-    if (ex.getBindingResult().getTarget() instanceof SearchQuery query
+  public String handleSearchQueryBindingError(
+      MethodArgumentNotValidException ex, HttpServletRequest request) {
+    if (ex.getBindingResult().getObjectName().equals("searchQuery")
         && ex.getBindingResult().getFieldErrors().stream()
             .anyMatch(fe -> "sort".equals(fe.getField()))) {
-      return "redirect:" + query.getRedirectUrl(null);
+
+      // Reconstruct the remainder of the search query so we can attempt to redirect the user
+      // to a useful page.
+      var builder =
+          SearchQuery.builder()
+              .page(1) // If sort is invalid then the page number is no longer meaningful
+              .officeCode(request.getParameter("officeCode"))
+              .submissionDateMonth(request.getParameter("submissionDateMonth"))
+              .submissionDateYear(request.getParameter("submissionDateYear"))
+              .uniqueFileNumber(request.getParameter("uniqueFileNumber"))
+              .caseReferenceNumber(request.getParameter("caseReferenceNumber"));
+      Optional.ofNullable(request.getParameter("page"))
+          .ifPresent(page -> builder.page(Integer.valueOf(page)));
+      Optional.ofNullable(request.getParameter("areaOfLaw"))
+          .ifPresent(areaOfLaw -> builder.areaOfLaw(AreaOfLaw.valueOf(areaOfLaw)));
+      Optional.ofNullable(request.getParameter("escapeCase"))
+          .ifPresent(escapeCase -> builder.escapeCase(Boolean.valueOf(escapeCase)));
+
+      return "redirect:" + builder.build().getRedirectUrl();
     }
     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request parameters");
   }

@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.models;
+package uk.gov.justice.laa.amend.claim.models.sorting;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;

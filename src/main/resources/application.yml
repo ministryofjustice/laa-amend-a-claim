@@ -52,8 +52,6 @@ microsoft-graph-api:
 provider-api:
   url: ${PROVIDER_API}
   access-token: ${PROVIDER_TOKEN}
-search:
-  sort-enabled: true
 submission:
   high-value-assessment-limit: 25000
 app:

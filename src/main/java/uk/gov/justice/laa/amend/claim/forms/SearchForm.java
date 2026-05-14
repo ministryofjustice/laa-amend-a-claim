@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.forms;
 import static org.springframework.util.StringUtils.hasText;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,11 +12,12 @@ import uk.gov.justice.laa.amend.claim.forms.annotations.ValidOfficeCode;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidSubmissionDate;
 import uk.gov.justice.laa.amend.claim.forms.annotations.ValidUniqueFileNumber;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
-import uk.gov.justice.laa.amend.claim.models.SearchQuery;
+import uk.gov.justice.laa.amend.claim.models.search.SearchQuery;
 import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ValidOfficeCode

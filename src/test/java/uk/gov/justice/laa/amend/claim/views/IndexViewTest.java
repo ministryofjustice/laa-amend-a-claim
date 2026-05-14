@@ -1,7 +1,5 @@
 package uk.gov.justice.laa.amend.claim.views;
 
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +11,6 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import uk.gov.justice.laa.amend.claim.client.config.SearchProperties;
 import uk.gov.justice.laa.amend.claim.controllers.HomePageController;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
@@ -33,8 +30,6 @@ class IndexViewTest extends ViewTestBase {
   @MockitoBean private ClaimResultMapper claimResultMapper;
 
   @MockitoBean private ClaimMapper claimMapper;
-
-  @MockitoBean private SearchProperties searchProperties;
 
   IndexViewTest() {
     this.mapping = "/";
@@ -81,7 +76,6 @@ class IndexViewTest extends ViewTestBase {
     String url = String.format("/?page=%d", currentPage);
     int numberOfResultsPerPage = 10;
     this.mapping = url;
-    when(searchProperties.isSortEnabled()).thenReturn(true);
 
     ClaimView claimViewModel = new ClaimView(MockClaimsFunctions.createMockCivilClaim());
     List<BaseClaimView<Claim>> claims =
@@ -118,8 +112,6 @@ class IndexViewTest extends ViewTestBase {
 
   @Test
   void testPageWithOneResult() {
-    when(searchProperties.isSortEnabled()).thenReturn(true);
-
     ClaimView claimViewModel = new ClaimView(MockClaimsFunctions.createMockCivilClaim());
     List<BaseClaimView<Claim>> claims = List.of(claimViewModel);
 

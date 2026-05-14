@@ -116,7 +116,7 @@ class HomePageControllerIntegrationTest extends ControllerIntegrationTest {
     mockMvc
         .perform(get("/").param("officeCode", "0P322F").param("sort", "uniqueFileNumber,asc"))
         .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl("/?officeCode=0P322F&page=1"));
+        .andExpect(redirectedUrl("/?officeCode=0P322F&page=1&sort=unique_file_number,asc"));
   }
 
   @Test

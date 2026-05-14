@@ -27,9 +27,9 @@ import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.Sort;
-import uk.gov.justice.laa.amend.claim.models.SortDirection;
-import uk.gov.justice.laa.amend.claim.models.SortField;
+import uk.gov.justice.laa.amend.claim.models.search.SearchSort;
+import uk.gov.justice.laa.amend.claim.models.search.SearchSortField;
+import uk.gov.justice.laa.amend.claim.models.sorting.SortDirection;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
@@ -74,9 +74,9 @@ class ClaimServiceTest {
     when(claimsApiClient.searchClaims(
             "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc"))
         .thenReturn(Mono.just(mockApiResponse));
-    Sort sort =
-        Sort.builder()
-            .field(SortField.UNIQUE_FILE_NUMBER)
+    var sort =
+        SearchSort.builder()
+            .field(SearchSortField.UNIQUE_FILE_NUMBER)
             .direction(SortDirection.ASCENDING)
             .build();
 
@@ -143,9 +143,9 @@ class ClaimServiceTest {
     when(claimsApiClient.searchClaims(
             "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc"))
         .thenThrow(new RuntimeException("API Error"));
-    Sort sort =
-        Sort.builder()
-            .field(SortField.UNIQUE_FILE_NUMBER)
+    var sort =
+        SearchSort.builder()
+            .field(SearchSortField.UNIQUE_FILE_NUMBER)
             .direction(SortDirection.ASCENDING)
             .build();
 
@@ -179,9 +179,9 @@ class ClaimServiceTest {
     when(claimsApiClient.searchClaims(
             "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc"))
         .thenReturn(Mono.empty());
-    Sort sort =
-        Sort.builder()
-            .field(SortField.UNIQUE_FILE_NUMBER)
+    var sort =
+        SearchSort.builder()
+            .field(SearchSortField.UNIQUE_FILE_NUMBER)
             .direction(SortDirection.ASCENDING)
             .build();
 
