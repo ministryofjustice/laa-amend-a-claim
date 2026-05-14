@@ -40,7 +40,7 @@ jobs:
 
       - name: Upload result to GitHub Code Scanning
         if: always()
-        uses: github/codeql-action/upload-sarif@ee09113642cdd89dfd282ecd8d96340380bbee26
+        uses: github/codeql-action/upload-sarif@3d6ea97f262502cf014e0c1a0e525230c8f6ead6
         with:
           sarif_file: snyk-app.sarif
           category: snyk-app
