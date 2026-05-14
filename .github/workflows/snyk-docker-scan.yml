@@ -32,7 +32,6 @@ jobs:
       security-events: write
       id-token: write
     env:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
@@ -60,7 +59,16 @@ jobs:
           REPOSITORY: ${{ vars.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ inputs.image_tag }}
 
+      - name: Obtain Short-lived Snyk token
+        id: auth
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/snyk-auth@6db001458db30ae747d9eb8eb25707ce52b359bc
+        with:
+          client_id: ${{ secrets.SNYK_CLIENT_ID }}
+          client_secret: ${{ secrets.SNYK_CLIENT_SECRET }}
+
       - name: Run Snyk on Docker image
+        env:
+          SNYK_OAUTH_TOKEN: ${{ steps.auth.outputs.token }}
         uses: snyk/actions/docker@9adf32b1121593767fc3c057af55b55db032dc04
         with:
           image: spring-boot-microservice:scan
