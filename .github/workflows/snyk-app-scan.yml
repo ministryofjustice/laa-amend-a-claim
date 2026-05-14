@@ -12,7 +12,6 @@ jobs:
     name: Vulnerability Scan - Application
     runs-on: ubuntu-latest
     env:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       SNYK_TEST_EXCLUDE: build,generated
       SNYK_TARGET_REFERENCE: main
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -33,10 +32,17 @@ jobs:
       - name: Install Snyk CLI
         run: npm install -g snyk
 
+      - name: Obtain Short-lived Snyk token
+        id: auth
+        uses: ministryofjustice/laa-reusable-github-actions/.github/actions/snyk-auth@6db001458db30ae747d9eb8eb25707ce52b359bc
+        with:
+          client_id: ${{ secrets.SNYK_CLIENT_ID }}
+          client_secret: ${{ secrets.SNYK_CLIENT_SECRET }}
+
       - name: Run Snyk app vulnerability scan
         run: snyk test --severity-threshold=low --sarif-file-output=snyk-app.sarif
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_OAUTH_TOKEN: ${{ steps.auth.outputs.token }}
 
       - name: Upload result to GitHub Code Scanning
         if: always()
