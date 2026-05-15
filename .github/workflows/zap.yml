@@ -23,7 +23,7 @@ jobs:
       CLAIMS_API: http://localhost:8081
       PROVIDER_API: http://localhost:8081
       SENTRY_ENVIRONMENT: local
-      REDIS_URL: redis://localhost:6379
+      REDIS_URL: redis://localhost:6380
       FEEDBACK_URL: /
       LAA_URL: /
     steps:
