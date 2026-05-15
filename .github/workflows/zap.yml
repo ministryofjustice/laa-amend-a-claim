@@ -13,8 +13,7 @@ jobs:
     name: Scan the web application
     runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
@@ -23,14 +22,14 @@ jobs:
       CLAIMS_API: http://localhost:8081
       PROVIDER_API: http://localhost:8081
       SENTRY_ENVIRONMENT: local
-      REDIS_URL: redis://localhost:6380
+      REDIS_URL: redis://localhost:6379
       FEEDBACK_URL: /
       LAA_URL: /
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: ${{ github.event.inputs.branch || 'main' }}
+          ref: ${{ github.event.inputs.branch }}
       - name: Set up JDK 25
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
@@ -41,10 +40,10 @@ jobs:
       - name: Start app with local profile
         run: |
           echo "INFO: Running application..."
-          docker compose up -d wiremock redis
+          docker compose up -d wiremock amend-redis
           ./gradlew bootRun > zap_output.log 2>&1 &
 
-          url="http://localhost:8282/actuator/health"
+          url="http://localhost:8190/actuator/health"
           retries=30
 
           for i in $(seq 1 $retries); do
@@ -62,7 +61,7 @@ jobs:
         uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c # v0.13.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'http://localhost:8080/?officeCode=0P322F' # Exposes 'View' links for ZAP spider to discover
+          target: 'http://localhost:8090/?officeCode=0P322F' # Exposes 'View' links for ZAP spider to discover
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-z "-config spider.maxDepth=10" -n zap.context' # https://www.zaproxy.org/docs/docker/full-scan/#usage
           allow_issue_writing: false
