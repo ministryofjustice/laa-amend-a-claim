@@ -62,7 +62,7 @@ public class ClaimService {
       int size,
       Sort sort) {
     try {
-      ClaimResultSetV2 firstSet =
+      ClaimResultSetV2 claimResultSet =
           claimsApiClient
               .searchClaims(
                   officeCode.toUpperCase(),
@@ -77,8 +77,8 @@ public class ClaimService {
                   size,
                   Objects.toString(sort, null))
               .block();
-      if (uniqueFileNumber.isPresent() && isEmpty(firstSet)) {
-        firstSet =
+      if (uniqueFileNumber.isPresent() && isEmpty(claimResultSet)) {
+        claimResultSet =
             claimsApiClient
                 .searchClaims(
                     officeCode.toUpperCase(),
@@ -94,7 +94,7 @@ public class ClaimService {
                     Objects.toString(sort, null))
                 .block();
       }
-      return firstSet;
+      return claimResultSet;
     } catch (Exception e) {
       log.error("Error searching claims", e);
       throw e;
