@@ -297,9 +297,9 @@ class ClaimServiceTest {
             10,
             "unique_file_number,asc"))
         .thenReturn(Mono.empty());
-    Sort sort =
-        Sort.builder()
-            .field(SortField.UNIQUE_FILE_NUMBER)
+    var sort =
+        SearchSort.builder()
+            .field(SearchSortField.UNIQUE_FILE_NUMBER)
             .direction(SortDirection.ASCENDING)
             .build();
 
