@@ -37,8 +37,6 @@ ext['netty.version'] = '4.2.13.Final'
 // Upgrade to fix SNYK-JAVA-ORGAPACHETOMCATEMBED-16643276
 ext['tomcat.version'] = '11.0.22'
 
-ext['tomcat.version'] = '11.0.22'
-
 configurations.configureEach {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
         if (details.requested.group == 'org.codehaus.plexus' && details.requested.name == 'plexus-utils') {
