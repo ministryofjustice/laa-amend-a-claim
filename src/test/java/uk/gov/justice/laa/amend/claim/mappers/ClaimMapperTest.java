@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -590,6 +591,17 @@ class ClaimMapperTest {
     assertEquals("0P322F", claim.getOfficeCode());
 
     assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());
+  }
+
+  void testMapUniqueFileId() {
+    var response = createClaimResponse(AreaOfLaw.MEDIATION);
+    response.setUniqueCaseId("112233/001");
+
+    var claim = mapper.mapToClaimDetails(response);
+
+    String claimField = claim.getUniqueCaseId();
+    assertNotNull(claimField);
+    assertEquals("112233/001", claimField);
   }
 
   private static ClaimResponseV2 createClaimResponse(AreaOfLaw areaOfLaw) {
