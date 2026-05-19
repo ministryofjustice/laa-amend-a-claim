@@ -33,7 +33,7 @@ public interface ClaimsApiClient {
       @RequestParam(value = "area_of_law", defaultValue = "") AreaOfLaw areaOfLaw,
       @RequestParam(value = "escaped_case_flag", required = false) Boolean escapedCaseFlag,
       @RequestParam(value = "claim_statuses", required = false) List<ClaimStatus> claimStatuses,
-      @RequestParam(value = "unique_case_id", defaultValue = "") String uniqueCaseId,
+      @RequestParam(value = "unique_case_id", required = false) String uniqueCaseId,
       @RequestParam(value = "page", required = false) int page,
       @RequestParam(value = "size", required = false) int size,
       @RequestParam(value = "sort", required = false) String sort);
