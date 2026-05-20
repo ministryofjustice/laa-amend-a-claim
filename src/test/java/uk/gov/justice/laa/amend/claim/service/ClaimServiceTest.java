@@ -271,9 +271,17 @@ class ClaimServiceTest {
   @DisplayName("Should retry search on unique case id on an empty UFN search")
   void testSearchClaims_SearchAgainAfterUfnSearchNotFound() {
     // Arrange
+    var mockApiResponseEmpty = new ClaimResultSetV2();
+    mockApiResponseEmpty.setTotalElements(0);
+
+    var mockApiResponseSingle = new ClaimResultSetV2();
+    mockApiResponseSingle.setTotalElements(1);
+
+    String uniqueFileNumber = "112233/001";
+
     when(claimsApiClient.searchClaims(
             "0P322F",
-            "112233/001",
+            uniqueFileNumber,
             null,
             null,
             null,
@@ -283,7 +291,8 @@ class ClaimServiceTest {
             0,
             10,
             "unique_file_number,asc"))
-        .thenReturn(Mono.empty());
+        .thenReturn(Mono.just(mockApiResponseEmpty));
+
     when(claimsApiClient.searchClaims(
             "0P322F",
             null,
@@ -292,11 +301,11 @@ class ClaimServiceTest {
             null,
             null,
             STATUSES,
-            "112233/001",
+            uniqueFileNumber,
             0,
             10,
             "unique_file_number,asc"))
-        .thenReturn(Mono.empty());
+        .thenReturn(Mono.just(mockApiResponseSingle));
     var sort =
         SearchSort.builder()
             .field(SearchSortField.UNIQUE_FILE_NUMBER)
@@ -307,7 +316,7 @@ class ClaimServiceTest {
     var result =
         claimService.searchClaims(
             "0P322F",
-            Optional.of("112233/001"),
+            Optional.of(uniqueFileNumber),
             Optional.empty(),
             Optional.empty(),
             Optional.empty(),
@@ -318,12 +327,14 @@ class ClaimServiceTest {
             sort);
 
     // Assert
-    assertNull(result);
+    assertNotNull(result);
+    assertNotNull(result.getTotalElements());
+    assertEquals(Integer.valueOf(1), result.getTotalElements());
 
     verify(claimsApiClient, times(1))
         .searchClaims(
             "0P322F",
-            "112233/001",
+            uniqueFileNumber,
             null,
             null,
             null,
@@ -343,7 +354,7 @@ class ClaimServiceTest {
             null,
             null,
             STATUSES,
-            "112233/001",
+            uniqueFileNumber,
             0,
             10,
             "unique_file_number,asc");
