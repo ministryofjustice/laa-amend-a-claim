@@ -36,6 +36,7 @@ public class Claim {
   private Boolean vatApplicable;
   private String officeCode;
   private ClaimStatus status;
+  private String uniqueCaseId;
 
   public BaseClaimView<? extends Claim> toViewModel() {
     return new ClaimView(this);

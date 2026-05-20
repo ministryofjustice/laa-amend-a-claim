@@ -72,7 +72,17 @@ class ClaimServiceTest {
     var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
 
     when(claimsApiClient.searchClaims(
-            "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc"))
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc"))
         .thenReturn(Mono.just(mockApiResponse));
     var sort =
         SearchSort.builder()
@@ -100,7 +110,17 @@ class ClaimServiceTest {
 
     verify(claimsApiClient, times(1))
         .searchClaims(
-            "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc");
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc");
   }
 
   @Test
@@ -111,7 +131,7 @@ class ClaimServiceTest {
     var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
 
     when(claimsApiClient.searchClaims(
-            "0P322F", null, null, null, null, null, STATUSES, 0, 10, null))
+            "0P322F", null, null, null, null, null, STATUSES, null, 0, 10, null))
         .thenReturn(Mono.just(mockApiResponse));
 
     // Act
@@ -133,7 +153,7 @@ class ClaimServiceTest {
     assertEquals(mockApiResponse, result);
 
     verify(claimsApiClient, times(1))
-        .searchClaims("0P322F", null, null, null, null, null, STATUSES, 0, 10, null);
+        .searchClaims("0P322F", null, null, null, null, null, STATUSES, null, 0, 10, null);
   }
 
   @Test
@@ -141,7 +161,17 @@ class ClaimServiceTest {
   void testSearchClaims_ApiClientThrowsException() {
     // Arrange
     when(claimsApiClient.searchClaims(
-            "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc"))
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc"))
         .thenThrow(new RuntimeException("API Error"));
     var sort =
         SearchSort.builder()
@@ -169,7 +199,17 @@ class ClaimServiceTest {
 
     verify(claimsApiClient, times(1))
         .searchClaims(
-            "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc");
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc");
   }
 
   @Test
@@ -177,7 +217,17 @@ class ClaimServiceTest {
   void testSearchClaims_EmptyResponse() {
     // Arrange
     when(claimsApiClient.searchClaims(
-            "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc"))
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc"))
         .thenReturn(Mono.empty());
     var sort =
         SearchSort.builder()
@@ -204,7 +254,110 @@ class ClaimServiceTest {
 
     verify(claimsApiClient, times(1))
         .searchClaims(
-            "0P322F", null, null, null, null, null, STATUSES, 0, 10, "unique_file_number,asc");
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc");
+  }
+
+  @Test
+  @DisplayName("Should retry search on unique case id on an empty UFN search")
+  void testSearchClaims_SearchAgainAfterUfnSearchNotFound() {
+    // Arrange
+    var mockApiResponseEmpty = new ClaimResultSetV2();
+    mockApiResponseEmpty.setTotalElements(0);
+
+    var mockApiResponseSingle = new ClaimResultSetV2();
+    mockApiResponseSingle.setTotalElements(1);
+
+    String uniqueFileNumber = "112233/001";
+
+    when(claimsApiClient.searchClaims(
+            "0P322F",
+            uniqueFileNumber,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc"))
+        .thenReturn(Mono.just(mockApiResponseEmpty));
+
+    when(claimsApiClient.searchClaims(
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            uniqueFileNumber,
+            0,
+            10,
+            "unique_file_number,asc"))
+        .thenReturn(Mono.just(mockApiResponseSingle));
+    var sort =
+        SearchSort.builder()
+            .field(SearchSortField.UNIQUE_FILE_NUMBER)
+            .direction(SortDirection.ASCENDING)
+            .build();
+
+    // Act
+    var result =
+        claimService.searchClaims(
+            "0P322F",
+            Optional.of(uniqueFileNumber),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            STATUSES,
+            1,
+            10,
+            sort);
+
+    // Assert
+    assertNotNull(result);
+    assertNotNull(result.getTotalElements());
+    assertEquals(Integer.valueOf(1), result.getTotalElements());
+
+    verify(claimsApiClient, times(1))
+        .searchClaims(
+            "0P322F",
+            uniqueFileNumber,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc");
+
+    verify(claimsApiClient, times(1))
+        .searchClaims(
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            uniqueFileNumber,
+            0,
+            10,
+            "unique_file_number,asc");
   }
 
   @Test

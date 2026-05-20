@@ -15,7 +15,7 @@ import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.sorting.Sort;
+import uk.gov.justice.laa.amend.claim.models.search.SearchSort;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
@@ -60,25 +60,51 @@ public class ClaimService {
       List<ClaimStatus> claimStatuses,
       int page,
       int size,
-      Sort sort) {
+      SearchSort sort) {
     try {
-      return claimsApiClient
-          .searchClaims(
-              officeCode.toUpperCase(),
-              uniqueFileNumber.orElse(null),
-              caseReferenceNumber.orElse(null),
-              submissionPeriod.orElse(null),
-              areaOfLaw.orElse(null),
-              escapeCase.orElse(null),
-              claimStatuses,
-              page - 1,
-              size,
-              Objects.toString(sort, null))
-          .block();
+      ClaimResultSetV2 claimResultSet =
+          claimsApiClient
+              .searchClaims(
+                  officeCode.toUpperCase(),
+                  uniqueFileNumber.orElse(null),
+                  caseReferenceNumber.orElse(null),
+                  submissionPeriod.orElse(null),
+                  areaOfLaw.orElse(null),
+                  escapeCase.orElse(null),
+                  claimStatuses,
+                  null,
+                  page - 1,
+                  size,
+                  Objects.toString(sort, null))
+              .block();
+      if (uniqueFileNumber.isPresent() && isEmpty(claimResultSet)) {
+        claimResultSet =
+            claimsApiClient
+                .searchClaims(
+                    officeCode.toUpperCase(),
+                    null,
+                    caseReferenceNumber.orElse(null),
+                    submissionPeriod.orElse(null),
+                    areaOfLaw.orElse(null),
+                    escapeCase.orElse(null),
+                    claimStatuses,
+                    uniqueFileNumber.orElse(null),
+                    page - 1,
+                    size,
+                    Objects.toString(sort, null))
+                .block();
+      }
+      return claimResultSet;
     } catch (Exception e) {
       log.error("Error searching claims", e);
       throw e;
     }
+  }
+
+  private boolean isEmpty(ClaimResultSetV2 resultSet) {
+    return resultSet == null
+        || resultSet.getTotalElements() == null
+        || resultSet.getTotalElements() == 0;
   }
 
   public ClaimResponseV2 getClaim(UUID submissionId, UUID claimId) {
