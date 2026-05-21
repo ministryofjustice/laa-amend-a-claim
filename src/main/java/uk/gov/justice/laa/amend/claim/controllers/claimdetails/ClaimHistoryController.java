@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.controllers;
+package uk.gov.justice.laa.amend.claim.controllers.claimdetails;
 
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getClaim;
 
@@ -31,16 +31,14 @@ public class ClaimHistoryController extends ClaimDetailsBaseController {
       @PathVariable UUID claimId)
       throws IOException {
     var claim = getClaim(session, submissionId, claimId);
+    var claimHistory = claimHistoryService.getClaimHistory(claim);
 
     setCommonModelAttributes(
-        model, session, request, submissionId, claimId, claim, featureFlagsConfig);
-
-    var claimHistory = claimHistoryService.getClaimHistory(claim);
-    claimHistory.latestAssessmentUser().ifPresent(user -> model.addAttribute("user", user));
+        model, session, request, claim, claimHistory.latestAssessmentUser().orElse(null));
 
     var events = claimHistory.events().stream().map(ClaimHistoryEventViewModel::create).toList();
     model.addAttribute("events", events);
 
-    return "claim-history";
+    return "claimdetails/claim-history";
   }
 }

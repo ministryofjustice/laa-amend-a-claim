@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.views;
+package uk.gov.justice.laa.amend.claim.views.claimdetails;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.DISPLAY_NAME;
+import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.createUser;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -28,7 +29,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import uk.gov.justice.laa.amend.claim.controllers.ClaimSummaryController;
+import uk.gov.justice.laa.amend.claim.controllers.claimdetails.ClaimSummaryController;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
@@ -42,6 +43,7 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.MicrosoftUserRetrievalService;
+import uk.gov.justice.laa.amend.claim.views.ViewTestBase;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
@@ -59,19 +61,21 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
   @MockitoBean private OAuth2AuthorizedClientService authorizedClientService;
 
-  ClaimSummaryViewTest() {
-    this.mapping = String.format("/submissions/%s/claims/%s", submissionId, claimId);
-  }
-
   @BeforeEach
-  void setUp() {
+  public void setup() {
+    super.setup();
+
     when(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled()).thenReturn(true);
+
+    this.mapping = String.format("/submissions/%s/claims/%s", submissionId, claimId);
   }
 
   @Test
   void testCivilClaimPage() {
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
     createClaimSummary(claim);
+    claim.setClaimId(claimId);
+    claim.setSubmissionId(submissionId);
     claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
     claim.setCategoryOfLaw("TEST");
     claim.setMatterTypeCode("IMLB:AHQS");
@@ -133,6 +137,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
   @Test
   void testAssessedClaimPage() {
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setClaimId(claimId);
+    claim.setSubmissionId(submissionId);
     claim.setHasAssessment(true);
 
     OAuth2AuthorizedClient mockClient = mock(OAuth2AuthorizedClient.class);
@@ -207,6 +213,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
   void testCrimeClaimPage() {
     CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
     createClaimSummary(claim);
+    claim.setClaimId(claimId);
+    claim.setSubmissionId(submissionId);
     claim.setMatterTypeCode("IMLB");
     claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
     claim.setSchemeId("SCHEME");
@@ -288,11 +296,14 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
     claim.setStatus(ClaimStatus.VOID);
     var lastAssessment = MockClaimsFunctions.createAssessment(AssessmentTypeEnum.VOID);
+    claim.setHasAssessment(true);
     claim.setLastAssessment(lastAssessment);
     claim.setLastUpdatedDateTime(lastAssessment.lastAssessmentDate());
     claim.setLastUpdatedUser(lastAssessment.lastAssessedBy());
 
-    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
+    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    when(userRetrievalService.getUser(lastAssessment.lastAssessedBy())).thenReturn(createUser());
 
     Document doc = renderDocument();
 
@@ -326,11 +337,14 @@ class ClaimSummaryViewTest extends ViewTestBase {
     claim.setStatus(ClaimStatus.VOID);
     claim.setLastAssessment(null);
     var lastAssessment = MockClaimsFunctions.createAssessment(AssessmentTypeEnum.VOID);
+    claim.setHasAssessment(true);
     claim.setLastAssessment(lastAssessment);
     claim.setLastUpdatedDateTime(lastAssessment.lastAssessmentDate());
     claim.setLastUpdatedUser(lastAssessment.lastAssessedBy());
 
-    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
+    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    when(userRetrievalService.getUser(lastAssessment.lastAssessedBy())).thenReturn(createUser());
 
     Document doc = renderDocument();
 

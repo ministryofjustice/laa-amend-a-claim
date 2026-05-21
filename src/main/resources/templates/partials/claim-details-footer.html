@@ -1,16 +1,17 @@
 <th:block th:fragment="claimDetailsFooter()" xmlns:th="http://www.thymeleaf.org">
+    <!--/*@thymesVar id="claimDetailsFooterView" type="uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsFooterView"*/-->
     <form method="post"
           th:action="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}">
         <div class="govuk-button-group">
-            <th:block th:if="${isAssessmentButtonPresent}">
+            <th:block th:if="${claimDetailsFooterView.isAssessmentButtonPresent}">
                 <button class="govuk-button govuk-button--success"
                         data-module="govuk-button"
                         th:data-testid="claim-details-assessment-button"
-                        th:text="${claim.hasAssessment} ? #{claimSummary.update.assessmentButton} : #{claimSummary.assessmentButton}" type="submit">
+                        th:text="${claimDetailsFooterView.hasAssessment} ? #{claimSummary.update.assessmentButton} : #{claimSummary.assessmentButton}" type="submit">
                 </button>
             </th:block>
 
-            <th:block th:if="${isVoidButtonPresent}">
+            <th:block th:if="${claimDetailsFooterView.isVoidButtonPresent}">
                 <a th:href="@{/submissions/{submissionId}/claims/{claimId}/void(submissionId=${submissionId}, claimId=${claimId})}"
                    th:data-testid="claim-details-void-button"
                    class="govuk-button govuk-button--warning"

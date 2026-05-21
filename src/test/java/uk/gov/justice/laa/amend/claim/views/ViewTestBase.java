@@ -5,7 +5,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.createUser;
 
 import jakarta.servlet.RequestDispatcher;
 import java.util.ArrayList;
@@ -93,7 +92,7 @@ public abstract class ViewTestBase {
     try {
       String html =
           mockMvc
-              .perform(requestBuilder.session(session).requestAttr("user", createUser()))
+              .perform(requestBuilder.session(session))
               .andExpect(status().is(expectedStatus))
               .andReturn()
               .getResponse()
