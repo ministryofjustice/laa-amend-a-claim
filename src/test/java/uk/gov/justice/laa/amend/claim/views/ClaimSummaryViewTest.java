@@ -65,7 +65,6 @@ class ClaimSummaryViewTest extends ViewTestBase {
 
   @BeforeEach
   void setUp() {
-    when(featureFlagsConfig.getIsClaimHistoryEnabled()).thenReturn(true);
     when(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled()).thenReturn(true);
   }
 
