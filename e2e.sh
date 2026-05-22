@@ -26,7 +26,6 @@ export CLAIMS_TOKEN="f67f968e-b479-4e61-b66e-f57984931e56"
 export SPRING_PROFILES_ACTIVE="e2e"
 export SILAS_AUTH_ENABLED=false
 export IS_BULK_UPLOAD_ENABLED=true
-export IS_CLAIM_HISTORY_ENABLED=true
 export IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED=true
 
 echo "[INFO] Starting API application..."

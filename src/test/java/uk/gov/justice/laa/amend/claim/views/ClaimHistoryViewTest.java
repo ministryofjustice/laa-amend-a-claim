@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -42,11 +41,6 @@ class ClaimHistoryViewTest extends ViewTestBase {
   ClaimHistoryViewTest() {
     this.overviewUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
     this.mapping = String.format("/submissions/%s/claims/%s/history", submissionId, claimId);
-  }
-
-  @BeforeEach
-  void setUp() {
-    when(featureFlagsConfig.getIsClaimHistoryEnabled()).thenReturn(true);
   }
 
   @Test

@@ -3,7 +3,6 @@ package uk.gov.justice.laa.amend.claim.controllers;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getClaim;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.UUID;
@@ -26,17 +25,11 @@ public class ClaimHistoryController extends ClaimDetailsBaseController {
   @GetMapping("/submissions/{submissionId}/claims/{claimId}/history")
   public String onPageLoad(
       HttpServletRequest request,
-      HttpServletResponse response,
       HttpSession session,
       Model model,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId)
       throws IOException {
-    if (!featureFlagsConfig.getIsClaimHistoryEnabled()) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
-      return null;
-    }
-
     var claim = getClaim(session, submissionId, claimId);
 
     setCommonModelAttributes(

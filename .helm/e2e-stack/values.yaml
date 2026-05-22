@@ -201,8 +201,6 @@ laaAmendAClaim:
           key: laa
     - name: IS_BULK_UPLOAD_ENABLED
       value: "true"
-    - name: IS_CLAIM_HISTORY_ENABLED
-      value: "true"
     - name: IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED
       value: "true"
   resources:
