@@ -62,7 +62,8 @@ app:
 feature-flags:
   is-bulk-upload-enabled: ${IS_BULK_UPLOAD_ENABLED:false}
   is-requested-and-calculated-swap-enabled: ${IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED:false}
-
+  # TODO: Wire it up
+  is-full-claim-details-enabled: true
 management:
   server:
     port: 8282

@@ -24,6 +24,12 @@
             </li>
             <li class="moj-sub-navigation__item">
                 <a class="moj-sub-navigation__link"
+                   th:attr="aria-current=${currentPage == 'client'} ? 'page' : null"
+                   th:href="@{/submissions/{submissionId}/claims/{claimId}/client(submissionId=${submissionId}, claimId=${claimId})}"
+                   th:text="#{claimDetails.clientHeading}"></a>
+            </li>
+            <li class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link"
                    th:attr="aria-current=${currentPage == 'history'} ? 'page' : null"
                    th:href="@{/submissions/{submissionId}/claims/{claimId}/history(submissionId=${submissionId}, claimId=${claimId})}"
                    th:text="#{claimDetails.claimHistoryHeading}"></a>
