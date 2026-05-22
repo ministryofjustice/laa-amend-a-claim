@@ -34,7 +34,7 @@ public class ClaimDetailsHeaderViewTest {
       MicrosoftApiUser user = new MicrosoftApiUser("id", "Bloggs, Joe", "Joe", "Bloggs");
       var viewModel = new ClaimDetailsHeaderView(claim, user);
 
-      ThymeleafMessage result = viewModel.getLastEditedBy();
+      ThymeleafMessage result = viewModel.lastEditedBy();
 
       Assertions.assertEquals("claimSummary.lastAssessmentText", result.getKey());
       Assertions.assertEquals("Joe Bloggs", result.getParams()[0]);
@@ -62,7 +62,7 @@ public class ClaimDetailsHeaderViewTest {
       MicrosoftApiUser user = new MicrosoftApiUser("id", null, null, null);
       var viewModel = new ClaimDetailsHeaderView(claim, user);
 
-      ThymeleafMessage result = viewModel.getLastEditedBy();
+      ThymeleafMessage result = viewModel.lastEditedBy();
 
       Assertions.assertEquals("claimSummary.lastAssessmentText.noUser", result.getKey());
       Assertions.assertEquals("15 June 2025", result.getParams()[0]);
@@ -89,7 +89,7 @@ public class ClaimDetailsHeaderViewTest {
 
       var viewModel = new ClaimDetailsHeaderView(claim, null);
 
-      ThymeleafMessage result = viewModel.getLastEditedBy();
+      ThymeleafMessage result = viewModel.lastEditedBy();
 
       Assertions.assertEquals("claimSummary.lastAssessmentText.noUser", result.getKey());
       Assertions.assertEquals("15 June 2025", result.getParams()[0]);
@@ -118,7 +118,7 @@ public class ClaimDetailsHeaderViewTest {
 
       var viewModel = new ClaimDetailsHeaderView(claim, user);
 
-      ThymeleafMessage result = viewModel.getLastEditedBy();
+      ThymeleafMessage result = viewModel.lastEditedBy();
 
       Assertions.assertEquals("claimSummary.lastAssessmentText.noUser", result.getKey());
       Assertions.assertEquals("15 June 2025", result.getParams()[0]);
