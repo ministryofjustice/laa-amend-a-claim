@@ -22,7 +22,7 @@ public class AssessmentOutcomePage extends LaaInputPage {
   private final Locator errorSummaryLink;
 
   public AssessmentOutcomePage(Page page) {
-    super(page, "Assessment Outcome");
+    super(page, "Assessment outcome");
 
     this.assessedInFullRadio =
         page.getByLabel("Assessed in full", new Page.GetByLabelOptions().setExact(true));

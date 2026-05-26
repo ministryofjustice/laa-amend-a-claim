@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -24,10 +25,9 @@ import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
-import uk.gov.justice.laa.amend.claim.views.ViewTestBase;
 
 @WebMvcTest(ClaimHistoryController.class)
-class ClaimHistoryViewTest extends ViewTestBase {
+class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
 
   private static final String USER = "Joe Bloggs";
   private static final OffsetDateTime CREATED_AT =
@@ -41,11 +41,10 @@ class ClaimHistoryViewTest extends ViewTestBase {
   @MockitoBean private AssessmentService assessmentService;
   @MockitoBean private UserRetrievalService userRetrievalService;
 
-  private final String overviewUrl;
-
-  ClaimHistoryViewTest() {
-    this.overviewUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
-    this.mapping = String.format("/submissions/%s/claims/%s/history", submissionId, claimId);
+  @BeforeEach
+  public void setup() {
+    super.setup();
+    mapping = historyUrl;
   }
 
   @Test
@@ -128,6 +127,7 @@ class ClaimHistoryViewTest extends ViewTestBase {
 
     assertPageHasNoActiveServiceNavigationItems(doc);
     assertPageHasInactiveSubNavigationItem(doc, "Overview", overviewUrl);
+    assertPageHasInactiveSubNavigationItem(doc, "Client", clientUrl);
     assertPageHasActiveSubNavigationItem(doc, "Claim history", mapping);
 
     assertH2Exists(doc, "Claim history");

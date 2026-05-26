@@ -10,7 +10,7 @@ public class AssessmentCompletePage extends LaaPage {
   private final Locator viewAssessedClaimButton;
 
   public AssessmentCompletePage(Page page) {
-    super(page, "Assessment Complete");
+    super(page, "Assessment complete");
     this.bodyText = page.locator(".govuk-panel__body");
     this.goToSearchButton = page.locator("#go-to-search");
     this.viewAssessedClaimButton = page.locator("#view-assessed-claim");

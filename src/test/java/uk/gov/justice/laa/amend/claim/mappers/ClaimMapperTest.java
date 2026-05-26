@@ -508,6 +508,9 @@ class ClaimMapperTest {
     response.setCaseReferenceNumber("CASE456");
     response.setClientSurname("Doe");
     response.setClientForename("John");
+    response.setGenderCode("genderCode");
+    response.setEthnicityCode("ethnicityCode");
+    response.setDisabilityCode("disabilityCode");
     response.setUniqueClientNumber("21121985/J/DOE");
     response.setCaseStartDate("2025-01-01");
     response.setCaseConcludedDate("2025-02-01");
@@ -535,6 +538,9 @@ class ClaimMapperTest {
     assertEquals("CASE456", claim.getCaseReferenceNumber());
     assertEquals("Doe", claim.getClientSurname());
     assertEquals("John", claim.getClientForename());
+    assertEquals("genderCode", claim.getClientGender());
+    assertEquals("ethnicityCode", claim.getClientEthnicity());
+    assertEquals("disabilityCode", claim.getClientDisability());
     assertEquals("21121985/J/DOE", claim.getUniqueClientNumber());
     assertEquals("FeeCode", claim.getFeeCode());
     assertEquals("FeeCodeDesc", claim.getFeeCodeDescription());
@@ -593,6 +599,7 @@ class ClaimMapperTest {
     assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());
   }
 
+  @Test
   void testMapUniqueFileId() {
     var response = createClaimResponse(AreaOfLaw.MEDIATION);
     response.setUniqueCaseId("112233/001");

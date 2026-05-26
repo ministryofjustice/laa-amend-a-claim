@@ -43,13 +43,12 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.MicrosoftUserRetrievalService;
-import uk.gov.justice.laa.amend.claim.views.ViewTestBase;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
 @WebMvcTest(ClaimSummaryController.class)
-class ClaimSummaryViewTest extends ViewTestBase {
+class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
 
   @MockitoBean private ClaimService claimService;
 
@@ -64,10 +63,8 @@ class ClaimSummaryViewTest extends ViewTestBase {
   @BeforeEach
   public void setup() {
     super.setup();
-
     when(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled()).thenReturn(true);
-
-    this.mapping = String.format("/submissions/%s/claims/%s", submissionId, claimId);
+    mapping = overviewUrl;
   }
 
   @Test
@@ -371,8 +368,9 @@ class ClaimSummaryViewTest extends ViewTestBase {
     assertPageHasHeading(doc, "Claim details");
 
     assertPageHasNoActiveServiceNavigationItems(doc);
-    assertPageHasActiveSubNavigationItem(doc, "Overview", mapping);
-    assertPageHasInactiveSubNavigationItem(doc, "Claim history", mapping + "/history");
+    assertPageHasActiveSubNavigationItem(doc, "Overview", overviewUrl);
+    assertPageHasInactiveSubNavigationItem(doc, "Client", clientUrl);
+    assertPageHasInactiveSubNavigationItem(doc, "Claim history", historyUrl);
 
     assertH2Exists(doc, "Overview");
 

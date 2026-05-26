@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Assertions;
 
 public class ClaimDetailsPage extends LaaPage {
 
+  private final Locator clientLink;
+
   private final Locator addAssessmentOutcomeButton;
   private final Locator updateAssessmentOutcomeButton;
   private final Locator addUpdateAssessmentOutcomeButton;
@@ -20,7 +22,9 @@ public class ClaimDetailsPage extends LaaPage {
   private final Locator backToSearchButton;
 
   public ClaimDetailsPage(Page page) {
-    super(page, "Claim details");
+    super(page, "Overview");
+
+    this.clientLink = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Client"));
 
     this.addAssessmentOutcomeButton =
         page.getByRole(
@@ -38,6 +42,10 @@ public class ClaimDetailsPage extends LaaPage {
 
     this.backToSearchButton =
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Back to search"));
+  }
+
+  public void clickClientItem() {
+    clientLink.click();
   }
 
   public void clickAddUpdateAssessmentOutcome() {
