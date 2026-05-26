@@ -64,6 +64,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
   public void setup() {
     super.setup();
     when(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled()).thenReturn(true);
+    when(featureFlagsConfig.getIsFullClaimDetailsEnabled()).thenReturn(true);
     mapping = overviewUrl;
   }
 

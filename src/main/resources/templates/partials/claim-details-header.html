@@ -22,7 +22,7 @@
                    th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
                    th:text="#{claimDetails.overviewHeading}"></a>
             </li>
-            <li class="moj-sub-navigation__item">
+            <li th:if="${featureFlagsConfig.isFullClaimDetailsEnabled}" class="moj-sub-navigation__item">
                 <a class="moj-sub-navigation__link"
                    th:attr="aria-current=${currentPage == 'client'} ? 'page' : null"
                    th:href="@{/submissions/{submissionId}/claims/{claimId}/client(submissionId=${submissionId}, claimId=${claimId})}"
