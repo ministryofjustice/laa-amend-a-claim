@@ -29,6 +29,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.claimdetails.ClaimSummaryController;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.models.Role;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
@@ -66,6 +67,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
         AssessmentInfo.builder()
             .lastAssessedBy("test")
             .lastAssessmentDate(OffsetDateTime.now())
+            .lastAssessmentOutcome(OutcomeType.PAID_IN_FULL)
             .build();
     claim.setLastAssessment(lastAssessment);
     when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
@@ -91,6 +93,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
         AssessmentInfo.builder()
             .lastAssessedBy("test")
             .lastAssessmentDate(OffsetDateTime.now())
+            .lastAssessmentOutcome(OutcomeType.PAID_IN_FULL)
             .build();
     claim.setLastAssessment(lastAssessment);
     when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
