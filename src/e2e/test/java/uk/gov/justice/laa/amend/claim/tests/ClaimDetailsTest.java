@@ -24,7 +24,9 @@ import uk.gov.justice.laa.amend.claim.models.ClaimInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
+import uk.gov.justice.laa.amend.claim.pages.ClaimClientPage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
+import uk.gov.justice.laa.amend.claim.pages.ClaimHistoryPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 
 @Epic("Claim Details")
@@ -184,5 +186,25 @@ public class ClaimDetailsTest extends BaseTest {
         "Add assessment outcome enabled/disabled state mismatch");
 
     details.assertAllValues(claimDetailsFixture.getValues());
+  }
+
+  @Test
+  @DisplayName("Claim Details: Can navigate to all items")
+  @Severity(SeverityLevel.CRITICAL)
+  void claimDetailsItems() {
+    var search = new SearchPage(page);
+    search.searchForClaim(CRIME_OFFICE_CODE, "", "", CRIME_UFN, "", "", "");
+    search.clickViewForUfn(CRIME_UFN);
+
+    var overview = new ClaimDetailsPage(page);
+    overview.clickClientItem();
+
+    var client = new ClaimClientPage(page);
+    client.clickClaimHistoryItem();
+
+    var history = new ClaimHistoryPage(page);
+    history.clickOverviewItem();
+
+    new ClaimDetailsPage(page);
   }
 }

@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.EnumSet;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -21,13 +20,11 @@ import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 
 @Controller
-@RequiredArgsConstructor
 @Slf4j
 public class ClaimSummaryController extends ClaimDetailsBaseController {
 
@@ -35,6 +32,20 @@ public class ClaimSummaryController extends ClaimDetailsBaseController {
   private final AssessmentService assessmentService;
   private final UserRetrievalService userRetrievalService;
   private final FeatureFlagsConfig featureFlagsConfig;
+
+  public ClaimSummaryController(
+      AssessmentService assessmentService,
+      UserRetrievalService userRetrievalService,
+      ClaimService claimService,
+      AssessmentService assessmentService1,
+      UserRetrievalService userRetrievalService1,
+      FeatureFlagsConfig featureFlagsConfig) {
+    super(assessmentService, userRetrievalService);
+    this.claimService = claimService;
+    this.assessmentService = assessmentService1;
+    this.userRetrievalService = userRetrievalService1;
+    this.featureFlagsConfig = featureFlagsConfig;
+  }
 
   @GetMapping("/submissions/{submissionId}/claims/{claimId}")
   public String onPageLoad(
@@ -52,13 +63,7 @@ public class ClaimSummaryController extends ClaimDetailsBaseController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    MicrosoftApiUser user = null;
-    if (claim.isHasAssessment()) {
-      claim = assessmentService.getLatestAssessmentByClaim(claim);
-      if (claim.getLastUpdatedUser() != null) {
-        user = userRetrievalService.getUser(claim.getLastUpdatedUser());
-      }
-    }
+    var user = setLatestAssessment(claim);
 
     session.setAttribute(claimId.toString(), claim);
 

@@ -25,7 +25,9 @@ public abstract class LaaPage {
   public LaaPage(Page page, String heading) {
     this.page = page;
 
-    this.heading = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName(heading));
+    this.heading =
+        page.getByRole(
+            AriaRole.HEADING, new Page.GetByRoleOptions().setName(heading).setExact(true));
 
     this.axeBuilder =
         new AxeBuilder(page).exclude(".govuk-phase-banner").exclude(".govuk-back-link");

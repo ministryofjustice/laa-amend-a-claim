@@ -186,7 +186,11 @@ env:
       configMapKeyRef:
         name: feature-flags
         key: is-requested-and-calculated-swap-enabled
-
+  - name: IS_FULL_CLAIM_DETAILS_ENABLED
+    valueFrom:
+      configMapKeyRef:
+        name: feature-flags
+        key: is-full-claim-details-enabled
 autoscaling:
   enabled: false
   minReplicas: 1

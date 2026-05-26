@@ -47,6 +47,10 @@ public abstract class ClaimDetails extends Claim {
   private String lastUpdatedUser;
   private OffsetDateTime lastUpdatedDateTime;
 
+  private String clientGender;
+  private String clientEthnicity;
+  private String clientDisability;
+
   public void applyOutcome(OutcomeType outcome) {
     getClaimFields().forEach(x -> x.applyOutcome(outcome));
   }

@@ -32,4 +32,5 @@ submission:
 feature-flags:
   is-bulk-upload-enabled: true
   is-requested-and-calculated-swap-enabled: true
+  is-full-claim-details-enabled: true
 

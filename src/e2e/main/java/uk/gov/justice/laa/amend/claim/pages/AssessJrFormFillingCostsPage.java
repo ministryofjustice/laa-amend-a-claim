@@ -5,6 +5,6 @@ import com.microsoft.playwright.Page;
 public class AssessJrFormFillingCostsPage extends LaaCostPage {
 
   public AssessJrFormFillingCostsPage(Page page) {
-    super(page, "Assess JR and form filling");
+    super(page, "Assess JR and form filling costs");
   }
 }

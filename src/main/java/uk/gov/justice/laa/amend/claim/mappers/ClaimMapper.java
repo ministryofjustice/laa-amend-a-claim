@@ -52,6 +52,9 @@ public interface ClaimMapper {
   @Mapping(target = "assessmentOutcome", ignore = true)
   @Mapping(target = "lastAssessment", ignore = true)
   @Mapping(target = "claimFields", ignore = true)
+  @Mapping(target = "clientGender", source = "genderCode")
+  @Mapping(target = "clientEthnicity", source = "ethnicityCode")
+  @Mapping(target = "clientDisability", source = "disabilityCode")
   ClaimDetails mapToCommonDetails(ClaimResponseV2 claimResponse);
 
   @Mapping(target = "submissionId", source = "submissionId")
