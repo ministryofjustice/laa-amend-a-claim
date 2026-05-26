@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -24,8 +26,10 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import uk.gov.justice.laa.amend.claim.controllers.claimdetails.ClaimSummaryController;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.models.Role;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
@@ -63,6 +67,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
         AssessmentInfo.builder()
             .lastAssessedBy("test")
             .lastAssessmentDate(OffsetDateTime.now())
+            .lastAssessmentOutcome(OutcomeType.PAID_IN_FULL)
             .build();
     claim.setLastAssessment(lastAssessment);
     when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
@@ -70,7 +75,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("claim-summary"))
+        .andExpect(view().name("claimdetails/claim-summary"))
         .andExpect(model().attributeExists("claim"))
         .andExpect(model().attribute("searchUrl", "/"))
         .andExpect(request().sessionAttribute(claimId.toString(), claim));
@@ -88,6 +93,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
         AssessmentInfo.builder()
             .lastAssessedBy("test")
             .lastAssessmentDate(OffsetDateTime.now())
+            .lastAssessmentOutcome(OutcomeType.PAID_IN_FULL)
             .build();
     claim.setLastAssessment(lastAssessment);
     when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
@@ -95,7 +101,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("claim-summary"))
+        .andExpect(view().name("claimdetails/claim-summary"))
         .andExpect(model().attributeExists("claim"))
         .andExpect(model().attribute("searchUrl", "/?officeCode=12345&page=1"))
         .andExpect(request().sessionAttribute(claimId.toString(), claim));
@@ -162,7 +168,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("isAssessmentButtonPresent", true));
+        .andExpect(
+            model()
+                .attribute(
+                    "claimDetailsFooterView", hasProperty("assessmentButtonPresent", is(true))));
   }
 
   @Test
@@ -181,7 +190,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("isAssessmentButtonPresent", false));
+        .andExpect(
+            model()
+                .attribute(
+                    "claimDetailsFooterView", hasProperty("assessmentButtonPresent", is(false))));
   }
 
   @Test
@@ -197,7 +209,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("isAssessmentButtonPresent", false));
+        .andExpect(
+            model()
+                .attribute(
+                    "claimDetailsFooterView", hasProperty("assessmentButtonPresent", is(false))));
   }
 
   @Test
@@ -212,7 +227,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("isAssessmentButtonPresent", false));
+        .andExpect(
+            model()
+                .attribute(
+                    "claimDetailsFooterView", hasProperty("assessmentButtonPresent", is(false))));
   }
 
   @Test
@@ -228,7 +246,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("isAssessmentButtonPresent", true));
+        .andExpect(
+            model()
+                .attribute(
+                    "claimDetailsFooterView", hasProperty("assessmentButtonPresent", is(true))));
   }
 
   @Test
@@ -243,7 +264,9 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("isVoidButtonPresent", true));
+        .andExpect(
+            model()
+                .attribute("claimDetailsFooterView", hasProperty("voidButtonPresent", is(true))));
   }
 
   @Test
@@ -262,7 +285,9 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("isVoidButtonPresent", false));
+        .andExpect(
+            model()
+                .attribute("claimDetailsFooterView", hasProperty("voidButtonPresent", is(false))));
   }
 
   @Test
@@ -281,7 +306,9 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("isVoidButtonPresent", false));
+        .andExpect(
+            model()
+                .attribute("claimDetailsFooterView", hasProperty("voidButtonPresent", is(false))));
   }
 
   private String buildPath() {

@@ -1,19 +1,14 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import uk.gov.justice.laa.amend.claim.forms.errors.ReviewAndAmendFormError;
-import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
-import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
@@ -112,34 +107,7 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
   }
 
   default boolean hasAssessment() {
-    return claim().isHasAssessment() && lastAssessment() != null;
-  }
-
-  default AssessmentInfo lastAssessment() {
-    return claim().getLastAssessment();
-  }
-
-  default ThymeleafMessage lastEditedBy(MicrosoftApiUser user) {
-    String date = DateUtils.displayDateTimeDateValue(claim().getLastUpdatedDateTime());
-    String time = DateUtils.displayDateTimeTimeValue(claim().getLastUpdatedDateTime());
-
-    List<Object> args = new ArrayList<>();
-    String editMessageKey = "claimSummary.lastAssessmentText.noUser";
-    Optional<String> userName = Optional.ofNullable(user).map(MicrosoftApiUser::name);
-    if (userName.isPresent()) {
-      args.add(userName.get());
-      editMessageKey = "claimSummary.lastAssessmentText";
-    }
-    args.add(date);
-    args.add(time);
-
-    String messageKey =
-        (lastAssessment() != null && !isVoidClaim())
-            ? lastAssessment().lastAssessmentOutcome().getMessageKey()
-            : "claimSummary.void.message";
-    args.add(new ThymeleafMessage(messageKey));
-
-    return new ThymeleafMessage(editMessageKey, args.toArray());
+    return claim().isHasAssessment() && claim().getLastAssessment() != null;
   }
 
   private Stream<ClaimFieldRow> toClaimFieldRows(Stream<ClaimField> claimFields) {

@@ -42,7 +42,7 @@ class ClaimDetailsIntegrationTest extends ControllerIntegrationTest {
         mockMvc
             .perform(get("/submissions/{submissionId}/claims/{claimId}", SUBMISSION_ID, CLAIM_ID))
             .andExpect(status().isOk())
-            .andExpect(view().name("claim-summary"))
+            .andExpect(view().name("claimdetails/claim-summary"))
             .andExpect(model().attributeExists("claim"))
             .andExpect(model().attributeExists("submissionId"))
             .andExpect(model().attributeExists("claimId"))

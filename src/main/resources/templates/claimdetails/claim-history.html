@@ -13,7 +13,7 @@
         <div class="govuk-grid-column-full">
             <th:block th:replace="~{partials/claim-details-header :: claimDetailsHeader(currentPage='history')}"></th:block>
 
-            <h2 class="govuk-heading-m" th:text="#{claimDetails.claimHistory}"></h2>
+            <h2 class="govuk-heading-m" th:text="#{claimDetails.claimHistoryHeading}"></h2>
 
             <div class="moj-timeline">
                 <div class="moj-timeline__item" th:each="event : ${events}">

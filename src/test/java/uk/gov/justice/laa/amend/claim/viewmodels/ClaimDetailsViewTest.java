@@ -1,21 +1,14 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.YearMonth;
-import java.time.ZoneOffset;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends ClaimDetailsView<C>> {
 
@@ -182,115 +175,6 @@ public abstract class ClaimDetailsViewTest<C extends ClaimDetails, V extends Cla
       claim.setClientSurname("Doe");
       V viewModel = createView(claim);
       Assertions.assertEquals("John Doe", viewModel.getClientName());
-    }
-  }
-
-  @Nested
-  class LastEditedByTests {
-    @Test
-    void displayLastEditedTextWhenUserValuesAreNonNull() {
-      C claim = createClaim();
-      var assessmentInfo =
-          AssessmentInfo.builder()
-              // UTC 14:30:00 on a BST day (June) = London 3:30pm
-              .lastAssessmentDate(
-                  OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC))
-              .lastAssessmentOutcome(OutcomeType.NILLED)
-              .build();
-
-      claim.setLastAssessment(assessmentInfo);
-      claim.setLastUpdatedUser(assessmentInfo.lastAssessedBy());
-      claim.setLastUpdatedDateTime(assessmentInfo.lastAssessmentDate());
-      V viewModel = createView(claim);
-      MicrosoftApiUser user = new MicrosoftApiUser("id", "Bloggs, Joe", "Joe", "Bloggs");
-
-      ThymeleafMessage result = viewModel.lastEditedBy(user);
-
-      Assertions.assertEquals("claimSummary.lastAssessmentText", result.getKey());
-      Assertions.assertEquals("Joe Bloggs", result.getParams()[0]);
-      Assertions.assertEquals("15 June 2025", result.getParams()[1]);
-      Assertions.assertEquals("3:30pm", result.getParams()[2]);
-      ThymeleafMessage param = (ThymeleafMessage) result.getParams()[3];
-      Assertions.assertEquals("outcome.nilled", param.getKey());
-      Assertions.assertEquals(0, param.getParams().length);
-    }
-
-    @Test
-    void displayLastEditedTextWhenUserValuesAreNull() {
-      C claim = createClaim();
-      var assessmentInfo =
-          AssessmentInfo.builder()
-              // UTC 14:30:00 on a BST day (June) = London 3:30pm
-              .lastAssessmentDate(
-                  OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC))
-              .lastAssessmentOutcome(OutcomeType.NILLED)
-              .build();
-      claim.setLastAssessment(assessmentInfo);
-      claim.setLastUpdatedUser(assessmentInfo.lastAssessedBy());
-      claim.setLastUpdatedDateTime(assessmentInfo.lastAssessmentDate());
-      V viewModel = createView(claim);
-      MicrosoftApiUser user = new MicrosoftApiUser("id", null, null, null);
-
-      ThymeleafMessage result = viewModel.lastEditedBy(user);
-
-      Assertions.assertEquals("claimSummary.lastAssessmentText.noUser", result.getKey());
-      Assertions.assertEquals("15 June 2025", result.getParams()[0]);
-      Assertions.assertEquals("3:30pm", result.getParams()[1]);
-      ThymeleafMessage param = (ThymeleafMessage) result.getParams()[2];
-      Assertions.assertEquals("outcome.nilled", param.getKey());
-      Assertions.assertEquals(0, param.getParams().length);
-    }
-
-    @Test
-    void displayLastEditedTextWhenUserIsNull() {
-      C claim = createClaim();
-      var assessmentInfo =
-          AssessmentInfo.builder()
-              // UTC 14:30:00 on a BST day (June) = London 3:30pm
-              .lastAssessmentDate(
-                  OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC))
-              .lastAssessmentOutcome(OutcomeType.NILLED)
-              .build();
-      claim.setLastAssessment(assessmentInfo);
-      claim.setLastUpdatedUser(assessmentInfo.lastAssessedBy());
-      claim.setLastUpdatedDateTime(assessmentInfo.lastAssessmentDate());
-      claim.setStatus(ClaimStatus.VALID);
-      V viewModel = createView(claim);
-
-      ThymeleafMessage result = viewModel.lastEditedBy(null);
-
-      Assertions.assertEquals("claimSummary.lastAssessmentText.noUser", result.getKey());
-      Assertions.assertEquals("15 June 2025", result.getParams()[0]);
-      Assertions.assertEquals("3:30pm", result.getParams()[1]);
-      ThymeleafMessage param = (ThymeleafMessage) result.getParams()[2];
-      Assertions.assertEquals("outcome.nilled", param.getKey());
-      Assertions.assertEquals(0, param.getParams().length);
-    }
-
-    @Test
-    void displayLastEditedTextWhenClaimVoided() {
-      C claim = createClaim();
-      var assessmentInfo =
-          AssessmentInfo.builder()
-              // UTC 14:30:00 on a BST day (June) = London 3:30pm
-              .lastAssessmentDate(
-                  OffsetDateTime.of(LocalDateTime.of(2025, 6, 15, 14, 30, 0), ZoneOffset.UTC))
-              .lastAssessmentOutcome(OutcomeType.NILLED)
-              .build();
-      claim.setLastAssessment(assessmentInfo);
-      claim.setLastUpdatedUser(assessmentInfo.lastAssessedBy());
-      claim.setLastUpdatedDateTime(assessmentInfo.lastAssessmentDate());
-      claim.setStatus(ClaimStatus.VOID);
-      V viewModel = createView(claim);
-      MicrosoftApiUser user = new MicrosoftApiUser("id", null, null, null);
-
-      ThymeleafMessage result = viewModel.lastEditedBy(user);
-
-      Assertions.assertEquals("claimSummary.lastAssessmentText.noUser", result.getKey());
-      Assertions.assertEquals("15 June 2025", result.getParams()[0]);
-      Assertions.assertEquals("3:30pm", result.getParams()[1]);
-      ThymeleafMessage param = (ThymeleafMessage) result.getParams()[2];
-      Assertions.assertEquals("claimSummary.void.message", param.getKey());
     }
   }
 }

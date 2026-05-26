@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.views;
+package uk.gov.justice.laa.amend.claim.views.claimdetails;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -16,12 +16,13 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import uk.gov.justice.laa.amend.claim.controllers.ClaimHistoryController;
+import uk.gov.justice.laa.amend.claim.controllers.claimdetails.ClaimHistoryController;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistory;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistoryEvent;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
+import uk.gov.justice.laa.amend.claim.views.ViewTestBase;
 
 @WebMvcTest(ClaimHistoryController.class)
 class ClaimHistoryViewTest extends ViewTestBase {

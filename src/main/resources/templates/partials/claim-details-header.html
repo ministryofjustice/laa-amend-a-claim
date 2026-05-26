@@ -1,10 +1,13 @@
 <th:block th:fragment="claimDetailsHeader(currentPage)" xmlns:th="http://www.thymeleaf.org">
-    <th:block th:if="${claim.hasAssessment and !claim.isVoidClaim}">
-        <th:block th:replace="~{partials/information-alert :: informationAlert('claimSummary', ${claim.lastEditedBy(user).resolve(#messages)})}"></th:block>
+    <!--/*@thymesVar id="featureFlagsConfig" type="uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig"*/-->
+    <!--/*@thymesVar id="claimDetailsHeaderView" type="uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsHeaderView"*/-->
+
+    <th:block th:if="${claimDetailsHeaderView.isLastAssessedAlertPresent}">
+        <th:block th:replace="~{partials/information-alert :: informationAlert('claimSummary', ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)})}"></th:block>
     </th:block>
 
-    <th:block th:if="${claim.isVoidClaim}">
-        <th:block th:replace="~{partials/error-alert :: errorAlert('claimSummary.error', ${claim.lastEditedBy(user).resolve(#messages)})}"></th:block>
+    <th:block th:if="${claimDetailsHeaderView.isVoidedAlertPresent}">
+        <th:block th:replace="~{partials/error-alert :: errorAlert('claimSummary.error', ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)})}"></th:block>
     </th:block>
 
     <h1 class="govuk-heading-l">
@@ -17,13 +20,13 @@
                 <a class="moj-sub-navigation__link"
                    th:attr="aria-current=${currentPage == 'overview'} ? 'page' : null"
                    th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
-                   th:text="#{claimDetails.overview}"></a>
+                   th:text="#{claimDetails.overviewHeading}"></a>
             </li>
             <li class="moj-sub-navigation__item">
                 <a class="moj-sub-navigation__link"
                    th:attr="aria-current=${currentPage == 'history'} ? 'page' : null"
                    th:href="@{/submissions/{submissionId}/claims/{claimId}/history(submissionId=${submissionId}, claimId=${claimId})}"
-                   th:text="#{claimDetails.claimHistory}"></a>
+                   th:text="#{claimDetails.claimHistoryHeading}"></a>
             </li>
         </ul>
     </nav>

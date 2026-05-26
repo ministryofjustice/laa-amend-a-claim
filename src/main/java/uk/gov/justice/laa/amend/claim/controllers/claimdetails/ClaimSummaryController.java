@@ -1,5 +1,6 @@
-package uk.gov.justice.laa.amend.claim.controllers;
+package uk.gov.justice.laa.amend.claim.controllers.claimdetails;
 
+import static java.lang.Boolean.TRUE;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VALID;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VOID;
@@ -20,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
@@ -50,19 +52,25 @@ public class ClaimSummaryController extends ClaimDetailsBaseController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
+    MicrosoftApiUser user = null;
     if (claim.isHasAssessment()) {
       claim = assessmentService.getLatestAssessmentByClaim(claim);
       if (claim.getLastUpdatedUser() != null) {
-        var user = userRetrievalService.getUser(claim.getLastUpdatedUser());
-        model.addAttribute("user", user);
+        user = userRetrievalService.getUser(claim.getLastUpdatedUser());
       }
     }
+
     session.setAttribute(claimId.toString(), claim);
 
-    setCommonModelAttributes(
-        model, session, request, submissionId, claimId, claim, featureFlagsConfig);
+    setCommonModelAttributes(model, session, request, claim, user);
 
-    return "claim-summary";
+    boolean isSwapColumns =
+        TRUE.equals(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled());
+    model.addAttribute("isSwapColumns", isSwapColumns);
+
+    model.addAttribute("claim", claim.toViewModel());
+
+    return "claimdetails/claim-summary";
   }
 
   @HasRoleEscapeCaseCaseworker
