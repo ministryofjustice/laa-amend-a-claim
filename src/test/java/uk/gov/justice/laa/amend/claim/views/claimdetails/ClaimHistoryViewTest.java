@@ -21,7 +21,9 @@ import uk.gov.justice.laa.amend.claim.models.ClaimHistory;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistoryEvent;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
+import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 import uk.gov.justice.laa.amend.claim.views.ViewTestBase;
 
 @WebMvcTest(ClaimHistoryController.class)
@@ -36,6 +38,8 @@ class ClaimHistoryViewTest extends ViewTestBase {
       OffsetDateTime.of(2026, 5, 16, 10, 40, 0, 0, ZoneOffset.UTC);
 
   @MockitoBean private ClaimHistoryService claimHistoryService;
+  @MockitoBean private AssessmentService assessmentService;
+  @MockitoBean private UserRetrievalService userRetrievalService;
 
   private final String overviewUrl;
 

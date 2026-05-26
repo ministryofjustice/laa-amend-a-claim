@@ -6,21 +6,27 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
+import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimHistoryEventViewModel;
 
 @Controller
-@RequiredArgsConstructor
 public class ClaimHistoryController extends ClaimDetailsBaseController {
 
   private final ClaimHistoryService claimHistoryService;
-  private final FeatureFlagsConfig featureFlagsConfig;
+
+  public ClaimHistoryController(
+      AssessmentService assessmentService,
+      UserRetrievalService userRetrievalService,
+      ClaimHistoryService claimHistoryService) {
+    super(assessmentService, userRetrievalService);
+    this.claimHistoryService = claimHistoryService;
+  }
 
   @GetMapping("/submissions/{submissionId}/claims/{claimId}/history")
   public String onPageLoad(
