@@ -51,6 +51,9 @@ public abstract class ClaimDetails extends Claim {
   private String clientEthnicity;
   private String clientDisability;
 
+  private String stageReached;
+  private String outcome;
+
   public void applyOutcome(OutcomeType outcome) {
     getClaimFields().forEach(x -> x.applyOutcome(outcome));
   }

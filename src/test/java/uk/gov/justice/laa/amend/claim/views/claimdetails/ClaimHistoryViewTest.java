@@ -129,6 +129,7 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
     assertPageHasNoActiveServiceNavigationItems(doc);
     assertPageHasInactiveSubNavigationItem(doc, "Overview", overviewUrl);
     assertPageHasInactiveSubNavigationItem(doc, "Client", clientUrl);
+    assertPageHasInactiveSubNavigationItem(doc, "Case", caseUrl);
     assertPageHasActiveSubNavigationItem(doc, "Claim history", mapping);
 
     assertH2Exists(doc, "Claim history");

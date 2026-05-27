@@ -28,6 +28,12 @@
                    th:href="@{/submissions/{submissionId}/claims/{claimId}/client(submissionId=${submissionId}, claimId=${claimId})}"
                    th:text="#{claimDetails.clientHeading}"></a>
             </li>
+            <li th:if="${featureFlagsConfig.isFullClaimDetailsEnabled}" class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link"
+                   th:attr="aria-current=${currentPage == 'case'} ? 'page' : null"
+                   th:href="@{/submissions/{submissionId}/claims/{claimId}/case(submissionId=${submissionId}, claimId=${claimId})}"
+                   th:text="#{claimDetails.caseHeading}"></a>
+            </li>
             <li class="moj-sub-navigation__item">
                 <a class="moj-sub-navigation__link"
                    th:attr="aria-current=${currentPage == 'history'} ? 'page' : null"

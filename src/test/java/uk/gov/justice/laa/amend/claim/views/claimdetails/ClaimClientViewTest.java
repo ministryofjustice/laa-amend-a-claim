@@ -62,6 +62,7 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     assertPageHasNoActiveServiceNavigationItems(doc);
     assertPageHasInactiveSubNavigationItem(doc, "Overview", overviewUrl);
     assertPageHasActiveSubNavigationItem(doc, "Client", clientUrl);
+    assertPageHasInactiveSubNavigationItem(doc, "Case", caseUrl);
     assertPageHasInactiveSubNavigationItem(doc, "Claim history", historyUrl);
 
     assertH2Exists(doc, "Client");

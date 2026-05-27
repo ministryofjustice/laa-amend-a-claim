@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.VALID_POLICE_STATION_FEE_CODES;
 
+import java.time.LocalDate;
 import java.util.stream.Stream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,8 +17,17 @@ public class CrimeClaimDetails extends ClaimDetails {
 
   private ClaimField travelCosts;
   private ClaimField waitingCosts;
-  private String policeStationCourtPrisonId;
   private String schemeId;
+  private LocalDate representationOrderDate;
+  private String standardFeeCategory;
+  private Integer suspectsDefendantsCount;
+  private Integer policeStationCourtAttendancesCount;
+  private String policeStationCourtPrisonId;
+  private String dsccNumber;
+  private String maatId;
+  private String prisonLawPriorApprovalNumber;
+  private Boolean isDutySolicitor;
+  private Boolean isYouthCourt;
 
   @Override
   public boolean isAssessedTotalFieldAssessable() {

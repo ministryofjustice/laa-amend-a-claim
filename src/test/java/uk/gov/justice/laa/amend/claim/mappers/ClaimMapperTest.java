@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -580,6 +581,17 @@ class ClaimMapperTest {
     response.setMatterTypeCode("INVC");
     response.setPoliceStationCourtPrisonId("PrisonCode");
     response.setSchemeId("SchemeId");
+    response.setStageReachedCode("StageReachedCode");
+    response.setOutcomeCode("OutcomeCode");
+    response.setRepresentationOrderDate("2025-01-01");
+    response.setStandardFeeCategoryCode("StandardFeeCategoryCode");
+    response.setSuspectsDefendantsCount(1);
+    response.setPoliceStationCourtAttendancesCount(2);
+    response.setMaatId("MaatId");
+    response.setDsccNumber("DsccNumber");
+    response.setPrisonLawPriorApprovalNumber("PrisonLawPriorApprovalNumber");
+    response.setIsDutySolicitor(true);
+    response.setIsYouthCourt(true);
     CrimeClaimDetails claim = (CrimeClaimDetails) mapper.mapToClaimDetails(response);
 
     assertEquals("UFN123", claim.getUniqueFileNumber());
@@ -595,6 +607,17 @@ class ClaimMapperTest {
     assertEquals("SchemeId", claim.getSchemeId());
     assertEquals(ClaimStatus.VALID, claim.getStatus());
     assertEquals("0P322F", claim.getOfficeCode());
+    assertEquals("StageReachedCode", claim.getStageReached());
+    assertEquals("OutcomeCode", claim.getOutcome());
+    assertEquals(LocalDate.parse("2025-01-01"), claim.getRepresentationOrderDate());
+    assertEquals("StandardFeeCategoryCode", claim.getStandardFeeCategory());
+    assertEquals(1, claim.getSuspectsDefendantsCount());
+    assertEquals(2, claim.getPoliceStationCourtAttendancesCount());
+    assertEquals("MaatId", claim.getMaatId());
+    assertEquals("DsccNumber", claim.getDsccNumber());
+    assertEquals("PrisonLawPriorApprovalNumber", claim.getPrisonLawPriorApprovalNumber());
+    assertEquals(true, claim.getIsDutySolicitor());
+    assertEquals(true, claim.getIsYouthCourt());
 
     assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());
   }
