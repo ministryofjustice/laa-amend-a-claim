@@ -117,6 +117,7 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
     assertPageHasInactiveSubNavigationItem(doc, "Overview", overviewUrl);
     assertPageHasInactiveSubNavigationItem(doc, "Client", clientUrl);
     assertPageHasActiveSubNavigationItem(doc, "Case", caseUrl);
+    assertPageHasInactiveSubNavigationItem(doc, "Costs", costsUrl);
     assertPageHasInactiveSubNavigationItem(doc, "Claim history", historyUrl);
 
     assertH2Exists(doc, "Case");
