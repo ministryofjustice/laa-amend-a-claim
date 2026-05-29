@@ -43,15 +43,18 @@ jobs:
           docker compose up -d wiremock amend-redis
           ./gradlew bootRun > zap_output.log 2>&1 &
 
+      - name: Actuator check
+        run: |
           url="http://localhost:8190/actuator/health"
           retries=30
-
 
           for i in $(seq 1 $retries); do
             echo "INFO: Checking application health (attempt $i of $retries)..."
             if curl -fS http://localhost:8190/actuator/health | grep -q '"status":"UP"'; then
               curl -fS http://localhost:8190/actuator/health
               ss -tuln
+              sudo lsof -i :8190
+          
               echo "INFO: Application is healthy";
               exit 0;
             fi
@@ -60,6 +63,7 @@ jobs:
 
           echo "ERROR: Application did not start"           
           exit 0
+          
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c # v0.13.0
         with:
