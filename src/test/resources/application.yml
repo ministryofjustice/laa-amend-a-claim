@@ -4,3 +4,7 @@ management:
       enabled: false
 app:
   email: someone@example.com
+
+maintenance:
+  disable-at-time: 2026-05-29T17:29:00Z
+  outage-banner-message: Planned maintenance.
