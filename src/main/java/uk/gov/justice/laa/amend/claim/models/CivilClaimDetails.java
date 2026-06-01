@@ -21,6 +21,11 @@ public class CivilClaimDetails extends ClaimDetails {
   private ClaimField substantiveHearing;
   private ClaimField counselsCost;
   private String uniqueClientNumber;
+  private String clientDateOfBirth;
+  private String clientPostcode;
+  private String eligibleClient;
+  private String clientType;
+  private String hoUcn;
 
   @Override
   public boolean isAssessedTotalFieldAssessable() {
