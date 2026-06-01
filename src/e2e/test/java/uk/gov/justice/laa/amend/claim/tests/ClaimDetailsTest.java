@@ -26,6 +26,7 @@ import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.ClaimCasePage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimClientPage;
+import uk.gov.justice.laa.amend.claim.pages.ClaimCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.ClaimHistoryPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
@@ -204,7 +205,10 @@ public class ClaimDetailsTest extends BaseTest {
     client.clickCaseItem();
 
     var casePage = new ClaimCasePage(page);
-    casePage.clickClaimHistoryItem();
+    casePage.clickCostsItem();
+
+    var costs = new ClaimCostsPage(page);
+    costs.clickClaimHistoryItem();
 
     var history = new ClaimHistoryPage(page);
     history.clickOverviewItem();
