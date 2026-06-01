@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{claimSummary.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${false}
+    )}">
+<body>
+<main class="govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <th:block th:replace="~{partials/claim-details-header :: claimDetailsHeader(currentPage='case')}"></th:block>
+
+            <h2 class="govuk-heading-m" th:text="#{claimDetails.caseHeading}"></h2>
+
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title" th:text="#{claimCase.caseType}"></h2>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row" th:each="entry : ${claim.caseTypeRows}">
+                            <dt class="govuk-summary-list__key" th:text="#{${'claimCase.rows.' + entry.key}}"></dt>
+                            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title" th:text="#{claimCase.caseDetails}"></h2>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row" th:each="entry : ${claim.caseDetailsRows}">
+                            <dt class="govuk-summary-list__key" th:text="#{${'claimCase.rows.' + entry.key}}"></dt>
+                            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+
+            <th:block th:replace="~{partials/claim-details-footer :: claimDetailsFooter()}"></th:block>
+        </div>
+    </div>
+</main>
+</body>
+</html>

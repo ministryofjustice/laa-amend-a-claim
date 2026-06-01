@@ -55,6 +55,8 @@ public interface ClaimMapper {
   @Mapping(target = "clientGender", source = "genderCode")
   @Mapping(target = "clientEthnicity", source = "ethnicityCode")
   @Mapping(target = "clientDisability", source = "disabilityCode")
+  @Mapping(target = "stageReached", source = "stageReachedCode")
+  @Mapping(target = "outcome", source = "outcomeCode")
   ClaimDetails mapToCommonDetails(ClaimResponseV2 claimResponse);
 
   @Mapping(target = "submissionId", source = "submissionId")
@@ -101,6 +103,17 @@ public interface ClaimMapper {
   @InheritConfiguration(name = "mapToCommonDetails")
   @Mapping(target = "travelCosts", source = "claimResponse", qualifiedByName = "mapTravelCosts")
   @Mapping(target = "waitingCosts", source = "claimResponse", qualifiedByName = "mapWaitingCosts")
+  @Mapping(target = "representationOrderDate", source = "representationOrderDate")
+  @Mapping(target = "standardFeeCategory", source = "standardFeeCategoryCode")
+  @Mapping(target = "suspectsDefendantsCount", source = "suspectsDefendantsCount")
+  @Mapping(
+      target = "policeStationCourtAttendancesCount",
+      source = "policeStationCourtAttendancesCount")
+  @Mapping(target = "maatId", source = "maatId")
+  @Mapping(target = "dsccNumber", source = "dsccNumber")
+  @Mapping(target = "prisonLawPriorApprovalNumber", source = "prisonLawPriorApprovalNumber")
+  @Mapping(target = "isDutySolicitor", source = "isDutySolicitor")
+  @Mapping(target = "isYouthCourt", source = "isYouthCourt")
   CrimeClaimDetails mapToCrimeClaimDetails(ClaimResponseV2 claimResponse);
 
   @ObjectFactory
