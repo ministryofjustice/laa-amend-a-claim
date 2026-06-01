@@ -14,7 +14,7 @@
             <th:block th:if="${claimDetailsFooterView.isVoidButtonPresent}">
                 <a th:href="@{/submissions/{submissionId}/claims/{claimId}/void(submissionId=${submissionId}, claimId=${claimId})}"
                    th:data-testid="claim-details-void-button"
-                   class="govuk-button govuk-button--warning"
+                   class="govuk-button govuk-button--secondary"
                    data-module="govuk-button"
                    th:text="#{claimSummary.voidClaim}"></a>
             </th:block>

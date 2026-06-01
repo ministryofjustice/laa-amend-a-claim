@@ -18,6 +18,7 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentGet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentOutcome;
@@ -71,6 +72,25 @@ public interface AssessmentMapper {
       target = "boltOnHomeOfficeInterviewFee",
       expression = "java(mapBoltOnHomeOfficeInterviewFee(claim))")
   AssessmentPost mapCivilClaimToAssessment(CivilClaimDetails claim, @Context String userId);
+
+  @InheritConfiguration(name = "mapClaimToAssessment")
+  @Mapping(target = "netCostOfCounselAmount", expression = "java(mapNetCostOfCounselAmount(claim))")
+  @Mapping(
+      target = "detentionTravelAndWaitingCostsAmount",
+      expression = "java(mapDetentionTravelAndWaitingCostsAmount(claim))")
+  @Mapping(
+      target = "boltOnAdjournedHearingFee",
+      expression = "java(mapBoltOnAdjournedHearingFee(claim))")
+  @Mapping(target = "jrFormFillingAmount", expression = "java(mapJrFormFillingAmount(claim))")
+  @Mapping(target = "boltOnCmrhOralFee", expression = "java(mapBoltOnCmrhOralFee(claim))")
+  @Mapping(target = "boltOnCmrhTelephoneFee", expression = "java(mapBoltOnCmrhTelephoneFee(claim))")
+  @Mapping(
+      target = "boltOnSubstantiveHearingFee",
+      expression = "java(mapBoltOnSubstantiveHearingFee(claim))")
+  @Mapping(
+      target = "boltOnHomeOfficeInterviewFee",
+      expression = "java(mapBoltOnHomeOfficeInterviewFee(claim))")
+  AssessmentPost mapMediationClaimToAssessment(MediationClaimDetails claim, @Context String userId);
 
   @InheritConfiguration(name = "mapClaimToAssessment")
   @Mapping(target = "netTravelCostsAmount", expression = "java(mapNetTravelCostsAmount(claim))")
@@ -237,7 +257,15 @@ public interface AssessmentMapper {
     return mapToBigDecimal(claim.getCounselsCost());
   }
 
+  default BigDecimal mapNetCostOfCounselAmount(MediationClaimDetails claim) {
+    return mapToBigDecimal(claim.getCounselsCost());
+  }
+
   default BigDecimal mapBoltOnAdjournedHearingFee(CivilClaimDetails claim) {
+    return mapToBigDecimal(claim.getAdjournedHearing());
+  }
+
+  default BigDecimal mapBoltOnAdjournedHearingFee(MediationClaimDetails claim) {
     return mapToBigDecimal(claim.getAdjournedHearing());
   }
 
@@ -245,7 +273,15 @@ public interface AssessmentMapper {
     return mapToBigDecimal(claim.getJrFormFillingCost());
   }
 
+  default BigDecimal mapJrFormFillingAmount(MediationClaimDetails claim) {
+    return mapToBigDecimal(claim.getJrFormFillingCost());
+  }
+
   default BigDecimal mapBoltOnCmrhOralFee(CivilClaimDetails claim) {
+    return mapToBigDecimal(claim.getCmrhOral());
+  }
+
+  default BigDecimal mapBoltOnCmrhOralFee(MediationClaimDetails claim) {
     return mapToBigDecimal(claim.getCmrhOral());
   }
 
@@ -253,7 +289,15 @@ public interface AssessmentMapper {
     return mapToBigDecimal(claim.getCmrhTelephone());
   }
 
+  default BigDecimal mapBoltOnCmrhTelephoneFee(MediationClaimDetails claim) {
+    return mapToBigDecimal(claim.getCmrhTelephone());
+  }
+
   default BigDecimal mapBoltOnHomeOfficeInterviewFee(CivilClaimDetails claim) {
+    return mapToBigDecimal(claim.getHoInterview());
+  }
+
+  default BigDecimal mapBoltOnHomeOfficeInterviewFee(MediationClaimDetails claim) {
     return mapToBigDecimal(claim.getHoInterview());
   }
 
@@ -269,7 +313,15 @@ public interface AssessmentMapper {
     return mapToBigDecimal(claim.getDetentionTravelWaitingCosts());
   }
 
+  default BigDecimal mapDetentionTravelAndWaitingCostsAmount(MediationClaimDetails claim) {
+    return mapToBigDecimal(claim.getDetentionTravelWaitingCosts());
+  }
+
   default BigDecimal mapBoltOnSubstantiveHearingFee(CivilClaimDetails claim) {
+    return mapToBigDecimal(claim.getSubstantiveHearing());
+  }
+
+  default BigDecimal mapBoltOnSubstantiveHearingFee(MediationClaimDetails claim) {
     return mapToBigDecimal(claim.getSubstantiveHearing());
   }
 
