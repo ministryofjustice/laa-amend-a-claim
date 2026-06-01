@@ -1,14 +1,12 @@
 package uk.gov.justice.laa.amend.claim.views;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import jakarta.servlet.RequestDispatcher;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,16 +31,16 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.config.ViewTestConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Role;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
-import uk.gov.justice.laa.amend.claim.utils.DateWrapperUtil;
 
 @ActiveProfiles("local")
-@Import({LocalSecurityConfig.class, ThymeleafConfig.class})
+@Import({LocalSecurityConfig.class, ThymeleafConfig.class, ViewTestConfig.class})
 public abstract class ViewTestBase {
 
   @Autowired protected MockMvc mockMvc;
@@ -53,8 +51,6 @@ public abstract class ViewTestBase {
 
   @MockitoBean protected FeatureFlagsConfig featureFlagsConfig;
 
-  @MockitoBean protected DateWrapperUtil dateWrapperUtil;
-
   @BeforeEach
   public void setup() {
     session = new MockHttpSession();
@@ -63,7 +59,6 @@ public abstract class ViewTestBase {
     claim.setClaimId(claimId);
 
     dummyUserSecurityService.setRoles(Set.of(Role.values()));
-    when(dateWrapperUtil.timeNow()).thenReturn(LocalDateTime.now());
   }
 
   protected String mapping;
