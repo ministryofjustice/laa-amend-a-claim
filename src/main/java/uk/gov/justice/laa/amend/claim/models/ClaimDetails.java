@@ -14,6 +14,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
@@ -63,6 +64,10 @@ public abstract class ClaimDetails extends Claim {
   public abstract ClaimDetailsView<? extends ClaimDetails> toViewModel();
 
   public abstract AssessmentPost toAssessment(AssessmentMapper mapper, String userId);
+
+  public abstract ClaimField getClaimField(Cost cost) throws ClaimMismatchException;
+
+  public abstract void setClaimField(Cost cost, ClaimField claimField);
 
   @JsonIgnore
   public Stream<@NotNull ClaimField> getClaimFields() {

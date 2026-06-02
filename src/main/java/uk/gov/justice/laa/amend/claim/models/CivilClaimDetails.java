@@ -3,11 +3,14 @@ package uk.gov.justice.laa.amend.claim.models;
 import java.util.stream.Stream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
+import uk.gov.justice.laa.amend.claim.exceptions.ClaimMismatchException;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimDetailsView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 
+@Slf4j
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CivilClaimDetails extends ClaimDetails {
@@ -35,6 +38,40 @@ public class CivilClaimDetails extends ClaimDetails {
   @Override
   public AssessmentPost toAssessment(AssessmentMapper mapper, String userId) {
     return mapper.mapCivilClaimToAssessment(this, userId);
+  }
+
+  @Override
+  public ClaimField getClaimField(Cost cost) throws ClaimMismatchException {
+    return switch (cost) {
+      case PROFIT_COSTS -> getNetProfitCost();
+      case DISBURSEMENTS -> getNetDisbursementAmount();
+      case DISBURSEMENTS_VAT -> getDisbursementVatAmount();
+      case COUNSEL_COSTS -> getCounselsCost();
+      case DETENTION_TRAVEL_AND_WAITING_COSTS -> getDetentionTravelWaitingCosts();
+      case JR_FORM_FILLING_COSTS -> getJrFormFillingCost();
+      default -> {
+        var message = "Claim %s does not support this cost".formatted(getClaimId());
+        log.warn(message);
+        throw new ClaimMismatchException(message);
+      }
+    };
+  }
+
+  @Override
+  public void setClaimField(Cost cost, ClaimField claimField) {
+    switch (cost) {
+      case PROFIT_COSTS -> setNetProfitCost(claimField);
+      case DISBURSEMENTS -> setNetDisbursementAmount(claimField);
+      case DISBURSEMENTS_VAT -> setDisbursementVatAmount(claimField);
+      case COUNSEL_COSTS -> setCounselsCost(claimField);
+      case DETENTION_TRAVEL_AND_WAITING_COSTS -> setDetentionTravelWaitingCosts(claimField);
+      case JR_FORM_FILLING_COSTS -> setJrFormFillingCost(claimField);
+      default -> {
+        var message = "Claim %s does not support this cost".formatted(getClaimId());
+        log.warn(message);
+        throw new IllegalArgumentException(message);
+      }
+    }
   }
 
   @Override
