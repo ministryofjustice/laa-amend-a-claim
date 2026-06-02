@@ -27,7 +27,6 @@ import uk.gov.justice.laa.amend.claim.forms.MonetaryValueForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
-import uk.gov.justice.laa.amend.claim.utils.ChangeMonetaryValueUtils;
 
 @Controller
 @RequiredArgsConstructor
@@ -85,7 +84,7 @@ public class ChangeMonetaryValueController {
 
       BigDecimal value = setScale(form.getValue());
       claimField.setAssessed(value);
-      ChangeMonetaryValueUtils.setCostClaimField(claim, cost, claimField);
+      cost.setClaimField(claim, claimField);
       session.setAttribute(claimId.toString(), claim);
 
       return "redirect:" + getRedirectUrl(submissionId, claimId);
@@ -121,7 +120,7 @@ public class ChangeMonetaryValueController {
 
   private ClaimField getCostClaimField(ClaimDetails claim, Cost cost, UUID claimId)
       throws ClaimMismatchException {
-    var claimField = ChangeMonetaryValueUtils.getCostClaimField(claim, cost);
+    var claimField = cost.getClaimField(claim);
 
     if (claimField == null) {
       log.warn(

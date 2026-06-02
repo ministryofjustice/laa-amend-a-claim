@@ -23,8 +23,6 @@ import static uk.gov.justice.laa.amend.claim.models.Cost.TRAVEL_COSTS;
 import static uk.gov.justice.laa.amend.claim.models.Cost.WAITING_COSTS;
 import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
-import static uk.gov.justice.laa.amend.claim.utils.ChangeMonetaryValueUtils.getCostClaimField;
-import static uk.gov.justice.laa.amend.claim.utils.ChangeMonetaryValueUtils.setCostClaimField;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -45,7 +43,6 @@ import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.amend.claim.utils.ChangeMonetaryValueUtils;
 
 @WebMvcTest(ChangeMonetaryValueController.class)
 class ChangeMonetaryValueControllerTest extends BaseControllerTest {
@@ -88,7 +85,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
   @MethodSource("validCosts")
   void testGetReturnsView(Cost cost, Class<?> targetClass) throws Exception {
     var claim = createClaimFor(cost, targetClass);
-    var claimField = getCostClaimField(claim, cost);
+    var claimField = cost.getClaimField(claim);
     session.setAttribute(claimId.toString(), claim);
 
     mockMvc
@@ -128,7 +125,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
   void testGetReturnsViewWhenQuestionAlreadyAnswered(Cost cost, Class<?> targetClass)
       throws Exception {
     var claim = createClaimFor(cost, targetClass);
-    var claimField = ChangeMonetaryValueUtils.getCostClaimField(claim, cost);
+    var claimField = cost.getClaimField(claim);
     Assertions.assertNotNull(claimField);
     claimField.setAssessed(BigDecimal.valueOf(100));
     session.setAttribute(claimId.toString(), claim);
@@ -145,7 +142,8 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
   @MethodSource("validCosts")
   void testPostSavesValueAndRedirects(Cost cost, Class<?> targetClass) throws Exception {
     var claim = createClaimFor(cost, targetClass);
-    var claimField = getCostClaimField(claim, cost);
+    var claimField = cost.getClaimField(claim);
+    ;
     Assertions.assertNotNull(claimField);
     session.setAttribute(claimId.toString(), claim);
 
@@ -158,7 +156,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
     Claim updated = (Claim) session.getAttribute(claimId.toString());
 
     Assertions.assertNotNull(updated);
-    Assertions.assertEquals(new BigDecimal("100.00"), getCostClaimField(claim, cost).getAssessed());
+    Assertions.assertEquals(new BigDecimal("100.00"), cost.getClaimField(claim).getAssessed());
   }
 
   @ParameterizedTest
@@ -227,13 +225,13 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
   private ClaimDetails createClaimFor(Cost cost, Class<?> targetClass) {
     var claim = createClaim(cost, targetClass);
     var claimField = CostClaimField.builder().cost(cost).build();
-    setCostClaimField(claim, cost, claimField);
+    cost.setClaimField(claim, claimField);
     return claim;
   }
 
   private Claim createClaimWithNullFieldFor(Cost cost, Class<?> targetClass) {
     var claim = createClaim(cost, targetClass);
-    setCostClaimField(claim, cost, null);
+    cost.setClaimField(claim, null);
     return claim;
   }
 
@@ -241,7 +239,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
     var claim = createClaim(cost, targetClass);
     var claimField = CostClaimField.builder().cost(cost).build();
     claimField.setAssessable(false);
-    setCostClaimField(claim, cost, claimField);
+    cost.setClaimField(claim, claimField);
     return claim;
   }
 
@@ -254,7 +252,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
     } else {
       claim = MockClaimsFunctions.createMockCrimeClaim();
     }
-    setCostClaimField(claim, cost, null);
+    cost.setClaimField(claim, null);
     return claim;
   }
 
