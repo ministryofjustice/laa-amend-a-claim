@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import java.time.LocalDate;
 import java.util.stream.Stream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,9 +22,9 @@ public class CivilClaimDetails extends ClaimDetails {
   private ClaimField substantiveHearing;
   private ClaimField counselsCost;
   private String uniqueClientNumber;
-  private String clientDateOfBirth;
+  private LocalDate clientDateOfBirth;
   private String clientPostcode;
-  private boolean eligibleClient;
+  private Boolean eligibleClient;
   private String clientType;
   private String hoUcn;
 

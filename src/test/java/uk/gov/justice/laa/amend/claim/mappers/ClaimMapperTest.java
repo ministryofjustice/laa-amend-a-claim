@@ -558,7 +558,7 @@ class ClaimMapperTest {
     assertEquals(ClaimStatus.VALID, claim.getStatus());
     assertEquals("1970-01-01", claim.getClientDateOfBirth());
     assertEquals("AB12 ABC", claim.getClientPostcode());
-    assertFalse(claim.isEligibleClient());
+    assertEquals(false, claim.getEligibleClient());
     assertEquals("clientType", claim.getClientType());
     assertEquals("HOUCN123", claim.getHoUcn());
   }
