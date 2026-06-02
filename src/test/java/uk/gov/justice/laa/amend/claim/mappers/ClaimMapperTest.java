@@ -556,7 +556,7 @@ class ClaimMapperTest {
     assertNull(claim.getProviderName());
     assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());
     assertEquals(ClaimStatus.VALID, claim.getStatus());
-    assertEquals("1970-01-01", claim.getClientDateOfBirth());
+    assertEquals(LocalDate.parse("1970-01-01"), claim.getClientDateOfBirth());
     assertEquals("AB12 ABC", claim.getClientPostcode());
     assertEquals(false, claim.getEligibleClient());
     assertEquals("clientType", claim.getClientType());
