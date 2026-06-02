@@ -21,7 +21,7 @@ private static LinkedHashMap<String, Object> createRows(CivilClaimDetails claim)
     rows.put("ethnicity", claim.getClientEthnicity());
     rows.put("disability", claim.getClientDisability());
     rows.put("postcode", claim.getClientPostcode());
-    rows.put("eligibleClient", claim.getEligibleClient());
+    rows.put("eligibleClient", claim.isEligibleClient());
     rows.put("clientType", claim.getClientType());
     rows.put("ucn", claim.getUniqueClientNumber());
     rows.put("hoUcn", claim.getHoUcn());

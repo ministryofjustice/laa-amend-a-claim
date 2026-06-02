@@ -1,10 +1,5 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -23,6 +18,8 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {ClaimMapperImpl.class, ClaimMapperHelper.class})
@@ -518,6 +515,11 @@ class ClaimMapperTest {
     response.setOfficeCode("0P322F");
     response.setDateSubmitted(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"));
     response.setStatus(ClaimStatus.VALID);
+    response.setClientDateOfBirth("1970-01-01");
+    response.setClientPostcode("AB12 ABC");
+    response.setIsEligibleClient(false);
+    response.setClientTypeCode("clientType");
+    response.setHomeOfficeClientNumber("HOUCN123");
 
     UUID claimSummaryFeeId = UUID.randomUUID();
 
@@ -554,6 +556,11 @@ class ClaimMapperTest {
     assertNull(claim.getProviderName());
     assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());
     assertEquals(ClaimStatus.VALID, claim.getStatus());
+    assertEquals("1970-01-01", claim.getClientDateOfBirth());
+    assertEquals("AB12 ABC", claim.getClientPostcode());
+    assertFalse(claim.isEligibleClient());
+    assertEquals("clientType", claim.getClientType());
+    assertEquals("HOUCN123", claim.getHoUcn());
   }
 
   @Test
