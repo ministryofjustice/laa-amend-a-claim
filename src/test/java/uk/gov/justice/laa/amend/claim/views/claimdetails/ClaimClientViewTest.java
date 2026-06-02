@@ -65,44 +65,42 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(4), "Disability", DISABILITY);
   }
 
-  ///
   @Test
   void testShowsCivilClientDetails() {
-      var claim = MockClaimsFunctions.createMockCivilClaim();
-      this.claim = claim;
-      claim.setSubmissionId(submissionId);
-      claim.setClaimId(claimId);
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
 
-      claim.setClientForename(FORENAME);
-      claim.setClientSurname(SURNAME);
-      claim.setClientDateOfBirth(DATE_OF_BIRTH);
-      claim.setUniqueClientNumber(UCN);
-      claim.setClientPostcode(POSTCODE);
-      claim.setClientGender(GENDER);
-      claim.setClientEthnicity(ETHNICITY);
-      claim.setClientDisability(DISABILITY);
-      claim.setEligibleClient(true);
-      claim.setClientType(CLIENT_TYPE);
-      claim.setHoUcn(HO_UCN);
+    claim.setClientForename(FORENAME);
+    claim.setClientSurname(SURNAME);
+    claim.setClientDateOfBirth(DATE_OF_BIRTH);
+    claim.setUniqueClientNumber(UCN);
+    claim.setClientPostcode(POSTCODE);
+    claim.setClientGender(GENDER);
+    claim.setClientEthnicity(ETHNICITY);
+    claim.setClientDisability(DISABILITY);
+    claim.setEligibleClient(true);
+    claim.setClientType(CLIENT_TYPE);
+    claim.setHoUcn(HO_UCN);
 
-      var doc = renderDocument();
-      assertCommonPageContent(doc);
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
 
-      var clientDetails = getSummaryListInCard(doc, "Client details");
-      assertSummaryListRowContainsValues(clientDetails.getFirst(), "First name", FORENAME);
-      assertSummaryListRowContainsValues(clientDetails.get(1), "Last name", SURNAME);
-      assertSummaryListRowContainsValues(
-              clientDetails.get(2), "Date of birth", DATE_OF_BIRTH_RENDERED);
-      assertSummaryListRowContainsValues(clientDetails.get(3), "Gender", GENDER);
-      assertSummaryListRowContainsValues(clientDetails.get(4), "Ethnicity", ETHNICITY);
-      assertSummaryListRowContainsValues(clientDetails.get(5), "Disability", DISABILITY);
-      assertSummaryListRowContainsValues(clientDetails.get(6), "Postcode", POSTCODE);
-      assertSummaryListRowContainsValues(clientDetails.get(7), "Eligible client", "Yes");
-      assertSummaryListRowContainsValues(clientDetails.get(8), "Client type", CLIENT_TYPE);
-      assertSummaryListRowContainsValues(clientDetails.get(9), "Unique client number (UCN)", UCN);
-      assertSummaryListRowContainsValues(clientDetails.get(10), "Home Office unique client number (HO UCN)", HO_UCN);
+    var clientDetails = getSummaryListInCard(doc, "Client details");
+    assertSummaryListRowContainsValues(clientDetails.getFirst(), "First name", FORENAME);
+    assertSummaryListRowContainsValues(clientDetails.get(1), "Last name", SURNAME);
+    assertSummaryListRowContainsValues(
+      clientDetails.get(2), "Date of birth", DATE_OF_BIRTH_RENDERED);
+    assertSummaryListRowContainsValues(clientDetails.get(3), "Gender", GENDER);
+    assertSummaryListRowContainsValues(clientDetails.get(4), "Ethnicity", ETHNICITY);
+    assertSummaryListRowContainsValues(clientDetails.get(5), "Disability", DISABILITY);
+    assertSummaryListRowContainsValues(clientDetails.get(6), "Postcode", POSTCODE);
+    assertSummaryListRowContainsValues(clientDetails.get(7), "Eligible client", "Yes");
+    assertSummaryListRowContainsValues(clientDetails.get(8), "Client type", CLIENT_TYPE);
+    assertSummaryListRowContainsValues(clientDetails.get(9), "Unique client number (UCN)", UCN);
+    assertSummaryListRowContainsValues(clientDetails.get(10), "Home Office unique client number (HO UCN)", HO_UCN);
   }
-
 
   private void assertCommonPageContent(Document doc) {
     assertPageHasTitle(doc, "Claim details");
