@@ -123,6 +123,18 @@ public interface AssessmentMapper {
       AssessmentInfo assessmentInfo, @MappingTarget CivilClaimDetails claimDetails);
 
   @InheritConfiguration(name = "mapToClaim")
+  @Mapping(target = "hoInterview", ignore = true)
+  @Mapping(target = "cmrhOral", ignore = true)
+  @Mapping(target = "cmrhTelephone", ignore = true)
+  @Mapping(target = "jrFormFillingCost", ignore = true)
+  @Mapping(target = "detentionTravelWaitingCosts", ignore = true)
+  @Mapping(target = "adjournedHearing", ignore = true)
+  @Mapping(target = "substantiveHearing", ignore = true)
+  @Mapping(target = "counselsCost", ignore = true)
+  MediationClaimDetails mapToMediationClaim(
+      AssessmentInfo assessmentInfo, @MappingTarget MediationClaimDetails claimDetails);
+
+  @InheritConfiguration(name = "mapToClaim")
   @Mapping(target = "travelCosts", ignore = true)
   @Mapping(target = "waitingCosts", ignore = true)
   CrimeClaimDetails mapToCrimeClaim(
@@ -201,6 +213,8 @@ public interface AssessmentMapper {
     return switch (claimDetails) {
       case CrimeClaimDetails crime -> mapToCrimeClaim(claimDetails.getLastAssessment(), crime);
       case CivilClaimDetails civil -> mapToCivilClaim(claimDetails.getLastAssessment(), civil);
+      case MediationClaimDetails mediation ->
+          mapToMediationClaim(claimDetails.getLastAssessment(), mediation);
       default -> throw new IllegalArgumentException("Unsupported Claim details");
     };
   }

@@ -13,26 +13,39 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.models.Cost.COUNSEL_COSTS;
+import static uk.gov.justice.laa.amend.claim.models.Cost.DETENTION_TRAVEL_AND_WAITING_COSTS;
+import static uk.gov.justice.laa.amend.claim.models.Cost.DISBURSEMENTS;
+import static uk.gov.justice.laa.amend.claim.models.Cost.DISBURSEMENTS_VAT;
+import static uk.gov.justice.laa.amend.claim.models.Cost.JR_FORM_FILLING_COSTS;
+import static uk.gov.justice.laa.amend.claim.models.Cost.PROFIT_COSTS;
+import static uk.gov.justice.laa.amend.claim.models.Cost.TRAVEL_COSTS;
+import static uk.gov.justice.laa.amend.claim.models.Cost.WAITING_COSTS;
 import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
+import static uk.gov.justice.laa.amend.claim.utils.ChangeMonetaryValueUtils.getCostClaimField;
+import static uk.gov.justice.laa.amend.claim.utils.ChangeMonetaryValueUtils.setCostClaimField;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
-import uk.gov.justice.laa.amend.claim.models.ClaimField;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.utils.ChangeMonetaryValueUtils;
 
 @WebMvcTest(ChangeMonetaryValueController.class)
 class ChangeMonetaryValueControllerTest extends BaseControllerTest {
@@ -50,15 +63,32 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
     redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
   }
 
-  private static Stream<Cost> validCosts() {
-    return Arrays.stream(Cost.values());
+  private static Stream<Arguments> validCosts() {
+    return Stream.of(
+        Arguments.of(PROFIT_COSTS, CrimeClaimDetails.class),
+        Arguments.of(PROFIT_COSTS, CivilClaimDetails.class),
+        Arguments.of(PROFIT_COSTS, MediationClaimDetails.class),
+        Arguments.of(DISBURSEMENTS, CrimeClaimDetails.class),
+        Arguments.of(DISBURSEMENTS, CivilClaimDetails.class),
+        Arguments.of(DISBURSEMENTS, MediationClaimDetails.class),
+        Arguments.of(DISBURSEMENTS_VAT, CrimeClaimDetails.class),
+        Arguments.of(DISBURSEMENTS_VAT, CivilClaimDetails.class),
+        Arguments.of(DISBURSEMENTS_VAT, MediationClaimDetails.class),
+        Arguments.of(COUNSEL_COSTS, CivilClaimDetails.class),
+        Arguments.of(COUNSEL_COSTS, MediationClaimDetails.class),
+        Arguments.of(DETENTION_TRAVEL_AND_WAITING_COSTS, CivilClaimDetails.class),
+        Arguments.of(DETENTION_TRAVEL_AND_WAITING_COSTS, MediationClaimDetails.class),
+        Arguments.of(JR_FORM_FILLING_COSTS, CivilClaimDetails.class),
+        Arguments.of(JR_FORM_FILLING_COSTS, MediationClaimDetails.class),
+        Arguments.of(TRAVEL_COSTS, CrimeClaimDetails.class),
+        Arguments.of(WAITING_COSTS, CrimeClaimDetails.class));
   }
 
   @ParameterizedTest
   @MethodSource("validCosts")
-  void testGetReturnsView(Cost cost) throws Exception {
-    var claim = createClaimFor(cost);
-    var claimField = cost.getAccessor().get(claim);
+  void testGetReturnsView(Cost cost, Class<?> targetClass) throws Exception {
+    var claim = createClaimFor(cost, targetClass);
+    var claimField = getCostClaimField(claim, cost);
     session.setAttribute(claimId.toString(), claim);
 
     mockMvc
@@ -72,8 +102,8 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
 
   @ParameterizedTest
   @MethodSource("validCosts")
-  void testGetReturns404_whenFieldIsNull(Cost cost) throws Exception {
-    Claim claim = createClaimWithNullFieldFor(cost);
+  void testGetReturns404_whenFieldIsNull(Cost cost, Class<?> targetClass) throws Exception {
+    var claim = createClaimWithNullFieldFor(cost, targetClass);
     session.setAttribute(claimId.toString(), claim);
 
     mockMvc
@@ -83,8 +113,9 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
 
   @ParameterizedTest
   @MethodSource("validCosts")
-  void testGetReturns404_whenFieldIsNotAssessable(Cost cost) throws Exception {
-    Claim claim = createClaimWithUnassessableFieldFor(cost);
+  void testGetReturns404_whenFieldIsNotAssessable(Cost cost, Class<?> targetClass)
+      throws Exception {
+    var claim = createClaimWithUnassessableFieldFor(cost, targetClass);
     session.setAttribute(claimId.toString(), claim);
 
     mockMvc
@@ -94,9 +125,10 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
 
   @ParameterizedTest
   @MethodSource("validCosts")
-  void testGetReturnsViewWhenQuestionAlreadyAnswered(Cost cost) throws Exception {
-    Claim claim = createClaimFor(cost);
-    ClaimField claimField = cost.getAccessor().get(claim);
+  void testGetReturnsViewWhenQuestionAlreadyAnswered(Cost cost, Class<?> targetClass)
+      throws Exception {
+    var claim = createClaimFor(cost, targetClass);
+    var claimField = ChangeMonetaryValueUtils.getCostClaimField(claim, cost);
     Assertions.assertNotNull(claimField);
     claimField.setAssessed(BigDecimal.valueOf(100));
     session.setAttribute(claimId.toString(), claim);
@@ -111,9 +143,9 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
 
   @ParameterizedTest
   @MethodSource("validCosts")
-  void testPostSavesValueAndRedirects(Cost cost) throws Exception {
-    Claim claim = createClaimFor(cost);
-    ClaimField claimField = cost.getAccessor().get(claim);
+  void testPostSavesValueAndRedirects(Cost cost, Class<?> targetClass) throws Exception {
+    var claim = createClaimFor(cost, targetClass);
+    var claimField = getCostClaimField(claim, cost);
     Assertions.assertNotNull(claimField);
     session.setAttribute(claimId.toString(), claim);
 
@@ -126,14 +158,13 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
     Claim updated = (Claim) session.getAttribute(claimId.toString());
 
     Assertions.assertNotNull(updated);
-    Assertions.assertEquals(
-        new BigDecimal("100.00"), cost.getAccessor().get(updated).getAssessed());
+    Assertions.assertEquals(new BigDecimal("100.00"), getCostClaimField(claim, cost).getAssessed());
   }
 
   @ParameterizedTest
   @MethodSource("validCosts")
-  void testPostReturnsBadRequestForInvalidValue(Cost cost) throws Exception {
-    Claim claim = createClaimFor(cost);
+  void testPostReturnsBadRequestForInvalidValue(Cost cost, Class<?> targetClass) throws Exception {
+    var claim = createClaimFor(cost, targetClass);
     session.setAttribute(claimId.toString(), claim);
 
     mockMvc
@@ -157,7 +188,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
 
   @Test
   void testGetReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
-    CivilClaimDetails claim = new CivilClaimDetails();
+    var claim = new CivilClaimDetails();
     session.setAttribute(claimId.toString(), claim);
 
     mockMvc
@@ -167,7 +198,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
 
   @Test
   void testPostReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
-    CivilClaimDetails claim = new CivilClaimDetails();
+    var claim = new CivilClaimDetails();
     session.setAttribute(claimId.toString(), claim);
 
     mockMvc
@@ -193,36 +224,37 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
         .andExpect(status().isForbidden());
   }
 
-  private Claim createClaimFor(Cost cost) {
-    Claim claim = createClaim(cost);
-    ClaimField claimField = CostClaimField.builder().cost(cost).build();
-    cost.getAccessor().set(claim, claimField);
+  private ClaimDetails createClaimFor(Cost cost, Class<?> targetClass) {
+    var claim = createClaim(cost, targetClass);
+    var claimField = CostClaimField.builder().cost(cost).build();
+    setCostClaimField(claim, cost, claimField);
     return claim;
   }
 
-  private Claim createClaimWithNullFieldFor(Cost cost) {
-    Claim claim = createClaim(cost);
-    cost.getAccessor().set(claim, null);
+  private Claim createClaimWithNullFieldFor(Cost cost, Class<?> targetClass) {
+    var claim = createClaim(cost, targetClass);
+    setCostClaimField(claim, cost, null);
     return claim;
   }
 
-  private Claim createClaimWithUnassessableFieldFor(Cost cost) {
-    Claim claim = createClaim(cost);
-    ClaimField claimField = CostClaimField.builder().cost(cost).build();
+  private Claim createClaimWithUnassessableFieldFor(Cost cost, Class<?> targetClass) {
+    var claim = createClaim(cost, targetClass);
+    var claimField = CostClaimField.builder().cost(cost).build();
     claimField.setAssessable(false);
-    cost.getAccessor().set(claim, claimField);
+    setCostClaimField(claim, cost, claimField);
     return claim;
   }
 
-  private Claim createClaim(Cost cost) {
-    Class<?> targetClass = cost.getAccessor().type();
-    Claim claim;
+  private ClaimDetails createClaim(Cost cost, Class<?> targetClass) {
+    ClaimDetails claim;
     if (CivilClaimDetails.class.equals(targetClass)) {
       claim = MockClaimsFunctions.createMockCivilClaim();
+    } else if (MediationClaimDetails.class.equals(targetClass)) {
+      claim = MockClaimsFunctions.createMockMediationClaim();
     } else {
       claim = MockClaimsFunctions.createMockCrimeClaim();
     }
-    cost.getAccessor().set(claim, null);
+    setCostClaimField(claim, cost, null);
     return claim;
   }
 
