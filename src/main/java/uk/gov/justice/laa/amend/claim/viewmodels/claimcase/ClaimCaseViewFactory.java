@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 
 @UtilityClass
 public class ClaimCaseViewFactory {
@@ -13,6 +14,7 @@ public class ClaimCaseViewFactory {
       case CrimeClaimDetails crimeClaim -> new CrimeClaimCaseView(crimeClaim);
       case CivilClaimDetails civilClaimDetails ->
           throw new IllegalArgumentException("TODO: BC-567 will implement this");
+      case MediationClaimDetails mediationClaim -> new MediationClaimCaseView(mediationClaim);
       default -> throw new IllegalArgumentException("Unsupported ClaimDetails type");
     };
   }

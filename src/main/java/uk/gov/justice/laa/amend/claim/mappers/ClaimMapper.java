@@ -138,6 +138,12 @@ public interface ClaimMapper {
   @Mapping(
       target = "isClient2PostalApplicationAccepted",
       source = "isClient2PostalApplicationAccepted")
+  @Mapping(target = "caseId", source = "caseId")
+  @Mapping(target = "mediationSessionsCount", source = "mediationSessionsCount")
+  @Mapping(target = "mediationTimeMinutes", source = "mediationTimeMinutes")
+  @Mapping(target = "outreachLocation", source = "outreachLocation")
+  @Mapping(target = "referralSource", source = "referralSource")
+  @Mapping(target = "scheduleReference", source = "scheduleReference")
   MediationClaimDetails mapToMediationClaimDetails(ClaimResponseV2 claimResponse);
 
   @InheritConfiguration(name = "mapToCommonDetails")
