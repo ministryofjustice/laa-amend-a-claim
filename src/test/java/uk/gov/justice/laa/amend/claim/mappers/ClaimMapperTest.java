@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -18,8 +20,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {ClaimMapperImpl.class, ClaimMapperHelper.class})
