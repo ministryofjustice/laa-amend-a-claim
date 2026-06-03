@@ -5,10 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
-import org.mapstruct.InheritConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ObjectFactory;
+
+import org.mapstruct.*;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
@@ -104,6 +102,45 @@ public interface ClaimMapper {
   @Mapping(target = "isEligibleClient", source = "isEligibleClient")
   @Mapping(target = "clientType", source = "clientTypeCode")
   @Mapping(target = "homeOfficeClientNumber", source = "homeOfficeClientNumber")
+  @Mapping(target = "scheduleReference", source = "scheduleReference")
+  @Mapping(target = "caseId", source = "caseId")
+  @Mapping(target = "caseReferenceNumber", source = "caseReferenceNumber")
+  @Mapping(target = "caseStartDate", source = "caseStartDate")
+  @Mapping(target = "caseConcludedDate", source = "caseConcludedDate")
+  @Mapping(target = "uniqueFileNumber", source = "uniqueFileNumber")
+  @Mapping(target = "caseStage", source = "caseStageCode")
+  @Mapping(target = "valueOfCosts", source = "costsDamagesRecoveredAmount")
+  @Mapping(target = "procurementArea", source = "procurementAreaCode")
+  @Mapping(target = "accessPoint", source = "accessPointCode")
+  @Mapping(target = "stageReached", source = "stageReachedCode")
+  @Mapping(target = "outcome", source = "outcomeCode")
+  @Mapping(target = "exceptionalCaseFundingReference", source = "exceptionalCaseFundingReference")
+  @Mapping(target = "civilLegalAdviceReference", source = "claReferenceNumber")
+  @Mapping(target = "civilLegalAdviceExemption", source = "claExemptionCode")
+  @Mapping(target = "deliveryLocation", source = "deliveryLocation")
+  @Mapping(target = "courtLocation", source = "courtLocationCode")
+  @Mapping(target = "aitHearingCentre", source = "aitHearingCentreCode")
+  @Mapping(target = "localAuthorityNumber", source = "localAuthorityNumber")
+  @Mapping(target = "designatedAccreditedRepresentative", source = "designatedAccreditedRepresentativeCode")
+  @Mapping(target = "adviceTime", source = "adviceTime")
+  @Mapping(target = "travelTime", source = "travelTime")
+  @Mapping(target = "waitingTime", source = "waitingTime")
+  @Mapping(target = "isAdditionalTravelPayment", source = "isAdditionalTravelPayment")
+  @Mapping(target = "followOnWork", source = "followOnWork")
+  @Mapping(target = "isToleranceApplicable", source = "isToleranceApplicable")
+  @Mapping(target = "isLegacyCase", source = "isLegacyCase")
+  @Mapping(target = "meetingsAttended", source = "meetingsAttendedCode")
+  @Mapping(target = "adviceType", source = "adviceTypeCode")
+  @Mapping(target = "transferDate", source = "transferDate")
+  @Mapping(target = "medicalReportsClaimed", source = "medicalReportsCount")
+  @Mapping(target = "exemptionCriteriaSatisfied", source = "exemptionCriteriaSatisfied")
+  @Mapping(target = "isIrcSurgery", source = "isIrcSurgery")
+  @Mapping(target = "surgeryDate", source = "surgeryDate")
+  @Mapping(target = "surgeryClientsCount", source = "surgeryClientsCount")
+  @Mapping(target = "surgeryMattersCount", source = "surgeryMattersCount")
+  @Mapping(target = "postalApplication", source = "isPostalApplicationAccepted")
+  @Mapping(target = "mentalHealthTribunalReference", source = "mentalHealthTribunalReference")
+  @Mapping(target = "isNrmAdvice", source = "isNrmAdvice")
   CivilClaimDetails mapToCivilClaimDetails(ClaimResponseV2 claimResponse);
 
   @InheritConfiguration(name = "mapToCommonDetails")
@@ -165,8 +202,43 @@ public interface ClaimMapper {
   @Mapping(target = "prisonLawPriorApprovalNumber", source = "prisonLawPriorApprovalNumber")
   @Mapping(target = "isDutySolicitor", source = "isDutySolicitor")
   @Mapping(target = "isYouthCourt", source = "isYouthCourt")
+  @Mapping(
+          target = "matterType1",
+          source = "claimResponse.matterTypeCode",
+          qualifiedByName = "matterType1")
+  @Mapping(
+          target = "matterType2",
+          source = "claimResponse.matterTypeCode",
+          qualifiedByName = "matterType2")
   CrimeClaimDetails mapToCrimeClaimDetails(ClaimResponseV2 claimResponse);
 
+  /**
+   * Extracts the first part of the matter type code (matterType1).
+   *
+   * @param matterTypeCode the matterTpeCode string
+   * @return the first part of the matterTypeCode, or null if input is null
+   */
+  @Named("matterType1")
+  default String getMatterType1(String matterTypeCode) {
+    if (matterTypeCode == null) {
+      return null;
+    }
+    return matterTypeCode.split(":")[0];
+  }
+
+  /**
+   * Extracts the second part of the matter type code (matterType2) if it exists.
+   *
+   * @param matterTypeCode the matterTpeCode string
+   * @return the second part of the matterTypeCode, or null if input is null
+   */
+  @Named("matterType2")
+  default String getMatterType2(String matterTypeCode) {
+    if (matterTypeCode == null || !matterTypeCode.contains(":")) {
+      return null;
+    }
+    return matterTypeCode.split(":")[1];
+  }
   @ObjectFactory
   default ClaimDetails createClaimDetails(ClaimResponseV2 claimResponse) {
     if (claimResponse != null && claimResponse.getAreaOfLaw() != null) {
