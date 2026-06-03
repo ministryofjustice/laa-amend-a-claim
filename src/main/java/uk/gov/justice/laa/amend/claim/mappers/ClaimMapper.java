@@ -138,9 +138,17 @@ public interface ClaimMapper {
   @Mapping(target = "surgeryDate", source = "surgeryDate")
   @Mapping(target = "surgeryClientsCount", source = "surgeryClientsCount")
   @Mapping(target = "surgeryMattersCount", source = "surgeryMattersCount")
-  @Mapping(target = "postalApplication", source = "isPostalApplicationAccepted")
+  @Mapping(target = "isPostalApplication", source = "isPostalApplicationAccepted")
   @Mapping(target = "mentalHealthTribunalReference", source = "mentalHealthTribunalReference")
   @Mapping(target = "isNrmAdvice", source = "isNrmAdvice")
+  @Mapping(
+          target = "matterType1",
+          source = "claimResponse.matterTypeCode",
+          qualifiedByName = "matterType1")
+  @Mapping(
+          target = "matterType2",
+          source = "claimResponse.matterTypeCode",
+          qualifiedByName = "matterType2")
   CivilClaimDetails mapToCivilClaimDetails(ClaimResponseV2 claimResponse);
 
   @InheritConfiguration(name = "mapToCommonDetails")
@@ -202,14 +210,6 @@ public interface ClaimMapper {
   @Mapping(target = "prisonLawPriorApprovalNumber", source = "prisonLawPriorApprovalNumber")
   @Mapping(target = "isDutySolicitor", source = "isDutySolicitor")
   @Mapping(target = "isYouthCourt", source = "isYouthCourt")
-  @Mapping(
-          target = "matterType1",
-          source = "claimResponse.matterTypeCode",
-          qualifiedByName = "matterType1")
-  @Mapping(
-          target = "matterType2",
-          source = "claimResponse.matterTypeCode",
-          qualifiedByName = "matterType2")
   CrimeClaimDetails mapToCrimeClaimDetails(ClaimResponseV2 claimResponse);
 
   /**
