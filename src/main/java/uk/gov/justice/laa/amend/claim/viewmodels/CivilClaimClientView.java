@@ -1,17 +1,16 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import java.util.LinkedHashMap;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientView;
 
-import java.util.LinkedHashMap;
+public record CivilClaimClientView(LinkedHashMap<String, Object> rows) implements ClaimClientView {
 
-public record CivilClaimClientView (LinkedHashMap<String, Object> rows) implements ClaimClientView {
-
-public CivilClaimClientView(CivilClaimDetails claim) {
+  public CivilClaimClientView(CivilClaimDetails claim) {
     this(createRows(claim));
-}
+  }
 
-private static LinkedHashMap<String, Object> createRows(CivilClaimDetails claim) {
+  private static LinkedHashMap<String, Object> createRows(CivilClaimDetails claim) {
     var rows = new LinkedHashMap<String, Object>();
 
     rows.put("firstName", claim.getClientForename());
@@ -27,5 +26,5 @@ private static LinkedHashMap<String, Object> createRows(CivilClaimDetails claim)
     rows.put("hoUcn", claim.getHoUcn());
 
     return rows;
-}
+  }
 }
