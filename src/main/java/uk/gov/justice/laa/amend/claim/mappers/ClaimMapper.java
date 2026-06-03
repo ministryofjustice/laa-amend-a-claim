@@ -99,6 +99,11 @@ public interface ClaimMapper {
       qualifiedByName = "mapSubstantiveHearing")
   @Mapping(target = "counselsCost", source = "claimResponse", qualifiedByName = "mapCounselsCost")
   @Mapping(target = "uniqueClientNumber", source = "uniqueClientNumber")
+  @Mapping(target = "clientDateOfBirth", source = "clientDateOfBirth")
+  @Mapping(target = "clientPostcode", source = "clientPostcode")
+  @Mapping(target = "isEligibleClient", source = "isEligibleClient")
+  @Mapping(target = "clientType", source = "clientTypeCode")
+  @Mapping(target = "homeOfficeClientNumber", source = "homeOfficeClientNumber")
   CivilClaimDetails mapToCivilClaimDetails(ClaimResponseV2 claimResponse);
 
   @InheritConfiguration(name = "mapToCommonDetails")

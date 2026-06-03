@@ -519,6 +519,11 @@ class ClaimMapperTest {
     response.setOfficeCode("0P322F");
     response.setDateSubmitted(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"));
     response.setStatus(ClaimStatus.VALID);
+    response.setClientDateOfBirth("1970-01-01");
+    response.setClientPostcode("AB12 ABC");
+    response.setIsEligibleClient(false);
+    response.setClientTypeCode("clientType");
+    response.setHomeOfficeClientNumber("HOUCN123");
 
     UUID claimSummaryFeeId = UUID.randomUUID();
 
@@ -555,6 +560,11 @@ class ClaimMapperTest {
     assertNull(claim.getProviderName());
     assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());
     assertEquals(ClaimStatus.VALID, claim.getStatus());
+    assertEquals(LocalDate.parse("1970-01-01"), claim.getClientDateOfBirth());
+    assertEquals("AB12 ABC", claim.getClientPostcode());
+    assertEquals(false, claim.getIsEligibleClient());
+    assertEquals("clientType", claim.getClientType());
+    assertEquals("HOUCN123", claim.getHomeOfficeClientNumber());
   }
 
   @Test

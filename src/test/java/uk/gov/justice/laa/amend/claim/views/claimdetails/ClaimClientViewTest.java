@@ -25,6 +25,8 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
   private static final String GENDER = "gender";
   private static final String ETHNICITY = "ethnicity";
   private static final String DISABILITY = "disability";
+  private static final String HOME_OFFICE_CLIENT_NUMBER = "homeOfficeClientNumber";
+  private static final String CLIENT_TYPE = "clientType";
 
   private static final String CLIENT_2_FORENAME = "forename2";
   private static final String CLIENT_2_SURNAME = "surname2";
@@ -127,6 +129,46 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(client2Details.get(7), "Disability", CLIENT_2_DISABILITY);
     assertSummaryListRowContainsValues(client2Details.get(8), "Legally aided", "No");
     assertSummaryListRowContainsValues(client2Details.get(9), "Postal application accepted", "Yes");
+  }
+
+  @Test
+  void testShowsCivilClientDetails() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+
+    claim.setClientForename(FORENAME);
+    claim.setClientSurname(SURNAME);
+    claim.setClientDateOfBirth(DATE_OF_BIRTH);
+    claim.setUniqueClientNumber(UCN);
+    claim.setClientPostcode(POSTCODE);
+    claim.setClientGender(GENDER);
+    claim.setClientEthnicity(ETHNICITY);
+    claim.setClientDisability(DISABILITY);
+    claim.setIsEligibleClient(true);
+    claim.setClientType(CLIENT_TYPE);
+    claim.setHomeOfficeClientNumber(HOME_OFFICE_CLIENT_NUMBER);
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    var clientDetails = getSummaryListInCard(doc, "Client details");
+    assertSummaryListRowContainsValues(clientDetails.getFirst(), "First name", FORENAME);
+    assertSummaryListRowContainsValues(clientDetails.get(1), "Last name", SURNAME);
+    assertSummaryListRowContainsValues(
+        clientDetails.get(2), "Date of birth", DATE_OF_BIRTH_RENDERED);
+    assertSummaryListRowContainsValues(clientDetails.get(3), "Gender", GENDER);
+    assertSummaryListRowContainsValues(clientDetails.get(4), "Ethnicity", ETHNICITY);
+    assertSummaryListRowContainsValues(clientDetails.get(5), "Disability", DISABILITY);
+    assertSummaryListRowContainsValues(clientDetails.get(6), "Postcode", POSTCODE);
+    assertSummaryListRowContainsValues(clientDetails.get(7), "Eligible client", "Yes");
+    assertSummaryListRowContainsValues(clientDetails.get(8), "Client type", CLIENT_TYPE);
+    assertSummaryListRowContainsValues(clientDetails.get(9), "Unique client number (UCN)", UCN);
+    assertSummaryListRowContainsValues(
+        clientDetails.get(10),
+        "Home Office unique client number (HO UCN)",
+        HOME_OFFICE_CLIENT_NUMBER);
   }
 
   private void assertCommonPageContent(Document doc) {
