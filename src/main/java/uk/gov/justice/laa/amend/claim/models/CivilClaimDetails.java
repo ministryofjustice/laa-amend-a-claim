@@ -27,9 +27,9 @@ public class CivilClaimDetails extends ClaimDetails {
   private String uniqueClientNumber;
   private LocalDate clientDateOfBirth;
   private String clientPostcode;
-  private Boolean eligibleClient;
+  private Boolean isEligibleClient;
   private String clientType;
-  private String hoUcn;
+  private String homeOfficeClientNumber;
 
   @Override
   public boolean isAssessedTotalFieldAssessable() {

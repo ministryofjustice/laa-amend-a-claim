@@ -22,10 +22,10 @@ public record CivilClaimClientView(
     rows.put("ethnicity", claim.getClientEthnicity());
     rows.put("disability", claim.getClientDisability());
     rows.put("postcode", claim.getClientPostcode());
-    rows.put("eligibleClient", claim.getEligibleClient());
+    rows.put("isEligibleClient", claim.getIsEligibleClient());
     rows.put("clientType", claim.getClientType());
     rows.put("ucn", claim.getUniqueClientNumber());
-    rows.put("hoUcn", claim.getHoUcn());
+    rows.put("homeOfficeClientNumber", claim.getHomeOfficeClientNumber());
 
     return rows;
   }

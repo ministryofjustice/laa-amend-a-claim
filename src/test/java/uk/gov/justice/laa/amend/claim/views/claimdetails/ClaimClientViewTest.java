@@ -25,7 +25,7 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
   private static final String GENDER = "gender";
   private static final String ETHNICITY = "ethnicity";
   private static final String DISABILITY = "disability";
-  private static final String HO_UCN = "hoUcn";
+  private static final String HOME_OFFICE_CLIENT_NUMBER = "homeOfficeClientNumber";
   private static final String CLIENT_TYPE = "clientType";
 
   private static final String CLIENT_2_FORENAME = "forename2";
@@ -146,9 +146,9 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     claim.setClientGender(GENDER);
     claim.setClientEthnicity(ETHNICITY);
     claim.setClientDisability(DISABILITY);
-    claim.setEligibleClient(true);
+    claim.setIsEligibleClient(true);
     claim.setClientType(CLIENT_TYPE);
-    claim.setHoUcn(HO_UCN);
+    claim.setHomeOfficeClientNumber(HOME_OFFICE_CLIENT_NUMBER);
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -166,7 +166,7 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(8), "Client type", CLIENT_TYPE);
     assertSummaryListRowContainsValues(clientDetails.get(9), "Unique client number (UCN)", UCN);
     assertSummaryListRowContainsValues(
-        clientDetails.get(10), "Home Office unique client number (HO UCN)", HO_UCN);
+        clientDetails.get(10), "Home Office unique client number (HO UCN)", HOME_OFFICE_CLIENT_NUMBER);
   }
 
   private void assertCommonPageContent(Document doc) {

@@ -101,9 +101,9 @@ public interface ClaimMapper {
   @Mapping(target = "uniqueClientNumber", source = "uniqueClientNumber")
   @Mapping(target = "clientDateOfBirth", source = "clientDateOfBirth")
   @Mapping(target = "clientPostcode", source = "clientPostcode")
-  @Mapping(target = "eligibleClient", source = "isEligibleClient")
+  @Mapping(target = "isEligibleClient", source = "isEligibleClient")
   @Mapping(target = "clientType", source = "clientTypeCode")
-  @Mapping(target = "hoUcn", source = "homeOfficeClientNumber")
+  @Mapping(target = "homeOfficeClientNumber", source = "homeOfficeClientNumber")
   CivilClaimDetails mapToCivilClaimDetails(ClaimResponseV2 claimResponse);
 
   @InheritConfiguration(name = "mapToCommonDetails")

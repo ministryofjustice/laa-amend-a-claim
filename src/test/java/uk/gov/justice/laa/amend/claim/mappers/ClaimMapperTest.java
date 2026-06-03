@@ -562,9 +562,9 @@ class ClaimMapperTest {
     assertEquals(ClaimStatus.VALID, claim.getStatus());
     assertEquals(LocalDate.parse("1970-01-01"), claim.getClientDateOfBirth());
     assertEquals("AB12 ABC", claim.getClientPostcode());
-    assertEquals(false, claim.getEligibleClient());
+    assertEquals(false, claim.getIsEligibleClient());
     assertEquals("clientType", claim.getClientType());
-    assertEquals("HOUCN123", claim.getHoUcn());
+    assertEquals("HOUCN123", claim.getHomeOfficeClientNumber());
   }
 
   @Test
