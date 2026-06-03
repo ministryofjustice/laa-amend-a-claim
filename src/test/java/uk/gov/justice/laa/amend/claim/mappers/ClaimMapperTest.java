@@ -661,6 +661,12 @@ class ClaimMapperTest {
     response.setClient2IsLegallyAided(false);
     response.setIsClient2PostalApplicationAccepted(true);
 
+    response.setCaseId("caseId");
+    response.setMediationSessionsCount(2);
+    response.mediationTimeMinutes(60);
+    response.setOutreachLocation("outreachLocation");
+    response.setReferralSource("referralSource");
+
     response.setCaseStartDate("2025-01-01");
     response.setCaseConcludedDate("2025-02-01");
     response.setOfficeCode("0P322F");
@@ -707,6 +713,12 @@ class ClaimMapperTest {
     assertEquals("21121985/J/POE", claim.getClient2Ucn());
     assertEquals(false, claim.getIsClient2LegallyAided());
     assertEquals(true, claim.getIsClient2PostalApplicationAccepted());
+
+    assertEquals("caseId", claim.getCaseId());
+    assertEquals(2, claim.getMediationSessionsCount());
+    assertEquals(60, claim.getMediationTimeMinutes());
+    assertEquals("outreachLocation", claim.getOutreachLocation());
+    assertEquals("referralSource", claim.getReferralSource());
 
     assertEquals("FeeCode", claim.getFeeCode());
     assertEquals("FeeCodeDesc", claim.getFeeCodeDescription());

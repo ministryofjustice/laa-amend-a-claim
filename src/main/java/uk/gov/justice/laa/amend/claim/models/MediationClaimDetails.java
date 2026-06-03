@@ -42,6 +42,13 @@ public class MediationClaimDetails extends ClaimDetails {
   private Boolean isClient2LegallyAided;
   private Boolean isClient2PostalApplicationAccepted;
 
+  private String caseId;
+  private Integer mediationSessionsCount;
+  private Integer mediationTimeMinutes;
+  private String outreachLocation;
+  private String referralSource;
+  private String scheduleReference;
+
   @Override
   public boolean isAssessedTotalFieldAssessable() {
     return false;
