@@ -36,6 +36,7 @@ import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
+import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
@@ -50,6 +51,38 @@ public class MockClaimsFunctions {
 
   public static CivilClaimDetails createMockCivilClaim() {
     CivilClaimDetails claim = new CivilClaimDetails();
+    claim.setClaimId(UUID.randomUUID());
+    claim.setSubmissionId(UUID.randomUUID());
+    claim.setClaimSummaryFeeId(UUID.randomUUID());
+    claim.setEscaped(true);
+    claim.setStatus(ClaimStatus.VALID);
+
+    claim.setFixedFee(createFixedFeeField());
+    claim.setNetProfitCost(createNetProfitCostField());
+    claim.setNetDisbursementAmount(createDisbursementCostField());
+    claim.setDisbursementVatAmount(createDisbursementVatCostField());
+    claim.setTotalAmount(createTotalAmountField());
+    claim.setCounselsCost(createCounselCostField());
+    claim.setDetentionTravelWaitingCosts(createDetentionCostField());
+    claim.setJrFormFillingCost(createJrFormFillingCostField());
+    claim.setAdjournedHearing(createAdjournedHearingField());
+    claim.setCmrhTelephone(createCmrhTelephoneField());
+    claim.setCmrhOral(createCmrhOralField());
+    claim.setHoInterview(createHoInterviewField());
+    claim.setSubstantiveHearing(createSubstantiveHearingField());
+    claim.setVatClaimed(createVatClaimedField());
+    claim.setAssessmentOutcome(OutcomeType.REDUCED);
+    claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
+
+    claim.setAssessedTotalVat(createAssessedTotalVatField());
+    claim.setAssessedTotalInclVat(createAssessedTotalInclVatField());
+    claim.setAllowedTotalVat(createAllowedTotalVatField());
+    claim.setAllowedTotalInclVat(createAllowedTotalInclVatField());
+    return claim;
+  }
+
+  public static MediationClaimDetails createMockMediationClaim() {
+    MediationClaimDetails claim = new MediationClaimDetails();
     claim.setClaimId(UUID.randomUUID());
     claim.setSubmissionId(UUID.randomUUID());
     claim.setClaimSummaryFeeId(UUID.randomUUID());

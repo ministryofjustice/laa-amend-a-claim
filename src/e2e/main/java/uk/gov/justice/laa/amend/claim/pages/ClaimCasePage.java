@@ -6,15 +6,14 @@ import com.microsoft.playwright.options.AriaRole;
 
 public class ClaimCasePage extends LaaPage {
 
-  private final Locator claimHistory;
+  private final Locator costs;
 
   public ClaimCasePage(Page page) {
     super(page, "Case");
-    this.claimHistory =
-        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Claim history"));
+    this.costs = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Costs"));
   }
 
-  public void clickClaimHistoryItem() {
-    claimHistory.click();
+  public void clickCostsItem() {
+    costs.click();
   }
 }

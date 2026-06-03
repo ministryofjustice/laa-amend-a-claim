@@ -18,6 +18,7 @@ import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
@@ -630,6 +631,94 @@ class ClaimMapperTest {
     assertEquals(true, claim.getIsYouthCourt());
 
     assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());
+  }
+
+  @Test
+  void testMapToMediationClaim() {
+    var response = createClaimResponse(AreaOfLaw.MEDIATION);
+    response.setUniqueFileNumber("UFN123");
+    response.setCaseReferenceNumber("CASE456");
+
+    response.setClientSurname("Doe");
+    response.setClientForename("John");
+    response.setClientDateOfBirth("1970-01-01");
+    response.setClientPostcode("AB12 ABC");
+    response.setGenderCode("genderCode");
+    response.setEthnicityCode("ethnicityCode");
+    response.setDisabilityCode("disabilityCode");
+    response.setUniqueClientNumber("21121985/J/DOE");
+    response.setIsLegallyAided(true);
+    response.setIsPostalApplicationAccepted(false);
+
+    response.setClient2Surname("Poe");
+    response.setClient2Forename("Jane");
+    response.setClient2DateOfBirth("1971-01-01");
+    response.setClient2Postcode("CD45 CDE");
+    response.setClient2GenderCode("genderCode2");
+    response.setClient2EthnicityCode("ethnicityCode2");
+    response.setClient2DisabilityCode("disabilityCode2");
+    response.setClient2Ucn("21121985/J/POE");
+    response.setClient2IsLegallyAided(false);
+    response.setIsClient2PostalApplicationAccepted(true);
+
+    response.setCaseStartDate("2025-01-01");
+    response.setCaseConcludedDate("2025-02-01");
+    response.setOfficeCode("0P322F");
+    response.setDateSubmitted(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"));
+    response.setStatus(ClaimStatus.VALID);
+
+    UUID claimSummaryFeeId = UUID.randomUUID();
+
+    FeeCalculationPatch feeCalc = new FeeCalculationPatch();
+    feeCalc.setClaimSummaryFeeId(claimSummaryFeeId);
+    feeCalc.setFeeCode("FeeCode");
+    feeCalc.setFeeCodeDescription("FeeCodeDesc");
+    feeCalc.setCategoryOfLaw("Civil");
+    BoltOnPatch boltOn = new BoltOnPatch();
+    boltOn.setEscapeCaseFlag(true);
+    feeCalc.setBoltOnDetails(boltOn);
+    response.setFeeCalculationResponse(feeCalc);
+
+    response.setMatterTypeCode("MT1+MT2");
+
+    MediationClaimDetails claim = (MediationClaimDetails) mapper.mapToClaimDetails(response);
+
+    assertEquals("UFN123", claim.getUniqueFileNumber());
+    assertEquals("CASE456", claim.getCaseReferenceNumber());
+
+    assertEquals("Doe", claim.getClientSurname());
+    assertEquals("John", claim.getClientForename());
+    assertEquals(LocalDate.parse("1970-01-01"), claim.getClientDateOfBirth());
+    assertEquals("AB12 ABC", claim.getClientPostcode());
+    assertEquals("genderCode", claim.getClientGender());
+    assertEquals("ethnicityCode", claim.getClientEthnicity());
+    assertEquals("disabilityCode", claim.getClientDisability());
+    assertEquals("21121985/J/DOE", claim.getUniqueClientNumber());
+    assertEquals(true, claim.getIsClientLegallyAided());
+    assertEquals(false, claim.getIsClientPostalApplicationAccepted());
+
+    assertEquals("Poe", claim.getClient2Surname());
+    assertEquals("Jane", claim.getClient2Forename());
+    assertEquals(LocalDate.parse("1971-01-01"), claim.getClient2DateOfBirth());
+    assertEquals("CD45 CDE", claim.getClient2Postcode());
+    assertEquals("genderCode2", claim.getClient2Gender());
+    assertEquals("ethnicityCode2", claim.getClient2Ethnicity());
+    assertEquals("disabilityCode2", claim.getClient2Disability());
+    assertEquals("21121985/J/POE", claim.getClient2Ucn());
+    assertEquals(false, claim.getIsClient2LegallyAided());
+    assertEquals(true, claim.getIsClient2PostalApplicationAccepted());
+
+    assertEquals("FeeCode", claim.getFeeCode());
+    assertEquals("FeeCodeDesc", claim.getFeeCodeDescription());
+    assertEquals("Civil", claim.getCategoryOfLaw());
+    assertTrue(claim.getEscaped());
+    assertEquals("MT1+MT2", claim.getMatterTypeCode());
+    assertEquals(claimSummaryFeeId, claim.getClaimSummaryFeeId());
+    assertEquals(uk.gov.justice.laa.amend.claim.models.AreaOfLaw.MEDIATION, claim.getAreaOfLaw());
+    assertEquals("0P322F", claim.getOfficeCode());
+    assertNull(claim.getProviderName());
+    assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());
+    assertEquals(ClaimStatus.VALID, claim.getStatus());
   }
 
   @Test
