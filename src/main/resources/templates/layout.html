@@ -25,11 +25,7 @@
                class="govuk-back-link"
                th:text="#{service.back}">
             </a>
-        </div>
-        <div class="govuk-width-container govuk-!-padding-top-4" th:if="${outageBannerEnabled}">
             <th:block th:replace="~{partials/outage-banner :: outage-banner}"/>
-        </div>
-        <div class="govuk-width-container">
             <th:block th:replace="${mainContent}">Default Main Content</th:block>
         </div>
 
