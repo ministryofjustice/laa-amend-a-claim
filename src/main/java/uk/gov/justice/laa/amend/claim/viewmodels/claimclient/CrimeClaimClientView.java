@@ -3,10 +3,12 @@ package uk.gov.justice.laa.amend.claim.viewmodels.claimclient;
 import java.util.LinkedHashMap;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
-public record CrimeClaimClientView(LinkedHashMap<String, Object> rows) implements ClaimClientView {
+public record CrimeClaimClientView(
+    LinkedHashMap<String, Object> client1Rows, LinkedHashMap<String, Object> client2Rows)
+    implements ClaimClientView {
 
   public CrimeClaimClientView(CrimeClaimDetails claim) {
-    this(createRows(claim));
+    this(createRows(claim), new LinkedHashMap<>());
   }
 
   private static LinkedHashMap<String, Object> createRows(CrimeClaimDetails claim) {

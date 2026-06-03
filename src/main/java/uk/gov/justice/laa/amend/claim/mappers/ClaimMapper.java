@@ -14,6 +14,7 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 
 @Mapper(
@@ -101,6 +102,45 @@ public interface ClaimMapper {
   CivilClaimDetails mapToCivilClaimDetails(ClaimResponseV2 claimResponse);
 
   @InheritConfiguration(name = "mapToCommonDetails")
+  @Mapping(
+      target = "detentionTravelWaitingCosts",
+      source = "claimResponse",
+      qualifiedByName = "mapDetentionTravelWaitingCosts")
+  @Mapping(
+      target = "jrFormFillingCost",
+      source = "claimResponse",
+      qualifiedByName = "mapJrFormFillingCost")
+  @Mapping(
+      target = "adjournedHearing",
+      source = "claimResponse",
+      qualifiedByName = "mapAdjournedHearingFee")
+  @Mapping(target = "cmrhTelephone", source = "claimResponse", qualifiedByName = "mapCmrhTelephone")
+  @Mapping(target = "cmrhOral", source = "claimResponse", qualifiedByName = "mapCmrhOral")
+  @Mapping(target = "hoInterview", source = "claimResponse", qualifiedByName = "mapHoInterview")
+  @Mapping(
+      target = "substantiveHearing",
+      source = "claimResponse",
+      qualifiedByName = "mapSubstantiveHearing")
+  @Mapping(target = "counselsCost", source = "claimResponse", qualifiedByName = "mapCounselsCost")
+  @Mapping(target = "uniqueClientNumber", source = "uniqueClientNumber")
+  @Mapping(target = "clientPostcode", source = "clientPostcode")
+  @Mapping(target = "isClientLegallyAided", source = "isLegallyAided")
+  @Mapping(target = "isClientPostalApplicationAccepted", source = "isPostalApplicationAccepted")
+  @Mapping(target = "client2Forename", source = "client2Forename")
+  @Mapping(target = "client2Surname", source = "client2Surname")
+  @Mapping(target = "client2DateOfBirth", source = "client2DateOfBirth")
+  @Mapping(target = "client2Ucn", source = "client2Ucn")
+  @Mapping(target = "client2Postcode", source = "client2Postcode")
+  @Mapping(target = "client2Gender", source = "client2GenderCode")
+  @Mapping(target = "client2Ethnicity", source = "client2EthnicityCode")
+  @Mapping(target = "client2Disability", source = "client2DisabilityCode")
+  @Mapping(target = "isClient2LegallyAided", source = "client2IsLegallyAided")
+  @Mapping(
+      target = "isClient2PostalApplicationAccepted",
+      source = "isClient2PostalApplicationAccepted")
+  MediationClaimDetails mapToMediationClaimDetails(ClaimResponseV2 claimResponse);
+
+  @InheritConfiguration(name = "mapToCommonDetails")
   @Mapping(target = "travelCosts", source = "claimResponse", qualifiedByName = "mapTravelCosts")
   @Mapping(target = "waitingCosts", source = "claimResponse", qualifiedByName = "mapWaitingCosts")
   @Mapping(target = "representationOrderDate", source = "representationOrderDate")
@@ -121,7 +161,8 @@ public interface ClaimMapper {
     if (claimResponse != null && claimResponse.getAreaOfLaw() != null) {
       return switch (claimResponse.getAreaOfLaw()) {
         case CRIME_LOWER -> new CrimeClaimDetails();
-        case LEGAL_HELP, MEDIATION -> new CivilClaimDetails();
+        case LEGAL_HELP -> new CivilClaimDetails();
+        case MEDIATION -> new MediationClaimDetails();
       };
     }
     throw new IllegalArgumentException("Both claimResponse and areaOfLaw must be non-null");
@@ -138,7 +179,8 @@ public interface ClaimMapper {
     if (claimResponse != null && claimResponse.getAreaOfLaw() != null) {
       return switch (claimResponse.getAreaOfLaw()) {
         case CRIME_LOWER -> mapToCrimeClaimDetails(claimResponse);
-        case LEGAL_HELP, MEDIATION -> mapToCivilClaimDetails(claimResponse);
+        case LEGAL_HELP -> mapToCivilClaimDetails(claimResponse);
+        case MEDIATION -> mapToMediationClaimDetails(claimResponse);
       };
     }
     throw new IllegalArgumentException("Both claimResponse and areaOfLaw must be non-null");

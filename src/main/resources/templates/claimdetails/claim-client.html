@@ -17,11 +17,31 @@
 
             <div class="govuk-summary-card">
                 <div class="govuk-summary-card__title-wrapper">
-                    <h2 class="govuk-summary-card__title" th:text="#{claimClient.clientDetails}"></h2>
+                    <h2 class="govuk-summary-card__title"
+                        th:text="${#maps.isEmpty(claim.client2Rows)}
+                                    ? #{claimClient.clientDetails}
+                                    : #{claimClient.client1Details}">
+                    </h2>
                 </div>
                 <div class="govuk-summary-card__content">
                     <dl class="govuk-summary-list">
-                        <div class="govuk-summary-list__row" th:each="entry : ${claim.rows}">
+                        <div class="govuk-summary-list__row" th:each="entry : ${claim.client1Rows}">
+                            <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key}}"></dt>
+                            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="govuk-summary-card" th:if="${!#maps.isEmpty(claim.client2Rows)}">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title"
+                        th:text="#{claimClient.client2Details}">
+                    </h2>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row" th:each="entry : ${claim.client2Rows}">
                             <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key}}"></dt>
                             <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
                         </div>
