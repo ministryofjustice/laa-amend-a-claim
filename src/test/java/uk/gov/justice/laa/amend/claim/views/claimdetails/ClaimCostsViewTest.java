@@ -63,6 +63,30 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
         clientDetails.get(7), "Disbursements VAT", SUBMITTED, CALCULATED, ASSESSED);
   }
 
+  @Test
+  void testShowsMediationCosts() {
+    var claim = MockClaimsFunctions.createMockMediationClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setHasAssessment(true);
+    claim.setLastAssessment(AssessmentInfo.builder().lastAssessmentOutcome(PAID_IN_FULL).build());
+    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    var clientDetails = getSummaryListInCard(doc, "List of costs");
+    assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Requested", "Calculated");
+    assertSummaryListRowContainsValues(
+        clientDetails.get(1), "Fixed fee", NOT_APPLICABLE, CALCULATED, ASSESSED);
+    assertSummaryListRowContainsValues(clientDetails.get(2), "VAT indicator", "Yes", "No", "Yes");
+    assertSummaryListRowContainsValues(
+        clientDetails.get(3), "Net disbursements", SUBMITTED, CALCULATED, ASSESSED);
+    assertSummaryListRowContainsValues(
+        clientDetails.get(4), "Disbursements VAT", SUBMITTED, CALCULATED, ASSESSED);
+  }
+
   private void assertCommonPageContent(Document doc) {
     assertPageHasTitle(doc, "Claim details");
     assertPageHasHeading(doc, "Claim details");
