@@ -4,8 +4,8 @@ import lombok.experimental.UtilityClass;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
-import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimClientView;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
+import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimClientView;
 
 @UtilityClass
 public class ClaimClientViewFactory {
