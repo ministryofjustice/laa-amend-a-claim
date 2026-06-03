@@ -28,7 +28,7 @@ public record CrimeClaimCaseView(
     rows.put("representationOrderDate", claim.getRepresentationOrderDate());
     rows.put("caseEndDate", claim.getCaseEndDate());
     rows.put("standardFeeCategory", claim.getStandardFeeCategory());
-    rows.put("outcome", claim.getOutcome());
+    rows.put("outcomeForTheClient", claim.getOutcome());
     rows.put("suspectsDefendantsCount", claim.getSuspectsDefendantsCount());
     rows.put("policeStationCourtAttendancesCount", claim.getPoliceStationCourtAttendancesCount());
     rows.put("policeStationCourtPrisonId", claim.getPoliceStationCourtPrisonId());
