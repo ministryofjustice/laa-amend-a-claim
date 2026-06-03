@@ -166,7 +166,9 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(8), "Client type", CLIENT_TYPE);
     assertSummaryListRowContainsValues(clientDetails.get(9), "Unique client number (UCN)", UCN);
     assertSummaryListRowContainsValues(
-        clientDetails.get(10), "Home Office unique client number (HO UCN)", HOME_OFFICE_CLIENT_NUMBER);
+        clientDetails.get(10),
+        "Home Office unique client number (HO UCN)",
+        HOME_OFFICE_CLIENT_NUMBER);
   }
 
   private void assertCommonPageContent(Document doc) {
