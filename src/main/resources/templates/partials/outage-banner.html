@@ -1,4 +1,4 @@
-<th:block th:fragment="outage-banner">
+<th:block th:fragment="outage-banner" th:if="${outageBannerEnabled}">
 
   <div role="region" class="moj-alert moj-alert--information moj-alert--with-heading govuk-!-margin-top-4" id="outage-banner" th:aria-label="|information: #{outage.banner.title}|" data-module="moj-alert">
     <div>
