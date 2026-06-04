@@ -84,13 +84,13 @@ jobs:
           kube-sa: deploy-user
 
       - name: Login to Docker Hub
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Can I deploy?
-        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-can-i-deploy@dc4173bfc12f714d7e8cbdd9f524d00ef02e25c4 # v2.1.1
+        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-can-i-deploy@345e0172073b135f5bb0dfaa8ba3731abe1054cc # v2.1.2
         with:
           pacticipant: 'laa-amend-a-claim'
           environment: ${{ inputs.claim_api_environment_name }}
@@ -121,7 +121,7 @@ jobs:
           SENTRY_ENV: ${{ inputs.sentry_env }}
 
       - name: Record deployment to pact broker
-        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-record-deployment@dc4173bfc12f714d7e8cbdd9f524d00ef02e25c4 # v2.1.1
+        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-record-deployment@345e0172073b135f5bb0dfaa8ba3731abe1054cc # v2.1.2
         with:
           pacticipant: 'laa-amend-a-claim'
           environment: ${{ inputs.claim_api_environment_name }}
