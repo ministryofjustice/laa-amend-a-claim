@@ -525,6 +525,43 @@ class ClaimMapperTest {
     response.setClientTypeCode("clientType");
     response.setHomeOfficeClientNumber("HOUCN123");
 
+    response.setScheduleReference("SCHEDULE_REF");
+    response.setCaseId("ID_123");
+    response.setCaseStageCode("caseStageCode");
+    response.setCostsDamagesRecoveredAmount(BigDecimal.valueOf(130));
+    response.setProcurementAreaCode("procurementAreaCode");
+    response.setAccessPointCode("accessPointCode");
+    response.setStageReachedCode("stageReachedCode");
+    response.setOutcomeCode("outcomeCode");
+    response.setExceptionalCaseFundingReference("EXC_REF");
+    response.setClaReferenceNumber("CLA_REF");
+    response.setClaExemptionCode("EX_CODE");
+    response.setDeliveryLocation("deliveryLocation");
+    response.setCourtLocationCode("courtLocationCode");
+    response.setAitHearingCentreCode("aitCode");
+    response.setLocalAuthorityNumber("localAuthorityNum");
+    response.setDesignatedAccreditedRepresentativeCode("representativeCode");
+    response.setAdviceTime(90);
+    response.setTravelTime(10);
+    response.setWaitingTime(5);
+    response.setIsAdditionalTravelPayment(true);
+    response.setFollowOnWork("followOnWork");
+    response.setIsToleranceApplicable(true);
+    response.setIsLegacyCase(true);
+    response.setMeetingsAttendedCode("meetingsAttendedCode");
+    response.setAdviceTypeCode("adviceTypeCode");
+    response.setTransferDate("2025-01-12");
+    response.setMediationSessionsCount(0);
+    response.setExemptionCriteriaSatisfied("Yes");
+    response.setIsIrcSurgery(true);
+    response.setSurgeryDate("2025-01-14");
+    response.setSurgeryClientsCount(1);
+    response.setSurgeryMattersCount(1);
+    response.setIsPostalApplicationAccepted(true);
+    response.setMentalHealthTribunalReference("MHT_REF");
+    response.setIsNrmAdvice(false);
+
+
     UUID claimSummaryFeeId = UUID.randomUUID();
 
     FeeCalculationPatch feeCalc = new FeeCalculationPatch();
@@ -565,6 +602,42 @@ class ClaimMapperTest {
     assertEquals(false, claim.getIsEligibleClient());
     assertEquals("clientType", claim.getClientType());
     assertEquals("HOUCN123", claim.getHomeOfficeClientNumber());
+
+    assertEquals("SCHEDULE_REF123", claim.getScheduleReference());
+    assertEquals("ID_123", claim.getCaseId());
+    assertEquals("caseStageCode", claim.getCaseStage());
+    assertEquals(BigDecimal.valueOf(130), claim.getValueOfCosts());
+    assertEquals("procurementAreaCode", claim.getProcurementArea());
+    assertEquals("accessPointCode", claim.getAccessPoint());
+    assertEquals("stageReachedCode", claim.getStageReached());
+    assertEquals("outcomeCode", claim.getOutcome());
+    assertEquals("EXC_REF", claim.getExceptionalCaseFundingReference());
+    assertEquals("CLA_REF", claim.getCivilLegalAdviceReference());
+    assertEquals("EX_CODE", claim.getCivilLegalAdviceExemption());
+    assertEquals("deliveryLocation", claim.getDeliveryLocation());
+    assertEquals("courtLocationCode", claim.getCourtLocation());
+    assertEquals("aitCode", claim.getAitHearingCentre());
+    assertEquals("localAuthorityNum", claim.getLocalAuthorityNumber());
+    assertEquals("representativeCode", claim.getDesignatedAccreditedRepresentative());
+    assertEquals(90, claim.getAdviceTime());
+    assertEquals(10, claim.getTravelTime());
+    assertEquals(5, claim.getWaitingTime());
+    assertEquals(true, claim.getIsAdditionalTravelPayment());
+    assertEquals("followOnWork", claim.getFollowOnWork());
+    assertEquals(true, claim.getIsToleranceApplicable());
+    assertEquals(true, claim.getIsLegacyCase());
+    assertEquals("meetingsAttendedCode", claim.getMeetingsAttended());
+    assertEquals("adviceTypeCode", claim.getAdviceType());
+    assertEquals("2025-01-12", claim.getTransferDate());
+    assertEquals(0, claim.getMedicalReportsClaimed());
+    assertEquals("Yes", claim.getExemptionCriteriaSatisfied());
+    assertEquals(true, claim.getIsIrcSurgery());
+    assertEquals("2025-01-14", claim.getSurgeryDate());
+    assertEquals(1, claim.getSurgeryClientsCount());
+    assertEquals(1, claim.getSurgeryMattersCount());
+    assertEquals(true, claim.getIsPostalApplication());
+    assertEquals("MHT_REF", claim.getMentalHealthTribunalReference());
+    assertEquals(false, claim.getIsNrmAdvice());
   }
 
   @Test
