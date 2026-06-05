@@ -31,6 +31,7 @@ public class CrimeClaimDetails extends ClaimDetails {
   private String prisonLawPriorApprovalNumber;
   private Boolean isDutySolicitor;
   private Boolean isYouthCourt;
+  private String matterTypeCode;
 
   @Override
   public boolean isAssessedTotalFieldAssessable() {

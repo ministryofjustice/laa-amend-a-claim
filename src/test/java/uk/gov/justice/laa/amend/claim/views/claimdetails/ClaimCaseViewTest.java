@@ -264,7 +264,6 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
 
     var caseType = getSummaryListInCard(doc, "Case type");
     assertSummaryListRowContainsValues(caseType.getFirst(), "Fee code", FEE_CODE);
-    System.out.println("MT: " + claim.getMatterTypeCode());
     assertSummaryListRowContainsValues(caseType.get(1), "Matter type 1", MATTER_TYPE1);
     assertSummaryListRowContainsValues(caseType.get(2), "Matter type 2", MATTER_TYPE2);
 

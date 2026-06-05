@@ -39,7 +39,6 @@ public interface ClaimMapper {
   @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
   @Mapping(target = "feeCode", source = "feeCalculationResponse.feeCode")
   @Mapping(target = "feeCodeDescription", source = "feeCalculationResponse.feeCodeDescription")
-  @Mapping(target = "matterTypeCode", source = "matterTypeCode")
   @Mapping(
       target = "assessedTotalVat",
       expression = "java(claimMapperHelper.mapAssessedTotalVat())")
@@ -200,6 +199,14 @@ public interface ClaimMapper {
   @Mapping(target = "outreachLocation", source = "outreachLocation")
   @Mapping(target = "referralSource", source = "referralSource")
   @Mapping(target = "scheduleReference", source = "scheduleReference")
+  @Mapping(
+      target = "matterType1",
+      source = "claimResponse.matterTypeCode",
+      qualifiedByName = "matterType1")
+  @Mapping(
+      target = "matterType2",
+      source = "claimResponse.matterTypeCode",
+      qualifiedByName = "matterType2")
   MediationClaimDetails mapToMediationClaimDetails(ClaimResponseV2 claimResponse);
 
   @InheritConfiguration(name = "mapToCommonDetails")
@@ -216,6 +223,7 @@ public interface ClaimMapper {
   @Mapping(target = "prisonLawPriorApprovalNumber", source = "prisonLawPriorApprovalNumber")
   @Mapping(target = "isDutySolicitor", source = "isDutySolicitor")
   @Mapping(target = "isYouthCourt", source = "isYouthCourt")
+  @Mapping(target = "matterTypeCode", source = "matterTypeCode")
   CrimeClaimDetails mapToCrimeClaimDetails(ClaimResponseV2 claimResponse);
 
   /**

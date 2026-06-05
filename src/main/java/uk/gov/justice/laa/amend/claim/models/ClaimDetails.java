@@ -23,7 +23,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 @Data
 public abstract class ClaimDetails extends Claim {
   private String categoryOfLaw;
-  private String matterTypeCode;
   private String providerName;
   private Boolean vatApplicable;
   private ClaimField vatClaimed;

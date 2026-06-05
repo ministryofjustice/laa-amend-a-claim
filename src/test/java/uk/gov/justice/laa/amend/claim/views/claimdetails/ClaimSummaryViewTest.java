@@ -76,7 +76,8 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setSubmissionId(submissionId);
     claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
     claim.setCategoryOfLaw("TEST");
-    claim.setMatterTypeCode("IMLB:AHQS");
+    claim.setMatterType1("IMLB");
+    claim.setMatterType2("AHQS");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
