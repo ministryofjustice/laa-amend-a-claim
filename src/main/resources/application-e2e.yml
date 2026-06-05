@@ -6,9 +6,9 @@ management:
 
 
 feature-flags:
-  is-bulk-upload-enabled: false
-  is-requested-and-calculated-swap-enabled: false
-  is-full-claim-details-enabled: false
+  is-bulk-upload-enabled: true
+  is-requested-and-calculated-swap-enabled: true
+  is-full-claim-details-enabled: true
 
 claims-api:
   # Env var for docker-compose to override to docker host if required
