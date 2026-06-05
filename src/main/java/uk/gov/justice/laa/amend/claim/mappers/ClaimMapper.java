@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.*;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
@@ -220,10 +221,11 @@ public interface ClaimMapper {
    */
   @Named("matterType1")
   default String getMatterType1(String matterTypeCode) {
-    if (matterTypeCode == null) {
-      return null;
+    if (StringUtils.isNotEmpty(matterTypeCode)) {
+      String[] matterType = matterTypeCode.split("[+:]");
+      return matterType.length > 0 ? matterType[0] : null;
     }
-    return matterTypeCode.split(":")[0];
+    return null;
   }
 
   /**
@@ -234,11 +236,13 @@ public interface ClaimMapper {
    */
   @Named("matterType2")
   default String getMatterType2(String matterTypeCode) {
-    if (matterTypeCode == null || !matterTypeCode.contains(":")) {
-      return null;
+    if (StringUtils.isNotEmpty(matterTypeCode)) {
+      String[] matterType = matterTypeCode.split("[+:]");
+      return matterType.length > 1 ? matterType[1] : null;
     }
-    return matterTypeCode.split(":")[1];
+    return null;
   }
+
   @ObjectFactory
   default ClaimDetails createClaimDetails(ClaimResponseV2 claimResponse) {
     if (claimResponse != null && claimResponse.getAreaOfLaw() != null) {
