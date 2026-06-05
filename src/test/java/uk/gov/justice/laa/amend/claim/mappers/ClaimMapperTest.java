@@ -504,6 +504,61 @@ class ClaimMapperTest {
   }
 
   @Test
+  void mapMatterTypeCodeOneAndTwoWhenInExpectedFormat() {
+    var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
+    response.setMatterTypeCode("IMLB+AHQS");
+    var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
+    String matterType1 = claim.getMatterType1();
+    String matterType2 = claim.getMatterType2();
+    assertEquals("IMLB", matterType1);
+    assertEquals("AHQS", matterType2);
+  }
+
+  @Test
+  void mapMatterTypeCodeOneAndTwoWhenInUnexpectedFormat() {
+    var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
+    response.setMatterTypeCode("IMLB");
+    var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
+    String matterType1 = claim.getMatterType1();
+    String matterType2 = claim.getMatterType2();
+    assertEquals("IMLB", matterType1);
+    assertNull(matterType2);
+  }
+
+  @Test
+  void mapMatterTypeCodeOneAndTwoWhenNull() {
+    var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
+    response.setMatterTypeCode(null);
+    var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
+    String matterType1 = claim.getMatterType1();
+    String matterType2 = claim.getMatterType2();
+    assertNull(matterType1);
+    assertNull(matterType2);
+  }
+
+  @Test
+  void mapMatterTypeCodeOneAndTwoWhenEmpty() {
+    var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
+    response.setMatterTypeCode("");
+    var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
+    String matterType1 = claim.getMatterType1();
+    String matterType2 = claim.getMatterType2();
+    assertNull(matterType1);
+    assertNull(matterType2);
+  }
+
+  @Test
+  void mapMatterTypeCodeOneAndTwoWhenBlank() {
+    var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
+    response.setMatterTypeCode(" ");
+    var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
+    String matterType1 = claim.getMatterType1();
+    String matterType2 = claim.getMatterType2();
+    assertNull(matterType1);
+    assertNull(matterType2);
+  }
+
+  @Test
   void testMapToCivilClaim() {
     var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
     response.setUniqueFileNumber("UFN123");

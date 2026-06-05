@@ -234,7 +234,7 @@ public interface ClaimMapper {
    */
   @Named("matterType1")
   default String getMatterType1(String matterTypeCode) {
-    if (StringUtils.isNotEmpty(matterTypeCode)) {
+    if (StringUtils.isNotBlank(matterTypeCode)) {
       String[] matterType = matterTypeCode.split("[+:]");
       return matterType.length > 0 ? matterType[0] : null;
     }
@@ -249,7 +249,7 @@ public interface ClaimMapper {
    */
   @Named("matterType2")
   default String getMatterType2(String matterTypeCode) {
-    if (StringUtils.isNotEmpty(matterTypeCode)) {
+    if (StringUtils.isNotBlank(matterTypeCode)) {
       String[] matterType = matterTypeCode.split("[+:]");
       return matterType.length > 1 ? matterType[1] : null;
     }
