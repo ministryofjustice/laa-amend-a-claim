@@ -75,17 +75,18 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
   private static final Boolean IS_LEGACY_CASE = false;
   private static final String MEETINGS_ATTENDED = "meetingsAttended";
   private static final String ADVICE_TYPE = "adviceType";
-  private static final String TRANSFER_DATE = "26 May 2026";
+  private static final LocalDate TRANSFER_DATE = LocalDate.of(2026, 5, 26);
+  private static final String TRANSFER_DATE_RENDERED = "26 May 2026";
   private static final Integer MEDICAL_REPORTS_CLAIMED = 0;
   private static final String EXEMPTION_CRITERIA_SATISFIED = "exceptionCriteriaSatisfied";
   private static final Boolean IS_IRC_SURGERY = true;
-  private static final String SURGERY_DATE = "30 May 2026";
+  private static final LocalDate SURGERY_DATE = LocalDate.of(2026, 5, 30);
+  private static final String SURGERY_DATE_RENDERED = "30 May 2026";
   private static final Integer SURGERY_CLIENTS_COUNT = 1;
   private static final Integer SURGERY_MATTERS_COUNT = 1;
   private static final Boolean IS_POSTAL_APPLICATION = false;
   private static final String MENTAL_HEALTH_TRIBUNAL_REFERENCE = "MENTAL_HEALTH_REF";
   private static final Boolean IS_NRM_ADVICE = false;
-  private static final String MATTER_TYPE_CIVIL = "matterType1:matterType2";
   private static final String MATTER_TYPE1 = "matterType1";
   private static final String MATTER_TYPE2 = "matterType2";
 
@@ -321,14 +322,15 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(caseDetails.get(26), "Legacy case", "No");
     assertSummaryListRowContainsValues(caseDetails.get(27), "Meetings attended", MEETINGS_ATTENDED);
     assertSummaryListRowContainsValues(caseDetails.get(28), "Type of advice", ADVICE_TYPE);
-    assertSummaryListRowContainsValues(caseDetails.get(29), "Transfer date", TRANSFER_DATE);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(29), "Transfer date", TRANSFER_DATE_RENDERED);
     assertSummaryListRowContainsValues(
         caseDetails.get(30), "Medical reports claimed", MEDICAL_REPORTS_CLAIMED.toString());
     assertSummaryListRowContainsValues(
         caseDetails.get(31), "Exemption criteria satisfied", EXEMPTION_CRITERIA_SATISFIED);
     assertSummaryListRowContainsValues(
         caseDetails.get(32), "Immigration removal centre (IRC) surgery", "Yes");
-    assertSummaryListRowContainsValues(caseDetails.get(33), "Surgery date", SURGERY_DATE);
+    assertSummaryListRowContainsValues(caseDetails.get(33), "Surgery date", SURGERY_DATE_RENDERED);
     assertSummaryListRowContainsValues(
         caseDetails.get(34), "Number of clients seen at surgery", SURGERY_CLIENTS_COUNT.toString());
     assertSummaryListRowContainsValues(

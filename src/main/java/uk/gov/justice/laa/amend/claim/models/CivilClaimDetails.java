@@ -61,11 +61,11 @@ public class CivilClaimDetails extends ClaimDetails {
   private Boolean isLegacyCase;
   private String meetingsAttended;
   private String adviceType;
-  private String transferDate;
+  private LocalDate transferDate; //
   private Integer medicalReportsClaimed;
   private String exemptionCriteriaSatisfied;
   private Boolean isIrcSurgery;
-  private String surgeryDate;
+  private LocalDate surgeryDate; //
   private Integer surgeryClientsCount;
   private Integer surgeryMattersCount;
   private Boolean isPostalApplication;

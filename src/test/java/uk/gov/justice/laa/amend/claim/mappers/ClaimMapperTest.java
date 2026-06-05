@@ -627,11 +627,11 @@ class ClaimMapperTest {
     assertEquals(true, claim.getIsLegacyCase());
     assertEquals("meetingsAttendedCode", claim.getMeetingsAttended());
     assertEquals("adviceTypeCode", claim.getAdviceType());
-    assertEquals("2025-01-12", claim.getTransferDate());
+    assertEquals(LocalDate.parse("2025-01-12"), claim.getTransferDate());
     assertEquals(0, claim.getMedicalReportsClaimed());
     assertEquals("Yes", claim.getExemptionCriteriaSatisfied());
     assertEquals(true, claim.getIsIrcSurgery());
-    assertEquals("2025-01-14", claim.getSurgeryDate());
+    assertEquals(LocalDate.parse("2025-01-14"), claim.getSurgeryDate());
     assertEquals(1, claim.getSurgeryClientsCount());
     assertEquals(1, claim.getSurgeryMattersCount());
     assertEquals(true, claim.getIsPostalApplication());
