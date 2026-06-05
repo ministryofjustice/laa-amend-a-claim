@@ -10,6 +10,10 @@ feature-flags:
   is-requested-and-calculated-swap-enabled: true
   is-full-claim-details-enabled: true
 
+maintenance:
+  disable-at-time: 2023-12-31T23:59:59Z
+  outage-banner-message: Disabled
+
 claims-api:
   # Env var for docker-compose to override to docker host if required
   url: ${CLAIMS_API:http://localhost:8082}
