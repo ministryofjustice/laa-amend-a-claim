@@ -64,7 +64,8 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
   private static final String COURT_LOCATION = "courtLocation";
   private static final String AIT_HEARING_CENTRE = "aitHearingCentre";
   private static final String LOCAL_AUTHORITY_NUMBER = "localAuthorityNum";
-  private static final String DESIGNATED_ACCREDITED_REPRESENTATIVE = "designatedAccreditedRepresentative";
+  private static final String DESIGNATED_ACCREDITED_REPRESENTATIVE =
+      "designatedAccreditedRepresentative";
   private static final Integer ADVICE_TIME = 60;
   private static final Integer TRAVEL_TIME = 90;
   private static final Integer WAITING_TIME = 15;
@@ -207,113 +208,139 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
         caseDetails.get(10), "Schedule reference (outcome)", SCHEDULE_REFERENCE);
   }
 
+  @Test
+  void testShowsCivilClientDetails() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setFeeCode(FEE_CODE);
+    claim.setMatterType1(MATTER_TYPE1);
+    claim.setMatterType2(MATTER_TYPE2);
 
-    @Test
-    void testShowsCivilClientDetails() {
-      var claim = MockClaimsFunctions.createMockCivilClaim();
-      this.claim = claim;
-      claim.setSubmissionId(submissionId);
-      claim.setClaimId(claimId);
-      claim.setFeeCode(FEE_CODE);
-      claim.setMatterType1(MATTER_TYPE1);
-      claim.setMatterType2(MATTER_TYPE2);
+    claim.setScheduleReference(SCHEDULE_REFERENCE);
+    claim.setCaseId(CASE_ID);
+    claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
+    claim.setCaseStartDate(CASE_START_DATE);
+    claim.setCaseConcludedDate(CASE_CONCLUDED_DATE);
+    claim.setUniqueFileNumber(UNIQUE_FILE_NUMBER);
+    claim.setCaseStage(CASE_STAGE);
+    claim.setValueOfCosts(VALUE_OF_COSTS);
+    claim.setProcurementArea(PROCUREMENT_AREA);
+    claim.setAccessPoint(ACCESS_POINT);
+    claim.setStageReached(STAGE_REACHED);
+    claim.setOutcome(OUTCOME);
+    claim.setExceptionalCaseFundingReference(EXCEPTIONAL_CASE_FUNDING_REFERENCE);
+    claim.setCivilLegalAdviceReference(CLA_REFERENCE);
+    claim.setCivilLegalAdviceExemption(CLA_EXEMPTION);
+    claim.setDeliveryLocation(DELIVERY_LOCATION);
+    claim.setCourtLocation(COURT_LOCATION);
+    claim.setAitHearingCentre(AIT_HEARING_CENTRE);
+    claim.setLocalAuthorityNumber(LOCAL_AUTHORITY_NUMBER);
+    claim.setDesignatedAccreditedRepresentative(DESIGNATED_ACCREDITED_REPRESENTATIVE);
+    claim.setAdviceTime(ADVICE_TIME);
+    claim.setTravelTime(TRAVEL_TIME);
+    claim.setWaitingTime(WAITING_TIME);
+    claim.setIsAdditionalTravelPayment(IS_ADDITIONAL_TRAVEL_PAYMENT);
+    claim.setFollowOnWork(FOLLOW_ON_WORK);
+    claim.setIsToleranceApplicable(IS_TOLERANCE_APPLICABLE);
+    claim.setIsLegacyCase(IS_LEGACY_CASE);
+    claim.setMeetingsAttended(MEETINGS_ATTENDED);
+    claim.setAdviceType(ADVICE_TYPE);
+    claim.setTransferDate(TRANSFER_DATE);
+    claim.setMedicalReportsClaimed(MEDICAL_REPORTS_CLAIMED);
+    claim.setExemptionCriteriaSatisfied(EXEMPTION_CRITERIA_SATISFIED);
+    claim.setIsIrcSurgery(IS_IRC_SURGERY);
+    claim.setSurgeryDate(SURGERY_DATE);
+    claim.setSurgeryClientsCount(SURGERY_CLIENTS_COUNT);
+    claim.setSurgeryMattersCount(SURGERY_MATTERS_COUNT);
+    claim.setIsPostalApplication(IS_POSTAL_APPLICATION);
+    claim.setMentalHealthTribunalReference(MENTAL_HEALTH_TRIBUNAL_REFERENCE);
+    claim.setIsNrmAdvice(IS_NRM_ADVICE);
 
-      claim.setScheduleReference(SCHEDULE_REFERENCE);
-      claim.setCaseId(CASE_ID);
-      claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
-      claim.setCaseStartDate(CASE_START_DATE);
-      claim.setCaseConcludedDate(CASE_CONCLUDED_DATE);
-      claim.setUniqueFileNumber(UNIQUE_FILE_NUMBER);
-      claim.setCaseStage(CASE_STAGE);
-      claim.setValueOfCosts(VALUE_OF_COSTS);
-      claim.setProcurementArea(PROCUREMENT_AREA);
-      claim.setAccessPoint(ACCESS_POINT);
-      claim.setStageReached(STAGE_REACHED);
-      claim.setOutcome(OUTCOME);
-      claim.setExceptionalCaseFundingReference(EXCEPTIONAL_CASE_FUNDING_REFERENCE);
-      claim.setCivilLegalAdviceReference(CLA_REFERENCE);
-      claim.setCivilLegalAdviceExemption(CLA_EXEMPTION);
-      claim.setDeliveryLocation(DELIVERY_LOCATION);
-      claim.setCourtLocation(COURT_LOCATION);
-      claim.setAitHearingCentre(AIT_HEARING_CENTRE);
-      claim.setLocalAuthorityNumber(LOCAL_AUTHORITY_NUMBER);
-      claim.setDesignatedAccreditedRepresentative(DESIGNATED_ACCREDITED_REPRESENTATIVE);
-      claim.setAdviceTime(ADVICE_TIME);
-      claim.setTravelTime(TRAVEL_TIME);
-      claim.setWaitingTime(WAITING_TIME);
-      claim.setIsAdditionalTravelPayment(IS_ADDITIONAL_TRAVEL_PAYMENT);
-      claim.setFollowOnWork(FOLLOW_ON_WORK);
-      claim.setIsToleranceApplicable(IS_TOLERANCE_APPLICABLE);
-      claim.setIsLegacyCase(IS_LEGACY_CASE);
-      claim.setMeetingsAttended(MEETINGS_ATTENDED);
-      claim.setAdviceType(ADVICE_TYPE);
-      claim.setTransferDate(TRANSFER_DATE);
-      claim.setMedicalReportsClaimed(MEDICAL_REPORTS_CLAIMED);
-      claim.setExemptionCriteriaSatisfied(EXEMPTION_CRITERIA_SATISFIED);
-      claim.setIsIrcSurgery(IS_IRC_SURGERY);
-      claim.setSurgeryDate(SURGERY_DATE);
-      claim.setSurgeryClientsCount(SURGERY_CLIENTS_COUNT);
-      claim.setSurgeryMattersCount(SURGERY_MATTERS_COUNT);
-      claim.setIsPostalApplication(IS_POSTAL_APPLICATION);
-      claim.setMentalHealthTribunalReference(MENTAL_HEALTH_TRIBUNAL_REFERENCE);
-      claim.setIsNrmAdvice(IS_NRM_ADVICE);
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
 
-      var doc = renderDocument();
-      assertCommonPageContent(doc);
+    var caseType = getSummaryListInCard(doc, "Case type");
+    assertSummaryListRowContainsValues(caseType.getFirst(), "Fee code", FEE_CODE);
+    System.out.println("MT: " + claim.getMatterTypeCode());
+    assertSummaryListRowContainsValues(caseType.get(1), "Matter type 1", MATTER_TYPE1);
+    assertSummaryListRowContainsValues(caseType.get(2), "Matter type 2", MATTER_TYPE2);
 
-      var caseType = getSummaryListInCard(doc, "Case type");
-      assertSummaryListRowContainsValues(caseType.getFirst(), "Fee code", FEE_CODE);
-      System.out.println("MT: " + claim.getMatterTypeCode());
-      assertSummaryListRowContainsValues(caseType.get(1), "Matter type 1", MATTER_TYPE1);
-      assertSummaryListRowContainsValues(caseType.get(2), "Matter type 2", MATTER_TYPE2);
-
-      var caseDetails = getSummaryListInCard(doc, "Case details");
-      assertSummaryListRowContainsValues(
+    var caseDetails = getSummaryListInCard(doc, "Case details");
+    assertSummaryListRowContainsValues(
         caseDetails.getFirst(), "Schedule reference", SCHEDULE_REFERENCE);
-      assertSummaryListRowContainsValues(
-        caseDetails.get(1), "Case ID", CASE_ID);
-      assertSummaryListRowContainsValues(caseDetails.get(2), "Case reference number (CRN)", CASE_REFERENCE_NUMBER);
-      assertSummaryListRowContainsValues(caseDetails.get(3), "Case start date", CASE_START_DATE_RENDERED);
-      assertSummaryListRowContainsValues(
-        caseDetails.get(4), "Case concluded date or case claimed date", CASE_CONCLUDED_DATE_RENDERED);
-      assertSummaryListRowContainsValues(caseDetails.get(5), "Unique file number (UFN)", UNIQUE_FILE_NUMBER);
-      assertSummaryListRowContainsValues(caseDetails.get(6), "Case stage or evel", CASE_STAGE);
-      assertSummaryListRowContainsValues(caseDetails.get(7), "Value of costs or damages recovered", VALUE_OF_COSTS_RENDERED);
-      assertSummaryListRowContainsValues(caseDetails.get(8), "Procurement area", PROCUREMENT_AREA);
-      assertSummaryListRowContainsValues(caseDetails.get(9), "Access point", ACCESS_POINT);
-      assertSummaryListRowContainsValues(
-        caseDetails.get(10), "Stage reached", STAGE_REACHED);
-      assertSummaryListRowContainsValues(caseDetails.get(11), "Outcome for client", OUTCOME);
-      assertSummaryListRowContainsValues(caseDetails.get(12), "Exceptional case funding (ECF) reference", EXCEPTIONAL_CASE_FUNDING_REFERENCE);
-      assertSummaryListRowContainsValues(caseDetails.get(13), "Civil Legal Advice (CLA) reference number", CLA_REFERENCE);
-      assertSummaryListRowContainsValues(caseDetails.get(14), "Civil Legal Advice (CLA) exemption code", CLA_EXEMPTION);
-      assertSummaryListRowContainsValues(caseDetails.get(15), "Delivery location", DELIVERY_LOCATION);
-      assertSummaryListRowContainsValues(caseDetails.get(16), "Court location (Housing Possession Court Duty Scheme (HPCDS))", COURT_LOCATION);
-      assertSummaryListRowContainsValues(caseDetails.get(17), "Asylum and Immigration Tribunal (AIT) hearing centre", AIT_HEARING_CENTRE);
-      assertSummaryListRowContainsValues(caseDetails.get(18), "Local authority number", LOCAL_AUTHORITY_NUMBER);
-      assertSummaryListRowContainsValues(caseDetails.get(19), "Designated accredited representative", DESIGNATED_ACCREDITED_REPRESENTATIVE);
-      assertSummaryListRowContainsValues(caseDetails.get(20), "Advice time", ADVICE_TIME.toString());
-      assertSummaryListRowContainsValues(caseDetails.get(21), "Travel time", TRAVEL_TIME.toString());
-      assertSummaryListRowContainsValues(caseDetails.get(22), "Waiting time", WAITING_TIME.toString());
-      assertSummaryListRowContainsValues(caseDetails.get(23), "Additional travel payment", "Yes");
-      assertSummaryListRowContainsValues(caseDetails.get(24), "Follow on work", FOLLOW_ON_WORK);
-      assertSummaryListRowContainsValues(caseDetails.get(25), "Tolerance indicator", "No");
-      assertSummaryListRowContainsValues(caseDetails.get(26), "Legacy case", "No");
-      assertSummaryListRowContainsValues(caseDetails.get(27), "Meetings attended", MEETINGS_ATTENDED);
-      assertSummaryListRowContainsValues(caseDetails.get(28), "Type of advice", ADVICE_TYPE);
-      assertSummaryListRowContainsValues(caseDetails.get(29), "Transfer date", TRANSFER_DATE);
-      assertSummaryListRowContainsValues(caseDetails.get(30), "Medical reports claimed", MEDICAL_REPORTS_CLAIMED.toString());
-      assertSummaryListRowContainsValues(caseDetails.get(31), "Exemption criteria satisfied", EXEMPTION_CRITERIA_SATISFIED);
-      assertSummaryListRowContainsValues(caseDetails.get(32), "Immigration removal centre (IRC) surgery", "Yes");
-      assertSummaryListRowContainsValues(caseDetails.get(33), "Surgery date", SURGERY_DATE);
-      assertSummaryListRowContainsValues(caseDetails.get(34), "Number of clients seen at surgery", SURGERY_CLIENTS_COUNT.toString());
-      assertSummaryListRowContainsValues(caseDetails.get(35), "Number of clients resulting in legal help matter opened", SURGERY_MATTERS_COUNT.toString());
-      assertSummaryListRowContainsValues(caseDetails.get(36), "Postal application accepted", "No");
-      assertSummaryListRowContainsValues(caseDetails.get(37), "Mental health tribunal reference", MENTAL_HEALTH_TRIBUNAL_REFERENCE);
-      assertSummaryListRowContainsValues(caseDetails.get(38), "National referral mechanism (NRM) advice", "No");
-
-    }
-
+    assertSummaryListRowContainsValues(caseDetails.get(1), "Case ID", CASE_ID);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(2), "Case reference number (CRN)", CASE_REFERENCE_NUMBER);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(3), "Case start date", CASE_START_DATE_RENDERED);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(4),
+        "Case concluded date or case claimed date",
+        CASE_CONCLUDED_DATE_RENDERED);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(5), "Unique file number (UFN)", UNIQUE_FILE_NUMBER);
+    assertSummaryListRowContainsValues(caseDetails.get(6), "Case stage or evel", CASE_STAGE);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(7), "Value of costs or damages recovered", VALUE_OF_COSTS_RENDERED);
+    assertSummaryListRowContainsValues(caseDetails.get(8), "Procurement area", PROCUREMENT_AREA);
+    assertSummaryListRowContainsValues(caseDetails.get(9), "Access point", ACCESS_POINT);
+    assertSummaryListRowContainsValues(caseDetails.get(10), "Stage reached", STAGE_REACHED);
+    assertSummaryListRowContainsValues(caseDetails.get(11), "Outcome for client", OUTCOME);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(12),
+        "Exceptional case funding (ECF) reference",
+        EXCEPTIONAL_CASE_FUNDING_REFERENCE);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(13), "Civil Legal Advice (CLA) reference number", CLA_REFERENCE);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(14), "Civil Legal Advice (CLA) exemption code", CLA_EXEMPTION);
+    assertSummaryListRowContainsValues(caseDetails.get(15), "Delivery location", DELIVERY_LOCATION);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(16),
+        "Court location (Housing Possession Court Duty Scheme (HPCDS))",
+        COURT_LOCATION);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(17),
+        "Asylum and Immigration Tribunal (AIT) hearing centre",
+        AIT_HEARING_CENTRE);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(18), "Local authority number", LOCAL_AUTHORITY_NUMBER);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(19),
+        "Designated accredited representative",
+        DESIGNATED_ACCREDITED_REPRESENTATIVE);
+    assertSummaryListRowContainsValues(caseDetails.get(20), "Advice time", ADVICE_TIME.toString());
+    assertSummaryListRowContainsValues(caseDetails.get(21), "Travel time", TRAVEL_TIME.toString());
+    assertSummaryListRowContainsValues(
+        caseDetails.get(22), "Waiting time", WAITING_TIME.toString());
+    assertSummaryListRowContainsValues(caseDetails.get(23), "Additional travel payment", "Yes");
+    assertSummaryListRowContainsValues(caseDetails.get(24), "Follow on work", FOLLOW_ON_WORK);
+    assertSummaryListRowContainsValues(caseDetails.get(25), "Tolerance indicator", "No");
+    assertSummaryListRowContainsValues(caseDetails.get(26), "Legacy case", "No");
+    assertSummaryListRowContainsValues(caseDetails.get(27), "Meetings attended", MEETINGS_ATTENDED);
+    assertSummaryListRowContainsValues(caseDetails.get(28), "Type of advice", ADVICE_TYPE);
+    assertSummaryListRowContainsValues(caseDetails.get(29), "Transfer date", TRANSFER_DATE);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(30), "Medical reports claimed", MEDICAL_REPORTS_CLAIMED.toString());
+    assertSummaryListRowContainsValues(
+        caseDetails.get(31), "Exemption criteria satisfied", EXEMPTION_CRITERIA_SATISFIED);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(32), "Immigration removal centre (IRC) surgery", "Yes");
+    assertSummaryListRowContainsValues(caseDetails.get(33), "Surgery date", SURGERY_DATE);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(34), "Number of clients seen at surgery", SURGERY_CLIENTS_COUNT.toString());
+    assertSummaryListRowContainsValues(
+        caseDetails.get(35),
+        "Number of clients resulting in legal help matter opened",
+        SURGERY_MATTERS_COUNT.toString());
+    assertSummaryListRowContainsValues(caseDetails.get(36), "Postal application accepted", "No");
+    assertSummaryListRowContainsValues(
+        caseDetails.get(37), "Mental health tribunal reference", MENTAL_HEALTH_TRIBUNAL_REFERENCE);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(38), "National referral mechanism (NRM) advice", "No");
+  }
 
   private void assertCommonPageContent(Document doc) {
     assertPageHasTitle(doc, "Claim details");

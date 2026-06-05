@@ -561,7 +561,6 @@ class ClaimMapperTest {
     response.setMentalHealthTribunalReference("MHT_REF");
     response.setIsNrmAdvice(false);
 
-
     UUID claimSummaryFeeId = UUID.randomUUID();
 
     FeeCalculationPatch feeCalc = new FeeCalculationPatch();

@@ -5,9 +5,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
-
 import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.*;
+import org.mapstruct.InheritConfiguration;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.ObjectFactory;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
@@ -122,7 +125,9 @@ public interface ClaimMapper {
   @Mapping(target = "courtLocation", source = "courtLocationCode")
   @Mapping(target = "aitHearingCentre", source = "aitHearingCentreCode")
   @Mapping(target = "localAuthorityNumber", source = "localAuthorityNumber")
-  @Mapping(target = "designatedAccreditedRepresentative", source = "designatedAccreditedRepresentativeCode")
+  @Mapping(
+      target = "designatedAccreditedRepresentative",
+      source = "designatedAccreditedRepresentativeCode")
   @Mapping(target = "adviceTime", source = "adviceTime")
   @Mapping(target = "travelTime", source = "travelTime")
   @Mapping(target = "waitingTime", source = "waitingTime")
@@ -143,13 +148,13 @@ public interface ClaimMapper {
   @Mapping(target = "mentalHealthTribunalReference", source = "mentalHealthTribunalReference")
   @Mapping(target = "isNrmAdvice", source = "isNrmAdvice")
   @Mapping(
-          target = "matterType1",
-          source = "claimResponse.matterTypeCode",
-          qualifiedByName = "matterType1")
+      target = "matterType1",
+      source = "claimResponse.matterTypeCode",
+      qualifiedByName = "matterType1")
   @Mapping(
-          target = "matterType2",
-          source = "claimResponse.matterTypeCode",
-          qualifiedByName = "matterType2")
+      target = "matterType2",
+      source = "claimResponse.matterTypeCode",
+      qualifiedByName = "matterType2")
   CivilClaimDetails mapToCivilClaimDetails(ClaimResponseV2 claimResponse);
 
   @InheritConfiguration(name = "mapToCommonDetails")
