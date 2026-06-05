@@ -244,7 +244,7 @@ public interface ClaimMapper {
   /**
    * Extracts the second part of the matter type code (matterType2) if it exists.
    *
-   * @param matterTypeCode the matterTpeCode string
+   * @param matterTypeCode the matterTypeCode string
    * @return the second part of the matterTypeCode, or null if input is null
    */
   @Named("matterType2")

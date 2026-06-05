@@ -281,7 +281,7 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
         CASE_CONCLUDED_DATE_RENDERED);
     assertSummaryListRowContainsValues(
         caseDetails.get(5), "Unique file number (UFN)", UNIQUE_FILE_NUMBER);
-    assertSummaryListRowContainsValues(caseDetails.get(6), "Case stage or evel", CASE_STAGE);
+    assertSummaryListRowContainsValues(caseDetails.get(6), "Case stage or level", CASE_STAGE);
     assertSummaryListRowContainsValues(
         caseDetails.get(7), "Value of costs or damages recovered", VALUE_OF_COSTS_RENDERED);
     assertSummaryListRowContainsValues(caseDetails.get(8), "Procurement area", PROCUREMENT_AREA);
