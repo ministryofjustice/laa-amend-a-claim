@@ -12,8 +12,7 @@ public class ClaimCaseViewFactory {
   public static ClaimCaseView create(ClaimDetails claim) {
     return switch (claim) {
       case CrimeClaimDetails crimeClaim -> new CrimeClaimCaseView(crimeClaim);
-      case CivilClaimDetails civilClaimDetails ->
-          throw new IllegalArgumentException("TODO: BC-567 will implement this");
+      case CivilClaimDetails civilClaimDetails -> new CivilClaimCaseView(civilClaimDetails);
       case MediationClaimDetails mediationClaim -> new MediationClaimCaseView(mediationClaim);
       default -> throw new IllegalArgumentException("Unsupported ClaimDetails type");
     };

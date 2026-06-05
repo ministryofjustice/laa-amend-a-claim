@@ -2,7 +2,6 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import java.util.Map;
 import java.util.stream.Stream;
-import org.apache.commons.lang3.StringUtils;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 
@@ -22,24 +21,8 @@ public record MediationClaimDetailsView(MediationClaimDetails claim)
 
   @Override
   public void addMatterTypeCodeRow(Map<String, Object> summaryRows) {
-    summaryRows.put("matterTypeCodeOne", getMatterTypeCodeOne());
-    summaryRows.put("matterTypeCodeTwo", getMatterTypeCodeTwo());
-  }
-
-  public String getMatterTypeCodeOne() {
-    if (StringUtils.isNotEmpty(claim.getMatterTypeCode())) {
-      String[] matterType = claim.getMatterTypeCode().split("[+:]");
-      return matterType.length > 0 ? matterType[0] : null;
-    }
-    return null;
-  }
-
-  public String getMatterTypeCodeTwo() {
-    if (StringUtils.isNotEmpty(claim.getMatterTypeCode())) {
-      String[] matterType = claim.getMatterTypeCode().split("[+:]");
-      return matterType.length > 1 ? matterType[1] : null;
-    }
-    return null;
+    summaryRows.put("matterTypeCodeOne", claim.getMatterType1());
+    summaryRows.put("matterTypeCodeTwo", claim.getMatterType2());
   }
 
   @Override

@@ -48,6 +48,8 @@ public class MediationClaimDetails extends ClaimDetails {
   private String outreachLocation;
   private String referralSource;
   private String scheduleReference;
+  private String matterType1;
+  private String matterType2;
 
   @Override
   public boolean isAssessedTotalFieldAssessable() {

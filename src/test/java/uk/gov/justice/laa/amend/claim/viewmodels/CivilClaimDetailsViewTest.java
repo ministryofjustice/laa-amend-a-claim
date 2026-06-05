@@ -46,92 +46,6 @@ public class CivilClaimDetailsViewTest
   }
 
   @Nested
-  class GetMatterTypeCodeOneTests {
-    @Test
-    void getMatterTypeCodeOneWhenInExpectedFormat() {
-      CivilClaimDetails claim = new CivilClaimDetails();
-      claim.setMatterTypeCode("IMLB+AHQS");
-      CivilClaimDetailsView viewModel = createView(claim);
-      Assertions.assertEquals("IMLB", viewModel.getMatterTypeCodeOne());
-    }
-
-    @Test
-    void getMatterTypeCodeOneWhenInUnexpectedFormat() {
-      CivilClaimDetails claim = new CivilClaimDetails();
-      claim.setMatterTypeCode("IMLB");
-      CivilClaimDetailsView viewModel = createView(claim);
-      Assertions.assertEquals("IMLB", viewModel.getMatterTypeCodeOne());
-    }
-
-    @Test
-    void getMatterTypeCodeOneWhenNull() {
-      CivilClaimDetails claim = new CivilClaimDetails();
-      claim.setMatterTypeCode(null);
-      CivilClaimDetailsView viewModel = createView(claim);
-      Assertions.assertNull(null, viewModel.getMatterTypeCodeOne());
-    }
-
-    @Test
-    void getMatterTypeCodeOneWhenEmpty() {
-      CivilClaimDetails claim = new CivilClaimDetails();
-      claim.setMatterTypeCode("");
-      CivilClaimDetailsView viewModel = createView(claim);
-      Assertions.assertNull(null, viewModel.getMatterTypeCodeOne());
-    }
-
-    @Test
-    void getMatterTypeCodeOneWhenBlank() {
-      CivilClaimDetails claim = new CivilClaimDetails();
-      claim.setMatterTypeCode(" ");
-      CivilClaimDetailsView viewModel = createView(claim);
-      Assertions.assertNull(null, viewModel.getMatterTypeCodeOne());
-    }
-  }
-
-  @Nested
-  class GetMatterTypeCodeTwoTests {
-    @Test
-    void getMatterTypeCodeTwoWhenInExpectedFormat() {
-      CivilClaimDetails claim = new CivilClaimDetails();
-      claim.setMatterTypeCode("IMLB+AHQS");
-      CivilClaimDetailsView viewModel = createView(claim);
-      Assertions.assertEquals("AHQS", viewModel.getMatterTypeCodeTwo());
-    }
-
-    @Test
-    void getMatterTypeCodeTwoWhenInUnexpectedFormat() {
-      CivilClaimDetails claim = new CivilClaimDetails();
-      claim.setMatterTypeCode("IMLB");
-      CivilClaimDetailsView viewModel = createView(claim);
-      Assertions.assertNull(viewModel.getMatterTypeCodeTwo());
-    }
-
-    @Test
-    void getMatterTypeCodeTwoWhenNull() {
-      CivilClaimDetails claim = new CivilClaimDetails();
-      claim.setMatterTypeCode(null);
-      CivilClaimDetailsView viewModel = createView(claim);
-      Assertions.assertNull(null, viewModel.getMatterTypeCodeTwo());
-    }
-
-    @Test
-    void getMatterTypeCodeTwoWhenEmpty() {
-      CivilClaimDetails claim = new CivilClaimDetails();
-      claim.setMatterTypeCode("");
-      CivilClaimDetailsView viewModel = createView(claim);
-      Assertions.assertNull(null, viewModel.getMatterTypeCodeTwo());
-    }
-
-    @Test
-    void getMatterTypeCodeTwoWhenBlank() {
-      CivilClaimDetails claim = new CivilClaimDetails();
-      claim.setMatterTypeCode(" ");
-      CivilClaimDetailsView viewModel = createView(claim);
-      Assertions.assertNull(null, viewModel.getMatterTypeCodeTwo());
-    }
-  }
-
-  @Nested
   class GetSummaryRowsTests {
     @Test
     void createMapOfKeyValuePairs() {
@@ -151,7 +65,8 @@ public class CivilClaimDetailsViewTest
       claim.setCategoryOfLaw("category of law");
       claim.setFeeCode("fee code");
       claim.setFeeCodeDescription("fee code description");
-      claim.setMatterTypeCode("IMLB+AHQS");
+      claim.setMatterType1("IMLB");
+      claim.setMatterType2("AHQS");
       claim.setCaseStartDate(caseStartDate);
       claim.setCaseEndDate(caseEndDate);
       claim.setEscaped(true);

@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.stream.Stream;
 import lombok.Data;
@@ -30,6 +31,48 @@ public class CivilClaimDetails extends ClaimDetails {
   private Boolean isEligibleClient;
   private String clientType;
   private String homeOfficeClientNumber;
+
+  private String scheduleReference;
+  private String caseId;
+  private String caseReferenceNumber;
+  private LocalDate caseStartDate;
+  private LocalDate caseConcludedDate;
+  private String uniqueFileNumber;
+  private String caseStage;
+  private BigDecimal valueOfCosts;
+  private String procurementArea;
+  private String accessPoint;
+  private String stageReached;
+  private String outcome;
+  private String exceptionalCaseFundingReference;
+  private String civilLegalAdviceReference;
+  private String civilLegalAdviceExemption;
+  private String deliveryLocation;
+  private String courtLocation;
+  private String aitHearingCentre;
+  private String localAuthorityNumber;
+  private String designatedAccreditedRepresentative;
+  private Integer adviceTime;
+  private Integer travelTime;
+  private Integer waitingTime;
+  private Boolean isAdditionalTravelPayment;
+  private String followOnWork;
+  private Boolean isToleranceApplicable;
+  private Boolean isLegacyCase;
+  private String meetingsAttended;
+  private String adviceType;
+  private LocalDate transferDate; //
+  private Integer medicalReportsClaimed;
+  private String exemptionCriteriaSatisfied;
+  private Boolean isIrcSurgery;
+  private LocalDate surgeryDate; //
+  private Integer surgeryClientsCount;
+  private Integer surgeryMattersCount;
+  private Boolean isPostalApplication;
+  private String mentalHealthTribunalReference;
+  private Boolean isNrmAdvice;
+  private String matterType1;
+  private String matterType2;
 
   @Override
   public boolean isAssessedTotalFieldAssessable() {

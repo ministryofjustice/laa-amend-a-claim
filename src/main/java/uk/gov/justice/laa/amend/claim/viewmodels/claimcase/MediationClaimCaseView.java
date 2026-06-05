@@ -15,7 +15,8 @@ public record MediationClaimCaseView(
     var rows = new LinkedHashMap<String, Object>();
 
     rows.put("feeCode", claim.getFeeCode());
-    rows.put("matterType", claim.getMatterTypeCode());
+    rows.put("matterTypeCodeOne", claim.getMatterType1());
+    rows.put("matterTypeCodeTwo", claim.getMatterType2());
 
     return rows;
   }

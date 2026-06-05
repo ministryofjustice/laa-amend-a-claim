@@ -504,6 +504,61 @@ class ClaimMapperTest {
   }
 
   @Test
+  void mapMatterTypeCodeOneAndTwoWhenInExpectedFormat() {
+    var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
+    response.setMatterTypeCode("IMLB+AHQS");
+    var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
+    String matterType1 = claim.getMatterType1();
+    String matterType2 = claim.getMatterType2();
+    assertEquals("IMLB", matterType1);
+    assertEquals("AHQS", matterType2);
+  }
+
+  @Test
+  void mapMatterTypeCodeOneAndTwoWhenInUnexpectedFormat() {
+    var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
+    response.setMatterTypeCode("IMLB");
+    var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
+    String matterType1 = claim.getMatterType1();
+    String matterType2 = claim.getMatterType2();
+    assertEquals("IMLB", matterType1);
+    assertNull(matterType2);
+  }
+
+  @Test
+  void mapMatterTypeCodeOneAndTwoWhenNull() {
+    var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
+    response.setMatterTypeCode(null);
+    var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
+    String matterType1 = claim.getMatterType1();
+    String matterType2 = claim.getMatterType2();
+    assertNull(matterType1);
+    assertNull(matterType2);
+  }
+
+  @Test
+  void mapMatterTypeCodeOneAndTwoWhenEmpty() {
+    var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
+    response.setMatterTypeCode("");
+    var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
+    String matterType1 = claim.getMatterType1();
+    String matterType2 = claim.getMatterType2();
+    assertNull(matterType1);
+    assertNull(matterType2);
+  }
+
+  @Test
+  void mapMatterTypeCodeOneAndTwoWhenBlank() {
+    var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
+    response.setMatterTypeCode(" ");
+    var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
+    String matterType1 = claim.getMatterType1();
+    String matterType2 = claim.getMatterType2();
+    assertNull(matterType1);
+    assertNull(matterType2);
+  }
+
+  @Test
   void testMapToCivilClaim() {
     var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
     response.setUniqueFileNumber("UFN123");
@@ -524,6 +579,42 @@ class ClaimMapperTest {
     response.setIsEligibleClient(false);
     response.setClientTypeCode("clientType");
     response.setHomeOfficeClientNumber("HOUCN123");
+
+    response.setScheduleReference("SCHEDULE_REF");
+    response.setCaseId("ID_123");
+    response.setCaseStageCode("caseStageCode");
+    response.setCostsDamagesRecoveredAmount(BigDecimal.valueOf(130));
+    response.setProcurementAreaCode("procurementAreaCode");
+    response.setAccessPointCode("accessPointCode");
+    response.setStageReachedCode("stageReachedCode");
+    response.setOutcomeCode("outcomeCode");
+    response.setExceptionalCaseFundingReference("EXC_REF");
+    response.setClaReferenceNumber("CLA_REF");
+    response.setClaExemptionCode("EX_CODE");
+    response.setDeliveryLocation("deliveryLocation");
+    response.setCourtLocationCode("courtLocationCode");
+    response.setAitHearingCentreCode("aitCode");
+    response.setLocalAuthorityNumber("localAuthorityNum");
+    response.setDesignatedAccreditedRepresentativeCode("representativeCode");
+    response.setAdviceTime(90);
+    response.setTravelTime(10);
+    response.setWaitingTime(5);
+    response.setIsAdditionalTravelPayment(true);
+    response.setFollowOnWork("followOnWork");
+    response.setIsToleranceApplicable(true);
+    response.setIsLegacyCase(true);
+    response.setMeetingsAttendedCode("meetingsAttendedCode");
+    response.setAdviceTypeCode("adviceTypeCode");
+    response.setTransferDate("2025-01-12");
+    response.setMedicalReportsCount(0);
+    response.setExemptionCriteriaSatisfied("Yes");
+    response.setIsIrcSurgery(true);
+    response.setSurgeryDate("2025-01-14");
+    response.setSurgeryClientsCount(1);
+    response.setSurgeryMattersCount(1);
+    response.setIsPostalApplicationAccepted(true);
+    response.setMentalHealthTribunalReference("MHT_REF");
+    response.setIsNrmAdvice(false);
 
     UUID claimSummaryFeeId = UUID.randomUUID();
 
@@ -553,7 +644,8 @@ class ClaimMapperTest {
     assertEquals("FeeCodeDesc", claim.getFeeCodeDescription());
     assertEquals("Civil", claim.getCategoryOfLaw());
     assertTrue(claim.getEscaped());
-    assertEquals("MT1+MT2", claim.getMatterTypeCode());
+    assertEquals("MT1", claim.getMatterType1());
+    assertEquals("MT2", claim.getMatterType2());
     assertEquals(claimSummaryFeeId, claim.getClaimSummaryFeeId());
     assertEquals(uk.gov.justice.laa.amend.claim.models.AreaOfLaw.LEGAL_HELP, claim.getAreaOfLaw());
     assertEquals("0P322F", claim.getOfficeCode());
@@ -565,6 +657,42 @@ class ClaimMapperTest {
     assertEquals(false, claim.getIsEligibleClient());
     assertEquals("clientType", claim.getClientType());
     assertEquals("HOUCN123", claim.getHomeOfficeClientNumber());
+
+    assertEquals("SCHEDULE_REF", claim.getScheduleReference());
+    assertEquals("ID_123", claim.getCaseId());
+    assertEquals("caseStageCode", claim.getCaseStage());
+    assertEquals(BigDecimal.valueOf(130), claim.getValueOfCosts());
+    assertEquals("procurementAreaCode", claim.getProcurementArea());
+    assertEquals("accessPointCode", claim.getAccessPoint());
+    assertEquals("stageReachedCode", claim.getStageReached());
+    assertEquals("outcomeCode", claim.getOutcome());
+    assertEquals("EXC_REF", claim.getExceptionalCaseFundingReference());
+    assertEquals("CLA_REF", claim.getCivilLegalAdviceReference());
+    assertEquals("EX_CODE", claim.getCivilLegalAdviceExemption());
+    assertEquals("deliveryLocation", claim.getDeliveryLocation());
+    assertEquals("courtLocationCode", claim.getCourtLocation());
+    assertEquals("aitCode", claim.getAitHearingCentre());
+    assertEquals("localAuthorityNum", claim.getLocalAuthorityNumber());
+    assertEquals("representativeCode", claim.getDesignatedAccreditedRepresentative());
+    assertEquals(90, claim.getAdviceTime());
+    assertEquals(10, claim.getTravelTime());
+    assertEquals(5, claim.getWaitingTime());
+    assertEquals(true, claim.getIsAdditionalTravelPayment());
+    assertEquals("followOnWork", claim.getFollowOnWork());
+    assertEquals(true, claim.getIsToleranceApplicable());
+    assertEquals(true, claim.getIsLegacyCase());
+    assertEquals("meetingsAttendedCode", claim.getMeetingsAttended());
+    assertEquals("adviceTypeCode", claim.getAdviceType());
+    assertEquals(LocalDate.parse("2025-01-12"), claim.getTransferDate());
+    assertEquals(0, claim.getMedicalReportsClaimed());
+    assertEquals("Yes", claim.getExemptionCriteriaSatisfied());
+    assertEquals(true, claim.getIsIrcSurgery());
+    assertEquals(LocalDate.parse("2025-01-14"), claim.getSurgeryDate());
+    assertEquals(1, claim.getSurgeryClientsCount());
+    assertEquals(1, claim.getSurgeryMattersCount());
+    assertEquals(true, claim.getIsPostalApplication());
+    assertEquals("MHT_REF", claim.getMentalHealthTribunalReference());
+    assertEquals(false, claim.getIsNrmAdvice());
   }
 
   @Test
@@ -724,7 +852,8 @@ class ClaimMapperTest {
     assertEquals("FeeCodeDesc", claim.getFeeCodeDescription());
     assertEquals("Civil", claim.getCategoryOfLaw());
     assertTrue(claim.getEscaped());
-    assertEquals("MT1+MT2", claim.getMatterTypeCode());
+    assertEquals("MT1", claim.getMatterType1());
+    assertEquals("MT2", claim.getMatterType2());
     assertEquals(claimSummaryFeeId, claim.getClaimSummaryFeeId());
     assertEquals(uk.gov.justice.laa.amend.claim.models.AreaOfLaw.MEDIATION, claim.getAreaOfLaw());
     assertEquals("0P322F", claim.getOfficeCode());
