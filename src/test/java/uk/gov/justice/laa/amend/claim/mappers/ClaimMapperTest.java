@@ -551,7 +551,7 @@ class ClaimMapperTest {
     response.setMeetingsAttendedCode("meetingsAttendedCode");
     response.setAdviceTypeCode("adviceTypeCode");
     response.setTransferDate("2025-01-12");
-    response.setMediationSessionsCount(0);
+    response.setMedicalReportsCount(0);
     response.setExemptionCriteriaSatisfied("Yes");
     response.setIsIrcSurgery(true);
     response.setSurgeryDate("2025-01-14");
@@ -603,7 +603,7 @@ class ClaimMapperTest {
     assertEquals("clientType", claim.getClientType());
     assertEquals("HOUCN123", claim.getHomeOfficeClientNumber());
 
-    assertEquals("SCHEDULE_REF123", claim.getScheduleReference());
+    assertEquals("SCHEDULE_REF", claim.getScheduleReference());
     assertEquals("ID_123", claim.getCaseId());
     assertEquals("caseStageCode", claim.getCaseStage());
     assertEquals(BigDecimal.valueOf(130), claim.getValueOfCosts());

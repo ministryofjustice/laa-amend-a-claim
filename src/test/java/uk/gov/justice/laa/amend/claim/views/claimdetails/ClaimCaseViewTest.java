@@ -164,6 +164,54 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
         caseDetails.get(10), "Schedule reference (outcome)", SCHEDULE_REFERENCE);
   }
 
+
+    @Test
+    void testShowsCivilClientDetails() {
+        var claim = MockClaimsFunctions.createMockMediationClaim();
+        this.claim = claim;
+        claim.setSubmissionId(submissionId);
+        claim.setClaimId(claimId);
+        claim.setFeeCode(FEE_CODE);
+        claim.setMatterTypeCode(MATTER_TYPE);
+
+        claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
+        claim.setCaseStartDate(CASE_START_DATE);
+        claim.setCaseId(CASE_ID);
+        claim.setUniqueCaseId(UNIQUE_CASE_ID);
+        claim.setCaseEndDate(CASE_END_DATE);
+        claim.setMediationSessionsCount(1);
+        claim.setMediationTimeMinutes(2);
+        claim.setOutcome(OUTCOME);
+        claim.setOutreachLocation(OUTREACH_LOCATION);
+        claim.setReferralSource(REFERRAL_SOURCE);
+        claim.setScheduleReference(SCHEDULE_REFERENCE);
+
+        var doc = renderDocument();
+        assertCommonPageContent(doc);
+
+        var caseType = getSummaryListInCard(doc, "Case type");
+        assertSummaryListRowContainsValues(caseType.getFirst(), "Fee code", FEE_CODE);
+        assertSummaryListRowContainsValues(caseType.get(1), "Matter type", MATTER_TYPE);
+
+        var caseDetails = getSummaryListInCard(doc, "Case details");
+        assertSummaryListRowContainsValues(
+                caseDetails.getFirst(), "Case reference number (CRN)", CASE_REFERENCE_NUMBER);
+        assertSummaryListRowContainsValues(
+                caseDetails.get(1), "Case start date", CASE_START_DATE_RENDERED);
+        assertSummaryListRowContainsValues(caseDetails.get(2), "Claim ID", CASE_ID);
+        assertSummaryListRowContainsValues(caseDetails.get(3), "Unique case ID", UNIQUE_CASE_ID);
+        assertSummaryListRowContainsValues(
+                caseDetails.get(4), "Case concluded date", CASE_END_DATE_RENDERED);
+        assertSummaryListRowContainsValues(caseDetails.get(5), "Number of mediation sessions", "1");
+        assertSummaryListRowContainsValues(caseDetails.get(6), "Mediation time (minutes)", "2");
+        assertSummaryListRowContainsValues(caseDetails.get(7), "Outcome", OUTCOME);
+        assertSummaryListRowContainsValues(caseDetails.get(8), "Outreach location", OUTREACH_LOCATION);
+        assertSummaryListRowContainsValues(caseDetails.get(9), "Referral", REFERRAL_SOURCE);
+        assertSummaryListRowContainsValues(
+                caseDetails.get(10), "Schedule reference (outcome)", SCHEDULE_REFERENCE);
+    }
+
+
   private void assertCommonPageContent(Document doc) {
     assertPageHasTitle(doc, "Claim details");
     assertPageHasHeading(doc, "Claim details");
