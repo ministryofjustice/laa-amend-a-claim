@@ -60,6 +60,7 @@ app:
   email: AmendaBulkClaimTeam@justice.gov.uk
 
 maintenance:
+  banner-title: ${OUTAGE_BANNER_TITLE:Outage Scheduled}
   disable-at-time: ${OUTAGE_BANNER_DISABLE_AT_TIMESTAMP:2026-06-01T00:00:00Z}
   outage-banner-message: ${OUTAGE_BANNER_MESSAGE:System maintenance scheduled.}
 
@@ -106,7 +107,7 @@ logging:
 spring:
   config:
     activate:
-      on-profile: local | e2e | docker
+      on-profile: local | docker
 
 server:
   port: 8090

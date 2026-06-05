@@ -321,7 +321,7 @@ public abstract class ViewTestBase {
 
   protected void assertPageHasInformationAlert(
       Document doc, String expectedTitle, String expectedText) {
-    Element element = selectFirst(doc, ".moj-alert--information");
+    Element element = selectFirst(doc, "#information-alert");
 
     Element title = selectFirst(element, ".moj-alert__heading");
     Assertions.assertEquals(expectedTitle, title.text());

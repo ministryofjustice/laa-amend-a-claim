@@ -47,14 +47,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
-@WebMvcTest(
-    // One of the tests checks for the first alert on the page. This property hides the already
-    // showing outage banner
-    properties = {
-      "maintenance.disable-at-time=2025-01-01T00:00:00Z",
-      "maintenance.outage-banner-message=Service unavailable"
-    },
-    controllers = ClaimSummaryController.class)
+@WebMvcTest(controllers = ClaimSummaryController.class)
 class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
 
   @MockitoBean private ClaimService claimService;
