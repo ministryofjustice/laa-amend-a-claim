@@ -199,6 +199,16 @@ laaAmendAClaim:
         configMapKeyRef:
           name: urls
           key: laa
+    - name: OUTAGE_BANNER_DISABLE_AT_TIMESTAMP
+      valueFrom:
+        configMapKeyRef:
+          name: outage-banner-properties
+          key: outage-banner-disable-at-timestamp
+    - name: OUTAGE_BANNER_MESSAGE
+      valueFrom:
+        configMapKeyRef:
+          name: outage-banner-properties
+          key: outage-banner-message
     - name: IS_BULK_UPLOAD_ENABLED
       value: "true"
     - name: IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED
