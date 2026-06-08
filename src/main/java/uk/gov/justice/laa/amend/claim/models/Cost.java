@@ -15,7 +15,9 @@ public enum Cost {
       "detention-travel-and-waiting-costs", "detentionTravelAndWaitingCosts"),
   JR_FORM_FILLING_COSTS("jr-form-filling-costs", "jrFormFillingCosts"),
   TRAVEL_COSTS("travel-costs", "travelCosts"),
-  WAITING_COSTS("waiting-costs", "waitingCosts");
+  WAITING_COSTS("waiting-costs", "waitingCosts"),
+  NET_COUNSEL_COSTS("net-counsel-costs", "netCounselCosts"),
+  TRAVEL_AND_WAITING_COSTS("travel-and-waiting-costs", "travelAndWaitingCosts");
 
   private final String path;
   private final String prefix;
