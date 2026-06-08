@@ -1,6 +1,24 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.*;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_COUNSEL_COSTS;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_AND_WAITING_COSTS;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.add;
 
 import java.math.BigDecimal;
@@ -233,28 +251,28 @@ public class ClaimMapperHelper {
 
   @Named("mapPriorAuthorityReference")
   public ClaimField mapPriorAuthorityReference(ClaimResponseV2 claimResponse) {
-    return new BoltOnClaimField(CMRH_ORAL, claimResponse.getPriorAuthorityReference(), "Not Applicable");
+    return new BoltOnClaimField(
+        CMRH_ORAL, claimResponse.getPriorAuthorityReference(), "Not Applicable");
   }
 
   @Named("mapTravelAndWaitingCosts")
   public ClaimField mapTravelAndWaitingCosts(ClaimResponseV2 claimResponse) {
     var submitted = claimResponse.getTravelWaitingCostsAmount();
     BigDecimal calculated =
-      claimResponse.getFeeCalculationResponse() != null
-        ? claimResponse.getFeeCalculationResponse().getTravelAndWaitingCostsAmount()
-        : null;
+        claimResponse.getFeeCalculationResponse() != null
+            ? claimResponse.getFeeCalculationResponse().getTravelAndWaitingCostsAmount()
+            : null;
     return new CostClaimField(
-      TRAVEL_AND_WAITING_COSTS, submitted, calculated, Cost.TRAVEL_AND_WAITING_COSTS);
+        TRAVEL_AND_WAITING_COSTS, submitted, calculated, Cost.TRAVEL_AND_WAITING_COSTS);
   }
 
   @Named("mapNetCounselCosts")
   public ClaimField mapNetCounselCosts(ClaimResponseV2 claimResponse) {
     var submitted = claimResponse.getNetCounselCostsAmount();
     BigDecimal calculated =
-      claimResponse.getFeeCalculationResponse() != null
-        ? claimResponse.getFeeCalculationResponse().getNetCostOfCounselAmount()
-        : null;
-    return new CostClaimField(
-      NET_COUNSEL_COSTS, submitted, calculated, Cost.NET_COUNSEL_COSTS);
+        claimResponse.getFeeCalculationResponse() != null
+            ? claimResponse.getFeeCalculationResponse().getNetCostOfCounselAmount()
+            : null;
+    return new CostClaimField(NET_COUNSEL_COSTS, submitted, calculated, Cost.NET_COUNSEL_COSTS);
   }
 }

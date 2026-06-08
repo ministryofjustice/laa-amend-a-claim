@@ -146,16 +146,23 @@ public interface ClaimMapper {
   @Mapping(target = "isPostalApplication", source = "isPostalApplicationAccepted")
   @Mapping(target = "mentalHealthTribunalReference", source = "mentalHealthTribunalReference")
   @Mapping(target = "isNrmAdvice", source = "isNrmAdvice")
-  @Mapping(target = "netCounselCosts", source = "claimResponse",
-          qualifiedByName = "mapNetCounselCosts")
-  @Mapping(target = "travelAndWaitingCosts", source = "claimResponse",
-          qualifiedByName = "mapTravelAndWaitingCosts")
-  @Mapping(target = "isVatApplicable", source = "claimResponse",
-          qualifiedByName = "mapIsVatApplicable")
-  @Mapping(target = "isLondonRate", source = "claimResponse",
-          qualifiedByName = "mapIsLondonRate")
-  @Mapping(target = "priorAuthorityReference", source = "claimResponse",
-          qualifiedByName = "mapPriorAuthorityReference")
+  @Mapping(
+      target = "netCounselCosts",
+      source = "claimResponse",
+      qualifiedByName = "mapNetCounselCosts")
+  @Mapping(
+      target = "travelAndWaitingCosts",
+      source = "claimResponse",
+      qualifiedByName = "mapTravelAndWaitingCosts")
+  @Mapping(
+      target = "isVatApplicable",
+      source = "claimResponse",
+      qualifiedByName = "mapIsVatApplicable")
+  @Mapping(target = "isLondonRate", source = "claimResponse", qualifiedByName = "mapIsLondonRate")
+  @Mapping(
+      target = "priorAuthorityReference",
+      source = "claimResponse",
+      qualifiedByName = "mapPriorAuthorityReference")
   @Mapping(
       target = "matterType1",
       source = "claimResponse.matterTypeCode",
