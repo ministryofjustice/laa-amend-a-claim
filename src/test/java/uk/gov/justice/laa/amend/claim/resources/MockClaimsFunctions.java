@@ -1,23 +1,7 @@
 package uk.gov.justice.laa.amend.claim.resources;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.*;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -73,6 +57,9 @@ public class MockClaimsFunctions {
     claim.setVatClaimed(createVatClaimedField());
     claim.setAssessmentOutcome(OutcomeType.REDUCED);
     claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
+    claim.setTravelAndWaitingCosts(createTravelAndWaitingCostsField());
+    claim.setIsLondonRate(createIsLondonRateField());
+    claim.setPriorAuthorityReference(createPriorAuthorityField());
 
     claim.setAssessedTotalVat(createAssessedTotalVatField());
     claim.setAssessedTotalInclVat(createAssessedTotalInclVatField());
@@ -219,6 +206,18 @@ public class MockClaimsFunctions {
   public static BoltOnClaimField createAdjournedHearingField() {
     return createBoltOnField(ADJOURNED_FEE);
   }
+
+  public static BoltOnClaimField createTravelAndWaitingCostsField() {
+        return createBoltOnField(TRAVEL_AND_WAITING_COSTS);
+  }
+
+  public static BoltOnClaimField createIsLondonRateField() {
+        return createBoltOnField(IS_LONDON_RATE);
+    }
+
+  public static BoltOnClaimField createPriorAuthorityField() {
+        return createBoltOnField(PRIOR_AUTHORITY_REFERENCE);
+    }
 
   public static BoltOnClaimField createCmrhOralField() {
     return createBoltOnField(CMRH_ORAL);
