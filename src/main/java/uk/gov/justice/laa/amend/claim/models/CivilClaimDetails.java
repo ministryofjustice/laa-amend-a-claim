@@ -28,7 +28,6 @@ public class CivilClaimDetails extends ClaimDetails {
 
   private ClaimField netCounselCosts;
   private ClaimField travelAndWaitingCosts;
-  private ClaimField isVatApplicable;
   private ClaimField isLondonRate;
   private ClaimField priorAuthorityReference;
 
@@ -145,7 +144,6 @@ public class CivilClaimDetails extends ClaimDetails {
         getCmrhOral(),
         getCmrhTelephone(),
         getDetentionTravelWaitingCosts(),
-        getIsVatApplicable(),
         getPriorAuthorityReference(),
         getIsLondonRate());
   }

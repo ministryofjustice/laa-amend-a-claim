@@ -154,10 +154,6 @@ public interface ClaimMapper {
       target = "travelAndWaitingCosts",
       source = "claimResponse",
       qualifiedByName = "mapTravelAndWaitingCosts")
-  @Mapping(
-      target = "isVatApplicable",
-      source = "claimResponse",
-      qualifiedByName = "mapIsVatApplicable")
   @Mapping(target = "isLondonRate", source = "claimResponse", qualifiedByName = "mapIsLondonRate")
   @Mapping(
       target = "priorAuthorityReference",

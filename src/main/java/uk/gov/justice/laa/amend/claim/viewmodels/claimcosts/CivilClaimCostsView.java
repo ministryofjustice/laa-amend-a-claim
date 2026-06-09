@@ -21,7 +21,7 @@ public record CivilClaimCostsView(List<ClaimFieldRow> rows, boolean hasAssessmen
             claim.getNetCounselCosts(),
             claim.getDisbursementVatAmount(),
             claim.getTravelAndWaitingCosts(),
-            claim.getIsVatApplicable(),
+            claim.getVatClaimed(),
             claim.getAdjournedHearing(),
             claim.getDetentionTravelWaitingCosts(),
             claim.getJrFormFillingCost(),

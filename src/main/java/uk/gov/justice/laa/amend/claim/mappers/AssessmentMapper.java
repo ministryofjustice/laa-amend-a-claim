@@ -119,7 +119,6 @@ public interface AssessmentMapper {
   @Mapping(target = "adjournedHearing", ignore = true)
   @Mapping(target = "substantiveHearing", ignore = true)
   @Mapping(target = "counselsCost", ignore = true)
-  @Mapping(target = "isVatApplicable", ignore = true)
   CivilClaimDetails mapToCivilClaim(
       AssessmentInfo assessmentInfo, @MappingTarget CivilClaimDetails claimDetails);
 

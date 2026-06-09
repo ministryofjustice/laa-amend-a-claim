@@ -24,15 +24,7 @@ import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.add;
 import java.math.BigDecimal;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
-import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
-import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
-import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
-import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.Cost;
-import uk.gov.justice.laa.amend.claim.models.CostClaimField;
-import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
-import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
+import uk.gov.justice.laa.amend.claim.models.*;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
@@ -239,20 +231,15 @@ public class ClaimMapperHelper {
     return new AllowedClaimField(ALLOWED_TOTAL_INCL_VAT, calculated);
   }
 
-  @Named("mapIsVatApplicable")
-  public ClaimField mapIsVatApplicable(ClaimResponseV2 claimResponse) {
-    return new BoltOnClaimField(CMRH_ORAL, claimResponse.getIsVatApplicable(), "Not Applicable");
-  }
-
   @Named("mapIsLondonRate")
   public ClaimField mapIsLondonRate(ClaimResponseV2 claimResponse) {
-    return new BoltOnClaimField(CMRH_ORAL, claimResponse.getIsLondonRate(), "Not Applicable");
+    return new SubmittedClaimField(CMRH_ORAL, claimResponse.getIsLondonRate());
   }
 
   @Named("mapPriorAuthorityReference")
   public ClaimField mapPriorAuthorityReference(ClaimResponseV2 claimResponse) {
-    return new BoltOnClaimField(
-        CMRH_ORAL, claimResponse.getPriorAuthorityReference(), "Not Applicable");
+    return new SubmittedClaimField(
+        CMRH_ORAL, claimResponse.getPriorAuthorityReference());
   }
 
   @Named("mapTravelAndWaitingCosts")
