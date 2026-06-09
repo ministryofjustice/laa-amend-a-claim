@@ -147,10 +147,6 @@ public interface ClaimMapper {
   @Mapping(target = "mentalHealthTribunalReference", source = "mentalHealthTribunalReference")
   @Mapping(target = "isNrmAdvice", source = "isNrmAdvice")
   @Mapping(
-      target = "netCounselCosts",
-      source = "claimResponse",
-      qualifiedByName = "mapNetCounselCosts")
-  @Mapping(
       target = "travelAndWaitingCosts",
       source = "claimResponse",
       qualifiedByName = "mapTravelAndWaitingCosts")

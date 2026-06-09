@@ -18,7 +18,7 @@ public record CivilClaimCostsView(List<ClaimFieldRow> rows, boolean hasAssessmen
             claim.getFixedFee(),
             claim.getNetProfitCost(),
             claim.getNetDisbursementAmount(),
-            claim.getNetCounselCosts(),
+            claim.getCounselsCost(),
             claim.getDisbursementVatAmount(),
             claim.getTravelAndWaitingCosts(),
             claim.getVatClaimed(),

@@ -12,7 +12,6 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_COUNSEL_COSTS;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
@@ -251,15 +250,5 @@ public class ClaimMapperHelper {
             : null;
     return new CostClaimField(
         TRAVEL_AND_WAITING_COSTS, submitted, calculated, Cost.TRAVEL_AND_WAITING_COSTS);
-  }
-
-  @Named("mapNetCounselCosts")
-  public ClaimField mapNetCounselCosts(ClaimResponseV2 claimResponse) {
-    var submitted = claimResponse.getNetCounselCostsAmount();
-    BigDecimal calculated =
-        claimResponse.getFeeCalculationResponse() != null
-            ? claimResponse.getFeeCalculationResponse().getNetCostOfCounselAmount()
-            : null;
-    return new CostClaimField(NET_COUNSEL_COSTS, submitted, calculated, Cost.NET_COUNSEL_COSTS);
   }
 }

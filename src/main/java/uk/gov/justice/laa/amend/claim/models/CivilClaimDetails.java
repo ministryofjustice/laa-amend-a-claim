@@ -26,7 +26,6 @@ public class CivilClaimDetails extends ClaimDetails {
   private ClaimField substantiveHearing;
   private ClaimField counselsCost;
 
-  private ClaimField netCounselCosts;
   private ClaimField travelAndWaitingCosts;
   private ClaimField isLondonRate;
   private ClaimField priorAuthorityReference;
@@ -104,7 +103,6 @@ public class CivilClaimDetails extends ClaimDetails {
       case COUNSEL_COSTS -> getCounselsCost();
       case DETENTION_TRAVEL_AND_WAITING_COSTS -> getDetentionTravelWaitingCosts();
       case JR_FORM_FILLING_COSTS -> getJrFormFillingCost();
-      case NET_COUNSEL_COSTS -> getNetCounselCosts();
       case TRAVEL_AND_WAITING_COSTS -> getTravelAndWaitingCosts();
       default -> {
         var message = "Claim %s does not support this cost".formatted(getClaimId());
@@ -123,7 +121,6 @@ public class CivilClaimDetails extends ClaimDetails {
       case COUNSEL_COSTS -> setCounselsCost(claimField);
       case DETENTION_TRAVEL_AND_WAITING_COSTS -> setDetentionTravelWaitingCosts(claimField);
       case JR_FORM_FILLING_COSTS -> setJrFormFillingCost(claimField);
-      case NET_COUNSEL_COSTS -> setNetCounselCosts(claimField);
       case TRAVEL_AND_WAITING_COSTS -> setTravelAndWaitingCosts(claimField);
       default -> {
         var message = "Claim %s does not support this cost".formatted(getClaimId());
@@ -144,6 +141,7 @@ public class CivilClaimDetails extends ClaimDetails {
         getCmrhOral(),
         getCmrhTelephone(),
         getDetentionTravelWaitingCosts(),
+        getTravelAndWaitingCosts(),
         getPriorAuthorityReference(),
         getIsLondonRate());
   }
