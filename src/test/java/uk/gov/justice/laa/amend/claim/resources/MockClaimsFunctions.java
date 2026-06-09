@@ -42,6 +42,7 @@ import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.models.SubmittedClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
@@ -230,12 +231,12 @@ public class MockClaimsFunctions {
     return createBoltOnField(TRAVEL_AND_WAITING_COSTS);
   }
 
-  public static BoltOnClaimField createIsLondonRateField() {
-    return createBoltOnField(IS_LONDON_RATE);
+  public static SubmittedClaimField createIsLondonRateField() {
+    return createSubmittedClaimField(IS_LONDON_RATE);
   }
 
-  public static BoltOnClaimField createPriorAuthorityField() {
-    return createBoltOnField(PRIOR_AUTHORITY_REFERENCE);
+  public static SubmittedClaimField createPriorAuthorityField() {
+    return createSubmittedClaimField(PRIOR_AUTHORITY_REFERENCE);
   }
 
   public static BoltOnClaimField createCmrhOralField() {
@@ -262,6 +263,13 @@ public class MockClaimsFunctions {
         .assessed(BigDecimal.valueOf(300))
         .build();
   }
+
+    private static SubmittedClaimField createSubmittedClaimField(String key) {
+        return SubmittedClaimField.builder()
+                .key(key)
+                .submitted("submittedValue")
+                .build();
+    }
 
   public static AssessedClaimField createAssessedTotalVatField() {
     return createAssessedTotalField(ASSESSED_TOTAL_VAT);
