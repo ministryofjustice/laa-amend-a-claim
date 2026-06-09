@@ -1,23 +1,6 @@
 package uk.gov.justice.laa.amend.claim.mappers;
 
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_ORAL;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.COUNSELS_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_AND_WAITING_COSTS;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
-import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.*;
 import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.add;
 
 import java.math.BigDecimal;
@@ -232,13 +215,13 @@ public class ClaimMapperHelper {
 
   @Named("mapIsLondonRate")
   public ClaimField mapIsLondonRate(ClaimResponseV2 claimResponse) {
-    return new SubmittedClaimField(CMRH_ORAL, claimResponse.getIsLondonRate());
+    return new SubmittedClaimField(IS_LONDON_RATE, claimResponse.getIsLondonRate());
   }
 
   @Named("mapPriorAuthorityReference")
   public ClaimField mapPriorAuthorityReference(ClaimResponseV2 claimResponse) {
     return new SubmittedClaimField(
-        CMRH_ORAL, claimResponse.getPriorAuthorityReference());
+        PRIOR_AUTHORITY_REFERENCE, claimResponse.getPriorAuthorityReference());
   }
 
   @Named("mapTravelAndWaitingCosts")

@@ -57,6 +57,8 @@ public class AmendClaimConstants {
     public static final String ALLOWED_TOTAL_VAT = "allowedTotalVat";
     public static final String ALLOWED_TOTAL_INCL_VAT = "allowedTotalInclVat";
     public static final String TRAVEL_AND_WAITING_COSTS = "travelAndWaitingCosts";
+    public static final String IS_LONDON_RATE = "isLondonRate";
+    public static final String PRIOR_AUTHORITY_REFERENCE = "priorAuthorityReference";
   }
 
   public static final String ASSESSMENT_ID = "assessmentId";
