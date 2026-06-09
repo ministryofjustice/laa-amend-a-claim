@@ -2,7 +2,14 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
 
-import uk.gov.justice.laa.amend.claim.models.*;
+import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
+import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
+import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
+import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
+import uk.gov.justice.laa.amend.claim.models.CostClaimField;
+import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
+import uk.gov.justice.laa.amend.claim.models.SubmittedClaimField;
+import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.amend.claim.utils.FormUtils;
 
 public record ClaimFieldRow(
@@ -101,15 +108,15 @@ public record ClaimFieldRow(
         "/submissions/%s/claims/%s/assessment-outcome");
   }
 
-    public static ClaimFieldRow from(SubmittedClaimField claimField) {
-        return new ClaimFieldRow(
-                claimField.getKey(),
-                claimField.getSubmitted(),
-                null,
-                null,
-                claimField.isAssessable(),
-                null);
-    }
+  public static ClaimFieldRow from(SubmittedClaimField claimField) {
+    return new ClaimFieldRow(
+        claimField.getKey(),
+        claimField.getSubmitted(),
+        null,
+        null,
+        claimField.isAssessable(),
+        null);
+  }
 
   public String getLabel() {
     return String.format("claimSummary.rows.%s", key);
