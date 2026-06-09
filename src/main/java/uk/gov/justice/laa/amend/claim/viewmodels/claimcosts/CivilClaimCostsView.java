@@ -31,7 +31,7 @@ public record CivilClaimCostsView(List<ClaimFieldRow> rows, boolean hasAssessmen
             claim.getCmrhTelephone(),
             claim.getIsLondonRate(),
             claim.getPriorAuthorityReference())
-        .map(ClaimField::toClaimFieldRow)
+        .map(ClaimField::toCustomClaimFieldRow)
         .toList();
   }
 }

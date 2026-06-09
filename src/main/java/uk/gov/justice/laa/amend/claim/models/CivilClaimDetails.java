@@ -141,6 +141,7 @@ public class CivilClaimDetails extends ClaimDetails {
         getCmrhOral(),
         getCmrhTelephone(),
         getDetentionTravelWaitingCosts(),
+
         getTravelAndWaitingCosts(),
         getPriorAuthorityReference(),
         getIsLondonRate());

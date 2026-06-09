@@ -2,14 +2,7 @@ package uk.gov.justice.laa.amend.claim.viewmodels;
 
 import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.getOrElseZero;
 
-import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
-import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
-import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
-import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
-import uk.gov.justice.laa.amend.claim.models.CostClaimField;
-import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
-import uk.gov.justice.laa.amend.claim.models.SubmittedClaimField;
-import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
+import uk.gov.justice.laa.amend.claim.models.*;
 import uk.gov.justice.laa.amend.claim.utils.FormUtils;
 
 public record ClaimFieldRow(
@@ -42,17 +35,17 @@ public record ClaimFieldRow(
 
   public static ClaimFieldRow from(BoltOnClaimField claimField) {
     if (claimField.hasSubmittedValue()) {
-      return new ClaimFieldRow(
-          claimField.getKey(),
-          claimField.getSubmitted(),
-          claimField.getCalculated(),
-          claimField.getAssessed(),
-          claimField.isAssessable(),
-          null);
+      return createRow(claimField, claimField.getSubmitted(), claimField.getCalculated());
     }
     return null;
   }
 
+  public static ClaimFieldRow fromCustom(BoltOnClaimField claimField) {
+    if (!claimField.hasSubmittedValue()) {
+        return createRow(claimField, "Not applicable", "Not applicable");
+      }
+    return createRow(claimField, claimField.getSubmitted(), claimField.getCalculated());
+  }
   public static ClaimFieldRow from(CostClaimField claimField) {
     Object submitted;
     Object calculated;
@@ -149,4 +142,14 @@ public record ClaimFieldRow(
   public boolean hasAssessedValue() {
     return assessed != null;
   }
+
+  private static ClaimFieldRow createRow(ClaimField claimField, Object submitted, Object calculated){
+    return new ClaimFieldRow(
+      claimField.getKey(),
+      submitted,
+      calculated,
+      claimField.getAssessed(),
+      claimField.isAssessable(),
+      null);
+    }
 }

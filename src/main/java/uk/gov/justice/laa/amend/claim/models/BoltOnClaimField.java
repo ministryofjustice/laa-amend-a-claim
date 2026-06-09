@@ -35,4 +35,9 @@ public class BoltOnClaimField extends ClaimField {
   public ClaimFieldRow toClaimFieldRow() {
     return ClaimFieldRow.from(this);
   }
+
+  @Override
+  public ClaimFieldRow toCustomClaimFieldRow() {
+    return ClaimFieldRow.fromCustom(this);
+  }
 }

@@ -45,6 +45,8 @@ public abstract class ClaimField {
 
   public abstract ClaimFieldRow toClaimFieldRow();
 
+  public ClaimFieldRow toCustomClaimFieldRow() {return toClaimFieldRow();};
+
   public abstract void applyOutcome(OutcomeType outcome);
 
   protected void setNilled() {
