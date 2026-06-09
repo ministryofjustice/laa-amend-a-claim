@@ -317,7 +317,7 @@ class ClaimMapperTest {
     assertEquals(true, claimField.getSubmitted());
     assertNull(claimField.getCalculated());
     assertNull(claimField.getAssessed());
-    }
+  }
 
   @Test
   void mapPriorAuthorityReference() {

@@ -87,52 +87,69 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
         clientDetails.get(4), "Disbursements VAT", SUBMITTED, CALCULATED, ASSESSED);
   }
 
-    @Test
-    void testShowsCivilCosts() {
-      var claim = MockClaimsFunctions.createMockCivilClaim();
-      this.claim = claim;
-      claim.setSubmissionId(submissionId);
-      claim.setClaimId(claimId);
-      claim.setHasAssessment(true);
-      claim.setLastAssessment(AssessmentInfo.builder().lastAssessmentOutcome(PAID_IN_FULL).build());
-      when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+  @Test
+  void testShowsCivilCosts() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setHasAssessment(true);
+    claim.setLastAssessment(AssessmentInfo.builder().lastAssessmentOutcome(PAID_IN_FULL).build());
+    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
 
-      var doc = renderDocument();
-      assertCommonPageContent(doc);
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
 
-      var clientDetails = getSummaryListInCard(doc, "List of costs");
-      assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Requested", "Calculated");
-      assertSummaryListRowContainsValues(
+    var clientDetails = getSummaryListInCard(doc, "List of costs");
+    assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Requested", "Calculated");
+    assertSummaryListRowContainsValues(
         clientDetails.get(1), "Fixed fee", NOT_APPLICABLE, CALCULATED, ASSESSED);
-      assertSummaryListRowContainsValues(clientDetails.get(2), "Net profit costs", SUBMITTED, NOT_APPLICABLE, ASSESSED);
-      assertSummaryListRowContainsValues(
-                clientDetails.get(3), "Net disbursements", SUBMITTED, CALCULATED, ASSESSED);
-      assertSummaryListRowContainsValues(
+    assertSummaryListRowContainsValues(
+        clientDetails.get(2), "Net profit costs", SUBMITTED, NOT_APPLICABLE, ASSESSED);
+    assertSummaryListRowContainsValues(
+        clientDetails.get(3), "Net disbursements", SUBMITTED, CALCULATED, ASSESSED);
+    assertSummaryListRowContainsValues(
         clientDetails.get(4), "Net cost of counsel", SUBMITTED, CALCULATED, ASSESSED);
-      assertSummaryListRowContainsValues(
+    assertSummaryListRowContainsValues(
         clientDetails.get(5), "Disbursements VAT", SUBMITTED, CALCULATED, ASSESSED);
-      assertSummaryListRowContainsValues(
-                clientDetails.get(6), "Travel and waiting costs", SUBMITTED, CALCULATED, ASSESSED);
-        assertSummaryListRowContainsValues(clientDetails.get(7), "VAT indicator", "Yes", "No", "Yes");
-      assertSummaryListRowContainsValues(
-                clientDetails.get(8), "Adjourned hearing fee", SUBMITTED, CALCULATED, ASSESSED);
-      assertSummaryListRowContainsValues(
-                clientDetails.get(9), "Detention, travel and waiting (DTW) costs", SUBMITTED, CALCULATED, ASSESSED);
-      assertSummaryListRowContainsValues(
-                clientDetails.get(10), "Judicial review or form filling", SUBMITTED, CALCULATED, ASSESSED);
-        assertSummaryListRowContainsValues(
-                clientDetails.get(11), "Substantive hearing", SUBMITTED, CALCULATED, ASSESSED);
-        assertSummaryListRowContainsValues(
-                clientDetails.get(12), "Home Office Interview", SUBMITTED, CALCULATED, ASSESSED);
-        assertSummaryListRowContainsValues(
-                clientDetails.get(13), "Case management review hearing (CMRH)-oral", SUBMITTED, CALCULATED, ASSESSED);
-        assertSummaryListRowContainsValues(
-                clientDetails.get(14), "Case management review hearing (CMRH)-telephone", SUBMITTED, CALCULATED, ASSESSED);
-        assertSummaryListRowContainsValues(
-                clientDetails.get(15), "London rate", SUBMITTED, CALCULATED, ASSESSED);
-        assertSummaryListRowContainsValues(
-                clientDetails.get(16), "National Immigration Asylum Team Disbursement prior authority number", SUBMITTED, CALCULATED, ASSESSED);
-    }
+    assertSummaryListRowContainsValues(
+        clientDetails.get(6), "Travel and waiting costs", SUBMITTED, CALCULATED, ASSESSED);
+    assertSummaryListRowContainsValues(clientDetails.get(7), "VAT indicator", "Yes", "No", "Yes");
+    assertSummaryListRowContainsValues(
+        clientDetails.get(8), "Adjourned hearing fee", SUBMITTED, CALCULATED, ASSESSED);
+    assertSummaryListRowContainsValues(
+        clientDetails.get(9),
+        "Detention, travel and waiting (DTW) costs",
+        SUBMITTED,
+        CALCULATED,
+        ASSESSED);
+    assertSummaryListRowContainsValues(
+        clientDetails.get(10), "Judicial review or form filling", SUBMITTED, CALCULATED, ASSESSED);
+    assertSummaryListRowContainsValues(
+        clientDetails.get(11), "Substantive hearing", SUBMITTED, CALCULATED, ASSESSED);
+    assertSummaryListRowContainsValues(
+        clientDetails.get(12), "Home Office Interview", SUBMITTED, CALCULATED, ASSESSED);
+    assertSummaryListRowContainsValues(
+        clientDetails.get(13),
+        "Case management review hearing (CMRH)-oral",
+        SUBMITTED,
+        CALCULATED,
+        ASSESSED);
+    assertSummaryListRowContainsValues(
+        clientDetails.get(14),
+        "Case management review hearing (CMRH)-telephone",
+        SUBMITTED,
+        CALCULATED,
+        ASSESSED);
+    assertSummaryListRowContainsValues(
+        clientDetails.get(15), "London rate", SUBMITTED, CALCULATED, ASSESSED);
+    assertSummaryListRowContainsValues(
+        clientDetails.get(16),
+        "National Immigration Asylum Team Disbursement prior authority number",
+        SUBMITTED,
+        CALCULATED,
+        ASSESSED);
+  }
 
   private void assertCommonPageContent(Document doc) {
     assertPageHasTitle(doc, "Claim details");
