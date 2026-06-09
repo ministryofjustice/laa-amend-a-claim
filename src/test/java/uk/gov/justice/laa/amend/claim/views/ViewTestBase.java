@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
+import uk.gov.justice.laa.amend.claim.config.ViewTestConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Role;
@@ -39,7 +40,7 @@ import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
 
 @ActiveProfiles("local")
-@Import({LocalSecurityConfig.class, ThymeleafConfig.class})
+@Import({LocalSecurityConfig.class, ThymeleafConfig.class, ViewTestConfig.class})
 public abstract class ViewTestBase {
 
   @Autowired protected MockMvc mockMvc;
@@ -320,7 +321,7 @@ public abstract class ViewTestBase {
 
   protected void assertPageHasInformationAlert(
       Document doc, String expectedTitle, String expectedText) {
-    Element element = selectFirst(doc, ".moj-alert--information");
+    Element element = selectFirst(doc, "#information-alert");
 
     Element title = selectFirst(element, ".moj-alert__heading");
     Assertions.assertEquals(expectedTitle, title.text());

@@ -26,7 +26,7 @@ Example .env contents:
 * UI_BASE_URL=http://localhost:8090
 * P_USERNAME=<your test@devl.justice.gov.uk email>
 * P_PASSWORD=<your test@devl.justice.gov.uk password>
-* MFA_SECRET=<see below instructions>
+* P_MFA_SECRET=<see below instructions>
 * HEADLESS=true
 * BROWSER=chromium
 * API_BASE=https://reqres.in

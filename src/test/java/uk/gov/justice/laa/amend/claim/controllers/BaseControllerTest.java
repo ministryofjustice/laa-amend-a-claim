@@ -28,6 +28,8 @@ public abstract class BaseControllerTest {
 
   @MockitoBean protected MaintenanceService maintenanceService;
 
+  @MockitoBean protected OutageBannerAdvice outageBannerAdvice;
+
   @BeforeEach
   public void beforeEach() {
     dummyUserSecurityService.setRoles(Set.of(Role.values()));

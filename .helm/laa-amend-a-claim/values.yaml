@@ -191,6 +191,16 @@ env:
       configMapKeyRef:
         name: feature-flags
         key: is-full-claim-details-enabled
+  - name: OUTAGE_BANNER_DISABLE_AT_TIMESTAMP
+    valueFrom:
+      configMapKeyRef:
+        name: outage-banner-properties
+        key: outage-banner-disable-at-timestamp
+  - name: OUTAGE_BANNER_MESSAGE
+    valueFrom:
+      configMapKeyRef:
+        name: outage-banner-properties
+        key: outage-banner-message
 autoscaling:
   enabled: false
   minReplicas: 1

@@ -59,6 +59,11 @@ app:
   laa-url: ${LAA_URL}
   email: AmendaBulkClaimTeam@justice.gov.uk
 
+maintenance:
+  banner-title: ${OUTAGE_BANNER_TITLE:Outage Scheduled}
+  disable-at-time: ${OUTAGE_BANNER_DISABLE_AT_TIMESTAMP:2026-06-01T00:00:00Z}
+  outage-banner-message: ${OUTAGE_BANNER_MESSAGE:System maintenance scheduled.}
+
 feature-flags:
   is-bulk-upload-enabled: ${IS_BULK_UPLOAD_ENABLED:false}
   is-requested-and-calculated-swap-enabled: ${IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED:false}
@@ -102,7 +107,7 @@ logging:
 spring:
   config:
     activate:
-      on-profile: local | e2e | docker
+      on-profile: local | docker
 
 server:
   port: 8090

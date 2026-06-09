@@ -47,7 +47,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
-@WebMvcTest(ClaimSummaryController.class)
+@WebMvcTest(controllers = ClaimSummaryController.class)
 class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
 
   @MockitoBean private ClaimService claimService;
