@@ -232,11 +232,11 @@ public class MockClaimsFunctions {
   }
 
   public static SubmittedClaimField createIsLondonRateField() {
-    return createSubmittedClaimField(IS_LONDON_RATE);
+    return createSubmittedClaimField(IS_LONDON_RATE, "Yes");
   }
 
   public static SubmittedClaimField createPriorAuthorityField() {
-    return createSubmittedClaimField(PRIOR_AUTHORITY_REFERENCE);
+    return createSubmittedClaimField(PRIOR_AUTHORITY_REFERENCE, "PRIOR_AUTHORITY_REF");
   }
 
   public static BoltOnClaimField createCmrhOralField() {
@@ -264,8 +264,8 @@ public class MockClaimsFunctions {
         .build();
   }
 
-  private static SubmittedClaimField createSubmittedClaimField(String key) {
-    return SubmittedClaimField.builder().key(key).submitted("submittedValue").build();
+  private static SubmittedClaimField createSubmittedClaimField(String key, String submitted) {
+    return SubmittedClaimField.builder().key(key).submitted(submitted).build();
   }
 
   public static AssessedClaimField createAssessedTotalVatField() {
