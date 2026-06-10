@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{amendments.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${true}
+    )}">
+<body>
+<main class="govuk-main-wrapper" id="main-content">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <!-- TODO: Amend header -->
+      <!--      <th:block th:replace="~{partials/claim-details-header :: claimDetailsHeader(currentPage='client')}"></th:block>-->
+
+      <h1 class="govuk-heading-l">
+        <span th:text="#{amendments.title}"></span>
+      </h1>
+
+      <h2 class="govuk-heading-m" th:text="#{claimDetails.clientHeading}"></h2>
+
+      <p th:text="${'clientView:' + clientView.client1Rows}"></p>
+      <p th:text="${'clientForm:' + clientForm.inputs}"></p>
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title"
+              th:text="${#maps.isEmpty(clientView.client2Rows)}
+                                    ? #{claimClient.clientDetails}
+                                    : #{claimClient.client1Details}">
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" th:href="${flowExecutionUrl + '&_eventId_change'}" th:text="#{amendments.change}"></a>
+            </li>
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+
+            <!-- TODO: header row if amended-->
+
+            <div class="govuk-summary-list__row" th:each="entry : ${clientView.client1Rows}">
+              <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key}}"></dt>
+              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+
+              <!-- TODO: amended column if amended-->
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="govuk-summary-card" th:if="${!#maps.isEmpty(clientView.client2Rows)}">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title"
+              th:text="#{claimClient.client2Details}">
+          </h2>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row" th:each="entry : ${clientView.client2Rows}">
+              <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key}}"></dt>
+              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <!-- TODO: Footer-->
+    </div>
+  </div>
+</main>
+</body>
+</html>

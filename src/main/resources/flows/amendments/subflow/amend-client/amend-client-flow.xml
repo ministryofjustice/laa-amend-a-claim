@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
+  start-state="decision-check-feature-flag">
+
+  <input name="submissionId" type="java.util.UUID"/>
+  <input name="claimId" type="java.util.UUID"/>
+  <input name="clientView" type="uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientView"/>
+  <input name="clientForm"/>
+
+  <decision-state id="decision-check-feature-flag">
+    <if test="featureFlagsConfig.getIsClaimAmendmentEnabled()"
+      then="amend-client"
+      else="not-found"/>
+  </decision-state>
+
+  <view-state id="amend-client" view="amendments/amend-client" model="clientForm">
+    <transition on="continue" to="handle-form" />
+  </view-state>
+
+  <action-state id="handle-form">
+    <!-- TODO: There will be some validation etc in here -->
+    <evaluate expression="claimClientHandler.save(clientForm)"/>
+    <transition to="end-state-continue"/>
+  </action-state>
+
+  <end-state id="not-found" view="redirect:/not-found"/>
+
+  <end-state id="end-state-continue"/>
+</flow>
