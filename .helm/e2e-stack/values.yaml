@@ -215,6 +215,8 @@ laaAmendAClaim:
       value: "true"
     - name: IS_FULL_CLAIM_DETAILS_ENABLED
       value: "true"
+    - name: IS_CLAIM_AMENDMENT_ENABLED
+      value: "true"
   resources:
     requests:
       memory: "512Mi"
