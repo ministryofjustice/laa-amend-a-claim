@@ -30,6 +30,27 @@ ignore:
   SNYK-JAVA-ORGSPRINGFRAMEWORK-17254527:
       - '*':
           reason: Waiting for Spring to catch up with fix
+  SNYK-JAVA-ORGSPRINGFRAMEWORK-17254116:
+      - '*':
+          reason: Waiting for Spring to catch up with fix
+  SNYK-JAVA-ORGSPRINGFRAMEWORK-17254544:
+      - '*':
+          reason: Waiting for Spring to catch up with fix
+  SNYK-JAVA-ORGSPRINGFRAMEWORK-17255206:
+      - '*':
+          reason: Waiting for Spring to catch up with fix
+  SNYK-JAVA-ORGSPRINGFRAMEWORK-17253311:
+      - '*':
+          reason: Waiting for Spring to catch up with fix
+  SNYK-JAVA-ORGSPRINGFRAMEWORK-17254115:
+      - '*':
+          reason: Waiting for Spring to catch up with fix
+  SNYK-JAVA-ORGSPRINGFRAMEWORK-17254528:
+      - '*':
+          reason: Waiting for Spring to catch up with fix
+  SNYK-JAVA-ORGSPRINGFRAMEWORK-17254543:
+      - '*':
+          reason: Waiting for Spring to catch up with fix
 patch: {}
 exclude:
   global:
