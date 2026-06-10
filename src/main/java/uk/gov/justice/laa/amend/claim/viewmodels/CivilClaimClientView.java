@@ -26,6 +26,7 @@ public record CivilClaimClientView(
     rows.put("clientType", claim.getClientType());
     rows.put("ucn", claim.getUniqueClientNumber());
     rows.put("homeOfficeClientNumber", claim.getHomeOfficeClientNumber());
+    rows.put("isPostalApplication", claim.getIsPostalApplication());
 
     return rows;
   }

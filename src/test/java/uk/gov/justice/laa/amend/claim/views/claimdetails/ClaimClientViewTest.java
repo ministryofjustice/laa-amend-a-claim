@@ -37,6 +37,7 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
   private static final String CLIENT_2_GENDER = "gender2";
   private static final String CLIENT_2_ETHNICITY = "ethnicity2";
   private static final String CLIENT_2_DISABILITY = "disability2";
+  private static final Boolean IS_POSTAL_APPLICATION = false;
 
   @MockitoBean private AssessmentService assessmentService;
   @MockitoBean private UserRetrievalService userRetrievalService;
@@ -149,6 +150,7 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     claim.setIsEligibleClient(true);
     claim.setClientType(CLIENT_TYPE);
     claim.setHomeOfficeClientNumber(HOME_OFFICE_CLIENT_NUMBER);
+    claim.setIsPostalApplication(IS_POSTAL_APPLICATION);
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -169,6 +171,7 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
         clientDetails.get(10),
         "Home Office unique client number (HO UCN)",
         HOME_OFFICE_CLIENT_NUMBER);
+    assertSummaryListRowContainsValues(clientDetails.get(11), "Postal application accepted", "No");
   }
 
   private void assertCommonPageContent(Document doc) {
