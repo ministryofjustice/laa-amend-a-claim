@@ -19,6 +19,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
 
   private static final String NOT_APPLICABLE = "Not applicable";
 
+  private static final String SUBMITTED_NON_MONETARY_FIELD = "submittedValue";
   private static final String SUBMITTED = "£100.00";
   private static final String CALCULATED = "£200.00";
   private static final String ASSESSED = "£300.00";
@@ -142,13 +143,13 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
         CALCULATED,
         ASSESSED);
     assertSummaryListRowContainsValues(
-        clientDetails.get(15), "London rate", SUBMITTED, CALCULATED, ASSESSED);
+        clientDetails.get(15), "London rate", "submittedValue", NOT_APPLICABLE, NOT_APPLICABLE);
     assertSummaryListRowContainsValues(
         clientDetails.get(16),
         "National Immigration Asylum Team Disbursement prior authority number",
-        SUBMITTED,
-        CALCULATED,
-        ASSESSED);
+        "submittedValue",
+        NOT_APPLICABLE,
+        NOT_APPLICABLE);
   }
 
   private void assertCommonPageContent(Document doc) {

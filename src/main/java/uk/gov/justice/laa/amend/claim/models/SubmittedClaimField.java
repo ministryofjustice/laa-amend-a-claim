@@ -18,10 +18,7 @@ public class SubmittedClaimField extends ClaimField {
   }
 
   @Override
-  public void applyOutcome(OutcomeType outcome) {
-    throw new UnsupportedOperationException(
-        "SubmittedClaimField does not support outcome application");
-  }
+  public void applyOutcome(OutcomeType outcome) {}
 
   @Override
   public ClaimFieldRow toClaimFieldRow() {
