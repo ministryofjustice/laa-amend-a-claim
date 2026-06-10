@@ -264,12 +264,9 @@ public class MockClaimsFunctions {
         .build();
   }
 
-    private static SubmittedClaimField createSubmittedClaimField(String key) {
-        return SubmittedClaimField.builder()
-                .key(key)
-                .submitted("submittedValue")
-                .build();
-    }
+  private static SubmittedClaimField createSubmittedClaimField(String key) {
+    return SubmittedClaimField.builder().key(key).submitted("submittedValue").build();
+  }
 
   public static AssessedClaimField createAssessedTotalVatField() {
     return createAssessedTotalField(ASSESSED_TOTAL_VAT);
