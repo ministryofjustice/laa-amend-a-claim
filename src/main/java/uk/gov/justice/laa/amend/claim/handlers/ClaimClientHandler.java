@@ -11,7 +11,6 @@ import org.springframework.webflow.context.ExternalContext;
 import uk.gov.justice.laa.amend.claim.forms.AmendClientForm;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientView;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
-import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.CrimeClaimClientView.AmendmentField;
 
 @Slf4j
 @Component
@@ -27,7 +26,7 @@ public class ClaimClientHandler {
 
   // TODO: Have a separate form for each area of law and a separate save method for each
   public void save(AmendClientForm form) {
-    Map<AmendmentField<?>, String> inputs = form.getInputs();
+    Map<String, String> inputs = form.getInputs();
 
     Map<String, Object> outputs = new HashMap<>();
   }

@@ -23,7 +23,7 @@ public class AmendClientForm implements Serializable {
         view.client1Rows().entrySet().stream()
             .collect(
                 Collectors.toMap(
-                    Map.Entry::getKey,
+                    entry -> String.valueOf(entry.getKey()),
                     entry -> String.valueOf(entry.getValue()),
                     (a, b) -> b,
                     LinkedHashMap::new));
