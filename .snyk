@@ -96,6 +96,10 @@ ignore:
   SNYK-JAVA-ORGSPRINGFRAMEWORK-17254122:
       - '*':
           reason: Waiting for Spring to catch up with fix
+  SNYK-JAVA-ORGSPRINGFRAMEWORKDATA-17279540:
+      - '*':
+          reason: Waiting for Spring to catch up with fix
+
 patch: {}
 exclude:
   global:
