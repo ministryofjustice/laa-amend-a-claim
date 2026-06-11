@@ -12,10 +12,13 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.IS_LONDON_RATE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.PRIOR_AUTHORITY_REFERENCE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_AND_WAITING_COSTS;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 
@@ -39,6 +42,7 @@ import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.models.SubmittedClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
@@ -73,6 +77,9 @@ public class MockClaimsFunctions {
     claim.setVatClaimed(createVatClaimedField());
     claim.setAssessmentOutcome(OutcomeType.REDUCED);
     claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
+    claim.setTravelAndWaitingCosts(createTravelAndWaitingCostsField());
+    claim.setIsLondonRate(createIsLondonRateField());
+    claim.setPriorAuthorityReference(createPriorAuthorityField());
 
     claim.setAssessedTotalVat(createAssessedTotalVatField());
     claim.setAssessedTotalInclVat(createAssessedTotalInclVatField());
@@ -220,6 +227,18 @@ public class MockClaimsFunctions {
     return createBoltOnField(ADJOURNED_FEE);
   }
 
+  public static BoltOnClaimField createTravelAndWaitingCostsField() {
+    return createBoltOnField(TRAVEL_AND_WAITING_COSTS);
+  }
+
+  public static SubmittedClaimField createIsLondonRateField() {
+    return createSubmittedClaimField(IS_LONDON_RATE, "Yes");
+  }
+
+  public static SubmittedClaimField createPriorAuthorityField() {
+    return createSubmittedClaimField(PRIOR_AUTHORITY_REFERENCE, "PRIOR_AUTHORITY_REF");
+  }
+
   public static BoltOnClaimField createCmrhOralField() {
     return createBoltOnField(CMRH_ORAL);
   }
@@ -243,6 +262,10 @@ public class MockClaimsFunctions {
         .calculated(BigDecimal.valueOf(200))
         .assessed(BigDecimal.valueOf(300))
         .build();
+  }
+
+  private static SubmittedClaimField createSubmittedClaimField(String key, String submitted) {
+    return SubmittedClaimField.builder().key(key).submitted(submitted).build();
   }
 
   public static AssessedClaimField createAssessedTotalVatField() {

@@ -60,7 +60,6 @@ public record CivilClaimCaseView(
     rows.put("surgeryDate", claim.getSurgeryDate());
     rows.put("surgeryClientsCount", claim.getSurgeryClientsCount());
     rows.put("surgeryMattersCount", claim.getSurgeryMattersCount());
-    rows.put("isPostalApplication", claim.getIsPostalApplication());
     rows.put("mentalHealthTribunalReference", claim.getMentalHealthTribunalReference());
     rows.put("isNrmAdvice", claim.getIsNrmAdvice());
 

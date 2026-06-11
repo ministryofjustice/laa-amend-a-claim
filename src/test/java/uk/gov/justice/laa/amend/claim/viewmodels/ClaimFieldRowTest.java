@@ -10,6 +10,7 @@ import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
+import uk.gov.justice.laa.amend.claim.models.SubmittedClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
@@ -242,6 +243,18 @@ public class ClaimFieldRowTest {
   @Test
   void whenBoltOnClaimField() {
     BoltOnClaimField field = MockClaimsFunctions.createAdjournedHearingField();
+    ClaimFieldRow result = ClaimFieldRow.from(field);
+    Assertions.assertEquals(field.getKey(), result.key());
+    Assertions.assertEquals(field.getSubmitted(), result.submitted());
+    Assertions.assertEquals(field.getCalculated(), result.calculated());
+    Assertions.assertEquals(field.getAssessed(), result.assessed());
+    Assertions.assertFalse(result.assessable());
+    Assertions.assertNull(result.changeUrl());
+  }
+
+  @Test
+  void whenSubmittedClaimField() {
+    SubmittedClaimField field = MockClaimsFunctions.createIsLondonRateField();
     ClaimFieldRow result = ClaimFieldRow.from(field);
     Assertions.assertEquals(field.getKey(), result.key());
     Assertions.assertEquals(field.getSubmitted(), result.submitted());

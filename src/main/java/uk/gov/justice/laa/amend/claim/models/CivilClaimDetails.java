@@ -25,6 +25,11 @@ public class CivilClaimDetails extends ClaimDetails {
   private ClaimField hoInterview;
   private ClaimField substantiveHearing;
   private ClaimField counselsCost;
+
+  private ClaimField travelAndWaitingCosts;
+  private ClaimField isLondonRate;
+  private ClaimField priorAuthorityReference;
+
   private String uniqueClientNumber;
   private LocalDate clientDateOfBirth;
   private String clientPostcode;
@@ -61,11 +66,11 @@ public class CivilClaimDetails extends ClaimDetails {
   private Boolean isLegacyCase;
   private String meetingsAttended;
   private String adviceType;
-  private LocalDate transferDate; //
+  private LocalDate transferDate;
   private Integer medicalReportsClaimed;
   private String exemptionCriteriaSatisfied;
   private Boolean isIrcSurgery;
-  private LocalDate surgeryDate; //
+  private LocalDate surgeryDate;
   private Integer surgeryClientsCount;
   private Integer surgeryMattersCount;
   private Boolean isPostalApplication;
@@ -98,6 +103,7 @@ public class CivilClaimDetails extends ClaimDetails {
       case COUNSEL_COSTS -> getCounselsCost();
       case DETENTION_TRAVEL_AND_WAITING_COSTS -> getDetentionTravelWaitingCosts();
       case JR_FORM_FILLING_COSTS -> getJrFormFillingCost();
+      case TRAVEL_AND_WAITING_COSTS -> getTravelAndWaitingCosts();
       default -> {
         var message = "Claim %s does not support this cost".formatted(getClaimId());
         log.warn(message);
@@ -115,6 +121,7 @@ public class CivilClaimDetails extends ClaimDetails {
       case COUNSEL_COSTS -> setCounselsCost(claimField);
       case DETENTION_TRAVEL_AND_WAITING_COSTS -> setDetentionTravelWaitingCosts(claimField);
       case JR_FORM_FILLING_COSTS -> setJrFormFillingCost(claimField);
+      case TRAVEL_AND_WAITING_COSTS -> setTravelAndWaitingCosts(claimField);
       default -> {
         var message = "Claim %s does not support this cost".formatted(getClaimId());
         log.warn(message);
@@ -133,6 +140,9 @@ public class CivilClaimDetails extends ClaimDetails {
         getAdjournedHearing(),
         getCmrhOral(),
         getCmrhTelephone(),
-        getDetentionTravelWaitingCosts());
+        getDetentionTravelWaitingCosts(),
+        getTravelAndWaitingCosts(),
+        getPriorAuthorityReference(),
+        getIsLondonRate());
   }
 }

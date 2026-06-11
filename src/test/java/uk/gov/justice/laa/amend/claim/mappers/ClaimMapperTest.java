@@ -306,6 +306,34 @@ class ClaimMapperTest {
   }
 
   @Test
+  void mapIsLondonRate() {
+    var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
+    response.setIsLondonRate(true);
+
+    var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
+
+    ClaimField claimField = claim.getIsLondonRate();
+    assertEquals(AmendClaimConstants.Label.IS_LONDON_RATE, claimField.getKey());
+    assertEquals(true, claimField.getSubmitted());
+    assertNull(claimField.getCalculated());
+    assertNull(claimField.getAssessed());
+  }
+
+  @Test
+  void mapPriorAuthorityReference() {
+    var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
+    response.setPriorAuthorityReference("PRIOR_AUTHORITY_REF");
+
+    var claim = (CivilClaimDetails) mapper.mapToClaimDetails(response);
+
+    ClaimField claimField = claim.getPriorAuthorityReference();
+    assertEquals(AmendClaimConstants.Label.PRIOR_AUTHORITY_REFERENCE, claimField.getKey());
+    assertEquals("PRIOR_AUTHORITY_REF", claimField.getSubmitted());
+    assertNull(claimField.getCalculated());
+    assertNull(claimField.getAssessed());
+  }
+
+  @Test
   void mapSubstantiveHearing() {
     var response = createClaimResponse(AreaOfLaw.LEGAL_HELP);
     response.setIsSubstantiveHearing(true);
