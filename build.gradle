@@ -1,7 +1,7 @@
 plugins {
     id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.2.12'
     id "com.diffplug.spotless" version "8.6.0"
-    id "io.sentry.jvm.gradle" version "6.8.1"
+    id "io.sentry.jvm.gradle" version "6.9.0"
     id 'au.com.dius.pact' version '4.7.1'
 }
 
@@ -49,8 +49,8 @@ configurations.configureEach {
 dependencies {
 
     // Upgrade to fix SNYK-JAVA-TOOLSJACKSONCORE-15907550
-    implementation 'tools.jackson.core:jackson-core:3.1.3'
-    implementation 'tools.jackson.core:jackson-databind:3.1.3'
+    implementation 'tools.jackson.core:jackson-core:3.1.4'
+    implementation 'tools.jackson.core:jackson-databind:3.1.4'
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
@@ -81,7 +81,7 @@ dependencies {
     implementation("io.vavr:vavr:1.0.1")
 
     // Sentry observability for Spring Boot 4
-    implementation enforcedPlatform('io.sentry:sentry-bom:8.43.0')
+    implementation enforcedPlatform('io.sentry:sentry-bom:8.43.1')
     implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
