@@ -1,25 +1,41 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimclient;
 
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.DISABILITY;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.ETHNICITY;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.GENDER;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.INITIAL;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.SURNAME;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.asCrimeField;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
+
 import java.util.LinkedHashMap;
+import java.util.stream.Stream;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 
 public record CrimeClaimClientView(
-    LinkedHashMap<String, Object> client1Rows, LinkedHashMap<String, Object> client2Rows)
-    implements ClaimClientView {
+    LinkedHashMap<ClaimViewField<CrimeClaimDetails>, Object> client1Rows,
+    LinkedHashMap<ClaimViewField<CrimeClaimDetails>, Object> client2Rows)
+    implements ClaimClientView<ClaimViewField<CrimeClaimDetails>> {
 
   public CrimeClaimClientView(CrimeClaimDetails claim) {
     this(createRows(claim), new LinkedHashMap<>());
   }
 
-  private static LinkedHashMap<String, Object> createRows(CrimeClaimDetails claim) {
-    var rows = new LinkedHashMap<String, Object>();
+  public Class<?> claimDetailsType() {
+    return CrimeClaimDetails.class;
+  }
 
-    rows.put("initial", claim.getClientForename());
-    rows.put("surname", claim.getClientSurname());
-    rows.put("gender", claim.getClientGender());
-    rows.put("ethnicity", claim.getClientEthnicity());
-    rows.put("disability", claim.getClientDisability());
+  private static LinkedHashMap<ClaimViewField<CrimeClaimDetails>, Object> createRows(
+      CrimeClaimDetails claim) {
+    var fields =
+        Stream.of(
+            asCrimeField(INITIAL),
+            asCrimeField(SURNAME),
+            asCrimeField(GENDER),
+            asCrimeField(ETHNICITY),
+            asCrimeField(DISABILITY));
 
-    return rows;
+    return toFieldMap(fields, claim);
   }
 }
