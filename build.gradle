@@ -62,6 +62,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-jackson'
+    implementation 'org.springframework.webflow:spring-webflow:4.0.0'
 
     // API models
     implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:1.0.42'
