@@ -36,7 +36,6 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 public class BulkUploadController {
 
   private final BulkUploadService<BulkUploadCivilClaim> bulkUploadService;
-  private final FeatureFlagsConfig featureFlagsConfig;
 
   @GetMapping
   public String onPageLoad() {
