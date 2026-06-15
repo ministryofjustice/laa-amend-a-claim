@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{amendments.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${true}
+    )}">
+<body>
+<main class="govuk-main-wrapper" id="main-content">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+      <h1 class="govuk-heading-l">
+        <span th:text="#{amendments.title}"></span>
+      </h1>
+
+      <h2 class="govuk-heading-m" th:text="#{claimDetails.clientHeading}"></h2>
+
+      <form th:action="${flowExecutionUrl}" method="post" th:object="${client1Form}">
+
+        <div class="govuk-summary-card">
+          <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title"
+                th:text="${#maps.isEmpty(clientView.client2Rows)}
+                                      ? #{claimClient.clientDetails}
+                                      : #{claimClient.client1Details}">
+            </h2>
+          </div>
+          <div class="govuk-summary-card__content">
+            <dl class="govuk-summary-list">
+
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key" th:text="#{amendments.item}"></dt>
+                <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.current}"></dd>
+                <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.amended}"></dd>
+              </div>
+
+              <div class="govuk-summary-list__row"
+                  th:each="entry : ${clientView.client1Rows}">
+                <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key}}"></dt>
+                <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+                <dd class="govuk-summary-list__value">
+                  <input class="govuk-input"
+                         type="text"
+                         th:field="*{inputs[__${entry.key}__]}" />
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <button class="govuk-button"
+                type="submit"
+                name="_eventId_continue"
+                th:text="#{amendments.continue}">
+        </button>
+      </form>
+    </div>
+  </div>
+</main>
+</body>
+</html>
