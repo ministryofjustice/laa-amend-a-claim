@@ -4,7 +4,6 @@ import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadS
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.SUBMISSION_FAILURE;
 import static uk.gov.justice.laa.amend.claim.models.BulkUploadResult.BulkUploadStatus.VALIDATION_FAILURE;
 
-import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.List;
 import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadError;
@@ -12,8 +11,7 @@ import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadError;
 public record BulkUploadResult(
     BulkUploadStatus status,
     List<BulkUploadError> errors,
-    List<BulkUploadAssessmentSummary> uploadedAssessments)
-    implements Serializable {
+    List<BulkUploadAssessmentSummary> uploadedAssessments) {
 
   public enum BulkUploadStatus {
     SUCCESS,

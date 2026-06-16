@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
 public record ClaimDetailsFooterView(
@@ -9,11 +10,14 @@ public record ClaimDetailsFooterView(
     boolean isVoidButtonPresent) {
 
   public ClaimDetailsFooterView(
-      ClaimDetails claim, boolean isEscapeCaseCaseworker, boolean isClaimAmendmentsCaseworker) {
+      ClaimDetails claim,
+      boolean isEscapeCaseCaseworker,
+      boolean isClaimAmendmentsCaseworker,
+      FeatureFlagsConfig featureFlagsConfig) {
     this(
         hasAssessment(claim),
         isAssessmentButtonPresent(claim, isEscapeCaseCaseworker),
-        isAmendmentButtonPresent(claim, isClaimAmendmentsCaseworker),
+        isAmendmentButtonPresent(claim, isClaimAmendmentsCaseworker, featureFlagsConfig),
         isVoidButtonPresent(claim, isClaimAmendmentsCaseworker));
   }
 
@@ -29,8 +33,12 @@ public record ClaimDetailsFooterView(
   }
 
   private static boolean isAmendmentButtonPresent(
-      ClaimDetails claim, boolean isClaimAmendmentsCaseworker) {
-    return isClaimAmendmentsCaseworker && !claim.isHasAssessment();
+      ClaimDetails claim,
+      boolean isClaimAmendmentsCaseworker,
+      FeatureFlagsConfig featureFlagsConfig) {
+    return isClaimAmendmentsCaseworker
+        && !claim.isHasAssessment()
+        && featureFlagsConfig.getIsClaimAmendmentEnabled();
   }
 
   public static boolean isVoidButtonPresent(

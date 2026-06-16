@@ -11,12 +11,7 @@
 <main class="govuk-main-wrapper" id="main-content">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <!-- TODO: Amend header -->
-      <!--      <th:block th:replace="~{partials/claim-details-header :: claimDetailsHeader(currentPage='client')}"></th:block>-->
-
-      <h1 class="govuk-heading-l">
-        <span th:text="#{amendments.title}"></span>
-      </h1>
+      <th:block th:replace="~{partials/amendments-view-header :: viewHeader(currentPage='client')}"></th:block>
 
       <h2 class="govuk-heading-m" th:text="#{claimDetails.clientHeading}"></h2>
 
@@ -29,14 +24,16 @@
           </h2>
           <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action">
-              <a class="govuk-link" th:href="${flowExecutionUrl + '&_eventId_change'}" th:text="#{amendments.change}"></a>
+              <a class="govuk-link"
+                 th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/amendClient1(submissionId=${submissionId}, claimId=${claimId})}"
+                 th:text="#{amendments.change}"></a>
             </li>
           </ul>
         </div>
         <div class="govuk-summary-card__content">
           <dl class="govuk-summary-list">
 
-            <div class="govuk-summary-list__row" th:if="${client1Form.hasAmendments(clientView.client1Rows)}">
+            <div class="govuk-summary-list__row" th:if="${client1Form.hasAmendments(forms.client1Form.original)}">
               <dt class="govuk-summary-list__key" th:text="#{amendments.item}"></dt>
               <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.current}"></dd>
               <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.amended}"></dd>
@@ -48,8 +45,8 @@
               <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
 
               <dd class="govuk-summary-list__value"
-                  th:if="${client1Form.isAmendment(entry.key, entry.value)}"
-                  th:text="${client1Form.inputs[entry.key]}"></dd>
+                  th:if="${client1Form.isAmendment(entry.key, forms.client1Form.original)}"
+                  th:text="${@ThymeleafUtils.getFormattedValue(client1Form.inputs[entry.key]).resolve(#messages)}"></dd>
             </div>
           </dl>
         </div>
@@ -71,7 +68,11 @@
         </div>
       </div>
 
-      <!-- TODO: Footer-->
+      <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
+         id="back-to-claim-details"
+         class="govuk-link govuk-link--no-visited-state"
+         th:text="#{amendments.backToClaim}">
+      </a>
     </div>
   </div>
 </main>

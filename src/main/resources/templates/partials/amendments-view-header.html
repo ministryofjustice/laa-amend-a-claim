@@ -1,0 +1,29 @@
+<th:block th:fragment="viewHeader(currentPage)" xmlns:th="http://www.thymeleaf.org">
+
+    <h1 class="govuk-heading-l">
+        <span th:text="#{amendments.title}"></span>
+    </h1>
+
+    <nav class="moj-sub-navigation" aria-label="Sub navigation">
+        <ul class="moj-sub-navigation__list">
+            <li class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link"
+                   th:attr="aria-current=${currentPage == 'client'} ? 'page' : null"
+                   th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/client(submissionId=${submissionId}, claimId=${claimId})}"
+                   th:text="#{claimDetails.clientHeading}"></a>
+            </li>
+            <li class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link"
+                   th:attr="aria-current=${currentPage == 'case'} ? 'page' : null"
+                   th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/case(submissionId=${submissionId}, claimId=${claimId})}"
+                   th:text="#{claimDetails.caseHeading}"></a>
+            </li>
+            <li class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link"
+                   th:attr="aria-current=${currentPage == 'costs'} ? 'page' : null"
+                   th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/costs(submissionId=${submissionId}, claimId=${claimId})}"
+                   th:text="#{claimDetails.costsHeading}"></a>
+            </li>
+        </ul>
+    </nav>
+</th:block>
