@@ -47,7 +47,9 @@ public interface ClaimsApiClient {
       value = "/v1/claims/{claimId}/assessments",
       contentType = MediaType.APPLICATION_JSON_VALUE)
   Mono<ResponseEntity<CreateAssessment201Response>> submitAssessment(
-      @PathVariable UUID claimId, @RequestBody AssessmentPost body);
+      @PathVariable UUID claimId,
+      @RequestParam(value = "claimVersion") int claimVersion,
+      @RequestBody AssessmentPost body);
 
   @GetExchange(url = "/v1/claims/{claimId}/assessments", accept = MediaType.APPLICATION_JSON_VALUE)
   Mono<AssessmentResultSet> getAssessments(

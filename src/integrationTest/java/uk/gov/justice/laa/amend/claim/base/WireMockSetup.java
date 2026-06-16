@@ -77,6 +77,7 @@ public class WireMockSetup {
               .put("office_code", officeCode)
               .put("status", "VALID")
               .put("area_of_law", "LEGAL HELP")
+              .put("version", "1")
               .build();
 
       claims.add(claim);

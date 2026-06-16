@@ -136,7 +136,8 @@ class AssessmentServiceTest {
       ResponseEntity<CreateAssessment201Response> response =
           ResponseEntity.ok(new CreateAssessment201Response());
 
-      when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
+      when(claimsApiClient.submitAssessment(claimId, claim.getVersion(), assessment))
+          .thenReturn(Mono.just(response));
 
       CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
 
@@ -144,7 +145,7 @@ class AssessmentServiceTest {
       assertEquals(response.getBody(), result);
 
       verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
-      verify(claimsApiClient).submitAssessment(claimId, assessment);
+      verify(claimsApiClient).submitAssessment(claimId, claim.getVersion(), assessment);
 
       assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(1.0);
       assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(0.0);
@@ -162,7 +163,8 @@ class AssessmentServiceTest {
       ResponseEntity<CreateAssessment201Response> response =
           ResponseEntity.ok(new CreateAssessment201Response());
 
-      when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
+      when(claimsApiClient.submitAssessment(claimId, claim.getVersion(), assessment))
+          .thenReturn(Mono.just(response));
 
       CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
 
@@ -170,7 +172,7 @@ class AssessmentServiceTest {
       assertEquals(response.getBody(), result);
 
       verify(assessmentMapper).mapCrimeClaimToAssessment(claim, userId);
-      verify(claimsApiClient).submitAssessment(claimId, assessment);
+      verify(claimsApiClient).submitAssessment(claimId, claim.getVersion(), assessment);
 
       assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(1.0);
       assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(0.0);
@@ -186,12 +188,13 @@ class AssessmentServiceTest {
 
       when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
 
-      when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.empty());
+      when(claimsApiClient.submitAssessment(claimId, claim.getVersion(), assessment))
+          .thenReturn(Mono.empty());
 
       assertThrows(RuntimeException.class, () -> assessmentService.submitAssessment(claim, userId));
 
       verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
-      verify(claimsApiClient).submitAssessment(claimId, assessment);
+      verify(claimsApiClient).submitAssessment(claimId, claim.getVersion(), assessment);
 
       assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
       assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(1.0);
@@ -211,12 +214,13 @@ class AssessmentServiceTest {
           ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
               .body(new CreateAssessment201Response());
 
-      when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
+      when(claimsApiClient.submitAssessment(claimId, claim.getVersion(), assessment))
+          .thenReturn(Mono.just(response));
 
       assertThrows(RuntimeException.class, () -> assessmentService.submitAssessment(claim, userId));
 
       verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
-      verify(claimsApiClient).submitAssessment(claimId, assessment);
+      verify(claimsApiClient).submitAssessment(claimId, claim.getVersion(), assessment);
 
       assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
       assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(1.0);
@@ -232,13 +236,13 @@ class AssessmentServiceTest {
 
       when(assessmentMapper.mapCivilClaimToAssessment(claim, userId)).thenReturn(assessment);
 
-      when(claimsApiClient.submitAssessment(claimId, assessment))
+      when(claimsApiClient.submitAssessment(claimId, claim.getVersion(), assessment))
           .thenReturn(Mono.error(new RuntimeException("Network error")));
 
       assertThrows(RuntimeException.class, () -> assessmentService.submitAssessment(claim, userId));
 
       verify(assessmentMapper).mapCivilClaimToAssessment(claim, userId);
-      verify(claimsApiClient).submitAssessment(claimId, assessment);
+      verify(claimsApiClient).submitAssessment(claimId, claim.getVersion(), assessment);
 
       assertThat(meterRegistry.counter("assessment.submissions").count()).isEqualTo(0.0);
       assertThat(meterRegistry.counter("assessment.submissions.failed").count()).isEqualTo(1.0);
@@ -272,14 +276,15 @@ class AssessmentServiceTest {
       ResponseEntity<CreateAssessment201Response> response =
           ResponseEntity.ok(new CreateAssessment201Response());
 
-      when(claimsApiClient.submitAssessment(claimId, assessment)).thenReturn(Mono.just(response));
+      when(claimsApiClient.submitAssessment(claimId, claim.getVersion(), assessment))
+          .thenReturn(Mono.just(response));
 
       CreateAssessment201Response result = assessmentService.submitAssessment(claim, userId);
 
       Assertions.assertNotNull(result);
       assertEquals(response.getBody(), result);
 
-      verify(claimsApiClient).submitAssessment(claimId, assessment);
+      verify(claimsApiClient).submitAssessment(claimId, claim.getVersion(), assessment);
     }
   }
 

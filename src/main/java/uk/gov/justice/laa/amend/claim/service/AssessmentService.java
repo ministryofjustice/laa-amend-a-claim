@@ -85,7 +85,9 @@ public class AssessmentService {
 
     try {
       ResponseEntity<CreateAssessment201Response> response =
-          claimsApiClient.submitAssessment(claim.getClaimId(), assessment).block();
+          claimsApiClient
+              .submitAssessment(claim.getClaimId(), claim.getVersion(), assessment)
+              .block();
 
       if (response == null
           || response.getBody() == null

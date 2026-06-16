@@ -88,7 +88,7 @@ public final class CreateAssessmentPactTest extends AbstractPactTest {
     AssessmentPost assessment = buildAssessmentPost();
 
     ResponseEntity<CreateAssessment201Response> response =
-        claimsApiClient.submitAssessment(CLAIM_ID, assessment).block();
+        claimsApiClient.submitAssessment(CLAIM_ID, 1, assessment).block();
 
     assertThat(response).isNotNull();
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -103,7 +103,7 @@ public final class CreateAssessmentPactTest extends AbstractPactTest {
     AssessmentPost assessment = buildAssessmentPost();
 
     assertThrows(
-        NotFound.class, () -> claimsApiClient.submitAssessment(CLAIM_ID, assessment).block());
+        NotFound.class, () -> claimsApiClient.submitAssessment(CLAIM_ID, 1, assessment).block());
   }
 
   private static void buildAssessmentRequestBody(

@@ -33,6 +33,7 @@ import uk.gov.justice.laa.amend.claim.models.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
 import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
@@ -55,11 +56,7 @@ public class MockClaimsFunctions {
 
   public static CivilClaimDetails createMockCivilClaim() {
     CivilClaimDetails claim = new CivilClaimDetails();
-    claim.setClaimId(UUID.randomUUID());
-    claim.setSubmissionId(UUID.randomUUID());
-    claim.setClaimSummaryFeeId(UUID.randomUUID());
-    claim.setEscaped(true);
-    claim.setStatus(ClaimStatus.VALID);
+    setClaimCommonValues(claim);
 
     claim.setFixedFee(createFixedFeeField());
     claim.setNetProfitCost(createNetProfitCostField());
@@ -88,14 +85,18 @@ public class MockClaimsFunctions {
     return claim;
   }
 
-  public static MediationClaimDetails createMockMediationClaim() {
-    MediationClaimDetails claim = new MediationClaimDetails();
+  private static void setClaimCommonValues(Claim claim) {
     claim.setClaimId(UUID.randomUUID());
     claim.setSubmissionId(UUID.randomUUID());
     claim.setClaimSummaryFeeId(UUID.randomUUID());
     claim.setEscaped(true);
     claim.setStatus(ClaimStatus.VALID);
+    claim.setVersion(1);
+  }
 
+  public static MediationClaimDetails createMockMediationClaim() {
+    MediationClaimDetails claim = new MediationClaimDetails();
+    setClaimCommonValues(claim);
     claim.setFixedFee(createFixedFeeField());
     claim.setNetProfitCost(createNetProfitCostField());
     claim.setNetDisbursementAmount(createDisbursementCostField());
@@ -122,11 +123,7 @@ public class MockClaimsFunctions {
 
   public static CrimeClaimDetails createMockCrimeClaim() {
     CrimeClaimDetails claim = new CrimeClaimDetails();
-    claim.setClaimId(UUID.randomUUID());
-    claim.setSubmissionId(UUID.randomUUID());
-    claim.setClaimSummaryFeeId(UUID.randomUUID());
-    claim.setEscaped(true);
-    claim.setStatus(ClaimStatus.VALID);
+    setClaimCommonValues(claim);
 
     claim.setNetProfitCost(createNetProfitCostField());
     claim.setTravelCosts(createTravelCostField());
