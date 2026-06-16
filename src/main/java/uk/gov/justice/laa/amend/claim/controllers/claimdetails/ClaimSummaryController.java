@@ -29,22 +29,14 @@ import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 public class ClaimSummaryController extends ClaimDetailsBaseController {
 
   private final ClaimService claimService;
-  private final AssessmentService assessmentService;
-  private final UserRetrievalService userRetrievalService;
-  private final FeatureFlagsConfig featureFlagsConfig;
 
   public ClaimSummaryController(
       AssessmentService assessmentService,
       UserRetrievalService userRetrievalService,
       ClaimService claimService,
-      AssessmentService assessmentService1,
-      UserRetrievalService userRetrievalService1,
       FeatureFlagsConfig featureFlagsConfig) {
-    super(assessmentService, userRetrievalService);
+    super(assessmentService, userRetrievalService, featureFlagsConfig);
     this.claimService = claimService;
-    this.assessmentService = assessmentService1;
-    this.userRetrievalService = userRetrievalService1;
-    this.featureFlagsConfig = featureFlagsConfig;
   }
 
   @GetMapping("/submissions/{submissionId}/claims/{claimId}")

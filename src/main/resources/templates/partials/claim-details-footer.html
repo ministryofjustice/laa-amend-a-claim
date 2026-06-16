@@ -12,7 +12,7 @@
             </th:block>
 
             <th:block th:if="${claimDetailsFooterView.isAmendmentButtonPresent}">
-                <a th:href="@{/amendments(submissionId=${submissionId}, claimId=${claimId})}"
+                <a th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments(submissionId=${submissionId}, claimId=${claimId})}"
                    th:data-testid="claim-details-amend-button"
                    class="govuk-button govuk-button--success"
                    data-module="govuk-button"

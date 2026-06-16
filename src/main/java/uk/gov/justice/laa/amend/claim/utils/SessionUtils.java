@@ -5,13 +5,15 @@ import java.util.UUID;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.webflow.core.collection.SharedAttributeMap;
 import uk.gov.justice.laa.amend.claim.exceptions.NoClaimInSessionException;
+import uk.gov.justice.laa.amend.claim.forms.amendment.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @UtilityClass
 public class SessionUtils {
+
+  public static final String AMENDMENTS_KEY = "amendments-%s";
 
   public static ClaimDetails getClaim(HttpSession session, UUID submissionId, UUID claimId) {
     if (session == null) {
@@ -19,21 +21,6 @@ public class SessionUtils {
     }
 
     var claim = (ClaimDetails) session.getAttribute(claimId.toString());
-
-    if (claim == null) {
-      throw new NoClaimInSessionException(submissionId, claimId, "Claim not found");
-    }
-
-    return claim;
-  }
-
-  public static ClaimDetails getClaim(
-      SharedAttributeMap<Object> session, UUID submissionId, UUID claimId) {
-    if (session == null) {
-      throw new NoClaimInSessionException(submissionId, claimId, "Session not found");
-    }
-
-    var claim = (ClaimDetails) session.get(claimId.toString());
 
     if (claim == null) {
       throw new NoClaimInSessionException(submissionId, claimId, "Claim not found");
@@ -59,5 +46,31 @@ public class SessionUtils {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Claim is not assessable");
     }
     return claim;
+  }
+
+  public static ClaimDetails getValidAmendableClaim(
+      HttpSession session, UUID submissionId, UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
+    if (claim.isHasAssessment()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Claim is not amendable");
+    }
+    return claim;
+  }
+
+  public static void saveAmendmentForms(HttpSession session, UUID claimId, AmendmentForms forms) {
+    var key = AMENDMENTS_KEY.formatted(claimId.toString());
+    session.setAttribute(key, forms);
+  }
+
+  public static AmendmentForms getAmendmentForms(HttpSession session, UUID claimId) {
+    var key = AMENDMENTS_KEY.formatted(claimId.toString());
+    var form = session.getAttribute(key);
+
+    if (form == null) {
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "Amendment forms not found: %s".formatted(key));
+    }
+
+    return (AmendmentForms) form;
   }
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
@@ -23,8 +24,9 @@ public class ClaimHistoryController extends ClaimDetailsBaseController {
   public ClaimHistoryController(
       AssessmentService assessmentService,
       UserRetrievalService userRetrievalService,
-      ClaimHistoryService claimHistoryService) {
-    super(assessmentService, userRetrievalService);
+      ClaimHistoryService claimHistoryService,
+      FeatureFlagsConfig featureFlagsConfig) {
+    super(assessmentService, userRetrievalService, featureFlagsConfig);
     this.claimHistoryService = claimHistoryService;
   }
 
