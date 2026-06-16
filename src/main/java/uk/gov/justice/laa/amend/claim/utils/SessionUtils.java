@@ -5,7 +5,6 @@ import java.util.UUID;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.webflow.core.collection.SharedAttributeMap;
 import uk.gov.justice.laa.amend.claim.exceptions.NoClaimInSessionException;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -22,21 +21,6 @@ public class SessionUtils {
     }
 
     var claim = (ClaimDetails) session.getAttribute(claimId.toString());
-
-    if (claim == null) {
-      throw new NoClaimInSessionException(submissionId, claimId, "Claim not found");
-    }
-
-    return claim;
-  }
-
-  public static ClaimDetails getClaim(
-      SharedAttributeMap<Object> session, UUID submissionId, UUID claimId) {
-    if (session == null) {
-      throw new NoClaimInSessionException(submissionId, claimId, "Session not found");
-    }
-
-    var claim = (ClaimDetails) session.get(claimId.toString());
 
     if (claim == null) {
       throw new NoClaimInSessionException(submissionId, claimId, "Claim not found");
