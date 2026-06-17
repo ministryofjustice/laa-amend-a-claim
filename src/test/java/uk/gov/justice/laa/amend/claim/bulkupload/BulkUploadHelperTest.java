@@ -57,6 +57,7 @@ class BulkUploadHelperTest {
     var ufn = "20220101/020244";
     // Mock claim returned from paging API
     ClaimResponseV2 claim = new ClaimResponseV2();
+    claim.setId("11111111-1111-1111-1111-111111111111");
     claim.setOfficeCode(officeCode);
     claim.setUniqueFileNumber(ufn);
     claim.setStatus(VALID);
@@ -94,6 +95,106 @@ class BulkUploadHelperTest {
     var response = helper.getAllClaims(rows, errors);
 
     assertEquals(List.of(claim), response);
+    assertTrue(errors.isEmpty());
+  }
+
+  @Test
+  void getAllClaimsShouldDeduplicateSameClaimReturnedAcrossPages() {
+    // Simulate the API returning the same claim on multiple pages due to unstable pagination.
+    // The claim should be deduplicated and not treated as a duplicate submission.
+    var officeCode = "123456";
+    var ufn = "20220101/020244";
+    ClaimResponseV2 claim = new ClaimResponseV2();
+    claim.setId("22222222-2222-2222-2222-222222222222");
+    claim.setOfficeCode(officeCode);
+    claim.setUniqueFileNumber(ufn);
+    claim.setStatus(VALID);
+
+    ClaimResultSetV2 pageOne = claimList(claim);
+    pageOne.setTotalPages(2);
+    when(claimService.searchClaims(
+            officeCode,
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.of(AreaOfLaw.LEGAL_HELP),
+            Optional.of(true),
+            List.of(VALID),
+            1,
+            200,
+            null))
+        .thenReturn(pageOne);
+
+    ClaimResultSetV2 pageTwo = claimList(claim);
+    pageTwo.setTotalPages(2);
+    when(claimService.searchClaims(
+            officeCode,
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.of(AreaOfLaw.LEGAL_HELP),
+            Optional.of(true),
+            List.of(VALID),
+            2,
+            200,
+            null))
+        .thenReturn(pageTwo);
+
+    List<BulkUploadError> errors = new ArrayList<>();
+    var response = helper.getAllClaims(List.of(row(officeCode, ufn, 1)), errors);
+
+    assertEquals(List.of(claim), response);
+    assertTrue(errors.isEmpty());
+  }
+
+  @Test
+  void getAllClaimsShouldRetainDistinctClaimsWithSameOfficeAndUfn() {
+    // Two distinct claims sharing an office code and UFN must both be
+    // retained so downstream duplicate detection can still flag them.
+    var officeCode = "123456";
+    var ufn = "20220101/020244";
+    ClaimResponseV2 claimOne = new ClaimResponseV2();
+    claimOne.setId("11111111-1111-1111-1111-111111111111");
+    claimOne.setOfficeCode(officeCode);
+    claimOne.setUniqueFileNumber(ufn);
+    claimOne.setStatus(VALID);
+
+    ClaimResponseV2 claimTwo = new ClaimResponseV2();
+    claimTwo.setId("22222222-2222-2222-2222-222222222222");
+    claimTwo.setOfficeCode(officeCode);
+    claimTwo.setUniqueFileNumber(ufn);
+    claimTwo.setStatus(VALID);
+
+    when(claimService.searchClaims(
+            officeCode,
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.of(AreaOfLaw.LEGAL_HELP),
+            Optional.of(true),
+            List.of(VALID),
+            1,
+            200,
+            null))
+        .thenReturn(claimList(claimOne, claimTwo));
+
+    when(claimService.searchClaims(
+            officeCode,
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.of(AreaOfLaw.LEGAL_HELP),
+            Optional.of(true),
+            List.of(VALID),
+            2,
+            200,
+            null))
+        .thenReturn(emptyList());
+
+    List<BulkUploadError> errors = new ArrayList<>();
+    var response = helper.getAllClaims(List.of(row(officeCode, ufn, 1)), errors);
+
+    assertEquals(List.of(claimOne, claimTwo), response);
     assertTrue(errors.isEmpty());
   }
 

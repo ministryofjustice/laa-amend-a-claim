@@ -3,10 +3,12 @@ package uk.gov.justice.laa.amend.claim.bulkupload;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -42,11 +44,12 @@ public class BulkUploadHelper {
 
   private List<ClaimResponseV2> getAllClaims(
       String officeCode, Map<Pair<String, String>, BulkUploadCivilClaim> officeCodeUfnRows) {
-    List<ClaimResponseV2> claims = new ArrayList<>();
+    //  Deduplicate claims by ID, as the API may return the same claim on multiple pages
+    Map<UUID, ClaimResponseV2> claimsById = new LinkedHashMap<>();
     fetchValidClaims(officeCode)
         .filter(ufnExistsInRowsPredicate(officeCodeUfnRows))
-        .forEach(claims::add);
-    return claims;
+        .forEach(claim -> claimsById.putIfAbsent(UUID.fromString(claim.getId()), claim));
+    return new ArrayList<>(claimsById.values());
   }
 
   /** Map officeCode with UFN and row index from given rows of csv. */
