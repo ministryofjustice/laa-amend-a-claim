@@ -68,11 +68,7 @@
         </div>
       </div>
 
-      <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
-         id="back-to-claim-details"
-         class="govuk-link govuk-link--no-visited-state"
-         th:text="#{amendments.backToClaim}">
-      </a>
+      <th:block th:replace="~{partials/amendments-view-footer :: viewFooter()}"></th:block>
     </div>
   </div>
 </main>
