@@ -8,11 +8,11 @@
       "£239.35",
       "Not applicable"
     ],
-    "Profit costs": [
+    "Net profit costs": [
       "Not applicable",
       "£750.00"
     ],
-    "Disbursements": [
+    "Net disbursements": [
       "£400.00",
       "£400.00"
     ],
@@ -24,11 +24,11 @@
       "£0.00",
       "£0.00"
     ],
-    "Counsel costs": [
+    "Net cost of counsel": [
       "£0.00",
       "£0.00"
     ],
-    "VAT": [
+    "VAT indicator": [
       "Yes",
       "Yes"
     ]

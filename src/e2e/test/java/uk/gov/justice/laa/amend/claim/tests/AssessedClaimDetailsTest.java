@@ -84,13 +84,13 @@ public class AssessedClaimDetailsTest extends BaseTest {
     claimDetails.assertUpdateAssessmentOutcomeButtonIsPresent();
 
     claimDetails.assertCost("Fixed fee", "Not applicable", "£239.35", "£1,000.00");
-    claimDetails.assertCost("Profit costs", "£750.00", "Not applicable", "£2,000.00");
-    claimDetails.assertCost("Disbursements", "£400.00", "£400.00", "Not applicable");
+    claimDetails.assertCost("Net profit costs", "£750.00", "Not applicable", "£2,000.00");
+    claimDetails.assertCost("Net disbursements", "£400.00", "£400.00", "Not applicable");
     claimDetails.assertCost("Disbursement VAT", "£80.00", "£80.00", "Not applicable");
     claimDetails.assertCost("Detention travel and waiting costs", "£0.00", "£0.00", "£0.00");
     claimDetails.assertCost("JR and form filling", "£0.00", "£0.00", "£0.00");
-    claimDetails.assertCost("Counsel costs", "£0.00", "£0.00", "£0.00");
-    claimDetails.assertCost("VAT", "Yes", "Yes", "No");
+    claimDetails.assertCost("Net cost of counsel", "£0.00", "£0.00", "£0.00");
+    claimDetails.assertCost("VAT indicator", "Yes", "Yes", "No");
 
     claimDetails.assertAssessedTotals(
         "Assessed total VAT", "Not applicable", "Not applicable", "£3,000.00");
