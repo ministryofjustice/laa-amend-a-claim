@@ -1,11 +1,11 @@
 package uk.gov.justice.laa.amend.claim.bulkupload;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -28,6 +28,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 public class BulkUploadHelper {
   public static final int MAX_ROWS = 10000;
   public static final int PAGE_SIZE = 200;
+  private static final int MAX_FETCH_ATTEMPTS = 3;
 
   private final ClaimService claimService;
 
@@ -44,12 +45,9 @@ public class BulkUploadHelper {
 
   private List<ClaimResponseV2> getAllClaims(
       String officeCode, Map<Pair<String, String>, BulkUploadCivilClaim> officeCodeUfnRows) {
-    //  Deduplicate claims by ID, as the API may return the same claim on multiple pages
-    Map<UUID, ClaimResponseV2> claimsById = new LinkedHashMap<>();
-    fetchValidClaims(officeCode)
+    return fetchAllValidClaims(officeCode).values().stream()
         .filter(ufnExistsInRowsPredicate(officeCodeUfnRows))
-        .forEach(claim -> claimsById.putIfAbsent(UUID.fromString(claim.getId()), claim));
-    return new ArrayList<>(claimsById.values());
+        .collect(Collectors.toList());
   }
 
   /** Map officeCode with UFN and row index from given rows of csv. */
@@ -67,7 +65,6 @@ public class BulkUploadHelper {
               String ufn = row.getUfn();
 
               Pair<String, String> key = Pair.of(office, ufn);
-              // Duplicate Rows (officeCode + UFN)
               if (!appearedKeys.add(key)) {
                 errors.add(
                     new BulkUploadError(
@@ -91,24 +88,60 @@ public class BulkUploadHelper {
     };
   }
 
-  private Stream<ClaimResponseV2> fetchValidClaims(String officeCode) {
+  /**
+   * Fetches all distinct valid escaped claims for an office, keyed by claim ID.
+   *
+   * <p>The Claims API does not guarantee a stable, unique sort order across pages. As a result, a
+   * single paginated sweep may return the same claim more than once or omit claims entirely.
+   *
+   * <p>Duplicate claims are removed by keying on claim ID. Missing claims are detected by comparing
+   * the number of distinct claims collected with the total count reported by the API. If the counts
+   * do not match, the sweep is retried, allowing a different page ordering to contribute additional
+   * claims to the result set.
+   *
+   * <p>If the reported total still cannot be reconciled after retrying, the upload is failed rather
+   * than risking silent data loss.
+   */
+  private Map<UUID, ClaimResponseV2> fetchAllValidClaims(String officeCode) {
+    Map<UUID, ClaimResponseV2> claimsById = new LinkedHashMap<>();
+    int totalElements = collectDistinctClaimsInto(officeCode, claimsById);
 
-    var firstPage = safeFetch(officeCode, 1, PAGE_SIZE);
-    int totalPages = Optional.of(firstPage.totalPages()).orElse(1);
+    int attempts = 1;
+    while (claimsById.size() < totalElements && attempts < MAX_FETCH_ATTEMPTS) {
+      totalElements = collectDistinctClaimsInto(officeCode, claimsById);
+      attempts++;
+    }
 
-    // Stream first page
-    Stream<ClaimResponseV2> pageOne = firstPage.claimResponseV2Stream();
-
-    // Stream remaining pages
-    Stream<ClaimResponseV2> others =
-        IntStream.rangeClosed(2, totalPages)
-            .mapToObj(p -> safeFetch(officeCode, p, PAGE_SIZE))
-            .flatMap(PageResult::claimResponseV2Stream);
-
-    return Stream.concat(pageOne, others);
+    if (claimsById.size() < totalElements) {
+      throw new RuntimeException(
+          String.format(
+              "Could not retrieve all valid claims for office code %s: expected %d but only "
+                  + "resolved %d distinct claims after %d attempts",
+              officeCode, totalElements, claimsById.size(), attempts));
+    }
+    return claimsById;
   }
 
-  private PageResult safeFetch(String officeCode, int page, int pageSize) {
+  private int collectDistinctClaimsInto(String officeCode, Map<UUID, ClaimResponseV2> claimsById) {
+    var firstPage = safeFetch(officeCode, 1);
+    addDistinct(firstPage, claimsById);
+
+    int totalPages = firstPage.totalPages();
+    for (int page = 2; page <= totalPages; page++) {
+      addDistinct(safeFetch(officeCode, page), claimsById);
+    }
+    return firstPage.totalElements();
+  }
+
+  private void addDistinct(PageResult page, Map<UUID, ClaimResponseV2> claimsById) {
+    page.claimResponseV2Stream()
+        .forEach(
+            claim ->
+                claimsById.putIfAbsent(
+                    UUID.fromString(Objects.requireNonNull(claim.getId())), claim));
+  }
+
+  private PageResult safeFetch(String officeCode, int page) {
     try {
       var result =
           claimService.searchClaims(
@@ -120,22 +153,24 @@ public class BulkUploadHelper {
               Optional.of(true),
               List.of(ClaimStatus.VALID),
               page,
-              pageSize,
+              BulkUploadHelper.PAGE_SIZE,
               null);
       if (result == null || result.getContent() == null) {
         throw new RuntimeException("No claims found for office code " + officeCode);
       }
       int totalPages = Optional.ofNullable(result.getTotalPages()).orElse(1);
+      int totalElements = Optional.ofNullable(result.getTotalElements()).orElse(0);
 
       Stream<ClaimResponseV2> responseStream =
           (result.getContent().isEmpty()) ? Stream.empty() : result.getContent().stream();
 
-      return new PageResult(responseStream, totalPages);
+      return new PageResult(responseStream, totalPages, totalElements);
     } catch (Exception e) {
       throw new RuntimeException(
           "Error fetching claims for office code " + officeCode + " page " + page, e);
     }
   }
 
-  private record PageResult(Stream<ClaimResponseV2> claimResponseV2Stream, int totalPages) {}
+  private record PageResult(
+      Stream<ClaimResponseV2> claimResponseV2Stream, int totalPages, int totalElements) {}
 }

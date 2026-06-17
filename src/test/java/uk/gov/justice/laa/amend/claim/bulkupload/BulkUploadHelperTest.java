@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.bulkupload;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -198,6 +199,49 @@ class BulkUploadHelperTest {
     assertTrue(errors.isEmpty());
   }
 
+  @Test
+  void getAllClaimsShouldRetryUntilAllClaimsReportedByTotalElementsAreResolved() {
+    // The first sweep skips a claim (returns fewer than total_elements); a retry reconciles the
+    // full set, so no claim is missed.
+    var officeCode = "123456";
+    var ufn = "20220101/020244";
+    ClaimResponseV2 claimOne = claim("11111111-1111-1111-1111-111111111111", officeCode, ufn);
+    ClaimResponseV2 claimTwo = claim("22222222-2222-2222-2222-222222222222", officeCode, ufn);
+
+    ClaimResultSetV2 incompleteSweep = claimList(claimOne);
+    incompleteSweep.setTotalElements(2);
+    ClaimResultSetV2 completeSweep = claimList(claimOne, claimTwo);
+
+    whenSearchPage(officeCode, 1).thenReturn(incompleteSweep, completeSweep);
+
+    List<BulkUploadError> errors = new ArrayList<>();
+    var response = helper.getAllClaims(List.of(row(officeCode, ufn, 1)), errors);
+
+    assertEquals(2, response.size());
+    assertTrue(response.containsAll(List.of(claimOne, claimTwo)));
+    assertTrue(errors.isEmpty());
+  }
+
+  @Test
+  void getAllClaimsShouldFailWhenClaimsCannotBeReconciledWithTotalElements() {
+    // Every sweep returns fewer claims than total_elements reports, so completeness can never be
+    // confirmed. The upload must fail loudly rather than silently dropping a claim.
+    var officeCode = "123456";
+    var ufn = "20220101/020244";
+    ClaimResponseV2 claimOne = claim("11111111-1111-1111-1111-111111111111", officeCode, ufn);
+
+    ClaimResultSetV2 alwaysIncomplete = claimList(claimOne);
+    alwaysIncomplete.setTotalElements(2);
+    whenSearchPage(officeCode, 1).thenReturn(alwaysIncomplete);
+
+    List<BulkUploadCivilClaim> rows = List.of(row(officeCode, ufn, 1));
+    List<BulkUploadError> errors = new ArrayList<>();
+
+    RuntimeException exception =
+        assertThrows(RuntimeException.class, () -> helper.getAllClaims(rows, errors));
+    assertTrue(exception.getMessage().contains(officeCode));
+  }
+
   private BulkUploadCivilClaim row(String officeCode, String ufn, int rowNumber) {
     BulkUploadCivilClaim r = new BulkUploadCivilClaim();
     r.setOfficeCode(officeCode);
@@ -212,12 +256,41 @@ class BulkUploadHelperTest {
   private ClaimResultSetV2 claimList(ClaimResponseV2... claims) {
     ClaimResultSetV2 result = new ClaimResultSetV2();
     result.setContent(Arrays.asList(claims));
+    result.setTotalPages(1);
+    result.setTotalElements(claims.length);
     return result;
   }
 
   private ClaimResultSetV2 emptyList() {
     ClaimResultSetV2 result = new ClaimResultSetV2();
     result.setContent(Collections.emptyList());
+    result.setTotalPages(1);
+    result.setTotalElements(0);
     return result;
+  }
+
+  private ClaimResponseV2 claim(String id, String officeCode, String ufn) {
+    ClaimResponseV2 claim = new ClaimResponseV2();
+    claim.setId(id);
+    claim.setOfficeCode(officeCode);
+    claim.setUniqueFileNumber(ufn);
+    claim.setStatus(VALID);
+    return claim;
+  }
+
+  private org.mockito.stubbing.OngoingStubbing<ClaimResultSetV2> whenSearchPage(
+      String officeCode, int page) {
+    return when(
+        claimService.searchClaims(
+            officeCode,
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.of(AreaOfLaw.LEGAL_HELP),
+            Optional.of(true),
+            List.of(VALID),
+            page,
+            200,
+            null));
   }
 }
