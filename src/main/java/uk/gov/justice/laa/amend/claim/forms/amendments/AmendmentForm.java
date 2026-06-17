@@ -1,5 +1,6 @@
-package uk.gov.justice.laa.amend.claim.forms.amendment;
+package uk.gov.justice.laa.amend.claim.forms.amendments;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,11 +18,11 @@ public class AmendmentForm {
   private Map<String, String> inputs;
 
   public AmendmentForm() {
-    this.inputs = new LinkedHashMap<>();
+    this.inputs = new HashMap<>();
   }
 
   public AmendmentForm(LinkedHashMap<? extends ClaimViewField<?>, Object> viewRows) {
-    var inputs = new LinkedHashMap<String, String>();
+    var inputs = new HashMap<String, String>();
     for (var entry : viewRows.entrySet()) {
       inputs.put(entry.getKey().name(), formatValue(entry.getValue()));
     }

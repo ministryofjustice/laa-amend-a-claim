@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.forms.amendment;
+package uk.gov.justice.laa.amend.claim.forms.amendments;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

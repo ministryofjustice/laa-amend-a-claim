@@ -51,8 +51,6 @@ public class VoidConfirmationControllerTest extends BaseControllerTest {
 
   @Test
   public void testOnPageLoadReturnsViewWhenClaimInSession() throws Exception {
-    session.setAttribute(claimId.toString(), claim);
-
     when(claimService.voidClaim(claimId, USER_ID))
         .thenReturn(new VoidClaim201Response(UUID.randomUUID()));
 

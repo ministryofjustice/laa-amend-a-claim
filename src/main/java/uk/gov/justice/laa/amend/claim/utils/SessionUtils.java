@@ -6,14 +6,14 @@ import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.exceptions.NoClaimInSessionException;
-import uk.gov.justice.laa.amend.claim.forms.amendment.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @UtilityClass
 public class SessionUtils {
 
-  public static final String AMENDMENTS_KEY = "amendments-%s";
+  public static final String AMENDMENTS_KEY = "amendments:%s";
 
   public static ClaimDetails getClaim(HttpSession session, UUID submissionId, UUID claimId) {
     if (session == null) {
