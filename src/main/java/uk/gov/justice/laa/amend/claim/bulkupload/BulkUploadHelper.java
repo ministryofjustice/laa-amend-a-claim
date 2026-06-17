@@ -95,29 +95,28 @@ public class BulkUploadHelper {
    * single paginated sweep may return the same claim more than once or omit claims entirely.
    *
    * <p>Duplicate claims are removed by keying on claim ID. Missing claims are detected by comparing
-   * the number of distinct claims collected with the total count reported by the API. If the counts
-   * do not match, the sweep is retried, allowing a different page ordering to contribute additional
-   * claims to the result set.
+   * the number of distinct claims collected with the total element count reported by the initial
+   * call.
    *
    * <p>If the reported total still cannot be reconciled after retrying, the upload is failed rather
    * than risking silent data loss.
    */
   private Map<UUID, ClaimResponseV2> fetchAllValidClaims(String officeCode) {
     Map<UUID, ClaimResponseV2> claimsById = new LinkedHashMap<>();
-    int totalElements = collectDistinctClaimsInto(officeCode, claimsById);
+    int expectedTotal = collectDistinctClaimsInto(officeCode, claimsById);
 
     int attempts = 1;
-    while (claimsById.size() < totalElements && attempts < MAX_FETCH_ATTEMPTS) {
-      totalElements = collectDistinctClaimsInto(officeCode, claimsById);
+    while (claimsById.size() < expectedTotal && attempts < MAX_FETCH_ATTEMPTS) {
+      collectDistinctClaimsInto(officeCode, claimsById);
       attempts++;
     }
 
-    if (claimsById.size() < totalElements) {
+    if (claimsById.size() < expectedTotal) {
       throw new RuntimeException(
           String.format(
               "Could not retrieve all valid claims for office code %s: expected %d but only "
                   + "resolved %d distinct claims after %d attempts",
-              officeCode, totalElements, claimsById.size(), attempts));
+              officeCode, expectedTotal, claimsById.size(), attempts));
     }
     return claimsById;
   }

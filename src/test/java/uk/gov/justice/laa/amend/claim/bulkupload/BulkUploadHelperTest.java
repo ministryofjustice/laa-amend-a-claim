@@ -10,7 +10,6 @@ import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VAL
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,95 +55,40 @@ class BulkUploadHelperTest {
   void getAllClaimsShouldMatchClaimsAndReturnClaims() {
     var officeCode = "123456";
     var ufn = "20220101/020244";
-    // Mock claim returned from paging API
-    ClaimResponseV2 claim = new ClaimResponseV2();
-    claim.setId("11111111-1111-1111-1111-111111111111");
-    claim.setOfficeCode(officeCode);
-    claim.setUniqueFileNumber(ufn);
-    claim.setStatus(VALID);
-
-    when(claimService.searchClaims(
-            officeCode,
-            Optional.empty(),
-            Optional.empty(),
-            Optional.empty(),
-            Optional.of(AreaOfLaw.LEGAL_HELP),
-            Optional.of(true),
-            List.of(VALID),
-            1,
-            200,
-            null))
-        .thenReturn(claimList(claim));
-
-    // After page 1, return empty content (stop)
-    when(claimService.searchClaims(
-            officeCode,
-            Optional.empty(),
-            Optional.empty(),
-            Optional.empty(),
-            Optional.of(AreaOfLaw.LEGAL_HELP),
-            Optional.of(true),
-            List.of(VALID),
-            2,
-            200,
-            null))
-        .thenReturn(emptyList());
+    var claimId = "11111111-1111-1111-1111-111111111111";
+    whenSearchPage(officeCode, 1).thenReturn(claimList(claim(claimId, officeCode, ufn)));
 
     List<BulkUploadError> errors = new ArrayList<>();
-    BulkUploadCivilClaim row = row(officeCode, ufn, 1);
-    List<BulkUploadCivilClaim> rows = List.of(row);
-    var response = helper.getAllClaims(rows, errors);
+    var response = helper.getAllClaims(List.of(row(officeCode, ufn, 1)), errors);
 
-    assertEquals(List.of(claim), response);
+    assertEquals(1, response.size());
+    assertEquals(claimId, response.getFirst().getId());
     assertTrue(errors.isEmpty());
   }
 
   @Test
   void getAllClaimsShouldDeduplicateSameClaimReturnedAcrossPages() {
-    // Simulate the API returning the same claim on multiple pages due to unstable pagination.
-    // The claim should be deduplicated and not treated as a duplicate submission.
+    // Unstable pagination returns the same claim (same ID) on two pages as distinct instances.
+    // It must be deduplicated by claim ID, not treated as a duplicate submission.
     var officeCode = "123456";
     var ufn = "20220101/020244";
-    ClaimResponseV2 claim = new ClaimResponseV2();
-    claim.setId("22222222-2222-2222-2222-222222222222");
-    claim.setOfficeCode(officeCode);
-    claim.setUniqueFileNumber(ufn);
-    claim.setStatus(VALID);
+    var sharedId = "22222222-2222-2222-2222-222222222222";
+    ClaimResponseV2 pageOneClaim = claim(sharedId, officeCode, ufn);
+    ClaimResponseV2 pageTwoClaim = claim(sharedId, officeCode, ufn);
 
-    ClaimResultSetV2 pageOne = claimList(claim);
+    ClaimResultSetV2 pageOne = claimList(pageOneClaim);
     pageOne.setTotalPages(2);
-    when(claimService.searchClaims(
-            officeCode,
-            Optional.empty(),
-            Optional.empty(),
-            Optional.empty(),
-            Optional.of(AreaOfLaw.LEGAL_HELP),
-            Optional.of(true),
-            List.of(VALID),
-            1,
-            200,
-            null))
-        .thenReturn(pageOne);
+    whenSearchPage(officeCode, 1).thenReturn(pageOne);
 
-    ClaimResultSetV2 pageTwo = claimList(claim);
+    ClaimResultSetV2 pageTwo = claimList(pageTwoClaim);
     pageTwo.setTotalPages(2);
-    when(claimService.searchClaims(
-            officeCode,
-            Optional.empty(),
-            Optional.empty(),
-            Optional.empty(),
-            Optional.of(AreaOfLaw.LEGAL_HELP),
-            Optional.of(true),
-            List.of(VALID),
-            2,
-            200,
-            null))
-        .thenReturn(pageTwo);
+    whenSearchPage(officeCode, 2).thenReturn(pageTwo);
 
     List<BulkUploadError> errors = new ArrayList<>();
     var response = helper.getAllClaims(List.of(row(officeCode, ufn, 1)), errors);
 
-    assertEquals(List.of(claim), response);
+    assertEquals(1, response.size());
+    assertEquals(sharedId, response.getFirst().getId());
     assertTrue(errors.isEmpty());
   }
 
@@ -154,48 +98,19 @@ class BulkUploadHelperTest {
     // retained so downstream duplicate detection can still flag them.
     var officeCode = "123456";
     var ufn = "20220101/020244";
-    ClaimResponseV2 claimOne = new ClaimResponseV2();
-    claimOne.setId("11111111-1111-1111-1111-111111111111");
-    claimOne.setOfficeCode(officeCode);
-    claimOne.setUniqueFileNumber(ufn);
-    claimOne.setStatus(VALID);
+    var claimOneId = "11111111-1111-1111-1111-111111111111";
+    var claimTwoId = "22222222-2222-2222-2222-222222222222";
+    ClaimResponseV2 claimOne = claim(claimOneId, officeCode, ufn);
+    ClaimResponseV2 claimTwo = claim(claimTwoId, officeCode, ufn);
 
-    ClaimResponseV2 claimTwo = new ClaimResponseV2();
-    claimTwo.setId("22222222-2222-2222-2222-222222222222");
-    claimTwo.setOfficeCode(officeCode);
-    claimTwo.setUniqueFileNumber(ufn);
-    claimTwo.setStatus(VALID);
-
-    when(claimService.searchClaims(
-            officeCode,
-            Optional.empty(),
-            Optional.empty(),
-            Optional.empty(),
-            Optional.of(AreaOfLaw.LEGAL_HELP),
-            Optional.of(true),
-            List.of(VALID),
-            1,
-            200,
-            null))
-        .thenReturn(claimList(claimOne, claimTwo));
-
-    when(claimService.searchClaims(
-            officeCode,
-            Optional.empty(),
-            Optional.empty(),
-            Optional.empty(),
-            Optional.of(AreaOfLaw.LEGAL_HELP),
-            Optional.of(true),
-            List.of(VALID),
-            2,
-            200,
-            null))
-        .thenReturn(emptyList());
+    whenSearchPage(officeCode, 1).thenReturn(claimList(claimOne, claimTwo));
 
     List<BulkUploadError> errors = new ArrayList<>();
     var response = helper.getAllClaims(List.of(row(officeCode, ufn, 1)), errors);
 
-    assertEquals(List.of(claimOne, claimTwo), response);
+    assertEquals(2, response.size());
+    assertEquals(
+        List.of(claimOneId, claimTwoId), response.stream().map(ClaimResponseV2::getId).toList());
     assertTrue(errors.isEmpty());
   }
 
@@ -258,14 +173,6 @@ class BulkUploadHelperTest {
     result.setContent(Arrays.asList(claims));
     result.setTotalPages(1);
     result.setTotalElements(claims.length);
-    return result;
-  }
-
-  private ClaimResultSetV2 emptyList() {
-    ClaimResultSetV2 result = new ClaimResultSetV2();
-    result.setContent(Collections.emptyList());
-    result.setTotalPages(1);
-    result.setTotalElements(0);
     return result;
   }
 
