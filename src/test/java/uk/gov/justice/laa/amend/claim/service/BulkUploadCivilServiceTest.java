@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -121,6 +122,21 @@ class BulkUploadCivilServiceTest {
 
     // --- verify mapper called correctly ---
     verify(claimMapper, times(1)).mapToCivilClaimDetails(apiResponse);
+  }
+
+  @Test
+  void validateRowsShouldFailValidationWhenClaimsCannotBeRetrieved() {
+    BulkUploadCivilClaim row = buildRow();
+    when(bulkUploadHelper.getAllClaims(anyList(), anyList()))
+        .thenThrow(new RuntimeException("could not reconcile claims for office"));
+
+    BulkUploadValidationOutcome outcome = service.validateRows(List.of(row));
+
+    assertEquals(VALIDATION_FAILURE, outcome.result().status());
+    assertTrue(outcome.claimDetailsList().isEmpty());
+    BulkUploadError error = outcome.result().errors().getFirst();
+    assertNull(error.rowNumber());
+    assertTrue(error.message().contains("Unable to retrieve all claims"));
   }
 
   @Test

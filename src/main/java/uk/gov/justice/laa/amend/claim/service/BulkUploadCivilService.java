@@ -46,7 +46,20 @@ public class BulkUploadCivilService extends BulkUploadService<BulkUploadCivilCla
     List<BulkUploadError> errors = new ArrayList<>();
     List<ClaimDetails> claimsData = new ArrayList<>();
 
-    var apiClaimResponseObjects = bulkUploadHelper.getAllClaims(rows, errors);
+    List<ClaimResponseV2> apiClaimResponseObjects;
+    try {
+      apiClaimResponseObjects = bulkUploadHelper.getAllClaims(rows, errors);
+    } catch (Exception ex) {
+      log.error("Failed to retrieve claims required to validate the bulk upload", ex);
+      errors.add(
+          new BulkUploadError(
+              null,
+              "Unable to retrieve all claims required to validate the upload. "
+                  + "This may be a temporary problem, please try again."));
+      return new BulkUploadValidationOutcome(
+          BulkUploadResult.failure(VALIDATION_FAILURE, sortedByRowNumber(errors)), List.of());
+    }
+
     var claimsByOfficeCodeAndUfn =
         apiClaimResponseObjects.stream()
             .collect(
