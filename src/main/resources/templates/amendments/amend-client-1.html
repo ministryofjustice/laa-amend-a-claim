@@ -18,7 +18,9 @@
 
       <h2 class="govuk-heading-m" th:text="#{claimDetails.clientHeading}"></h2>
 
-      <form th:action="${flowExecutionUrl}" method="post" th:object="${client1Form}">
+      <form method="post"
+            th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amendClient1(submissionId=${submissionId}, claimId=${claimId})}"
+            th:object="${client1Form}">
 
         <div class="govuk-summary-card">
           <div class="govuk-summary-card__title-wrapper">
