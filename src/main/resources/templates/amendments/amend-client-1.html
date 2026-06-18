@@ -19,7 +19,7 @@
       <h2 class="govuk-heading-m" th:text="#{claimDetails.clientHeading}"></h2>
 
       <form method="post"
-            th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amendClient1(submissionId=${submissionId}, claimId=${claimId})}"
+            th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-client(submissionId=${submissionId}, claimId=${claimId})}"
             th:object="${client1Form}">
 
         <div class="govuk-summary-card">
@@ -41,12 +41,12 @@
 
               <div class="govuk-summary-list__row"
                   th:each="entry : ${clientView.client1Rows}">
-                <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key}}"></dt>
+                <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key.name()}}"></dt>
                 <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
                 <dd class="govuk-summary-list__value">
                   <input class="govuk-input"
                          type="text"
-                         th:field="*{inputs[__${entry.key}__]}" />
+                         th:field="*{inputs[__${entry.key.name()}__]}" />
                 </dd>
               </div>
             </dl>

@@ -10,7 +10,7 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
   final String caseUrl;
   final String costsUrl;
 
-  final String amendClient1Url;
+  final String amendClientUrl;
 
   final String checkUrl;
 
@@ -21,8 +21,8 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
     caseUrl = "/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
     costsUrl = "/submissions/%s/claims/%s/amendments/costs".formatted(submissionId, claimId);
 
-    amendClient1Url =
-        "/submissions/%s/claims/%s/amendments/amendClient1".formatted(submissionId, claimId);
+    amendClientUrl =
+        "/submissions/%s/claims/%s/amendments/amend-client".formatted(submissionId, claimId);
 
     checkUrl = "/submissions/%s/claims/%s/amendments/check".formatted(submissionId, claimId);
   }

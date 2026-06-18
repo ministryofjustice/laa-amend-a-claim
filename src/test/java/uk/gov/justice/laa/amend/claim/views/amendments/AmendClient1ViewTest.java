@@ -38,7 +38,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
   private static final String CLIENT_2_DISABILITY = "disability2";
 
   AmendClient1ViewTest() {
-    this.mapping = amendClient1Url;
+    this.mapping = amendClientUrl;
   }
 
   @Test

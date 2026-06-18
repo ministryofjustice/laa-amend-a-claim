@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import lombok.Data;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
@@ -73,11 +76,11 @@ public class AmendmentForm {
   }
 
   private static ClaimViewField<?> getField(String fieldName, Class<?> claimDetailsType) {
-    if (claimDetailsType == CrimeClaimDetailsViewField.class) {
+    if (claimDetailsType == CrimeClaimDetails.class) {
       return getCrimeField(fieldName);
-    } else if (claimDetailsType == CivilClaimDetailsViewField.class) {
+    } else if (claimDetailsType == CivilClaimDetails.class) {
       return getCivilField(fieldName);
-    } else if (claimDetailsType == MediationClaimDetailsViewField.class) {
+    } else if (claimDetailsType == MediationClaimDetails.class) {
       return getMediationField(fieldName);
     }
     throw new IllegalArgumentException("Unsupported claim details type");

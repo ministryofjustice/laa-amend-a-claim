@@ -26,7 +26,7 @@
             <li class="govuk-summary-card__action">
               <a class="govuk-link"
                  id="amend-client-1"
-                 th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/amendClient1(submissionId=${submissionId}, claimId=${claimId})}"
+                 th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-client(submissionId=${submissionId}, claimId=${claimId})}"
                  th:text="#{amendments.change}"></a>
             </li>
           </ul>
@@ -47,7 +47,7 @@
 
               <dd class="govuk-summary-list__value"
                   th:if="${client1Form.isAmendment(entry.key, forms.client1Form.original)}"
-                  th:text="${@ThymeleafUtils.getFormattedValue(client1Form.inputs[entry.key]).resolve(#messages)}"></dd>
+                  th:text="${@ThymeleafUtils.getFormattedValue(client1Form.inputs[entry.key.name()]).resolve(#messages)}"></dd>
             </div>
           </dl>
         </div>

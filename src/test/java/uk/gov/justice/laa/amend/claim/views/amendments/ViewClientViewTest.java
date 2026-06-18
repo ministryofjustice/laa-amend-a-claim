@@ -230,6 +230,6 @@ class ViewClientViewTest extends AmendmentsBaseTest {
 
     assertH2Exists(doc, "Client");
 
-    assertPageHasLink(doc, "amend-client-1", "Change", amendClient1Url);
+    assertPageHasLink(doc, "amend-client-1", "Change", amendClientUrl);
   }
 }

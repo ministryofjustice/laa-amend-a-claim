@@ -46,8 +46,8 @@ public class ClientController {
     return "amendments/view-client";
   }
 
-  @GetMapping("/amendClient1")
-  public String viewAmendClient1(
+  @GetMapping("/amend-client")
+  public String viewAmendClient(
       HttpSession session,
       Model model,
       @PathVariable UUID submissionId,
@@ -65,7 +65,7 @@ public class ClientController {
     return "amendments/amend-client-1";
   }
 
-  @PostMapping("/amendClient1")
+  @PostMapping("/amend-client")
   public String amendClient1(
       HttpSession session,
       @ModelAttribute("client1Form") AmendmentForm client1Form,

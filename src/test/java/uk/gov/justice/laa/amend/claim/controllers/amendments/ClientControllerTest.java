@@ -24,7 +24,7 @@ class ClientControllerTest extends BaseControllerTest {
 
   private static final String INPUTS = "inputs[%s]";
 
-  private static final String FORENAME = "forname";
+  private static final String FORENAME = "forename";
   private static final String SURNAME = "surname";
   private static final String GENDER = "gender";
   private static final String ETHNICITY = "ethnicity";
@@ -88,6 +88,6 @@ class ClientControllerTest extends BaseControllerTest {
   }
 
   private String buildAmendClient1Path() {
-    return "/submissions/%s/claims/%s/amendments/amendClient1".formatted(submissionId, claimId);
+    return "/submissions/%s/claims/%s/amendments/amend-client".formatted(submissionId, claimId);
   }
 }
