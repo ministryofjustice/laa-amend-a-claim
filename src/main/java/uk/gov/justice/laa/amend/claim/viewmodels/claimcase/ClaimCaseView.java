@@ -9,5 +9,5 @@ public interface ClaimCaseView<K extends ClaimViewField<? extends ClaimDetails>>
   /** A LinkedHashMap to ensure insertion order of rows is preserved. */
   LinkedHashMap<K, Object> caseTypeRows();
 
-  LinkedHashMap<String, Object> caseDetailsRows();
+  LinkedHashMap<K, Object> caseDetailsRows();
 }
