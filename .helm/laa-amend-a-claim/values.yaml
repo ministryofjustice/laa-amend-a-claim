@@ -191,6 +191,11 @@ env:
       configMapKeyRef:
         name: feature-flags
         key: is-full-claim-details-enabled
+  - name: IS_CLAIM_AMENDMENT_ENABLED
+    valueFrom:
+      configMapKeyRef:
+        name: feature-flags
+        key: is-claim-amendment-enabled
   - name: OUTAGE_BANNER_DISABLE_AT_TIMESTAMP
     valueFrom:
       configMapKeyRef:

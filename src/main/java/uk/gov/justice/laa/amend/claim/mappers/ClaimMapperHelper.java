@@ -11,10 +11,13 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.HO_INTERVIEW;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.IS_LONDON_RATE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.PRIOR_AUTHORITY_REFERENCE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
+import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_AND_WAITING_COSTS;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
 import static uk.gov.justice.laa.amend.claim.utils.NumberUtils.add;
@@ -30,6 +33,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
+import uk.gov.justice.laa.amend.claim.models.SubmittedClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
@@ -235,5 +239,27 @@ public class ClaimMapperHelper {
     FeeCalculationPatch fee = claimResponse.getFeeCalculationResponse();
     BigDecimal calculated = fee != null ? fee.getTotalAmount() : null;
     return new AllowedClaimField(ALLOWED_TOTAL_INCL_VAT, calculated);
+  }
+
+  @Named("mapIsLondonRate")
+  public ClaimField mapIsLondonRate(ClaimResponseV2 claimResponse) {
+    return new SubmittedClaimField(IS_LONDON_RATE, claimResponse.getIsLondonRate());
+  }
+
+  @Named("mapPriorAuthorityReference")
+  public ClaimField mapPriorAuthorityReference(ClaimResponseV2 claimResponse) {
+    return new SubmittedClaimField(
+        PRIOR_AUTHORITY_REFERENCE, claimResponse.getPriorAuthorityReference());
+  }
+
+  @Named("mapTravelAndWaitingCosts")
+  public ClaimField mapTravelAndWaitingCosts(ClaimResponseV2 claimResponse) {
+    var submitted = claimResponse.getTravelWaitingCostsAmount();
+    BigDecimal calculated =
+        claimResponse.getFeeCalculationResponse() != null
+            ? claimResponse.getFeeCalculationResponse().getTravelAndWaitingCostsAmount()
+            : null;
+    return new CostClaimField(
+        TRAVEL_AND_WAITING_COSTS, submitted, calculated, Cost.TRAVEL_AND_WAITING_COSTS);
   }
 }

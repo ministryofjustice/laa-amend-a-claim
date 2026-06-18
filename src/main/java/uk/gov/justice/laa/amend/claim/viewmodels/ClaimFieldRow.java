@@ -6,8 +6,10 @@ import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
 import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
+import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
+import uk.gov.justice.laa.amend.claim.models.SubmittedClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.amend.claim.utils.FormUtils;
 
@@ -41,13 +43,7 @@ public record ClaimFieldRow(
 
   public static ClaimFieldRow from(BoltOnClaimField claimField) {
     if (claimField.hasSubmittedValue()) {
-      return new ClaimFieldRow(
-          claimField.getKey(),
-          claimField.getSubmitted(),
-          claimField.getCalculated(),
-          claimField.getAssessed(),
-          claimField.isAssessable(),
-          null);
+      return createRow(claimField, claimField.getSubmitted(), claimField.getCalculated());
     }
     return null;
   }
@@ -107,6 +103,23 @@ public record ClaimFieldRow(
         "/submissions/%s/claims/%s/assessment-outcome");
   }
 
+  public static ClaimFieldRow from(SubmittedClaimField claimField) {
+    return new ClaimFieldRow(
+        claimField.getKey(),
+        claimField.getSubmitted(),
+        null,
+        null,
+        claimField.isAssessable(),
+        null);
+  }
+
+  public static ClaimFieldRow fromCustom(BoltOnClaimField claimField) {
+    if (!claimField.hasSubmittedValue()) {
+      return createRow(claimField, "Not applicable", "Not applicable");
+    }
+    return createRow(claimField, claimField.getSubmitted(), claimField.getCalculated());
+  }
+
   public String getLabel() {
     return String.format("claimSummary.rows.%s", key);
   }
@@ -137,5 +150,16 @@ public record ClaimFieldRow(
 
   public boolean hasAssessedValue() {
     return assessed != null;
+  }
+
+  private static ClaimFieldRow createRow(
+      ClaimField claimField, Object submitted, Object calculated) {
+    return new ClaimFieldRow(
+        claimField.getKey(),
+        submitted,
+        calculated,
+        claimField.getAssessed(),
+        claimField.isAssessable(),
+        null);
   }
 }

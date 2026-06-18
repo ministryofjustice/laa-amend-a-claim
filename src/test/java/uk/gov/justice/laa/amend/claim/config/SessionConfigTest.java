@@ -26,6 +26,7 @@ import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
+import uk.gov.justice.laa.amend.claim.models.SubmittedClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
@@ -78,6 +79,8 @@ class SessionConfigTest {
     claim.setAssessedTotalInclVat(new AssessedClaimField("assessedTotalInclVat"));
     claim.setAllowedTotalVat(new AssessedClaimField("allowedTotalVat"));
     claim.setAllowedTotalInclVat(new AssessedClaimField("allowedTotalInclVat"));
+    claim.setIsLondonRate(new SubmittedClaimField("isLondonRate", true));
+    claim.setPriorAuthorityReference(new SubmittedClaimField("priorAuthorityReference", "REF"));
 
     byte[] serialized = serializer.serialize(claim);
     Object deserialized = serializer.deserialize(serialized);
@@ -93,6 +96,8 @@ class SessionConfigTest {
     assertThat(restored.getNetProfitCost().getCalculated()).isInstanceOf(BigDecimal.class);
     assertThat(restored.getNetProfitCost().getAssessed()).isInstanceOf(BigDecimal.class);
     assertThat(restored.getFixedFee().getCalculated()).isInstanceOf(BigDecimal.class);
+    assertThat(restored.getIsLondonRate()).isInstanceOf(SubmittedClaimField.class);
+    assertThat(restored.getPriorAuthorityReference()).isInstanceOf(SubmittedClaimField.class);
   }
 
   @Test

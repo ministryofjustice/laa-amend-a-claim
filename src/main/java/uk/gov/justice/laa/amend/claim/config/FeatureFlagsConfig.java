@@ -11,4 +11,5 @@ public class FeatureFlagsConfig {
   private Boolean isBulkUploadEnabled;
   private Boolean isRequestedAndCalculatedSwapEnabled;
   private Boolean isFullClaimDetailsEnabled;
+  private Boolean isClaimAmendmentEnabled;
 }

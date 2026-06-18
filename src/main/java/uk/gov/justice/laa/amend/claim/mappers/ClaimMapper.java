@@ -147,6 +147,15 @@ public interface ClaimMapper {
   @Mapping(target = "mentalHealthTribunalReference", source = "mentalHealthTribunalReference")
   @Mapping(target = "isNrmAdvice", source = "isNrmAdvice")
   @Mapping(
+      target = "travelAndWaitingCosts",
+      source = "claimResponse",
+      qualifiedByName = "mapTravelAndWaitingCosts")
+  @Mapping(target = "isLondonRate", source = "claimResponse", qualifiedByName = "mapIsLondonRate")
+  @Mapping(
+      target = "priorAuthorityReference",
+      source = "claimResponse",
+      qualifiedByName = "mapPriorAuthorityReference")
+  @Mapping(
       target = "matterType1",
       source = "claimResponse.matterTypeCode",
       qualifiedByName = "matterType1")

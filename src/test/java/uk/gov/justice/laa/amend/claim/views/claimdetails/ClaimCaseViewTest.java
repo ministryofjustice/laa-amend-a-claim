@@ -84,7 +84,6 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
   private static final String SURGERY_DATE_RENDERED = "30 May 2026";
   private static final Integer SURGERY_CLIENTS_COUNT = 1;
   private static final Integer SURGERY_MATTERS_COUNT = 1;
-  private static final Boolean IS_POSTAL_APPLICATION = false;
   private static final String MENTAL_HEALTH_TRIBUNAL_REFERENCE = "MENTAL_HEALTH_REF";
   private static final Boolean IS_NRM_ADVICE = false;
   private static final String MATTER_TYPE1 = "matterType1";
@@ -255,7 +254,6 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
     claim.setSurgeryDate(SURGERY_DATE);
     claim.setSurgeryClientsCount(SURGERY_CLIENTS_COUNT);
     claim.setSurgeryMattersCount(SURGERY_MATTERS_COUNT);
-    claim.setIsPostalApplication(IS_POSTAL_APPLICATION);
     claim.setMentalHealthTribunalReference(MENTAL_HEALTH_TRIBUNAL_REFERENCE);
     claim.setIsNrmAdvice(IS_NRM_ADVICE);
 
@@ -336,11 +334,10 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
         caseDetails.get(35),
         "Number of clients resulting in legal help matter opened",
         SURGERY_MATTERS_COUNT.toString());
-    assertSummaryListRowContainsValues(caseDetails.get(36), "Postal application accepted", "No");
     assertSummaryListRowContainsValues(
-        caseDetails.get(37), "Mental health tribunal reference", MENTAL_HEALTH_TRIBUNAL_REFERENCE);
+        caseDetails.get(36), "Mental health tribunal reference", MENTAL_HEALTH_TRIBUNAL_REFERENCE);
     assertSummaryListRowContainsValues(
-        caseDetails.get(38), "National referral mechanism (NRM) advice", "No");
+        caseDetails.get(37), "National referral mechanism (NRM) advice", "No");
   }
 
   private void assertCommonPageContent(Document doc) {
