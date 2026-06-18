@@ -1,20 +1,20 @@
-package uk.gov.justice.laa.amend.claim.views.claimdetails;
+package uk.gov.justice.laa.amend.claim.views.amendments;
 
-import static org.mockito.Mockito.when;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
 import java.time.LocalDate;
 import org.jsoup.nodes.Document;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import uk.gov.justice.laa.amend.claim.controllers.claimdetails.ClaimClientController;
+import uk.gov.justice.laa.amend.claim.controllers.amendments.ClientController;
+import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.amend.claim.service.AssessmentService;
-import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
-@WebMvcTest(ClaimClientController.class)
-class ClaimClientViewTest extends ClaimDetailsBaseTest {
+@WebMvcTest(ClientController.class)
+class ViewClientViewTest extends AmendmentsBaseTest {
 
   private static final String FORENAME = "forename";
   private static final String SURNAME = "surname";
@@ -38,18 +38,12 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
   private static final String CLIENT_2_ETHNICITY = "ethnicity2";
   private static final String CLIENT_2_DISABILITY = "disability2";
 
-  @MockitoBean private AssessmentService assessmentService;
-  @MockitoBean private UserRetrievalService userRetrievalService;
-
-  @BeforeEach
-  public void setup() {
-    super.setup();
-    when(featureFlagsConfig.getIsFullClaimDetailsEnabled()).thenReturn(true);
-    mapping = clientUrl;
+  ViewClientViewTest() {
+    this.mapping = clientUrl;
   }
 
   @Test
-  void testShowsCrimeClientDetails() {
+  void testShowsUnamendedCrimeClientDetails() {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     this.claim = claim;
     claim.setSubmissionId(submissionId);
@@ -60,6 +54,9 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     claim.setClientEthnicity(ETHNICITY);
     claim.setClientDisability(DISABILITY);
 
+    var forms = createClientForms(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
     var doc = renderDocument();
     assertCommonPageContent(doc);
 
@@ -69,6 +66,39 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(2), "Gender", GENDER);
     assertSummaryListRowContainsValues(clientDetails.get(3), "Ethnicity", ETHNICITY);
     assertSummaryListRowContainsValues(clientDetails.get(4), "Disability", DISABILITY);
+
+    assertPageHasLink(doc, "back-to-claim-details", "Back to claim details", overviewUrl);
+  }
+
+  @Test
+  void testShowsAmendedClient1Details() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setClientForename(FORENAME);
+    claim.setClientSurname(SURNAME);
+    claim.setClientGender(GENDER);
+    claim.setClientEthnicity(ETHNICITY);
+    claim.setClientDisability(DISABILITY);
+
+    var forms = createClientForms(claim);
+    forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changed");
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    var clientDetails = getSummaryListInCard(doc, "Client details");
+    assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Current", "Amended");
+    assertSummaryListRowContainsValues(clientDetails.get(1), "Initial", FORENAME);
+    assertSummaryListRowContainsValues(clientDetails.get(2), "Last name", SURNAME, "changed");
+    assertSummaryListRowContainsValues(clientDetails.get(3), "Gender", GENDER);
+    assertSummaryListRowContainsValues(clientDetails.get(4), "Ethnicity", ETHNICITY);
+    assertSummaryListRowContainsValues(clientDetails.get(5), "Disability", DISABILITY);
+
+    assertPageHasLink(doc, "check", "Continue", checkUrl);
+    assertPageHasLink(doc, "cancel", "Cancel", overviewUrl);
   }
 
   @Test
@@ -100,6 +130,9 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     claim.setIsClient2LegallyAided(false);
     claim.setIsClient2PostalApplicationAccepted(true);
 
+    var forms = createClientForms(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
     var doc = renderDocument();
     assertCommonPageContent(doc);
 
@@ -129,6 +162,8 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(client2Details.get(7), "Disability", CLIENT_2_DISABILITY);
     assertSummaryListRowContainsValues(client2Details.get(8), "Legally aided", "No");
     assertSummaryListRowContainsValues(client2Details.get(9), "Postal application accepted", "Yes");
+
+    assertPageHasLink(doc, "back-to-claim-details", "Back to claim details", overviewUrl);
   }
 
   @Test
@@ -151,6 +186,9 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     claim.setHomeOfficeClientNumber(HOME_OFFICE_CLIENT_NUMBER);
     claim.setIsPostalApplication(false);
 
+    var forms = createClientForms(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
     var doc = renderDocument();
     assertCommonPageContent(doc);
 
@@ -171,20 +209,27 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
         "Home Office unique client number (HO UCN)",
         HOME_OFFICE_CLIENT_NUMBER);
     assertSummaryListRowContainsValues(clientDetails.get(11), "Postal application accepted", "No");
+
+    assertPageHasLink(doc, "back-to-claim-details", "Back to claim details", overviewUrl);
+  }
+
+  private AmendmentForms createClientForms(ClaimDetails claim) {
+    var view = ClaimClientViewFactory.create(claim);
+    return new AmendmentForms(new AmendmentForm(view.client1Rows()));
   }
 
   private void assertCommonPageContent(Document doc) {
-    assertPageHasTitle(doc, "Claim details");
-    assertPageHasHeading(doc, "Claim details");
-    assertPageDoesNotHaveBackLink(doc);
+    assertPageHasTitle(doc, "Amend claim details");
+    assertPageHasHeading(doc, "Amend claim details");
+    assertPageHasBackLink(doc);
 
     assertPageHasNoActiveServiceNavigationItems(doc);
-    assertPageHasInactiveSubNavigationItem(doc, "Overview", overviewUrl);
     assertPageHasActiveSubNavigationItem(doc, "Client", clientUrl);
     assertPageHasInactiveSubNavigationItem(doc, "Case", caseUrl);
     assertPageHasInactiveSubNavigationItem(doc, "Costs", costsUrl);
-    assertPageHasInactiveSubNavigationItem(doc, "Claim history", historyUrl);
 
     assertH2Exists(doc, "Client");
+
+    assertPageHasLink(doc, "amend-client-1", "Change", amendClient1Url);
   }
 }

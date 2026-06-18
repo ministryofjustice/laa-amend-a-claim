@@ -21,6 +21,10 @@ public class AmendmentForm {
     this.inputs = new HashMap<>();
   }
 
+  public AmendmentForm(AmendmentForm form) {
+    this.inputs = new LinkedHashMap<>(form.getInputs());
+  }
+
   public AmendmentForm(LinkedHashMap<? extends ClaimViewField<?>, Object> viewRows) {
     var inputs = new HashMap<String, String>();
     for (var entry : viewRows.entrySet()) {

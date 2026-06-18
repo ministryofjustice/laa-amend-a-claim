@@ -11,7 +11,10 @@ public class AmendmentForms {
   private OriginalAndCurrent client1Form;
 
   public AmendmentForms(AmendmentForm client1Form) {
-    this.client1Form = new OriginalAndCurrent(client1Form, client1Form);
+    // Create a new copy of each form to ensure changes to one aren't propagated to the other
+    var currentClient1Form = new AmendmentForm(client1Form);
+
+    this.client1Form = new OriginalAndCurrent(client1Form, currentClient1Form);
   }
 
   public boolean hasAmendments() {
