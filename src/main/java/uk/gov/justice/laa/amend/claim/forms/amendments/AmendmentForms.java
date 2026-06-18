@@ -1,7 +1,11 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class AmendmentForms {
   private OriginalAndCurrent client1Form;
