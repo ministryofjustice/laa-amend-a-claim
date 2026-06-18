@@ -17,6 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.models.search.SearchSort;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
@@ -118,7 +119,7 @@ public class BulkUploadHelper {
               List.of(ClaimStatus.VALID),
               page,
               pageSize,
-              null);
+              SearchSort.defaults());
       if (result == null || result.getContent() == null) {
         throw new RuntimeException("No claims found for office code " + officeCode);
       }
