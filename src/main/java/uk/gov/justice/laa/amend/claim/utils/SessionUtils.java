@@ -48,15 +48,6 @@ public class SessionUtils {
     return claim;
   }
 
-  public static ClaimDetails getValidAmendableClaim(
-      HttpSession session, UUID submissionId, UUID claimId) {
-    var claim = getValidClaim(session, submissionId, claimId);
-    if (claim.isHasAssessment()) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Claim is not amendable");
-    }
-    return claim;
-  }
-
   public static void saveAmendmentForms(HttpSession session, UUID claimId, AmendmentForms forms) {
     var key = AMENDMENTS_KEY.formatted(claimId.toString());
     session.setAttribute(key, forms);

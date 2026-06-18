@@ -37,7 +37,7 @@ public record ClaimDetailsFooterView(
       boolean isClaimAmendmentsCaseworker,
       FeatureFlagsConfig featureFlagsConfig) {
     return isClaimAmendmentsCaseworker
-        && !claim.isHasAssessment()
+        && claim.isValid()
         && featureFlagsConfig.getIsClaimAmendmentEnabled();
   }
 

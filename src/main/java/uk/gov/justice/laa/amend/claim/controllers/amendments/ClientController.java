@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getAmendmentForms;
-import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAmendableClaim;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveAmendmentForms;
 
 import jakarta.servlet.http.HttpSession;
@@ -35,7 +35,7 @@ public class ClientController {
       @PathVariable UUID claimId) {
     featureFlagsConfig.checkClaimAmendmentEnabled();
 
-    var claim = getValidAmendableClaim(session, submissionId, claimId);
+    var claim = getValidClaim(session, submissionId, claimId);
     var clientView = ClaimClientViewFactory.create(claim);
     var amendmentForms = getAmendmentForms(session, claimId);
 
@@ -54,7 +54,7 @@ public class ClientController {
       @PathVariable UUID claimId) {
     featureFlagsConfig.checkClaimAmendmentEnabled();
 
-    var claim = getValidAmendableClaim(session, submissionId, claimId);
+    var claim = getValidClaim(session, submissionId, claimId);
     var clientView = ClaimClientViewFactory.create(claim);
     var amendmentForms = getAmendmentForms(session, claimId);
 
