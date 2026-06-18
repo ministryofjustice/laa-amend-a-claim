@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.helpers;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import org.junit.jupiter.api.Assertions;
 
 public class PageHelper {
 
@@ -36,5 +37,20 @@ public class PageHelper {
             String.format(
                 ".govuk-summary-list__row:has(.govuk-summary-list__key:text-is('%s'))", label))
         .first();
+  }
+
+  public static void assertSummaryListValue(
+      Locator rowSelector, int columnIndex, String expectedValue) {
+    String actualValue = rowSelector.locator("dd").nth(columnIndex).textContent().trim();
+    Assertions.assertEquals(expectedValue, actualValue, "Value mismatch in key");
+  }
+
+  public static void assertSummaryListRow(Page page, String title, String label, String... values) {
+    Locator card = cardByTitle(title, page);
+    Locator row = summaryListRowByLabel(card, label);
+
+    for (int i = 0; i < values.length; ++i) {
+      assertSummaryListValue(row, i, values[i]);
+    }
   }
 }
