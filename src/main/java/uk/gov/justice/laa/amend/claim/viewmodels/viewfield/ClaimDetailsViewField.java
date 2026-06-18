@@ -6,7 +6,7 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
 @Getter
 public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
-  // Client fields
+  // Common client fields
   INITIAL(new Accessor<>(ClaimDetails::getClientForename)),
   FORENAME(new Accessor<>(ClaimDetails::getClientForename)),
   SURNAME(new Accessor<>(ClaimDetails::getClientSurname)),
