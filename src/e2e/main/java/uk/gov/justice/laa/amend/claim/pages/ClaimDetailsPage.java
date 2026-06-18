@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.pages;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.assertSummaryListValue;
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.cardByTitle;
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.summaryListRowByLabel;
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.tableRowByLabel;
