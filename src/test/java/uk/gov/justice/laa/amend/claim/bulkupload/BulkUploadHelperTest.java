@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.models.search.SearchSort;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
@@ -70,8 +71,8 @@ class BulkUploadHelperTest {
             Optional.of(true),
             List.of(VALID),
             1,
-            200,
-            null))
+            10000,
+            SearchSort.defaults()))
         .thenReturn(claimList(claim));
 
     // After page 1, return empty content (stop)
@@ -84,8 +85,8 @@ class BulkUploadHelperTest {
             Optional.of(true),
             List.of(VALID),
             2,
-            200,
-            null))
+            10000,
+            SearchSort.defaults()))
         .thenReturn(emptyList());
 
     List<BulkUploadError> errors = new ArrayList<>();
