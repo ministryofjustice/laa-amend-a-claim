@@ -71,7 +71,7 @@ class BulkUploadHelperTest {
             Optional.of(true),
             List.of(VALID),
             1,
-            200,
+            10000,
             SearchSort.defaults()))
         .thenReturn(claimList(claim));
 
@@ -85,7 +85,7 @@ class BulkUploadHelperTest {
             Optional.of(true),
             List.of(VALID),
             2,
-            200,
+            10000,
             SearchSort.defaults()))
         .thenReturn(emptyList());
 
