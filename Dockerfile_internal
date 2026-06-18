@@ -9,7 +9,7 @@ WORKDIR /app
 COPY . .
 
 # Build the JAR using Gradle, with caching and secret injection for GitHub credentials
-RUN --mount=type=cache,target=/root/.gradle \
+RUN --mount=type=cache,target=/root/.gradle,sharing=locked \
     --mount=type=secret,id=github_actor \
     --mount=type=secret,id=github_token \
     export GITHUB_ACTOR="$(cat /run/secrets/github_actor)" && \
