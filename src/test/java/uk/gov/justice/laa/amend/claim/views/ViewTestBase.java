@@ -379,8 +379,9 @@ public abstract class ViewTestBase {
   }
 
   protected void assertCellContainsText(Element cell, String expectedText) {
+    var allText = cell.text() + cell.select("input").attr("value");
     Assertions.assertEquals(
-        expectedText, cell.text(), "Cell does not contain expected text: " + expectedText);
+        expectedText, allText, "Cell does not contain expected text: " + expectedText);
   }
 
   private void assertCellIsEmpty(Element cell) {
