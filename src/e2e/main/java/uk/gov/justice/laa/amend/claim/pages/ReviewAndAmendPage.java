@@ -75,15 +75,15 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
   }
 
   public void clickChangeProfitCosts() {
-    clickChangeInRow("Profit costs", claimCostsTable);
+    clickChangeInRow("Net profit costs", claimCostsTable);
   }
 
   public void clickAddProfitCosts() {
-    clickAddLink("Profit costs", "claim-field-profitCost", claimCostsTable);
+    clickAddLink("Net profit costs", "claim-field-profitCost", claimCostsTable);
   }
 
   public void clickChangeDisbursements() {
-    clickChangeInRow("Disbursements", claimCostsTable);
+    clickChangeInRow("Net disbursements", claimCostsTable);
   }
 
   public void clickChangeDisbursementsVat() {
@@ -91,15 +91,15 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
   }
 
   public void clickChangeTravelCosts() {
-    clickChangeInRow("Travel costs", claimCostsTable);
+    clickChangeInRow("Net travel costs", claimCostsTable);
   }
 
   public void clickChangeWaitingCosts() {
-    clickChangeInRow("Waiting costs", claimCostsTable);
+    clickChangeInRow("Net waiting costs", claimCostsTable);
   }
 
   public void clickChangeVat() {
-    clickChangeInRow("VAT", claimCostsTable);
+    clickChangeInRow("VAT indicator", claimCostsTable);
   }
 
   public void clickChangeDetentionTravelAndWaitingCosts() {
@@ -111,7 +111,7 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
   }
 
   public void clickChangeCounselCosts() {
-    clickChangeInRow("Counsel costs", claimCostsTable);
+    clickChangeInRow("Net cost of counsel", claimCostsTable);
   }
 
   public void clickAddAssessedTotalVat() {
@@ -133,39 +133,39 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
   }
 
   public void assertCrimePageLoadedHeadersAndItems() {
-    assertTableHasHeaders(claimCostsTable, "Item", "Requested", "Calculated", "Assessed");
-    assertTableHasHeaders(totalClaimValueTable, "Item", "Requested", "Calculated", "Assessed");
-    assertTableHasHeaders(totalAllowedValueTable, "Item", "Requested", "Calculated", "Allowed");
+    assertTableHasHeaders(claimCostsTable, "Item", "Reported", "Calculated", "Assessed");
+    assertTableHasHeaders(totalClaimValueTable, "Item", "Reported", "Calculated", "Assessed");
+    assertTableHasHeaders(totalAllowedValueTable, "Item", "Reported", "Calculated", "Allowed");
 
     assertAssessmentHasItems(
         "Assessment outcome", "Was this claim assessed as part of the contingency process?");
     assertClaimCostsHasItems(
         "Fixed fee",
-        "Profit costs",
-        "Disbursements",
+        "Net profit costs",
+        "Net disbursements",
         "Disbursement VAT",
-        "Travel costs",
-        "Waiting costs");
+        "Net travel costs",
+        "Net waiting costs");
     assertClaimCostsNotHasItems("Total");
     assertThat(saveButton).isVisible();
     assertThat(cancelButton).isVisible();
   }
 
   public void assertCivilPageLoadedHeadersAndItems() {
-    assertTableHasHeaders(claimCostsTable, "Item", "Requested", "Calculated", "Assessed");
-    assertTableHasHeaders(totalClaimValueTable, "Item", "Requested", "Calculated", "Assessed");
-    assertTableHasHeaders(totalAllowedValueTable, "Item", "Requested", "Calculated", "Allowed");
+    assertTableHasHeaders(claimCostsTable, "Item", "Reported", "Calculated", "Assessed");
+    assertTableHasHeaders(totalClaimValueTable, "Item", "Reported", "Calculated", "Assessed");
+    assertTableHasHeaders(totalAllowedValueTable, "Item", "Reported", "Calculated", "Allowed");
 
     assertAssessmentHasItems(
         "Assessment outcome", "Was this claim assessed as part of the contingency process?");
     assertClaimCostsHasItems(
         "Fixed fee",
-        "Profit costs",
-        "Disbursements",
+        "Net profit costs",
+        "Net disbursements",
         "Disbursement VAT",
         "Detention travel and waiting costs",
         "JR and form filling",
-        "Counsel costs");
+        "Net cost of counsel");
     assertClaimCostsNotHasItems("Total");
 
     assertThat(saveButton).isVisible();

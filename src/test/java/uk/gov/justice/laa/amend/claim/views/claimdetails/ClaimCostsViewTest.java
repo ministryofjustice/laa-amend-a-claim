@@ -47,7 +47,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
     assertCommonPageContent(doc);
 
     var clientDetails = getSummaryListInCard(doc, "List of costs");
-    assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Requested", "Calculated");
+    assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Reported", "Calculated");
     assertSummaryListRowContainsValues(
         clientDetails.get(1), "Fixed fee", NOT_APPLICABLE, CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(
@@ -77,7 +77,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
     assertCommonPageContent(doc);
 
     var clientDetails = getSummaryListInCard(doc, "List of costs");
-    assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Requested", "Calculated");
+    assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Reported", "Calculated");
     assertSummaryListRowContainsValues(
         clientDetails.get(1), "Fixed fee", NOT_APPLICABLE, CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(clientDetails.get(2), "VAT indicator", "Yes", "No", "Yes");
@@ -101,7 +101,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
     assertCommonPageContent(doc);
 
     var clientDetails = getSummaryListInCard(doc, "List of costs");
-    assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Requested", "Calculated");
+    assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Reported", "Calculated");
     assertSummaryListRowContainsValues(
         clientDetails.get(1), "Fixed fee", NOT_APPLICABLE, CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(

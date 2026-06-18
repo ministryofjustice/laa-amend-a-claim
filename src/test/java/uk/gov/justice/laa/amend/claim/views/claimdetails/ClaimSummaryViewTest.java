@@ -37,6 +37,7 @@ import uk.gov.justice.laa.amend.claim.models.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
@@ -93,7 +94,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
         summaryList1.get(2), "Unique client number (UCN)", "Not applicable");
     assertSummaryListRowContainsValues(
         summaryList1.get(3), "Provider name", "Currently not available");
-    assertSummaryListRowContainsValues(summaryList1.get(4), "Office code", "0P322F");
+    assertSummaryListRowContainsValues(summaryList1.get(4), "Office Account Number", "0P322F");
     assertSummaryListRowContainsValues(
         summaryList1.get(5), "Date submitted", "15 June 2020 at 10:30am");
     assertSummaryListRowContainsValues(summaryList1.get(6), "Area of law", "Legal help");
@@ -109,18 +110,21 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
 
     List<List<Element>> summaryList2 = getSummaryListInCard(doc, "Values");
     Assertions.assertEquals(15, summaryList2.size());
+    assertSummaryListRowContainsValues(summaryList2.getFirst(), "Item", "Reported", "Calculated");
     assertSummaryListRowContainsValues(
         summaryList2.get(1), "Fixed fee", "Not applicable", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(2), "Profit costs", "£100.00", "Not applicable");
-    assertSummaryListRowContainsValues(summaryList2.get(3), "Disbursements", "£100.00", "£200.00");
+        summaryList2.get(2), "Net profit costs", "£100.00", "Not applicable");
+    assertSummaryListRowContainsValues(
+        summaryList2.get(3), "Net disbursements", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(4), "Disbursement VAT", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(5), "Detention travel and waiting costs", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(6), "JR and form filling", "£100.00", "£200.00");
-    assertSummaryListRowContainsValues(summaryList2.get(7), "Counsel costs", "£100.00", "£200.00");
+    assertSummaryListRowContainsValues(
+        summaryList2.get(7), "Net cost of counsel", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(summaryList2.get(8), "Oral CMRH", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(summaryList2.get(9), "Telephone CMRH", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
@@ -129,7 +133,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
         summaryList2.get(11), "Substantive hearing", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(12), "Adjourned hearing fee", "£100.00", "£200.00");
-    assertSummaryListRowContainsValues(summaryList2.get(13), "VAT", "Yes", "No");
+    assertSummaryListRowContainsValues(summaryList2.get(13), "VAT indicator", "Yes", "No");
     assertSummaryListRowContainsValues(summaryList2.get(14), "Total", "Not applicable", "£200.00");
   }
 
@@ -182,11 +186,13 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     List<List<Element>> summaryList2 = getSummaryListInCard(doc, "Values");
     Assertions.assertEquals(14, summaryList2.size());
     assertSummaryListRowContainsValues(
+        summaryList2.getFirst(), "Item", "Reported", "Calculated", "Assessed");
+    assertSummaryListRowContainsValues(
         summaryList2.get(1), "Fixed fee", "Not applicable", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(2), "Profit costs", "£100.00", "Not applicable", "£300.00");
+        summaryList2.get(2), "Net profit costs", "£100.00", "Not applicable", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(3), "Disbursements", "£100.00", "£200.00", "£300.00");
+        summaryList2.get(3), "Net disbursements", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(4), "Disbursement VAT", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
@@ -194,7 +200,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(
         summaryList2.get(6), "JR and form filling", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(7), "Counsel costs", "£100.00", "£200.00", "£300.00");
+        summaryList2.get(7), "Net cost of counsel", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(8), "Oral CMRH", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
@@ -205,7 +211,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
         summaryList2.get(11), "Substantive hearing", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(12), "Adjourned hearing fee", "£100.00", "£200.00", "£300.00");
-    assertSummaryListRowContainsValues(summaryList2.get(13), "VAT", "Yes", "No", "Yes");
+    assertSummaryListRowContainsValues(summaryList2.get(13), "VAT indicator", "Yes", "No", "Yes");
   }
 
   @Test
@@ -233,7 +239,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
         summaryList1.get(1), "Unique file number (UFN)", "Not applicable");
     assertSummaryListRowContainsValues(
         summaryList1.get(2), "Provider name", "Currently not available");
-    assertSummaryListRowContainsValues(summaryList1.get(3), "Office code", "0P322F");
+    assertSummaryListRowContainsValues(summaryList1.get(3), "Office Account Number", "0P322F");
     assertSummaryListRowContainsValues(
         summaryList1.get(4), "Date submitted", "15 June 2020 at 10:30am");
     assertSummaryListRowContainsValues(summaryList1.get(5), "Area of law", "Crime lower");
@@ -251,17 +257,68 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
 
     List<List<Element>> summaryList2 = getSummaryListInCard(doc, "Values");
     Assertions.assertEquals(9, summaryList2.size());
+    assertSummaryListRowContainsValues(summaryList2.getFirst(), "Item", "Reported", "Calculated");
     assertSummaryListRowContainsValues(
         summaryList2.get(1), "Fixed fee", "Not applicable", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(2), "Profit costs", "£100.00", "Not applicable");
-    assertSummaryListRowContainsValues(summaryList2.get(3), "Disbursements", "£100.00", "£200.00");
+        summaryList2.get(2), "Net profit costs", "£100.00", "Not applicable");
+    assertSummaryListRowContainsValues(
+        summaryList2.get(3), "Net disbursements", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(4), "Disbursement VAT", "£100.00", "£200.00");
-    assertSummaryListRowContainsValues(summaryList2.get(5), "Travel costs", "£100.00", "£200.00");
-    assertSummaryListRowContainsValues(summaryList2.get(6), "Waiting costs", "£100.00", "£200.00");
-    assertSummaryListRowContainsValues(summaryList2.get(7), "VAT", "Yes", "No");
+    assertSummaryListRowContainsValues(
+        summaryList2.get(5), "Net travel costs", "£100.00", "£200.00");
+    assertSummaryListRowContainsValues(
+        summaryList2.get(6), "Net waiting costs", "£100.00", "£200.00");
+    assertSummaryListRowContainsValues(summaryList2.get(7), "VAT indicator", "Yes", "No");
     assertSummaryListRowContainsValues(summaryList2.get(8), "Total", "Not applicable", "£200.00");
+  }
+
+  @Test
+  void testMediationClaimPage() {
+    MediationClaimDetails claim = MockClaimsFunctions.createMockMediationClaim();
+    createClaimSummary(claim);
+    claim.setClaimId(claimId);
+    claim.setSubmissionId(submissionId);
+    claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
+    claim.setCategoryOfLaw("TEST");
+    claim.setMatterType1("IMLB");
+    claim.setMatterType2("AHQS");
+
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+
+    Document doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    List<List<Element>> summaryList1 = getSummaryListInCard(doc, "Summary");
+    Assertions.assertEquals(16, summaryList1.size());
+    assertSummaryListRowContainsValues(summaryList1.getFirst(), "Client name", "John Doe");
+    assertSummaryListRowContainsValues(
+        summaryList1.get(1), "Unique file number (UFN)", "Not applicable");
+    assertSummaryListRowContainsValues(
+        summaryList1.get(2), "Unique client number (UCN)", "Not applicable");
+    assertSummaryListRowContainsValues(
+        summaryList1.get(3), "Provider name", "Currently not available");
+    assertSummaryListRowContainsValues(summaryList1.get(4), "Office Account Number", "0P322F");
+    assertSummaryListRowContainsValues(
+        summaryList1.get(5), "Date submitted", "15 June 2020 at 10:30am");
+    assertSummaryListRowContainsValues(summaryList1.get(6), "Area of law", "Mediation");
+    assertSummaryListRowContainsValues(summaryList1.get(7), "Category of law", "TEST");
+    assertSummaryListRowContainsValues(summaryList1.get(8), "Fee code", "FC");
+    assertSummaryListRowContainsValues(summaryList1.get(9), "Fee code description", "FCD");
+    assertSummaryListRowContainsValues(summaryList1.get(10), "Matter type 1", "IMLB");
+    assertSummaryListRowContainsValues(summaryList1.get(11), "Matter type 2", "AHQS");
+    assertSummaryListRowContainsValues(summaryList1.get(12), "Case start date", "01 January 2020");
+    assertSummaryListRowContainsValues(summaryList1.get(13), "Case end date", "31 December 2020");
+    assertSummaryListRowContainsValues(summaryList1.get(14), "Escape case", "Yes");
+    assertSummaryListRowContainsValues(summaryList1.get(15), "VAT requested", "Not applicable");
+
+    List<List<Element>> summaryList2 = getSummaryListInCard(doc, "Values");
+    assertSummaryListRowContainsValues(summaryList2.getFirst(), "Item", "Reported", "Calculated");
+    assertSummaryListRowContainsValues(
+        summaryList2.get(3), "Net disbursements", "£100.00", "£200.00");
+    assertSummaryListRowContainsValues(
+        summaryList2.get(summaryList2.size() - 2), "VAT indicator", "Yes", "No");
   }
 
   @Test
