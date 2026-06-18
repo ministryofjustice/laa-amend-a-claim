@@ -13,7 +13,13 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   CLIENT_TYPE(new Accessor<>(CivilClaimDetails::getClientType)),
   UNIQUE_CLIENT_NUMBER(new Accessor<>(CivilClaimDetails::getUniqueClientNumber)),
   HOME_OFFICE_CLIENT_NUMBER(new Accessor<>(CivilClaimDetails::getHomeOfficeClientNumber)),
-  IS_POSTAL_APPLICATION_ACCEPTED(new Accessor<>(CivilClaimDetails::getIsPostalApplication));
+  IS_POSTAL_APPLICATION_ACCEPTED(new Accessor<>(CivilClaimDetails::getIsPostalApplication)),
+
+  // Case type fields
+  FEE_CODE(new Accessor<>(CivilClaimDetails::getFeeCode)),
+  MATTER_TYPE_CODE_ONE(new Accessor<>(CivilClaimDetails::getMatterType1)),
+  MATTER_TYPE_CODE_TWO(new Accessor<>(CivilClaimDetails::getMatterType2)),
+  ;
 
   private final Accessor<?> accessor;
 

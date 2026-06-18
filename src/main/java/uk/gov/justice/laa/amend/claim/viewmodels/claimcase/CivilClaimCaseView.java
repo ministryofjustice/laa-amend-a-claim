@@ -1,24 +1,30 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcase;
 
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.FEE_CODE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.MATTER_TYPE_CODE_ONE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.MATTER_TYPE_CODE_TWO;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
+
 import java.util.LinkedHashMap;
+import java.util.stream.Stream;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 
 public record CivilClaimCaseView(
-    LinkedHashMap<String, Object> caseTypeRows, LinkedHashMap<String, Object> caseDetailsRows)
-    implements ClaimCaseView {
+    LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object> caseTypeRows,
+    LinkedHashMap<String, Object> caseDetailsRows)
+    implements ClaimCaseView<ClaimViewField<CivilClaimDetails>> {
 
   public CivilClaimCaseView(CivilClaimDetails claim) {
     this(createCaseTypeRows(claim), createCaseDetailsRows(claim));
   }
 
-  private static LinkedHashMap<String, Object> createCaseTypeRows(CivilClaimDetails claim) {
-    var rows = new LinkedHashMap<String, Object>();
+  private static LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object> createCaseTypeRows(
+      CivilClaimDetails claim) {
+    Stream<ClaimViewField<CivilClaimDetails>> fields =
+        Stream.of(FEE_CODE, MATTER_TYPE_CODE_ONE, MATTER_TYPE_CODE_TWO);
 
-    rows.put("feeCode", claim.getFeeCode());
-    rows.put("matterTypeCodeOne", claim.getMatterType1());
-    rows.put("matterTypeCodeTwo", claim.getMatterType2());
-
-    return rows;
+    return toFieldMap(fields, claim);
   }
 
   private static LinkedHashMap<String, Object> createCaseDetailsRows(CivilClaimDetails claim) {

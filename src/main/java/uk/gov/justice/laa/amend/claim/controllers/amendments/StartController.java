@@ -14,6 +14,7 @@ import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCasework
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @Controller
@@ -33,6 +34,8 @@ public class StartController {
 
     var clientView = ClaimClientViewFactory.create(claim);
     var client1Form = new AmendmentForm(clientView.client1Rows());
+    var caseView = ClaimCaseViewFactory.create(claim);
+    var caseTypeForm = new AmendmentForm(caseView.caseTypeRows());
     var amendmentForms = new AmendmentForms(client1Form);
 
     saveAmendmentForms(session, claimId, amendmentForms);
