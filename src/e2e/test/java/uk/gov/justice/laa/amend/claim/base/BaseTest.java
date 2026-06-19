@@ -1,5 +1,8 @@
 package uk.gov.justice.laa.amend.claim.base;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static java.util.regex.Pattern.compile;
+
 import com.microsoft.playwright.Page;
 import java.sql.SQLException;
 import java.util.List;
@@ -63,5 +66,9 @@ public abstract class BaseTest {
       } catch (Exception ignored) {
       }
     }
+  }
+
+  protected void assertUrlEndsWith(String expectedUrl) {
+    assertThat(page).hasURL(compile(".*%s$".formatted(expectedUrl)));
   }
 }

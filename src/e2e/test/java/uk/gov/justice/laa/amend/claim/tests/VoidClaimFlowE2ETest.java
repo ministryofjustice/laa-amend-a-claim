@@ -1,10 +1,10 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 import java.util.List;
 import java.util.UUID;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
@@ -76,6 +76,7 @@ public class VoidClaimFlowE2ETest extends BaseTest {
     voidConfirmation.clickVoidClaimButton();
 
     var searchAfterVoid = new SearchPage(page);
-    Assertions.assertEquals("You voided the claim", searchAfterVoid.getSuccessBannerHeading());
+    assertThat(searchAfterVoid.getSuccessBanner()).isVisible();
+    assertThat(searchAfterVoid.getSuccessBannerHeading()).hasText("You voided the claim");
   }
 }

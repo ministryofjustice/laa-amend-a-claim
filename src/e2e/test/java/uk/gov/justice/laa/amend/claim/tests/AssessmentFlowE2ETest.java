@@ -1,10 +1,10 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 import java.util.List;
 import java.util.UUID;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
@@ -137,8 +137,8 @@ public class AssessmentFlowE2ETest extends BaseTest {
 
     AssessmentCompletePage complete = new AssessmentCompletePage(page);
 
-    Assertions.assertTrue(complete.getBodyText().contains("Your changes have been submitted"));
-    Assertions.assertTrue(complete.goToSearchExists());
-    Assertions.assertTrue(complete.viewAssessedClaimExists());
+    assertThat(complete.getBodyText()).hasText("Your changes have been submitted");
+    assertThat(complete.getGoToSearchButton()).isVisible();
+    assertThat(complete.getViewAssessedClaimButton()).isVisible();
   }
 }

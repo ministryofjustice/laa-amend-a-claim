@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 import io.qameta.allure.Epic;
@@ -9,7 +10,6 @@ import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import java.util.List;
 import java.util.UUID;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
@@ -75,14 +75,10 @@ public class DiscardAssessmentTest extends BaseTest {
   @DisplayName("Discard Assessment: Screen displays correct heading, button, and return link")
   @Severity(SeverityLevel.CRITICAL)
   void discardAssessmentScreenDisplaysCorrectly() {
-
     DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
 
-    Assertions.assertTrue(
-        discard.isDiscardAssessmentButtonVisible(), "Discard Assessment button must be visible");
-
-    Assertions.assertTrue(
-        discard.isReturnToClaimLinkVisible(), "Return to Claim link must be visible");
+    assertThat(discard.getDiscardButton()).isVisible();
+    assertThat(discard.getReturnToClaimLink()).isVisible();
   }
 
   @Test
@@ -90,20 +86,14 @@ public class DiscardAssessmentTest extends BaseTest {
   @DisplayName("Discard Assessment: Clicking discard redirects to search page with success banner")
   @Severity(SeverityLevel.CRITICAL)
   void discardAssessmentRedirectsToSearchWithBanner() {
-
     DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
     discard.clickDiscardAssessment();
 
     SearchPage searchAfterDiscard = new SearchPage(page);
 
-    Assertions.assertTrue(
-        searchAfterDiscard.isSuccessBannerVisible(),
-        "Success notification banner should appear after discarding");
-
-    Assertions.assertEquals(
-        "You discarded the assessment",
-        searchAfterDiscard.getSuccessBannerHeading(),
-        "Success banner heading must match expected text");
+    assertThat(searchAfterDiscard.getSuccessBanner()).isVisible();
+    assertThat(searchAfterDiscard.getSuccessBannerHeading())
+        .hasText("You discarded the assessment");
   }
 
   @Test
@@ -146,10 +136,7 @@ public class DiscardAssessmentTest extends BaseTest {
 
     ClaimDetailsPage details = new ClaimDetailsPage(page);
 
-    Assertions.assertFalse(
-        details.isAddAssessmentOutcomeHidden(),
-        "Test data issue: expected escape claim (Add assessment outcome enabled) but it was hidden");
-
+    assertThat(details.getAddAssessmentOutcomeButton()).isVisible();
     details.clickAddUpdateAssessmentOutcome();
 
     AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);

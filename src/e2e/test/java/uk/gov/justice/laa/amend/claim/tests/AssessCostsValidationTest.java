@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 import java.util.List;
@@ -119,7 +118,7 @@ public class AssessCostsValidationTest extends BaseTest {
     outcome.selectAssessmentOutcome("assessed in full");
     outcome.saveChanges();
 
-    assertTrue(page.url().contains("/review"));
+    assertUrlEndsWith("/review");
   }
 
   @Test

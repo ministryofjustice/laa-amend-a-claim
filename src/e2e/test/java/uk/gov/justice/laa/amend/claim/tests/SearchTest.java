@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -142,9 +141,13 @@ public class SearchTest extends BaseTest {
         config.getEscapeCase(),
         config.isExpectedResults());
 
-    boolean hasResults = searchPage.hasResults();
-    Assertions.assertEquals(
-        config.isExpectedResults(), hasResults, "Results presence should match expected.");
+    if (config.isExpectedResults()) {
+      searchPage.waitForResults();
+      assertThat(searchPage.getResultRows()).not().hasCount(0);
+    } else {
+      assertThat(searchPage.getNoResultsMessage()).isVisible();
+      assertThat(searchPage.getResultRows()).hasCount(0);
+    }
   }
 
   @Test
@@ -157,12 +160,10 @@ public class SearchTest extends BaseTest {
     search.clickViewForUfn(UFN_1);
 
     ClaimDetailsPage details = new ClaimDetailsPage(page);
-
     details.clickBackToSearchButton();
-    assertTrue(
-        page.url()
-            .contains(
-                "/?officeCode=123456&submissionDateMonth=04&submissionDateYear=2025&page=1&sort=unique_file_number,asc"));
+
+    assertUrlEndsWith(
+        "/?officeCode=123456&submissionDateMonth=04&submissionDateYear=2025&page=1&sort=unique_file_number,asc");
   }
 
   @Test
@@ -172,6 +173,7 @@ public class SearchTest extends BaseTest {
 
     search.searchForClaim(OFFICE_ACCOUNT_NUMBER_3, "", "", "", "", "", "", false);
 
-    Assertions.assertFalse(search.hasResults());
+    assertThat(search.getNoResultsMessage()).isVisible();
+    assertThat(search.getResultRows()).hasCount(0);
   }
 }
