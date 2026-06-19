@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getAmendmentForms;
-import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.UUID;
@@ -31,7 +31,7 @@ public class AmendCaseController {
       @PathVariable UUID claimId) {
     featureFlagsConfig.checkClaimAmendmentEnabled();
 
-    var claim = getValidAssessableClaim(session, submissionId, claimId);
+    var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
 
     var claimView = ClaimCaseViewFactory.create(claim);

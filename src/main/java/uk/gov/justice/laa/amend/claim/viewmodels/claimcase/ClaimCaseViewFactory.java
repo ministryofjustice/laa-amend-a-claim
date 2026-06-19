@@ -9,7 +9,7 @@ import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 @UtilityClass
 public class ClaimCaseViewFactory {
 
-  public static ClaimCaseView create(ClaimDetails claim) {
+  public static ClaimCaseView<?> create(ClaimDetails claim) {
     return switch (claim) {
       case CrimeClaimDetails crimeClaim -> new CrimeClaimCaseView(crimeClaim);
       case CivilClaimDetails civilClaimDetails -> new CivilClaimCaseView(civilClaimDetails);
