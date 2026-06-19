@@ -23,7 +23,7 @@
             <li class="govuk-summary-card__action">
               <a class="govuk-link"
                  id="amend-case-type-link"
-                 href="#"
+                 th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-case-type(submissionId=${submissionId}, claimId=${claimId})}"
                  th:text="#{amendments.change}"></a>
             </li>
           </ul>
@@ -31,7 +31,7 @@
         <div class="govuk-summary-card__content">
           <dl class="govuk-summary-list">
             <!--TODO: Only show if amendments to case type form-->
-            <div class="govuk-summary-list__row">
+            <div class="govuk-summary-list__row" th:if="false">
               <dt class="govuk-summary-list__key" th:text="#{amendments.item}"></dt>
               <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.current}"></dd>
               <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.amended}"></dd>
@@ -52,7 +52,7 @@
             <li class="govuk-summary-card__action">
               <a class="govuk-link"
                  id="amend-case-details-link"
-                 href="#"
+                 th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-case-details(submissionId=${submissionId}, claimId=${claimId})}"
                  th:text="#{amendments.change}"></a>
             </li>
           </ul>
@@ -60,7 +60,7 @@
         <div class="govuk-summary-card__content">
           <dl class="govuk-summary-list">
             <!--TODO: Only show if amendments to case details form-->
-            <div class="govuk-summary-list__row">
+            <div class="govuk-summary-list__row" th:if="false">
               <dt class="govuk-summary-list__key" th:text="#{amendments.item}"></dt>
               <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.current}"></dd>
               <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.amended}"></dd>

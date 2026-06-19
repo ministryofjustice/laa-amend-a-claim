@@ -19,7 +19,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
 @RequiredArgsConstructor
 @HasRoleClaimAmendmentsCaseworker
-public class AmendCaseController {
+public class CaseController {
 
   private final FeatureFlagsConfig featureFlagsConfig;
 

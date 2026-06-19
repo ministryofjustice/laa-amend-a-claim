@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.views.amendments;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import uk.gov.justice.laa.amend.claim.views.ViewTestBase;
 
 public abstract class AmendmentsBaseTest extends ViewTestBase {
@@ -11,8 +13,13 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
   final String costsUrl;
 
   final String amendClientUrl;
+  final String amendCaseTypeUrl;
+  final String amendCaseDetailsUrl;
 
   final String checkUrl;
+
+  final DateTimeFormatter testFormatter =
+      new DateTimeFormatterBuilder().appendPattern("dd MMMM yyyy").toFormatter();
 
   AmendmentsBaseTest() {
     overviewUrl = "/submissions/%s/claims/%s".formatted(submissionId, claimId);
@@ -23,6 +30,10 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
 
     amendClientUrl =
         "/submissions/%s/claims/%s/amendments/amend-client".formatted(submissionId, claimId);
+    amendCaseTypeUrl =
+        "/submissions/%s/claims/%s/amendments/amend-case-type".formatted(submissionId, claimId);
+    amendCaseDetailsUrl =
+        "/submissions/%s/claims/%s/amendments/amend-case-details".formatted(submissionId, claimId);
 
     checkUrl = "/submissions/%s/claims/%s/amendments/check".formatted(submissionId, claimId);
   }

@@ -22,7 +22,6 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
 
   // Case details fields
   SCHEDULE_REFERENCE_CIVIL(new Accessor<>(CivilClaimDetails::getScheduleReference)),
-  SCHEDULE_REFERENCE(new Accessor<>(CivilClaimDetails::getScheduleReference)),
   CASE_ID(new Accessor<>(CivilClaimDetails::getCaseId)),
   CASE_REFERENCE_NUMBER(new Accessor<>(CivilClaimDetails::getCaseReferenceNumber)),
   CASE_START_DATE(new Accessor<>(CivilClaimDetails::getCaseStartDate)),
