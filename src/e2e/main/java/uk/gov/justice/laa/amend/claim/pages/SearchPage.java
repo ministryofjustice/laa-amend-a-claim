@@ -3,7 +3,9 @@ package uk.gov.justice.laa.amend.claim.pages;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import lombok.Getter;
 
+@Getter
 public class SearchPage extends LaaPage {
 
   private final Locator officeCodeInput;
@@ -141,38 +143,9 @@ public class SearchPage extends LaaPage {
     resultsTable.waitFor();
   }
 
-  public boolean hasResults() {
-    if (noResultsMessage.isVisible()) {
-      return false;
-    }
-    waitForResults();
-    return resultRows.count() > 0;
-  }
-
-  public void clickViewOnFirstResult() {
-    waitForResults();
-    Locator row = resultRows.first();
-    row.locator("a.govuk-link:has-text('View')").click();
-  }
-
   public void clickViewForUfn(String ufn) {
     waitForResults();
     Locator row = resultRows.filter(new Locator.FilterOptions().setHasText(ufn)).first();
     row.locator("a.govuk-link:has-text('View')").click();
-  }
-
-  public void clickViewForCrn(String crn) {
-    waitForResults();
-    Locator row = resultRows.filter(new Locator.FilterOptions().setHasText(crn)).first();
-    row.locator("a.govuk-link:has-text('View')").click();
-  }
-
-  public boolean isSuccessBannerVisible() {
-    return successBanner.isVisible();
-  }
-
-  public String getSuccessBannerHeading() {
-    if (!successBanner.isVisible()) return "";
-    return successBannerHeading.textContent().trim();
   }
 }

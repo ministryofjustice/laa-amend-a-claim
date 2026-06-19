@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 import java.util.List;
@@ -76,7 +75,7 @@ public class AssessTotalsValidationTest extends BaseTest {
     outcome.selectAssessmentOutcome("reduced-to-fixed-fee-assessed");
     outcome.saveChanges();
 
-    assertTrue(page.url().contains("/review"));
+    assertUrlEndsWith("/review");
   }
 
   @Test

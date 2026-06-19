@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 import java.util.List;
@@ -127,7 +126,7 @@ public class ReviewAndAmendTest extends BaseTest {
 
     ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
-    assertTrue(page.url().contains("/review"));
+    assertUrlEndsWith("/review");
     review.assertCrimePageLoadedHeadersAndItems();
   }
 
@@ -138,7 +137,7 @@ public class ReviewAndAmendTest extends BaseTest {
 
     ReviewAndAmendPage review = new ReviewAndAmendPage(page);
 
-    assertTrue(page.url().contains("/review"));
+    assertUrlEndsWith("/review");
     review.assertCivilPageLoadedHeadersAndItems();
   }
 
@@ -151,7 +150,7 @@ public class ReviewAndAmendTest extends BaseTest {
 
     review.saveChanges();
 
-    assertTrue(page.url().contains("/review"));
+    assertUrlEndsWith("/review");
     review.assertSubmitTotalsRequiredErrors();
   }
 
@@ -163,7 +162,7 @@ public class ReviewAndAmendTest extends BaseTest {
         CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN, "reduced-still-escaped");
     ReviewAndAmendPage review = new ReviewAndAmendPage(page);
     review.saveChanges();
-    assertTrue(page.url().contains("/review"));
+    assertUrlEndsWith("/review");
     review.assertProfitCostRequiredErrors();
   }
 
@@ -175,7 +174,7 @@ public class ReviewAndAmendTest extends BaseTest {
         CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN, "reduced-to-fixed-fee-assessed");
     ReviewAndAmendPage review = new ReviewAndAmendPage(page);
     review.saveChanges();
-    assertTrue(page.url().contains("/review"));
+    assertUrlEndsWith("/review");
     review.assertProfitCostRequiredErrors();
     review.assertSubmitTotalsRequiredErrors();
   }
@@ -188,7 +187,7 @@ public class ReviewAndAmendTest extends BaseTest {
         CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN, "reduced-still-escaped");
     ReviewAndAmendPage review = new ReviewAndAmendPage(page);
     review.saveChanges();
-    assertTrue(page.url().contains("/review"));
+    assertUrlEndsWith("/review");
     review.assertProfitCostRequiredErrors();
   }
 
@@ -201,7 +200,7 @@ public class ReviewAndAmendTest extends BaseTest {
 
     review.clickAssessmentOutcome();
 
-    assertTrue(page.url().contains("/assessment-outcome#assessment-outcome"));
+    assertUrlEndsWith("/assessment-outcome#assessment-outcome");
   }
 
   @Test
@@ -213,7 +212,7 @@ public class ReviewAndAmendTest extends BaseTest {
 
     review.clickContingencyAssessment();
 
-    assertTrue(page.url().contains("/assessment-outcome#contingency-assessment"));
+    assertUrlEndsWith("/assessment-outcome#contingency-assessment");
   }
 
   @Test
@@ -225,7 +224,7 @@ public class ReviewAndAmendTest extends BaseTest {
 
     review.clickAssessmentOutcome();
 
-    assertTrue(page.url().contains("/assessment-outcome#assessment-outcome"));
+    assertUrlEndsWith("/assessment-outcome#assessment-outcome");
   }
 
   @Test
@@ -237,6 +236,6 @@ public class ReviewAndAmendTest extends BaseTest {
 
     review.clickContingencyAssessment();
 
-    assertTrue(page.url().contains("/assessment-outcome#contingency-assessment"));
+    assertUrlEndsWith("/assessment-outcome#contingency-assessment");
   }
 }

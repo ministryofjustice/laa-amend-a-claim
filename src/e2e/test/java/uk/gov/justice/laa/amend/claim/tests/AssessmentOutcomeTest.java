@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
 import java.util.List;
@@ -78,7 +77,7 @@ public class AssessmentOutcomeTest extends BaseTest {
     AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
     outcome.assertPageLoaded();
 
-    assertTrue(page.url().contains("/assessment-outcome"));
+    assertUrlEndsWith("/assessment-outcome");
   }
 
   @Test
@@ -91,7 +90,7 @@ public class AssessmentOutcomeTest extends BaseTest {
 
     outcome.saveChanges();
 
-    assertTrue(page.url().contains("/assessment-outcome"));
+    assertUrlEndsWith("/assessment-outcome");
     outcome.assertAssessmentOutcomeRequiredError();
   }
 }

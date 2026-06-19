@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static uk.gov.justice.laa.amend.claim.base.E2ETestHelper.loadFixture;
 import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
@@ -11,7 +12,6 @@ import io.qameta.allure.Story;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -154,9 +154,7 @@ public class ClaimDetailsTest extends BaseTest {
 
     ClaimDetailsPage details = new ClaimDetailsPage(page);
 
-    Assertions.assertTrue(
-        details.isAddAssessmentOutcomeHidden(),
-        "Expected Add assessment outcome button to be disabled for non-escape claim");
+    assertThat(details.getAddAssessmentOutcomeButton()).not().isVisible();
   }
 
   /**
@@ -178,15 +176,7 @@ public class ClaimDetailsTest extends BaseTest {
 
     ClaimDetailsPage details = new ClaimDetailsPage(page);
 
-    Assertions.assertFalse(
-        details.isAddAssessmentOutcomeHidden(),
-        "Expected Add assessment outcome button to be enabled for escape claim");
-
-    Assertions.assertEquals(
-        claimDetailsFixture.isAddAssessmentOutcomeDisabled(),
-        details.isAddAssessmentOutcomeHidden(),
-        "Add assessment outcome enabled/disabled state mismatch");
-
+    assertThat(details.getAddAssessmentOutcomeButton()).isVisible();
     details.assertAllValues(claimDetailsFixture.getValues());
   }
 

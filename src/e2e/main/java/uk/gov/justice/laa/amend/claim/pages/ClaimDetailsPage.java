@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.pages;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.cardByTitle;
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.summaryListRowByLabel;
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.tableRowByLabel;
@@ -8,8 +9,9 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import java.util.Map;
-import org.junit.jupiter.api.Assertions;
+import lombok.Getter;
 
+@Getter
 public class ClaimDetailsPage extends LaaPage {
 
   private final Locator clientLink;
@@ -58,10 +60,6 @@ public class ClaimDetailsPage extends LaaPage {
 
   public void clickBackToSearchButton() {
     backToSearchButton.click();
-  }
-
-  public boolean isAddAssessmentOutcomeHidden() {
-    return !addAssessmentOutcomeButton.isVisible();
   }
 
   private Locator valuesCard() {
@@ -179,23 +177,6 @@ public class ClaimDetailsPage extends LaaPage {
     }
   }
 
-  public String dumpValuesKeys() {
-    if (!hasValuesCard()) return "Values card not present.";
-
-    StringBuilder sb = new StringBuilder("Values keys found:\n");
-    Locator rows = valuesRows();
-    int count = rows.count();
-
-    for (int i = 0; i < count; i++) {
-      Locator dt = rows.nth(i).locator("dt.govuk-summary-list__key").first();
-      if (dt.count() == 0) continue;
-      String key = dt.textContent();
-      if (key != null) sb.append("- ").append(key.trim()).append("\n");
-    }
-
-    return sb.toString();
-  }
-
   public void assertCost(String label, String submitted, String calculated, String assessed) {
     assertSummaryListRow("Values", label, submitted, calculated, assessed);
   }
@@ -236,18 +217,13 @@ public class ClaimDetailsPage extends LaaPage {
   }
 
   private void assertTableCellValue(Locator rowSelector, int columnIndex, String expectedValue) {
-    String actualValue = rowSelector.locator("td").nth(columnIndex).textContent().trim();
-    Assertions.assertEquals(
-        expectedValue, actualValue, String.format("Value mismatch in column %d", columnIndex));
+    var column = rowSelector.locator("td").nth(columnIndex);
+    assertThat(column).hasText(expectedValue);
   }
 
   private void assertSummaryListValue(Locator rowSelector, int columnIndex, String expectedValue) {
-    String actualValue = rowSelector.locator("dd").nth(columnIndex).textContent().trim();
-    Assertions.assertEquals(expectedValue, actualValue, "Value mismatch in key");
-  }
-
-  public void assertAddAssessmentOutcomeButtonIsPresent() {
-    addAssessmentOutcomeButton.waitFor();
+    var column = rowSelector.locator("dd").nth(columnIndex);
+    assertThat(column).hasText(expectedValue);
   }
 
   public void assertUpdateAssessmentOutcomeButtonIsPresent() {
@@ -256,6 +232,6 @@ public class ClaimDetailsPage extends LaaPage {
 
   public void assertInfoAlertIsPresent() {
     Locator heading = infoAlert.locator(".moj-alert__heading");
-    Assertions.assertEquals("This claim has been assessed", heading.textContent());
+    assertThat(heading).hasText("This claim has been assessed");
   }
 }

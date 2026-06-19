@@ -1,8 +1,8 @@
 package uk.gov.justice.laa.amend.claim.tests;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
-import org.junit.jupiter.api.Assertions;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
 import uk.gov.justice.laa.amend.claim.pages.AssessAllowedTotalsPage;
 import uk.gov.justice.laa.amend.claim.pages.AssessAssessedTotalsPage;
@@ -123,9 +123,9 @@ public abstract class E2eBaseTest extends BaseTest {
   private void viewAssessedClaim() {
     AssessmentCompletePage complete = new AssessmentCompletePage(page);
 
-    Assertions.assertTrue(complete.getBodyText().contains("Your changes have been submitted"));
-    Assertions.assertTrue(complete.goToSearchExists());
-    Assertions.assertTrue(complete.viewAssessedClaimExists());
+    assertThat(complete.getBodyText()).hasText("Your changes have been submitted");
+    assertThat(complete.getGoToSearchButton()).isVisible();
+    assertThat(complete.getViewAssessedClaimButton()).isVisible();
 
     complete.clickViewAssessedClaim();
   }
