@@ -15,7 +15,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
   STAGE_REACHED(new Accessor<>(CrimeClaimDetails::getStageReached)),
   UNIQUE_FILE_NUMBER(new Accessor<>(CrimeClaimDetails::getUniqueFileNumber)),
   REPRESENTATION_ORDER_DATE(new Accessor<>(CrimeClaimDetails::getRepresentationOrderDate)),
-  CASE_END_DATE(new Accessor<>(CrimeClaimDetails::getCaseEndDate)),
+  CASE_CONCLUDED_DATE(new Accessor<>(CrimeClaimDetails::getCaseEndDate)),
   STANDARD_FEE_CATEGORY(new Accessor<>(CrimeClaimDetails::getStandardFeeCategory)),
   OUTCOME_FOR_CLIENT(new Accessor<>(CrimeClaimDetails::getOutcome)),
   SUSPECTS_DEFENDANTS_COUNT(new Accessor<>(CrimeClaimDetails::getSuspectsDefendantsCount)),

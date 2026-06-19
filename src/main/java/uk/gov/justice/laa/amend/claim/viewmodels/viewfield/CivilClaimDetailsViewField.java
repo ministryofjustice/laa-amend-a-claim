@@ -17,8 +17,8 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
 
   // Case type fields
   FEE_CODE(new Accessor<>(CivilClaimDetails::getFeeCode)),
-  MATTER_TYPE_CODE_ONE(new Accessor<>(CivilClaimDetails::getMatterType1)),
-  MATTER_TYPE_CODE_TWO(new Accessor<>(CivilClaimDetails::getMatterType2)),
+  MATTER_TYPE_CODE_1(new Accessor<>(CivilClaimDetails::getMatterType1)),
+  MATTER_TYPE_CODE_2(new Accessor<>(CivilClaimDetails::getMatterType2)),
 
   // Case details fields
   SCHEDULE_REFERENCE_CIVIL(new Accessor<>(CivilClaimDetails::getScheduleReference)),
@@ -26,7 +26,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   CASE_ID(new Accessor<>(CivilClaimDetails::getCaseId)),
   CASE_REFERENCE_NUMBER(new Accessor<>(CivilClaimDetails::getCaseReferenceNumber)),
   CASE_START_DATE(new Accessor<>(CivilClaimDetails::getCaseStartDate)),
-  CASE_CONCLUDED_DATE(new Accessor<>(CivilClaimDetails::getCaseConcludedDate)),
+  CASE_CONCLUDED_CLAIMED_DATE(new Accessor<>(CivilClaimDetails::getCaseConcludedDate)),
   UNIQUE_FILE_NUMBER(new Accessor<>(CivilClaimDetails::getUniqueFileNumber)),
   CASE_STAGE(new Accessor<>(CivilClaimDetails::getCaseStage)),
   VALUE_OF_COSTS(new Accessor<>(CivilClaimDetails::getValueOfCosts)),

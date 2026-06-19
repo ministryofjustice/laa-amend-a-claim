@@ -1,41 +1,50 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcase;
 
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
+
 import java.util.LinkedHashMap;
+import java.util.stream.Stream;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField;
 
 public record MediationClaimCaseView(
-    LinkedHashMap<String, Object> caseTypeRows, LinkedHashMap<String, Object> caseDetailsRows)
-    implements ClaimCaseView {
+    LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> caseTypeRows,
+    LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> caseDetailsRows)
+    implements ClaimCaseView<ClaimViewField<MediationClaimDetails>> {
 
   public MediationClaimCaseView(MediationClaimDetails claim) {
     this(createCaseTypeRows(claim), createCaseDetailsRows(claim));
   }
 
-  private static LinkedHashMap<String, Object> createCaseTypeRows(MediationClaimDetails claim) {
-    var rows = new LinkedHashMap<String, Object>();
+  private static LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> createCaseTypeRows(
+      MediationClaimDetails claim) {
+    Stream<ClaimViewField<MediationClaimDetails>> fields =
+        Stream.of(
+            MediationClaimDetailsViewField.FEE_CODE,
+            MediationClaimDetailsViewField.MATTER_TYPE_CODE_1,
+            MediationClaimDetailsViewField.MATTER_TYPE_CODE_2);
 
-    rows.put("feeCode", claim.getFeeCode());
-    rows.put("matterTypeCodeOne", claim.getMatterType1());
-    rows.put("matterTypeCodeTwo", claim.getMatterType2());
-
-    return rows;
+    return toFieldMap(fields, claim);
   }
 
-  private static LinkedHashMap<String, Object> createCaseDetailsRows(MediationClaimDetails claim) {
-    var rows = new LinkedHashMap<String, Object>();
+  private static LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> createCaseDetailsRows(
+      MediationClaimDetails claim) {
 
-    rows.put("caseReferenceNumber", claim.getCaseReferenceNumber());
-    rows.put("caseStartDate", claim.getCaseStartDate());
-    rows.put("caseId", claim.getCaseId());
-    rows.put("uniqueCaseId", claim.getUniqueCaseId());
-    rows.put("caseEndDate", claim.getCaseEndDate());
-    rows.put("mediationSessionsCount", claim.getMediationSessionsCount());
-    rows.put("mediationTimeMinutes", claim.getMediationTimeMinutes());
-    rows.put("outcome", claim.getOutcome());
-    rows.put("outreachLocation", claim.getOutreachLocation());
-    rows.put("referralSource", claim.getReferralSource());
-    rows.put("scheduleReference", claim.getScheduleReference());
+    Stream<ClaimViewField<MediationClaimDetails>> fields =
+        Stream.of(
+            MediationClaimDetailsViewField.CASE_REFERENCE_NUMBER,
+            MediationClaimDetailsViewField.CASE_START_DATE,
+            MediationClaimDetailsViewField.CLAIM_ID,
+            MediationClaimDetailsViewField.UNIQUE_CASE_ID,
+            MediationClaimDetailsViewField.CASE_CONCLUDED_DATE,
+            MediationClaimDetailsViewField.MEDIATION_SESSIONS_COUNT,
+            MediationClaimDetailsViewField.MEDIATION_TIME_MINUTES,
+            MediationClaimDetailsViewField.OUTCOME,
+            MediationClaimDetailsViewField.OUTREACH_LOCATION,
+            MediationClaimDetailsViewField.REFERRAL_SOURCE,
+            MediationClaimDetailsViewField.SCHEDULE_REFERENCE);
 
-    return rows;
+    return toFieldMap(fields, claim);
   }
 }

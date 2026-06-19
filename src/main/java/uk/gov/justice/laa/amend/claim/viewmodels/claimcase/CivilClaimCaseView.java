@@ -22,8 +22,8 @@ public record CivilClaimCaseView(
     Stream<ClaimViewField<CivilClaimDetails>> fields =
         Stream.of(
             CivilClaimDetailsViewField.FEE_CODE,
-            CivilClaimDetailsViewField.MATTER_TYPE_CODE_ONE,
-            CivilClaimDetailsViewField.MATTER_TYPE_CODE_TWO);
+            CivilClaimDetailsViewField.MATTER_TYPE_CODE_1,
+            CivilClaimDetailsViewField.MATTER_TYPE_CODE_2);
 
     return toFieldMap(fields, claim);
   }
@@ -36,7 +36,7 @@ public record CivilClaimCaseView(
             CivilClaimDetailsViewField.CASE_ID,
             CivilClaimDetailsViewField.CASE_REFERENCE_NUMBER,
             CivilClaimDetailsViewField.CASE_START_DATE,
-            CivilClaimDetailsViewField.CASE_CONCLUDED_DATE,
+            CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE,
             CivilClaimDetailsViewField.UNIQUE_FILE_NUMBER,
             CivilClaimDetailsViewField.CASE_STAGE,
             CivilClaimDetailsViewField.VALUE_OF_COSTS,

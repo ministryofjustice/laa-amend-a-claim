@@ -32,7 +32,7 @@ public record CrimeClaimCaseView(
             CrimeClaimDetailsViewField.STAGE_REACHED,
             CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER,
             CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE,
-            CrimeClaimDetailsViewField.CASE_END_DATE,
+            CrimeClaimDetailsViewField.CASE_CONCLUDED_DATE,
             CrimeClaimDetailsViewField.STANDARD_FEE_CATEGORY,
             CrimeClaimDetailsViewField.OUTCOME_FOR_CLIENT,
             CrimeClaimDetailsViewField.SUSPECTS_DEFENDANTS_COUNT,
