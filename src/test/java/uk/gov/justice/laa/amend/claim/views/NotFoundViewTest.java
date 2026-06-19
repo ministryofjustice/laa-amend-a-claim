@@ -30,8 +30,8 @@ public class NotFoundViewTest extends ViewTestBase {
 
     assertPageHasContent(
         doc,
-        "Alternatively return to the Amend a claim for contracted work homepage and try again.");
+        "Alternatively return to the Amend a claim for controlled work homepage and try again.");
 
-    assertPageHasLink(doc, "homepage", "Amend a claim for contracted work homepage", "/");
+    assertPageHasLink(doc, "homepage", "Amend a claim for controlled work homepage", "/");
   }
 }
