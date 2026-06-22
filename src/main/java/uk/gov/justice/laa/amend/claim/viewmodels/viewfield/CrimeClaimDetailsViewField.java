@@ -3,7 +3,6 @@ package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
 import java.util.function.Function;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.Accessor;
 
 @Getter
 public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetails> {
