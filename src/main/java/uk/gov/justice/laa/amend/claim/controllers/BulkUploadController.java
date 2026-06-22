@@ -36,20 +36,14 @@ public class BulkUploadController {
   private final FeatureFlagsConfig featureFlagsConfig;
 
   @GetMapping
-  public String onPageLoad(HttpServletResponse response) throws IOException {
-    if (!featureFlagsConfig.getIsBulkUploadEnabled()) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
-      return null;
-    }
+  public String onPageLoad() {
+    featureFlagsConfig.checkBulkUploadEnabled();
     return "bulk-upload";
   }
 
   @GetMapping("/result")
-  public String onPageLoad(Model model, HttpServletResponse response) throws IOException {
-    if (!featureFlagsConfig.getIsBulkUploadEnabled()) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
-      return null;
-    }
+  public String onPageLoad(Model model) {
+    featureFlagsConfig.checkBulkUploadEnabled();
 
     if (!model.containsAttribute("result")) {
       return "redirect:/bulk-upload";
@@ -59,11 +53,8 @@ public class BulkUploadController {
   }
 
   @GetMapping(value = "/example", produces = "text/csv")
-  public ResponseEntity<Resource> getCsvFile(HttpServletResponse response) throws IOException {
-    if (!featureFlagsConfig.getIsBulkUploadEnabled()) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
-      return null;
-    }
+  public ResponseEntity<Resource> getCsvFile() throws IOException {
+    featureFlagsConfig.checkBulkUploadEnabled();
 
     ClassPathResource csvFile = new ClassPathResource("data/example_bulk_upload.csv");
 
@@ -80,12 +71,8 @@ public class BulkUploadController {
       @ModelAttribute("userId") UUID userId,
       RedirectAttributes redirectAttributes,
       Model model,
-      HttpServletResponse response)
-      throws IOException {
-    if (!featureFlagsConfig.getIsBulkUploadEnabled()) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
-      return null;
-    }
+      HttpServletResponse response) {
+    featureFlagsConfig.checkBulkUploadEnabled();
 
     if (file == null || Strings.isBlank(file.getOriginalFilename())) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import static java.lang.Boolean.TRUE;
+
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
@@ -38,7 +40,7 @@ public record ClaimDetailsFooterView(
       FeatureFlagsConfig featureFlagsConfig) {
     return isClaimAmendmentsCaseworker
         && claim.isValid()
-        && featureFlagsConfig.getIsClaimAmendmentEnabled();
+        && TRUE.equals(featureFlagsConfig.getIsClaimAmendmentEnabled());
   }
 
   public static boolean isVoidButtonPresent(

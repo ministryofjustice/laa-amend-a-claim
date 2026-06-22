@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.config;
 
+import static java.lang.Boolean.TRUE;
+
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -15,14 +17,20 @@ public class FeatureFlagsConfig {
   private Boolean isFullClaimDetailsEnabled;
   private Boolean isClaimAmendmentEnabled;
 
+  public void checkBulkUploadEnabled() {
+    if (!TRUE.equals(isBulkUploadEnabled)) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "isBulkUploadEnabled is false");
+    }
+  }
+
   public void checkFullClaimDetailsEnabled() {
-    if (!isFullClaimDetailsEnabled) {
+    if (!TRUE.equals(isFullClaimDetailsEnabled)) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "isFullClaimDetailsEnabled is false");
     }
   }
 
   public void checkClaimAmendmentEnabled() {
-    if (!isClaimAmendmentEnabled) {
+    if (!TRUE.equals(isClaimAmendmentEnabled)) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "isClaimAmendmentEnabled is false");
     }
   }
