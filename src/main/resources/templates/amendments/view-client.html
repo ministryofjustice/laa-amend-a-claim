@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{amendments.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${true}
+    )}">
+<body>
+<main class="govuk-main-wrapper" id="main-content">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <th:block th:replace="~{partials/amendments-view-header :: viewHeader(currentPage='client')}"></th:block>
+
+      <h2 class="govuk-heading-m" th:text="#{claimDetails.clientHeading}"></h2>
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title"
+              th:text="${#maps.isEmpty(clientView.client2Rows)}
+                                    ? #{claimClient.clientDetails}
+                                    : #{claimClient.client1Details}">
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link"
+                 id="amend-client-1"
+                 th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-client(submissionId=${submissionId}, claimId=${claimId})}"
+                 th:text="#{amendments.change}"></a>
+            </li>
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+
+            <div class="govuk-summary-list__row" th:if="${client1Form.hasAmendments(forms.client1Form.original)}">
+              <dt class="govuk-summary-list__key" th:text="#{amendments.item}"></dt>
+              <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.current}"></dd>
+              <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.amended}"></dd>
+            </div>
+
+            <div class="govuk-summary-list__row"
+                 th:each="entry : ${clientView.client1Rows}">
+              <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key}}"></dt>
+              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+
+              <dd class="govuk-summary-list__value"
+                  th:if="${client1Form.isAmendment(entry.key, forms.client1Form.original)}"
+                  th:text="${@ThymeleafUtils.getFormattedValue(client1Form.inputs[entry.key.name()]).resolve(#messages)}"></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="govuk-summary-card" th:if="${!#maps.isEmpty(clientView.client2Rows)}">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title"
+              th:text="#{claimClient.client2Details}">
+          </h2>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row" th:each="entry : ${clientView.client2Rows}">
+              <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key}}"></dt>
+              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <th:block th:replace="~{partials/amendments-view-footer :: viewFooter()}"></th:block>
+    </div>
+  </div>
+</main>
+</body>
+</html>

@@ -5,12 +5,11 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
-import uk.gov.justice.laa.amend.claim.viewmodels.CivilClaimClientView;
 
 @UtilityClass
 public class ClaimClientViewFactory {
 
-  public static ClaimClientView create(ClaimDetails claim) {
+  public static ClaimClientView<?> create(ClaimDetails claim) {
     return switch (claim) {
       case CrimeClaimDetails crimeClaim -> new CrimeClaimClientView(crimeClaim);
       case CivilClaimDetails civilClaimDetails -> new CivilClaimClientView(civilClaimDetails);

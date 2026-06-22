@@ -20,6 +20,7 @@ public class ClaimDetailsPage extends LaaPage {
   private final Locator updateAssessmentOutcomeButton;
   private final Locator addUpdateAssessmentOutcomeButton;
   private final Locator voidClaimButton;
+  private final Locator amendClaimButton;
   private final Locator infoAlert;
   private final Locator backToSearchButton;
 
@@ -40,6 +41,8 @@ public class ClaimDetailsPage extends LaaPage {
 
     this.voidClaimButton = page.getByTestId("claim-details-void-button");
 
+    this.amendClaimButton = page.getByTestId("claim-details-amend-button");
+
     this.infoAlert = page.locator(".moj-alert--information");
 
     this.backToSearchButton =
@@ -56,6 +59,10 @@ public class ClaimDetailsPage extends LaaPage {
 
   public void clickVoidClaim() {
     voidClaimButton.click();
+  }
+
+  public void clickAmendClaim() {
+    amendClaimButton.click();
   }
 
   public void clickBackToSearchButton() {

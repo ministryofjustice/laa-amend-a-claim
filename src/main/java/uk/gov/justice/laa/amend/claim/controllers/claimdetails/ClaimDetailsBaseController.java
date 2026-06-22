@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
 import org.springframework.ui.Model;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
@@ -18,14 +19,18 @@ public abstract class ClaimDetailsBaseController {
 
   private final AssessmentService assessmentService;
   private final UserRetrievalService userRetrievalService;
+  protected final FeatureFlagsConfig featureFlagsConfig;
 
   public ClaimDetailsBaseController(
-      AssessmentService assessmentService, UserRetrievalService userRetrievalService) {
+      AssessmentService assessmentService,
+      UserRetrievalService userRetrievalService,
+      FeatureFlagsConfig featureFlagsConfig) {
     this.assessmentService = assessmentService;
     this.userRetrievalService = userRetrievalService;
+    this.featureFlagsConfig = featureFlagsConfig;
   }
 
-  protected static void setCommonModelAttributes(
+  protected void setCommonModelAttributes(
       Model model,
       HttpSession session,
       HttpServletRequest request,
@@ -43,7 +48,8 @@ public abstract class ClaimDetailsBaseController {
         new ClaimDetailsFooterView(
             claim,
             request.isUserInRole(ROLE_ESCAPE_CASE_CASEWORKER.name()),
-            request.isUserInRole(ROLE_CLAIM_AMENDMENTS_CASEWORKER.name())));
+            request.isUserInRole(ROLE_CLAIM_AMENDMENTS_CASEWORKER.name()),
+            featureFlagsConfig));
   }
 
   protected MicrosoftApiUser setLatestAssessment(ClaimDetails claim) {

@@ -1,47 +1,79 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimclient;
 
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.DISABILITY;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.ETHNICITY;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.FORENAME;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.GENDER;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.SURNAME;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.asMediationField;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CLIENT_2_DATE_OF_BIRTH;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CLIENT_2_DISABILITY;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CLIENT_2_ETHNICITY;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CLIENT_2_FORENAME;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CLIENT_2_GENDER;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CLIENT_2_POSTCODE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CLIENT_2_SURNAME;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CLIENT_2_UCN;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.DATE_OF_BIRTH;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.IS_CLIENT_2_LEGALLY_AIDED;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.IS_LEGALLY_AIDED;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.IS_POSTAL_APPLICATION_ACCEPTED;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.POSTCODE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.UNIQUE_CLIENT_NUMBER;
+
 import java.util.LinkedHashMap;
+import java.util.stream.Stream;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 
 public record MediationClaimClientView(
-    LinkedHashMap<String, Object> client1Rows, LinkedHashMap<String, Object> client2Rows)
-    implements ClaimClientView {
+    LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> client1Rows,
+    LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> client2Rows)
+    implements ClaimClientView<ClaimViewField<MediationClaimDetails>> {
 
   public MediationClaimClientView(MediationClaimDetails claim) {
     this(createClient1Rows(claim), createClient2Rows(claim));
   }
 
-  private static LinkedHashMap<String, Object> createClient1Rows(MediationClaimDetails claim) {
-    var rows = new LinkedHashMap<String, Object>();
-
-    rows.put("firstName", claim.getClientForename());
-    rows.put("surname", claim.getClientSurname());
-    rows.put("dateOfBirth", claim.getClientDateOfBirth());
-    rows.put("ucn", claim.getUniqueClientNumber());
-    rows.put("postcode", claim.getClientPostcode());
-    rows.put("gender", claim.getClientGender());
-    rows.put("ethnicity", claim.getClientEthnicity());
-    rows.put("disability", claim.getClientDisability());
-    rows.put("legallyAided", claim.getIsClientLegallyAided());
-    rows.put("postalApplicationAccepted", claim.getIsClientPostalApplicationAccepted());
-
-    return rows;
+  public Class<?> claimDetailsType() {
+    return MediationClaimDetails.class;
   }
 
-  private static LinkedHashMap<String, Object> createClient2Rows(MediationClaimDetails claim) {
-    var rows = new LinkedHashMap<String, Object>();
+  private static LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> createClient1Rows(
+      MediationClaimDetails claim) {
+    var fields =
+        Stream.of(
+            asMediationField(FORENAME),
+            asMediationField(SURNAME),
+            DATE_OF_BIRTH,
+            UNIQUE_CLIENT_NUMBER,
+            POSTCODE,
+            asMediationField(GENDER),
+            asMediationField(ETHNICITY),
+            asMediationField(DISABILITY),
+            IS_LEGALLY_AIDED,
+            IS_POSTAL_APPLICATION_ACCEPTED);
 
-    rows.put("firstName", claim.getClient2Forename());
-    rows.put("surname", claim.getClient2Surname());
-    rows.put("dateOfBirth", claim.getClient2DateOfBirth());
-    rows.put("ucn", claim.getClient2Ucn());
-    rows.put("postcode", claim.getClient2Postcode());
-    rows.put("gender", claim.getClient2Gender());
-    rows.put("ethnicity", claim.getClient2Ethnicity());
-    rows.put("disability", claim.getClient2Disability());
-    rows.put("legallyAided", claim.getIsClient2LegallyAided());
-    rows.put("postalApplicationAccepted", claim.getIsClient2PostalApplicationAccepted());
+    return toFieldMap(fields, claim);
+  }
 
-    return rows;
+  private static LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> createClient2Rows(
+      MediationClaimDetails claim) {
+    Stream<ClaimViewField<MediationClaimDetails>> fields =
+        Stream.of(
+            CLIENT_2_FORENAME,
+            CLIENT_2_SURNAME,
+            CLIENT_2_DATE_OF_BIRTH,
+            CLIENT_2_UCN,
+            CLIENT_2_POSTCODE,
+            CLIENT_2_GENDER,
+            CLIENT_2_ETHNICITY,
+            CLIENT_2_DISABILITY,
+            IS_CLIENT_2_LEGALLY_AIDED,
+            IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED);
+
+    return toFieldMap(fields, claim);
   }
 }

@@ -1,0 +1,25 @@
+<th:block
+    th:fragment="viewFooter()"
+    xmlns:th="http://www.thymeleaf.org"
+    th:with="hasAmendments=${forms.hasAmendments()}">
+
+    <a th:if="${!hasAmendments}"
+        th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
+       id="back-to-claim-details"
+       class="govuk-link govuk-link--no-visited-state"
+       th:text="#{amendments.backToClaim}">
+    </a>
+    <div class="govuk-button-group" th:if="${hasAmendments}">
+        <a th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/check(submissionId=${submissionId}, claimId=${claimId})}"
+           id="check"
+           class="govuk-button"
+           data-module="govuk-button"
+           th:text="#{amendments.continue}">
+        </a>
+        <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
+           id="cancel"
+           class="govuk-link govuk-link--no-visited-state"
+           th:text="#{service.cancel}">
+        </a>
+    </div>
+</th:block>
