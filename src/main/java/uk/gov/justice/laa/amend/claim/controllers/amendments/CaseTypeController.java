@@ -1,0 +1,42 @@
+package uk.gov.justice.laa.amend.claim.controllers.amendments;
+
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
+
+import jakarta.servlet.http.HttpSession;
+import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+
+@Controller
+@RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
+@HasRoleClaimAmendmentsCaseworker
+@RequiredArgsConstructor
+public class CaseTypeController {
+
+  private final FeatureFlagsConfig featureFlagsConfig;
+
+  @GetMapping("/amend-case-type")
+  public String viewCaseType(@PathVariable UUID submissionId, @PathVariable UUID claimId) {
+    return "redirect:/submissions/%s/claims/%s/amendments/amend-fee-code"
+        .formatted(submissionId, claimId);
+  }
+
+  @GetMapping("/amend-fee-code")
+  public String amendFeeCode(
+      HttpSession session,
+      Model model,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    featureFlagsConfig.checkClaimAmendmentEnabled();
+
+    var claim = getValidClaim(session, submissionId, claimId);
+
+    return "amendments/amend-fee-code";
+  }
+}

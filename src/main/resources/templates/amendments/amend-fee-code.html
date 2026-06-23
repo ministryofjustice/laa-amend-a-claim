@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{amendments.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${true}
+    )}">
+<body>
+<main class="govuk-main-wrapper" id="main-content">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+      <h1 class="govuk-heading-l">
+        <span th:text="#{amendments.feeCode.title}"></span>
+      </h1>
+
+      <form method="post"
+            th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-fee-code(submissionId=${submissionId}, claimId=${claimId})}"
+            th:object="${client1Form}">
+
+
+        <!--<table class="govuk-table">
+          <caption class="govuk-table__caption govuk-table__caption&#45;&#45;m" th:text="#{amendments.feeCode}"/>
+          <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header" th:text="#{amendments.feeCode.table.item}"/>
+            <th scope="col" class="govuk-table__header" th:text="#{amendments.feeCode.table.current}"/>
+          </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">First 6 weeks</th>
+            <td class="govuk-table__cell">£109.80 per week</td>
+          </tr>
+          </tbody>
+        </table>
+-->
+        <p class="govuk-body" th:text="#{amendments.feeCode.description}"/>
+
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key" th:text="#{amendments.feeCode.title}"/>
+            <dd class="govuk-summary-list__value">
+              INVX - Police station: attendance
+            </dd>
+          </div>
+        </dl>
+
+
+
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="fee-code-input"
+            th:text="#{amendments.feeCode.title}"/>
+          <input class="govuk-input" id="fee-code-input" name="authenticationCode" type="text" spellcheck="false" value="NC1701" aria-describedby="authentication-code-hint">
+        </div>
+
+        <div class="govuk-button-group">
+          <button class="govuk-button" type="submit" th:text="#{amendments.continue}"></button>
+          <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
+             id="cancel"
+             class="govuk-link govuk-link--no-visited-state"
+             th:text="#{service.cancel}">
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+</body>
+</html>
