@@ -1,7 +1,7 @@
 plugins {
     id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.3.0'
     id "com.diffplug.spotless" version "8.6.0"
-    id "io.sentry.jvm.gradle" version "6.10.0"
+    id "io.sentry.jvm.gradle" version "6.11.0"
     id 'au.com.dius.pact' version '4.7.1'
 }
 
@@ -48,10 +48,6 @@ configurations.configureEach {
 
 dependencies {
 
-    // Upgrade to fix SNYK-JAVA-TOOLSJACKSONCORE-15907550
-    implementation 'tools.jackson.core:jackson-core:3.1.4'
-    implementation 'tools.jackson.core:jackson-databind:3.1.4'
-
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -81,7 +77,7 @@ dependencies {
     implementation("io.vavr:vavr:1.0.1")
 
     // Sentry observability for Spring Boot 4
-    implementation enforcedPlatform('io.sentry:sentry-bom:8.43.1')
+    implementation enforcedPlatform('io.sentry:sentry-bom:8.43.2')
     implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
@@ -96,7 +92,7 @@ dependencies {
     // Pact consumer testing
     testImplementation 'au.com.dius.pact.consumer:junit5:4.7.1'
     // test dependencies
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:5.0.2'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:5.0.3'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-jackson-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
