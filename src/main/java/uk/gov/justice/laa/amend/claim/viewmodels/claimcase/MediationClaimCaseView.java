@@ -1,12 +1,25 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcase;
 
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CASE_CONCLUDED_DATE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CASE_REFERENCE_NUMBER;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CASE_START_DATE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CLAIM_ID;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.FEE_CODE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.MATTER_TYPE_CODE_1;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.MATTER_TYPE_CODE_2;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.MEDIATION_SESSIONS_COUNT;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.MEDIATION_TIME_MINUTES;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.OUTCOME;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.OUTREACH_LOCATION;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.REFERRAL_SOURCE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.SCHEDULE_REFERENCE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.UNIQUE_CASE_ID;
 
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField;
 
 public record MediationClaimCaseView(
     LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> caseTypeRows,
@@ -20,10 +33,7 @@ public record MediationClaimCaseView(
   private static LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> createCaseTypeRows(
       MediationClaimDetails claim) {
     Stream<ClaimViewField<MediationClaimDetails>> fields =
-        Stream.of(
-            MediationClaimDetailsViewField.FEE_CODE,
-            MediationClaimDetailsViewField.MATTER_TYPE_CODE_1,
-            MediationClaimDetailsViewField.MATTER_TYPE_CODE_2);
+        Stream.of(FEE_CODE, MATTER_TYPE_CODE_1, MATTER_TYPE_CODE_2);
 
     return toFieldMap(fields, claim);
   }
@@ -33,17 +43,17 @@ public record MediationClaimCaseView(
 
     Stream<ClaimViewField<MediationClaimDetails>> fields =
         Stream.of(
-            MediationClaimDetailsViewField.CASE_REFERENCE_NUMBER,
-            MediationClaimDetailsViewField.CASE_START_DATE,
-            MediationClaimDetailsViewField.CLAIM_ID,
-            MediationClaimDetailsViewField.UNIQUE_CASE_ID,
-            MediationClaimDetailsViewField.CASE_CONCLUDED_DATE,
-            MediationClaimDetailsViewField.MEDIATION_SESSIONS_COUNT,
-            MediationClaimDetailsViewField.MEDIATION_TIME_MINUTES,
-            MediationClaimDetailsViewField.OUTCOME,
-            MediationClaimDetailsViewField.OUTREACH_LOCATION,
-            MediationClaimDetailsViewField.REFERRAL_SOURCE,
-            MediationClaimDetailsViewField.SCHEDULE_REFERENCE);
+            CASE_REFERENCE_NUMBER,
+            CASE_START_DATE,
+            CLAIM_ID,
+            UNIQUE_CASE_ID,
+            CASE_CONCLUDED_DATE,
+            MEDIATION_SESSIONS_COUNT,
+            MEDIATION_TIME_MINUTES,
+            OUTCOME,
+            OUTREACH_LOCATION,
+            REFERRAL_SOURCE,
+            SCHEDULE_REFERENCE);
 
     return toFieldMap(fields, claim);
   }
