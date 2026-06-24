@@ -9,7 +9,11 @@ import reactor.core.publisher.Mono;
 @HttpExchange("/api")
 public interface FeeSchemePlatformApiClient {
 
-  record FeeCode(String feeCode, String feeCodeDescription) {}
+  record FeeCode(String feeCode, String feeCodeDescription) {
+    public String fullFeeCodeDescription() {
+      return feeCode + " - " + feeCodeDescription;
+    }
+  }
 
   record FeeCodes(List<FeeCode> feeCodes) {}
 
