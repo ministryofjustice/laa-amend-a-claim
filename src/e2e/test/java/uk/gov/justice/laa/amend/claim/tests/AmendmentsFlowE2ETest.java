@@ -17,6 +17,7 @@ import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient1Page;
+import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCasePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewClientPage;
 
 public class AmendmentsFlowE2ETest extends BaseTest {
@@ -63,7 +64,12 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
   @Test
   @DisplayName(
-      "E2E: Claim Amendment Flow – Search → View → View Client → Amend Client -> View Client")
+      """
+          E2E: Claim Amendment Flow – Search → View → View Client → Amend Claim Details
+            → View Client → Change Client Details → View Client
+            → View Case → (TODO) Change case type → View Case
+            → View Case → (TODO) Change case details → View Case
+            """)
   void fullAmendmentFlow() {
     var search = new SearchPage(page);
 
@@ -74,15 +80,20 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var details = new ClaimDetailsPage(page);
     details.clickAmendClaim();
 
-    var viewClient = new ViewClientPage(page);
+    var viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable");
-    viewClient.clickChangeLink();
+    viewAmendClient.clickChangeLink();
 
     var amendClient1 = new AmendClient1Page(page);
     amendClient1.fillInput("SURNAME", "changed");
     amendClient1.clickContinueButton();
 
-    viewClient = new ViewClientPage(page);
+    viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+    viewAmendClient.clickCaseTab();
+
+    var viewAmendCase = new ViewCasePage(page);
+    assertSummaryListRow(page, "Case type", "Fee code", "INVC");
+    assertSummaryListRow(page, "Case details", "Stage reached", "Not applicable");
   }
 }

@@ -139,7 +139,7 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
         caseDetails.get(3), "Case concluded date", CASE_END_DATE_RENDERED);
     assertSummaryListRowContainsValues(
         caseDetails.get(4), "Standard fee category", STANDARD_FEE_CATEGORY);
-    assertSummaryListRowContainsValues(caseDetails.get(5), "Outcome for the client", OUTCOME);
+    assertSummaryListRowContainsValues(caseDetails.get(5), "Outcome for client", OUTCOME);
     assertSummaryListRowContainsValues(
         caseDetails.get(6),
         "Number of suspects or defendants",

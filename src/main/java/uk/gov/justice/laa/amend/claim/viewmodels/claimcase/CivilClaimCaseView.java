@@ -1,68 +1,112 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcase;
 
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.ACCESS_POINT;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.ADDITIONAL_TRAVEL_PAYMENT;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.ADVICE_TIME;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.ADVICE_TYPE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.AIT_HEARING_CENTRE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CASE_ID;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CASE_REFERENCE_NUMBER;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CASE_STAGE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CASE_START_DATE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_EXEMPTION;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_REFERENCE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.COURT_LOCATION;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.DELIVERY_LOCATION;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.DESIGNATED_ACCREDITED_REPRESENTATIVE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.EXCEPTIONAL_CASE_FUNDING;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.EXEMPTION_CRITERIA_SATISFIED;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.FEE_CODE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.FOLLOW_ON_WORK;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.IRC_SURGERY;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.IS_NRM_ADVICE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.LEGACY_CASE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.MATTER_TYPE_CODE_1;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.MATTER_TYPE_CODE_2;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.MEDICAL_REPORTS_CLAIMED;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.MEETINGS_ATTENDED;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.MENTAL_HEALTH_TRIBUNAL_REFERENCE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.PROCUREMENT_AREA;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.STAGE_REACHED;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.SURGERY_CLIENTS_COUNT;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.SURGERY_DATE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.SURGERY_MATTERS_COUNT;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.TOLERANCE_INDICATOR;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.TRANSFER_DATE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.TRAVEL_TIME;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.UNIQUE_FILE_NUMBER;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.VALUE_OF_COSTS;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.WAITING_TIME;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
+
 import java.util.LinkedHashMap;
+import java.util.stream.Stream;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 
 public record CivilClaimCaseView(
-    LinkedHashMap<String, Object> caseTypeRows, LinkedHashMap<String, Object> caseDetailsRows)
-    implements ClaimCaseView {
+    LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object> caseTypeRows,
+    LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object> caseDetailsRows)
+    implements ClaimCaseView<ClaimViewField<CivilClaimDetails>> {
 
   public CivilClaimCaseView(CivilClaimDetails claim) {
     this(createCaseTypeRows(claim), createCaseDetailsRows(claim));
   }
 
-  private static LinkedHashMap<String, Object> createCaseTypeRows(CivilClaimDetails claim) {
-    var rows = new LinkedHashMap<String, Object>();
+  private static LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object> createCaseTypeRows(
+      CivilClaimDetails claim) {
+    Stream<ClaimViewField<CivilClaimDetails>> fields =
+        Stream.of(FEE_CODE, MATTER_TYPE_CODE_1, MATTER_TYPE_CODE_2);
 
-    rows.put("feeCode", claim.getFeeCode());
-    rows.put("matterTypeCodeOne", claim.getMatterType1());
-    rows.put("matterTypeCodeTwo", claim.getMatterType2());
-
-    return rows;
+    return toFieldMap(fields, claim);
   }
 
-  private static LinkedHashMap<String, Object> createCaseDetailsRows(CivilClaimDetails claim) {
-    var rows = new LinkedHashMap<String, Object>();
-
-    rows.put("scheduleReferenceCivil", claim.getScheduleReference());
-    rows.put("caseIdCivil", claim.getCaseId());
-    rows.put("caseReferenceNumber", claim.getCaseReferenceNumber());
-    rows.put("caseStartDate", claim.getCaseStartDate());
-    rows.put("caseConcludedDate", claim.getCaseConcludedDate());
-    rows.put("uniqueFileNumber", claim.getUniqueFileNumber());
-    rows.put("caseStage", claim.getCaseStage());
-    rows.put("valueOfCosts", claim.getValueOfCosts());
-    rows.put("procurementArea", claim.getProcurementArea());
-    rows.put("accessPoint", claim.getAccessPoint());
-    rows.put("stageReached", claim.getStageReached());
-    rows.put("outcomeForClient", claim.getOutcome());
-    rows.put("exceptionalCaseFundingReference", claim.getExceptionalCaseFundingReference());
-    rows.put("civilLegalAdviceReference", claim.getCivilLegalAdviceReference());
-    rows.put("civilLegalAdviceExemption", claim.getCivilLegalAdviceExemption());
-    rows.put("deliveryLocation", claim.getDeliveryLocation());
-    rows.put("courtLocation", claim.getCourtLocation());
-    rows.put("aitHearingCentre", claim.getAitHearingCentre());
-    rows.put("localAuthorityNumber", claim.getLocalAuthorityNumber());
-    rows.put("designatedAccreditedRepresentative", claim.getDesignatedAccreditedRepresentative());
-    rows.put("adviceTime", claim.getAdviceTime());
-    rows.put("travelTime", claim.getTravelTime());
-    rows.put("waitingTime", claim.getWaitingTime());
-    rows.put("isAdditionalTravelPayment", claim.getIsAdditionalTravelPayment());
-    rows.put("followOnWork", claim.getFollowOnWork());
-    rows.put("isToleranceApplicable", claim.getIsToleranceApplicable());
-    rows.put("isLegacyCase", claim.getIsLegacyCase());
-    rows.put("meetingsAttended", claim.getMeetingsAttended());
-    rows.put("adviceType", claim.getAdviceType());
-    rows.put("transferDate", claim.getTransferDate());
-    rows.put("medicalReportsClaimed", claim.getMedicalReportsClaimed());
-    rows.put("exemptionCriteriaSatisfied", claim.getExemptionCriteriaSatisfied());
-    rows.put("isIrcSurgery", claim.getIsIrcSurgery());
-    rows.put("surgeryDate", claim.getSurgeryDate());
-    rows.put("surgeryClientsCount", claim.getSurgeryClientsCount());
-    rows.put("surgeryMattersCount", claim.getSurgeryMattersCount());
-    rows.put("mentalHealthTribunalReference", claim.getMentalHealthTribunalReference());
-    rows.put("isNrmAdvice", claim.getIsNrmAdvice());
-
-    return rows;
+  private static LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object> createCaseDetailsRows(
+      CivilClaimDetails claim) {
+    Stream<ClaimViewField<CivilClaimDetails>> fields =
+        Stream.of(
+            SCHEDULE_REFERENCE_CIVIL,
+            CASE_ID,
+            CASE_REFERENCE_NUMBER,
+            CASE_START_DATE,
+            CASE_CONCLUDED_CLAIMED_DATE,
+            UNIQUE_FILE_NUMBER,
+            CASE_STAGE,
+            VALUE_OF_COSTS,
+            PROCUREMENT_AREA,
+            ACCESS_POINT,
+            STAGE_REACHED,
+            OUTCOME_FOR_CLIENT,
+            EXCEPTIONAL_CASE_FUNDING,
+            CIVIL_LEGAL_ADVICE_REFERENCE,
+            CIVIL_LEGAL_ADVICE_EXEMPTION,
+            DELIVERY_LOCATION,
+            COURT_LOCATION,
+            AIT_HEARING_CENTRE,
+            LOCAL_AUTHORITY_NUMBER,
+            DESIGNATED_ACCREDITED_REPRESENTATIVE,
+            ADVICE_TIME,
+            TRAVEL_TIME,
+            WAITING_TIME,
+            ADDITIONAL_TRAVEL_PAYMENT,
+            FOLLOW_ON_WORK,
+            TOLERANCE_INDICATOR,
+            LEGACY_CASE,
+            MEETINGS_ATTENDED,
+            ADVICE_TYPE,
+            TRANSFER_DATE,
+            MEDICAL_REPORTS_CLAIMED,
+            EXEMPTION_CRITERIA_SATISFIED,
+            IRC_SURGERY,
+            SURGERY_DATE,
+            SURGERY_CLIENTS_COUNT,
+            SURGERY_MATTERS_COUNT,
+            MENTAL_HEALTH_TRIBUNAL_REFERENCE,
+            IS_NRM_ADVICE);
+    return toFieldMap(fields, claim);
   }
 }

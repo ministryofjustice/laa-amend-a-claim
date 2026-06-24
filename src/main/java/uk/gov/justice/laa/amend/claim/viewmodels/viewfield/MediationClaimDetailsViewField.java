@@ -26,7 +26,26 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
   CLIENT_2_DISABILITY(new Accessor<>(MediationClaimDetails::getClient2Disability)),
   IS_CLIENT_2_LEGALLY_AIDED(new Accessor<>(MediationClaimDetails::getIsClient2LegallyAided)),
   IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED(
-      new Accessor<>(MediationClaimDetails::getIsClient2PostalApplicationAccepted));
+      new Accessor<>(MediationClaimDetails::getIsClient2PostalApplicationAccepted)),
+
+  // Case Type fields
+  FEE_CODE(new Accessor<>(MediationClaimDetails::getFeeCode)),
+  MATTER_TYPE_CODE_1(new Accessor<>(MediationClaimDetails::getMatterType1)),
+  MATTER_TYPE_CODE_2(new Accessor<>(MediationClaimDetails::getMatterType2)),
+
+  // Case Details fields
+  CASE_REFERENCE_NUMBER(new Accessor<>(MediationClaimDetails::getCaseReferenceNumber)),
+  CASE_START_DATE(new Accessor<>(MediationClaimDetails::getCaseStartDate)),
+  CLAIM_ID(new Accessor<>(MediationClaimDetails::getCaseId)),
+  UNIQUE_CASE_ID(new Accessor<>(MediationClaimDetails::getUniqueCaseId)),
+  CASE_CONCLUDED_DATE(new Accessor<>(MediationClaimDetails::getCaseEndDate)),
+  MEDIATION_SESSIONS_COUNT(new Accessor<>(MediationClaimDetails::getMediationSessionsCount)),
+  MEDIATION_TIME_MINUTES(new Accessor<>(MediationClaimDetails::getMediationTimeMinutes)),
+  OUTCOME(new Accessor<>(MediationClaimDetails::getOutcome)),
+  OUTREACH_LOCATION(new Accessor<>(MediationClaimDetails::getOutreachLocation)),
+  REFERRAL_SOURCE(new Accessor<>(MediationClaimDetails::getReferralSource)),
+  SCHEDULE_REFERENCE(new Accessor<>(MediationClaimDetails::getScheduleReference)),
+  ;
 
   private final Accessor<?> accessor;
 

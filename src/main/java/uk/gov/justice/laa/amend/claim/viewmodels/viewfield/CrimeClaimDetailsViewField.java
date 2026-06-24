@@ -6,10 +6,28 @@ import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 
 @Getter
 public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetails> {
+  // Case type fields
+  FEE_CODE(new Accessor<>(CrimeClaimDetails::getFeeCode)),
+  MATTER_TYPE_CODE(new Accessor<>(CrimeClaimDetails::getMatterTypeCode)),
+
   // Case fields
-  // TODO: The remainder of the fields will need to be populated. Just putting one in here for now
-  // so that we have the class to work with as there are no unique crime client fields.
-  SCHEME_ID(new Accessor<>(CrimeClaimDetails::getSchemeId));
+  STAGE_REACHED(new Accessor<>(CrimeClaimDetails::getStageReached)),
+  UNIQUE_FILE_NUMBER(new Accessor<>(CrimeClaimDetails::getUniqueFileNumber)),
+  REPRESENTATION_ORDER_DATE(new Accessor<>(CrimeClaimDetails::getRepresentationOrderDate)),
+  CASE_CONCLUDED_DATE(new Accessor<>(CrimeClaimDetails::getCaseEndDate)),
+  STANDARD_FEE_CATEGORY(new Accessor<>(CrimeClaimDetails::getStandardFeeCategory)),
+  OUTCOME_FOR_CLIENT(new Accessor<>(CrimeClaimDetails::getOutcome)),
+  SUSPECTS_DEFENDANTS_COUNT(new Accessor<>(CrimeClaimDetails::getSuspectsDefendantsCount)),
+  POLICE_STATION_COURT_ATTENDANCES_COUNT(
+      new Accessor<>(CrimeClaimDetails::getPoliceStationCourtAttendancesCount)),
+  POLICE_STATION_COURT_PRISON_ID(new Accessor<>(CrimeClaimDetails::getPoliceStationCourtPrisonId)),
+  SCHEME_ID(new Accessor<>(CrimeClaimDetails::getSchemeId)),
+  DSCC_NUMBER(new Accessor<>(CrimeClaimDetails::getDsccNumber)),
+  MAAT_ID(new Accessor<>(CrimeClaimDetails::getMaatId)),
+  PRISON_LAW_PRIOR_APPROVAL_NUMBER(
+      new Accessor<>(CrimeClaimDetails::getPrisonLawPriorApprovalNumber)),
+  IS_DUTY_SOLICITOR(new Accessor<>(CrimeClaimDetails::getIsDutySolicitor)),
+  IS_YOUTH_COURT(new Accessor<>(CrimeClaimDetails::getIsYouthCourt));
 
   private final Accessor<?> accessor;
 

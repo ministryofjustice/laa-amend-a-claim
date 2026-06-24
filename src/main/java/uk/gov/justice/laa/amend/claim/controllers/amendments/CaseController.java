@@ -1,45 +1,44 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getAmendmentForms;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
-import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveAmendmentForms;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
-import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
-import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
-@HasRoleClaimAmendmentsCaseworker
 @RequiredArgsConstructor
-public class StartController {
+@HasRoleClaimAmendmentsCaseworker
+public class CaseController {
 
   private final FeatureFlagsConfig featureFlagsConfig;
 
-  @GetMapping
-  public String startAmendment(
-      HttpSession session, @PathVariable UUID submissionId, @PathVariable UUID claimId) {
+  @GetMapping("/case")
+  public String viewCase(
+      HttpSession session,
+      Model model,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
     featureFlagsConfig.checkClaimAmendmentEnabled();
 
     var claim = getValidClaim(session, submissionId, claimId);
+    var amendmentForms = getAmendmentForms(session, claimId);
 
-    var clientView = ClaimClientViewFactory.create(claim);
-    var client1Form = new AmendmentForm(clientView.client1Rows());
-    var caseView = ClaimCaseViewFactory.create(claim);
-    var caseTypeForm = new AmendmentForm(caseView.caseTypeRows());
-    var amendmentForms = new AmendmentForms(client1Form);
+    var claimView = ClaimCaseViewFactory.create(claim);
+    model.addAttribute("claim", claimView);
 
-    saveAmendmentForms(session, claimId, amendmentForms);
+    model.addAttribute("forms", amendmentForms);
 
-    return "redirect:/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
+    return "amendments/view-case";
   }
 }
