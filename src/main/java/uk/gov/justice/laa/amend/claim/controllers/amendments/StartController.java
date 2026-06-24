@@ -36,7 +36,7 @@ public class StartController {
     var client1Form = new AmendmentForm(clientView.client1Rows());
     var caseView = ClaimCaseViewFactory.create(claim);
     var caseTypeForm = new AmendmentForm(caseView.caseTypeRows());
-    var amendmentForms = new AmendmentForms(client1Form);
+    var amendmentForms = new AmendmentForms(client1Form, caseTypeForm);
 
     saveAmendmentForms(session, claimId, amendmentForms);
 
