@@ -176,6 +176,16 @@ env:
       secretKeyRef:
         name: laa-amend-a-claim-provider-api-token
         key: PROVIDER_TOKEN
+  - name: FEE_SCHEME_API
+    valueFrom:
+      secretKeyRef:
+        name: laa-fee-scheme-platform-api-url
+        key: FEE_SCHEME_API
+  - name: FEE_SCHEME_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: laa-fee-scheme-platform-api-token
+        key: FEE_SCHEME_TOKEN
   - name: IS_BULK_UPLOAD_ENABLED
     valueFrom:
       configMapKeyRef:
