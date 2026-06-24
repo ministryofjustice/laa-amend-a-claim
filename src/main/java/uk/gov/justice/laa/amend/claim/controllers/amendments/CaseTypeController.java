@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getAmendmentForms;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
 
 import jakarta.servlet.http.HttpSession;
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
-import uk.gov.justice.laa.amend.claim.client.FeeSchemePlatformApiClient;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.factories.AvailableFeeCodesFactory;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
@@ -21,7 +22,7 @@ import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 public class CaseTypeController {
 
   private final FeatureFlagsConfig featureFlagsConfig;
-  private final FeeSchemePlatformApiClient feeSchemePlatformApiClient;
+  private final AvailableFeeCodesFactory availableFeeCodesFactory;
 
   @GetMapping("/amend-case-type")
   public String viewCaseType(@PathVariable UUID submissionId, @PathVariable UUID claimId) {
@@ -38,9 +39,13 @@ public class CaseTypeController {
     featureFlagsConfig.checkClaimAmendmentEnabled();
 
     var claim = getValidClaim(session, submissionId, claimId);
+    var availableFeeCodes = availableFeeCodesFactory.getAvailableFeeCodes(claim.getAreaOfLaw());
+    var currentFeeCode = availableFeeCodes.get(claim.getFeeCode());
+    var amendmentForms = getAmendmentForms(session, claimId);
 
-    var feeCodes = feeSchemePlatformApiClient.getFeeCodes("legal_help").block();
-
+    model.addAttribute("currentFeeCode", currentFeeCode);
+    model.addAttribute("feeCodes", availableFeeCodes);
+    model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
     return "amendments/amend-fee-code";
   }
 }

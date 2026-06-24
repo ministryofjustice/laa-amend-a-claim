@@ -130,7 +130,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
     claim.setIsNrmAdvice(IS_NRM_ADVICE);
 
     // TODO: Add forms once form pages have been implemented
-    var forms = new AmendmentForms(new AmendmentForm(new LinkedHashMap<>()));
+    var forms = new AmendmentForms(new AmendmentForm(new LinkedHashMap<>()), new AmendmentForm());
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var doc = renderDocument();
@@ -244,7 +244,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
     claim.setIsYouthCourt(IS_YOUTH_COURT);
 
     // TODO: Add forms once form pages have been implemented
-    var forms = new AmendmentForms(new AmendmentForm(new LinkedHashMap<>()));
+    var forms = new AmendmentForms(new AmendmentForm(new LinkedHashMap<>()), new AmendmentForm());
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var doc = renderDocument();
@@ -310,7 +310,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
     claim.setReferralSource(REFERRAL_SOURCE);
     claim.setScheduleReference(SCHEDULE_REFERENCE);
     // TODO: Add forms once form pages have been implemented
-    var forms = new AmendmentForms(new AmendmentForm(new LinkedHashMap<>()));
+    var forms = new AmendmentForms(new AmendmentForm(new LinkedHashMap<>()), new AmendmentForm());
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var doc = renderDocument();

@@ -18,11 +18,11 @@
 
       <form method="post"
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-fee-code(submissionId=${submissionId}, claimId=${claimId})}"
-            th:object="${client1Form}">
+            th:object="${caseTypeForm}">
 
 
-        <!--<table class="govuk-table">
-          <caption class="govuk-table__caption govuk-table__caption&#45;&#45;m" th:text="#{amendments.feeCode}"/>
+        <table class="govuk-table">
+          <caption class="govuk-table__caption govuk-table__caption--m" th:text="#{amendments.feeCode.title}"/>
           <thead class="govuk-table__head">
           <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header" th:text="#{amendments.feeCode.table.item}"/>
@@ -31,41 +31,27 @@
           </thead>
           <tbody class="govuk-table__body">
           <tr class="govuk-table__row">
-            <th scope="row" class="govuk-table__header">First 6 weeks</th>
-            <td class="govuk-table__cell">£109.80 per week</td>
+            <th scope="row" class="govuk-table__header" th:text="#{amendments.feeCode.title}"/>
+            <td class="govuk-table__cell" th:text="${currentFeeCode}"></td>
           </tr>
           </tbody>
         </table>
--->
+
         <p class="govuk-body" th:text="#{amendments.feeCode.description}"/>
 
-        <dl class="govuk-summary-list">
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key" th:text="#{amendments.feeCode.title}"/>
-            <dd class="govuk-summary-list__value">
-              INVX - Police station: attendance
-            </dd>
-          </div>
-        </dl>
-
-        <div class="govuk-body govuk-input--width-10">
+        <div class="govuk-body">
           <div class="autocomplete-wrapper">
-            <label class="govuk-label govuk-label--s" for="submission-period"></label>
+            <label class="govuk-label" for="submission-period" th:text="#{amendments.feeCode.title}"></label>
             <select class="govuk-select" id="submission-period"
+                    th:field="*{inputs['FEE_CODE']}"
                     data-module="make-autocomplete">
 
               <option value="" selected></option>
-              <option value="fr">France</option>
-              <option value="de">Germany</option>
-              <option value="gb">United Kingdom</option>
+              <option th:each="entry : ${feeCodes}" th:value="${entry.key}"
+                      th:text="${entry.value}"></option>
+
             </select>
           </div>
-        </div>
-
-        <div class="govuk-form-group">
-          <label class="govuk-label" for="fee-code-input"
-            th:text="#{amendments.feeCode.title}"/>
-          <input class="govuk-input" id="fee-code-input" name="authenticationCode" type="text" spellcheck="false" value="NC1701" aria-describedby="authentication-code-hint">
         </div>
 
         <div class="govuk-button-group">
