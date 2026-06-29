@@ -37,6 +37,8 @@ public class CaseController {
     var claimView = ClaimCaseViewFactory.create(claim);
     model.addAttribute("claim", claimView);
 
+    model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
+    model.addAttribute("originalCaseTypeForm", amendmentForms.getCaseTypeForm().getOriginal());
     model.addAttribute("forms", amendmentForms);
 
     return "amendments/view-case";
