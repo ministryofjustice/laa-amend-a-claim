@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
+import uk.gov.justice.laa.amend.claim.exceptions.FeatureNotEnabledException;
 
 @Data
 @Configuration
@@ -20,19 +21,19 @@ public class FeatureFlagsConfig {
 
   private void checkBulkUploadEnabled() {
     if (!TRUE.equals(isBulkUploadEnabled)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "isBulkUploadEnabled is false");
+      throw new FeatureNotEnabledException("isBulkUploadEnabled is false");
     }
   }
 
   private void checkFullClaimDetailsEnabled() {
     if (!TRUE.equals(isFullClaimDetailsEnabled)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "isFullClaimDetailsEnabled is false");
+      throw new FeatureNotEnabledException("isFullClaimDetailsEnabled is false");
     }
   }
 
   public void checkClaimAmendmentEnabled() {
     if (!TRUE.equals(isClaimAmendmentEnabled)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "isClaimAmendmentEnabled is false");
+      throw new FeatureNotEnabledException("isClaimAmendmentEnabled is false");
     }
   }
 

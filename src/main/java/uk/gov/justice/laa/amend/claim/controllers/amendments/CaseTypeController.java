@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
+import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
-import uk.gov.justice.laa.amend.claim.config.features.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.factories.AvailableFeeCodesFactory;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 
 @Controller
+@RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
 @HasRoleClaimAmendmentsCaseworker
 @RequiredArgsConstructor
@@ -29,7 +30,6 @@ public class CaseTypeController {
   private final AvailableFeeCodesFactory availableFeeCodesFactory;
 
   @GetMapping("/amend-fee-code")
-  @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
   public String amendFeeCode(
       HttpSession session,
       Model model,
@@ -47,7 +47,6 @@ public class CaseTypeController {
   }
 
   @PostMapping("/amend-fee-code")
-  @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
   public String postAmendFeeCode(
       HttpSession session,
       @ModelAttribute("feeCodeForm") AmendmentForm caseTypeForm,

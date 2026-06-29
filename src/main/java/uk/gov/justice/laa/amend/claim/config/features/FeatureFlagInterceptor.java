@@ -6,8 +6,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 
+/**
+ * Interceptor to check if a feature flag is enabled before allowing access to a handler method. The
+ * {@link RequiresFeatureFlag} annotation can be placed either at the top of a Controller, or at the
+ * top of a method within a Controller.
+ */
 @Component
 @RequiredArgsConstructor
 public class FeatureFlagInterceptor implements HandlerInterceptor {
