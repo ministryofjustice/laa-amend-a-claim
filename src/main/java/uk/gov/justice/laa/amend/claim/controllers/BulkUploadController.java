@@ -31,6 +31,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 @UserControllerAdvice.Enabled
 @Controller
 @RequiredArgsConstructor
+@RequiresFeatureFlag(Feature.BULK_UPLOAD)
 @RequestMapping("/bulk-upload")
 public class BulkUploadController {
 
@@ -38,13 +39,11 @@ public class BulkUploadController {
   private final FeatureFlagsConfig featureFlagsConfig;
 
   @GetMapping
-  @RequiresFeatureFlag(Feature.BULK_UPLOAD)
   public String onPageLoad() {
     return "bulk-upload";
   }
 
   @GetMapping("/result")
-  @RequiresFeatureFlag(Feature.BULK_UPLOAD)
   public String onPageLoad(Model model) {
     if (!model.containsAttribute("result")) {
       return "redirect:/bulk-upload";
@@ -54,7 +53,6 @@ public class BulkUploadController {
   }
 
   @GetMapping(value = "/example", produces = "text/csv")
-  @RequiresFeatureFlag(Feature.BULK_UPLOAD)
   public ResponseEntity<Resource> getCsvFile() throws IOException {
 
     ClassPathResource csvFile = new ClassPathResource("data/example_bulk_upload.csv");
@@ -67,7 +65,6 @@ public class BulkUploadController {
   }
 
   @PostMapping
-  @RequiresFeatureFlag(Feature.BULK_UPLOAD)
   public String onSubmit(
       @RequestParam(value = "file", required = false) MultipartFile file,
       @ModelAttribute("userId") UUID userId,

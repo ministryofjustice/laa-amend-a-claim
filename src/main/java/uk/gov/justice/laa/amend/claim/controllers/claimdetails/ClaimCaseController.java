@@ -17,6 +17,7 @@ import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
 @Controller
+@RequiresFeatureFlag(Feature.FULL_CLAIM_DETAILS)
 public class ClaimCaseController extends ClaimDetailsBaseController {
 
   public ClaimCaseController(
@@ -27,7 +28,6 @@ public class ClaimCaseController extends ClaimDetailsBaseController {
   }
 
   @GetMapping("/submissions/{submissionId}/claims/{claimId}/case")
-  @RequiresFeatureFlag(Feature.FULL_CLAIM_DETAILS)
   public String onPageLoad(
       HttpServletRequest request,
       HttpSession session,
