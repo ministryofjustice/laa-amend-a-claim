@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
-import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.config.features.Feature;
+import uk.gov.justice.laa.amend.claim.config.features.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.factories.AvailableFeeCodesFactory;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 
@@ -25,17 +26,15 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 @RequiredArgsConstructor
 public class CaseTypeController {
 
-  private final FeatureFlagsConfig featureFlagsConfig;
   private final AvailableFeeCodesFactory availableFeeCodesFactory;
 
   @GetMapping("/amend-fee-code")
+  @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
   public String amendFeeCode(
       HttpSession session,
       Model model,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    featureFlagsConfig.checkClaimAmendmentEnabled();
-
     var claim = getValidClaim(session, submissionId, claimId);
     var availableFeeCodes = availableFeeCodesFactory.getAvailableFeeCodes(claim.getAreaOfLaw());
     var currentFeeCode = availableFeeCodes.get(claim.getFeeCode());
@@ -48,13 +47,12 @@ public class CaseTypeController {
   }
 
   @PostMapping("/amend-fee-code")
+  @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
   public String postAmendFeeCode(
       HttpSession session,
       @ModelAttribute("feeCodeForm") AmendmentForm caseTypeForm,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    featureFlagsConfig.checkClaimAmendmentEnabled();
-
     var amendmentForms = getAmendmentForms(session, claimId);
 
     amendmentForms.getCaseTypeForm().setCurrent(caseTypeForm);
