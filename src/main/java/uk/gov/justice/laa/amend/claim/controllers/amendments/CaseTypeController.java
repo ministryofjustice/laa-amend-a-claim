@@ -21,6 +21,7 @@ import uk.gov.justice.laa.amend.claim.factories.AvailableFeeCodesFactory;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 
 @Controller
+@RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
 @RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)

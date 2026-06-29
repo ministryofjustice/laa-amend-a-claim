@@ -17,6 +17,7 @@ import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
 @Controller
+@RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
 @RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
