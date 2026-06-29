@@ -26,7 +26,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 @RequiredArgsConstructor
 public class BulkUploadHelper {
   public static final int MAX_ROWS = 10000;
-  public static final int PAGE_SIZE = 10000;
+  public static final int PAGE_SIZE = 200;
 
   private final ClaimService claimService;
 
