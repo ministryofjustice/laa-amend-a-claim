@@ -24,12 +24,6 @@ public class CaseTypeController {
   private final FeatureFlagsConfig featureFlagsConfig;
   private final AvailableFeeCodesFactory availableFeeCodesFactory;
 
-  @GetMapping("/amend-case-type")
-  public String viewCaseType(@PathVariable UUID submissionId, @PathVariable UUID claimId) {
-    return "redirect:/submissions/%s/claims/%s/amendments/amend-fee-code"
-        .formatted(submissionId, claimId);
-  }
-
   @GetMapping("/amend-fee-code")
   public String amendFeeCode(
       HttpSession session,
