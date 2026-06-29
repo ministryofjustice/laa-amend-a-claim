@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -465,6 +466,22 @@ public abstract class ViewTestBase {
     Element span = selectFirst(link, "span");
     Assertions.assertEquals(expectedText, span.text());
     Assertions.assertEquals(expectedLink, link.attr("href"));
+  }
+
+  protected void assertDropDownList(Document doc, String labelName, String... expectedOptions) {
+    var label = selectFirst(doc, String.format("label:matchesOwn(^%s$)", Pattern.quote(labelName)));
+    var id = label.attr("for");
+    var select = selectFirst(doc, "#" + id);
+    var options = select.children();
+    for (var expectedOption : expectedOptions) {
+      Assertions.assertEquals(
+          expectedOption,
+          options.stream()
+              .map(Element::text)
+              .filter(x -> Objects.equals(expectedOption, x))
+              .findFirst()
+              .orElse(null));
+    }
   }
 
   protected void assertTableHeaderIsNotSortable(Element header, String expectedText) {

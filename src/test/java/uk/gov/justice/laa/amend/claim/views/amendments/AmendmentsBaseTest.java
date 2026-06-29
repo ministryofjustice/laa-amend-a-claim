@@ -31,7 +31,7 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
     amendClientUrl =
         "/submissions/%s/claims/%s/amendments/amend-client".formatted(submissionId, claimId);
     amendCaseTypeUrl =
-        "/submissions/%s/claims/%s/amendments/amend-case-type".formatted(submissionId, claimId);
+        "/submissions/%s/claims/%s/amendments/amend-fee-code".formatted(submissionId, claimId);
     amendCaseDetailsUrl =
         "/submissions/%s/claims/%s/amendments/amend-case-details".formatted(submissionId, claimId);
 
