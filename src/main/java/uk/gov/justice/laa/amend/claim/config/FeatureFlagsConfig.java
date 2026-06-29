@@ -31,13 +31,13 @@ public class FeatureFlagsConfig {
     }
   }
 
-  public void checkClaimAmendmentEnabled() {
+  private void checkClaimAmendmentEnabled() {
     if (!TRUE.equals(isClaimAmendmentEnabled)) {
       throw new FeatureNotEnabledException("isClaimAmendmentEnabled is false");
     }
   }
 
-  public void checkEnabled(Feature[] features) {
+  public void checkEnabled(Feature... features) {
     for (var feature : features) {
       switch (feature) {
         case BULK_UPLOAD -> checkBulkUploadEnabled();
