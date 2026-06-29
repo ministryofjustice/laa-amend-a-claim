@@ -179,12 +179,12 @@ env:
   - name: FEE_SCHEME_API
     valueFrom:
       secretKeyRef:
-        name: laa-fee-scheme-platform-api-url
+        name: laa-amend-a-claim-fsp-api-url
         key: FEE_SCHEME_API
   - name: FEE_SCHEME_TOKEN
     valueFrom:
       secretKeyRef:
-        name: laa-fee-scheme-platform-api-token
+        name: laa-amend-a-claim-fsp-api-token
         key: FEE_SCHEME_TOKEN
   - name: IS_BULK_UPLOAD_ENABLED
     valueFrom:
