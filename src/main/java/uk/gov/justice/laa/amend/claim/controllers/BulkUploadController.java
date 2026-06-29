@@ -22,6 +22,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseBulkUploader;
 import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.config.features.Feature;
+import uk.gov.justice.laa.amend.claim.config.features.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 
@@ -36,15 +38,14 @@ public class BulkUploadController {
   private final FeatureFlagsConfig featureFlagsConfig;
 
   @GetMapping
+  @RequiresFeatureFlag(Feature.BULK_UPLOAD)
   public String onPageLoad() {
-    featureFlagsConfig.checkBulkUploadEnabled();
     return "bulk-upload";
   }
 
   @GetMapping("/result")
+  @RequiresFeatureFlag(Feature.BULK_UPLOAD)
   public String onPageLoad(Model model) {
-    featureFlagsConfig.checkBulkUploadEnabled();
-
     if (!model.containsAttribute("result")) {
       return "redirect:/bulk-upload";
     }
@@ -53,8 +54,8 @@ public class BulkUploadController {
   }
 
   @GetMapping(value = "/example", produces = "text/csv")
+  @RequiresFeatureFlag(Feature.BULK_UPLOAD)
   public ResponseEntity<Resource> getCsvFile() throws IOException {
-    featureFlagsConfig.checkBulkUploadEnabled();
 
     ClassPathResource csvFile = new ClassPathResource("data/example_bulk_upload.csv");
 
@@ -66,14 +67,13 @@ public class BulkUploadController {
   }
 
   @PostMapping
+  @RequiresFeatureFlag(Feature.BULK_UPLOAD)
   public String onSubmit(
       @RequestParam(value = "file", required = false) MultipartFile file,
       @ModelAttribute("userId") UUID userId,
       RedirectAttributes redirectAttributes,
       Model model,
       HttpServletResponse response) {
-    featureFlagsConfig.checkBulkUploadEnabled();
-
     if (file == null || Strings.isBlank(file.getOriginalFilename())) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       model.addAttribute("fileError", new ThymeleafMessage("bulkUpload.fileError.required"));

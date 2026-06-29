@@ -18,13 +18,13 @@ public class FeatureFlagsConfig {
   private Boolean isFullClaimDetailsEnabled;
   private Boolean isClaimAmendmentEnabled;
 
-  public void checkBulkUploadEnabled() {
+  private void checkBulkUploadEnabled() {
     if (!TRUE.equals(isBulkUploadEnabled)) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "isBulkUploadEnabled is false");
     }
   }
 
-  public void checkFullClaimDetailsEnabled() {
+  private void checkFullClaimDetailsEnabled() {
     if (!TRUE.equals(isFullClaimDetailsEnabled)) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "isFullClaimDetailsEnabled is false");
     }

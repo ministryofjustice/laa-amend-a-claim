@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.config.features.Feature;
+import uk.gov.justice.laa.amend.claim.config.features.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
@@ -25,14 +27,13 @@ public class ClaimClientController extends ClaimDetailsBaseController {
   }
 
   @GetMapping("/submissions/{submissionId}/claims/{claimId}/client")
+  @RequiresFeatureFlag(Feature.FULL_CLAIM_DETAILS)
   public String onPageLoad(
       HttpServletRequest request,
       HttpSession session,
       Model model,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    featureFlagsConfig.checkFullClaimDetailsEnabled();
-
     var claim = getClaim(session, submissionId, claimId);
 
     var claimView = ClaimClientViewFactory.create(claim);
