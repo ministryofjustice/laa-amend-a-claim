@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
-import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.config.features.Feature;
+import uk.gov.justice.laa.amend.claim.config.features.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
@@ -23,13 +24,10 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFact
 @RequiredArgsConstructor
 public class StartController {
 
-  private final FeatureFlagsConfig featureFlagsConfig;
-
   @GetMapping
+  @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
   public String startAmendment(
       HttpSession session, @PathVariable UUID submissionId, @PathVariable UUID claimId) {
-    featureFlagsConfig.checkClaimAmendmentEnabled();
-
     var claim = getValidClaim(session, submissionId, claimId);
 
     var clientView = ClaimClientViewFactory.create(claim);

@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import uk.gov.justice.laa.amend.claim.config.features.Feature;
 
 @Data
 @Configuration
@@ -32,6 +33,17 @@ public class FeatureFlagsConfig {
   public void checkClaimAmendmentEnabled() {
     if (!TRUE.equals(isClaimAmendmentEnabled)) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "isClaimAmendmentEnabled is false");
+    }
+  }
+
+  public void checkEnabled(Feature[] features) {
+    for (var feature : features) {
+      switch (feature) {
+        case BULK_UPLOAD -> checkBulkUploadEnabled();
+        case FULL_CLAIM_DETAILS -> checkFullClaimDetailsEnabled();
+        case CLAIM_AMENDMENT -> checkClaimAmendmentEnabled();
+        default -> throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Feature not found");
+      }
     }
   }
 }
