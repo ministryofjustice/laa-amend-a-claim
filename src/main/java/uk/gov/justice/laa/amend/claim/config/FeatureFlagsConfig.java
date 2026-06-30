@@ -5,15 +5,15 @@ import static java.lang.Boolean.TRUE;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.exceptions.FeatureNotEnabledException;
+import uk.gov.justice.laa.amend.claim.exceptions.FeatureNotImplementedRuntimeException;
 
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "feature-flags")
 public class FeatureFlagsConfig {
+
   private Boolean isBulkUploadEnabled;
   private Boolean isRequestedAndCalculatedSwapEnabled;
   private Boolean isFullClaimDetailsEnabled;
@@ -43,7 +43,7 @@ public class FeatureFlagsConfig {
         case BULK_UPLOAD -> checkBulkUploadEnabled();
         case FULL_CLAIM_DETAILS -> checkFullClaimDetailsEnabled();
         case CLAIM_AMENDMENT -> checkClaimAmendmentEnabled();
-        default -> throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Feature not found");
+        default -> throw new FeatureNotImplementedRuntimeException(feature);
       }
     }
   }
