@@ -27,12 +27,12 @@ import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 
-@HasRoleEscapeCaseBulkUploader
-@UserControllerAdvice.Enabled
 @Controller
+@RequestMapping("/bulk-upload")
 @RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.BULK_UPLOAD)
-@RequestMapping("/bulk-upload")
+@HasRoleEscapeCaseBulkUploader
+@UserControllerAdvice.Enabled
 public class BulkUploadController {
 
   private final BulkUploadService<BulkUploadCivilClaim> bulkUploadService;

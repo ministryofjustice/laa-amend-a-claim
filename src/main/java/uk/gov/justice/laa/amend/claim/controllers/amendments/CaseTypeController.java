@@ -21,10 +21,10 @@ import uk.gov.justice.laa.amend.claim.factories.AvailableFeeCodesFactory;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 
 @Controller
-@RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
-@HasRoleClaimAmendmentsCaseworker
 @RequiredArgsConstructor
+@RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
+@HasRoleClaimAmendmentsCaseworker
 public class CaseTypeController {
 
   private final AvailableFeeCodesFactory availableFeeCodesFactory;
