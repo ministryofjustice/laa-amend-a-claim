@@ -17,7 +17,6 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       branch: ${{ github.ref_name }}
-    secrets: inherit
 
   test:
     name: Test
@@ -28,7 +27,6 @@ jobs:
       environment: dev
       amend_a_claim_image_tag: ${{ needs.build.outputs.image_tag }}
       sanitized_release_name: 'main'
-    secrets: inherit
 
   pact-test:
     name: Pact Test
@@ -57,7 +55,6 @@ jobs:
       branch: ${{ github.ref_name }}
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
-    secrets: inherit
 
   deploy-dev:
     name: Deploy to Dev
@@ -71,7 +68,6 @@ jobs:
       aws_region: ${{ vars.ECR_REGION }}
       values_file: values/dev.yaml
       claim_api_environment_name: dev
-    secrets: inherit
 
   deploy-uat:
     name: Deploy to UAT
@@ -85,7 +81,6 @@ jobs:
       aws_region: ${{ vars.ECR_REGION }}
       values_file: values/uat.yaml
       claim_api_environment_name: main
-    secrets: inherit
 
   deploy-staging:
     name: Deploy to Staging
@@ -99,7 +94,6 @@ jobs:
       aws_region: ${{ vars.ECR_REGION }}
       values_file: values/staging.yaml
       claim_api_environment_name: stg
-    secrets: inherit
 
   deploy-production:
     name: Deploy to Production
@@ -113,4 +107,3 @@ jobs:
       aws_region: ${{ vars.ECR_REGION }}
       values_file: values/production.yaml
       claim_api_environment_name: prod
-    secrets: inherit

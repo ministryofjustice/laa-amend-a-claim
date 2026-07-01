@@ -104,4 +104,3 @@ jobs:
       environment: ${{ inputs.environment }}
       amend_a_claim_image_tag: ${{ inputs.amend_a_claim_image_tag }}
       sanitized_release_name: ${{ inputs.sanitized_release_name }}
-    secrets: inherit
