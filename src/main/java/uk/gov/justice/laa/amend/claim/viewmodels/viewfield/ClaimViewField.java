@@ -13,6 +13,8 @@ public interface ClaimViewField<T extends Claim> {
 
   <U> ClaimViewFieldAccessor<T, U> getAccessor();
 
+  FieldType getType();
+
   static <C extends ClaimDetails> LinkedHashMap<ClaimViewField<C>, Object> toFieldMap(
       Stream<ClaimViewField<C>> fields, C claim) {
     LinkedHashMap<ClaimViewField<C>, Object> fieldMap = new LinkedHashMap<>();
