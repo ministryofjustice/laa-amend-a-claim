@@ -16,6 +16,13 @@ on:
         type: string
         default: 'eu-west-2'
         description: 'AWS region for the ECR'
+    secrets:
+      ECR_ROLE_TO_ASSUME:
+        required: true
+      SNYK_CLIENT_ID:
+        required: true
+      SNYK_CLIENT_SECRET:
+        required: true
 
 permissions:
   contents: read

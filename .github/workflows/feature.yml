@@ -18,6 +18,11 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       branch: ${{ github.ref_name }}
+    secrets:
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
 
   pact-test:
     name: Pact Test
@@ -48,6 +53,12 @@ jobs:
       branch: ${{ github.ref_name }}
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
+    secrets:
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+      KUBE_CERT: ${{ secrets.KUBE_CERT }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
 
   test:
     name: Test
@@ -58,6 +69,16 @@ jobs:
       environment: dev
       amend_a_claim_image_tag: ${{ needs.build.outputs.image_tag }}
       sanitized_release_name: ${{ needs.deploy-ephemeral.outputs.sanitized_release_name }}
+    secrets:
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      KUBE_CERT: ${{ secrets.KUBE_CERT }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+      DATA_CLAIMS_API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
+      E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
+      E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
 
   security:
     name: Security
@@ -67,6 +88,10 @@ jobs:
       branch: ${{ github.ref_name }}
       image_tag: ${{ needs.build.outputs.image_tag }}
       aws_region: ${{ vars.ECR_REGION }}
+    secrets:
+      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+      SNYK_CLIENT_ID: ${{ secrets.SNYK_CLIENT_ID }}
+      SNYK_CLIENT_SECRET: ${{ secrets.SNYK_CLIENT_SECRET }}
 
   deploy-dev:
     name: Deploy to Dev
@@ -80,3 +105,13 @@ jobs:
       aws_region: ${{ vars.ECR_REGION }}
       values_file: values/dev.yaml
       claim_api_environment_name: dev
+    secrets:
+      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+      KUBE_CERT: ${{ secrets.KUBE_CERT }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+      PACT_BROKER_USERNAME: ${{ secrets.PACT_BROKER_USERNAME }}
+      PACT_BROKER_PASSWORD: ${{ secrets.PACT_BROKER_PASSWORD }}

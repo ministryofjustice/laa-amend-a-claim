@@ -11,6 +11,15 @@ on:
       image_tag:
         description: "The Docker image tag (commit SHA) - Cache test"
         value: ${{ jobs.build.outputs.image_tag }}
+    secrets:
+      PAT_TOKEN:
+        required: true
+      ECR_ROLE_TO_ASSUME:
+        required: true
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_TOKEN:
+        required: true
 
 jobs:
   build:
