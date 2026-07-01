@@ -83,6 +83,34 @@ class ClientControllerTest extends BaseControllerTest {
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
   }
 
+  @Test
+  void persistsDateSubInputsIntoSessionThenRedirects() throws Exception {
+    var existingForms = new AmendmentForms(new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    var dateInputs =
+        Map.of(
+            "DATE_OF_BIRTH-day", "14",
+            "DATE_OF_BIRTH-month", "5",
+            "DATE_OF_BIRTH-year", "2002");
+    var client1Form = new AmendmentForm();
+    client1Form.setInputs(dateInputs);
+
+    var updatedForms = new AmendmentForms(new AmendmentForm());
+    updatedForms.getClient1Form().setCurrent(client1Form);
+
+    var request = post(buildAmendClient1Path()).session(session).with(csrf());
+    for (var entry : dateInputs.entrySet()) {
+      request.param(INPUTS.formatted(entry.getKey()), entry.getValue());
+    }
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildViewClientPath()))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
   private String buildViewClientPath() {
     return "/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
   }

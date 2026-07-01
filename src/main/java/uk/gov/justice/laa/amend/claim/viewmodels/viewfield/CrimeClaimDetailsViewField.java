@@ -13,8 +13,9 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
   // Case fields
   STAGE_REACHED(new Accessor<>(CrimeClaimDetails::getStageReached)),
   UNIQUE_FILE_NUMBER(new Accessor<>(CrimeClaimDetails::getUniqueFileNumber)),
-  REPRESENTATION_ORDER_DATE(new Accessor<>(CrimeClaimDetails::getRepresentationOrderDate)),
-  CASE_CONCLUDED_DATE(new Accessor<>(CrimeClaimDetails::getCaseEndDate)),
+  REPRESENTATION_ORDER_DATE(
+      new Accessor<>(CrimeClaimDetails::getRepresentationOrderDate), FieldType.DATE),
+  CASE_CONCLUDED_DATE(new Accessor<>(CrimeClaimDetails::getCaseEndDate), FieldType.DATE),
   STANDARD_FEE_CATEGORY(new Accessor<>(CrimeClaimDetails::getStandardFeeCategory)),
   OUTCOME_FOR_CLIENT(new Accessor<>(CrimeClaimDetails::getOutcome)),
   SUSPECTS_DEFENDANTS_COUNT(new Accessor<>(CrimeClaimDetails::getSuspectsDefendantsCount)),
@@ -30,9 +31,15 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
   IS_YOUTH_COURT(new Accessor<>(CrimeClaimDetails::getIsYouthCourt));
 
   private final Accessor<?> accessor;
+  private final FieldType type;
 
   CrimeClaimDetailsViewField(Accessor<?> accessor) {
+    this(accessor, FieldType.TEXT);
+  }
+
+  CrimeClaimDetailsViewField(Accessor<?> accessor, FieldType type) {
     this.accessor = accessor;
+    this.type = type;
   }
 
   public record Accessor<T>(Function<CrimeClaimDetails, T> getter)

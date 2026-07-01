@@ -15,9 +15,15 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   DISABILITY(new Accessor<>(ClaimDetails::getClientDisability));
 
   private final Accessor<?> accessor;
+  private final FieldType type;
 
   ClaimDetailsViewField(Accessor<?> accessor) {
+    this(accessor, FieldType.TEXT);
+  }
+
+  ClaimDetailsViewField(Accessor<?> accessor, FieldType type) {
     this.accessor = accessor;
+    this.type = type;
   }
 
   public record Accessor<T>(Function<ClaimDetails, T> getter)

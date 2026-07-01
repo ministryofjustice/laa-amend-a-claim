@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="amendmentDateInput(fieldKey)">
+  <div class="govuk-date-input">
+    <div class="govuk-date-input__item">
+      <div class="govuk-form-group">
+        <label class="govuk-label govuk-date-input__label"
+               th:for="${fieldKey + '-day'}"
+               th:text="#{amendments.date.day}"></label>
+        <input class="govuk-input govuk-date-input__input govuk-input--width-2"
+               type="text"
+               inputmode="numeric"
+               th:id="${fieldKey + '-day'}"
+               th:field="*{inputs[__${fieldKey + '-day'}__]}" />
+      </div>
+    </div>
+    <div class="govuk-date-input__item">
+      <div class="govuk-form-group">
+        <label class="govuk-label govuk-date-input__label"
+               th:for="${fieldKey + '-month'}"
+               th:text="#{amendments.date.month}"></label>
+        <select class="govuk-select"
+                th:id="${fieldKey + '-month'}"
+                th:field="*{inputs[__${fieldKey + '-month'}__]}">
+          <option value=""></option>
+          <option th:each="month : ${T(java.time.Month).values()}"
+                  th:value="${month.getValue()}"
+                  th:text="${month.getDisplayName(T(java.time.format.TextStyle).FULL, T(java.util.Locale).ENGLISH)}"></option>
+        </select>
+      </div>
+    </div>
+    <div class="govuk-date-input__item">
+      <div class="govuk-form-group">
+        <label class="govuk-label govuk-date-input__label"
+               th:for="${fieldKey + '-year'}"
+               th:text="#{amendments.date.year}"></label>
+        <input class="govuk-input govuk-date-input__input govuk-input--width-4"
+               type="text"
+               inputmode="numeric"
+               th:id="${fieldKey + '-year'}"
+               th:field="*{inputs[__${fieldKey + '-year'}__]}" />
+      </div>
+    </div>
+  </div>
+</th:block>
+</body>
+</html>
