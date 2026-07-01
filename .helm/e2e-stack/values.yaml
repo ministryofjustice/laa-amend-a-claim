@@ -46,7 +46,7 @@ dataClaimsApi:
     tag: ""
     pullPolicy: IfNotPresent
   enabled: true
-  springProfile: "application"
+  springProfile: "local"
   service:
     type: ClusterIP
     port: 8082

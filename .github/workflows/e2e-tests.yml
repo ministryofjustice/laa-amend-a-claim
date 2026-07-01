@@ -20,7 +20,7 @@ on:
       claims_api_image_tag:
         required: false
         type: string
-        default: 'data-claims-api-1.0.17'
+        default: 'data-claims-api-1.0.42'
         description: 'data-claims-api image tag, retrieved from github build logs (needs to update with latest version)'
     secrets:
       KUBE_NAMESPACE:
