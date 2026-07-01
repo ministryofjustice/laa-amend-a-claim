@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
-import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
+import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
 @RequiredArgsConstructor
+@RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
 public class CaseController {
-
-  private final FeatureFlagsConfig featureFlagsConfig;
 
   @GetMapping("/case")
   public String viewCase(
@@ -29,8 +29,6 @@ public class CaseController {
       Model model,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    featureFlagsConfig.checkClaimAmendmentEnabled();
-
     var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
 
