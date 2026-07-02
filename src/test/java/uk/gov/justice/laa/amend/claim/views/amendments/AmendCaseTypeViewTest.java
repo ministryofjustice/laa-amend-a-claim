@@ -46,7 +46,7 @@ class AmendCaseTypeViewTest extends AmendmentsBaseTest {
     var doc = renderDocument();
     assertCommonPageContent(doc);
 
-    assertDropDownList(doc, "Fee code", "ABC");
+    assertAutocompleteDropDownList(doc, "Fee code", "ABC");
   }
 
   private AmendmentForms createCaseTypeForm(ClaimDetails claim) {

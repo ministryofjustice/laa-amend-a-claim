@@ -484,6 +484,29 @@ public abstract class ViewTestBase {
     }
   }
 
+  protected void assertAutocompleteDropDownList(
+      Document doc, String labelName, String... expectedOptions) {
+    var label = selectFirst(doc, String.format("label:matchesOwn(^%s$)", Pattern.quote(labelName)));
+    var id = label.attr("for");
+    var select = selectFirst(doc, "#" + id);
+    assertThat(select.attr("data-module")).isEqualTo("make-autocomplete");
+    var parent = select.parent();
+    assertThat(parent).isNotNull();
+    assertThat(parent.tagName()).isEqualTo("div");
+    assertThat(parent.hasClass("autocomplete-wrapper")).isTrue();
+
+    var options = select.children();
+    for (var expectedOption : expectedOptions) {
+      Assertions.assertEquals(
+          expectedOption,
+          options.stream()
+              .map(Element::text)
+              .filter(x -> Objects.equals(expectedOption, x))
+              .findFirst()
+              .orElse(null));
+    }
+  }
+
   protected void assertTableHeaderIsNotSortable(Element header, String expectedText) {
     Assertions.assertEquals(expectedText, header.text());
   }
