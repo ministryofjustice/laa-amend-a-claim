@@ -131,10 +131,6 @@ ignore:
     - '*':
         reason: Waiting for Jackson to release fix
         expires: 2026-07-31T00:00:00.000Z
-  SNYK-JAVA-CHQOSLOGBACK-17675439:
-    - '*':
-        reason: Waiting for logback to catch up with fix
-        expires: 2026-07-31T00:00:00.000Z
 patch: {}
 exclude:
   global:
