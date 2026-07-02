@@ -1,0 +1,31 @@
+const gulp = require('gulp');
+const {task} = require("gulp");
+const sass = require('gulp-sass')(require('sass'));
+const rename = require('gulp-rename');
+const cleanCSS = require('gulp-clean-css');
+
+function compileSass() {
+  return gulp.src('src/main/resources/sass/app.scss')
+  .pipe(sass.sync({
+    // Set to project root and node_modules
+    // on purpose to make moj stylesheet find gov uk references
+    // properly within node_modules.
+    loadPaths: ['.','node_modules'],
+    quietDeps: true,        // silences the @import deprecation noise from vendor files
+    silenceDeprecations: ['import']
+  })
+    .on('error', function (err) {
+        sass.logError.call(this, err);   // print the readable Sass error
+        this.emit('end');                // end the stream so Gulp doesn't hang
+    })
+  )
+  .pipe(cleanCSS())
+  .pipe(rename('app.min.css'))
+  .pipe(gulp.dest('src/main/resources/static/css'))
+  .on('end', () => console.log('CSS written to src/main/resources/static/css'));
+}
+
+exports.default = compileSass;
+exports.compileSass = compileSass;
+
+task('build', compileSass);
