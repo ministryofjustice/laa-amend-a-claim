@@ -63,7 +63,12 @@ class StartControllerTest extends BaseControllerTest {
     var caseTypeForm = new AmendmentForm();
     caseTypeForm.setInputs(caseTypeRows);
 
-    AmendmentForms forms = new AmendmentForms(client1Form, caseTypeForm);
+    var caseDetailsRows =
+        Map.of("FEE_CODE", claim.getFeeCode(), "MATTER_TYPE_CODE", claim.getMatterTypeCode());
+    var caseDetailsForm = new AmendmentForm();
+    caseDetailsForm.setInputs(caseDetailsRows);
+
+    AmendmentForms forms = new AmendmentForms(client1Form, caseTypeForm, caseDetailsForm);
 
     mockMvc
         .perform(get(buildPath()).session(session))

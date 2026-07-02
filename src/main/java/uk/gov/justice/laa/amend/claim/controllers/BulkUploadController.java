@@ -22,7 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseBulkUploader;
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
-import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
@@ -36,7 +35,6 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 public class BulkUploadController {
 
   private final BulkUploadService<BulkUploadCivilClaim> bulkUploadService;
-  private final FeatureFlagsConfig featureFlagsConfig;
 
   @GetMapping
   public String onPageLoad() {
