@@ -63,6 +63,7 @@ public class CaseTypeController {
     saveAmendmentForms(session, claimId, amendmentForms);
 
     // TODO (BC-569): Redirect to matter type code page once implemented
-    return "redirect:/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
+    return "redirect:/submissions/%s/claims/%s/amendments/amend-matter-type"
+        .formatted(submissionId, claimId);
   }
 }
