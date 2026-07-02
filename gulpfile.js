@@ -37,4 +37,20 @@ function copyMOJJavascript(){
   .on('end', () => console.log('MOJ JS copied to src/main/resources/static/js'));
 }
 
-task('default',  series(compileStylesheets,copyGOVUKJavascript, copyMOJJavascript));
+function copyGOVUKAssets(){
+  return gulp.src('node_modules/govuk-frontend/dist/govuk/assets/**/*')
+  .pipe(gulp.dest('src/main/resources/static/assets'))
+  .on('end', () => console.log('GOV.UK assets copied to src/main/resources/static/assets'));
+}
+
+function copyMOJAssets(){
+  return gulp.src('node_modules/@ministryofjustice/frontend/moj/assets/**/*')
+  .pipe(gulp.dest('src/main/resources/static/assets'))
+  .on('end', () => console.log('MOJ assets copied to src/main/resources/static/assets'));
+}
+
+task('copy-assets', series(copyGOVUKAssets, copyMOJAssets));
+task('copy-js', series(copyGOVUKJavascript, copyMOJJavascript));
+task('compile-stylesheets', compileStylesheets);
+
+task('default',  series('copy-assets', 'copy-js', 'compile-stylesheets'));
