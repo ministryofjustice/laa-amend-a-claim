@@ -10,36 +10,45 @@
 <body>
 <main class="govuk-main-wrapper" id="main-content">
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      <th:block th:replace="~{partials/amendments-view-header :: viewHeader(currentPage='case')}"></th:block>
+    <div class="govuk-grid-column-full"
+         th:with="originalCaseTypeForm=${forms.getCaseTypeForm().getOriginal()}, caseTypeForm=${forms.getCaseTypeForm().getCurrent()}">
+      <th:block
+          th:replace="~{partials/amendments-view-header :: viewHeader(currentPage='case')}"></th:block>
 
       <h2 class="govuk-heading-m" th:text="#{claimDetails.caseHeading}"></h2>
 
 
-      <div class="govuk-summary-card">
+      <div class="govuk-summary-card"
+           th:with="caseTypeFormIsAmended=${caseTypeForm.hasAmendments(originalCaseTypeForm)}">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title" th:text="#{claimCase.caseType}"></h2>
           <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action">
               <a class="govuk-link"
                  id="amend-case-type-link"
-                 th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-case-type(submissionId=${submissionId}, claimId=${claimId})}"
+                 th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-fee-code(submissionId=${submissionId}, claimId=${claimId})}"
                  th:text="#{amendments.change}"></a>
             </li>
           </ul>
         </div>
         <div class="govuk-summary-card__content">
           <dl class="govuk-summary-list">
-            <!--TODO: Only show if amendments to case type form-->
-            <div class="govuk-summary-list__row" th:if="false">
+            <div class="govuk-summary-list__row" th:if="${caseTypeFormIsAmended}">
               <dt class="govuk-summary-list__key" th:text="#{amendments.item}"></dt>
-              <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.current}"></dd>
-              <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.amended}"></dd>
+              <dd class="govuk-summary-list__value govuk-!-font-weight-bold"
+                  th:text="#{amendments.current}"></dd>
+              <dd class="govuk-summary-list__value govuk-!-font-weight-bold"
+                  th:text="#{amendments.amended}"></dd>
             </div>
 
             <div class="govuk-summary-list__row" th:each="entry : ${claim.caseTypeRows}">
-              <dt class="govuk-summary-list__key" th:text="#{${'claimCase.rows.' + entry.key}}"></dt>
-              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+              <dt class="govuk-summary-list__key"
+                  th:text="#{${'claimCase.rows.' + entry.key}}"></dt>
+              <dd class="govuk-summary-list__value"
+                  th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+              <dd class="govuk-summary-list__value"
+                  th:if="${caseTypeForm.isAmendment(entry.key, originalCaseTypeForm)}"
+                  th:text="${@ThymeleafUtils.getFormattedValue(caseTypeForm.inputs[entry.key.name()]).resolve(#messages)}"></dd>
             </div>
           </dl>
         </div>
@@ -62,12 +71,16 @@
             <!--TODO: Only show if amendments to case details form-->
             <div class="govuk-summary-list__row" th:if="false">
               <dt class="govuk-summary-list__key" th:text="#{amendments.item}"></dt>
-              <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.current}"></dd>
-              <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.amended}"></dd>
+              <dd class="govuk-summary-list__value govuk-!-font-weight-bold"
+                  th:text="#{amendments.current}"></dd>
+              <dd class="govuk-summary-list__value govuk-!-font-weight-bold"
+                  th:text="#{amendments.amended}"></dd>
             </div>
             <div class="govuk-summary-list__row" th:each="entry : ${claim.caseDetailsRows}">
-              <dt class="govuk-summary-list__key" th:text="#{${'claimCase.rows.' + entry.key}}"></dt>
-              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+              <dt class="govuk-summary-list__key"
+                  th:text="#{${'claimCase.rows.' + entry.key}}"></dt>
+              <dd class="govuk-summary-list__value"
+                  th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
             </div>
           </dl>
         </div>

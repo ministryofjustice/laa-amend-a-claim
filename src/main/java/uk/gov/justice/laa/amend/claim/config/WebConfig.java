@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import uk.gov.justice.laa.amend.claim.config.features.FeatureFlagInterceptor;
 import uk.gov.justice.laa.amend.claim.interceptors.MaintenanceInterceptor;
 
 @Configuration
@@ -13,11 +14,18 @@ public class WebConfig implements WebMvcConfigurer {
 
   private MaintenanceInterceptor maintenanceInterceptor;
 
+  private final FeatureFlagInterceptor featureFlagInterceptor;
+
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry
         .addInterceptor(maintenanceInterceptor)
         .order(Ordered.HIGHEST_PRECEDENCE)
+        .addPathPatterns("/**")
+        .excludePathPatterns(ALLOWED_URLS);
+
+    registry
+        .addInterceptor(featureFlagInterceptor)
         .addPathPatterns("/**")
         .excludePathPatterns(ALLOWED_URLS);
   }

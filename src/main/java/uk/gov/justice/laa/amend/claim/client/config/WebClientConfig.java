@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.amend.claim.client.FeeSchemePlatformApiClient;
 import uk.gov.justice.laa.amend.claim.client.MicrosoftGraphApiClient;
 import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 
@@ -20,7 +21,8 @@ import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 @EnableConfigurationProperties({
   ClaimsApiProperties.class,
   MicrosoftGraphApiProperties.class,
-  ProviderApiProperties.class
+  ProviderApiProperties.class,
+  FeeSchemePlatformApiProperties.class
 })
 public class WebClientConfig {
 
@@ -39,11 +41,11 @@ public class WebClientConfig {
 
     WebClient webClient =
         webClientBuilder
-            .baseUrl(properties.getUrl())
-            .defaultHeader(HttpHeaders.AUTHORIZATION, properties.getAccessToken())
+            .baseUrl(properties.url())
+            .defaultHeader(HttpHeaders.AUTHORIZATION, properties.accessToken())
             .exchangeStrategies(strategies)
             .build();
-    log.info("Claims API URL: {}", properties.getUrl());
+    log.info("Claims API URL: {}", properties.url());
     WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
     HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
 
@@ -55,8 +57,8 @@ public class WebClientConfig {
       WebClient.Builder webClientBuilder, ProviderApiProperties properties) {
     WebClient webClient =
         webClientBuilder
-            .baseUrl(properties.getUrl())
-            .defaultHeader("X-Authorization", properties.getAccessToken())
+            .baseUrl(properties.url())
+            .defaultHeader("X-Authorization", properties.accessToken())
             .exchangeStrategies(
                 ExchangeStrategies.builder().codecs(ClientCodecConfigurer::defaultCodecs).build())
             .build();
@@ -67,9 +69,25 @@ public class WebClientConfig {
   }
 
   @Bean
+  public FeeSchemePlatformApiClient feeSchemePlatformApiClient(
+      WebClient.Builder webClientBuilder, FeeSchemePlatformApiProperties properties) {
+    WebClient webClient =
+        webClientBuilder
+            .baseUrl(properties.url())
+            .defaultHeader("Authorization", properties.accessToken())
+            .exchangeStrategies(
+                ExchangeStrategies.builder().codecs(ClientCodecConfigurer::defaultCodecs).build())
+            .build();
+
+    WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
+    HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
+    return factory.createClient(FeeSchemePlatformApiClient.class);
+  }
+
+  @Bean
   public MicrosoftGraphApiClient microsoftGraphApiClient(
       WebClient.Builder webClientBuilder, MicrosoftGraphApiProperties properties) {
-    WebClient webClient = webClientBuilder.baseUrl(properties.getUrl()).build();
+    WebClient webClient = webClientBuilder.baseUrl(properties.url()).build();
     WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
     HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
     return factory.createClient(MicrosoftGraphApiClient.class);

@@ -1,14 +1,7 @@
 package uk.gov.justice.laa.amend.claim.client.config;
 
-import lombok.Getter;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "microsoft-graph-api")
-@Getter
-public class MicrosoftGraphApiProperties {
-  private final String url;
-
-  public MicrosoftGraphApiProperties(String url) {
-    this.url = url;
-  }
-}
+public record MicrosoftGraphApiProperties(@NotBlank String url) {}
