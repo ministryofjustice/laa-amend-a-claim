@@ -17,7 +17,25 @@ on:
         required: false
         type: string
         description: 'Sanitized release name from ephemeral deployment'
-
+    secrets:
+      PAT_TOKEN:
+        required: true
+      KUBE_NAMESPACE:
+        required: true
+      KUBE_CERT:
+        required: true
+      KUBE_TOKEN:
+        required: true
+      KUBE_CLUSTER:
+        required: true
+      ECR_ROLE_TO_ASSUME:
+        required: true
+      DATA_CLAIMS_API_IMAGE:
+        required: true
+      E2E_DB_USER:
+        required: true
+      E2E_DB_PASSWORD:
+        required: true
 
 permissions:
   contents: read
@@ -104,4 +122,13 @@ jobs:
       environment: ${{ inputs.environment }}
       amend_a_claim_image_tag: ${{ inputs.amend_a_claim_image_tag }}
       sanitized_release_name: ${{ inputs.sanitized_release_name }}
-    secrets: inherit
+    secrets:
+      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+      KUBE_CERT: ${{ secrets.KUBE_CERT }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
+      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
+      DATA_CLAIMS_API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
+      E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
+      E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
+

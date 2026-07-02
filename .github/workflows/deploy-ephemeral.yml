@@ -17,6 +17,17 @@ on:
       sanitized_release_name:
         description: "The Docker image tag (commit SHA) - Cache test"
         value: ${{ jobs.deploy.outputs.sanitized_release_name }}
+    secrets: 
+      KUBE_NAMESPACE:
+        required: true
+      ECR_ROLE_TO_ASSUME:
+        required: true
+      KUBE_CERT:
+        required: true
+      KUBE_TOKEN:
+        required: true
+      KUBE_CLUSTER:
+        required: true
 
 jobs:
   deploy:

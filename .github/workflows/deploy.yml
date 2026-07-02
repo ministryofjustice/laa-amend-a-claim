@@ -31,6 +31,26 @@ on:
         required: true
         type: string
         description: 'Claims API environment name for Pact broker (e.g., main, stg, prod)'
+    secrets:
+      ECR_ROLE_TO_ASSUME:
+        required: true
+      KUBE_CERT:
+        required: true
+      KUBE_TOKEN:
+        required: true
+      KUBE_CLUSTER:
+        required: true
+      KUBE_NAMESPACE:
+        required: true
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_TOKEN:
+        required: true
+      PACT_BROKER_USERNAME:
+        required: true
+      PACT_BROKER_PASSWORD:
+        required: true
+
 
 jobs:
   deploy:

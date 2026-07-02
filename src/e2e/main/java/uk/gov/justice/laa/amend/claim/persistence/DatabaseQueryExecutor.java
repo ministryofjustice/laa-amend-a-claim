@@ -52,6 +52,7 @@ public class DatabaseQueryExecutor implements AutoCloseable {
   }
 
   public void clean() {
+    delete("validation_message_log");
     delete("assessment");
     delete("calculated_fee_detail");
     delete("claim_summary_fee");
