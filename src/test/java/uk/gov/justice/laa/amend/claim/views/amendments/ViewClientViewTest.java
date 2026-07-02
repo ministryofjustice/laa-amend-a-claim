@@ -102,7 +102,7 @@ class ViewClientViewTest extends AmendmentsBaseTest {
   }
 
   @Test
-  void testShowsMediationClientDetails() {
+  void testShowsUnamendedMediationClientDetails() {
     var claim = MockClaimsFunctions.createMockMediationClaim();
     this.claim = claim;
     claim.setSubmissionId(submissionId);
@@ -167,7 +167,87 @@ class ViewClientViewTest extends AmendmentsBaseTest {
   }
 
   @Test
-  void testShowsCivilClientDetails() {
+  void testShowsAmendedMediationClientDetails() {
+    var claim = MockClaimsFunctions.createMockMediationClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+
+    claim.setClientForename(FORENAME);
+    claim.setClientSurname(SURNAME);
+    claim.setClientDateOfBirth(DATE_OF_BIRTH);
+    claim.setUniqueClientNumber(UCN);
+    claim.setClientPostcode(POSTCODE);
+    claim.setClientGender(GENDER);
+    claim.setClientEthnicity(ETHNICITY);
+    claim.setClientDisability(DISABILITY);
+    claim.setIsClientLegallyAided(true);
+    claim.setIsClientPostalApplicationAccepted(false);
+
+    claim.setClient2Forename(CLIENT_2_FORENAME);
+    claim.setClient2Surname(CLIENT_2_SURNAME);
+    claim.setClient2DateOfBirth(CLIENT_2_DATE_OF_BIRTH);
+    claim.setClient2Ucn(CLIENT_2_UCN);
+    claim.setClient2Postcode(CLIENT_2_POSTCODE);
+    claim.setClient2Gender(CLIENT_2_GENDER);
+    claim.setClient2Ethnicity(CLIENT_2_ETHNICITY);
+    claim.setClient2Disability(CLIENT_2_DISABILITY);
+    claim.setIsClient2LegallyAided(false);
+    claim.setIsClient2PostalApplicationAccepted(true);
+
+    var forms = createClientForms(claim);
+    forms.getClient1Form().getCurrent().getInputs().put("FORENAME", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("DATE_OF_BIRTH", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("UNIQUE_CLIENT_NUMBER", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("POSTCODE", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("GENDER", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("ETHNICITY", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("DISABILITY", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("IS_LEGALLY_AIDED", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("IS_POSTAL_APPLICATION_ACCEPTED", "false");
+
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    var client1Details = getSummaryListInCard(doc, "Client 1 details");
+    assertSummaryListRowContainsValues(client1Details.getFirst(), "Item", "Current", "Amended");
+    assertSummaryListRowContainsValues(client1Details.get(1), "First name", FORENAME, "changed");
+    assertSummaryListRowContainsValues(client1Details.get(2), "Last name", SURNAME, "changed");
+    assertSummaryListRowContainsValues(
+        client1Details.get(3), "Date of birth", DATE_OF_BIRTH_RENDERED);
+    assertSummaryListRowContainsValues(
+        client1Details.get(4), "Unique client number (UCN)", UCN, "changed");
+    assertSummaryListRowContainsValues(client1Details.get(5), "Postcode", POSTCODE, "changed");
+    assertSummaryListRowContainsValues(client1Details.get(6), "Gender", GENDER, "changed");
+    assertSummaryListRowContainsValues(client1Details.get(7), "Ethnicity", ETHNICITY, "changed");
+    assertSummaryListRowContainsValues(client1Details.get(8), "Disability", DISABILITY, "changed");
+    assertSummaryListRowContainsValues(client1Details.get(9), "Legally aided", "Yes", "changed");
+    assertSummaryListRowContainsValues(
+        client1Details.get(10), "Postal application accepted", "No", "false");
+
+    var client2Details = getSummaryListInCard(doc, "Client 2 details");
+    assertSummaryListRowContainsValues(client2Details.getFirst(), "First name", CLIENT_2_FORENAME);
+    assertSummaryListRowContainsValues(client2Details.get(1), "Last name", CLIENT_2_SURNAME);
+    assertSummaryListRowContainsValues(
+        client2Details.get(2), "Date of birth", CLIENT_2_DATE_OF_BIRTH_RENDERED);
+    assertSummaryListRowContainsValues(
+        client2Details.get(3), "Unique client number (UCN)", CLIENT_2_UCN);
+    assertSummaryListRowContainsValues(client2Details.get(4), "Postcode", CLIENT_2_POSTCODE);
+    assertSummaryListRowContainsValues(client2Details.get(5), "Gender", CLIENT_2_GENDER);
+    assertSummaryListRowContainsValues(client2Details.get(6), "Ethnicity", CLIENT_2_ETHNICITY);
+    assertSummaryListRowContainsValues(client2Details.get(7), "Disability", CLIENT_2_DISABILITY);
+    assertSummaryListRowContainsValues(client2Details.get(8), "Legally aided", "No");
+    assertSummaryListRowContainsValues(client2Details.get(9), "Postal application accepted", "Yes");
+
+    assertPageHasLink(doc, "check", "Continue", checkUrl);
+    assertPageHasLink(doc, "cancel", "Cancel", overviewUrl);
+  }
+
+  @Test
+  void testShowsUnamendedCivilClientDetails() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     this.claim = claim;
     claim.setSubmissionId(submissionId);
@@ -211,6 +291,70 @@ class ViewClientViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(11), "Postal application accepted", "No");
 
     assertPageHasLink(doc, "back-to-claim-details", "Back to claim details", overviewUrl);
+  }
+
+  @Test
+  void testShowsAmendedCivilClientDetails() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+
+    claim.setClientForename(FORENAME);
+    claim.setClientSurname(SURNAME);
+    claim.setClientDateOfBirth(DATE_OF_BIRTH);
+    claim.setUniqueClientNumber(UCN);
+    claim.setClientPostcode(POSTCODE);
+    claim.setClientGender(GENDER);
+    claim.setClientEthnicity(ETHNICITY);
+    claim.setClientDisability(DISABILITY);
+    claim.setIsEligibleClient(true);
+    claim.setClientType(CLIENT_TYPE);
+    claim.setHomeOfficeClientNumber(HOME_OFFICE_CLIENT_NUMBER);
+    claim.setIsPostalApplication(true);
+
+    var forms = createClientForms(claim);
+    forms.getClient1Form().getCurrent().getInputs().put("FORENAME", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("DATE_OF_BIRTH", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("UNIQUE_CLIENT_NUMBER", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("POSTCODE", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("GENDER", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("ETHNICITY", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("DISABILITY", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("IS_ELIGIBLE_CLIENT", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("CLIENT_TYPE", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("HOME_OFFICE_CLIENT_NUMBER", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("IS_POSTAL_APPLICATION_ACCEPTED", "false");
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    var clientDetails = getSummaryListInCard(doc, "Client details");
+    assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Current", "Amended");
+    assertSummaryListRowContainsValues(clientDetails.get(1), "First name", FORENAME, "changed");
+    assertSummaryListRowContainsValues(clientDetails.get(2), "Last name", SURNAME, "changed");
+    assertSummaryListRowContainsValues(
+        clientDetails.get(3), "Date of birth", DATE_OF_BIRTH_RENDERED);
+    assertSummaryListRowContainsValues(clientDetails.get(4), "Gender", GENDER, "changed");
+    assertSummaryListRowContainsValues(clientDetails.get(5), "Ethnicity", ETHNICITY, "changed");
+    assertSummaryListRowContainsValues(clientDetails.get(6), "Disability", DISABILITY, "changed");
+    assertSummaryListRowContainsValues(clientDetails.get(7), "Postcode", POSTCODE, "changed");
+    assertSummaryListRowContainsValues(clientDetails.get(8), "Eligible client", "Yes", "changed");
+    assertSummaryListRowContainsValues(clientDetails.get(9), "Client type", CLIENT_TYPE, "changed");
+    assertSummaryListRowContainsValues(
+        clientDetails.get(10), "Unique client number (UCN)", UCN, "changed");
+    assertSummaryListRowContainsValues(
+        clientDetails.get(11),
+        "Home Office unique client number (HO UCN)",
+        HOME_OFFICE_CLIENT_NUMBER,
+        "changed");
+    assertSummaryListRowContainsValues(
+        clientDetails.get(12), "Postal application accepted", "Yes", "false");
+
+    assertPageHasLink(doc, "check", "Continue", checkUrl);
+    assertPageHasLink(doc, "cancel", "Cancel", overviewUrl);
   }
 
   private AmendmentForms createClientForms(ClaimDetails claim) {
