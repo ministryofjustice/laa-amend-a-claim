@@ -1,10 +1,10 @@
 const gulp = require('gulp');
-const {task} = require("gulp");
+const {task, series} = require("gulp");
 const sass = require('gulp-sass')(require('sass'));
 const rename = require('gulp-rename');
 const cleanCSS = require('gulp-clean-css');
 
-function compileSass() {
+function compileStylesheets() {
   return gulp.src('src/main/resources/sass/app.scss')
   .pipe(sass.sync({
     // Set to project root and node_modules
@@ -25,7 +25,16 @@ function compileSass() {
   .on('end', () => console.log('CSS written to src/main/resources/static/css'));
 }
 
-exports.default = compileSass;
-exports.compileSass = compileSass;
+function copyGOVUKJavascript(){
+  return gulp.src('node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.js')
+  .pipe(gulp.dest('src/main/resources/static/js'))
+  .on('end', () => console.log('GOV.UK JS copied to src/main/resources/static/js'));
+}
 
-task('build', compileSass);
+function copyMOJJavascript(){
+  return gulp.src('node_modules/@ministryofjustice/frontend/moj/moj-frontend.min.js')
+  .pipe(gulp.dest('src/main/resources/static/js'))
+  .on('end', () => console.log('MOJ JS copied to src/main/resources/static/js'));
+}
+
+task('default',  series(compileStylesheets,copyGOVUKJavascript, copyMOJJavascript));
