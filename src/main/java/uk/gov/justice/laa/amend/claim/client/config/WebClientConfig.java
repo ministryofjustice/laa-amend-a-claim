@@ -41,11 +41,11 @@ public class WebClientConfig {
 
     WebClient webClient =
         webClientBuilder
-            .baseUrl(properties.getUrl())
-            .defaultHeader(HttpHeaders.AUTHORIZATION, properties.getAccessToken())
+            .baseUrl(properties.url())
+            .defaultHeader(HttpHeaders.AUTHORIZATION, properties.accessToken())
             .exchangeStrategies(strategies)
             .build();
-    log.info("Claims API URL: {}", properties.getUrl());
+    log.info("Claims API URL: {}", properties.url());
     WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
     HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
 
@@ -57,8 +57,8 @@ public class WebClientConfig {
       WebClient.Builder webClientBuilder, ProviderApiProperties properties) {
     WebClient webClient =
         webClientBuilder
-            .baseUrl(properties.getUrl())
-            .defaultHeader("X-Authorization", properties.getAccessToken())
+            .baseUrl(properties.url())
+            .defaultHeader("X-Authorization", properties.accessToken())
             .exchangeStrategies(
                 ExchangeStrategies.builder().codecs(ClientCodecConfigurer::defaultCodecs).build())
             .build();
@@ -73,8 +73,8 @@ public class WebClientConfig {
       WebClient.Builder webClientBuilder, FeeSchemePlatformApiProperties properties) {
     WebClient webClient =
         webClientBuilder
-            .baseUrl(properties.getUrl())
-            .defaultHeader("Authorization", properties.getAccessToken())
+            .baseUrl(properties.url())
+            .defaultHeader("Authorization", properties.accessToken())
             .exchangeStrategies(
                 ExchangeStrategies.builder().codecs(ClientCodecConfigurer::defaultCodecs).build())
             .build();
@@ -87,7 +87,7 @@ public class WebClientConfig {
   @Bean
   public MicrosoftGraphApiClient microsoftGraphApiClient(
       WebClient.Builder webClientBuilder, MicrosoftGraphApiProperties properties) {
-    WebClient webClient = webClientBuilder.baseUrl(properties.getUrl()).build();
+    WebClient webClient = webClientBuilder.baseUrl(properties.url()).build();
     WebClientAdapter webClientAdapter = WebClientAdapter.create(webClient);
     HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(webClientAdapter).build();
     return factory.createClient(MicrosoftGraphApiClient.class);

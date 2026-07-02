@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
-import uk.gov.justice.laa.amend.claim.factories.AvailableFeeCodesFactory;
+import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
+import uk.gov.justice.laa.amend.claim.factories.AvailableFeeCodesService;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 
 @Controller
@@ -27,7 +28,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 @HasRoleClaimAmendmentsCaseworker
 public class CaseTypeController {
 
-  private final AvailableFeeCodesFactory availableFeeCodesFactory;
+  private final AvailableFeeCodesService availableFeeCodesService;
 
   @GetMapping("/amend-fee-code")
   public String amendFeeCode(
@@ -36,7 +37,11 @@ public class CaseTypeController {
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
-    var availableFeeCodes = availableFeeCodesFactory.getAvailableFeeCodes(claim.getAreaOfLaw());
+    var availableFeeCodes = availableFeeCodesService.getAvailableFeeCodes(claim.getAreaOfLaw());
+    if (!availableFeeCodes.containsKey(claim.getFeeCode())) {
+      throw new FeeCodeNotFoundException(claim.getFeeCode());
+    }
+
     var currentFeeCode = availableFeeCodes.get(claim.getFeeCode());
     var amendmentForms = getAmendmentForms(session, claimId);
 

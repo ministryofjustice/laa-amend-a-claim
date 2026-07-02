@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.amendments.CaseTypeController;
-import uk.gov.justice.laa.amend.claim.factories.AvailableFeeCodesFactory;
+import uk.gov.justice.laa.amend.claim.factories.AvailableFeeCodesService;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -22,10 +22,8 @@ class AmendCaseTypeViewTest extends AmendmentsBaseTest {
 
   private static final String FEE_CODE = "feecode";
   private static final String MATTER_TYPE_CODE = "matter";
-  private static final String MATTER_TYPE_CODE_1 = "matterone";
-  private static final String MATTER_TYPE_CODE_2 = "mattertwo";
 
-  @MockitoBean AvailableFeeCodesFactory availableFeeCodesFactory;
+  @MockitoBean AvailableFeeCodesService availableFeeCodesService;
 
   AmendCaseTypeViewTest() {
     this.mapping = amendCaseTypeUrl;
@@ -43,7 +41,7 @@ class AmendCaseTypeViewTest extends AmendmentsBaseTest {
     var forms = createCaseTypeForm(claim);
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
-    when(availableFeeCodesFactory.getAvailableFeeCodes(any())).thenReturn(Map.of(FEE_CODE, "ABC"));
+    when(availableFeeCodesService.getAvailableFeeCodes(any())).thenReturn(Map.of(FEE_CODE, "ABC"));
 
     var doc = renderDocument();
     assertCommonPageContent(doc);

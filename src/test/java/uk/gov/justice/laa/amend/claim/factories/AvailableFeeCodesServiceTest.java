@@ -12,20 +12,20 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.FeeSchemePlatformApiClient;
-import uk.gov.justice.laa.amend.claim.client.FeeSchemePlatformApiClient.FeeCode;
-import uk.gov.justice.laa.amend.claim.client.FeeSchemePlatformApiClient.FeeCodes;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.models.fsp.FeeCode;
+import uk.gov.justice.laa.amend.claim.models.fsp.FeeCodes;
 
 @ExtendWith(MockitoExtension.class)
-class AvailableFeeCodesFactoryTest {
+class AvailableFeeCodesServiceTest {
 
   @Mock FeeSchemePlatformApiClient feeSchemePlatformApiClient;
 
-  AvailableFeeCodesFactory availableFeeCodesFactory;
+  AvailableFeeCodesService availableFeeCodesService;
 
   @BeforeEach
   void beforeEach() {
-    availableFeeCodesFactory = new AvailableFeeCodesFactory(feeSchemePlatformApiClient);
+    availableFeeCodesService = new AvailableFeeCodesService(feeSchemePlatformApiClient);
   }
 
   @Test
@@ -35,7 +35,7 @@ class AvailableFeeCodesFactoryTest {
     when(feeSchemePlatformApiClient.getFeeCodes(anyString()))
         .thenReturn(Mono.just(new FeeCodes(List.of(one, two))));
 
-    var result = availableFeeCodesFactory.getAvailableFeeCodes(AreaOfLaw.LEGAL_HELP);
+    var result = availableFeeCodesService.getAvailableFeeCodes(AreaOfLaw.LEGAL_HELP);
 
     assertThat(result).hasSize(2);
     assertThat(result).containsKey("ONE");

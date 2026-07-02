@@ -24,7 +24,10 @@ public class WebConfig implements WebMvcConfigurer {
         .addPathPatterns("/**")
         .excludePathPatterns(ALLOWED_URLS);
 
-    registry.addInterceptor(featureFlagInterceptor);
+    registry
+        .addInterceptor(featureFlagInterceptor)
+        .addPathPatterns("/**")
+        .excludePathPatterns(ALLOWED_URLS);
   }
 
   private static final String[] ALLOWED_URLS = {
