@@ -7,7 +7,7 @@ import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 @Getter
 public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetails> {
   // Client fields
-  DATE_OF_BIRTH(new Accessor<>(CivilClaimDetails::getClientDateOfBirth)),
+  DATE_OF_BIRTH(new Accessor<>(CivilClaimDetails::getClientDateOfBirth), FieldType.DATE),
   POSTCODE(new Accessor<>(CivilClaimDetails::getClientPostcode)),
   IS_ELIGIBLE_CLIENT(new Accessor<>(CivilClaimDetails::getIsEligibleClient)),
   CLIENT_TYPE(new Accessor<>(CivilClaimDetails::getClientType)),
@@ -24,8 +24,9 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   SCHEDULE_REFERENCE_CIVIL(new Accessor<>(CivilClaimDetails::getScheduleReference)),
   CASE_ID(new Accessor<>(CivilClaimDetails::getCaseId)),
   CASE_REFERENCE_NUMBER(new Accessor<>(CivilClaimDetails::getCaseReferenceNumber)),
-  CASE_START_DATE(new Accessor<>(CivilClaimDetails::getCaseStartDate)),
-  CASE_CONCLUDED_CLAIMED_DATE(new Accessor<>(CivilClaimDetails::getCaseConcludedDate)),
+  CASE_START_DATE(new Accessor<>(CivilClaimDetails::getCaseStartDate), FieldType.DATE),
+  CASE_CONCLUDED_CLAIMED_DATE(
+      new Accessor<>(CivilClaimDetails::getCaseConcludedDate), FieldType.DATE),
   UNIQUE_FILE_NUMBER(new Accessor<>(CivilClaimDetails::getUniqueFileNumber)),
   CASE_STAGE(new Accessor<>(CivilClaimDetails::getCaseStage)),
   VALUE_OF_COSTS(new Accessor<>(CivilClaimDetails::getValueOfCosts)),
@@ -51,11 +52,11 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   LEGACY_CASE(new Accessor<>(CivilClaimDetails::getIsLegacyCase)),
   MEETINGS_ATTENDED(new Accessor<>(CivilClaimDetails::getMeetingsAttended)),
   ADVICE_TYPE(new Accessor<>(CivilClaimDetails::getAdviceType)),
-  TRANSFER_DATE(new Accessor<>(CivilClaimDetails::getTransferDate)),
+  TRANSFER_DATE(new Accessor<>(CivilClaimDetails::getTransferDate), FieldType.DATE),
   MEDICAL_REPORTS_CLAIMED(new Accessor<>(CivilClaimDetails::getMedicalReportsClaimed)),
   EXEMPTION_CRITERIA_SATISFIED(new Accessor<>(CivilClaimDetails::getExemptionCriteriaSatisfied)),
   IRC_SURGERY(new Accessor<>(CivilClaimDetails::getIsIrcSurgery)),
-  SURGERY_DATE(new Accessor<>(CivilClaimDetails::getSurgeryDate)),
+  SURGERY_DATE(new Accessor<>(CivilClaimDetails::getSurgeryDate), FieldType.DATE),
   SURGERY_CLIENTS_COUNT(new Accessor<>(CivilClaimDetails::getSurgeryClientsCount)),
   SURGERY_MATTERS_COUNT(new Accessor<>(CivilClaimDetails::getSurgeryMattersCount)),
   MENTAL_HEALTH_TRIBUNAL_REFERENCE(
@@ -64,9 +65,15 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   ;
 
   private final Accessor<?> accessor;
+  private final FieldType type;
 
   CivilClaimDetailsViewField(Accessor<?> accessor) {
+    this(accessor, FieldType.TEXT);
+  }
+
+  CivilClaimDetailsViewField(Accessor<?> accessor, FieldType type) {
     this.accessor = accessor;
+    this.type = type;
   }
 
   public record Accessor<T>(Function<CivilClaimDetails, T> getter)

@@ -8,7 +8,7 @@ import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 public enum MediationClaimDetailsViewField implements ClaimViewField<MediationClaimDetails> {
 
   // Client fields
-  DATE_OF_BIRTH(new Accessor<>(MediationClaimDetails::getClientDateOfBirth)),
+  DATE_OF_BIRTH(new Accessor<>(MediationClaimDetails::getClientDateOfBirth), FieldType.DATE),
   POSTCODE(new Accessor<>(MediationClaimDetails::getClientPostcode)),
   UNIQUE_CLIENT_NUMBER(new Accessor<>(MediationClaimDetails::getUniqueClientNumber)),
   IS_LEGALLY_AIDED(new Accessor<>(MediationClaimDetails::getIsClientLegallyAided)),
@@ -18,7 +18,8 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
   // Client 2 fields
   CLIENT_2_FORENAME(new Accessor<>(MediationClaimDetails::getClient2Forename)),
   CLIENT_2_SURNAME(new Accessor<>(MediationClaimDetails::getClient2Surname)),
-  CLIENT_2_DATE_OF_BIRTH(new Accessor<>(MediationClaimDetails::getClient2DateOfBirth)),
+  CLIENT_2_DATE_OF_BIRTH(
+      new Accessor<>(MediationClaimDetails::getClient2DateOfBirth), FieldType.DATE),
   CLIENT_2_UCN(new Accessor<>(MediationClaimDetails::getClient2Ucn)),
   CLIENT_2_POSTCODE(new Accessor<>(MediationClaimDetails::getClient2Postcode)),
   CLIENT_2_GENDER(new Accessor<>(MediationClaimDetails::getClient2Gender)),
@@ -35,10 +36,10 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
 
   // Case Details fields
   CASE_REFERENCE_NUMBER(new Accessor<>(MediationClaimDetails::getCaseReferenceNumber)),
-  CASE_START_DATE(new Accessor<>(MediationClaimDetails::getCaseStartDate)),
+  CASE_START_DATE(new Accessor<>(MediationClaimDetails::getCaseStartDate), FieldType.DATE),
   CLAIM_ID(new Accessor<>(MediationClaimDetails::getCaseId)),
   UNIQUE_CASE_ID(new Accessor<>(MediationClaimDetails::getUniqueCaseId)),
-  CASE_CONCLUDED_DATE(new Accessor<>(MediationClaimDetails::getCaseEndDate)),
+  CASE_CONCLUDED_DATE(new Accessor<>(MediationClaimDetails::getCaseEndDate), FieldType.DATE),
   MEDIATION_SESSIONS_COUNT(new Accessor<>(MediationClaimDetails::getMediationSessionsCount)),
   MEDIATION_TIME_MINUTES(new Accessor<>(MediationClaimDetails::getMediationTimeMinutes)),
   OUTCOME(new Accessor<>(MediationClaimDetails::getOutcome)),
@@ -48,9 +49,15 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
   ;
 
   private final Accessor<?> accessor;
+  private final FieldType type;
 
   MediationClaimDetailsViewField(Accessor<?> accessor) {
+    this(accessor, FieldType.TEXT);
+  }
+
+  MediationClaimDetailsViewField(Accessor<?> accessor, FieldType type) {
     this.accessor = accessor;
+    this.type = type;
   }
 
   public record Accessor<T>(Function<MediationClaimDetails, T> getter)
