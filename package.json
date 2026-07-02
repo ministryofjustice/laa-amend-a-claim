@@ -17,6 +17,7 @@
     "accessible-autocomplete": "^3.0.1",
     "govuk-frontend": "^6.3.0",
     "gulp": "^5.0.1",
+    "gulp-clean": "^0.4.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-rename": "^2.1.0",
     "gulp-sass": "^6.0.1",

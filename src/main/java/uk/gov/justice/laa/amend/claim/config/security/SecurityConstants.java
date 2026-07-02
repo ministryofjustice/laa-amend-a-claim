@@ -9,7 +9,6 @@ public class SecurityConstants {
     "/css/**",
     "/js/**",
     "/assets/**",
-    "/webjars/**",
     "/ping",
     "/error",
     "/not-found",

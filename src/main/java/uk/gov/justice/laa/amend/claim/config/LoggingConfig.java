@@ -10,16 +10,7 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 public class LoggingConfig {
 
   private static final List<String> IGNORED_URLS =
-      List.of(
-          "/actuator",
-          "/health",
-          "/ping",
-          "/assets",
-          "/css",
-          "/static",
-          "/public",
-          "/js",
-          "/webjars");
+      List.of("/actuator", "/health", "/ping", "/assets", "/css", "/static", "/public", "/js");
 
   @Bean
   public CommonsRequestLoggingFilter logFilter() {
