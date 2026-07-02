@@ -3,6 +3,7 @@ const {task, series} = require("gulp");
 const sass = require('gulp-sass')(require('sass'));
 const rename = require('gulp-rename');
 const cleanCSS = require('gulp-clean-css');
+const browserSync = require('browser-sync').create();
 
 function compileStylesheets() {
   return gulp.src('src/main/resources/sass/app.scss')
@@ -49,8 +50,48 @@ function copyMOJAssets(){
   .on('end', () => console.log('MOJ assets copied to src/main/resources/static/assets'));
 }
 
+function watch() {
+  browserSync.init({
+    proxy: {
+      target: 'localhost:8090',
+      proxyReq: [
+        function (proxyReq) {
+          // ask the backend not to compress, so BrowserSync can inject the snippet
+          proxyReq.setHeader('Accept-Encoding', 'identity');
+        }
+      ],
+      proxyRes: [
+        function (proxyRes) {
+          // strip CSP so BrowserSync's inline client script is allowed (DEV ONLY)
+          delete proxyRes.headers['content-security-policy'];
+          delete proxyRes.headers['content-security-policy-report-only'];
+        }
+      ]
+    },
+    open: true,
+    notify: false
+  });
+
+  gulp.watch([
+    'src/main/resources/templates/**',
+    'src/main/resources/templates/**/*'
+  ])
+  .on('change', (path) => {
+    console.log('Template changed:', path);
+    browserSync.reload();
+  });
+
+  gulp.watch('src/main/resources/sass/**/*.scss')
+  .on('change', (path) => {
+    console.log('Stylesheet changed:', path);
+    browserSync.reload();
+  });
+
+}
+
 task('copy-assets', series(copyGOVUKAssets, copyMOJAssets));
 task('copy-js', series(copyGOVUKJavascript, copyMOJJavascript));
 task('compile-stylesheets', compileStylesheets);
 
 task('default',  series('copy-assets', 'copy-js', 'compile-stylesheets'));
+task('watch', series(watch));

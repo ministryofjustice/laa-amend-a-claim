@@ -15,6 +15,7 @@
   "devDependencies": {
     "@ministryofjustice/frontend": "^9.0.0",
     "accessible-autocomplete": "^3.0.1",
+    "browser-sync": "^3.0.4",
     "govuk-frontend": "^6.3.0",
     "gulp": "^5.0.1",
     "gulp-clean": "^0.4.0",
