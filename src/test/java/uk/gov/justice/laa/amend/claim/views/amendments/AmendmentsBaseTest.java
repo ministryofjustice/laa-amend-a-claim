@@ -7,6 +7,7 @@ import uk.gov.justice.laa.amend.claim.views.ViewTestBase;
 public abstract class AmendmentsBaseTest extends ViewTestBase {
 
   final String overviewUrl;
+  final String overviewCaseUrl;
 
   final String clientUrl;
   final String caseUrl;
@@ -23,6 +24,7 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
 
   AmendmentsBaseTest() {
     overviewUrl = "/submissions/%s/claims/%s".formatted(submissionId, claimId);
+    overviewCaseUrl = "/submissions/%s/claims/%s/case".formatted(submissionId, claimId);
 
     clientUrl = "/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
     caseUrl = "/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
