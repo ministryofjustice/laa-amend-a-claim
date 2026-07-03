@@ -1,9 +1,15 @@
-const gulp = require('gulp');
-const {task, series} = require("gulp");
-const sass = require('gulp-sass')(require('sass'));
-const rename = require('gulp-rename');
-const cleanCSS = require('gulp-clean-css');
-const browserSync = require('browser-sync').create();
+import gulp from 'gulp';
+import { task, series } from 'gulp';
+import rename from 'gulp-rename';
+import cleanCSS from 'gulp-clean-css';
+import gulpSass from 'gulp-sass';
+import * as dartSass from 'sass';
+import browserSyncModule from 'browser-sync';
+import type { Transform } from 'stream';
+
+const sass = gulpSass(dartSass);
+const browserSync = browserSyncModule.create();
+
 
 function compileStylesheets() {
   return gulp.src('src/main/resources/sass/app.scss')
@@ -15,7 +21,7 @@ function compileStylesheets() {
     quietDeps: true,        // silences the @import deprecation noise from vendor files
     silenceDeprecations: ['import']
   })
-    .on('error', function (err) {
+    .on('error', function (this: Transform, err: Error) {
         sass.logError.call(this, err);   // print the readable Sass error
         this.emit('end');                // end the stream so Gulp doesn't hang
     })
@@ -55,13 +61,13 @@ function watch() {
     proxy: {
       target: 'localhost:8090',
       proxyReq: [
-        function (proxyReq) {
+        function (proxyReq: any) {
           // ask the backend not to compress, so BrowserSync can inject the snippet
           proxyReq.setHeader('Accept-Encoding', 'identity');
         }
       ],
       proxyRes: [
-        function (proxyRes) {
+        function (proxyRes: any) {
           // strip CSP so BrowserSync's inline client script is allowed (DEV ONLY)
           delete proxyRes.headers['content-security-policy'];
           delete proxyRes.headers['content-security-policy-report-only'];
