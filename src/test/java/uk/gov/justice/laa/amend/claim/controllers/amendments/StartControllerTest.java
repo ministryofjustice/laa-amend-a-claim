@@ -15,7 +15,7 @@ import org.springframework.mock.web.MockHttpSession;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 @WebMvcTest(controllers = StartController.class)
@@ -24,7 +24,7 @@ class StartControllerTest extends BaseControllerTest {
   private UUID submissionId;
   private UUID claimId;
   private MockHttpSession session;
-  private ClaimDetails claim;
+  private CrimeClaimDetails claim;
 
   @BeforeEach
   void setup() {
@@ -34,6 +34,8 @@ class StartControllerTest extends BaseControllerTest {
     claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
+    claim.setFeeCode("ABC");
+    claim.setMatterTypeCode("MAT1");
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
     session.setAttribute(claimId.toString(), claim);
   }
@@ -56,7 +58,12 @@ class StartControllerTest extends BaseControllerTest {
     var client1Form = new AmendmentForm();
     client1Form.setInputs(client1Rows);
 
-    AmendmentForms forms = new AmendmentForms(client1Form);
+    var caseTypeRows =
+        Map.of("FEE_CODE", claim.getFeeCode(), "MATTER_TYPE_CODE", claim.getMatterTypeCode());
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    AmendmentForms forms = new AmendmentForms(client1Form, caseTypeForm);
 
     mockMvc
         .perform(get(buildPath()).session(session))

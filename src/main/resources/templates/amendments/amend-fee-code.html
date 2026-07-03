@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{amendments.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${true}
+    )}">
+<body>
+<main class="govuk-main-wrapper" id="main-content">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+      <h1 class="govuk-heading-l">
+        <span th:text="#{amendments.feeCode.title}"></span>
+      </h1>
+
+      <form method="post"
+            th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-fee-code(submissionId=${submissionId}, claimId=${claimId})}"
+            th:object="${feeCodeForm}">
+
+
+        <table class="govuk-table">
+          <caption class="govuk-table__caption govuk-table__caption--m" th:text="#{amendments.feeCode.title}"/>
+          <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header" th:text="#{amendments.item}"/>
+            <th scope="col" class="govuk-table__header" th:text="#{amendments.current}"/>
+          </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header" th:text="#{amendments.feeCode.title}"/>
+            <td class="govuk-table__cell" th:text="${currentFeeCode}"></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <p class="govuk-body" th:text="#{amendments.feeCode.description}"/>
+
+        <div class="govuk-body">
+          <div class="autocomplete-wrapper">
+            <label class="govuk-label" for="submission-period" th:text="#{amendments.feeCode.title}"></label>
+            <select class="govuk-select" id="submission-period"
+                    th:field="*{inputs['FEE_CODE']}"
+                    data-module="make-autocomplete">
+
+              <option value="" selected></option>
+              <option th:each="entry : ${feeCodes}" th:value="${entry.key}"
+                      th:text="${entry.value}"></option>
+
+            </select>
+          </div>
+        </div>
+
+        <div class="govuk-button-group">
+          <button class="govuk-button" type="submit" th:text="#{amendments.continue}"></button>
+          <a th:href="@{/submissions/{submissionId}/claims/{claimId}/case(submissionId=${submissionId}, claimId=${claimId})}"
+             id="cancel"
+             class="govuk-link govuk-link--no-visited-state"
+             th:text="#{service.cancel}">
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+</body>
+</html>

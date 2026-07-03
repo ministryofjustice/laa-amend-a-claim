@@ -20,16 +20,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseBulkUploader;
+import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.bulkupload.civil.BulkUploadCivilClaim;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 
+@Controller
+@RequestMapping("/bulk-upload")
+@RequiredArgsConstructor
+@RequiresFeatureFlag(Feature.BULK_UPLOAD)
 @HasRoleEscapeCaseBulkUploader
 @UserControllerAdvice.Enabled
-@Controller
-@RequiredArgsConstructor
-@RequestMapping("/bulk-upload")
 public class BulkUploadController {
 
   private final BulkUploadService<BulkUploadCivilClaim> bulkUploadService;
@@ -37,14 +40,11 @@ public class BulkUploadController {
 
   @GetMapping
   public String onPageLoad() {
-    featureFlagsConfig.checkBulkUploadEnabled();
     return "bulk-upload";
   }
 
   @GetMapping("/result")
   public String onPageLoad(Model model) {
-    featureFlagsConfig.checkBulkUploadEnabled();
-
     if (!model.containsAttribute("result")) {
       return "redirect:/bulk-upload";
     }
@@ -54,7 +54,6 @@ public class BulkUploadController {
 
   @GetMapping(value = "/example", produces = "text/csv")
   public ResponseEntity<Resource> getCsvFile() throws IOException {
-    featureFlagsConfig.checkBulkUploadEnabled();
 
     ClassPathResource csvFile = new ClassPathResource("data/example_bulk_upload.csv");
 
@@ -72,8 +71,6 @@ public class BulkUploadController {
       RedirectAttributes redirectAttributes,
       Model model,
       HttpServletResponse response) {
-    featureFlagsConfig.checkBulkUploadEnabled();
-
     if (file == null || Strings.isBlank(file.getOriginalFilename())) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       model.addAttribute("fileError", new ThymeleafMessage("bulkUpload.fileError.required"));
