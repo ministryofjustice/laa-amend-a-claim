@@ -30,8 +30,6 @@ document.querySelectorAll('[id=bulk-upload-form]').forEach(function (form) {
     });
 });
 
-import '/webjars/accessible-autocomplete/dist/accessible-autocomplete.min.js'
-
 var selectDropdowns = document.querySelectorAll('[data-module="make-autocomplete"]');
 
 // For each dropdown
