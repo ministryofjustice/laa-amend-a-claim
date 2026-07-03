@@ -66,7 +66,9 @@ class CaseTypeControllerTest extends BaseControllerTest {
     var caseTypeForm = new AmendmentForm();
     caseTypeForm.setInputs(caseTypeRows);
 
-    var updatedForms = new AmendmentForms(new AmendmentForm(), new AmendmentForm());
+    var updatedForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(caseTypeForm));
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = get(buildAmendFeeCodePath()).session(session).with(csrf());
@@ -92,7 +94,9 @@ class CaseTypeControllerTest extends BaseControllerTest {
     var caseTypeForm = new AmendmentForm();
     caseTypeForm.setInputs(caseTypeRows);
 
-    var updatedForms = new AmendmentForms(new AmendmentForm(), new AmendmentForm());
+    var updatedForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(caseTypeForm));
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = get(buildAmendFeeCodePath()).session(session).with(csrf());
@@ -119,7 +123,9 @@ class CaseTypeControllerTest extends BaseControllerTest {
     var caseTypeForm = new AmendmentForm();
     caseTypeForm.setInputs(caseTypeRows);
 
-    var updatedForms = new AmendmentForms(new AmendmentForm(), new AmendmentForm());
+    var updatedForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(caseTypeForm));
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = post(buildAmendFeeCodePath()).session(session).with(csrf());

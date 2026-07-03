@@ -4,9 +4,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.amend.claim.client.FeeSchemePlatformApiClient;
-import uk.gov.justice.laa.amend.claim.client.FeeSchemePlatformApiClient.FeeCode;
-import uk.gov.justice.laa.amend.claim.client.FeeSchemePlatformApiClient.FeeCodes;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.models.fsp.FeeCode;
+import uk.gov.justice.laa.amend.claim.models.fsp.FeeCodes;
 
 @Component
 public class AvailableFeeCodesFactory {
