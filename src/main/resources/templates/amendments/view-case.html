@@ -11,7 +11,10 @@
 <main class="govuk-main-wrapper" id="main-content">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full"
-         th:with="originalCaseTypeForm=${forms.getCaseTypeForm().getOriginal()}, caseTypeForm=${forms.getCaseTypeForm().getCurrent()}">
+         th:with="originalCaseTypeForm=${forms.getCaseTypeForm().getOriginal()},
+                caseTypeForm=${forms.getCaseTypeForm().getCurrent()},
+                originalCaseDetailsForm=${forms.getCaseDetailsForm().getOriginal()},
+                caseDetailsForm=${forms.getCaseDetailsForm().getCurrent()}">
       <th:block
           th:replace="~{partials/amendments-view-header :: viewHeader(currentPage='case')}"></th:block>
 
@@ -54,7 +57,8 @@
         </div>
       </div>
 
-      <div class="govuk-summary-card">
+      <div class="govuk-summary-card"
+           th:with="caseDetailsFormIsAmended=${caseDetailsForm.hasAmendments(originalCaseDetailsForm)}">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title" th:text="#{claimCase.caseDetails}"></h2>
           <ul class="govuk-summary-card__actions">
@@ -68,8 +72,7 @@
         </div>
         <div class="govuk-summary-card__content">
           <dl class="govuk-summary-list">
-            <!--TODO: Only show if amendments to case details form-->
-            <div class="govuk-summary-list__row" th:if="false">
+            <div class="govuk-summary-list__row" th:if="${caseDetailsFormIsAmended}">
               <dt class="govuk-summary-list__key" th:text="#{amendments.item}"></dt>
               <dd class="govuk-summary-list__value govuk-!-font-weight-bold"
                   th:text="#{amendments.current}"></dd>
@@ -81,6 +84,9 @@
                   th:text="#{${'claimCase.rows.' + entry.key}}"></dt>
               <dd class="govuk-summary-list__value"
                   th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+              <dd class="govuk-summary-list__value"
+                  th:if="${caseDetailsForm.isAmendment(entry.key.name(), originalCaseDetailsForm)}"
+                  th:text="${@ThymeleafUtils.getFormattedValue(caseDetailsForm.inputs[entry.key.name()]).resolve(#messages)}"></dd>
             </div>
           </dl>
         </div>

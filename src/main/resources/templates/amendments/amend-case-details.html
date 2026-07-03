@@ -19,7 +19,7 @@
       <h2 class="govuk-heading-m" th:text="#{claimDetails.caseHeading}"></h2>
 
       <form method="post"
-            th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-client(submissionId=${submissionId}, claimId=${claimId})}"
+            th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-case-details(submissionId=${submissionId}, claimId=${claimId})}"
             th:object="${caseDetailsForm}">
 
 
