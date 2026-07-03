@@ -6,10 +6,13 @@ import gulpSass from 'gulp-sass';
 import * as dartSass from 'sass';
 import browserSyncModule from 'browser-sync';
 import type { Transform } from 'stream';
+import gulpTypescript from 'gulp-typescript';
+import terser from 'gulp-terser';
 
 const sass = gulpSass(dartSass);
 const browserSync = browserSyncModule.create();
 
+const tsProject = gulpTypescript.createProject('tsconfig.json');
 
 function compileStylesheets() {
   return gulp.src('src/main/resources/sass/app.scss')
@@ -35,13 +38,15 @@ function compileStylesheets() {
 function copyGOVUKJavascript(){
   return gulp.src('node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.js')
   .pipe(gulp.dest('src/main/resources/static/js'))
-  .on('end', () => console.log('GOV.UK JS copied to src/main/resources/static/js'));
+  .pipe(gulp.dest('src/main/resources/es'))
+  .on('end', () => console.log('GOV.UK JS copied to src/main/resources/static/js and src/main/resources/es'));
 }
 
 function copyMOJJavascript(){
   return gulp.src('node_modules/@ministryofjustice/frontend/moj/moj-frontend.min.js')
   .pipe(gulp.dest('src/main/resources/static/js'))
-  .on('end', () => console.log('MOJ JS copied to src/main/resources/static/js'));
+  .pipe(gulp.dest('src/main/resources/es'))
+  .on('end', () => console.log('MOJ JS copied to src/main/resources/static/js and src/main/resources/es'));
 }
 
 function copyGOVUKAssets(){
@@ -54,6 +59,15 @@ function copyMOJAssets(){
   return gulp.src('node_modules/@ministryofjustice/frontend/moj/assets/**/*')
   .pipe(gulp.dest('src/main/resources/static/assets'))
   .on('end', () => console.log('MOJ assets copied to src/main/resources/static/assets'));
+}
+
+function compileScripts() {
+  return gulp.src('src/main/resources/es/app.ts')
+  .pipe(tsProject())
+  .pipe(terser())
+  .pipe(rename('app.min.js'))
+  .pipe(gulp.dest('src/main/resources/static/js'))
+  .on('end', () => console.log('App JS compiled to src/main/resources/static/js'));
 }
 
 function watch() {
@@ -87,9 +101,15 @@ function watch() {
     browserSync.reload();
   });
 
-  gulp.watch('src/main/resources/sass/**/*.scss')
+  gulp.watch('src/main/resources/sass/**/*.scss', series(compileStylesheets))
   .on('change', (path) => {
     console.log('Stylesheet changed:', path);
+    browserSync.reload();
+  });
+
+  gulp.watch('src/main/resources/es/**/*.{ts,js}', series(compileScripts))
+  .on('change', (path) => {
+    console.log('Script changed:', path);
     browserSync.reload();
   });
 
@@ -98,6 +118,7 @@ function watch() {
 task('copy-assets', series(copyGOVUKAssets, copyMOJAssets));
 task('copy-js', series(copyGOVUKJavascript, copyMOJJavascript));
 task('compile-stylesheets', compileStylesheets);
+task('compile-scripts', series('copy-js', compileScripts));
 
-task('default',  series('copy-assets', 'copy-js', 'compile-stylesheets'));
+task('default',  series('copy-assets', 'compile-stylesheets', 'compile-scripts'));
 task('watch', series(watch));

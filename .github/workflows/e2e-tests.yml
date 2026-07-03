@@ -267,7 +267,7 @@ jobs:
           MOJ_VERSION=$(grep "webjars.npm:ministryofjustice__frontend" ../../build.gradle | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
 
           echo "Checking scripts..."
-          check "/js/app.js"
+          check "/js/app.min.js"
           check "/webjars/govuk-frontend/dist/govuk/govuk-frontend.min.js"
           check "/webjars/ministryofjustice__frontend/moj/moj-frontend.min.js"
           
