@@ -30,7 +30,7 @@ class AmendCaseTypeViewTest extends AmendmentsBaseTest {
   }
 
   @Test
-  void testShowsUnamendedCivilCaseDetails() {
+  void testShowsUnamendedCrimeCaseDetails() {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     this.claim = claim;
     claim.setSubmissionId(submissionId);

@@ -47,7 +47,7 @@
               <dd class="govuk-summary-list__value"
                   th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
               <dd class="govuk-summary-list__value"
-                  th:if="${caseTypeForm.isAmendment(entry.key, originalCaseTypeForm)}"
+                  th:if="${caseTypeForm.isAmendment(entry.key.name(), originalCaseTypeForm)}"
                   th:text="${@ThymeleafUtils.getFormattedValue(caseTypeForm.inputs[entry.key.name()]).resolve(#messages)}"></dd>
             </div>
           </dl>

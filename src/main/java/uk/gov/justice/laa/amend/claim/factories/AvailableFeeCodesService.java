@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.amend.claim.client.FeeSchemePlatformApiClient;
+import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.fsp.FeeCode;
 import uk.gov.justice.laa.amend.claim.models.fsp.FeeCodes;
@@ -25,6 +26,7 @@ public class AvailableFeeCodesService {
             feeCodes ->
                 feeCodes.stream()
                     .collect(Collectors.toMap(FeeCode::feeCode, FeeCode::fullFeeCodeDescription)))
-        .block();
+        .blockOptional()
+        .orElseThrow(() -> new FeeCodeNotFoundException(areaOfLaw));
   }
 }

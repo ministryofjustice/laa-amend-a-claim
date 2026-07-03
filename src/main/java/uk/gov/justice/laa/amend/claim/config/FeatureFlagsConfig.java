@@ -2,7 +2,7 @@ package uk.gov.justice.laa.amend.claim.config;
 
 import static java.lang.Boolean.TRUE;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +15,10 @@ import uk.gov.justice.laa.amend.claim.exceptions.FeatureNotImplementedRuntimeExc
 @ConfigurationProperties(prefix = "feature-flags")
 public class FeatureFlagsConfig {
 
-  @NotBlank private Boolean isBulkUploadEnabled;
-  @NotBlank private Boolean isRequestedAndCalculatedSwapEnabled;
-  @NotBlank private Boolean isFullClaimDetailsEnabled;
-  @NotBlank private Boolean isClaimAmendmentEnabled;
+  @NotNull private Boolean isBulkUploadEnabled;
+  @NotNull private Boolean isRequestedAndCalculatedSwapEnabled;
+  @NotNull private Boolean isFullClaimDetailsEnabled;
+  @NotNull private Boolean isClaimAmendmentEnabled;
 
   private void checkBulkUploadEnabled() {
     if (!TRUE.equals(isBulkUploadEnabled)) {
