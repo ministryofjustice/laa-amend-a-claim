@@ -131,6 +131,14 @@ ignore:
     - '*':
         reason: Waiting for Jackson to release fix
         expires: 2026-07-31T00:00:00.000Z
+  SNYK-JAVA-ORGHDRHISTOGRAM-17821182:
+    - '*':
+        reason: Transitive via micrometer-core/actuator; low severity, no fix available yet
+        expires: 2026-07-31T00:00:00.000Z
+  SNYK-JAVA-ORGHDRHISTOGRAM-17821183:
+    - '*':
+        reason: Transitive via micrometer-core/actuator; low severity, no fix available yet
+        expires: 2026-07-31T00:00:00.000Z
 patch: {}
 exclude:
   global:
