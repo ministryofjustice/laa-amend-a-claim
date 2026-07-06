@@ -162,7 +162,9 @@ public class AmendmentForm {
     return switch (value) {
       case null -> null;
       case String stringValue -> stringValue;
-      case LocalDate date -> date.toString();
+      case LocalDate ignored ->
+          throw new IllegalArgumentException(
+              "LocalDate value must be handled as a date field (FieldType.DATE), not formatted here");
       default -> "TODO";
     };
   }
