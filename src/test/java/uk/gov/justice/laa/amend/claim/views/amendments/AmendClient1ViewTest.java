@@ -184,11 +184,14 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
 
     Element day = selectFirst(dateInput, "input.govuk-input--width-2");
     Assertions.assertEquals("1", day.attr("value"), "Day input value");
+    Assertions.assertEquals("DATE_OF_BIRTH-day", day.attr("id"), "Day input id");
 
     Element year = selectFirst(dateInput, "input.govuk-input--width-4");
     Assertions.assertEquals("1970", year.attr("value"), "Year input value");
+    Assertions.assertEquals("DATE_OF_BIRTH-year", year.attr("id"), "Year input id");
 
     Element monthSelect = selectFirst(dateInput, "select");
+    Assertions.assertEquals("DATE_OF_BIRTH-month", monthSelect.attr("id"), "Month select id");
     Assertions.assertEquals(
         12, monthSelect.select("option[value~=^[0-9]+$]").size(), "Twelve month options");
     Element selectedMonth = selectFirst(monthSelect, "option[selected]");

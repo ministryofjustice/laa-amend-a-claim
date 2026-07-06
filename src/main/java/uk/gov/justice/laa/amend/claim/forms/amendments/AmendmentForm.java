@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import lombok.Data;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
@@ -56,7 +57,7 @@ public class AmendmentForm {
     var processedDateFields = new HashSet<String>();
 
     for (var entry : inputs.entrySet()) {
-      var dateFieldName = dateFieldName(entry.getKey());
+      var dateFieldName = dateFieldNameOrNull(entry.getKey());
       if (dateFieldName != null) {
         if (processedDateFields.add(dateFieldName)) {
           var date = getDateValue(dateFieldName);
@@ -71,7 +72,7 @@ public class AmendmentForm {
     return fieldInputs;
   }
 
-  private static String dateFieldName(String key) {
+  private static String dateFieldNameOrNull(String key) {
     for (var suffix : DATE_SUFFIXES) {
       if (key.endsWith(suffix)) {
         return key.substring(0, key.length() - suffix.length());
@@ -81,6 +82,10 @@ public class AmendmentForm {
   }
 
   public boolean isAmendment(String key, AmendmentForm originalForm) {
+    if (isDateField(key)) {
+      return !Objects.equals(originalForm.getDateValue(key), getDateValue(key));
+    }
+
     var original = originalForm.getInputs().get(key);
     var current = inputs.get(key);
 
@@ -97,6 +102,16 @@ public class AmendmentForm {
 
   public boolean hasAmendments(AmendmentForm original) {
     return getInputs().keySet().stream().anyMatch(key -> isAmendment(key, original));
+  }
+
+  public boolean isDateField(String fieldName) {
+    return inputs.containsKey(fieldName + DAY_SUFFIX)
+        || inputs.containsKey(fieldName + MONTH_SUFFIX)
+        || inputs.containsKey(fieldName + YEAR_SUFFIX);
+  }
+
+  public Object getAmendedValue(String fieldName) {
+    return isDateField(fieldName) ? getDateValue(fieldName) : inputs.get(fieldName);
   }
 
   public LocalDate getDateValue(String fieldName) {
@@ -119,15 +134,21 @@ public class AmendmentForm {
   }
 
   private static void putDateInputs(Map<String, String> inputs, String name, Object value) {
-    if (value instanceof LocalDate date) {
-      inputs.put(name + DAY_SUFFIX, String.valueOf(date.getDayOfMonth()));
-      inputs.put(name + MONTH_SUFFIX, String.valueOf(date.getMonthValue()));
-      inputs.put(name + YEAR_SUFFIX, String.valueOf(date.getYear()));
-    } else {
+    if (value == null) {
       inputs.put(name + DAY_SUFFIX, "");
       inputs.put(name + MONTH_SUFFIX, "");
       inputs.put(name + YEAR_SUFFIX, "");
+      return;
     }
+
+    if (!(value instanceof LocalDate date)) {
+      throw new IllegalArgumentException(
+          "Expected LocalDate for date field '%s' but got %s".formatted(name, value.getClass()));
+    }
+
+    inputs.put(name + DAY_SUFFIX, String.valueOf(date.getDayOfMonth()));
+    inputs.put(name + MONTH_SUFFIX, String.valueOf(date.getMonthValue()));
+    inputs.put(name + YEAR_SUFFIX, String.valueOf(date.getYear()));
   }
 
   private static String formatValue(Object value) {

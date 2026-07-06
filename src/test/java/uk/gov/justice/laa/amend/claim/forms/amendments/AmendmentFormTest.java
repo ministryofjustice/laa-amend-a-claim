@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -40,6 +41,16 @@ class AmendmentFormTest {
         .containsEntry("DATE_OF_BIRTH-day", "")
         .containsEntry("DATE_OF_BIRTH-month", "")
         .containsEntry("DATE_OF_BIRTH-year", "");
+  }
+
+  @Test
+  void throwsWhenDateFieldValueIsNotLocalDate() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.DATE_OF_BIRTH, "not-a-date");
+
+    assertThatThrownBy(() -> new AmendmentForm(rows))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("DATE_OF_BIRTH");
   }
 
   @Test
@@ -84,5 +95,49 @@ class AmendmentFormTest {
     form.setInputs(new HashMap<>(Map.of("DOB-day", "31", "DOB-month", "2", "DOB-year", "2002")));
 
     assertThat(form.getDateValue("DOB")).isNull();
+  }
+
+  @Test
+  void getAmendedValueRecombinesDateSubInputs() {
+    var form = new AmendmentForm();
+    form.setInputs(
+        new HashMap<>(
+            Map.of(
+                "DATE_OF_BIRTH-day", "14",
+                "DATE_OF_BIRTH-month", "5",
+                "DATE_OF_BIRTH-year", "2002")));
+
+    assertThat(form.getAmendedValue("DATE_OF_BIRTH")).isEqualTo(LocalDate.of(2002, 5, 14));
+  }
+
+  @Test
+  void getAmendedValueReturnsRawInputForNonDateField() {
+    var form = new AmendmentForm();
+    form.setInputs(new HashMap<>(Map.of("POSTCODE", "AB1 2CD")));
+
+    assertThat(form.getAmendedValue("POSTCODE")).isEqualTo("AB1 2CD");
+  }
+
+  @Test
+  void isAmendmentDetectsChangedDateField() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.DATE_OF_BIRTH, LocalDate.of(2002, 5, 14));
+    var original = new AmendmentForm(rows);
+
+    var current = new AmendmentForm(original);
+    current.getInputs().put("DATE_OF_BIRTH-year", "2003");
+
+    assertThat(current.isAmendment("DATE_OF_BIRTH", original)).isTrue();
+  }
+
+  @Test
+  void isAmendmentReturnsFalseForUnchangedDateField() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.DATE_OF_BIRTH, LocalDate.of(2002, 5, 14));
+    var original = new AmendmentForm(rows);
+
+    var current = new AmendmentForm(original);
+
+    assertThat(current.isAmendment("DATE_OF_BIRTH", original)).isFalse();
   }
 }

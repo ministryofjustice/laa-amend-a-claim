@@ -44,13 +44,7 @@
                 <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key.name()}}"></dt>
                 <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
                 <dd class="govuk-summary-list__value">
-                  <th:block th:if="${entry.key.type.name() == 'DATE'}">
-                    <th:block th:replace="~{partials/amendments/date-input :: amendmentDateInput(${entry.key.name()})}"></th:block>
-                  </th:block>
-                  <input th:unless="${entry.key.type.name() == 'DATE'}"
-                         class="govuk-input"
-                         type="text"
-                         th:field="*{inputs[__${entry.key.name()}__]}" />
+                  <th:block th:replace="~{partials/amendments/amendment-input :: amendmentInput(${entry.key})}"></th:block>
                 </dd>
               </div>
             </dl>
