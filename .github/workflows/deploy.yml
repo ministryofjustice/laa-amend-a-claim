@@ -62,7 +62,7 @@ jobs:
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ inputs.branch }}
 
@@ -110,7 +110,7 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Can I deploy?
-        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-can-i-deploy@a5b870c152d0bc4a7f67a23f2c226868f94d7041 # v2.2.2
+        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-can-i-deploy@4daa796eff475c7a107e17daf4e4882b8a1b949b # v2.3.0
         with:
           pacticipant: 'laa-amend-a-claim'
           environment: ${{ inputs.claim_api_environment_name }}
@@ -141,7 +141,7 @@ jobs:
           SENTRY_ENV: ${{ inputs.sentry_env }}
 
       - name: Record deployment to pact broker
-        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-record-deployment@a5b870c152d0bc4a7f67a23f2c226868f94d7041 # v2.2.2
+        uses: ministryofjustice/laa-ccms-common-workflows/.github/actions/pact-record-deployment@4daa796eff475c7a107e17daf4e4882b8a1b949b # v2.3.0
         with:
           pacticipant: 'laa-amend-a-claim'
           environment: ${{ inputs.claim_api_environment_name }}
