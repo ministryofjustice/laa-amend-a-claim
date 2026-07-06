@@ -140,4 +140,29 @@ class AmendmentFormTest {
 
     assertThat(current.isAmendment("DATE_OF_BIRTH", original)).isFalse();
   }
+
+  @Test
+  void hasAmendmentsIgnoresDateSubInputReformattingThatKeepsSameDate() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.DATE_OF_BIRTH, LocalDate.of(2002, 5, 14));
+    var original = new AmendmentForm(rows);
+
+    var current = new AmendmentForm(original);
+    current.getInputs().put("DATE_OF_BIRTH-day", "14 ");
+    current.getInputs().put("DATE_OF_BIRTH-month", "05");
+
+    assertThat(current.hasAmendments(original)).isFalse();
+  }
+
+  @Test
+  void hasAmendmentsDetectsChangedDate() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.DATE_OF_BIRTH, LocalDate.of(2002, 5, 14));
+    var original = new AmendmentForm(rows);
+
+    var current = new AmendmentForm(original);
+    current.getInputs().put("DATE_OF_BIRTH-year", "2003");
+
+    assertThat(current.hasAmendments(original)).isTrue();
+  }
 }

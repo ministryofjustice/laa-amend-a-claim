@@ -101,7 +101,14 @@ public class AmendmentForm {
   }
 
   public boolean hasAmendments(AmendmentForm original) {
-    return getInputs().keySet().stream().anyMatch(key -> isAmendment(key, original));
+    return getInputs().keySet().stream()
+        .map(
+            key -> {
+              var dateField = dateFieldNameOrNull(key);
+              return dateField != null ? dateField : key;
+            })
+        .distinct()
+        .anyMatch(key -> isAmendment(key, original));
   }
 
   public boolean isDateField(String fieldName) {
