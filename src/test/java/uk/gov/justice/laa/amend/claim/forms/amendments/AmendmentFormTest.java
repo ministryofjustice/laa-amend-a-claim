@@ -58,8 +58,7 @@ class AmendmentFormTest {
     var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
     rows.put(CivilClaimDetailsViewField.POSTCODE, LocalDate.of(2002, 5, 14));
 
-    assertThatThrownBy(() -> new AmendmentForm(rows))
-        .isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> new AmendmentForm(rows)).isInstanceOf(IllegalArgumentException.class);
   }
 
   @Test
