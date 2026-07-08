@@ -99,13 +99,12 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Case type", "Fee code", "INVC");
     assertSummaryListRow(page, "Case details", "Stage reached", "Not applicable");
 
-    /**
-     * TODO: Matter Type - As the page is not implemented, the test breaks here due to a 404.
-     * Uncomment this section once matter type/ stage reached is completed.
-     *
-     * <p>viewAmendCase.clickChangeCaseTypeLink(); var amendFeeCode = new AmendFeeCodePage(page);
-     * amendFeeCode.fillFeeCodeInput("YOUK4"); //amendFeeCode.clickContinueButton();
-     */
+    // TODO: Matter Type - As the page is not implemented, the test breaks here due to a 404.
+    // Uncomment this section once matter type / stage reached is completed.
+    // viewAmendCase.clickChangeCaseTypeLink();
+    // var amendFeeCode = new AmendFeeCodePage(page);
+    // amendFeeCode.fillFeeCodeInput("YOUK4");
+    // amendFeeCode.clickContinueButton();
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(page, "Case type", "Fee code", "INVC");
     viewAmendCase.clickChangeCaseDetailsLink();
