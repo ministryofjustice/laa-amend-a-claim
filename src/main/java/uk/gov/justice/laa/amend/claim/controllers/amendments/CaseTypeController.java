@@ -18,8 +18,8 @@ import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCasework
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
-import uk.gov.justice.laa.amend.claim.factories.AvailableFeeCodesService;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")

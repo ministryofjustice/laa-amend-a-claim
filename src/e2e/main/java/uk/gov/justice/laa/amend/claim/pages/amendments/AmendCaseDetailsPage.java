@@ -18,9 +18,9 @@ public class AmendCaseDetailsPage extends LaaPage {
   }
 
   public void fillInput(String inputKey, String value) {
-    var surnameInput = page.locator(String.format("input#inputs%s", inputKey));
-    assertThat(surnameInput).isVisible();
-    surnameInput.fill(value);
+    var caseDetailInput = page.locator(String.format("input#inputs%s", inputKey));
+    assertThat(caseDetailInput).isVisible();
+    caseDetailInput.fill(value);
   }
 
   public void clickContinueButton() {

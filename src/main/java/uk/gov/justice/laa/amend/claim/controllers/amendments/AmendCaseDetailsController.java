@@ -46,7 +46,6 @@ public class AmendCaseDetailsController {
   @PostMapping("/amend-case-details")
   public String postAmendCaseDetails(
       HttpSession session,
-      Model model,
       @ModelAttribute("caseDetailsForm") AmendmentForm caseDetailsForm,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
