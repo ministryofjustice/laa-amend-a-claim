@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class AmendmentForms {
 
-  private OriginalAndCurrent client1Form;
-  private OriginalAndCurrent caseTypeForm;
-  private OriginalAndCurrent caseDetailsForm;
+  @NotNull private OriginalAndCurrent client1Form;
+  @NotNull private OriginalAndCurrent caseTypeForm;
+  @NotNull private OriginalAndCurrent caseDetailsForm;
 
   public AmendmentForms(
       AmendmentForm client1Form, AmendmentForm caseType, AmendmentForm caseDetailsForm) {

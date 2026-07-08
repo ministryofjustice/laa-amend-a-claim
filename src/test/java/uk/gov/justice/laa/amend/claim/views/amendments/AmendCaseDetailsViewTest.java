@@ -9,14 +9,14 @@ import org.jsoup.nodes.Document;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import uk.gov.justice.laa.amend.claim.controllers.amendments.CaseDetailsController;
+import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendCaseDetailsController;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
-@WebMvcTest(CaseDetailsController.class)
+@WebMvcTest(AmendCaseDetailsController.class)
 class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
 
   private static final String FEE_CODE = "feecode";
