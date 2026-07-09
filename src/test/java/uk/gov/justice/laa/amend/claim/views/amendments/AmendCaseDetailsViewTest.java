@@ -4,9 +4,14 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jspecify.annotations.NonNull;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendCaseDetailsController;
@@ -148,13 +153,13 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "Case reference number (CRN)",
         CASE_REFERENCE_NUMBER,
         CASE_REFERENCE_NUMBER);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(4), "Case start date", CASE_START_DATE.format(testFormatter), "");
-    assertSummaryListRowContainsValues(
+
+    assertDateRow(caseDetails.get(4), "Case start date", CASE_START_DATE, "CASE_START_DATE");
+    assertDateRow(
         caseDetails.get(5),
         "Case concluded date or case claimed date",
-        CASE_CONCLUDED_DATE.format(testFormatter),
-        "");
+        CASE_CONCLUDED_DATE,
+        "CASE_CONCLUDED_CLAIMED_DATE");
     assertSummaryListRowContainsValues(caseDetails.get(6), "Unique file number (UFN)", UFN, UFN);
     assertSummaryListRowContainsValues(
         caseDetails.get(7), "Case stage or level", CASE_STAGE, CASE_STAGE);
@@ -224,8 +229,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         caseDetails.get(28), "Meetings attended", MEETINGS_ATTENDED, MEETINGS_ATTENDED);
     assertSummaryListRowContainsValues(
         caseDetails.get(29), "Type of advice", ADVICE_TYPE, ADVICE_TYPE);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(30), "Transfer date", TRANSFER_DATE.format(testFormatter), "");
+    assertDateRow(caseDetails.get(30), "Transfer date", TRANSFER_DATE, "TRANSFER_DATE");
     assertSummaryListRowContainsValues(
         caseDetails.get(31),
         "Medical reports claimed",
@@ -238,8 +242,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         EXEMPTION_CRITERIA_SATISFIED);
     assertSummaryListRowContainsValues(
         caseDetails.get(33), "Immigration removal centre (IRC) surgery", YES, "TODO");
-    assertSummaryListRowContainsValues(
-        caseDetails.get(34), "Surgery date", SURGERY_DATE.format(testFormatter), "");
+    assertDateRow(caseDetails.get(34), "Surgery date", SURGERY_DATE, "SURGERY_DATE");
     assertSummaryListRowContainsValues(
         caseDetails.get(35),
         "Number of clients seen at surgery",
@@ -293,13 +296,13 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(1), "Stage reached", STAGE_REACHED, STAGE_REACHED);
     assertSummaryListRowContainsValues(caseDetails.get(2), "Unique file number (UFN)", UFN, UFN);
-    assertSummaryListRowContainsValues(
+    assertDateRow(
         caseDetails.get(3),
         "Representation order date",
-        REPRESENTATION_ORDER_DATE.format(testFormatter),
-        "");
-    assertSummaryListRowContainsValues(
-        caseDetails.get(4), "Case concluded date", CASE_CONCLUDED_DATE.format(testFormatter), "");
+        REPRESENTATION_ORDER_DATE,
+        "REPRESENTATION_ORDER_DATE");
+    assertDateRow(
+        caseDetails.get(4), "Case concluded date", CASE_CONCLUDED_DATE, "CASE_CONCLUDED_DATE");
     assertSummaryListRowContainsValues(
         caseDetails.get(5), "Standard fee category", STANDARD_FEE_CATEGORY, STANDARD_FEE_CATEGORY);
     assertSummaryListRowContainsValues(
@@ -369,13 +372,12 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "Case reference number (CRN)",
         CASE_REFERENCE_NUMBER,
         CASE_REFERENCE_NUMBER);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(2), "Case start date", CASE_START_DATE.format(testFormatter), "");
+    assertDateRow(caseDetails.get(2), "Case start date", CASE_START_DATE, "CASE_START_DATE");
     assertSummaryListRowContainsValues(caseDetails.get(3), "Claim ID", CASE_ID, CASE_ID);
     assertSummaryListRowContainsValues(
         caseDetails.get(4), "Unique case ID", UNIQUE_CASE_ID, UNIQUE_CASE_ID);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(5), "Case concluded date", CASE_CONCLUDED_DATE.format(testFormatter), "");
+    assertDateRow(
+        caseDetails.get(5), "Case concluded date", CASE_CONCLUDED_DATE, "CASE_CONCLUDED_DATE");
     assertSummaryListRowContainsValues(
         caseDetails.get(6),
         "Number of mediation sessions",
@@ -416,5 +418,38 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         new AmendmentForm(new LinkedHashMap<>()),
         new AmendmentForm(new LinkedHashMap<>()),
         new AmendmentForm(view.caseDetailsRows()));
+  }
+
+  private void assertDateRow(
+      List<Element> row, String label, LocalDate expectedDate, String inputPrefix) {
+    assertCellContainsText(row.getFirst(), label);
+    assertCellContainsText(row.get(1), expectedDate.format(testFormatter));
+
+    Element amended = row.get(2);
+    Element dateInput = selectFirst(amended, ".govuk-date-input");
+
+    Element day = selectFirst(dateInput, "input.govuk-input--width-2");
+    Assertions.assertEquals(
+        String.valueOf(expectedDate.getDayOfMonth()), day.attr("value"), "Day input value");
+    Assertions.assertEquals(inputPrefix + "-day", day.attr("id"), "Day input id");
+
+    Element year = selectFirst(dateInput, "input.govuk-input--width-4");
+    Assertions.assertEquals(
+        String.valueOf(expectedDate.getYear()), year.attr("value"), "Year input value");
+    Assertions.assertEquals(inputPrefix + "-year", year.attr("id"), "Year input id");
+
+    Element monthSelect = selectFirst(dateInput, "select");
+    Assertions.assertEquals(inputPrefix + "-month", monthSelect.attr("id"), "Month select id");
+    Assertions.assertEquals(
+        12, monthSelect.select("option[value~=^[0-9]+$]").size(), "Twelve month options");
+    Element selectedMonth = selectFirst(monthSelect, "option[selected]");
+    Assertions.assertEquals(
+        expectedDate.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH),
+        selectedMonth.text(),
+        "Selected month name");
+    Assertions.assertEquals(
+        String.valueOf(expectedDate.getMonthValue()),
+        selectedMonth.attr("value"),
+        "Selected month value");
   }
 }

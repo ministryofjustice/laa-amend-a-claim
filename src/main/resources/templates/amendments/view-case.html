@@ -51,7 +51,7 @@
                   th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
               <dd class="govuk-summary-list__value"
                   th:if="${caseTypeForm.isAmendment(entry.key.name(), originalCaseTypeForm)}"
-                  th:text="${@ThymeleafUtils.getFormattedValue(caseTypeForm.inputs[entry.key.name()]).resolve(#messages)}"></dd>
+                  th:text="${@ThymeleafUtils.getFormattedValue(caseTypeForm.getAmendedValue(entry.key.name())).resolve(#messages)}"></dd>
             </div>
           </dl>
         </div>
@@ -86,7 +86,7 @@
                   th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
               <dd class="govuk-summary-list__value"
                   th:if="${caseDetailsForm.isAmendment(entry.key.name(), originalCaseDetailsForm)}"
-                  th:text="${@ThymeleafUtils.getFormattedValue(caseDetailsForm.inputs[entry.key.name()]).resolve(#messages)}"></dd>
+                  th:text="${@ThymeleafUtils.getFormattedValue(caseDetailsForm.getAmendedValue(entry.key.name())).resolve(#messages)}"></dd>
             </div>
           </dl>
         </div>
