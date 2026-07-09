@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.factories;
+package uk.gov.justice.laa.amend.claim.service;
 
 import java.util.Map;
 import java.util.stream.Collectors;

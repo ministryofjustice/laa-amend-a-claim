@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +65,47 @@ class StartControllerTest extends BaseControllerTest {
     var caseTypeForm = new AmendmentForm();
     caseTypeForm.setInputs(caseTypeRows);
 
-    AmendmentForms forms = new AmendmentForms(client1Form, caseTypeForm);
+    claim.setStageReached("stagereached");
+    claim.setUniqueFileNumber("uniqueFileNumber");
+    claim.setRepresentationOrderDate(LocalDate.of(2000, 1, 1));
+    claim.setCaseEndDate(LocalDate.of(2001, 1, 1));
+    claim.setStandardFeeCategory("standardFeeCategory");
+    claim.setOutcome("outcome");
+    claim.setSuspectsDefendantsCount(1);
+    claim.setPoliceStationCourtAttendancesCount(2);
+    claim.setPoliceStationCourtPrisonId("policeStationCourtPrisonId");
+    claim.setSchemeId("schemeId");
+    claim.setDsccNumber("dsccNumber");
+    claim.setMaatId("maatId");
+    claim.setPrisonLawPriorApprovalNumber("prisonLawPriorApprovalNumber");
+    claim.setIsDutySolicitor(true);
+    claim.setIsYouthCourt(true);
+    Map<String, String> caseDetailsRows = new HashMap<>();
+    caseDetailsRows.put("STAGE_REACHED", claim.getStageReached());
+    caseDetailsRows.put("UNIQUE_FILE_NUMBER", claim.getUniqueFileNumber());
+    caseDetailsRows.put("REPRESENTATION_ORDER_DATE-day", "1");
+    caseDetailsRows.put("REPRESENTATION_ORDER_DATE-month", "1");
+    caseDetailsRows.put("REPRESENTATION_ORDER_DATE-year", "2000");
+    caseDetailsRows.put("CASE_CONCLUDED_DATE-day", "1");
+    caseDetailsRows.put("CASE_CONCLUDED_DATE-month", "1");
+    caseDetailsRows.put("CASE_CONCLUDED_DATE-year", "2001");
+    caseDetailsRows.put("STANDARD_FEE_CATEGORY", claim.getStandardFeeCategory());
+    caseDetailsRows.put("OUTCOME_FOR_CLIENT", claim.getOutcome());
+    caseDetailsRows.put("SUSPECTS_DEFENDANTS_COUNT", "TODO");
+    caseDetailsRows.put("POLICE_STATION_COURT_ATTENDANCES_COUNT", "TODO");
+    caseDetailsRows.put("POLICE_STATION_COURT_PRISON_ID", claim.getPoliceStationCourtPrisonId());
+    caseDetailsRows.put("SCHEME_ID", claim.getSchemeId());
+    caseDetailsRows.put("DSCC_NUMBER", claim.getDsccNumber());
+    caseDetailsRows.put("MAAT_ID", claim.getMaatId());
+    caseDetailsRows.put(
+        "PRISON_LAW_PRIOR_APPROVAL_NUMBER", claim.getPrisonLawPriorApprovalNumber());
+    caseDetailsRows.put("IS_DUTY_SOLICITOR", "TODO");
+    caseDetailsRows.put("IS_YOUTH_COURT", "TODO");
+
+    var caseDetailsForm = new AmendmentForm();
+    caseDetailsForm.setInputs(caseDetailsRows);
+
+    AmendmentForms forms = new AmendmentForms(client1Form, caseTypeForm, caseDetailsForm);
 
     mockMvc
         .perform(get(buildPath()).session(session))

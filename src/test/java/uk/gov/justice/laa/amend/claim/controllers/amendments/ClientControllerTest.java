@@ -55,7 +55,8 @@ class ClientControllerTest extends BaseControllerTest {
     claim.setClientEthnicity("ethnicity");
     claim.setClientDisability("disability");
 
-    var existingForms = new AmendmentForms(new AmendmentForm(), new AmendmentForm());
+    var existingForms =
+        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
     var client1Rows =
@@ -68,7 +69,8 @@ class ClientControllerTest extends BaseControllerTest {
     var client1Form = new AmendmentForm();
     client1Form.setInputs(client1Rows);
 
-    var updatedForms = new AmendmentForms(new AmendmentForm(), new AmendmentForm());
+    var updatedForms =
+        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
     updatedForms.getClient1Form().setCurrent(client1Form);
 
     var request = post(buildAmendClient1Path()).session(session).with(csrf());
@@ -85,7 +87,8 @@ class ClientControllerTest extends BaseControllerTest {
 
   @Test
   void persistsDateSubInputsIntoSessionThenRedirects() throws Exception {
-    var existingForms = new AmendmentForms(new AmendmentForm(), new AmendmentForm());
+    var existingForms =
+        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
     var dateInputs =
@@ -96,7 +99,8 @@ class ClientControllerTest extends BaseControllerTest {
     var client1Form = new AmendmentForm();
     client1Form.setInputs(dateInputs);
 
-    var updatedForms = new AmendmentForms(new AmendmentForm(), new AmendmentForm());
+    var updatedForms =
+        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
     updatedForms.getClient1Form().setCurrent(client1Form);
 
     var request = post(buildAmendClient1Path()).session(session).with(csrf());

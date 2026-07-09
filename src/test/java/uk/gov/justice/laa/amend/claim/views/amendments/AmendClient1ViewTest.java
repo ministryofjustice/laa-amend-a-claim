@@ -201,7 +201,8 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
 
   private AmendmentForms createClientForms(ClaimDetails claim) {
     var view = ClaimClientViewFactory.create(claim);
-    return new AmendmentForms(new AmendmentForm(view.client1Rows()), new AmendmentForm());
+    return new AmendmentForms(
+        new AmendmentForm(view.client1Rows()), new AmendmentForm(), new AmendmentForm());
   }
 
   private void assertCommonPageContent(Document doc) {

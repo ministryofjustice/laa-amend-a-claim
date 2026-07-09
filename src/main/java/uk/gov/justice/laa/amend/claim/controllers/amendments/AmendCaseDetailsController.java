@@ -17,53 +17,43 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
-import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
 @Controller
-@RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
+@RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/amend-case-details")
 @RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
-public class CaseTypeController {
+public class AmendCaseDetailsController {
 
-  private final AvailableFeeCodesService availableFeeCodesService;
-
-  @GetMapping("/amend-fee-code")
-  public String amendFeeCode(
+  @GetMapping
+  public String amendCaseDetails(
       HttpSession session,
       Model model,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    var claim = getValidClaim(session, submissionId, claimId);
-    var availableFeeCodes = availableFeeCodesService.getAvailableFeeCodes(claim.getAreaOfLaw());
-    if (!availableFeeCodes.containsKey(claim.getFeeCode())) {
-      throw new FeeCodeNotFoundException(claim.getFeeCode());
-    }
-
-    var currentFeeCode = availableFeeCodes.get(claim.getFeeCode());
     var amendmentForms = getAmendmentForms(session, claimId);
+    var claim = getValidClaim(session, submissionId, claimId);
+    var caseView = ClaimCaseViewFactory.create(claim);
 
-    model.addAttribute("currentFeeCode", currentFeeCode);
-    model.addAttribute("feeCodes", availableFeeCodes);
-    model.addAttribute("feeCodeForm", amendmentForms.getCaseTypeForm().getCurrent());
-    return "amendments/amend-fee-code";
+    model.addAttribute("caseView", caseView);
+    model.addAttribute("caseDetailsForm", amendmentForms.getCaseDetailsForm().getCurrent());
+    model.addAttribute("forms", amendmentForms);
+    return "amendments/amend-case-details";
   }
 
-  @PostMapping("/amend-fee-code")
-  public String postAmendFeeCode(
+  @PostMapping
+  public String postAmendCaseDetails(
       HttpSession session,
-      @ModelAttribute("feeCodeForm") AmendmentForm caseTypeForm,
+      @ModelAttribute("caseDetailsForm") AmendmentForm caseDetailsForm,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var amendmentForms = getAmendmentForms(session, claimId);
 
-    amendmentForms.getCaseTypeForm().setCurrent(caseTypeForm);
+    amendmentForms.getCaseDetailsForm().setCurrent(caseDetailsForm);
     saveAmendmentForms(session, claimId, amendmentForms);
 
-    // TODO (BC-569): Redirect to matter type code page once implemented
-    return "redirect:/submissions/%s/claims/%s/amendments/amend-matter-type"
-        .formatted(submissionId, claimId);
+    return "redirect:/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
   }
 }

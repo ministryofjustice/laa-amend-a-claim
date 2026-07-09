@@ -20,12 +20,12 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
-import uk.gov.justice.laa.amend.claim.factories.AvailableFeeCodesService;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 
 @WebMvcTest(CaseTypeController.class)
 class CaseTypeControllerTest extends BaseControllerTest {
@@ -66,7 +66,9 @@ class CaseTypeControllerTest extends BaseControllerTest {
     var caseTypeForm = new AmendmentForm();
     caseTypeForm.setInputs(caseTypeRows);
 
-    var updatedForms = new AmendmentForms(new AmendmentForm(), new AmendmentForm());
+    var updatedForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = get(buildAmendFeeCodePath()).session(session).with(csrf());
@@ -92,7 +94,9 @@ class CaseTypeControllerTest extends BaseControllerTest {
     var caseTypeForm = new AmendmentForm();
     caseTypeForm.setInputs(caseTypeRows);
 
-    var updatedForms = new AmendmentForms(new AmendmentForm(), new AmendmentForm());
+    var updatedForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = get(buildAmendFeeCodePath()).session(session).with(csrf());
@@ -119,7 +123,9 @@ class CaseTypeControllerTest extends BaseControllerTest {
     var caseTypeForm = new AmendmentForm();
     caseTypeForm.setInputs(caseTypeRows);
 
-    var updatedForms = new AmendmentForms(new AmendmentForm(), new AmendmentForm());
+    var updatedForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = post(buildAmendFeeCodePath()).session(session).with(csrf());

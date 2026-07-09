@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.factories;
+package uk.gov.justice.laa.amend.claim.service;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
