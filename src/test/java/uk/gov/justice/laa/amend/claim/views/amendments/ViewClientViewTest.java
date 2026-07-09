@@ -102,6 +102,31 @@ class ViewClientViewTest extends AmendmentsBaseTest {
   }
 
   @Test
+  void testShowsAmendedDateFieldInAmendedColumn() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setClientForename(FORENAME);
+    claim.setClientSurname(SURNAME);
+    claim.setClientDateOfBirth(DATE_OF_BIRTH);
+
+    var forms = createClientForms(claim);
+    forms.getClient1Form().getCurrent().getInputs().put("DATE_OF_BIRTH-year", "1985");
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    var clientDetails = getSummaryListInCard(doc, "Client details");
+    assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Current", "Amended");
+    assertSummaryListRowContainsValues(clientDetails.get(1), "First name", FORENAME);
+    assertSummaryListRowContainsValues(clientDetails.get(2), "Last name", SURNAME);
+    assertSummaryListRowContainsValues(
+        clientDetails.get(3), "Date of birth", DATE_OF_BIRTH_RENDERED, "01 January 1985");
+  }
+
+  @Test
   void testShowsUnamendedMediationClientDetails() {
     var claim = MockClaimsFunctions.createMockMediationClaim();
     this.claim = claim;

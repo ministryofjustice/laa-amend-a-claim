@@ -3,7 +3,10 @@ package uk.gov.justice.laa.amend.claim.views.amendments;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
 import java.time.LocalDate;
+import java.util.List;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import uk.gov.justice.laa.amend.claim.controllers.amendments.ClientController;
@@ -107,9 +110,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(client1Details.getFirst(), "Item", "Current", "Amended");
     assertSummaryListRowContainsValues(client1Details.get(1), "First name", FORENAME, FORENAME);
     assertSummaryListRowContainsValues(client1Details.get(2), "Last name", SURNAME, SURNAME);
-    // TODO: Correct test when local dates are correctly parsed
-    assertSummaryListRowContainsValues(
-        client1Details.get(3), "Date of birth", DATE_OF_BIRTH_RENDERED, "TODO");
+    assertDateOfBirthRow(client1Details.get(3));
     assertSummaryListRowContainsValues(
         client1Details.get(4), "Unique client number (UCN)", UCN, UCN);
     assertSummaryListRowContainsValues(client1Details.get(5), "Postcode", POSTCODE, POSTCODE);
@@ -153,9 +154,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Current", "Amended");
     assertSummaryListRowContainsValues(clientDetails.get(1), "First name", FORENAME, FORENAME);
     assertSummaryListRowContainsValues(clientDetails.get(2), "Last name", SURNAME, SURNAME);
-    // TODO: Correct test when local dates are correctly parsed
-    assertSummaryListRowContainsValues(
-        clientDetails.get(3), "Date of birth", DATE_OF_BIRTH_RENDERED, "TODO");
+    assertDateOfBirthRow(clientDetails.get(3));
     assertSummaryListRowContainsValues(clientDetails.get(4), "Gender", GENDER, GENDER);
     assertSummaryListRowContainsValues(clientDetails.get(5), "Ethnicity", ETHNICITY, ETHNICITY);
     assertSummaryListRowContainsValues(clientDetails.get(6), "Disability", DISABILITY, DISABILITY);
@@ -174,6 +173,30 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     // TODO: Correct assertion when booleans are correctly parsed
     assertSummaryListRowContainsValues(
         clientDetails.get(12), "Postal application accepted", "No", "TODO");
+  }
+
+  private void assertDateOfBirthRow(List<Element> row) {
+    assertCellContainsText(row.getFirst(), "Date of birth");
+    assertCellContainsText(row.get(1), DATE_OF_BIRTH_RENDERED);
+
+    Element amended = row.get(2);
+    Element dateInput = selectFirst(amended, ".govuk-date-input");
+
+    Element day = selectFirst(dateInput, "input.govuk-input--width-2");
+    Assertions.assertEquals("1", day.attr("value"), "Day input value");
+    Assertions.assertEquals("DATE_OF_BIRTH-day", day.attr("id"), "Day input id");
+
+    Element year = selectFirst(dateInput, "input.govuk-input--width-4");
+    Assertions.assertEquals("1970", year.attr("value"), "Year input value");
+    Assertions.assertEquals("DATE_OF_BIRTH-year", year.attr("id"), "Year input id");
+
+    Element monthSelect = selectFirst(dateInput, "select");
+    Assertions.assertEquals("DATE_OF_BIRTH-month", monthSelect.attr("id"), "Month select id");
+    Assertions.assertEquals(
+        12, monthSelect.select("option[value~=^[0-9]+$]").size(), "Twelve month options");
+    Element selectedMonth = selectFirst(monthSelect, "option[selected]");
+    Assertions.assertEquals("January", selectedMonth.text(), "Selected month name");
+    Assertions.assertEquals("1", selectedMonth.attr("value"), "Selected month value");
   }
 
   private AmendmentForms createClientForms(ClaimDetails claim) {

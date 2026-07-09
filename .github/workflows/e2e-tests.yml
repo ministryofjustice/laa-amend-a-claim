@@ -20,7 +20,7 @@ on:
       claims_api_image_tag:
         required: false
         type: string
-        default: 'data-claims-api-1.0.42'
+        default: 'data-claims-api-1.2.3'
         description: 'data-claims-api image tag, retrieved from github build logs (needs to update with latest version)'
     secrets:
       KUBE_NAMESPACE:
@@ -260,7 +260,7 @@ jobs:
           check () {
             URL="${UI_BASE_URL}$1"
             printf "\nChecking ${URL}\n"
-            curl -f "${URL}"
+            curl -fsS -o /dev/null "${URL}"
           }
 
           GOVUK_VERSION=$(grep "webjars.npm:govuk-frontend" ../../build.gradle | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
@@ -328,4 +328,3 @@ jobs:
           else
             echo "Release ${RELEASE_NAME} not found, nothing to clean up"
           fi
-

@@ -44,9 +44,7 @@
                 <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key.name()}}"></dt>
                 <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
                 <dd class="govuk-summary-list__value">
-                  <input class="govuk-input"
-                         type="text"
-                         th:field="*{inputs[__${entry.key.name()}__]}" />
+                  <th:block th:replace="~{partials/amendments/amendment-input :: amendmentInput(${entry.key})}"></th:block>
                 </dd>
               </div>
             </dl>
