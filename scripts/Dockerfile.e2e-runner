@@ -5,7 +5,7 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive \
     RUNNER_VERSION=2.331.0 \
     PLATFORM=X64 \
-    NODE_VERSION=20.x \
+    NODE_VERSION=24.x \
     JAVA_HOME=/usr/lib/jvm/java-25-amazon-corretto \
     PATH=/usr/lib/jvm/java-25-amazon-corretto/bin:$PATH
 
