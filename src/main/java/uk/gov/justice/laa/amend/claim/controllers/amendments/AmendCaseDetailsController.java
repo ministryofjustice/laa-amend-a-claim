@@ -21,13 +21,13 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
 @Controller
-@RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
+@RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/amend-case-details")
 @RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
 public class AmendCaseDetailsController {
 
-  @GetMapping("/amend-case-details")
+  @GetMapping
   public String amendCaseDetails(
       HttpSession session,
       Model model,
@@ -43,7 +43,7 @@ public class AmendCaseDetailsController {
     return "amendments/amend-case-details";
   }
 
-  @PostMapping("/amend-case-details")
+  @PostMapping
   public String postAmendCaseDetails(
       HttpSession session,
       @ModelAttribute("caseDetailsForm") AmendmentForm caseDetailsForm,
