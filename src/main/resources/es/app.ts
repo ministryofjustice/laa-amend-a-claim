@@ -8,7 +8,6 @@ MOJFrontend.initAll();
 
 document.querySelectorAll<HTMLAnchorElement>('[data-module="back-link"]').forEach(function (link: HTMLAnchorElement): void {
     link.addEventListener('click', function (e: MouseEvent): void {
-        console.log('Back link clicked');
         e.preventDefault();
         window.history.back();
     });

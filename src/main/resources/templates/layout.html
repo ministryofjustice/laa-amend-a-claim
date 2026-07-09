@@ -25,13 +25,13 @@
                class="govuk-back-link"
                th:text="#{service.back}">
             </a>
-            <th:block th:replace="~{partials/outage-banner :: outage-banner}"/>
+            <th:block th:replace="~{partials/outage-banner :: outage-banner}"/>z`
             <th:block th:replace="${mainContent}">Default Main Content</th:block>
         </div>
 
         <th:block th:replace="~{partials/footer :: footer}"></th:block>
 
-        <script src="/js/accessible-autocomplete.min.js"></script>
+        <script th:src="@{/js/accessible-autocomplete.min.js}"></script>
         <script type="module" th:src="@{/js/app.min.js}"></script>
     </body>
 

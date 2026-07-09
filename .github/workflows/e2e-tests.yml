@@ -263,18 +263,18 @@ jobs:
             curl -fsS -o /dev/null "${URL}"
           }
 
-          GOVUK_VERSION=$(grep "webjars.npm:govuk-frontend" ../../build.gradle | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-          MOJ_VERSION=$(grep "webjars.npm:ministryofjustice__frontend" ../../build.gradle | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          
+          GOVUK_VERSION=$(jq -r '.devDependencies["govuk-frontend"]' ../../package.json | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          MOJ_VERSION=$(jq -r '.devDependencies["@ministryofjustice/frontend"]' ../../package.json | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          echo "Expecting GOV.UK Frontend ${GOVUK_VERSION} and MOJ Frontend ${MOJ_VERSION} (from package.json)"
 
           echo "Checking scripts..."
           check "/js/app.min.js"
-          check "/webjars/govuk-frontend/dist/govuk/govuk-frontend.min.js"
-          check "/webjars/ministryofjustice__frontend/moj/moj-frontend.min.js"
+          check "/js/govuk-frontend.min.js"
+          check "/js/moj-frontend.min.js"
           
           echo "Checking styling..."
-          check "/css/styles.css"
-          check "/webjars/govuk-frontend/${GOVUK_VERSION}/dist/govuk/govuk-frontend.min.css"
-          check "/webjars/ministryofjustice__frontend/${MOJ_VERSION}/moj/moj-frontend.min.css"
+          check "/css/app.min.css"
           
           echo "Running E2E tests..."
           ./gradlew clean test --no-daemon
