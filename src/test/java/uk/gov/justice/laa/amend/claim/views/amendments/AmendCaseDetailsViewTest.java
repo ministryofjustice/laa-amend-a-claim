@@ -149,12 +149,12 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         CASE_REFERENCE_NUMBER,
         CASE_REFERENCE_NUMBER);
     assertSummaryListRowContainsValues(
-        caseDetails.get(4), "Case start date", CASE_START_DATE.format(testFormatter), "TODO");
+        caseDetails.get(4), "Case start date", CASE_START_DATE.format(testFormatter), "");
     assertSummaryListRowContainsValues(
         caseDetails.get(5),
         "Case concluded date or case claimed date",
         CASE_CONCLUDED_DATE.format(testFormatter),
-        "TODO");
+        "");
     assertSummaryListRowContainsValues(caseDetails.get(6), "Unique file number (UFN)", UFN, UFN);
     assertSummaryListRowContainsValues(
         caseDetails.get(7), "Case stage or level", CASE_STAGE, CASE_STAGE);
@@ -225,7 +225,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(29), "Type of advice", ADVICE_TYPE, ADVICE_TYPE);
     assertSummaryListRowContainsValues(
-        caseDetails.get(30), "Transfer date", TRANSFER_DATE.format(testFormatter), "TODO");
+        caseDetails.get(30), "Transfer date", TRANSFER_DATE.format(testFormatter), "");
     assertSummaryListRowContainsValues(
         caseDetails.get(31),
         "Medical reports claimed",
@@ -239,7 +239,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(33), "Immigration removal centre (IRC) surgery", YES, "TODO");
     assertSummaryListRowContainsValues(
-        caseDetails.get(34), "Surgery date", SURGERY_DATE.format(testFormatter), "TODO");
+        caseDetails.get(34), "Surgery date", SURGERY_DATE.format(testFormatter), "");
     assertSummaryListRowContainsValues(
         caseDetails.get(35),
         "Number of clients seen at surgery",
@@ -297,12 +297,9 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         caseDetails.get(3),
         "Representation order date",
         REPRESENTATION_ORDER_DATE.format(testFormatter),
-        "TODO");
+        "");
     assertSummaryListRowContainsValues(
-        caseDetails.get(4),
-        "Case concluded date",
-        CASE_CONCLUDED_DATE.format(testFormatter),
-        "TODO");
+        caseDetails.get(4), "Case concluded date", CASE_CONCLUDED_DATE.format(testFormatter), "");
     assertSummaryListRowContainsValues(
         caseDetails.get(5), "Standard fee category", STANDARD_FEE_CATEGORY, STANDARD_FEE_CATEGORY);
     assertSummaryListRowContainsValues(
@@ -373,15 +370,12 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         CASE_REFERENCE_NUMBER,
         CASE_REFERENCE_NUMBER);
     assertSummaryListRowContainsValues(
-        caseDetails.get(2), "Case start date", CASE_START_DATE.format(testFormatter), "TODO");
+        caseDetails.get(2), "Case start date", CASE_START_DATE.format(testFormatter), "");
     assertSummaryListRowContainsValues(caseDetails.get(3), "Claim ID", CASE_ID, CASE_ID);
     assertSummaryListRowContainsValues(
         caseDetails.get(4), "Unique case ID", UNIQUE_CASE_ID, UNIQUE_CASE_ID);
     assertSummaryListRowContainsValues(
-        caseDetails.get(5),
-        "Case concluded date",
-        CASE_CONCLUDED_DATE.format(testFormatter),
-        "TODO");
+        caseDetails.get(5), "Case concluded date", CASE_CONCLUDED_DATE.format(testFormatter), "");
     assertSummaryListRowContainsValues(
         caseDetails.get(6),
         "Number of mediation sessions",

@@ -83,8 +83,12 @@ class StartControllerTest extends BaseControllerTest {
     Map<String, String> caseDetailsRows = new HashMap<>();
     caseDetailsRows.put("STAGE_REACHED", claim.getStageReached());
     caseDetailsRows.put("UNIQUE_FILE_NUMBER", claim.getUniqueFileNumber());
-    caseDetailsRows.put("REPRESENTATION_ORDER_DATE", "TODO");
-    caseDetailsRows.put("CASE_CONCLUDED_DATE", "TODO");
+    caseDetailsRows.put("REPRESENTATION_ORDER_DATE-day", "1");
+    caseDetailsRows.put("REPRESENTATION_ORDER_DATE-month", "1");
+    caseDetailsRows.put("REPRESENTATION_ORDER_DATE-year", "2000");
+    caseDetailsRows.put("CASE_CONCLUDED_DATE-day", "1");
+    caseDetailsRows.put("CASE_CONCLUDED_DATE-month", "1");
+    caseDetailsRows.put("CASE_CONCLUDED_DATE-year", "2001");
     caseDetailsRows.put("STANDARD_FEE_CATEGORY", claim.getStandardFeeCategory());
     caseDetailsRows.put("OUTCOME_FOR_CLIENT", claim.getOutcome());
     caseDetailsRows.put("SUSPECTS_DEFENDANTS_COUNT", "TODO");
