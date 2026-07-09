@@ -29,3 +29,17 @@ document.querySelectorAll<HTMLFormElement>('[id=bulk-upload-form]').forEach(func
         (form.querySelector('#drop-zone') as HTMLElement).style.display = "none";
     });
 });
+
+
+const selectDropdowns = document.querySelectorAll<HTMLSelectElement>('[data-module="make-autocomplete"]');
+
+// For each dropdown
+selectDropdowns.forEach(function (select: HTMLSelectElement) {
+    accessibleAutocomplete.enhanceSelectElement({
+        element: select,
+        id: select.id,
+        defaultValue: select.options[select.options.selectedIndex].innerHTML,
+        selectElement: select,
+        allowEmpty: true
+    });
+});

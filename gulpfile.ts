@@ -1,11 +1,10 @@
-import gulp from 'gulp';
-import { task, series } from 'gulp';
+import gulp, {series, task} from 'gulp';
 import rename from 'gulp-rename';
 import cleanCSS from 'gulp-clean-css';
 import gulpSass from 'gulp-sass';
 import * as dartSass from 'sass';
 import browserSyncModule from 'browser-sync';
-import type { Transform } from 'stream';
+import type {Transform} from 'stream';
 import gulpTypescript from 'gulp-typescript';
 import terser from 'gulp-terser';
 
@@ -17,17 +16,18 @@ const tsProject = gulpTypescript.createProject('tsconfig.json');
 function compileStylesheets() {
   return gulp.src('src/main/resources/sass/app.scss')
   .pipe(sass.sync({
-    // Set to project root and node_modules
-    // on purpose to make moj stylesheet find gov uk references
-    // properly within node_modules.
-    loadPaths: ['.','node_modules'],
-    quietDeps: true,        // silences the @import deprecation noise from vendor files
-    silenceDeprecations: ['import']
-  })
-    .on('error', function (this: Transform, err: Error) {
+        // Set to project root and node_modules
+        // on purpose to make moj stylesheet find gov uk references
+        // properly within node_modules.
+        loadPaths: ['.', 'node_modules'],
+        quietDeps: true,        // silences the @import deprecation noise from vendor files
+        silenceDeprecations: ['import']
+      })
+      .on('error', function (this: Transform, err: Error) {
+        // @ts-ignore: Usually shouldn't supress, however this is a dev file and not for production.
         sass.logError.call(this, err);   // print the readable Sass error
         this.emit('end');                // end the stream so Gulp doesn't hang
-    })
+      })
   )
   .pipe(cleanCSS())
   .pipe(rename('app.min.css'))
@@ -35,34 +35,45 @@ function compileStylesheets() {
   .on('end', () => console.log('CSS written to src/main/resources/static/css'));
 }
 
-function copyGOVUKJavascript(){
+function copyGOVUKJavascript() {
   return gulp.src('node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.js')
   .pipe(gulp.dest('src/main/resources/static/js'))
   .pipe(gulp.dest('src/main/resources/es'))
   .on('end', () => console.log('GOV.UK JS copied to src/main/resources/static/js and src/main/resources/es'));
 }
 
-function copyMOJJavascript(){
+function copyGOVUKAutocompleteJavascript() {
+  return gulp.src('node_modules/accessible-autocomplete/dist/accessible-autocomplete.min.js')
+  .pipe(gulp.dest('src/main/resources/static/js'))
+  .pipe(gulp.dest('src/main/resources/es'))
+  .on('end', () => console.log('GOV.UK Autocomplete JS copied to src/main/resources/static/js and src/main/resources/es'));
+
+}
+
+function copyMOJJavascript() {
   return gulp.src('node_modules/@ministryofjustice/frontend/moj/moj-frontend.min.js')
   .pipe(gulp.dest('src/main/resources/static/js'))
   .pipe(gulp.dest('src/main/resources/es'))
   .on('end', () => console.log('MOJ JS copied to src/main/resources/static/js and src/main/resources/es'));
 }
 
-function copyGOVUKAssets(){
+function copyGOVUKAssets() {
   return gulp.src('node_modules/govuk-frontend/dist/govuk/assets/**/*')
   .pipe(gulp.dest('src/main/resources/static/assets'))
   .on('end', () => console.log('GOV.UK assets copied to src/main/resources/static/assets'));
 }
 
-function copyMOJAssets(){
+function copyMOJAssets() {
   return gulp.src('node_modules/@ministryofjustice/frontend/moj/assets/**/*')
   .pipe(gulp.dest('src/main/resources/static/assets'))
   .on('end', () => console.log('MOJ assets copied to src/main/resources/static/assets'));
 }
 
 function compileScripts() {
-  return gulp.src('src/main/resources/es/app.ts')
+  return gulp.src([
+    'src/main/resources/es/**/*.ts',
+    'src/main/resources/es/**/*.d.ts'
+  ])
   .pipe(tsProject())
   .pipe(terser())
   .pipe(rename('app.min.js'))
@@ -116,9 +127,9 @@ function watch() {
 }
 
 task('copy-assets', series(copyGOVUKAssets, copyMOJAssets));
-task('copy-js', series(copyGOVUKJavascript, copyMOJJavascript));
+task('copy-js', series(copyGOVUKJavascript, copyGOVUKAutocompleteJavascript, copyMOJJavascript));
 task('compile-stylesheets', compileStylesheets);
 task('compile-scripts', series('copy-js', compileScripts));
 
-task('default',  series('copy-assets', 'compile-stylesheets', 'compile-scripts'));
+task('default', series('copy-assets', 'compile-stylesheets', 'compile-scripts'));
 task('watch', series(watch));
