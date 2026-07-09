@@ -27,3 +27,5 @@ e2e.log
 e2e.api.log
 
 node_modules/
+
+/src/main/resources/static/
