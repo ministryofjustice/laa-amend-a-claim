@@ -25,7 +25,8 @@ public class LocalSecurityConfigIntegrationTest extends RedisSetup {
   @Autowired private MockMvc mockMvc;
 
   @ParameterizedTest
-  @ValueSource(strings = {"/", "/js/app.min.js", "/css/styles.css"})
+  @ValueSource(
+      strings = {"/", "/js/app.min.js", "/js/accessible-autocomplete.min.js", "/css/app.min.css"})
   void responseOnGetHasCorrectHeaders(String url) throws Exception {
     mockMvc
         .perform(get(url))
