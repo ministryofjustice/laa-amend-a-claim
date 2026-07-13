@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<th:block th:fragment="amendmentInput(field)">
+<th:block th:fragment="amendmentInput(field, labelMessageKey)">
   <th:block th:if="${field.type.name() == 'DATE'}">
     <th:block th:replace="~{partials/amendments/date-input :: amendmentDateInput(${field.name()})}"></th:block>
+  </th:block>
+  <th:block th:if="${field.type.name() == 'BOOLEAN'}">
+    <th:block th:replace="~{partials/amendments/boolean-input :: amendmentBooleanInput(${field.name()}, ${labelMessageKey})}"></th:block>
   </th:block>
   <input th:if="${field.type.name() == 'TEXT'}"
          class="govuk-input"

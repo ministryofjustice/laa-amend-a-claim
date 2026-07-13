@@ -117,11 +117,13 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(client1Details.get(6), "Gender", GENDER, GENDER);
     assertSummaryListRowContainsValues(client1Details.get(7), "Ethnicity", ETHNICITY, ETHNICITY);
     assertSummaryListRowContainsValues(client1Details.get(8), "Disability", DISABILITY, DISABILITY);
-    // TODO: Correct assertion when booleans are correctly parsed
-    assertSummaryListRowContainsValues(client1Details.get(9), "Legally aided", "Yes", "TODO");
-    // TODO: Correct assertion when booleans are correctly parsed
-    assertSummaryListRowContainsValues(
-        client1Details.get(10), "Postal application accepted", "No", "TODO");
+    assertBooleanSelectRow(client1Details.get(9), "Legally aided", "Yes", "IS_LEGALLY_AIDED", true);
+    assertBooleanSelectRow(
+        client1Details.get(10),
+        "Postal application accepted",
+        "No",
+        "IS_POSTAL_APPLICATION_ACCEPTED",
+        false);
   }
 
   @Test
@@ -159,8 +161,8 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(5), "Ethnicity", ETHNICITY, ETHNICITY);
     assertSummaryListRowContainsValues(clientDetails.get(6), "Disability", DISABILITY, DISABILITY);
     assertSummaryListRowContainsValues(clientDetails.get(7), "Postcode", POSTCODE, POSTCODE);
-    // TODO: Correct assertion when booleans are correctly parsed
-    assertSummaryListRowContainsValues(clientDetails.get(8), "Eligible client", "Yes", "TODO");
+    assertBooleanSelectRow(
+        clientDetails.get(8), "Eligible client", "Yes", "IS_ELIGIBLE_CLIENT", true);
     assertSummaryListRowContainsValues(
         clientDetails.get(9), "Client type", CLIENT_TYPE, CLIENT_TYPE);
     assertSummaryListRowContainsValues(
@@ -170,9 +172,12 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
         "Home Office unique client number (HO UCN)",
         HOME_OFFICE_CLIENT_NUMBER,
         HOME_OFFICE_CLIENT_NUMBER);
-    // TODO: Correct assertion when booleans are correctly parsed
-    assertSummaryListRowContainsValues(
-        clientDetails.get(12), "Postal application accepted", "No", "TODO");
+    assertBooleanSelectRow(
+        clientDetails.get(12),
+        "Postal application accepted",
+        "No",
+        "IS_POSTAL_APPLICATION_ACCEPTED",
+        false);
   }
 
   private void assertDateOfBirthRow(List<Element> row) {

@@ -45,6 +45,8 @@ public class AmendmentForm {
       var field = entry.getKey();
       if (field.getType() == FieldType.DATE) {
         putDateInputs(inputs, field.name(), entry.getValue());
+      } else if (field.getType() == FieldType.BOOLEAN) {
+        inputs.put(field.name(), formatBooleanValue(field.name(), entry.getValue()));
       } else {
         inputs.put(field.name(), formatValue(entry.getValue()));
       }
@@ -121,6 +123,28 @@ public class AmendmentForm {
     return isDateField(fieldName) ? getDateValue(fieldName) : inputs.get(fieldName);
   }
 
+  public Object getAmendedValue(ClaimViewField<?> field) {
+    return switch (field.getType()) {
+      case DATE -> getDateValue(field.name());
+      case BOOLEAN -> getBooleanValue(field.name());
+      case TEXT -> inputs.get(field.name());
+    };
+  }
+
+  public Boolean getBooleanValue(String fieldName) {
+    var value = inputs.get(fieldName);
+    if (isBlank(value)) {
+      return null;
+    }
+    return switch (value.trim().toLowerCase()) {
+      case "true" -> true;
+      case "false" -> false;
+      default ->
+          throw new IllegalArgumentException(
+              "Invalid boolean value for field '%s'".formatted(fieldName));
+    };
+  }
+
   public LocalDate getDateValue(String fieldName) {
     var day = inputs.get(fieldName + DAY_SUFFIX);
     var month = inputs.get(fieldName + MONTH_SUFFIX);
@@ -166,6 +190,17 @@ public class AmendmentForm {
           throw new IllegalArgumentException(
               "LocalDate value must be handled as a date field (FieldType.DATE), not formatted here");
       default -> "TODO";
+    };
+  }
+
+  private static String formatBooleanValue(String name, Object value) {
+    return switch (value) {
+      case null -> "";
+      case Boolean booleanValue -> booleanValue.toString();
+      default ->
+          throw new IllegalArgumentException(
+              "Expected Boolean for boolean field '%s' but got %s"
+                  .formatted(name, value.getClass()));
     };
   }
 

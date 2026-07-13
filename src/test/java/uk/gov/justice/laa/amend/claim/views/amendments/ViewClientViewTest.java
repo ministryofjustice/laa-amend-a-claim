@@ -229,8 +229,8 @@ class ViewClientViewTest extends AmendmentsBaseTest {
     forms.getClient1Form().getCurrent().getInputs().put("GENDER", "changed");
     forms.getClient1Form().getCurrent().getInputs().put("ETHNICITY", "changed");
     forms.getClient1Form().getCurrent().getInputs().put("DISABILITY", "changed");
-    forms.getClient1Form().getCurrent().getInputs().put("IS_LEGALLY_AIDED", "changed");
-    forms.getClient1Form().getCurrent().getInputs().put("IS_POSTAL_APPLICATION_ACCEPTED", "false");
+    forms.getClient1Form().getCurrent().getInputs().put("IS_LEGALLY_AIDED", "false");
+    forms.getClient1Form().getCurrent().getInputs().put("IS_POSTAL_APPLICATION_ACCEPTED", "true");
 
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
@@ -249,9 +249,9 @@ class ViewClientViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(client1Details.get(6), "Gender", GENDER, "changed");
     assertSummaryListRowContainsValues(client1Details.get(7), "Ethnicity", ETHNICITY, "changed");
     assertSummaryListRowContainsValues(client1Details.get(8), "Disability", DISABILITY, "changed");
-    assertSummaryListRowContainsValues(client1Details.get(9), "Legally aided", "Yes", "changed");
+    assertSummaryListRowContainsValues(client1Details.get(9), "Legally aided", "Yes", "No");
     assertSummaryListRowContainsValues(
-        client1Details.get(10), "Postal application accepted", "No", "false");
+        client1Details.get(10), "Postal application accepted", "No", "Yes");
 
     var client2Details = getSummaryListInCard(doc, "Client 2 details");
     assertSummaryListRowContainsValues(client2Details.getFirst(), "First name", CLIENT_2_FORENAME);
@@ -347,7 +347,7 @@ class ViewClientViewTest extends AmendmentsBaseTest {
     forms.getClient1Form().getCurrent().getInputs().put("GENDER", "changed");
     forms.getClient1Form().getCurrent().getInputs().put("ETHNICITY", "changed");
     forms.getClient1Form().getCurrent().getInputs().put("DISABILITY", "changed");
-    forms.getClient1Form().getCurrent().getInputs().put("IS_ELIGIBLE_CLIENT", "changed");
+    forms.getClient1Form().getCurrent().getInputs().put("IS_ELIGIBLE_CLIENT", "false");
     forms.getClient1Form().getCurrent().getInputs().put("CLIENT_TYPE", "changed");
     forms.getClient1Form().getCurrent().getInputs().put("HOME_OFFICE_CLIENT_NUMBER", "changed");
     forms.getClient1Form().getCurrent().getInputs().put("IS_POSTAL_APPLICATION_ACCEPTED", "false");
@@ -366,7 +366,7 @@ class ViewClientViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(5), "Ethnicity", ETHNICITY, "changed");
     assertSummaryListRowContainsValues(clientDetails.get(6), "Disability", DISABILITY, "changed");
     assertSummaryListRowContainsValues(clientDetails.get(7), "Postcode", POSTCODE, "changed");
-    assertSummaryListRowContainsValues(clientDetails.get(8), "Eligible client", "Yes", "changed");
+    assertSummaryListRowContainsValues(clientDetails.get(8), "Eligible client", "Yes", "No");
     assertSummaryListRowContainsValues(clientDetails.get(9), "Client type", CLIENT_TYPE, "changed");
     assertSummaryListRowContainsValues(
         clientDetails.get(10), "Unique client number (UCN)", UCN, "changed");
@@ -376,7 +376,7 @@ class ViewClientViewTest extends AmendmentsBaseTest {
         HOME_OFFICE_CLIENT_NUMBER,
         "changed");
     assertSummaryListRowContainsValues(
-        clientDetails.get(12), "Postal application accepted", "Yes", "false");
+        clientDetails.get(12), "Postal application accepted", "Yes", "No");
 
     assertPageHasLink(doc, "check", "Continue", checkUrl);
     assertPageHasLink(doc, "cancel", "Cancel", overviewUrl);

@@ -99,8 +99,8 @@ class StartControllerTest extends BaseControllerTest {
     caseDetailsRows.put("MAAT_ID", claim.getMaatId());
     caseDetailsRows.put(
         "PRISON_LAW_PRIOR_APPROVAL_NUMBER", claim.getPrisonLawPriorApprovalNumber());
-    caseDetailsRows.put("IS_DUTY_SOLICITOR", "TODO");
-    caseDetailsRows.put("IS_YOUTH_COURT", "TODO");
+    caseDetailsRows.put("IS_DUTY_SOLICITOR", "true");
+    caseDetailsRows.put("IS_YOUTH_COURT", "true");
 
     var caseDetailsForm = new AmendmentForm();
     caseDetailsForm.setInputs(caseDetailsRows);
