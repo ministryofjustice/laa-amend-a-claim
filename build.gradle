@@ -45,6 +45,20 @@ configurations.configureEach {
             details.useVersion '4.0.3'
             details.because 'Fixes Directory Traversal (SNYK-JAVA-ORGCODEHAUSPLEXUS-15766699)'
         }
+        if (details.requested.group == 'org.apache.logging.log4j' && details.requested.name in ['log4j-api', 'log4j-to-slf4j']) {
+            details.useVersion '2.25.5'
+            details.because 'Fixes Improper Encoding or Escaping of Output (SNYK-JAVA-ORGAPACHELOGGINGLOG4J-17954276)'
+        }
+        if (details.requested.group == 'org.apache.httpcomponents.core5' && details.requested.name == 'httpcore5-h2') {
+            details.useVersion '5.4.3'
+            details.because 'Fixes Allocation of Resources Without Limits or Throttling (SNYK-JAVA-ORGAPACHEHTTPCOMPONENTSCORE5-17817217)'
+        }
+        if (details.requested.group == 'com.fasterxml.jackson.core' && details.requested.name == 'jackson-annotations') {
+            details.useVersion '2.21'
+        } else if (details.requested.group.startsWith('com.fasterxml.jackson')) {
+            details.useVersion '2.21.5'
+            details.because 'Fixes Improperly Controlled Modification of Dynamically-Determined Object Attributes (SNYK-JAVA-COMFASTERXMLJACKSONCORE-17457695)'
+        }
     }
 }
 
