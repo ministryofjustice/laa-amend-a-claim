@@ -78,7 +78,7 @@ public class CaseTypeController {
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
 
-    return "amendments/amend-matter-type-legal-help";
+    return "amendments/amend-matter-type";
   }
 
   @PostMapping("/amend-matter-type")

@@ -38,7 +38,8 @@ class CaseTypeControllerTest extends BaseControllerTest {
   private ClaimDetails claim;
 
   private static final String FEE_CODE = "feecode";
-  private static final String MATTER_TYPE_CODE = "mattertype";
+  private static final String MATTER_TYPE_CODE_1 = "mattertype1";
+  private static final String MATTER_TYPE_CODE_2 = "mattertype2";
 
   @MockitoBean AvailableFeeCodesService availableFeeCodesService;
 
@@ -58,7 +59,7 @@ class CaseTypeControllerTest extends BaseControllerTest {
   void getAmendFeeCodeAsExpected() throws Exception {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterTypeCode(MATTER_TYPE_CODE);
+    claim.setMatterTypeCode(MATTER_TYPE_CODE_1);
     claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
     session.setAttribute(claimId.toString(), claim);
 
@@ -86,7 +87,7 @@ class CaseTypeControllerTest extends BaseControllerTest {
   void getFeeCodeCatchMissingFeeCode() throws Exception {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterTypeCode(MATTER_TYPE_CODE);
+    claim.setMatterTypeCode(MATTER_TYPE_CODE_1);
     claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
     session.setAttribute(claimId.toString(), claim);
 
@@ -116,7 +117,7 @@ class CaseTypeControllerTest extends BaseControllerTest {
   void postFeeCodeAsExpected() throws Exception {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterTypeCode(MATTER_TYPE_CODE);
+    claim.setMatterTypeCode(MATTER_TYPE_CODE_1);
     session.setAttribute(claimId.toString(), claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
@@ -138,6 +139,138 @@ class CaseTypeControllerTest extends BaseControllerTest {
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(buildAmendMatterTypeCodePath()))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
+  @Test
+  void getAmendMatterStartsLegalHelpAsExpected() throws Exception {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setFeeCode(FEE_CODE);
+    claim.setMatterType1(MATTER_TYPE_CODE_1);
+    claim.setMatterType2(MATTER_TYPE_CODE_2);
+    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeRows =
+        Map.of(
+            "FEE_CODE",
+            FEE_CODE,
+            "MATTER_TYPE_CODE_1",
+            MATTER_TYPE_CODE_1,
+            "MATTER_TYPE_CODE_2",
+            MATTER_TYPE_CODE_2);
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    var updatedForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
+
+    var request = get(buildAmendMatterTypeCodePath()).session(session).with(csrf());
+
+    when(availableFeeCodesService.getAvailableFeeCodes(AreaOfLaw.CRIME_LOWER))
+        .thenReturn(Map.of(FEE_CODE, FEE_CODE));
+    mockMvc
+        .perform(request)
+        .andExpect(status().isOk())
+        .andExpect(view().name("amendments/amend-matter-type"))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
+  @Test
+  void getAmendMatterStartsMediationAsExpected() throws Exception {
+    var claim = MockClaimsFunctions.createMockMediationClaim();
+    claim.setFeeCode(FEE_CODE);
+    claim.setMatterType(MATTER_TYPE_CODE_1);
+    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeRows = Map.of("FEE_CODE", FEE_CODE, "MATTER_TYPE_CODE", MATTER_TYPE_CODE_1);
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    var updatedForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
+
+    var request = get(buildAmendMatterTypeCodePath()).session(session).with(csrf());
+
+    when(availableFeeCodesService.getAvailableFeeCodes(AreaOfLaw.CRIME_LOWER))
+        .thenReturn(Map.of(FEE_CODE, FEE_CODE));
+    mockMvc
+        .perform(request)
+        .andExpect(status().isOk())
+        .andExpect(view().name("amendments/amend-matter-type"))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
+  @Test
+  void postMatterTypeCodeLegalHelpAsExpected() throws Exception {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setFeeCode(FEE_CODE);
+    claim.setMatterType1(MATTER_TYPE_CODE_1);
+    claim.setMatterType2(MATTER_TYPE_CODE_2);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeRows =
+        Map.of(
+            "FEE_CODE",
+            FEE_CODE,
+            "MATTER_TYPE_CODE_1",
+            MATTER_TYPE_CODE_1,
+            "MATTER_TYPE_CODE_2",
+            MATTER_TYPE_CODE_2);
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    var updatedForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
+
+    var request = post(buildAmendMatterTypeCodePath()).session(session).with(csrf());
+    for (var entry : caseTypeRows.entrySet()) {
+      request.param(INPUTS.formatted(entry.getKey()), entry.getValue());
+    }
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildAmendCasePath()))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
+  @Test
+  void postMatterTypeCodeMediationAsExpected() throws Exception {
+    var claim = MockClaimsFunctions.createMockMediationClaim();
+    claim.setFeeCode(FEE_CODE);
+    claim.setMatterType(MATTER_TYPE_CODE_1);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeRows = Map.of("FEE_CODE", FEE_CODE, "MATTER_TYPE_CODE", MATTER_TYPE_CODE_1);
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    var updatedForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
+
+    var request = post(buildAmendMatterTypeCodePath()).session(session).with(csrf());
+    for (var entry : caseTypeRows.entrySet()) {
+      request.param(INPUTS.formatted(entry.getKey()), entry.getValue());
+    }
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildAmendCasePath()))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
+  private String buildAmendCasePath() {
+    return "/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
   }
 
   private String buildAmendFeeCodePath() {

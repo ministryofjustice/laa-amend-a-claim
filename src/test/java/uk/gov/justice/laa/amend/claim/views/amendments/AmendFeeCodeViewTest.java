@@ -18,7 +18,7 @@ import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
 @WebMvcTest(CaseTypeController.class)
-class AmendCaseTypeViewTest extends AmendmentsBaseTest {
+class AmendFeeCodeViewTest extends AmendmentsBaseTest {
 
   private static final String FEE_CODE = "feecode";
   private static final String MATTER_TYPE_CODE = "matter";
@@ -27,7 +27,7 @@ class AmendCaseTypeViewTest extends AmendmentsBaseTest {
 
   @MockitoBean AvailableFeeCodesService availableFeeCodesService;
 
-  AmendCaseTypeViewTest() {
+  AmendFeeCodeViewTest() {
     this.mapping = amendCaseTypeUrl;
   }
 

@@ -880,8 +880,7 @@ class ClaimMapperTest {
     assertEquals("FeeCodeDesc", claim.getFeeCodeDescription());
     assertEquals("Civil", claim.getCategoryOfLaw());
     assertTrue(claim.getEscaped());
-    assertEquals("MT1", claim.getMatterType1());
-    assertEquals("MT2", claim.getMatterType2());
+    assertEquals("MT1", claim.getMatterType());
     assertEquals(claimSummaryFeeId, claim.getClaimSummaryFeeId());
     assertEquals(uk.gov.justice.laa.amend.claim.models.AreaOfLaw.MEDIATION, claim.getAreaOfLaw());
     assertEquals("0P322F", claim.getOfficeCode());
