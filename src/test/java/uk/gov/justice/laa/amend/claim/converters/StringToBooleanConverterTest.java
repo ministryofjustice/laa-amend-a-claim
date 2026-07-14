@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.converters;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,5 +30,22 @@ public class StringToBooleanConverterTest {
   @ParameterizedTest
   void convertsStringToBoolean(String input, Boolean expected) {
     assertEquals(expected, converter.convert(input));
+  }
+
+  @ParameterizedTest
+  @MethodSource("provideInvalidArguments")
+  void existingConverterTreatsInvalidInputAsFalse(String input) {
+    assertEquals(false, converter.convert(input));
+  }
+
+  @ParameterizedTest
+  @MethodSource("provideInvalidArguments")
+  void strictConverterThrowsWhenInputIsNotBoolean(String input) {
+    assertThrows(
+        IllegalArgumentException.class, () -> StringToBooleanConverter.convertStrict(input));
+  }
+
+  private static Stream<Arguments> provideInvalidArguments() {
+    return Stream.of(Arguments.of("not-a-boolean"), Arguments.of("1"), Arguments.of("0"));
   }
 }

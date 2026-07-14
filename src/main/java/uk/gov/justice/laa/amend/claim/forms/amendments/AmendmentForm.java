@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.Data;
+import uk.gov.justice.laa.amend.claim.converters.StringToBooleanConverter;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
@@ -136,13 +137,12 @@ public class AmendmentForm {
     if (isBlank(value)) {
       return null;
     }
-    return switch (value.trim().toLowerCase()) {
-      case "true" -> true;
-      case "false" -> false;
-      default ->
-          throw new IllegalArgumentException(
-              "Invalid boolean value for field '%s'".formatted(fieldName));
-    };
+    try {
+      return StringToBooleanConverter.convertStrict(value);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException(
+          "Invalid boolean value for field '%s'".formatted(fieldName), e);
+    }
   }
 
   public LocalDate getDateValue(String fieldName) {
