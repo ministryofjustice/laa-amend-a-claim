@@ -73,12 +73,25 @@ public class CaseTypeController {
       @ModelAttribute("caseTypeForm") AmendmentForm amendmentForm,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
 
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
 
     return "amendments/amend-matter-type-legal-help";
+  }
+
+  @PostMapping("/amend-matter-type")
+  public String postAmendMatterType(
+      HttpSession session,
+      @ModelAttribute("caseTypeForm") AmendmentForm caseTypeForm,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    var amendmentForms = getAmendmentForms(session, claimId);
+
+    amendmentForms.getCaseTypeForm().setCurrent(caseTypeForm);
+    saveAmendmentForms(session, claimId, amendmentForms);
+
+    return "redirect:/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
   }
 }

@@ -34,7 +34,7 @@
       <form method="post"
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-matter-type(submissionId=${submissionId}, claimId=${claimId})}"
             th:object="${caseTypeForm}">
-
+        <input type="hidden" th:field="*{inputs['FEE_CODE']}"/>
 
         <div class="govuk-form-group">
           <label class="govuk-label govuk-!-font-weight-bold" for="matter-type-one-input" th:text="#{amendments.matterType.amended.one}"/>
