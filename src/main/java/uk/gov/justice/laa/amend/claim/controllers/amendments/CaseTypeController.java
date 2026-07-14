@@ -47,14 +47,14 @@ public class CaseTypeController {
 
     model.addAttribute("currentFeeCode", currentFeeCode);
     model.addAttribute("feeCodes", availableFeeCodes);
-    model.addAttribute("feeCodeForm", amendmentForms.getCaseTypeForm().getCurrent());
+    model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
     return "amendments/amend-fee-code";
   }
 
   @PostMapping("/amend-fee-code")
   public String postAmendFeeCode(
       HttpSession session,
-      @ModelAttribute("feeCodeForm") AmendmentForm caseTypeForm,
+      @ModelAttribute("caseTypeForm") AmendmentForm caseTypeForm,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var amendmentForms = getAmendmentForms(session, claimId);
@@ -62,8 +62,22 @@ public class CaseTypeController {
     amendmentForms.getCaseTypeForm().setCurrent(caseTypeForm);
     saveAmendmentForms(session, claimId, amendmentForms);
 
-    // TODO (BC-569): Redirect to matter type code page once implemented
     return "redirect:/submissions/%s/claims/%s/amendments/amend-matter-type"
         .formatted(submissionId, claimId);
+  }
+
+  @GetMapping("/amend-matter-type")
+  public String getAmendMatterType(
+      HttpSession session,
+      Model model,
+      @ModelAttribute("caseTypeForm") AmendmentForm amendmentForm,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
+    var amendmentForms = getAmendmentForms(session, claimId);
+
+    model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
+
+    return "amendments/amend-matter-type-legal-help";
   }
 }
