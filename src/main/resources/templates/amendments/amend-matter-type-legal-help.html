@@ -16,11 +16,38 @@
         <span th:text="#{amendments.matterType.title}"></span>
       </h1>
 
+      <dl class="govuk-summary-list" th:with="originalMatterTypes=${forms.caseTypeForm.getOriginal()}">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key"
+            th:text="#{amendments.matterType.current.one}"/>
+          <dd class="govuk-summary-list__value"
+            th:text="${originalMatterTypes.getInputs()['MATTER_TYPE_CODE_1']}"/>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key"
+            th:text="#{amendments.matterType.current.two}"/>
+          <dd class="govuk-summary-list__value"
+            th:text="${originalMatterTypes.getInputs()['MATTER_TYPE_CODE_2']}"/>
+        </div>
+      </dl>
+
       <form method="post"
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-matter-type(submissionId=${submissionId}, claimId=${claimId})}"
             th:object="${caseTypeForm}">
 
 
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-!-font-weight-bold" for="matter-type-one-input" th:text="#{amendments.matterType.amended.one}"/>
+          <input class="govuk-input govuk-input--width-20" id="matter-type-one-input"
+                 th:field="*{inputs['MATTER_TYPE_CODE_1']}"
+                 type="text">
+        </div>
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-!-font-weight-bold" for="matter-type-two-input" th:text="#{amendments.matterType.amended.two}"/>
+          <input class="govuk-input govuk-input--width-20" id="matter-type-two-input"
+                 th:field="*{inputs['MATTER_TYPE_CODE_2']}"
+                 type="text">
+        </div>
         <div class="govuk-button-group">
           <button class="govuk-button" type="submit" th:text="#{amendments.continue}"></button>
           <a th:href="@{/submissions/{submissionId}/claims/{claimId}/case(submissionId=${submissionId}, claimId=${claimId})}"

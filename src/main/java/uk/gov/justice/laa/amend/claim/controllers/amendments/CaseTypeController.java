@@ -76,6 +76,7 @@ public class CaseTypeController {
     var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
 
+    model.addAttribute("forms", amendmentForms);
     model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
 
     return "amendments/amend-matter-type-legal-help";
