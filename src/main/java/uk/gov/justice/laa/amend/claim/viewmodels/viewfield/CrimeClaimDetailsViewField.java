@@ -27,8 +27,8 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
   MAAT_ID(new Accessor<>(CrimeClaimDetails::getMaatId)),
   PRISON_LAW_PRIOR_APPROVAL_NUMBER(
       new Accessor<>(CrimeClaimDetails::getPrisonLawPriorApprovalNumber)),
-  IS_DUTY_SOLICITOR(new Accessor<>(CrimeClaimDetails::getIsDutySolicitor)),
-  IS_YOUTH_COURT(new Accessor<>(CrimeClaimDetails::getIsYouthCourt));
+  IS_DUTY_SOLICITOR(new Accessor<>(CrimeClaimDetails::getIsDutySolicitor), FieldType.BOOLEAN),
+  IS_YOUTH_COURT(new Accessor<>(CrimeClaimDetails::getIsYouthCourt), FieldType.BOOLEAN);
 
   private final Accessor<?> accessor;
   private final FieldType type;

@@ -9,11 +9,12 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   // Client fields
   DATE_OF_BIRTH(new Accessor<>(CivilClaimDetails::getClientDateOfBirth), FieldType.DATE),
   POSTCODE(new Accessor<>(CivilClaimDetails::getClientPostcode)),
-  IS_ELIGIBLE_CLIENT(new Accessor<>(CivilClaimDetails::getIsEligibleClient)),
+  IS_ELIGIBLE_CLIENT(new Accessor<>(CivilClaimDetails::getIsEligibleClient), FieldType.BOOLEAN),
   CLIENT_TYPE(new Accessor<>(CivilClaimDetails::getClientType)),
   UNIQUE_CLIENT_NUMBER(new Accessor<>(CivilClaimDetails::getUniqueClientNumber)),
   HOME_OFFICE_CLIENT_NUMBER(new Accessor<>(CivilClaimDetails::getHomeOfficeClientNumber)),
-  IS_POSTAL_APPLICATION_ACCEPTED(new Accessor<>(CivilClaimDetails::getIsPostalApplication)),
+  IS_POSTAL_APPLICATION_ACCEPTED(
+      new Accessor<>(CivilClaimDetails::getIsPostalApplication), FieldType.BOOLEAN),
 
   // Case type fields
   FEE_CODE(new Accessor<>(CivilClaimDetails::getFeeCode)),
@@ -46,22 +47,24 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   ADVICE_TIME(new Accessor<>(CivilClaimDetails::getAdviceTime)),
   TRAVEL_TIME(new Accessor<>(CivilClaimDetails::getTravelTime)),
   WAITING_TIME(new Accessor<>(CivilClaimDetails::getWaitingTime)),
-  ADDITIONAL_TRAVEL_PAYMENT(new Accessor<>(CivilClaimDetails::getIsAdditionalTravelPayment)),
+  ADDITIONAL_TRAVEL_PAYMENT(
+      new Accessor<>(CivilClaimDetails::getIsAdditionalTravelPayment), FieldType.BOOLEAN),
   FOLLOW_ON_WORK(new Accessor<>(CivilClaimDetails::getFollowOnWork)),
-  TOLERANCE_INDICATOR(new Accessor<>(CivilClaimDetails::getIsToleranceApplicable)),
-  LEGACY_CASE(new Accessor<>(CivilClaimDetails::getIsLegacyCase)),
+  TOLERANCE_INDICATOR(
+      new Accessor<>(CivilClaimDetails::getIsToleranceApplicable), FieldType.BOOLEAN),
+  LEGACY_CASE(new Accessor<>(CivilClaimDetails::getIsLegacyCase), FieldType.BOOLEAN),
   MEETINGS_ATTENDED(new Accessor<>(CivilClaimDetails::getMeetingsAttended)),
   ADVICE_TYPE(new Accessor<>(CivilClaimDetails::getAdviceType)),
   TRANSFER_DATE(new Accessor<>(CivilClaimDetails::getTransferDate), FieldType.DATE),
   MEDICAL_REPORTS_CLAIMED(new Accessor<>(CivilClaimDetails::getMedicalReportsClaimed)),
   EXEMPTION_CRITERIA_SATISFIED(new Accessor<>(CivilClaimDetails::getExemptionCriteriaSatisfied)),
-  IRC_SURGERY(new Accessor<>(CivilClaimDetails::getIsIrcSurgery)),
+  IRC_SURGERY(new Accessor<>(CivilClaimDetails::getIsIrcSurgery), FieldType.BOOLEAN),
   SURGERY_DATE(new Accessor<>(CivilClaimDetails::getSurgeryDate), FieldType.DATE),
   SURGERY_CLIENTS_COUNT(new Accessor<>(CivilClaimDetails::getSurgeryClientsCount)),
   SURGERY_MATTERS_COUNT(new Accessor<>(CivilClaimDetails::getSurgeryMattersCount)),
   MENTAL_HEALTH_TRIBUNAL_REFERENCE(
       new Accessor<>(CivilClaimDetails::getMentalHealthTribunalReference)),
-  IS_NRM_ADVICE(new Accessor<>(CivilClaimDetails::getIsNrmAdvice)),
+  IS_NRM_ADVICE(new Accessor<>(CivilClaimDetails::getIsNrmAdvice), FieldType.BOOLEAN),
   ;
 
   private final Accessor<?> accessor;

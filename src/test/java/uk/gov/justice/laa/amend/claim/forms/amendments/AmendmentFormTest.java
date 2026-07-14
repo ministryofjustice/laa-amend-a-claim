@@ -62,6 +62,39 @@ class AmendmentFormTest {
   }
 
   @Test
+  void seedsBooleanFieldAsTrueFalseInput() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.IS_ELIGIBLE_CLIENT, true);
+    rows.put(CivilClaimDetailsViewField.IS_POSTAL_APPLICATION_ACCEPTED, false);
+
+    var form = new AmendmentForm(rows);
+
+    assertThat(form.getInputs())
+        .containsEntry("IS_ELIGIBLE_CLIENT", "true")
+        .containsEntry("IS_POSTAL_APPLICATION_ACCEPTED", "false");
+  }
+
+  @Test
+  void seedsNullBooleanFieldAsEmptyInput() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.IS_ELIGIBLE_CLIENT, null);
+
+    var form = new AmendmentForm(rows);
+
+    assertThat(form.getInputs()).containsEntry("IS_ELIGIBLE_CLIENT", "");
+  }
+
+  @Test
+  void throwsWhenBooleanFieldValueIsNotBoolean() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.IS_ELIGIBLE_CLIENT, "not-a-boolean");
+
+    assertThatThrownBy(() -> new AmendmentForm(rows))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("IS_ELIGIBLE_CLIENT");
+  }
+
+  @Test
   void getFieldInputsCollapsesDateSubInputsIntoSingleField() {
     var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
     rows.put(CivilClaimDetailsViewField.DATE_OF_BIRTH, LocalDate.of(2002, 5, 14));
@@ -127,6 +160,32 @@ class AmendmentFormTest {
   }
 
   @Test
+  void getAmendedValueReturnsBooleanForBooleanField() {
+    var form = new AmendmentForm();
+    form.setInputs(new HashMap<>(Map.of("IS_ELIGIBLE_CLIENT", "true")));
+
+    assertThat(form.getAmendedValue(CivilClaimDetailsViewField.IS_ELIGIBLE_CLIENT)).isEqualTo(true);
+  }
+
+  @Test
+  void getBooleanValueReturnsNullWhenInputBlank() {
+    var form = new AmendmentForm();
+    form.setInputs(new HashMap<>(Map.of("IS_ELIGIBLE_CLIENT", "")));
+
+    assertThat(form.getBooleanValue("IS_ELIGIBLE_CLIENT")).isNull();
+  }
+
+  @Test
+  void getBooleanValueThrowsWhenInputIsNotTrueOrFalse() {
+    var form = new AmendmentForm();
+    form.setInputs(new HashMap<>(Map.of("IS_ELIGIBLE_CLIENT", "not-a-boolean")));
+
+    assertThatThrownBy(() -> form.getBooleanValue("IS_ELIGIBLE_CLIENT"))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("IS_ELIGIBLE_CLIENT");
+  }
+
+  @Test
   void isAmendmentDetectsChangedDateField() {
     var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
     rows.put(CivilClaimDetailsViewField.DATE_OF_BIRTH, LocalDate.of(2002, 5, 14));
@@ -170,6 +229,18 @@ class AmendmentFormTest {
 
     var current = new AmendmentForm(original);
     current.getInputs().put("DATE_OF_BIRTH-year", "2003");
+
+    assertThat(current.hasAmendments(original)).isTrue();
+  }
+
+  @Test
+  void hasAmendmentsDetectsChangedBoolean() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.IS_ELIGIBLE_CLIENT, true);
+    var original = new AmendmentForm(rows);
+
+    var current = new AmendmentForm(original);
+    current.getInputs().put("IS_ELIGIBLE_CLIENT", "false");
 
     assertThat(current.hasAmendments(original)).isTrue();
   }

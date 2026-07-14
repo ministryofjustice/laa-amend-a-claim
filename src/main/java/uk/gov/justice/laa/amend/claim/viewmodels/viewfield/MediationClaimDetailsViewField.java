@@ -11,9 +11,11 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
   DATE_OF_BIRTH(new Accessor<>(MediationClaimDetails::getClientDateOfBirth), FieldType.DATE),
   POSTCODE(new Accessor<>(MediationClaimDetails::getClientPostcode)),
   UNIQUE_CLIENT_NUMBER(new Accessor<>(MediationClaimDetails::getUniqueClientNumber)),
-  IS_LEGALLY_AIDED(new Accessor<>(MediationClaimDetails::getIsClientLegallyAided)),
+  IS_LEGALLY_AIDED(
+      new Accessor<>(MediationClaimDetails::getIsClientLegallyAided), FieldType.BOOLEAN),
   IS_POSTAL_APPLICATION_ACCEPTED(
-      new Accessor<>(MediationClaimDetails::getIsClientPostalApplicationAccepted)),
+      new Accessor<>(MediationClaimDetails::getIsClientPostalApplicationAccepted),
+      FieldType.BOOLEAN),
 
   // Client 2 fields
   CLIENT_2_FORENAME(new Accessor<>(MediationClaimDetails::getClient2Forename)),
@@ -25,9 +27,11 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
   CLIENT_2_GENDER(new Accessor<>(MediationClaimDetails::getClient2Gender)),
   CLIENT_2_ETHNICITY(new Accessor<>(MediationClaimDetails::getClient2Ethnicity)),
   CLIENT_2_DISABILITY(new Accessor<>(MediationClaimDetails::getClient2Disability)),
-  IS_CLIENT_2_LEGALLY_AIDED(new Accessor<>(MediationClaimDetails::getIsClient2LegallyAided)),
+  IS_CLIENT_2_LEGALLY_AIDED(
+      new Accessor<>(MediationClaimDetails::getIsClient2LegallyAided), FieldType.BOOLEAN),
   IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED(
-      new Accessor<>(MediationClaimDetails::getIsClient2PostalApplicationAccepted)),
+      new Accessor<>(MediationClaimDetails::getIsClient2PostalApplicationAccepted),
+      FieldType.BOOLEAN),
 
   // Case Type fields
   FEE_CODE(new Accessor<>(MediationClaimDetails::getFeeCode)),

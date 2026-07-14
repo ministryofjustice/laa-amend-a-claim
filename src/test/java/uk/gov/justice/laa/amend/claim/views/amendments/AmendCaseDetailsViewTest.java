@@ -219,12 +219,13 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         caseDetails.get(22), "Travel time", String.valueOf(TRAVEL_TIME), "TODO");
     assertSummaryListRowContainsValues(
         caseDetails.get(23), "Waiting time", String.valueOf(WAITING_TIME), "TODO");
-    assertSummaryListRowContainsValues(
-        caseDetails.get(24), "Additional travel payment", YES, "TODO");
+    assertBooleanSelectRow(
+        caseDetails.get(24), "Additional travel payment", YES, "ADDITIONAL_TRAVEL_PAYMENT", true);
     assertSummaryListRowContainsValues(
         caseDetails.get(25), "Follow on work", FOLLOW_ON_WORK, FOLLOW_ON_WORK);
-    assertSummaryListRowContainsValues(caseDetails.get(26), "Tolerance indicator", YES, "TODO");
-    assertSummaryListRowContainsValues(caseDetails.get(27), "Legacy case", YES, "TODO");
+    assertBooleanSelectRow(
+        caseDetails.get(26), "Tolerance indicator", YES, "TOLERANCE_INDICATOR", true);
+    assertBooleanSelectRow(caseDetails.get(27), "Legacy case", YES, "LEGACY_CASE", true);
     assertSummaryListRowContainsValues(
         caseDetails.get(28), "Meetings attended", MEETINGS_ATTENDED, MEETINGS_ATTENDED);
     assertSummaryListRowContainsValues(
@@ -240,8 +241,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "Exemption criteria satisfied",
         EXEMPTION_CRITERIA_SATISFIED,
         EXEMPTION_CRITERIA_SATISFIED);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(33), "Immigration removal centre (IRC) surgery", YES, "TODO");
+    assertBooleanSelectRow(
+        caseDetails.get(33), "Immigration removal centre (IRC) surgery", YES, "IRC_SURGERY", true);
     assertDateRow(caseDetails.get(34), "Surgery date", SURGERY_DATE, "SURGERY_DATE");
     assertSummaryListRowContainsValues(
         caseDetails.get(35),
@@ -258,8 +259,12 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "Mental health tribunal reference",
         MENTAL_HEALTH_TRIBUNAL_REFERENCE,
         MENTAL_HEALTH_TRIBUNAL_REFERENCE);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(38), "National referral mechanism (NRM) advice", YES, "TODO");
+    assertBooleanSelectRow(
+        caseDetails.get(38),
+        "National referral mechanism (NRM) advice",
+        YES,
+        "IS_NRM_ADVICE",
+        true);
   }
 
   @Test
@@ -334,8 +339,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "Prison Law Prior Approval number",
         PRISON_LAW_PRIOR_APPROVAL_NUMBER,
         PRISON_LAW_PRIOR_APPROVAL_NUMBER);
-    assertSummaryListRowContainsValues(caseDetails.get(14), "Duty solicitor", YES, "TODO");
-    assertSummaryListRowContainsValues(caseDetails.get(15), "Youth court", YES, "TODO");
+    assertBooleanSelectRow(caseDetails.get(14), "Duty solicitor", YES, "IS_DUTY_SOLICITOR", true);
+    assertBooleanSelectRow(caseDetails.get(15), "Youth court", YES, "IS_YOUTH_COURT", true);
   }
 
   @Test

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="amendmentBooleanInput(fieldKey, labelMessageKey)"
+          th:with="label=${#messages.msgOrNull(labelMessageKey) ?: fieldKey}">
+  <label class="govuk-label govuk-visually-hidden"
+         th:for="${fieldKey}"
+         th:text="${label}"></label>
+  <select class="govuk-select"
+          th:id="${fieldKey}"
+          th:field="*{inputs[__${fieldKey}__]}">
+    <option value=""></option>
+    <option value="true" th:text="#{service.yes}"></option>
+    <option value="false" th:text="#{service.no}"></option>
+  </select>
+</th:block>
+</body>
+</html>

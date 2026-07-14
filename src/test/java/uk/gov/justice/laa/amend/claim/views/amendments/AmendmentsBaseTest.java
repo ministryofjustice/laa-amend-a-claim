@@ -2,6 +2,9 @@ package uk.gov.justice.laa.amend.claim.views.amendments;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.List;
+import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.Assertions;
 import uk.gov.justice.laa.amend.claim.views.ViewTestBase;
 
 public abstract class AmendmentsBaseTest extends ViewTestBase {
@@ -38,5 +41,21 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
         "/submissions/%s/claims/%s/amendments/amend-case-details".formatted(submissionId, claimId);
 
     checkUrl = "/submissions/%s/claims/%s/amendments/check".formatted(submissionId, claimId);
+  }
+
+  protected void assertBooleanSelectRow(
+      List<Element> row, String label, String currentValue, String inputId, boolean expectedValue) {
+    assertCellContainsText(row.getFirst(), label);
+    assertCellContainsText(row.get(1), currentValue);
+
+    Element select = selectFirst(row.get(2), "select.govuk-select");
+    Assertions.assertEquals(inputId, select.attr("id"), "Boolean select id");
+    Assertions.assertEquals(2, select.select("option[value=true], option[value=false]").size());
+    Element selectLabel = selectFirst(row.get(2), "label[for=%s]".formatted(inputId));
+    Assertions.assertEquals(label, selectLabel.text());
+
+    Element selectedOption = selectFirst(select, "option[selected]");
+    Assertions.assertEquals(Boolean.toString(expectedValue), selectedOption.attr("value"));
+    Assertions.assertEquals(expectedValue ? "Yes" : "No", selectedOption.text());
   }
 }
