@@ -168,7 +168,7 @@ class ClaimStatusHandlerTest {
       ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
       crimeClaim.setAssessedTotalVat(assessedTotalVatField);
       crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
-      crimeClaim.setFeeCode("IMCA");
+      crimeClaim.setFeeCode("INVC");
 
       claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.REDUCED);
 
@@ -284,7 +284,7 @@ class ClaimStatusHandlerTest {
       ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
       crimeClaim.setAssessedTotalVat(assessedTotalVatField);
       crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
-      crimeClaim.setFeeCode("IMCA");
+      crimeClaim.setFeeCode("INVC");
 
       claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.NILLED);
 
@@ -338,7 +338,7 @@ class ClaimStatusHandlerTest {
       ClaimField assessedTotalInclVatField = MockClaimsFunctions.createAssessedTotalInclVatField();
       crimeClaim.setAssessedTotalVat(assessedTotalVatField);
       crimeClaim.setAssessedTotalInclVat(assessedTotalInclVatField);
-      crimeClaim.setFeeCode("IMCA");
+      crimeClaim.setFeeCode("INVC");
 
       claimStatusHandler.updateFieldStatuses(crimeClaim, OutcomeType.PAID_IN_FULL);
 

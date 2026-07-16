@@ -745,7 +745,7 @@ class ClaimMapperTest {
     feeCalc.setBoltOnDetails(boltOn);
     response.setFeeCalculationResponse(feeCalc);
 
-    response.setMatterTypeCode("IMCA");
+    response.setMatterTypeCode("INVC");
     response.setPoliceStationCourtPrisonId("PrisonCode");
     response.setSchemeId("SchemeId");
     response.setStageReachedCode("StageReachedCode");
@@ -769,7 +769,7 @@ class ClaimMapperTest {
     assertEquals("FeeCodeDesc", claim.getFeeCodeDescription());
     assertEquals("Civil", claim.getCategoryOfLaw());
     assertTrue(claim.getEscaped());
-    assertEquals("IMCA", claim.getMatterTypeCode());
+    assertEquals("INVC", claim.getMatterTypeCode());
     assertEquals("PrisonCode", claim.getPoliceStationCourtPrisonId());
     assertEquals("SchemeId", claim.getSchemeId());
     assertEquals(ClaimStatus.VALID, claim.getStatus());
