@@ -27,21 +27,21 @@ sourceSets {
 }
 
 dependencies {
-    implementation 'com.microsoft.playwright:playwright:1.60.0'
-    implementation 'com.deque.html.axe-core:playwright:4.11.3'
+    implementation 'com.microsoft.playwright:playwright:1.61.0'
+    implementation 'com.deque.html.axe-core:playwright:4.12.0'
     testImplementation 'org.webjars.npm:axe-html-reporter:2.2.11'
     implementation 'io.github.cdimascio:dotenv-java:3.2.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.1'
     implementation 'org.slf4j:slf4j-simple:2.0.18'
-    implementation 'org.junit.jupiter:junit-jupiter-api:6.1.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:6.1.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.1.0'
+    implementation 'org.junit.jupiter:junit-jupiter-api:6.1.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:6.1.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.1.1'
 
     testImplementation 'io.rest-assured:rest-assured:6.0.0'
 
     // Allure + JUnit 5
-    testImplementation 'io.qameta.allure:allure-junit5:2.35.2'
-    testImplementation 'org.postgresql:postgresql:42.7.11'
+    testImplementation 'io.qameta.allure:allure-junit5:2.35.3'
+    testImplementation 'org.postgresql:postgresql:42.7.13'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.46'
