@@ -41,7 +41,7 @@
               <div class="govuk-summary-list__row"
                    th:each="entry : ${caseView.caseDetailsRows()}">
                 <dt class="govuk-summary-list__key" th:text="#{${'claimCase.rows.' + entry.key.name()}}"></dt>
-                <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+                <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
                 <dd class="govuk-summary-list__value">
                   <th:block th:replace="~{partials/amendments/amendment-input :: amendmentInput(${entry.key}, ${'claimCase.rows.' + entry.key.name()})}"></th:block>
                 </dd>

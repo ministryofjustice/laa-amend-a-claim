@@ -82,7 +82,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final int MEDIATION_SESSIONS_COUNT = 9;
   private static final int MEDIATION_TIME_MINUTES = 10;
   private static final String OUTREACH_LOCATION = "outreachlocation";
-  private static final String REFERRAL_SOURCE = "referralsource";
+  private static final String REFERRAL_SOURCE = "08";
+  private static final String REFERRAL_SOURCE_LABEL = "08 - Client self-referred";
   public static final String YES = "Yes";
 
   AmendCaseDetailsViewTest() {
@@ -161,8 +162,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         CASE_CONCLUDED_DATE,
         "CASE_CONCLUDED_CLAIMED_DATE");
     assertSummaryListRowContainsValues(caseDetails.get(6), "Unique file number (UFN)", UFN, UFN);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(7), "Case stage or level", CASE_STAGE, CASE_STAGE);
+    assertEnumTypeaheadRow(
+        caseDetails.get(7), "Case stage or level", CASE_STAGE, "CASE_STAGE", CASE_STAGE);
     assertSummaryListRowContainsValues(
         caseDetails.get(8),
         "Value of costs or damages recovered",
@@ -172,10 +173,14 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         caseDetails.get(9), "Procurement area", PROCUREMENT_AREA, PROCUREMENT_AREA);
     assertSummaryListRowContainsValues(
         caseDetails.get(10), "Access point", ACCESS_POINT, ACCESS_POINT);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(11), "Stage reached", STAGE_REACHED, STAGE_REACHED);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(12), "Outcome for client", OUTCOME_FOR_CLIENT, OUTCOME_FOR_CLIENT);
+    assertEnumTypeaheadRow(
+        caseDetails.get(11), "Stage reached", STAGE_REACHED, "STAGE_REACHED", STAGE_REACHED);
+    assertEnumTypeaheadRow(
+        caseDetails.get(12),
+        "Outcome for client",
+        OUTCOME_FOR_CLIENT,
+        "OUTCOME_FOR_CLIENT",
+        OUTCOME_FOR_CLIENT);
     assertSummaryListRowContainsValues(
         caseDetails.get(13),
         "Exceptional case funding (ECF) reference",
@@ -198,20 +203,22 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "Court location (Housing Possession Court Duty Scheme (HPCDS))",
         COURT_LOCATION,
         COURT_LOCATION);
-    assertSummaryListRowContainsValues(
+    assertEnumTypeaheadRow(
         caseDetails.get(18),
         "Asylum and Immigration Tribunal (AIT) hearing centre",
         AIT_HEARING_CENTRE,
+        "AIT_HEARING_CENTRE",
         AIT_HEARING_CENTRE);
     assertSummaryListRowContainsValues(
         caseDetails.get(19),
         "Local authority number",
         LOCAL_AUTHORITY_NUMBER,
         LOCAL_AUTHORITY_NUMBER);
-    assertSummaryListRowContainsValues(
+    assertEnumTypeaheadRow(
         caseDetails.get(20),
         "Designated accredited representative",
         DESIGNATED_ACCREDITED_REPRESENTATIVE,
+        "DESIGNATED_ACCREDITED_REPRESENTATIVE",
         DESIGNATED_ACCREDITED_REPRESENTATIVE);
     assertSummaryListRowContainsValues(
         caseDetails.get(21), "Advice time", String.valueOf(ADVICE_TIME), "TODO");
@@ -226,20 +233,25 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertBooleanSelectRow(
         caseDetails.get(26), "Tolerance indicator", YES, "TOLERANCE_INDICATOR", true);
     assertBooleanSelectRow(caseDetails.get(27), "Legacy case", YES, "LEGACY_CASE", true);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(28), "Meetings attended", MEETINGS_ATTENDED, MEETINGS_ATTENDED);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(29), "Type of advice", ADVICE_TYPE, ADVICE_TYPE);
+    assertEnumTypeaheadRow(
+        caseDetails.get(28),
+        "Meetings attended",
+        MEETINGS_ATTENDED,
+        "MEETINGS_ATTENDED",
+        MEETINGS_ATTENDED);
+    assertEnumTypeaheadRow(
+        caseDetails.get(29), "Type of advice", ADVICE_TYPE, "ADVICE_TYPE", ADVICE_TYPE);
     assertDateRow(caseDetails.get(30), "Transfer date", TRANSFER_DATE, "TRANSFER_DATE");
     assertSummaryListRowContainsValues(
         caseDetails.get(31),
         "Medical reports claimed",
         String.valueOf(MEDICAL_REPORTS_CLAIMED),
         "TODO");
-    assertSummaryListRowContainsValues(
+    assertEnumTypeaheadRow(
         caseDetails.get(32),
         "Exemption criteria satisfied",
         EXEMPTION_CRITERIA_SATISFIED,
+        "EXEMPTION_CRITERIA_SATISFIED",
         EXEMPTION_CRITERIA_SATISFIED);
     assertBooleanSelectRow(
         caseDetails.get(33), "Immigration removal centre (IRC) surgery", YES, "IRC_SURGERY", true);
@@ -298,8 +310,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     var caseDetails = getSummaryListInCard(doc, "Case details");
 
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");
-    assertSummaryListRowContainsValues(
-        caseDetails.get(1), "Stage reached", STAGE_REACHED, STAGE_REACHED);
+    assertEnumTypeaheadRow(
+        caseDetails.get(1), "Stage reached", STAGE_REACHED, "STAGE_REACHED", STAGE_REACHED);
     assertSummaryListRowContainsValues(caseDetails.get(2), "Unique file number (UFN)", UFN, UFN);
     assertDateRow(
         caseDetails.get(3),
@@ -308,10 +320,18 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "REPRESENTATION_ORDER_DATE");
     assertDateRow(
         caseDetails.get(4), "Case concluded date", CASE_CONCLUDED_DATE, "CASE_CONCLUDED_DATE");
-    assertSummaryListRowContainsValues(
-        caseDetails.get(5), "Standard fee category", STANDARD_FEE_CATEGORY, STANDARD_FEE_CATEGORY);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(6), "Outcome for client", OUTCOME_FOR_CLIENT, OUTCOME_FOR_CLIENT);
+    assertEnumTypeaheadRow(
+        caseDetails.get(5),
+        "Standard fee category",
+        STANDARD_FEE_CATEGORY,
+        "STANDARD_FEE_CATEGORY",
+        STANDARD_FEE_CATEGORY);
+    assertEnumTypeaheadRow(
+        caseDetails.get(6),
+        "Outcome for client",
+        OUTCOME_FOR_CLIENT,
+        "OUTCOME_FOR_CLIENT",
+        OUTCOME_FOR_CLIENT);
     assertSummaryListRowContainsValues(
         caseDetails.get(7),
         "Number of suspects or defendants",
@@ -392,12 +412,12 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         "Mediation time (minutes)",
         String.valueOf(MEDIATION_TIME_MINUTES),
         "TODO");
-    assertSummaryListRowContainsValues(
-        caseDetails.get(8), "Outcome", OUTCOME_FOR_CLIENT, OUTCOME_FOR_CLIENT);
+    assertEnumTypeaheadRow(
+        caseDetails.get(8), "Outcome", OUTCOME_FOR_CLIENT, "OUTCOME", OUTCOME_FOR_CLIENT);
     assertSummaryListRowContainsValues(
         caseDetails.get(9), "Outreach location", OUTREACH_LOCATION, OUTREACH_LOCATION);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(10), "Referral", REFERRAL_SOURCE, REFERRAL_SOURCE);
+    assertEnumTypeaheadRow(
+        caseDetails.get(10), "Referral", REFERRAL_SOURCE_LABEL, "REFERRAL_SOURCE", REFERRAL_SOURCE);
     assertSummaryListRowContainsValues(
         caseDetails.get(11),
         "Schedule reference (outcome)",

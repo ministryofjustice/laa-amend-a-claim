@@ -23,6 +23,14 @@ public class AmendCaseDetailsPage extends LaaPage {
     caseDetailInput.fill(value);
   }
 
+  public void fillTypeaheadInput(String inputKey, String value) {
+    var caseDetailInput = page.locator(String.format("input#%s", inputKey));
+    assertThat(caseDetailInput).isVisible();
+    caseDetailInput.clear();
+    caseDetailInput.fill(value);
+    caseDetailInput.press("Enter");
+  }
+
   public void clickContinueButton() {
     continueButton.click();
   }

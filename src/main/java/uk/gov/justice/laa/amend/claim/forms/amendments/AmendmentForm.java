@@ -128,6 +128,7 @@ public class AmendmentForm {
     return switch (field.getType()) {
       case DATE -> getDateValue(field.name());
       case BOOLEAN -> getBooleanValue(field.name());
+      case ENUM -> inputs.get(field.name());
       case TEXT -> inputs.get(field.name());
     };
   }

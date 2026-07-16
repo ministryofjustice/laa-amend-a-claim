@@ -40,6 +40,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
   private static final String MEDIATION_CLAIM_ID = UUID.randomUUID().toString();
   private static final String MEDIATION_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
   private static final String MEDIATION_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
+  private static final String STAGE_REACHED = "INVA";
 
   @Override
   protected List<Insert> inserts() {
@@ -170,11 +171,11 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     viewAmendCase.clickChangeCaseDetailsLink();
     var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
-    viewAmendCaseDetails.fillInput("STAGE_REACHED", "changed");
+    viewAmendCaseDetails.fillTypeaheadInput("STAGE_REACHED", STAGE_REACHED);
     viewAmendCaseDetails.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
-    assertSummaryListRow(page, "Case details", "Stage reached", "Not applicable", "changed");
+    assertSummaryListRow(page, "Case details", "Stage reached", "Not applicable", STAGE_REACHED);
   }
 
   @Test

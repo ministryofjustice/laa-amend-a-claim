@@ -22,6 +22,8 @@ import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafLiteralString;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafString;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldType;
 
 @AllArgsConstructor
 public class ThymeleafUtils {
@@ -75,6 +77,21 @@ public class ThymeleafUtils {
       case LocalDate d -> new ThymeleafLiteralString(displayDateValue(d));
       default -> new ThymeleafLiteralString(value.toString());
     };
+  }
+
+  public ThymeleafString getFormattedValue(ClaimViewField<?> field, Object value) {
+    if (field.getType() == FieldType.ENUM && value != null) {
+      var selectedValue = value.toString();
+      var selectedOption =
+          field.getOptionsIncluding(selectedValue).stream()
+              .filter(option -> option.value().equals(selectedValue))
+              .findFirst();
+      return selectedOption
+          .<ThymeleafString>map(option -> new ThymeleafLiteralString(option.label()))
+          .orElseGet(() -> new ThymeleafLiteralString(selectedValue));
+    }
+
+    return getFormattedValue(value);
   }
 
   public ThymeleafString getFormattedBoolean(Boolean value) {

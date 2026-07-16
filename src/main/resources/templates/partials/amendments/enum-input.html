@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="amendmentEnumInput(field, labelMessageKey, selectedValue)"
+          th:with="fieldKey=${field.name()},
+                   label=${#messages.msgOrNull(labelMessageKey) ?: fieldKey},
+                   options=${field.getOptionsIncluding(selectedValue)}">
+  <div class="autocomplete-wrapper amend-enum-input">
+    <label class="govuk-label govuk-visually-hidden"
+           th:for="${fieldKey}"
+           th:text="${label}"></label>
+    <select class="govuk-select"
+            th:id="${fieldKey}"
+            th:field="*{inputs[__${fieldKey}__]}"
+            data-module="make-autocomplete">
+      <option value=""></option>
+      <option th:each="option : ${options}"
+              th:value="${option.value()}"
+              th:text="${option.label()}"></option>
+    </select>
+  </div>
+</th:block>
+</body>
+</html>

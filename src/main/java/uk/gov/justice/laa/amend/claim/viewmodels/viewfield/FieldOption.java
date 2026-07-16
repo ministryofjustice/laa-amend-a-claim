@@ -1,8 +1,3 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
 
-public enum FieldType {
-  TEXT,
-  BOOLEAN,
-  DATE,
-  ENUM
-}
+public record FieldOption(String value, String label) {}

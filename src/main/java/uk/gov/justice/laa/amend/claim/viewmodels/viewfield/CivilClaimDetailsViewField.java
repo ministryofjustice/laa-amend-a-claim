@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
 
+import java.util.List;
 import java.util.function.Function;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
@@ -29,21 +30,23 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   CASE_CONCLUDED_CLAIMED_DATE(
       new Accessor<>(CivilClaimDetails::getCaseConcludedDate), FieldType.DATE),
   UNIQUE_FILE_NUMBER(new Accessor<>(CivilClaimDetails::getUniqueFileNumber)),
-  CASE_STAGE(new Accessor<>(CivilClaimDetails::getCaseStage)),
+  CASE_STAGE(new Accessor<>(CivilClaimDetails::getCaseStage), FieldOptions.CASE_STAGE),
   VALUE_OF_COSTS(new Accessor<>(CivilClaimDetails::getValueOfCosts)),
   PROCUREMENT_AREA(new Accessor<>(CivilClaimDetails::getProcurementArea)),
   ACCESS_POINT(new Accessor<>(CivilClaimDetails::getAccessPoint)),
-  STAGE_REACHED(new Accessor<>(CivilClaimDetails::getStageReached)),
-  OUTCOME_FOR_CLIENT(new Accessor<>(CivilClaimDetails::getOutcome)),
+  STAGE_REACHED(new Accessor<>(CivilClaimDetails::getStageReached), FieldOptions.STAGE_REACHED),
+  OUTCOME_FOR_CLIENT(new Accessor<>(CivilClaimDetails::getOutcome), FieldOptions.OUTCOME),
   EXCEPTIONAL_CASE_FUNDING(new Accessor<>(CivilClaimDetails::getExceptionalCaseFundingReference)),
   CIVIL_LEGAL_ADVICE_REFERENCE(new Accessor<>(CivilClaimDetails::getCivilLegalAdviceReference)),
   CIVIL_LEGAL_ADVICE_EXEMPTION(new Accessor<>(CivilClaimDetails::getCivilLegalAdviceExemption)),
   DELIVERY_LOCATION(new Accessor<>(CivilClaimDetails::getDeliveryLocation)),
   COURT_LOCATION(new Accessor<>(CivilClaimDetails::getCourtLocation)),
-  AIT_HEARING_CENTRE(new Accessor<>(CivilClaimDetails::getAitHearingCentre)),
+  AIT_HEARING_CENTRE(
+      new Accessor<>(CivilClaimDetails::getAitHearingCentre), FieldOptions.AIT_HEARING_CENTRE),
   LOCAL_AUTHORITY_NUMBER(new Accessor<>(CivilClaimDetails::getLocalAuthorityNumber)),
   DESIGNATED_ACCREDITED_REPRESENTATIVE(
-      new Accessor<>(CivilClaimDetails::getDesignatedAccreditedRepresentative)),
+      new Accessor<>(CivilClaimDetails::getDesignatedAccreditedRepresentative),
+      FieldOptions.DESIGNATED_ACCREDITED_REPRESENTATIVE),
   ADVICE_TIME(new Accessor<>(CivilClaimDetails::getAdviceTime)),
   TRAVEL_TIME(new Accessor<>(CivilClaimDetails::getTravelTime)),
   WAITING_TIME(new Accessor<>(CivilClaimDetails::getWaitingTime)),
@@ -53,11 +56,14 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   TOLERANCE_INDICATOR(
       new Accessor<>(CivilClaimDetails::getIsToleranceApplicable), FieldType.BOOLEAN),
   LEGACY_CASE(new Accessor<>(CivilClaimDetails::getIsLegacyCase), FieldType.BOOLEAN),
-  MEETINGS_ATTENDED(new Accessor<>(CivilClaimDetails::getMeetingsAttended)),
-  ADVICE_TYPE(new Accessor<>(CivilClaimDetails::getAdviceType)),
+  MEETINGS_ATTENDED(
+      new Accessor<>(CivilClaimDetails::getMeetingsAttended), FieldOptions.MEETINGS_ATTENDED),
+  ADVICE_TYPE(new Accessor<>(CivilClaimDetails::getAdviceType), FieldOptions.ADVICE_TYPE),
   TRANSFER_DATE(new Accessor<>(CivilClaimDetails::getTransferDate), FieldType.DATE),
   MEDICAL_REPORTS_CLAIMED(new Accessor<>(CivilClaimDetails::getMedicalReportsClaimed)),
-  EXEMPTION_CRITERIA_SATISFIED(new Accessor<>(CivilClaimDetails::getExemptionCriteriaSatisfied)),
+  EXEMPTION_CRITERIA_SATISFIED(
+      new Accessor<>(CivilClaimDetails::getExemptionCriteriaSatisfied),
+      FieldOptions.EXEMPTION_CRITERIA_SATISFIED),
   IRC_SURGERY(new Accessor<>(CivilClaimDetails::getIsIrcSurgery), FieldType.BOOLEAN),
   SURGERY_DATE(new Accessor<>(CivilClaimDetails::getSurgeryDate), FieldType.DATE),
   SURGERY_CLIENTS_COUNT(new Accessor<>(CivilClaimDetails::getSurgeryClientsCount)),
@@ -69,14 +75,24 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
 
   private final Accessor<?> accessor;
   private final FieldType type;
+  private final List<FieldOption> options;
 
   CivilClaimDetailsViewField(Accessor<?> accessor) {
     this(accessor, FieldType.TEXT);
   }
 
   CivilClaimDetailsViewField(Accessor<?> accessor, FieldType type) {
+    this(accessor, type, List.of());
+  }
+
+  CivilClaimDetailsViewField(Accessor<?> accessor, List<FieldOption> options) {
+    this(accessor, FieldType.ENUM, options);
+  }
+
+  CivilClaimDetailsViewField(Accessor<?> accessor, FieldType type, List<FieldOption> options) {
     this.accessor = accessor;
     this.type = type;
+    this.options = List.copyOf(options);
   }
 
   public record Accessor<T>(Function<CivilClaimDetails, T> getter)
