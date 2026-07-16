@@ -18,6 +18,8 @@ import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCaseDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient1Page;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendFeeCodePage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendMatterTypePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCasePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewClientPage;
 
@@ -39,7 +41,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .bulkSubmissionId(BULK_SUBMISSION_ID)
             .officeAccountNumber(PROVIDER_ACCOUNT)
             .submissionPeriod("MAR-2020")
-            .areaOfLaw("CRIME_LOWER")
+            .areaOfLaw("LEGAL_HELP")
             .userId(USER_ID)
             .build(),
         ClaimInsert.builder()
@@ -57,7 +59,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .id(CALCULATED_FEE_DETAIL_ID)
             .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
             .claimId(CLAIM_ID)
-            .feeCode("INVC")
+            .feeCode("IMCA")
             .escaped(true)
             .userId(USER_ID)
             .build());
@@ -68,7 +70,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
       """
           E2E: Claim Amendment Flow – Search → View → View Client → Amend Claim Details
             → View Client → Change Client Details → View Client
-            → View Case → Change case type → View Case (TODO: Matter Type)
+            → View Case → Change case type → Change Fee code → Change Matter Type → View Case Type
             → View Case → (TODO) Change case details → View Case
           """)
   void fullAmendmentFlow() {
@@ -96,19 +98,27 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     // View Case → Change case type → View Case
     var viewAmendCase = new ViewCasePage(page);
-    assertSummaryListRow(page, "Case type", "Fee code", "INVC");
+    assertSummaryListRow(page, "Case type", "Fee code", "IMCA");
+    assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB");
+    assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL");
     assertSummaryListRow(page, "Case details", "Stage reached", "Not applicable");
 
-    // TODO: Matter Type - As the page is not implemented, the test breaks here due to a 404.
-    // Uncomment this section once matter type / stage reached is completed.
-    // viewAmendCase.clickChangeCaseTypeLink();
-    // var amendFeeCode = new AmendFeeCodePage(page);
-    // amendFeeCode.fillFeeCodeInput("YOUK4");
-    // amendFeeCode.clickContinueButton();
-    viewAmendCase = new ViewCasePage(page);
-    assertSummaryListRow(page, "Case type", "Fee code", "INVC");
-    viewAmendCase.clickChangeCaseDetailsLink();
+    viewAmendCase.clickChangeCaseTypeLink();
+    var amendFeeCode = new AmendFeeCodePage(page);
+    amendFeeCode.fillFeeCodeInput("IAXC");
+    amendFeeCode.clickContinueButton();
 
+    var amendMatterType = new AmendMatterTypePage(page);
+    amendMatterType.fillMatterTypeCodeOne("NEW_MONE");
+    amendMatterType.fillMatterTypeCodeTwo("NEW_MTWO");
+    amendMatterType.clickContinueButton();
+
+    viewAmendCase = new ViewCasePage(page);
+    assertSummaryListRow(page, "Case type", "Fee code", "IMCA", "IAXC");
+    assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "NEW_MONE");
+    assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL", "NEW_MTWO");
+
+    viewAmendCase.clickChangeCaseDetailsLink();
     var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
     viewAmendCaseDetails.fillInput("STAGE_REACHED", "changed");
     viewAmendCaseDetails.clickContinueButton();

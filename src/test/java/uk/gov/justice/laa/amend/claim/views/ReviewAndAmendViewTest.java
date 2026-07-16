@@ -268,7 +268,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     OutcomeType outcome = OutcomeType.REDUCED;
 
     claim.setAssessmentOutcome(outcome);
-    claim.setFeeCode("INVC");
+    claim.setFeeCode("IMCA");
 
     claim.setNetProfitCost(netProfitCostField);
     claim.setAssessedTotalVat(assessedTotalVat);
