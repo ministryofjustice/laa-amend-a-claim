@@ -29,7 +29,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
   private static final String PROVIDER_ACCOUNT = "123456";
   private static final String LEGAL_HELP_UFN = generateUfn();
-  private static final String MEDIATION_UFN = generateUfn();
+  private static final String MEDIATION_UFN = generateUfn(1L);
   private static final String LEGAL_HELP_BULK_SUBMISSION_ID = UUID.randomUUID().toString();
   private static final String LEGAL_HELP_SUBMISSION_ID = UUID.randomUUID().toString();
   private static final String LEGAL_HELP_CLAIM_ID = UUID.randomUUID().toString();
@@ -43,7 +43,6 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
   @Override
   protected List<Insert> inserts() {
-
     return new ArrayList<>() {
       {
         addAll(buildLegalHelpObjects());
@@ -92,7 +91,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .bulkSubmissionId(MEDIATION_BULK_SUBMISSION_ID)
             .officeAccountNumber(PROVIDER_ACCOUNT)
             .submissionPeriod("MAR-2020")
-            .areaOfLaw("LEGAL_HELP")
+            .areaOfLaw("MEDIATION")
             .userId(USER_ID)
             .build(),
         ClaimInsert.builder()
@@ -110,7 +109,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .id(MEDIATION_CALCULATED_FEE_DETAIL_ID)
             .claimSummaryFeeId(MEDIATION_CLAIM_SUMMARY_FEE_ID)
             .claimId(MEDIATION_CLAIM_ID)
-            .feeCode("FVP022")
+            .feeCode("MDAS2S")
             .escaped(true)
             .userId(USER_ID)
             .build());
@@ -198,7 +197,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     details.clickAmendClaim();
 
     var viewAmendClient = new ViewClientPage(page);
-    assertSummaryListRow(page, "Client details", "Last name", "Not applicable");
+    assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable");
     viewAmendClient.clickChangeLink();
 
     var amendClient1 = new AmendClient1Page(page);
@@ -206,37 +205,34 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendClient1.clickContinueButton();
 
     viewAmendClient = new ViewClientPage(page);
-    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+    assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
     viewAmendClient.clickCaseTab();
 
     // View Case → Change case type → View Case
     var viewAmendCase = new ViewCasePage(page);
-    assertSummaryListRow(page, "Case type", "Fee code", "IMCA");
-    assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB");
-    assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL");
-    assertSummaryListRow(page, "Case details", "Stage reached", "Not applicable");
+    assertSummaryListRow(page, "Case type", "Fee code", "MDAS2S");
+    assertSummaryListRow(page, "Case type", "Matter type", "IMCB");
+    assertSummaryListRow(page, "Case details", "Case start date", "01 August 2020");
 
     viewAmendCase.clickChangeCaseTypeLink();
     var amendFeeCode = new AmendFeeCodePage(page);
-    amendFeeCode.fillFeeCodeInput("FVP011");
+    amendFeeCode.fillFeeCodeInput("MDPS1B");
     amendFeeCode.clickContinueButton();
 
     var amendMatterType = new AmendMatterTypePage(page);
-    amendMatterType.fillMatterTypeCodeOne("NEW_MONE");
-    amendMatterType.fillMatterTypeCodeTwo("NEW_MTWO");
+    amendMatterType.fillMatterTypeCode("NEW_MONE");
     amendMatterType.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
-    assertSummaryListRow(page, "Case type", "Fee code", "IMCA", "IAXC");
-    assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "NEW_MONE");
-    assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL", "NEW_MTWO");
+    assertSummaryListRow(page, "Case type", "Fee code", "MDAS2S", "MDPS1B");
+    assertSummaryListRow(page, "Case type", "Matter type", "IMCB", "NEW_MONE");
 
     viewAmendCase.clickChangeCaseDetailsLink();
     var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
-    viewAmendCaseDetails.fillInput("STAGE_REACHED", "changed");
+    viewAmendCaseDetails.fillInput("CLAIM_ID", "changed");
     viewAmendCaseDetails.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
-    assertSummaryListRow(page, "Case details", "Stage reached", "Not applicable", "changed");
+    assertSummaryListRow(page, "Case details", "Claim ID", "Not applicable", "changed");
   }
 }

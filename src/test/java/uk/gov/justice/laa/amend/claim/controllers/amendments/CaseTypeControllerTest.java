@@ -147,7 +147,7 @@ class CaseTypeControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setMatterType1(MATTER_TYPE_CODE_1);
     claim.setMatterType2(MATTER_TYPE_CODE_2);
-    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
     session.setAttribute(claimId.toString(), claim);
 
     var caseTypeRows =
@@ -168,8 +168,6 @@ class CaseTypeControllerTest extends BaseControllerTest {
 
     var request = get(buildAmendMatterTypeCodePath()).session(session).with(csrf());
 
-    when(availableFeeCodesService.getAvailableFeeCodes(AreaOfLaw.CRIME_LOWER))
-        .thenReturn(Map.of(FEE_CODE, FEE_CODE));
     mockMvc
         .perform(request)
         .andExpect(status().isOk())
@@ -182,7 +180,7 @@ class CaseTypeControllerTest extends BaseControllerTest {
     var claim = MockClaimsFunctions.createMockMediationClaim();
     claim.setFeeCode(FEE_CODE);
     claim.setMatterType(MATTER_TYPE_CODE_1);
-    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
     session.setAttribute(claimId.toString(), claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE, "MATTER_TYPE_CODE", MATTER_TYPE_CODE_1);
@@ -196,8 +194,6 @@ class CaseTypeControllerTest extends BaseControllerTest {
 
     var request = get(buildAmendMatterTypeCodePath()).session(session).with(csrf());
 
-    when(availableFeeCodesService.getAvailableFeeCodes(AreaOfLaw.CRIME_LOWER))
-        .thenReturn(Map.of(FEE_CODE, FEE_CODE));
     mockMvc
         .perform(request)
         .andExpect(status().isOk())

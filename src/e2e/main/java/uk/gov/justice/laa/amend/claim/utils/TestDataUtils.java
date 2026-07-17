@@ -28,7 +28,11 @@ public final class TestDataUtils {
   }
 
   public static String generateUfn() {
-    String datePart = LocalDate.now().format(DateTimeFormatter.ofPattern("ddMMyy"));
+    return generateUfn(0);
+  }
+
+  public static String generateUfn(long plusDays) {
+    String datePart = LocalDate.now().plusDays(1L).format(DateTimeFormatter.ofPattern("ddMMyy"));
     int n = (int) (System.nanoTime() % 1000);
     if (n < 0) n = -n;
     String suffix = String.format("%03d", n);
