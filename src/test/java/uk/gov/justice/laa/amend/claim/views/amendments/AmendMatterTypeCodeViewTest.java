@@ -12,6 +12,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.amendments.CaseTypeController;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
@@ -35,6 +36,7 @@ class AmendMatterTypeCodeViewTest extends AmendmentsBaseTest {
   void testShowsUnamendedLegalHelpMatterTypeCode() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     this.claim = claim;
+    this.claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
     claim.setFeeCode(FEE_CODE);
@@ -62,6 +64,7 @@ class AmendMatterTypeCodeViewTest extends AmendmentsBaseTest {
   void testShowsUnamendedMediationMatterTypeCode() {
     var claim = MockClaimsFunctions.createMockMediationClaim();
     this.claim = claim;
+    this.claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
     claim.setFeeCode(FEE_CODE);

@@ -73,8 +73,11 @@ public class CaseTypeController {
       @ModelAttribute("caseTypeForm") AmendmentForm amendmentForm,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
+
     var amendmentForms = getAmendmentForms(session, claimId);
 
+    model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
 
