@@ -38,8 +38,6 @@ ext['netty.version'] = '4.2.15.Final'
 ext['tomcat.version'] = '11.0.23'
 // Upgrade to fix snyk vulnerabilities in 1.5.34
 ext['logback.version'] = '1.5.36'
-// Update to fix snyk vulnerabilities SNYK-JAVA-TOOLSJACKSONCORE-17972609
-ext['jackson-databind.version'] = '3.1.5'
 
 dependencyManagement {
     dependencies {
@@ -74,6 +72,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-jackson'
+
+    // Vulnerabillities
+    // Update to fix snyk vulnerabilities SNYK-JAVA-TOOLSJACKSONCORE-17972609
+    implementation 'tools.jackson.core:jackson-databind:3.1.5'
 
     // API models
     implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:1.0.42'
