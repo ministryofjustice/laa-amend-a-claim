@@ -628,7 +628,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
 
     assertH2Exists(doc, "Case");
 
-    assertPageHasLink(doc, "amend-case-type-link", "Change", amendCaseTypeUrl);
+    assertPageHasLink(doc, "amend-case-type-link", "Change", amendFeeCodeUrl);
     assertPageHasLink(doc, "amend-case-details-link", "Change", amendCaseDetailsUrl);
   }
 
