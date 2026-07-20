@@ -34,21 +34,21 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final LocalDate CASE_START_DATE = LocalDate.of(2020, 1, 1);
   private static final LocalDate CASE_CONCLUDED_DATE = LocalDate.of(2020, 2, 1);
   private static final String UFN = "ufn";
-  private static final String CASE_STAGE = "casestage";
+  private static final String CASE_STAGE = "MHL04";
   private static final BigDecimal VALUE_OF_COSTS = BigDecimal.valueOf(10.12);
   private static final String PROCUREMENT_AREA = "procurementarea";
   private static final String ACCESS_POINT = "accesspoint";
-  private static final String STAGE_REACHED = "stagereached";
-  private static final String OUTCOME_FOR_CLIENT = "outcomeforclient";
+  private static final String STAGE_REACHED = "INVA";
+  private static final String OUTCOME_FOR_CLIENT = "A";
   private static final String EXCEPTIONAL_CASE_FUNDING = "exceptionalcasefunding";
   private static final String CLA_REFERENCE = "clareference";
   private static final String CLA_EXEMPTION = "claexemption";
   private static final String DELIVERY_LOCATION = "deliverylocation";
   private static final String COURT_LOCATION = "courtlocation";
-  private static final String AIT_HEARING_CENTRE = "aithearingcentre";
+  private static final String AIT_HEARING_CENTRE = "16";
+  private static final String AIT_HEARING_CENTRE_LABEL = "16 - Other";
   private static final String LOCAL_AUTHORITY_NUMBER = "localauthoritynumber";
-  private static final String DESIGNATED_ACCREDITED_REPRESENTATIVE =
-      "designatedaccreditedrepresentative";
+  private static final String DESIGNATED_ACCREDITED_REPRESENTATIVE = "1";
   private static final int ADVICE_TIME = 1;
   private static final int TRAVEL_TIME = 2;
   private static final int WAITING_TIME = 3;
@@ -56,11 +56,11 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final String FOLLOW_ON_WORK = "followonwork";
   private static final boolean TOLERANCE_INDICATOR = true;
   private static final boolean LEGACY_CASE = true;
-  private static final String MEETINGS_ATTENDED = "meetingsattended";
-  private static final String ADVICE_TYPE = "advicetype";
+  private static final String MEETINGS_ATTENDED = "MTGA02";
+  private static final String ADVICE_TYPE = "FTF";
   private static final LocalDate TRANSFER_DATE = LocalDate.of(2020, 3, 1);
   private static final int MEDICAL_REPORTS_CLAIMED = 4;
-  private static final String EXEMPTION_CRITERIA_SATISFIED = "exemptioncriteriasatisfied";
+  private static final String EXEMPTION_CRITERIA_SATISFIED = "DV001";
   private static final boolean IRC_SURGERY = true;
   private static final LocalDate SURGERY_DATE = LocalDate.of(2020, 4, 1);
   private static final int SURGERY_CLIENTS_COUNT = 5;
@@ -68,7 +68,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final String MENTAL_HEALTH_TRIBUNAL_REFERENCE = "mentalhealthtribunalreference";
   private static final boolean IS_NRM_ADVICE = true;
   private static final LocalDate REPRESENTATION_ORDER_DATE = LocalDate.of(2020, 5, 1);
-  private static final String STANDARD_FEE_CATEGORY = "standardfeecategory";
+  private static final String STANDARD_FEE_CATEGORY = "1EW";
   private static final int SUSPECTS_DEFENDANTS_COUNT = 7;
   private static final int POLICE_ATTENDANCES_COURT = 8;
   private static final String POLICE_STATION_COURT_PRISON_ID = "policestationcourtprisonid";
@@ -206,7 +206,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertEnumTypeaheadRow(
         caseDetails.get(18),
         "Asylum and Immigration Tribunal (AIT) hearing centre",
-        AIT_HEARING_CENTRE,
+        AIT_HEARING_CENTRE_LABEL,
         "AIT_HEARING_CENTRE",
         AIT_HEARING_CENTRE);
     assertSummaryListRowContainsValues(

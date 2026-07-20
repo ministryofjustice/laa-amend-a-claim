@@ -83,7 +83,7 @@ public class ThymeleafUtils {
     if (field.getType() == FieldType.ENUM && value != null) {
       var selectedValue = value.toString();
       var selectedOption =
-          field.getOptionsIncluding(selectedValue).stream()
+          field.getOptions().stream()
               .filter(option -> option.value().equals(selectedValue))
               .findFirst();
       return selectedOption

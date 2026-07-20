@@ -43,8 +43,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
   private static final String AIT_HEARING_CENTRE = "16";
   private static final String AIT_HEARING_CENTRE_LABEL = "16 - Other";
   private static final String LOCAL_AUTHORITY_NUMBER = "localauthoritynumber";
-  private static final String DESIGNATED_ACCREDITED_REPRESENTATIVE =
-      "1";
+  private static final String DESIGNATED_ACCREDITED_REPRESENTATIVE = "1";
   private static final int ADVICE_TIME = 1;
   private static final int TRAVEL_TIME = 2;
   private static final int WAITING_TIME = 3;
@@ -182,7 +181,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(17),
         "Asylum and Immigration Tribunal (AIT) hearing centre",
-        AIT_HEARING_CENTRE);
+        AIT_HEARING_CENTRE_LABEL);
     assertSummaryListRowContainsValues(
         caseDetails.get(18), "Local authority number", LOCAL_AUTHORITY_NUMBER);
     assertSummaryListRowContainsValues(
@@ -327,7 +326,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(17),
         "Asylum and Immigration Tribunal (AIT) hearing centre",
-        AIT_HEARING_CENTRE);
+        AIT_HEARING_CENTRE_LABEL);
     assertSummaryListRowContainsValues(
         caseDetails.get(18), "Local authority number", LOCAL_AUTHORITY_NUMBER);
     assertSummaryListRowContainsValues(
