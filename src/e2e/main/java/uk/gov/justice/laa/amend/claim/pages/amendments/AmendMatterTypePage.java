@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.pages.amendments;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
@@ -22,23 +24,17 @@ public class AmendMatterTypePage extends LaaPage {
   }
 
   public void fillMatterTypeCode(String value) {
-    if (matterTypeCode.count() == 0) {
-      throw new IllegalStateException("Matter type input not found");
-    }
+    assertThat(matterTypeCode).isVisible();
     matterTypeCode.fill(value);
   }
 
   public void fillMatterTypeCodeOne(String value) {
-    if (matterTypeCodeOne.count() == 0) {
-      throw new IllegalStateException("Matter type input not found");
-    }
+    assertThat(matterTypeCodeOne).isVisible();
     matterTypeCodeOne.fill(value);
   }
 
   public void fillMatterTypeCodeTwo(String value) {
-    if (matterTypeCodeTwo.count() == 0) {
-      throw new IllegalStateException("Matter type input not found");
-    }
+    assertThat(matterTypeCodeTwo).isVisible();
     matterTypeCodeTwo.fill(value);
   }
 
