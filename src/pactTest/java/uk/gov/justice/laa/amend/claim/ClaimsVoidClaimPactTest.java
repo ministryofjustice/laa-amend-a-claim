@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound;
-import uk.gov.justice.laa.amend.AbstractPactTest;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
@@ -31,7 +30,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
 @PactTestFor(providerName = AbstractPactTest.CLAIMS_API_PROVIDER)
 @MockServerConfig(port = "1240")
 @DisplayName("POST: /api/v1/claims/{claimId}/void PACT tests")
-public final class VoidClaimPactTest extends AbstractPactTest {
+public final class ClaimsVoidClaimPactTest extends AbstractPactTest {
 
   @Autowired ClaimsApiClient claimsApiClient;
 
@@ -45,7 +44,7 @@ public final class VoidClaimPactTest extends AbstractPactTest {
         .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX, EXAMPLE_AUTH_TOKEN)
         .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
         .method("POST")
-        .body(LambdaDsl.newJsonBody(VoidClaimPactTest::buildVoidClaimRequestBody).build())
+        .body(LambdaDsl.newJsonBody(ClaimsVoidClaimPactTest::buildVoidClaimRequestBody).build())
         .willRespondWith()
         .status(201)
         .headers(Map.of("Content-Type", "application/json"))
@@ -68,7 +67,7 @@ public final class VoidClaimPactTest extends AbstractPactTest {
         .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX, EXAMPLE_AUTH_TOKEN)
         .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
         .method("POST")
-        .body(LambdaDsl.newJsonBody(VoidClaimPactTest::buildVoidClaimRequestBody).build())
+        .body(LambdaDsl.newJsonBody(ClaimsVoidClaimPactTest::buildVoidClaimRequestBody).build())
         .willRespondWith()
         .status(404)
         .matchHeader("Content-Type", "application/(problem\\+)?json", "application/problem+json")

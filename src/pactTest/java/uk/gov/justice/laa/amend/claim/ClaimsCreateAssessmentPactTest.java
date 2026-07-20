@@ -22,7 +22,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound;
-import uk.gov.justice.laa.amend.AbstractPactTest;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentOutcome;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
@@ -36,7 +35,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Res
 @PactTestFor(providerName = AbstractPactTest.CLAIMS_API_PROVIDER)
 @MockServerConfig(port = "1242")
 @DisplayName("POST: /api/v1/claims/{claimId}/assessments PACT tests")
-public final class CreateAssessmentPactTest extends AbstractPactTest {
+public final class ClaimsCreateAssessmentPactTest extends AbstractPactTest {
 
   @Autowired ClaimsApiClient claimsApiClient;
 
@@ -51,7 +50,9 @@ public final class CreateAssessmentPactTest extends AbstractPactTest {
         .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX, EXAMPLE_AUTH_TOKEN)
         .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
         .method("POST")
-        .body(LambdaDsl.newJsonBody(CreateAssessmentPactTest::buildAssessmentRequestBody).build())
+        .body(
+            LambdaDsl.newJsonBody(ClaimsCreateAssessmentPactTest::buildAssessmentRequestBody)
+                .build())
         .willRespondWith()
         .status(201)
         .headers(Map.of("Content-Type", "application/json"))
@@ -75,7 +76,9 @@ public final class CreateAssessmentPactTest extends AbstractPactTest {
         .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX, EXAMPLE_AUTH_TOKEN)
         .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
         .method("POST")
-        .body(LambdaDsl.newJsonBody(CreateAssessmentPactTest::buildAssessmentRequestBody).build())
+        .body(
+            LambdaDsl.newJsonBody(ClaimsCreateAssessmentPactTest::buildAssessmentRequestBody)
+                .build())
         .willRespondWith()
         .status(404)
         .matchHeader("Content-Type", "application/(problem\\+)?json", "application/problem+json")
