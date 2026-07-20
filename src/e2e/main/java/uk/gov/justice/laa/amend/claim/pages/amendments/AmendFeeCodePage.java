@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.pages.amendments;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
@@ -18,6 +20,7 @@ public class AmendFeeCodePage extends LaaPage {
   }
 
   public void fillFeeCodeInput(String value) {
+    assertThat(feeCodeInput).isVisible();
     feeCodeInput.clear();
     feeCodeInput.fill(value);
     feeCodeInput.press("Enter");

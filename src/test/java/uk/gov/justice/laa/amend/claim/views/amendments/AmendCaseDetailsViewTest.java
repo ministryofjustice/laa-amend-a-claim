@@ -351,8 +351,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     claim.setClaimId(claimId);
     claim.setCaseId(CASE_ID);
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterType1(MATTER_TYPE_CODE_1);
-    claim.setMatterType2(MATTER_TYPE_CODE_2);
+    claim.setMatterType(MATTER_TYPE_CODE_1);
     claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
     claim.setCaseStartDate(CASE_START_DATE);
     claim.setUniqueCaseId(UNIQUE_CASE_ID);
