@@ -84,7 +84,7 @@ public final class ClaimsGetClaimPactTest extends AbstractPactTest {
   @Pact(consumer = CONSUMER)
   public RequestResponsePact getClaim404(PactDslWithProvider builder) {
     return builder
-        .given("no claim exists for the submission and claim IDs")
+        .given("no claim exists")
         .uponReceiving("a request to get a non-existent claim")
         .matchPath(
             "/api/v2/submissions/(" + UUID_REGEX + ")/claims/(" + UUID_REGEX + ")",

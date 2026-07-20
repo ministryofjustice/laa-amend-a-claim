@@ -35,7 +35,7 @@ public final class ClaimsSearchClaimsPactTest extends AbstractPactTest {
   @Pact(consumer = CONSUMER)
   public RequestResponsePact searchClaims200(PactDslWithProvider builder) {
     return builder
-        .given("claims exist for the office code")
+        .given("a claim exists")
         .uponReceiving("a request to search claims for a valid office code")
         .matchPath("/api/v2/claims", "/api/v2/claims")
         .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX, EXAMPLE_AUTH_TOKEN)
@@ -96,7 +96,7 @@ public final class ClaimsSearchClaimsPactTest extends AbstractPactTest {
   @Pact(consumer = CONSUMER)
   public RequestResponsePact searchClaims200Empty(PactDslWithProvider builder) {
     return builder
-        .given("no claims exist for the office code")
+        .given("no a claim exists")
         .uponReceiving("a request to search claims for an office code with no results")
         .matchPath("/api/v2/claims", "/api/v2/claims")
         .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX, EXAMPLE_AUTH_TOKEN)
