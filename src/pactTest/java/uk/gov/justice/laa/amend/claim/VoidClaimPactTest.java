@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound;
+import uk.gov.justice.laa.amend.AbstractPactTest;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;

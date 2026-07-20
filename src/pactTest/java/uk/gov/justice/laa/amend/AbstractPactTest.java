@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim;
+package uk.gov.justice.laa.amend;
 
 import java.util.UUID;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;

@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim;
+package uk.gov.justice.laa.amend.fsp;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import uk.gov.justice.laa.amend.AbstractPactTest;
 import uk.gov.justice.laa.amend.claim.client.FeeSchemePlatformApiClient;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 
