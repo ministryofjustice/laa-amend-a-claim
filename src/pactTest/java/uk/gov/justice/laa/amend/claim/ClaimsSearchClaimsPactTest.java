@@ -35,9 +35,9 @@ public final class ClaimsSearchClaimsPactTest extends AbstractPactTest {
   @Pact(consumer = CONSUMER)
   public RequestResponsePact searchClaims200(PactDslWithProvider builder) {
     return builder
-        .given("a claim exists")
+        .given("claims exist for the search criteria")
         .uponReceiving("a request to search claims for a valid office code")
-        .matchPath("/api/v2/claims", "/api/v2/claims")
+        .matchPath("/api/v2/claims")
         .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX, EXAMPLE_AUTH_TOKEN)
         .matchQuery("office_code", OFFICE_CODE_REGEX, "1A234B")
         .matchQuery("unique_file_number", ".*", "")

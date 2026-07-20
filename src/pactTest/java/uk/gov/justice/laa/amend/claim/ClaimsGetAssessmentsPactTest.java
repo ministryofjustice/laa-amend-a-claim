@@ -66,7 +66,7 @@ public final class ClaimsGetAssessmentsPactTest extends AbstractPactTest {
                                 "PAID_IN_FULL");
                             assessment.stringType("assessment_reason", "ESCAPE_CASE");
                             assessment.stringType("created_by_user_id", "user-123");
-                            assessment.datetime("created_on", "yyyy-MM-dd'T'HH:mm:ssXXX");
+                            assessment.datetime("created_on", "yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX");
                           });
                     })
                 .build())
