@@ -37,7 +37,7 @@ public final class ClaimsGetClaimPactTest extends AbstractPactTest {
   @Pact(consumer = CONSUMER)
   public RequestResponsePact getClaim200(PactDslWithProvider builder) {
     return builder
-        .given("a claim exists for the submission and claim IDs")
+        .given("a claim exists")
         .uponReceiving("a request to get a valid claim")
         .matchPath(
             "/api/v2/submissions/(" + UUID_REGEX + ")/claims/(" + UUID_REGEX + ")",
