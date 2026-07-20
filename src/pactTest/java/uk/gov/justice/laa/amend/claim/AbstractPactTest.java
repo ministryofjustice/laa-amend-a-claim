@@ -6,7 +6,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 public abstract class AbstractPactTest {
   public static final String CONSUMER = "laa-amend-a-claim";
-  public static final String PROVIDER = "laa-data-claims-api";
+  public static final String CLAIMS_API_PROVIDER = "laa-data-claims-api";
+  public static final String FSP_API_PROVIDER = "laa-fee-scheme-platform-api";
 
   protected static final String UUID_REGEX =
       "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
