@@ -16,7 +16,7 @@
       <option value=""></option>
       <option th:each="option : ${options}"
               th:value="${option.value()}"
-              th:text="${option.label()}"></option>
+              th:text="#{${option.messageKey()}}"></option>
     </select>
   </div>
 </th:block>

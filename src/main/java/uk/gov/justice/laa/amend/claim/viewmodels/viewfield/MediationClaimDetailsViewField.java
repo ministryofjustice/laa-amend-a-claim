@@ -49,7 +49,7 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
   OUTCOME(new Accessor<>(MediationClaimDetails::getOutcome), FieldOptions.OUTCOME),
   OUTREACH_LOCATION(new Accessor<>(MediationClaimDetails::getOutreachLocation)),
   REFERRAL_SOURCE(
-      new Accessor<>(MediationClaimDetails::getReferralSource), FieldOptions.MEDIATION_REFERRAL),
+      new Accessor<>(MediationClaimDetails::getReferralSource), FieldOptions.REFERRAL_SOURCE),
   SCHEDULE_REFERENCE(new Accessor<>(MediationClaimDetails::getScheduleReference)),
   ;
 

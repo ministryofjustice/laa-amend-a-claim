@@ -87,7 +87,7 @@ public class ThymeleafUtils {
               .filter(option -> option.value().equals(selectedValue))
               .findFirst();
       return selectedOption
-          .<ThymeleafString>map(option -> new ThymeleafLiteralString(option.label()))
+          .<ThymeleafString>map(option -> new ThymeleafMessage(option.messageKey()))
           .orElseGet(() -> new ThymeleafLiteralString(selectedValue));
     }
 
