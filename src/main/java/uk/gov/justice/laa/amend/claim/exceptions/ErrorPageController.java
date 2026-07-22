@@ -38,11 +38,7 @@ public class ErrorPageController implements ErrorController {
       response.setStatus(SC_INTERNAL_SERVER_ERROR);
       String referenceNumber = referenceNumberFactory.create();
       model.addAttribute("referenceNumber", referenceNumber);
-      log.error(
-          "Something went wrong. Reference: {}. Status: {}. Session ID: {}",
-          referenceNumber,
-          status,
-          request.getSession().getId());
+      log.error("Something went wrong. Reference: {}. Status: {}", referenceNumber, status);
       return "error";
     }
   }
