@@ -48,7 +48,7 @@ class AmendFeeCodeViewTest extends AmendmentsBaseTest {
     var doc = renderDocument();
     assertCommonPageContent(doc);
 
-    assertAutocompleteDropDownList(doc, "Fee code", "ABC");
+    assertAutocompleteDropDownList(doc, "Amended fee code", "ABC");
   }
 
   private AmendmentForms createCaseTypeForm(ClaimDetails claim) {
@@ -59,7 +59,7 @@ class AmendFeeCodeViewTest extends AmendmentsBaseTest {
 
   private void assertCommonPageContent(Document doc) {
     assertPageHasTitle(doc, "Amend claim details");
-    assertPageHasHeading(doc, "Fee code");
+    assertPageHasHeading(doc, "Amend fee code");
     assertPageHasBackLink(doc);
 
     assertPageHasPrimaryButton(doc, "Continue");
