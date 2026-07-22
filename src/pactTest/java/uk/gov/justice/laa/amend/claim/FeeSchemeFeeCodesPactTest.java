@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import au.com.dius.pact.consumer.dsl.LambdaDsl;
 import au.com.dius.pact.consumer.dsl.LambdaDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
