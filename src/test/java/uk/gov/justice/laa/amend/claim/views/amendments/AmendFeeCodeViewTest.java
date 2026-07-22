@@ -22,8 +22,6 @@ class AmendFeeCodeViewTest extends AmendmentsBaseTest {
 
   private static final String FEE_CODE = "feecode";
   private static final String MATTER_TYPE_CODE = "matter";
-  private static final String MATTER_TYPE_CODE_1 = "matterone";
-  private static final String MATTER_TYPE_CODE_2 = "mattertwo";
 
   @MockitoBean AvailableFeeCodesService availableFeeCodesService;
 
