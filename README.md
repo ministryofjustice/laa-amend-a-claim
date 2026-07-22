@@ -102,6 +102,23 @@ refresh each time you make a change to HTML using the following command:
 gulp watch
 ```
 
+#### Building frontend assets via Gradle
+
+The `compileFEAssets` Gradle task runs `npm i` and `gulp` as part of the build. It is also wired
+into `processResources`, so a standard `./gradlew build` will compile frontend assets automatically.
+
+When running Gradle through the wrapper or via IntelliJ, the Gradle daemon does not inherit your
+shell's `PATH`, which means `npm` installed via Homebrew may not be found. The `build.gradle` works
+around this by resolving the full path to `npm` at configuration time using `bash -lc 'which npm'`.
+This reads your login shell environment (including Homebrew's PATH) and uses the absolute path for
+all npm invocations.
+
+If the build fails with `Cannot run program "npm"`, ensure:
+
+- Node.js and npm are installed via Homebrew (`brew install node`)
+- Your shell profile (`.zprofile` or `.zshrc`) correctly adds Homebrew to `PATH`
+- You have run `brew doctor` to confirm Homebrew is correctly set up
+
 
 ### Snyk
 
