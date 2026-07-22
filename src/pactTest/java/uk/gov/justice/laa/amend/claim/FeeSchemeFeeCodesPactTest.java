@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.amend.claim;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import au.com.dius.pact.consumer.dsl.LambdaDsl;
 import au.com.dius.pact.consumer.dsl.LambdaDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
@@ -21,10 +20,10 @@ import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.NONE,
-    properties = {"fee-scheme-api.url=http://localhost:1242"})
+    properties = {"fee-scheme-api.url=http://localhost:1246"})
 @PactConsumerTest
 @PactTestFor(providerName = AbstractPactTest.FSP_API_PROVIDER)
-@MockServerConfig(port = "1242")
+@MockServerConfig(port = "1246")
 @DisplayName("GET: /api/v1/fee-codes/{areaOfLaw} PACT tests")
 public class FeeSchemeFeeCodesPactTest extends AbstractPactTest {
 

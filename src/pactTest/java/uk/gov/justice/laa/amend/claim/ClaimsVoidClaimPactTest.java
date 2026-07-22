@@ -25,10 +25,10 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.NONE,
-    properties = {"claims-api.url=http://localhost:1240"})
+    properties = {"claims-api.url=http://localhost:1245"})
 @PactConsumerTest
 @PactTestFor(providerName = AbstractPactTest.CLAIMS_API_PROVIDER)
-@MockServerConfig(port = "1240")
+@MockServerConfig(port = "1245")
 @DisplayName("POST: /api/v1/claims/{claimId}/void PACT tests")
 public final class ClaimsVoidClaimPactTest extends AbstractPactTest {
 

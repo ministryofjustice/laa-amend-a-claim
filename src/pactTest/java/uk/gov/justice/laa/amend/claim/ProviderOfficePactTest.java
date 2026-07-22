@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.amend.claim;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import au.com.dius.pact.consumer.dsl.LambdaDsl;
 import au.com.dius.pact.consumer.dsl.LambdaDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
@@ -20,10 +19,10 @@ import uk.gov.justice.laa.amend.claim.client.ProviderApiClient;
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.NONE,
-    properties = {"provider-api.url=http://localhost:1242"})
+    properties = {"provider-api.url=http://localhost:1247"})
 @PactConsumerTest
 @PactTestFor(providerName = AbstractPactTest.PROVIDER_API_PROVIDER)
-@MockServerConfig(port = "1242")
+@MockServerConfig(port = "1247")
 @DisplayName("GET: /api/v1/provider-offices/{officeCode} PACT tests")
 public class ProviderOfficePactTest extends AbstractPactTest {
 
@@ -55,7 +54,7 @@ public class ProviderOfficePactTest extends AbstractPactTest {
   }
 
   @Test
-  @DisplayName("Verify 200 response - fee codes exist for the area of law")
+  @DisplayName("Verify 200 response - provider office exists for the office code")
   @PactTestFor(pactMethod = "getProviderOffice")
   void verify200Response() {
     String officeCode = "0P322F";
