@@ -11,7 +11,7 @@
   "license": "MIT",
   "author": "Controlled Work Claims",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "gulp": "gulp"
   },
   "devDependencies": {
     "@ministryofjustice/frontend": "^9.0.0",

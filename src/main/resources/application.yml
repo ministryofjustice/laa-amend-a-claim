@@ -130,9 +130,15 @@ spring:
   config:
     activate:
       on-profile: local
+      
   thymeleaf:
     cache: false
     prefix: file:src/main/resources/templates/
+  web:
+    resources:
+      static-locations: file:build/resources/main/static/
+      cache:
+        period: 0
 ---
 spring:
   config:
