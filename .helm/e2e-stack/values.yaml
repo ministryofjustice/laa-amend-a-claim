@@ -189,6 +189,16 @@ laaAmendAClaim:
         secretKeyRef:
           name: laa-amend-a-claim-e2e-claims-api-token
           key: claims_token
+    - name: FEE_SCHEME_API
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-fsp-api-url
+          key: FEE_SCHEME_API
+    - name: FEE_SCHEME_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-fsp-api-token
+          key: FEE_SCHEME_TOKEN
     - name: FEEDBACK_URL
       valueFrom:
         configMapKeyRef:
@@ -244,4 +254,3 @@ laaAmendAClaim:
     limits:
       memory: "1Gi"
       cpu: "500m"
-
