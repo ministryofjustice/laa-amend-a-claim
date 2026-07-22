@@ -55,6 +55,8 @@ dependencyManagement {
         dependency "org.codehaus.plexus:plexus-utils:4.0.3"
         // Force httpcore5-h2 version to fix Snyk vulnerability
         dependency 'org.apache.httpcomponents.core5:httpcore5-h2:5.4.3'
+        // Force netty-codec-http to fix Snyk vulnerability
+        dependency 'io.netty:netty-codec-http:4.2.16.Final'
     }
 }
 
