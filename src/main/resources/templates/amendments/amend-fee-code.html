@@ -20,7 +20,9 @@
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-fee-code(submissionId=${submissionId}, claimId=${claimId})}"
             th:object="${caseTypeForm}">
 
-        <input type="hidden" th:each="entry : *{inputs}" th:field="*{inputs[__${entry.key}__]}"
+        <input type="hidden" th:each="entry : *{inputs}"
+               th:if="${entry.key != 'FEE_CODE'}"
+               th:field="*{inputs[__${entry.key}__]}"
                th:value="${entry.value}"/>
         <p class="govuk-body" th:text="#{amendments.feeCode.description}"/>
 
