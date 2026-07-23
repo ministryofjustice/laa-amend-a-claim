@@ -31,48 +31,42 @@ function compileStylesheets() {
   )
   .pipe(cleanCSS())
   .pipe(rename('app.min.css'))
-  .pipe(gulp.dest('src/main/resources/static/css'))
-  .pipe(gulp.dest('build/resources/main/static/css'))
-  .on('end', () => console.log('CSS written to build/resources/main/static/css'));
+  .pipe(gulp.dest('build/generatedFEAssets/static/css'))
+  .on('end', () => console.log('CSS written to build/generatedFEAssets/static/css'));
 }
 
 function copyGOVUKJavascript() {
   return gulp.src('node_modules/govuk-frontend/dist/govuk/govuk-frontend.min.js')
-  .pipe(gulp.dest('src/main/resources/static/js'))
-  .pipe(gulp.dest('build/resources/main/static/js'))
+  .pipe(gulp.dest('build/generatedFEAssets/static/js'))
   .pipe(gulp.dest('src/main/resources/es'))
-  .on('end', () => console.log('GOV.UK JS copied to build/resources/main/static/js and src/main/resources/es'));
+  .on('end', () => console.log('GOV.UK JS copied to build/generatedFEAssets/static/js and src/main/resources/es'));
 }
 
 function copyGOVUKAutocompleteJavascript() {
   return gulp.src('node_modules/accessible-autocomplete/dist/accessible-autocomplete.min.js')
-  .pipe(gulp.dest('src/main/resources/static/js'))
-  .pipe(gulp.dest('build/resources/main/static/js'))
+  .pipe(gulp.dest('build/generatedFEAssets/static/js'))
   .pipe(gulp.dest('src/main/resources/es'))
-  .on('end', () => console.log('GOV.UK Autocomplete JS copied to build/resources/main/static/js and src/main/resources/es'));
+  .on('end', () => console.log('GOV.UK Autocomplete JS copied to build/generatedFEAssets/static/js and src/main/resources/es'));
 
 }
 
 function copyMOJJavascript() {
   return gulp.src('node_modules/@ministryofjustice/frontend/moj/moj-frontend.min.js')
-  .pipe(gulp.dest('build/resources/main/static/js'))
-  .pipe(gulp.dest('src/main/resources/js'))
+  .pipe(gulp.dest('build/generatedFEAssets/static/js'))
   .pipe(gulp.dest('src/main/resources/es'))
-  .on('end', () => console.log('MOJ JS copied to build/resources/main/static/js and src/main/resources/es'));
+  .on('end', () => console.log('MOJ JS copied to build/generatedFEAssets/static/js and src/main/resources/es'));
 }
 
 function copyGOVUKAssets() {
   return gulp.src('node_modules/govuk-frontend/dist/govuk/assets/**/*')
-  .pipe(gulp.dest('src/main/resources/static/assets'))
-  .pipe(gulp.dest('build/resources/main/static/assets'))
-  .on('end', () => console.log('GOV.UK assets copied to build/resources/main/static/assets'));
+  .pipe(gulp.dest('build/generatedFEAssets/static/assets'))
+  .on('end', () => console.log('GOV.UK assets copied to build/generatedFEAssets/static/assets'));
 }
 
 function copyMOJAssets() {
   return gulp.src('node_modules/@ministryofjustice/frontend/moj/assets/**/*')
-  .pipe(gulp.dest('src/main/resources/static/assets'))
-  .pipe(gulp.dest('build/resources/main/static/assets'))
-  .on('end', () => console.log('MOJ assets copied to build/resources/main/static/assets'));
+  .pipe(gulp.dest('build/generatedFEAssets/static/assets'))
+  .on('end', () => console.log('MOJ assets copied to build/generatedFEAssets/static/assets'));
 }
 
 function compileScripts() {
@@ -83,9 +77,8 @@ function compileScripts() {
   .pipe(tsProject())
   .pipe(terser())
   .pipe(rename('app.min.js'))
-  .pipe(gulp.dest('build/resources/main/static/js'))
-  .pipe(gulp.dest('src/main/resources/static/js'))
-  .on('end', () => console.log('App JS compiled to build/resources/main/static/js'));
+  .pipe(gulp.dest('build/generatedFEAssets/static/js'))
+  .on('end', () => console.log('App JS compiled to build/generatedFEAssets/static/js'));
 }
 
 function watch() {

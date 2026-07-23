@@ -220,7 +220,6 @@ tasks.register('compileFEAssets', Exec) {
     description = 'Compiles application frontend assets with gulp.'
     workingDir = projectDir
     dependsOn tasks.named('npmInstall')
-    //inputs.dir(frontendResourcesDir)
     inputs.files('gulpfile.js', 'package.json', 'package-lock.json')
     commandLine npmExecutable, 'run', 'gulp'
 }
@@ -231,12 +230,10 @@ tasks.register('watch', Exec) {
     description = 'Compiles application frontend assets with gulp.'
     workingDir = projectDir
     dependsOn tasks.named('npmInstall')
-    //inputs.dir(frontendResourcesDir)
     inputs.files('gulpfile.js', 'package.json', 'package-lock.json')
     commandLine npmExecutable, 'run', 'gulp', 'watch'
 }
 
-/* Hooks into the existing task processResources*/
-tasks.named('processResources') {
-    dependsOn tasks.named('compileFEAssets')
-}
+processResources.dependsOn compileFEAssets
+processResources
+        { from(layout.buildDirectory.dir("generatedFEAssets")) }
