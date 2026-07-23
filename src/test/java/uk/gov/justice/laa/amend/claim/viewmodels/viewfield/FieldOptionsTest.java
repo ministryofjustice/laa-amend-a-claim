@@ -25,4 +25,19 @@ class FieldOptionsTest {
     assertThat(ReferralSource.CLIENT_SELF_REFERRED.messageKey())
         .isEqualTo("claimCase.options.referralSource.CLIENT_SELF_REFERRED");
   }
+
+  @Test
+  void outcomeCodesWithDuplicateDescriptionsHaveUniqueMessageKeys() {
+    assertThat(OutcomeCode.CHANGE_OF_SOLICITOR.value()).isEqualTo("CN02");
+    assertThat(OutcomeCode.CHANGE_OF_SOLICITOR.messageKey())
+        .isEqualTo("claimCase.options.outcomeCode.CHANGE_OF_SOLICITOR");
+
+    assertThat(OutcomeCode.CHANGE_OF_SOLICITOR_CP02.value()).isEqualTo("CP02");
+    assertThat(OutcomeCode.CHANGE_OF_SOLICITOR_CP02.messageKey())
+        .isEqualTo("claimCase.options.outcomeCode.CHANGE_OF_SOLICITOR_CP02");
+
+    assertThat(OutcomeCode.CHANGE_OF_SOLICITOR_PL02.value()).isEqualTo("PL02");
+    assertThat(OutcomeCode.CHANGE_OF_SOLICITOR_PL02.messageKey())
+        .isEqualTo("claimCase.options.outcomeCode.CHANGE_OF_SOLICITOR_PL02");
+  }
 }
