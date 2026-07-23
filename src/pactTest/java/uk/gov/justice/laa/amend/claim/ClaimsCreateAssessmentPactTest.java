@@ -30,12 +30,12 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Res
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.NONE,
-    properties = {"claims-api.url=http://localhost:1242"})
+    properties = {"claims-api.url=http://localhost:1241"})
 @PactConsumerTest
-@PactTestFor(providerName = AbstractPactTest.PROVIDER)
-@MockServerConfig(port = "1242")
+@PactTestFor(providerName = AbstractPactTest.CLAIMS_API_PROVIDER)
+@MockServerConfig(port = "1241")
 @DisplayName("POST: /api/v1/claims/{claimId}/assessments PACT tests")
-public final class CreateAssessmentPactTest extends AbstractPactTest {
+public final class ClaimsCreateAssessmentPactTest extends AbstractPactTest {
 
   @Autowired ClaimsApiClient claimsApiClient;
 
@@ -50,7 +50,9 @@ public final class CreateAssessmentPactTest extends AbstractPactTest {
         .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX, EXAMPLE_AUTH_TOKEN)
         .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
         .method("POST")
-        .body(LambdaDsl.newJsonBody(CreateAssessmentPactTest::buildAssessmentRequestBody).build())
+        .body(
+            LambdaDsl.newJsonBody(ClaimsCreateAssessmentPactTest::buildAssessmentRequestBody)
+                .build())
         .willRespondWith()
         .status(201)
         .headers(Map.of("Content-Type", "application/json"))
@@ -74,7 +76,9 @@ public final class CreateAssessmentPactTest extends AbstractPactTest {
         .matchHeader(HttpHeaders.AUTHORIZATION, UUID_REGEX, EXAMPLE_AUTH_TOKEN)
         .matchHeader(HttpHeaders.CONTENT_TYPE, "application/json.*", "application/json")
         .method("POST")
-        .body(LambdaDsl.newJsonBody(CreateAssessmentPactTest::buildAssessmentRequestBody).build())
+        .body(
+            LambdaDsl.newJsonBody(ClaimsCreateAssessmentPactTest::buildAssessmentRequestBody)
+                .build())
         .willRespondWith()
         .status(404)
         .matchHeader("Content-Type", "application/(problem\\+)?json", "application/problem+json")

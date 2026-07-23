@@ -33,7 +33,7 @@ repositories {
 }
 
 // Upgrade to fix HTTP Request Smuggling (SNYK-JAVA-IONETTY-16425695)
-ext['netty.version'] = '4.2.15.Final'
+ext['netty.version'] = '4.2.16.Final'
 // Upgrade to fix snyk vulnerabilities in 11.0.22
 ext['tomcat.version'] = '11.0.23'
 // Upgrade to fix snyk vulnerabilities in 1.5.34
