@@ -96,6 +96,6 @@ class AmendMatterTypeCodeViewTest extends AmendmentsBaseTest {
     assertPageHasBackLink(doc);
 
     assertPageHasPrimaryButton(doc, "Continue");
-    assertPageHasLink(doc, "cancel", "Cancel", overviewCaseUrl);
+    assertPageHasLink(doc, "cancel", "Cancel", caseUrl);
   }
 }
