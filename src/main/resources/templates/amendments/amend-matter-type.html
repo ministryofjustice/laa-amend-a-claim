@@ -76,7 +76,7 @@
         </th:block>
         <div class="govuk-button-group">
           <button class="govuk-button" type="submit" th:text="#{amendments.continue}"></button>
-          <a th:href="@{/submissions/{submissionId}/claims/{claimId}/case(submissionId=${submissionId}, claimId=${claimId})}"
+          <a th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/case(submissionId=${submissionId}, claimId=${claimId})}"
              id="cancel"
              class="govuk-link govuk-link--no-visited-state"
              th:text="#{service.cancel}">
