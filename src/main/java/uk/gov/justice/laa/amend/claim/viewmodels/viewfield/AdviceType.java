@@ -1,8 +1,8 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
 
 public enum AdviceType implements FieldOption {
-  FTF("FTF"),
-  REM("REM");
+  FACE_TO_FACE("FTF"),
+  REMOTELY("REM");
 
   private final String value;
 

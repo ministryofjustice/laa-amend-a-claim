@@ -39,6 +39,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final String PROCUREMENT_AREA = "procurementarea";
   private static final String ACCESS_POINT = "accesspoint";
   private static final String STAGE_REACHED = "INVA";
+  private static final String STAGE_REACHED_LABEL =
+      "INVA - Advice and Assistance (not at the police station)";
   private static final String OUTCOME_FOR_CLIENT = "A";
   private static final String EXCEPTIONAL_CASE_FUNDING = "exceptionalcasefunding";
   private static final String CLA_REFERENCE = "clareference";
@@ -49,6 +51,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final String AIT_HEARING_CENTRE_LABEL = "16 - Other";
   private static final String LOCAL_AUTHORITY_NUMBER = "localauthoritynumber";
   private static final String DESIGNATED_ACCREDITED_REPRESENTATIVE = "1";
+  private static final String DESIGNATED_ACCREDITED_REPRESENTATIVE_LABEL =
+      "1 - Designated Accredited Representative";
   private static final int ADVICE_TIME = 1;
   private static final int TRAVEL_TIME = 2;
   private static final int WAITING_TIME = 3;
@@ -57,10 +61,14 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final boolean TOLERANCE_INDICATOR = true;
   private static final boolean LEGACY_CASE = true;
   private static final String MEETINGS_ATTENDED = "MTGA02";
+  private static final String MEETINGS_ATTENDED_LABEL = "MTGA02 - Tribunal Hearing only";
   private static final String ADVICE_TYPE = "FTF";
+  private static final String ADVICE_TYPE_LABEL = "FTF - Face to Face";
   private static final LocalDate TRANSFER_DATE = LocalDate.of(2020, 3, 1);
   private static final int MEDICAL_REPORTS_CLAIMED = 4;
   private static final String EXEMPTION_CRITERIA_SATISFIED = "DV001";
+  private static final String EXEMPTION_CRITERIA_SATISFIED_LABEL =
+      "DV001 - Domestic Abuse - injunction or protective order";
   private static final boolean IRC_SURGERY = true;
   private static final LocalDate SURGERY_DATE = LocalDate.of(2020, 4, 1);
   private static final int SURGERY_CLIENTS_COUNT = 5;
@@ -69,6 +77,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final boolean IS_NRM_ADVICE = true;
   private static final LocalDate REPRESENTATION_ORDER_DATE = LocalDate.of(2020, 5, 1);
   private static final String STANDARD_FEE_CATEGORY = "1EW";
+  private static final String STANDARD_FEE_CATEGORY_LABEL = "1EW - Magistrates Court Category 1A";
   private static final int SUSPECTS_DEFENDANTS_COUNT = 7;
   private static final int POLICE_ATTENDANCES_COURT = 8;
   private static final String POLICE_STATION_COURT_PRISON_ID = "policestationcourtprisonid";
@@ -174,7 +183,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(10), "Access point", ACCESS_POINT, ACCESS_POINT);
     assertEnumTypeaheadRow(
-        caseDetails.get(11), "Stage reached", STAGE_REACHED, "STAGE_REACHED", STAGE_REACHED);
+        caseDetails.get(11), "Stage reached", STAGE_REACHED_LABEL, "STAGE_REACHED", STAGE_REACHED);
     assertEnumTypeaheadRow(
         caseDetails.get(12),
         "Outcome for client",
@@ -217,7 +226,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertEnumTypeaheadRow(
         caseDetails.get(20),
         "Designated accredited representative",
-        DESIGNATED_ACCREDITED_REPRESENTATIVE,
+        DESIGNATED_ACCREDITED_REPRESENTATIVE_LABEL,
         "DESIGNATED_ACCREDITED_REPRESENTATIVE",
         DESIGNATED_ACCREDITED_REPRESENTATIVE);
     assertSummaryListRowContainsValues(
@@ -236,11 +245,11 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertEnumTypeaheadRow(
         caseDetails.get(28),
         "Meetings attended",
-        MEETINGS_ATTENDED,
+        MEETINGS_ATTENDED_LABEL,
         "MEETINGS_ATTENDED",
         MEETINGS_ATTENDED);
     assertEnumTypeaheadRow(
-        caseDetails.get(29), "Type of advice", ADVICE_TYPE, "ADVICE_TYPE", ADVICE_TYPE);
+        caseDetails.get(29), "Type of advice", ADVICE_TYPE_LABEL, "ADVICE_TYPE", ADVICE_TYPE);
     assertDateRow(caseDetails.get(30), "Transfer date", TRANSFER_DATE, "TRANSFER_DATE");
     assertSummaryListRowContainsValues(
         caseDetails.get(31),
@@ -250,7 +259,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertEnumTypeaheadRow(
         caseDetails.get(32),
         "Exemption criteria satisfied",
-        EXEMPTION_CRITERIA_SATISFIED,
+        EXEMPTION_CRITERIA_SATISFIED_LABEL,
         "EXEMPTION_CRITERIA_SATISFIED",
         EXEMPTION_CRITERIA_SATISFIED);
     assertBooleanSelectRow(
@@ -311,7 +320,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
 
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");
     assertEnumTypeaheadRow(
-        caseDetails.get(1), "Stage reached", STAGE_REACHED, "STAGE_REACHED", STAGE_REACHED);
+        caseDetails.get(1), "Stage reached", STAGE_REACHED_LABEL, "STAGE_REACHED", STAGE_REACHED);
     assertSummaryListRowContainsValues(caseDetails.get(2), "Unique file number (UFN)", UFN, UFN);
     assertDateRow(
         caseDetails.get(3),
@@ -323,7 +332,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertEnumTypeaheadRow(
         caseDetails.get(5),
         "Standard fee category",
-        STANDARD_FEE_CATEGORY,
+        STANDARD_FEE_CATEGORY_LABEL,
         "STANDARD_FEE_CATEGORY",
         STANDARD_FEE_CATEGORY);
     assertEnumTypeaheadRow(
