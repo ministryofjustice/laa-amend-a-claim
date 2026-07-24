@@ -78,48 +78,6 @@ import static <all other imports>
 import <all other imports>
 ```
 
-### Frontend dependencies
-
-This project uses [GOV.UK Frontend](https://frontend.design-system.service.gov.uk/)
-and [MOJ Frontend](https://design-patterns.service.justice.gov.uk/) for the frontend. These are
-installed via npm and are included in the build process. In order to install the dependencies locally, run the following command:
-
-```bash
-npm install
-```
-
-Then using gulp, you can build the frontend assets with:
-```bash
-gulp
-```
-
-The above `gulp` command will need to be ran for each time there is a version change to the 
-design systems locally.
-
-Alongside this, when running the `local` spring profile, you can have your browser automatically
-refresh each time you make a change to HTML using the following command:
-```bash
-gulp watch
-```
-
-#### Building frontend assets via Gradle
-
-The `compileFEAssets` Gradle task runs `npm i` and `gulp` as part of the build. It is also wired
-into `processResources`, so a standard `./gradlew build` will compile frontend assets automatically.
-
-When running Gradle through the wrapper or via IntelliJ, the Gradle daemon does not inherit your
-shell's `PATH`, which means `npm` installed via Homebrew may not be found. The `build.gradle` works
-around this by resolving the full path to `npm` at configuration time using `bash -lc 'which npm'`.
-This reads your login shell environment (including Homebrew's PATH) and uses the absolute path for
-all npm invocations.
-
-If the build fails with `Cannot run program "npm"`, ensure:
-
-- Node.js and npm are installed via Homebrew (`brew install node`)
-- Your shell profile (`.zprofile` or `.zshrc`) correctly adds Homebrew to `PATH`
-- You have run `brew doctor` to confirm Homebrew is correctly set up
-
-
 ### Snyk
 
 We use Snyk to help identify security vulnerabilities in our code and dependencies. To setup:
@@ -247,6 +205,53 @@ which provides sensible defaults for:
   components for accessible, consistent UI.
 - [MOJ Frontend](https://design-patterns.service.justice.gov.uk/) - extends GOV.UK Frontend with
   Ministry of Justice specific components.
+
+
+### Frontend dependencies
+
+This project uses [GOV.UK Frontend](https://frontend.design-system.service.gov.uk/)
+and [MOJ Frontend](https://design-patterns.service.justice.gov.uk/) for the frontend. These are
+installed via npm and are included in the build process.
+
+The `compileFEAssets` Gradle task runs `npm i` and `gulp` as part of the build. It is also wired
+into `processResources`, so a standard `./gradlew build` will compile frontend assets automatically.
+
+When running Gradle through the wrapper or via IntelliJ, the Gradle daemon does not inherit your
+shell's `PATH`, which means `npm` installed via Homebrew may not be found. The `build.gradle` works
+around this by resolving the full path to `npm` at configuration time using `bash -lc 'which npm'`.
+This reads your login shell environment (including Homebrew's PATH) and uses the absolute path for
+all npm invocations.
+
+If the build fails with `Cannot run program "npm"`, ensure:
+
+- Node.js and npm are installed via Homebrew (`brew install node`)
+- Your shell profile (`.zprofile` or `.zshrc`) correctly adds Homebrew to `PATH`
+- You have run `brew doctor` to confirm Homebrew is correctly set up
+
+There is also the `watch` Gradle task which runs `gulp watch`. This attaches a browser sync process
+to your app (which must already be running) that recompiles assets and reloads thymeleaf changes 
+in real time.
+
+#### Optional gulp usage without gradle
+Install local dependencies:
+```bash
+npm install
+```
+
+Then using gulp, you can build the frontend assets with:
+```bash
+gulp
+```
+
+The above `gulp` command will need to be ran for each time there is a version change to the
+design systems locally.
+
+Alongside this, when running the `local` spring profile, you can have your browser automatically
+refresh each time you make a change to HTML using the following command:
+```bash
+gulp watch
+```
+
 
 #### Code Generation
 
