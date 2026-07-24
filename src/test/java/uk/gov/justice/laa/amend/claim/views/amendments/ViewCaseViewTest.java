@@ -34,8 +34,6 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
   private static final String PROCUREMENT_AREA = "procurementarea";
   private static final String ACCESS_POINT = "accesspoint";
   private static final String STAGE_REACHED = "INVA";
-  private static final String STAGE_REACHED_LABEL =
-      "INVA - Advice and Assistance (not at the police station)";
   private static final String OUTCOME_FOR_CLIENT = "A";
   private static final String EXCEPTIONAL_CASE_FUNDING = "exceptionalcasefunding";
   private static final String CLA_REFERENCE = "clareference";
@@ -56,14 +54,11 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
   private static final boolean TOLERANCE_INDICATOR = true;
   private static final boolean LEGACY_CASE = true;
   private static final String MEETINGS_ATTENDED = "MTGA02";
-  private static final String MEETINGS_ATTENDED_LABEL = "MTGA02 - Tribunal Hearing only";
   private static final String ADVICE_TYPE = "FTF";
   private static final String ADVICE_TYPE_LABEL = "FTF - Face to Face";
   private static final LocalDate TRANSFER_DATE = LocalDate.of(2020, 3, 1);
   private static final int MEDICAL_REPORTS_CLAIMED = 4;
   private static final String EXEMPTION_CRITERIA_SATISFIED = "DV001";
-  private static final String EXEMPTION_CRITERIA_SATISFIED_LABEL =
-      "DV001 - Domestic Abuse - injunction or protective order";
   private static final boolean IRC_SURGERY = true;
   private static final LocalDate SURGERY_DATE = LocalDate.of(2020, 4, 1);
   private static final int SURGERY_CLIENTS_COUNT = 5;
@@ -72,7 +67,6 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
   private static final boolean IS_NRM_ADVICE = true;
   private static final LocalDate REPRESENTATION_ORDER_DATE = LocalDate.of(2020, 5, 1);
   private static final String STANDARD_FEE_CATEGORY = "1EW";
-  private static final String STANDARD_FEE_CATEGORY_LABEL = "1EW - Magistrates Court Category 1A";
   private static final int SUSPECTS_DEFENDANTS_COUNT = 7;
   private static final int POLICE_ATTENDANCES_COURT = 8;
   private static final String POLICE_STATION_COURT_PRISON_ID = "policestationcourtprisonid";
@@ -173,7 +167,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
         caseDetails.get(7), "Value of costs or damages recovered", "£" + VALUE_OF_COSTS.toString());
     assertSummaryListRowContainsValues(caseDetails.get(8), "Procurement area", PROCUREMENT_AREA);
     assertSummaryListRowContainsValues(caseDetails.get(9), "Access point", ACCESS_POINT);
-    assertSummaryListRowContainsValues(caseDetails.get(10), "Stage reached", STAGE_REACHED_LABEL);
+    assertSummaryListRowContainsValues(caseDetails.get(10), "Stage reached", STAGE_REACHED);
     assertSummaryListRowContainsValues(
         caseDetails.get(11), "Outcome for client", OUTCOME_FOR_CLIENT);
     assertSummaryListRowContainsValues(
@@ -207,15 +201,14 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(caseDetails.get(24), "Follow on work", FOLLOW_ON_WORK);
     assertSummaryListRowContainsValues(caseDetails.get(25), "Tolerance indicator", YES);
     assertSummaryListRowContainsValues(caseDetails.get(26), "Legacy case", YES);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(27), "Meetings attended", MEETINGS_ATTENDED_LABEL);
+    assertSummaryListRowContainsValues(caseDetails.get(27), "Meetings attended", MEETINGS_ATTENDED);
     assertSummaryListRowContainsValues(caseDetails.get(28), "Type of advice", ADVICE_TYPE_LABEL);
     assertSummaryListRowContainsValues(
         caseDetails.get(29), "Transfer date", TRANSFER_DATE.format(testFormatter));
     assertSummaryListRowContainsValues(
         caseDetails.get(30), "Medical reports claimed", String.valueOf(MEDICAL_REPORTS_CLAIMED));
     assertSummaryListRowContainsValues(
-        caseDetails.get(31), "Exemption criteria satisfied", EXEMPTION_CRITERIA_SATISFIED_LABEL);
+        caseDetails.get(31), "Exemption criteria satisfied", EXEMPTION_CRITERIA_SATISFIED);
     assertSummaryListRowContainsValues(
         caseDetails.get(32), "Immigration removal centre (IRC) surgery", YES);
     assertSummaryListRowContainsValues(
@@ -319,7 +312,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
         caseDetails.get(7), "Value of costs or damages recovered", "£" + VALUE_OF_COSTS.toString());
     assertSummaryListRowContainsValues(caseDetails.get(8), "Procurement area", PROCUREMENT_AREA);
     assertSummaryListRowContainsValues(caseDetails.get(9), "Access point", ACCESS_POINT);
-    assertSummaryListRowContainsValues(caseDetails.get(10), "Stage reached", STAGE_REACHED_LABEL);
+    assertSummaryListRowContainsValues(caseDetails.get(10), "Stage reached", STAGE_REACHED);
     assertSummaryListRowContainsValues(
         caseDetails.get(11), "Outcome for client", OUTCOME_FOR_CLIENT);
     assertSummaryListRowContainsValues(
@@ -353,15 +346,14 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(caseDetails.get(24), "Follow on work", FOLLOW_ON_WORK);
     assertSummaryListRowContainsValues(caseDetails.get(25), "Tolerance indicator", YES);
     assertSummaryListRowContainsValues(caseDetails.get(26), "Legacy case", YES);
-    assertSummaryListRowContainsValues(
-        caseDetails.get(27), "Meetings attended", MEETINGS_ATTENDED_LABEL);
+    assertSummaryListRowContainsValues(caseDetails.get(27), "Meetings attended", MEETINGS_ATTENDED);
     assertSummaryListRowContainsValues(caseDetails.get(28), "Type of advice", ADVICE_TYPE_LABEL);
     assertSummaryListRowContainsValues(
         caseDetails.get(29), "Transfer date", TRANSFER_DATE.format(testFormatter));
     assertSummaryListRowContainsValues(
         caseDetails.get(30), "Medical reports claimed", String.valueOf(MEDICAL_REPORTS_CLAIMED));
     assertSummaryListRowContainsValues(
-        caseDetails.get(31), "Exemption criteria satisfied", EXEMPTION_CRITERIA_SATISFIED_LABEL);
+        caseDetails.get(31), "Exemption criteria satisfied", EXEMPTION_CRITERIA_SATISFIED);
     assertSummaryListRowContainsValues(
         caseDetails.get(32), "Immigration removal centre (IRC) surgery", YES);
     assertSummaryListRowContainsValues(
@@ -416,8 +408,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(caseType.get(1), "Matter type", MATTER_TYPE_CODE);
 
     var caseDetails = getSummaryListInCard(doc, "Case details");
-    assertSummaryListRowContainsValues(
-        caseDetails.getFirst(), "Stage reached", STAGE_REACHED_LABEL);
+    assertSummaryListRowContainsValues(caseDetails.getFirst(), "Stage reached", STAGE_REACHED);
     assertSummaryListRowContainsValues(caseDetails.get(1), "Unique file number (UFN)", UFN);
     assertSummaryListRowContainsValues(
         caseDetails.get(2),
@@ -426,7 +417,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(3), "Case concluded date", CASE_CONCLUDED_DATE.format(testFormatter));
     assertSummaryListRowContainsValues(
-        caseDetails.get(4), "Standard fee category", STANDARD_FEE_CATEGORY_LABEL);
+        caseDetails.get(4), "Standard fee category", STANDARD_FEE_CATEGORY);
     assertSummaryListRowContainsValues(
         caseDetails.get(5), "Outcome for client", OUTCOME_FOR_CLIENT);
     assertSummaryListRowContainsValues(
@@ -487,8 +478,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(caseType.get(2), "Matter type", MATTER_TYPE_CODE, "changed");
 
     var caseDetails = getSummaryListInCard(doc, "Case details");
-    assertSummaryListRowContainsValues(
-        caseDetails.getFirst(), "Stage reached", STAGE_REACHED_LABEL);
+    assertSummaryListRowContainsValues(caseDetails.getFirst(), "Stage reached", STAGE_REACHED);
     assertSummaryListRowContainsValues(caseDetails.get(1), "Unique file number (UFN)", UFN);
     assertSummaryListRowContainsValues(
         caseDetails.get(2),
@@ -497,7 +487,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(3), "Case concluded date", CASE_CONCLUDED_DATE.format(testFormatter));
     assertSummaryListRowContainsValues(
-        caseDetails.get(4), "Standard fee category", STANDARD_FEE_CATEGORY_LABEL);
+        caseDetails.get(4), "Standard fee category", STANDARD_FEE_CATEGORY);
     assertSummaryListRowContainsValues(
         caseDetails.get(5), "Outcome for client", OUTCOME_FOR_CLIENT);
     assertSummaryListRowContainsValues(
