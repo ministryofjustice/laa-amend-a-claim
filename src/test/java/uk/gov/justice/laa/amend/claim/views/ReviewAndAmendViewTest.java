@@ -7,7 +7,6 @@ import java.util.List;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -31,11 +30,6 @@ class ReviewAndAmendViewTest extends ViewTestBase {
 
   ReviewAndAmendViewTest() {
     this.mapping = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
-  }
-
-  @BeforeEach
-  void setUp() {
-    when(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled()).thenReturn(true);
   }
 
   @Test

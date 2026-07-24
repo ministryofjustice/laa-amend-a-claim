@@ -1,7 +1,5 @@
 package uk.gov.justice.laa.amend.claim.views.claimdetails;
 
-import static org.mockito.Mockito.when;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.jsoup.nodes.Document;
@@ -95,7 +93,6 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
   @BeforeEach
   public void setup() {
     super.setup();
-    when(featureFlagsConfig.getIsFullClaimDetailsEnabled()).thenReturn(true);
     mapping = caseUrl;
   }
 

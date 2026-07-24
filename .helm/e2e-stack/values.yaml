@@ -241,10 +241,6 @@ laaAmendAClaim:
           key: FEE_SCHEME_TOKEN
     - name: IS_BULK_UPLOAD_ENABLED
       value: "true"
-    - name: IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED
-      value: "true"
-    - name: IS_FULL_CLAIM_DETAILS_ENABLED
-      value: "true"
     - name: IS_CLAIM_AMENDMENT_ENABLED
       value: "true"
   resources:
