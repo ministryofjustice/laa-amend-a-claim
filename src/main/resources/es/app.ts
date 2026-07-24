@@ -39,6 +39,7 @@ selectDropdowns.forEach(function (select: HTMLSelectElement) {
         id: select.id,
         defaultValue: select.options[select.options.selectedIndex].innerHTML,
         selectElement: select,
-        allowEmpty: true
+        allowEmpty: true,
+        displayMenu: 'overlay'
     });
 });
