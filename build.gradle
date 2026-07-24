@@ -1,7 +1,7 @@
 plugins {
     id 'uk.gov.laa.springboot.laa-spring-boot-gradle-plugin' version '2.3.6'
     id "com.diffplug.spotless" version "8.8.0"
-    id "io.sentry.jvm.gradle" version "6.14.0"
+    id "io.sentry.jvm.gradle" version "6.15.0"
     id 'au.com.dius.pact' version '4.7.3'
 }
 
@@ -45,14 +45,14 @@ dependencyManagement {
     dependencies {
         // === INSERT YOUR OVERRIDES HERE ===
         // Force jackson-core version to fix Snyk vulnerability
-        dependency "com.fasterxml.jackson.core:jackson-core:2.21.5"
-        dependency "com.fasterxml.jackson.core:jackson-databind:2.21.5"
+        dependency "com.fasterxml.jackson.core:jackson-core:2.22.1"
+        dependency "com.fasterxml.jackson.core:jackson-databind:2.22.1"
         // Force log4j version to fix Snyk vulnerability
-        dependency "org.apache.logging.log4j:log4j-api:2.25.5"
-        dependency "org.apache.logging.log4j:log4j-to-slf4j:2.25.5"
+        dependency "org.apache.logging.log4j:log4j-api:2.26.1"
+        dependency "org.apache.logging.log4j:log4j-to-slf4j:2.26.1"
         // Force tools.jackson version to fix Snyk vulnerability
-        dependency "tools.jackson.core:jackson-core:3.1.5"
-        dependency "tools.jackson.core:jackson-databind:3.1.5"
+        dependency "tools.jackson.core:jackson-core:3.2.1"
+        dependency "tools.jackson.core:jackson-databind:3.2.1"
         // Force plexus-utils version to fix Snyk vulnerability
         dependency "org.codehaus.plexus:plexus-utils:4.0.3"
         // Force httpcore5-h2 version to fix Snyk vulnerability
@@ -77,7 +77,7 @@ dependencies {
 
     // Vulnerabillities
     // Update to fix snyk vulnerabilities SNYK-JAVA-TOOLSJACKSONCORE-17972609
-    implementation 'tools.jackson.core:jackson-databind:3.1.5'
+    implementation 'tools.jackson.core:jackson-databind:3.2.1'
 
     // API models
     implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:1.0.42'
@@ -96,7 +96,7 @@ dependencies {
     implementation("io.vavr:vavr:1.0.1")
 
     // Sentry observability for Spring Boot 4
-    implementation enforcedPlatform('io.sentry:sentry-bom:8.48.0')
+    implementation enforcedPlatform('io.sentry:sentry-bom:8.49.0')
     implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
