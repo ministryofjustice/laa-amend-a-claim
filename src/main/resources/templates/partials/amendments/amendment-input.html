@@ -9,7 +9,7 @@
     <th:block th:replace="~{partials/amendments/boolean-input :: amendmentBooleanInput(${field.name()}, ${labelMessageKey})}"></th:block>
   </th:block>
   <th:block th:if="${field.type.name() == 'ENUM'}">
-    <th:block th:replace="~{partials/amendments/enum-input :: amendmentEnumInput(${field}, ${labelMessageKey}, *{inputs[__${field.name()}__]})}"></th:block>
+    <th:block th:replace="~{partials/amendments/enum-input :: amendmentEnumInput(${field}, ${labelMessageKey})}"></th:block>
   </th:block>
   <input th:if="${field.type.name() == 'TEXT'}"
          class="govuk-input"
