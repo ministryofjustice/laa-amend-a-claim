@@ -436,7 +436,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertH2Exists(doc, "Case");
 
     assertPageHasPrimaryButton(doc, "Continue");
-    assertPageHasLink(doc, "cancel", "Cancel", overviewUrl);
+    assertPageHasLink(doc, "cancel", "Cancel", caseUrl);
   }
 
   private static @NonNull AmendmentForms createCaseForms(ClaimDetails claimDetails) {
