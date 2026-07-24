@@ -50,11 +50,11 @@ claims-api:
 microsoft-graph-api:
   url: https://graph.microsoft.com
 provider-api:
-  url: ${PROVIDER_API}
-  access-token: ${PROVIDER_TOKEN}
+  url: ${PROVIDER_DETAILS_API_URL}
+  access-token: ${PROVIDER_DETAILS_API_ACCESS_TOKEN}
 fee-scheme-api:
-  url: ${FEE_SCHEME_API}
-  access-token: ${FEE_SCHEME_TOKEN}
+  url: ${FEE_SCHEME_PLATFORM_API_URL}
+  access-token: ${FEE_SCHEME_PLATFORM_API_ACCESS_TOKEN}
 submission:
   high-value-assessment-limit: 25000
 app:
