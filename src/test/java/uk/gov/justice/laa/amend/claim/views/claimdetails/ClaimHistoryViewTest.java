@@ -44,7 +44,6 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
   @BeforeEach
   public void setup() {
     super.setup();
-    when(featureFlagsConfig.getIsFullClaimDetailsEnabled()).thenReturn(true);
     mapping = historyUrl;
   }
 

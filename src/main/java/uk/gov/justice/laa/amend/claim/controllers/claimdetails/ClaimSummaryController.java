@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.controllers.claimdetails;
 
-import static java.lang.Boolean.TRUE;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VALID;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VOID;
@@ -60,10 +59,6 @@ public class ClaimSummaryController extends ClaimDetailsBaseController {
     session.setAttribute(claimId.toString(), claim);
 
     setCommonModelAttributes(model, session, request, claim, user);
-
-    boolean isSwapColumns =
-        TRUE.equals(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled());
-    model.addAttribute("isSwapColumns", isSwapColumns);
 
     model.addAttribute("claim", claim.toViewModel());
 

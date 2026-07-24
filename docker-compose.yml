@@ -33,8 +33,6 @@ services:
       PROVIDER_TOKEN: ${PROVIDER_DETAILS_API_ACCESS_TOKEN}
       SPRING_PROFILES_ACTIVE: docker
       IS_BULK_UPLOAD_ENABLED: true
-      IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED: true
-      IS_FULL_CLAIM_DETAILS_ENABLED: true
       IS_CLAIM_AMENDMENT_ENABLED: true
       JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
   amend-ui-local:
@@ -71,8 +69,6 @@ services:
       PROVIDER_TOKEN: ${PROVIDER_DETAILS_API_ACCESS_TOKEN}
       SPRING_PROFILES_ACTIVE: local
       IS_BULK_UPLOAD_ENABLED: true
-      IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED: true
-      IS_FULL_CLAIM_DETAILS_ENABLED: true
       IS_CLAIM_AMENDMENT_ENABLED: true
       JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
   amend-redis:
