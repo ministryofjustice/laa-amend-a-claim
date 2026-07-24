@@ -32,7 +32,7 @@ repositories {
     mavenCentral()
 }
 
-// Upgrade to fix HTTP Request Smuggling (SNYK-JAVA-IONETTY-16425695)
+// Upgrade to fix Snyk vulnerabilities in Netty
 ext['netty.version'] = '4.2.16.Final'
 // Upgrade to fix snyk vulnerabilities in 11.0.22
 ext['tomcat.version'] = '11.0.23'

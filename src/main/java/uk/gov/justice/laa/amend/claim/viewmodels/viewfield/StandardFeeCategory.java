@@ -1,0 +1,32 @@
+package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
+
+public enum StandardFeeCategory implements FieldOption {
+  YOUTH_COURT_CATEGORY_1A("1A"),
+  YOUTH_COURT_CATEGORY_2A("2A"),
+  YOUTH_COURT_CATEGORY_1B("1B"),
+  YOUTH_COURT_CATEGORY_2B("2B"),
+  YOUTH_COURT_DEFERRED_SENTENCE_CATEGORY_1A_HSF("1A-HSF"),
+  YOUTH_COURT_DEFERRED_SENTENCE_CATEGORY_1B_HSF("1B-HSF"),
+  YOUTH_COURT_DEFERRED_SENTENCE_CATEGORY_1A_LSF("1A-LSF"),
+  YOUTH_COURT_DEFERRED_SENTENCE_CATEGORY_1B_LSF("1B-LSF"),
+  MAGISTRATES_COURT_CATEGORY_1A("1EW"),
+  MAGISTRATES_COURT_CATEGORY_1B("1SO"),
+  MAGISTRATES_COURT_CATEGORY_2("2"),
+  THREE("3"),
+  UNCONTESTED_LOWER_FEE_PROV1("ULF"),
+  UNCONTESTED_HIGHER_FEE_PROV2("UHF"),
+  CONTESTED_LOWER_FEE_PROV3("CLF"),
+  CONTESTED_HIGHER_FEE_PROV4("CHF"),
+  SENDING_HEARING_FIXED_FEE("Sending Hearing Fixed Fee");
+
+  private final String value;
+
+  StandardFeeCategory(String value) {
+    this.value = value;
+  }
+
+  @Override
+  public String value() {
+    return value;
+  }
+}

@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
 
+import java.util.List;
 import java.util.function.Function;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
@@ -45,22 +46,33 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
   CASE_CONCLUDED_DATE(new Accessor<>(MediationClaimDetails::getCaseEndDate), FieldType.DATE),
   MEDIATION_SESSIONS_COUNT(new Accessor<>(MediationClaimDetails::getMediationSessionsCount)),
   MEDIATION_TIME_MINUTES(new Accessor<>(MediationClaimDetails::getMediationTimeMinutes)),
-  OUTCOME(new Accessor<>(MediationClaimDetails::getOutcome)),
+  OUTCOME(new Accessor<>(MediationClaimDetails::getOutcome), FieldOptions.OUTCOME),
   OUTREACH_LOCATION(new Accessor<>(MediationClaimDetails::getOutreachLocation)),
-  REFERRAL_SOURCE(new Accessor<>(MediationClaimDetails::getReferralSource)),
+  REFERRAL_SOURCE(
+      new Accessor<>(MediationClaimDetails::getReferralSource), FieldOptions.REFERRAL_SOURCE),
   SCHEDULE_REFERENCE(new Accessor<>(MediationClaimDetails::getScheduleReference)),
   ;
 
   private final Accessor<?> accessor;
   private final FieldType type;
+  private final List<FieldOption> options;
 
   MediationClaimDetailsViewField(Accessor<?> accessor) {
     this(accessor, FieldType.TEXT);
   }
 
   MediationClaimDetailsViewField(Accessor<?> accessor, FieldType type) {
+    this(accessor, type, List.of());
+  }
+
+  MediationClaimDetailsViewField(Accessor<?> accessor, List<FieldOption> options) {
+    this(accessor, FieldType.ENUM, options);
+  }
+
+  MediationClaimDetailsViewField(Accessor<?> accessor, FieldType type, List<FieldOption> options) {
     this.accessor = accessor;
     this.type = type;
+    this.options = List.copyOf(options);
   }
 
   public record Accessor<T>(Function<MediationClaimDetails, T> getter)

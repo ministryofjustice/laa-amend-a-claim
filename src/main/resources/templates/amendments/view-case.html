@@ -48,10 +48,10 @@
               <dt class="govuk-summary-list__key"
                   th:text="#{${'claimCase.rows.' + entry.key}}"></dt>
               <dd class="govuk-summary-list__value"
-                  th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+                  th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
               <dd class="govuk-summary-list__value"
                   th:if="${caseTypeForm.isAmendment(entry.key.name(), originalCaseTypeForm)}"
-                  th:text="${@ThymeleafUtils.getFormattedValue(caseTypeForm.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
+                  th:text="${@ThymeleafUtils.getFormattedValue(entry.key, caseTypeForm.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
             </div>
           </dl>
         </div>
@@ -83,10 +83,10 @@
               <dt class="govuk-summary-list__key"
                   th:text="#{${'claimCase.rows.' + entry.key}}"></dt>
               <dd class="govuk-summary-list__value"
-                  th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+                  th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
               <dd class="govuk-summary-list__value"
                   th:if="${caseDetailsForm.isAmendment(entry.key.name(), originalCaseDetailsForm)}"
-                  th:text="${@ThymeleafUtils.getFormattedValue(caseDetailsForm.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
+                  th:text="${@ThymeleafUtils.getFormattedValue(entry.key, caseDetailsForm.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
             </div>
           </dl>
         </div>

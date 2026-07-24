@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.stream.Stream;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
@@ -14,6 +15,10 @@ public interface ClaimViewField<T extends Claim> {
   <U> ClaimViewFieldAccessor<T, U> getAccessor();
 
   FieldType getType();
+
+  default List<FieldOption> getOptions() {
+    return List.of();
+  }
 
   static <C extends ClaimDetails> LinkedHashMap<ClaimViewField<C>, Object> toFieldMap(
       Stream<ClaimViewField<C>> fields, C claim) {
