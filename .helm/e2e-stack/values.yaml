@@ -209,6 +209,26 @@ laaAmendAClaim:
         configMapKeyRef:
           name: outage-banner-properties
           key: outage-banner-message
+    - name: PROVIDER_DETAILS_API_URL
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-provider-api-url
+          key: PROVIDER_API
+    - name: PROVIDER_DETAILS_API_ACCESS_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-provider-api-token
+          key: PROVIDER_TOKEN
+    - name: FEE_SCHEME_PLATFORM_API_URL
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-fsp-api-url
+          key: FEE_SCHEME_API
+    - name: FEE_SCHEME_PLATFORM_API_ACCESS_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-fsp-api-token
+          key: FEE_SCHEME_TOKEN
     - name: IS_BULK_UPLOAD_ENABLED
       value: "true"
     - name: IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED

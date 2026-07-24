@@ -166,22 +166,22 @@ env:
       configMapKeyRef:
         name: urls
         key: laa
-  - name: PROVIDER_API
+  - name: PROVIDER_DETAILS_API_URL
     valueFrom:
       secretKeyRef:
         name: laa-amend-a-claim-provider-api-url
         key: PROVIDER_API
-  - name: PROVIDER_TOKEN
+  - name: PROVIDER_DETAILS_API_ACCESS_TOKEN
     valueFrom:
       secretKeyRef:
         name: laa-amend-a-claim-provider-api-token
         key: PROVIDER_TOKEN
-  - name: FEE_SCHEME_API
+  - name: FEE_SCHEME_PLATFORM_API_URL
     valueFrom:
       secretKeyRef:
         name: laa-amend-a-claim-fsp-api-url
         key: FEE_SCHEME_API
-  - name: FEE_SCHEME_TOKEN
+  - name: FEE_SCHEME_PLATFORM_API_ACCESS_TOKEN
     valueFrom:
       secretKeyRef:
         name: laa-amend-a-claim-fsp-api-token
