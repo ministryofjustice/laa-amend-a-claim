@@ -9,15 +9,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
-import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactory;
 
 @Controller
-@RequiresFeatureFlag(Feature.FULL_CLAIM_DETAILS)
 public class ClaimCostsController extends ClaimDetailsBaseController {
 
   public ClaimCostsController(
