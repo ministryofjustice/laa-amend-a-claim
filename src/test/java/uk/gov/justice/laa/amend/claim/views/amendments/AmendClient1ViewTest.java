@@ -218,6 +218,6 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertH2Exists(doc, "Client");
 
     assertPageHasPrimaryButton(doc, "Continue");
-    assertPageHasLink(doc, "cancel", "Cancel", overviewUrl);
+    assertPageHasLink(doc, "cancel", "Cancel", clientUrl);
   }
 }

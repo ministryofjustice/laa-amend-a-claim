@@ -22,8 +22,6 @@ class AmendFeeCodeViewTest extends AmendmentsBaseTest {
 
   private static final String FEE_CODE = "feecode";
   private static final String MATTER_TYPE_CODE = "matter";
-  private static final String MATTER_TYPE_CODE_1 = "matterone";
-  private static final String MATTER_TYPE_CODE_2 = "mattertwo";
 
   @MockitoBean AvailableFeeCodesService availableFeeCodesService;
 
@@ -48,7 +46,7 @@ class AmendFeeCodeViewTest extends AmendmentsBaseTest {
     var doc = renderDocument();
     assertCommonPageContent(doc);
 
-    assertAutocompleteDropDownList(doc, "Fee code", "ABC");
+    assertAutocompleteDropDownList(doc, "Amended fee code", "ABC");
   }
 
   private AmendmentForms createCaseTypeForm(ClaimDetails claim) {
@@ -59,10 +57,10 @@ class AmendFeeCodeViewTest extends AmendmentsBaseTest {
 
   private void assertCommonPageContent(Document doc) {
     assertPageHasTitle(doc, "Amend claim details");
-    assertPageHasHeading(doc, "Fee code");
+    assertPageHasHeading(doc, "Amend fee code");
     assertPageHasBackLink(doc);
 
     assertPageHasPrimaryButton(doc, "Continue");
-    assertPageHasLink(doc, "cancel", "Cancel", overviewCaseUrl);
+    assertPageHasLink(doc, "cancel", "Cancel", caseUrl);
   }
 }
