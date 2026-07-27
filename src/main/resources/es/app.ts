@@ -41,10 +41,21 @@ selectDropdowns.forEach(function (select: HTMLSelectElement) {
         selectElement: select,
         allowEmpty: true,
         displayMenu: 'overlay',
+        // Match the query anywhere in the text, but list matches at the start first, alphabetically.
         source: function (query: string, populateResults: (results: string[]) => void): void {
+            const lowerQuery = query.toLowerCase();
             const options = [].filter.call(select.options, (option: HTMLOptionElement) => option.value)
                 .map((option: HTMLOptionElement) => option.textContent || option.innerText);
-            populateResults(options.filter((option: string) => option.toLowerCase().startsWith(query.toLowerCase())));
+            const results = options.filter((option: string) => option.toLowerCase().includes(lowerQuery));
+            results.sort((a: string, b: string) => {
+                const aStartsWith = a.toLowerCase().startsWith(lowerQuery);
+                const bStartsWith = b.toLowerCase().startsWith(lowerQuery);
+                if (aStartsWith !== bStartsWith) {
+                    return aStartsWith ? -1 : 1;
+                }
+                return a.localeCompare(b);
+            });
+            populateResults(results);
         }
     });
 });
