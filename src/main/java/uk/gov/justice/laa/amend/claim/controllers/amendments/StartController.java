@@ -15,6 +15,7 @@ import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
@@ -35,7 +36,12 @@ public class StartController {
     var caseView = ClaimCaseViewFactory.create(claim);
     var caseTypeForm = new AmendmentForm(caseView.caseTypeRows());
     var caseDetailsForm = new AmendmentForm(caseView.caseDetailsRows());
-    var amendmentForms = new AmendmentForms(client1Form, caseTypeForm, caseDetailsForm);
+
+    boolean isMediation = AreaOfLaw.MEDIATION.equals(claim.getAreaOfLaw());
+    var client2Form = isMediation ? new AmendmentForm(clientView.client2Rows()) : null;
+    var amendmentForms = isMediation
+        ? new AmendmentForms(client1Form, client2Form, caseTypeForm, caseDetailsForm)
+        : new AmendmentForms(client1Form, caseTypeForm, caseDetailsForm);
 
     saveAmendmentForms(session, claimId, amendmentForms);
 

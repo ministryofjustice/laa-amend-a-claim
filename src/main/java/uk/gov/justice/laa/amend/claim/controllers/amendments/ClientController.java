@@ -76,4 +76,21 @@ public class ClientController {
 
     return "redirect:/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
   }
+
+  @GetMapping("/amend-client-two")
+  public String viewAmendClientTwo(
+      HttpSession session,
+      Model model,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
+    var clientView = ClaimClientViewFactory.create(claim);
+    var amendmentForms = getAmendmentForms(session, claimId);
+
+    model.addAttribute("clientView", clientView);
+    model.addAttribute("client2Form", amendmentForms.getClient2Form().getCurrent());
+    model.addAttribute("forms", amendmentForms);
+
+    return "amendments/amend-client-1";
+  }
 }
