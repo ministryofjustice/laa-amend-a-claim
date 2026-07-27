@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.config.InquestConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.config.ViewTestConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
@@ -51,6 +52,8 @@ public abstract class ViewTestBase {
   @MockitoBean protected MaintenanceService maintenanceService;
 
   @MockitoBean protected FeatureFlagsConfig featureFlagsConfig;
+
+  @MockitoBean protected InquestConfig inquestConfig;
 
   @BeforeEach
   public void setup() {
@@ -230,6 +233,12 @@ public abstract class ViewTestBase {
           assertThat(link.text()).isEqualTo(expectedText);
           assertThat(link.attr("href")).isEqualTo(expectedHref);
         });
+  }
+
+  protected void assertPageDoesNotHaveSubNavigationItem(Document doc, String expectedText) {
+    Elements elements = doc.select(".moj-sub-navigation__item a");
+    boolean found = elements.stream().anyMatch(link -> expectedText.equals(link.text()));
+    Assertions.assertFalse(found, "Expected sub navigation to not contain item: " + expectedText);
   }
 
   protected Element selectFirst(Element element, String cssQuery) {

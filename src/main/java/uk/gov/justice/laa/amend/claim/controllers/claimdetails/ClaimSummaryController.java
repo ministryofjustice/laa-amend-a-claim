@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.config.InquestConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
@@ -34,8 +35,9 @@ public class ClaimSummaryController extends ClaimDetailsBaseController {
       AssessmentService assessmentService,
       UserRetrievalService userRetrievalService,
       ClaimService claimService,
-      FeatureFlagsConfig featureFlagsConfig) {
-    super(assessmentService, userRetrievalService, featureFlagsConfig);
+      FeatureFlagsConfig featureFlagsConfig,
+      InquestConfig inquestConfig) {
+    super(assessmentService, userRetrievalService, featureFlagsConfig, inquestConfig);
     this.claimService = claimService;
   }
 

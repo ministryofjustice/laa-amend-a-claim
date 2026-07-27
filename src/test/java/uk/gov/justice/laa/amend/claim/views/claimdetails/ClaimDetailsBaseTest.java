@@ -9,6 +9,7 @@ public abstract class ClaimDetailsBaseTest extends ViewTestBase {
   final String caseUrl;
   final String costsUrl;
   final String historyUrl;
+  final String inquestUrl;
 
   ClaimDetailsBaseTest() {
     overviewUrl = String.format("/submissions/%s/claims/%s", submissionId, claimId);
@@ -16,5 +17,6 @@ public abstract class ClaimDetailsBaseTest extends ViewTestBase {
     caseUrl = String.format("/submissions/%s/claims/%s/case", submissionId, claimId);
     costsUrl = String.format("/submissions/%s/claims/%s/costs", submissionId, claimId);
     historyUrl = String.format("/submissions/%s/claims/%s/history", submissionId, claimId);
+    inquestUrl = String.format("/submissions/%s/claims/%s/inquest", submissionId, claimId);
   }
 }
