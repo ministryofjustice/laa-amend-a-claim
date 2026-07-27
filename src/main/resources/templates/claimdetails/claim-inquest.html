@@ -15,7 +15,14 @@
 
             <h2 class="govuk-heading-m" th:text="#{claimInquest.heading}"></h2>
 
-            <form th:object="${form}">
+            <form th:object="${form}"
+                  th:action="@{/submissions/{submissionId}/claims/{claimId}/inquest(submissionId=${submissionId}, claimId=${claimId})}"
+                  method="post">
+
+                <th:block th:with="formErrors=${@ThymeleafUtils.toInquestFormErrors(#fields.detailedErrors())}">
+                    <th:block th:replace="~{partials/error-summary :: error-summary(${formErrors})}"></th:block>
+                </th:block>
+
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="deceasedForename" th:text="#{claimInquest.deceasedForename}"></label>
                     <input class="govuk-input" id="deceasedForename" th:field="*{deceasedForename}">
@@ -26,12 +33,22 @@
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="deceasedDateOfBirth" th:text="#{claimInquest.deceasedDateOfBirth}"></label>
+                    <p th:if="${#fields.hasErrors('deceasedDateOfBirth')}" class="govuk-error-message">
+                        <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                        <th:block th:errors="*{deceasedDateOfBirth}"></th:block>
+                    </p>
                     <input class="govuk-input govuk-input--width-10" type="date"
+                           th:classappend="${#fields.hasErrors('deceasedDateOfBirth') ? 'govuk-input--error' : ''}"
                            id="deceasedDateOfBirth" th:field="*{deceasedDateOfBirth}">
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="deceasedDateOfDeath" th:text="#{claimInquest.deceasedDateOfDeath}"></label>
+                    <p th:if="${#fields.hasErrors('deceasedDateOfDeath')}" class="govuk-error-message">
+                        <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                        <th:block th:errors="*{deceasedDateOfDeath}"></th:block>
+                    </p>
                     <input class="govuk-input govuk-input--width-10" type="date"
+                           th:classappend="${#fields.hasErrors('deceasedDateOfDeath') ? 'govuk-input--error' : ''}"
                            id="deceasedDateOfDeath" th:field="*{deceasedDateOfDeath}">
                 </div>
                 <div class="govuk-form-group">
@@ -39,10 +56,14 @@
                     <input class="govuk-input" id="coronersInquestReference" th:field="*{coronersInquestReference}">
                 </div>
 
-                <div class="govuk-form-group" id="interested-government-departments">
+                <div class="govuk-form-group" id="interested-department-codes">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m"
                                 th:text="#{claimInquest.interestedDepartments}"></legend>
+                        <p th:if="${#fields.hasErrors('interestedDepartmentCodes')}" class="govuk-error-message">
+                            <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+                            <th:block th:errors="*{interestedDepartmentCodes}"></th:block>
+                        </p>
                         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                             <div class="govuk-checkboxes__item" th:each="department : ${departments}">
                                 <input class="govuk-checkboxes__input" type="checkbox"
@@ -68,7 +89,17 @@
                                th:id="|interestedPublicAuthorities${item.index}|"
                                th:name="|interestedPublicAuthorities[${item.index}]|"
                                th:value="${authority}">
+                        <button type="submit" name="removeAuthority" th:value="${item.index}"
+                                class="govuk-button govuk-button--secondary"
+                                data-module="govuk-button" th:text="#{claimInquest.removeAuthority}"></button>
                     </div>
+                    <button type="submit" name="addAuthority" value="true"
+                            class="govuk-button govuk-button--secondary"
+                            data-module="govuk-button" th:text="#{claimInquest.addAnotherAuthority}"></button>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button" data-module="govuk-button" th:text="#{service.saveChanges}"></button>
                 </div>
             </form>
 

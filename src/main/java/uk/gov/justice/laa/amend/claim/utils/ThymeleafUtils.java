@@ -17,6 +17,7 @@ import org.thymeleaf.spring6.util.DetailedError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AllowedTotalFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessedTotalFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessmentOutcomeFormError;
+import uk.gov.justice.laa.amend.claim.forms.errors.InquestFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.MonetaryValueFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafLiteralString;
@@ -47,6 +48,10 @@ public class ThymeleafUtils {
 
   public List<AllowedTotalFormError> toAllowedTotalFormErrors(List<DetailedError> errors) {
     return mapErrors(errors, AllowedTotalFormError::new, AllowedTotalFormError::getMessage);
+  }
+
+  public List<InquestFormError> toInquestFormErrors(List<DetailedError> errors) {
+    return mapErrors(errors, InquestFormError::new, InquestFormError::getMessage);
   }
 
   private <T> List<T> mapErrors(
