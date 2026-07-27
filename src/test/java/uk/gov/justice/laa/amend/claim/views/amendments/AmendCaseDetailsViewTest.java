@@ -167,11 +167,11 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(caseDetails.get(6), "Unique file number (UFN)", UFN, UFN);
     assertEnumTypeaheadRow(
         caseDetails.get(7), "Case stage or level", CASE_STAGE, "CASE_STAGE", CASE_STAGE);
-    assertSummaryListRowContainsValues(
+    assertBigDecimalInputRow(
         caseDetails.get(8),
         "Value of costs or damages recovered",
-        "£" + VALUE_OF_COSTS.toString(),
-        "TODO");
+        VALUE_OF_COSTS,
+        "VALUE_OF_COSTS");
     assertSummaryListRowContainsValues(
         caseDetails.get(9), "Procurement area", PROCUREMENT_AREA, PROCUREMENT_AREA);
     assertSummaryListRowContainsValues(
@@ -478,5 +478,20 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         String.valueOf(expectedDate.getMonthValue()),
         selectedMonth.attr("value"),
         "Selected month value");
+  }
+
+  private void assertBigDecimalInputRow(
+      List<Element> row, String label, BigDecimal expectedValue, String inputId) {
+    assertCellContainsText(row.getFirst(), label);
+    assertCellContainsText(row.get(1), "£" + expectedValue);
+
+    Element amended = row.get(2);
+    Element inputWrapper = selectFirst(amended, ".govuk-input__wrapper");
+    Assertions.assertEquals("£", selectFirst(inputWrapper, ".govuk-input__prefix").text());
+
+    Element input = selectFirst(inputWrapper, "input.govuk-input--width-10");
+    Assertions.assertEquals(inputId, input.attr("id"), "BigDecimal input id");
+    Assertions.assertEquals(
+        expectedValue.toString(), input.attr("value"), "BigDecimal input value");
   }
 }

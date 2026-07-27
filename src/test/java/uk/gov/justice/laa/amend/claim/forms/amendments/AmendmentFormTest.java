@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.forms.amendments;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -165,6 +166,25 @@ class AmendmentFormTest {
     form.setInputs(new HashMap<>(Map.of("IS_ELIGIBLE_CLIENT", "true")));
 
     assertThat(form.getAmendedValue(CivilClaimDetailsViewField.IS_ELIGIBLE_CLIENT)).isEqualTo(true);
+  }
+
+  @Test
+  void seedsBigDecimalFieldAsScaledInput() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.VALUE_OF_COSTS, BigDecimal.valueOf(10.1));
+
+    var form = new AmendmentForm(rows);
+
+    assertThat(form.getInputs()).containsEntry("VALUE_OF_COSTS", "10.10");
+  }
+
+  @Test
+  void getAmendedValueReturnsBigDecimalForBigDecimalField() {
+    var form = new AmendmentForm();
+    form.setInputs(new HashMap<>(Map.of("VALUE_OF_COSTS", "10.1")));
+
+    assertThat(form.getAmendedValue(CivilClaimDetailsViewField.VALUE_OF_COSTS))
+        .isEqualTo(BigDecimal.valueOf(10.10).setScale(2));
   }
 
   @Test
