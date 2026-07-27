@@ -40,6 +40,11 @@ selectDropdowns.forEach(function (select: HTMLSelectElement) {
         defaultValue: select.options[select.options.selectedIndex].innerHTML,
         selectElement: select,
         allowEmpty: true,
-        displayMenu: 'overlay'
+        displayMenu: 'overlay',
+        source: function (query: string, populateResults: (results: string[]) => void): void {
+            const options = [].filter.call(select.options, (option: HTMLOptionElement) => option.value)
+                .map((option: HTMLOptionElement) => option.textContent || option.innerText);
+            populateResults(options.filter((option: string) => option.toLowerCase().startsWith(query.toLowerCase())));
+        }
     });
 });
