@@ -22,6 +22,8 @@ public record ClaimHistoryEventViewModel(
       new ThymeleafMessage("claimHistory.claimCalculated.description");
   private static final ThymeleafMessage CLAIM_VOIDED_DESCRIPTION =
       new ThymeleafMessage("claimHistory.claimVoided.description");
+  private static final ThymeleafMessage CLAIM_INQUEST_DATA_UPDATED_DESCRIPTION =
+      new ThymeleafMessage("claimHistory.claimInquestDataUpdated.description");
 
   private static final String CLAIM_ASSESSED_ESCAPE_CASE_DESCRIPTION_KEY =
       "claimHistory.claimAssessedEscapeCase.description";
@@ -41,6 +43,7 @@ public record ClaimHistoryEventViewModel(
           case CLAIM_ASSESSED_STAGE_DISBURSEMENT ->
               "claimHistory.claimAssessedStageDisbursement.type";
           case CLAIM_VOIDED -> "claimHistory.claimVoided.type";
+          case CLAIM_INQUEST_DATA_UPDATED -> "claimHistory.claimInquestDataUpdated.type";
         };
     return new ThymeleafMessage(messageKey);
   }
@@ -63,6 +66,7 @@ public record ClaimHistoryEventViewModel(
       case CLAIM_ASSESSED_STAGE_DISBURSEMENT ->
           toAssessmentDescription(CLAIM_ASSESSED_STAGE_DISBURSEMENT_DESCRIPTION_KEY, event);
       case CLAIM_VOIDED -> List.of(CLAIM_VOIDED_DESCRIPTION);
+      case CLAIM_INQUEST_DATA_UPDATED -> List.of(CLAIM_INQUEST_DATA_UPDATED_DESCRIPTION);
     };
   }
 
