@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="amendmentNumberInput(fieldKey, labelMessageKey)"
+          th:with="label=${#messages.msgOrNull(labelMessageKey) ?: fieldKey}">
+  <label class="govuk-label govuk-visually-hidden"
+         th:for="${fieldKey}"
+         th:text="${label}"></label>
+  <input class="govuk-input govuk-input--width-5"
+         type="text"
+         inputmode="numeric"
+         spellcheck="false"
+         th:id="${fieldKey}"
+         th:field="*{inputs[__${fieldKey}__]}" />
+</th:block>
+</body>
+</html>

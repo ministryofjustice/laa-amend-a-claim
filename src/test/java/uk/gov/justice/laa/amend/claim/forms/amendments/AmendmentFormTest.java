@@ -196,6 +196,45 @@ class AmendmentFormTest {
   }
 
   @Test
+  void seedsNumberFieldAsIntegerInput() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.TRAVEL_TIME, 200);
+
+    var form = new AmendmentForm(rows);
+
+    assertThat(form.getInputs()).containsEntry("TRAVEL_TIME", "200");
+  }
+
+  @Test
+  void seedsNullNumberFieldAsEmptyInput() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.TRAVEL_TIME, null);
+    var original = new AmendmentForm(rows);
+
+    assertThat(original.getInputs()).containsEntry("TRAVEL_TIME", "");
+
+    var current = new AmendmentForm();
+    current.setInputs(new HashMap<>(Map.of("TRAVEL_TIME", "")));
+    assertThat(current.isAmendment("TRAVEL_TIME", original)).isFalse();
+  }
+
+  @Test
+  void getAmendedValueReturnsIntegerForNumberField() {
+    var form = new AmendmentForm();
+    form.setInputs(new HashMap<>(Map.of("TRAVEL_TIME", "200")));
+
+    assertThat(form.getAmendedValue(CivilClaimDetailsViewField.TRAVEL_TIME)).isEqualTo(200);
+  }
+
+  @Test
+  void getAmendedValueReturnsNullForNonNumericNumberInput() {
+    var form = new AmendmentForm();
+    form.setInputs(new HashMap<>(Map.of("TRAVEL_TIME", "not-a-number")));
+
+    assertThat(form.getAmendedValue(CivilClaimDetailsViewField.TRAVEL_TIME)).isNull();
+  }
+
+  @Test
   void getBooleanValueReturnsNullWhenInputBlank() {
     var form = new AmendmentForm();
     form.setInputs(new HashMap<>(Map.of("IS_ELIGIBLE_CLIENT", "")));

@@ -47,9 +47,9 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   DESIGNATED_ACCREDITED_REPRESENTATIVE(
       new Accessor<>(CivilClaimDetails::getDesignatedAccreditedRepresentative),
       FieldOptions.DESIGNATED_ACCREDITED_REPRESENTATIVE),
-  ADVICE_TIME(new Accessor<>(CivilClaimDetails::getAdviceTime)),
-  TRAVEL_TIME(new Accessor<>(CivilClaimDetails::getTravelTime)),
-  WAITING_TIME(new Accessor<>(CivilClaimDetails::getWaitingTime)),
+  ADVICE_TIME(new Accessor<>(CivilClaimDetails::getAdviceTime), FieldType.NUMBER),
+  TRAVEL_TIME(new Accessor<>(CivilClaimDetails::getTravelTime), FieldType.NUMBER),
+  WAITING_TIME(new Accessor<>(CivilClaimDetails::getWaitingTime), FieldType.NUMBER),
   ADDITIONAL_TRAVEL_PAYMENT(
       new Accessor<>(CivilClaimDetails::getIsAdditionalTravelPayment), FieldType.BOOLEAN),
   FOLLOW_ON_WORK(new Accessor<>(CivilClaimDetails::getFollowOnWork)),
