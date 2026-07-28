@@ -18,6 +18,7 @@ import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCasework
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @Controller
@@ -39,6 +40,9 @@ public class ClientController {
 
     model.addAttribute("clientView", clientView);
     model.addAttribute("client1Form", amendmentForms.getClient1Form().getCurrent());
+    if(AreaOfLaw.MEDIATION.equals(claim.getAreaOfLaw())){
+      model.addAttribute("client2Form", amendmentForms.getClient2Form().getCurrent());
+    }
     model.addAttribute("forms", amendmentForms);
 
     return "amendments/view-client";
@@ -91,6 +95,22 @@ public class ClientController {
     model.addAttribute("client2Form", amendmentForms.getClient2Form().getCurrent());
     model.addAttribute("forms", amendmentForms);
 
-    return "amendments/amend-client-1";
+    return "amendments/amend-client-2";
+  }
+
+  @PostMapping("/amend-client-two")
+  public String postAmendClient2(
+      HttpSession session,
+      @ModelAttribute("client2Form") AmendmentForm client2Form,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    var amendmentForms = getAmendmentForms(session, claimId);
+
+    // TODO: Validation can be done here and any errors returned
+
+    amendmentForms.getClient2Form().setCurrent(client2Form);
+    saveAmendmentForms(session, claimId, amendmentForms);
+
+    return "redirect:/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
   }
 }
