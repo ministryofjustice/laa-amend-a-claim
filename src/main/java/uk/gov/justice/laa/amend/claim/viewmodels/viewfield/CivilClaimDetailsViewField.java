@@ -31,7 +31,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       new Accessor<>(CivilClaimDetails::getCaseConcludedDate), FieldType.DATE),
   UNIQUE_FILE_NUMBER(new Accessor<>(CivilClaimDetails::getUniqueFileNumber)),
   CASE_STAGE(new Accessor<>(CivilClaimDetails::getCaseStage), FieldOptions.CASE_STAGE),
-  VALUE_OF_COSTS(new Accessor<>(CivilClaimDetails::getValueOfCosts)),
+  VALUE_OF_COSTS(new Accessor<>(CivilClaimDetails::getValueOfCosts), FieldType.BIG_DECIMAL),
   PROCUREMENT_AREA(new Accessor<>(CivilClaimDetails::getProcurementArea)),
   ACCESS_POINT(new Accessor<>(CivilClaimDetails::getAccessPoint)),
   STAGE_REACHED(new Accessor<>(CivilClaimDetails::getStageReached), FieldOptions.STAGE_REACHED),

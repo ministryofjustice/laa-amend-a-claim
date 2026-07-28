@@ -1,7 +1,10 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -15,6 +18,7 @@ import uk.gov.justice.laa.amend.claim.converters.StringToBooleanConverter;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
+import uk.gov.justice.laa.amend.claim.utils.NumberUtils;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
@@ -128,6 +132,7 @@ public class AmendmentForm {
     return switch (field.getType()) {
       case DATE -> getDateValue(field.name());
       case BOOLEAN -> getBooleanValue(field.name());
+      case BIG_DECIMAL -> getBigDecimalValue(field.name());
       case ENUM -> inputs.get(field.name());
       case TEXT -> inputs.get(field.name());
     };
@@ -143,6 +148,19 @@ public class AmendmentForm {
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException(
           "Invalid boolean value for field '%s'".formatted(fieldName), e);
+    }
+  }
+
+  public BigDecimal getBigDecimalValue(String fieldName) {
+    var value = inputs.get(fieldName);
+    if (isBlank(value)) {
+      return null;
+    }
+    try {
+      var parsed = NumberUtils.parse(value);
+      return parsed.scale() > 2 ? null : setScale(parsed);
+    } catch (NumberFormatException | ParseException e) {
+      return null;
     }
   }
 
@@ -187,6 +205,7 @@ public class AmendmentForm {
     return switch (value) {
       case null -> null;
       case String stringValue -> stringValue;
+      case BigDecimal bigDecimal -> setScale(bigDecimal).toString();
       case LocalDate ignored ->
           throw new IllegalArgumentException(
               "LocalDate value must be handled as a date field (FieldType.DATE), not formatted here");

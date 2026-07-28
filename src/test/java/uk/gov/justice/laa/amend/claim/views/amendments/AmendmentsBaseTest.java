@@ -1,10 +1,12 @@
 package uk.gov.justice.laa.amend.claim.views.amendments;
 
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
+import uk.gov.justice.laa.amend.claim.utils.CurrencyUtils;
 import uk.gov.justice.laa.amend.claim.views.ViewTestBase;
 
 public abstract class AmendmentsBaseTest extends ViewTestBase {
@@ -76,5 +78,22 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
     Element selectedOption = selectFirst(select, "option[selected]");
     Assertions.assertEquals(expectedValue, selectedOption.attr("value"));
     Assertions.assertEquals(currentValue, selectedOption.text());
+  }
+
+  protected void assertBigDecimalInputRow(
+      List<Element> row, String label, BigDecimal expectedValue, String inputId) {
+    assertCellContainsText(row.getFirst(), label);
+    assertCellContainsText(row.get(1), CurrencyUtils.formatCurrency(expectedValue));
+
+    Element amended = row.get(2);
+    Element inputWrapper = selectFirst(amended, ".govuk-input__wrapper");
+    Assertions.assertEquals("£", selectFirst(inputWrapper, ".govuk-input__prefix").text());
+
+    Element input = selectFirst(inputWrapper, "input.govuk-input--width-10");
+    Assertions.assertEquals(inputId, input.attr("id"), "BigDecimal input id");
+    Assertions.assertEquals(
+        CurrencyUtils.setScale(expectedValue).toString(),
+        input.attr("value"),
+        "BigDecimal input value");
   }
 }

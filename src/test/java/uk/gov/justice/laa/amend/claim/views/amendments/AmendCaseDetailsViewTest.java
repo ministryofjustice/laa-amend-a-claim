@@ -35,7 +35,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final LocalDate CASE_CONCLUDED_DATE = LocalDate.of(2020, 2, 1);
   private static final String UFN = "ufn";
   private static final String CASE_STAGE = "MHL04";
-  private static final BigDecimal VALUE_OF_COSTS = BigDecimal.valueOf(10.12);
+  private static final BigDecimal VALUE_OF_COSTS = BigDecimal.valueOf(1234.5);
   private static final String PROCUREMENT_AREA = "procurementarea";
   private static final String ACCESS_POINT = "accesspoint";
   private static final String STAGE_REACHED = "INVA";
@@ -167,11 +167,11 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(caseDetails.get(6), "Unique file number (UFN)", UFN, UFN);
     assertEnumTypeaheadRow(
         caseDetails.get(7), "Case stage or level", CASE_STAGE, "CASE_STAGE", CASE_STAGE);
-    assertSummaryListRowContainsValues(
+    assertBigDecimalInputRow(
         caseDetails.get(8),
         "Value of costs or damages recovered",
-        "£" + VALUE_OF_COSTS.toString(),
-        "TODO");
+        VALUE_OF_COSTS,
+        "VALUE_OF_COSTS");
     assertSummaryListRowContainsValues(
         caseDetails.get(9), "Procurement area", PROCUREMENT_AREA, PROCUREMENT_AREA);
     assertSummaryListRowContainsValues(
