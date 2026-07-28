@@ -19,6 +19,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.utils.CurrencyUtils;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
 @WebMvcTest(AmendCaseDetailsController.class)
@@ -35,7 +36,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final LocalDate CASE_CONCLUDED_DATE = LocalDate.of(2020, 2, 1);
   private static final String UFN = "ufn";
   private static final String CASE_STAGE = "MHL04";
-  private static final BigDecimal VALUE_OF_COSTS = BigDecimal.valueOf(10.12);
+  private static final BigDecimal VALUE_OF_COSTS = BigDecimal.valueOf(1234.5);
   private static final String PROCUREMENT_AREA = "procurementarea";
   private static final String ACCESS_POINT = "accesspoint";
   private static final String STAGE_REACHED = "INVA";
@@ -483,7 +484,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private void assertBigDecimalInputRow(
       List<Element> row, String label, BigDecimal expectedValue, String inputId) {
     assertCellContainsText(row.getFirst(), label);
-    assertCellContainsText(row.get(1), "£" + expectedValue);
+    assertCellContainsText(row.get(1), CurrencyUtils.formatCurrency(expectedValue));
 
     Element amended = row.get(2);
     Element inputWrapper = selectFirst(amended, ".govuk-input__wrapper");
@@ -492,6 +493,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     Element input = selectFirst(inputWrapper, "input.govuk-input--width-10");
     Assertions.assertEquals(inputId, input.attr("id"), "BigDecimal input id");
     Assertions.assertEquals(
-        expectedValue.toString(), input.attr("value"), "BigDecimal input value");
+        CurrencyUtils.setScale(expectedValue).toString(),
+        input.attr("value"),
+        "BigDecimal input value");
   }
 }

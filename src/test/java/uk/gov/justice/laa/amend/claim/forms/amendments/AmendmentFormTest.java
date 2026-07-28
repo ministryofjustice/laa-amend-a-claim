@@ -188,6 +188,14 @@ class AmendmentFormTest {
   }
 
   @Test
+  void getBigDecimalValueRejectsMoreThanTwoDecimalPlacesRatherThanRounding() {
+    var form = new AmendmentForm();
+    form.setInputs(new HashMap<>(Map.of("VALUE_OF_COSTS", "10.129")));
+
+    assertThat(form.getBigDecimalValue("VALUE_OF_COSTS")).isNull();
+  }
+
+  @Test
   void getBooleanValueReturnsNullWhenInputBlank() {
     var form = new AmendmentForm();
     form.setInputs(new HashMap<>(Map.of("IS_ELIGIBLE_CLIENT", "")));

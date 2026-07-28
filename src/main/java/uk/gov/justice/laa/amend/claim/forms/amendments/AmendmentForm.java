@@ -157,7 +157,8 @@ public class AmendmentForm {
       return null;
     }
     try {
-      return setScale(NumberUtils.parse(value));
+      var parsed = NumberUtils.parse(value);
+      return parsed.scale() > 2 ? null : setScale(parsed);
     } catch (NumberFormatException | ParseException e) {
       return null;
     }
