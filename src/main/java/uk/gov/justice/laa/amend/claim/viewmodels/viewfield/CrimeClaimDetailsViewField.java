@@ -21,9 +21,10 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       new Accessor<>(CrimeClaimDetails::getStandardFeeCategory),
       FieldOptions.STANDARD_FEE_CATEGORY),
   OUTCOME_FOR_CLIENT(new Accessor<>(CrimeClaimDetails::getOutcome), FieldOptions.OUTCOME),
-  SUSPECTS_DEFENDANTS_COUNT(new Accessor<>(CrimeClaimDetails::getSuspectsDefendantsCount)),
+  SUSPECTS_DEFENDANTS_COUNT(
+      new Accessor<>(CrimeClaimDetails::getSuspectsDefendantsCount), FieldType.NUMBER),
   POLICE_STATION_COURT_ATTENDANCES_COUNT(
-      new Accessor<>(CrimeClaimDetails::getPoliceStationCourtAttendancesCount)),
+      new Accessor<>(CrimeClaimDetails::getPoliceStationCourtAttendancesCount), FieldType.NUMBER),
   POLICE_STATION_COURT_PRISON_ID(new Accessor<>(CrimeClaimDetails::getPoliceStationCourtPrisonId)),
   SCHEME_ID(new Accessor<>(CrimeClaimDetails::getSchemeId)),
   DSCC_NUMBER(new Accessor<>(CrimeClaimDetails::getDsccNumber)),

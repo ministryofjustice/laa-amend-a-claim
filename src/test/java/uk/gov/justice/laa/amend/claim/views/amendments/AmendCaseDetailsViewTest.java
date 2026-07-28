@@ -243,11 +243,11 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertEnumTypeaheadRow(
         caseDetails.get(29), "Type of advice", ADVICE_TYPE_LABEL, "ADVICE_TYPE", ADVICE_TYPE);
     assertDateRow(caseDetails.get(30), "Transfer date", TRANSFER_DATE, "TRANSFER_DATE");
-    assertSummaryListRowContainsValues(
+    assertNumberInputRow(
         caseDetails.get(31),
         "Medical reports claimed",
-        String.valueOf(MEDICAL_REPORTS_CLAIMED),
-        "TODO");
+        MEDICAL_REPORTS_CLAIMED,
+        "MEDICAL_REPORTS_CLAIMED");
     assertEnumTypeaheadRow(
         caseDetails.get(32),
         "Exemption criteria satisfied",
@@ -257,16 +257,16 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertBooleanSelectRow(
         caseDetails.get(33), "Immigration removal centre (IRC) surgery", YES, "IRC_SURGERY", true);
     assertDateRow(caseDetails.get(34), "Surgery date", SURGERY_DATE, "SURGERY_DATE");
-    assertSummaryListRowContainsValues(
+    assertNumberInputRow(
         caseDetails.get(35),
         "Number of clients seen at surgery",
-        String.valueOf(SURGERY_CLIENTS_COUNT),
-        "TODO");
-    assertSummaryListRowContainsValues(
+        SURGERY_CLIENTS_COUNT,
+        "SURGERY_CLIENTS_COUNT");
+    assertNumberInputRow(
         caseDetails.get(36),
         "Number of clients resulting in legal help matter opened",
-        String.valueOf(SURGERY_MATTERS_COUNT),
-        "TODO");
+        SURGERY_MATTERS_COUNT,
+        "SURGERY_MATTERS_COUNT");
     assertSummaryListRowContainsValues(
         caseDetails.get(37),
         "Mental health tribunal reference",
@@ -333,16 +333,16 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         OUTCOME_FOR_CLIENT,
         "OUTCOME_FOR_CLIENT",
         OUTCOME_FOR_CLIENT);
-    assertSummaryListRowContainsValues(
+    assertNumberInputRow(
         caseDetails.get(7),
         "Number of suspects or defendants",
-        String.valueOf(SUSPECTS_DEFENDANTS_COUNT),
-        "TODO");
-    assertSummaryListRowContainsValues(
+        SUSPECTS_DEFENDANTS_COUNT,
+        "SUSPECTS_DEFENDANTS_COUNT");
+    assertNumberInputRow(
         caseDetails.get(8),
         "Number of police station or court attendances",
-        String.valueOf(POLICE_ATTENDANCES_COURT),
-        "TODO");
+        POLICE_ATTENDANCES_COURT,
+        "POLICE_STATION_COURT_ATTENDANCES_COUNT");
     assertSummaryListRowContainsValues(
         caseDetails.get(9),
         "Police station/Court ID/Prison ID",
@@ -403,11 +403,11 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         caseDetails.get(4), "Unique case ID", UNIQUE_CASE_ID, UNIQUE_CASE_ID);
     assertDateRow(
         caseDetails.get(5), "Case concluded date", CASE_CONCLUDED_DATE, "CASE_CONCLUDED_DATE");
-    assertSummaryListRowContainsValues(
+    assertNumberInputRow(
         caseDetails.get(6),
         "Number of mediation sessions",
-        String.valueOf(MEDIATION_SESSIONS_COUNT),
-        "TODO");
+        MEDIATION_SESSIONS_COUNT,
+        "MEDIATION_SESSIONS_COUNT");
     assertNumberInputRow(
         caseDetails.get(7),
         "Mediation time (minutes)",
