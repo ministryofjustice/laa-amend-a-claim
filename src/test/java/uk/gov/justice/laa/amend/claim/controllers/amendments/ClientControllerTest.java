@@ -130,10 +130,7 @@ class ClientControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(view().name("amendments/view-client"))
         .andExpect(model().attributeExists("clientView"))
-        .andExpect(
-            model()
-                .attribute(
-                    "client1Form", existingForms.getClient1Form().getCurrent()))
+        .andExpect(model().attribute("client1Form", existingForms.getClient1Form().getCurrent()))
         .andExpect(model().attributeDoesNotExist("client2Form"))
         .andExpect(model().attribute("forms", existingForms));
   }
@@ -157,14 +154,8 @@ class ClientControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(view().name("amendments/view-client"))
         .andExpect(model().attributeExists("clientView"))
-        .andExpect(
-            model()
-                .attribute(
-                    "client1Form", existingForms.getClient1Form().getCurrent()))
-        .andExpect(
-            model()
-                .attribute(
-                    "client2Form", existingForms.getClient2Form().getCurrent()))
+        .andExpect(model().attribute("client1Form", existingForms.getClient1Form().getCurrent()))
+        .andExpect(model().attribute("client2Form", existingForms.getClient2Form().getCurrent()))
         .andExpect(model().attribute("forms", existingForms));
   }
 
@@ -179,10 +170,7 @@ class ClientControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(view().name("amendments/amend-client-1"))
         .andExpect(model().attributeExists("clientView"))
-        .andExpect(
-            model()
-                .attribute(
-                    "client1Form", existingForms.getClient1Form().getCurrent()))
+        .andExpect(model().attribute("client1Form", existingForms.getClient1Form().getCurrent()))
         .andExpect(model().attribute("forms", existingForms));
   }
 
@@ -198,10 +186,7 @@ class ClientControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(view().name("amendments/amend-client-2"))
         .andExpect(model().attributeExists("clientView"))
-        .andExpect(
-            model()
-                .attribute(
-                    "client2Form", existingForms.getClient2Form().getCurrent()))
+        .andExpect(model().attribute("client2Form", existingForms.getClient2Form().getCurrent()))
         .andExpect(model().attribute("forms", existingForms));
   }
 
@@ -280,7 +265,6 @@ class ClientControllerTest extends BaseControllerTest {
   }
 
   private String buildAmendClient2Path() {
-    return "/submissions/%s/claims/%s/amendments/amend-client-two"
-        .formatted(submissionId, claimId);
+    return "/submissions/%s/claims/%s/amendments/amend-client-two".formatted(submissionId, claimId);
   }
 }

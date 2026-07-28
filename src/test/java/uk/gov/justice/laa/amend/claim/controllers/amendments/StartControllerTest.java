@@ -34,7 +34,6 @@ class StartControllerTest extends BaseControllerTest {
     submissionId = UUID.randomUUID();
     claimId = UUID.randomUUID();
     session = new MockHttpSession();
-
   }
 
   @Test
@@ -219,7 +218,8 @@ class StartControllerTest extends BaseControllerTest {
     var caseDetailsForm = new AmendmentForm();
     caseDetailsForm.setInputs(caseDetailsRows);
 
-    AmendmentForms forms = new AmendmentForms(client1Form, client2Form, caseTypeForm, caseDetailsForm);
+    AmendmentForms forms =
+        new AmendmentForms(client1Form, client2Form, caseTypeForm, caseDetailsForm);
 
     mockMvc
         .perform(get(buildPath()).session(session))

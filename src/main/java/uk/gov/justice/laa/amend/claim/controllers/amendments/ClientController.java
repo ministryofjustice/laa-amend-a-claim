@@ -40,7 +40,7 @@ public class ClientController {
 
     model.addAttribute("clientView", clientView);
     model.addAttribute("client1Form", amendmentForms.getClient1Form().getCurrent());
-    if(AreaOfLaw.MEDIATION.equals(claim.getAreaOfLaw())){
+    if (AreaOfLaw.MEDIATION.equals(claim.getAreaOfLaw())) {
       model.addAttribute("client2Form", amendmentForms.getClient2Form().getCurrent());
     }
     model.addAttribute("forms", amendmentForms);
