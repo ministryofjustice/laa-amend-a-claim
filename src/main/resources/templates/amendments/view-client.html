@@ -18,9 +18,9 @@
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title"
-              th:text="${#maps.isEmpty(clientView.client2Rows)}
-                                    ? #{claimClient.clientDetails}
-                                    : #{claimClient.client1Details}">
+              th:text="${#strings.toString(areaOfLaw) == 'MEDIATION'}
+                                    ? #{claimClient.client1Details}
+                                    : #{claimClient.clientDetails}">
           </h2>
           <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action">
@@ -53,7 +53,8 @@
         </div>
       </div>
 
-      <div class="govuk-summary-card" th:if="${!#maps.isEmpty(clientView.client2Rows)}">
+      <div class="govuk-summary-card"
+           th:if="${#strings.toString(areaOfLaw) == 'MEDIATION'}">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title"
               th:text="#{claimClient.client2Details}">

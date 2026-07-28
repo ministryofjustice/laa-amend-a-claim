@@ -38,6 +38,7 @@ public class ClientController {
     var clientView = ClaimClientViewFactory.create(claim);
     var amendmentForms = getAmendmentForms(session, claimId);
 
+    model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
     model.addAttribute("clientView", clientView);
     model.addAttribute("client1Form", amendmentForms.getClient1Form().getCurrent());
     if (AreaOfLaw.MEDIATION.equals(claim.getAreaOfLaw())) {

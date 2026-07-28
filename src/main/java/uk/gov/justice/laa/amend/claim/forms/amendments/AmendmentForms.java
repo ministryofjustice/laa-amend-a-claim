@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 public class AmendmentForms {
 
   @NotNull private OriginalAndCurrent client1Form;
-  @NotNull private OriginalAndCurrent client2Form;
   @NotNull private OriginalAndCurrent caseTypeForm;
   @NotNull private OriginalAndCurrent caseDetailsForm;
+  private OriginalAndCurrent client2Form;
 
   public AmendmentForms(
       AmendmentForm client1Form,
