@@ -1,10 +1,13 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
 import java.util.Map;
@@ -16,6 +19,7 @@ import org.springframework.mock.web.MockHttpSession;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
@@ -115,11 +119,168 @@ class ClientControllerTest extends BaseControllerTest {
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
   }
 
+  @Test
+  void viewClientDisplaysClient1FormOnlyForNonMediationClaim() throws Exception {
+    var existingForms =
+        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    mockMvc
+        .perform(get(buildViewClientPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("amendments/view-client"))
+        .andExpect(model().attributeExists("clientView"))
+        .andExpect(
+            model()
+                .attribute(
+                    "client1Form", existingForms.getClient1Form().getCurrent()))
+        .andExpect(model().attributeDoesNotExist("client2Form"))
+        .andExpect(model().attribute("forms", existingForms));
+  }
+
+  @Test
+  void viewClientDisplaysClient1AndClient2FormsForMediationClaim() throws Exception {
+    claim = MockClaimsFunctions.createMockMediationClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
+    MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
+    session.setAttribute(claimId.toString(), claim);
+
+    var existingForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    mockMvc
+        .perform(get(buildViewClientPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("amendments/view-client"))
+        .andExpect(model().attributeExists("clientView"))
+        .andExpect(
+            model()
+                .attribute(
+                    "client1Form", existingForms.getClient1Form().getCurrent()))
+        .andExpect(
+            model()
+                .attribute(
+                    "client2Form", existingForms.getClient2Form().getCurrent()))
+        .andExpect(model().attribute("forms", existingForms));
+  }
+
+  @Test
+  void getAmendClientAsExpected() throws Exception {
+    var existingForms =
+        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    mockMvc
+        .perform(get(buildAmendClient1Path()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("amendments/amend-client-1"))
+        .andExpect(model().attributeExists("clientView"))
+        .andExpect(
+            model()
+                .attribute(
+                    "client1Form", existingForms.getClient1Form().getCurrent()))
+        .andExpect(model().attribute("forms", existingForms));
+  }
+
+  @Test
+  void getAmendClientTwoAsExpected() throws Exception {
+    var existingForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    mockMvc
+        .perform(get(buildAmendClient2Path()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("amendments/amend-client-2"))
+        .andExpect(model().attributeExists("clientView"))
+        .andExpect(
+            model()
+                .attribute(
+                    "client2Form", existingForms.getClient2Form().getCurrent()))
+        .andExpect(model().attribute("forms", existingForms));
+  }
+
+  @Test
+  void savesClient2FormsIntoSessionThenRedirects() throws Exception {
+    var existingForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    var client2Rows =
+        Map.of(
+            "CLIENT_2_FORENAME", FORENAME,
+            "CLIENT_2_SURNAME", SURNAME,
+            "CLIENT_2_GENDER", GENDER,
+            "CLIENT_2_ETHNICITY", ETHNICITY,
+            "CLIENT_2_DISABILITY", DISABILITY);
+    var client2Form = new AmendmentForm();
+    client2Form.setInputs(client2Rows);
+
+    var updatedForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    updatedForms.getClient2Form().setCurrent(client2Form);
+
+    var request = post(buildAmendClient2Path()).session(session).with(csrf());
+    for (var entry : client2Rows.entrySet()) {
+      request.param(INPUTS.formatted(entry.getKey()), entry.getValue());
+    }
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildViewClientPath()))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
+  @Test
+  void persistsClient2DateSubInputsIntoSessionThenRedirects() throws Exception {
+    var existingForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    var dateInputs =
+        Map.of(
+            "CLIENT_2_DATE_OF_BIRTH-day", "14",
+            "CLIENT_2_DATE_OF_BIRTH-month", "5",
+            "CLIENT_2_DATE_OF_BIRTH-year", "2002");
+    var client2Form = new AmendmentForm();
+    client2Form.setInputs(dateInputs);
+
+    var updatedForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    updatedForms.getClient2Form().setCurrent(client2Form);
+
+    var request = post(buildAmendClient2Path()).session(session).with(csrf());
+    for (var entry : dateInputs.entrySet()) {
+      request.param(INPUTS.formatted(entry.getKey()), entry.getValue());
+    }
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildViewClientPath()))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
   private String buildViewClientPath() {
     return "/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
   }
 
   private String buildAmendClient1Path() {
     return "/submissions/%s/claims/%s/amendments/amend-client".formatted(submissionId, claimId);
+  }
+
+  private String buildAmendClient2Path() {
+    return "/submissions/%s/claims/%s/amendments/amend-client-two"
+        .formatted(submissionId, claimId);
   }
 }
