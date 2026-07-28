@@ -39,9 +39,10 @@ public class StartController {
 
     boolean isMediation = AreaOfLaw.MEDIATION.equals(claim.getAreaOfLaw());
     var client2Form = isMediation ? new AmendmentForm(clientView.client2Rows()) : null;
-    var amendmentForms = isMediation
-        ? new AmendmentForms(client1Form, client2Form, caseTypeForm, caseDetailsForm)
-        : new AmendmentForms(client1Form, caseTypeForm, caseDetailsForm);
+    var amendmentForms =
+        isMediation
+            ? new AmendmentForms(client1Form, client2Form, caseTypeForm, caseDetailsForm)
+            : new AmendmentForms(client1Form, caseTypeForm, caseDetailsForm);
 
     saveAmendmentForms(session, claimId, amendmentForms);
 

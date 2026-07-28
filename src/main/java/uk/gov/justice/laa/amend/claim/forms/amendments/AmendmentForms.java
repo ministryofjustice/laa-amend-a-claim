@@ -16,7 +16,10 @@ public class AmendmentForms {
   @NotNull private OriginalAndCurrent caseDetailsForm;
 
   public AmendmentForms(
-      AmendmentForm client1Form, AmendmentForm client2Form, AmendmentForm caseType, AmendmentForm caseDetailsForm) {
+      AmendmentForm client1Form,
+      AmendmentForm client2Form,
+      AmendmentForm caseType,
+      AmendmentForm caseDetailsForm) {
     this(client1Form, caseType, caseDetailsForm);
     var currentClient2Form = new AmendmentForm(client2Form);
     this.client2Form = new OriginalAndCurrent(client2Form, currentClient2Form);
