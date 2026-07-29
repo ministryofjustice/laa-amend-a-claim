@@ -138,7 +138,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable");
-    viewAmendClient.clickChangeClientOneLink();
+    viewAmendClient.getChangeClientOneLink().click();
 
     var amendClient1 = new AmendClient1Page(page);
     amendClient1.fillInput("SURNAME", "changed");
@@ -200,7 +200,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable");
-    viewAmendClient.clickChangeClientOneLink();
+    viewAmendClient.getChangeClientOneLink().click();
 
     var amendClient1 = new AmendClient1Page(page);
     amendClient1.fillInput("SURNAME", "changed");
@@ -208,7 +208,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
-    viewAmendClient.clickChangeClientTwoLink();
+    viewAmendClient.getChangeClientTwoLink().click();
 
     var amendClient2 = new AmendClient2Page(page);
     amendClient2.fillInput("CLIENT_2_SURNAME", "changedTwo");
