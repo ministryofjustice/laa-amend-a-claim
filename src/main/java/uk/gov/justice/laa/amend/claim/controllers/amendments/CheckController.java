@@ -34,13 +34,13 @@ public class CheckController {
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
-    
+
     if (!amendmentForms.hasAmendments()) {
       throw new ResponseStatusException(
           HttpStatus.NOT_FOUND,
           "No amendments found for submission %s claim %s".formatted(submissionId, claimId));
     }
-    
+
     var clientView = ClaimClientViewFactory.create(claim);
 
     model.addAttribute("forms", amendmentForms);

@@ -14,7 +14,8 @@ public class ViewCasePage extends BaseAmendmentPage {
     super(page);
     this.changeCaseTypeLink = page.locator("#amend-case-type-link");
     this.changeCaseDetailsLink = page.locator("#amend-case-details-link");
-    this.continueButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue"));
+    this.continueButton =
+        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue"));
   }
 
   public void clickChangeCaseTypeLink() {

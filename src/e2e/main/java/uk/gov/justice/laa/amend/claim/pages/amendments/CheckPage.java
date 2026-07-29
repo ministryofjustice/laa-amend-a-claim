@@ -13,10 +13,11 @@ public class CheckPage extends LaaPage {
 
   public CheckPage(Page page) {
     super(page, "Check your amendments");
-    this.changeClientLink =
-        page.locator("#change-client");
-    this.submitButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Submit amendments"));
-    this.cancelLink = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Cancel amendments"));
+    this.changeClientLink = page.locator("#change-client");
+    this.submitButton =
+        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Submit amendments"));
+    this.cancelLink =
+        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Cancel amendments"));
   }
 
   public void clickChangeClientLink() {

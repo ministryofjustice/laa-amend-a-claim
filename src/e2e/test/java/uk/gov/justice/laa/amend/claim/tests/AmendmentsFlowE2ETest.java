@@ -146,7 +146,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendClient1.clickContinueButton();
 
     viewAmendClient = new ViewClientPage(page);
-      assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
     viewAmendClient.clickCaseTab();
 
     // View Case → Change case type → View Case
@@ -182,7 +182,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var checkPage = new CheckPage(page);
     viewAmendCase.clickContinue();
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
-    //checkPage.clickChangeClientLink();
+    // checkPage.clickChangeClientLink();
 
   }
 
@@ -256,6 +256,6 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var checkPage = new CheckPage(page);
     viewAmendCase.clickContinue();
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
-    //checkPage.clickChangeClientLink();
+    // checkPage.clickChangeClientLink();
   }
 }

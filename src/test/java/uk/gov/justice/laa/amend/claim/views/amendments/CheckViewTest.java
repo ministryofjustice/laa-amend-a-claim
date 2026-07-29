@@ -47,7 +47,8 @@ class CheckViewTest extends AmendmentsBaseTest {
 
     var clientDetails = getSummaryListInCard(doc, "Client details");
     assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Current", "Amended");
-    assertSummaryListRowContainsValues(clientDetails.get(1), "Last name", SURNAME, "changedSurname");
+    assertSummaryListRowContainsValues(
+        clientDetails.get(1), "Last name", SURNAME, "changedSurname");
     assertEquals(2, clientDetails.size());
   }
 
@@ -74,8 +75,10 @@ class CheckViewTest extends AmendmentsBaseTest {
 
     var clientDetails = getSummaryListInCard(doc, "Client details");
     assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Current", "Amended");
-    assertSummaryListRowContainsValues(clientDetails.get(1), "Initial", FORENAME, "changedForename");
-    assertSummaryListRowContainsValues(clientDetails.get(2), "Last name", SURNAME, "changedSurname");
+    assertSummaryListRowContainsValues(
+        clientDetails.get(1), "Initial", FORENAME, "changedForename");
+    assertSummaryListRowContainsValues(
+        clientDetails.get(2), "Last name", SURNAME, "changedSurname");
     assertSummaryListRowContainsValues(clientDetails.get(3), "Gender", GENDER, "changedGender");
     assertEquals(4, clientDetails.size());
   }
