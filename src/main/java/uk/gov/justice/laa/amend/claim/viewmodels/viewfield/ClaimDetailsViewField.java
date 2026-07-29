@@ -28,8 +28,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
     this(accessor, type, List.of());
   }
 
-  ClaimDetailsViewField(
-      Accessor<?> accessor, List<FieldOption> options) {
+  ClaimDetailsViewField(Accessor<?> accessor, List<FieldOption> options) {
     this(accessor, FieldType.ENUM, options);
   }
 
