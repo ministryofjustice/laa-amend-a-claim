@@ -19,6 +19,7 @@ public class FeatureFlagsConfig {
   @NotNull private Boolean isRequestedAndCalculatedSwapEnabled;
   @NotNull private Boolean isFullClaimDetailsEnabled;
   @NotNull private Boolean isClaimAmendmentEnabled;
+  @NotNull private Boolean isInquestTabEnabled;
 
   private void checkBulkUploadEnabled() {
     if (!TRUE.equals(isBulkUploadEnabled)) {
@@ -38,12 +39,19 @@ public class FeatureFlagsConfig {
     }
   }
 
+  private void checkInquestTabEnabled() {
+    if (!TRUE.equals(isInquestTabEnabled)) {
+      throw new FeatureNotEnabledException("isInquestTabEnabled is false");
+    }
+  }
+
   public void checkEnabled(Feature... features) {
     for (var feature : features) {
       switch (feature) {
         case BULK_UPLOAD -> checkBulkUploadEnabled();
         case FULL_CLAIM_DETAILS -> checkFullClaimDetailsEnabled();
         case CLAIM_AMENDMENT -> checkClaimAmendmentEnabled();
+        case INQUEST_TAB -> checkInquestTabEnabled();
         default -> throw new FeatureNotImplementedRuntimeException(feature);
       }
     }

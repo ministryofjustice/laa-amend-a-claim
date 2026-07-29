@@ -61,6 +61,8 @@ app:
   feedback-url: ${FEEDBACK_URL}
   laa-url: ${LAA_URL}
   email: AmendaBulkClaimTeam@justice.gov.uk
+  inquest:
+    matter-type-codes: ${INQUEST_MATTER_TYPE_CODES:INQUEST}
 
 maintenance:
   banner-title: ${OUTAGE_BANNER_TITLE:Outage Scheduled}
@@ -72,6 +74,7 @@ feature-flags:
   is-requested-and-calculated-swap-enabled: ${IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED:false}
   is-full-claim-details-enabled: ${IS_FULL_CLAIM_DETAILS_ENABLED:false}
   is-claim-amendment-enabled: ${IS_CLAIM_AMENDMENT_ENABLED:false}
+  is-inquest-tab-enabled: ${IS_INQUEST_TAB_ENABLED:false}
 management:
   server:
     port: 8282

@@ -4,12 +4,14 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.claimdetails.ClaimCaseController;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
@@ -338,6 +340,51 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
         caseDetails.get(36), "Mental health tribunal reference", MENTAL_HEALTH_TRIBUNAL_REFERENCE);
     assertSummaryListRowContainsValues(
         caseDetails.get(37), "National referral mechanism (NRM) advice", "No");
+  }
+
+  @Test
+  void testInquestTabHiddenWhenClaimNotInquestEligible() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    when(featureFlagsConfig.getIsInquestTabEnabled()).thenReturn(true);
+
+    var doc = renderDocument();
+
+    assertPageDoesNotHaveSubNavigationItem(doc, "Inquest");
+  }
+
+  @Test
+  void testInquestTabHiddenWhenFeatureFlagDisabled() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
+    claim.setMatterType1("INQUEST");
+    when(inquestConfig.getMatterTypeCodes()).thenReturn(Set.of("INQUEST"));
+    when(featureFlagsConfig.getIsInquestTabEnabled()).thenReturn(false);
+
+    var doc = renderDocument();
+
+    assertPageDoesNotHaveSubNavigationItem(doc, "Inquest");
+  }
+
+  @Test
+  void testInquestTabShownWhenEligibleAndFeatureFlagEnabled() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
+    claim.setMatterType1("INQUEST");
+    when(inquestConfig.getMatterTypeCodes()).thenReturn(Set.of("INQUEST"));
+    when(featureFlagsConfig.getIsInquestTabEnabled()).thenReturn(true);
+
+    var doc = renderDocument();
+
+    assertPageHasInactiveSubNavigationItem(doc, "Inquest", inquestUrl);
   }
 
   private void assertCommonPageContent(Document doc) {

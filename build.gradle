@@ -31,6 +31,7 @@ spotless {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -80,7 +81,7 @@ dependencies {
     implementation 'tools.jackson.core:jackson-databind:3.1.5'
 
     // API models
-    implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:1.0.42'
+    implementation 'uk.gov.justice.laa.datastewardship.payments:data-claims-api-models:1.10.0-740daf6-SNAPSHOT'
     implementation 'uk.gov.justice.laadata.providers:providers-api:1.23.0'
 
     implementation 'org.apache.commons:commons-lang3:3.20.0'

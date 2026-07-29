@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_ASSESSED_ESCAPE_CASE;
 import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_CREATED;
 import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
+import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_INQUEST_DATA_UPDATED;
 import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_VOIDED;
 
 import java.time.OffsetDateTime;
@@ -94,6 +95,76 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "Claim uploaded to Submit a Bulk Claim",
             "Claim financial values calculated by Fee Scheme Platform",
             "Claim logged as an escape case by Fee Scheme Platform"));
+  }
+
+  @Test
+  void testPageWithInquestEventInterleavedWithAssessments() {
+    var createdEvent = new ClaimHistoryEvent(CLAIM_CREATED, CREATED_AT, USER, Optional.empty());
+    var inquestEvent =
+        new ClaimHistoryEvent(CLAIM_INQUEST_DATA_UPDATED, ASSESSED_AT, USER, Optional.empty());
+    var voidedEvent = new ClaimHistoryEvent(CLAIM_VOIDED, VOIDED_AT, USER, Optional.empty());
+
+    when(claimHistoryService.getClaimHistory(claim))
+        .thenReturn(
+            new ClaimHistory(
+                List.of(voidedEvent, inquestEvent, createdEvent),
+                Optional.of(new MicrosoftApiUser("test-id", "Bloggs, Joe", "Joe", "Bloggs"))));
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    var timeline = selectFirst(doc, ".moj-timeline");
+    var timelineItems = timeline.selectStream(".moj-timeline__item").toList();
+
+    assertThat(timelineItems).hasSize(3);
+
+    assertTimelineItemContent(
+        timelineItems.getFirst(),
+        "Claim voided",
+        "by Joe Bloggs",
+        "16 May 2026 at 11:40am",
+        "Claim voided");
+
+    assertTimelineItemContent(
+        timelineItems.get(1),
+        "Inquest data updated",
+        "by Joe Bloggs",
+        "15 May 2026 at 11:40am",
+        "Inquest data added or updated for this claim");
+
+    assertTimelineItemContent(
+        timelineItems.get(2),
+        "Claim created",
+        "by Joe Bloggs",
+        "14 April 2026 at 10:30am",
+        List.of(
+            "Claim uploaded to Submit a Bulk Claim",
+            "Claim financial values calculated by Fee Scheme Platform"));
+  }
+
+  @Test
+  void testPageWithAssessmentsHasNoInquestEventWhenNoneReturned() {
+    var createdEvent =
+        new ClaimHistoryEvent(CLAIM_CREATED_AND_ESCAPED, CREATED_AT, USER, Optional.empty());
+    var assessedEvent =
+        new ClaimHistoryEvent(
+            CLAIM_ASSESSED_ESCAPE_CASE, ASSESSED_AT, USER, Optional.of(OutcomeType.PAID_IN_FULL));
+
+    when(claimHistoryService.getClaimHistory(claim))
+        .thenReturn(
+            new ClaimHistory(
+                List.of(assessedEvent, createdEvent),
+                Optional.of(new MicrosoftApiUser("test-id", "Bloggs, Joe", "Joe", "Bloggs"))));
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    var timeline = selectFirst(doc, ".moj-timeline");
+    var timelineItems = timeline.selectStream(".moj-timeline__item").toList();
+
+    assertThat(timelineItems).hasSize(2);
+    assertThat(timelineItems)
+        .noneMatch(item -> item.select(".moj-timeline__header h2").text().contains("Inquest"));
   }
 
   @Test

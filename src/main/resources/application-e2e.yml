@@ -10,6 +10,7 @@ feature-flags:
   is-requested-and-calculated-swap-enabled: true
   is-full-claim-details-enabled: true
   is-claim-amendment-enabled: true
+  is-inquest-tab-enabled: true
 
 maintenance:
   disable-at-time: 2023-12-31T23:59:59Z

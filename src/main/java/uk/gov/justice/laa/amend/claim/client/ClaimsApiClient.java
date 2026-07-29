@@ -10,14 +10,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
+import org.springframework.web.service.annotation.PutExchange;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimInquestData;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimInquestDataWrite;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Response;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.InquestDepartmentReference;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
 
@@ -59,4 +63,24 @@ public interface ClaimsApiClient {
   @PostExchange(url = "/v1/claims/{claimId}/void", accept = MediaType.APPLICATION_JSON_VALUE)
   Mono<VoidClaim201Response> voidClaim(
       @PathVariable UUID claimId, @RequestBody VoidClaimRequest body);
+
+  @GetExchange(url = "/v1/claims/{claimId}/inquest-data", accept = MediaType.APPLICATION_JSON_VALUE)
+  Mono<ClaimInquestData> getClaimInquestData(@PathVariable UUID claimId);
+
+  @PostExchange(
+      value = "/v1/claims/{claimId}/inquest-data",
+      contentType = MediaType.APPLICATION_JSON_VALUE)
+  Mono<ClaimInquestData> createClaimInquestData(
+      @PathVariable UUID claimId, @RequestBody ClaimInquestDataWrite body);
+
+  @PutExchange(
+      value = "/v1/claims/{claimId}/inquest-data",
+      contentType = MediaType.APPLICATION_JSON_VALUE)
+  Mono<ClaimInquestData> replaceClaimInquestData(
+      @PathVariable UUID claimId, @RequestBody ClaimInquestDataWrite body);
+
+  @GetExchange(
+      url = "/v1/system/references/inquest-departments",
+      accept = MediaType.APPLICATION_JSON_VALUE)
+  Mono<List<InquestDepartmentReference>> getInquestDepartments();
 }

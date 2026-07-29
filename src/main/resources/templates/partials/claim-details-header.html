@@ -40,6 +40,12 @@
                    th:href="@{/submissions/{submissionId}/claims/{claimId}/costs(submissionId=${submissionId}, claimId=${claimId})}"
                    th:text="#{claimDetails.costsHeading}"></a>
             </li>
+            <li th:if="${isInquestEligible} and ${featureFlagsConfig.isInquestTabEnabled}" class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link"
+                   th:attr="aria-current=${currentPage == 'inquest'} ? 'page' : null"
+                   th:href="@{/submissions/{submissionId}/claims/{claimId}/inquest(submissionId=${submissionId}, claimId=${claimId})}"
+                   th:text="#{claimDetails.inquestHeading}"></a>
+            </li>
             <li class="moj-sub-navigation__item">
                 <a class="moj-sub-navigation__link"
                    th:attr="aria-current=${currentPage == 'history'} ? 'page' : null"

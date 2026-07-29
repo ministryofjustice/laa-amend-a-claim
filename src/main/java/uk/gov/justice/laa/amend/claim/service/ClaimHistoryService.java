@@ -7,8 +7,10 @@ import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_
 import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_ASSESSED_STAGE_DISBURSEMENT;
 import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_CREATED;
 import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
+import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_INQUEST_DATA_UPDATED;
 import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_VOIDED;
 
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,11 +19,14 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.amend.claim.config.InquestConfig;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistory;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistoryEvent;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
+import uk.gov.justice.laa.amend.claim.utils.InquestEligibility;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimInquestData;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
 
@@ -34,6 +39,8 @@ public class ClaimHistoryService {
   private final AssessmentService assessmentService;
   private final ProviderService providerService;
   private final UserRetrievalService userRetrievalService;
+  private final InquestDataService inquestDataService;
+  private final InquestConfig inquestConfig;
 
   public ClaimHistory getClaimHistory(ClaimDetails claim) {
     List<AssessmentInfo> assessments =
@@ -44,9 +51,11 @@ public class ClaimHistoryService {
     var userIdToUser = getUserIdToUser(assessments);
 
     var events =
-        Stream.concat(
+        Stream.of(
                 Stream.of(getClaimCreatedEvent(claim)),
-                toClaimHistoryEvents(assessments, userIdToUser))
+                toClaimHistoryEvents(assessments, userIdToUser),
+                getInquestDataEvent(claim).stream())
+            .flatMap(eventStream -> eventStream)
             .sorted(comparing(ClaimHistoryEvent::eventDateTime).reversed())
             .toList();
 
@@ -54,6 +63,27 @@ public class ClaimHistoryService {
         assessments.stream().findFirst().map(AssessmentInfo::lastAssessedBy).map(userIdToUser::get);
 
     return new ClaimHistory(events, latestAssessmentUser);
+  }
+
+  private Optional<ClaimHistoryEvent> getInquestDataEvent(ClaimDetails claim) {
+    if (!InquestEligibility.isEligible(claim, inquestConfig.getMatterTypeCodes())) {
+      return Optional.empty();
+    }
+
+    return inquestDataService.get(claim.getClaimId()).map(this::toInquestHistoryEvent);
+  }
+
+  private ClaimHistoryEvent toInquestHistoryEvent(ClaimInquestData inquestData) {
+    var eventDateTime = latestOf(inquestData.getCreatedOn(), inquestData.getUpdatedOn());
+    var user =
+        Optional.ofNullable(userRetrievalService.getUser(inquestData.getActorUserId()))
+            .map(MicrosoftApiUser::name)
+            .orElse(null);
+    return new ClaimHistoryEvent(CLAIM_INQUEST_DATA_UPDATED, eventDateTime, user, Optional.empty());
+  }
+
+  private static OffsetDateTime latestOf(OffsetDateTime createdOn, OffsetDateTime updatedOn) {
+    return updatedOn == null || createdOn.isAfter(updatedOn) ? createdOn : updatedOn;
   }
 
   private Map<String, MicrosoftApiUser> getUserIdToUser(final List<AssessmentInfo> assessments) {

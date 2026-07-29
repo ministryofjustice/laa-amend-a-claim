@@ -9,6 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.config.InquestConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.Role;
@@ -25,6 +26,8 @@ public abstract class BaseControllerTest {
   @Autowired protected DummyUserSecurityService dummyUserSecurityService;
 
   @MockitoBean protected FeatureFlagsConfig featureFlagsConfig;
+
+  @MockitoBean protected InquestConfig inquestConfig;
 
   @MockitoBean protected MaintenanceService maintenanceService;
 
