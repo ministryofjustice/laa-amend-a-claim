@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,11 +10,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
+import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
@@ -44,8 +47,13 @@ class CheckControllerTest extends BaseControllerTest {
 
   @Test
   void getsClientFormAndClientViewIntoModel() throws Exception {
+    var client1Rows = Map.of("SURNAME", "changedSurname");
+    var client1Form = new AmendmentForm();
+    client1Form.setInputs(client1Rows);
+
     var amendmentForms =
         new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    amendmentForms.getClient1Form().setCurrent(client1Form);
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), amendmentForms);
 
     mockMvc
@@ -56,10 +64,30 @@ class CheckControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void submitCheckRedirectsToSuccessPage() throws Exception {
-    // TODO change in BC-620 when the submit button functionality is implemented
+  void getCheckPageThrows404WhenNoAmendments() throws Exception {
     var amendmentForms =
         new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), amendmentForms);
+
+    mockMvc
+        .perform(get(buildCheckPath()).session(session))
+        .andExpect(status().isNotFound())
+        .andExpect(
+            result ->
+                assertThat(result.getResolvedException() instanceof ResponseStatusException)
+                    .isTrue());
+  }
+
+  @Test
+  void submitCheckRedirectsToSuccessPage() throws Exception {
+    // TODO change in BC-620 when the submit button functionality is implemented
+    var client1Rows = Map.of("SURNAME", "changedSurname");
+    var client1Form = new AmendmentForm();
+    client1Form.setInputs(client1Rows);
+
+    var amendmentForms =
+        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    amendmentForms.getClient1Form().setCurrent(client1Form);
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), amendmentForms);
 
     mockMvc

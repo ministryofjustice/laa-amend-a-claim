@@ -6,12 +6,14 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
 import jakarta.servlet.http.HttpSession;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
@@ -32,6 +34,13 @@ public class CheckController {
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
+    
+    if (!amendmentForms.hasAmendments()) {
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND,
+          "No amendments found for submission %s claim %s".formatted(submissionId, claimId));
+    }
+    
     var clientView = ClaimClientViewFactory.create(claim);
 
     model.addAttribute("forms", amendmentForms);
