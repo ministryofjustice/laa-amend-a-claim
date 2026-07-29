@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Function;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.Accessor;
 
 @Getter
 public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
