@@ -98,15 +98,15 @@ public class AmendmentForm {
     var original = originalForm.getInputs().get(key);
     var current = inputs.get(key);
 
-    if (original == null && current == null) {
+    if (isBlank(original) && isBlank(current)) {
       return false;
     }
 
-    if (original == null || current == null) {
+    if (isBlank(original) || isBlank(current)) {
       return true;
     }
 
-    return !originalForm.getInputs().get(key).equals(getInputs().get(key));
+    return !original.equals(current);
   }
 
   public boolean hasAmendments(AmendmentForm original) {
@@ -230,7 +230,7 @@ public class AmendmentForm {
 
   private static String formatBooleanValue(String name, Object value) {
     return switch (value) {
-      case null -> "";
+      case null -> null;
       case Boolean booleanValue -> booleanValue.toString();
       default ->
           throw new IllegalArgumentException(
@@ -241,7 +241,7 @@ public class AmendmentForm {
 
   private static String formatNumberValue(String name, Object value) {
     return switch (value) {
-      case null -> "";
+      case null -> null;
       case Integer intValue -> intValue.toString();
       default ->
           throw new IllegalArgumentException(

@@ -76,13 +76,13 @@ class AmendmentFormTest {
   }
 
   @Test
-  void seedsNullBooleanFieldAsEmptyInput() {
+  void seedsNullBooleanFieldAsNullInput() {
     var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
     rows.put(CivilClaimDetailsViewField.IS_ELIGIBLE_CLIENT, null);
 
     var form = new AmendmentForm(rows);
 
-    assertThat(form.getInputs()).containsEntry("IS_ELIGIBLE_CLIENT", "");
+    assertThat(form.getInputs()).containsEntry("IS_ELIGIBLE_CLIENT", null);
   }
 
   @Test
@@ -206,16 +206,40 @@ class AmendmentFormTest {
   }
 
   @Test
-  void seedsNullNumberFieldAsEmptyInput() {
+  void seedsNullNumberFieldAsNullInput() {
     var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
     rows.put(CivilClaimDetailsViewField.TRAVEL_TIME, null);
     var original = new AmendmentForm(rows);
 
-    assertThat(original.getInputs()).containsEntry("TRAVEL_TIME", "");
+    assertThat(original.getInputs()).containsEntry("TRAVEL_TIME", null);
 
     var current = new AmendmentForm();
     current.setInputs(new HashMap<>(Map.of("TRAVEL_TIME", "")));
     assertThat(current.isAmendment("TRAVEL_TIME", original)).isFalse();
+  }
+
+  @Test
+  void isAmendmentTreatsSeededEmptyNumberAndAbsentCurrentAsUnchanged() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.TRAVEL_TIME, null);
+    var original = new AmendmentForm(rows);
+
+    var current = new AmendmentForm();
+    current.setInputs(new HashMap<>());
+
+    assertThat(current.isAmendment("TRAVEL_TIME", original)).isFalse();
+  }
+
+  @Test
+  void isAmendmentTreatsSeededEmptyBooleanAndAbsentCurrentAsUnchanged() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.IS_ELIGIBLE_CLIENT, null);
+    var original = new AmendmentForm(rows);
+
+    var current = new AmendmentForm();
+    current.setInputs(new HashMap<>());
+
+    assertThat(current.isAmendment("IS_ELIGIBLE_CLIENT", original)).isFalse();
   }
 
   @Test
