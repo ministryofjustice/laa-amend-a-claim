@@ -19,6 +19,6 @@ public class ViewClientPage extends BaseAmendmentPage {
   }
 
   public void clickContinue() {
-      continueButton.click();
+    continueButton.click();
   }
 }
