@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getAmendmentForms;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.UUID;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/check")
 @RequiredArgsConstructor
@@ -28,9 +30,13 @@ public class CheckController {
       Model model,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
+    var clientView = ClaimClientViewFactory.create(claim);
 
     model.addAttribute("forms", amendmentForms);
+    model.addAttribute("client1Form", amendmentForms.getClient1Form().getCurrent());
+    model.addAttribute("clientView", clientView);
 
     return "amendments/check";
   }

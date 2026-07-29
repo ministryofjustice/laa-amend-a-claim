@@ -22,6 +22,7 @@ import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCaseDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient1Page;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendFeeCodePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendMatterTypePage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.CheckPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCasePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewClientPage;
 
@@ -144,7 +145,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendClient1.clickContinueButton();
 
     viewAmendClient = new ViewClientPage(page);
-    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+      assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
     viewAmendClient.clickCaseTab();
 
     // View Case → Change case type → View Case
@@ -176,6 +177,12 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(page, "Case details", "Stage reached", "Not applicable", STAGE_REACHED);
+
+    var checkPage = new CheckPage(page);
+    viewAmendCase.clickContinue();
+    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+    //checkPage.clickChangeClientLink();
+
   }
 
   @Test
@@ -235,5 +242,10 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(page, "Case details", "Claim ID", "Not applicable", "changed");
+
+    var checkPage = new CheckPage(page);
+    viewAmendCase.clickContinue();
+    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+    //checkPage.clickChangeClientLink();
   }
 }
