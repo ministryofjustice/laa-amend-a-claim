@@ -26,8 +26,10 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
   CLIENT_2_UCN(new Accessor<>(MediationClaimDetails::getClient2Ucn)),
   CLIENT_2_POSTCODE(new Accessor<>(MediationClaimDetails::getClient2Postcode)),
   CLIENT_2_GENDER(new Accessor<>(MediationClaimDetails::getClient2Gender)),
-  CLIENT_2_ETHNICITY(new Accessor<>(MediationClaimDetails::getClient2Ethnicity)),
-  CLIENT_2_DISABILITY(new Accessor<>(MediationClaimDetails::getClient2Disability)),
+  CLIENT_2_ETHNICITY(
+      new Accessor<>(MediationClaimDetails::getClient2Ethnicity), FieldOptions.ETHNICITY_CODE),
+  CLIENT_2_DISABILITY(
+      new Accessor<>(MediationClaimDetails::getClient2Disability), FieldOptions.DISABILITY_CODE),
   IS_CLIENT_2_LEGALLY_AIDED(
       new Accessor<>(MediationClaimDetails::getIsClient2LegallyAided), FieldType.BOOLEAN),
   IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED(

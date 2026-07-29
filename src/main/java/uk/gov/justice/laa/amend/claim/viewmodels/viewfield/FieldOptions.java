@@ -10,6 +10,8 @@ public final class FieldOptions {
   public static final List<FieldOption> CASE_STAGE = from(CaseStage.values());
   public static final List<FieldOption> DESIGNATED_ACCREDITED_REPRESENTATIVE =
       from(DesignatedAccreditedRepresentative.values());
+  public static final List<FieldOption> DISABILITY_CODE = from(DisabilityCode.values());
+  public static final List<FieldOption> ETHNICITY_CODE = from(EthnicityCode.values());
   public static final List<FieldOption> EXEMPTION_CRITERIA_SATISFIED =
       from(ExemptionCriteriaSatisfied.values());
   public static final List<FieldOption> MEETINGS_ATTENDED = from(MeetingsAttended.values());
