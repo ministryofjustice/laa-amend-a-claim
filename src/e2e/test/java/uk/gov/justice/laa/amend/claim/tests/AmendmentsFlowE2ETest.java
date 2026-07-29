@@ -146,7 +146,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendClient1.clickContinueButton();
 
     viewAmendClient = new ViewClientPage(page);
-      assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
     viewAmendClient.clickCaseTab();
 
     // View Case → Change case type → View Case
@@ -179,11 +179,13 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(page, "Case details", "Stage reached", "Not applicable", STAGE_REACHED);
 
-    var checkPage = new CheckPage(page);
     viewAmendCase.clickContinue();
-    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
-    //checkPage.clickChangeClientLink();
 
+    var checkPage = new CheckPage(page);
+    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+    checkPage.clickChangeClientLink();
+
+    viewAmendClient = new ViewClientPage(page);
   }
 
   @Test
@@ -223,7 +225,6 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
-
     viewAmendClient.clickCaseTab();
 
     // View Case → Change case type → View Case
@@ -253,9 +254,12 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(page, "Case details", "Claim ID", "Not applicable", "changed");
 
-    var checkPage = new CheckPage(page);
     viewAmendCase.clickContinue();
+
+    var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
-    //checkPage.clickChangeClientLink();
+    checkPage.clickChangeClientLink();
+
+    var viewAmendClientFinal = new ViewClientPage(page);
   }
 }
