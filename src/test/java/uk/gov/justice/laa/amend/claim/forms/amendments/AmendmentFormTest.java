@@ -76,13 +76,13 @@ class AmendmentFormTest {
   }
 
   @Test
-  void seedsNullBooleanFieldAsEmptyInput() {
+  void seedsNullBooleanFieldAsNullInput() {
     var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
     rows.put(CivilClaimDetailsViewField.IS_ELIGIBLE_CLIENT, null);
 
     var form = new AmendmentForm(rows);
 
-    assertThat(form.getInputs()).containsEntry("IS_ELIGIBLE_CLIENT", "");
+    assertThat(form.getInputs()).containsEntry("IS_ELIGIBLE_CLIENT", null);
   }
 
   @Test
@@ -193,6 +193,69 @@ class AmendmentFormTest {
     form.setInputs(new HashMap<>(Map.of("VALUE_OF_COSTS", "10.129")));
 
     assertThat(form.getBigDecimalValue("VALUE_OF_COSTS")).isNull();
+  }
+
+  @Test
+  void seedsNumberFieldAsIntegerInput() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.TRAVEL_TIME, 200);
+
+    var form = new AmendmentForm(rows);
+
+    assertThat(form.getInputs()).containsEntry("TRAVEL_TIME", "200");
+  }
+
+  @Test
+  void seedsNullNumberFieldAsNullInput() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.TRAVEL_TIME, null);
+    var original = new AmendmentForm(rows);
+
+    assertThat(original.getInputs()).containsEntry("TRAVEL_TIME", null);
+
+    var current = new AmendmentForm();
+    current.setInputs(new HashMap<>(Map.of("TRAVEL_TIME", "")));
+    assertThat(current.isAmendment("TRAVEL_TIME", original)).isFalse();
+  }
+
+  @Test
+  void isAmendmentTreatsSeededEmptyNumberAndAbsentCurrentAsUnchanged() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.TRAVEL_TIME, null);
+    var original = new AmendmentForm(rows);
+
+    var current = new AmendmentForm();
+    current.setInputs(new HashMap<>());
+
+    assertThat(current.isAmendment("TRAVEL_TIME", original)).isFalse();
+  }
+
+  @Test
+  void isAmendmentTreatsSeededEmptyBooleanAndAbsentCurrentAsUnchanged() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.IS_ELIGIBLE_CLIENT, null);
+    var original = new AmendmentForm(rows);
+
+    var current = new AmendmentForm();
+    current.setInputs(new HashMap<>());
+
+    assertThat(current.isAmendment("IS_ELIGIBLE_CLIENT", original)).isFalse();
+  }
+
+  @Test
+  void getAmendedValueReturnsIntegerForNumberField() {
+    var form = new AmendmentForm();
+    form.setInputs(new HashMap<>(Map.of("TRAVEL_TIME", "200")));
+
+    assertThat(form.getAmendedValue(CivilClaimDetailsViewField.TRAVEL_TIME)).isEqualTo(200);
+  }
+
+  @Test
+  void getAmendedValueReturnsNullForNonNumericNumberInput() {
+    var form = new AmendmentForm();
+    form.setInputs(new HashMap<>(Map.of("TRAVEL_TIME", "not-a-number")));
+
+    assertThat(form.getAmendedValue(CivilClaimDetailsViewField.TRAVEL_TIME)).isNull();
   }
 
   @Test

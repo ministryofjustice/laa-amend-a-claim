@@ -307,10 +307,12 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
         caseDetails.get(19),
         "Designated accredited representative",
         DESIGNATED_ACCREDITED_REPRESENTATIVE);
-    assertSummaryListRowContainsValues(caseDetails.get(20), "Advice time", ADVICE_TIME.toString());
-    assertSummaryListRowContainsValues(caseDetails.get(21), "Travel time", TRAVEL_TIME.toString());
     assertSummaryListRowContainsValues(
-        caseDetails.get(22), "Waiting time", WAITING_TIME.toString());
+        caseDetails.get(20), "Advice time (minutes)", ADVICE_TIME.toString());
+    assertSummaryListRowContainsValues(
+        caseDetails.get(21), "Travel time (minutes)", TRAVEL_TIME.toString());
+    assertSummaryListRowContainsValues(
+        caseDetails.get(22), "Waiting time (minutes)", WAITING_TIME.toString());
     assertSummaryListRowContainsValues(caseDetails.get(23), "Additional travel payment", "Yes");
     assertSummaryListRowContainsValues(caseDetails.get(24), "Follow on work", FOLLOW_ON_WORK);
     assertSummaryListRowContainsValues(caseDetails.get(25), "Tolerance indicator", "No");

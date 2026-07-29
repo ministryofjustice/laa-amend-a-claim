@@ -7,24 +7,20 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import uk.gov.justice.laa.amend.claim.pages.LaaPage;
 
-public class AmendFeeCodePage extends LaaPage {
+public class AmendClient2Page extends LaaPage {
 
   private final Locator continueButton;
-  private final Locator feeCodeInput;
 
-  public AmendFeeCodePage(Page page) {
-    super(page, "Amend fee code");
+  public AmendClient2Page(Page page) {
+    super(page, "Amend claim details");
     this.continueButton =
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue"));
-    this.feeCodeInput =
-        page.locator("#fee-code-input.autocomplete__input.autocomplete__input--show-all-values");
   }
 
-  public void fillFeeCodeInput(String value) {
-    assertThat(feeCodeInput).isVisible();
-    feeCodeInput.clear();
-    feeCodeInput.fill(value);
-    feeCodeInput.press("Enter");
+  public void fillInput(String inputKey, String value) {
+    var surnameInput = page.locator(String.format("input#inputs%s", inputKey));
+    assertThat(surnameInput).isVisible();
+    surnameInput.fill(value);
   }
 
   public void clickContinueButton() {

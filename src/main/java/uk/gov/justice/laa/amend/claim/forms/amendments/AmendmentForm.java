@@ -52,6 +52,8 @@ public class AmendmentForm {
         putDateInputs(inputs, field.name(), entry.getValue());
       } else if (field.getType() == FieldType.BOOLEAN) {
         inputs.put(field.name(), formatBooleanValue(field.name(), entry.getValue()));
+      } else if (field.getType() == FieldType.NUMBER) {
+        inputs.put(field.name(), formatNumberValue(field.name(), entry.getValue()));
       } else {
         inputs.put(field.name(), formatValue(entry.getValue()));
       }
@@ -96,15 +98,15 @@ public class AmendmentForm {
     var original = originalForm.getInputs().get(key);
     var current = inputs.get(key);
 
-    if (original == null && current == null) {
+    if (isBlank(original) && isBlank(current)) {
       return false;
     }
 
-    if (original == null || current == null) {
+    if (isBlank(original) || isBlank(current)) {
       return true;
     }
 
-    return !originalForm.getInputs().get(key).equals(getInputs().get(key));
+    return !original.equals(current);
   }
 
   public boolean hasAmendments(AmendmentForm original) {
@@ -133,9 +135,22 @@ public class AmendmentForm {
       case DATE -> getDateValue(field.name());
       case BOOLEAN -> getBooleanValue(field.name());
       case BIG_DECIMAL -> getBigDecimalValue(field.name());
+      case NUMBER -> getIntegerValue(field.name());
       case ENUM -> inputs.get(field.name());
       case TEXT -> inputs.get(field.name());
     };
+  }
+
+  public Integer getIntegerValue(String fieldName) {
+    var value = inputs.get(fieldName);
+    if (isBlank(value)) {
+      return null;
+    }
+    try {
+      return Integer.valueOf(value.trim());
+    } catch (NumberFormatException e) {
+      return null;
+    }
   }
 
   public Boolean getBooleanValue(String fieldName) {
@@ -215,11 +230,22 @@ public class AmendmentForm {
 
   private static String formatBooleanValue(String name, Object value) {
     return switch (value) {
-      case null -> "";
+      case null -> null;
       case Boolean booleanValue -> booleanValue.toString();
       default ->
           throw new IllegalArgumentException(
               "Expected Boolean for boolean field '%s' but got %s"
+                  .formatted(name, value.getClass()));
+    };
+  }
+
+  private static String formatNumberValue(String name, Object value) {
+    return switch (value) {
+      case null -> null;
+      case Integer intValue -> intValue.toString();
+      default ->
+          throw new IllegalArgumentException(
+              "Expected Integer for number field '%s' but got %s"
                   .formatted(name, value.getClass()));
     };
   }

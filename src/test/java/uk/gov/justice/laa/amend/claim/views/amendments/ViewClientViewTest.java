@@ -232,6 +232,21 @@ class ViewClientViewTest extends AmendmentsBaseTest {
     forms.getClient1Form().getCurrent().getInputs().put("IS_LEGALLY_AIDED", "false");
     forms.getClient1Form().getCurrent().getInputs().put("IS_POSTAL_APPLICATION_ACCEPTED", "true");
 
+    forms.getClient2Form().getCurrent().getInputs().put("CLIENT_2_FORENAME", "changed");
+    forms.getClient2Form().getCurrent().getInputs().put("CLIENT_2_SURNAME", "changed");
+    forms.getClient2Form().getCurrent().getInputs().put("CLIENT_2_DATE_OF_BIRTH", "changed");
+    forms.getClient2Form().getCurrent().getInputs().put("CLIENT_2_UNIQUE_CLIENT_NUMBER", "changed");
+    forms.getClient2Form().getCurrent().getInputs().put("CLIENT_2_POSTCODE", "changed");
+    forms.getClient2Form().getCurrent().getInputs().put("CLIENT_2_GENDER", "changed");
+    forms.getClient2Form().getCurrent().getInputs().put("CLIENT_2_ETHNICITY", "changed");
+    forms.getClient2Form().getCurrent().getInputs().put("CLIENT_2_DISABILITY", "changed");
+    forms.getClient2Form().getCurrent().getInputs().put("CLIENT_2_IS_LEGALLY_AIDED", "false");
+    forms
+        .getClient2Form()
+        .getCurrent()
+        .getInputs()
+        .put("CLIENT_2_IS_POSTAL_APPLICATION_ACCEPTED", "true");
+
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var doc = renderDocument();
@@ -254,18 +269,20 @@ class ViewClientViewTest extends AmendmentsBaseTest {
         client1Details.get(10), "Postal application accepted", "No", "Yes");
 
     var client2Details = getSummaryListInCard(doc, "Client 2 details");
-    assertSummaryListRowContainsValues(client2Details.getFirst(), "First name", CLIENT_2_FORENAME);
-    assertSummaryListRowContainsValues(client2Details.get(1), "Last name", CLIENT_2_SURNAME);
+    assertSummaryListRowContainsValues(client1Details.getFirst(), "Item", "Current", "Amended");
+    assertSummaryListRowContainsValues(client2Details.get(1), "First name", CLIENT_2_FORENAME);
+    assertSummaryListRowContainsValues(client2Details.get(2), "Last name", CLIENT_2_SURNAME);
     assertSummaryListRowContainsValues(
-        client2Details.get(2), "Date of birth", CLIENT_2_DATE_OF_BIRTH_RENDERED);
+        client2Details.get(3), "Date of birth", CLIENT_2_DATE_OF_BIRTH_RENDERED);
     assertSummaryListRowContainsValues(
-        client2Details.get(3), "Unique client number (UCN)", CLIENT_2_UCN);
-    assertSummaryListRowContainsValues(client2Details.get(4), "Postcode", CLIENT_2_POSTCODE);
-    assertSummaryListRowContainsValues(client2Details.get(5), "Gender", CLIENT_2_GENDER);
-    assertSummaryListRowContainsValues(client2Details.get(6), "Ethnicity", CLIENT_2_ETHNICITY);
-    assertSummaryListRowContainsValues(client2Details.get(7), "Disability", CLIENT_2_DISABILITY);
-    assertSummaryListRowContainsValues(client2Details.get(8), "Legally aided", "No");
-    assertSummaryListRowContainsValues(client2Details.get(9), "Postal application accepted", "Yes");
+        client2Details.get(4), "Unique client number (UCN)", CLIENT_2_UCN);
+    assertSummaryListRowContainsValues(client2Details.get(5), "Postcode", CLIENT_2_POSTCODE);
+    assertSummaryListRowContainsValues(client2Details.get(6), "Gender", CLIENT_2_GENDER);
+    assertSummaryListRowContainsValues(client2Details.get(7), "Ethnicity", CLIENT_2_ETHNICITY);
+    assertSummaryListRowContainsValues(client2Details.get(8), "Disability", CLIENT_2_DISABILITY);
+    assertSummaryListRowContainsValues(client2Details.get(9), "Legally aided", "No");
+    assertSummaryListRowContainsValues(
+        client2Details.get(10), "Postal application accepted", "Yes");
 
     assertPageHasLink(doc, "check", "Continue", checkUrl);
     assertPageHasLink(doc, "cancel", "Cancel", overviewUrl);
@@ -385,7 +402,8 @@ class ViewClientViewTest extends AmendmentsBaseTest {
   private AmendmentForms createClientForms(ClaimDetails claim) {
     var view = ClaimClientViewFactory.create(claim);
     return new AmendmentForms(
-        new AmendmentForm(view.client1Rows()), new AmendmentForm(), new AmendmentForm());
+        new AmendmentForm(view.client1Rows()), new AmendmentForm(view.client2Rows()),
+        new AmendmentForm(), new AmendmentForm());
   }
 
   private void assertCommonPageContent(Document doc) {

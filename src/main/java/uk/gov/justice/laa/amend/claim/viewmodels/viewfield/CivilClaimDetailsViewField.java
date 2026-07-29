@@ -47,9 +47,9 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   DESIGNATED_ACCREDITED_REPRESENTATIVE(
       new Accessor<>(CivilClaimDetails::getDesignatedAccreditedRepresentative),
       FieldOptions.DESIGNATED_ACCREDITED_REPRESENTATIVE),
-  ADVICE_TIME(new Accessor<>(CivilClaimDetails::getAdviceTime)),
-  TRAVEL_TIME(new Accessor<>(CivilClaimDetails::getTravelTime)),
-  WAITING_TIME(new Accessor<>(CivilClaimDetails::getWaitingTime)),
+  ADVICE_TIME(new Accessor<>(CivilClaimDetails::getAdviceTime), FieldType.NUMBER),
+  TRAVEL_TIME(new Accessor<>(CivilClaimDetails::getTravelTime), FieldType.NUMBER),
+  WAITING_TIME(new Accessor<>(CivilClaimDetails::getWaitingTime), FieldType.NUMBER),
   ADDITIONAL_TRAVEL_PAYMENT(
       new Accessor<>(CivilClaimDetails::getIsAdditionalTravelPayment), FieldType.BOOLEAN),
   FOLLOW_ON_WORK(new Accessor<>(CivilClaimDetails::getFollowOnWork)),
@@ -60,14 +60,17 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       new Accessor<>(CivilClaimDetails::getMeetingsAttended), FieldOptions.MEETINGS_ATTENDED),
   ADVICE_TYPE(new Accessor<>(CivilClaimDetails::getAdviceType), FieldOptions.ADVICE_TYPE),
   TRANSFER_DATE(new Accessor<>(CivilClaimDetails::getTransferDate), FieldType.DATE),
-  MEDICAL_REPORTS_CLAIMED(new Accessor<>(CivilClaimDetails::getMedicalReportsClaimed)),
+  MEDICAL_REPORTS_CLAIMED(
+      new Accessor<>(CivilClaimDetails::getMedicalReportsClaimed), FieldType.NUMBER),
   EXEMPTION_CRITERIA_SATISFIED(
       new Accessor<>(CivilClaimDetails::getExemptionCriteriaSatisfied),
       FieldOptions.EXEMPTION_CRITERIA_SATISFIED),
   IRC_SURGERY(new Accessor<>(CivilClaimDetails::getIsIrcSurgery), FieldType.BOOLEAN),
   SURGERY_DATE(new Accessor<>(CivilClaimDetails::getSurgeryDate), FieldType.DATE),
-  SURGERY_CLIENTS_COUNT(new Accessor<>(CivilClaimDetails::getSurgeryClientsCount)),
-  SURGERY_MATTERS_COUNT(new Accessor<>(CivilClaimDetails::getSurgeryMattersCount)),
+  SURGERY_CLIENTS_COUNT(
+      new Accessor<>(CivilClaimDetails::getSurgeryClientsCount), FieldType.NUMBER),
+  SURGERY_MATTERS_COUNT(
+      new Accessor<>(CivilClaimDetails::getSurgeryMattersCount), FieldType.NUMBER),
   MENTAL_HEALTH_TRIBUNAL_REFERENCE(
       new Accessor<>(CivilClaimDetails::getMentalHealthTribunalReference)),
   IS_NRM_ADVICE(new Accessor<>(CivilClaimDetails::getIsNrmAdvice), FieldType.BOOLEAN),

@@ -19,6 +19,7 @@ interface AccessibleAutocompleteOptions {
   onConfirm?: (confirmed: string) => void;
   required?: boolean;
   showAllValues?: boolean;
+  dropdownArrow?(props: { className: string }): string | ReactElement;
   showNoOptionsFound?: boolean;
   templates?: {
     inputValue?: (result: string) => string;

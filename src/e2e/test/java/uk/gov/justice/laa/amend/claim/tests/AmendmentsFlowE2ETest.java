@@ -20,6 +20,7 @@ import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCaseDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient1Page;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient2Page;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendFeeCodePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendMatterTypePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.CheckPage;
@@ -138,7 +139,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable");
-    viewAmendClient.clickChangeLink();
+    viewAmendClient.getChangeClientOneLink().click();
 
     var amendClient1 = new AmendClient1Page(page);
     amendClient1.fillInput("SURNAME", "changed");
@@ -206,7 +207,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable");
-    viewAmendClient.clickChangeLink();
+    viewAmendClient.getChangeClientOneLink().click();
 
     var amendClient1 = new AmendClient1Page(page);
     amendClient1.fillInput("SURNAME", "changed");
@@ -214,6 +215,15 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
+    viewAmendClient.getChangeClientTwoLink().click();
+
+    var amendClient2 = new AmendClient2Page(page);
+    amendClient2.fillInput("CLIENT_2_SURNAME", "changedTwo");
+    amendClient2.clickContinueButton();
+
+    viewAmendClient = new ViewClientPage(page);
+    assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
+
     viewAmendClient.clickCaseTab();
 
     // View Case → Change case type → View Case
