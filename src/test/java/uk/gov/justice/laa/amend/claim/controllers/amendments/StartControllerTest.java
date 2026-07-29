@@ -91,8 +91,8 @@ class StartControllerTest extends BaseControllerTest {
     caseDetailsRows.put("CASE_CONCLUDED_DATE-year", "2001");
     caseDetailsRows.put("STANDARD_FEE_CATEGORY", claim.getStandardFeeCategory());
     caseDetailsRows.put("OUTCOME_FOR_CLIENT", claim.getOutcome());
-    caseDetailsRows.put("SUSPECTS_DEFENDANTS_COUNT", "TODO");
-    caseDetailsRows.put("POLICE_STATION_COURT_ATTENDANCES_COUNT", "TODO");
+    caseDetailsRows.put("SUSPECTS_DEFENDANTS_COUNT", "1");
+    caseDetailsRows.put("POLICE_STATION_COURT_ATTENDANCES_COUNT", "2");
     caseDetailsRows.put("POLICE_STATION_COURT_PRISON_ID", claim.getPoliceStationCourtPrisonId());
     caseDetailsRows.put("SCHEME_ID", claim.getSchemeId());
     caseDetailsRows.put("DSCC_NUMBER", claim.getDsccNumber());

@@ -14,6 +14,9 @@
   <th:block th:if="${field.type.name() == 'BIG_DECIMAL'}">
     <th:block th:replace="~{partials/amendments/big-decimal-input :: amendmentBigDecimalInput(${field.name()}, ${labelMessageKey})}"></th:block>
   </th:block>
+  <th:block th:if="${field.type.name() == 'NUMBER'}">
+    <th:block th:replace="~{partials/amendments/number-input :: amendmentNumberInput(${field.name()}, ${labelMessageKey})}"></th:block>
+  </th:block>
   <input th:if="${field.type.name() == 'TEXT'}"
          class="govuk-input"
          type="text"

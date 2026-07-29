@@ -192,11 +192,11 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
         "Designated accredited representative",
         DESIGNATED_ACCREDITED_REPRESENTATIVE_LABEL);
     assertSummaryListRowContainsValues(
-        caseDetails.get(20), "Advice time", String.valueOf(ADVICE_TIME));
+        caseDetails.get(20), "Advice time (minutes)", String.valueOf(ADVICE_TIME));
     assertSummaryListRowContainsValues(
-        caseDetails.get(21), "Travel time", String.valueOf(TRAVEL_TIME));
+        caseDetails.get(21), "Travel time (minutes)", String.valueOf(TRAVEL_TIME));
     assertSummaryListRowContainsValues(
-        caseDetails.get(22), "Waiting time", String.valueOf(WAITING_TIME));
+        caseDetails.get(22), "Waiting time (minutes)", String.valueOf(WAITING_TIME));
     assertSummaryListRowContainsValues(caseDetails.get(23), "Additional travel payment", YES);
     assertSummaryListRowContainsValues(caseDetails.get(24), "Follow on work", FOLLOW_ON_WORK);
     assertSummaryListRowContainsValues(caseDetails.get(25), "Tolerance indicator", YES);
@@ -337,11 +337,11 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
         "Designated accredited representative",
         DESIGNATED_ACCREDITED_REPRESENTATIVE_LABEL);
     assertSummaryListRowContainsValues(
-        caseDetails.get(20), "Advice time", String.valueOf(ADVICE_TIME));
+        caseDetails.get(20), "Advice time (minutes)", String.valueOf(ADVICE_TIME));
     assertSummaryListRowContainsValues(
-        caseDetails.get(21), "Travel time", String.valueOf(TRAVEL_TIME));
+        caseDetails.get(21), "Travel time (minutes)", String.valueOf(TRAVEL_TIME));
     assertSummaryListRowContainsValues(
-        caseDetails.get(22), "Waiting time", String.valueOf(WAITING_TIME));
+        caseDetails.get(22), "Waiting time (minutes)", String.valueOf(WAITING_TIME));
     assertSummaryListRowContainsValues(caseDetails.get(23), "Additional travel payment", YES);
     assertSummaryListRowContainsValues(caseDetails.get(24), "Follow on work", FOLLOW_ON_WORK);
     assertSummaryListRowContainsValues(caseDetails.get(25), "Tolerance indicator", YES);
