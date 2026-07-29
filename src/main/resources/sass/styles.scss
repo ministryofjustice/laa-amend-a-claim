@@ -69,6 +69,13 @@
   display: none; /* Hidden until required */
 }
 
+/* Without this, the wrapper doesn't form its own stacking context, so the
+   dropdown arrow's negative z-index escapes to the document root and gets
+   painted behind the page background instead of behind just the input. */
+.autocomplete__dropdown-arrow-down {
+  z-index: 0 !important;
+}
+
 /* Adapted from https://design.homeoffice.gov.uk/design-system/components?name=Loading%20spinner */
 .loading-spinner {
   margin-left: auto;
