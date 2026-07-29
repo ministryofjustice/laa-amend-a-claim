@@ -27,6 +27,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.AssessmentTypeEnum;
@@ -55,6 +56,7 @@ public class MockClaimsFunctions {
 
   public static CivilClaimDetails createMockCivilClaim() {
     CivilClaimDetails claim = new CivilClaimDetails();
+    claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
     claim.setClaimId(UUID.randomUUID());
     claim.setSubmissionId(UUID.randomUUID());
     claim.setClaimSummaryFeeId(UUID.randomUUID());
@@ -90,6 +92,7 @@ public class MockClaimsFunctions {
 
   public static MediationClaimDetails createMockMediationClaim() {
     MediationClaimDetails claim = new MediationClaimDetails();
+    claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
     claim.setClaimId(UUID.randomUUID());
     claim.setSubmissionId(UUID.randomUUID());
     claim.setClaimSummaryFeeId(UUID.randomUUID());
@@ -122,6 +125,7 @@ public class MockClaimsFunctions {
 
   public static CrimeClaimDetails createMockCrimeClaim() {
     CrimeClaimDetails claim = new CrimeClaimDetails();
+    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
     claim.setClaimId(UUID.randomUUID());
     claim.setSubmissionId(UUID.randomUUID());
     claim.setClaimSummaryFeeId(UUID.randomUUID());
