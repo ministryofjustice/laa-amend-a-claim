@@ -140,6 +140,12 @@ public class AmendmentForm {
         || inputs.containsKey(fieldName + YEAR_SUFFIX);
   }
 
+  public boolean isDateInputProvided(String fieldName) {
+    return !isBlank(inputs.get(fieldName + DAY_SUFFIX))
+        || !isBlank(inputs.get(fieldName + MONTH_SUFFIX))
+        || !isBlank(inputs.get(fieldName + YEAR_SUFFIX));
+  }
+
   public Object getAmendedValue(String fieldName) {
     return isDateField(fieldName) ? getDateValue(fieldName) : inputs.get(fieldName);
   }

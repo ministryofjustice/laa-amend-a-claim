@@ -108,6 +108,33 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
         .isEqualTo("updated");
   }
 
+  @Test
+  void postCaseDetailsWithInvalidValueRedirectsBackAndPreservesInput() throws Exception {
+    var caseDetailsRows = Map.of("FEE_CODE", FEE_CODE);
+    var caseDetailsForm = new AmendmentForm();
+    caseDetailsForm.setInputs(caseDetailsRows);
+
+    var forms = new AmendmentForms(new AmendmentForm(), new AmendmentForm(), caseDetailsForm);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var tooLong = "a".repeat(256);
+    var request =
+        post(buildAmendCaseDetailsPath())
+            .param(INPUTS.formatted("FEE_CODE"), tooLong)
+            .session(session)
+            .with(csrf());
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildAmendCaseDetailsPath()));
+
+    AmendmentForms updatedForm =
+        (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
+    assertThat(updatedForm.getCaseDetailsForm().getCurrent().getInputs().get("FEE_CODE"))
+        .isEqualTo(tooLong);
+  }
+
   public String buildAmendCaseDetailsPath() {
     return "/submissions/%s/claims/%s/amendments/amend-case-details"
         .formatted(submissionId, claimId);
