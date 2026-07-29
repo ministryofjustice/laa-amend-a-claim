@@ -155,7 +155,7 @@ public class CivilClaimDetailsViewTest
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(9).calculated());
 
       Assertions.assertEquals(SUBSTANTIVE_HEARING, result.get(10).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(10).submitted());
+      Assertions.assertEquals(Boolean.TRUE, result.get(10).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(10).calculated());
 
       Assertions.assertEquals(ADJOURNED_FEE, result.get(11).key());
@@ -223,7 +223,7 @@ public class CivilClaimDetailsViewTest
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(9).calculated());
 
       Assertions.assertEquals(SUBSTANTIVE_HEARING, result.get(10).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(10).submitted());
+      Assertions.assertEquals(Boolean.TRUE, result.get(10).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(10).calculated());
 
       Assertions.assertEquals(ADJOURNED_FEE, result.get(11).key());

@@ -16,6 +16,10 @@ public interface ClaimViewField<T extends Claim> {
 
   FieldType getType();
 
+  default String inputKey() {
+    return name();
+  }
+
   default List<FieldOption> getOptions() {
     return List.of();
   }

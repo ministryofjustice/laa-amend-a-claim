@@ -126,7 +126,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(
         clientDetails.get(10), "Judicial review or form filling", SUBMITTED, CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(
-        clientDetails.get(11), "Substantive hearing", SUBMITTED, CALCULATED, ASSESSED);
+        clientDetails.get(11), "Substantive hearing", "Yes", CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(
         clientDetails.get(12), "Home Office Interview", SUBMITTED, CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(

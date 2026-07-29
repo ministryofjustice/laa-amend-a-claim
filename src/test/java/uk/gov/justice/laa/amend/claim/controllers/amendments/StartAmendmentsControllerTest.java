@@ -21,6 +21,7 @@ import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactory;
 
 @WebMvcTest(controllers = StartAmendmentsController.class)
 class StartAmendmentsControllerTest extends BaseControllerTest {
@@ -107,7 +108,24 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     var caseDetailsForm = new AmendmentForm();
     caseDetailsForm.setInputs(caseDetailsRows);
 
-    AmendmentForms forms = new AmendmentForms(client1Form, caseTypeForm, caseDetailsForm);
+    Map<String, String> costsRows = new HashMap<>();
+    costsRows.put("fixedFee", null);
+    costsRows.put("profitCost", "100.00");
+    costsRows.put("disbursements", "100.00");
+    costsRows.put("travel", "100.00");
+    costsRows.put("waiting", "100.00");
+    costsRows.put("vat", "true");
+    costsRows.put("disbursementsVat", "100.00");
+    var costsForm = new AmendmentForm();
+    costsForm.setInputs(costsRows);
+
+    AmendmentForms forms =
+        AmendmentForms.builder()
+            .client1(client1Form)
+            .caseType(caseTypeForm)
+            .caseDetails(caseDetailsForm)
+            .costs(costsForm)
+            .build();
 
     mockMvc
         .perform(get(buildPath()).session(session))
@@ -218,8 +236,16 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     var caseDetailsForm = new AmendmentForm();
     caseDetailsForm.setInputs(caseDetailsRows);
 
+    var costsForm = new AmendmentForm(ClaimCostsViewFactory.create(claim).costRows());
+
     AmendmentForms forms =
-        new AmendmentForms(client1Form, client2Form, caseTypeForm, caseDetailsForm);
+        AmendmentForms.builder()
+            .client1(client1Form)
+            .client2(client2Form)
+            .caseType(caseTypeForm)
+            .caseDetails(caseDetailsForm)
+            .costs(costsForm)
+            .build();
 
     mockMvc
         .perform(get(buildPath()).session(session))

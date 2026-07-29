@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CostClaimDetailsViewField;
 
 class AmendmentFormTest {
 
@@ -83,6 +84,16 @@ class AmendmentFormTest {
     var form = new AmendmentForm(rows);
 
     assertThat(form.getInputs()).containsEntry("IS_ELIGIBLE_CLIENT", null);
+  }
+
+  @Test
+  void seedsBigDecimalFieldAsScaledInput() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.VALUE_OF_COSTS, BigDecimal.valueOf(10.1));
+
+    var form = new AmendmentForm(rows);
+
+    assertThat(form.getInputs()).containsEntry("VALUE_OF_COSTS", "10.10");
   }
 
   @Test
@@ -169,16 +180,6 @@ class AmendmentFormTest {
   }
 
   @Test
-  void seedsBigDecimalFieldAsScaledInput() {
-    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
-    rows.put(CivilClaimDetailsViewField.VALUE_OF_COSTS, BigDecimal.valueOf(10.1));
-
-    var form = new AmendmentForm(rows);
-
-    assertThat(form.getInputs()).containsEntry("VALUE_OF_COSTS", "10.10");
-  }
-
-  @Test
   void getAmendedValueReturnsBigDecimalForBigDecimalField() {
     var form = new AmendmentForm();
     form.setInputs(new HashMap<>(Map.of("VALUE_OF_COSTS", "10.1")));
@@ -259,6 +260,15 @@ class AmendmentFormTest {
   }
 
   @Test
+  void getAmendedValueUsesInputKeyWhenFieldOverridesIt() {
+    var form = new AmendmentForm();
+    form.setInputs(new HashMap<>(Map.of("profitCost", "150.25")));
+
+    assertThat(form.getAmendedValue(CostClaimDetailsViewField.PROFIT_COST))
+        .isEqualTo(new BigDecimal("150.25"));
+  }
+
+  @Test
   void getBooleanValueReturnsNullWhenInputBlank() {
     var form = new AmendmentForm();
     form.setInputs(new HashMap<>(Map.of("IS_ELIGIBLE_CLIENT", "")));
@@ -334,5 +344,20 @@ class AmendmentFormTest {
     current.getInputs().put("IS_ELIGIBLE_CLIENT", "false");
 
     assertThat(current.hasAmendments(original)).isTrue();
+  }
+
+  @Test
+  void isAmendmentIgnoresBigDecimalReformatting() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.VALUE_OF_COSTS, BigDecimal.valueOf(10.10));
+    var original = new AmendmentForm(rows);
+
+    var current = new AmendmentForm(original);
+    current.getInputs().put("VALUE_OF_COSTS", "10.1");
+
+    assertThat(
+            current.isAmendment(
+                "VALUE_OF_COSTS", original, CivilClaimDetailsViewField.VALUE_OF_COSTS.getType()))
+        .isFalse();
   }
 }

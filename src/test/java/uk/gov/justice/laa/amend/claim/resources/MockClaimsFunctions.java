@@ -236,7 +236,7 @@ public class MockClaimsFunctions {
   }
 
   public static SubmittedClaimField createIsLondonRateField() {
-    return createSubmittedClaimField(IS_LONDON_RATE, "Yes");
+    return SubmittedClaimField.builder().key(IS_LONDON_RATE).submitted(true).build();
   }
 
   public static SubmittedClaimField createPriorAuthorityField() {
@@ -256,7 +256,12 @@ public class MockClaimsFunctions {
   }
 
   public static BoltOnClaimField createSubstantiveHearingField() {
-    return createBoltOnField(SUBSTANTIVE_HEARING);
+    return BoltOnClaimField.builder()
+        .key(SUBSTANTIVE_HEARING)
+        .submitted(true)
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
   }
 
   private static BoltOnClaimField createBoltOnField(String key) {

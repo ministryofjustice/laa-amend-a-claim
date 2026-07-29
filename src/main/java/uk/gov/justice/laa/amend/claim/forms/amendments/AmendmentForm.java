@@ -49,13 +49,13 @@ public class AmendmentForm {
     for (var entry : viewRows.entrySet()) {
       var field = entry.getKey();
       if (field.getType() == FieldType.DATE) {
-        putDateInputs(inputs, field.name(), entry.getValue());
+        putDateInputs(inputs, field.inputKey(), entry.getValue());
       } else if (field.getType() == FieldType.BOOLEAN) {
-        inputs.put(field.name(), formatBooleanValue(field.name(), entry.getValue()));
+        inputs.put(field.inputKey(), formatBooleanValue(field.inputKey(), entry.getValue()));
       } else if (field.getType() == FieldType.NUMBER) {
-        inputs.put(field.name(), formatNumberValue(field.name(), entry.getValue()));
+        inputs.put(field.inputKey(), formatNumberValue(field.inputKey(), entry.getValue()));
       } else {
-        inputs.put(field.name(), formatValue(entry.getValue()));
+        inputs.put(field.inputKey(), formatValue(entry.getValue()));
       }
     }
     this.inputs = inputs;
@@ -109,6 +109,14 @@ public class AmendmentForm {
     return !original.equals(current);
   }
 
+  public boolean isAmendment(String key, AmendmentForm originalForm, FieldType fieldType) {
+    if (fieldType == FieldType.BIG_DECIMAL) {
+      return !Objects.equals(originalForm.getBigDecimalValue(key), getBigDecimalValue(key));
+    }
+
+    return isAmendment(key, originalForm);
+  }
+
   public boolean hasAmendments(AmendmentForm original) {
     return getInputs().keySet().stream()
         .map(
@@ -130,14 +138,24 @@ public class AmendmentForm {
     return isDateField(fieldName) ? getDateValue(fieldName) : inputs.get(fieldName);
   }
 
+  public Object getAmendedValue(String fieldName, FieldType fieldType) {
+    return switch (fieldType) {
+      case BIG_DECIMAL -> getBigDecimalValue(fieldName);
+      case DATE -> getDateValue(fieldName);
+      case BOOLEAN -> getBooleanValue(fieldName);
+      case NUMBER -> getIntegerValue(fieldName);
+      case ENUM, TEXT -> inputs.get(fieldName);
+    };
+  }
+
   public Object getAmendedValue(ClaimViewField<?> field) {
     return switch (field.getType()) {
-      case DATE -> getDateValue(field.name());
-      case BOOLEAN -> getBooleanValue(field.name());
-      case BIG_DECIMAL -> getBigDecimalValue(field.name());
-      case NUMBER -> getIntegerValue(field.name());
-      case ENUM -> inputs.get(field.name());
-      case TEXT -> inputs.get(field.name());
+      case DATE -> getDateValue(field.inputKey());
+      case BOOLEAN -> getBooleanValue(field.inputKey());
+      case BIG_DECIMAL -> getBigDecimalValue(field.inputKey());
+      case NUMBER -> getIntegerValue(field.inputKey());
+      case ENUM -> inputs.get(field.inputKey());
+      case TEXT -> inputs.get(field.inputKey());
     };
   }
 

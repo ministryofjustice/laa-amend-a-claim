@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
-import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,12 +18,11 @@ import org.springframework.mock.web.MockHttpSession;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
-import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
-@WebMvcTest(AmendCaseDetailsController.class)
-class AmendCaseDetailsControllerTest extends BaseControllerTest {
+@WebMvcTest(controllers = CostsController.class)
+class CostsControllerTest extends BaseControllerTest {
 
   private static final String INPUTS = "inputs[%s]";
 
@@ -32,9 +30,6 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
   private UUID claimId;
   private MockHttpSession session;
   private ClaimDetails claim;
-
-  private static final String FEE_CODE = "feecode";
-  private static final String MATTER_TYPE_CODE = "mattertype";
 
   @BeforeEach
   void setup() {
@@ -49,71 +44,71 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void getCaseDetailsAsExpected() throws Exception {
-    var claim = MockClaimsFunctions.createMockCrimeClaim();
-    claim.setFeeCode(FEE_CODE);
-    claim.setMatterTypeCode(MATTER_TYPE_CODE);
-    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
-    session.setAttribute(claimId.toString(), claim);
-
-    var caseDetailsRows = Map.of("FEE_CODE", FEE_CODE);
-    var caseDetailsForm = new AmendmentForm();
-    caseDetailsForm.setInputs(caseDetailsRows);
-
-    var updatedForms =
-        AmendmentForms.builder()
-            .client1(new AmendmentForm())
-            .caseType(new AmendmentForm())
-            .caseDetails(caseDetailsForm)
-            .build();
-    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
-
-    var request = get(buildAmendCaseDetailsPath()).session(session).with(csrf());
-
-    mockMvc
-        .perform(request)
-        .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-case-details"))
-        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
-  }
-
-  @Test
-  void postCaseDetailsAsExpected() throws Exception {
-    var caseDetailsRows = Map.of("FEE_CODE", FEE_CODE);
-    var caseDetailsForm = new AmendmentForm();
-    caseDetailsForm.setInputs(caseDetailsRows);
-
+  void getCostsAsExpected() throws Exception {
     var forms =
         AmendmentForms.builder()
             .client1(new AmendmentForm())
             .caseType(new AmendmentForm())
-            .caseDetails(caseDetailsForm)
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    mockMvc
+        .perform(get(buildCostsPath()).session(session).with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(view().name("amendments/view-costs"))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), forms));
+  }
+
+  @Test
+  void getAmendCostsAsExpected() throws Exception {
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    mockMvc
+        .perform(get(buildAmendCostsPath()).session(session).with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(view().name("amendments/amend-costs"))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), forms));
+  }
+
+  @Test
+  void postCostsAsExpected() throws Exception {
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var request =
-        post(buildAmendCaseDetailsPath())
-            .param(INPUTS.formatted("FEE_CODE"), "updated")
+        post(buildAmendCostsPath())
+            .param(INPUTS.formatted("profitCost"), "150.25")
             .session(session)
             .with(csrf());
 
     mockMvc
         .perform(request)
         .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildAmendCaseTabPath()))
+        .andExpect(redirectedUrl(buildCostsPath()))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), forms));
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
-    assertThat(updatedForm.getCaseDetailsForm().getCurrent().getInputs().get("FEE_CODE"))
-        .isEqualTo("updated");
+    assertThat(updatedForm.getCostsForm().getCurrent().getInputs().get("profitCost"))
+        .isEqualTo("150.25");
   }
 
-  public String buildAmendCaseDetailsPath() {
-    return "/submissions/%s/claims/%s/amendments/amend-case-details"
-        .formatted(submissionId, claimId);
+  private String buildCostsPath() {
+    return "/submissions/%s/claims/%s/amendments/costs".formatted(submissionId, claimId);
   }
 
-  public String buildAmendCaseTabPath() {
-    return "/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
+  private String buildAmendCostsPath() {
+    return "/submissions/%s/claims/%s/amendments/amend-costs".formatted(submissionId, claimId);
   }
 }

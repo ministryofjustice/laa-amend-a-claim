@@ -124,7 +124,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(9), "Home office interview", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(10), "Substantive hearing", "£100.00", "£200.00", "£300.00");
+        claimCostsTable.get(10), "Substantive hearing", "Yes", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(11), "Adjourned hearing fee", "£100.00", "£200.00", "£300.00");
 
@@ -471,7 +471,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(9), "Home office interview", "£100.00", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(10), "Substantive hearing", "£100.00", "£200.00", "£300.00");
+        claimCostsTable.get(10), "Substantive hearing", "Yes", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(11), "Adjourned hearing fee", "£100.00", "£200.00", "£300.00");
 
@@ -649,11 +649,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         "Not applicable",
         "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(10),
-        "Substantive hearing",
-        "£100.00",
-        "Not applicable",
-        "Not applicable");
+        claimCostsTable.get(10), "Substantive hearing", "Yes", "Not applicable", "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(11),
         "Adjourned hearing fee",

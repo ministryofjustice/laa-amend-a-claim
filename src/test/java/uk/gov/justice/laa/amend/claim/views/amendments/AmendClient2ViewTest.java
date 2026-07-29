@@ -122,11 +122,12 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
 
   private AmendmentForms createClient2Forms(MediationClaimDetails claim) {
     var view = ClaimClientViewFactory.create(claim);
-    return new AmendmentForms(
-        new AmendmentForm(),
-        new AmendmentForm(view.client2Rows()),
-        new AmendmentForm(),
-        new AmendmentForm());
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm())
+        .client2(new AmendmentForm(view.client2Rows()))
+        .caseType(new AmendmentForm())
+        .caseDetails(new AmendmentForm())
+        .build();
   }
 
   private void assertCommonPageContent(Document doc) {
