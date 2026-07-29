@@ -208,8 +208,8 @@ class StartControllerTest extends BaseControllerTest {
     caseDetailsRows.put("CASE_CONCLUDED_DATE-day", "1");
     caseDetailsRows.put("CASE_CONCLUDED_DATE-month", "1");
     caseDetailsRows.put("CASE_CONCLUDED_DATE-year", "2001");
-    caseDetailsRows.put("MEDIATION_SESSIONS_COUNT", "TODO");
-    caseDetailsRows.put("MEDIATION_TIME_MINUTES", "TODO");
+    caseDetailsRows.put("MEDIATION_SESSIONS_COUNT", "3");
+    caseDetailsRows.put("MEDIATION_TIME_MINUTES", "45");
     caseDetailsRows.put("OUTCOME", claim.getOutcome());
     caseDetailsRows.put("OUTREACH_LOCATION", claim.getOutreachLocation());
     caseDetailsRows.put("REFERRAL_SOURCE", claim.getReferralSource());
