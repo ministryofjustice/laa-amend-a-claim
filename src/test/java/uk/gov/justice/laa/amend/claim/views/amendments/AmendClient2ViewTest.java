@@ -26,8 +26,8 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
   private static final String CLIENT_2_UCN = "ucn2";
   private static final String CLIENT_2_POSTCODE = "postcode2";
   private static final String CLIENT_2_GENDER = "gender2";
-  private static final String CLIENT_2_ETHNICITY = "ethnicity2";
-  private static final String CLIENT_2_DISABILITY = "disability2";
+  private static final String CLIENT_2_ETHNICITY = "01";
+  private static final String CLIENT_2_DISABILITY = "MOB";
 
   AmendClient2ViewTest() {
     this.mapping = amendClientTwoUrl;
@@ -70,10 +70,18 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
         client2Details.get(5), "Postcode", CLIENT_2_POSTCODE, CLIENT_2_POSTCODE);
     assertSummaryListRowContainsValues(
         client2Details.get(6), "Gender", CLIENT_2_GENDER, CLIENT_2_GENDER);
-    assertSummaryListRowContainsValues(
-        client2Details.get(7), "Ethnicity", CLIENT_2_ETHNICITY, CLIENT_2_ETHNICITY);
-    assertSummaryListRowContainsValues(
-        client2Details.get(8), "Disability", CLIENT_2_DISABILITY, CLIENT_2_DISABILITY);
+    assertEnumTypeaheadRowWithRawCurrent(
+        client2Details.get(7),
+        "Ethnicity",
+        CLIENT_2_ETHNICITY,
+        "CLIENT_2_ETHNICITY",
+        CLIENT_2_ETHNICITY);
+    assertEnumTypeaheadRowWithRawCurrent(
+        client2Details.get(8),
+        "Disability",
+        CLIENT_2_DISABILITY,
+        "CLIENT_2_DISABILITY",
+        CLIENT_2_DISABILITY);
     assertBooleanSelectRow(
         client2Details.get(9), "Legally aided", "No", "IS_CLIENT_2_LEGALLY_AIDED", false);
     assertBooleanSelectRow(
@@ -107,6 +115,21 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
     Element selectedMonth = selectFirst(monthSelect, "option[selected]");
     Assertions.assertEquals("January", selectedMonth.text(), "Selected month name");
     Assertions.assertEquals("1", selectedMonth.attr("value"), "Selected month value");
+  }
+
+  private void assertEnumTypeaheadRowWithRawCurrent(
+      List<Element> row, String label, String currentValue, String inputId, String expectedValue) {
+    assertCellContainsText(row.getFirst(), label);
+    assertCellContainsText(row.get(1), currentValue);
+
+    Element select = selectFirst(row.get(2), "select.govuk-select");
+    Assertions.assertEquals(inputId, select.attr("id"), "Enum select id");
+    Assertions.assertEquals("make-autocomplete", select.attr("data-module"));
+    Element selectLabel = selectFirst(row.get(2), "label[for=%s]".formatted(inputId));
+    Assertions.assertEquals(label, selectLabel.text());
+
+    Element selectedOption = selectFirst(select, "option[selected]");
+    Assertions.assertEquals(expectedValue, selectedOption.attr("value"));
   }
 
   private AmendmentForms createClient2Forms(MediationClaimDetails claim) {
