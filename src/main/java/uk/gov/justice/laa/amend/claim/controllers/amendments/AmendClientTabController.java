@@ -14,28 +14,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
-import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
 @RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
-public class AmendmentsCaseTabController {
+public class AmendClientTabController {
 
-  @GetMapping("/case")
-  public String viewCase(
+  @GetMapping("/client")
+  public String viewClient(
       HttpSession session,
       Model model,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
+    var clientView = ClaimClientViewFactory.create(claim);
     var amendmentForms = getAmendmentForms(session, claimId);
 
-    var claimView = ClaimCaseViewFactory.create(claim);
-    model.addAttribute("claim", claimView);
+    model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
+    model.addAttribute("clientView", clientView);
+    model.addAttribute("client1Form", amendmentForms.getClient1Form().getCurrent());
+    if (AreaOfLaw.MEDIATION.equals(claim.getAreaOfLaw())) {
+      model.addAttribute("client2Form", amendmentForms.getClient2Form().getCurrent());
+    }
     model.addAttribute("forms", amendmentForms);
 
-    return "amendments/view-case";
+    return "amendments/view-client";
   }
 }
