@@ -8,10 +8,14 @@ public final class FieldOptions {
   public static final List<FieldOption> ADVICE_TYPE = from(AdviceType.values());
   public static final List<FieldOption> AIT_HEARING_CENTRE = from(AitHearingCentre.values());
   public static final List<FieldOption> CASE_STAGE = from(CaseStage.values());
+  public static final List<FieldOption> CLIENT_TYPE = from(ClientTypeCode.values());
   public static final List<FieldOption> DESIGNATED_ACCREDITED_REPRESENTATIVE =
       from(DesignatedAccreditedRepresentative.values());
+  public static final List<FieldOption> DISABILITY_CODE = from(DisabilityCode.values());
+  public static final List<FieldOption> ETHNICITY_CODE = from(EthnicityCode.values());
   public static final List<FieldOption> EXEMPTION_CRITERIA_SATISFIED =
       from(ExemptionCriteriaSatisfied.values());
+  public static final List<FieldOption> GENDER = from(GenderCode.values());
   public static final List<FieldOption> MEETINGS_ATTENDED = from(MeetingsAttended.values());
   public static final List<FieldOption> OUTCOME = from(OutcomeCode.values());
   public static final List<FieldOption> REFERRAL_SOURCE = from(ReferralSource.values());
