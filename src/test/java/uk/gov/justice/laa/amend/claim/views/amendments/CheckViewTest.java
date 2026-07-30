@@ -220,8 +220,7 @@ class CheckViewTest extends AmendmentsBaseTest {
     var caseDetails = getSummaryListInCard(doc, "Case details");
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");
     assertEquals(2, caseDetails.size());
-    assertSummaryListRowContainsValues(
-        caseDetails.get(1), "Stage reached", "INVA", "changedStage");
+    assertSummaryListRowContainsValues(caseDetails.get(1), "Stage reached", "INVA", "changedStage");
   }
 
   private void setupClaim(ClaimDetails claim) {
