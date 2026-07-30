@@ -27,8 +27,8 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 
-@WebMvcTest(CaseTypeController.class)
-class CaseTypeControllerTest extends BaseControllerTest {
+@WebMvcTest(AmendCaseTypeController.class)
+class AmendCaseTypeControllerTest extends BaseControllerTest {
 
   private static final String INPUTS = "inputs[%s]";
 

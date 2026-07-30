@@ -24,8 +24,8 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
-@WebMvcTest(controllers = CheckController.class)
-class CheckControllerTest extends BaseControllerTest {
+@WebMvcTest(controllers = AmendmentsCheckController.class)
+class AmendmentsCheckControllerTest extends BaseControllerTest {
 
   private UUID submissionId;
   private UUID claimId;

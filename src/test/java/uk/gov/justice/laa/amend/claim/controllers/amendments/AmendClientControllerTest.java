@@ -23,8 +23,8 @@ import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
-@WebMvcTest(controllers = ClientController.class)
-class ClientControllerTest extends BaseControllerTest {
+@WebMvcTest(controllers = AmendClientController.class)
+class AmendClientControllerTest extends BaseControllerTest {
 
   private static final String INPUTS = "inputs[%s]";
 

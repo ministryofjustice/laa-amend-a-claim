@@ -6,7 +6,7 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import uk.gov.justice.laa.amend.claim.controllers.amendments.CheckController;
+import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendmentsCheckController;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -14,7 +14,7 @@ import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
-@WebMvcTest(CheckController.class)
+@WebMvcTest(AmendmentsCheckController.class)
 class CheckViewTest extends AmendmentsBaseTest {
 
   private static final String FORENAME = "forename";

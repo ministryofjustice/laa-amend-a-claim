@@ -26,7 +26,7 @@ import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 @RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
-public class CaseTypeController {
+public class AmendCaseTypeController {
 
   private final AvailableFeeCodesService availableFeeCodesService;
 

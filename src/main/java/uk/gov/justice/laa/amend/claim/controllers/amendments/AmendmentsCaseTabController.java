@@ -21,7 +21,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 @RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
-public class CaseController {
+public class AmendmentsCaseTabController {
 
   @GetMapping("/case")
   public String viewCase(
