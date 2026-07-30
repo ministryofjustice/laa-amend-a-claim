@@ -30,8 +30,11 @@ class CheckViewTest extends AmendmentsBaseTest {
   private static final String CLIENT_2_ETHNICITY = "ethnicity2";
   private static final String CLIENT_2_DISABILITY = "disability2";
 
-  private static final String MATTER_TYPE_1 = "IMLB";
-  private static final String MATTER_TYPE_2 = "AHQS";
+  private static final String MATTER_TYPE1 = "matterType1";
+  private static final String MATTER_TYPE2 = "matterType2";
+  private static final String SCHEDULE_REFERENCE = "schedulereference";
+  private static final String FEE_CODE = "feecode";
+  private static final String STAGE_REACHED = "INVA";
 
   CheckViewTest() {
     this.mapping = checkUrl;
@@ -140,10 +143,10 @@ class CheckViewTest extends AmendmentsBaseTest {
     setupClaim(claim);
     claim.setClientForename(FORENAME);
     claim.setClientSurname(SURNAME);
-    claim.setMatterType1(MATTER_TYPE_1);
-    claim.setMatterType2(MATTER_TYPE_2);
-    claim.setScheduleReference("SCHED001");
-    claim.setFeeCode("FEE123");
+    claim.setMatterType1(MATTER_TYPE1);
+    claim.setMatterType2(MATTER_TYPE2);
+    claim.setScheduleReference(SCHEDULE_REFERENCE);
+    claim.setFeeCode(FEE_CODE);
 
     var forms = createCrimeForms(claim);
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
@@ -169,15 +172,15 @@ class CheckViewTest extends AmendmentsBaseTest {
     var caseType = getSummaryListInCard(doc, "Case type");
     assertSummaryListRowContainsValues(caseType.getFirst(), "Item", "Current", "Amended");
     assertEquals(4, caseType.size());
-    assertSummaryListRowContainsValues(caseType.get(1), "Fee code", "FEE123", "changedFeeCode");
-    assertSummaryListRowContainsValues(caseType.get(2), "Matter type 1", MATTER_TYPE_1, "changed1");
-    assertSummaryListRowContainsValues(caseType.get(3), "Matter type 2", MATTER_TYPE_2, "changed2");
+    assertSummaryListRowContainsValues(caseType.get(1), "Fee code", "feecode", "changedFeeCode");
+    assertSummaryListRowContainsValues(caseType.get(2), "Matter type 1", "matterType1", "changed1");
+    assertSummaryListRowContainsValues(caseType.get(3), "Matter type 2", "matterType2", "changed2");
 
     var caseDetails = getSummaryListInCard(doc, "Case details");
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");
     assertEquals(2, caseDetails.size());
     assertSummaryListRowContainsValues(
-        caseDetails.get(1), "Schedule reference", "SCHED001", "changedRef");
+        caseDetails.get(1), "Schedule reference", "schedulereference", "changedRef");
   }
 
   @Test
@@ -186,8 +189,8 @@ class CheckViewTest extends AmendmentsBaseTest {
     setupClaim(claim);
     claim.setClientForename(FORENAME);
     claim.setClientSurname(SURNAME);
-    claim.setFeeCode("FEE123");
-    claim.setStageReached("Trial");
+    claim.setFeeCode(FEE_CODE);
+    claim.setStageReached(STAGE_REACHED);
 
     var forms = createCrimeForms(claim);
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
@@ -212,13 +215,13 @@ class CheckViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(caseTypeDetails.getFirst(), "Item", "Current", "Amended");
     assertEquals(2, caseTypeDetails.size());
     assertSummaryListRowContainsValues(
-        caseTypeDetails.get(1), "Fee code", "FEE123", "changedFeeCode");
+        caseTypeDetails.get(1), "Fee code", "feecode", "changedFeeCode");
 
     var caseDetails = getSummaryListInCard(doc, "Case details");
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");
     assertEquals(2, caseDetails.size());
     assertSummaryListRowContainsValues(
-        caseDetails.get(1), "Stage reached", "Trial", "changedStage");
+        caseDetails.get(1), "Stage reached", "INVA", "changedStage");
   }
 
   private void setupClaim(ClaimDetails claim) {
