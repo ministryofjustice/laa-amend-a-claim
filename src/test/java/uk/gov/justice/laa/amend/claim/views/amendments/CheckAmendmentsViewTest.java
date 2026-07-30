@@ -6,7 +6,7 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import uk.gov.justice.laa.amend.claim.controllers.amendments.CheckController;
+import uk.gov.justice.laa.amend.claim.controllers.amendments.CheckAmendmentsController;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -14,8 +14,8 @@ import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
-@WebMvcTest(CheckController.class)
-class CheckViewTest extends AmendmentsBaseTest {
+@WebMvcTest(CheckAmendmentsController.class)
+class CheckAmendmentsViewTest extends AmendmentsBaseTest {
 
   private static final String FORENAME = "forename";
   private static final String SURNAME = "surname";
@@ -29,7 +29,7 @@ class CheckViewTest extends AmendmentsBaseTest {
   private static final String CLIENT_2_ETHNICITY = "ethnicity2";
   private static final String CLIENT_2_DISABILITY = "disability2";
 
-  CheckViewTest() {
+  CheckAmendmentsViewTest() {
     this.mapping = checkUrl;
   }
 

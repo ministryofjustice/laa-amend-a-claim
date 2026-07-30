@@ -22,8 +22,8 @@ import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
-@WebMvcTest(controllers = StartController.class)
-class StartControllerTest extends BaseControllerTest {
+@WebMvcTest(controllers = StartAmendmentsController.class)
+class StartAmendmentsControllerTest extends BaseControllerTest {
 
   private UUID submissionId;
   private UUID claimId;

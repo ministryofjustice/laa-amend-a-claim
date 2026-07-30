@@ -9,15 +9,15 @@ import org.jsoup.nodes.Document;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import uk.gov.justice.laa.amend.claim.controllers.amendments.CaseController;
+import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendCaseTabController;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
-@WebMvcTest(CaseController.class)
-class ViewCaseViewTest extends AmendmentsBaseTest {
+@WebMvcTest(AmendCaseTabController.class)
+class AmendCaseTabViewTest extends AmendmentsBaseTest {
 
   private static final String FEE_CODE = "feecode";
   private static final String MATTER_TYPE_CODE = "matter";
@@ -86,7 +86,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
   private static final String AMENDED_REFERRAL_SOURCE_LABEL = "09 - Other";
   public static final String YES = "Yes";
 
-  ViewCaseViewTest() {
+  AmendCaseTabViewTest() {
     this.mapping = caseUrl;
   }
 

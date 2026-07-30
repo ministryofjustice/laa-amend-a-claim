@@ -24,7 +24,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFact
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
 @Controller
-public class CheckController {
+public class CheckAmendmentsController {
 
   @GetMapping
   public String check(
