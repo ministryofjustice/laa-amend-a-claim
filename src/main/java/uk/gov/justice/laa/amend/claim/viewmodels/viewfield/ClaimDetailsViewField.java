@@ -11,7 +11,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   INITIAL(new Accessor<>(ClaimDetails::getClientForename)),
   FORENAME(new Accessor<>(ClaimDetails::getClientForename)),
   SURNAME(new Accessor<>(ClaimDetails::getClientSurname)),
-  GENDER(new Accessor<>(ClaimDetails::getClientGender)),
+  GENDER(new Accessor<>(ClaimDetails::getClientGender), FieldOptions.GENDER),
   ETHNICITY(new Accessor<>(ClaimDetails::getClientEthnicity), FieldOptions.ETHNICITY_CODE),
   DISABILITY(new Accessor<>(ClaimDetails::getClientDisability), FieldOptions.DISABILITY_CODE);
 

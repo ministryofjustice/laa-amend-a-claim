@@ -11,7 +11,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   DATE_OF_BIRTH(new Accessor<>(CivilClaimDetails::getClientDateOfBirth), FieldType.DATE),
   POSTCODE(new Accessor<>(CivilClaimDetails::getClientPostcode)),
   IS_ELIGIBLE_CLIENT(new Accessor<>(CivilClaimDetails::getIsEligibleClient), FieldType.BOOLEAN),
-  CLIENT_TYPE(new Accessor<>(CivilClaimDetails::getClientType)),
+  CLIENT_TYPE(new Accessor<>(CivilClaimDetails::getClientType), FieldOptions.CLIENT_TYPE),
   UNIQUE_CLIENT_NUMBER(new Accessor<>(CivilClaimDetails::getUniqueClientNumber)),
   HOME_OFFICE_CLIENT_NUMBER(new Accessor<>(CivilClaimDetails::getHomeOfficeClientNumber)),
   IS_POSTAL_APPLICATION_ACCEPTED(
