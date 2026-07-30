@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/check")
@@ -42,6 +43,7 @@ public class CheckController {
     }
 
     var clientView = ClaimClientViewFactory.create(claim);
+    var caseView = ClaimCaseViewFactory.create(claim);
 
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("client1Form", amendmentForms.getClient1Form().getCurrent());
@@ -50,7 +52,10 @@ public class CheckController {
         amendmentForms.getClient2Form() != null
             ? amendmentForms.getClient2Form().getCurrent()
             : null);
+    model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
+    model.addAttribute("caseDetailsForm", amendmentForms.getCaseDetailsForm().getCurrent());
     model.addAttribute("clientView", clientView);
+    model.addAttribute("claim", caseView);
     model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
 
     return "amendments/check-your-answers";

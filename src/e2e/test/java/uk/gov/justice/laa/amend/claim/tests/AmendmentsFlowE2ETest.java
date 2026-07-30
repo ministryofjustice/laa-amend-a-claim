@@ -125,7 +125,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             → View Client → Change Client Details → View Client
             → View Case → Change case type → Change Fee code → Change Matter Type → View Case Type
             → View Case → Change case details → View Case
-            → Check Page → Change Client details → View Client
+            → Check Page
           """)
   void fullLegalHelpAmendmentFlow() {
     var search = new SearchPage(page);
@@ -184,9 +184,9 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
-    checkPage.clickChangeClientOneLink();
-
-    viewAmendClient = new ViewClientPage(page);
+      assertSummaryListRow(page, "Case type", "Fee code", "IMCA", "IAXC");
+      assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "NEW_MONE");
+      assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL", "NEW_MTWO");
   }
 
   @Test
@@ -196,7 +196,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             → View Client → Change Client Details → View Client
             → View Case → Change case type → Change Fee code → Change Matter Type → View Case Type
             → View Case → Change case details → View Case
-            → Check Page → Change Client 2 details → View Client → Check Page
+            → Check Page
           """)
   void fullMediationAmendmentFlow() {
     var search = new SearchPage(page);
@@ -261,21 +261,8 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
     assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
-    checkPage.clickChangeClientTwoLink();
-
-    viewAmendClient = new ViewClientPage(page);
-    amendClient2 = new AmendClient2Page(page);
-    amendClient2.fillInput("CLIENT_2_FORENAME", "changedTwoForename");
-    amendClient2.clickContinueButton();
-    viewAmendClient = new ViewClientPage(page);
-    assertSummaryListRow(
-        page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
-    viewAmendCase.clickContinue();
-
-    checkPage = new CheckPage(page);
-    assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
-    assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
-    assertSummaryListRow(
-        page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
+    assertSummaryListRow(page, "Case details", "Claim ID", "Not applicable", "changed");
+    assertSummaryListRow(page, "Case type", "Fee code", "MDAS2S", "MDPS1B");
+    assertSummaryListRow(page, "Case type", "Matter type", "IMCB", "NEW_MONE");
   }
 }

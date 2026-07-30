@@ -22,6 +22,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @WebMvcTest(controllers = CheckController.class)
@@ -48,7 +49,7 @@ class CheckControllerTest extends BaseControllerTest {
         .perform(get(buildCheckPath()).session(session))
         .andExpect(status().isOk())
         .andExpect(view().name("amendments/check-your-answers"))
-        .andExpect(model().attributeExists("forms", "client1Form", "clientView"));
+        .andExpect(model().attributeExists("forms", "client1Form", "clientView", "caseTypeForm", "caseDetailsForm", "claim"));
   }
 
   @Test
@@ -61,7 +62,7 @@ class CheckControllerTest extends BaseControllerTest {
         .perform(get(buildCheckPath()).session(session))
         .andExpect(status().isOk())
         .andExpect(view().name("amendments/check-your-answers"))
-        .andExpect(model().attributeExists("forms", "client1Form", "client2Form", "clientView"));
+        .andExpect(model().attributeExists("forms", "client1Form", "client2Form", "clientView", "caseTypeForm", "caseDetailsForm", "claim"));
   }
 
   @Test
@@ -99,27 +100,38 @@ class CheckControllerTest extends BaseControllerTest {
   }
 
   private AmendmentForms createCrimeForms() {
+    var clientView = ClaimClientViewFactory.create(claim);
+    var caseView = ClaimCaseViewFactory.create(claim);
     var client1Form = new AmendmentForm();
     client1Form.setInputs(Map.of("SURNAME", "changedSurname"));
 
     var amendmentForms =
-        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        new AmendmentForms(
+            new AmendmentForm(clientView.client1Rows()),
+            new AmendmentForm(caseView.caseTypeRows()),
+            new AmendmentForm(caseView.caseDetailsRows()));
     amendmentForms.getClient1Form().setCurrent(client1Form);
     return amendmentForms;
   }
 
   private AmendmentForms createEmptyForms() {
-    return new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    var clientView = ClaimClientViewFactory.create(claim);
+    var caseView = ClaimCaseViewFactory.create(claim);
+    return new AmendmentForms(
+        new AmendmentForm(clientView.client1Rows()),
+        new AmendmentForm(caseView.caseTypeRows()),
+        new AmendmentForm(caseView.caseDetailsRows()));
   }
 
   private AmendmentForms createMediationForms() {
     var clientView = ClaimClientViewFactory.create(claim);
+    var caseView = ClaimCaseViewFactory.create(claim);
     var forms =
         new AmendmentForms(
             new AmendmentForm(clientView.client1Rows()),
             new AmendmentForm(clientView.client2Rows()),
-            new AmendmentForm(),
-            new AmendmentForm());
+            new AmendmentForm(caseView.caseTypeRows()),
+            new AmendmentForm(caseView.caseDetailsRows()));
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
     forms
         .getClient2Form()

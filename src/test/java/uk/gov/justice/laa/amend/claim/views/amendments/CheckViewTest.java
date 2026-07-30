@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.views.amendments;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
 import org.jsoup.nodes.Document;
@@ -12,6 +13,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @WebMvcTest(CheckController.class)
@@ -29,6 +31,9 @@ class CheckViewTest extends AmendmentsBaseTest {
   private static final String CLIENT_2_ETHNICITY = "ethnicity2";
   private static final String CLIENT_2_DISABILITY = "disability2";
 
+  private static final String MATTER_TYPE_1 = "IMLB";
+  private static final String MATTER_TYPE_2 = "AHQS";
+
   CheckViewTest() {
     this.mapping = checkUrl;
   }
@@ -36,16 +41,14 @@ class CheckViewTest extends AmendmentsBaseTest {
   @Test
   void testShowsOnlyAmendedClientFields() {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
-    this.claim = claim;
-    claim.setSubmissionId(submissionId);
-    claim.setClaimId(claimId);
+    setupClaim(claim);
     claim.setClientForename(FORENAME);
     claim.setClientSurname(SURNAME);
     claim.setClientGender(GENDER);
     claim.setClientEthnicity(ETHNICITY);
     claim.setClientDisability(DISABILITY);
 
-    var forms = createClientForms(claim);
+    var forms = createCrimeForms(claim);
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
@@ -62,16 +65,14 @@ class CheckViewTest extends AmendmentsBaseTest {
   @Test
   void testShowsMultipleAmendedClientFields() {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
-    this.claim = claim;
-    claim.setSubmissionId(submissionId);
-    claim.setClaimId(claimId);
+    setupClaim(claim);
     claim.setClientForename(FORENAME);
     claim.setClientSurname(SURNAME);
     claim.setClientGender(GENDER);
     claim.setClientEthnicity(ETHNICITY);
     claim.setClientDisability(DISABILITY);
 
-    var forms = createClientForms(claim);
+    var forms = createCrimeForms(claim);
     forms.getClient1Form().getCurrent().getInputs().put("INITIAL", "changedForename");
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
     forms.getClient1Form().getCurrent().getInputs().put("GENDER", "changedGender");
@@ -93,9 +94,7 @@ class CheckViewTest extends AmendmentsBaseTest {
   @Test
   void testShowsMediationClientDetails() {
     var claim = MockClaimsFunctions.createMockMediationClaim();
-    this.claim = claim;
-    claim.setSubmissionId(submissionId);
-    claim.setClaimId(claimId);
+    setupClaim(claim);
     claim.setClientForename(FORENAME);
     claim.setClientSurname(SURNAME);
     claim.setClientGender(GENDER);
@@ -108,7 +107,7 @@ class CheckViewTest extends AmendmentsBaseTest {
     claim.setClient2Ethnicity(CLIENT_2_ETHNICITY);
     claim.setClient2Disability(CLIENT_2_DISABILITY);
 
-    var forms = createMediationClientForms(claim);
+    var forms = createMediationForms(claim);
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
     forms
         .getClient2Form()
@@ -136,19 +135,93 @@ class CheckViewTest extends AmendmentsBaseTest {
     assertPageHasLink(doc, "change-client2", "Change", amendClientTwoUrl);
   }
 
-  private AmendmentForms createClientForms(ClaimDetails claim) {
-    var view = ClaimClientViewFactory.create(claim);
-    return new AmendmentForms(
-        new AmendmentForm(view.client1Rows()), new AmendmentForm(), new AmendmentForm());
+  @Test
+  void testShowsCivilClientAndCaseAmendments() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    setupClaim(claim);
+    claim.setClientForename(FORENAME);
+    claim.setClientSurname(SURNAME);
+    claim.setMatterType1(MATTER_TYPE_1);
+    claim.setMatterType2(MATTER_TYPE_2);
+    claim.setScheduleReference("SCHED001");
+    claim.setFeeCode("FEE123");
+
+    var forms = createCrimeForms(claim);
+    forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
+    forms.getCaseTypeForm().getCurrent().getInputs().put("FEE_CODE", "changedFeeCode");
+    forms.getCaseDetailsForm().getCurrent().getInputs().put("SCHEDULE_REFERENCE", "SCHED002");
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    var clientDetails = getSummaryListInCard(doc, "Client details");
+    assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Current", "Amended");
+    assertEquals(2, clientDetails.size());
+
+    var caseType = getSummaryListInCard(doc, "Case type");
+    assertSummaryListRowContainsValues(caseType.getFirst(), "Item", "Current", "Amended");
+
+    var caseDetails = getSummaryListInCard(doc, "Case details");
+    assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");
   }
 
-  private AmendmentForms createMediationClientForms(MediationClaimDetails claim) {
+  @Test
+  void testShowsCrimeClientAndCaseAmendments() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    setupClaim(claim);
+    claim.setClientForename(FORENAME);
+    claim.setClientSurname(SURNAME);
+    claim.setFeeCode("FEE123");
+    claim.setStageReached("Trial");
+
+    var forms = createCrimeForms(claim);
+    forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
+    forms.getClient1Form().getCurrent().getInputs().put("INITIAL", "changedForename");
+    forms.getCaseTypeForm().getCurrent().getInputs().put("FEE_CODE", "changedFeeCode");
+
+    forms.getCaseDetailsForm().getCurrent().getInputs().put("STAGE_REACHED", "Sentencing");
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    var clientDetails = getSummaryListInCard(doc, "Client details");
+    assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Current", "Amended");
+    assertEquals(3, clientDetails.size());
+
+    var caseTypeDetails = getSummaryListInCard(doc, "Case type");
+    assertSummaryListRowContainsValues(caseTypeDetails.getFirst(), "Item", "Current", "Amended");
+    assertEquals(2, caseTypeDetails.size());
+
+    var caseDetails = getSummaryListInCard(doc, "Case details");
+    assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");
+    assertEquals(2, caseDetails.size());
+  }
+
+  private void setupClaim(ClaimDetails claim) {
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+  }
+
+  private AmendmentForms createCrimeForms(ClaimDetails claim) {
     var view = ClaimClientViewFactory.create(claim);
+    var caseView = ClaimCaseViewFactory.create(claim);
+    return new AmendmentForms(
+        new AmendmentForm(view.client1Rows()),
+        new AmendmentForm(caseView.caseTypeRows()),
+        new AmendmentForm(caseView.caseDetailsRows()));
+  }
+
+  private AmendmentForms createMediationForms(MediationClaimDetails claim) {
+    var view = ClaimClientViewFactory.create(claim);
+    var caseView = ClaimCaseViewFactory.create(claim);
     return new AmendmentForms(
         new AmendmentForm(view.client1Rows()),
         new AmendmentForm(view.client2Rows()),
-        new AmendmentForm(),
-        new AmendmentForm());
+        new AmendmentForm(caseView.caseTypeRows()),
+        new AmendmentForm(caseView.caseDetailsRows()));
   }
 
   private void assertCommonPageContent(Document doc) {
