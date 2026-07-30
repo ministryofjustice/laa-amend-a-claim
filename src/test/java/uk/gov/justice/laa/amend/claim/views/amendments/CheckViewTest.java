@@ -127,7 +127,7 @@ class CheckViewTest extends AmendmentsBaseTest {
     assertEquals(2, client2Details.size());
 
     assertPageHasLink(doc, "change-client1", "Change", amendClientUrl);
-    assertPageHasLink(doc, "change-client2", "Change", amendClientUrl);
+    assertPageHasLink(doc, "change-client2", "Change", amendClientTwoUrl);
   }
 
   private AmendmentForms createClientForms(ClaimDetails claim) {
