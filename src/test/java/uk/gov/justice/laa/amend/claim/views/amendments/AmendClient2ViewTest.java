@@ -25,7 +25,8 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
   private static final String CLIENT_2_DATE_OF_BIRTH_RENDERED = "01 January 1971";
   private static final String CLIENT_2_UCN = "ucn2";
   private static final String CLIENT_2_POSTCODE = "postcode2";
-  private static final String CLIENT_2_GENDER = "gender2";
+  private static final String CLIENT_2_GENDER_LABEL = "Female";
+  private static final String CLIENT_2_GENDER = "F";
   private static final String CLIENT_2_ETHNICITY_LABEL = "01 - White Irish";
   private static final String CLIENT_2_ETHNICITY = "01";
   private static final String CLIENT_2_DISABILITY_LABEL = "MOB - Mobility";
@@ -70,8 +71,12 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
         client2Details.get(4), "Unique client number (UCN)", CLIENT_2_UCN, CLIENT_2_UCN);
     assertSummaryListRowContainsValues(
         client2Details.get(5), "Postcode", CLIENT_2_POSTCODE, CLIENT_2_POSTCODE);
-    assertSummaryListRowContainsValues(
-        client2Details.get(6), "Gender", CLIENT_2_GENDER, CLIENT_2_GENDER);
+    assertEnumTypeaheadRow(
+        client2Details.get(6),
+        "Gender",
+        CLIENT_2_GENDER_LABEL,
+        "CLIENT_2_GENDER",
+        CLIENT_2_GENDER);
     assertEnumTypeaheadRow(
         client2Details.get(7),
         "Ethnicity",

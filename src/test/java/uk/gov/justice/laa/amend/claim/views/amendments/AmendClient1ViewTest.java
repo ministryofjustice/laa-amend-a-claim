@@ -25,13 +25,15 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
   private static final String DATE_OF_BIRTH_RENDERED = "01 January 1970";
   private static final String UCN = "ucn";
   private static final String POSTCODE = "postcode";
-  private static final String GENDER = "gender";
+  private static final String GENDER_LABEL = "Male";
+  private static final String GENDER = "M";
   private static final String ETHNICITY_LABEL = "00 - White British";
   private static final String ETHNICITY = "00";
-  private static final String DISABILITY_LABEL = "NCD - No Condition Declared";
+  private static final String DISABILITY_LABEL = "NCD - No condition declared";
   private static final String DISABILITY = "NCD";
   private static final String HOME_OFFICE_CLIENT_NUMBER = "homeOfficeClientNumber";
-  private static final String CLIENT_TYPE = "clientType";
+  private static final String CLIENT_TYPE_LABEL = "Parent";
+  private static final String CLIENT_TYPE = "P";
 
   private static final String CLIENT_2_FORENAME = "forename2";
   private static final String CLIENT_2_SURNAME = "surname2";
@@ -68,7 +70,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.getFirst(), "Item", "Current", "Amended");
     assertSummaryListRowContainsValues(clientDetails.get(1), "Initial", FORENAME, FORENAME);
     assertSummaryListRowContainsValues(clientDetails.get(2), "Last name", SURNAME, SURNAME);
-    assertSummaryListRowContainsValues(clientDetails.get(3), "Gender", GENDER, GENDER);
+    assertEnumTypeaheadRow(clientDetails.get(3), "Gender", GENDER_LABEL, "GENDER", GENDER);
     assertEnumTypeaheadRow(
         clientDetails.get(4), "Ethnicity", ETHNICITY_LABEL, "ETHNICITY", ETHNICITY);
     assertEnumTypeaheadRow(
@@ -118,7 +120,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         client1Details.get(4), "Unique client number (UCN)", UCN, UCN);
     assertSummaryListRowContainsValues(client1Details.get(5), "Postcode", POSTCODE, POSTCODE);
-    assertSummaryListRowContainsValues(client1Details.get(6), "Gender", GENDER, GENDER);
+    assertEnumTypeaheadRow(client1Details.get(6), "Gender", GENDER_LABEL, "GENDER", GENDER);
     assertEnumTypeaheadRow(
         client1Details.get(7), "Ethnicity", ETHNICITY_LABEL, "ETHNICITY", ETHNICITY);
     assertEnumTypeaheadRow(
@@ -163,7 +165,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(1), "First name", FORENAME, FORENAME);
     assertSummaryListRowContainsValues(clientDetails.get(2), "Last name", SURNAME, SURNAME);
     assertDateOfBirthRow(clientDetails.get(3));
-    assertSummaryListRowContainsValues(clientDetails.get(4), "Gender", GENDER, GENDER);
+    assertEnumTypeaheadRow(clientDetails.get(4), "Gender", GENDER_LABEL, "GENDER", GENDER);
     assertEnumTypeaheadRow(
         clientDetails.get(5), "Ethnicity", ETHNICITY_LABEL, "ETHNICITY", ETHNICITY);
     assertEnumTypeaheadRow(
@@ -171,8 +173,8 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(7), "Postcode", POSTCODE, POSTCODE);
     assertBooleanSelectRow(
         clientDetails.get(8), "Eligible client", "Yes", "IS_ELIGIBLE_CLIENT", true);
-    assertSummaryListRowContainsValues(
-        clientDetails.get(9), "Client type", CLIENT_TYPE, CLIENT_TYPE);
+    assertEnumTypeaheadRow(
+        clientDetails.get(9), "Client type", CLIENT_TYPE_LABEL, "CLIENT_TYPE", CLIENT_TYPE);
     assertSummaryListRowContainsValues(
         clientDetails.get(10), "Unique client number (UCN)", UCN, UCN);
     assertSummaryListRowContainsValues(
