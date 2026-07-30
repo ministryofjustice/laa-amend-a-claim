@@ -23,6 +23,7 @@ import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient1Page;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient2Page;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendFeeCodePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendMatterTypePage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.CheckPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCasePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewClientPage;
 
@@ -124,6 +125,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             → View Client → Change Client Details → View Client
             → View Case → Change case type → Change Fee code → Change Matter Type → View Case Type
             → View Case → Change case details → View Case
+            → Check Page → Change Client details → View Client
           """)
   void fullLegalHelpAmendmentFlow() {
     var search = new SearchPage(page);
@@ -177,6 +179,14 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(page, "Case details", "Stage reached", "Not applicable", STAGE_REACHED);
+
+    viewAmendCase.clickContinue();
+
+    var checkPage = new CheckPage(page);
+    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+    checkPage.clickChangeClientOneLink();
+
+    viewAmendClient = new ViewClientPage(page);
   }
 
   @Test
@@ -186,6 +196,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             → View Client → Change Client Details → View Client
             → View Case → Change case type → Change Fee code → Change Matter Type → View Case Type
             → View Case → Change case details → View Case
+            → Check Page → Change Client 2 details → View Client → Check Page
           """)
   void fullMediationAmendmentFlow() {
     var search = new SearchPage(page);
@@ -216,7 +227,6 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
-
     viewAmendClient.clickCaseTab();
 
     // View Case → Change case type → View Case
@@ -245,5 +255,27 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(page, "Case details", "Claim ID", "Not applicable", "changed");
+
+    viewAmendCase.clickContinue();
+
+    var checkPage = new CheckPage(page);
+    assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
+    assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
+    checkPage.clickChangeClientTwoLink();
+
+    viewAmendClient = new ViewClientPage(page);
+    amendClient2 = new AmendClient2Page(page);
+    amendClient2.fillInput("CLIENT_2_FORENAME", "changedTwoForename");
+    amendClient2.clickContinueButton();
+    viewAmendClient = new ViewClientPage(page);
+    assertSummaryListRow(
+        page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
+    viewAmendCase.clickContinue();
+
+    checkPage = new CheckPage(page);
+    assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
+    assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
+    assertSummaryListRow(
+        page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
   }
 }

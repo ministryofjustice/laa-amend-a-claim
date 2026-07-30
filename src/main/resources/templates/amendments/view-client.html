@@ -18,9 +18,7 @@
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title"
-              th:text="${#strings.toString(areaOfLaw) == 'MEDIATION'}
-                                    ? #{claimClient.client1Details}
-                                    : #{claimClient.clientDetails}">
+              th:text="#{${@ThymeleafUtils.client1DetailsMessageKey(areaOfLaw)}}">
           </h2>
           <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action">
@@ -54,7 +52,7 @@
       </div>
 
       <div class="govuk-summary-card"
-           th:if="${#strings.toString(areaOfLaw) == 'MEDIATION'}">
+           th:if="${@ThymeleafUtils.supportsClient2(areaOfLaw)}">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title"
               th:text="#{claimClient.client2Details}">
