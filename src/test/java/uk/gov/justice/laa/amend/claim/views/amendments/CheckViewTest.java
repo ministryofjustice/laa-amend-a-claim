@@ -23,6 +23,12 @@ class CheckViewTest extends AmendmentsBaseTest {
   private static final String ETHNICITY = "ethnicity";
   private static final String DISABILITY = "disability";
 
+  private static final String CLIENT_2_FORENAME = "forename2";
+  private static final String CLIENT_2_SURNAME = "surname2";
+  private static final String CLIENT_2_GENDER = "gender2";
+  private static final String CLIENT_2_ETHNICITY = "ethnicity2";
+  private static final String CLIENT_2_DISABILITY = "disability2";
+
   CheckViewTest() {
     this.mapping = checkUrl;
   }
@@ -96,11 +102,11 @@ class CheckViewTest extends AmendmentsBaseTest {
     claim.setClientEthnicity(ETHNICITY);
     claim.setClientDisability(DISABILITY);
 
-    claim.setClient2Forename("client2Forename");
-    claim.setClient2Surname("client2Surname");
-    claim.setClient2Gender("client2Gender");
-    claim.setClient2Ethnicity("client2Ethnicity");
-    claim.setClient2Disability("client2Disability");
+    claim.setClient2Forename(CLIENT_2_FORENAME);
+    claim.setClient2Surname(CLIENT_2_SURNAME);
+    claim.setClient2Gender(CLIENT_2_GENDER);
+    claim.setClient2Ethnicity(CLIENT_2_ETHNICITY);
+    claim.setClient2Disability(CLIENT_2_DISABILITY);
 
     var forms = createMediationClientForms(claim);
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
@@ -123,7 +129,7 @@ class CheckViewTest extends AmendmentsBaseTest {
     var client2Details = getSummaryListInCard(doc, "Client 2 details");
     assertSummaryListRowContainsValues(client2Details.getFirst(), "Item", "Current", "Amended");
     assertSummaryListRowContainsValues(
-        client2Details.get(1), "Last name", "client2Surname", "changedClient2Surname");
+        client2Details.get(1), "Last name", CLIENT_2_SURNAME, "changedClient2Surname");
     assertEquals(2, client2Details.size());
 
     assertPageHasLink(doc, "change-client1", "Change", amendClientUrl);

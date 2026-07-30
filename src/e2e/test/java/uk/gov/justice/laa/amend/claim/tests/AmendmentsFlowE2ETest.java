@@ -125,6 +125,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             → View Client → Change Client Details → View Client
             → View Case → Change case type → Change Fee code → Change Matter Type → View Case Type
             → View Case → Change case details → View Case
+            → Check Page → Change Client details → View Client
           """)
   void fullLegalHelpAmendmentFlow() {
     var search = new SearchPage(page);
@@ -195,6 +196,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             → View Client → Change Client Details → View Client
             → View Case → Change case type → Change Fee code → Change Matter Type → View Case Type
             → View Case → Change case details → View Case
+            → Check Page → Change Client 2 details → View Client → Check Page
           """)
   void fullMediationAmendmentFlow() {
     var search = new SearchPage(page);
