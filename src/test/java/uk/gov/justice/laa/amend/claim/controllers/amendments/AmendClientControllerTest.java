@@ -106,8 +106,12 @@ class AmendClientControllerTest extends BaseControllerTest {
     claim.setClientDisability("disability");
 
     var existingForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .client2(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
     var client2Rows =
@@ -121,8 +125,12 @@ class AmendClientControllerTest extends BaseControllerTest {
     client2Form.setInputs(client2Rows);
 
     var updatedForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .client2(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     updatedForms.getClient2Form().setCurrent(client2Form);
 
     var request = post(buildAmendClient2Path()).session(session).with(csrf());

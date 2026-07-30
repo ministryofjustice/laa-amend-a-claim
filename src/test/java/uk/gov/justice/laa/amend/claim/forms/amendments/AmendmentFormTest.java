@@ -11,8 +11,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CostClaimDetailsViewField;
 
 class AmendmentFormTest {
 
@@ -260,11 +260,11 @@ class AmendmentFormTest {
   }
 
   @Test
-  void getAmendedValueUsesInputKeyWhenFieldOverridesIt() {
+  void getAmendedValueReadsBigDecimalCostFieldByName() {
     var form = new AmendmentForm();
-    form.setInputs(new HashMap<>(Map.of("profitCost", "150.25")));
+    form.setInputs(new HashMap<>(Map.of("PROFIT_COST", "150.25")));
 
-    assertThat(form.getAmendedValue(CostClaimDetailsViewField.PROFIT_COST))
+    assertThat(form.getAmendedValue(ClaimDetailsViewField.PROFIT_COST))
         .isEqualTo(new BigDecimal("150.25"));
   }
 

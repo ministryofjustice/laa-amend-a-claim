@@ -89,7 +89,7 @@ class CostsControllerTest extends BaseControllerTest {
 
     var request =
         post(buildAmendCostsPath())
-            .param(INPUTS.formatted("profitCost"), "150.25")
+            .param(INPUTS.formatted("PROFIT_COST"), "150.25")
             .session(session)
             .with(csrf());
 
@@ -100,7 +100,7 @@ class CostsControllerTest extends BaseControllerTest {
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), forms));
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
-    assertThat(updatedForm.getCostsForm().getCurrent().getInputs().get("profitCost"))
+    assertThat(updatedForm.getCostsForm().getCurrent().getInputs().get("PROFIT_COST"))
         .isEqualTo("150.25");
   }
 

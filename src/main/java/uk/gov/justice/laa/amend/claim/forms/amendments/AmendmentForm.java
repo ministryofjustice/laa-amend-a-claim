@@ -49,13 +49,13 @@ public class AmendmentForm {
     for (var entry : viewRows.entrySet()) {
       var field = entry.getKey();
       if (field.getType() == FieldType.DATE) {
-        putDateInputs(inputs, field.inputKey(), entry.getValue());
+        putDateInputs(inputs, field.name(), entry.getValue());
       } else if (field.getType() == FieldType.BOOLEAN) {
-        inputs.put(field.inputKey(), formatBooleanValue(field.inputKey(), entry.getValue()));
+        inputs.put(field.name(), formatBooleanValue(field.name(), entry.getValue()));
       } else if (field.getType() == FieldType.NUMBER) {
-        inputs.put(field.inputKey(), formatNumberValue(field.inputKey(), entry.getValue()));
+        inputs.put(field.name(), formatNumberValue(field.name(), entry.getValue()));
       } else {
-        inputs.put(field.inputKey(), formatValue(entry.getValue()));
+        inputs.put(field.name(), formatValue(entry.getValue()));
       }
     }
     this.inputs = inputs;
@@ -150,12 +150,12 @@ public class AmendmentForm {
 
   public Object getAmendedValue(ClaimViewField<?> field) {
     return switch (field.getType()) {
-      case DATE -> getDateValue(field.inputKey());
-      case BOOLEAN -> getBooleanValue(field.inputKey());
-      case BIG_DECIMAL -> getBigDecimalValue(field.inputKey());
-      case NUMBER -> getIntegerValue(field.inputKey());
-      case ENUM -> inputs.get(field.inputKey());
-      case TEXT -> inputs.get(field.inputKey());
+      case DATE -> getDateValue(field.name());
+      case BOOLEAN -> getBooleanValue(field.name());
+      case BIG_DECIMAL -> getBigDecimalValue(field.name());
+      case NUMBER -> getIntegerValue(field.name());
+      case ENUM -> inputs.get(field.name());
+      case TEXT -> inputs.get(field.name());
     };
   }
 

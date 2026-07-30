@@ -40,14 +40,16 @@
                   th:text="#{amendments.amended}"></dd>
             </div>
 
-            <div class="govuk-summary-list__row" th:each="row : ${costRows}">
-              <dt class="govuk-summary-list__key" th:text="#{${'claimCosts.rows.' + row.key}}"></dt>
-              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submittedValue).resolve(#messages)}"></dd>
+            <div class="govuk-summary-list__row"
+                 th:each="entry : ${costFields}"
+                 th:with="field=${entry.key}, row=${entry.value}">
+              <dt class="govuk-summary-list__key" th:text="#{${'claimCosts.rows.' + field.name()}}"></dt>
+              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></dd>
               <dd class="govuk-summary-list__value"
-                  th:text="${@ThymeleafUtils.getFormattedValue(row.calculatedValue).resolve(#messages)}"></dd>
+                  th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
               <dd class="govuk-summary-list__value"
                   th:if="${costsFormIsAmended}"
-                  th:text="${costsForm.isAmendment(row.key, originalCostsForm, row.type) ? @ThymeleafUtils.getFormattedValue(costsForm.getAmendedValue(row.key, row.type)).resolve(#messages) : ''}"></dd>
+                  th:text="${costsForm.isAmendment(field.name(), originalCostsForm, field.type) ? @ThymeleafUtils.getFormattedValue(costsForm.getAmendedValue(field)).resolve(#messages) : ''}"></dd>
             </div>
           </dl>
         </div>

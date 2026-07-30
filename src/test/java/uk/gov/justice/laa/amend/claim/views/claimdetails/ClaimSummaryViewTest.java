@@ -125,14 +125,14 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
         summaryList2.get(6), "JR and form filling", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(7), "Net cost of counsel", "£100.00", "£200.00");
-    assertSummaryListRowContainsValues(summaryList2.get(8), "Oral CMRH", "£100.00", "£200.00");
-    assertSummaryListRowContainsValues(summaryList2.get(9), "Telephone CMRH", "£100.00", "£200.00");
+    assertSummaryListRowContainsValues(summaryList2.get(8), "Oral CMRH", "100", "£200.00");
+    assertSummaryListRowContainsValues(summaryList2.get(9), "Telephone CMRH", "100", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(10), "Home office interview", "£100.00", "£200.00");
+        summaryList2.get(10), "Home office interview", "100", "£200.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(11), "Substantive hearing", "Yes", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(12), "Adjourned hearing fee", "£100.00", "£200.00");
+        summaryList2.get(12), "Adjourned hearing fee", "100", "£200.00");
     assertSummaryListRowContainsValues(summaryList2.get(13), "VAT indicator", "Yes", "No");
     assertSummaryListRowContainsValues(summaryList2.get(14), "Total", "Not applicable", "£200.00");
   }
@@ -202,15 +202,15 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(
         summaryList2.get(7), "Net cost of counsel", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(8), "Oral CMRH", "£100.00", "£200.00", "£300.00");
+        summaryList2.get(8), "Oral CMRH", "100", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(9), "Telephone CMRH", "£100.00", "£200.00", "£300.00");
+        summaryList2.get(9), "Telephone CMRH", "100", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(10), "Home office interview", "£100.00", "£200.00", "£300.00");
+        summaryList2.get(10), "Home office interview", "100", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(11), "Substantive hearing", "Yes", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(12), "Adjourned hearing fee", "£100.00", "£200.00", "£300.00");
+        summaryList2.get(12), "Adjourned hearing fee", "100", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(summaryList2.get(13), "VAT indicator", "Yes", "No", "Yes");
   }
 

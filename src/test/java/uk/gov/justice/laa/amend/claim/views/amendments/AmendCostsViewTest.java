@@ -42,8 +42,8 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(costs.getFirst(), "Item", "Reported", "Amended");
     assertSummaryListRowContainsValues(costs.get(1), "Fixed fee", "Not applicable");
     Assertions.assertTrue(costs.get(1).get(2).select("input, select").isEmpty());
-    assertBigDecimalInputRow(costs.get(2), "Net profit costs", "£100.00", "profitCost", "100.00");
-    assertBooleanSelectRow(costs.get(6), "VAT indicator", "Yes", "vat", true);
+    assertBigDecimalInputRow(costs.get(2), "Net profit costs", "£100.00", "PROFIT_COST", "100.00");
+    assertBooleanSelectRow(costs.get(6), "VAT indicator", "Yes", "VAT", true);
   }
 
   @Test
@@ -62,9 +62,9 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(costs.getFirst(), "Item", "Reported", "Amended");
     assertSummaryListRowContainsValues(costs.get(1), "Fixed fee", "Not applicable");
     Assertions.assertTrue(costs.get(1).get(2).select("input, select").isEmpty());
-    assertBooleanSelectRow(costs.get(2), "VAT indicator", "Yes", "vat", true);
+    assertBooleanSelectRow(costs.get(2), "VAT indicator", "Yes", "VAT", true);
     assertBigDecimalInputRow(
-        costs.get(3), "Net disbursements", "£100.00", "disbursements", "100.00");
+        costs.get(3), "Net disbursements", "£100.00", "DISBURSEMENTS", "100.00");
   }
 
   @Test
@@ -83,13 +83,13 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
 
     var costs = getSummaryListInCard(doc, "List of costs");
     assertSummaryListRowContainsValues(costs.getFirst(), "Item", "Reported", "Amended");
-    assertBigDecimalInputRow(costs.get(2), "Net profit costs", "£100.00", "profitCost", "100.00");
-    assertBooleanSelectRow(costs.get(7), "VAT indicator", "Yes", "vat", true);
+    assertBigDecimalInputRow(costs.get(2), "Net profit costs", "£100.00", "PROFIT_COST", "100.00");
+    assertBooleanSelectRow(costs.get(7), "VAT indicator", "Yes", "VAT", true);
     assertSummaryListRowContainsValues(costs.get(11), "Substantive hearing", "Not applicable");
     Assertions.assertFalse(
-        costs.get(11).get(2).select("select#substantiveHearing").isEmpty(),
+        costs.get(11).get(2).select("select#SUBSTANTIVE_HEARING").isEmpty(),
         "Not-provided bolt-on should still be editable");
-    assertBooleanSelectRow(costs.get(15), "London rate", "Yes", "isLondonRate", true);
+    assertBooleanSelectRow(costs.get(15), "London rate", "Yes", "IS_LONDON_RATE", true);
   }
 
   private static AmendmentForms createCostsForms(ClaimDetails claimDetails) {

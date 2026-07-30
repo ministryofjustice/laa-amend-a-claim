@@ -50,7 +50,7 @@ class ViewCostsViewTest extends AmendmentsBaseTest {
     claim.setClaimId(claimId);
 
     var forms = createCostsForms(claim);
-    forms.getCostsForm().getCurrent().getInputs().put("profitCost", "150.25");
+    forms.getCostsForm().getCurrent().getInputs().put("PROFIT_COST", "150.25");
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var doc = renderDocument();
@@ -73,7 +73,7 @@ class ViewCostsViewTest extends AmendmentsBaseTest {
     claim.setClaimId(claimId);
 
     var forms = createCostsForms(claim);
-    forms.getCostsForm().getCurrent().getInputs().put("profitCost", "100");
+    forms.getCostsForm().getCurrent().getInputs().put("PROFIT_COST", "100");
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var doc = renderDocument();

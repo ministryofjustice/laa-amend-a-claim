@@ -138,17 +138,21 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
 
   private AmendmentForms createClientForms(ClaimDetails claim) {
     var view = ClaimClientViewFactory.create(claim);
-    return new AmendmentForms(
-        new AmendmentForm(view.client1Rows()), new AmendmentForm(), new AmendmentForm());
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm(view.client1Rows()))
+        .caseType(new AmendmentForm())
+        .caseDetails(new AmendmentForm())
+        .build();
   }
 
   private AmendmentForms createMediationClientForms(MediationClaimDetails claim) {
     var view = ClaimClientViewFactory.create(claim);
-    return new AmendmentForms(
-        new AmendmentForm(view.client1Rows()),
-        new AmendmentForm(view.client2Rows()),
-        new AmendmentForm(),
-        new AmendmentForm());
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm(view.client1Rows()))
+        .client2(new AmendmentForm(view.client2Rows()))
+        .caseType(new AmendmentForm())
+        .caseDetails(new AmendmentForm())
+        .build();
   }
 
   private void assertCommonPageContent(Document doc) {

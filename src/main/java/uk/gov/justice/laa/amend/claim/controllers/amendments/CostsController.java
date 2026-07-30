@@ -18,7 +18,6 @@ import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCasework
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.viewmodels.amendments.AmendmentCostRow;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactory;
 
 @Controller
@@ -67,16 +66,18 @@ public class CostsController {
   private void addCostsModelAttributes(
       HttpSession session, Model model, UUID submissionId, UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
-    var costsRows =
-        ClaimCostsViewFactory.create(claim).rows().stream().map(AmendmentCostRow::from).toList();
+    var costFields = ClaimCostsViewFactory.create(claim).costFields();
     var amendmentForms = getAmendmentForms(session, claimId);
     var costs = amendmentForms.getCostsForm();
     var costsFormIsAmended =
-        costsRows.stream()
+        costFields.keySet().stream()
             .anyMatch(
-                row -> costs.getCurrent().isAmendment(row.key(), costs.getOriginal(), row.type()));
+                field ->
+                    costs
+                        .getCurrent()
+                        .isAmendment(field.name(), costs.getOriginal(), field.getType()));
 
-    model.addAttribute("costRows", costsRows);
+    model.addAttribute("costFields", costFields);
     model.addAttribute("costsForm", costs.getCurrent());
     model.addAttribute("costsFormIsAmended", costsFormIsAmended);
     model.addAttribute("forms", amendmentForms);

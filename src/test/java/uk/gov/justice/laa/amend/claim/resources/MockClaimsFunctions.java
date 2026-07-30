@@ -228,7 +228,7 @@ public class MockClaimsFunctions {
   }
 
   public static BoltOnClaimField createAdjournedHearingField() {
-    return createBoltOnField(ADJOURNED_FEE);
+    return createCountBoltOnField(ADJOURNED_FEE);
   }
 
   public static BoltOnClaimField createTravelAndWaitingCostsField() {
@@ -244,15 +244,15 @@ public class MockClaimsFunctions {
   }
 
   public static BoltOnClaimField createCmrhOralField() {
-    return createBoltOnField(CMRH_ORAL);
+    return createCountBoltOnField(CMRH_ORAL);
   }
 
   public static BoltOnClaimField createCmrhTelephoneField() {
-    return createBoltOnField(CMRH_TELEPHONE);
+    return createCountBoltOnField(CMRH_TELEPHONE);
   }
 
   public static BoltOnClaimField createHoInterviewField() {
-    return createBoltOnField(HO_INTERVIEW);
+    return createCountBoltOnField(HO_INTERVIEW);
   }
 
   public static BoltOnClaimField createSubstantiveHearingField() {
@@ -268,6 +268,15 @@ public class MockClaimsFunctions {
     return BoltOnClaimField.builder()
         .key(key)
         .submitted(BigDecimal.valueOf(100))
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
+
+  private static BoltOnClaimField createCountBoltOnField(String key) {
+    return BoltOnClaimField.builder()
+        .key(key)
+        .submitted(100)
         .calculated(BigDecimal.valueOf(200))
         .assessed(BigDecimal.valueOf(300))
         .build();

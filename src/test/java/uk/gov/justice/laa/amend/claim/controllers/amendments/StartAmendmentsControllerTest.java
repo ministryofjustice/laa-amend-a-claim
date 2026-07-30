@@ -109,13 +109,13 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     caseDetailsForm.setInputs(caseDetailsRows);
 
     Map<String, String> costsRows = new HashMap<>();
-    costsRows.put("fixedFee", null);
-    costsRows.put("profitCost", "100.00");
-    costsRows.put("disbursements", "100.00");
-    costsRows.put("travel", "100.00");
-    costsRows.put("waiting", "100.00");
-    costsRows.put("vat", "true");
-    costsRows.put("disbursementsVat", "100.00");
+    costsRows.put("FIXED_FEE", null);
+    costsRows.put("PROFIT_COST", "100.00");
+    costsRows.put("DISBURSEMENTS", "100.00");
+    costsRows.put("TRAVEL_COSTS", "100.00");
+    costsRows.put("WAITING_COSTS", "100.00");
+    costsRows.put("VAT", "true");
+    costsRows.put("DISBURSEMENTS_VAT", "100.00");
     var costsForm = new AmendmentForm();
     costsForm.setInputs(costsRows);
 

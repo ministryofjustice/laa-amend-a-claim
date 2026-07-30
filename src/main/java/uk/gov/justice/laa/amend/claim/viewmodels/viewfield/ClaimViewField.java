@@ -16,8 +16,8 @@ public interface ClaimViewField<T extends Claim> {
 
   FieldType getType();
 
-  default String inputKey() {
-    return name();
+  default boolean isEditable() {
+    return true;
   }
 
   default List<FieldOption> getOptions() {
