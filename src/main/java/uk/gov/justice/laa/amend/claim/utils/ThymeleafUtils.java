@@ -19,6 +19,7 @@ import uk.gov.justice.laa.amend.claim.forms.errors.AssessedTotalFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessmentOutcomeFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.MonetaryValueFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafLiteralString;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafString;
@@ -47,6 +48,14 @@ public class ThymeleafUtils {
 
   public List<AllowedTotalFormError> toAllowedTotalFormErrors(List<DetailedError> errors) {
     return mapErrors(errors, AllowedTotalFormError::new, AllowedTotalFormError::getMessage);
+  }
+
+  public boolean supportsClient2(AreaOfLaw areaOfLaw) {
+    return AreaOfLaw.MEDIATION.equals(areaOfLaw);
+  }
+
+  public String client1DetailsMessageKey(AreaOfLaw areaOfLaw) {
+    return supportsClient2(areaOfLaw) ? "claimClient.client1Details" : "claimClient.clientDetails";
   }
 
   private <T> List<T> mapErrors(

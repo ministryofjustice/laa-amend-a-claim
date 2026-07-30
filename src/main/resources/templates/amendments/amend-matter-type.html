@@ -33,7 +33,7 @@
         </div>
       </dl>
       <dl class="govuk-summary-list"
-          th:if="${#strings.toString(areaOfLaw) == 'MEDIATION'}"
+          th:if="${@ThymeleafUtils.supportsClient2(areaOfLaw)}"
           th:with="originalMatterTypes=${forms.caseTypeForm.getOriginal()}">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key"
@@ -65,7 +65,7 @@
           </div>
         </th:block>
         <th:block
-            th:if="${#strings.toString(areaOfLaw) == 'MEDIATION'}">
+            th:if="${@ThymeleafUtils.supportsClient2(areaOfLaw)}">
           <div class="govuk-form-group">
             <label class="govuk-label govuk-!-font-weight-bold" for="matter-type-input"
                    th:text="#{amendments.matterType.amended}"/>
