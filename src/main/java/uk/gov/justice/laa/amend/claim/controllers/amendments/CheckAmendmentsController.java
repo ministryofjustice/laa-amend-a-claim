@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
+import uk.gov.justice.laa.amend.claim.service.CheckService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/check")
@@ -25,6 +26,8 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFact
 @HasRoleClaimAmendmentsCaseworker
 @Controller
 public class CheckAmendmentsController {
+
+  private final CheckService checkService;
 
   @GetMapping
   public String check(
@@ -59,10 +62,19 @@ public class CheckAmendmentsController {
   @PostMapping
   public String submit(
       HttpSession session,
-      Model model,
-      @PathVariable UUID submissionId,
-      @PathVariable UUID claimId) {
+      @PathVariable("submissionId") UUID submissionId,
+      @PathVariable("claimId") UUID claimId) {
+
+    var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
+
+    if (!amendmentForms.hasAmendments()) {
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND,
+          "No amendments found for submission %s claim %s".formatted(submissionId, claimId));
+    }
+
+    checkService.submitAmendments(submissionId, claimId, UUID.randomUUID(), claim, amendmentForms);
 
     return "redirect:/submissions/%s/claims/%s/amendments/success".formatted(submissionId, claimId);
   }

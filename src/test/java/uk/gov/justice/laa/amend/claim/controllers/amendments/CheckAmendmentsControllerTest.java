@@ -1,6 +1,9 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -16,16 +19,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.forms.amendments.OriginalAndCurrent;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.service.CheckService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
-@WebMvcTest(controllers = CheckAmendmentsController.class)
+@WebMvcTest(CheckAmendmentsController.class)
 class CheckAmendmentsControllerTest extends BaseControllerTest {
+
+  @MockitoBean private CheckService checkService;
 
   private UUID submissionId;
   private UUID claimId;
@@ -78,14 +86,36 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void submitCheckRedirectsToSuccessPage() throws Exception {
-    // TODO change in BC-620 when the submit button functionality is implemented
-    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCrimeForms());
+  void submitAndRedirect() throws Exception {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    session.setAttribute(claimId.toString(), claim);
+
+    var originalClientForm = new AmendmentForm();
+    originalClientForm.setInputs(Map.of("INITIAL", "OLD"));
+    var currentClientForm = new AmendmentForm();
+    currentClientForm.setInputs(Map.of("INITIAL", "NEW"));
+
+    var emptyForm = new AmendmentForm();
+    emptyForm.setInputs(Map.of());
+
+    var forms =
+        new AmendmentForms(
+            new OriginalAndCurrent(originalClientForm, currentClientForm),
+            new OriginalAndCurrent(emptyForm, emptyForm),
+            new OriginalAndCurrent(emptyForm, emptyForm),
+            new OriginalAndCurrent(emptyForm, emptyForm),
+            new OriginalAndCurrent(emptyForm, emptyForm));
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     mockMvc
         .perform(post(buildCheckPath()).session(session).with(csrf()))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(buildSuccessPath()));
+
+    verify(checkService)
+        .submitAmendments(eq(submissionId), eq(claimId), any(UUID.class), eq(claim), eq(forms));
   }
 
   private void setupClaim(ClaimDetails claim) {

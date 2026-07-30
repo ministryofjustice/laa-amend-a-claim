@@ -1,12 +1,14 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class AmendmentForms {
 
   @NotNull private OriginalAndCurrent client1Form;

@@ -53,6 +53,7 @@ public abstract class ClaimDetails extends Claim {
 
   private String stageReached;
   private String outcome;
+  private Long version;
 
   public void applyOutcome(OutcomeType outcome) {
     getClaimFields().forEach(x -> x.applyOutcome(outcome));

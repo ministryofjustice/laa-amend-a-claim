@@ -113,11 +113,11 @@ class AmendmentFormTest {
     rows.put(CivilClaimDetailsViewField.POSTCODE, "AB1 2CD");
     var form = new AmendmentForm(rows);
 
-    var fieldInputs = form.getFieldInputs(CivilClaimDetails.class);
+    var fieldInputs = form.getFieldValues(CivilClaimDetails.class);
 
     assertThat(fieldInputs)
         .hasSize(2)
-        .containsEntry(CivilClaimDetailsViewField.DATE_OF_BIRTH, "2002-05-14")
+        .containsEntry(CivilClaimDetailsViewField.DATE_OF_BIRTH, LocalDate.of(2002, 5, 14))
         .containsEntry(CivilClaimDetailsViewField.POSTCODE, "AB1 2CD");
   }
 
@@ -357,7 +357,9 @@ class AmendmentFormTest {
 
     assertThat(
             current.isAmendment(
-                "VALUE_OF_COSTS", original, CivilClaimDetailsViewField.VALUE_OF_COSTS.getType()))
+                "VALUE_OF_COSTS",
+                original,
+                CivilClaimDetailsViewField.VALUE_OF_COSTS.getFieldType()))
         .isFalse();
   }
 }

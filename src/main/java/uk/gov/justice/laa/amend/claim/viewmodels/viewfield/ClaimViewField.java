@@ -8,13 +8,20 @@ import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
 public interface ClaimViewField<T extends Claim> {
   String name();
 
-  <U> ClaimViewFieldAccessor<T, U> getAccessor();
+  <V> ClaimViewFieldGetter<T, V> getGetter();
 
-  FieldType getType();
+  FieldType getFieldType();
+
+  ClaimViewFieldPatcher<?> getPatcher();
+
+  default ClaimPatch.Builder applyPatch(ClaimPatch.Builder patchBuilder, Object value) {
+    return getPatcher().apply(patchBuilder, value);
+  }
 
   default boolean isEditable() {
     return true;
@@ -27,7 +34,7 @@ public interface ClaimViewField<T extends Claim> {
   static <C extends ClaimDetails> LinkedHashMap<ClaimViewField<C>, Object> toFieldMap(
       Stream<ClaimViewField<C>> fields, C claim) {
     LinkedHashMap<ClaimViewField<C>, Object> fieldMap = new LinkedHashMap<>();
-    fields.forEach(field -> fieldMap.put(field, field.getAccessor().getter().apply(claim)));
+    fields.forEach(field -> fieldMap.put(field, field.getGetter().getter().apply(claim)));
     return fieldMap;
   }
 
