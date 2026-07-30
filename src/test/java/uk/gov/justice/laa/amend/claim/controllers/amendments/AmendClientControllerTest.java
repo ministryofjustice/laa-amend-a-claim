@@ -36,17 +36,97 @@ class AmendClientControllerTest extends BaseControllerTest {
   private UUID submissionId;
   private UUID claimId;
   private MockHttpSession session;
+  private ClaimDetails claim;
 
   @BeforeEach
   void setup() {
     submissionId = UUID.randomUUID();
     claimId = UUID.randomUUID();
     session = new MockHttpSession();
-    ClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
     session.setAttribute(claimId.toString(), claim);
+  }
+
+  @Test
+  void savesFormsIntoSessionThenRedirectsClient1() throws Exception {
+    claim.setClientForename("forename");
+    claim.setClientSurname("surname");
+    claim.setClientGender("gender");
+    claim.setClientEthnicity("ethnicity");
+    claim.setClientDisability("disability");
+
+    var existingForms =
+        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    var client1Rows =
+        Map.of(
+            "INITIAL", FORENAME,
+            "SURNAME", SURNAME,
+            "GENDER", GENDER,
+            "ETHNICITY", ETHNICITY,
+            "DISABILITY", DISABILITY);
+    var client1Form = new AmendmentForm();
+    client1Form.setInputs(client1Rows);
+
+    var updatedForms =
+        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    updatedForms.getClient1Form().setCurrent(client1Form);
+
+    var request = post(buildAmendClient1Path()).session(session).with(csrf());
+    for (var entry : client1Rows.entrySet()) {
+      request.param(INPUTS.formatted(entry.getKey()), entry.getValue());
+    }
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildViewClientPath()))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
+  @Test
+  void savesFormsIntoSessionThenRedirectsClient2() throws Exception {
+    claim = MockClaimsFunctions.createMockMediationClaim();
+    claim.setClientForename("forename");
+    claim.setClientSurname("surname");
+    claim.setClientGender("gender");
+    claim.setClientEthnicity("ethnicity");
+    claim.setClientDisability("disability");
+
+    var existingForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    var client2Rows =
+        Map.of(
+            "CLIENT_2_INITIAL", FORENAME,
+            "CLIENT_2_SURNAME", SURNAME,
+            "CLIENT_2_GENDER", GENDER,
+            "CLIENT_2_ETHNICITY", ETHNICITY,
+            "CLIENT_2_DISABILITY", DISABILITY);
+    var client2Form = new AmendmentForm();
+    client2Form.setInputs(client2Rows);
+
+    var updatedForms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    updatedForms.getClient2Form().setCurrent(client2Form);
+
+    var request = post(buildAmendClient2Path()).session(session).with(csrf());
+    for (var entry : client2Rows.entrySet()) {
+      request.param(INPUTS.formatted(entry.getKey()), entry.getValue());
+    }
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildViewClientPath()))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
   }
 
   @Test
