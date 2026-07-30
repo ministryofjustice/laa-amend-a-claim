@@ -43,7 +43,7 @@
             <div class="govuk-summary-list__row"
                  th:each="entry : ${clientView.client1Rows}">
               <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key}}"></dt>
-              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
 
               <dd class="govuk-summary-list__value"
                   th:if="${client1Form.isAmendment(entry.key.name(), forms.client1Form.original)}"
@@ -80,7 +80,7 @@
             <div class="govuk-summary-list__row"
                  th:each="entry : ${clientView.client2Rows}">
               <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key}}"></dt>
-              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
 
               <dd class="govuk-summary-list__value"
                   th:if="${client2Form.isAmendment(entry.key.name(), forms.client2Form.original)}"
