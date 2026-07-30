@@ -29,3 +29,6 @@ e2e.api.log
 node_modules/
 
 /src/main/resources/static/
+/src/main/resources/es/govuk-frontend.min.js
+/src/main/resources/es/moj-frontend.min.js
+/src/main/resources/es/accessible-autocomplete.min.js
