@@ -40,6 +40,7 @@ public class AmendmentForms {
   public boolean hasAmendments() {
     return client1Form.hasAmendments()
         || caseTypeForm.hasAmendments()
-        || caseDetailsForm.hasAmendments();
+        || caseDetailsForm.hasAmendments()
+        || (client2Form != null && client2Form.hasAmendments());
   }
 }

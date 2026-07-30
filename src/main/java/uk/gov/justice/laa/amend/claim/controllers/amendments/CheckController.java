@@ -45,7 +45,11 @@ public class CheckController {
 
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("client1Form", amendmentForms.getClient1Form().getCurrent());
+    model.addAttribute(
+        "client2Form",
+        amendmentForms.getClient2Form() != null ? amendmentForms.getClient2Form().getCurrent() : null);
     model.addAttribute("clientView", clientView);
+    model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
 
     return "amendments/check";
   }

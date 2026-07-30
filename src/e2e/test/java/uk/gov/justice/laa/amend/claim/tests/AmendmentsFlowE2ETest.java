@@ -183,7 +183,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
-    checkPage.clickChangeClientLink();
+    checkPage.clickChangeClientOneLink();
 
     viewAmendClient = new ViewClientPage(page);
   }
@@ -257,9 +257,21 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendCase.clickContinue();
 
     var checkPage = new CheckPage(page);
-    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
-    checkPage.clickChangeClientLink();
+    assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
+    assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
+    checkPage.clickChangeClientTwoLink();
 
-    var viewAmendClientFinal = new ViewClientPage(page);
+    viewAmendClient = new ViewClientPage(page);
+    amendClient2 = new AmendClient2Page(page);
+    amendClient2.fillInput("CLIENT_2_FORENAME", "changedTwoForename");
+    amendClient2.clickContinueButton();
+    viewAmendClient = new ViewClientPage(page);
+    assertSummaryListRow(page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
+    viewAmendCase.clickContinue();
+
+    checkPage = new CheckPage(page);
+    assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
+    assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
+    assertSummaryListRow(page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
   }
 }
