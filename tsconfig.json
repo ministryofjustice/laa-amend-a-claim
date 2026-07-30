@@ -9,9 +9,5 @@
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types", "./types"]
   },
-  "include": ["src/**/*", "types/**/*.d.ts"],
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node"
-  }
+  "include": ["src/**/*", "types/**/*.d.ts"]
 }
