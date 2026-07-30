@@ -14,7 +14,7 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @WebMvcTest(AmendClientTabController.class)
-class ViewClientViewTest extends AmendmentsBaseTest {
+class AmendClientTabViewTest extends AmendmentsBaseTest {
 
   private static final String FORENAME = "forename";
   private static final String SURNAME = "surname";
@@ -38,7 +38,7 @@ class ViewClientViewTest extends AmendmentsBaseTest {
   private static final String CLIENT_2_ETHNICITY = "ethnicity2";
   private static final String CLIENT_2_DISABILITY = "disability2";
 
-  ViewClientViewTest() {
+  AmendClientTabViewTest() {
     this.mapping = clientUrl;
   }
 

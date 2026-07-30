@@ -17,7 +17,7 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
 @WebMvcTest(AmendCaseTabController.class)
-class ViewCaseViewTest extends AmendmentsBaseTest {
+class AmendCaseTabViewTest extends AmendmentsBaseTest {
 
   private static final String FEE_CODE = "feecode";
   private static final String MATTER_TYPE_CODE = "matter";
@@ -86,7 +86,7 @@ class ViewCaseViewTest extends AmendmentsBaseTest {
   private static final String AMENDED_REFERRAL_SOURCE_LABEL = "09 - Other";
   public static final String YES = "Yes";
 
-  ViewCaseViewTest() {
+  AmendCaseTabViewTest() {
     this.mapping = caseUrl;
   }
 
