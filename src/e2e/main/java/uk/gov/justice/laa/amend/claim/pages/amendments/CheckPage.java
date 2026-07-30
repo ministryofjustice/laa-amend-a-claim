@@ -27,7 +27,7 @@ public class CheckPage extends LaaPage {
   }
 
   public void clickChangeClientTwoLink() {
-      changeClientTwoLink.click();
+    changeClientTwoLink.click();
   }
 
   public void clickSubmitButton() {

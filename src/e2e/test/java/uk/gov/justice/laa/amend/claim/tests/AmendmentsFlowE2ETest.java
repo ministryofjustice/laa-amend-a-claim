@@ -266,12 +266,14 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendClient2.fillInput("CLIENT_2_FORENAME", "changedTwoForename");
     amendClient2.clickContinueButton();
     viewAmendClient = new ViewClientPage(page);
-    assertSummaryListRow(page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
+    assertSummaryListRow(
+        page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
     viewAmendCase.clickContinue();
 
     checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
     assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
-    assertSummaryListRow(page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
+    assertSummaryListRow(
+        page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
   }
 }

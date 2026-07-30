@@ -22,6 +22,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @WebMvcTest(controllers = CheckController.class)
 class CheckControllerTest extends BaseControllerTest {
@@ -36,25 +37,12 @@ class CheckControllerTest extends BaseControllerTest {
     submissionId = UUID.randomUUID();
     claimId = UUID.randomUUID();
     session = new MockHttpSession();
-    claim = MockClaimsFunctions.createMockCrimeClaim();
-    claim.setSubmissionId(submissionId);
-    claim.setClaimId(claimId);
-    claim.setClientForename("forename");
-    claim.setClientSurname("surname");
-    MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
-    session.setAttribute(claimId.toString(), claim);
+    setupClaim(MockClaimsFunctions.createMockCrimeClaim());
   }
 
   @Test
   void getsClientFormAndClientViewIntoModel() throws Exception {
-    var client1Rows = Map.of("SURNAME", "changedSurname");
-    var client1Form = new AmendmentForm();
-    client1Form.setInputs(client1Rows);
-
-    var amendmentForms =
-        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
-    amendmentForms.getClient1Form().setCurrent(client1Form);
-    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), amendmentForms);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCrimeForms());
 
     mockMvc
         .perform(get(buildCheckPath()).session(session))
@@ -64,10 +52,21 @@ class CheckControllerTest extends BaseControllerTest {
   }
 
   @Test
+  void getsClient2FormIntoModelForMediationClaims() throws Exception {
+    setupClaim(MockClaimsFunctions.createMockMediationClaim());
+
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createMediationForms());
+
+    mockMvc
+        .perform(get(buildCheckPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("amendments/check"))
+        .andExpect(model().attributeExists("forms", "client1Form", "client2Form", "clientView"));
+  }
+
+  @Test
   void getCheckPageThrows404WhenNoAmendments() throws Exception {
-    var amendmentForms =
-        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
-    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), amendmentForms);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createEmptyForms());
 
     mockMvc
         .perform(get(buildCheckPath()).session(session))
@@ -81,19 +80,53 @@ class CheckControllerTest extends BaseControllerTest {
   @Test
   void submitCheckRedirectsToSuccessPage() throws Exception {
     // TODO change in BC-620 when the submit button functionality is implemented
-    var client1Rows = Map.of("SURNAME", "changedSurname");
-    var client1Form = new AmendmentForm();
-    client1Form.setInputs(client1Rows);
-
-    var amendmentForms =
-        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
-    amendmentForms.getClient1Form().setCurrent(client1Form);
-    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), amendmentForms);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCrimeForms());
 
     mockMvc
         .perform(post(buildCheckPath()).session(session).with(csrf()))
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(buildSuccessPath()));
+  }
+
+  private void setupClaim(ClaimDetails claim) {
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setClientForename("forename");
+    claim.setClientSurname("surname");
+    MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
+    session.setAttribute(claimId.toString(), claim);
+  }
+
+  private AmendmentForms createCrimeForms() {
+    var client1Form = new AmendmentForm();
+    client1Form.setInputs(Map.of("SURNAME", "changedSurname"));
+
+    var amendmentForms =
+        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    amendmentForms.getClient1Form().setCurrent(client1Form);
+    return amendmentForms;
+  }
+
+  private AmendmentForms createEmptyForms() {
+    return new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+  }
+
+  private AmendmentForms createMediationForms() {
+    var clientView = ClaimClientViewFactory.create(claim);
+    var forms =
+        new AmendmentForms(
+            new AmendmentForm(clientView.client1Rows()),
+            new AmendmentForm(clientView.client2Rows()),
+            new AmendmentForm(),
+            new AmendmentForm());
+    forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
+    forms
+        .getClient2Form()
+        .getCurrent()
+        .getInputs()
+        .put("CLIENT_2_SURNAME", "changedClient2Surname");
+    return forms;
   }
 
   private String buildCheckPath() {
