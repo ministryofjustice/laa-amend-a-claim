@@ -184,9 +184,9 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
-      assertSummaryListRow(page, "Case type", "Fee code", "IMCA", "IAXC");
-      assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "NEW_MONE");
-      assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL", "NEW_MTWO");
+    assertSummaryListRow(page, "Case type", "Fee code", "IMCA", "IAXC");
+    assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "NEW_MONE");
+    assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL", "NEW_MTWO");
   }
 
   @Test

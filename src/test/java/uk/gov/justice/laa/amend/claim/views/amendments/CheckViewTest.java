@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.amend.claim.views.amendments;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
 import org.jsoup.nodes.Document;

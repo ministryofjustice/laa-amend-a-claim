@@ -49,7 +49,15 @@ class CheckControllerTest extends BaseControllerTest {
         .perform(get(buildCheckPath()).session(session))
         .andExpect(status().isOk())
         .andExpect(view().name("amendments/check-your-answers"))
-        .andExpect(model().attributeExists("forms", "client1Form", "clientView", "caseTypeForm", "caseDetailsForm", "claim"));
+        .andExpect(
+            model()
+                .attributeExists(
+                    "forms",
+                    "client1Form",
+                    "clientView",
+                    "caseTypeForm",
+                    "caseDetailsForm",
+                    "claim"));
   }
 
   @Test
@@ -62,7 +70,16 @@ class CheckControllerTest extends BaseControllerTest {
         .perform(get(buildCheckPath()).session(session))
         .andExpect(status().isOk())
         .andExpect(view().name("amendments/check-your-answers"))
-        .andExpect(model().attributeExists("forms", "client1Form", "client2Form", "clientView", "caseTypeForm", "caseDetailsForm", "claim"));
+        .andExpect(
+            model()
+                .attributeExists(
+                    "forms",
+                    "client1Form",
+                    "client2Form",
+                    "clientView",
+                    "caseTypeForm",
+                    "caseDetailsForm",
+                    "claim"));
   }
 
   @Test
