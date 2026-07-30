@@ -25,16 +25,12 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   // Case details fields
   SCHEDULE_REFERENCE_CIVIL(new Accessor<>(CivilClaimDetails::getScheduleReference)),
   CASE_ID(new Accessor<>(CivilClaimDetails::getCaseId)),
-  CASE_REFERENCE_NUMBER(new Accessor<>(CivilClaimDetails::getCaseReferenceNumber)),
-  CASE_START_DATE(new Accessor<>(CivilClaimDetails::getCaseStartDate), FieldType.DATE),
   CASE_CONCLUDED_CLAIMED_DATE(
       new Accessor<>(CivilClaimDetails::getCaseConcludedDate), FieldType.DATE),
-  UNIQUE_FILE_NUMBER(new Accessor<>(CivilClaimDetails::getUniqueFileNumber)),
   CASE_STAGE(new Accessor<>(CivilClaimDetails::getCaseStage), FieldOptions.CASE_STAGE),
   VALUE_OF_COSTS(new Accessor<>(CivilClaimDetails::getValueOfCosts), FieldType.BIG_DECIMAL),
   PROCUREMENT_AREA(new Accessor<>(CivilClaimDetails::getProcurementArea)),
   ACCESS_POINT(new Accessor<>(CivilClaimDetails::getAccessPoint)),
-  STAGE_REACHED(new Accessor<>(CivilClaimDetails::getStageReached), FieldOptions.STAGE_REACHED),
   OUTCOME_FOR_CLIENT(new Accessor<>(CivilClaimDetails::getOutcome), FieldOptions.OUTCOME),
   EXCEPTIONAL_CASE_FUNDING(new Accessor<>(CivilClaimDetails::getExceptionalCaseFundingReference)),
   CIVIL_LEGAL_ADVICE_REFERENCE(new Accessor<>(CivilClaimDetails::getCivilLegalAdviceReference)),
