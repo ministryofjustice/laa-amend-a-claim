@@ -88,9 +88,6 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-    implementation 'org.webjars.npm:govuk-frontend:6.4.0'
-    implementation 'org.webjars.npm:ministryofjustice__frontend:10.0.0'
-    implementation 'org.webjars.npm:accessible-autocomplete:3.0.1'
     implementation("org.apache.commons:commons-csv:1.14.1")
 
     implementation("io.vavr:vavr:1.0.1")
