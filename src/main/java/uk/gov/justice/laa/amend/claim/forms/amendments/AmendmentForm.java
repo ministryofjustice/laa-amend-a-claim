@@ -239,10 +239,13 @@ public class AmendmentForm {
       case null -> null;
       case String stringValue -> stringValue;
       case BigDecimal bigDecimal -> setScale(bigDecimal).toString();
+      case Integer intValue -> intValue.toString();
       case LocalDate ignored ->
           throw new IllegalArgumentException(
               "LocalDate value must be handled as a date field (FieldType.DATE), not formatted here");
-      default -> "TODO";
+      default ->
+          throw new IllegalArgumentException(
+              "Unsupported value type '%s' for text field".formatted(value.getClass()));
     };
   }
 

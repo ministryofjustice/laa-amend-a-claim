@@ -8,15 +8,8 @@ public record AmendmentCostRow(
     String key, Object submittedValue, Object calculatedValue, FieldType type, boolean editable) {
 
   public static AmendmentCostRow from(ClaimFieldRow row) {
+    var field = CostClaimDetailsViewField.byKey(row.key());
     return new AmendmentCostRow(
-        row.key(),
-        row.submitted(),
-        row.calculated(),
-        CostClaimDetailsViewField.byKey(row.key()).getType(),
-        isEditable(row.submitted()));
-  }
-
-  private static boolean isEditable(Object submitted) {
-    return submitted != null;
+        row.key(), row.submitted(), row.calculated(), field.getType(), field.isEditable());
   }
 }

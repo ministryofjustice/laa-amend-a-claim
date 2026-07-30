@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
 
+import java.util.EnumSet;
+import java.util.Set;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -25,12 +27,18 @@ public enum CostClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   HOME_OFFICE(Label.HO_INTERVIEW, FieldType.TEXT),
   PRIOR_AUTHORITY_REFERENCE(Label.PRIOR_AUTHORITY_REFERENCE, FieldType.TEXT);
 
+  private static final Set<CostClaimDetailsViewField> NON_EDITABLE = EnumSet.of(FIXED_FEE);
+
   private final String key;
   private final FieldType type;
 
   CostClaimDetailsViewField(String key, FieldType type) {
     this.key = key;
     this.type = type;
+  }
+
+  public boolean isEditable() {
+    return !NON_EDITABLE.contains(this);
   }
 
   @Override

@@ -68,7 +68,7 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
   }
 
   @Test
-  void testShowsCivilCostInputsWithNonApplicableBoltOn() {
+  void testNotProvidedBoltOnIsStillEditable() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setSubstantiveHearing(BoltOnClaimField.builder().key(SUBSTANTIVE_HEARING).build());
     this.claim = claim;
@@ -86,7 +86,9 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
     assertBigDecimalInputRow(costs.get(2), "Net profit costs", "£100.00", "profitCost", "100.00");
     assertBooleanSelectRow(costs.get(7), "VAT indicator", "Yes", "vat", true);
     assertSummaryListRowContainsValues(costs.get(11), "Substantive hearing", "Not applicable");
-    Assertions.assertTrue(costs.get(11).get(2).select("input, select").isEmpty());
+    Assertions.assertFalse(
+        costs.get(11).get(2).select("select#substantiveHearing").isEmpty(),
+        "Not-provided bolt-on should still be editable");
     assertBooleanSelectRow(costs.get(15), "London rate", "Yes", "isLondonRate", true);
   }
 
@@ -107,7 +109,7 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
 
     assertH2Exists(doc, "Costs");
     assertPageHasPrimaryButton(doc, "Continue");
-    assertPageHasLink(doc, "cancel", "Cancel", overviewUrl);
+    assertPageHasLink(doc, "cancel", "Cancel", costsUrl);
   }
 
   private void assertBigDecimalInputRow(

@@ -11,20 +11,27 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldType;
 class AmendmentCostRowTest {
 
   @Test
-  void nullBooleanRowIsNotEditable() {
+  void fixedFeeRowIsNotEditableEvenWithValue() {
+    var row = new ClaimFieldRow(Label.FIXED_FEE, BigDecimal.valueOf(100), null, null, false, null);
+
+    assertThat(AmendmentCostRow.from(row).editable()).isFalse();
+  }
+
+  @Test
+  void nonFixedFeeRowIsEditableWhenNotProvided() {
     var row = new ClaimFieldRow(Label.SUBSTANTIVE_HEARING, null, null, null, false, null);
 
     var costRow = AmendmentCostRow.from(row);
 
-    assertThat(costRow.editable()).isFalse();
+    assertThat(costRow.editable()).isTrue();
     assertThat(costRow.type()).isEqualTo(FieldType.BOOLEAN);
   }
 
   @Test
-  void nullRowIsNotEditable() {
-    var row = new ClaimFieldRow(Label.FIXED_FEE, null, null, null, false, null);
+  void zeroValueRowIsEditable() {
+    var row = new ClaimFieldRow(Label.WAITING_COSTS, BigDecimal.ZERO, null, null, false, null);
 
-    assertThat(AmendmentCostRow.from(row).editable()).isFalse();
+    assertThat(AmendmentCostRow.from(row).editable()).isTrue();
   }
 
   @Test
