@@ -1,9 +1,10 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcase;
 
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_CONCLUDED_DATE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_REFERENCE_NUMBER;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_START_DATE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.asMediationField;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CASE_CONCLUDED_DATE;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CASE_REFERENCE_NUMBER;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CASE_START_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CLAIM_ID;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.FEE_CODE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.MATTER_TYPE_CODE;
@@ -41,11 +42,11 @@ public record MediationClaimCaseView(
 
     Stream<ClaimViewField<MediationClaimDetails>> fields =
         Stream.of(
-            CASE_REFERENCE_NUMBER,
-            CASE_START_DATE,
+            asMediationField(CASE_REFERENCE_NUMBER),
+            asMediationField(CASE_START_DATE),
             CLAIM_ID,
             UNIQUE_CASE_ID,
-            CASE_CONCLUDED_DATE,
+            asMediationField(CASE_CONCLUDED_DATE),
             MEDIATION_SESSIONS_COUNT,
             MEDIATION_TIME_MINUTES,
             OUTCOME,

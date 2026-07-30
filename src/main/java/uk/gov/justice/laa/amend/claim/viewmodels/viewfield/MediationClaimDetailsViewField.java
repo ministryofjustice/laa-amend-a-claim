@@ -41,11 +41,8 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
   MATTER_TYPE_CODE(new Accessor<>(MediationClaimDetails::getMatterType)),
 
   // Case Details fields
-  CASE_REFERENCE_NUMBER(new Accessor<>(MediationClaimDetails::getCaseReferenceNumber)),
-  CASE_START_DATE(new Accessor<>(MediationClaimDetails::getCaseStartDate), FieldType.DATE),
   CLAIM_ID(new Accessor<>(MediationClaimDetails::getCaseId)),
   UNIQUE_CASE_ID(new Accessor<>(MediationClaimDetails::getUniqueCaseId)),
-  CASE_CONCLUDED_DATE(new Accessor<>(MediationClaimDetails::getCaseEndDate), FieldType.DATE),
   MEDIATION_SESSIONS_COUNT(
       new Accessor<>(MediationClaimDetails::getMediationSessionsCount), FieldType.NUMBER),
   MEDIATION_TIME_MINUTES(

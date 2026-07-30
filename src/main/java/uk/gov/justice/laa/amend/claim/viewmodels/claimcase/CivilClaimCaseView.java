@@ -7,9 +7,7 @@ import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDeta
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.AIT_HEARING_CENTRE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CASE_ID;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CASE_REFERENCE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CASE_STAGE;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CASE_START_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_EXEMPTION;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_REFERENCE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.COURT_LOCATION;
@@ -31,16 +29,19 @@ import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDeta
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.PROCUREMENT_AREA;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.STAGE_REACHED;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.SURGERY_CLIENTS_COUNT;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.SURGERY_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.SURGERY_MATTERS_COUNT;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.TOLERANCE_INDICATOR;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.TRANSFER_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.TRAVEL_TIME;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.UNIQUE_FILE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.VALUE_OF_COSTS;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.WAITING_TIME;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_REFERENCE_NUMBER;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_START_DATE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.STAGE_REACHED;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.UNIQUE_FILE_NUMBER;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.asCivilField;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
 
 import java.util.LinkedHashMap;
@@ -71,15 +72,15 @@ public record CivilClaimCaseView(
         Stream.of(
             SCHEDULE_REFERENCE_CIVIL,
             CASE_ID,
-            CASE_REFERENCE_NUMBER,
-            CASE_START_DATE,
+            asCivilField(CASE_REFERENCE_NUMBER),
+            asCivilField(CASE_START_DATE),
             CASE_CONCLUDED_CLAIMED_DATE,
-            UNIQUE_FILE_NUMBER,
+            asCivilField(UNIQUE_FILE_NUMBER),
             CASE_STAGE,
             VALUE_OF_COSTS,
             PROCUREMENT_AREA,
             ACCESS_POINT,
-            STAGE_REACHED,
+            asCivilField(STAGE_REACHED),
             OUTCOME_FOR_CLIENT,
             EXCEPTIONAL_CASE_FUNDING,
             CIVIL_LEGAL_ADVICE_REFERENCE,

@@ -1,7 +1,10 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcase;
 
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_CONCLUDED_DATE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.STAGE_REACHED;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.UNIQUE_FILE_NUMBER;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.asCrimeField;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.CASE_CONCLUDED_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.DSCC_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.FEE_CODE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.IS_DUTY_SOLICITOR;
@@ -14,10 +17,8 @@ import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDeta
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.PRISON_LAW_PRIOR_APPROVAL_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.SCHEME_ID;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.STAGE_REACHED;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.STANDARD_FEE_CATEGORY;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.SUSPECTS_DEFENDANTS_COUNT;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER;
 
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
@@ -44,10 +45,10 @@ public record CrimeClaimCaseView(
       CrimeClaimDetails claim) {
     Stream<ClaimViewField<CrimeClaimDetails>> fields =
         Stream.of(
-            STAGE_REACHED,
-            UNIQUE_FILE_NUMBER,
+            asCrimeField(STAGE_REACHED),
+            asCrimeField(UNIQUE_FILE_NUMBER),
             REPRESENTATION_ORDER_DATE,
-            CASE_CONCLUDED_DATE,
+            asCrimeField(CASE_CONCLUDED_DATE),
             STANDARD_FEE_CATEGORY,
             OUTCOME_FOR_CLIENT,
             SUSPECTS_DEFENDANTS_COUNT,
