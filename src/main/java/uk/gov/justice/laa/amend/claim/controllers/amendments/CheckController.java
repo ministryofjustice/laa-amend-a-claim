@@ -53,7 +53,7 @@ public class CheckController {
     model.addAttribute("clientView", clientView);
     model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
 
-    return "amendments/check";
+    return "amendments/check-your-answers";
   }
 
   @PostMapping
