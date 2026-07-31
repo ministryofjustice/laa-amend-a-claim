@@ -49,7 +49,7 @@
                   th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
               <dd class="govuk-summary-list__value"
                   th:if="${costsFormIsAmended}"
-                  th:text="${costsForm.isAmendment(field.name(), originalCostsForm, field.type) ? @ThymeleafUtils.getFormattedValue(costsForm.getAmendedValue(field)).resolve(#messages) : ''}"></dd>
+                  th:text="${costsForm.isAmendment(field.name(), originalCostsForm, field.fieldType) ? @ThymeleafUtils.getFormattedValue(costsForm.getAmendedValue(field)).resolve(#messages) : ''}"></dd>
             </div>
           </dl>
         </div>

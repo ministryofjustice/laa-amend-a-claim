@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.tests;
 import static uk.gov.justice.laa.amend.claim.helpers.PageHelper.assertSummaryListRow;
 import static uk.gov.justice.laa.amend.claim.utils.TestDataUtils.generateUfn;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -12,8 +13,10 @@ import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.base.BaseTest;
 import uk.gov.justice.laa.amend.claim.models.BulkSubmissionInsert;
 import uk.gov.justice.laa.amend.claim.models.CalculatedFeeDetailInsert;
+import uk.gov.justice.laa.amend.claim.models.ClaimCaseInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimInsert;
 import uk.gov.justice.laa.amend.claim.models.ClaimSummaryFeeInsert;
+import uk.gov.justice.laa.amend.claim.models.ClientInsert;
 import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
@@ -25,32 +28,30 @@ import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendFeeCodePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendMatterTypePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.CheckPage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.ConfirmationPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCasePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewClientPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCostsPage;
 
 public class AmendmentsFlowE2ETest extends BaseTest {
 
-  private static final String PROVIDER_ACCOUNT = "123456";
+  private static final String PROVIDER_ACCOUNT = "0P322F";
   private static final String LEGAL_HELP_UFN = generateUfn();
-  private static final String MEDIATION_UFN = generateUfn(1L);
+  private static final String MEDIATION_UFN = "121019/002";
   private static final String LEGAL_HELP_BULK_SUBMISSION_ID = UUID.randomUUID().toString();
   private static final String LEGAL_HELP_SUBMISSION_ID = UUID.randomUUID().toString();
   private static final String LEGAL_HELP_CLAIM_ID = UUID.randomUUID().toString();
   private static final String LEGAL_HELP_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-  private static final String LEGAL_HELP_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
   private static final String MEDIATION_BULK_SUBMISSION_ID = UUID.randomUUID().toString();
   private static final String MEDIATION_SUBMISSION_ID = UUID.randomUUID().toString();
   private static final String MEDIATION_CLAIM_ID = UUID.randomUUID().toString();
   private static final String MEDIATION_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-  private static final String MEDIATION_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
-  private static final String CRIME_UFN = generateUfn(2L);
+  private static final String CRIME_UFN = "121019/003";
   private static final String CRIME_BULK_SUBMISSION_ID = UUID.randomUUID().toString();
   private static final String CRIME_SUBMISSION_ID = UUID.randomUUID().toString();
   private static final String CRIME_CLAIM_ID = UUID.randomUUID().toString();
   private static final String CRIME_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-  private static final String CRIME_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
-  private static final String STAGE_REACHED = "INVA";
+  private static final String LEGAL_HELP_STAGE_REACHED = "AB";
 
   @Override
   protected List<Insert> inserts() {
@@ -83,10 +84,35 @@ public class AmendmentsFlowE2ETest extends BaseTest {
         ClaimSummaryFeeInsert.builder()
             .id(LEGAL_HELP_CLAIM_SUMMARY_FEE_ID)
             .claimId(LEGAL_HELP_CLAIM_ID)
+            .adviceTime(60)
+            .travelTime(10)
+            .waitingTime(5)
+            .netCounselCostsAmount(BigDecimal.valueOf(100))
+            .userId(USER_ID)
+            .build(),
+        ClientInsert.builder()
+            .id(UUID.randomUUID().toString())
+            .claimId(LEGAL_HELP_CLAIM_ID)
+            .clientForename("Francesca")
+            .clientDateOfBirth("1996-08-07")
+            .uniqueClientNumber("07081996/S/MCLE")
+            .clientPostcode("SE61LG")
+            .genderCode("F")
+            .ethnicityCode("03")
+            .disabilityCode("NCD")
+            .userId(USER_ID)
+            .build(),
+        ClaimCaseInsert.builder()
+            .id(UUID.randomUUID().toString())
+            .claimId(LEGAL_HELP_CLAIM_ID)
+            .caseId("711")
+            .uniqueCaseId("UCID123456")
+            .outcomeCode("BB")
+            .stageReachedCode("--")
             .userId(USER_ID)
             .build(),
         CalculatedFeeDetailInsert.builder()
-            .id(LEGAL_HELP_CALCULATED_FEE_DETAIL_ID)
+            .id(UUID.randomUUID().toString())
             .claimSummaryFeeId(LEGAL_HELP_CLAIM_SUMMARY_FEE_ID)
             .claimId(LEGAL_HELP_CLAIM_ID)
             .feeCode("IMCA")
@@ -110,6 +136,29 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .id(MEDIATION_CLAIM_ID)
             .submissionId(MEDIATION_SUBMISSION_ID)
             .uniqueFileNumber(MEDIATION_UFN)
+            .outreachLocation("001")
+            .referralSource("08")
+            .userId(USER_ID)
+            .build(),
+        ClientInsert.builder()
+            .id(UUID.randomUUID().toString())
+            .claimId(MEDIATION_CLAIM_ID)
+            .clientForename("Francesca")
+            .clientSurname("Elonga")
+            .clientDateOfBirth("1996-08-07")
+            .uniqueClientNumber("07081996/S/MCLE")
+            .clientPostcode("SE61LG")
+            .genderCode("F")
+            .ethnicityCode("03")
+            .disabilityCode("NCD")
+            .isLegallyAided(true)
+            .userId(USER_ID)
+            .build(),
+        ClaimCaseInsert.builder()
+            .id(UUID.randomUUID().toString())
+            .claimId(MEDIATION_CLAIM_ID)
+            .uniqueCaseId("UCID123456")
+            .caseId("711")
             .userId(USER_ID)
             .build(),
         ClaimSummaryFeeInsert.builder()
@@ -118,7 +167,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .userId(USER_ID)
             .build(),
         CalculatedFeeDetailInsert.builder()
-            .id(MEDIATION_CALCULATED_FEE_DETAIL_ID)
+            .id(UUID.randomUUID().toString())
             .claimSummaryFeeId(MEDIATION_CLAIM_SUMMARY_FEE_ID)
             .claimId(MEDIATION_CLAIM_ID)
             .feeCode("MDAS2S")
@@ -142,6 +191,15 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .id(CRIME_CLAIM_ID)
             .submissionId(CRIME_SUBMISSION_ID)
             .uniqueFileNumber(CRIME_UFN)
+            .matterType("INVA")
+            .crimeMatterType("1")
+            .feeCode("INVC")
+            .userId(USER_ID)
+            .build(),
+        ClaimCaseInsert.builder()
+            .id(UUID.randomUUID().toString())
+            .claimId(CRIME_CLAIM_ID)
+            .stageReachedCode("INVC")
             .userId(USER_ID)
             .build(),
         ClaimSummaryFeeInsert.builder()
@@ -150,7 +208,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .userId(USER_ID)
             .build(),
         CalculatedFeeDetailInsert.builder()
-            .id(CRIME_CALCULATED_FEE_DETAIL_ID)
+            .id(UUID.randomUUID().toString())
             .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
             .claimId(CRIME_CLAIM_ID)
             .feeCode("INVC")
@@ -166,7 +224,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             → View Client → Change Client Details → View Client
             → View Case → Change case type → Change Fee code → Change Matter Type → View Case Type
             → View Case → Change case details → View Case
-            → Check Page → Change Client details → View Client
+            → Check Page → Submit amendments → Confirmation page
           """)
   void fullLegalHelpAmendmentFlow() {
     var search = new SearchPage(page);
@@ -196,7 +254,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Case type", "Fee code", "IMCA");
     assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB");
     assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL");
-    assertSummaryListRow(page, "Case details", "Stage reached", "Not applicable");
+    assertSummaryListRow(page, "Case details", "Stage reached", "--");
 
     viewAmendCase.clickChangeCaseTypeLink();
     var amendFeeCode = new AmendFeeCodePage(page);
@@ -204,22 +262,22 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendFeeCode.clickContinueButton();
 
     var amendMatterType = new AmendMatterTypePage(page);
-    amendMatterType.fillMatterTypeCodeOne("NEW_MONE");
-    amendMatterType.fillMatterTypeCodeTwo("NEW_MTWO");
+    amendMatterType.fillMatterTypeCodeOne("MONE");
+    amendMatterType.fillMatterTypeCodeTwo("MTWO");
     amendMatterType.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(page, "Case type", "Fee code", "IMCA", "IAXC");
-    assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "NEW_MONE");
-    assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL", "NEW_MTWO");
+    assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "MONE");
+    assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL", "MTWO");
 
     viewAmendCase.clickChangeCaseDetailsLink();
     var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
-    viewAmendCaseDetails.fillTypeaheadInput("STAGE_REACHED", STAGE_REACHED);
+    viewAmendCaseDetails.fillInput("STAGE_REACHED", LEGAL_HELP_STAGE_REACHED);
     viewAmendCaseDetails.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
-    assertSummaryListRow(page, "Case details", "Stage reached", "Not applicable", STAGE_REACHED);
+    assertSummaryListRow(page, "Case details", "Stage reached", "--", LEGAL_HELP_STAGE_REACHED);
 
     // View Case → Costs tab → Change costs → View Costs
     viewAmendCase.clickCostsTab();
@@ -236,9 +294,9 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
-    checkPage.clickChangeClientOneLink();
 
-    viewAmendClient = new ViewClientPage(page);
+    checkPage.clickSubmitButton();
+    new ConfirmationPage(page);
   }
 
   @Test
@@ -248,7 +306,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             → View Client → Change Client Details → View Client
             → View Case → Change case type → Change Fee code → Change Matter Type → View Case Type
             → View Case → Change case details → View Case
-            → Check Page → Change Client 2 details → View Client → Check Page
+            → Check Page → Submit amendments → Confirmation page
           """)
   void fullMediationAmendmentFlow() {
     var search = new SearchPage(page);
@@ -262,7 +320,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     details.clickAmendClaim();
 
     var viewAmendClient = new ViewClientPage(page);
-    assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable");
+    assertSummaryListRow(page, "Client 1 details", "Last name", "Elonga");
     viewAmendClient.getChangeClientOneLink().click();
 
     var amendClient1 = new AmendClient1Page(page);
@@ -270,7 +328,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendClient1.clickContinueButton();
 
     viewAmendClient = new ViewClientPage(page);
-    assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
+    assertSummaryListRow(page, "Client 1 details", "Last name", "Elonga", "changed");
     viewAmendClient.getChangeClientTwoLink().click();
 
     var amendClient2 = new AmendClient2Page(page);
@@ -293,20 +351,20 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendFeeCode.clickContinueButton();
 
     var amendMatterType = new AmendMatterTypePage(page);
-    amendMatterType.fillMatterTypeCode("NEW_MONE");
+    amendMatterType.fillMatterTypeCode("MONE:MTWO");
     amendMatterType.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(page, "Case type", "Fee code", "MDAS2S", "MDPS1B");
-    assertSummaryListRow(page, "Case type", "Matter type", "IMCB", "NEW_MONE");
+    assertSummaryListRow(page, "Case type", "Matter type", "IMCB", "MONE:MTWO");
 
     viewAmendCase.clickChangeCaseDetailsLink();
     var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
-    viewAmendCaseDetails.fillInput("CLAIM_ID", "changed");
+    viewAmendCaseDetails.fillInput("CLAIM_ID", "123");
     viewAmendCaseDetails.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
-    assertSummaryListRow(page, "Case details", "Claim ID", "Not applicable", "changed");
+    assertSummaryListRow(page, "Case details", "Claim ID", "711", "123");
 
     // View Case → Costs tab → Change costs → View Costs
     viewAmendCase.clickCostsTab();
@@ -322,24 +380,11 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendCosts.clickContinue();
 
     var checkPage = new CheckPage(page);
-    assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
+    assertSummaryListRow(page, "Client 1 details", "Last name", "Elonga", "changed");
     assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
-    checkPage.clickChangeClientTwoLink();
 
-    viewAmendClient = new ViewClientPage(page);
-    amendClient2 = new AmendClient2Page(page);
-    amendClient2.fillInput("CLIENT_2_FORENAME", "changedTwoForename");
-    amendClient2.clickContinueButton();
-    viewAmendClient = new ViewClientPage(page);
-    assertSummaryListRow(
-        page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
-    viewAmendCase.clickContinue();
-
-    checkPage = new CheckPage(page);
-    assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
-    assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
-    assertSummaryListRow(
-        page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
+    checkPage.clickSubmitButton();
+    new ConfirmationPage(page);
   }
 
   @Test
@@ -347,6 +392,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
       """
           E2E: Crime Claim Amendment Flow – Search → View → Amend Claim Details
             → Costs tab → Change costs → View Costs
+            → Check Page → Submit amendments → Confirmation page
           """)
   void crimeCostsAmendmentFlow() {
     var search = new SearchPage(page);
@@ -370,5 +416,11 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     viewAmendCosts = new ViewCostsPage(page);
     viewAmendCosts.assertAmendedCost("Net disbursements", "£150.00");
+
+    viewAmendCosts.clickContinue();
+
+    var checkPage = new CheckPage(page);
+    checkPage.clickSubmitButton();
+    new ConfirmationPage(page);
   }
 }

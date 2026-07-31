@@ -48,11 +48,11 @@ public class AmendmentForm {
     var inputs = new HashMap<String, String>();
     for (var entry : viewRows.entrySet()) {
       var field = entry.getKey();
-      if (field.getType() == FieldType.DATE) {
+      if (field.getFieldType() == FieldType.DATE) {
         putDateInputs(inputs, field.name(), entry.getValue());
-      } else if (field.getType() == FieldType.BOOLEAN) {
+      } else if (field.getFieldType() == FieldType.BOOLEAN) {
         inputs.put(field.name(), formatBooleanValue(field.name(), entry.getValue()));
-      } else if (field.getType() == FieldType.NUMBER) {
+      } else if (field.getFieldType() == FieldType.NUMBER) {
         inputs.put(field.name(), formatNumberValue(field.name(), entry.getValue()));
       } else {
         inputs.put(field.name(), formatValue(entry.getValue()));
@@ -61,20 +61,20 @@ public class AmendmentForm {
     this.inputs = inputs;
   }
 
-  public Map<ClaimViewField<?>, String> getFieldInputs(Class<?> claimDetailsType) {
-    var fieldInputs = new LinkedHashMap<ClaimViewField<?>, String>();
+  public Map<ClaimViewField<?>, Object> getFieldValues(Class<?> claimDetailsType) {
+    var fieldInputs = new LinkedHashMap<ClaimViewField<?>, Object>();
     var processedDateFields = new HashSet<String>();
 
     for (var entry : inputs.entrySet()) {
       var dateFieldName = dateFieldNameOrNull(entry.getKey());
       if (dateFieldName != null) {
         if (processedDateFields.add(dateFieldName)) {
-          var date = getDateValue(dateFieldName);
-          fieldInputs.put(
-              getField(dateFieldName, claimDetailsType), date == null ? null : date.toString());
+          var field = getField(dateFieldName, claimDetailsType);
+          fieldInputs.put(field, getAmendedValue(field));
         }
       } else {
-        fieldInputs.put(getField(entry.getKey(), claimDetailsType), entry.getValue());
+        var field = getField(entry.getKey(), claimDetailsType);
+        fieldInputs.put(field, getAmendedValue(field));
       }
     }
 
@@ -149,7 +149,7 @@ public class AmendmentForm {
   }
 
   public Object getAmendedValue(ClaimViewField<?> field) {
-    return switch (field.getType()) {
+    return switch (field.getFieldType()) {
       case DATE -> getDateValue(field.name());
       case BOOLEAN -> getBooleanValue(field.name());
       case BIG_DECIMAL -> getBigDecimalValue(field.name());
@@ -271,7 +271,7 @@ public class AmendmentForm {
     };
   }
 
-  private static ClaimViewField<?> getField(String fieldName, Class<?> claimDetailsType) {
+  public static ClaimViewField<?> getField(String fieldName, Class<?> claimDetailsType) {
     if (claimDetailsType == CrimeClaimDetails.class) {
       return getCrimeField(fieldName);
     } else if (claimDetailsType == CivilClaimDetails.class) {

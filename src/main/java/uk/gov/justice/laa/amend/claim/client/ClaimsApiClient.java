@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
+import org.springframework.web.service.annotation.PatchExchange;
 import org.springframework.web.service.annotation.PostExchange;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
@@ -42,6 +44,12 @@ public interface ClaimsApiClient {
       url = "/v2/submissions/{submissionId}/claims/{claimId}",
       accept = MediaType.APPLICATION_JSON_VALUE)
   Mono<ClaimResponseV2> getClaim(@PathVariable UUID submissionId, @PathVariable UUID claimId);
+
+  @PatchExchange(
+      url = "/v1/submissions/{submissionId}/claims/{claimId}",
+      accept = MediaType.APPLICATION_JSON_VALUE)
+  Mono<Void> updateClaim(
+      @PathVariable UUID submissionId, @PathVariable UUID claimId, @RequestBody ClaimPatch body);
 
   @PostExchange(
       value = "/v1/claims/{claimId}/assessments",

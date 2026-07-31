@@ -1,62 +1,125 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.Getter;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
 @Getter
 public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetails> {
   // Case type fields
-  FEE_CODE(new Accessor<>(CrimeClaimDetails::getFeeCode)),
-  MATTER_TYPE_CODE(new Accessor<>(CrimeClaimDetails::getMatterTypeCode)),
+  FEE_CODE(
+      FieldType.TEXT, String.class, CrimeClaimDetails::getFeeCode, ClaimPatch.Builder::feeCode),
+  MATTER_TYPE_CODE(
+      FieldType.TEXT,
+      String.class,
+      CrimeClaimDetails::getMatterTypeCode,
+      ClaimPatch.Builder::crimeMatterTypeCode),
 
   // Case fields
+  STAGE_REACHED(
+      FieldType.ENUM,
+      String.class,
+      ClaimDetails::getStageReached,
+      ClaimPatch.Builder::stageReachedCode,
+      FieldOptions.CRIME_STAGE_REACHED),
   REPRESENTATION_ORDER_DATE(
-      new Accessor<>(CrimeClaimDetails::getRepresentationOrderDate), FieldType.DATE),
+      FieldType.DATE,
+      String.class,
+      CrimeClaimDetails::getRepresentationOrderDate,
+      ClaimPatch.Builder::representationOrderDate),
   STANDARD_FEE_CATEGORY(
-      new Accessor<>(CrimeClaimDetails::getStandardFeeCategory),
+      FieldType.ENUM,
+      String.class,
+      CrimeClaimDetails::getStandardFeeCategory,
+      ClaimPatch.Builder::standardFeeCategoryCode,
       FieldOptions.STANDARD_FEE_CATEGORY),
-  OUTCOME_FOR_CLIENT(new Accessor<>(CrimeClaimDetails::getOutcome), FieldOptions.OUTCOME),
+  OUTCOME_FOR_CLIENT(
+      FieldType.ENUM,
+      String.class,
+      CrimeClaimDetails::getOutcome,
+      ClaimPatch.Builder::outcomeCode,
+      FieldOptions.OUTCOME),
   SUSPECTS_DEFENDANTS_COUNT(
-      new Accessor<>(CrimeClaimDetails::getSuspectsDefendantsCount), FieldType.NUMBER),
+      FieldType.NUMBER,
+      Integer.class,
+      CrimeClaimDetails::getSuspectsDefendantsCount,
+      ClaimPatch.Builder::suspectsDefendantsCount),
   POLICE_STATION_COURT_ATTENDANCES_COUNT(
-      new Accessor<>(CrimeClaimDetails::getPoliceStationCourtAttendancesCount), FieldType.NUMBER),
-  POLICE_STATION_COURT_PRISON_ID(new Accessor<>(CrimeClaimDetails::getPoliceStationCourtPrisonId)),
-  SCHEME_ID(new Accessor<>(CrimeClaimDetails::getSchemeId)),
-  DSCC_NUMBER(new Accessor<>(CrimeClaimDetails::getDsccNumber)),
-  MAAT_ID(new Accessor<>(CrimeClaimDetails::getMaatId)),
+      FieldType.NUMBER,
+      Integer.class,
+      CrimeClaimDetails::getPoliceStationCourtAttendancesCount,
+      ClaimPatch.Builder::policeStationCourtAttendancesCount),
+  POLICE_STATION_COURT_PRISON_ID(
+      FieldType.TEXT,
+      String.class,
+      CrimeClaimDetails::getPoliceStationCourtPrisonId,
+      ClaimPatch.Builder::policeStationCourtPrisonId),
+  SCHEME_ID(
+      FieldType.TEXT, String.class, CrimeClaimDetails::getSchemeId, ClaimPatch.Builder::schemeId),
+  DSCC_NUMBER(
+      FieldType.TEXT,
+      String.class,
+      CrimeClaimDetails::getDsccNumber,
+      ClaimPatch.Builder::dsccNumber),
+  MAAT_ID(FieldType.TEXT, String.class, CrimeClaimDetails::getMaatId, ClaimPatch.Builder::maatId),
   PRISON_LAW_PRIOR_APPROVAL_NUMBER(
-      new Accessor<>(CrimeClaimDetails::getPrisonLawPriorApprovalNumber)),
-  IS_DUTY_SOLICITOR(new Accessor<>(CrimeClaimDetails::getIsDutySolicitor), FieldType.BOOLEAN),
-  IS_YOUTH_COURT(new Accessor<>(CrimeClaimDetails::getIsYouthCourt), FieldType.BOOLEAN),
+      FieldType.TEXT,
+      String.class,
+      CrimeClaimDetails::getPrisonLawPriorApprovalNumber,
+      ClaimPatch.Builder::prisonLawPriorApprovalNumber),
+  IS_DUTY_SOLICITOR(
+      FieldType.BOOLEAN,
+      Boolean.class,
+      CrimeClaimDetails::getIsDutySolicitor,
+      ClaimPatch.Builder::isDutySolicitor),
+  IS_YOUTH_COURT(
+      FieldType.BOOLEAN,
+      Boolean.class,
+      CrimeClaimDetails::getIsYouthCourt,
+      ClaimPatch.Builder::isYouthCourt),
 
   // Cost fields
-  TRAVEL_COSTS(new Accessor<>(CrimeClaimDetails::getTravelCosts), FieldType.BIG_DECIMAL),
-  WAITING_COSTS(new Accessor<>(CrimeClaimDetails::getWaitingCosts), FieldType.BIG_DECIMAL);
+  TRAVEL_COSTS(
+      FieldType.BIG_DECIMAL,
+      BigDecimal.class,
+      CrimeClaimDetails::getTravelCosts,
+      ClaimPatch.Builder::travelWaitingCostsAmount),
+  WAITING_COSTS(
+      FieldType.BIG_DECIMAL,
+      BigDecimal.class,
+      CrimeClaimDetails::getWaitingCosts,
+      ClaimPatch.Builder::netWaitingCostsAmount);
 
-  private final Accessor<?> accessor;
-  private final FieldType type;
+  private final CrimeClaimViewFieldGetter<?> getter;
+  private final FieldType fieldType;
+  private final ClaimViewFieldPatcher<?> patcher;
   private final List<FieldOption> options;
 
-  CrimeClaimDetailsViewField(Accessor<?> accessor) {
-    this(accessor, FieldType.TEXT);
+  <T> CrimeClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<CrimeClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher) {
+    this(fieldType, patchType, getter, patcher, List.of());
   }
 
-  CrimeClaimDetailsViewField(Accessor<?> accessor, FieldType type) {
-    this(accessor, type, List.of());
-  }
-
-  CrimeClaimDetailsViewField(Accessor<?> accessor, List<FieldOption> options) {
-    this(accessor, FieldType.ENUM, options);
-  }
-
-  CrimeClaimDetailsViewField(Accessor<?> accessor, FieldType type, List<FieldOption> options) {
-    this.accessor = accessor;
-    this.type = type;
+  <T> CrimeClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<CrimeClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      List<FieldOption> options) {
+    this.getter = new CrimeClaimViewFieldGetter<>(getter);
+    this.fieldType = fieldType;
+    this.patcher = new ClaimViewFieldPatcher<>(patchType, patcher);
     this.options = List.copyOf(options);
   }
 
-  public record Accessor<T>(Function<CrimeClaimDetails, T> getter)
-      implements ClaimViewFieldAccessor<CrimeClaimDetails, T> {}
+  public record CrimeClaimViewFieldGetter<T>(Function<CrimeClaimDetails, T> getter)
+      implements ClaimViewFieldGetter<CrimeClaimDetails, T> {}
 }
