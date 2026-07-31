@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
 
+import java.util.Locale;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
@@ -10,7 +11,7 @@ public class TextAmendmentFieldValidator implements AmendmentFieldValidator {
 
   static final int MAX_TEXT_LENGTH = 255;
 
-  private static final String TOO_LONG_CODE = "amendmentForm.tooLong";
+  private static final String TOO_LONG_CODE = "amendmentForm.text.tooLong";
 
   private final MessageSource messageSource;
 
@@ -27,7 +28,10 @@ public class TextAmendmentFieldValidator implements AmendmentFieldValidator {
   public void validate(ClaimViewField<?> field, AmendmentForm form, Errors errors) {
     var value = form.getInputs().get(field.name());
     if (value != null && value.length() > MAX_TEXT_LENGTH) {
-      reject(errors, field, TOO_LONG_CODE, "Value exceeds maximum length", MAX_TEXT_LENGTH);
+      var message =
+          messageSource.getMessage(
+              TOO_LONG_CODE, new Object[] {field.label(messageSource), MAX_TEXT_LENGTH}, Locale.UK);
+      errors.rejectValue(FIELD_PATH.formatted(field.name()), TOO_LONG_CODE, message);
     }
   }
 }

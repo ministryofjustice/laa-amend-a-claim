@@ -178,7 +178,9 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("govuk-error-summary")))
         .andExpect(content().string(containsString("govuk-error-message")))
-        .andExpect(content().string(containsString("Value exceeds maximum length")));
+        .andExpect(
+            content()
+                .string(containsString("Unique file number (UFN) must be 255 characters or less")));
   }
 
   public String buildAmendCaseDetailsPath() {

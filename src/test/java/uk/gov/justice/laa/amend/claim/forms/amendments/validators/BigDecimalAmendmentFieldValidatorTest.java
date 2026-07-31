@@ -17,35 +17,55 @@ class BigDecimalAmendmentFieldValidatorTest {
 
   @Test
   void acceptsWellFormedBigDecimalValue() {
-    var errors = validate(Map.of("VALUE_OF_COSTS", "12.34"));
+    var errors = validate(CivilClaimDetailsViewField.VALUE_OF_COSTS, "12.34");
 
     assertThat(errors.hasErrors()).isFalse();
   }
 
   @Test
-  void rejectsMalformedBigDecimalValue() {
-    var errors = validate(Map.of("VALUE_OF_COSTS", "not-a-number"));
+  void rejectsMalformedBigDecimalValueNamingTheField() {
+    var errors = validate(CivilClaimDetailsViewField.VALUE_OF_COSTS, "not-a-number");
 
     assertThat(errors.hasErrors()).isTrue();
-    assertThat(errors.getFieldError("inputs[VALUE_OF_COSTS]").getCode())
-        .isEqualTo("amendmentForm.invalidValue");
+    var fieldError = errors.getFieldError("inputs[VALUE_OF_COSTS]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.invalid");
+    assertThat(fieldError.getDefaultMessage())
+        .isEqualTo("Value of costs or damages recovered must be entered as a valid amount");
+  }
+
+  @Test
+  void rejectsMalformedBigDecimalValueNamingADifferentField() {
+    var errors = validate(CivilClaimDetailsViewField.COUNSELS_COST, "not-a-number");
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[COUNSELS_COST]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.invalid");
+    assertThat(fieldError.getDefaultMessage())
+        .isEqualTo("Net cost of counsel must be entered as a valid amount");
   }
 
   @Test
   void rejectsBigDecimalWithMoreThanTwoDecimalPlaces() {
-    var errors = validate(Map.of("VALUE_OF_COSTS", "12.345"));
+    var errors = validate(CivilClaimDetailsViewField.VALUE_OF_COSTS, "12.345");
 
     assertThat(errors.hasErrors()).isTrue();
     assertThat(errors.getFieldError("inputs[VALUE_OF_COSTS]").getCode())
-        .isEqualTo("amendmentForm.invalidValue");
+        .isEqualTo("amendmentForm.bigDecimal.invalid");
   }
 
-  private Errors validate(Map<String, String> inputs) {
+  @Test
+  void acceptsBlankBigDecimalValue() {
+    var errors = validate(CivilClaimDetailsViewField.VALUE_OF_COSTS, "");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  private Errors validate(CivilClaimDetailsViewField field, String value) {
     var form = new AmendmentForm();
-    form.setInputs(inputs);
+    form.setInputs(Map.of(field.name(), value));
 
     var errors = new BeanPropertyBindingResult(form, "amendmentForm");
-    validator.validate(CivilClaimDetailsViewField.VALUE_OF_COSTS, form, errors);
+    validator.validate(field, form, errors);
     return errors;
   }
 }

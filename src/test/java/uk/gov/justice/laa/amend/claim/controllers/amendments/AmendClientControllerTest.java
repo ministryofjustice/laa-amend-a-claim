@@ -403,7 +403,7 @@ class AmendClientControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("govuk-error-summary")))
         .andExpect(content().string(containsString("govuk-error-message")))
-        .andExpect(content().string(containsString("Value exceeds maximum length")));
+        .andExpect(content().string(containsString("Last name must be 255 characters or less")));
   }
 
   @Test
@@ -440,7 +440,7 @@ class AmendClientControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("govuk-error-summary")))
         .andExpect(content().string(containsString("govuk-error-message")))
-        .andExpect(content().string(containsString("Value exceeds maximum length")));
+        .andExpect(content().string(containsString("Last name must be 255 characters or less")));
   }
 
   private void useMediationClaim() {

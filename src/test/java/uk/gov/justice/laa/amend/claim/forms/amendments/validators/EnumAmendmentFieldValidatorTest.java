@@ -17,33 +17,44 @@ class EnumAmendmentFieldValidatorTest {
 
   @Test
   void acceptsEnumValueMatchingAnAllowedOption() {
-    var errors = validate(Map.of("GENDER", "M"));
+    var errors = validate(ClaimDetailsViewField.GENDER, Map.of("GENDER", "M"));
 
     assertThat(errors.hasErrors()).isFalse();
   }
 
   @Test
-  void rejectsEnumValueNotMatchingAnAllowedOption() {
-    var errors = validate(Map.of("GENDER", "NOT_A_CODE"));
+  void rejectsEnumValueNotMatchingAnAllowedOptionNamingTheField() {
+    var errors = validate(ClaimDetailsViewField.GENDER, Map.of("GENDER", "NOT_A_CODE"));
 
     assertThat(errors.hasErrors()).isTrue();
-    assertThat(errors.getFieldError("inputs[GENDER]").getCode())
-        .isEqualTo("amendmentForm.invalidOption");
+    var fieldError = errors.getFieldError("inputs[GENDER]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.enum.invalid");
+    assertThat(fieldError.getDefaultMessage()).isEqualTo("Gender must be a valid option");
+  }
+
+  @Test
+  void rejectsEnumValueNotMatchingAnAllowedOptionNamingADifferentField() {
+    var errors = validate(ClaimDetailsViewField.ETHNICITY, Map.of("ETHNICITY", "NOT_A_CODE"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[ETHNICITY]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.enum.invalid");
+    assertThat(fieldError.getDefaultMessage()).isEqualTo("Ethnicity must be a valid option");
   }
 
   @Test
   void acceptsBlankEnumValue() {
-    var errors = validate(Map.of("GENDER", ""));
+    var errors = validate(ClaimDetailsViewField.GENDER, Map.of("GENDER", ""));
 
     assertThat(errors.hasErrors()).isFalse();
   }
 
-  private Errors validate(Map<String, String> inputs) {
+  private Errors validate(ClaimDetailsViewField field, Map<String, String> inputs) {
     var form = new AmendmentForm();
     form.setInputs(inputs);
 
     var errors = new BeanPropertyBindingResult(form, "amendmentForm");
-    validator.validate(ClaimDetailsViewField.GENDER, form, errors);
+    validator.validate(field, form, errors);
     return errors;
   }
 }

@@ -17,26 +17,46 @@ class NumberAmendmentFieldValidatorTest {
 
   @Test
   void acceptsWellFormedNumberValue() {
-    var errors = validate(Map.of("SUSPECTS_DEFENDANTS_COUNT", "3"));
+    var errors = validate(CrimeClaimDetailsViewField.SUSPECTS_DEFENDANTS_COUNT, "3");
 
     assertThat(errors.hasErrors()).isFalse();
   }
 
   @Test
-  void rejectsMalformedNumberValue() {
-    var errors = validate(Map.of("SUSPECTS_DEFENDANTS_COUNT", "abc"));
+  void rejectsMalformedNumberValueNamingTheField() {
+    var errors = validate(CrimeClaimDetailsViewField.SUSPECTS_DEFENDANTS_COUNT, "abc");
 
     assertThat(errors.hasErrors()).isTrue();
-    assertThat(errors.getFieldError("inputs[SUSPECTS_DEFENDANTS_COUNT]").getCode())
-        .isEqualTo("amendmentForm.invalidValue");
+    var fieldError = errors.getFieldError("inputs[SUSPECTS_DEFENDANTS_COUNT]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.invalid");
+    assertThat(fieldError.getDefaultMessage())
+        .isEqualTo("Number of suspects or defendants must be entered as numbers only");
   }
 
-  private Errors validate(Map<String, String> inputs) {
+  @Test
+  void rejectsMalformedNumberValueNamingADifferentField() {
+    var errors = validate(CrimeClaimDetailsViewField.POLICE_STATION_COURT_ATTENDANCES_COUNT, "abc");
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[POLICE_STATION_COURT_ATTENDANCES_COUNT]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.invalid");
+    assertThat(fieldError.getDefaultMessage())
+        .isEqualTo("Number of police station or court attendances must be entered as numbers only");
+  }
+
+  @Test
+  void acceptsBlankNumberValue() {
+    var errors = validate(CrimeClaimDetailsViewField.SUSPECTS_DEFENDANTS_COUNT, "");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  private Errors validate(CrimeClaimDetailsViewField field, String value) {
     var form = new AmendmentForm();
-    form.setInputs(inputs);
+    form.setInputs(Map.of(field.name(), value));
 
     var errors = new BeanPropertyBindingResult(form, "amendmentForm");
-    validator.validate(CrimeClaimDetailsViewField.SUSPECTS_DEFENDANTS_COUNT, form, errors);
+    validator.validate(field, form, errors);
     return errors;
   }
 }

@@ -329,7 +329,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("govuk-error-summary")))
         .andExpect(content().string(containsString("govuk-error-message")))
-        .andExpect(content().string(containsString("Value exceeds maximum length")));
+        .andExpect(content().string(containsString("Fee code must be 255 characters or less")));
   }
 
   @Test
@@ -431,7 +431,8 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("govuk-error-summary")))
         .andExpect(content().string(containsString("govuk-error-message")))
-        .andExpect(content().string(containsString("Value exceeds maximum length")));
+        .andExpect(
+            content().string(containsString("Matter type 1 must be 255 characters or less")));
   }
 
   @Test

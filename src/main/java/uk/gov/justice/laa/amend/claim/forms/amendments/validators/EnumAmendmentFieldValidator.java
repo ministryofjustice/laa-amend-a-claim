@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import java.util.Locale;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
@@ -10,7 +11,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldType;
 
 public class EnumAmendmentFieldValidator implements AmendmentFieldValidator {
 
-  private static final String INVALID_OPTION_CODE = "amendmentForm.invalidOption";
+  private static final String INVALID_CODE = "amendmentForm.enum.invalid";
 
   private final MessageSource messageSource;
 
@@ -32,7 +33,10 @@ public class EnumAmendmentFieldValidator implements AmendmentFieldValidator {
     var isAllowedOption =
         field.getOptions().stream().anyMatch(option -> option.value().equals(value));
     if (!isAllowedOption) {
-      reject(errors, field, INVALID_OPTION_CODE, "Value is not a recognised option", value);
+      var message =
+          messageSource.getMessage(
+              INVALID_CODE, new Object[] {field.label(messageSource)}, Locale.UK);
+      errors.rejectValue(FIELD_PATH.formatted(field.name()), INVALID_CODE, message);
     }
   }
 }

@@ -17,26 +17,44 @@ class BooleanAmendmentFieldValidatorTest {
 
   @Test
   void acceptsWellFormedBooleanValue() {
-    var errors = validate(Map.of("IS_DUTY_SOLICITOR", "yes"));
+    var errors = validate(CrimeClaimDetailsViewField.IS_DUTY_SOLICITOR, "yes");
 
     assertThat(errors.hasErrors()).isFalse();
   }
 
   @Test
-  void rejectsMalformedBooleanValue() {
-    var errors = validate(Map.of("IS_DUTY_SOLICITOR", "banana"));
+  void rejectsMalformedBooleanValueNamingTheField() {
+    var errors = validate(CrimeClaimDetailsViewField.IS_DUTY_SOLICITOR, "banana");
 
     assertThat(errors.hasErrors()).isTrue();
-    assertThat(errors.getFieldError("inputs[IS_DUTY_SOLICITOR]").getCode())
-        .isEqualTo("amendmentForm.invalidValue");
+    var fieldError = errors.getFieldError("inputs[IS_DUTY_SOLICITOR]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.boolean.invalid");
+    assertThat(fieldError.getDefaultMessage()).isEqualTo("Duty solicitor must be Yes or No");
   }
 
-  private Errors validate(Map<String, String> inputs) {
+  @Test
+  void rejectsMalformedBooleanValueNamingADifferentField() {
+    var errors = validate(CrimeClaimDetailsViewField.IS_YOUTH_COURT, "banana");
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[IS_YOUTH_COURT]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.boolean.invalid");
+    assertThat(fieldError.getDefaultMessage()).isEqualTo("Youth court must be Yes or No");
+  }
+
+  @Test
+  void acceptsBlankBooleanValue() {
+    var errors = validate(CrimeClaimDetailsViewField.IS_DUTY_SOLICITOR, "");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  private Errors validate(CrimeClaimDetailsViewField field, String value) {
     var form = new AmendmentForm();
-    form.setInputs(inputs);
+    form.setInputs(Map.of(field.name(), value));
 
     var errors = new BeanPropertyBindingResult(form, "amendmentForm");
-    validator.validate(CrimeClaimDetailsViewField.IS_DUTY_SOLICITOR, form, errors);
+    validator.validate(field, form, errors);
     return errors;
   }
 }

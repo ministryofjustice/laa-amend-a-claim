@@ -19,6 +19,7 @@ class DateAmendmentFieldValidatorTest {
   void acceptsCompleteWellFormedDate() {
     var errors =
         validate(
+            ClaimDetailsViewField.CASE_START_DATE,
             Map.of(
                 "CASE_START_DATE-day", "1",
                 "CASE_START_DATE-month", "6",
@@ -31,6 +32,7 @@ class DateAmendmentFieldValidatorTest {
   void acceptsCompletelyBlankDate() {
     var errors =
         validate(
+            ClaimDetailsViewField.CASE_START_DATE,
             Map.of(
                 "CASE_START_DATE-day", "",
                 "CASE_START_DATE-month", "",
@@ -40,39 +42,44 @@ class DateAmendmentFieldValidatorTest {
   }
 
   @Test
-  void rejectsPartiallyFilledDate() {
+  void rejectsPartiallyFilledDateNamingTheField() {
     var errors =
         validate(
+            ClaimDetailsViewField.CASE_START_DATE,
             Map.of(
                 "CASE_START_DATE-day", "1",
                 "CASE_START_DATE-month", "",
                 "CASE_START_DATE-year", ""));
 
     assertThat(errors.hasErrors()).isTrue();
-    assertThat(errors.getFieldError("inputs[CASE_START_DATE]").getCode())
-        .isEqualTo("amendmentForm.invalidValue");
+    var fieldError = errors.getFieldError("inputs[CASE_START_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getDefaultMessage()).isEqualTo("Case start date must be a valid date");
   }
 
   @Test
-  void rejectsImpossibleDate() {
+  void rejectsImpossibleDateNamingADifferentField() {
     var errors =
         validate(
+            ClaimDetailsViewField.CASE_CONCLUDED_DATE,
             Map.of(
-                "CASE_START_DATE-day", "31",
-                "CASE_START_DATE-month", "2",
-                "CASE_START_DATE-year", "2025"));
+                "CASE_CONCLUDED_DATE-day", "31",
+                "CASE_CONCLUDED_DATE-month", "2",
+                "CASE_CONCLUDED_DATE-year", "2025"));
 
     assertThat(errors.hasErrors()).isTrue();
-    assertThat(errors.getFieldError("inputs[CASE_START_DATE]").getCode())
-        .isEqualTo("amendmentForm.invalidValue");
+    var fieldError = errors.getFieldError("inputs[CASE_CONCLUDED_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getDefaultMessage())
+        .isEqualTo("Case concluded date must be a valid date");
   }
 
-  private Errors validate(Map<String, String> inputs) {
+  private Errors validate(ClaimDetailsViewField field, Map<String, String> inputs) {
     var form = new AmendmentForm();
     form.setInputs(inputs);
 
     var errors = new BeanPropertyBindingResult(form, "amendmentForm");
-    validator.validate(ClaimDetailsViewField.CASE_START_DATE, form, errors);
+    validator.validate(field, form, errors);
     return errors;
   }
 }

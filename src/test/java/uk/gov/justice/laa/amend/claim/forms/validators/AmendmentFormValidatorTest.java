@@ -68,9 +68,9 @@ class AmendmentFormValidatorTest {
 
     assertThat(errors.getFieldErrors()).hasSize(2);
     assertThat(errors.getFieldError("inputs[UNIQUE_FILE_NUMBER]").getCode())
-        .isEqualTo("amendmentForm.tooLong");
+        .isEqualTo("amendmentForm.text.tooLong");
     assertThat(errors.getFieldError("inputs[STAGE_REACHED]").getCode())
-        .isEqualTo("amendmentForm.invalidOption");
+        .isEqualTo("amendmentForm.enum.invalid");
   }
 
   @Test

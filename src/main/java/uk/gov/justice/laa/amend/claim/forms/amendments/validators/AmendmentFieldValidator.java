@@ -12,10 +12,4 @@ public interface AmendmentFieldValidator {
   FieldType supportedType();
 
   void validate(ClaimViewField<?> field, AmendmentForm form, Errors errors);
-
-  default void reject(
-      Errors errors, ClaimViewField<?> field, String code, String defaultMessage, Object arg) {
-    errors.rejectValue(
-        FIELD_PATH.formatted(field.name()), code, new Object[] {field.name(), arg}, defaultMessage);
-  }
 }
