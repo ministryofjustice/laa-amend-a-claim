@@ -10,6 +10,7 @@
                th:for="${fieldKey + '-day'}"
                th:text="#{amendments.date.day}"></label>
         <input class="govuk-input govuk-date-input__input govuk-input--width-2"
+               th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, fieldKey) ? 'govuk-input--error' : ''}"
                type="text"
                inputmode="numeric"
                th:id="${fieldKey + '-day'}"
@@ -22,6 +23,7 @@
                th:for="${fieldKey + '-month'}"
                th:text="#{amendments.date.month}"></label>
         <select class="govuk-select"
+                th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, fieldKey) ? 'govuk-select--error' : ''}"
                 th:id="${fieldKey + '-month'}"
                 th:field="*{inputs[__${fieldKey + '-month'}__]}">
           <option value=""></option>
@@ -37,6 +39,7 @@
                th:for="${fieldKey + '-year'}"
                th:text="#{amendments.date.year}"></label>
         <input class="govuk-input govuk-date-input__input govuk-input--width-4"
+               th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, fieldKey) ? 'govuk-input--error' : ''}"
                type="text"
                inputmode="numeric"
                th:id="${fieldKey + '-year'}"
