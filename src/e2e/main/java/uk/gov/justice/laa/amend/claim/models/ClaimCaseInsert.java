@@ -1,29 +1,28 @@
 package uk.gov.justice.laa.amend.claim.models;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record ClaimSummaryFeeInsert(
+public record ClaimCaseInsert(
     String id,
     String claimId,
-    Integer adviceTime,
-    Integer travelTime,
-    Integer waitingTime,
-    BigDecimal netCounselCostsAmount,
+    String caseId,
+    String uniqueCaseId,
+    String outcomeCode,
+    String stageReachedCode,
     String userId)
     implements Insert {
 
   @Override
   public String table() {
-    return "claim_summary_fee";
+    return "claim_case";
   }
 
   @Override
   public List<Object> parameters() {
     return Arrays.asList(
-        id, claimId, adviceTime, travelTime, waitingTime, netCounselCostsAmount, userId);
+        id, claimId, caseId, uniqueCaseId, outcomeCode, stageReachedCode, userId, userId);
   }
 }

@@ -29,6 +29,7 @@ import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDeta
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.PROCUREMENT_AREA;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.STAGE_REACHED;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.SURGERY_CLIENTS_COUNT;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.SURGERY_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.SURGERY_MATTERS_COUNT;
@@ -39,7 +40,6 @@ import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDeta
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.WAITING_TIME;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_REFERENCE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_START_DATE;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.STAGE_REACHED;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.UNIQUE_FILE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.asCivilField;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
@@ -80,7 +80,7 @@ public record CivilClaimCaseView(
             VALUE_OF_COSTS,
             PROCUREMENT_AREA,
             ACCESS_POINT,
-            asCivilField(STAGE_REACHED),
+            STAGE_REACHED,
             OUTCOME_FOR_CLIENT,
             EXCEPTIONAL_CASE_FUNDING,
             CIVIL_LEGAL_ADVICE_REFERENCE,
