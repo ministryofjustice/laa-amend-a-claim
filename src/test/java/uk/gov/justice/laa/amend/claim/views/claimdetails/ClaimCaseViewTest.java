@@ -128,10 +128,10 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
 
     var caseType = getSummaryListInCard(doc, "Case type");
     assertSummaryListRowContainsValues(caseType.getFirst(), "Fee code", FEE_CODE);
-    assertSummaryListRowContainsValues(caseType.get(1), "Matter type", MATTER_TYPE);
+    assertSummaryListRowContainsValues(caseType.get(1), "Stage reached", STAGE_REACHED);
 
     var caseDetails = getSummaryListInCard(doc, "Case details");
-    assertSummaryListRowContainsValues(caseDetails.getFirst(), "Stage reached", STAGE_REACHED);
+    assertSummaryListRowContainsValues(caseDetails.getFirst(), "Matter type", MATTER_TYPE);
     assertSummaryListRowContainsValues(caseDetails.get(1), "Unique file number (UFN)", UFN);
     assertSummaryListRowContainsValues(
         caseDetails.get(2), "Representation order date", REPRESENTATION_ORDER_DATE_RENDERED);
@@ -207,6 +207,7 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(10), "Schedule reference (outcome)", SCHEDULE_REFERENCE);
   }
+
   void testShowsCivilClientDetails() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     this.claim = claim;

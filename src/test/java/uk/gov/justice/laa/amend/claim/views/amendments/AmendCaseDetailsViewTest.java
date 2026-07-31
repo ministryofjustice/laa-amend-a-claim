@@ -311,8 +311,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     var caseDetails = getSummaryListInCard(doc, "Case details");
 
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");
-    assertEnumTypeaheadRow(
-        caseDetails.get(1), "Stage reached", STAGE_REACHED, "STAGE_REACHED", STAGE_REACHED);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(1), "Matter type", MATTER_TYPE_CODE, MATTER_TYPE_CODE);
     assertSummaryListRowContainsValues(caseDetails.get(2), "Unique file number (UFN)", UFN, UFN);
     assertDateRow(
         caseDetails.get(3),

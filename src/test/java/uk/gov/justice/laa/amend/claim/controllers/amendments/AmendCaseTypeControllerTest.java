@@ -184,7 +184,14 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
     session.setAttribute(claimId.toString(), claim);
 
-    var caseTypeRows = Map.of("FEE_CODE", FEE_CODE, "MATTER_TYPE_CODE_1", MATTER_TYPE_CODE_1, "MATTER_TYPE_CODE_2", MATTER_TYPE_CODE_2);
+    var caseTypeRows =
+        Map.of(
+            "FEE_CODE",
+            FEE_CODE,
+            "MATTER_TYPE_CODE_1",
+            MATTER_TYPE_CODE_1,
+            "MATTER_TYPE_CODE_2",
+            MATTER_TYPE_CODE_2);
     var caseTypeForm = new AmendmentForm();
     caseTypeForm.setInputs(caseTypeRows);
 

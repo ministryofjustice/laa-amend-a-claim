@@ -62,11 +62,6 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     var client1Form = new AmendmentForm();
     client1Form.setInputs(client1Rows);
 
-    var caseTypeRows =
-        Map.of("FEE_CODE", claim.getFeeCode(), "MATTER_TYPE_CODE", claim.getMatterTypeCode());
-    var caseTypeForm = new AmendmentForm();
-    caseTypeForm.setInputs(caseTypeRows);
-
     claim.setStageReached("stagereached");
     claim.setUniqueFileNumber("uniqueFileNumber");
     claim.setRepresentationOrderDate(LocalDate.of(2000, 1, 1));
@@ -82,8 +77,16 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     claim.setPrisonLawPriorApprovalNumber("prisonLawPriorApprovalNumber");
     claim.setIsDutySolicitor(true);
     claim.setIsYouthCourt(true);
+
+    var caseTypeRows =
+        Map.of(
+            "FEE_CODE", claim.getFeeCode(),
+            "STAGE_REACHED", claim.getStageReached());
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
     Map<String, String> caseDetailsRows = new HashMap<>();
-    caseDetailsRows.put("STAGE_REACHED", claim.getStageReached());
+    caseDetailsRows.put("MATTER_TYPE_CODE", claim.getMatterTypeCode());
     caseDetailsRows.put("UNIQUE_FILE_NUMBER", claim.getUniqueFileNumber());
     caseDetailsRows.put("REPRESENTATION_ORDER_DATE-day", "1");
     caseDetailsRows.put("REPRESENTATION_ORDER_DATE-month", "1");

@@ -33,7 +33,8 @@ public record MediationClaimCaseView(
 
   private static LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> createCaseTypeRows(
       MediationClaimDetails claim) {
-    Stream<ClaimViewField<MediationClaimDetails>> fields = Stream.of(FEE_CODE, MATTER_TYPE_CODE_1, MATTER_TYPE_CODE_2);
+    Stream<ClaimViewField<MediationClaimDetails>> fields =
+        Stream.of(FEE_CODE, MATTER_TYPE_CODE_1, MATTER_TYPE_CODE_2);
 
     return toFieldMap(fields, claim);
   }

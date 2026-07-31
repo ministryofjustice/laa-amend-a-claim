@@ -36,7 +36,8 @@ public record CrimeClaimCaseView(
 
   private static LinkedHashMap<ClaimViewField<CrimeClaimDetails>, Object> createCaseTypeRows(
       CrimeClaimDetails claim) {
-    Stream<ClaimViewField<CrimeClaimDetails>> fields = Stream.of(FEE_CODE, MATTER_TYPE_CODE);
+    Stream<ClaimViewField<CrimeClaimDetails>> fields =
+        Stream.of(FEE_CODE, asCrimeField(STAGE_REACHED));
 
     return toFieldMap(fields, claim);
   }
@@ -45,7 +46,7 @@ public record CrimeClaimCaseView(
       CrimeClaimDetails claim) {
     Stream<ClaimViewField<CrimeClaimDetails>> fields =
         Stream.of(
-            asCrimeField(STAGE_REACHED),
+            MATTER_TYPE_CODE,
             asCrimeField(UNIQUE_FILE_NUMBER),
             REPRESENTATION_ORDER_DATE,
             asCrimeField(CASE_CONCLUDED_DATE),
