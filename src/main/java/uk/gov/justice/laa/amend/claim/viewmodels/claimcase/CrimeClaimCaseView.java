@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcase;
 
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_CONCLUDED_DATE;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.STAGE_REACHED;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.UNIQUE_FILE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.asCrimeField;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
@@ -17,6 +16,7 @@ import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDeta
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.PRISON_LAW_PRIOR_APPROVAL_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.SCHEME_ID;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.STAGE_REACHED;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.STANDARD_FEE_CATEGORY;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.SUSPECTS_DEFENDANTS_COUNT;
 
@@ -45,7 +45,7 @@ public record CrimeClaimCaseView(
       CrimeClaimDetails claim) {
     Stream<ClaimViewField<CrimeClaimDetails>> fields =
         Stream.of(
-            asCrimeField(STAGE_REACHED),
+            STAGE_REACHED,
             asCrimeField(UNIQUE_FILE_NUMBER),
             REPRESENTATION_ORDER_DATE,
             asCrimeField(CASE_CONCLUDED_DATE),

@@ -100,6 +100,28 @@ dataClaimsApi:
       value: "http://host.docker.internal:4566"
     - name: AWS_SQS_ENDPOINT
       value: "http://host.docker.internal:4566"
+    - name: PROVIDER_DETAILS_API_URL
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-provider-api-url
+          key: PROVIDER_API
+    - name: PROVIDER_DETAILS_API_ACCESS_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-provider-api-token
+          key: PROVIDER_TOKEN
+    - name: FEE_SCHEME_PLATFORM_API_URL
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-fsp-api-url
+          key: FEE_SCHEME_API
+    - name: FEE_SCHEME_PLATFORM_API_ACCESS_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: laa-amend-a-claim-fsp-api-token
+          key: FEE_SCHEME_TOKEN
+    - name: CLAIMS_API_AMENDMENTS_ENABLED
+      value: "true"
   resources: {}
 
 # Redis for laa-amend-a-claim session/cache

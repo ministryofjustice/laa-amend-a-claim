@@ -10,6 +10,11 @@ public record ClaimInsert(
     String submissionId,
     String status,
     String uniqueFileNumber,
+    String matterType,
+    String crimeMatterType,
+    String feeCode,
+    String outreachLocation,
+    String referralSource,
     String userId,
     Boolean hasAssessment)
     implements Insert {
@@ -26,6 +31,11 @@ public record ClaimInsert(
         submissionId,
         status != null ? status : "VALID",
         uniqueFileNumber,
+        matterType != null ? matterType : "IMCB:IRVL",
+        crimeMatterType,
+        feeCode != null ? feeCode : "INVC",
+        outreachLocation,
+        referralSource,
         userId,
         userId,
         hasAssessment != null ? hasAssessment : false);

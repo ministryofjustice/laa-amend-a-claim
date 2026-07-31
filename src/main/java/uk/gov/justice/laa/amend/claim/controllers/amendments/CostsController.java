@@ -75,7 +75,7 @@ public class CostsController {
                 field ->
                     costs
                         .getCurrent()
-                        .isAmendment(field.name(), costs.getOriginal(), field.getType()));
+                        .isAmendment(field.name(), costs.getOriginal(), field.getFieldType()));
 
     model.addAttribute("costFields", costFields);
     model.addAttribute("costsForm", costs.getCurrent());

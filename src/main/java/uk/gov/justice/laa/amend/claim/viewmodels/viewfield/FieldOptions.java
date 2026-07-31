@@ -19,7 +19,7 @@ public final class FieldOptions {
   public static final List<FieldOption> MEETINGS_ATTENDED = from(MeetingsAttended.values());
   public static final List<FieldOption> OUTCOME = from(OutcomeCode.values());
   public static final List<FieldOption> REFERRAL_SOURCE = from(ReferralSource.values());
-  public static final List<FieldOption> STAGE_REACHED = from(StageReached.values());
+  public static final List<FieldOption> CRIME_STAGE_REACHED = from(StageReached.values());
   public static final List<FieldOption> STANDARD_FEE_CATEGORY = from(StandardFeeCategory.values());
 
   private FieldOptions() {}

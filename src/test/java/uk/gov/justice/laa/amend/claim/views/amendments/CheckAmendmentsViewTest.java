@@ -6,12 +6,14 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.amendments.CheckAmendmentsController;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.service.CheckAmendmentsService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
@@ -35,6 +37,8 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
   private static final String SCHEDULE_REFERENCE = "schedulereference";
   private static final String FEE_CODE = "feecode";
   private static final String STAGE_REACHED = "INVA";
+
+  @MockitoBean CheckAmendmentsService checkAmendmentsService;
 
   CheckAmendmentsViewTest() {
     this.mapping = checkUrl;
