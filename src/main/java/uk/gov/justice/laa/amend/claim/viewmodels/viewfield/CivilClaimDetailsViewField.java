@@ -70,6 +70,21 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   MENTAL_HEALTH_TRIBUNAL_REFERENCE(
       new Accessor<>(CivilClaimDetails::getMentalHealthTribunalReference)),
   IS_NRM_ADVICE(new Accessor<>(CivilClaimDetails::getIsNrmAdvice), FieldType.BOOLEAN),
+
+  // Cost fields
+  COUNSELS_COST(new Accessor<>(CivilClaimDetails::getCounselsCost), FieldType.BIG_DECIMAL),
+  TRAVEL_AND_WAITING_COSTS(
+      new Accessor<>(CivilClaimDetails::getTravelAndWaitingCosts), FieldType.BIG_DECIMAL),
+  DETENTION_TRAVEL(
+      new Accessor<>(CivilClaimDetails::getDetentionTravelWaitingCosts), FieldType.BIG_DECIMAL),
+  JR_FORM_FILLING(new Accessor<>(CivilClaimDetails::getJrFormFillingCost), FieldType.BIG_DECIMAL),
+  ADJOURNED_HEARING_FEE(new Accessor<>(CivilClaimDetails::getAdjournedHearing), FieldType.NUMBER),
+  CMRH_TELEPHONE(new Accessor<>(CivilClaimDetails::getCmrhTelephone), FieldType.NUMBER),
+  CMRH_ORAL(new Accessor<>(CivilClaimDetails::getCmrhOral), FieldType.NUMBER),
+  HOME_OFFICE(new Accessor<>(CivilClaimDetails::getHoInterview), FieldType.NUMBER),
+  SUBSTANTIVE_HEARING(new Accessor<>(CivilClaimDetails::getSubstantiveHearing), FieldType.BOOLEAN),
+  IS_LONDON_RATE(new Accessor<>(CivilClaimDetails::getIsLondonRate), FieldType.BOOLEAN),
+  PRIOR_AUTHORITY_REFERENCE(new Accessor<>(CivilClaimDetails::getPriorAuthorityReference)),
   ;
 
   private final Accessor<?> accessor;

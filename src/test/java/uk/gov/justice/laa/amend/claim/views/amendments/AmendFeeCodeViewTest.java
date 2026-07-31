@@ -9,7 +9,7 @@ import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import uk.gov.justice.laa.amend.claim.controllers.amendments.CaseTypeController;
+import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendCaseTypeController;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -17,7 +17,7 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
-@WebMvcTest(CaseTypeController.class)
+@WebMvcTest(AmendCaseTypeController.class)
 class AmendFeeCodeViewTest extends AmendmentsBaseTest {
 
   private static final String FEE_CODE = "feecode";
@@ -51,8 +51,11 @@ class AmendFeeCodeViewTest extends AmendmentsBaseTest {
 
   private AmendmentForms createCaseTypeForm(ClaimDetails claim) {
     var view = ClaimCaseViewFactory.create(claim);
-    return new AmendmentForms(
-        new AmendmentForm(), new AmendmentForm(view.caseTypeRows()), new AmendmentForm());
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm())
+        .caseType(new AmendmentForm(view.caseTypeRows()))
+        .caseDetails(new AmendmentForm())
+        .build();
   }
 
   private void assertCommonPageContent(Document doc) {

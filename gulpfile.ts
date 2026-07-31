@@ -5,13 +5,13 @@ import gulpSass from 'gulp-sass';
 import * as dartSass from 'sass';
 import browserSyncModule from 'browser-sync';
 import type {Transform} from 'stream';
-import gulpTypescript from 'gulp-typescript';
-import terser from 'gulp-terser';
+import * as esbuild from 'esbuild';
+import {execFile} from 'child_process';
+import {promisify} from 'util';
 
 const sass = gulpSass(dartSass);
 const browserSync = browserSyncModule.create();
-
-const tsProject = gulpTypescript.createProject('tsconfig.json');
+const execFileAsync = promisify(execFile);
 
 function compileStylesheets() {
   return gulp.src('src/main/resources/sass/app.scss')
@@ -69,16 +69,20 @@ function copyMOJAssets() {
   .on('end', () => console.log('MOJ assets copied to build/generatedFEAssets/static/assets'));
 }
 
-function compileScripts() {
-  return gulp.src([
-    'src/main/resources/es/**/*.ts',
-    'src/main/resources/es/**/*.d.ts'
-  ])
-  .pipe(tsProject())
-  .pipe(terser())
-  .pipe(rename('app.min.js'))
-  .pipe(gulp.dest('build/generatedFEAssets/static/js'))
-  .on('end', () => console.log('App JS compiled to build/generatedFEAssets/static/js'));
+async function compileScripts() {
+  await esbuild.build({
+    entryPoints: ['src/main/resources/es/app.ts'],
+    outfile: 'build/generatedFEAssets/static/js/app.min.js',
+    bundle: false,
+    minify: true,
+    target: 'esnext',
+    format: 'esm',
+  });
+  console.log('App JS compiled to build/generatedFEAssets/static/js');
+}
+
+async function typeCheck() {
+  await execFileAsync('npx', ['tsc', '--noEmit', '-p', 'tsconfig.json']);
 }
 
 function watch() {
@@ -118,7 +122,7 @@ function watch() {
     browserSync.reload();
   });
 
-  gulp.watch('src/main/resources/es/**/*.{ts,js}', series(compileScripts))
+  gulp.watch('src/main/resources/es/**/*.{ts,js}', series(typeCheck, compileScripts))
   .on('change', (path) => {
     console.log('Script changed:', path);
     browserSync.reload();
@@ -126,10 +130,11 @@ function watch() {
 
 }
 
+task('type-check', typeCheck);
 task('copy-assets', series(copyGOVUKAssets, copyMOJAssets));
 task('copy-js', series(copyGOVUKJavascript, copyGOVUKAutocompleteJavascript, copyMOJJavascript));
 task('compile-stylesheets', compileStylesheets);
 task('compile-scripts', series('copy-js', compileScripts));
 
-task('default', series('copy-assets', 'compile-stylesheets', 'compile-scripts'));
+task('default', series('type-check', 'copy-assets', 'compile-stylesheets', 'compile-scripts'));
 task('watch', series(watch));

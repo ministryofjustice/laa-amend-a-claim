@@ -6,7 +6,7 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import uk.gov.justice.laa.amend.claim.controllers.amendments.CheckController;
+import uk.gov.justice.laa.amend.claim.controllers.amendments.CheckAmendmentsController;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -15,8 +15,8 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
-@WebMvcTest(CheckController.class)
-class CheckViewTest extends AmendmentsBaseTest {
+@WebMvcTest(CheckAmendmentsController.class)
+class CheckAmendmentsViewTest extends AmendmentsBaseTest {
 
   private static final String FORENAME = "forename";
   private static final String SURNAME = "surname";
@@ -36,7 +36,7 @@ class CheckViewTest extends AmendmentsBaseTest {
   private static final String FEE_CODE = "feecode";
   private static final String STAGE_REACHED = "INVA";
 
-  CheckViewTest() {
+  CheckAmendmentsViewTest() {
     this.mapping = checkUrl;
   }
 
@@ -232,20 +232,22 @@ class CheckViewTest extends AmendmentsBaseTest {
   private AmendmentForms createCrimeForms(ClaimDetails claim) {
     var view = ClaimClientViewFactory.create(claim);
     var caseView = ClaimCaseViewFactory.create(claim);
-    return new AmendmentForms(
-        new AmendmentForm(view.client1Rows()),
-        new AmendmentForm(caseView.caseTypeRows()),
-        new AmendmentForm(caseView.caseDetailsRows()));
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm(view.client1Rows()))
+        .caseType(new AmendmentForm(caseView.caseTypeRows()))
+        .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
+        .build();
   }
 
   private AmendmentForms createMediationForms(MediationClaimDetails claim) {
     var view = ClaimClientViewFactory.create(claim);
     var caseView = ClaimCaseViewFactory.create(claim);
-    return new AmendmentForms(
-        new AmendmentForm(view.client1Rows()),
-        new AmendmentForm(view.client2Rows()),
-        new AmendmentForm(caseView.caseTypeRows()),
-        new AmendmentForm(caseView.caseDetailsRows()));
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm(view.client1Rows()))
+        .client2(new AmendmentForm(view.client2Rows()))
+        .caseType(new AmendmentForm(caseView.caseTypeRows()))
+        .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
+        .build();
   }
 
   private void assertCommonPageContent(Document doc) {

@@ -21,11 +21,13 @@ import uk.gov.justice.laa.amend.claim.pages.SearchPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCaseDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient1Page;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient2Page;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendFeeCodePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendMatterTypePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.CheckPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCasePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewClientPage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCostsPage;
 
 public class AmendmentsFlowE2ETest extends BaseTest {
 
@@ -42,6 +44,12 @@ public class AmendmentsFlowE2ETest extends BaseTest {
   private static final String MEDIATION_CLAIM_ID = UUID.randomUUID().toString();
   private static final String MEDIATION_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
   private static final String MEDIATION_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
+  private static final String CRIME_UFN = generateUfn(2L);
+  private static final String CRIME_BULK_SUBMISSION_ID = UUID.randomUUID().toString();
+  private static final String CRIME_SUBMISSION_ID = UUID.randomUUID().toString();
+  private static final String CRIME_CLAIM_ID = UUID.randomUUID().toString();
+  private static final String CRIME_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
+  private static final String CRIME_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
   private static final String STAGE_REACHED = "INVA";
 
   @Override
@@ -50,6 +58,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
       {
         addAll(buildLegalHelpObjects());
         addAll(buildMediationObjects());
+        addAll(buildCrimeObjects());
       }
     };
   }
@@ -118,6 +127,38 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .build());
   }
 
+  private @NonNull List<Insert> buildCrimeObjects() {
+    return List.of(
+        BulkSubmissionInsert.builder().id(CRIME_BULK_SUBMISSION_ID).userId(USER_ID).build(),
+        SubmissionInsert.builder()
+            .id(CRIME_SUBMISSION_ID)
+            .bulkSubmissionId(CRIME_BULK_SUBMISSION_ID)
+            .officeAccountNumber(PROVIDER_ACCOUNT)
+            .submissionPeriod("MAR-2020")
+            .areaOfLaw("CRIME_LOWER")
+            .userId(USER_ID)
+            .build(),
+        ClaimInsert.builder()
+            .id(CRIME_CLAIM_ID)
+            .submissionId(CRIME_SUBMISSION_ID)
+            .uniqueFileNumber(CRIME_UFN)
+            .userId(USER_ID)
+            .build(),
+        ClaimSummaryFeeInsert.builder()
+            .id(CRIME_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CRIME_CLAIM_ID)
+            .userId(USER_ID)
+            .build(),
+        CalculatedFeeDetailInsert.builder()
+            .id(CRIME_CALCULATED_FEE_DETAIL_ID)
+            .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
+            .claimId(CRIME_CLAIM_ID)
+            .feeCode("INVC")
+            .escaped(true)
+            .userId(USER_ID)
+            .build());
+  }
+
   @Test
   @DisplayName(
       """
@@ -180,7 +221,18 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(page, "Case details", "Stage reached", "Not applicable", STAGE_REACHED);
 
-    viewAmendCase.clickContinue();
+    // View Case → Costs tab → Change costs → View Costs
+    viewAmendCase.clickCostsTab();
+    var viewAmendCosts = new ViewCostsPage(page);
+    viewAmendCosts.clickChangeCostsLink();
+    var amendCosts = new AmendCostsPage(page);
+    amendCosts.fillCostInput("DISBURSEMENTS", "999.99");
+    amendCosts.clickContinueButton();
+
+    viewAmendCosts = new ViewCostsPage(page);
+    viewAmendCosts.assertAmendedCost("Net disbursements", "£999.99");
+
+    viewAmendCosts.clickContinue();
 
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
@@ -256,7 +308,18 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(page, "Case details", "Claim ID", "Not applicable", "changed");
 
-    viewAmendCase.clickContinue();
+    // View Case → Costs tab → Change costs → View Costs
+    viewAmendCase.clickCostsTab();
+    var viewAmendCosts = new ViewCostsPage(page);
+    viewAmendCosts.clickChangeCostsLink();
+    var amendCosts = new AmendCostsPage(page);
+    amendCosts.fillCostInput("DISBURSEMENTS", "200.00");
+    amendCosts.clickContinueButton();
+
+    viewAmendCosts = new ViewCostsPage(page);
+    viewAmendCosts.assertAmendedCost("Net disbursements", "£200.00");
+
+    viewAmendCosts.clickContinue();
 
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client 1 details", "Last name", "Not applicable", "changed");
@@ -264,5 +327,35 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Case details", "Claim ID", "Not applicable", "changed");
     assertSummaryListRow(page, "Case type", "Fee code", "MDAS2S", "MDPS1B");
     assertSummaryListRow(page, "Case type", "Matter type", "IMCB", "NEW_MONE");
+  }
+
+  @Test
+  @DisplayName(
+      """
+          E2E: Crime Claim Amendment Flow – Search → View → Amend Claim Details
+            → Costs tab → Change costs → View Costs
+          """)
+  void crimeCostsAmendmentFlow() {
+    var search = new SearchPage(page);
+
+    search.searchForClaim(PROVIDER_ACCOUNT, "03", "2020", CRIME_UFN, "", "", "");
+
+    search.clickViewForUfn(CRIME_UFN);
+
+    var details = new ClaimDetailsPage(page);
+    details.clickAmendClaim();
+
+    var viewAmendClient = new ViewClientPage(page);
+    viewAmendClient.clickCostsTab();
+
+    var viewAmendCosts = new ViewCostsPage(page);
+    viewAmendCosts.clickChangeCostsLink();
+
+    var amendCosts = new AmendCostsPage(page);
+    amendCosts.fillCostInput("DISBURSEMENTS", "150.00");
+    amendCosts.clickContinueButton();
+
+    viewAmendCosts = new ViewCostsPage(page);
+    viewAmendCosts.assertAmendedCost("Net disbursements", "£150.00");
   }
 }

@@ -25,8 +25,8 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
-@WebMvcTest(controllers = CheckController.class)
-class CheckControllerTest extends BaseControllerTest {
+@WebMvcTest(controllers = CheckAmendmentsController.class)
+class CheckAmendmentsControllerTest extends BaseControllerTest {
 
   private UUID submissionId;
   private UUID claimId;
@@ -123,10 +123,11 @@ class CheckControllerTest extends BaseControllerTest {
     client1Form.setInputs(Map.of("SURNAME", "changedSurname"));
 
     var amendmentForms =
-        new AmendmentForms(
-            new AmendmentForm(clientView.client1Rows()),
-            new AmendmentForm(caseView.caseTypeRows()),
-            new AmendmentForm(caseView.caseDetailsRows()));
+        AmendmentForms.builder()
+            .client1(new AmendmentForm(clientView.client1Rows()))
+            .caseType(new AmendmentForm(caseView.caseTypeRows()))
+            .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
+            .build();
     amendmentForms.getClient1Form().setCurrent(client1Form);
     return amendmentForms;
   }
@@ -134,21 +135,24 @@ class CheckControllerTest extends BaseControllerTest {
   private AmendmentForms createEmptyForms() {
     var clientView = ClaimClientViewFactory.create(claim);
     var caseView = ClaimCaseViewFactory.create(claim);
-    return new AmendmentForms(
-        new AmendmentForm(clientView.client1Rows()),
-        new AmendmentForm(caseView.caseTypeRows()),
-        new AmendmentForm(caseView.caseDetailsRows()));
+
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm(clientView.client1Rows()))
+        .caseType(new AmendmentForm(caseView.caseTypeRows()))
+        .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
+        .build();
   }
 
   private AmendmentForms createMediationForms() {
     var clientView = ClaimClientViewFactory.create(claim);
     var caseView = ClaimCaseViewFactory.create(claim);
     var forms =
-        new AmendmentForms(
-            new AmendmentForm(clientView.client1Rows()),
-            new AmendmentForm(clientView.client2Rows()),
-            new AmendmentForm(caseView.caseTypeRows()),
-            new AmendmentForm(caseView.caseDetailsRows()));
+        AmendmentForms.builder()
+            .client1(new AmendmentForm(clientView.client1Rows()))
+            .client2(new AmendmentForm(clientView.client2Rows()))
+            .caseType(new AmendmentForm(caseView.caseTypeRows()))
+            .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
+            .build();
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
     forms
         .getClient2Form()

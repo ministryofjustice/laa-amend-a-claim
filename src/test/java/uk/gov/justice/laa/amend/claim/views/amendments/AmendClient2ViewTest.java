@@ -9,14 +9,14 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import uk.gov.justice.laa.amend.claim.controllers.amendments.ClientController;
+import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendClientController;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
-@WebMvcTest(ClientController.class)
+@WebMvcTest(AmendClientController.class)
 class AmendClient2ViewTest extends AmendmentsBaseTest {
 
   private static final String CLIENT_2_FORENAME = "forename2";
@@ -122,11 +122,12 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
 
   private AmendmentForms createClient2Forms(MediationClaimDetails claim) {
     var view = ClaimClientViewFactory.create(claim);
-    return new AmendmentForms(
-        new AmendmentForm(),
-        new AmendmentForm(view.client2Rows()),
-        new AmendmentForm(),
-        new AmendmentForm());
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm())
+        .client2(new AmendmentForm(view.client2Rows()))
+        .caseType(new AmendmentForm())
+        .caseDetails(new AmendmentForm())
+        .build();
   }
 
   private void assertCommonPageContent(Document doc) {

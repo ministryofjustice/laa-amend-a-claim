@@ -6,15 +6,15 @@ import java.time.LocalDate;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import uk.gov.justice.laa.amend.claim.controllers.amendments.ClientController;
+import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendClientTabController;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
-@WebMvcTest(ClientController.class)
-class ViewClientViewTest extends AmendmentsBaseTest {
+@WebMvcTest(AmendClientTabController.class)
+class AmendClientTabViewTest extends AmendmentsBaseTest {
 
   private static final String FORENAME = "forename";
   private static final String SURNAME = "surname";
@@ -38,7 +38,7 @@ class ViewClientViewTest extends AmendmentsBaseTest {
   private static final String CLIENT_2_ETHNICITY = "ethnicity2";
   private static final String CLIENT_2_DISABILITY = "disability2";
 
-  ViewClientViewTest() {
+  AmendClientTabViewTest() {
     this.mapping = clientUrl;
   }
 
@@ -401,9 +401,12 @@ class ViewClientViewTest extends AmendmentsBaseTest {
 
   private AmendmentForms createClientForms(ClaimDetails claim) {
     var view = ClaimClientViewFactory.create(claim);
-    return new AmendmentForms(
-        new AmendmentForm(view.client1Rows()), new AmendmentForm(view.client2Rows()),
-        new AmendmentForm(), new AmendmentForm());
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm(view.client1Rows()))
+        .client2(new AmendmentForm(view.client2Rows()))
+        .caseType(new AmendmentForm())
+        .caseDetails(new AmendmentForm())
+        .build();
   }
 
   private void assertCommonPageContent(Document doc) {

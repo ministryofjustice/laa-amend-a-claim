@@ -27,8 +27,8 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 
-@WebMvcTest(CaseTypeController.class)
-class CaseTypeControllerTest extends BaseControllerTest {
+@WebMvcTest(AmendCaseTypeController.class)
+class AmendCaseTypeControllerTest extends BaseControllerTest {
 
   private static final String INPUTS = "inputs[%s]";
 
@@ -68,8 +68,11 @@ class CaseTypeControllerTest extends BaseControllerTest {
     caseTypeForm.setInputs(caseTypeRows);
 
     var updatedForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm(caseTypeForm))
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = get(buildAmendFeeCodePath()).session(session).with(csrf());
@@ -96,8 +99,11 @@ class CaseTypeControllerTest extends BaseControllerTest {
     caseTypeForm.setInputs(caseTypeRows);
 
     var updatedForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm(caseTypeForm))
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = get(buildAmendFeeCodePath()).session(session).with(csrf());
@@ -125,8 +131,11 @@ class CaseTypeControllerTest extends BaseControllerTest {
     caseTypeForm.setInputs(caseTypeRows);
 
     var updatedForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm(caseTypeForm))
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = post(buildAmendFeeCodePath()).session(session).with(csrf());
@@ -162,8 +171,11 @@ class CaseTypeControllerTest extends BaseControllerTest {
     caseTypeForm.setInputs(caseTypeRows);
 
     var updatedForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm(caseTypeForm))
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = get(buildAmendMatterTypeCodePath()).session(session).with(csrf());
@@ -188,8 +200,11 @@ class CaseTypeControllerTest extends BaseControllerTest {
     caseTypeForm.setInputs(caseTypeRows);
 
     var updatedForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm(caseTypeForm))
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = get(buildAmendMatterTypeCodePath()).session(session).with(csrf());
@@ -221,8 +236,11 @@ class CaseTypeControllerTest extends BaseControllerTest {
     caseTypeForm.setInputs(caseTypeRows);
 
     var updatedForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm(caseTypeForm))
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = post(buildAmendMatterTypeCodePath()).session(session).with(csrf());
@@ -249,8 +267,11 @@ class CaseTypeControllerTest extends BaseControllerTest {
     caseTypeForm.setInputs(caseTypeRows);
 
     var updatedForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm(caseTypeForm))
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = post(buildAmendMatterTypeCodePath()).session(session).with(csrf());
