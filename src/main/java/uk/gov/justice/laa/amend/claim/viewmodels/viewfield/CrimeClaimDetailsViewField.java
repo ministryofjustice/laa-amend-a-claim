@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.Getter;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
@@ -17,9 +18,15 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       FieldType.TEXT,
       String.class,
       CrimeClaimDetails::getMatterTypeCode,
-      ClaimPatch.Builder::matterTypeCode),
+      ClaimPatch.Builder::crimeMatterTypeCode),
 
   // Case fields
+  STAGE_REACHED(
+      FieldType.ENUM,
+      String.class,
+      ClaimDetails::getStageReached,
+      ClaimPatch.Builder::stageReachedCode,
+      FieldOptions.CRIME_STAGE_REACHED),
   REPRESENTATION_ORDER_DATE(
       FieldType.DATE,
       String.class,

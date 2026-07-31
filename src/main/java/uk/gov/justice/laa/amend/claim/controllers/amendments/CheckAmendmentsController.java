@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,17 +18,19 @@ import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
-import uk.gov.justice.laa.amend.claim.service.CheckService;
+import uk.gov.justice.laa.amend.claim.controllers.UserControllerAdvice;
+import uk.gov.justice.laa.amend.claim.service.AmendmentsCheckService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/check")
 @RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
+@UserControllerAdvice.Enabled
 @Controller
 public class CheckAmendmentsController {
 
-  private final CheckService checkService;
+  private final AmendmentsCheckService amendmentsCheckService;
 
   @GetMapping
   public String check(
@@ -62,8 +65,9 @@ public class CheckAmendmentsController {
   @PostMapping
   public String submit(
       HttpSession session,
-      @PathVariable("submissionId") UUID submissionId,
-      @PathVariable("claimId") UUID claimId) {
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId,
+      @ModelAttribute("userId") UUID userId) {
 
     var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
@@ -74,8 +78,9 @@ public class CheckAmendmentsController {
           "No amendments found for submission %s claim %s".formatted(submissionId, claimId));
     }
 
-    checkService.submitAmendments(submissionId, claimId, UUID.randomUUID(), claim, amendmentForms);
+    amendmentsCheckService.submitAmendments(submissionId, claimId, userId, claim, amendmentForms);
 
-    return "redirect:/submissions/%s/claims/%s/amendments/success".formatted(submissionId, claimId);
+    return "redirect:/submissions/%s/claims/%s/amendments/confirmation"
+        .formatted(submissionId, claimId);
   }
 }

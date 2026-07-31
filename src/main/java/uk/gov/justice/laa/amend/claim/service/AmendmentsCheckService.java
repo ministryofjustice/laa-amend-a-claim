@@ -18,7 +18,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CheckService {
+public class AmendmentsCheckService {
 
   private final ClaimsApiClient claimsApiClient;
 

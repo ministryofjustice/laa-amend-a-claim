@@ -10,6 +10,8 @@ public record ClaimInsert(
     String submissionId,
     String status,
     String uniqueFileNumber,
+    String outreachLocation,
+    String referralSource,
     String userId,
     Boolean hasAssessment)
     implements Insert {
@@ -26,6 +28,8 @@ public record ClaimInsert(
         submissionId,
         status != null ? status : "VALID",
         uniqueFileNumber,
+        outreachLocation,
+        referralSource,
         userId,
         userId,
         hasAssessment != null ? hasAssessment : false);

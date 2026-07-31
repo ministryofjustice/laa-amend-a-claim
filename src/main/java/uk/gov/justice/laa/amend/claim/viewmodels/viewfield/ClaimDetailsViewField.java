@@ -53,26 +53,14 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Claim::getCaseReferenceNumber,
       ClaimPatch.Builder::caseReferenceNumber),
   CASE_START_DATE(
-      FieldType.DATE,
-      String.class,
-      Claim::getCaseStartDate,
-      ClaimPatch.Builder::caseStartDate),
+      FieldType.DATE, String.class, Claim::getCaseStartDate, ClaimPatch.Builder::caseStartDate),
   UNIQUE_FILE_NUMBER(
       FieldType.TEXT,
       String.class,
       Claim::getUniqueFileNumber,
       ClaimPatch.Builder::uniqueFileNumber),
-  STAGE_REACHED(
-      FieldType.ENUM,
-      String.class,
-      ClaimDetails::getStageReached,
-      ClaimPatch.Builder::stageReachedCode,
-      FieldOptions.STAGE_REACHED),
   CASE_CONCLUDED_DATE(
-      FieldType.DATE,
-      String.class,
-      Claim::getCaseEndDate,
-      ClaimPatch.Builder::caseConcludedDate),
+      FieldType.DATE, String.class, Claim::getCaseEndDate, ClaimPatch.Builder::caseConcludedDate),
 
   // Common cost fields
   FIXED_FEE(FieldType.TEXT, Object.class, ClaimDetails::getFixedFee, (b, v) -> b, List.of(), false),

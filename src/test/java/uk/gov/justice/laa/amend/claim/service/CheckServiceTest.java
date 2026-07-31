@@ -32,11 +32,11 @@ class CheckServiceTest {
 
   @Mock private ClaimsApiClient claimsApiClient;
 
-  private CheckService checkService;
+  private AmendmentsCheckService amendmentsCheckService;
 
   @BeforeEach
   void setUp() {
-    checkService = new CheckService(claimsApiClient);
+    amendmentsCheckService = new AmendmentsCheckService(claimsApiClient);
   }
 
   @Test
@@ -140,7 +140,7 @@ class CheckServiceTest {
             .ethnicityCode("NEW_ETHNICITY")
             .disabilityCode("NEW_DISABILITY")
             .feeCode("NEW_FEE")
-            .matterTypeCode("NEW_MATTER")
+            .crimeMatterTypeCode("NEW_MATTER")
             .stageReachedCode("NEW_STAGE")
             .uniqueFileNumber("NEW_UFN")
             .representationOrderDate("30/06/2026")
@@ -571,7 +571,7 @@ class CheckServiceTest {
     when(claimsApiClient.updateClaim(eq(submissionId), eq(claimId), any(ClaimPatch.class)))
         .thenReturn(Mono.empty());
 
-    checkService.submitAmendments(submissionId, claimId, USER_ID, claim, amendmentForms);
+    amendmentsCheckService.submitAmendments(submissionId, claimId, USER_ID, claim, amendmentForms);
 
     var patchCaptor = ArgumentCaptor.forClass(ClaimPatch.class);
     verify(claimsApiClient).updateClaim(eq(submissionId), eq(claimId), patchCaptor.capture());

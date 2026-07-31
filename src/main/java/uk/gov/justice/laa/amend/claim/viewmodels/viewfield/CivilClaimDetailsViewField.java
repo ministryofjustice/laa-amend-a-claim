@@ -6,6 +6,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
 @Getter
@@ -63,6 +64,11 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       ClaimPatch.Builder::matterTypeCode),
 
   // Case details fields
+  STAGE_REACHED(
+      FieldType.TEXT,
+      String.class,
+      ClaimDetails::getStageReached,
+      ClaimPatch.Builder::stageReachedCode),
   SCHEDULE_REFERENCE_CIVIL(
       FieldType.TEXT,
       String.class,

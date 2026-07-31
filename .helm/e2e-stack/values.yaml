@@ -100,6 +100,8 @@ dataClaimsApi:
       value: "http://host.docker.internal:4566"
     - name: AWS_SQS_ENDPOINT
       value: "http://host.docker.internal:4566"
+    - name: CLAIMS_API_AMENDMENTS_ENABLED
+      value: "true"
   resources: {}
 
 # Redis for laa-amend-a-claim session/cache

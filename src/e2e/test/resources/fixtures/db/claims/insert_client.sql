@@ -1,0 +1,33 @@
+INSERT INTO claims.client (
+  id,
+  claim_id,
+  client_forename,
+  client_surname,
+  client_date_of_birth,
+  unique_client_number,
+  client_postcode,
+  gender_code,
+  ethnicity_code,
+  disability_code,
+  is_legally_aided,
+  created_by_user_id,
+  created_on,
+  updated_by_user_id,
+  updated_on
+) VALUES (
+  ?::uuid,
+  ?::uuid,
+  ?,
+  ?,
+  ?::date,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?::boolean,
+  ?,
+  now(),
+  ?,
+  now()
+);
