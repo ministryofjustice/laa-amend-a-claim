@@ -62,7 +62,9 @@ public record CivilClaimCaseView(
       CivilClaimDetails claim) {
     Stream<ClaimViewField<CivilClaimDetails>> fields =
         Stream.of(
-            asCivilField(FEE_CODE), asCivilField(MATTER_TYPE_CODE_1), asCivilField(MATTER_TYPE_CODE_2));
+            asCivilField(FEE_CODE),
+            asCivilField(MATTER_TYPE_CODE_1),
+            asCivilField(MATTER_TYPE_CODE_2));
 
     return toFieldMap(fields, claim);
   }
