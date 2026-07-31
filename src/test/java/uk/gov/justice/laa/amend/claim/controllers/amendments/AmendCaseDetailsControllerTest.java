@@ -114,7 +114,12 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
     var caseDetailsForm = new AmendmentForm();
     caseDetailsForm.setInputs(caseDetailsRows);
 
-    var forms = new AmendmentForms(new AmendmentForm(), new AmendmentForm(), caseDetailsForm);
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(caseDetailsForm)
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var tooLong = "a".repeat(256);

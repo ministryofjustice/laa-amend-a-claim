@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 
 class TextAmendmentFieldValidatorTest {
 
@@ -36,7 +36,7 @@ class TextAmendmentFieldValidatorTest {
     form.setInputs(inputs);
 
     var errors = new BeanPropertyBindingResult(form, "amendmentForm");
-    validator.validate(CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER, form, errors);
+    validator.validate(ClaimDetailsViewField.UNIQUE_FILE_NUMBER, form, errors);
     return errors;
   }
 }

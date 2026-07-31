@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 
 class DateAmendmentFieldValidatorTest {
 
@@ -70,7 +70,7 @@ class DateAmendmentFieldValidatorTest {
     form.setInputs(inputs);
 
     var errors = new BeanPropertyBindingResult(form, "amendmentForm");
-    validator.validate(MediationClaimDetailsViewField.CASE_START_DATE, form, errors);
+    validator.validate(ClaimDetailsViewField.CASE_START_DATE, form, errors);
     return errors;
   }
 }

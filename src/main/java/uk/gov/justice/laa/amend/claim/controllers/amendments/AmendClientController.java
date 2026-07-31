@@ -5,11 +5,15 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveAmendmentForms;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +22,7 @@ import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCasework
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.forms.validators.AmendmentFormValidator;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @Controller
@@ -26,6 +31,26 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFact
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
 public class AmendClientController {
+
+  @InitBinder("client1Form")
+  public void initClient1FormBinder(
+      WebDataBinder binder,
+      HttpSession session,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
+    binder.addValidators(new AmendmentFormValidator(claim.getClass()));
+  }
+
+  @InitBinder("client2Form")
+  public void initClient2FormBinder(
+      WebDataBinder binder,
+      HttpSession session,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
+    binder.addValidators(new AmendmentFormValidator(claim.getClass()));
+  }
 
   @GetMapping("/amend-client")
   public String viewAmendClient(
@@ -47,15 +72,19 @@ public class AmendClientController {
   @PostMapping("/amend-client")
   public String amendClient1(
       HttpSession session,
-      @ModelAttribute("client1Form") AmendmentForm client1Form,
+      @Valid @ModelAttribute("client1Form") AmendmentForm client1Form,
+      BindingResult bindingResult,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var amendmentForms = getAmendmentForms(session, claimId);
 
-    // TODO: Validation can be done here and any errors returned
-
     amendmentForms.getClient1Form().setCurrent(client1Form);
     saveAmendmentForms(session, claimId, amendmentForms);
+
+    if (bindingResult.hasErrors()) {
+      return "redirect:/submissions/%s/claims/%s/amendments/amend-client"
+          .formatted(submissionId, claimId);
+    }
 
     return "redirect:/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
   }
@@ -80,15 +109,19 @@ public class AmendClientController {
   @PostMapping("/amend-client-two")
   public String postAmendClient2(
       HttpSession session,
-      @ModelAttribute("client2Form") AmendmentForm client2Form,
+      @Valid @ModelAttribute("client2Form") AmendmentForm client2Form,
+      BindingResult bindingResult,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var amendmentForms = getAmendmentForms(session, claimId);
 
-    // TODO: Validation can be done here and any errors returned
-
     amendmentForms.getClient2Form().setCurrent(client2Form);
     saveAmendmentForms(session, claimId, amendmentForms);
+
+    if (bindingResult.hasErrors()) {
+      return "redirect:/submissions/%s/claims/%s/amendments/amend-client-two"
+          .formatted(submissionId, claimId);
+    }
 
     return "redirect:/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
   }
