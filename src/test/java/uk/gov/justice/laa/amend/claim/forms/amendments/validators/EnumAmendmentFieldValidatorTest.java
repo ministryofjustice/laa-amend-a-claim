@@ -15,23 +15,23 @@ class EnumAmendmentFieldValidatorTest {
 
   @Test
   void acceptsEnumValueMatchingAnAllowedOption() {
-    var errors = validate(Map.of("STAGE_REACHED", "INVA"));
+    var errors = validate(Map.of("GENDER", "M"));
 
     assertThat(errors.hasErrors()).isFalse();
   }
 
   @Test
   void rejectsEnumValueNotMatchingAnAllowedOption() {
-    var errors = validate(Map.of("STAGE_REACHED", "NOT_A_CODE"));
+    var errors = validate(Map.of("GENDER", "NOT_A_CODE"));
 
     assertThat(errors.hasErrors()).isTrue();
-    assertThat(errors.getFieldError("inputs[STAGE_REACHED]").getCode())
+    assertThat(errors.getFieldError("inputs[GENDER]").getCode())
         .isEqualTo("amendmentForm.invalidOption");
   }
 
   @Test
   void acceptsBlankEnumValue() {
-    var errors = validate(Map.of("STAGE_REACHED", ""));
+    var errors = validate(Map.of("GENDER", ""));
 
     assertThat(errors.hasErrors()).isFalse();
   }
@@ -41,7 +41,7 @@ class EnumAmendmentFieldValidatorTest {
     form.setInputs(inputs);
 
     var errors = new BeanPropertyBindingResult(form, "amendmentForm");
-    validator.validate(ClaimDetailsViewField.STAGE_REACHED, form, errors);
+    validator.validate(ClaimDetailsViewField.GENDER, form, errors);
     return errors;
   }
 }

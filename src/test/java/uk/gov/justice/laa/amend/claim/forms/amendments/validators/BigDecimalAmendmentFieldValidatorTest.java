@@ -30,6 +30,15 @@ class BigDecimalAmendmentFieldValidatorTest {
         .isEqualTo("amendmentForm.invalidValue");
   }
 
+  @Test
+  void rejectsBigDecimalWithMoreThanTwoDecimalPlaces() {
+    var errors = validate(Map.of("VALUE_OF_COSTS", "12.345"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    assertThat(errors.getFieldError("inputs[VALUE_OF_COSTS]").getCode())
+        .isEqualTo("amendmentForm.invalidValue");
+  }
+
   private Errors validate(Map<String, String> inputs) {
     var form = new AmendmentForm();
     form.setInputs(inputs);
