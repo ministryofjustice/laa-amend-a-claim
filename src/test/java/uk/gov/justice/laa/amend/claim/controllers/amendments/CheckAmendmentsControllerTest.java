@@ -103,23 +103,32 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
     client1Form.setInputs(Map.of("SURNAME", "changedSurname"));
 
     var amendmentForms =
-        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     amendmentForms.getClient1Form().setCurrent(client1Form);
     return amendmentForms;
   }
 
   private AmendmentForms createEmptyForms() {
-    return new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm())
+        .caseType(new AmendmentForm())
+        .caseDetails(new AmendmentForm())
+        .build();
   }
 
   private AmendmentForms createMediationForms() {
     var clientView = ClaimClientViewFactory.create(claim);
     var forms =
-        new AmendmentForms(
-            new AmendmentForm(clientView.client1Rows()),
-            new AmendmentForm(clientView.client2Rows()),
-            new AmendmentForm(),
-            new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm(clientView.client1Rows()))
+            .client2(new AmendmentForm(clientView.client2Rows()))
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
     forms
         .getClient2Form()

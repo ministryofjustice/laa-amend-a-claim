@@ -29,7 +29,11 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
   PRISON_LAW_PRIOR_APPROVAL_NUMBER(
       new Accessor<>(CrimeClaimDetails::getPrisonLawPriorApprovalNumber)),
   IS_DUTY_SOLICITOR(new Accessor<>(CrimeClaimDetails::getIsDutySolicitor), FieldType.BOOLEAN),
-  IS_YOUTH_COURT(new Accessor<>(CrimeClaimDetails::getIsYouthCourt), FieldType.BOOLEAN);
+  IS_YOUTH_COURT(new Accessor<>(CrimeClaimDetails::getIsYouthCourt), FieldType.BOOLEAN),
+
+  // Cost fields
+  TRAVEL_COSTS(new Accessor<>(CrimeClaimDetails::getTravelCosts), FieldType.BIG_DECIMAL),
+  WAITING_COSTS(new Accessor<>(CrimeClaimDetails::getWaitingCosts), FieldType.BIG_DECIMAL);
 
   private final Accessor<?> accessor;
   private final FieldType type;

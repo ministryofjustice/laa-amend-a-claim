@@ -109,6 +109,14 @@ public class AmendmentForm {
     return !original.equals(current);
   }
 
+  public boolean isAmendment(String key, AmendmentForm originalForm, FieldType fieldType) {
+    if (fieldType == FieldType.BIG_DECIMAL) {
+      return !Objects.equals(originalForm.getBigDecimalValue(key), getBigDecimalValue(key));
+    }
+
+    return isAmendment(key, originalForm);
+  }
+
   public boolean hasAmendments(AmendmentForm original) {
     return getInputs().keySet().stream()
         .map(
@@ -128,6 +136,16 @@ public class AmendmentForm {
 
   public Object getAmendedValue(String fieldName) {
     return isDateField(fieldName) ? getDateValue(fieldName) : inputs.get(fieldName);
+  }
+
+  public Object getAmendedValue(String fieldName, FieldType fieldType) {
+    return switch (fieldType) {
+      case BIG_DECIMAL -> getBigDecimalValue(fieldName);
+      case DATE -> getDateValue(fieldName);
+      case BOOLEAN -> getBooleanValue(fieldName);
+      case NUMBER -> getIntegerValue(fieldName);
+      case ENUM, TEXT -> inputs.get(fieldName);
+    };
   }
 
   public Object getAmendedValue(ClaimViewField<?> field) {
@@ -221,10 +239,13 @@ public class AmendmentForm {
       case null -> null;
       case String stringValue -> stringValue;
       case BigDecimal bigDecimal -> setScale(bigDecimal).toString();
+      case Integer intValue -> intValue.toString();
       case LocalDate ignored ->
           throw new IllegalArgumentException(
               "LocalDate value must be handled as a date field (FieldType.DATE), not formatted here");
-      default -> "TODO";
+      default ->
+          throw new IllegalArgumentException(
+              "Unsupported value type '%s' for text field".formatted(value.getClass()));
     };
   }
 

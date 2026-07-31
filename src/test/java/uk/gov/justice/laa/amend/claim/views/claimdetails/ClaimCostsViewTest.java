@@ -116,7 +116,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
         clientDetails.get(6), "Travel and waiting costs", SUBMITTED, CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(clientDetails.get(7), "VAT indicator", "Yes", "No", "Yes");
     assertSummaryListRowContainsValues(
-        clientDetails.get(8), "Adjourned hearing fee", SUBMITTED, CALCULATED, ASSESSED);
+        clientDetails.get(8), "Adjourned hearing fee", "100", CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(
         clientDetails.get(9),
         "Detention, travel and waiting (DTW) costs",
@@ -126,19 +126,19 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(
         clientDetails.get(10), "Judicial review or form filling", SUBMITTED, CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(
-        clientDetails.get(11), "Substantive hearing", SUBMITTED, CALCULATED, ASSESSED);
+        clientDetails.get(11), "Substantive hearing", "Yes", CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(
-        clientDetails.get(12), "Home Office Interview", SUBMITTED, CALCULATED, ASSESSED);
+        clientDetails.get(12), "Home Office Interview", "100", CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(
         clientDetails.get(13),
         "Case management review hearing (CMRH)-oral",
-        SUBMITTED,
+        "100",
         CALCULATED,
         ASSESSED);
     assertSummaryListRowContainsValues(
         clientDetails.get(14),
         "Case management review hearing (CMRH)-telephone",
-        SUBMITTED,
+        "100",
         CALCULATED,
         ASSESSED);
     assertSummaryListRowContainsValues(

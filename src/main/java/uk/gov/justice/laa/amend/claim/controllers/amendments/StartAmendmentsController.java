@@ -18,6 +18,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactory;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
@@ -36,13 +37,19 @@ public class StartAmendmentsController {
     var caseView = ClaimCaseViewFactory.create(claim);
     var caseTypeForm = new AmendmentForm(caseView.caseTypeRows());
     var caseDetailsForm = new AmendmentForm(caseView.caseDetailsRows());
+    var costsView = ClaimCostsViewFactory.create(claim);
+    var costsForm = new AmendmentForm(costsView.costRows());
 
     boolean isMediation = AreaOfLaw.MEDIATION.equals(claim.getAreaOfLaw());
     var client2Form = isMediation ? new AmendmentForm(clientView.client2Rows()) : null;
     var amendmentForms =
-        isMediation
-            ? new AmendmentForms(client1Form, client2Form, caseTypeForm, caseDetailsForm)
-            : new AmendmentForms(client1Form, caseTypeForm, caseDetailsForm);
+        AmendmentForms.builder()
+            .client1(client1Form)
+            .client2(client2Form)
+            .caseType(caseTypeForm)
+            .caseDetails(caseDetailsForm)
+            .costs(costsForm)
+            .build();
 
     saveAmendmentForms(session, claimId, amendmentForms);
 

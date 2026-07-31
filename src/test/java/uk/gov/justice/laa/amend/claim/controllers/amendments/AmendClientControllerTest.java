@@ -59,7 +59,11 @@ class AmendClientControllerTest extends BaseControllerTest {
     claim.setClientDisability("disability");
 
     var existingForms =
-        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
     var client1Rows =
@@ -73,7 +77,11 @@ class AmendClientControllerTest extends BaseControllerTest {
     client1Form.setInputs(client1Rows);
 
     var updatedForms =
-        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     updatedForms.getClient1Form().setCurrent(client1Form);
 
     var request = post(buildAmendClient1Path()).session(session).with(csrf());
@@ -98,8 +106,12 @@ class AmendClientControllerTest extends BaseControllerTest {
     claim.setClientDisability("disability");
 
     var existingForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .client2(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
     var client2Rows =
@@ -113,8 +125,12 @@ class AmendClientControllerTest extends BaseControllerTest {
     client2Form.setInputs(client2Rows);
 
     var updatedForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .client2(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     updatedForms.getClient2Form().setCurrent(client2Form);
 
     var request = post(buildAmendClient2Path()).session(session).with(csrf());
@@ -132,7 +148,11 @@ class AmendClientControllerTest extends BaseControllerTest {
   @Test
   void persistsDateSubInputsIntoSessionThenRedirects() throws Exception {
     var existingForms =
-        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
     var dateInputs =
@@ -144,7 +164,11 @@ class AmendClientControllerTest extends BaseControllerTest {
     client1Form.setInputs(dateInputs);
 
     var updatedForms =
-        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     updatedForms.getClient1Form().setCurrent(client1Form);
 
     var request = post(buildAmendClient1Path()).session(session).with(csrf());
@@ -162,7 +186,11 @@ class AmendClientControllerTest extends BaseControllerTest {
   @Test
   void getAmendClientAsExpected() throws Exception {
     var existingForms =
-        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
     mockMvc
@@ -177,8 +205,12 @@ class AmendClientControllerTest extends BaseControllerTest {
   @Test
   void getAmendClientTwoAsExpected() throws Exception {
     var existingForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .client2(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
     mockMvc
@@ -193,8 +225,12 @@ class AmendClientControllerTest extends BaseControllerTest {
   @Test
   void savesClient2FormsIntoSessionThenRedirects() throws Exception {
     var existingForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .client2(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
     var client2Rows =
@@ -208,8 +244,12 @@ class AmendClientControllerTest extends BaseControllerTest {
     client2Form.setInputs(client2Rows);
 
     var updatedForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .client2(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     updatedForms.getClient2Form().setCurrent(client2Form);
 
     var request = post(buildAmendClient2Path()).session(session).with(csrf());
@@ -227,8 +267,12 @@ class AmendClientControllerTest extends BaseControllerTest {
   @Test
   void persistsClient2DateSubInputsIntoSessionThenRedirects() throws Exception {
     var existingForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .client2(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
     var dateInputs =
@@ -240,8 +284,12 @@ class AmendClientControllerTest extends BaseControllerTest {
     client2Form.setInputs(dateInputs);
 
     var updatedForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .client2(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     updatedForms.getClient2Form().setCurrent(client2Form);
 
     var request = post(buildAmendClient2Path()).session(session).with(csrf());

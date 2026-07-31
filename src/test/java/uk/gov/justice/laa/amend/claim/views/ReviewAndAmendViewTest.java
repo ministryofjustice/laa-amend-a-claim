@@ -118,15 +118,15 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         "£300.00",
         String.format("/submissions/%s/claims/%s/counsel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(7), "Oral CMRH", "£100.00", "£200.00", "£300.00");
+        claimCostsTable.get(7), "Oral CMRH", "100", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(8), "Telephone CMRH", "£100.00", "£200.00", "£300.00");
+        claimCostsTable.get(8), "Telephone CMRH", "100", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(9), "Home office interview", "£100.00", "£200.00", "£300.00");
+        claimCostsTable.get(9), "Home office interview", "100", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(10), "Substantive hearing", "£100.00", "£200.00", "£300.00");
+        claimCostsTable.get(10), "Substantive hearing", "Yes", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(11), "Adjourned hearing fee", "£100.00", "£200.00", "£300.00");
+        claimCostsTable.get(11), "Adjourned hearing fee", "100", "£200.00", "£300.00");
 
     List<List<Element>> totalClaimValueTable = getTable(doc, "Total claim value");
     assertTableRowContainsValuesWithNoChangeLink(
@@ -465,15 +465,15 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         "£300.00",
         String.format("/submissions/%s/claims/%s/counsel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(7), "Oral CMRH", "£100.00", "£200.00", "£300.00");
+        claimCostsTable.get(7), "Oral CMRH", "100", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(8), "Telephone CMRH", "£100.00", "£200.00", "£300.00");
+        claimCostsTable.get(8), "Telephone CMRH", "100", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(9), "Home office interview", "£100.00", "£200.00", "£300.00");
+        claimCostsTable.get(9), "Home office interview", "100", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(10), "Substantive hearing", "£100.00", "£200.00", "£300.00");
+        claimCostsTable.get(10), "Substantive hearing", "Yes", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(11), "Adjourned hearing fee", "£100.00", "£200.00", "£300.00");
+        claimCostsTable.get(11), "Adjourned hearing fee", "100", "£200.00", "£300.00");
 
     List<List<Element>> totalClaimValueTable = getTable(doc, "Total claim value");
     Assertions.assertEquals(2, totalClaimValueTable.size());
@@ -639,25 +639,17 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         "£300.00",
         String.format("/submissions/%s/claims/%s/counsel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(7), "Oral CMRH", "£100.00", "Not applicable", "Not applicable");
+        claimCostsTable.get(7), "Oral CMRH", "100", "Not applicable", "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(8), "Telephone CMRH", "£100.00", "Not applicable", "Not applicable");
+        claimCostsTable.get(8), "Telephone CMRH", "100", "Not applicable", "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(9),
-        "Home office interview",
-        "£100.00",
-        "Not applicable",
-        "Not applicable");
+        claimCostsTable.get(9), "Home office interview", "100", "Not applicable", "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(10),
-        "Substantive hearing",
-        "£100.00",
-        "Not applicable",
-        "Not applicable");
+        claimCostsTable.get(10), "Substantive hearing", "Yes", "Not applicable", "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(11),
         "Adjourned hearing fee",
-        "£100.00",
+        "100",
         "Not applicable",
         "Not applicable");
 

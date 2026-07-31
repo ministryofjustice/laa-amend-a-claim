@@ -648,9 +648,10 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
 
   private static @NonNull AmendmentForms createCaseForms(ClaimDetails claimDetails) {
     var view = ClaimCaseViewFactory.create(claimDetails);
-    return new AmendmentForms(
-        new AmendmentForm(new LinkedHashMap<>()),
-        new AmendmentForm(view.caseTypeRows()),
-        new AmendmentForm(view.caseDetailsRows()));
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm(new LinkedHashMap<>()))
+        .caseType(new AmendmentForm(view.caseTypeRows()))
+        .caseDetails(new AmendmentForm(view.caseDetailsRows()))
+        .build();
   }
 }
