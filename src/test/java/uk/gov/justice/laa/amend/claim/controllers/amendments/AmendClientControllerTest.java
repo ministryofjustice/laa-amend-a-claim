@@ -1,9 +1,11 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
@@ -368,6 +370,77 @@ class AmendClientControllerTest extends BaseControllerTest {
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForms.getClient2Form().getCurrent().getInputs().get("CLIENT_2_SURNAME"))
         .isEqualTo(tooLong);
+  }
+
+  @Test
+  void postClient1WithInvalidValueRendersErrorSummaryAndInlineErrorOnRedirect() throws Exception {
+    var existingForms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    var tooLong = "a".repeat(256);
+    var postRequest =
+        post(buildAmendClient1Path())
+            .param(INPUTS.formatted("SURNAME"), tooLong)
+            .session(session)
+            .with(csrf());
+
+    var postResult =
+        mockMvc.perform(postRequest).andExpect(status().is3xxRedirection()).andReturn();
+
+    var getRequest =
+        get(buildAmendClient1Path())
+            .session(session)
+            .flashAttrs(postResult.getFlashMap())
+            .with(csrf());
+
+    mockMvc
+        .perform(getRequest)
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("govuk-error-summary")))
+        .andExpect(content().string(containsString("govuk-error-message")))
+        .andExpect(content().string(containsString("Value exceeds maximum length")));
+  }
+
+  @Test
+  void postClient2WithInvalidValueRendersErrorSummaryAndInlineErrorOnRedirect() throws Exception {
+    useMediationClaim();
+
+    var existingForms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .client2(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    var tooLong = "a".repeat(256);
+    var postRequest =
+        post(buildAmendClient2Path())
+            .param(INPUTS.formatted("CLIENT_2_SURNAME"), tooLong)
+            .session(session)
+            .with(csrf());
+
+    var postResult =
+        mockMvc.perform(postRequest).andExpect(status().is3xxRedirection()).andReturn();
+
+    var getRequest =
+        get(buildAmendClient2Path())
+            .session(session)
+            .flashAttrs(postResult.getFlashMap())
+            .with(csrf());
+
+    mockMvc
+        .perform(getRequest)
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("govuk-error-summary")))
+        .andExpect(content().string(containsString("govuk-error-message")))
+        .andExpect(content().string(containsString("Value exceeds maximum length")));
   }
 
   private void useMediationClaim() {

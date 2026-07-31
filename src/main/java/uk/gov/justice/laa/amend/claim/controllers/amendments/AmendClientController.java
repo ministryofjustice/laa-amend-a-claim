@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
+import static uk.gov.justice.laa.amend.claim.utils.AmendmentFormRedirects.redirectWithErrors;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getAmendmentForms;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveAmendmentForms;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
@@ -74,6 +76,7 @@ public class AmendClientController {
       HttpSession session,
       @Valid @ModelAttribute("client1Form") AmendmentForm client1Form,
       BindingResult bindingResult,
+      RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var amendmentForms = getAmendmentForms(session, claimId);
@@ -82,8 +85,11 @@ public class AmendClientController {
     saveAmendmentForms(session, claimId, amendmentForms);
 
     if (bindingResult.hasErrors()) {
-      return "redirect:/submissions/%s/claims/%s/amendments/amend-client"
-          .formatted(submissionId, claimId);
+      return redirectWithErrors(
+          redirectAttributes,
+          bindingResult,
+          "client1FormErrors",
+          "/submissions/%s/claims/%s/amendments/amend-client".formatted(submissionId, claimId));
     }
 
     return "redirect:/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
@@ -111,6 +117,7 @@ public class AmendClientController {
       HttpSession session,
       @Valid @ModelAttribute("client2Form") AmendmentForm client2Form,
       BindingResult bindingResult,
+      RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var amendmentForms = getAmendmentForms(session, claimId);
@@ -119,8 +126,12 @@ public class AmendClientController {
     saveAmendmentForms(session, claimId, amendmentForms);
 
     if (bindingResult.hasErrors()) {
-      return "redirect:/submissions/%s/claims/%s/amendments/amend-client-two"
-          .formatted(submissionId, claimId);
+      return redirectWithErrors(
+          redirectAttributes,
+          bindingResult,
+          "client2FormErrors",
+          "/submissions/%s/claims/%s/amendments/amend-client-two"
+              .formatted(submissionId, claimId));
     }
 
     return "redirect:/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
