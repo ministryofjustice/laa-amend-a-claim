@@ -90,8 +90,11 @@ class AmendMatterTypeCodeViewTest extends AmendmentsBaseTest {
 
   private AmendmentForms createCaseTypeForm(ClaimDetails claim) {
     var view = ClaimCaseViewFactory.create(claim);
-    return new AmendmentForms(
-        new AmendmentForm(), new AmendmentForm(view.caseTypeRows()), new AmendmentForm());
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm())
+        .caseType(new AmendmentForm(view.caseTypeRows()))
+        .caseDetails(new AmendmentForm())
+        .build();
   }
 
   private void assertCommonPageContent(Document doc) {

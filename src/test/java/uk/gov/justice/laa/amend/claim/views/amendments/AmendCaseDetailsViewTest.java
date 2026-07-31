@@ -440,10 +440,11 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
 
   private static @NonNull AmendmentForms createCaseForms(ClaimDetails claimDetails) {
     var view = ClaimCaseViewFactory.create(claimDetails);
-    return new AmendmentForms(
-        new AmendmentForm(new LinkedHashMap<>()),
-        new AmendmentForm(new LinkedHashMap<>()),
-        new AmendmentForm(view.caseDetailsRows()));
+    return AmendmentForms.builder()
+        .client1(new AmendmentForm(new LinkedHashMap<>()))
+        .caseType(new AmendmentForm(new LinkedHashMap<>()))
+        .caseDetails(new AmendmentForm(view.caseDetailsRows()))
+        .build();
   }
 
   private void assertDateRow(

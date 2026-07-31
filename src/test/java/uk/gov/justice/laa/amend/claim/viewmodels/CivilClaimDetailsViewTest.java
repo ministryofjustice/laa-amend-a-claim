@@ -143,23 +143,23 @@ public class CivilClaimDetailsViewTest
       Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).changeUrl());
 
       Assertions.assertEquals(CMRH_ORAL, result.get(7).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(7).submitted());
+      Assertions.assertEquals(100, result.get(7).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(7).calculated());
 
       Assertions.assertEquals(CMRH_TELEPHONE, result.get(8).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).submitted());
+      Assertions.assertEquals(100, result.get(8).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).calculated());
 
       Assertions.assertEquals(HO_INTERVIEW, result.get(9).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(9).submitted());
+      Assertions.assertEquals(100, result.get(9).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(9).calculated());
 
       Assertions.assertEquals(SUBSTANTIVE_HEARING, result.get(10).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(10).submitted());
+      Assertions.assertEquals(Boolean.TRUE, result.get(10).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(10).calculated());
 
       Assertions.assertEquals(ADJOURNED_FEE, result.get(11).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(11).submitted());
+      Assertions.assertEquals(100, result.get(11).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(11).calculated());
 
       Assertions.assertEquals(VAT, result.get(12).key());
@@ -211,23 +211,23 @@ public class CivilClaimDetailsViewTest
       Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).changeUrl());
 
       Assertions.assertEquals(CMRH_ORAL, result.get(7).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(7).submitted());
+      Assertions.assertEquals(100, result.get(7).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(7).calculated());
 
       Assertions.assertEquals(CMRH_TELEPHONE, result.get(8).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).submitted());
+      Assertions.assertEquals(100, result.get(8).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).calculated());
 
       Assertions.assertEquals(HO_INTERVIEW, result.get(9).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(9).submitted());
+      Assertions.assertEquals(100, result.get(9).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(9).calculated());
 
       Assertions.assertEquals(SUBSTANTIVE_HEARING, result.get(10).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(10).submitted());
+      Assertions.assertEquals(Boolean.TRUE, result.get(10).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(10).calculated());
 
       Assertions.assertEquals(ADJOURNED_FEE, result.get(11).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(11).submitted());
+      Assertions.assertEquals(100, result.get(11).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(11).calculated());
 
       Assertions.assertEquals(VAT, result.get(12).key());
@@ -422,15 +422,15 @@ public class CivilClaimDetailsViewTest
       Assertions.assertEquals("/submissions/%s/claims/%s/counsel-costs", result.get(6).changeUrl());
 
       Assertions.assertEquals(CMRH_ORAL, result.get(7).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(7).submitted());
+      Assertions.assertEquals(100, result.get(7).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(7).calculated());
 
       Assertions.assertEquals(CMRH_TELEPHONE, result.get(8).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(8).submitted());
+      Assertions.assertEquals(100, result.get(8).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(8).calculated());
 
       Assertions.assertEquals(HO_INTERVIEW, result.get(9).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(9).submitted());
+      Assertions.assertEquals(100, result.get(9).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(9).calculated());
 
       Assertions.assertEquals(SUBSTANTIVE_HEARING, result.get(10).key());
@@ -438,7 +438,7 @@ public class CivilClaimDetailsViewTest
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(10).calculated());
 
       Assertions.assertEquals(ADJOURNED_FEE, result.get(11).key());
-      Assertions.assertEquals(BigDecimal.valueOf(100), result.get(11).submitted());
+      Assertions.assertEquals(100, result.get(11).submitted());
       Assertions.assertEquals(BigDecimal.valueOf(200), result.get(11).calculated());
     }
 

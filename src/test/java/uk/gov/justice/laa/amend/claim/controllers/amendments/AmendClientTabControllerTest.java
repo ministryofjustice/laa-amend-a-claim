@@ -49,7 +49,11 @@ class AmendClientTabControllerTest extends BaseControllerTest {
   @Test
   void viewClientDisplaysClient1FormOnlyForNonMediationClaim() throws Exception {
     var existingForms =
-        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
     mockMvc
@@ -72,8 +76,12 @@ class AmendClientTabControllerTest extends BaseControllerTest {
     session.setAttribute(claimId.toString(), claim);
 
     var existingForms =
-        new AmendmentForms(
-            new AmendmentForm(), new AmendmentForm(), new AmendmentForm(), new AmendmentForm());
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .client2(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
     mockMvc
