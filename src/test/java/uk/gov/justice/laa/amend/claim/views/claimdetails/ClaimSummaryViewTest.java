@@ -283,7 +283,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
     claim.setCategoryOfLaw("TEST");
     claim.setMatterType1("IMLB");
-    claim.setMatterType2(null);
+    claim.setMatterType2("AHQS");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
@@ -307,7 +307,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(summaryList1.get(8), "Fee code", "FC");
     assertSummaryListRowContainsValues(summaryList1.get(9), "Fee code description", "FCD");
     assertSummaryListRowContainsValues(summaryList1.get(10), "Matter type 1", "IMLB");
-    assertSummaryListRowContainsValues(summaryList1.get(11), "Matter type 2", "Not applicable");
+    assertSummaryListRowContainsValues(summaryList1.get(11), "Matter type 2", "AHQS");
     assertSummaryListRowContainsValues(summaryList1.get(12), "Case start date", "01 January 2020");
     assertSummaryListRowContainsValues(summaryList1.get(13), "Case end date", "31 December 2020");
     assertSummaryListRowContainsValues(summaryList1.get(14), "Escape case", "Yes");
