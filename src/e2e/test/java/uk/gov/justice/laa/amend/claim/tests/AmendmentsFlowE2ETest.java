@@ -334,6 +334,8 @@ public class AmendmentsFlowE2ETest extends BaseTest {
       """
           E2E: Crime Claim Amendment Flow – Search → View → Amend Claim Details
             → Costs tab → Change costs → View Costs
+            → View Client → Change Client Details → View Client
+            → Check Page
           """)
   void crimeCostsAmendmentFlow() {
     var search = new SearchPage(page);
@@ -357,5 +359,25 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     viewAmendCosts = new ViewCostsPage(page);
     viewAmendCosts.assertAmendedCost("Net disbursements", "£150.00");
+
+    // View Client → Change Client Details → View Client
+
+    viewAmendClient = new ViewClientPage(page);
+    viewAmendClient.clickClientTab();
+
+    assertSummaryListRow(page, "Client details", "Last name", "Not applicable");
+    viewAmendClient.getChangeClientOneLink().click();
+
+    var amendClient1 = new AmendClient1Page(page);
+    amendClient1.fillInput("SURNAME", "changed");
+    amendClient1.clickContinueButton();
+
+    viewAmendClient = new ViewClientPage(page);
+    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+
+    viewAmendCosts.clickContinue();
+
+    var checkPage = new CheckPage(page);
+    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
   }
 }
