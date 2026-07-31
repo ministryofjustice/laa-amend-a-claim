@@ -247,6 +247,84 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
+  void postFeeCodeWithInvalidValueRedirectsBackAndPreservesInput() throws Exception {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setFeeCode(FEE_CODE);
+    claim.setMatterTypeCode(MATTER_TYPE_CODE_1);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    var forms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var tooLong = "a".repeat(256);
+    var request =
+        post(buildAmendFeeCodePath())
+            .param(INPUTS.formatted("FEE_CODE"), tooLong)
+            .session(session)
+            .with(csrf());
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildAmendFeeCodePath()));
+
+    AmendmentForms updatedForm =
+        (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
+    assertThat(updatedForm.getCaseTypeForm().getCurrent().getInputs().get("FEE_CODE"))
+        .isEqualTo(tooLong);
+  }
+
+  @Test
+  void postMatterTypeCodeWithInvalidValueRedirectsBackAndPreservesInput() throws Exception {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setFeeCode(FEE_CODE);
+    claim.setMatterType1(MATTER_TYPE_CODE_1);
+    claim.setMatterType2(MATTER_TYPE_CODE_2);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeRows =
+        Map.of(
+            "FEE_CODE",
+            FEE_CODE,
+            "MATTER_TYPE_CODE_1",
+            MATTER_TYPE_CODE_1,
+            "MATTER_TYPE_CODE_2",
+            MATTER_TYPE_CODE_2);
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    var forms =
+        new AmendmentForms(
+            new AmendmentForm(), new AmendmentForm(caseTypeForm), new AmendmentForm());
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var tooLong = "a".repeat(256);
+    var request =
+        post(buildAmendMatterTypeCodePath())
+            .param(INPUTS.formatted("FEE_CODE"), FEE_CODE)
+            .param(INPUTS.formatted("MATTER_TYPE_CODE_1"), tooLong)
+            .param(INPUTS.formatted("MATTER_TYPE_CODE_2"), MATTER_TYPE_CODE_2)
+            .session(session)
+            .with(csrf());
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildAmendMatterTypeCodePath()));
+
+    AmendmentForms updatedForm =
+        (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
+    assertThat(updatedForm.getCaseTypeForm().getCurrent().getInputs().get("MATTER_TYPE_CODE_1"))
+        .isEqualTo(tooLong);
+  }
+
+  @Test
   void getAmendMatterStartsLegalHelpAsExpected() throws Exception {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setFeeCode(FEE_CODE);
