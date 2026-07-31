@@ -13,8 +13,10 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import org.springframework.validation.FieldError;
 import org.thymeleaf.spring6.util.DetailedError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AllowedTotalFormError;
+import uk.gov.justice.laa.amend.claim.forms.errors.AmendmentFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessedTotalFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessmentOutcomeFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.MonetaryValueFormError;
@@ -50,6 +52,27 @@ public class ThymeleafUtils {
     return mapErrors(errors, AllowedTotalFormError::new, AllowedTotalFormError::getMessage);
   }
 
+
+  public List<AmendmentFormError> toAmendmentFormErrors(List<FieldError> errors) {
+    return mapErrors(errors, AmendmentFormError::new, AmendmentFormError::getMessage);
+  }
+
+  public List<AmendmentFormError> orEmpty(List<AmendmentFormError> errors) {
+    return errors == null ? List.of() : errors;
+  }
+
+  public boolean hasAmendmentFieldError(List<AmendmentFormError> errors, String fieldKey) {
+    return orEmpty(errors).stream().anyMatch(error -> error.getFieldName().equals(fieldKey));
+  }
+
+  public String amendmentFieldErrorMessage(List<AmendmentFormError> errors, String fieldKey) {
+    return orEmpty(errors).stream()
+        .filter(error -> error.getFieldName().equals(fieldKey))
+        .map(AmendmentFormError::getMessage)
+        .findFirst()
+        .orElse(null);
+  }
+
   public boolean supportsClient2(AreaOfLaw areaOfLaw) {
     return AreaOfLaw.MEDIATION.equals(areaOfLaw);
   }
@@ -58,10 +81,8 @@ public class ThymeleafUtils {
     return supportsClient2(areaOfLaw) ? "claimClient.client1Details" : "claimClient.clientDetails";
   }
 
-  private <T> List<T> mapErrors(
-      List<DetailedError> errors,
-      Function<DetailedError, T> mapper,
-      Function<T, String> keyExtractor) {
+  private <S, T> List<T> mapErrors(
+      List<S> errors, Function<S, T> mapper, Function<T, String> keyExtractor) {
     return errors.stream()
         .map(mapper)
         .sorted()

@@ -1,9 +1,11 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -138,6 +140,45 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCaseDetailsForm().getCurrent().getInputs().get("FEE_CODE"))
         .isEqualTo(tooLong);
+  }
+
+  @Test
+  void postCaseDetailsWithInvalidValueRendersErrorSummaryAndInlineErrorOnRedirect()
+      throws Exception {
+    var caseDetailsRows = Map.of("UNIQUE_FILE_NUMBER", "abc");
+    var caseDetailsForm = new AmendmentForm();
+    caseDetailsForm.setInputs(caseDetailsRows);
+
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(caseDetailsForm)
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var tooLong = "a".repeat(256);
+    var postRequest =
+        post(buildAmendCaseDetailsPath())
+            .param(INPUTS.formatted("UNIQUE_FILE_NUMBER"), tooLong)
+            .session(session)
+            .with(csrf());
+
+    var postResult =
+        mockMvc.perform(postRequest).andExpect(status().is3xxRedirection()).andReturn();
+
+    var getRequest =
+        get(buildAmendCaseDetailsPath())
+            .session(session)
+            .flashAttrs(postResult.getFlashMap())
+            .with(csrf());
+
+    mockMvc
+        .perform(getRequest)
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("govuk-error-summary")))
+        .andExpect(content().string(containsString("govuk-error-message")))
+        .andExpect(content().string(containsString("Value exceeds maximum length")));
   }
 
   public String buildAmendCaseDetailsPath() {

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<th:block th:fragment="amendmentEnumInput(field, labelMessageKey)"
+<th:block th:fragment="amendmentEnumInput(field, labelMessageKey, formErrors)"
           th:with="fieldKey=${field.name()},
                    label=${#messages.msgOrNull(labelMessageKey) ?: fieldKey},
                    options=${field.getOptions()}">
@@ -9,7 +9,9 @@
     <label class="govuk-label govuk-visually-hidden"
            th:for="${fieldKey}"
            th:text="${label}"></label>
+    <th:block th:replace="~{partials/amendments/field-error :: fieldError(${fieldKey}, ${formErrors})}"></th:block>
     <select class="govuk-select"
+            th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, fieldKey) ? 'govuk-select--error' : ''}"
             th:id="${fieldKey}"
             th:field="*{inputs[__${fieldKey}__]}"
             data-module="make-autocomplete">

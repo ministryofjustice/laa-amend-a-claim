@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="fieldError(fieldKey, formErrors)"
+          th:with="errorMessage=${@ThymeleafUtils.amendmentFieldErrorMessage(formErrors, fieldKey)}">
+  <p th:if="${errorMessage != null}" class="govuk-error-message">
+    <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
+    <span th:text="${errorMessage}"></span>
+  </p>
+</th:block>
+</body>
+</html>

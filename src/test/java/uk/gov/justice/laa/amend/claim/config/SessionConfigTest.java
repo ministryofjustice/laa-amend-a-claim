@@ -1,17 +1,20 @@
 package uk.gov.justice.laa.amend.claim.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -19,6 +22,10 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.validation.BeanPropertyBindingResult;
+import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.forms.errors.AmendmentFormError;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
@@ -125,6 +132,25 @@ class SessionConfigTest {
     Object deserialized = serializer.deserialize(serialized);
 
     assertThat(deserialized).isInstanceOf(CrimeClaimDetails.class);
+  }
+
+  @Test
+  void roundTripsAmendmentFormErrorList() {
+    // Mirrors the ArrayList shape AmendmentFormRedirects actually flashes: the
+    // ImmutableCollections list Stream.toList() returns doesn't round-trip through this
+    // serializer's polymorphic type-id wrapping the way a plain ArrayList does.
+    List<AmendmentFormError> errors =
+        new ArrayList<>(
+            List.of(new AmendmentFormError("FEE_CODE", "Value exceeds maximum length")));
+
+    byte[] serialized = serializer.serialize(errors);
+    Object deserialized = serializer.deserialize(serialized);
+
+    assertThat(deserialized).isInstanceOf(List.class);
+    @SuppressWarnings("unchecked")
+    List<AmendmentFormError> restored = (List<AmendmentFormError>) deserialized;
+    assertThat(restored)
+        .containsExactly(new AmendmentFormError("FEE_CODE", "Value exceeds maximum length"));
   }
 
   @Test

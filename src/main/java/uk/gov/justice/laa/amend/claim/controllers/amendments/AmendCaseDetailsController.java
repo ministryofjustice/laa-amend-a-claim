@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
+import static uk.gov.justice.laa.amend.claim.utils.AmendmentFormRedirects.redirectWithErrors;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getAmendmentForms;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveAmendmentForms;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
@@ -63,6 +65,7 @@ public class AmendCaseDetailsController {
       HttpSession session,
       @Valid @ModelAttribute("caseDetailsForm") AmendmentForm caseDetailsForm,
       BindingResult bindingResult,
+      RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var amendmentForms = getAmendmentForms(session, claimId);
@@ -71,8 +74,12 @@ public class AmendCaseDetailsController {
     saveAmendmentForms(session, claimId, amendmentForms);
 
     if (bindingResult.hasErrors()) {
-      return "redirect:/submissions/%s/claims/%s/amendments/amend-case-details"
-          .formatted(submissionId, claimId);
+      return redirectWithErrors(
+          redirectAttributes,
+          bindingResult,
+          "caseDetailsFormErrors",
+          "/submissions/%s/claims/%s/amendments/amend-case-details"
+              .formatted(submissionId, claimId));
     }
 
     return "redirect:/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);

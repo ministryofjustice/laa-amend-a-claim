@@ -1,10 +1,12 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -284,6 +286,53 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
+  void postFeeCodeWithInvalidValueRendersErrorSummaryAndInlineErrorOnRedirect() throws Exception {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setFeeCode(FEE_CODE);
+    claim.setMatterTypeCode(MATTER_TYPE_CODE_1);
+    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(caseTypeForm)
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var tooLong = "a".repeat(256);
+    var postRequest =
+        post(buildAmendFeeCodePath())
+            .param(INPUTS.formatted("FEE_CODE"), tooLong)
+            .session(session)
+            .with(csrf());
+
+    var postResult =
+        mockMvc.perform(postRequest).andExpect(status().is3xxRedirection()).andReturn();
+
+    when(availableFeeCodesService.getAvailableFeeCodes(AreaOfLaw.CRIME_LOWER))
+        .thenReturn(Map.of(FEE_CODE, FEE_CODE));
+
+    var getRequest =
+        get(buildAmendFeeCodePath())
+            .session(session)
+            .flashAttrs(postResult.getFlashMap())
+            .with(csrf());
+
+    mockMvc
+        .perform(getRequest)
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("govuk-error-summary")))
+        .andExpect(content().string(containsString("govuk-error-message")))
+        .andExpect(content().string(containsString("Value exceeds maximum length")));
+  }
+
+  @Test
   void postMatterTypeCodeWithInvalidValueRedirectsBackAndPreservesInput() throws Exception {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setFeeCode(FEE_CODE);
@@ -328,6 +377,61 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCaseTypeForm().getCurrent().getInputs().get("MATTER_TYPE_CODE_1"))
         .isEqualTo(tooLong);
+  }
+
+  @Test
+  void postMatterTypeCodeWithInvalidValueRendersErrorSummaryAndInlineErrorOnRedirect()
+      throws Exception {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setFeeCode(FEE_CODE);
+    claim.setMatterType1(MATTER_TYPE_CODE_1);
+    claim.setMatterType2(MATTER_TYPE_CODE_2);
+    claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeRows =
+        Map.of(
+            "FEE_CODE",
+            FEE_CODE,
+            "MATTER_TYPE_CODE_1",
+            MATTER_TYPE_CODE_1,
+            "MATTER_TYPE_CODE_2",
+            MATTER_TYPE_CODE_2);
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(caseTypeForm)
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var tooLong = "a".repeat(256);
+    var postRequest =
+        post(buildAmendMatterTypeCodePath())
+            .param(INPUTS.formatted("FEE_CODE"), FEE_CODE)
+            .param(INPUTS.formatted("MATTER_TYPE_CODE_1"), tooLong)
+            .param(INPUTS.formatted("MATTER_TYPE_CODE_2"), MATTER_TYPE_CODE_2)
+            .session(session)
+            .with(csrf());
+
+    var postResult =
+        mockMvc.perform(postRequest).andExpect(status().is3xxRedirection()).andReturn();
+
+    var getRequest =
+        get(buildAmendMatterTypeCodePath())
+            .session(session)
+            .flashAttrs(postResult.getFlashMap())
+            .with(csrf());
+
+    mockMvc
+        .perform(getRequest)
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("govuk-error-summary")))
+        .andExpect(content().string(containsString("govuk-error-message")))
+        .andExpect(content().string(containsString("Value exceeds maximum length")));
   }
 
   @Test

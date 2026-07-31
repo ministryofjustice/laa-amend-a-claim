@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
-<th:block th:fragment="amendmentDateInput(fieldKey)">
-  <div class="govuk-date-input amend-date-input">
+<th:block th:fragment="amendmentDateInput(fieldKey, formErrors)">
+  <th:block th:replace="~{partials/amendments/field-error :: fieldError(${fieldKey}, ${formErrors})}"></th:block>
+  <div class="govuk-date-input amend-date-input" th:id="${fieldKey}">
     <div class="govuk-date-input__item">
       <div class="govuk-form-group">
         <label class="govuk-label govuk-date-input__label govuk-visually-hidden"
