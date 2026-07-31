@@ -22,6 +22,7 @@ import uk.gov.justice.laa.amend.claim.controllers.UserControllerAdvice;
 import uk.gov.justice.laa.amend.claim.service.CheckAmendmentsService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactory;
 
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/check")
 @RequiredArgsConstructor
@@ -50,6 +51,7 @@ public class CheckAmendmentsController {
 
     var clientView = ClaimClientViewFactory.create(claim);
     var caseView = ClaimCaseViewFactory.create(claim);
+    var costFields = ClaimCostsViewFactory.create(claim).costFields();
 
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("client1Form", amendmentForms.getClient1Form().getCurrent());
@@ -60,6 +62,8 @@ public class CheckAmendmentsController {
             : null);
     model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
     model.addAttribute("caseDetailsForm", amendmentForms.getCaseDetailsForm().getCurrent());
+    model.addAttribute("costsForm", amendmentForms.getCostsForm().getCurrent());
+    model.addAttribute("costFields", costFields);
     model.addAttribute("clientView", clientView);
     model.addAttribute("claim", caseView);
     model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
