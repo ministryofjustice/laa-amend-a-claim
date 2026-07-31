@@ -633,7 +633,7 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
   private void assertCommonPageContent(Document doc) {
     assertPageHasTitle(doc, "Amend claim details");
     assertPageHasHeading(doc, "Amend claim details");
-    assertPageHasBackLink(doc);
+    assertPageDoesNotHaveBackLink(doc);
 
     assertPageHasNoActiveServiceNavigationItems(doc);
     assertPageHasInactiveSubNavigationItem(doc, "Client", clientUrl);
