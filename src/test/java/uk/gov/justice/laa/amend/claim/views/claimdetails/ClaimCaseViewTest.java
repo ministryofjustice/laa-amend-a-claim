@@ -208,6 +208,7 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
         caseDetails.get(10), "Schedule reference (outcome)", SCHEDULE_REFERENCE);
   }
 
+  @Test
   void testShowsCivilClientDetails() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     this.claim = claim;
