@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcosts;
 
+import static uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsView.putField;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CMRH_ORAL;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.CMRH_TELEPHONE;
@@ -33,22 +34,22 @@ public record CivilClaimCostsView(
   private static LinkedHashMap<ClaimViewField<?>, ClaimFieldRow> createCostFields(
       CivilClaimDetails claim) {
     var costFields = new LinkedHashMap<ClaimViewField<?>, ClaimFieldRow>();
-    ClaimCostsView.putField(costFields, FIXED_FEE, claim);
-    ClaimCostsView.putField(costFields, PROFIT_COST, claim);
-    ClaimCostsView.putField(costFields, DISBURSEMENTS, claim);
-    ClaimCostsView.putField(costFields, COUNSELS_COST, claim);
-    ClaimCostsView.putField(costFields, DISBURSEMENTS_VAT, claim);
-    ClaimCostsView.putField(costFields, TRAVEL_AND_WAITING_COSTS, claim);
-    ClaimCostsView.putField(costFields, VAT, claim);
-    ClaimCostsView.putField(costFields, ADJOURNED_HEARING_FEE, claim);
-    ClaimCostsView.putField(costFields, DETENTION_TRAVEL, claim);
-    ClaimCostsView.putField(costFields, JR_FORM_FILLING, claim);
-    ClaimCostsView.putField(costFields, SUBSTANTIVE_HEARING, claim);
-    ClaimCostsView.putField(costFields, HOME_OFFICE, claim);
-    ClaimCostsView.putField(costFields, CMRH_ORAL, claim);
-    ClaimCostsView.putField(costFields, CMRH_TELEPHONE, claim);
-    ClaimCostsView.putField(costFields, IS_LONDON_RATE, claim);
-    ClaimCostsView.putField(costFields, PRIOR_AUTHORITY_REFERENCE, claim);
+    putField(costFields, FIXED_FEE, claim);
+    putField(costFields, PROFIT_COST, claim);
+    putField(costFields, DISBURSEMENTS, claim);
+    putField(costFields, COUNSELS_COST, claim);
+    putField(costFields, DISBURSEMENTS_VAT, claim);
+    putField(costFields, TRAVEL_AND_WAITING_COSTS, claim);
+    putField(costFields, VAT, claim);
+    putField(costFields, ADJOURNED_HEARING_FEE, claim);
+    putField(costFields, DETENTION_TRAVEL, claim);
+    putField(costFields, JR_FORM_FILLING, claim);
+    putField(costFields, SUBSTANTIVE_HEARING, claim);
+    putField(costFields, HOME_OFFICE, claim);
+    putField(costFields, CMRH_ORAL, claim);
+    putField(costFields, CMRH_TELEPHONE, claim);
+    putField(costFields, IS_LONDON_RATE, claim);
+    putField(costFields, PRIOR_AUTHORITY_REFERENCE, claim);
     return costFields;
   }
 }

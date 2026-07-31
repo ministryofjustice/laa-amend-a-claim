@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcosts;
 
+import static uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsView.putField;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.DISBURSEMENTS;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.DISBURSEMENTS_VAT;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.FIXED_FEE;
@@ -21,10 +22,10 @@ public record MediationClaimCostsView(
   private static LinkedHashMap<ClaimViewField<?>, ClaimFieldRow> createCostFields(
       MediationClaimDetails claim) {
     var costFields = new LinkedHashMap<ClaimViewField<?>, ClaimFieldRow>();
-    ClaimCostsView.putField(costFields, FIXED_FEE, claim);
-    ClaimCostsView.putField(costFields, VAT, claim);
-    ClaimCostsView.putField(costFields, DISBURSEMENTS, claim);
-    ClaimCostsView.putField(costFields, DISBURSEMENTS_VAT, claim);
+    putField(costFields, FIXED_FEE, claim);
+    putField(costFields, VAT, claim);
+    putField(costFields, DISBURSEMENTS, claim);
+    putField(costFields, DISBURSEMENTS_VAT, claim);
     return costFields;
   }
 }

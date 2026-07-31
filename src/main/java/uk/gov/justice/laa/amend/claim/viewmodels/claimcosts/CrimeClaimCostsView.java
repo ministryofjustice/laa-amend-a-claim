@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcosts;
 
+import static uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsView.putField;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.DISBURSEMENTS;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.DISBURSEMENTS_VAT;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.FIXED_FEE;
@@ -24,13 +25,13 @@ public record CrimeClaimCostsView(
   private static LinkedHashMap<ClaimViewField<?>, ClaimFieldRow> createCostFields(
       CrimeClaimDetails claim) {
     var costFields = new LinkedHashMap<ClaimViewField<?>, ClaimFieldRow>();
-    ClaimCostsView.putField(costFields, FIXED_FEE, claim);
-    ClaimCostsView.putField(costFields, PROFIT_COST, claim);
-    ClaimCostsView.putField(costFields, DISBURSEMENTS, claim);
-    ClaimCostsView.putField(costFields, TRAVEL_COSTS, claim);
-    ClaimCostsView.putField(costFields, WAITING_COSTS, claim);
-    ClaimCostsView.putField(costFields, VAT, claim);
-    ClaimCostsView.putField(costFields, DISBURSEMENTS_VAT, claim);
+    putField(costFields, FIXED_FEE, claim);
+    putField(costFields, PROFIT_COST, claim);
+    putField(costFields, DISBURSEMENTS, claim);
+    putField(costFields, TRAVEL_COSTS, claim);
+    putField(costFields, WAITING_COSTS, claim);
+    putField(costFields, VAT, claim);
+    putField(costFields, DISBURSEMENTS_VAT, claim);
     return costFields;
   }
 }
