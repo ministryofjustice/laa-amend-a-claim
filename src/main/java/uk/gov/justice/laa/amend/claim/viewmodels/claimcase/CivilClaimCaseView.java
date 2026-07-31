@@ -15,11 +15,14 @@ import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDeta
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.DESIGNATED_ACCREDITED_REPRESENTATIVE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.EXCEPTIONAL_CASE_FUNDING;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.EXEMPTION_CRITERIA_SATISFIED;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.FEE_CODE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.FOLLOW_ON_WORK;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.IRC_SURGERY;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.IS_NRM_ADVICE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.LEGACY_CASE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.MATTER_TYPE_CODE_1;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.MATTER_TYPE_CODE_2;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.MEDICAL_REPORTS_CLAIMED;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.MEETINGS_ATTENDED;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.MENTAL_HEALTH_TRIBUNAL_REFERENCE;
@@ -36,9 +39,6 @@ import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDeta
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.WAITING_TIME;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_REFERENCE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_START_DATE;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.FEE_CODE;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.MATTER_TYPE_CODE_1;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.MATTER_TYPE_CODE_2;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.STAGE_REACHED;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.UNIQUE_FILE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.asCivilField;
@@ -61,10 +61,14 @@ public record CivilClaimCaseView(
   private static LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object> createCaseTypeRows(
       CivilClaimDetails claim) {
     Stream<ClaimViewField<CivilClaimDetails>> fields =
+<<<<<<< HEAD
         Stream.of(
             asCivilField(FEE_CODE),
             asCivilField(MATTER_TYPE_CODE_1),
             asCivilField(MATTER_TYPE_CODE_2));
+=======
+        Stream.of(FEE_CODE, MATTER_TYPE_CODE_1, MATTER_TYPE_CODE_2);
+>>>>>>> parent of e3092c98 (move fields into ClaimDetailsViewField)
 
     return toFieldMap(fields, claim);
   }

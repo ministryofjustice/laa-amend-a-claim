@@ -36,6 +36,11 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       new Accessor<>(MediationClaimDetails::getIsClient2PostalApplicationAccepted),
       FieldType.BOOLEAN),
 
+  // Case Type fields
+  FEE_CODE(new Accessor<>(MediationClaimDetails::getFeeCode)),
+  MATTER_TYPE_CODE_1(new Accessor<>(MediationClaimDetails::getMatterType1)),
+  MATTER_TYPE_CODE_2(new Accessor<>(MediationClaimDetails::getMatterType2)),
+
   // Case Details fields
   CLAIM_ID(new Accessor<>(MediationClaimDetails::getCaseId)),
   UNIQUE_CASE_ID(new Accessor<>(MediationClaimDetails::getUniqueCaseId)),

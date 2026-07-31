@@ -17,6 +17,11 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   IS_POSTAL_APPLICATION_ACCEPTED(
       new Accessor<>(CivilClaimDetails::getIsPostalApplication), FieldType.BOOLEAN),
 
+  // Case type fields
+  FEE_CODE(new Accessor<>(CivilClaimDetails::getFeeCode)),
+  MATTER_TYPE_CODE_1(new Accessor<>(CivilClaimDetails::getMatterType1)),
+  MATTER_TYPE_CODE_2(new Accessor<>(CivilClaimDetails::getMatterType2)),
+
   // Case details fields
   SCHEDULE_REFERENCE_CIVIL(new Accessor<>(CivilClaimDetails::getScheduleReference)),
   CASE_ID(new Accessor<>(CivilClaimDetails::getCaseId)),
