@@ -44,19 +44,19 @@ public class AmendmentFormValidator implements Validator {
   public void validate(Object target, Errors errors) {
     var form = (AmendmentForm) target;
 
-    for (var entry : form.getFieldInputs(claimDetailsType).entrySet()) {
+    for (var entry : form.getFieldValues(claimDetailsType).entrySet()) {
       var field = entry.getKey();
 
       var matched = false;
       for (var fieldValidator : fieldValidators) {
-        if (fieldValidator.supportedType() == field.getType()) {
+        if (fieldValidator.supportedType() == field.getFieldType()) {
           matched = true;
           fieldValidator.validate(field, form, errors);
         }
       }
 
       if (!matched) {
-        throw new IllegalStateException("Unsupported field type: " + field.getType());
+        throw new IllegalStateException("Unsupported field type: " + field.getFieldType());
       }
     }
   }
