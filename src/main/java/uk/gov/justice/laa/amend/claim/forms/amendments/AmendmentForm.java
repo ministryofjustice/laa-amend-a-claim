@@ -1,7 +1,10 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -15,6 +18,7 @@ import uk.gov.justice.laa.amend.claim.converters.StringToBooleanConverter;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
+import uk.gov.justice.laa.amend.claim.utils.NumberUtils;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
@@ -48,6 +52,8 @@ public class AmendmentForm {
         putDateInputs(inputs, field.name(), entry.getValue());
       } else if (field.getType() == FieldType.BOOLEAN) {
         inputs.put(field.name(), formatBooleanValue(field.name(), entry.getValue()));
+      } else if (field.getType() == FieldType.NUMBER) {
+        inputs.put(field.name(), formatNumberValue(field.name(), entry.getValue()));
       } else {
         inputs.put(field.name(), formatValue(entry.getValue()));
       }
@@ -92,15 +98,23 @@ public class AmendmentForm {
     var original = originalForm.getInputs().get(key);
     var current = inputs.get(key);
 
-    if (original == null && current == null) {
+    if (isBlank(original) && isBlank(current)) {
       return false;
     }
 
-    if (original == null || current == null) {
+    if (isBlank(original) || isBlank(current)) {
       return true;
     }
 
-    return !originalForm.getInputs().get(key).equals(getInputs().get(key));
+    return !original.equals(current);
+  }
+
+  public boolean isAmendment(String key, AmendmentForm originalForm, FieldType fieldType) {
+    if (fieldType == FieldType.BIG_DECIMAL) {
+      return !Objects.equals(originalForm.getBigDecimalValue(key), getBigDecimalValue(key));
+    }
+
+    return isAmendment(key, originalForm);
   }
 
   public boolean hasAmendments(AmendmentForm original) {
@@ -124,13 +138,37 @@ public class AmendmentForm {
     return isDateField(fieldName) ? getDateValue(fieldName) : inputs.get(fieldName);
   }
 
+  public Object getAmendedValue(String fieldName, FieldType fieldType) {
+    return switch (fieldType) {
+      case BIG_DECIMAL -> getBigDecimalValue(fieldName);
+      case DATE -> getDateValue(fieldName);
+      case BOOLEAN -> getBooleanValue(fieldName);
+      case NUMBER -> getIntegerValue(fieldName);
+      case ENUM, TEXT -> inputs.get(fieldName);
+    };
+  }
+
   public Object getAmendedValue(ClaimViewField<?> field) {
     return switch (field.getType()) {
       case DATE -> getDateValue(field.name());
       case BOOLEAN -> getBooleanValue(field.name());
+      case BIG_DECIMAL -> getBigDecimalValue(field.name());
+      case NUMBER -> getIntegerValue(field.name());
       case ENUM -> inputs.get(field.name());
       case TEXT -> inputs.get(field.name());
     };
+  }
+
+  public Integer getIntegerValue(String fieldName) {
+    var value = inputs.get(fieldName);
+    if (isBlank(value)) {
+      return null;
+    }
+    try {
+      return Integer.valueOf(value.trim());
+    } catch (NumberFormatException e) {
+      return null;
+    }
   }
 
   public Boolean getBooleanValue(String fieldName) {
@@ -143,6 +181,19 @@ public class AmendmentForm {
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException(
           "Invalid boolean value for field '%s'".formatted(fieldName), e);
+    }
+  }
+
+  public BigDecimal getBigDecimalValue(String fieldName) {
+    var value = inputs.get(fieldName);
+    if (isBlank(value)) {
+      return null;
+    }
+    try {
+      var parsed = NumberUtils.parse(value);
+      return parsed.scale() > 2 ? null : setScale(parsed);
+    } catch (NumberFormatException | ParseException e) {
+      return null;
     }
   }
 
@@ -187,20 +238,35 @@ public class AmendmentForm {
     return switch (value) {
       case null -> null;
       case String stringValue -> stringValue;
+      case BigDecimal bigDecimal -> setScale(bigDecimal).toString();
+      case Integer intValue -> intValue.toString();
       case LocalDate ignored ->
           throw new IllegalArgumentException(
               "LocalDate value must be handled as a date field (FieldType.DATE), not formatted here");
-      default -> "TODO";
+      default ->
+          throw new IllegalArgumentException(
+              "Unsupported value type '%s' for text field".formatted(value.getClass()));
     };
   }
 
   private static String formatBooleanValue(String name, Object value) {
     return switch (value) {
-      case null -> "";
+      case null -> null;
       case Boolean booleanValue -> booleanValue.toString();
       default ->
           throw new IllegalArgumentException(
               "Expected Boolean for boolean field '%s' but got %s"
+                  .formatted(name, value.getClass()));
+    };
+  }
+
+  private static String formatNumberValue(String name, Object value) {
+    return switch (value) {
+      case null -> null;
+      case Integer intValue -> intValue.toString();
+      default ->
+          throw new IllegalArgumentException(
+              "Expected Integer for number field '%s' but got %s"
                   .formatted(name, value.getClass()));
     };
   }

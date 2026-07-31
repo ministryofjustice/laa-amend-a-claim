@@ -115,7 +115,7 @@ public record ClaimFieldRow(
 
   public static ClaimFieldRow fromCustom(BoltOnClaimField claimField) {
     if (!claimField.hasSubmittedValue()) {
-      return createRow(claimField, "Not applicable", "Not applicable");
+      return createRow(claimField, null, null);
     }
     return createRow(claimField, claimField.getSubmitted(), claimField.getCalculated());
   }

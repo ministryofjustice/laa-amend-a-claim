@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="amendmentBigDecimalInput(fieldKey, labelMessageKey)"
+          th:with="label=${#messages.msgOrNull(labelMessageKey) ?: fieldKey}">
+  <label class="govuk-label govuk-visually-hidden"
+         th:for="${fieldKey}"
+         th:text="${label}"></label>
+  <div class="govuk-input__wrapper amend-big-decimal-input">
+    <div class="govuk-input__prefix" aria-hidden="true">£</div>
+    <input class="govuk-input govuk-input--width-10"
+           type="text"
+           inputmode="decimal"
+           spellcheck="false"
+           th:id="${fieldKey}"
+           th:field="*{inputs[__${fieldKey}__]}" />
+  </div>
+</th:block>
+</body>
+</html>

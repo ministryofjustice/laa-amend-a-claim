@@ -2,18 +2,23 @@ package uk.gov.justice.laa.amend.claim.pages.amendments;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.AriaRole;
+import lombok.Getter;
 
+@Getter
 public class ViewClientPage extends BaseAmendmentPage {
 
-  private final Locator changeLink;
+  private final Locator changeClientOneLink;
+  private final Locator changeClientTwoLink;
+  private final Locator continueButton;
 
   public ViewClientPage(Page page) {
     super(page);
-    this.changeLink = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Change"));
+    this.changeClientOneLink = page.locator("#amend-client-1");
+    this.changeClientTwoLink = page.locator("#amend-client-2");
+    this.continueButton = page.locator("#check");
   }
 
-  public void clickChangeLink() {
-    changeLink.click();
+  public void clickContinue() {
+    continueButton.click();
   }
 }

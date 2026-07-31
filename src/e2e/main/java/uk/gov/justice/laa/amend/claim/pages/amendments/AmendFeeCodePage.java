@@ -13,12 +13,11 @@ public class AmendFeeCodePage extends LaaPage {
   private final Locator feeCodeInput;
 
   public AmendFeeCodePage(Page page) {
-    super(page, "Fee code");
-
+    super(page, "Amend fee code");
     this.continueButton =
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue"));
     this.feeCodeInput =
-        page.locator("#fee-code-input.autocomplete__input.autocomplete__input--default");
+        page.locator("#fee-code-input.autocomplete__input.autocomplete__input--show-all-values");
   }
 
   public void fillFeeCodeInput(String value) {

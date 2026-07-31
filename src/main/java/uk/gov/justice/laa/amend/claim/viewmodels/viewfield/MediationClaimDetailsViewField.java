@@ -25,9 +25,11 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       new Accessor<>(MediationClaimDetails::getClient2DateOfBirth), FieldType.DATE),
   CLIENT_2_UCN(new Accessor<>(MediationClaimDetails::getClient2Ucn)),
   CLIENT_2_POSTCODE(new Accessor<>(MediationClaimDetails::getClient2Postcode)),
-  CLIENT_2_GENDER(new Accessor<>(MediationClaimDetails::getClient2Gender)),
-  CLIENT_2_ETHNICITY(new Accessor<>(MediationClaimDetails::getClient2Ethnicity)),
-  CLIENT_2_DISABILITY(new Accessor<>(MediationClaimDetails::getClient2Disability)),
+  CLIENT_2_GENDER(new Accessor<>(MediationClaimDetails::getClient2Gender), FieldOptions.GENDER),
+  CLIENT_2_ETHNICITY(
+      new Accessor<>(MediationClaimDetails::getClient2Ethnicity), FieldOptions.ETHNICITY_CODE),
+  CLIENT_2_DISABILITY(
+      new Accessor<>(MediationClaimDetails::getClient2Disability), FieldOptions.DISABILITY_CODE),
   IS_CLIENT_2_LEGALLY_AIDED(
       new Accessor<>(MediationClaimDetails::getIsClient2LegallyAided), FieldType.BOOLEAN),
   IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED(
@@ -39,13 +41,12 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
   MATTER_TYPE_CODE(new Accessor<>(MediationClaimDetails::getMatterType)),
 
   // Case Details fields
-  CASE_REFERENCE_NUMBER(new Accessor<>(MediationClaimDetails::getCaseReferenceNumber)),
-  CASE_START_DATE(new Accessor<>(MediationClaimDetails::getCaseStartDate), FieldType.DATE),
   CLAIM_ID(new Accessor<>(MediationClaimDetails::getCaseId)),
   UNIQUE_CASE_ID(new Accessor<>(MediationClaimDetails::getUniqueCaseId)),
-  CASE_CONCLUDED_DATE(new Accessor<>(MediationClaimDetails::getCaseEndDate), FieldType.DATE),
-  MEDIATION_SESSIONS_COUNT(new Accessor<>(MediationClaimDetails::getMediationSessionsCount)),
-  MEDIATION_TIME_MINUTES(new Accessor<>(MediationClaimDetails::getMediationTimeMinutes)),
+  MEDIATION_SESSIONS_COUNT(
+      new Accessor<>(MediationClaimDetails::getMediationSessionsCount), FieldType.NUMBER),
+  MEDIATION_TIME_MINUTES(
+      new Accessor<>(MediationClaimDetails::getMediationTimeMinutes), FieldType.NUMBER),
   OUTCOME(new Accessor<>(MediationClaimDetails::getOutcome), FieldOptions.OUTCOME),
   OUTREACH_LOCATION(new Accessor<>(MediationClaimDetails::getOutreachLocation)),
   REFERRAL_SOURCE(

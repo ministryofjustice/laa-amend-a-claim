@@ -1,15 +1,21 @@
 # Amend a claim
+
 [![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/laa-amend-a-claim/badge)](https://github-community.service.justice.gov.uk/repository-standards/laa-amend-a-claim)
 
 ## Overview
 
-Amend a claim is a Spring Boot web application that enables Legal Aid Agency caseworkers to perform escape case assessments on claims submitted via [Submit a Bulk Claim](https://github.com/ministryofjustice/laa-submit-a-bulk-claim).
+Amend a claim is a Spring Boot web application that enables Legal Aid Agency caseworkers to perform
+escape case assessments on claims submitted
+via [Submit a Bulk Claim](https://github.com/ministryofjustice/laa-submit-a-bulk-claim).
 
-The service authenticates users via Sign in to LAA Services (SiLAS), reads claims from Data Stewardship's [Data Claims API](https://github.com/ministryofjustice/laa-data-claims-api), and allows users to submit escape case assessments to this data store.
+The service authenticates users via Sign in to LAA Services (SiLAS), reads claims from Data
+Stewardship's [Data Claims API](https://github.com/ministryofjustice/laa-data-claims-api), and
+allows users to submit escape case assessments to this data store.
 
 ## Developer setup
 
 ### Prerequisites
+
 - Java 25
 - Docker
 
@@ -33,26 +39,35 @@ project.ext.gitPackageKey = <your GitHub access token>
 Using the `.env-template` file as a template, copy to a new .env file
 `cp .env-template .env`
 
-Be sure to fill out all values as they are required for pulling dependencies for the application to run
+Be sure to fill out all values as they are required for pulling dependencies for the application to
+run
 
 ### Commit hooks
-Run `scripts/setup-hooks.sh` to install pre-commit hooks for Git. This will install prek pre commit hook into git, which helps to:
+
+Run `scripts/setup-hooks.sh` to install pre-commit hooks for Git. This will install prek pre commit
+hook into git, which helps to:
+
 - Run Spotless to automatically format Java files
 - Run Checkstyle validation
 - Scan for potential secrets in code
 - Scan for code vulnerabilities
 
-Note: If Spotless detects formatting issues, the commit will fail. After Spotless applies the formatting, you can commit the changes again.
+Note: If Spotless detects formatting issues, the commit will fail. After Spotless applies the
+formatting, you can commit the changes again.
 
 To run pre-commit hooks manually:
+
 ```bash
 git add .
 prek run --all-files
 ```
 
 ### Code formatting
+
 Configure code formatting:
-- We use [google-java-format](https://github.com/google/google-java-format) for consistent code formatting
+
+- We use [google-java-format](https://github.com/google/google-java-format) for consistent code
+  formatting
 - Install and enable the "google-java-format" plugin in IntelliJ IDEA
 
 Import layout should be as follows:
@@ -64,30 +79,41 @@ import <all other imports>
 ```
 
 ### Snyk
+
 We use Snyk to help identify security vulnerabilities in our code and dependencies. To setup:
-1. Request access to [Snyk](https://app.snyk.io/org/legal-aid-agency) from an organisation admin. Contact the team lead developer for help doing this. Additionally, there is a `#snyk` channel in Slack.
+
+1. Request access to [Snyk](https://app.snyk.io/org/legal-aid-agency) from an organisation admin.
+   Contact the team lead developer for help doing this. Additionally, there is a `#snyk` channel in
+   Slack.
 2. Install [snyk-cli](https://formulae.brew.sh/formula/snyk-cli)
 3. `snyk config set org=<org-id>` (this is available in 1Password)
 4. `snyk auth` and log in through GitHub
-5. You should now be able to run `snyk test`, `snyk code test` etc. These are both executed as part of the pre-commit hooks. Exclusions and ignores can be defined in [.snyk](/.snyk) as required.
+5. You should now be able to run `snyk test`, `snyk code test` etc. These are both executed as part
+   of the pre-commit hooks. Exclusions and ignores can be defined in [.snyk](/.snyk) as required.
 
 ### Build and run application
+
 1. Run:
-   1. `./run.sh` or `./run.sh local` to run the service with:
-      1. WireMock to mock the responses from the claims API
-      2. A minimal security configuration for ease of use with no Entra login and with CSRF disabled
-   2. `./run.sh dev` to run the service with:
-      1. An integration with the claims API in UAT
-      2. A security configuration that enforces Entra login with CSRF enabled (note you will need a test developer account to log in through Entra)
+    1. `./run.sh` or `./run.sh local` to run the service with:
+        1. WireMock to mock the responses from the claims API
+        2. A minimal security configuration for ease of use with no Entra login and with CSRF
+           disabled
+    2. `./run.sh dev` to run the service with:
+        1. An integration with the claims API in UAT
+        2. A security configuration that enforces Entra login with CSRF enabled (note you will need
+           a test developer account to log in through Entra)
 2. Navigate to the landing page at [http://localhost:8090/](http://localhost:8090/)
 
 ### Build application
+
 `./gradlew clean build`
 
 ### Run integration tests
+
 `./gradlew integrationTest`
 
 ### Run E2E tests
+
 E2E tests use Playwright for UI automation testing.
 
 ```bash
@@ -97,43 +123,61 @@ E2E tests use Playwright for UI automation testing.
 ./e2e.sh --allure-serve               # Run tests and serve Allure report
 ```
 
-See [src/e2e/README.md](src/e2e/README.md) for detailed setup instructions, including MFA configuration and test data setup.
+See [src/e2e/README.md](src/e2e/README.md) for detailed setup instructions, including MFA
+configuration and test data setup.
 
 ### Run application via Docker
+
 `docker compose up`
 
 This starts the following services:
+
 - **WireMock** (port 8081): Mocks the Claims API and Provider API
 - **Redis** (port 6379): Session storage with persistent volume
 
 #### Actuator endpoints
+
 The following actuator endpoints have been configured:
+
 - http://localhost:8282/actuator
 - http://localhost:8282/actuator/health
 
 ## GitHub workflows
 
 ### `feature.yml`
+
 Feature branch pipeline: build -> deploy to ephemeral → test → security → deploy to dev
 
 ### `main.yml`
+
 Main branch pipeline: build → test → security → deploy to dev → UAT → staging → production
 
 ### `zap.yml`
-We use ZAP to help identify security vulnerabilities. This job is run nightly in the [GitHub Actions](https://github.com/ministryofjustice/laa-amend-a-claim/actions/workflows/zap.yml). If the job fails, a Slack alert is sent to `#laa-amend-a-claim-alerts-non-prod`. The job can also be invoked manually against a certain branch.
+
+We use ZAP to help identify security vulnerabilities. This job is run nightly in
+the [GitHub Actions](https://github.com/ministryofjustice/laa-amend-a-claim/actions/workflows/zap.yml).
+If the job fails, a Slack alert is sent to `#laa-amend-a-claim-alerts-non-prod`. The job can also be
+invoked manually against a certain branch.
 
 The job configures the application to point the claims data and provider details APIs at WireMock.
 
-We specify the target as `/?officeCode=0P322F`. This exposes the 'View' links that allow ZAP to discover subsequent pages / URLs.
+We specify the target as `/?officeCode=0P322F`. This exposes the 'View' links that allow ZAP to
+discover subsequent pages / URLs.
 
-The [context](zap.context) file tells ZAP what is in scope. This file was generated using the [ZAP](https://www.zaproxy.org/download/) application.
+The [context](zap.context) file tells ZAP what is in scope. This file was generated using
+the [ZAP](https://www.zaproxy.org/download/) application.
 
-Certain alerts can be ignored by updating the [rules](.zap/rules.tsv). Ensure the values are tab-separated otherwise the action will log that there was an `Error when reading the rules file`.
+Certain alerts can be ignored by updating the [rules](.zap/rules.tsv). Ensure the values are
+tab-separated otherwise the action will log that there was an `Error when reading the rules file`.
 
 ## Additional information
 
 ### Build plugin
-This project uses [laa-spring-boot-gradle-plugin](https://github.com/ministryofjustice/laa-ccms-spring-boot-common) which provides sensible defaults for:
+
+This project
+uses [laa-spring-boot-gradle-plugin](https://github.com/ministryofjustice/laa-ccms-spring-boot-common)
+which provides sensible defaults for:
+
 - Checkstyle
 - Dependency Management
 - Jacoco (code coverage)
@@ -145,30 +189,93 @@ This project uses [laa-spring-boot-gradle-plugin](https://github.com/ministryofj
 ### Libraries used
 
 #### Spring Framework
-- [Spring Boot Actuator](https://docs.spring.io/spring-boot/reference/actuator/index.html) - provides endpoints for monitoring application health and information.
-- [Spring Boot Web](https://docs.spring.io/spring-boot/reference/web/index.html) - provides features for building the web application with Thymeleaf templating.
-- [Spring Data Redis](https://docs.spring.io/spring-data/redis/reference/index.html) - provides Redis-backed session management.
-- [Spring Security OAuth2](https://docs.spring.io/spring-security/reference/servlet/oauth2/index.html) - provides authentication via Azure Entra ID.
+
+- [Spring Boot Actuator](https://docs.spring.io/spring-boot/reference/actuator/index.html) -
+  provides endpoints for monitoring application health and information.
+- [Spring Boot Web](https://docs.spring.io/spring-boot/reference/web/index.html) - provides features
+  for building the web application with Thymeleaf templating.
+- [Spring Data Redis](https://docs.spring.io/spring-data/redis/reference/index.html) - provides
+  Redis-backed session management.
+- [Spring Security OAuth2](https://docs.spring.io/spring-security/reference/servlet/oauth2/index.html) -
+  provides authentication via Azure Entra ID.
 
 #### Frontend
-- [GOV.UK Frontend](https://frontend.design-system.service.gov.uk/) - provides GOV.UK Design System components for accessible, consistent UI.
-- [MOJ Frontend](https://design-patterns.service.justice.gov.uk/) - extends GOV.UK Frontend with Ministry of Justice specific components.
+
+- [GOV.UK Frontend](https://frontend.design-system.service.gov.uk/) - provides GOV.UK Design System
+  components for accessible, consistent UI.
+- [MOJ Frontend](https://design-patterns.service.justice.gov.uk/) - extends GOV.UK Frontend with
+  Ministry of Justice specific components.
+
+
+### Frontend dependencies
+
+This project uses [GOV.UK Frontend](https://frontend.design-system.service.gov.uk/)
+and [MOJ Frontend](https://design-patterns.service.justice.gov.uk/) for the frontend. These are
+installed via npm and are included in the build process.
+
+The `compileFEAssets` Gradle task runs `npm i` and `gulp` as part of the build. It is also wired
+into `processResources`, so a standard `./gradlew build` will compile frontend assets automatically.
+
+When running Gradle through the wrapper or via IntelliJ, the Gradle daemon does not inherit your
+shell's `PATH`, which means `npm` installed via Homebrew may not be found. The `build.gradle` works
+around this by resolving the full path to `npm` at configuration time using `bash -lc 'which npm'`.
+This reads your login shell environment (including Homebrew's PATH) and uses the absolute path for
+all npm invocations.
+
+If the build fails with `Cannot run program "npm"`, ensure:
+
+- Node.js and npm are installed via Homebrew (`brew install node`)
+- Your shell profile (`.zprofile` or `.zshrc`) correctly adds Homebrew to `PATH`
+- You have run `brew doctor` to confirm Homebrew is correctly set up
+
+There is also the `watch` Gradle task which runs `gulp watch`. This attaches a browser sync process
+to your app (which must already be running) that recompiles assets and reloads thymeleaf changes 
+in real time.
+
+#### Optional gulp usage without gradle
+Install local dependencies:
+```bash
+npm install
+```
+
+Then using gulp, you can build the frontend assets with:
+```bash
+gulp
+```
+
+The above `gulp` command will need to be ran for each time there is a version change to the
+design systems locally.
+
+Alongside this, when running the `local` spring profile, you can have your browser automatically
+refresh each time you make a change to HTML using the following command:
+```bash
+gulp watch
+```
+
 
 #### Code Generation
-- [Lombok](https://projectlombok.org/) - reduces boilerplate by generating getters, setters, constructors etc. at compile-time.
-- [MapStruct](https://mapstruct.org/) - generates type-safe mapping code between DTOs and entity objects at compile time.
+
+- [Lombok](https://projectlombok.org/) - reduces boilerplate by generating getters, setters,
+  constructors etc. at compile-time.
+- [MapStruct](https://mapstruct.org/) - generates type-safe mapping code between DTOs and entity
+  objects at compile time.
 
 #### Observability
-- [Sentry](https://docs.sentry.io/platforms/java/guides/spring-boot/) - provides error tracking and performance monitoring.
-- [Micrometer](https://micrometer.io/) with [Prometheus](https://prometheus.io/) - provides application metrics.
+
+- [Sentry](https://docs.sentry.io/platforms/java/guides/spring-boot/) - provides error tracking and
+  performance monitoring.
+- [Micrometer](https://micrometer.io/) with [Prometheus](https://prometheus.io/) - provides
+  application metrics.
 
 ### Logging Configuration
 
-This application uses **ECS (Elastic Common Schema) structured logging** for production environments and console logging for local development.
+This application uses **ECS (Elastic Common Schema) structured logging** for production environments
+and console logging for local development.
 
 #### Structured Logging (Default/Production)
 
 By default, the application outputs logs in ECS JSON format with distributed tracing support:
+
 ```json
 {
   "@timestamp": "2026-03-06T16:25:18.992904Z",
@@ -198,7 +305,9 @@ By default, the application outputs logs in ECS JSON format with distributed tra
   "traceId": "69aaffee8d19869cfe4586c5fd5f7021"
 }
 ```
+
 #### logback-spring.xml Conflicts
 
 Adding `logback-spring.xml` will:
+
 - Override the profile-based logging configuration in `application.yml`

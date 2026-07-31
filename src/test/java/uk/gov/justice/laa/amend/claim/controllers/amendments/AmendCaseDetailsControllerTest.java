@@ -61,7 +61,11 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
     caseDetailsForm.setInputs(caseDetailsRows);
 
     var updatedForms =
-        new AmendmentForms(new AmendmentForm(), new AmendmentForm(), caseDetailsForm);
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(caseDetailsForm)
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = get(buildAmendCaseDetailsPath()).session(session).with(csrf());
@@ -79,7 +83,12 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
     var caseDetailsForm = new AmendmentForm();
     caseDetailsForm.setInputs(caseDetailsRows);
 
-    var forms = new AmendmentForms(new AmendmentForm(), new AmendmentForm(), caseDetailsForm);
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(caseDetailsForm)
+            .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var request =

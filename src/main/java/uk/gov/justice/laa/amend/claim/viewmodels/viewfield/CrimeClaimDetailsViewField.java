@@ -12,18 +12,16 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
   MATTER_TYPE_CODE(new Accessor<>(CrimeClaimDetails::getMatterTypeCode)),
 
   // Case fields
-  STAGE_REACHED(new Accessor<>(CrimeClaimDetails::getStageReached), FieldOptions.STAGE_REACHED),
-  UNIQUE_FILE_NUMBER(new Accessor<>(CrimeClaimDetails::getUniqueFileNumber)),
   REPRESENTATION_ORDER_DATE(
       new Accessor<>(CrimeClaimDetails::getRepresentationOrderDate), FieldType.DATE),
-  CASE_CONCLUDED_DATE(new Accessor<>(CrimeClaimDetails::getCaseEndDate), FieldType.DATE),
   STANDARD_FEE_CATEGORY(
       new Accessor<>(CrimeClaimDetails::getStandardFeeCategory),
       FieldOptions.STANDARD_FEE_CATEGORY),
   OUTCOME_FOR_CLIENT(new Accessor<>(CrimeClaimDetails::getOutcome), FieldOptions.OUTCOME),
-  SUSPECTS_DEFENDANTS_COUNT(new Accessor<>(CrimeClaimDetails::getSuspectsDefendantsCount)),
+  SUSPECTS_DEFENDANTS_COUNT(
+      new Accessor<>(CrimeClaimDetails::getSuspectsDefendantsCount), FieldType.NUMBER),
   POLICE_STATION_COURT_ATTENDANCES_COUNT(
-      new Accessor<>(CrimeClaimDetails::getPoliceStationCourtAttendancesCount)),
+      new Accessor<>(CrimeClaimDetails::getPoliceStationCourtAttendancesCount), FieldType.NUMBER),
   POLICE_STATION_COURT_PRISON_ID(new Accessor<>(CrimeClaimDetails::getPoliceStationCourtPrisonId)),
   SCHEME_ID(new Accessor<>(CrimeClaimDetails::getSchemeId)),
   DSCC_NUMBER(new Accessor<>(CrimeClaimDetails::getDsccNumber)),
@@ -31,7 +29,11 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
   PRISON_LAW_PRIOR_APPROVAL_NUMBER(
       new Accessor<>(CrimeClaimDetails::getPrisonLawPriorApprovalNumber)),
   IS_DUTY_SOLICITOR(new Accessor<>(CrimeClaimDetails::getIsDutySolicitor), FieldType.BOOLEAN),
-  IS_YOUTH_COURT(new Accessor<>(CrimeClaimDetails::getIsYouthCourt), FieldType.BOOLEAN);
+  IS_YOUTH_COURT(new Accessor<>(CrimeClaimDetails::getIsYouthCourt), FieldType.BOOLEAN),
+
+  // Cost fields
+  TRAVEL_COSTS(new Accessor<>(CrimeClaimDetails::getTravelCosts), FieldType.BIG_DECIMAL),
+  WAITING_COSTS(new Accessor<>(CrimeClaimDetails::getWaitingCosts), FieldType.BIG_DECIMAL);
 
   private final Accessor<?> accessor;
   private final FieldType type;

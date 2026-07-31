@@ -18,13 +18,11 @@
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title"
-              th:text="${#maps.isEmpty(clientView.client2Rows)}
-                                    ? #{claimClient.clientDetails}
-                                    : #{claimClient.client1Details}">
+              th:text="#{${@ThymeleafUtils.client1DetailsMessageKey(areaOfLaw)}}">
           </h2>
           <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action">
-              <a class="govuk-link"
+              <a class="govuk-link govuk-link--no-visited-state"
                  id="amend-client-1"
                  th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-client(submissionId=${submissionId}, claimId=${claimId})}"
                  th:text="#{amendments.change}"></a>
@@ -43,7 +41,7 @@
             <div class="govuk-summary-list__row"
                  th:each="entry : ${clientView.client1Rows}">
               <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key}}"></dt>
-              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
 
               <dd class="govuk-summary-list__value"
                   th:if="${client1Form.isAmendment(entry.key.name(), forms.client1Form.original)}"
@@ -53,17 +51,38 @@
         </div>
       </div>
 
-      <div class="govuk-summary-card" th:if="${!#maps.isEmpty(clientView.client2Rows)}">
+      <div class="govuk-summary-card"
+           th:if="${@ThymeleafUtils.supportsClient2(areaOfLaw)}">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title"
               th:text="#{claimClient.client2Details}">
           </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link govuk-link--no-visited-state"
+                 id="amend-client-2"
+                 th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-client-two(submissionId=${submissionId}, claimId=${claimId})}"
+                 th:text="#{amendments.change}"></a>
+            </li>
+          </ul>
         </div>
         <div class="govuk-summary-card__content">
           <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row" th:each="entry : ${clientView.client2Rows}">
+
+            <div class="govuk-summary-list__row" th:if="${client2Form.hasAmendments(forms.client2Form.original)}">
+              <dt class="govuk-summary-list__key" th:text="#{amendments.item}"></dt>
+              <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.current}"></dd>
+              <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.amended}"></dd>
+            </div>
+
+            <div class="govuk-summary-list__row"
+                 th:each="entry : ${clientView.client2Rows}">
               <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key}}"></dt>
-              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
+
+              <dd class="govuk-summary-list__value"
+                  th:if="${client2Form.isAmendment(entry.key.name(), forms.client2Form.original)}"
+                  th:text="${@ThymeleafUtils.getFormattedValue(client2Form.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
             </div>
           </dl>
         </div>

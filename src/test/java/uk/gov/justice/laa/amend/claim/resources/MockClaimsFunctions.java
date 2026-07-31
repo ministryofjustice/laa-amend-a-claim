@@ -27,6 +27,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.AssessmentTypeEnum;
@@ -55,6 +56,7 @@ public class MockClaimsFunctions {
 
   public static CivilClaimDetails createMockCivilClaim() {
     CivilClaimDetails claim = new CivilClaimDetails();
+    claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
     claim.setClaimId(UUID.randomUUID());
     claim.setSubmissionId(UUID.randomUUID());
     claim.setClaimSummaryFeeId(UUID.randomUUID());
@@ -90,6 +92,7 @@ public class MockClaimsFunctions {
 
   public static MediationClaimDetails createMockMediationClaim() {
     MediationClaimDetails claim = new MediationClaimDetails();
+    claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
     claim.setClaimId(UUID.randomUUID());
     claim.setSubmissionId(UUID.randomUUID());
     claim.setClaimSummaryFeeId(UUID.randomUUID());
@@ -122,6 +125,7 @@ public class MockClaimsFunctions {
 
   public static CrimeClaimDetails createMockCrimeClaim() {
     CrimeClaimDetails claim = new CrimeClaimDetails();
+    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
     claim.setClaimId(UUID.randomUUID());
     claim.setSubmissionId(UUID.randomUUID());
     claim.setClaimSummaryFeeId(UUID.randomUUID());
@@ -224,7 +228,7 @@ public class MockClaimsFunctions {
   }
 
   public static BoltOnClaimField createAdjournedHearingField() {
-    return createBoltOnField(ADJOURNED_FEE);
+    return createCountBoltOnField(ADJOURNED_FEE);
   }
 
   public static BoltOnClaimField createTravelAndWaitingCostsField() {
@@ -232,7 +236,7 @@ public class MockClaimsFunctions {
   }
 
   public static SubmittedClaimField createIsLondonRateField() {
-    return createSubmittedClaimField(IS_LONDON_RATE, "Yes");
+    return SubmittedClaimField.builder().key(IS_LONDON_RATE).submitted(true).build();
   }
 
   public static SubmittedClaimField createPriorAuthorityField() {
@@ -240,25 +244,39 @@ public class MockClaimsFunctions {
   }
 
   public static BoltOnClaimField createCmrhOralField() {
-    return createBoltOnField(CMRH_ORAL);
+    return createCountBoltOnField(CMRH_ORAL);
   }
 
   public static BoltOnClaimField createCmrhTelephoneField() {
-    return createBoltOnField(CMRH_TELEPHONE);
+    return createCountBoltOnField(CMRH_TELEPHONE);
   }
 
   public static BoltOnClaimField createHoInterviewField() {
-    return createBoltOnField(HO_INTERVIEW);
+    return createCountBoltOnField(HO_INTERVIEW);
   }
 
   public static BoltOnClaimField createSubstantiveHearingField() {
-    return createBoltOnField(SUBSTANTIVE_HEARING);
+    return BoltOnClaimField.builder()
+        .key(SUBSTANTIVE_HEARING)
+        .submitted(true)
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
   }
 
   private static BoltOnClaimField createBoltOnField(String key) {
     return BoltOnClaimField.builder()
         .key(key)
         .submitted(BigDecimal.valueOf(100))
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
+
+  private static BoltOnClaimField createCountBoltOnField(String key) {
+    return BoltOnClaimField.builder()
+        .key(key)
+        .submitted(100)
         .calculated(BigDecimal.valueOf(200))
         .assessed(BigDecimal.valueOf(300))
         .build();
