@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,6 +39,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldOptions;
 public class AmendCaseTypeController {
 
   private final AvailableFeeCodesService availableFeeCodesService;
+  private final MessageSource messageSource;
 
   @InitBinder("caseTypeForm")
   public void initCaseTypeFormBinder(
@@ -46,7 +48,7 @@ public class AmendCaseTypeController {
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
-    binder.addValidators(new AmendmentFormValidator(claim.getClass()));
+    binder.addValidators(new AmendmentFormValidator(claim.getClass(), messageSource));
   }
 
   @GetMapping("/amend-fee-code")

@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.forms.validators;
 
 import java.util.List;
+import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
@@ -14,25 +15,26 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.validators.TextAmendmentF
 
 public class AmendmentFormValidator implements Validator {
 
-  private static final List<AmendmentFieldValidator> DEFAULT_FIELD_VALIDATORS =
-      List.of(
-          new TextAmendmentFieldValidator(),
-          new EnumAmendmentFieldValidator(),
-          new NumberAmendmentFieldValidator(),
-          new BigDecimalAmendmentFieldValidator(),
-          new BooleanAmendmentFieldValidator(),
-          new DateAmendmentFieldValidator());
-
   private final Class<?> claimDetailsType;
   private final List<AmendmentFieldValidator> fieldValidators;
 
-  public AmendmentFormValidator(Class<?> claimDetailsType) {
-    this(claimDetailsType, DEFAULT_FIELD_VALIDATORS);
+  public AmendmentFormValidator(Class<?> claimDetailsType, MessageSource messageSource) {
+    this(claimDetailsType, defaultFieldValidators(messageSource));
   }
 
   AmendmentFormValidator(Class<?> claimDetailsType, List<AmendmentFieldValidator> fieldValidators) {
     this.claimDetailsType = claimDetailsType;
     this.fieldValidators = fieldValidators;
+  }
+
+  private static List<AmendmentFieldValidator> defaultFieldValidators(MessageSource messageSource) {
+    return List.of(
+        new TextAmendmentFieldValidator(messageSource),
+        new EnumAmendmentFieldValidator(messageSource),
+        new NumberAmendmentFieldValidator(messageSource),
+        new BigDecimalAmendmentFieldValidator(messageSource),
+        new BooleanAmendmentFieldValidator(messageSource),
+        new DateAmendmentFieldValidator(messageSource));
   }
 
   @Override

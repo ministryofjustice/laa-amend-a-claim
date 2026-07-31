@@ -7,11 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
 
 class NumberAmendmentFieldValidatorTest {
 
-  private final NumberAmendmentFieldValidator validator = new NumberAmendmentFieldValidator();
+  private final NumberAmendmentFieldValidator validator =
+      new NumberAmendmentFieldValidator(TestMessageSources.real());
 
   @Test
   void acceptsWellFormedNumberValue() {

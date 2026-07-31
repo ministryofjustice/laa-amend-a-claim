@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
 
+import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
@@ -10,6 +11,12 @@ public class TextAmendmentFieldValidator implements AmendmentFieldValidator {
   static final int MAX_TEXT_LENGTH = 255;
 
   private static final String TOO_LONG_CODE = "amendmentForm.tooLong";
+
+  private final MessageSource messageSource;
+
+  public TextAmendmentFieldValidator(MessageSource messageSource) {
+    this.messageSource = messageSource;
+  }
 
   @Override
   public FieldType supportedType() {

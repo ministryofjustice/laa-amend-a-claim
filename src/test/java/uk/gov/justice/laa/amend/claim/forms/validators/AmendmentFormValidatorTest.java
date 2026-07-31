@@ -7,16 +7,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.MessageSource;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.AmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldType;
 
 class AmendmentFormValidatorTest {
+
+  private static final MessageSource MESSAGE_SOURCE = TestMessageSources.real();
 
   @Test
   void dispatchesToTheUnitDeclaringTheFieldsType() {
@@ -59,7 +63,7 @@ class AmendmentFormValidatorTest {
     var value = "a".repeat(256);
     var errors =
         validate(
-            new AmendmentFormValidator(CrimeClaimDetails.class),
+            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE),
             Map.of("UNIQUE_FILE_NUMBER", value, "STAGE_REACHED", "NOT_A_CODE"));
 
     assertThat(errors.getFieldErrors()).hasSize(2);
@@ -76,16 +80,20 @@ class AmendmentFormValidatorTest {
     // silently apply a generic/shared rule.
     var inputs = Map.of("STANDARD_FEE_CATEGORY", "1A");
 
-    var validForCrime = validate(new AmendmentFormValidator(CrimeClaimDetails.class), inputs);
+    var validForCrime =
+        validate(new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE), inputs);
     assertThat(validForCrime.hasErrors()).isFalse();
 
     var invalidCodeForCrime =
         validate(
-            new AmendmentFormValidator(CrimeClaimDetails.class),
+            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE),
             Map.of("STANDARD_FEE_CATEGORY", "NOPE"));
     assertThat(invalidCodeForCrime.hasErrors()).isTrue();
 
-    assertThatThrownBy(() -> validate(new AmendmentFormValidator(CivilClaimDetails.class), inputs))
+    assertThatThrownBy(
+            () ->
+                validate(
+                    new AmendmentFormValidator(CivilClaimDetails.class, MESSAGE_SOURCE), inputs))
         .isInstanceOf(IllegalArgumentException.class);
   }
 

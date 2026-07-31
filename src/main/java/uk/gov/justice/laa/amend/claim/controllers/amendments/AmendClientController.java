@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,6 +35,8 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFact
 @HasRoleClaimAmendmentsCaseworker
 public class AmendClientController {
 
+  private final MessageSource messageSource;
+
   @InitBinder("client1Form")
   public void initClient1FormBinder(
       WebDataBinder binder,
@@ -41,7 +44,7 @@ public class AmendClientController {
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
-    binder.addValidators(new AmendmentFormValidator(claim.getClass()));
+    binder.addValidators(new AmendmentFormValidator(claim.getClass(), messageSource));
   }
 
   @InitBinder("client2Form")
@@ -51,7 +54,7 @@ public class AmendClientController {
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
-    binder.addValidators(new AmendmentFormValidator(claim.getClass()));
+    binder.addValidators(new AmendmentFormValidator(claim.getClass(), messageSource));
   }
 
   @GetMapping("/amend-client")
@@ -130,8 +133,7 @@ public class AmendClientController {
           redirectAttributes,
           bindingResult,
           "client2FormErrors",
-          "/submissions/%s/claims/%s/amendments/amend-client-two"
-              .formatted(submissionId, claimId));
+          "/submissions/%s/claims/%s/amendments/amend-client-two".formatted(submissionId, claimId));
     }
 
     return "redirect:/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);

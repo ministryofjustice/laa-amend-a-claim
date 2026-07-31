@@ -7,11 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 
 class DateAmendmentFieldValidatorTest {
 
-  private final DateAmendmentFieldValidator validator = new DateAmendmentFieldValidator();
+  private final DateAmendmentFieldValidator validator =
+      new DateAmendmentFieldValidator(TestMessageSources.real());
 
   @Test
   void acceptsCompleteWellFormedDate() {

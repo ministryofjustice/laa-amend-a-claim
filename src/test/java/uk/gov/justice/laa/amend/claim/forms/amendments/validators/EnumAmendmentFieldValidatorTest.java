@@ -7,11 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 
 class EnumAmendmentFieldValidatorTest {
 
-  private final EnumAmendmentFieldValidator validator = new EnumAmendmentFieldValidator();
+  private final EnumAmendmentFieldValidator validator =
+      new EnumAmendmentFieldValidator(TestMessageSources.real());
 
   @Test
   void acceptsEnumValueMatchingAnAllowedOption() {
