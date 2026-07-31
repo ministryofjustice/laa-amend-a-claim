@@ -38,7 +38,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final BigDecimal VALUE_OF_COSTS = BigDecimal.valueOf(1234.5);
   private static final String PROCUREMENT_AREA = "procurementarea";
   private static final String ACCESS_POINT = "accesspoint";
-  private static final String STAGE_REACHED = "INVA";
+  private static final String LEGAL_HELP_STAGE_REACHED = "BB";
+  private static final String CRIME_STAGE_REACHED = "INVA";
   private static final String OUTCOME_FOR_CLIENT = "A";
   private static final String EXCEPTIONAL_CASE_FUNDING = "exceptionalcasefunding";
   private static final String CLA_REFERENCE = "clareference";
@@ -112,7 +113,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     claim.setValueOfCosts(VALUE_OF_COSTS);
     claim.setProcurementArea(PROCUREMENT_AREA);
     claim.setAccessPoint(ACCESS_POINT);
-    claim.setStageReached(STAGE_REACHED);
+    claim.setStageReached(LEGAL_HELP_STAGE_REACHED);
     claim.setOutcome(OUTCOME_FOR_CLIENT);
     claim.setExceptionalCaseFundingReference(EXCEPTIONAL_CASE_FUNDING);
     claim.setCivilLegalAdviceReference(CLA_REFERENCE);
@@ -176,8 +177,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         caseDetails.get(9), "Procurement area", PROCUREMENT_AREA, PROCUREMENT_AREA);
     assertSummaryListRowContainsValues(
         caseDetails.get(10), "Access point", ACCESS_POINT, ACCESS_POINT);
-    assertEnumTypeaheadRow(
-        caseDetails.get(11), "Stage reached", STAGE_REACHED, "STAGE_REACHED", STAGE_REACHED);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(11), "Stage reached", LEGAL_HELP_STAGE_REACHED, LEGAL_HELP_STAGE_REACHED);
     assertEnumTypeaheadRow(
         caseDetails.get(12),
         "Outcome for client",
@@ -286,7 +287,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     this.claim = claim;
     claim.setFeeCode(FEE_CODE);
     claim.setMatterTypeCode(MATTER_TYPE_CODE);
-    claim.setStageReached(STAGE_REACHED);
+    claim.setStageReached(CRIME_STAGE_REACHED);
     claim.setUniqueFileNumber(UFN);
     claim.setRepresentationOrderDate(REPRESENTATION_ORDER_DATE);
     claim.setCaseEndDate(CASE_CONCLUDED_DATE);

@@ -1,6 +1,9 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
+import static java.util.UUID.fromString;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -8,24 +11,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService.USER_ID;
+import static uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService.createAuthToken;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.forms.amendments.OriginalAndCurrent;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.service.CheckAmendmentsService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
-@WebMvcTest(controllers = CheckAmendmentsController.class)
+@WebMvcTest(CheckAmendmentsController.class)
 class CheckAmendmentsControllerTest extends BaseControllerTest {
+
+  @MockitoBean private CheckAmendmentsService checkService;
 
   private UUID submissionId;
   private UUID claimId;
@@ -78,14 +89,39 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void submitCheckRedirectsToSuccessPage() throws Exception {
-    // TODO change in BC-620 when the submit button functionality is implemented
-    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCrimeForms());
+  void submitAndRedirect() throws Exception {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    session.setAttribute(claimId.toString(), claim);
+
+    var originalClientForm = new AmendmentForm();
+    originalClientForm.setInputs(Map.of("INITIAL", "OLD"));
+    var currentClientForm = new AmendmentForm();
+    currentClientForm.setInputs(Map.of("INITIAL", "NEW"));
+
+    var emptyForm = new AmendmentForm();
+    emptyForm.setInputs(Map.of());
+
+    var forms =
+        new AmendmentForms(
+            new OriginalAndCurrent(originalClientForm, currentClientForm),
+            new OriginalAndCurrent(emptyForm, emptyForm),
+            new OriginalAndCurrent(emptyForm, emptyForm),
+            new OriginalAndCurrent(emptyForm, emptyForm),
+            new OriginalAndCurrent(emptyForm, emptyForm));
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     mockMvc
-        .perform(post(buildCheckPath()).session(session).with(csrf()))
+        .perform(
+            post(buildCheckPath())
+                .session(session)
+                .with(csrf())
+                .with(authentication(createAuthToken(Set.of()))))
         .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildSuccessPath()));
+        .andExpect(redirectedUrl(buildConfirmationPath()));
+
+    verify(checkService).submitAmendments(submissionId, claimId, fromString(USER_ID), claim, forms);
   }
 
   private void setupClaim(ClaimDetails claim) {
@@ -142,7 +178,7 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
     return "/submissions/%s/claims/%s/amendments/check".formatted(submissionId, claimId);
   }
 
-  private String buildSuccessPath() {
-    return "/submissions/%s/claims/%s/amendments/success".formatted(submissionId, claimId);
+  private String buildConfirmationPath() {
+    return "/submissions/%s/claims/%s/amendments/confirmation".formatted(submissionId, claimId);
   }
 }

@@ -25,6 +25,7 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
   final String amendCaseDetailsUrl;
 
   final String checkUrl;
+  final String confirmationUrl;
 
   final DateTimeFormatter testFormatter =
       new DateTimeFormatterBuilder().appendPattern("dd MMMM yyyy").toFormatter();
@@ -49,6 +50,8 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
         "/submissions/%s/claims/%s/amendments/amend-case-details".formatted(submissionId, claimId);
 
     checkUrl = "/submissions/%s/claims/%s/amendments/check".formatted(submissionId, claimId);
+    confirmationUrl =
+        "/submissions/%s/claims/%s/amendments/confirmation".formatted(submissionId, claimId);
   }
 
   protected void assertBooleanSelectRow(

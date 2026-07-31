@@ -25,7 +25,7 @@ public interface ClaimCostsView {
       LinkedHashMap<ClaimViewField<?>, ClaimFieldRow> costFields,
       ClaimViewField<C> field,
       C claim) {
-    var claimField = (ClaimField) field.getAccessor().getter().apply(claim);
+    var claimField = (ClaimField) field.getGetter().getter().apply(claim);
     costFields.put(field, claimField.toCustomClaimFieldRow());
   }
 

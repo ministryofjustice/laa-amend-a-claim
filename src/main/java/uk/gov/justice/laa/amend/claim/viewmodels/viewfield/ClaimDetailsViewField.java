@@ -1,64 +1,127 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
 @Getter
 public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   // Common client fields
-  INITIAL(new Accessor<>(ClaimDetails::getClientForename)),
-  FORENAME(new Accessor<>(ClaimDetails::getClientForename)),
-  SURNAME(new Accessor<>(ClaimDetails::getClientSurname)),
-  GENDER(new Accessor<>(ClaimDetails::getClientGender), FieldOptions.GENDER),
-  ETHNICITY(new Accessor<>(ClaimDetails::getClientEthnicity), FieldOptions.ETHNICITY_CODE),
-  DISABILITY(new Accessor<>(ClaimDetails::getClientDisability), FieldOptions.DISABILITY_CODE),
+  INITIAL(
+      FieldType.TEXT,
+      String.class,
+      ClaimDetails::getClientForename,
+      ClaimPatch.Builder::clientForename),
+  FORENAME(
+      FieldType.TEXT,
+      String.class,
+      ClaimDetails::getClientForename,
+      ClaimPatch.Builder::clientForename),
+  SURNAME(
+      FieldType.TEXT,
+      String.class,
+      ClaimDetails::getClientSurname,
+      ClaimPatch.Builder::clientSurname),
+  GENDER(
+      FieldType.ENUM,
+      String.class,
+      ClaimDetails::getClientGender,
+      ClaimPatch.Builder::genderCode,
+      FieldOptions.GENDER),
+  ETHNICITY(
+      FieldType.ENUM,
+      String.class,
+      ClaimDetails::getClientEthnicity,
+      ClaimPatch.Builder::ethnicityCode,
+      FieldOptions.ETHNICITY_CODE),
+  DISABILITY(
+      FieldType.ENUM,
+      String.class,
+      ClaimDetails::getClientDisability,
+      ClaimPatch.Builder::disabilityCode,
+      FieldOptions.DISABILITY_CODE),
 
   // Common case details fields
-  CASE_REFERENCE_NUMBER(new Accessor<>(Claim::getCaseReferenceNumber)),
-  CASE_START_DATE(new Accessor<>(Claim::getCaseStartDate), FieldType.DATE),
-  UNIQUE_FILE_NUMBER(new Accessor<>(Claim::getUniqueFileNumber)),
-  STAGE_REACHED(new Accessor<>(ClaimDetails::getStageReached), FieldOptions.STAGE_REACHED),
-  CASE_CONCLUDED_DATE(new Accessor<>(Claim::getCaseEndDate), FieldType.DATE),
+  CASE_REFERENCE_NUMBER(
+      FieldType.TEXT,
+      String.class,
+      Claim::getCaseReferenceNumber,
+      ClaimPatch.Builder::caseReferenceNumber),
+  CASE_START_DATE(
+      FieldType.DATE, String.class, Claim::getCaseStartDate, ClaimPatch.Builder::caseStartDate),
+  UNIQUE_FILE_NUMBER(
+      FieldType.TEXT,
+      String.class,
+      Claim::getUniqueFileNumber,
+      ClaimPatch.Builder::uniqueFileNumber),
+  CASE_CONCLUDED_DATE(
+      FieldType.DATE, String.class, Claim::getCaseEndDate, ClaimPatch.Builder::caseConcludedDate),
 
   // Common cost fields
-  FIXED_FEE(new Accessor<>(ClaimDetails::getFixedFee), FieldType.TEXT, false),
-  PROFIT_COST(new Accessor<>(ClaimDetails::getNetProfitCost), FieldType.BIG_DECIMAL),
-  DISBURSEMENTS(new Accessor<>(ClaimDetails::getNetDisbursementAmount), FieldType.BIG_DECIMAL),
-  DISBURSEMENTS_VAT(new Accessor<>(ClaimDetails::getDisbursementVatAmount), FieldType.BIG_DECIMAL),
-  VAT(new Accessor<>(ClaimDetails::getVatClaimed), FieldType.BOOLEAN);
+  FIXED_FEE(FieldType.TEXT, Object.class, ClaimDetails::getFixedFee, (b, v) -> b, List.of(), false),
+  PROFIT_COST(
+      FieldType.BIG_DECIMAL,
+      BigDecimal.class,
+      ClaimDetails::getNetProfitCost,
+      ClaimPatch.Builder::netProfitCostsAmount),
+  DISBURSEMENTS(
+      FieldType.BIG_DECIMAL,
+      BigDecimal.class,
+      ClaimDetails::getNetDisbursementAmount,
+      ClaimPatch.Builder::netDisbursementAmount),
+  DISBURSEMENTS_VAT(
+      FieldType.BIG_DECIMAL,
+      BigDecimal.class,
+      ClaimDetails::getDisbursementVatAmount,
+      ClaimPatch.Builder::disbursementsVatAmount),
+  VAT(
+      FieldType.BOOLEAN,
+      Boolean.class,
+      ClaimDetails::getVatClaimed,
+      ClaimPatch.Builder::isVatApplicable);
 
-  private final Accessor<?> accessor;
-  private final FieldType type;
+  private final ClaimDetailsViewFieldGetter<?> getter;
+  private final FieldType fieldType;
+  private final ClaimViewFieldPatcher<?> patcher;
   private final boolean editable;
   private final List<FieldOption> options;
 
-  ClaimDetailsViewField(Accessor<?> accessor) {
-    this(accessor, FieldType.TEXT, true, List.of());
+  <T> ClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<ClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher) {
+    this(fieldType, patchType, getter, patcher, List.of(), true);
   }
 
-  ClaimDetailsViewField(Accessor<?> accessor, FieldType type) {
-    this(accessor, type, true, List.of());
+  <T> ClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<ClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      List<FieldOption> options) {
+    this(fieldType, patchType, getter, patcher, options, true);
   }
 
-  ClaimDetailsViewField(Accessor<?> accessor, FieldType type, boolean editable) {
-    this(accessor, type, editable, List.of());
-  }
-
-  ClaimDetailsViewField(Accessor<?> accessor, List<FieldOption> options) {
-    this(accessor, FieldType.ENUM, true, options);
-  }
-
-  ClaimDetailsViewField(
-      Accessor<?> accessor, FieldType type, boolean editable, List<FieldOption> options) {
-    this.accessor = accessor;
-    this.type = type;
-    this.editable = editable;
+  <T> ClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<ClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      List<FieldOption> options,
+      boolean editable) {
+    this.getter = new ClaimDetailsViewFieldGetter<>(getter);
+    this.fieldType = fieldType;
+    this.patcher = new ClaimViewFieldPatcher<>(patchType, patcher);
     this.options = List.copyOf(options);
+    this.editable = editable;
   }
 
-  public record Accessor<T>(Function<ClaimDetails, T> getter)
-      implements ClaimViewFieldAccessor<ClaimDetails, T> {}
+  public record ClaimDetailsViewFieldGetter<T>(Function<ClaimDetails, T> getter)
+      implements ClaimViewFieldGetter<ClaimDetails, T> {}
 }

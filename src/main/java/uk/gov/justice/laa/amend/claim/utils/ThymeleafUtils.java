@@ -89,7 +89,7 @@ public class ThymeleafUtils {
   }
 
   public ThymeleafString getFormattedValue(ClaimViewField<?> field, Object value) {
-    if (field.getType() == FieldType.ENUM && value != null) {
+    if (field.getFieldType() == FieldType.ENUM && value != null) {
       var selectedValue = value.toString();
       var selectedOption =
           field.getOptions().stream()

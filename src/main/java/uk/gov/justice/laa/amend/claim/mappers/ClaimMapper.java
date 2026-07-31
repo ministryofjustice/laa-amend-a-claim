@@ -59,6 +59,7 @@ public interface ClaimMapper {
   @Mapping(target = "clientDisability", source = "disabilityCode")
   @Mapping(target = "stageReached", source = "stageReachedCode")
   @Mapping(target = "outcome", source = "outcomeCode")
+  @Mapping(target = "version", source = "version")
   ClaimDetails mapToCommonDetails(ClaimResponseV2 claimResponse);
 
   @Mapping(target = "submissionId", source = "submissionId")
