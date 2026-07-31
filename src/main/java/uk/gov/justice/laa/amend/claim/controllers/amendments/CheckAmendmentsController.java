@@ -19,7 +19,7 @@ import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCasework
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.controllers.UserControllerAdvice;
-import uk.gov.justice.laa.amend.claim.service.AmendmentsCheckService;
+import uk.gov.justice.laa.amend.claim.service.CheckAmendmentsService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/check")
@@ -30,7 +30,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFact
 @Controller
 public class CheckAmendmentsController {
 
-  private final AmendmentsCheckService amendmentsCheckService;
+  private final CheckAmendmentsService checkAmendmentsService;
 
   @GetMapping
   public String check(
@@ -78,7 +78,7 @@ public class CheckAmendmentsController {
           "No amendments found for submission %s claim %s".formatted(submissionId, claimId));
     }
 
-    amendmentsCheckService.submitAmendments(submissionId, claimId, userId, claim, amendmentForms);
+    checkAmendmentsService.submitAmendments(submissionId, claimId, userId, claim, amendmentForms);
 
     return "redirect:/submissions/%s/claims/%s/amendments/confirmation"
         .formatted(submissionId, claimId);

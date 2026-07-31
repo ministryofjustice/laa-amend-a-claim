@@ -18,7 +18,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class AmendmentsCheckService {
+public class CheckAmendmentsService {
 
   private final ClaimsApiClient claimsApiClient;
 
@@ -45,6 +45,7 @@ public class AmendmentsCheckService {
       applyLegalHelpMatterTypeAmendments(patchBuilder, amendmentForms.getCaseTypeForm());
     }
     applyAmendments(patchBuilder, amendmentForms.getCaseDetailsForm(), claim.getClass());
+    applyAmendments(patchBuilder, amendmentForms.getCostsForm(), claim.getClass());
 
     try {
       claimsApiClient.updateClaim(submissionId, claimId, patchBuilder.build()).block();
@@ -73,10 +74,9 @@ public class AmendmentsCheckService {
 
     for (var fieldValue : current.getFieldValues(claimDetailsType).entrySet()) {
       var field = fieldValue.getKey();
-      if (!current.isAmendment(field.name(), original)) {
-        continue;
+      if (field.isEditable() && current.isAmendment(field.name(), original, field.getFieldType())) {
+        field.applyPatch(builder, fieldValue.getValue());
       }
-      field.applyPatch(builder, fieldValue.getValue());
     }
   }
 

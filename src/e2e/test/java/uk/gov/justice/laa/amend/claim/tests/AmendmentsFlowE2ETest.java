@@ -42,22 +42,15 @@ public class AmendmentsFlowE2ETest extends BaseTest {
   private static final String LEGAL_HELP_SUBMISSION_ID = UUID.randomUUID().toString();
   private static final String LEGAL_HELP_CLAIM_ID = UUID.randomUUID().toString();
   private static final String LEGAL_HELP_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-  private static final String LEGAL_HELP_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
-  private static final String LEGAL_HELP_CLIENT_ID = UUID.randomUUID().toString();
-  private static final String LEGAL_HELP_CLAIM_CASE_ID = UUID.randomUUID().toString();
   private static final String MEDIATION_BULK_SUBMISSION_ID = UUID.randomUUID().toString();
   private static final String MEDIATION_SUBMISSION_ID = UUID.randomUUID().toString();
   private static final String MEDIATION_CLAIM_ID = UUID.randomUUID().toString();
   private static final String MEDIATION_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-  private static final String MEDIATION_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
-  private static final String MEDIATION_CLIENT_ID = UUID.randomUUID().toString();
-  private static final String MEDIATION_CLAIM_CASE_ID = UUID.randomUUID().toString();
-  private static final String CRIME_UFN = generateUfn(2L);
+  private static final String CRIME_UFN = "121019/003";
   private static final String CRIME_BULK_SUBMISSION_ID = UUID.randomUUID().toString();
   private static final String CRIME_SUBMISSION_ID = UUID.randomUUID().toString();
   private static final String CRIME_CLAIM_ID = UUID.randomUUID().toString();
   private static final String CRIME_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
-  private static final String CRIME_CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
   private static final String LEGAL_HELP_STAGE_REACHED = "AB";
 
   @Override
@@ -98,7 +91,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .userId(USER_ID)
             .build(),
         ClientInsert.builder()
-            .id(LEGAL_HELP_CLIENT_ID)
+            .id(UUID.randomUUID().toString())
             .claimId(LEGAL_HELP_CLAIM_ID)
             .clientForename("Francesca")
             .clientDateOfBirth("1996-08-07")
@@ -110,7 +103,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .userId(USER_ID)
             .build(),
         ClaimCaseInsert.builder()
-            .id(LEGAL_HELP_CLAIM_CASE_ID)
+            .id(UUID.randomUUID().toString())
             .claimId(LEGAL_HELP_CLAIM_ID)
             .caseId("711")
             .uniqueCaseId("UCID123456")
@@ -119,7 +112,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .userId(USER_ID)
             .build(),
         CalculatedFeeDetailInsert.builder()
-            .id(LEGAL_HELP_CALCULATED_FEE_DETAIL_ID)
+            .id(UUID.randomUUID().toString())
             .claimSummaryFeeId(LEGAL_HELP_CLAIM_SUMMARY_FEE_ID)
             .claimId(LEGAL_HELP_CLAIM_ID)
             .feeCode("IMCA")
@@ -148,7 +141,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .userId(USER_ID)
             .build(),
         ClientInsert.builder()
-            .id(MEDIATION_CLIENT_ID)
+            .id(UUID.randomUUID().toString())
             .claimId(MEDIATION_CLAIM_ID)
             .clientForename("Francesca")
             .clientSurname("Elonga")
@@ -162,7 +155,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .userId(USER_ID)
             .build(),
         ClaimCaseInsert.builder()
-            .id(MEDIATION_CLAIM_CASE_ID)
+            .id(UUID.randomUUID().toString())
             .claimId(MEDIATION_CLAIM_ID)
             .uniqueCaseId("UCID123456")
             .caseId("711")
@@ -174,7 +167,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .userId(USER_ID)
             .build(),
         CalculatedFeeDetailInsert.builder()
-            .id(MEDIATION_CALCULATED_FEE_DETAIL_ID)
+            .id(UUID.randomUUID().toString())
             .claimSummaryFeeId(MEDIATION_CLAIM_SUMMARY_FEE_ID)
             .claimId(MEDIATION_CLAIM_ID)
             .feeCode("MDAS2S")
@@ -198,6 +191,15 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .id(CRIME_CLAIM_ID)
             .submissionId(CRIME_SUBMISSION_ID)
             .uniqueFileNumber(CRIME_UFN)
+            .matterType("INVA")
+            .crimeMatterType("1")
+            .feeCode("INVC")
+            .userId(USER_ID)
+            .build(),
+        ClaimCaseInsert.builder()
+            .id(UUID.randomUUID().toString())
+            .claimId(CRIME_CLAIM_ID)
+            .stageReachedCode("INVC")
             .userId(USER_ID)
             .build(),
         ClaimSummaryFeeInsert.builder()
@@ -206,7 +208,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .userId(USER_ID)
             .build(),
         CalculatedFeeDetailInsert.builder()
-            .id(CRIME_CALCULATED_FEE_DETAIL_ID)
+            .id(UUID.randomUUID().toString())
             .claimSummaryFeeId(CRIME_CLAIM_SUMMARY_FEE_ID)
             .claimId(CRIME_CLAIM_ID)
             .feeCode("INVC")

@@ -30,13 +30,13 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.OriginalAndCurrent;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.amend.claim.service.AmendmentsCheckService;
+import uk.gov.justice.laa.amend.claim.service.CheckAmendmentsService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @WebMvcTest(CheckAmendmentsController.class)
 class CheckAmendmentsControllerTest extends BaseControllerTest {
 
-  @MockitoBean private AmendmentsCheckService checkService;
+  @MockitoBean private CheckAmendmentsService checkService;
 
   private UUID submissionId;
   private UUID claimId;

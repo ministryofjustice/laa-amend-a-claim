@@ -26,17 +26,17 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
 @ExtendWith(MockitoExtension.class)
-class CheckServiceTest {
+class CheckAmendmentsServiceTest {
 
   private static final UUID USER_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
 
   @Mock private ClaimsApiClient claimsApiClient;
 
-  private AmendmentsCheckService amendmentsCheckService;
+  private CheckAmendmentsService checkAmendmentsService;
 
   @BeforeEach
   void setUp() {
-    amendmentsCheckService = new AmendmentsCheckService(claimsApiClient);
+    checkAmendmentsService = new CheckAmendmentsService(claimsApiClient);
   }
 
   @Test
@@ -156,6 +156,12 @@ class CheckServiceTest {
             .prisonLawPriorApprovalNumber("NEW_PLPA")
             .isDutySolicitor(true)
             .isYouthCourt(false)
+            .netProfitCostsAmount(new BigDecimal("11.00"))
+            .netDisbursementAmount(new BigDecimal("21.00"))
+            .travelWaitingCostsAmount(new BigDecimal("31.00"))
+            .netWaitingCostsAmount(new BigDecimal("41.00"))
+            .isVatApplicable(true)
+            .disbursementsVatAmount(new BigDecimal("51.00"))
             .build();
 
     assertThat(patch).usingRecursiveComparison().isEqualTo(expected);
@@ -402,6 +408,21 @@ class CheckServiceTest {
             .surgeryMattersCount(6)
             .mentalHealthTribunalReference("NEW_MHT")
             .isNrmAdvice(false)
+            .netProfitCostsAmount(new BigDecimal("11.00"))
+            .netDisbursementAmount(new BigDecimal("21.00"))
+            .netCounselCostsAmount(new BigDecimal("31.00"))
+            .disbursementsVatAmount(new BigDecimal("41.00"))
+            .travelWaitingCostsAmount(new BigDecimal("51.00"))
+            .isVatApplicable(true)
+            .adjournedHearingFeeAmount(2)
+            .detentionTravelWaitingCostsAmount(new BigDecimal("61.00"))
+            .jrFormFillingAmount(new BigDecimal("71.00"))
+            .isSubstantiveHearing(true)
+            .hoInterview(3)
+            .cmrhOralCount(4)
+            .cmrhTelephoneCount(5)
+            .isLondonRate(true)
+            .priorAuthorityReference("NEW_PRIOR")
             .build();
 
     assertThat(patch).usingRecursiveComparison().isEqualTo(expected);
@@ -561,6 +582,9 @@ class CheckServiceTest {
             .outreachLocation("NEW_OUTREACH")
             .referralSource("NEW_REFERRAL")
             .scheduleReference("NEW_SCHEDULE")
+            .isVatApplicable(true)
+            .netDisbursementAmount(new BigDecimal("31.00"))
+            .disbursementsVatAmount(new BigDecimal("41.00"))
             .build();
 
     assertThat(patch).usingRecursiveComparison().isEqualTo(expected);
@@ -571,7 +595,7 @@ class CheckServiceTest {
     when(claimsApiClient.updateClaim(eq(submissionId), eq(claimId), any(ClaimPatch.class)))
         .thenReturn(Mono.empty());
 
-    amendmentsCheckService.submitAmendments(submissionId, claimId, USER_ID, claim, amendmentForms);
+    checkAmendmentsService.submitAmendments(submissionId, claimId, USER_ID, claim, amendmentForms);
 
     var patchCaptor = ArgumentCaptor.forClass(ClaimPatch.class);
     verify(claimsApiClient).updateClaim(eq(submissionId), eq(claimId), patchCaptor.capture());
