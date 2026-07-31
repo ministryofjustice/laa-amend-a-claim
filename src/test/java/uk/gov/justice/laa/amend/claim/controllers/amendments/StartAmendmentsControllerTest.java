@@ -126,7 +126,7 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     claim.setClaimId(claimId);
     claim.setFeeCode("ABC");
     claim.setMatterType1("MAT1");
-    claim.setMatterType2(null);
+    claim.setMatterType2("MAT2");
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
     session.setAttribute(claimId.toString(), claim);
 
