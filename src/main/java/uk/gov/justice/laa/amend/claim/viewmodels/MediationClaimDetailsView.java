@@ -21,7 +21,8 @@ public record MediationClaimDetailsView(MediationClaimDetails claim)
 
   @Override
   public void addMatterTypeCodeRow(Map<String, Object> summaryRows) {
-    summaryRows.put("matterTypeCode", claim.getMatterType());
+    summaryRows.put("matterTypeCodeOne", claim.getMatterType1());
+    summaryRows.put("matterTypeCodeTwo", claim.getMatterType2());
   }
 
   @Override

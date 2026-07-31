@@ -167,7 +167,8 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterType(MATTER_TYPE);
+    claim.setMatterType1(MATTER_TYPE1);
+    claim.setMatterType2(MATTER_TYPE2);
 
     claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
     claim.setCaseStartDate(CASE_START_DATE);
@@ -186,7 +187,8 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
 
     var caseType = getSummaryListInCard(doc, "Case type");
     assertSummaryListRowContainsValues(caseType.getFirst(), "Fee code", FEE_CODE);
-    assertSummaryListRowContainsValues(caseType.get(1), "Matter type", MATTER_TYPE);
+    assertSummaryListRowContainsValues(caseType.get(1), "Matter type 1", MATTER_TYPE1);
+    assertSummaryListRowContainsValues(caseType.get(2), "Matter type 2", MATTER_TYPE2);
 
     var caseDetails = getSummaryListInCard(doc, "Case details");
     assertSummaryListRowContainsValues(
@@ -205,8 +207,6 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(10), "Schedule reference (outcome)", SCHEDULE_REFERENCE);
   }
-
-  @Test
   void testShowsCivilClientDetails() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     this.claim = claim;

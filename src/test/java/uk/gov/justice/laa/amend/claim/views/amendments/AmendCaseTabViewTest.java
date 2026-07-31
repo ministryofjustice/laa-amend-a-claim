@@ -521,7 +521,8 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     claim.setClaimId(claimId);
     claim.setCaseId(CASE_ID);
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterType(MATTER_TYPE_CODE_1);
+    claim.setMatterType1(MATTER_TYPE_CODE_1);
+    claim.setMatterType2(MATTER_TYPE_CODE_2);
     claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
     claim.setCaseStartDate(CASE_START_DATE);
     claim.setUniqueCaseId(UNIQUE_CASE_ID);
@@ -541,7 +542,8 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
 
     var caseType = getSummaryListInCard(doc, "Case type");
     assertSummaryListRowContainsValues(caseType.getFirst(), "Fee code", FEE_CODE);
-    assertSummaryListRowContainsValues(caseType.get(1), "Matter type", MATTER_TYPE_CODE_1);
+    assertSummaryListRowContainsValues(caseType.get(1), "Matter type 1", MATTER_TYPE_CODE_1);
+    assertSummaryListRowContainsValues(caseType.get(2), "Matter type 2", MATTER_TYPE_CODE_2);
 
     var caseDetails = getSummaryListInCard(doc, "Case details");
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Case reference number (CRN)");
@@ -572,7 +574,8 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     claim.setClaimId(claimId);
     claim.setCaseId(CASE_ID);
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterType(MATTER_TYPE_CODE_1);
+    claim.setMatterType1(MATTER_TYPE_CODE_1);
+    claim.setMatterType2(MATTER_TYPE_CODE_2);
     claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
     claim.setCaseStartDate(CASE_START_DATE);
     claim.setUniqueCaseId(UNIQUE_CASE_ID);
@@ -586,7 +589,8 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
 
     var forms = createCaseForms(claim);
     forms.getCaseTypeForm().getCurrent().getInputs().put("FEE_CODE", "changed");
-    forms.getCaseTypeForm().getCurrent().getInputs().put("MATTER_TYPE_CODE", "changed");
+    forms.getCaseTypeForm().getCurrent().getInputs().put("MATTER_TYPE_CODE_1", "changed");
+    forms.getCaseTypeForm().getCurrent().getInputs().put("MATTER_TYPE_CODE_2", "changed");
     forms
         .getCaseDetailsForm()
         .getCurrent()
@@ -601,7 +605,9 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(caseType.getFirst(), "Item", "Current", "Amended");
     assertSummaryListRowContainsValues(caseType.get(1), "Fee code", FEE_CODE, "changed");
     assertSummaryListRowContainsValues(
-        caseType.get(2), "Matter type", MATTER_TYPE_CODE_1, "changed");
+        caseType.get(2), "Matter type 1", MATTER_TYPE_CODE_1, "changed");
+    assertSummaryListRowContainsValues(
+        caseType.get(3), "Matter type 2", MATTER_TYPE_CODE_2, "changed");
 
     var caseDetails = getSummaryListInCard(doc, "Case details");
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");

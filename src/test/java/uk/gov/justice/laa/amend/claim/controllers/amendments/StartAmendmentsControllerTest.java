@@ -122,7 +122,8 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
     claim.setFeeCode("ABC");
-    claim.setMatterType("MAT1");
+    claim.setMatterType1("MAT1");
+    claim.setMatterType2(null);
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
     session.setAttribute(claimId.toString(), claim);
 
@@ -180,8 +181,10 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     var client2Form = new AmendmentForm();
     client2Form.setInputs(client2Rows);
 
-    var caseTypeRows =
-        Map.of("FEE_CODE", claim.getFeeCode(), "MATTER_TYPE_CODE", claim.getMatterType());
+    Map<String, String> caseTypeRows = new HashMap<>();
+    caseTypeRows.put("FEE_CODE", claim.getFeeCode());
+    caseTypeRows.put("MATTER_TYPE_CODE_1", claim.getMatterType1());
+    caseTypeRows.put("MATTER_TYPE_CODE_2", claim.getMatterType2());
     var caseTypeForm = new AmendmentForm();
     caseTypeForm.setInputs(caseTypeRows);
 

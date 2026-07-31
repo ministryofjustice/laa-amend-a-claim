@@ -179,11 +179,12 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
   void getAmendMatterStartsMediationAsExpected() throws Exception {
     var claim = MockClaimsFunctions.createMockMediationClaim();
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterType(MATTER_TYPE_CODE_1);
+    claim.setMatterType1(MATTER_TYPE_CODE_1);
+    claim.setMatterType2(MATTER_TYPE_CODE_2);
     claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
     session.setAttribute(claimId.toString(), claim);
 
-    var caseTypeRows = Map.of("FEE_CODE", FEE_CODE, "MATTER_TYPE_CODE", MATTER_TYPE_CODE_1);
+    var caseTypeRows = Map.of("FEE_CODE", FEE_CODE, "MATTER_TYPE_CODE_1", MATTER_TYPE_CODE_1, "MATTER_TYPE_CODE_2", MATTER_TYPE_CODE_2);
     var caseTypeForm = new AmendmentForm();
     caseTypeForm.setInputs(caseTypeRows);
 
@@ -241,10 +242,18 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
   void postMatterTypeCodeMediationAsExpected() throws Exception {
     var claim = MockClaimsFunctions.createMockMediationClaim();
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterType(MATTER_TYPE_CODE_1);
+    claim.setMatterType1(MATTER_TYPE_CODE_1);
+    claim.setMatterType2(MATTER_TYPE_CODE_2);
     session.setAttribute(claimId.toString(), claim);
 
-    var caseTypeRows = Map.of("FEE_CODE", FEE_CODE, "MATTER_TYPE_CODE", MATTER_TYPE_CODE_1);
+    var caseTypeRows =
+        Map.of(
+            "FEE_CODE",
+            FEE_CODE,
+            "MATTER_TYPE_CODE_1",
+            MATTER_TYPE_CODE_1,
+            "MATTER_TYPE_CODE_2",
+            MATTER_TYPE_CODE_2);
     var caseTypeForm = new AmendmentForm();
     caseTypeForm.setInputs(caseTypeRows);
 
