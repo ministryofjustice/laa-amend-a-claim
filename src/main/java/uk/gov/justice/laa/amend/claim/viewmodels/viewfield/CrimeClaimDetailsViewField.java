@@ -13,8 +13,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 @Getter
 public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetails> {
   // Case type fields
-  FEE_CODE(
-      FieldType.TEXT, String.class, CrimeClaimDetails::getFeeCode, ClaimPatch.Builder::feeCode),
   MATTER_TYPE_CODE(
       FieldType.TEXT,
       String.class,

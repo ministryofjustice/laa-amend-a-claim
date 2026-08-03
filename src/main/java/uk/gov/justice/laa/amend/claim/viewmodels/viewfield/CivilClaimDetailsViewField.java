@@ -51,8 +51,6 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       ClaimPatch.Builder::isPostalApplicationAccepted),
 
   // Case type fields
-  FEE_CODE(
-      FieldType.TEXT, String.class, CivilClaimDetails::getFeeCode, ClaimPatch.Builder::feeCode),
   MATTER_TYPE_CODE_1(
       FieldType.TEXT,
       String.class,

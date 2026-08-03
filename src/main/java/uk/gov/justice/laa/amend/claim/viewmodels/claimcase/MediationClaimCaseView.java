@@ -3,10 +3,10 @@ package uk.gov.justice.laa.amend.claim.viewmodels.claimcase;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_CONCLUDED_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_REFERENCE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_START_DATE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.FEE_CODE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.asMediationField;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CLAIM_ID;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.FEE_CODE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.MATTER_TYPE_CODE_1;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.MATTER_TYPE_CODE_2;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.MEDIATION_SESSIONS_COUNT;
@@ -34,7 +34,7 @@ public record MediationClaimCaseView(
   private static LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> createCaseTypeRows(
       MediationClaimDetails claim) {
     Stream<ClaimViewField<MediationClaimDetails>> fields =
-        Stream.of(FEE_CODE, MATTER_TYPE_CODE_1, MATTER_TYPE_CODE_2);
+        Stream.of(asMediationField(FEE_CODE), MATTER_TYPE_CODE_1, MATTER_TYPE_CODE_2);
 
     return toFieldMap(fields, claim);
   }
