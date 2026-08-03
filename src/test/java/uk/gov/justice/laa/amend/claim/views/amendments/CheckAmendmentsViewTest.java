@@ -227,8 +227,7 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");
     assertEquals(2, caseDetails.size());
     assertSummaryListRowContainsValues(caseDetails.get(1), "Stage reached", "INVA", "changedStage");
-    
-    var costsDetails = getSummaryListInCard(doc, "Costs");
+    var costsDetails = getSummaryListInCard(doc, "Reported costs");
     assertSummaryListRowContainsValues(costsDetails.getFirst(), "Item", "Current", "Amended");
     assertEquals(2, costsDetails.size());
     assertPageHasLink(doc, "change-costs", "Change", amendCostsUrl);
