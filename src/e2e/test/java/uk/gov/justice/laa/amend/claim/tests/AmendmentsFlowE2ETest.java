@@ -294,6 +294,10 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+    assertSummaryListRow(page, "Case type", "Fee code", "IMCA", "IAXC");
+    assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "MONE");
+    assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL", "MTWO");
+    assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£999.99");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);
@@ -385,6 +389,10 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client 1 details", "Last name", "Elonga", "changed");
     assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
+    assertSummaryListRow(page, "Case details", "Claim ID", "711", "123");
+    assertSummaryListRow(page, "Case type", "Fee code", "MDAS2S", "MDPS1B");
+    assertSummaryListRow(page, "Case type", "Matter type", "IMCB", "MONE:MTWO");
+    assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£200.00");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);
@@ -420,9 +428,27 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendCosts = new ViewCostsPage(page);
     viewAmendCosts.assertAmendedCost("Net disbursements", "£150.00");
 
+    // View Client → Change Client Details → View Client
+
+    viewAmendClient = new ViewClientPage(page);
+    viewAmendClient.clickClientTab();
+
+    assertSummaryListRow(page, "Client details", "Last name", "Not applicable");
+    viewAmendClient.getChangeClientOneLink().click();
+
+    var amendClient1 = new AmendClient1Page(page);
+    amendClient1.fillInput("SURNAME", "changed");
+    amendClient1.clickContinueButton();
+
+    viewAmendClient = new ViewClientPage(page);
+    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+
     viewAmendCosts.clickContinue();
 
     var checkPage = new CheckPage(page);
+    assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+    assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£150.00");
+
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);
   }

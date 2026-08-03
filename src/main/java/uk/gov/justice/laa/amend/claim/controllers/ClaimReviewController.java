@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
-import static java.lang.Boolean.TRUE;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_ID;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
 
@@ -97,9 +96,6 @@ public class ClaimReviewController {
     model.addAttribute("submissionFailed", submissionFailed);
     model.addAttribute("validationFailed", validationFailed);
 
-    boolean isSwapColumns =
-        TRUE.equals(featureFlagsConfig.getIsRequestedAndCalculatedSwapEnabled());
-    model.addAttribute("isSwapColumns", isSwapColumns);
     return "review-and-amend";
   }
 }

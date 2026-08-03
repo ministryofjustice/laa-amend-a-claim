@@ -191,16 +191,6 @@ env:
       configMapKeyRef:
         name: feature-flags
         key: is-bulk-upload-enabled
-  - name: IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED
-    valueFrom:
-      configMapKeyRef:
-        name: feature-flags
-        key: is-requested-and-calculated-swap-enabled
-  - name: IS_FULL_CLAIM_DETAILS_ENABLED
-    valueFrom:
-      configMapKeyRef:
-        name: feature-flags
-        key: is-full-claim-details-enabled
   - name: IS_CLAIM_AMENDMENT_ENABLED
     valueFrom:
       configMapKeyRef:

@@ -69,8 +69,6 @@ maintenance:
 
 feature-flags:
   is-bulk-upload-enabled: ${IS_BULK_UPLOAD_ENABLED:false}
-  is-requested-and-calculated-swap-enabled: ${IS_REQUESTED_AND_CALCULATED_SWAP_ENABLED:false}
-  is-full-claim-details-enabled: ${IS_FULL_CLAIM_DETAILS_ENABLED:false}
   is-claim-amendment-enabled: ${IS_CLAIM_AMENDMENT_ENABLED:false}
 management:
   server:
