@@ -124,7 +124,7 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
-    var tooLong = "a".repeat(256);
+    var tooLong = "a".repeat(51);
     var request =
         post(buildAmendCaseDetailsPath())
             .param(INPUTS.formatted("FEE_CODE"), tooLong)
@@ -157,7 +157,7 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
-    var tooLong = "a".repeat(256);
+    var tooLong = "a".repeat(51);
     var postRequest =
         post(buildAmendCaseDetailsPath())
             .param(INPUTS.formatted("UNIQUE_FILE_NUMBER"), tooLong)

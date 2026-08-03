@@ -270,7 +270,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
-    var tooLong = "a".repeat(256);
+    var tooLong = "a".repeat(51);
     var request =
         post(buildAmendFeeCodePath())
             .param(INPUTS.formatted("FEE_CODE"), tooLong)
@@ -308,7 +308,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
-    var tooLong = "a".repeat(256);
+    var tooLong = "a".repeat(51);
     var postRequest =
         post(buildAmendFeeCodePath())
             .param(INPUTS.formatted("FEE_CODE"), tooLong)
@@ -529,7 +529,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
-    var tooLong = "a".repeat(256);
+    var tooLong = "a".repeat(51);
     var request =
         post(buildAmendMatterTypeCodePath())
             .param(INPUTS.formatted("FEE_CODE"), FEE_CODE)
@@ -578,7 +578,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
-    var tooLong = "a".repeat(256);
+    var tooLong = "a".repeat(51);
     var postRequest =
         post(buildAmendMatterTypeCodePath())
             .param(INPUTS.formatted("FEE_CODE"), FEE_CODE)

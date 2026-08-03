@@ -65,7 +65,7 @@ class AmendmentFormValidatorTest {
 
   @Test
   void aggregatesRejectionsAcrossMultipleFieldsOnTheSameForm() {
-    var value = "a".repeat(256);
+    var value = "a".repeat(51);
     var errors =
         validate(
             new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE, List.of()),
@@ -133,7 +133,7 @@ class AmendmentFormValidatorTest {
                 CrimeClaimDetails.class,
                 MESSAGE_SOURCE,
                 List.of(rejectingFieldSpecificValidator(ClaimDetailsViewField.UNIQUE_FILE_NUMBER))),
-            Map.of("UNIQUE_FILE_NUMBER", "a".repeat(256)));
+            Map.of("UNIQUE_FILE_NUMBER", "a".repeat(51)));
 
     assertThat(errors.getFieldErrors("inputs[UNIQUE_FILE_NUMBER]")).hasSize(2);
     assertThat(

@@ -323,7 +323,7 @@ class AmendClientControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
-    var tooLong = "a".repeat(256);
+    var tooLong = "a".repeat(51);
     var request =
         post(buildAmendClient1Path())
             .param(INPUTS.formatted("SURNAME"), tooLong)
@@ -354,7 +354,7 @@ class AmendClientControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
-    var tooLong = "a".repeat(256);
+    var tooLong = "a".repeat(51);
     var request =
         post(buildAmendClient2Path())
             .param(INPUTS.formatted("CLIENT_2_SURNAME"), tooLong)
@@ -382,7 +382,7 @@ class AmendClientControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
-    var tooLong = "a".repeat(256);
+    var tooLong = "a".repeat(51);
     var postRequest =
         post(buildAmendClient1Path())
             .param(INPUTS.formatted("SURNAME"), tooLong)
@@ -419,7 +419,7 @@ class AmendClientControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
 
-    var tooLong = "a".repeat(256);
+    var tooLong = "a".repeat(51);
     var postRequest =
         post(buildAmendClient2Path())
             .param(INPUTS.formatted("CLIENT_2_SURNAME"), tooLong)

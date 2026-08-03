@@ -26,6 +26,7 @@ import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCasework
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
 import uk.gov.justice.laa.amend.claim.forms.validators.AmendmentFormValidator;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
@@ -37,6 +38,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 public class AmendCaseDetailsController {
 
   private final MessageSource messageSource;
+  private final List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators;
 
   @InitBinder("caseDetailsForm")
   public void initCaseDetailsFormBinder(
@@ -45,7 +47,9 @@ public class AmendCaseDetailsController {
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
-    binder.addValidators(new AmendmentFormValidator(claim.getClass(), messageSource, List.of()));
+    binder.addValidators(
+        new AmendmentFormValidator(
+            claim.getClass(), messageSource, fieldSpecificAmendmentValidators));
   }
 
   @GetMapping

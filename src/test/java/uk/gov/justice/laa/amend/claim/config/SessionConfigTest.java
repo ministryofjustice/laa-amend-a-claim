@@ -132,9 +132,6 @@ class SessionConfigTest {
 
   @Test
   void roundTripsAmendmentFormErrorList() {
-    // Mirrors the ArrayList shape AmendmentFormRedirects actually flashes: the
-    // ImmutableCollections list Stream.toList() returns doesn't round-trip through this
-    // serializer's polymorphic type-id wrapping the way a plain ArrayList does.
     List<AmendmentFormError> errors =
         new ArrayList<>(
             List.of(new AmendmentFormError("FEE_CODE", "Value exceeds maximum length")));
@@ -143,7 +140,6 @@ class SessionConfigTest {
     Object deserialized = serializer.deserialize(serialized);
 
     assertThat(deserialized).isInstanceOf(List.class);
-    @SuppressWarnings("unchecked")
     List<AmendmentFormError> restored = (List<AmendmentFormError>) deserialized;
     assertThat(restored)
         .containsExactly(new AmendmentFormError("FEE_CODE", "Value exceeds maximum length"));
