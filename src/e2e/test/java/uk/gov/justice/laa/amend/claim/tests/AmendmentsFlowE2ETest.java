@@ -391,7 +391,8 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
     assertSummaryListRow(page, "Case details", "Claim ID", "711", "123");
     assertSummaryListRow(page, "Case type", "Fee code", "MDAS2S", "MDPS1B");
-    assertSummaryListRow(page, "Case type", "Matter type", "IMCB", "MONE:MTWO");
+    assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "MONE");
+    assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL", "MTWO");
     assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£200.00");
 
     checkPage.clickSubmitButton();
