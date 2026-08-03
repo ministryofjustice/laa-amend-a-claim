@@ -95,10 +95,15 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
   // Case Type fields
   FEE_CODE(
       FieldType.TEXT, String.class, MediationClaimDetails::getFeeCode, ClaimPatch.Builder::feeCode),
-  MATTER_TYPE_CODE(
+  MATTER_TYPE_CODE_1(
       FieldType.TEXT,
       String.class,
-      MediationClaimDetails::getMatterType,
+      MediationClaimDetails::getMatterType1,
+      ClaimPatch.Builder::matterTypeCode),
+  MATTER_TYPE_CODE_2(
+      FieldType.TEXT,
+      String.class,
+      MediationClaimDetails::getMatterType2,
       ClaimPatch.Builder::matterTypeCode),
 
   // Case Details fields

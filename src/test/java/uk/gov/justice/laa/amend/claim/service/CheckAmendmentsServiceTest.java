@@ -466,9 +466,13 @@ class CheckAmendmentsServiceTest {
                     entry("IS_POSTAL_APPLICATION_ACCEPTED", "true"))),
             forms(
                 Map.ofEntries(
-                    entry("FEE_CODE", "OLD_FEE"), entry("MATTER_TYPE_CODE", "OLD_MATTER")),
+                    entry("FEE_CODE", "OLD_FEE"),
+                    entry("MATTER_TYPE_CODE_1", "OLD_MATTER1"),
+                    entry("MATTER_TYPE_CODE_2", "OLD_MATTER2")),
                 Map.ofEntries(
-                    entry("FEE_CODE", "NEW_FEE"), entry("MATTER_TYPE_CODE", "NEW_MATTER"))),
+                    entry("FEE_CODE", "NEW_FEE"),
+                    entry("MATTER_TYPE_CODE_1", "NEW_MATTER1"),
+                    entry("MATTER_TYPE_CODE_2", "NEW_MATTER2"))),
             forms(
                 Map.ofEntries(
                     entry("CASE_REFERENCE_NUMBER", "OLD_CASE_REF"),
@@ -570,7 +574,7 @@ class CheckAmendmentsServiceTest {
             .client2IsLegallyAided(true)
             .isClient2PostalApplicationAccepted(true)
             .feeCode("NEW_FEE")
-            .matterTypeCode("NEW_MATTER")
+            .matterTypeCode("NEW_MATTER1:NEW_MATTER2")
             .caseReferenceNumber("NEW_CASE_REF")
             .caseStartDate("05/07/2026")
             .caseId("NEW_CLAIM_ID")

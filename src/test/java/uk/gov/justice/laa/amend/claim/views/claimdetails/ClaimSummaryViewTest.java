@@ -280,7 +280,8 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setSubmissionId(submissionId);
     claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
     claim.setCategoryOfLaw("TEST");
-    claim.setMatterType("IMLB");
+    claim.setMatterType1("IMLB");
+    claim.setMatterType2("AHQS");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
 
@@ -288,7 +289,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertCommonPageContent(doc);
 
     List<List<Element>> summaryList1 = getSummaryListInCard(doc, "Summary");
-    Assertions.assertEquals(15, summaryList1.size());
+    Assertions.assertEquals(16, summaryList1.size());
     assertSummaryListRowContainsValues(summaryList1.getFirst(), "Client name", "John Doe");
     assertSummaryListRowContainsValues(
         summaryList1.get(1), "Unique file number (UFN)", "Not applicable");
@@ -303,11 +304,12 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(summaryList1.get(7), "Category of law", "TEST");
     assertSummaryListRowContainsValues(summaryList1.get(8), "Fee code", "FC");
     assertSummaryListRowContainsValues(summaryList1.get(9), "Fee code description", "FCD");
-    assertSummaryListRowContainsValues(summaryList1.get(10), "Matter type", "IMLB");
-    assertSummaryListRowContainsValues(summaryList1.get(11), "Case start date", "01 January 2020");
-    assertSummaryListRowContainsValues(summaryList1.get(12), "Case end date", "31 December 2020");
-    assertSummaryListRowContainsValues(summaryList1.get(13), "Escape case", "Yes");
-    assertSummaryListRowContainsValues(summaryList1.get(14), "VAT requested", "Not applicable");
+    assertSummaryListRowContainsValues(summaryList1.get(10), "Matter type 1", "IMLB");
+    assertSummaryListRowContainsValues(summaryList1.get(11), "Matter type 2", "AHQS");
+    assertSummaryListRowContainsValues(summaryList1.get(12), "Case start date", "01 January 2020");
+    assertSummaryListRowContainsValues(summaryList1.get(13), "Case end date", "31 December 2020");
+    assertSummaryListRowContainsValues(summaryList1.get(14), "Escape case", "Yes");
+    assertSummaryListRowContainsValues(summaryList1.get(15), "VAT requested", "Not applicable");
 
     List<List<Element>> summaryList2 = getSummaryListInCard(doc, "Values");
     assertSummaryListRowContainsValues(summaryList2.getFirst(), "Item", "Reported", "Calculated");

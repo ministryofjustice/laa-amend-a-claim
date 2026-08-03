@@ -10,45 +10,34 @@
 <body>
 <main class="govuk-main-wrapper" id="main-content">
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-one-half">
 
       <h1 class="govuk-heading-l">
         <span th:text="#{amendments.matterType.title}"></span>
       </h1>
 
       <dl class="govuk-summary-list"
-          th:if="${#strings.toString(areaOfLaw) == 'LEGAL_HELP'}"
+          th:if="${#strings.toString(areaOfLaw) != 'CRIME_LOWER'}"
           th:with="originalMatterTypes=${forms.caseTypeForm.getOriginal()}">
         <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key"
+          <dt class="govuk-summary-list__key govuk-!-width-one-half"
               th:text="#{amendments.matterType.current.one}"/>
           <dd class="govuk-summary-list__value"
               th:text="${originalMatterTypes.getInputs()['MATTER_TYPE_CODE_1']}"/>
         </div>
         <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key"
+          <dt class="govuk-summary-list__key govuk-!-width-one-half"
               th:text="#{amendments.matterType.current.two}"/>
           <dd class="govuk-summary-list__value"
               th:text="${originalMatterTypes.getInputs()['MATTER_TYPE_CODE_2']}"/>
         </div>
       </dl>
-      <dl class="govuk-summary-list"
-          th:if="${@ThymeleafUtils.supportsClient2(areaOfLaw)}"
-          th:with="originalMatterTypes=${forms.caseTypeForm.getOriginal()}">
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key"
-              th:text="#{amendments.matterType.current}"/>
-          <dd class="govuk-summary-list__value"
-              th:text="${originalMatterTypes.getInputs()['MATTER_TYPE_CODE']}"/>
-        </div>
-      </dl>
-
       <form method="post"
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-matter-type(submissionId=${submissionId}, claimId=${claimId})}"
             th:object="${caseTypeForm}">
         <input type="hidden" th:field="*{inputs['FEE_CODE']}"/>
         <th:block
-            th:if="${#strings.toString(areaOfLaw) == 'LEGAL_HELP'}">
+            th:if="${#strings.toString(areaOfLaw) != 'CRIME_LOWER'}">
           <div class="govuk-form-group">
             <label class="govuk-label govuk-!-font-weight-bold" for="matter-type-one-input"
                    th:text="#{amendments.matterType.amended.one}"/>
@@ -61,16 +50,6 @@
                    th:text="#{amendments.matterType.amended.two}"/>
             <input class="govuk-input govuk-input--width-20" id="matter-type-two-input"
                    th:field="*{inputs['MATTER_TYPE_CODE_2']}"
-                   type="text">
-          </div>
-        </th:block>
-        <th:block
-            th:if="${@ThymeleafUtils.supportsClient2(areaOfLaw)}">
-          <div class="govuk-form-group">
-            <label class="govuk-label govuk-!-font-weight-bold" for="matter-type-input"
-                   th:text="#{amendments.matterType.amended}"/>
-            <input class="govuk-input govuk-input--width-20" id="matter-type-input"
-                   th:field="*{inputs['MATTER_TYPE_CODE']}"
                    type="text">
           </div>
         </th:block>

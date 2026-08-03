@@ -14,7 +14,9 @@
             <th:block th:replace="~{partials/claim-details-header :: claimDetailsHeader(currentPage='case')}"></th:block>
 
             <h2 class="govuk-heading-m" th:text="#{claimDetails.caseHeading}"></h2>
+        </div>
 
+        <div class="govuk-grid-column-two-thirds">
             <div class="govuk-summary-card">
                 <div class="govuk-summary-card__title-wrapper">
                     <h2 class="govuk-summary-card__title" th:text="#{claimCase.caseType}"></h2>
@@ -28,7 +30,9 @@
                     </dl>
                 </div>
             </div>
+        </div>
 
+        <div class="govuk-grid-column-two-thirds">
             <div class="govuk-summary-card">
                 <div class="govuk-summary-card__title-wrapper">
                     <h2 class="govuk-summary-card__title" th:text="#{claimCase.caseDetails}"></h2>
@@ -42,7 +46,9 @@
                     </dl>
                 </div>
             </div>
+        </div>
 
+        <div class="govuk-grid-column-full">
             <th:block th:replace="~{partials/claim-details-footer :: claimDetailsFooter()}"></th:block>
         </div>
     </div>

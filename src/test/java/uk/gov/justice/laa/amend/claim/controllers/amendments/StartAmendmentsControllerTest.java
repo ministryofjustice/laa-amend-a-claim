@@ -63,11 +63,6 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     var client1Form = new AmendmentForm();
     client1Form.setInputs(client1Rows);
 
-    var caseTypeRows =
-        Map.of("FEE_CODE", claim.getFeeCode(), "MATTER_TYPE_CODE", claim.getMatterTypeCode());
-    var caseTypeForm = new AmendmentForm();
-    caseTypeForm.setInputs(caseTypeRows);
-
     claim.setStageReached("stagereached");
     claim.setUniqueFileNumber("uniqueFileNumber");
     claim.setRepresentationOrderDate(LocalDate.of(2000, 1, 1));
@@ -83,8 +78,16 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     claim.setPrisonLawPriorApprovalNumber("prisonLawPriorApprovalNumber");
     claim.setIsDutySolicitor(true);
     claim.setIsYouthCourt(true);
+
+    var caseTypeRows =
+        Map.of(
+            "FEE_CODE", claim.getFeeCode(),
+            "STAGE_REACHED", claim.getStageReached());
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
     Map<String, String> caseDetailsRows = new HashMap<>();
-    caseDetailsRows.put("STAGE_REACHED", claim.getStageReached());
+    caseDetailsRows.put("MATTER_TYPE_CODE", claim.getMatterTypeCode());
     caseDetailsRows.put("UNIQUE_FILE_NUMBER", claim.getUniqueFileNumber());
     caseDetailsRows.put("REPRESENTATION_ORDER_DATE-day", "1");
     caseDetailsRows.put("REPRESENTATION_ORDER_DATE-month", "1");
@@ -140,7 +143,8 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
     claim.setFeeCode("ABC");
-    claim.setMatterType("MAT1");
+    claim.setMatterType1("MAT1");
+    claim.setMatterType2("MAT2");
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
     session.setAttribute(claimId.toString(), claim);
 
@@ -198,8 +202,10 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     var client2Form = new AmendmentForm();
     client2Form.setInputs(client2Rows);
 
-    var caseTypeRows =
-        Map.of("FEE_CODE", claim.getFeeCode(), "MATTER_TYPE_CODE", claim.getMatterType());
+    Map<String, String> caseTypeRows = new HashMap<>();
+    caseTypeRows.put("FEE_CODE", claim.getFeeCode());
+    caseTypeRows.put("MATTER_TYPE_CODE_1", claim.getMatterType1());
+    caseTypeRows.put("MATTER_TYPE_CODE_2", claim.getMatterType2());
     var caseTypeForm = new AmendmentForm();
     caseTypeForm.setInputs(caseTypeRows);
 

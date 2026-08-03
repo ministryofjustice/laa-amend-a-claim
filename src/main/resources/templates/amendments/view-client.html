@@ -14,7 +14,9 @@
       <th:block th:replace="~{partials/amendments-view-header :: viewHeader(currentPage='client')}"></th:block>
 
       <h2 class="govuk-heading-m" th:text="#{claimDetails.clientHeading}"></h2>
+    </div>
 
+    <div th:class="${forms.clientPageAmended} ? 'govuk-grid-column-full' : 'govuk-grid-column-two-thirds'">
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title"
@@ -50,7 +52,9 @@
           </dl>
         </div>
       </div>
+    </div>
 
+    <div th:class="${forms.clientPageAmended} ? 'govuk-grid-column-full' : 'govuk-grid-column-two-thirds'">
       <div class="govuk-summary-card"
            th:if="${@ThymeleafUtils.supportsClient2(areaOfLaw)}">
         <div class="govuk-summary-card__title-wrapper">
@@ -87,7 +91,9 @@
           </dl>
         </div>
       </div>
+    </div>
 
+    <div class="govuk-grid-column-full">
       <th:block th:replace="~{partials/amendments-view-footer :: viewFooter()}"></th:block>
     </div>
   </div>

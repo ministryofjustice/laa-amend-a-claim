@@ -405,10 +405,10 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
 
     var caseType = getSummaryListInCard(doc, "Case type");
     assertSummaryListRowContainsValues(caseType.getFirst(), "Fee code", FEE_CODE);
-    assertSummaryListRowContainsValues(caseType.get(1), "Matter type", MATTER_TYPE_CODE);
+    assertSummaryListRowContainsValues(caseType.get(1), "Stage reached", STAGE_REACHED);
 
     var caseDetails = getSummaryListInCard(doc, "Case details");
-    assertSummaryListRowContainsValues(caseDetails.getFirst(), "Stage reached", STAGE_REACHED);
+    assertSummaryListRowContainsValues(caseDetails.getFirst(), "Matter type", MATTER_TYPE_CODE);
     assertSummaryListRowContainsValues(caseDetails.get(1), "Unique file number (UFN)", UFN);
     assertSummaryListRowContainsValues(
         caseDetails.get(2),
@@ -466,7 +466,7 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
 
     var forms = createCaseForms(claim);
     forms.getCaseTypeForm().getCurrent().getInputs().put("FEE_CODE", "changed");
-    forms.getCaseTypeForm().getCurrent().getInputs().put("MATTER_TYPE_CODE", "changed");
+    forms.getCaseDetailsForm().getCurrent().getInputs().put("MATTER_TYPE_CODE", "changed");
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var doc = renderDocument();
@@ -475,39 +475,41 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     var caseType = getSummaryListInCard(doc, "Case type");
     assertSummaryListRowContainsValues(caseType.getFirst(), "Item", "Current", "Amended");
     assertSummaryListRowContainsValues(caseType.get(1), "Fee code", FEE_CODE, "changed");
-    assertSummaryListRowContainsValues(caseType.get(2), "Matter type", MATTER_TYPE_CODE, "changed");
+    assertSummaryListRowContainsValues(caseType.get(2), "Stage reached", STAGE_REACHED);
 
     var caseDetails = getSummaryListInCard(doc, "Case details");
-    assertSummaryListRowContainsValues(caseDetails.getFirst(), "Stage reached", STAGE_REACHED);
-    assertSummaryListRowContainsValues(caseDetails.get(1), "Unique file number (UFN)", UFN);
+    assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");
     assertSummaryListRowContainsValues(
-        caseDetails.get(2),
+        caseDetails.get(1), "Matter type", MATTER_TYPE_CODE, "changed");
+    assertSummaryListRowContainsValues(caseDetails.get(2), "Unique file number (UFN)", UFN);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(3),
         "Representation order date",
         REPRESENTATION_ORDER_DATE.format(testFormatter));
     assertSummaryListRowContainsValues(
-        caseDetails.get(3), "Case concluded date", CASE_CONCLUDED_DATE.format(testFormatter));
+        caseDetails.get(4), "Case concluded date", CASE_CONCLUDED_DATE.format(testFormatter));
     assertSummaryListRowContainsValues(
-        caseDetails.get(4), "Standard fee category", STANDARD_FEE_CATEGORY);
+        caseDetails.get(5), "Standard fee category", STANDARD_FEE_CATEGORY);
     assertSummaryListRowContainsValues(
-        caseDetails.get(5), "Outcome for client", OUTCOME_FOR_CLIENT);
+        caseDetails.get(6), "Outcome for client", OUTCOME_FOR_CLIENT);
     assertSummaryListRowContainsValues(
-        caseDetails.get(6),
+        caseDetails.get(7),
         "Number of suspects or defendants",
         String.valueOf(SUSPECTS_DEFENDANTS_COUNT));
     assertSummaryListRowContainsValues(
-        caseDetails.get(7),
+        caseDetails.get(8),
         "Number of police station or court attendances",
         String.valueOf(POLICE_ATTENDANCES_COURT));
     assertSummaryListRowContainsValues(
-        caseDetails.get(8), "Police station/Court ID/Prison ID", POLICE_STATION_COURT_PRISON_ID);
-    assertSummaryListRowContainsValues(caseDetails.get(9), "Scheme ID", SCHEME_ID);
+        caseDetails.get(9), "Police station/Court ID/Prison ID", POLICE_STATION_COURT_PRISON_ID);
+    assertSummaryListRowContainsValues(caseDetails.get(10), "Scheme ID", SCHEME_ID);
     assertSummaryListRowContainsValues(
-        caseDetails.get(10), "Defence Solicitor Call Centre (DSCC) number", DSCC_NUMBER);
-    assertSummaryListRowContainsValues(caseDetails.get(11), "MAAT ID", MAAT_ID);
+        caseDetails.get(11), "Defence Solicitor Call Centre (DSCC) number", DSCC_NUMBER);
+    assertSummaryListRowContainsValues(caseDetails.get(12), "MAAT ID", MAAT_ID);
     assertSummaryListRowContainsValues(
-        caseDetails.get(12), "Prison Law Prior Approval number", PRISON_LAW_PRIOR_APPROVAL_NUMBER);
-    assertSummaryListRowContainsValues(caseDetails.get(13), "Duty solicitor", YES);
-    assertSummaryListRowContainsValues(caseDetails.get(14), "Youth court", YES);
+        caseDetails.get(13), "Prison Law Prior Approval number", PRISON_LAW_PRIOR_APPROVAL_NUMBER);
+    assertSummaryListRowContainsValues(caseDetails.get(14), "Duty solicitor", YES);
+    assertSummaryListRowContainsValues(caseDetails.get(15), "Youth court", YES);
 
     assertPageHasLink(doc, "check", "Continue", checkUrl);
     assertPageHasLink(doc, "cancel", "Cancel", overviewUrl);
@@ -521,7 +523,8 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     claim.setClaimId(claimId);
     claim.setCaseId(CASE_ID);
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterType(MATTER_TYPE_CODE_1);
+    claim.setMatterType1(MATTER_TYPE_CODE_1);
+    claim.setMatterType2(MATTER_TYPE_CODE_2);
     claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
     claim.setCaseStartDate(CASE_START_DATE);
     claim.setUniqueCaseId(UNIQUE_CASE_ID);
@@ -541,7 +544,8 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
 
     var caseType = getSummaryListInCard(doc, "Case type");
     assertSummaryListRowContainsValues(caseType.getFirst(), "Fee code", FEE_CODE);
-    assertSummaryListRowContainsValues(caseType.get(1), "Matter type", MATTER_TYPE_CODE_1);
+    assertSummaryListRowContainsValues(caseType.get(1), "Matter type 1", MATTER_TYPE_CODE_1);
+    assertSummaryListRowContainsValues(caseType.get(2), "Matter type 2", MATTER_TYPE_CODE_2);
 
     var caseDetails = getSummaryListInCard(doc, "Case details");
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Case reference number (CRN)");
@@ -572,7 +576,8 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     claim.setClaimId(claimId);
     claim.setCaseId(CASE_ID);
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterType(MATTER_TYPE_CODE_1);
+    claim.setMatterType1(MATTER_TYPE_CODE_1);
+    claim.setMatterType2(MATTER_TYPE_CODE_2);
     claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
     claim.setCaseStartDate(CASE_START_DATE);
     claim.setUniqueCaseId(UNIQUE_CASE_ID);
@@ -586,7 +591,8 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
 
     var forms = createCaseForms(claim);
     forms.getCaseTypeForm().getCurrent().getInputs().put("FEE_CODE", "changed");
-    forms.getCaseTypeForm().getCurrent().getInputs().put("MATTER_TYPE_CODE", "changed");
+    forms.getCaseTypeForm().getCurrent().getInputs().put("MATTER_TYPE_CODE_1", "changed");
+    forms.getCaseTypeForm().getCurrent().getInputs().put("MATTER_TYPE_CODE_2", "changed");
     forms
         .getCaseDetailsForm()
         .getCurrent()
@@ -601,7 +607,9 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(caseType.getFirst(), "Item", "Current", "Amended");
     assertSummaryListRowContainsValues(caseType.get(1), "Fee code", FEE_CODE, "changed");
     assertSummaryListRowContainsValues(
-        caseType.get(2), "Matter type", MATTER_TYPE_CODE_1, "changed");
+        caseType.get(2), "Matter type 1", MATTER_TYPE_CODE_1, "changed");
+    assertSummaryListRowContainsValues(
+        caseType.get(3), "Matter type 2", MATTER_TYPE_CODE_2, "changed");
 
     var caseDetails = getSummaryListInCard(doc, "Case details");
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");

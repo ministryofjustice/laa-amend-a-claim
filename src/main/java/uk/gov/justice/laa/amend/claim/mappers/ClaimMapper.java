@@ -210,9 +210,13 @@ public interface ClaimMapper {
   @Mapping(target = "referralSource", source = "referralSource")
   @Mapping(target = "scheduleReference", source = "scheduleReference")
   @Mapping(
-      target = "matterType",
+      target = "matterType1",
       source = "claimResponse.matterTypeCode",
       qualifiedByName = "matterType1")
+  @Mapping(
+      target = "matterType2",
+      source = "claimResponse.matterTypeCode",
+      qualifiedByName = "matterType2")
   MediationClaimDetails mapToMediationClaimDetails(ClaimResponseV2 claimResponse);
 
   @InheritConfiguration(name = "mapToCommonDetails")

@@ -13,6 +13,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.OriginalAndCurrent;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
 @Service
@@ -41,7 +42,7 @@ public class CheckAmendmentsService {
       applyAmendments(patchBuilder, amendmentForms.getClient2Form(), claim.getClass());
     }
     applyAmendments(patchBuilder, amendmentForms.getCaseTypeForm(), claim.getClass());
-    if (claim instanceof CivilClaimDetails) {
+    if (claim instanceof CivilClaimDetails || claim instanceof MediationClaimDetails) {
       applyLegalHelpMatterTypeAmendments(patchBuilder, amendmentForms.getCaseTypeForm());
     }
     applyAmendments(patchBuilder, amendmentForms.getCaseDetailsForm(), claim.getClass());

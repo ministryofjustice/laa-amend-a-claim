@@ -312,12 +312,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     var caseDetails = getSummaryListInCard(doc, "Case details");
 
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");
-    assertEnumTypeaheadRow(
-        caseDetails.get(1),
-        "Stage reached",
-        CRIME_STAGE_REACHED,
-        "STAGE_REACHED",
-        CRIME_STAGE_REACHED);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(1), "Matter type", MATTER_TYPE_CODE, MATTER_TYPE_CODE);
     assertSummaryListRowContainsValues(caseDetails.get(2), "Unique file number (UFN)", UFN, UFN);
     assertDateRow(
         caseDetails.get(3),
@@ -377,7 +373,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     claim.setClaimId(claimId);
     claim.setCaseId(CASE_ID);
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterType(MATTER_TYPE_CODE_1);
+    claim.setMatterType1(MATTER_TYPE_CODE_1);
+    claim.setMatterType2(MATTER_TYPE_CODE_2);
     claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
     claim.setCaseStartDate(CASE_START_DATE);
     claim.setUniqueCaseId(UNIQUE_CASE_ID);

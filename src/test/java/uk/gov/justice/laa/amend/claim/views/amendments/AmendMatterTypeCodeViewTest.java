@@ -68,7 +68,8 @@ class AmendMatterTypeCodeViewTest extends AmendmentsBaseTest {
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterType(MATTER_TYPE_CODE);
+    claim.setMatterType1(MATTER_TYPE_CODE_1);
+    claim.setMatterType2(MATTER_TYPE_CODE_2);
 
     var forms = createCaseTypeForm(claim);
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
@@ -80,8 +81,11 @@ class AmendMatterTypeCodeViewTest extends AmendmentsBaseTest {
 
     var matterTypeSummaryList = getFirstSummaryList(doc);
     assertSummaryListRowContainsValues(
-        matterTypeSummaryList.get(0), "Current matter type", MATTER_TYPE_CODE);
-    assertPageHasLabel(doc, "matter-type-input", "Amended matter type");
+        matterTypeSummaryList.get(0), "Current matter type 1", MATTER_TYPE_CODE_1);
+    assertSummaryListRowContainsValues(
+        matterTypeSummaryList.get(1), "Current matter type 2", MATTER_TYPE_CODE_2);
+    assertPageHasLabel(doc, "matter-type-one-input", "Amended matter type 1");
+    assertPageHasLabel(doc, "matter-type-two-input", "Amended matter type 2");
   }
 
   private AmendmentForms createCaseTypeForm(ClaimDetails claim) {

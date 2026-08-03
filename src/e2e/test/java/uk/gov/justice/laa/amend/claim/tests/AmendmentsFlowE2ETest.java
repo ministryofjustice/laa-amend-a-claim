@@ -345,7 +345,8 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     // View Case → Change case type → View Case
     var viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(page, "Case type", "Fee code", "MDAS2S");
-    assertSummaryListRow(page, "Case type", "Matter type", "IMCB");
+    assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB");
+    assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL");
     assertSummaryListRow(page, "Case details", "Case start date", "01 August 2020");
 
     viewAmendCase.clickChangeCaseTypeLink();
@@ -354,12 +355,14 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendFeeCode.clickContinueButton();
 
     var amendMatterType = new AmendMatterTypePage(page);
-    amendMatterType.fillMatterTypeCode("MONE:MTWO");
+    amendMatterType.fillMatterTypeCodeOne("MONE");
+    amendMatterType.fillMatterTypeCodeTwo("MTWO");
     amendMatterType.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
     assertSummaryListRow(page, "Case type", "Fee code", "MDAS2S", "MDPS1B");
-    assertSummaryListRow(page, "Case type", "Matter type", "IMCB", "MONE:MTWO");
+    assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "MONE");
+    assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL", "MTWO");
 
     viewAmendCase.clickChangeCaseDetailsLink();
     var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
