@@ -10,6 +10,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.validators.BigDecimalAmen
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.BooleanAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.DateAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.EnumAmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.NumberAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.TextAmendmentFieldValidator;
 
@@ -17,14 +18,22 @@ public class AmendmentFormValidator implements Validator {
 
   private final Class<?> claimDetailsType;
   private final List<AmendmentFieldValidator> fieldValidators;
+  private final List<FieldSpecificAmendmentValidator> fieldSpecificValidators;
 
-  public AmendmentFormValidator(Class<?> claimDetailsType, MessageSource messageSource) {
-    this(claimDetailsType, defaultFieldValidators(messageSource));
+  public AmendmentFormValidator(
+      Class<?> claimDetailsType,
+      MessageSource messageSource,
+      List<FieldSpecificAmendmentValidator> fieldSpecificValidators) {
+    this(claimDetailsType, defaultFieldValidators(messageSource), fieldSpecificValidators);
   }
 
-  AmendmentFormValidator(Class<?> claimDetailsType, List<AmendmentFieldValidator> fieldValidators) {
+  AmendmentFormValidator(
+      Class<?> claimDetailsType,
+      List<AmendmentFieldValidator> fieldValidators,
+      List<FieldSpecificAmendmentValidator> fieldSpecificValidators) {
     this.claimDetailsType = claimDetailsType;
     this.fieldValidators = fieldValidators;
+    this.fieldSpecificValidators = fieldSpecificValidators;
   }
 
   private static List<AmendmentFieldValidator> defaultFieldValidators(MessageSource messageSource) {
@@ -59,6 +68,12 @@ public class AmendmentFormValidator implements Validator {
 
       if (!matched) {
         throw new IllegalStateException("Unsupported field type: " + field.getFieldType());
+      }
+
+      for (var fieldSpecificValidator : fieldSpecificValidators) {
+        if (fieldSpecificValidator.appliesTo(field)) {
+          fieldSpecificValidator.validate(field, form, errors);
+        }
       }
     }
   }

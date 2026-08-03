@@ -12,10 +12,13 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.AmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldType;
 
 class AmendmentFormValidatorTest {
@@ -32,7 +35,8 @@ class AmendmentFormValidatorTest {
             CrimeClaimDetails.class,
             List.of(
                 countingFieldValidator(FieldType.TEXT, textCalls),
-                countingFieldValidator(FieldType.ENUM, enumCalls)));
+                countingFieldValidator(FieldType.ENUM, enumCalls)),
+            List.of());
 
     validate(validator, Map.of("UNIQUE_FILE_NUMBER", "value"));
 
@@ -50,7 +54,8 @@ class AmendmentFormValidatorTest {
             CrimeClaimDetails.class,
             List.of(
                 countingFieldValidator(FieldType.TEXT, firstCalls),
-                countingFieldValidator(FieldType.TEXT, secondCalls)));
+                countingFieldValidator(FieldType.TEXT, secondCalls)),
+            List.of());
 
     validate(validator, Map.of("UNIQUE_FILE_NUMBER", "value"));
 
@@ -63,7 +68,7 @@ class AmendmentFormValidatorTest {
     var value = "a".repeat(256);
     var errors =
         validate(
-            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE),
+            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE, List.of()),
             Map.of("UNIQUE_FILE_NUMBER", value, "STAGE_REACHED", "NOT_A_CODE"));
 
     assertThat(errors.getFieldErrors()).hasSize(2);
@@ -77,7 +82,7 @@ class AmendmentFormValidatorTest {
   void rejectsTamperedBooleanValueInsteadOfThrowing() {
     var errors =
         validate(
-            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE),
+            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE, List.of()),
             Map.of("IS_DUTY_SOLICITOR", "notABoolean"));
 
     assertThat(errors.getFieldError("inputs[IS_DUTY_SOLICITOR]").getCode())
@@ -89,20 +94,69 @@ class AmendmentFormValidatorTest {
     var inputs = Map.of("STANDARD_FEE_CATEGORY", "1A");
 
     var validForCrime =
-        validate(new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE), inputs);
+        validate(
+            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE, List.of()), inputs);
     assertThat(validForCrime.hasErrors()).isFalse();
 
     var invalidCodeForCrime =
         validate(
-            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE),
+            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE, List.of()),
             Map.of("STANDARD_FEE_CATEGORY", "NOPE"));
     assertThat(invalidCodeForCrime.hasErrors()).isTrue();
 
     assertThatThrownBy(
             () ->
                 validate(
-                    new AmendmentFormValidator(CivilClaimDetails.class, MESSAGE_SOURCE), inputs))
+                    new AmendmentFormValidator(CivilClaimDetails.class, MESSAGE_SOURCE, List.of()),
+                    inputs))
         .isInstanceOf(IllegalArgumentException.class);
+  }
+
+  @Test
+  void fieldWithNoMatchingFieldSpecificValidatorOnlyRunsItsFieldTypeValidator() {
+    var errors =
+        validate(
+            new AmendmentFormValidator(
+                CrimeClaimDetails.class,
+                MESSAGE_SOURCE,
+                List.of(rejectingFieldSpecificValidator(CrimeClaimDetailsViewField.STAGE_REACHED))),
+            Map.of("UNIQUE_FILE_NUMBER", "value"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void fieldWithMatchingFieldSpecificValidatorAggregatesRejectionsFromBoth() {
+    var errors =
+        validate(
+            new AmendmentFormValidator(
+                CrimeClaimDetails.class,
+                MESSAGE_SOURCE,
+                List.of(rejectingFieldSpecificValidator(ClaimDetailsViewField.UNIQUE_FILE_NUMBER))),
+            Map.of("UNIQUE_FILE_NUMBER", "a".repeat(256)));
+
+    assertThat(errors.getFieldErrors("inputs[UNIQUE_FILE_NUMBER]")).hasSize(2);
+    assertThat(
+            errors.getFieldErrors("inputs[UNIQUE_FILE_NUMBER]").stream()
+                .map(fieldError -> fieldError.getCode()))
+        .containsExactlyInAnyOrder("amendmentForm.text.tooLong", "test.fieldSpecific.invalid");
+  }
+
+  private static FieldSpecificAmendmentValidator rejectingFieldSpecificValidator(
+      ClaimViewField<?> targetField) {
+    return new FieldSpecificAmendmentValidator() {
+      @Override
+      public boolean appliesTo(ClaimViewField<?> field) {
+        return field == targetField;
+      }
+
+      @Override
+      public void validate(ClaimViewField<?> field, AmendmentForm form, Errors errors) {
+        errors.rejectValue(
+            String.format(AmendmentFieldValidator.FIELD_PATH, field.name()),
+            "test.fieldSpecific.invalid");
+      }
+    };
   }
 
   private static AmendmentFieldValidator countingFieldValidator(

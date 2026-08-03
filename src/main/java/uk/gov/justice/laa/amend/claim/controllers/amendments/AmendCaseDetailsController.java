@@ -7,6 +7,7 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveAmendmentFor
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -44,7 +45,7 @@ public class AmendCaseDetailsController {
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
-    binder.addValidators(new AmendmentFormValidator(claim.getClass(), messageSource));
+    binder.addValidators(new AmendmentFormValidator(claim.getClass(), messageSource, List.of()));
   }
 
   @GetMapping
