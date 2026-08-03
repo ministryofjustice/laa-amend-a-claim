@@ -431,8 +431,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("govuk-error-summary")))
         .andExpect(content().string(containsString("govuk-error-message")))
-        .andExpect(
-            content().string(containsString("Matter type 1 must be 50 characters or less")));
+        .andExpect(content().string(containsString("Matter type 1 must be 50 characters or less")));
   }
 
   @Test

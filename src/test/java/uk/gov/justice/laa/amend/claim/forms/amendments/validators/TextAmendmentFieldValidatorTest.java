@@ -18,7 +18,8 @@ class TextAmendmentFieldValidatorTest {
   @Test
   void acceptsTextValueAtMaxLength() {
     var value = "a".repeat(TextAmendmentFieldValidator.MAX_TEXT_LENGTH);
-    var errors = validate(ClaimDetailsViewField.UNIQUE_FILE_NUMBER, Map.of("UNIQUE_FILE_NUMBER", value));
+    var errors =
+        validate(ClaimDetailsViewField.UNIQUE_FILE_NUMBER, Map.of("UNIQUE_FILE_NUMBER", value));
 
     assertThat(errors.hasErrors()).isFalse();
   }
@@ -26,7 +27,8 @@ class TextAmendmentFieldValidatorTest {
   @Test
   void rejectsTextValueOverMaxLengthNamingTheField() {
     var value = "a".repeat(TextAmendmentFieldValidator.MAX_TEXT_LENGTH + 1);
-    var errors = validate(ClaimDetailsViewField.UNIQUE_FILE_NUMBER, Map.of("UNIQUE_FILE_NUMBER", value));
+    var errors =
+        validate(ClaimDetailsViewField.UNIQUE_FILE_NUMBER, Map.of("UNIQUE_FILE_NUMBER", value));
 
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[UNIQUE_FILE_NUMBER]");
@@ -39,7 +41,8 @@ class TextAmendmentFieldValidatorTest {
   void rejectsTextValueOverMaxLengthNamingADifferentField() {
     var value = "a".repeat(TextAmendmentFieldValidator.MAX_TEXT_LENGTH + 1);
     var errors =
-        validate(ClaimDetailsViewField.CASE_REFERENCE_NUMBER, Map.of("CASE_REFERENCE_NUMBER", value));
+        validate(
+            ClaimDetailsViewField.CASE_REFERENCE_NUMBER, Map.of("CASE_REFERENCE_NUMBER", value));
 
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[CASE_REFERENCE_NUMBER]");

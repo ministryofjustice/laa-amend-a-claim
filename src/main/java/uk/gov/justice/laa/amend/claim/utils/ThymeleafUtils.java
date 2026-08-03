@@ -52,7 +52,6 @@ public class ThymeleafUtils {
     return mapErrors(errors, AllowedTotalFormError::new, AllowedTotalFormError::getMessage);
   }
 
-
   public List<AmendmentFormError> toAmendmentFormErrors(List<FieldError> errors) {
     return mapErrors(errors, AmendmentFormError::new, AmendmentFormError::getMessage);
   }
