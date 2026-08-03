@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimAmendmentPatch;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.payments.amend.forms.amendments.OriginalAndCurrent;
@@ -31,7 +31,7 @@ public class CheckAmendmentsService {
       ClaimDetails claim,
       AmendmentForms amendmentForms) {
     var patchBuilder =
-        ClaimPatch.builder()
+        ClaimAmendmentPatch.builder()
             .amendmentUserId(userId)
             .amendmentReasonCode(amendmentForms.getRequestedReasonForm().getRequestedReason())
             .amendmentRequestedBy(amendmentForms.getRequestedByForm().getRequestedBy())
@@ -67,7 +67,7 @@ public class CheckAmendmentsService {
   }
 
   private void applyAmendments(
-      ClaimPatch.Builder builder, OriginalAndCurrent forms, ClaimDetails claim) {
+      ClaimAmendmentPatch.Builder builder, OriginalAndCurrent forms, ClaimDetails claim) {
 
     var original = forms.getOriginal();
     var current = forms.getCurrent();
@@ -87,7 +87,7 @@ public class CheckAmendmentsService {
    * types collected.
    */
   private void applyLegalHelpMatterTypeAmendments(
-      ClaimPatch.Builder builder, OriginalAndCurrent forms) {
+      ClaimAmendmentPatch.Builder builder, OriginalAndCurrent forms) {
     var original = forms.getOriginal();
     var current = forms.getCurrent();
 

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.Getter;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimAmendmentPatch.Builder;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.CrimeClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.enums.Amendability;
@@ -18,7 +18,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       FieldType.TEXT,
       String.class,
       CrimeClaimDetails::getClientForename,
-      ClaimPatch.Builder::clientForename,
+      Builder::clientForename,
       "client.clientForename"),
 
   // Case type fields
@@ -26,7 +26,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       FieldType.TEXT,
       String.class,
       CrimeClaimDetails::getMatterTypeCode,
-      ClaimPatch.Builder::crimeMatterTypeCode,
+      Builder::crimeMatterTypeCode,
       "claim.crimeMatterTypeCode"),
 
   // Case fields
@@ -34,99 +34,95 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       FieldType.ENUM,
       String.class,
       ClaimDetails::getStageReached,
-      ClaimPatch.Builder::stageReachedCode,
+      Builder::stageReachedCode,
       FieldOptions.CRIME_STAGE_REACHED,
       "claimCase.stageReachedCode"),
   UNIQUE_FILE_NUMBER(
       FieldType.TEXT,
       String.class,
       CrimeClaimDetails::getUniqueFileNumber,
-      ClaimPatch.Builder::uniqueFileNumber,
+      Builder::uniqueFileNumber,
       Amendability.UNTIL_ASSESSED,
       "claim.uniqueFileNumber"),
   REPRESENTATION_ORDER_DATE(
       FieldType.DATE,
       String.class,
       CrimeClaimDetails::getRepresentationOrderDate,
-      ClaimPatch.Builder::representationOrderDate,
+      Builder::representationOrderDate,
       Amendability.UNTIL_ASSESSED,
       "claim.representationOrderDate"),
   CASE_CONCLUDED_DATE(
       FieldType.DATE,
       String.class,
       CrimeClaimDetails::getCaseEndDate,
-      ClaimPatch.Builder::caseConcludedDate,
+      Builder::caseConcludedDate,
       Amendability.UNTIL_ASSESSED,
       "claim.caseConcludedDate"),
   STANDARD_FEE_CATEGORY(
       FieldType.ENUM,
       String.class,
       CrimeClaimDetails::getStandardFeeCategory,
-      ClaimPatch.Builder::standardFeeCategoryCode,
+      Builder::standardFeeCategoryCode,
       FieldOptions.STANDARD_FEE_CATEGORY,
       "claimCase.standardFeeCategoryCode"),
   OUTCOME_FOR_CLIENT(
       FieldType.ENUM,
       String.class,
       CrimeClaimDetails::getOutcome,
-      ClaimPatch.Builder::outcomeCode,
+      Builder::outcomeCode,
       FieldOptions.CRIME_LOWER_OUTCOME,
       "claimCase.outcomeCode"),
   SUSPECTS_DEFENDANTS_COUNT(
       FieldType.NUMBER,
       Integer.class,
       CrimeClaimDetails::getSuspectsDefendantsCount,
-      ClaimPatch.Builder::suspectsDefendantsCount,
+      Builder::suspectsDefendantsCount,
       "claim.suspectsDefendantsCount"),
   POLICE_STATION_COURT_ATTENDANCES_COUNT(
       FieldType.NUMBER,
       Integer.class,
       CrimeClaimDetails::getPoliceStationCourtAttendancesCount,
-      ClaimPatch.Builder::policeStationCourtAttendancesCount,
+      Builder::policeStationCourtAttendancesCount,
       "claim.policeStationCourtAttendancesCount"),
   POLICE_STATION_COURT_PRISON_ID(
       FieldType.TEXT,
       String.class,
       CrimeClaimDetails::getPoliceStationCourtPrisonId,
-      ClaimPatch.Builder::policeStationCourtPrisonId,
+      Builder::policeStationCourtPrisonId,
       Amendability.UNTIL_ASSESSED,
       "claim.policeStationCourtPrisonId"),
   SCHEME_ID(
       FieldType.TEXT,
       String.class,
       CrimeClaimDetails::getSchemeId,
-      ClaimPatch.Builder::schemeId,
+      Builder::schemeId,
       Amendability.UNTIL_ASSESSED,
       "claim.schemeId"),
   DSCC_NUMBER(
       FieldType.TEXT,
       String.class,
       CrimeClaimDetails::getDsccNumber,
-      ClaimPatch.Builder::dsccNumber,
+      Builder::dsccNumber,
       "claim.dsccNumber"),
   MAAT_ID(
-      FieldType.TEXT,
-      String.class,
-      CrimeClaimDetails::getMaatId,
-      ClaimPatch.Builder::maatId,
-      "claim.maatId"),
+      FieldType.TEXT, String.class, CrimeClaimDetails::getMaatId, Builder::maatId, "claim.maatId"),
   PRISON_LAW_PRIOR_APPROVAL_NUMBER(
       FieldType.TEXT,
       String.class,
       CrimeClaimDetails::getPrisonLawPriorApprovalNumber,
-      ClaimPatch.Builder::prisonLawPriorApprovalNumber,
+      Builder::prisonLawPriorApprovalNumber,
       "claim.prisonLawPriorApprovalNumber"),
   IS_DUTY_SOLICITOR(
       FieldType.BOOLEAN,
       Boolean.class,
       CrimeClaimDetails::getIsDutySolicitor,
-      ClaimPatch.Builder::isDutySolicitor,
+      Builder::isDutySolicitor,
       "claim.dutySolicitor"),
   IS_YOUTH_COURT(
       FieldType.BOOLEAN,
       Boolean.class,
       CrimeClaimDetails::getIsYouthCourt,
-      ClaimPatch.Builder::isYouthCourt,
+      Builder::isYouthCourt,
       "claim.youthCourt"),
 
   // Cost fields
@@ -134,14 +130,14 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       CrimeClaimDetails::getTravelCosts,
-      ClaimPatch.Builder::travelWaitingCostsAmount,
+      Builder::travelWaitingCostsAmount,
       "claimSummaryFee.travelWaitingCostsAmount",
       "fee.netTravelCostsAmount"),
   WAITING_COSTS(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       CrimeClaimDetails::getWaitingCosts,
-      ClaimPatch.Builder::netWaitingCostsAmount,
+      Builder::netWaitingCostsAmount,
       "claimSummaryFee.netWaitingCostsAmount",
       "fee.netWaitingCostsAmount");
 
@@ -157,7 +153,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       FieldType fieldType,
       Class<T> patchType,
       Function<CrimeClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      BiFunction<Builder, T, Builder> patcher,
       String claimsApiFieldName) {
     this(
         fieldType,
@@ -174,7 +170,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       FieldType fieldType,
       Class<T> patchType,
       Function<CrimeClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      BiFunction<Builder, T, Builder> patcher,
       List<FieldOption> options,
       String claimsApiFieldName) {
     this(
@@ -192,7 +188,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       FieldType fieldType,
       Class<T> patchType,
       Function<CrimeClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      BiFunction<Builder, T, Builder> patcher,
       String claimsApiFieldName,
       String feeApiFieldName) {
     this(
@@ -210,7 +206,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       FieldType fieldType,
       Class<T> patchType,
       Function<CrimeClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      BiFunction<Builder, T, Builder> patcher,
       Amendability amendability,
       String claimsApiFieldName) {
     this(fieldType, patchType, getter, patcher, List.of(), amendability, claimsApiFieldName, null);
@@ -220,7 +216,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       FieldType fieldType,
       Class<T> patchType,
       Function<CrimeClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      BiFunction<Builder, T, Builder> patcher,
       List<FieldOption> options,
       Amendability amendability,
       String claimsApiFieldName,

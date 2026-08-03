@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.Getter;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimAmendmentPatch.Builder;
 import uk.gov.justice.laa.payments.amend.models.Claim;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.enums.Amendability;
@@ -31,27 +31,27 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       FieldType.TEXT,
       String.class,
       ClaimDetails::getClientSurname,
-      ClaimPatch.Builder::clientSurname,
+      Builder::clientSurname,
       "client.clientSurname"),
   GENDER(
       FieldType.ENUM,
       String.class,
       ClaimDetails::getClientGender,
-      ClaimPatch.Builder::genderCode,
+      Builder::genderCode,
       FieldOptions.GENDER,
       "client.genderCode"),
   ETHNICITY(
       FieldType.ENUM,
       String.class,
       ClaimDetails::getClientEthnicity,
-      ClaimPatch.Builder::ethnicityCode,
+      Builder::ethnicityCode,
       FieldOptions.ETHNICITY_CODE,
       "client.ethnicityCode"),
   DISABILITY(
       FieldType.ENUM,
       String.class,
       ClaimDetails::getClientDisability,
-      ClaimPatch.Builder::disabilityCode,
+      Builder::disabilityCode,
       FieldOptions.DISABILITY_CODE,
       "client.disabilityCode"),
 
@@ -60,32 +60,32 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       FieldType.TEXT,
       String.class,
       Claim::getCaseReferenceNumber,
-      ClaimPatch.Builder::caseReferenceNumber,
+      Builder::caseReferenceNumber,
       "claim.caseReferenceNumber"),
   CASE_START_DATE(
       FieldType.DATE,
       String.class,
       Claim::getCaseStartDate,
-      ClaimPatch.Builder::caseStartDate,
+      Builder::caseStartDate,
       Amendability.UNTIL_ASSESSED,
       "claim.caseStartDate"),
   UNIQUE_FILE_NUMBER(
       FieldType.TEXT,
       String.class,
       Claim::getUniqueFileNumber,
-      ClaimPatch.Builder::uniqueFileNumber,
+      Builder::uniqueFileNumber,
       "claim.uniqueFileNumber"),
   CASE_CONCLUDED_DATE(
       FieldType.DATE,
       String.class,
       Claim::getCaseEndDate,
-      ClaimPatch.Builder::caseConcludedDate,
+      Builder::caseConcludedDate,
       "claim.caseConcludedDate"),
   FEE_CODE(
       FieldType.TEXT,
       String.class,
       ClaimDetails::getFeeCode,
-      ClaimPatch.Builder::feeCode,
+      Builder::feeCode,
       Amendability.UNTIL_ASSESSED,
       "claim.feeCode"),
 
@@ -101,28 +101,28 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       ClaimDetails::getNetProfitCost,
-      ClaimPatch.Builder::netProfitCostsAmount,
+      Builder::netProfitCostsAmount,
       "claimSummaryFee.netProfitCostsAmount",
       "fee.netProfitCostsAmount"),
   DISBURSEMENTS(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       ClaimDetails::getNetDisbursementAmount,
-      ClaimPatch.Builder::netDisbursementAmount,
+      Builder::netDisbursementAmount,
       "claimSummaryFee.netDisbursementAmount",
       "fee.disbursementAmount"),
   DISBURSEMENTS_VAT(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       ClaimDetails::getDisbursementVatAmount,
-      ClaimPatch.Builder::disbursementsVatAmount,
+      Builder::disbursementsVatAmount,
       "claimSummaryFee.disbursementsVatAmount",
       "fee.disbursementVatAmount"),
   VAT(
       FieldType.BOOLEAN,
       Boolean.class,
       ClaimDetails::getVatClaimed,
-      ClaimPatch.Builder::isVatApplicable,
+      Builder::isVatApplicable,
       "claimSummaryFee.isVatApplicable",
       "fee.vatIndicator");
 
@@ -142,7 +142,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       FieldType fieldType,
       Class<T> patchType,
       Function<ClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      BiFunction<Builder, T, Builder> patcher,
       String claimsApiFieldName) {
     this(
         fieldType,
@@ -159,7 +159,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       FieldType fieldType,
       Class<T> patchType,
       Function<ClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      BiFunction<Builder, T, Builder> patcher,
       String claimsApiFieldName,
       String feeApiFieldName) {
     this(
@@ -177,7 +177,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       FieldType fieldType,
       Class<T> patchType,
       Function<ClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      BiFunction<Builder, T, Builder> patcher,
       List<FieldOption> options,
       String claimsApiFieldName) {
     this(
@@ -195,7 +195,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       FieldType fieldType,
       Class<T> patchType,
       Function<ClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      BiFunction<Builder, T, Builder> patcher,
       Amendability amendability,
       String claimsApiFieldName) {
     this(fieldType, patchType, getter, patcher, List.of(), amendability, claimsApiFieldName, null);
@@ -205,7 +205,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       FieldType fieldType,
       Class<T> patchType,
       Function<ClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      BiFunction<Builder, T, Builder> patcher,
       List<FieldOption> options,
       Amendability amendability,
       String claimsApiFieldName,
