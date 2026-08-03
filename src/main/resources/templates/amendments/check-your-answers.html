@@ -164,10 +164,10 @@
       </div>
 
       <div class="govuk-summary-card"
-          th:if="${costsForm.hasAmendments(forms.costsForm.original)}">
+           th:if="${costsForm.hasAmendmentsByFieldType(forms.costsForm.original, costFields)}">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title"
-              th:text="#{claimClient.reportedCosts}">
+              th:text="#{claimCosts.reportedCosts}">
           </h2>
           <ul class="govuk-summary-card__actions">
             <li class="govuk-summary-card__action">

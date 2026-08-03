@@ -347,6 +347,34 @@ class AmendmentFormTest {
   }
 
   @Test
+  void hasAmendmentsByFieldTypeIgnoresUnchangedTypedFields() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.VALUE_OF_COSTS, BigDecimal.valueOf(10.10));
+    rows.put(CivilClaimDetailsViewField.IS_ELIGIBLE_CLIENT, true);
+    var original = new AmendmentForm(rows);
+
+    var current = new AmendmentForm(original);
+    current.getInputs().put("VALUE_OF_COSTS", "10.1");
+    current.getInputs().put("IS_ELIGIBLE_CLIENT", "true");
+
+    assertThat(current.hasAmendmentsByFieldType(original, rows)).isFalse();
+  }
+
+  @Test
+  void hasAmendmentsByFieldTypeDetectsChangedTypedField() {
+    var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
+    rows.put(CivilClaimDetailsViewField.VALUE_OF_COSTS, BigDecimal.valueOf(10.10));
+    rows.put(CivilClaimDetailsViewField.IS_ELIGIBLE_CLIENT, true);
+    var original = new AmendmentForm(rows);
+
+    var current = new AmendmentForm(original);
+    current.getInputs().put("VALUE_OF_COSTS", "10.2");
+    current.getInputs().put("IS_ELIGIBLE_CLIENT", "true");
+
+    assertThat(current.hasAmendmentsByFieldType(original, rows)).isTrue();
+  }
+
+  @Test
   void isAmendmentIgnoresBigDecimalReformatting() {
     var rows = new LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object>();
     rows.put(CivilClaimDetailsViewField.VALUE_OF_COSTS, BigDecimal.valueOf(10.10));
