@@ -9,7 +9,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldType;
 
 public class TextAmendmentFieldValidator implements AmendmentFieldValidator {
 
-  static final int MAX_TEXT_LENGTH = 255;
+  static final int MAX_TEXT_LENGTH = 50;
 
   private static final String TOO_LONG_CODE = "amendmentForm.text.tooLong";
 
