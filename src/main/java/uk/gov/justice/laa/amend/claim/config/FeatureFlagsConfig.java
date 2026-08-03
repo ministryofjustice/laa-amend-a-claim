@@ -16,19 +16,11 @@ import uk.gov.justice.laa.amend.claim.exceptions.FeatureNotImplementedRuntimeExc
 public class FeatureFlagsConfig {
 
   @NotNull private Boolean isBulkUploadEnabled;
-  @NotNull private Boolean isRequestedAndCalculatedSwapEnabled;
-  @NotNull private Boolean isFullClaimDetailsEnabled;
   @NotNull private Boolean isClaimAmendmentEnabled;
 
   private void checkBulkUploadEnabled() {
     if (!TRUE.equals(isBulkUploadEnabled)) {
       throw new FeatureNotEnabledException("isBulkUploadEnabled is false");
-    }
-  }
-
-  private void checkFullClaimDetailsEnabled() {
-    if (!TRUE.equals(isFullClaimDetailsEnabled)) {
-      throw new FeatureNotEnabledException("isFullClaimDetailsEnabled is false");
     }
   }
 
@@ -42,7 +34,6 @@ public class FeatureFlagsConfig {
     for (var feature : features) {
       switch (feature) {
         case BULK_UPLOAD -> checkBulkUploadEnabled();
-        case FULL_CLAIM_DETAILS -> checkFullClaimDetailsEnabled();
         case CLAIM_AMENDMENT -> checkClaimAmendmentEnabled();
         default -> throw new FeatureNotImplementedRuntimeException(feature);
       }
