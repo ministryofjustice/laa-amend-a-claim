@@ -203,7 +203,11 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
     forms.getClient1Form().getCurrent().getInputs().put("INITIAL", "changedForename");
     forms.getCaseTypeForm().getCurrent().getInputs().put("FEE_CODE", "changedFeeCode");
-    forms.getCaseDetailsForm().getCurrent().getInputs().put("MATTER_TYPE_CODE", "changedMatterType");
+    forms
+        .getCaseDetailsForm()
+        .getCurrent()
+        .getInputs()
+        .put("MATTER_TYPE_CODE", "changedMatterType");
     forms.getCostsForm().getCurrent().getInputs().put("PROFIT_COST", "5000.00");
 
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
