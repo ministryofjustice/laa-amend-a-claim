@@ -33,6 +33,7 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.CheckAmendmentsService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactory;
 
 @WebMvcTest(CheckAmendmentsController.class)
 class CheckAmendmentsControllerTest extends BaseControllerTest {
@@ -68,6 +69,8 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
                     "clientView",
                     "caseTypeForm",
                     "caseDetailsForm",
+                    "costsForm",
+                    "costFields",
                     "claim"));
   }
 
@@ -90,6 +93,8 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
                     "clientView",
                     "caseTypeForm",
                     "caseDetailsForm",
+                    "costsForm",
+                    "costFields",
                     "claim"));
   }
 
@@ -155,6 +160,7 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
   private AmendmentForms createCrimeForms() {
     var clientView = ClaimClientViewFactory.create(claim);
     var caseView = ClaimCaseViewFactory.create(claim);
+    var costsView = ClaimCostsViewFactory.create(claim);
     var client1Form = new AmendmentForm();
     client1Form.setInputs(Map.of("SURNAME", "changedSurname"));
 
@@ -163,6 +169,7 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
             .client1(new AmendmentForm(clientView.client1Rows()))
             .caseType(new AmendmentForm(caseView.caseTypeRows()))
             .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
+            .costs(new AmendmentForm(costsView.costRows()))
             .build();
     amendmentForms.getClient1Form().setCurrent(client1Form);
     return amendmentForms;
@@ -171,23 +178,27 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
   private AmendmentForms createEmptyForms() {
     var clientView = ClaimClientViewFactory.create(claim);
     var caseView = ClaimCaseViewFactory.create(claim);
+    var costsView = ClaimCostsViewFactory.create(claim);
 
     return AmendmentForms.builder()
         .client1(new AmendmentForm(clientView.client1Rows()))
         .caseType(new AmendmentForm(caseView.caseTypeRows()))
         .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
+        .costs(new AmendmentForm(costsView.costRows()))
         .build();
   }
 
   private AmendmentForms createMediationForms() {
     var clientView = ClaimClientViewFactory.create(claim);
     var caseView = ClaimCaseViewFactory.create(claim);
+    var costsView = ClaimCostsViewFactory.create(claim);
     var forms =
         AmendmentForms.builder()
             .client1(new AmendmentForm(clientView.client1Rows()))
             .client2(new AmendmentForm(clientView.client2Rows()))
             .caseType(new AmendmentForm(caseView.caseTypeRows()))
             .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
+            .costs(new AmendmentForm(costsView.costRows()))
             .build();
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
     forms

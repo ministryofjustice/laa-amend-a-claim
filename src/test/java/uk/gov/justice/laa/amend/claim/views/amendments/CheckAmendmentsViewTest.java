@@ -16,6 +16,7 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.CheckAmendmentsService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactory;
 
 @WebMvcTest(CheckAmendmentsController.class)
 class CheckAmendmentsViewTest extends AmendmentsBaseTest {
@@ -142,7 +143,7 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
   }
 
   @Test
-  void testShowsCivilClientAndCaseAmendments() {
+  void testShowsCivilAmendments() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     setupClaim(claim);
     claim.setClientForename(FORENAME);
@@ -188,7 +189,7 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
   }
 
   @Test
-  void testShowsCrimeClientAndCaseAmendments() {
+  void testShowsCrimeAmendments() {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     setupClaim(claim);
     claim.setClientForename(FORENAME);
@@ -201,6 +202,7 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
     forms.getClient1Form().getCurrent().getInputs().put("INITIAL", "changedForename");
     forms.getCaseTypeForm().getCurrent().getInputs().put("FEE_CODE", "changedFeeCode");
     forms.getCaseDetailsForm().getCurrent().getInputs().put("STAGE_REACHED", "changedStage");
+    forms.getCostsForm().getCurrent().getInputs().put("PROFIT_COST", "5000.00");
 
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
@@ -225,6 +227,10 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");
     assertEquals(2, caseDetails.size());
     assertSummaryListRowContainsValues(caseDetails.get(1), "Stage reached", "INVA", "changedStage");
+    var costsDetails = getSummaryListInCard(doc, "Reported costs");
+    assertSummaryListRowContainsValues(costsDetails.getFirst(), "Item", "Current", "Amended");
+    assertEquals(2, costsDetails.size());
+    assertPageHasLink(doc, "change-costs", "Change", amendCostsUrl);
   }
 
   private void setupClaim(ClaimDetails claim) {
@@ -236,21 +242,25 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
   private AmendmentForms createCrimeForms(ClaimDetails claim) {
     var view = ClaimClientViewFactory.create(claim);
     var caseView = ClaimCaseViewFactory.create(claim);
+    var costsView = ClaimCostsViewFactory.create(claim);
     return AmendmentForms.builder()
         .client1(new AmendmentForm(view.client1Rows()))
         .caseType(new AmendmentForm(caseView.caseTypeRows()))
         .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
+        .costs(new AmendmentForm(costsView.costRows()))
         .build();
   }
 
   private AmendmentForms createMediationForms(MediationClaimDetails claim) {
     var view = ClaimClientViewFactory.create(claim);
     var caseView = ClaimCaseViewFactory.create(claim);
+    var costsView = ClaimCostsViewFactory.create(claim);
     return AmendmentForms.builder()
         .client1(new AmendmentForm(view.client1Rows()))
         .client2(new AmendmentForm(view.client2Rows()))
         .caseType(new AmendmentForm(caseView.caseTypeRows()))
         .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
+        .costs(new AmendmentForm(costsView.costRows()))
         .build();
   }
 

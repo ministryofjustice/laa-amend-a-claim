@@ -163,6 +163,43 @@
         </div>
       </div>
 
+      <div class="govuk-summary-card"
+           th:if="${costsForm.hasAmendmentsByFieldType(forms.costsForm.original, costFields)}">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title"
+              th:text="#{claimCosts.reportedCosts}">
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link govuk-link--no-visited-state"
+                 id="change-costs"
+                 th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-costs(submissionId=${submissionId}, claimId=${claimId})}"
+                 th:text="#{amendments.change}"></a>
+            </li>
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key" th:text="#{amendments.item}"></dt>
+              <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.current}"></dd>
+              <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.amended}"></dd>
+            </div>
+
+            <div class="govuk-summary-list__row"
+                 th:each="entry : ${costFields}"
+                 th:if="${costsForm.isAmendment(entry.key.name(), forms.costsForm.original, entry.key.fieldType)}">
+              <dt class="govuk-summary-list__key" th:text="#{${'claimCosts.rows.' + entry.key.name()}}"></dt>
+              <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value.submitted).resolve(#messages)}"></dd>
+
+              <dd class="govuk-summary-list__value"
+                  th:text="${@ThymeleafUtils.getFormattedValue(entry.key, costsForm.getAmendedValue(entry.key)).resolve(#messages)}"></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
       <form method="post"
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/check(submissionId=${submissionId}, claimId=${claimId})}">
 

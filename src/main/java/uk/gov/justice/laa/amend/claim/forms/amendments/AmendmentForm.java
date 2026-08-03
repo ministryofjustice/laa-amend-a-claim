@@ -128,6 +128,12 @@ public class AmendmentForm {
         .anyMatch(key -> isAmendment(key, original));
   }
 
+  public boolean hasAmendmentsByFieldType(
+      AmendmentForm original, Map<? extends ClaimViewField<?>, ?> viewRows) {
+    return viewRows.keySet().stream()
+        .anyMatch(field -> isAmendment(field.name(), original, field.getFieldType()));
+  }
+
   public boolean isDateField(String fieldName) {
     return inputs.containsKey(fieldName + DAY_SUFFIX)
         || inputs.containsKey(fieldName + MONTH_SUFFIX)

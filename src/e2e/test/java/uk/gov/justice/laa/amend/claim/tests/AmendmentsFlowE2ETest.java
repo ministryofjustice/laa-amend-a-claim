@@ -297,6 +297,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Case type", "Fee code", "IMCA", "IAXC");
     assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "MONE");
     assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL", "MTWO");
+    assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£999.99");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);
@@ -391,6 +392,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Case details", "Claim ID", "711", "123");
     assertSummaryListRow(page, "Case type", "Fee code", "MDAS2S", "MDPS1B");
     assertSummaryListRow(page, "Case type", "Matter type", "IMCB", "MONE:MTWO");
+    assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£200.00");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);
@@ -445,6 +447,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+    assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£150.00");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);
