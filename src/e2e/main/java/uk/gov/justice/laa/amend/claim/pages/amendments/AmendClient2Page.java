@@ -18,7 +18,7 @@ public class AmendClient2Page extends LaaPage {
   }
 
   public void fillInput(String inputKey, String value) {
-    var surnameInput = page.locator(String.format("input#inputs%s", inputKey));
+    var surnameInput = page.locator(String.format("input#%s", inputKey));
     assertThat(surnameInput).isVisible();
     surnameInput.fill(value);
   }

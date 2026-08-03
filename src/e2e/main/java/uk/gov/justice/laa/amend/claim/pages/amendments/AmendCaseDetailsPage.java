@@ -19,7 +19,7 @@ public class AmendCaseDetailsPage extends LaaPage {
   }
 
   public void fillInput(String inputKey, String value) {
-    var caseDetailInput = page.locator(String.format("input#inputs%s", inputKey));
+    var caseDetailInput = page.locator(String.format("input#%s", inputKey));
     assertThat(caseDetailInput).isVisible();
     caseDetailInput.fill(value);
   }
