@@ -27,6 +27,7 @@ import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FeeCodeAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.forms.validators.AmendmentFormValidator;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
@@ -49,7 +50,11 @@ public class AmendCaseTypeController {
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
-    binder.addValidators(new AmendmentFormValidator(claim.getClass(), messageSource, List.of()));
+    var feeCodeValidator =
+        new FeeCodeAmendmentFieldValidator(
+            availableFeeCodesService, claim.getAreaOfLaw(), messageSource);
+    binder.addValidators(
+        new AmendmentFormValidator(claim.getClass(), messageSource, List.of(feeCodeValidator)));
   }
 
   @GetMapping("/amend-fee-code")
