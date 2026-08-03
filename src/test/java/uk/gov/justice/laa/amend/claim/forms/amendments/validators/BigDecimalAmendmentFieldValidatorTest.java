@@ -34,7 +34,7 @@ class BigDecimalAmendmentFieldValidatorTest {
   }
 
   @Test
-  void rejectsMalformedBigDecimalValueNamingADifferentField() {
+  void rejectsMalformedBigDecimalValueNamingDifferentField() {
     var errors = validate(CivilClaimDetailsViewField.COUNSELS_COST, "not-a-number");
 
     assertThat(errors.hasErrors()).isTrue();

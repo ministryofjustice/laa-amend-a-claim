@@ -33,7 +33,7 @@ class BooleanAmendmentFieldValidatorTest {
   }
 
   @Test
-  void rejectsMalformedBooleanValueNamingADifferentField() {
+  void rejectsMalformedBooleanValueNamingDifferentField() {
     var errors = validate(CrimeClaimDetailsViewField.IS_YOUTH_COURT, "banana");
 
     assertThat(errors.hasErrors()).isTrue();

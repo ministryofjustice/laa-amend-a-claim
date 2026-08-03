@@ -38,7 +38,7 @@ class TextAmendmentFieldValidatorTest {
   }
 
   @Test
-  void rejectsTextValueOverMaxLengthNamingADifferentField() {
+  void rejectsTextValueOverMaxLengthNamingDifferentField() {
     var value = "a".repeat(TextAmendmentFieldValidator.MAX_TEXT_LENGTH + 1);
     var errors =
         validate(

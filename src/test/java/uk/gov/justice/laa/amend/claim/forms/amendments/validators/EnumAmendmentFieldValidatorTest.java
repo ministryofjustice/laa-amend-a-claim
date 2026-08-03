@@ -33,7 +33,7 @@ class EnumAmendmentFieldValidatorTest {
   }
 
   @Test
-  void rejectsEnumValueNotMatchingAnAllowedOptionNamingADifferentField() {
+  void rejectsEnumValueNotMatchingAnAllowedOptionNamingDifferentField() {
     var errors = validate(ClaimDetailsViewField.ETHNICITY, Map.of("ETHNICITY", "NOT_A_CODE"));
 
     assertThat(errors.hasErrors()).isTrue();

@@ -34,7 +34,7 @@ class NumberAmendmentFieldValidatorTest {
   }
 
   @Test
-  void rejectsMalformedNumberValueNamingADifferentField() {
+  void rejectsMalformedNumberValueNamingDifferentField() {
     var errors = validate(CrimeClaimDetailsViewField.POLICE_STATION_COURT_ATTENDANCES_COUNT, "abc");
 
     assertThat(errors.hasErrors()).isTrue();

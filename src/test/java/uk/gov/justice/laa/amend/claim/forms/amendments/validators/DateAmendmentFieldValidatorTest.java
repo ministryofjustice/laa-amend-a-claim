@@ -58,7 +58,7 @@ class DateAmendmentFieldValidatorTest {
   }
 
   @Test
-  void rejectsImpossibleDateNamingADifferentField() {
+  void rejectsImpossibleDateNamingDifferentField() {
     var errors =
         validate(
             ClaimDetailsViewField.CASE_CONCLUDED_DATE,
