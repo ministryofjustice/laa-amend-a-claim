@@ -277,13 +277,11 @@ class AmendmentFormTest {
   }
 
   @Test
-  void getBooleanValueThrowsWhenInputIsNotTrueOrFalse() {
+  void getBooleanValueReturnsNullWhenInputIsNotTrueOrFalse() {
     var form = new AmendmentForm();
     form.setInputs(new HashMap<>(Map.of("IS_ELIGIBLE_CLIENT", "not-a-boolean")));
 
-    assertThatThrownBy(() -> form.getBooleanValue("IS_ELIGIBLE_CLIENT"))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessageContaining("IS_ELIGIBLE_CLIENT");
+    assertThat(form.getBooleanValue("IS_ELIGIBLE_CLIENT")).isNull();
   }
 
   @Test

@@ -30,9 +30,7 @@ public class BooleanAmendmentFieldValidator implements AmendmentFieldValidator {
     if (isBlank(value)) {
       return;
     }
-    try {
-      form.getBooleanValue(field.name());
-    } catch (IllegalArgumentException e) {
+    if (form.getBooleanValue(field.name()) == null) {
       var message =
           messageSource.getMessage(
               INVALID_CODE, new Object[] {field.label(messageSource)}, Locale.UK);

@@ -74,10 +74,18 @@ class AmendmentFormValidatorTest {
   }
 
   @Test
+  void rejectsTamperedBooleanValueInsteadOfThrowing() {
+    var errors =
+        validate(
+            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE),
+            Map.of("IS_DUTY_SOLICITOR", "notABoolean"));
+
+    assertThat(errors.getFieldError("inputs[IS_DUTY_SOLICITOR]").getCode())
+        .isEqualTo("amendmentForm.boolean.invalid");
+  }
+
+  @Test
   void resolvesFieldRulesAccordingToTheClaimsAreaOfLaw() {
-    // STANDARD_FEE_CATEGORY is declared only on CrimeClaimDetailsViewField, so validating it
-    // requires the crime-specific field definition - passing the wrong claim type must not
-    // silently apply a generic/shared rule.
     var inputs = Map.of("STANDARD_FEE_CATEGORY", "1A");
 
     var validForCrime =

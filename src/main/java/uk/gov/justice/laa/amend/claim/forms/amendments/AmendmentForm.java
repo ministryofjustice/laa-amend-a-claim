@@ -191,8 +191,7 @@ public class AmendmentForm {
     try {
       return StringToBooleanConverter.convertStrict(value);
     } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException(
-          "Invalid boolean value for field '%s'".formatted(fieldName), e);
+      return null;
     }
   }
 
