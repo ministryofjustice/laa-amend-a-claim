@@ -35,6 +35,7 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
 
   private static final String MATTER_TYPE1 = "matterType1";
   private static final String MATTER_TYPE2 = "matterType2";
+  private static final String MATTER_TYPE_CODE = "matterType";
   private static final String SCHEDULE_REFERENCE = "schedulereference";
   private static final String FEE_CODE = "feecode";
   private static final String STAGE_REACHED = "INVA";
@@ -195,13 +196,18 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
     claim.setClientForename(FORENAME);
     claim.setClientSurname(SURNAME);
     claim.setFeeCode(FEE_CODE);
+    claim.setMatterTypeCode(MATTER_TYPE_CODE);
     claim.setStageReached(STAGE_REACHED);
 
     var forms = createCrimeForms(claim);
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
     forms.getClient1Form().getCurrent().getInputs().put("INITIAL", "changedForename");
     forms.getCaseTypeForm().getCurrent().getInputs().put("FEE_CODE", "changedFeeCode");
-    forms.getCaseDetailsForm().getCurrent().getInputs().put("STAGE_REACHED", "changedStage");
+    forms
+        .getCaseDetailsForm()
+        .getCurrent()
+        .getInputs()
+        .put("MATTER_TYPE_CODE", "changedMatterType");
     forms.getCostsForm().getCurrent().getInputs().put("PROFIT_COST", "5000.00");
 
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
@@ -226,7 +232,8 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
     var caseDetails = getSummaryListInCard(doc, "Case details");
     assertSummaryListRowContainsValues(caseDetails.getFirst(), "Item", "Current", "Amended");
     assertEquals(2, caseDetails.size());
-    assertSummaryListRowContainsValues(caseDetails.get(1), "Stage reached", "INVA", "changedStage");
+    assertSummaryListRowContainsValues(
+        caseDetails.get(1), "Matter type", MATTER_TYPE_CODE, "changedMatterType");
     var costsDetails = getSummaryListInCard(doc, "Reported costs");
     assertSummaryListRowContainsValues(costsDetails.getFirst(), "Item", "Current", "Amended");
     assertEquals(2, costsDetails.size());
