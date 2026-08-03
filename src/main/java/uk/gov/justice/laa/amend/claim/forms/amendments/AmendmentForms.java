@@ -38,11 +38,23 @@ public class AmendmentForms {
     return new OriginalAndCurrent(original, new AmendmentForm(original));
   }
 
+  public boolean isClientPageAmended() {
+    return hasAmendments(client1Form) || hasAmendments(client2Form);
+  }
+
+  public boolean isCasePageAmended() {
+    return hasAmendments(caseTypeForm) || hasAmendments(caseDetailsForm);
+  }
+
   public boolean hasAmendments() {
     return client1Form.hasAmendments()
         || caseTypeForm.hasAmendments()
         || caseDetailsForm.hasAmendments()
         || (client2Form != null && client2Form.hasAmendments())
         || costsForm.hasAmendments();
+  }
+
+  private static boolean hasAmendments(OriginalAndCurrent form) {
+    return form != null && form.hasAmendments();
   }
 }

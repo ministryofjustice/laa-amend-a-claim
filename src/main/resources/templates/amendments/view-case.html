@@ -9,18 +9,19 @@
     )}">
 <body>
 <main class="govuk-main-wrapper" id="main-content">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full"
-         th:with="originalCaseTypeForm=${forms.getCaseTypeForm().getOriginal()},
+  <div class="govuk-grid-row"
+       th:with="originalCaseTypeForm=${forms.getCaseTypeForm().getOriginal()},
                 caseTypeForm=${forms.getCaseTypeForm().getCurrent()},
                 originalCaseDetailsForm=${forms.getCaseDetailsForm().getOriginal()},
                 caseDetailsForm=${forms.getCaseDetailsForm().getCurrent()}">
+    <div class="govuk-grid-column-full">
       <th:block
           th:replace="~{partials/amendments-view-header :: viewHeader(currentPage='case')}"></th:block>
 
       <h2 class="govuk-heading-m" th:text="#{claimDetails.caseHeading}"></h2>
+    </div>
 
-
+    <div th:class="${forms.casePageAmended} ? 'govuk-grid-column-full' : 'govuk-grid-column-two-thirds'">
       <div class="govuk-summary-card"
            th:with="caseTypeFormIsAmended=${caseTypeForm.hasAmendments(originalCaseTypeForm)}">
         <div class="govuk-summary-card__title-wrapper">
@@ -56,7 +57,9 @@
           </dl>
         </div>
       </div>
+    </div>
 
+    <div th:class="${forms.casePageAmended} ? 'govuk-grid-column-full' : 'govuk-grid-column-two-thirds'">
       <div class="govuk-summary-card"
            th:with="caseDetailsFormIsAmended=${caseDetailsForm.hasAmendments(originalCaseDetailsForm)}">
         <div class="govuk-summary-card__title-wrapper">
@@ -91,7 +94,9 @@
           </dl>
         </div>
       </div>
+    </div>
 
+    <div class="govuk-grid-column-full">
       <th:block th:replace="~{partials/amendments-view-footer :: viewFooter()}"></th:block>
     </div>
   </div>

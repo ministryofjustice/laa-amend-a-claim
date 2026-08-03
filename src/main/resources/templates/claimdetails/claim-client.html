@@ -14,7 +14,9 @@
             <th:block th:replace="~{partials/claim-details-header :: claimDetailsHeader(currentPage='client')}"></th:block>
 
             <h2 class="govuk-heading-m" th:text="#{claimDetails.clientHeading}"></h2>
+        </div>
 
+        <div class="govuk-grid-column-two-thirds">
             <div class="govuk-summary-card">
                 <div class="govuk-summary-card__title-wrapper">
                     <h2 class="govuk-summary-card__title"
@@ -32,8 +34,10 @@
                     </dl>
                 </div>
             </div>
+        </div>
 
-            <div class="govuk-summary-card" th:if="${!#maps.isEmpty(claim.client2Rows)}">
+        <div class="govuk-grid-column-two-thirds" th:if="${!#maps.isEmpty(claim.client2Rows)}">
+            <div class="govuk-summary-card">
                 <div class="govuk-summary-card__title-wrapper">
                     <h2 class="govuk-summary-card__title"
                         th:text="#{claimClient.client2Details}">
@@ -48,7 +52,9 @@
                     </dl>
                 </div>
             </div>
+        </div>
 
+        <div class="govuk-grid-column-full">
             <th:block th:replace="~{partials/claim-details-footer :: claimDetailsFooter()}"></th:block>
         </div>
     </div>
