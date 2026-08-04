@@ -7,7 +7,7 @@ import java.util.function.Function;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimAmendmentPatch.Builder;
 
 @Getter
 public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetails> {
@@ -16,289 +16,237 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       FieldType.DATE,
       String.class,
       CivilClaimDetails::getClientDateOfBirth,
-      ClaimPatch.Builder::clientDateOfBirth),
+      Builder::clientDateOfBirth),
   POSTCODE(
-      FieldType.TEXT,
-      String.class,
-      CivilClaimDetails::getClientPostcode,
-      ClaimPatch.Builder::clientPostcode),
+      FieldType.TEXT, String.class, CivilClaimDetails::getClientPostcode, Builder::clientPostcode),
   IS_ELIGIBLE_CLIENT(
       FieldType.BOOLEAN,
       Boolean.class,
       CivilClaimDetails::getIsEligibleClient,
-      ClaimPatch.Builder::isEligibleClient),
+      Builder::isEligibleClient),
   CLIENT_TYPE(
       FieldType.ENUM,
       String.class,
       CivilClaimDetails::getClientType,
-      ClaimPatch.Builder::clientTypeCode,
+      Builder::clientTypeCode,
       FieldOptions.CLIENT_TYPE),
   UNIQUE_CLIENT_NUMBER(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getUniqueClientNumber,
-      ClaimPatch.Builder::uniqueClientNumber),
+      Builder::uniqueClientNumber),
   HOME_OFFICE_CLIENT_NUMBER(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getHomeOfficeClientNumber,
-      ClaimPatch.Builder::homeOfficeClientNumber),
+      Builder::homeOfficeClientNumber),
   IS_POSTAL_APPLICATION_ACCEPTED(
       FieldType.BOOLEAN,
       Boolean.class,
       CivilClaimDetails::getIsPostalApplication,
-      ClaimPatch.Builder::isPostalApplicationAccepted),
+      Builder::isPostalApplicationAccepted),
 
   // Case type fields
-  FEE_CODE(
-      FieldType.TEXT, String.class, CivilClaimDetails::getFeeCode, ClaimPatch.Builder::feeCode),
+  FEE_CODE(FieldType.TEXT, String.class, CivilClaimDetails::getFeeCode, Builder::feeCode),
   MATTER_TYPE_CODE_1(
-      FieldType.TEXT,
-      String.class,
-      CivilClaimDetails::getMatterType1,
-      ClaimPatch.Builder::matterTypeCode),
+      FieldType.TEXT, String.class, CivilClaimDetails::getMatterType1, Builder::matterTypeCode),
   MATTER_TYPE_CODE_2(
-      FieldType.TEXT,
-      String.class,
-      CivilClaimDetails::getMatterType2,
-      ClaimPatch.Builder::matterTypeCode),
+      FieldType.TEXT, String.class, CivilClaimDetails::getMatterType2, Builder::matterTypeCode),
 
   // Case details fields
   STAGE_REACHED(
-      FieldType.TEXT,
-      String.class,
-      ClaimDetails::getStageReached,
-      ClaimPatch.Builder::stageReachedCode),
+      FieldType.TEXT, String.class, ClaimDetails::getStageReached, Builder::stageReachedCode),
   SCHEDULE_REFERENCE_CIVIL(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getScheduleReference,
-      ClaimPatch.Builder::scheduleReference),
-  CASE_ID(FieldType.TEXT, String.class, CivilClaimDetails::getCaseId, ClaimPatch.Builder::caseId),
+      Builder::scheduleReference),
+  CASE_ID(FieldType.TEXT, String.class, CivilClaimDetails::getCaseId, Builder::caseId),
   CASE_CONCLUDED_CLAIMED_DATE(
       FieldType.DATE,
       String.class,
       CivilClaimDetails::getCaseConcludedDate,
-      ClaimPatch.Builder::caseConcludedDate),
+      Builder::caseConcludedDate),
   CASE_STAGE(
       FieldType.ENUM,
       String.class,
       CivilClaimDetails::getCaseStage,
-      ClaimPatch.Builder::caseStageCode,
+      Builder::caseStageCode,
       FieldOptions.CASE_STAGE),
   VALUE_OF_COSTS(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       CivilClaimDetails::getValueOfCosts,
-      ClaimPatch.Builder::costsDamagesRecoveredAmount),
+      Builder::costsDamagesRecoveredAmount),
   PROCUREMENT_AREA(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getProcurementArea,
-      ClaimPatch.Builder::procurementAreaCode),
+      Builder::procurementAreaCode),
   ACCESS_POINT(
-      FieldType.TEXT,
-      String.class,
-      CivilClaimDetails::getAccessPoint,
-      ClaimPatch.Builder::accessPointCode),
+      FieldType.TEXT, String.class, CivilClaimDetails::getAccessPoint, Builder::accessPointCode),
   OUTCOME_FOR_CLIENT(
       FieldType.ENUM,
       String.class,
       CivilClaimDetails::getOutcome,
-      ClaimPatch.Builder::outcomeCode,
+      Builder::outcomeCode,
       FieldOptions.OUTCOME),
   EXCEPTIONAL_CASE_FUNDING(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getExceptionalCaseFundingReference,
-      ClaimPatch.Builder::exceptionalCaseFundingReference),
+      Builder::exceptionalCaseFundingReference),
   CIVIL_LEGAL_ADVICE_REFERENCE(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getCivilLegalAdviceReference,
-      ClaimPatch.Builder::claReferenceNumber),
+      Builder::claReferenceNumber),
   CIVIL_LEGAL_ADVICE_EXEMPTION(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getCivilLegalAdviceExemption,
-      ClaimPatch.Builder::claExemptionCode),
+      Builder::claExemptionCode),
   DELIVERY_LOCATION(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getDeliveryLocation,
-      ClaimPatch.Builder::deliveryLocation),
+      Builder::deliveryLocation),
   COURT_LOCATION(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getCourtLocation,
-      ClaimPatch.Builder::courtLocationCode),
+      Builder::courtLocationCode),
   AIT_HEARING_CENTRE(
       FieldType.ENUM,
       String.class,
       CivilClaimDetails::getAitHearingCentre,
-      ClaimPatch.Builder::aitHearingCentreCode,
+      Builder::aitHearingCentreCode,
       FieldOptions.AIT_HEARING_CENTRE),
   LOCAL_AUTHORITY_NUMBER(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getLocalAuthorityNumber,
-      ClaimPatch.Builder::localAuthorityNumber),
+      Builder::localAuthorityNumber),
   DESIGNATED_ACCREDITED_REPRESENTATIVE(
       FieldType.ENUM,
       String.class,
       CivilClaimDetails::getDesignatedAccreditedRepresentative,
-      ClaimPatch.Builder::designatedAccreditedRepresentativeCode,
+      Builder::designatedAccreditedRepresentativeCode,
       FieldOptions.DESIGNATED_ACCREDITED_REPRESENTATIVE),
   ADVICE_TIME(
-      FieldType.NUMBER,
-      Integer.class,
-      CivilClaimDetails::getAdviceTime,
-      ClaimPatch.Builder::adviceTime),
+      FieldType.NUMBER, Integer.class, CivilClaimDetails::getAdviceTime, Builder::adviceTime),
   TRAVEL_TIME(
-      FieldType.NUMBER,
-      Integer.class,
-      CivilClaimDetails::getTravelTime,
-      ClaimPatch.Builder::travelTime),
+      FieldType.NUMBER, Integer.class, CivilClaimDetails::getTravelTime, Builder::travelTime),
   WAITING_TIME(
-      FieldType.NUMBER,
-      Integer.class,
-      CivilClaimDetails::getWaitingTime,
-      ClaimPatch.Builder::waitingTime),
+      FieldType.NUMBER, Integer.class, CivilClaimDetails::getWaitingTime, Builder::waitingTime),
   ADDITIONAL_TRAVEL_PAYMENT(
       FieldType.BOOLEAN,
       Boolean.class,
       CivilClaimDetails::getIsAdditionalTravelPayment,
-      ClaimPatch.Builder::isAdditionalTravelPayment),
+      Builder::isAdditionalTravelPayment),
   FOLLOW_ON_WORK(
-      FieldType.TEXT,
-      String.class,
-      CivilClaimDetails::getFollowOnWork,
-      ClaimPatch.Builder::followOnWork),
+      FieldType.TEXT, String.class, CivilClaimDetails::getFollowOnWork, Builder::followOnWork),
   TOLERANCE_INDICATOR(
       FieldType.BOOLEAN,
       Boolean.class,
       CivilClaimDetails::getIsToleranceApplicable,
-      ClaimPatch.Builder::isToleranceApplicable),
+      Builder::isToleranceApplicable),
   LEGACY_CASE(
-      FieldType.BOOLEAN,
-      Boolean.class,
-      CivilClaimDetails::getIsLegacyCase,
-      ClaimPatch.Builder::isLegacyCase),
+      FieldType.BOOLEAN, Boolean.class, CivilClaimDetails::getIsLegacyCase, Builder::isLegacyCase),
   MEETINGS_ATTENDED(
       FieldType.ENUM,
       String.class,
       CivilClaimDetails::getMeetingsAttended,
-      ClaimPatch.Builder::meetingsAttendedCode,
+      Builder::meetingsAttendedCode,
       FieldOptions.MEETINGS_ATTENDED),
   ADVICE_TYPE(
       FieldType.ENUM,
       String.class,
       CivilClaimDetails::getAdviceType,
-      ClaimPatch.Builder::adviceTypeCode,
+      Builder::adviceTypeCode,
       FieldOptions.ADVICE_TYPE),
   TRANSFER_DATE(
-      FieldType.DATE,
-      String.class,
-      CivilClaimDetails::getTransferDate,
-      ClaimPatch.Builder::transferDate),
+      FieldType.DATE, String.class, CivilClaimDetails::getTransferDate, Builder::transferDate),
   MEDICAL_REPORTS_CLAIMED(
       FieldType.NUMBER,
       Integer.class,
       CivilClaimDetails::getMedicalReportsClaimed,
-      ClaimPatch.Builder::medicalReportsCount),
+      Builder::medicalReportsCount),
   EXEMPTION_CRITERIA_SATISFIED(
       FieldType.ENUM,
       String.class,
       CivilClaimDetails::getExemptionCriteriaSatisfied,
-      ClaimPatch.Builder::exemptionCriteriaSatisfied,
+      Builder::exemptionCriteriaSatisfied,
       FieldOptions.EXEMPTION_CRITERIA_SATISFIED),
   IRC_SURGERY(
-      FieldType.BOOLEAN,
-      Boolean.class,
-      CivilClaimDetails::getIsIrcSurgery,
-      ClaimPatch.Builder::isIrcSurgery),
+      FieldType.BOOLEAN, Boolean.class, CivilClaimDetails::getIsIrcSurgery, Builder::isIrcSurgery),
   SURGERY_DATE(
-      FieldType.DATE,
-      String.class,
-      CivilClaimDetails::getSurgeryDate,
-      ClaimPatch.Builder::surgeryDate),
+      FieldType.DATE, String.class, CivilClaimDetails::getSurgeryDate, Builder::surgeryDate),
   SURGERY_CLIENTS_COUNT(
       FieldType.NUMBER,
       Integer.class,
       CivilClaimDetails::getSurgeryClientsCount,
-      ClaimPatch.Builder::surgeryClientsCount),
+      Builder::surgeryClientsCount),
   SURGERY_MATTERS_COUNT(
       FieldType.NUMBER,
       Integer.class,
       CivilClaimDetails::getSurgeryMattersCount,
-      ClaimPatch.Builder::surgeryMattersCount),
+      Builder::surgeryMattersCount),
   MENTAL_HEALTH_TRIBUNAL_REFERENCE(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getMentalHealthTribunalReference,
-      ClaimPatch.Builder::mentalHealthTribunalReference),
+      Builder::mentalHealthTribunalReference),
   IS_NRM_ADVICE(
-      FieldType.BOOLEAN,
-      Boolean.class,
-      CivilClaimDetails::getIsNrmAdvice,
-      ClaimPatch.Builder::isNrmAdvice),
+      FieldType.BOOLEAN, Boolean.class, CivilClaimDetails::getIsNrmAdvice, Builder::isNrmAdvice),
 
   // Cost fields
   COUNSELS_COST(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       CivilClaimDetails::getCounselsCost,
-      ClaimPatch.Builder::netCounselCostsAmount),
+      Builder::netCounselCostsAmount),
   TRAVEL_AND_WAITING_COSTS(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       CivilClaimDetails::getTravelAndWaitingCosts,
-      ClaimPatch.Builder::travelWaitingCostsAmount),
+      Builder::travelWaitingCostsAmount),
   DETENTION_TRAVEL(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       CivilClaimDetails::getDetentionTravelWaitingCosts,
-      ClaimPatch.Builder::detentionTravelWaitingCostsAmount),
+      Builder::detentionTravelWaitingCostsAmount),
   JR_FORM_FILLING(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       CivilClaimDetails::getJrFormFillingCost,
-      ClaimPatch.Builder::jrFormFillingAmount),
+      Builder::jrFormFillingAmount),
   ADJOURNED_HEARING_FEE(
       FieldType.NUMBER,
       Integer.class,
       CivilClaimDetails::getAdjournedHearing,
-      ClaimPatch.Builder::adjournedHearingFeeAmount),
+      Builder::adjournedHearingFeeAmount),
   CMRH_TELEPHONE(
       FieldType.NUMBER,
       Integer.class,
       CivilClaimDetails::getCmrhTelephone,
-      ClaimPatch.Builder::cmrhTelephoneCount),
+      Builder::cmrhTelephoneCount),
   CMRH_ORAL(
-      FieldType.NUMBER,
-      Integer.class,
-      CivilClaimDetails::getCmrhOral,
-      ClaimPatch.Builder::cmrhOralCount),
+      FieldType.NUMBER, Integer.class, CivilClaimDetails::getCmrhOral, Builder::cmrhOralCount),
   HOME_OFFICE(
-      FieldType.NUMBER,
-      Integer.class,
-      CivilClaimDetails::getHoInterview,
-      ClaimPatch.Builder::hoInterview),
+      FieldType.NUMBER, Integer.class, CivilClaimDetails::getHoInterview, Builder::hoInterview),
   SUBSTANTIVE_HEARING(
       FieldType.BOOLEAN,
       Boolean.class,
       CivilClaimDetails::getSubstantiveHearing,
-      ClaimPatch.Builder::isSubstantiveHearing),
+      Builder::isSubstantiveHearing),
   IS_LONDON_RATE(
-      FieldType.BOOLEAN,
-      Boolean.class,
-      CivilClaimDetails::getIsLondonRate,
-      ClaimPatch.Builder::isLondonRate),
+      FieldType.BOOLEAN, Boolean.class, CivilClaimDetails::getIsLondonRate, Builder::isLondonRate),
   PRIOR_AUTHORITY_REFERENCE(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getPriorAuthorityReference,
-      ClaimPatch.Builder::priorAuthorityReference);
+      Builder::priorAuthorityReference);
 
   private final CivilClaimViewFieldGetter<?> getter;
   private final FieldType fieldType;
@@ -309,7 +257,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       FieldType fieldType,
       Class<T> patchType,
       Function<CivilClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher) {
+      BiFunction<Builder, T, Builder> patcher) {
     this(fieldType, patchType, getter, patcher, List.of());
   }
 
@@ -317,7 +265,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       FieldType fieldType,
       Class<T> patchType,
       Function<CivilClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      BiFunction<Builder, T, Builder> patcher,
       List<FieldOption> options) {
     this.getter = new CivilClaimViewFieldGetter<>(getter);
     this.fieldType = fieldType;

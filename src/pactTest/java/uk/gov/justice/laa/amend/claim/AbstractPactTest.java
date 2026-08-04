@@ -14,6 +14,8 @@ public abstract class AbstractPactTest {
       "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
   protected static final String OFFICE_CODE_REGEX = "[0-9A-Z]{6}";
 
+  protected static final UUID SUBMISSION_ID =
+      UUID.fromString("4fa85f64-5717-4562-b3fc-2c963f66afa6");
   protected static final UUID CLAIM_ID = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
   protected static final String EXAMPLE_AUTH_TOKEN = "e37da3d4-b8bc-4204-9528-deb6fa3bb39d";
 

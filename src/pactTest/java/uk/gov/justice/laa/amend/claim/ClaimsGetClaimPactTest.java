@@ -11,7 +11,6 @@ import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.RequestResponsePact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import java.util.Map;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 public final class ClaimsGetClaimPactTest extends AbstractPactTest {
 
   @Autowired ClaimsApiClient claimsApiClient;
-
-  private static final UUID SUBMISSION_ID = UUID.fromString("4fa85f64-5717-4562-b3fc-2c963f66afa6");
 
   @Pact(consumer = CONSUMER)
   public RequestResponsePact getClaim200(PactDslWithProvider builder) {

@@ -23,7 +23,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.OriginalAndCurrent;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimAmendmentPatch;
 
 @ExtendWith(MockitoExtension.class)
 class CheckAmendmentsServiceTest {
@@ -129,7 +129,7 @@ class CheckAmendmentsServiceTest {
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     var expected =
-        ClaimPatch.builder()
+        ClaimAmendmentPatch.builder()
             .amendmentUserId(patch.getAmendmentUserId())
             .amendmentReasonCode("CASE_REOPENED_REBILLED")
             .amendmentRequestedBy("PROVIDER")
@@ -351,7 +351,7 @@ class CheckAmendmentsServiceTest {
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     var expected =
-        ClaimPatch.builder()
+        ClaimAmendmentPatch.builder()
             .amendmentUserId(patch.getAmendmentUserId())
             .amendmentReasonCode("CASE_REOPENED_REBILLED")
             .amendmentRequestedBy("PROVIDER")
@@ -548,7 +548,7 @@ class CheckAmendmentsServiceTest {
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     var expected =
-        ClaimPatch.builder()
+        ClaimAmendmentPatch.builder()
             .amendmentUserId(USER_ID)
             .amendmentReasonCode("CASE_REOPENED_REBILLED")
             .amendmentRequestedBy("PROVIDER")
@@ -594,14 +594,14 @@ class CheckAmendmentsServiceTest {
     assertThat(patch).usingRecursiveComparison().isEqualTo(expected);
   }
 
-  private ClaimPatch submitAndCapturePatch(
+  private ClaimAmendmentPatch submitAndCapturePatch(
       UUID submissionId, UUID claimId, ClaimDetails claim, AmendmentForms amendmentForms) {
-    when(claimsApiClient.updateClaim(eq(submissionId), eq(claimId), any(ClaimPatch.class)))
+    when(claimsApiClient.updateClaim(eq(submissionId), eq(claimId), any(ClaimAmendmentPatch.class)))
         .thenReturn(Mono.empty());
 
     checkAmendmentsService.submitAmendments(submissionId, claimId, USER_ID, claim, amendmentForms);
 
-    var patchCaptor = ArgumentCaptor.forClass(ClaimPatch.class);
+    var patchCaptor = ArgumentCaptor.forClass(ClaimAmendmentPatch.class);
     verify(claimsApiClient).updateClaim(eq(submissionId), eq(claimId), patchCaptor.capture());
     return patchCaptor.getValue();
   }

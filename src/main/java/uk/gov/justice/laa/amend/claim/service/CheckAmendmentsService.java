@@ -14,7 +14,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.OriginalAndCurrent;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimAmendmentPatch;
 
 @Service
 @Slf4j
@@ -30,7 +30,7 @@ public class CheckAmendmentsService {
       ClaimDetails claim,
       AmendmentForms amendmentForms) {
     var patchBuilder =
-        ClaimPatch.builder()
+        ClaimAmendmentPatch.builder()
             .amendmentUserId(userId)
             // TODO: BC-574 will cover these values
             .amendmentReasonCode("CASE_REOPENED_REBILLED")
@@ -66,7 +66,7 @@ public class CheckAmendmentsService {
   }
 
   private void applyAmendments(
-      ClaimPatch.Builder builder,
+      ClaimAmendmentPatch.Builder builder,
       OriginalAndCurrent forms,
       Class<? extends ClaimDetails> claimDetailsType) {
 
@@ -86,7 +86,7 @@ public class CheckAmendmentsService {
    * types collected.
    */
   private void applyLegalHelpMatterTypeAmendments(
-      ClaimPatch.Builder builder, OriginalAndCurrent forms) {
+      ClaimAmendmentPatch.Builder builder, OriginalAndCurrent forms) {
     var original = forms.getOriginal();
     var current = forms.getCurrent();
 
