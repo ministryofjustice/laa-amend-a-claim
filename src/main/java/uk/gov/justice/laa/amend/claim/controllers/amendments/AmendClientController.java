@@ -49,7 +49,7 @@ public class AmendClientController {
     var claim = getValidClaim(session, submissionId, claimId);
     binder.addValidators(
         new AmendmentFormValidator(
-            claim.getClass(), messageSource, fieldSpecificAmendmentValidators));
+            claim, messageSource, fieldSpecificAmendmentValidators));
   }
 
   @InitBinder("client2Form")
@@ -61,7 +61,7 @@ public class AmendClientController {
     var claim = getValidClaim(session, submissionId, claimId);
     binder.addValidators(
         new AmendmentFormValidator(
-            claim.getClass(), messageSource, fieldSpecificAmendmentValidators));
+            claim, messageSource, fieldSpecificAmendmentValidators));
   }
 
   @GetMapping("/amend-client")

@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -28,7 +27,6 @@ import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FeeCodeAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.forms.validators.AmendmentFormValidator;
@@ -53,14 +51,9 @@ public class AmendCaseTypeController {
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
-    // Manually creating FeeCodeAmendmentFieldValidator due to per-request area of law changes.
-    var feeCodeValidator =
-        new FeeCodeAmendmentFieldValidator(
-            availableFeeCodesService, claim.getAreaOfLaw(), messageSource);
-    var validators =
-        Stream.concat(fieldSpecificAmendmentValidators.stream(), Stream.of(feeCodeValidator))
-            .toList();
-    binder.addValidators(new AmendmentFormValidator(claim.getClass(), messageSource, validators));
+    binder.addValidators(new AmendmentFormValidator(
+        claim, messageSource,
+        fieldSpecificAmendmentValidators));
   }
 
   @GetMapping("/amend-fee-code")

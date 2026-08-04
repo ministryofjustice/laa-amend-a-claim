@@ -18,18 +18,22 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FeeCodeAmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 
 @WebMvcTest(AmendCaseTypeController.class)
+@Import(FeeCodeAmendmentFieldValidator.class)
 class AmendCaseTypeControllerTest extends BaseControllerTest {
 
   private static final String INPUTS = "inputs[%s]";
@@ -416,7 +420,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void postFeeCodeSurfacesAvailableFeeCodesServiceFailureLikeGetTimeFailure() throws Exception {
+  void postFeeCodeSurfacesAvailableFeeCodesServiceFailureWhenFeeCodeNotFound() throws Exception {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setFeeCode(FEE_CODE);
     claim.setMatterTypeCode(MATTER_TYPE_CODE_1);

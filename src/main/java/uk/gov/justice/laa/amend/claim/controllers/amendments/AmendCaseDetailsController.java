@@ -49,7 +49,7 @@ public class AmendCaseDetailsController {
     var claim = getValidClaim(session, submissionId, claimId);
     binder.addValidators(
         new AmendmentFormValidator(
-            claim.getClass(), messageSource, fieldSpecificAmendmentValidators));
+            claim, messageSource, fieldSpecificAmendmentValidators));
   }
 
   @GetMapping

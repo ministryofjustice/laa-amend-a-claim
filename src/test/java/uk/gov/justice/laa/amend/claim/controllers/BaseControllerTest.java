@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.config.ThymeleafConfig;
 import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FeeCodeAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.models.enums.Role;
 import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;

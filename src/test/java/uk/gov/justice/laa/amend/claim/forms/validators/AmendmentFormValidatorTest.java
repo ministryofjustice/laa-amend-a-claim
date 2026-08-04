@@ -13,8 +13,7 @@ import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.AmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
-import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
@@ -32,7 +31,7 @@ class AmendmentFormValidatorTest {
 
     var validator =
         new AmendmentFormValidator(
-            CrimeClaimDetails.class,
+            MockClaimsFunctions.createMockCrimeClaim(),
             List.of(
                 countingFieldValidator(FieldType.TEXT, textCalls),
                 countingFieldValidator(FieldType.ENUM, enumCalls)),
@@ -51,7 +50,7 @@ class AmendmentFormValidatorTest {
 
     var validator =
         new AmendmentFormValidator(
-            CrimeClaimDetails.class,
+            MockClaimsFunctions.createMockCrimeClaim(),
             List.of(
                 countingFieldValidator(FieldType.TEXT, firstCalls),
                 countingFieldValidator(FieldType.TEXT, secondCalls)),
@@ -68,7 +67,8 @@ class AmendmentFormValidatorTest {
     var value = "a".repeat(51);
     var errors =
         validate(
-            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE, List.of()),
+            new AmendmentFormValidator(
+                MockClaimsFunctions.createMockCrimeClaim(), MESSAGE_SOURCE, List.of()),
             Map.of("UNIQUE_FILE_NUMBER", value, "STAGE_REACHED", "NOT_A_CODE"));
 
     assertThat(errors.getFieldErrors()).hasSize(2);
@@ -82,7 +82,8 @@ class AmendmentFormValidatorTest {
   void rejectsTamperedBooleanValueInsteadOfThrowing() {
     var errors =
         validate(
-            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE, List.of()),
+            new AmendmentFormValidator(
+                MockClaimsFunctions.createMockCrimeClaim(), MESSAGE_SOURCE, List.of()),
             Map.of("IS_DUTY_SOLICITOR", "notABoolean"));
 
     assertThat(errors.getFieldError("inputs[IS_DUTY_SOLICITOR]").getCode())
@@ -95,20 +96,23 @@ class AmendmentFormValidatorTest {
 
     var validForCrime =
         validate(
-            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE, List.of()), inputs);
+            new AmendmentFormValidator(
+                MockClaimsFunctions.createMockCrimeClaim(), MESSAGE_SOURCE, List.of()), inputs);
     assertThat(validForCrime.hasErrors()).isFalse();
 
     var invalidCodeForCrime =
         validate(
-            new AmendmentFormValidator(CrimeClaimDetails.class, MESSAGE_SOURCE, List.of()),
+            new AmendmentFormValidator(
+                MockClaimsFunctions.createMockCrimeClaim(), MESSAGE_SOURCE, List.of()),
             Map.of("STANDARD_FEE_CATEGORY", "NOPE"));
     assertThat(invalidCodeForCrime.hasErrors()).isTrue();
 
     assertThatThrownBy(
-            () ->
-                validate(
-                    new AmendmentFormValidator(CivilClaimDetails.class, MESSAGE_SOURCE, List.of()),
-                    inputs))
+        () ->
+            validate(
+                new AmendmentFormValidator(
+                    MockClaimsFunctions.createMockCivilClaim(), MESSAGE_SOURCE, List.of()),
+                inputs))
         .isInstanceOf(IllegalArgumentException.class);
   }
 
@@ -117,7 +121,7 @@ class AmendmentFormValidatorTest {
     var errors =
         validate(
             new AmendmentFormValidator(
-                CrimeClaimDetails.class,
+                MockClaimsFunctions.createMockCrimeClaim(),
                 MESSAGE_SOURCE,
                 List.of(rejectingFieldSpecificValidator(CrimeClaimDetailsViewField.STAGE_REACHED))),
             Map.of("UNIQUE_FILE_NUMBER", "value"));
@@ -130,15 +134,15 @@ class AmendmentFormValidatorTest {
     var errors =
         validate(
             new AmendmentFormValidator(
-                CrimeClaimDetails.class,
+                MockClaimsFunctions.createMockCrimeClaim(),
                 MESSAGE_SOURCE,
                 List.of(rejectingFieldSpecificValidator(ClaimDetailsViewField.UNIQUE_FILE_NUMBER))),
             Map.of("UNIQUE_FILE_NUMBER", "a".repeat(51)));
 
     assertThat(errors.getFieldErrors("inputs[UNIQUE_FILE_NUMBER]")).hasSize(2);
     assertThat(
-            errors.getFieldErrors("inputs[UNIQUE_FILE_NUMBER]").stream()
-                .map(fieldError -> fieldError.getCode()))
+        errors.getFieldErrors("inputs[UNIQUE_FILE_NUMBER]").stream()
+            .map(fieldError -> fieldError.getCode()))
         .containsExactlyInAnyOrder("amendmentForm.text.tooLong", "test.fieldSpecific.invalid");
   }
 

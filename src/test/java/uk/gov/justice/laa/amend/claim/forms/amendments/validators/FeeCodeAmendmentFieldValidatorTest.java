@@ -10,6 +10,8 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
@@ -21,7 +23,7 @@ class FeeCodeAmendmentFieldValidatorTest {
 
   private final FeeCodeAmendmentFieldValidator validator =
       new FeeCodeAmendmentFieldValidator(
-          availableFeeCodesService, AreaOfLaw.CRIME_LOWER, TestMessageSources.real());
+          availableFeeCodesService, TestMessageSources.real());
 
   @Test
   void appliesToFeeCodeFieldOnly() {
@@ -68,8 +70,10 @@ class FeeCodeAmendmentFieldValidatorTest {
     var form = new AmendmentForm();
     form.setInputs(inputs);
 
+    CrimeClaimDetails mockCrimeClaim = MockClaimsFunctions.createMockCrimeClaim();
+
     var errors = new BeanPropertyBindingResult(form, "amendmentForm");
-    validator.validate(ClaimDetailsViewField.FEE_CODE, form, errors);
+    validator.validate(mockCrimeClaim, ClaimDetailsViewField.FEE_CODE, form, errors);
     return errors;
   }
 }

@@ -13,25 +13,28 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.validators.EnumAmendmentF
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.NumberAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.TextAmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
 public class AmendmentFormValidator implements Validator {
 
+  private final ClaimDetails claimDetails;
   private final Class<?> claimDetailsType;
   private final List<AmendmentFieldValidator> fieldValidators;
   private final List<FieldSpecificAmendmentValidator> fieldSpecificValidators;
 
   public AmendmentFormValidator(
-      Class<?> claimDetailsType,
+      ClaimDetails claimDetails,
       MessageSource messageSource,
       List<FieldSpecificAmendmentValidator> fieldSpecificValidators) {
-    this(claimDetailsType, defaultFieldValidators(messageSource), fieldSpecificValidators);
+    this(claimDetails, defaultFieldValidators(messageSource), fieldSpecificValidators);
   }
 
   AmendmentFormValidator(
-      Class<?> claimDetailsType,
+      ClaimDetails claimDetails,
       List<AmendmentFieldValidator> fieldValidators,
       List<FieldSpecificAmendmentValidator> fieldSpecificValidators) {
-    this.claimDetailsType = claimDetailsType;
+    this.claimDetails = claimDetails;
+    this.claimDetailsType = claimDetails.getClass();
     this.fieldValidators = fieldValidators;
     this.fieldSpecificValidators = fieldSpecificValidators;
   }
@@ -72,7 +75,7 @@ public class AmendmentFormValidator implements Validator {
 
       for (var fieldSpecificValidator : fieldSpecificValidators) {
         if (fieldSpecificValidator.appliesTo(field)) {
-          fieldSpecificValidator.validate(field, form, errors);
+          fieldSpecificValidator.validate(claimDetails, field, form, errors);
         }
       }
     }
