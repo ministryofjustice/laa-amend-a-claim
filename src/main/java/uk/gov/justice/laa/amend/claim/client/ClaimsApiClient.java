@@ -13,6 +13,7 @@ import org.springframework.web.service.annotation.PatchExchange;
 import org.springframework.web.service.annotation.PostExchange;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
@@ -68,6 +69,11 @@ public interface ClaimsApiClient {
   @PostExchange(url = "/v1/claims/{claimId}/void", accept = MediaType.APPLICATION_JSON_VALUE)
   Mono<VoidClaim201Response> voidClaim(
       @PathVariable UUID claimId, @RequestBody VoidClaimRequest body);
+
+  @GetExchange(
+      url = "v1/system/references/amendment-requested-by",
+      accept = MediaType.APPLICATION_JSON_VALUE)
+  Mono<AmendmentRequestedByReferenceList> getAmendmentRequestedByReferenceList();
 
   @GetExchange(url = "/v1/claims/{claimId}/history", accept = MediaType.APPLICATION_JSON_VALUE)
   Mono<ClaimHistoryResultSet> getClaimHistory(@PathVariable UUID claimId);
