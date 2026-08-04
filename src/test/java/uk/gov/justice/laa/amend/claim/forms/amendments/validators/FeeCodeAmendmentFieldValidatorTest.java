@@ -22,8 +22,7 @@ class FeeCodeAmendmentFieldValidatorTest {
       mock(AvailableFeeCodesService.class);
 
   private final FeeCodeAmendmentFieldValidator validator =
-      new FeeCodeAmendmentFieldValidator(
-          availableFeeCodesService, TestMessageSources.real());
+      new FeeCodeAmendmentFieldValidator(availableFeeCodesService, TestMessageSources.real());
 
   @Test
   void appliesToFeeCodeFieldOnly() {

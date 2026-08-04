@@ -20,8 +20,7 @@ public class FeeCodeAmendmentFieldValidator implements FieldSpecificAmendmentVal
   private final MessageSource messageSource;
 
   public FeeCodeAmendmentFieldValidator(
-      AvailableFeeCodesService availableFeeCodesService,
-      MessageSource messageSource) {
+      AvailableFeeCodesService availableFeeCodesService, MessageSource messageSource) {
     this.availableFeeCodesService = availableFeeCodesService;
     this.messageSource = messageSource;
   }
@@ -32,8 +31,8 @@ public class FeeCodeAmendmentFieldValidator implements FieldSpecificAmendmentVal
   }
 
   @Override
-  public void validate(ClaimDetails claimDetails, ClaimViewField<?> field, AmendmentForm form,
-      Errors errors) {
+  public void validate(
+      ClaimDetails claimDetails, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
     AreaOfLaw areaOfLaw = claimDetails.getAreaOfLaw();
     var value = form.getInputs().get(field.name());
     var availableFeeCodes = availableFeeCodesService.getAvailableFeeCodes(areaOfLaw);
@@ -45,5 +44,4 @@ public class FeeCodeAmendmentFieldValidator implements FieldSpecificAmendmentVal
           AmendmentFieldValidator.FIELD_PATH.formatted(field.name()), INVALID_CODE, message);
     }
   }
-
 }

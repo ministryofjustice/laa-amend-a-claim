@@ -9,6 +9,5 @@ public interface FieldSpecificAmendmentValidator {
 
   boolean appliesTo(ClaimViewField<?> field);
 
-  void validate(ClaimDetails claim, ClaimViewField<?> field, AmendmentForm form,
-      Errors errors);
+  void validate(ClaimDetails claim, ClaimViewField<?> field, AmendmentForm form, Errors errors);
 }

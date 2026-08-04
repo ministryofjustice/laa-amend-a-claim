@@ -99,7 +99,8 @@ class AmendmentFormValidatorTest {
     var validForCrime =
         validate(
             new AmendmentFormValidator(
-                MockClaimsFunctions.createMockCrimeClaim(), MESSAGE_SOURCE, List.of()), inputs);
+                MockClaimsFunctions.createMockCrimeClaim(), MESSAGE_SOURCE, List.of()),
+            inputs);
     assertThat(validForCrime.hasErrors()).isFalse();
 
     var invalidCodeForCrime =
@@ -110,11 +111,11 @@ class AmendmentFormValidatorTest {
     assertThat(invalidCodeForCrime.hasErrors()).isTrue();
 
     assertThatThrownBy(
-        () ->
-            validate(
-                new AmendmentFormValidator(
-                    MockClaimsFunctions.createMockCivilClaim(), MESSAGE_SOURCE, List.of()),
-                inputs))
+            () ->
+                validate(
+                    new AmendmentFormValidator(
+                        MockClaimsFunctions.createMockCivilClaim(), MESSAGE_SOURCE, List.of()),
+                    inputs))
         .isInstanceOf(IllegalArgumentException.class);
   }
 
@@ -143,8 +144,8 @@ class AmendmentFormValidatorTest {
 
     assertThat(errors.getFieldErrors("inputs[UNIQUE_FILE_NUMBER]")).hasSize(2);
     assertThat(
-        errors.getFieldErrors("inputs[UNIQUE_FILE_NUMBER]").stream()
-            .map(DefaultMessageSourceResolvable::getCode))
+            errors.getFieldErrors("inputs[UNIQUE_FILE_NUMBER]").stream()
+                .map(DefaultMessageSourceResolvable::getCode))
         .containsExactlyInAnyOrder("amendmentForm.text.tooLong", "test.fieldSpecific.invalid");
   }
 
@@ -157,8 +158,8 @@ class AmendmentFormValidatorTest {
       }
 
       @Override
-      public void validate(ClaimDetails claim, ClaimViewField<?> field, AmendmentForm form,
-          Errors errors) {
+      public void validate(
+          ClaimDetails claim, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
         errors.rejectValue(
             String.format(AmendmentFieldValidator.FIELD_PATH, field.name()),
             "test.fieldSpecific.invalid");

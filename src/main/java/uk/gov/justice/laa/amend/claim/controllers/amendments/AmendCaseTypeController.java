@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +28,6 @@ import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
-import uk.gov.justice.laa.amend.claim.forms.validators.AmendmentFormValidator;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldOptions;
 
@@ -37,11 +35,12 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldOptions;
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
-public class AmendCaseTypeController extends AbstractAmendController{
+public class AmendCaseTypeController extends AbstractAmendController {
 
   private final AvailableFeeCodesService availableFeeCodesService;
 
-  protected AmendCaseTypeController(MessageSource messageSource,
+  protected AmendCaseTypeController(
+      MessageSource messageSource,
       List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators,
       AvailableFeeCodesService availableFeeCodesService) {
     super(messageSource, fieldSpecificAmendmentValidators);

@@ -15,19 +15,17 @@ public abstract class AbstractAmendController {
   private final MessageSource messageSource;
   private final List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators;
 
-  protected AbstractAmendController(MessageSource messageSource,
+  protected AbstractAmendController(
+      MessageSource messageSource,
       List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators) {
     this.messageSource = messageSource;
     this.fieldSpecificAmendmentValidators = fieldSpecificAmendmentValidators;
   }
 
-  protected void initBinder(WebDataBinder binder,
-      HttpSession session,
-      UUID submissionId,
-      UUID claimId) {
+  protected void initBinder(
+      WebDataBinder binder, HttpSession session, UUID submissionId, UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
     binder.addValidators(
-        new AmendmentFormValidator(
-            claim, messageSource, fieldSpecificAmendmentValidators));
+        new AmendmentFormValidator(claim, messageSource, fieldSpecificAmendmentValidators));
   }
 }

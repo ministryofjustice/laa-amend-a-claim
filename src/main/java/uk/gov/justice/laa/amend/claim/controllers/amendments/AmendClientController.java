@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +26,6 @@ import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
-import uk.gov.justice.laa.amend.claim.forms.validators.AmendmentFormValidator;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @Controller
@@ -36,7 +34,8 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFact
 @HasRoleClaimAmendmentsCaseworker
 public class AmendClientController extends AbstractAmendController {
 
-  protected AmendClientController(MessageSource messageSource,
+  protected AmendClientController(
+      MessageSource messageSource,
       List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators) {
     super(messageSource, fieldSpecificAmendmentValidators);
   }
