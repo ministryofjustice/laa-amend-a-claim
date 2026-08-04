@@ -19,7 +19,7 @@ public class AmendmentFormError extends FormError {
   }
 
   public AmendmentFormError(String fieldName, String message) {
-    super(extractFieldName(fieldName), message, new Object[]{});
+    super(extractFieldName(fieldName), message, new Object[] {});
   }
 
   @Override

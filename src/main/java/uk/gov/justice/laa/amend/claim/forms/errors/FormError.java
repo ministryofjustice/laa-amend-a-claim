@@ -21,10 +21,10 @@ public abstract class FormError implements Comparable<FormError> {
     this.args = error.getArguments();
   }
 
-  protected FormError(String fieldName, String message){
+  protected FormError(String fieldName, String message) {
     this.fieldName = fieldName;
     this.message = message;
-    this.args = new Object[]{};
+    this.args = new Object[] {};
   }
 
   public String getFieldId() {

@@ -33,7 +33,8 @@ class AmendmentFormValidatorTest {
   @Test
   void supportsAmendmentFormType() {
     var validator =
-        new AmendmentFormValidator(MockClaimsFunctions.createMockCrimeClaim(), List.of(), List.of());
+        new AmendmentFormValidator(
+            MockClaimsFunctions.createMockCrimeClaim(), List.of(), List.of());
 
     assertThat(validator.supports(AmendmentForm.class)).isTrue();
     assertThat(validator.supports(Object.class)).isFalse();
@@ -46,8 +47,7 @@ class AmendmentFormValidatorTest {
     var validator =
         new AmendmentFormValidator(
             MockClaimsFunctions.createMockCrimeClaim(),
-            List.of(
-                countingFieldValidator(FieldType.TEXT, callCount)),
+            List.of(countingFieldValidator(FieldType.TEXT, callCount)),
             List.of());
 
     validate(validator, Map.of("UNIQUE_FILE_NUMBER", "value"));
@@ -102,7 +102,9 @@ class AmendmentFormValidatorTest {
         new AmendmentFormValidator(
             MockClaimsFunctions.createMockCrimeClaim(),
             defaultFieldValidators(),
-            List.of(recordingFieldSpecificValidator(CrimeClaimDetailsViewField.STAGE_REACHED, seenField)));
+            List.of(
+                recordingFieldSpecificValidator(
+                    CrimeClaimDetailsViewField.STAGE_REACHED, seenField)));
 
     validate(validator, Map.of("UNIQUE_FILE_NUMBER", "value"));
 
@@ -147,7 +149,9 @@ class AmendmentFormValidatorTest {
             () ->
                 validate(
                     new AmendmentFormValidator(
-                        MockClaimsFunctions.createMockCivilClaim(), defaultFieldValidators(), List.of()),
+                        MockClaimsFunctions.createMockCivilClaim(),
+                        defaultFieldValidators(),
+                        List.of()),
                     Map.of("STANDARD_FEE_CATEGORY", "1A")))
         .isInstanceOf(IllegalArgumentException.class);
   }

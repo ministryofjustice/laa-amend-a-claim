@@ -30,7 +30,11 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 @WebMvcTest(controllers = AmendClientController.class)
-@Import({DateAmendmentFieldValidator.class, TextAmendmentFieldValidator.class, EnumAmendmentFieldValidator.class})
+@Import({
+  DateAmendmentFieldValidator.class,
+  TextAmendmentFieldValidator.class,
+  EnumAmendmentFieldValidator.class
+})
 class AmendClientControllerTest extends BaseControllerTest {
 
   private static final String INPUTS = "inputs[%s]";

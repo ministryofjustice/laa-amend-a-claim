@@ -29,8 +29,7 @@ class NumberAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[SUSPECTS_DEFENDANTS_COUNT]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.invalid");
-    assertThat(fieldError.getArguments()[0])
-        .isEqualTo("Number of suspects or defendants");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Number of suspects or defendants");
   }
 
   @Test

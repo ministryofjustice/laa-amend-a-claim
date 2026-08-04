@@ -36,7 +36,7 @@ public class NumberAmendmentFieldValidator implements GenericAmendmentFieldValid
       if (form.getIntegerValue(field.name()) == null) {
         isInvalid = true;
       }
-    } catch (IllegalArgumentException _) {
+    } catch (IllegalArgumentException e) {
       isInvalid = true;
     }
     if (isInvalid) {

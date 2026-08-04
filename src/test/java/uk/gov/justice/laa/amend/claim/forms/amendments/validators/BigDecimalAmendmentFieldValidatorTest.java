@@ -49,8 +49,7 @@ class BigDecimalAmendmentFieldValidatorTest {
 
     assertThat(errors.hasErrors()).isTrue();
     FieldError fieldError = errors.getFieldError("inputs[VALUE_OF_COSTS]");
-    assertThat(fieldError.getCode())
-        .isEqualTo("amendmentForm.bigDecimal.invalid");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.invalid");
     assertThat(fieldError.getArguments()[0]).isEqualTo("Value of costs or damages recovered");
   }
 

@@ -16,8 +16,7 @@ public class FeeCodeAmendmentFieldValidator implements FieldSpecificAmendmentVal
 
   private final AvailableFeeCodesService availableFeeCodesService;
 
-  public FeeCodeAmendmentFieldValidator(
-      AvailableFeeCodesService availableFeeCodesService) {
+  public FeeCodeAmendmentFieldValidator(AvailableFeeCodesService availableFeeCodesService) {
     this.availableFeeCodesService = availableFeeCodesService;
   }
 

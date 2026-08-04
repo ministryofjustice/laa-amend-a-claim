@@ -36,10 +36,10 @@ public class BooleanAmendmentFieldValidator implements GenericAmendmentFieldVali
       if (form.getBooleanValue(field.name()) == null) {
         isInvalid = true;
       }
-    } catch (IllegalArgumentException _) {
-        isInvalid = true;
+    } catch (IllegalArgumentException e) {
+      isInvalid = true;
     }
-    if(isInvalid) {
+    if (isInvalid) {
       addUniqueFieldError(field, INVALID_CODE, new String[] {field.label(messageSource)}, errors);
     }
   }

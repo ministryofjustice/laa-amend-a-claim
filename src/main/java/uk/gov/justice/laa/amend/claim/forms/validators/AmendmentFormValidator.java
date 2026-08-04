@@ -1,18 +1,11 @@
 package uk.gov.justice.laa.amend.claim.forms.validators;
 
 import java.util.List;
-import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.GenericAmendmentFieldValidator;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.BigDecimalAmendmentFieldValidator;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.BooleanAmendmentFieldValidator;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.DateAmendmentFieldValidator;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.EnumAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.NumberAmendmentFieldValidator;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.TextAmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.GenericAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
 public class AmendmentFormValidator implements Validator {

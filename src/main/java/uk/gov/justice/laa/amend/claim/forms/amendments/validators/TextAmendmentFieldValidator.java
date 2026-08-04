@@ -29,7 +29,11 @@ public class TextAmendmentFieldValidator implements GenericAmendmentFieldValidat
   public void validate(ClaimViewField<?> field, AmendmentForm form, Errors errors) {
     var value = form.getInputs().get(field.name());
     if (value != null && value.length() > MAX_TEXT_LENGTH) {
-      addUniqueFieldError(field, TOO_LONG_CODE, new String[] {field.label(messageSource), String.valueOf(MAX_TEXT_LENGTH)}, errors);
+      addUniqueFieldError(
+          field,
+          TOO_LONG_CODE,
+          new String[] {field.label(messageSource), String.valueOf(MAX_TEXT_LENGTH)},
+          errors);
     }
   }
 }

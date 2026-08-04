@@ -36,7 +36,7 @@ public class BigDecimalAmendmentFieldValidator implements GenericAmendmentFieldV
       if (form.getBigDecimalValue(field.name()) == null) {
         isInvalid = true;
       }
-    } catch (IllegalArgumentException _) {
+    } catch (IllegalArgumentException e) {
       isInvalid = true;
     }
     if (isInvalid) {
