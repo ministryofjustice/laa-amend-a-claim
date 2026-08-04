@@ -8,11 +8,13 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.MessageSource;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.AmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
@@ -25,7 +27,7 @@ class AmendmentFormValidatorTest {
   private static final MessageSource MESSAGE_SOURCE = TestMessageSources.real();
 
   @Test
-  void dispatchesToTheUnitDeclaringTheFieldsType() {
+  void callsCorrectDefaultValidator() {
     var textCalls = new AtomicInteger();
     var enumCalls = new AtomicInteger();
 
@@ -44,7 +46,7 @@ class AmendmentFormValidatorTest {
   }
 
   @Test
-  void supportsMoreThanOneUnitForTheSameFieldType() {
+  void callsCorrectDefaultValidatorForMultipleUnits() {
     var firstCalls = new AtomicInteger();
     var secondCalls = new AtomicInteger();
 
@@ -63,7 +65,7 @@ class AmendmentFormValidatorTest {
   }
 
   @Test
-  void aggregatesRejectionsAcrossMultipleFieldsOnTheSameForm() {
+  void addMulipleErrorMessagesForMultipleFieldViolations() {
     var value = "a".repeat(51);
     var errors =
         validate(
@@ -142,7 +144,7 @@ class AmendmentFormValidatorTest {
     assertThat(errors.getFieldErrors("inputs[UNIQUE_FILE_NUMBER]")).hasSize(2);
     assertThat(
         errors.getFieldErrors("inputs[UNIQUE_FILE_NUMBER]").stream()
-            .map(fieldError -> fieldError.getCode()))
+            .map(DefaultMessageSourceResolvable::getCode))
         .containsExactlyInAnyOrder("amendmentForm.text.tooLong", "test.fieldSpecific.invalid");
   }
 
@@ -155,7 +157,8 @@ class AmendmentFormValidatorTest {
       }
 
       @Override
-      public void validate(ClaimViewField<?> field, AmendmentForm form, Errors errors) {
+      public void validate(ClaimDetails claim, ClaimViewField<?> field, AmendmentForm form,
+          Errors errors) {
         errors.rejectValue(
             String.format(AmendmentFieldValidator.FIELD_PATH, field.name()),
             "test.fieldSpecific.invalid");

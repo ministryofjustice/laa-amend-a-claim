@@ -35,14 +35,18 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldOptions;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
-@RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
-public class AmendCaseTypeController {
+public class AmendCaseTypeController extends AbstractAmendController{
 
   private final AvailableFeeCodesService availableFeeCodesService;
-  private final MessageSource messageSource;
-  private final List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators;
+
+  protected AmendCaseTypeController(MessageSource messageSource,
+      List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators,
+      AvailableFeeCodesService availableFeeCodesService) {
+    super(messageSource, fieldSpecificAmendmentValidators);
+    this.availableFeeCodesService = availableFeeCodesService;
+  }
 
   @InitBinder("caseTypeForm")
   public void initCaseTypeFormBinder(
@@ -50,10 +54,7 @@ public class AmendCaseTypeController {
       HttpSession session,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    var claim = getValidClaim(session, submissionId, claimId);
-    binder.addValidators(new AmendmentFormValidator(
-        claim, messageSource,
-        fieldSpecificAmendmentValidators));
+    initBinder(binder, session, submissionId, claimId);
   }
 
   @GetMapping("/amend-fee-code")

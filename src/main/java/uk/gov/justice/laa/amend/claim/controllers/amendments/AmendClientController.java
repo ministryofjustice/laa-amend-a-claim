@@ -32,36 +32,22 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFact
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
-@RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
-public class AmendClientController {
+public class AmendClientController extends AbstractAmendController {
 
-  private final MessageSource messageSource;
-  private final List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators;
-
-  @InitBinder("client1Form")
-  public void initClient1FormBinder(
-      WebDataBinder binder,
-      HttpSession session,
-      @PathVariable UUID submissionId,
-      @PathVariable UUID claimId) {
-    var claim = getValidClaim(session, submissionId, claimId);
-    binder.addValidators(
-        new AmendmentFormValidator(
-            claim, messageSource, fieldSpecificAmendmentValidators));
+  protected AmendClientController(MessageSource messageSource,
+      List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators) {
+    super(messageSource, fieldSpecificAmendmentValidators);
   }
 
-  @InitBinder("client2Form")
-  public void initClient2FormBinder(
+  @InitBinder({"client1Form", "client2Form"})
+  public void initClientFormBinder(
       WebDataBinder binder,
       HttpSession session,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    var claim = getValidClaim(session, submissionId, claimId);
-    binder.addValidators(
-        new AmendmentFormValidator(
-            claim, messageSource, fieldSpecificAmendmentValidators));
+    initBinder(binder, session, submissionId, claimId);
   }
 
   @GetMapping("/amend-client")

@@ -32,13 +32,14 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/amend-case-details")
-@RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
-public class AmendCaseDetailsController {
+public class AmendCaseDetailsController extends AbstractAmendController {
 
-  private final MessageSource messageSource;
-  private final List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators;
+  protected AmendCaseDetailsController(MessageSource messageSource,
+      List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators) {
+    super(messageSource, fieldSpecificAmendmentValidators);
+  }
 
   @InitBinder("caseDetailsForm")
   public void initCaseDetailsFormBinder(
@@ -46,10 +47,7 @@ public class AmendCaseDetailsController {
       HttpSession session,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    var claim = getValidClaim(session, submissionId, claimId);
-    binder.addValidators(
-        new AmendmentFormValidator(
-            claim, messageSource, fieldSpecificAmendmentValidators));
+    initBinder(binder, session, submissionId, claimId);
   }
 
   @GetMapping
