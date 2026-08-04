@@ -2,6 +2,8 @@ package uk.gov.justice.laa.amend.claim.forms.validators;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Map;
@@ -14,15 +16,19 @@ import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.BigDecimalAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.BooleanAmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.CuratedFieldRuleValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.DateAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.EnumAmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FeeCodeAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.GenericAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.NumberAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.TextAmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.FieldType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
@@ -154,6 +160,28 @@ class AmendmentFormValidatorTest {
                         List.of()),
                     Map.of("STANDARD_FEE_CATEGORY", "1A")))
         .isInstanceOf(IllegalArgumentException.class);
+  }
+
+  @Test
+  void curatedFieldRuleEngineComposesWithUnaffectedFieldSpecificValidators() {
+    var availableFeeCodesService = mock(AvailableFeeCodesService.class);
+    when(availableFeeCodesService.getAvailableFeeCodes(AreaOfLaw.CRIME_LOWER))
+        .thenReturn(Map.of("FEECODE", "Fee code description"));
+
+    var validator =
+        new AmendmentFormValidator(
+            MockClaimsFunctions.createMockCrimeClaim(),
+            defaultFieldValidators(),
+            List.of(
+                new CuratedFieldRuleValidator(TestMessageSources.real()),
+                new FeeCodeAmendmentFieldValidator(availableFeeCodesService)));
+
+    var errors = validate(validator, Map.of("SURNAME", "#".repeat(31), "FEE_CODE", "NOT_A_CODE"));
+
+    assertThat(errors.getFieldError("inputs[SURNAME]").getCode())
+        .isEqualTo("amendmentForm.text.invalidFormat");
+    assertThat(errors.getFieldError("inputs[FEE_CODE]").getCode())
+        .isEqualTo("amendmentForm.feeCode.invalid");
   }
 
   private static List<GenericAmendmentFieldValidator> defaultFieldValidators() {
