@@ -26,6 +26,7 @@ import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.GenericAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @Controller
@@ -34,10 +35,10 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFact
 @HasRoleClaimAmendmentsCaseworker
 public class AmendClientController extends AbstractAmendController {
 
-  protected AmendClientController(
-      MessageSource messageSource,
+  public AmendClientController(
+      List<GenericAmendmentFieldValidator> genericAmendmentFieldValidators,
       List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators) {
-    super(messageSource, fieldSpecificAmendmentValidators);
+    super(genericAmendmentFieldValidators, fieldSpecificAmendmentValidators);
   }
 
   @InitBinder({"client1Form", "client2Form"})

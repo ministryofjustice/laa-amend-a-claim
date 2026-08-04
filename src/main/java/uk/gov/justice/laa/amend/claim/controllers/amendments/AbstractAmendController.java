@@ -5,27 +5,23 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.context.MessageSource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.WebDataBinder;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.GenericAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.validators.AmendmentFormValidator;
 
+@RequiredArgsConstructor
 public abstract class AbstractAmendController {
 
-  private final MessageSource messageSource;
+  private final List<GenericAmendmentFieldValidator> genericAmendmentFieldValidators;
   private final List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators;
-
-  protected AbstractAmendController(
-      MessageSource messageSource,
-      List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators) {
-    this.messageSource = messageSource;
-    this.fieldSpecificAmendmentValidators = fieldSpecificAmendmentValidators;
-  }
 
   protected void initBinder(
       WebDataBinder binder, HttpSession session, UUID submissionId, UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
     binder.addValidators(
-        new AmendmentFormValidator(claim, messageSource, fieldSpecificAmendmentValidators));
+        new AmendmentFormValidator(
+            claim, genericAmendmentFieldValidators, fieldSpecificAmendmentValidators));
   }
 }

@@ -22,7 +22,7 @@ class FeeCodeAmendmentFieldValidatorTest {
       mock(AvailableFeeCodesService.class);
 
   private final FeeCodeAmendmentFieldValidator validator =
-      new FeeCodeAmendmentFieldValidator(availableFeeCodesService, TestMessageSources.real());
+      new FeeCodeAmendmentFieldValidator(availableFeeCodesService);
 
   @Test
   void appliesToFeeCodeFieldOnly() {
@@ -50,7 +50,6 @@ class FeeCodeAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[FEE_CODE]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.feeCode.invalid");
-    assertThat(fieldError.getDefaultMessage()).isEqualTo("Fee code must be a valid fee code");
   }
 
   @Test

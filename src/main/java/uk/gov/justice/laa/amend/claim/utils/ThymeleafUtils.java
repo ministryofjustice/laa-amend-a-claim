@@ -64,10 +64,9 @@ public class ThymeleafUtils {
     return orEmpty(errors).stream().anyMatch(error -> error.getFieldName().equals(fieldKey));
   }
 
-  public String amendmentFieldErrorMessage(List<AmendmentFormError> errors, String fieldKey) {
+  public AmendmentFormError amendmentFieldErrorMessage(List<AmendmentFormError> errors, String fieldKey) {
     return orEmpty(errors).stream()
         .filter(error -> error.getFieldName().equals(fieldKey))
-        .map(AmendmentFormError::getMessage)
         .findFirst()
         .orElse(null);
   }

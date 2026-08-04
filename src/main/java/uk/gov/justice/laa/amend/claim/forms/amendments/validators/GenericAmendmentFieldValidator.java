@@ -5,7 +5,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldType;
 
-public interface AmendmentFieldValidator {
+public interface GenericAmendmentFieldValidator {
 
   String FIELD_PATH = "inputs[%s]";
 

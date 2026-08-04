@@ -5,7 +5,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.AmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.GenericAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.BigDecimalAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.BooleanAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.DateAmendmentFieldValidator;
@@ -19,19 +19,12 @@ public class AmendmentFormValidator implements Validator {
 
   private final ClaimDetails claimDetails;
   private final Class<?> claimDetailsType;
-  private final List<AmendmentFieldValidator> fieldValidators;
+  private final List<GenericAmendmentFieldValidator> fieldValidators;
   private final List<FieldSpecificAmendmentValidator> fieldSpecificValidators;
 
   public AmendmentFormValidator(
       ClaimDetails claimDetails,
-      MessageSource messageSource,
-      List<FieldSpecificAmendmentValidator> fieldSpecificValidators) {
-    this(claimDetails, defaultFieldValidators(messageSource), fieldSpecificValidators);
-  }
-
-  AmendmentFormValidator(
-      ClaimDetails claimDetails,
-      List<AmendmentFieldValidator> fieldValidators,
+      List<GenericAmendmentFieldValidator> fieldValidators,
       List<FieldSpecificAmendmentValidator> fieldSpecificValidators) {
     this.claimDetails = claimDetails;
     this.claimDetailsType = claimDetails.getClass();
@@ -39,7 +32,7 @@ public class AmendmentFormValidator implements Validator {
     this.fieldSpecificValidators = fieldSpecificValidators;
   }
 
-  private static List<AmendmentFieldValidator> defaultFieldValidators(MessageSource messageSource) {
+  private static List<GenericAmendmentFieldValidator> defaultFieldValidators(MessageSource messageSource) {
     return List.of(
         new TextAmendmentFieldValidator(messageSource),
         new EnumAmendmentFieldValidator(messageSource),

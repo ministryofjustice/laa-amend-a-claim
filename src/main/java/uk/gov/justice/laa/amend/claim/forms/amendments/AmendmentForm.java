@@ -168,7 +168,8 @@ public class AmendmentForm {
     try {
       return Integer.valueOf(value.trim());
     } catch (NumberFormatException e) {
-      return null;
+      throw new IllegalArgumentException(
+          "Invalid Integer value (%s) for field '%s'".formatted(value, fieldName), e);
     }
   }
 
@@ -180,7 +181,8 @@ public class AmendmentForm {
     try {
       return StringToBooleanConverter.convertStrict(value);
     } catch (IllegalArgumentException e) {
-      return null;
+      throw new IllegalArgumentException(
+          "Invalid Boolean value (%s) for field '%s'".formatted(value, fieldName), e);
     }
   }
 
@@ -193,7 +195,8 @@ public class AmendmentForm {
       var parsed = NumberUtils.parse(value);
       return parsed.scale() > 2 ? null : setScale(parsed);
     } catch (NumberFormatException | ParseException e) {
-      return null;
+      throw new IllegalArgumentException(
+          "Invalid BigDecimal value (%s) for field '%s'".formatted(value, fieldName), e);
     }
   }
 
@@ -240,12 +243,10 @@ public class AmendmentForm {
       case String stringValue -> stringValue;
       case BigDecimal bigDecimal -> setScale(bigDecimal).toString();
       case Integer intValue -> intValue.toString();
-      case LocalDate ignored ->
-          throw new IllegalArgumentException(
-              "LocalDate value must be handled as a date field (FieldType.DATE), not formatted here");
-      default ->
-          throw new IllegalArgumentException(
-              "Unsupported value type '%s' for text field".formatted(value.getClass()));
+      case LocalDate ignored -> throw new IllegalArgumentException(
+          "LocalDate value must be handled as a date field (FieldType.DATE), not formatted here");
+      default -> throw new IllegalArgumentException(
+          "Unsupported value type '%s' for text field".formatted(value.getClass()));
     };
   }
 
@@ -253,10 +254,9 @@ public class AmendmentForm {
     return switch (value) {
       case null -> null;
       case Boolean booleanValue -> booleanValue.toString();
-      default ->
-          throw new IllegalArgumentException(
-              "Expected Boolean for boolean field '%s' but got %s"
-                  .formatted(name, value.getClass()));
+      default -> throw new IllegalArgumentException(
+          "Expected Boolean for boolean field '%s' but got %s"
+              .formatted(name, value.getClass()));
     };
   }
 
@@ -264,10 +264,9 @@ public class AmendmentForm {
     return switch (value) {
       case null -> null;
       case Integer intValue -> intValue.toString();
-      default ->
-          throw new IllegalArgumentException(
-              "Expected Integer for number field '%s' but got %s"
-                  .formatted(name, value.getClass()));
+      default -> throw new IllegalArgumentException(
+          "Expected Integer for number field '%s' but got %s"
+              .formatted(name, value.getClass()));
     };
   }
 

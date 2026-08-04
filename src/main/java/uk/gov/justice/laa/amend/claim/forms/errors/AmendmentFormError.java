@@ -11,11 +11,15 @@ public class AmendmentFormError extends FormError {
   public AmendmentFormError() {}
 
   public AmendmentFormError(FieldError fieldError) {
-    this(fieldError.getField(), fieldError.getDefaultMessage());
+    this(fieldError.getField(), fieldError.getCode(), fieldError.getArguments());
+  }
+
+  public AmendmentFormError(String fieldName, String message, Object[] args) {
+    super(extractFieldName(fieldName), message, args);
   }
 
   public AmendmentFormError(String fieldName, String message) {
-    super(extractFieldName(fieldName), message);
+    super(extractFieldName(fieldName), message, new Object[]{});
   }
 
   @Override

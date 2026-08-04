@@ -27,6 +27,7 @@ import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.GenericAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldOptions;
@@ -39,11 +40,11 @@ public class AmendCaseTypeController extends AbstractAmendController {
 
   private final AvailableFeeCodesService availableFeeCodesService;
 
-  protected AmendCaseTypeController(
-      MessageSource messageSource,
+  public AmendCaseTypeController(
+      List<GenericAmendmentFieldValidator> genericAmendmentFieldValidators,
       List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators,
       AvailableFeeCodesService availableFeeCodesService) {
-    super(messageSource, fieldSpecificAmendmentValidators);
+    super(genericAmendmentFieldValidators, fieldSpecificAmendmentValidators);
     this.availableFeeCodesService = availableFeeCodesService;
   }
 

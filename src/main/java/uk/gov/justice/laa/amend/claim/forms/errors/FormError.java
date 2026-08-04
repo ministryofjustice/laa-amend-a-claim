@@ -13,10 +13,18 @@ import uk.gov.justice.laa.amend.claim.utils.FormUtils;
 public abstract class FormError implements Comparable<FormError> {
   private String fieldName;
   private String message;
+  private Object[] args;
 
-  public FormError(DetailedError error) {
+  protected FormError(DetailedError error) {
     this.fieldName = error.getFieldName();
     this.message = error.getMessage();
+    this.args = error.getArguments();
+  }
+
+  protected FormError(String fieldName, String message){
+    this.fieldName = fieldName;
+    this.message = message;
+    this.args = new Object[]{};
   }
 
   public String getFieldId() {

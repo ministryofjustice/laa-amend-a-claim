@@ -1,7 +1,5 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
 
-import java.util.Locale;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
@@ -17,12 +15,10 @@ public class FeeCodeAmendmentFieldValidator implements FieldSpecificAmendmentVal
   private static final String INVALID_CODE = "amendmentForm.feeCode.invalid";
 
   private final AvailableFeeCodesService availableFeeCodesService;
-  private final MessageSource messageSource;
 
   public FeeCodeAmendmentFieldValidator(
-      AvailableFeeCodesService availableFeeCodesService, MessageSource messageSource) {
+      AvailableFeeCodesService availableFeeCodesService) {
     this.availableFeeCodesService = availableFeeCodesService;
-    this.messageSource = messageSource;
   }
 
   @Override
@@ -37,11 +33,8 @@ public class FeeCodeAmendmentFieldValidator implements FieldSpecificAmendmentVal
     var value = form.getInputs().get(field.name());
     var availableFeeCodes = availableFeeCodesService.getAvailableFeeCodes(areaOfLaw);
     if (value == null || !availableFeeCodes.containsKey(value)) {
-      var message =
-          messageSource.getMessage(
-              INVALID_CODE, new Object[] {field.label(messageSource)}, Locale.UK);
       errors.rejectValue(
-          AmendmentFieldValidator.FIELD_PATH.formatted(field.name()), INVALID_CODE, message);
+          GenericAmendmentFieldValidator.FIELD_PATH.formatted(field.name()), INVALID_CODE);
     }
   }
 }

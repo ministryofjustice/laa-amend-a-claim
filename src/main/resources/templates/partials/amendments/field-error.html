@@ -2,10 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 <th:block th:fragment="fieldError(fieldKey, formErrors)"
-          th:with="errorMessage=${@ThymeleafUtils.amendmentFieldErrorMessage(formErrors, fieldKey)}">
-  <p th:if="${errorMessage != null}" class="govuk-error-message">
+          th:with="error=${@ThymeleafUtils.amendmentFieldErrorMessage(formErrors, fieldKey)}">
+  <p th:if="${error != null}" class="govuk-error-message">
     <span class="govuk-visually-hidden" th:text="#{form.error}"></span>
-    <span th:text="${errorMessage}"></span>
+    <span th:if="${error.args?.length > 0}" th:text="${#messages.msgWithParams(error.message, error.args)}"></span>
+    <span th:if="${error.args?.length == 0}" th:text="${#messages.msg(error.message)}"></span>
   </p>
 </th:block>
 </body>

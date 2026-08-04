@@ -12,7 +12,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.AmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.GenericAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
@@ -24,7 +24,6 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldType;
 
 class AmendmentFormValidatorTest {
 
-  private static final MessageSource MESSAGE_SOURCE = TestMessageSources.real();
 
   @Test
   void callsCorrectDefaultValidator() {
@@ -70,7 +69,7 @@ class AmendmentFormValidatorTest {
     var errors =
         validate(
             new AmendmentFormValidator(
-                MockClaimsFunctions.createMockCrimeClaim(), MESSAGE_SOURCE, List.of()),
+                MockClaimsFunctions.createMockCrimeClaim(), List.of(), List.of()),
             Map.of("UNIQUE_FILE_NUMBER", value, "STAGE_REACHED", "NOT_A_CODE"));
 
     assertThat(errors.getFieldErrors()).hasSize(2);
@@ -85,7 +84,7 @@ class AmendmentFormValidatorTest {
     var errors =
         validate(
             new AmendmentFormValidator(
-                MockClaimsFunctions.createMockCrimeClaim(), MESSAGE_SOURCE, List.of()),
+                MockClaimsFunctions.createMockCrimeClaim(), List.of(), List.of()),
             Map.of("IS_DUTY_SOLICITOR", "notABoolean"));
 
     assertThat(errors.getFieldError("inputs[IS_DUTY_SOLICITOR]").getCode())
@@ -99,14 +98,14 @@ class AmendmentFormValidatorTest {
     var validForCrime =
         validate(
             new AmendmentFormValidator(
-                MockClaimsFunctions.createMockCrimeClaim(), MESSAGE_SOURCE, List.of()),
+                MockClaimsFunctions.createMockCrimeClaim(), List.of(), List.of()),
             inputs);
     assertThat(validForCrime.hasErrors()).isFalse();
 
     var invalidCodeForCrime =
         validate(
             new AmendmentFormValidator(
-                MockClaimsFunctions.createMockCrimeClaim(), MESSAGE_SOURCE, List.of()),
+                MockClaimsFunctions.createMockCrimeClaim(), List.of(), List.of()),
             Map.of("STANDARD_FEE_CATEGORY", "NOPE"));
     assertThat(invalidCodeForCrime.hasErrors()).isTrue();
 
@@ -114,7 +113,7 @@ class AmendmentFormValidatorTest {
             () ->
                 validate(
                     new AmendmentFormValidator(
-                        MockClaimsFunctions.createMockCivilClaim(), MESSAGE_SOURCE, List.of()),
+                        MockClaimsFunctions.createMockCivilClaim(), List.of(), List.of()),
                     inputs))
         .isInstanceOf(IllegalArgumentException.class);
   }
@@ -125,7 +124,7 @@ class AmendmentFormValidatorTest {
         validate(
             new AmendmentFormValidator(
                 MockClaimsFunctions.createMockCrimeClaim(),
-                MESSAGE_SOURCE,
+                List.of(),
                 List.of(rejectingFieldSpecificValidator(CrimeClaimDetailsViewField.STAGE_REACHED))),
             Map.of("UNIQUE_FILE_NUMBER", "value"));
 
@@ -138,7 +137,7 @@ class AmendmentFormValidatorTest {
         validate(
             new AmendmentFormValidator(
                 MockClaimsFunctions.createMockCrimeClaim(),
-                MESSAGE_SOURCE,
+                List.of(),
                 List.of(rejectingFieldSpecificValidator(ClaimDetailsViewField.UNIQUE_FILE_NUMBER))),
             Map.of("UNIQUE_FILE_NUMBER", "a".repeat(51)));
 
@@ -161,15 +160,15 @@ class AmendmentFormValidatorTest {
       public void validate(
           ClaimDetails claim, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
         errors.rejectValue(
-            String.format(AmendmentFieldValidator.FIELD_PATH, field.name()),
+            String.format(GenericAmendmentFieldValidator.FIELD_PATH, field.name()),
             "test.fieldSpecific.invalid");
       }
     };
   }
 
-  private static AmendmentFieldValidator countingFieldValidator(
+  private static GenericAmendmentFieldValidator countingFieldValidator(
       FieldType type, AtomicInteger calls) {
-    return new AmendmentFieldValidator() {
+    return new GenericAmendmentFieldValidator() {
       @Override
       public FieldType supportedType() {
         return type;
