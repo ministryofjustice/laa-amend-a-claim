@@ -150,24 +150,13 @@ public class AmendmentForm {
     return isDateField(fieldName) ? getDateValue(fieldName) : inputs.get(fieldName);
   }
 
-  public Object getAmendedValue(String fieldName, FieldType fieldType) {
-    return switch (fieldType) {
-      case BIG_DECIMAL -> getBigDecimalValue(fieldName);
-      case DATE -> getDateValue(fieldName);
-      case BOOLEAN -> getBooleanValue(fieldName);
-      case NUMBER -> getIntegerValue(fieldName);
-      case ENUM, TEXT -> inputs.get(fieldName);
-    };
-  }
-
   public Object getAmendedValue(ClaimViewField<?> field) {
     return switch (field.getFieldType()) {
       case DATE -> getDateValue(field.name());
       case BOOLEAN -> getBooleanValue(field.name());
       case BIG_DECIMAL -> getBigDecimalValue(field.name());
       case NUMBER -> getIntegerValue(field.name());
-      case ENUM -> inputs.get(field.name());
-      case TEXT -> inputs.get(field.name());
+      case ENUM, TEXT -> inputs.get(field.name());
     };
   }
 
