@@ -29,7 +29,7 @@ class BooleanAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[IS_DUTY_SOLICITOR]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.boolean.invalid");
-    assertThat(fieldError.getDefaultMessage()).isEqualTo("Duty solicitor must be Yes or No");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Duty solicitor");
   }
 
   @Test
@@ -39,7 +39,7 @@ class BooleanAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[IS_YOUTH_COURT]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.boolean.invalid");
-    assertThat(fieldError.getDefaultMessage()).isEqualTo("Youth court must be Yes or No");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Youth court");
   }
 
   @Test

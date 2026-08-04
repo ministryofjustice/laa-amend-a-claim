@@ -54,7 +54,7 @@ class DateAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[CASE_START_DATE]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
-    assertThat(fieldError.getDefaultMessage()).isEqualTo("Case start date must be a valid date");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Case start date");
   }
 
   @Test
@@ -70,8 +70,7 @@ class DateAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[CASE_CONCLUDED_DATE]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
-    assertThat(fieldError.getDefaultMessage())
-        .isEqualTo("Case concluded date must be a valid date");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Case concluded date");
   }
 
   private Errors validate(ClaimDetailsViewField field, Map<String, String> inputs) {

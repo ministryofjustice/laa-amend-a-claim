@@ -29,7 +29,7 @@ class EnumAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[GENDER]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.enum.invalid");
-    assertThat(fieldError.getDefaultMessage()).isEqualTo("Gender must be a valid option");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Gender");
   }
 
   @Test
@@ -39,7 +39,7 @@ class EnumAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[ETHNICITY]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.enum.invalid");
-    assertThat(fieldError.getDefaultMessage()).isEqualTo("Ethnicity must be a valid option");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Ethnicity");
   }
 
   @Test

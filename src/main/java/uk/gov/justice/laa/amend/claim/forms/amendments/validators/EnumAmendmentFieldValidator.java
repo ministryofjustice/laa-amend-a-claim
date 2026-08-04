@@ -34,8 +34,7 @@ public class EnumAmendmentFieldValidator implements GenericAmendmentFieldValidat
     var isAllowedOption =
         field.getOptions().stream().anyMatch(option -> option.value().equals(value));
     if (!isAllowedOption) {
-      errors.rejectValue(FIELD_PATH.formatted(field.name()), INVALID_CODE,
-          new String[] {field.label(messageSource)}, null);
+      addUniqueFieldError(field, INVALID_CODE, new String[] {field.label(messageSource)}, errors);
     }
   }
 }

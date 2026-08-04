@@ -21,6 +21,7 @@ public class ThymeleafUtilsTest {
 
   @Nested
   class ToSearchFormErrorsTests {
+
     @Test
     void sortErrorsByFieldOrder() {
       List<DetailedError> errors =
@@ -89,6 +90,7 @@ public class ThymeleafUtilsTest {
 
   @Nested
   class ToAssessmentOutcomeErrorsTests {
+
     @Test
     void sortErrorsByFieldOrder() {
       List<DetailedError> errors =
@@ -117,6 +119,7 @@ public class ThymeleafUtilsTest {
 
   @Nested
   class ToAssessedTotalFormErrorsTests {
+
     @Test
     void sortErrorsByFieldOrder() {
       List<DetailedError> errors =
@@ -139,6 +142,7 @@ public class ThymeleafUtilsTest {
 
   @Nested
   class ToAmendmentFormErrorsTests {
+
     @Test
     void extractsFieldNameFromInputsPathAcrossMultipleForms() {
       List<FieldError> errors =
@@ -146,9 +150,19 @@ public class ThymeleafUtilsTest {
               new FieldError(
                   "caseDetailsForm",
                   "inputs[CASE_REFERENCE_NUMBER]",
-                  "Value exceeds maximum length"),
+                  null,
+                  false,
+                  new String[] {"Value exceeds maximum length"},
+                  new Object[] {},
+                  null),
               new FieldError(
-                  "caseTypeForm", "inputs[MATTER_TYPE_CODE_1]", "Value is not a valid option"));
+                  "caseTypeForm",
+                  "inputs[MATTER_TYPE_CODE_1]",
+                  null,
+                  false,
+                  new String[] {"Value is not a valid option"},
+                  new Object[] {},
+                  null));
 
       ThymeleafUtils sut = new ThymeleafUtils();
 
@@ -168,8 +182,22 @@ public class ThymeleafUtilsTest {
     void filterOutDuplicateErrorMessages() {
       List<FieldError> errors =
           List.of(
-              new FieldError("caseTypeForm", "inputs[FEE_CODE]", "Value is required"),
-              new FieldError("caseTypeForm", "inputs[MATTER_TYPE_CODE]", "Value is required"));
+              new FieldError(
+                  "caseTypeForm",
+                  "inputs[FEE_CODE]",
+                  null,
+                  false,
+                  new String[] {"Value is required"},
+                  new Object[] {},
+                  null),
+              new FieldError(
+                  "caseTypeForm",
+                  "inputs[MATTER_TYPE_CODE]",
+                  null,
+                  false,
+                  new String[] {"Value is required"},
+                  new Object[] {},
+                  null));
 
       ThymeleafUtils sut = new ThymeleafUtils();
 
@@ -184,6 +212,7 @@ public class ThymeleafUtilsTest {
 
   @Nested
   class OrEmptyTests {
+
     @Test
     void returnsEmptyListWhenNull() {
       ThymeleafUtils sut = new ThymeleafUtils();
@@ -202,6 +231,7 @@ public class ThymeleafUtilsTest {
 
   @Nested
   class HasAmendmentFieldErrorTests {
+
     @Test
     void trueWhenFieldHasAnError() {
       ThymeleafUtils sut = new ThymeleafUtils();
@@ -228,13 +258,15 @@ public class ThymeleafUtilsTest {
 
   @Nested
   class AmendmentFieldErrorMessageTests {
+
     @Test
     void returnsMessageForField() {
       ThymeleafUtils sut = new ThymeleafUtils();
       var errors = List.of(new AmendmentFormError("FEE_CODE", "Value is required"));
 
       Assertions.assertEquals(
-          "Value is required", sut.amendmentFieldErrorMessage(errors, "FEE_CODE"));
+          new AmendmentFormError("FEE_CODE", "Value is required"),
+          sut.amendmentFieldErrorMessage(errors, "FEE_CODE"));
     }
 
     @Test

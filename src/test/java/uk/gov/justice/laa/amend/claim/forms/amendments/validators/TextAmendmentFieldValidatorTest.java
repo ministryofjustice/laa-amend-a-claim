@@ -33,8 +33,10 @@ class TextAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[UNIQUE_FILE_NUMBER]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.tooLong");
-    assertThat(fieldError.getDefaultMessage())
-        .isEqualTo("Unique file number (UFN) must be 50 characters or less");
+    assertThat(fieldError.getArguments()[0])
+        .isEqualTo("Unique file number (UFN)");
+    assertThat(fieldError.getArguments()[1])
+        .isEqualTo("50");
   }
 
   @Test
@@ -46,8 +48,10 @@ class TextAmendmentFieldValidatorTest {
 
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[CASE_REFERENCE_NUMBER]");
-    assertThat(fieldError.getDefaultMessage())
-        .isEqualTo("Case reference number (CRN) must be 50 characters or less");
+    assertThat(fieldError.getArguments()[0])
+        .isEqualTo("Case reference number (CRN)");
+    assertThat(fieldError.getArguments()[1])
+        .isEqualTo("50");
   }
 
   private Errors validate(ClaimDetailsViewField field, Map<String, String> inputs) {

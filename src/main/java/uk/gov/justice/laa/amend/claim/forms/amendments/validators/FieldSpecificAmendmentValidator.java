@@ -5,7 +5,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 
-public interface FieldSpecificAmendmentValidator {
+public interface FieldSpecificAmendmentValidator extends AmendmentFieldValidator {
 
   boolean appliesTo(ClaimViewField<?> field);
 

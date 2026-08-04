@@ -173,7 +173,7 @@ public class AmendmentForm {
     }
   }
 
-  public Boolean getBooleanValue(String fieldName) {
+  public Boolean getBooleanValue(String fieldName) throws IllegalArgumentException {
     var value = inputs.get(fieldName);
     if (isBlank(value)) {
       return null;
@@ -186,7 +186,7 @@ public class AmendmentForm {
     }
   }
 
-  public BigDecimal getBigDecimalValue(String fieldName) {
+  public BigDecimal getBigDecimalValue(String fieldName) throws IllegalArgumentException {
     var value = inputs.get(fieldName);
     if (isBlank(value)) {
       return null;

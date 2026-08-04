@@ -6,6 +6,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
@@ -29,8 +30,7 @@ class BigDecimalAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[VALUE_OF_COSTS]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.invalid");
-    assertThat(fieldError.getDefaultMessage())
-        .isEqualTo("Value of costs or damages recovered must be entered as a valid amount");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Value of costs or damages recovered");
   }
 
   @Test
@@ -40,8 +40,7 @@ class BigDecimalAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[COUNSELS_COST]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.invalid");
-    assertThat(fieldError.getDefaultMessage())
-        .isEqualTo("Net cost of counsel must be entered as a valid amount");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Net cost of counsel");
   }
 
   @Test
@@ -49,8 +48,10 @@ class BigDecimalAmendmentFieldValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.VALUE_OF_COSTS, "12.345");
 
     assertThat(errors.hasErrors()).isTrue();
-    assertThat(errors.getFieldError("inputs[VALUE_OF_COSTS]").getCode())
+    FieldError fieldError = errors.getFieldError("inputs[VALUE_OF_COSTS]");
+    assertThat(fieldError.getCode())
         .isEqualTo("amendmentForm.bigDecimal.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Value of costs or damages recovered");
   }
 
   @Test

@@ -21,11 +21,11 @@ public class SearchFormErrorTest {
 
     List<SearchFormError> expectedResult =
         List.of(
-            new SearchFormError("officeCode", "message 1"),
-            new SearchFormError("submissionDateMonth", "message 2"),
-            new SearchFormError("submissionDateYear", "message 3"),
-            new SearchFormError("uniqueFileNumber", "message 4"),
-            new SearchFormError("caseReferenceNumber", "message 5"));
+            new SearchFormError(new DetailedError("officeCode", null, null, "message 1")),
+            new SearchFormError(new DetailedError("submissionDateMonth", null, null, "message 2")),
+            new SearchFormError(new DetailedError("submissionDateYear", null, null, "message 3")),
+            new SearchFormError(new DetailedError("uniqueFileNumber", null, null, "message 4")),
+            new SearchFormError(new DetailedError("caseReferenceNumber", null, null, "message 5")));
 
     Assertions.assertEquals(expectedResult, result);
   }

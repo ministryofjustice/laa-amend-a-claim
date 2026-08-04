@@ -29,8 +29,8 @@ class NumberAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[SUSPECTS_DEFENDANTS_COUNT]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.invalid");
-    assertThat(fieldError.getDefaultMessage())
-        .isEqualTo("Number of suspects or defendants must be entered as numbers only");
+    assertThat(fieldError.getArguments()[0])
+        .isEqualTo("Number of suspects or defendants");
   }
 
   @Test
@@ -40,8 +40,8 @@ class NumberAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[POLICE_STATION_COURT_ATTENDANCES_COUNT]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.invalid");
-    assertThat(fieldError.getDefaultMessage())
-        .isEqualTo("Number of police station or court attendances must be entered as numbers only");
+    assertThat(fieldError.getArguments()[0])
+        .isEqualTo("Number of police station or court attendances");
   }
 
   @Test

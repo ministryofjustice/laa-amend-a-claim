@@ -27,8 +27,7 @@ public class DateAmendmentFieldValidator implements GenericAmendmentFieldValidat
   public void validate(ClaimViewField<?> field, AmendmentForm form, Errors errors) {
     var fieldName = field.name();
     if (form.isDateInputProvided(fieldName) && form.getDateValue(fieldName) == null) {
-      errors.rejectValue(FIELD_PATH.formatted(fieldName), INVALID_CODE,
-          new String[] {field.label(messageSource)}, null);
+      addUniqueFieldError(field, INVALID_CODE, new String[] {field.label(messageSource)}, errors);
     }
   }
 }

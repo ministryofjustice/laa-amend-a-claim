@@ -20,7 +20,15 @@ class AmendmentFormRedirectsTest {
     var bindingResult = mock(BindingResult.class);
     when(bindingResult.getFieldErrors())
         .thenReturn(
-            List.of(new FieldError("caseDetailsForm", "inputs[FEE_CODE]", "Value is required")));
+            List.of(
+                new FieldError(
+                    "caseDetailsForm",
+                    "inputs[FEE_CODE]",
+                    null,
+                    false,
+                    new String[] {"Value is required"},
+                    new Object[] {},
+                    null)));
 
     var result =
         AmendmentFormRedirects.redirectWithErrors(

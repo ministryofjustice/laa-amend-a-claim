@@ -33,8 +33,7 @@ public class FeeCodeAmendmentFieldValidator implements FieldSpecificAmendmentVal
     var value = form.getInputs().get(field.name());
     var availableFeeCodes = availableFeeCodesService.getAvailableFeeCodes(areaOfLaw);
     if (value == null || !availableFeeCodes.containsKey(value)) {
-      errors.rejectValue(
-          GenericAmendmentFieldValidator.FIELD_PATH.formatted(field.name()), INVALID_CODE);
+      addUniqueFieldError(field, INVALID_CODE, errors);
     }
   }
 }

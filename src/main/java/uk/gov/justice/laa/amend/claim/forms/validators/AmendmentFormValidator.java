@@ -32,16 +32,6 @@ public class AmendmentFormValidator implements Validator {
     this.fieldSpecificValidators = fieldSpecificValidators;
   }
 
-  private static List<GenericAmendmentFieldValidator> defaultFieldValidators(MessageSource messageSource) {
-    return List.of(
-        new TextAmendmentFieldValidator(messageSource),
-        new EnumAmendmentFieldValidator(messageSource),
-        new NumberAmendmentFieldValidator(messageSource),
-        new BigDecimalAmendmentFieldValidator(messageSource),
-        new BooleanAmendmentFieldValidator(messageSource),
-        new DateAmendmentFieldValidator(messageSource));
-  }
-
   @Override
   public boolean supports(Class<?> clazz) {
     return AmendmentForm.class.isAssignableFrom(clazz);

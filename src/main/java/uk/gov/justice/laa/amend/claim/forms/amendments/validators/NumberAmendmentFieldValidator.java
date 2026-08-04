@@ -31,9 +31,16 @@ public class NumberAmendmentFieldValidator implements GenericAmendmentFieldValid
     if (isBlank(value)) {
       return;
     }
-    if (form.getIntegerValue(field.name()) == null) {
-      errors.rejectValue(FIELD_PATH.formatted(field.name()), INVALID_CODE,
-          new String[] {field.label(messageSource)}, null);
+    boolean isInvalid = false;
+    try {
+      if (form.getIntegerValue(field.name()) == null) {
+        isInvalid = true;
+      }
+    } catch (IllegalArgumentException _) {
+      isInvalid = true;
+    }
+    if (isInvalid) {
+      addUniqueFieldError(field, INVALID_CODE, new String[] {field.label(messageSource)}, errors);
     }
   }
 }
