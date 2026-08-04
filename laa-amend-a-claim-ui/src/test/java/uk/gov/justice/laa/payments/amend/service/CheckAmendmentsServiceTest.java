@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.openapitools.jackson.nullable.JsonNullable;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimAmendmentPatch;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
@@ -650,13 +651,13 @@ class CheckAmendmentsServiceTest {
     var claimId = UUID.randomUUID();
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
-    assertThat(patch.getFeeCode()).isNull();
-    assertThat(patch.getUniqueFileNumber()).isNull();
-    assertThat(patch.getSchemeId()).isNull();
-    assertThat(patch.getPoliceStationCourtPrisonId()).isNull();
+    assertThat(patch.getFeeCode()).isEqualTo(JsonNullable.undefined());
+    assertThat(patch.getUniqueFileNumber()).isEqualTo(JsonNullable.undefined());
+    assertThat(patch.getSchemeId()).isEqualTo(JsonNullable.undefined());
+    assertThat(patch.getPoliceStationCourtPrisonId()).isEqualTo(JsonNullable.undefined());
 
-    assertThat(patch.getMaatId()).isEqualTo("NEW_MAAT");
-    assertThat(patch.getStageReachedCode()).isEqualTo("NEW_STAGE");
+    assertThat(patch.getMaatId()).isEqualTo(JsonNullable.of("NEW_MAAT"));
+    assertThat(patch.getStageReachedCode()).isEqualTo(JsonNullable.of("NEW_STAGE"));
   }
 
   private ClaimAmendmentPatch submitAndCapturePatch(

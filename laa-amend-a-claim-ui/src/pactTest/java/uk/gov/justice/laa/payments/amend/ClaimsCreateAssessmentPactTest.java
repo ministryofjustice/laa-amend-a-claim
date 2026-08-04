@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE;
 
 import au.com.dius.pact.consumer.dsl.LambdaDsl;
+import au.com.dius.pact.consumer.dsl.LambdaDslJsonBody;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit.MockServerConfig;
 import au.com.dius.pact.consumer.junit5.PactConsumerTest;
@@ -110,8 +111,7 @@ public final class ClaimsCreateAssessmentPactTest extends AbstractPactTest {
         NotFound.class, () -> claimsApiClient.submitAssessment(CLAIM_ID, assessment).block());
   }
 
-  private static void buildAssessmentRequestBody(
-      au.com.dius.pact.consumer.dsl.LambdaDslJsonBody body) {
+  private static void buildAssessmentRequestBody(LambdaDslJsonBody body) {
     body.nullValue("id");
     body.uuid("claim_id");
     body.uuid("claim_summary_fee_id");
