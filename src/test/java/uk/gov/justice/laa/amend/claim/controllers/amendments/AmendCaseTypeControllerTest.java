@@ -38,6 +38,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
   private ClaimDetails claim;
 
   private static final String FEE_CODE = "feecode";
+  private static final String STAGE_REACHED = "INVC";
   private static final String MATTER_TYPE_CODE_1 = "mattertype1";
   private static final String MATTER_TYPE_CODE_2 = "mattertype2";
 
@@ -120,10 +121,44 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void postFeeCodeAsExpected() throws Exception {
+  void postFeeCodeForCrimeLowerAsExpected() throws Exception {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setFeeCode(FEE_CODE);
-    claim.setMatterTypeCode(MATTER_TYPE_CODE_1);
+    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    claim.setStageReached(STAGE_REACHED);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    var updatedForms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm(caseTypeForm))
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
+
+    var request = post(buildAmendFeeCodePath()).session(session).with(csrf());
+    for (var entry : caseTypeRows.entrySet()) {
+      request.param(INPUTS.formatted(entry.getKey()), entry.getValue());
+    }
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildAmendStageReachedPath()))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
+  @Test
+  void postFeeCodeForCivilAsExpected() throws Exception {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setFeeCode(FEE_CODE);
+    claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
+    claim.setMatterType1(MATTER_TYPE_CODE_1);
+    claim.setMatterType2(MATTER_TYPE_CODE_2);
     session.setAttribute(claimId.toString(), claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
@@ -147,6 +182,67 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
         .perform(request)
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(buildAmendMatterTypeCodePath()))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
+  @Test
+  void getAmendStageReachedAsExpected() throws Exception {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setFeeCode(FEE_CODE);
+    claim.setStageReached(STAGE_REACHED);
+    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeRows = Map.of("FEE_CODE", FEE_CODE, "STAGE_REACHED", STAGE_REACHED);
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    var updatedForms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm(caseTypeForm))
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
+
+    var request = get(buildAmendStageReachedPath()).session(session).with(csrf());
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().isOk())
+        .andExpect(view().name("amendments/amend-stage-reached"))
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
+  @Test
+  void postAmendStageReachedAsExpected() throws Exception {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setFeeCode(FEE_CODE);
+    claim.setStageReached(STAGE_REACHED);
+    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeRows = Map.of("FEE_CODE", FEE_CODE, "STAGE_REACHED", STAGE_REACHED);
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    var updatedForms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm(caseTypeForm))
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
+
+    var request = post(buildAmendStageReachedPath()).session(session).with(csrf());
+    for (var entry : caseTypeRows.entrySet()) {
+      request.param(INPUTS.formatted(entry.getKey()), entry.getValue());
+    }
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildAmendCasePath()))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
   }
 
@@ -312,6 +408,11 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
 
   private String buildAmendMatterTypeCodePath() {
     return "/submissions/%s/claims/%s/amendments/amend-matter-type"
+        .formatted(submissionId, claimId);
+  }
+
+  private String buildAmendStageReachedPath() {
+    return "/submissions/%s/claims/%s/amendments/amend-stage-reached"
         .formatted(submissionId, claimId);
   }
 }

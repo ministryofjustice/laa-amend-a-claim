@@ -21,17 +21,7 @@ import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCaseDetailsPage;
-import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient1Page;
-import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient2Page;
-import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCostsPage;
-import uk.gov.justice.laa.amend.claim.pages.amendments.AmendFeeCodePage;
-import uk.gov.justice.laa.amend.claim.pages.amendments.AmendMatterTypePage;
-import uk.gov.justice.laa.amend.claim.pages.amendments.CheckPage;
-import uk.gov.justice.laa.amend.claim.pages.amendments.ConfirmationPage;
-import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCasePage;
-import uk.gov.justice.laa.amend.claim.pages.amendments.ViewClientPage;
-import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCostsPage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.*;
 
 public class AmendmentsFlowE2ETest extends BaseTest {
 
@@ -405,8 +395,14 @@ public class AmendmentsFlowE2ETest extends BaseTest {
           E2E: Crime Claim Amendment Flow – Search → View → Amend Claim Details
             → Costs tab → Change costs → View Costs
             → Check Page → Submit amendments → Confirmation page
+            
+                E2E: Mediation Claim Amendment Flow – Search → View → View Client → Amend Claim Details
+            → View Client → Change Client Details → View Client
+            → View Case → Change case type → Change Fee code → Change Matter Type → View Case Type
+            → View Case → Change case details → View Case
+            → Check Page → Submit amendments → Confirmation page
           """)
-  void crimeCostsAmendmentFlow() {
+  void fullCrimeAmendmentFlow() {
     var search = new SearchPage(page);
 
     search.searchForClaim(PROVIDER_ACCOUNT, "03", "2020", CRIME_UFN, "", "", "");
@@ -415,6 +411,8 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var details = new ClaimDetailsPage(page);
     details.clickAmendClaim();
+
+    // View Costs → Change Client Details → View Client
 
     var viewAmendClient = new ViewClientPage(page);
     viewAmendClient.clickCostsTab();
@@ -444,11 +442,42 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
 
-    viewAmendCosts.clickContinue();
+      // View Case → Change case type → View Case
+      var viewAmendCase = new ViewCasePage(page);
+      viewAmendClient.clickCaseTab();
+      assertSummaryListRow(page, "Case type", "Fee code", "INVC");
+      assertSummaryListRow(page, "Case type", "Stage reached", "INVC");
+      assertSummaryListRow(page, "Case details", "Case concluded date", "30 January 2020");
+
+      viewAmendCase.clickChangeCaseTypeLink();
+      var amendFeeCode = new AmendFeeCodePage(page);
+      amendFeeCode.fillFeeCodeInput("APPA");
+      amendFeeCode.clickContinueButton();
+
+      var amendStageReached = new AmendStageReachedPage(page);
+      amendStageReached.fillStageReachedInput("PROD");
+      amendStageReached.clickContinueButton();
+
+      viewAmendCase = new ViewCasePage(page);
+      assertSummaryListRow(page, "Case type", "Fee code", "INVC", "APPA");
+      assertSummaryListRow(page, "Case type", "Stage reached", "INVC", "PROD");
+
+      viewAmendCase.clickChangeCaseDetailsLink();
+      var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
+      viewAmendCaseDetails.fillInput("MATTER_TYPE_CODE", "INVC");
+      viewAmendCaseDetails.clickContinueButton();
+
+      viewAmendCase = new ViewCasePage(page);
+      assertSummaryListRow(page, "Case details", "Matter type", "INVA", "INVC");
+
+
+    viewAmendCase.clickContinue();
 
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
     assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£150.00");
+    assertSummaryListRow(page, "Case type", "Stage reached", "INVC", "PROD");
+    assertSummaryListRow(page, "Case details", "Matter type", "INVA", "INVC");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);

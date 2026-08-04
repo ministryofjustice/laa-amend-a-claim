@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{amendments.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${true}
+    )}">
+<body>
+<main class="govuk-main-wrapper" id="main-content">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+
+      <h1 class="govuk-heading-l">
+        <span th:text="#{amendments.stageReached.title}"></span>
+      </h1>
+
+      <dl class="govuk-summary-list"
+          th:with="currentStageReachedCode=${forms.caseTypeForm.original.inputs['STAGE_REACHED']}">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key govuk-!-width-one-half" th:text="#{amendments.stageReached.current}">
+          </dt>
+          <dd class="govuk-summary-list__value"
+              th:text="${#messages.msgOrNull('claimCase.options.stageReached.' + currentStageReachedCode) ?: currentStageReachedCode}">
+          </dd>
+        </div>
+      </dl>
+
+      <form method="post"
+            th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-stage-reached(submissionId=${submissionId}, claimId=${claimId})}"
+            th:object="${caseTypeForm}">
+        <input type="hidden" th:field="*{inputs['FEE_CODE']}"/>
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-!-font-weight-bold"
+                 for="stage-reached-input"
+                 th:text="#{amendments.stageReached.amended}"></label>
+          <div class="autocomplete-wrapper">
+            <select class="govuk-select"
+                    id="stage-reached-input"
+                    th:field="*{inputs['STAGE_REACHED']}"
+                    data-module="make-autocomplete">
+              <option value=""></option>
+              <option th:each="option : ${stageReachedOptions}"
+                      th:value="${option.value()}"
+                      th:text="#{${option.messageKey()}}"></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="govuk-button-group">
+          <button class="govuk-button" type="submit" th:text="#{amendments.continue}"></button>
+          <a th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/case(submissionId=${submissionId}, claimId=${claimId})}"
+             id="cancel"
+             class="govuk-link govuk-link--no-visited-state"
+             th:text="#{service.cancel}">
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+</body>
+</html>

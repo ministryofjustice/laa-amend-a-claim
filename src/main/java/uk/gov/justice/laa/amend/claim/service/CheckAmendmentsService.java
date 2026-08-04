@@ -49,6 +49,7 @@ public class CheckAmendmentsService {
     applyAmendments(patchBuilder, amendmentForms.getCostsForm(), claim.getClass());
 
     try {
+      System.out.println("A: " + patchBuilder.build());
       claimsApiClient.updateClaim(submissionId, claimId, patchBuilder.build()).block();
     } catch (WebClientResponseException ex) {
       // TODO: This will be handled gracefully by BC-651
