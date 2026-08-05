@@ -2,7 +2,20 @@ package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
 
 import java.util.Arrays;
 import java.util.List;
-import uk.gov.justice.laa.amend.claim.models.enums.*;
+import uk.gov.justice.laa.amend.claim.models.enums.AdviceType;
+import uk.gov.justice.laa.amend.claim.models.enums.AitHearingCentre;
+import uk.gov.justice.laa.amend.claim.models.enums.CaseStage;
+import uk.gov.justice.laa.amend.claim.models.enums.ClientTypeCode;
+import uk.gov.justice.laa.amend.claim.models.enums.DesignatedAccreditedRepresentative;
+import uk.gov.justice.laa.amend.claim.models.enums.DisabilityCode;
+import uk.gov.justice.laa.amend.claim.models.enums.EthnicityCode;
+import uk.gov.justice.laa.amend.claim.models.enums.ExemptionCriteriaSatisfied;
+import uk.gov.justice.laa.amend.claim.models.enums.GenderCode;
+import uk.gov.justice.laa.amend.claim.models.enums.MeetingsAttended;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeCode;
+import uk.gov.justice.laa.amend.claim.models.enums.ReferralSource;
+import uk.gov.justice.laa.amend.claim.models.enums.StageReached;
+import uk.gov.justice.laa.amend.claim.models.enums.StandardFeeCategory;
 
 public final class FieldOptions {
 
