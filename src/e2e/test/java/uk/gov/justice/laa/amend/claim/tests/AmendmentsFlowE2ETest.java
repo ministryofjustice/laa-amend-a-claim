@@ -21,7 +21,18 @@ import uk.gov.justice.laa.amend.claim.models.Insert;
 import uk.gov.justice.laa.amend.claim.models.SubmissionInsert;
 import uk.gov.justice.laa.amend.claim.pages.ClaimDetailsPage;
 import uk.gov.justice.laa.amend.claim.pages.SearchPage;
-import uk.gov.justice.laa.amend.claim.pages.amendments.*;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCaseDetailsPage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient1Page;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient2Page;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCostsPage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendFeeCodePage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendMatterTypePage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendStageReachedPage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.CheckPage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.ConfirmationPage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCasePage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.ViewClientPage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCostsPage;
 
 public class AmendmentsFlowE2ETest extends BaseTest {
 
