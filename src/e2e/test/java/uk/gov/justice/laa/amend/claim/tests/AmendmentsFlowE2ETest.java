@@ -473,7 +473,8 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
     assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£150.00");
     assertSummaryListRow(page, "Case type", "Stage reached", "INVC", "PROD");
-    assertSummaryListRow(page, "Case details", "Case concluded date", "30 January 2020", "31 January 2020");
+    assertSummaryListRow(
+        page, "Case details", "Case concluded date", "30 January 2020", "31 January 2020");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);
