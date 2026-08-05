@@ -33,6 +33,11 @@ class CuratedFieldRuleValidatorTest {
     assertThat(validator.appliesTo(ClaimDetailsViewField.FORENAME)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.SURNAME)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.FEE_CODE)).isTrue();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.PROFIT_COST)).isTrue();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.DISBURSEMENTS)).isTrue();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.DISBURSEMENTS_VAT)).isTrue();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.VAT)).isFalse();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.FIXED_FEE)).isFalse();
     assertThat(validator.appliesTo(ClaimDetailsViewField.GENDER)).isFalse();
     assertThat(validator.appliesTo(ClaimDetailsViewField.DISABILITY)).isFalse();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.POSTCODE)).isTrue();
@@ -91,6 +96,61 @@ class CuratedFieldRuleValidatorTest {
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.OUTREACH_LOCATION)).isTrue();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.REFERRAL_SOURCE)).isFalse();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.SCHEDULE_REFERENCE)).isFalse();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.CASE_REFERENCE_NUMBER)).isTrue();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.CASE_START_DATE)).isFalse();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.UNIQUE_FILE_NUMBER)).isTrue();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.CASE_CONCLUDED_DATE)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.CASE_ID)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE))
+        .isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.CASE_STAGE)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.PROCUREMENT_AREA)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.ACCESS_POINT)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.DELIVERY_LOCATION)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.COURT_LOCATION)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.AIT_HEARING_CENTRE)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.VALUE_OF_COSTS)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.EXCEPTIONAL_CASE_FUNDING)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_REFERENCE))
+        .isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_EXEMPTION))
+        .isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.DESIGNATED_ACCREDITED_REPRESENTATIVE))
+        .isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.ADVICE_TIME)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.TRAVEL_TIME)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.WAITING_TIME)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.ADDITIONAL_TRAVEL_PAYMENT)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.FOLLOW_ON_WORK)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.TOLERANCE_INDICATOR)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.LEGACY_CASE)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.MEETINGS_ATTENDED)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.ADVICE_TYPE)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.TRANSFER_DATE)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.MEDICAL_REPORTS_CLAIMED)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.EXEMPTION_CRITERIA_SATISFIED))
+        .isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.IRC_SURGERY)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.SURGERY_DATE)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.SURGERY_CLIENTS_COUNT)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.SURGERY_MATTERS_COUNT)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.MENTAL_HEALTH_TRIBUNAL_REFERENCE))
+        .isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.IS_NRM_ADVICE)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.HOME_OFFICE)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.SUBSTANTIVE_HEARING)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.IS_LONDON_RATE)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.PRIOR_AUTHORITY_REFERENCE)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.COUNSELS_COST)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.TRAVEL_AND_WAITING_COSTS)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.DETENTION_TRAVEL)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.JR_FORM_FILLING)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.CMRH_TELEPHONE)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.CMRH_ORAL)).isTrue();
   }
 
   @ParameterizedTest
@@ -886,6 +946,775 @@ class CuratedFieldRuleValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[OUTREACH_LOCATION]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"AB123/45.6-7 CD", "12345", "case/ref.1-2 3"})
+  void acceptsValidCaseReferenceNumberValues(String value) {
+    var errors = validate(ClaimDetailsViewField.CASE_REFERENCE_NUMBER, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void acceptsCaseReferenceNumberAtMaxLength() {
+    var errors = validate(ClaimDetailsViewField.CASE_REFERENCE_NUMBER, "a".repeat(30));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsCaseReferenceNumberOverMaxLengthNamingTheFieldAndLimit() {
+    var errors = validate(ClaimDetailsViewField.CASE_REFERENCE_NUMBER, "a".repeat(31));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CASE_REFERENCE_NUMBER]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.tooLong");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Case reference number (CRN)");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("30");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"CASE#1", "CASE_1", "CASE@1"})
+  void rejectsCaseReferenceNumberValuesWithDisallowedCharactersNamingTheField(String value) {
+    var errors = validate(ClaimDetailsViewField.CASE_REFERENCE_NUMBER, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CASE_REFERENCE_NUMBER]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.caseReferenceNumber.invalidFormat");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Case reference number (CRN)");
+  }
+
+  @Test
+  void caseReferenceNumberFormatFailureTakesPriorityOverLengthFailure() {
+    var errors = validate(ClaimDetailsViewField.CASE_REFERENCE_NUMBER, "#".repeat(31));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CASE_REFERENCE_NUMBER]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.caseReferenceNumber.invalidFormat");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"120223/001", "010199/999"})
+  void acceptsValidUniqueFileNumberValues(String value) {
+    var errors = validate(ClaimDetailsViewField.UNIQUE_FILE_NUMBER, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"12022/001", "120223/01", "120223-001", "ABCDEF/001"})
+  void rejectsInvalidUniqueFileNumberValuesNamingTheField(String value) {
+    var errors = validate(ClaimDetailsViewField.UNIQUE_FILE_NUMBER, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[UNIQUE_FILE_NUMBER]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.uniqueFileNumber.invalidFormat");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Unique file number (UFN)");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"000", "123", "999"})
+  void acceptsValidCivilCaseIdValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CASE_ID, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"12", "1234", "abc"})
+  void rejectsInvalidCivilCaseIdValuesNamingTheField(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CASE_ID, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CASE_ID]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.claimId.invalidFormat");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Case ID");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"REF/1.2-3", "12345", "SCHEDULE-REF"})
+  void acceptsValidScheduleReferenceCivilValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void acceptsScheduleReferenceCivilAtMaxLength() {
+    var errors = validate(CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL, "a".repeat(20));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsScheduleReferenceCivilOverMaxLengthNamingTheFieldAndLimit() {
+    var errors = validate(CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL, "a".repeat(21));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[SCHEDULE_REFERENCE_CIVIL]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.tooLong");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Schedule reference");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("20");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"REF 1", "REF_1", "REF#1"})
+  void rejectsScheduleReferenceCivilValuesWithDisallowedCharactersNamingTheField(String value) {
+    var errors = validate(CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[SCHEDULE_REFERENCE_CIVIL]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.scheduleReference.invalidFormat");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Schedule reference");
+  }
+
+  @Test
+  void scheduleReferenceCivilFormatFailureTakesPriorityOverLengthFailure() {
+    var errors = validate(CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL, "#".repeat(21));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[SCHEDULE_REFERENCE_CIVIL]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.scheduleReference.invalidFormat");
+  }
+
+  @ParameterizedTest
+  @CsvSource({"PROCUREMENT_AREA, AB12345", "DELIVERY_LOCATION, ZZ00001"})
+  void acceptsValidLocationCodeValues(CivilClaimDetailsViewField field, String value) {
+    var errors = validate(field, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+    "PROCUREMENT_AREA, ab12345",
+    "PROCUREMENT_AREA, A12345",
+    "PROCUREMENT_AREA, AB1234",
+    "DELIVERY_LOCATION, delivery1",
+    "DELIVERY_LOCATION, AB123456"
+  })
+  void rejectsInvalidLocationCodeValuesNamingTheField(
+      CivilClaimDetailsViewField field, String value) {
+    var errors = validate(field, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[%s]".formatted(field.name()));
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.locationCode.invalidFormat");
+    assertThat(fieldError.getArguments()[0]).isEqualTo(field.label(TestMessageSources.real()));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"AP00001", "AP99999"})
+  void acceptsValidAccessPointValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.ACCESS_POINT, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"ap00001", "AB00001", "AP0001", "AP000012"})
+  void rejectsInvalidAccessPointValuesNamingTheField(String value) {
+    var errors = validate(CivilClaimDetailsViewField.ACCESS_POINT, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[ACCESS_POINT]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.accessPoint.invalidFormat");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Access point");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"AB123", "abc123XYZ", "1"})
+  void acceptsValidLocalAuthorityNumberValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void acceptsLocalAuthorityNumberAtMaxLength() {
+    var errors = validate(CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER, "a".repeat(30));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsLocalAuthorityNumberOverMaxLengthNamingTheFieldAndLimit() {
+    var errors = validate(CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER, "a".repeat(31));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[LOCAL_AUTHORITY_NUMBER]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.tooLong");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Local authority number");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("30");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"AB-123", "AB 123"})
+  void rejectsLocalAuthorityNumberValuesWithDisallowedCharactersNamingTheField(String value) {
+    var errors = validate(CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[LOCAL_AUTHORITY_NUMBER]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Local authority number");
+  }
+
+  @Test
+  void localAuthorityNumberFormatFailureTakesPriorityOverLengthFailure() {
+    var errors = validate(CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER, "-".repeat(31));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[LOCAL_AUTHORITY_NUMBER]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "0.00", "99999.99", "1234.56"})
+  void acceptsValidValueOfCostsValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.VALUE_OF_COSTS, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-0.01", "100000.00"})
+  void rejectsOutOfRangeValueOfCostsValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(CivilClaimDetailsViewField.VALUE_OF_COSTS, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[VALUE_OF_COSTS]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("99999.99");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0000001AB", "1234567ZZ"})
+  void acceptsValidExceptionalCaseFundingValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.EXCEPTIONAL_CASE_FUNDING, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"123456AB", "12345678AB", "0000001ab", "AAAAAAAAB"})
+  void rejectsInvalidExceptionalCaseFundingValuesNamingTheField(String value) {
+    var errors = validate(CivilClaimDetailsViewField.EXCEPTIONAL_CASE_FUNDING, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[EXCEPTIONAL_CASE_FUNDING]");
+    assertThat(fieldError.getCode())
+        .isEqualTo("amendmentForm.exceptionalCaseFunding.invalidFormat");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Exceptional case funding (ECF) reference");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"1", "1234567", "42"})
+  void acceptsValidCivilLegalAdviceReferenceValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_REFERENCE, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"12345678", "abc1234", "12A"})
+  void rejectsInvalidCivilLegalAdviceReferenceValuesNamingTheField(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_REFERENCE, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CIVIL_LEGAL_ADVICE_REFERENCE]");
+    assertThat(fieldError.getCode())
+        .isEqualTo("amendmentForm.civilLegalAdviceReference.invalidFormat");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Civil Legal Advice (CLA) reference number");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"ABCD", "1234", "AB12"})
+  void acceptsValidCivilLegalAdviceExemptionValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_EXEMPTION, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"ABC", "ABCDE"})
+  void rejectsInvalidCivilLegalAdviceExemptionValuesNamingTheFieldAndLength(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_EXEMPTION, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CIVIL_LEGAL_ADVICE_EXEMPTION]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.wrongLength");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Civil Legal Advice (CLA) exemption code");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("4");
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+    "ADVICE_TIME, 0",
+    "ADVICE_TIME, 99999",
+    "TRAVEL_TIME, 0",
+    "TRAVEL_TIME, 99999",
+    "WAITING_TIME, 0",
+    "WAITING_TIME, 99999"
+  })
+  void acceptsValidTimeValues(CivilClaimDetailsViewField field, String value) {
+    var errors = validate(field, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @CsvSource({
+    "ADVICE_TIME, -1",
+    "ADVICE_TIME, 100000",
+    "TRAVEL_TIME, -1",
+    "TRAVEL_TIME, 100000",
+    "WAITING_TIME, -1",
+    "WAITING_TIME, 100000"
+  })
+  void rejectsOutOfRangeTimeValuesNamingTheFieldAndRange(
+      CivilClaimDetailsViewField field, String value) {
+    var errors = validate(field, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[%s]".formatted(field.name()));
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("99999");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "10", "5"})
+  void acceptsValidMedicalReportsClaimedValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.MEDICAL_REPORTS_CLAIMED, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-1", "11"})
+  void rejectsOutOfRangeMedicalReportsClaimedValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(CivilClaimDetailsViewField.MEDICAL_REPORTS_CLAIMED, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[MEDICAL_REPORTS_CLAIMED]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Medical reports claimed");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("10");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"1", "20", "10"})
+  void acceptsValidSurgeryClientsCountValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.SURGERY_CLIENTS_COUNT, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "21"})
+  void rejectsOutOfRangeSurgeryClientsCountValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(CivilClaimDetailsViewField.SURGERY_CLIENTS_COUNT, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[SURGERY_CLIENTS_COUNT]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("1");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("20");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "99", "50"})
+  void acceptsValidSurgeryMattersCountValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.SURGERY_MATTERS_COUNT, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-1", "100"})
+  void rejectsOutOfRangeSurgeryMattersCountValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(CivilClaimDetailsViewField.SURGERY_MATTERS_COUNT, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[SURGERY_MATTERS_COUNT]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("99");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"AB/1234/56789", "AB12345"})
+  void acceptsValidMentalHealthTribunalReferenceValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.MENTAL_HEALTH_TRIBUNAL_REFERENCE, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"ab/1234/56789", "AB123456", "AB/123/56789", "12/1234/56789"})
+  void rejectsInvalidMentalHealthTribunalReferenceValuesNamingTheField(String value) {
+    var errors = validate(CivilClaimDetailsViewField.MENTAL_HEALTH_TRIBUNAL_REFERENCE, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[MENTAL_HEALTH_TRIBUNAL_REFERENCE]");
+    assertThat(fieldError.getCode())
+        .isEqualTo("amendmentForm.mentalHealthTribunalReference.invalidFormat");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Mental health tribunal reference");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "9", "5"})
+  void acceptsValidHomeOfficeValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.HOME_OFFICE, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-1", "10"})
+  void rejectsOutOfRangeHomeOfficeValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(CivilClaimDetailsViewField.HOME_OFFICE, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[HOME_OFFICE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Home Office Interview");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("9");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"AB1234C", "1234567", "ABCDEFG"})
+  void acceptsValidPriorAuthorityReferenceValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.PRIOR_AUTHORITY_REFERENCE, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void acceptsPriorAuthorityReferenceAtExactLength() {
+    var errors = validate(CivilClaimDetailsViewField.PRIOR_AUTHORITY_REFERENCE, "a".repeat(7));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"AB1234", "AB1234CD"})
+  void rejectsPriorAuthorityReferenceWrongLengthNamingTheFieldAndLength(String value) {
+    var errors = validate(CivilClaimDetailsViewField.PRIOR_AUTHORITY_REFERENCE, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[PRIOR_AUTHORITY_REFERENCE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.wrongLength");
+    assertThat(fieldError.getArguments()[0])
+        .isEqualTo("National Immigration Asylum Team Disbursement prior authority number");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("7");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"AB-123", "AB 123"})
+  void rejectsPriorAuthorityReferenceValuesWithDisallowedCharactersNamingTheField(String value) {
+    var errors = validate(CivilClaimDetailsViewField.PRIOR_AUTHORITY_REFERENCE, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[PRIOR_AUTHORITY_REFERENCE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
+  }
+
+  @Test
+  void priorAuthorityReferenceFormatFailureTakesPriorityOverLengthFailure() {
+    var errors = validate(CivilClaimDetailsViewField.PRIOR_AUTHORITY_REFERENCE, "-".repeat(8));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[PRIOR_AUTHORITY_REFERENCE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "0.00", "999999999.99", "1234.56"})
+  void acceptsValidProfitCostValues(String value) {
+    var errors = validate(ClaimDetailsViewField.PROFIT_COST, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-0.01", "1000000000.00"})
+  void rejectsOutOfRangeProfitCostValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(ClaimDetailsViewField.PROFIT_COST, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[PROFIT_COST]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Net profit costs");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("999999999.99");
+  }
+
+  @Test
+  void doesNotAddSecondErrorForUnparseableProfitCostValue() {
+    var errors = validate(ClaimDetailsViewField.PROFIT_COST, "notanumber");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void doesNotAddSecondErrorForOverPrecisionInRangeProfitCostValue() {
+    var errors = validate(ClaimDetailsViewField.PROFIT_COST, "1234.567");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "0.00", "999999999.99", "1234.56"})
+  void acceptsValidDisbursementsValues(String value) {
+    var errors = validate(ClaimDetailsViewField.DISBURSEMENTS, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-0.01", "1000000000.00"})
+  void rejectsOutOfRangeDisbursementsValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(ClaimDetailsViewField.DISBURSEMENTS, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[DISBURSEMENTS]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Net disbursements");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("999999999.99");
+  }
+
+  @Test
+  void doesNotAddSecondErrorForOverPrecisionInRangeDisbursementsValue() {
+    var errors = validate(ClaimDetailsViewField.DISBURSEMENTS, "1234.567");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "0.00", "1234.56", "999999999.99"})
+  void acceptsValidDisbursementsVatValues(String value) {
+    var errors = validate(ClaimDetailsViewField.DISBURSEMENTS_VAT, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-0.01", "-100"})
+  void rejectsBelowMinimumDisbursementsVatValuesNamingTheFieldAndMinimum(String value) {
+    var errors = validate(ClaimDetailsViewField.DISBURSEMENTS_VAT, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[DISBURSEMENTS_VAT]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.min");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Disbursements VAT");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
+  }
+
+  @Test
+  void doesNotAddSecondErrorForUnparseableDisbursementsVatValue() {
+    var errors = validate(ClaimDetailsViewField.DISBURSEMENTS_VAT, "notanumber");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void doesNotAddSecondErrorForOverPrecisionInRangeDisbursementsVatValue() {
+    var errors = validate(ClaimDetailsViewField.DISBURSEMENTS_VAT, "1234.567");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "0.00", "99999.99", "1234.56"})
+  void acceptsValidCounselsCostValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.COUNSELS_COST, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-0.01", "100000.00"})
+  void rejectsOutOfRangeCounselsCostValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(CivilClaimDetailsViewField.COUNSELS_COST, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[COUNSELS_COST]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Net cost of counsel");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("99999.99");
+  }
+
+  @Test
+  void doesNotAddSecondErrorForOverPrecisionInRangeCounselsCostValue() {
+    var errors = validate(CivilClaimDetailsViewField.COUNSELS_COST, "1234.567");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "0.00", "9999.99", "1234.56"})
+  void acceptsValidTravelAndWaitingCostsValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.TRAVEL_AND_WAITING_COSTS, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-0.01", "10000.00"})
+  void rejectsOutOfRangeTravelAndWaitingCostsValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(CivilClaimDetailsViewField.TRAVEL_AND_WAITING_COSTS, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[TRAVEL_AND_WAITING_COSTS]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Travel and waiting costs");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("9999.99");
+  }
+
+  @Test
+  void doesNotAddSecondErrorForOverPrecisionInRangeTravelAndWaitingCostsValue() {
+    var errors = validate(CivilClaimDetailsViewField.TRAVEL_AND_WAITING_COSTS, "1234.567");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "0.00", "99999999.99", "1234.56"})
+  void acceptsValidDetentionTravelValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.DETENTION_TRAVEL, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-0.01", "100000000.00"})
+  void rejectsOutOfRangeDetentionTravelValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(CivilClaimDetailsViewField.DETENTION_TRAVEL, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[DETENTION_TRAVEL]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Detention, travel and waiting (DTW) costs");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("99999999.99");
+  }
+
+  @Test
+  void doesNotAddSecondErrorForOverPrecisionInRangeDetentionTravelValue() {
+    var errors = validate(CivilClaimDetailsViewField.DETENTION_TRAVEL, "1234.567");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "0.00", "9999.99", "1234.56"})
+  void acceptsValidJrFormFillingValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.JR_FORM_FILLING, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-0.01", "10000.00"})
+  void rejectsOutOfRangeJrFormFillingValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(CivilClaimDetailsViewField.JR_FORM_FILLING, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[JR_FORM_FILLING]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Judicial review or form filling");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("9999.99");
+  }
+
+  @Test
+  void doesNotAddSecondErrorForOverPrecisionInRangeJrFormFillingValue() {
+    var errors = validate(CivilClaimDetailsViewField.JR_FORM_FILLING, "1234.567");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void doesNotAddSecondErrorForUnparseableCivilCostsValue() {
+    var errors = validate(CivilClaimDetailsViewField.COUNSELS_COST, "notanumber");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "9", "5"})
+  void acceptsValidAdjournedHearingFeeValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-1", "10"})
+  void rejectsOutOfRangeAdjournedHearingFeeValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[ADJOURNED_HEARING_FEE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Adjourned hearing fee");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("9");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "9", "5"})
+  void acceptsValidCmrhTelephoneValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CMRH_TELEPHONE, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-1", "10"})
+  void rejectsOutOfRangeCmrhTelephoneValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CMRH_TELEPHONE, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CMRH_TELEPHONE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("9");
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"0", "9", "5"})
+  void acceptsValidCmrhOralValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CMRH_ORAL, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"-1", "10"})
+  void rejectsOutOfRangeCmrhOralValuesNamingTheFieldAndRange(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CMRH_ORAL, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CMRH_ORAL]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
+    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
+    assertThat(fieldError.getArguments()[2]).isEqualTo("9");
+  }
+
+  @Test
+  void doesNotAddSecondErrorForUnparseableSmallCountValue() {
+    var errors = validate(CivilClaimDetailsViewField.CMRH_ORAL, "notanumber");
+
+    assertThat(errors.hasErrors()).isFalse();
   }
 
   private Errors validate(ClaimViewField<?> field, String value) {

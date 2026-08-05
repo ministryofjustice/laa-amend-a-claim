@@ -78,6 +78,177 @@ class DateAmendmentFieldValidatorTest {
   }
 
   @Test
+  void acceptsWellFormedCivilCaseConcludedClaimedDate() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE,
+            Map.of(
+                "CASE_CONCLUDED_CLAIMED_DATE-day", "1",
+                "CASE_CONCLUDED_CLAIMED_DATE-month", "6",
+                "CASE_CONCLUDED_CLAIMED_DATE-year", "2025"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void acceptsCompletelyBlankCivilCaseConcludedClaimedDate() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE,
+            Map.of(
+                "CASE_CONCLUDED_CLAIMED_DATE-day", "",
+                "CASE_CONCLUDED_CLAIMED_DATE-month", "",
+                "CASE_CONCLUDED_CLAIMED_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleCivilCaseConcludedClaimedDateNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE,
+            Map.of(
+                "CASE_CONCLUDED_CLAIMED_DATE-day", "31",
+                "CASE_CONCLUDED_CLAIMED_DATE-month", "2",
+                "CASE_CONCLUDED_CLAIMED_DATE-year", "2025"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CASE_CONCLUDED_CLAIMED_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Case concluded date or case claimed date");
+  }
+
+  @Test
+  void rejectsPartiallyFilledCivilCaseConcludedClaimedDateNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE,
+            Map.of(
+                "CASE_CONCLUDED_CLAIMED_DATE-day", "1",
+                "CASE_CONCLUDED_CLAIMED_DATE-month", "",
+                "CASE_CONCLUDED_CLAIMED_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CASE_CONCLUDED_CLAIMED_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+  }
+
+  @Test
+  void acceptsWellFormedTransferDate() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.TRANSFER_DATE,
+            Map.of(
+                "TRANSFER_DATE-day", "1",
+                "TRANSFER_DATE-month", "6",
+                "TRANSFER_DATE-year", "2025"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void acceptsCompletelyBlankTransferDate() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.TRANSFER_DATE,
+            Map.of(
+                "TRANSFER_DATE-day", "",
+                "TRANSFER_DATE-month", "",
+                "TRANSFER_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleTransferDateNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.TRANSFER_DATE,
+            Map.of(
+                "TRANSFER_DATE-day", "31",
+                "TRANSFER_DATE-month", "2",
+                "TRANSFER_DATE-year", "2025"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[TRANSFER_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Transfer date");
+  }
+
+  @Test
+  void rejectsPartiallyFilledTransferDateNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.TRANSFER_DATE,
+            Map.of(
+                "TRANSFER_DATE-day", "1",
+                "TRANSFER_DATE-month", "",
+                "TRANSFER_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[TRANSFER_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+  }
+
+  @Test
+  void acceptsWellFormedSurgeryDate() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.SURGERY_DATE,
+            Map.of(
+                "SURGERY_DATE-day", "1",
+                "SURGERY_DATE-month", "6",
+                "SURGERY_DATE-year", "2025"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void acceptsCompletelyBlankSurgeryDate() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.SURGERY_DATE,
+            Map.of(
+                "SURGERY_DATE-day", "",
+                "SURGERY_DATE-month", "",
+                "SURGERY_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleSurgeryDateNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.SURGERY_DATE,
+            Map.of(
+                "SURGERY_DATE-day", "31",
+                "SURGERY_DATE-month", "2",
+                "SURGERY_DATE-year", "2025"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[SURGERY_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Surgery date");
+  }
+
+  @Test
+  void rejectsPartiallyFilledSurgeryDateNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.SURGERY_DATE,
+            Map.of(
+                "SURGERY_DATE-day", "1",
+                "SURGERY_DATE-month", "",
+                "SURGERY_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[SURGERY_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+  }
+
+  @Test
   void acceptsWellFormedCivilDateOfBirth() {
     var errors =
         validate(
