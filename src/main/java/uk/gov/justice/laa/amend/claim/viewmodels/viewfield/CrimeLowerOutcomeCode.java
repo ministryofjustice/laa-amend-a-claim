@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
 
-public enum OutcomeCode implements FieldOption {
+public enum CrimeLowerOutcomeCode implements FieldOption {
   NO_FURTHER_INSTRUCTIONS("CN01"),
   CHANGE_OF_SOLICITOR("CN02"),
   CLIENT_NOT_A_SUSPECT("CN03"),
@@ -64,12 +64,17 @@ public enum OutcomeCode implements FieldOption {
 
   private final String value;
 
-  OutcomeCode(String value) {
+  CrimeLowerOutcomeCode(String value) {
     this.value = value;
   }
 
   @Override
   public String value() {
     return value;
+  }
+
+  @Override
+  public String messageKeyPrefix() {
+    return "outcomeCode";
   }
 }
