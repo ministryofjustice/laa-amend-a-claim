@@ -4,6 +4,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.SelectOption;
 import com.microsoft.playwright.options.AriaRole;
 import uk.gov.justice.laa.amend.claim.pages.LaaPage;
 
@@ -33,7 +34,7 @@ public class AmendCaseDetailsPage extends LaaPage {
     assertThat(yearInput).isVisible();
 
     dayInput.fill(day);
-    monthInput.selectOption(month);
+    monthInput.selectOption(new SelectOption().setLabel(month));
     yearInput.fill(year);
   }
 
