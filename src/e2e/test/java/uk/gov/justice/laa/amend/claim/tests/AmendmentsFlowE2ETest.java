@@ -460,7 +460,6 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendCase.clickChangeCaseDetailsLink();
     var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
     viewAmendCaseDetails.fillDateInput("CASE_CONCLUDED_DATE", "31", "January", "2020");
-    ;
     viewAmendCaseDetails.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
