@@ -10,12 +10,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendClientController;
-import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockAmendmentFormsFunctions;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @WebMvcTest(AmendClientController.class)
 class AmendClient1ViewTest extends AmendmentsBaseTest {
@@ -214,7 +210,6 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     Assertions.assertEquals("January", selectedMonth.text(), "Selected month name");
     Assertions.assertEquals("1", selectedMonth.attr("value"), "Selected month value");
   }
-
 
   private void assertCommonPageContent(Document doc) {
     assertPageHasTitle(doc, "Amend claim details");

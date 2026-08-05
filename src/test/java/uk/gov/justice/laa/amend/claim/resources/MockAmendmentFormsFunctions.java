@@ -56,5 +56,4 @@ public class MockAmendmentFormsFunctions {
         .caseDetails(new AmendmentForm(view.caseDetailsRows()))
         .build();
   }
-
 }
