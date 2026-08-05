@@ -135,6 +135,92 @@ class DateAmendmentFieldValidatorTest {
     assertThat(fieldError.getArguments()[0]).isEqualTo("Date of birth");
   }
 
+  @Test
+  void acceptsWellFormedClient2DateOfBirth() {
+    var errors =
+        validate(
+            MediationClaimDetailsViewField.CLIENT_2_DATE_OF_BIRTH,
+            Map.of(
+                "CLIENT_2_DATE_OF_BIRTH-day", "15",
+                "CLIENT_2_DATE_OF_BIRTH-month", "3",
+                "CLIENT_2_DATE_OF_BIRTH-year", "1990"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleClient2DateOfBirthNamingTheField() {
+    var errors =
+        validate(
+            MediationClaimDetailsViewField.CLIENT_2_DATE_OF_BIRTH,
+            Map.of(
+                "CLIENT_2_DATE_OF_BIRTH-day", "31",
+                "CLIENT_2_DATE_OF_BIRTH-month", "2",
+                "CLIENT_2_DATE_OF_BIRTH-year", "1990"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CLIENT_2_DATE_OF_BIRTH]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Date of birth");
+  }
+
+  @Test
+  void acceptsWellFormedRepresentationOrderDate() {
+    var errors =
+        validate(
+            CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE,
+            Map.of(
+                "REPRESENTATION_ORDER_DATE-day", "15",
+                "REPRESENTATION_ORDER_DATE-month", "3",
+                "REPRESENTATION_ORDER_DATE-year", "2020"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void acceptsCompletelyBlankRepresentationOrderDate() {
+    var errors =
+        validate(
+            CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE,
+            Map.of(
+                "REPRESENTATION_ORDER_DATE-day", "",
+                "REPRESENTATION_ORDER_DATE-month", "",
+                "REPRESENTATION_ORDER_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleRepresentationOrderDateNamingTheField() {
+    var errors =
+        validate(
+            CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE,
+            Map.of(
+                "REPRESENTATION_ORDER_DATE-day", "31",
+                "REPRESENTATION_ORDER_DATE-month", "2",
+                "REPRESENTATION_ORDER_DATE-year", "2020"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[REPRESENTATION_ORDER_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Representation order date");
+  }
+
+  @Test
+  void rejectsPartiallyFilledRepresentationOrderDateNamingTheField() {
+    var errors =
+        validate(
+            CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE,
+            Map.of(
+                "REPRESENTATION_ORDER_DATE-day", "15",
+                "REPRESENTATION_ORDER_DATE-month", "3",
+                "REPRESENTATION_ORDER_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[REPRESENTATION_ORDER_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+  }
+
   private Errors validate(ClaimViewField<?> field, Map<String, String> inputs) {
     var form = new AmendmentForm();
     form.setInputs(inputs);
