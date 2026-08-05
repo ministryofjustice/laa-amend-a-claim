@@ -411,6 +411,8 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             → Check Page → Submit amendments → Confirmation page
           """)
   void fullCrimeAmendmentFlow() {
+    // TODO:  When case start date bug is fixed on DSTEW side we need to remove cas estart date from
+    // the test data here
     var search = new SearchPage(page);
 
     search.searchForClaim(PROVIDER_ACCOUNT, "03", "2020", CRIME_UFN, "", "", "");
