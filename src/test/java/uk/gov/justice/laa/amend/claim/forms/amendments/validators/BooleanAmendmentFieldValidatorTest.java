@@ -120,6 +120,42 @@ class BooleanAmendmentFieldValidatorTest {
     assertThat(fieldError.getArguments()[0]).isEqualTo("Postal application accepted");
   }
 
+  @Test
+  void acceptsWellFormedClient2IsLegallyAidedValue() {
+    var errors = validate(MediationClaimDetailsViewField.IS_CLIENT_2_LEGALLY_AIDED, "yes");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsMalformedClient2IsLegallyAidedValueNamingTheField() {
+    var errors = validate(MediationClaimDetailsViewField.IS_CLIENT_2_LEGALLY_AIDED, "banana");
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[IS_CLIENT_2_LEGALLY_AIDED]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.boolean.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Legally aided");
+  }
+
+  @Test
+  void acceptsWellFormedClient2IsPostalApplicationAcceptedValue() {
+    var errors =
+        validate(MediationClaimDetailsViewField.IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED, "no");
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsMalformedClient2IsPostalApplicationAcceptedValueNamingTheField() {
+    var errors =
+        validate(MediationClaimDetailsViewField.IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED, "banana");
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.boolean.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Postal application accepted");
+  }
+
   private Errors validate(ClaimViewField<?> field, String value) {
     var form = new AmendmentForm();
     form.setInputs(Map.of(field.name(), value));

@@ -176,7 +176,7 @@ class AmendmentFormValidatorTest {
                 new CuratedFieldRuleValidator(TestMessageSources.real()),
                 new FeeCodeAmendmentFieldValidator(availableFeeCodesService)));
 
-    var errors = validate(validator, Map.of("SURNAME", "#".repeat(31), "FEE_CODE", "NOT_A_CODE"));
+    var errors = validate(validator, Map.of("SURNAME", "#".repeat(31), "FEE_CODE", "NOTACODE"));
 
     assertThat(errors.getFieldError("inputs[SURNAME]").getCode())
         .isEqualTo("amendmentForm.text.invalidFormat");
