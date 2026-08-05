@@ -8,8 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
-import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.PageQuery;
+import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.sorting.SortDirection;
 
 @Builder

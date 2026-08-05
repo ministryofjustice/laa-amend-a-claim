@@ -675,7 +675,8 @@ class ClaimMapperTest {
     assertEquals("MT1", claim.getMatterType1());
     assertEquals("MT2", claim.getMatterType2());
     assertEquals(claimSummaryFeeId, claim.getClaimSummaryFeeId());
-    assertEquals(uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw.LEGAL_HELP, claim.getAreaOfLaw());
+    assertEquals(
+        uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw.LEGAL_HELP, claim.getAreaOfLaw());
     assertEquals("0P322F", claim.getOfficeCode());
     assertNull(claim.getProviderName());
     assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());
@@ -883,7 +884,8 @@ class ClaimMapperTest {
     assertEquals("MT1", claim.getMatterType1());
     assertEquals("MT2", claim.getMatterType2());
     assertEquals(claimSummaryFeeId, claim.getClaimSummaryFeeId());
-    assertEquals(uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw.MEDIATION, claim.getAreaOfLaw());
+    assertEquals(
+        uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw.MEDIATION, claim.getAreaOfLaw());
     assertEquals("0P322F", claim.getOfficeCode());
     assertNull(claim.getProviderName());
     assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());

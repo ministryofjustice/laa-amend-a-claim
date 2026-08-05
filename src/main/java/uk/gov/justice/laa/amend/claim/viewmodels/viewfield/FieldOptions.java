@@ -1,9 +1,8 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
 
-import uk.gov.justice.laa.amend.claim.models.enums.*;
-
 import java.util.Arrays;
 import java.util.List;
+import uk.gov.justice.laa.amend.claim.models.enums.*;
 
 public final class FieldOptions {
 
