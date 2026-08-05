@@ -8,7 +8,10 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField;
 
 class DateAmendmentFieldValidatorTest {
 
@@ -73,7 +76,65 @@ class DateAmendmentFieldValidatorTest {
     assertThat(fieldError.getArguments()[0]).isEqualTo("Case concluded date");
   }
 
-  private Errors validate(ClaimDetailsViewField field, Map<String, String> inputs) {
+  @Test
+  void acceptsWellFormedCivilDateOfBirth() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.DATE_OF_BIRTH,
+            Map.of(
+                "DATE_OF_BIRTH-day", "15",
+                "DATE_OF_BIRTH-month", "3",
+                "DATE_OF_BIRTH-year", "1990"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleCivilDateOfBirthNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.DATE_OF_BIRTH,
+            Map.of(
+                "DATE_OF_BIRTH-day", "31",
+                "DATE_OF_BIRTH-month", "2",
+                "DATE_OF_BIRTH-year", "1990"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[DATE_OF_BIRTH]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Date of birth");
+  }
+
+  @Test
+  void acceptsWellFormedMediationDateOfBirth() {
+    var errors =
+        validate(
+            MediationClaimDetailsViewField.DATE_OF_BIRTH,
+            Map.of(
+                "DATE_OF_BIRTH-day", "15",
+                "DATE_OF_BIRTH-month", "3",
+                "DATE_OF_BIRTH-year", "1990"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleMediationDateOfBirthNamingTheField() {
+    var errors =
+        validate(
+            MediationClaimDetailsViewField.DATE_OF_BIRTH,
+            Map.of(
+                "DATE_OF_BIRTH-day", "31",
+                "DATE_OF_BIRTH-month", "2",
+                "DATE_OF_BIRTH-year", "1990"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[DATE_OF_BIRTH]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Date of birth");
+  }
+
+  private Errors validate(ClaimViewField<?> field, Map<String, String> inputs) {
     var form = new AmendmentForm();
     form.setInputs(inputs);
 
