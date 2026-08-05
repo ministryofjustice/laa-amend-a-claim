@@ -8,7 +8,9 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 
 class EnumAmendmentFieldValidatorTest {
 
@@ -49,7 +51,42 @@ class EnumAmendmentFieldValidatorTest {
     assertThat(errors.hasErrors()).isFalse();
   }
 
-  private Errors validate(ClaimDetailsViewField field, Map<String, String> inputs) {
+  @Test
+  void acceptsDisabilityValueMatchingAnAllowedOption() {
+    var errors = validate(ClaimDetailsViewField.DISABILITY, Map.of("DISABILITY", "NCD"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsDisabilityValueNotMatchingAnAllowedOptionNamingTheField() {
+    var errors = validate(ClaimDetailsViewField.DISABILITY, Map.of("DISABILITY", "NOT_A_CODE"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[DISABILITY]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.enum.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Disability");
+  }
+
+  @Test
+  void acceptsClientTypeValueMatchingAnAllowedOption() {
+    var errors = validate(CivilClaimDetailsViewField.CLIENT_TYPE, Map.of("CLIENT_TYPE", "P"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsClientTypeValueNotMatchingAnAllowedOptionNamingTheField() {
+    var errors =
+        validate(CivilClaimDetailsViewField.CLIENT_TYPE, Map.of("CLIENT_TYPE", "NOT_A_CODE"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CLIENT_TYPE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.enum.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Client type");
+  }
+
+  private Errors validate(ClaimViewField<?> field, Map<String, String> inputs) {
     var form = new AmendmentForm();
     form.setInputs(inputs);
 
