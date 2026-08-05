@@ -13,6 +13,7 @@ import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendClientControll
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.resources.MockAmendmentFormsFunctions;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
@@ -60,7 +61,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     claim.setClientEthnicity(ETHNICITY);
     claim.setClientDisability(DISABILITY);
 
-    var forms = createClientForms(claim);
+    var forms = MockAmendmentFormsFunctions.justClient1Filled(claim);
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var doc = renderDocument();
@@ -106,7 +107,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     claim.setIsClient2LegallyAided(false);
     claim.setIsClient2PostalApplicationAccepted(true);
 
-    var forms = createClientForms(claim);
+    var forms = MockAmendmentFormsFunctions.justClient1Filled(claim);
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var doc = renderDocument();
@@ -154,7 +155,7 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     claim.setHomeOfficeClientNumber(HOME_OFFICE_CLIENT_NUMBER);
     claim.setIsPostalApplication(false);
 
-    var forms = createClientForms(claim);
+    var forms = MockAmendmentFormsFunctions.justClient1Filled(claim);
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var doc = renderDocument();
@@ -214,14 +215,6 @@ class AmendClient1ViewTest extends AmendmentsBaseTest {
     Assertions.assertEquals("1", selectedMonth.attr("value"), "Selected month value");
   }
 
-  private AmendmentForms createClientForms(ClaimDetails claim) {
-    var view = ClaimClientViewFactory.create(claim);
-    return AmendmentForms.builder()
-        .client1(new AmendmentForm(view.client1Rows()))
-        .caseType(new AmendmentForm())
-        .caseDetails(new AmendmentForm())
-        .build();
-  }
 
   private void assertCommonPageContent(Document doc) {
     assertPageHasTitle(doc, "Amend claim details");

@@ -25,6 +25,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.TextAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.resources.MockAmendmentFormsFunctions;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
@@ -66,12 +67,9 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
     var caseDetailsForm = new AmendmentForm();
     caseDetailsForm.setInputs(caseDetailsRows);
 
-    var updatedForms =
-        AmendmentForms.builder()
-            .client1(new AmendmentForm())
-            .caseType(new AmendmentForm())
-            .caseDetails(caseDetailsForm)
-            .build();
+    var updatedForms = MockAmendmentFormsFunctions.justCaseDetailsFilled(claim);
+    updatedForms.getCaseDetailsForm().setCurrent(caseDetailsForm);
+
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = get(buildAmendCaseDetailsPath()).session(session).with(csrf());
@@ -89,13 +87,10 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
     var caseDetailsForm = new AmendmentForm();
     caseDetailsForm.setInputs(caseDetailsRows);
 
-    var forms =
-        AmendmentForms.builder()
-            .client1(new AmendmentForm())
-            .caseType(new AmendmentForm())
-            .caseDetails(caseDetailsForm)
-            .build();
-    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+    var updatedForms = MockAmendmentFormsFunctions.empty();
+    updatedForms.getCaseDetailsForm().setCurrent(caseDetailsForm);
+
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request =
         post(buildAmendCaseDetailsPath())
@@ -107,7 +102,7 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
         .perform(request)
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(buildAmendCaseTabPath()))
-        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), forms));
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCaseDetailsForm().getCurrent().getInputs().get("FEE_CODE"))
@@ -120,13 +115,9 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
     var caseDetailsForm = new AmendmentForm();
     caseDetailsForm.setInputs(caseDetailsRows);
 
-    var forms =
-        AmendmentForms.builder()
-            .client1(new AmendmentForm())
-            .caseType(new AmendmentForm())
-            .caseDetails(caseDetailsForm)
-            .build();
-    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+    var updatedForms = MockAmendmentFormsFunctions.empty();
+    updatedForms.getCaseDetailsForm().setCurrent(caseDetailsForm);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var tooLong = "a".repeat(51);
     var request =
