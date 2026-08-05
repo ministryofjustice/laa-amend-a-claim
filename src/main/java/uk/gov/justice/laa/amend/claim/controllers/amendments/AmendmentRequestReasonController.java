@@ -1,8 +1,5 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -13,44 +10,46 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReference;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentReasonReference;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Controller
-@RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/requested-by")
+@RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/requested-reason")
 @HasRoleClaimAmendmentsCaseworker
 @Slf4j
-public class AmendmentRequestByController {
+public class AmendmentRequestReasonController {
 
   private final SystemReferenceService systemReferenceService;
 
   @GetMapping()
-  public String getRequestedBy(Model model, @PathVariable String claimId, @PathVariable String submissionId) {
-
-    var amendmentRequestedByReferenceList = systemReferenceService.getAmendmentRequestedByReferenceList();
+  public String getAmendReasons(Model model, @PathVariable String claimId, @PathVariable String submissionId) {
+    var amendmentReasons = systemReferenceService.getAmendmentReasonByProvider("Assurance");
     Map<String, String> codeToLabelMap = new LinkedHashMap<>();
-    if (amendmentRequestedByReferenceList != null
-        && amendmentRequestedByReferenceList.getRequestedBy() != null) {
+    if (amendmentReasons != null && !amendmentReasons.isEmpty()) {
       codeToLabelMap =
-          amendmentRequestedByReferenceList.getRequestedBy().stream()
+              amendmentReasons.stream()
               .filter(
                   item -> item != null && item.getCode() != null && item.getDisplayLabel() != null)
               .collect(
                   Collectors.toMap(
-                      AmendmentRequestedByReference::getCode,
-                      AmendmentRequestedByReference::getDisplayLabel,
+                      AmendmentReasonReference::getCode,
+                      AmendmentReasonReference::getDisplayLabel,
                       (existing, replacement) -> existing,
                       LinkedHashMap::new));
     }
-    model.addAttribute("amendmentRequestByOptions", codeToLabelMap);
+    model.addAttribute("amendmentReasonOptions", codeToLabelMap);
     model.addAttribute("claimId", claimId);
     model.addAttribute("submissionId", submissionId);
 
-    return "amendments/amend-request-by";
+    return "amendments/amend-request-reason";
   }
 
   @PostMapping
-  public String postRequestedBy(@PathVariable String submissionId, @PathVariable String claimId) {
-    return "redirect:/submissions/%s/claims/%s/amendments/requested-reason".formatted(submissionId, claimId);
+  public String postRequestedBy() {
+    return "redirect:/submissions/{submissionId}/claims/{claimId}/amendments/case";
   }
 }

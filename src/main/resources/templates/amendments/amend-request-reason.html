@@ -13,30 +13,27 @@
         <div class="govuk-grid-column-two-thirds">
 
             <h1 class="govuk-heading-l">
-                <span th:text="#{amendments.requestBy.title}"></span>
+                <span th:text="#{amendments.requestReason.title}"></span>
             </h1>
 
             <form method="post"
-                  th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/requested-by(submissionId=${submissionId}, claimId=${claimId})}"
+                  th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/requested-reason(submissionId=${submissionId}, claimId=${claimId})}"
                   th:object="${caseTypeForm}">
 
-                <div class="govuk-form-group"
-                     >
+                <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
-
-
                         <div class="govuk-radios govuk-radios--small"
-                             data-module="govuk-radios" id="requested-by-input-container">
-                            <th:block th:each="requestedBy,idx : ${amendmentRequestByOptions}">
+                             data-module="govuk-radios" id="requested-reason-input-container">
+                            <th:block th:each="requestedReason,idx : ${amendmentReasonOptions}">
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input"
-                                           th:id="${idx.index > 0} ? |requestedBy-input-${idx.index}| : |requestedBy-input|"
+                                           th:id="${idx.index > 0} ? |requestedReason-input-${idx.index}| : |requestedReason-input|"
                                            type="radio"
-                                           th:value="${requestedBy.getKey()}"
+                                           th:value="${requestedReason.getKey()}"
                                     >
                                     <label class="govuk-label govuk-radios__label"
-                                           th:for="${idx.index > 0} ? |requestedBy-input-${idx.index}| : |requestedBy-input|"
-                                           th:text="${requestedBy.getValue()}">
+                                           th:for="${idx.index > 0} ? |requestedReason-input-${idx.index}| : |requestedReason-input|"
+                                           th:text="${requestedReason.getValue()}">
                                     </label>
                                 </div>
                             </th:block>
@@ -46,7 +43,7 @@
                 </div>
                 <div class="govuk-button-group">
                     <button class="govuk-button" type="submit" th:text="#{amendments.continue}"></button>
-                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/requested-by(submissionId=${submissionId}, claimId=${claimId})}"
+                    <a th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/requested-reason(submissionId=${submissionId}, claimId=${claimId})}"
                        id="cancel"
                        class="govuk-link govuk-link--no-visited-state"
                        th:text="#{service.cancel}">
