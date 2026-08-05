@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 

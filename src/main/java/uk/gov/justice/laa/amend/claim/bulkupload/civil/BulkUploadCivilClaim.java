@@ -12,7 +12,7 @@ import java.util.List;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadError;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 
 @Data
 public class BulkUploadCivilClaim {

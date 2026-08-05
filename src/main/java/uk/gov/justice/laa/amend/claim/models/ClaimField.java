@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.models;
 import java.math.BigDecimal;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
 @Data

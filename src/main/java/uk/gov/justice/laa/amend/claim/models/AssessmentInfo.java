@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import lombok.Builder;
+import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 
 @Builder
 public record AssessmentInfo(

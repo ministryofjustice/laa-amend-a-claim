@@ -71,7 +71,7 @@
                                         <select class="govuk-select" id="area-of-law" name="areaOfLaw" th:field="*{areaOfLaw}">
                                             <option value="" th:text="#{service.showAll}"></option>
                                             <option
-                                                    th:each="areaOfLaw : ${T(uk.gov.justice.laa.amend.claim.models.AreaOfLaw).values()}"
+                                                    th:each="areaOfLaw : ${T(uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw).values()}"
                                                     th:value="${areaOfLaw.name()}"
                                                     th:text="#{${areaOfLaw.messageKey}}"></option>
                                         </select>

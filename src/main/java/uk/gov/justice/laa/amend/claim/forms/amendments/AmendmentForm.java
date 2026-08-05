@@ -23,7 +23,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsView
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldType;
+import uk.gov.justice.laa.amend.claim.models.enums.FieldType;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField;
 
 @Data

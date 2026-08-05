@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
+package uk.gov.justice.laa.amend.claim.models.enums;
 
 public enum FieldType {
   TEXT,

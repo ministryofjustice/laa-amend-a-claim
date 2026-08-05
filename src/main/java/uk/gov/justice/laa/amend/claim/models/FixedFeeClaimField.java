@@ -4,6 +4,7 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
 @NoArgsConstructor

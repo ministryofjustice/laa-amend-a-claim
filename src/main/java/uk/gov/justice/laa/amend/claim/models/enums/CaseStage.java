@@ -1,4 +1,6 @@
-package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
+package uk.gov.justice.laa.amend.claim.models.enums;
+
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldOption;
 
 public enum CaseStage implements FieldOption {
   FPL01("FPL01"),

@@ -6,7 +6,7 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.CONTI
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 
 @Setter
 @Getter

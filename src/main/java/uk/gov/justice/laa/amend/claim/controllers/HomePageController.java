@@ -23,7 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
-import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.search.SearchQuery;
 import uk.gov.justice.laa.amend.claim.models.search.SearchSortField;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;

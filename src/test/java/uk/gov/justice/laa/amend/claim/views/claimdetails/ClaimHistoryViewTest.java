@@ -2,10 +2,10 @@ package uk.gov.justice.laa.amend.claim.views.claimdetails;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_ASSESSED_ESCAPE_CASE;
-import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_CREATED;
-import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
-import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_VOIDED;
+import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_ASSESSED_ESCAPE_CASE;
+import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_CREATED;
+import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
+import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_VOIDED;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -21,7 +21,7 @@ import uk.gov.justice.laa.amend.claim.controllers.claimdetails.ClaimHistoryContr
 import uk.gov.justice.laa.amend.claim.models.ClaimHistory;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistoryEvent;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;

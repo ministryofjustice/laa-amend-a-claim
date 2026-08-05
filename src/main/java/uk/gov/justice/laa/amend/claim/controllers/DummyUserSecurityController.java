@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import uk.gov.justice.laa.amend.claim.models.Role;
+import uk.gov.justice.laa.amend.claim.models.enums.Role;
 import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 
 @AllArgsConstructor

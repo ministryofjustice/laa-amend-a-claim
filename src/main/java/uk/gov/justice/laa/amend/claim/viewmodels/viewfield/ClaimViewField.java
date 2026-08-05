@@ -8,6 +8,7 @@ import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.enums.FieldType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
 public interface ClaimViewField<T extends Claim> {

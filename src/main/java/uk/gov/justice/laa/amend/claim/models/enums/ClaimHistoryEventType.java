@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.models;
+package uk.gov.justice.laa.amend.claim.models.enums;
 
 public enum ClaimHistoryEventType {
   CLAIM_CREATED,

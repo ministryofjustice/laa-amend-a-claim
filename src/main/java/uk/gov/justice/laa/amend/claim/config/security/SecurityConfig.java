@@ -32,7 +32,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.OncePerRequestFilter;
-import uk.gov.justice.laa.amend.claim.models.Role;
+import uk.gov.justice.laa.amend.claim.models.enums.Role;
 
 @Slf4j
 @Profile("!local & !ephemeral & !e2e")

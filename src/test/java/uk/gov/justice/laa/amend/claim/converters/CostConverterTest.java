@@ -3,7 +3,7 @@ package uk.gov.justice.laa.amend.claim.converters;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
-import uk.gov.justice.laa.amend.claim.models.Cost;
+import uk.gov.justice.laa.amend.claim.models.enums.Cost;
 
 public class CostConverterTest {
 

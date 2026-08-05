@@ -5,6 +5,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.enums.FieldType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
 @Getter

@@ -7,7 +7,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import uk.gov.justice.laa.amend.claim.controllers.ChangeAssessedTotalsController;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 
 @WebMvcTest(ChangeAssessedTotalsController.class)
 class ChangeAssessedTotalViewTest extends ViewTestBase {

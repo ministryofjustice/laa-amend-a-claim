@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 public class ClaimDetailsHeaderViewTest {
