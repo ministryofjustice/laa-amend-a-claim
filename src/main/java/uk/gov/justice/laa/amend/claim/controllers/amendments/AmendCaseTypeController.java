@@ -80,6 +80,12 @@ public class AmendCaseTypeController {
       Model model,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
+    if (claim.getAreaOfLaw() != AreaOfLaw.CRIME_LOWER) {
+      return "redirect:/submissions/%s/claims/%s/amendments/amend-matter-type"
+          .formatted(submissionId, claimId);
+    }
+
     var amendmentForms = getAmendmentForms(session, claimId);
 
     model.addAttribute("forms", amendmentForms);
