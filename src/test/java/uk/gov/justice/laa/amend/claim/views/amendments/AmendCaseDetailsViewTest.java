@@ -179,12 +179,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
         caseDetails.get(10), "Access point", ACCESS_POINT, ACCESS_POINT);
     assertSummaryListRowContainsValues(
         caseDetails.get(11), "Stage reached", LEGAL_HELP_STAGE_REACHED, LEGAL_HELP_STAGE_REACHED);
-    assertEnumTypeaheadRow(
-        caseDetails.get(12),
-        "Outcome for client",
-        OUTCOME_FOR_CLIENT,
-        "OUTCOME_FOR_CLIENT",
-        OUTCOME_FOR_CLIENT);
+    assertSummaryListRowContainsValues(
+        caseDetails.get(12), "Outcome for client", OUTCOME_FOR_CLIENT, OUTCOME_FOR_CLIENT);
     assertSummaryListRowContainsValues(
         caseDetails.get(13),
         "Exceptional case funding (ECF) reference",

@@ -129,7 +129,7 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       String.class,
       MediationClaimDetails::getOutcome,
       ClaimPatch.Builder::outcomeCode,
-      FieldOptions.OUTCOME),
+      FieldOptions.MEDIATION_OUTCOME),
   OUTREACH_LOCATION(
       FieldType.TEXT,
       String.class,

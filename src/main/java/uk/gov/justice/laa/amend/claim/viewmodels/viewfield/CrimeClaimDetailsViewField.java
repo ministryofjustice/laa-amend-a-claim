@@ -43,7 +43,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       String.class,
       CrimeClaimDetails::getOutcome,
       ClaimPatch.Builder::outcomeCode,
-      FieldOptions.OUTCOME),
+      FieldOptions.CRIME_LOWER_OUTCOME),
   SUSPECTS_DEFENDANTS_COUNT(
       FieldType.NUMBER,
       Integer.class,

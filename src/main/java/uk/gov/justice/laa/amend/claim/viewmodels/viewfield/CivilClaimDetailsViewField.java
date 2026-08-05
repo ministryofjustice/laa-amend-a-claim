@@ -102,11 +102,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       CivilClaimDetails::getAccessPoint,
       ClaimPatch.Builder::accessPointCode),
   OUTCOME_FOR_CLIENT(
-      FieldType.ENUM,
-      String.class,
-      CivilClaimDetails::getOutcome,
-      ClaimPatch.Builder::outcomeCode,
-      FieldOptions.OUTCOME),
+      FieldType.TEXT, String.class, CivilClaimDetails::getOutcome, ClaimPatch.Builder::outcomeCode),
   EXCEPTIONAL_CASE_FUNDING(
       FieldType.TEXT,
       String.class,
