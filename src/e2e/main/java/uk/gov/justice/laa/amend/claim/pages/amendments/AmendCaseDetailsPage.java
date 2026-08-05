@@ -23,6 +23,20 @@ public class AmendCaseDetailsPage extends LaaPage {
     caseDetailInput.fill(value);
   }
 
+  public void fillDateInput(String inputKey, String day, String month, String year) {
+    var dayInput = page.locator(String.format("#%s-day", inputKey));
+    var monthInput = page.locator(String.format("#%s-month", inputKey));
+    var yearInput = page.locator(String.format("#%s-year", inputKey));
+
+    assertThat(dayInput).isVisible();
+    assertThat(monthInput).isVisible();
+    assertThat(yearInput).isVisible();
+
+    dayInput.fill(day);
+    monthInput.selectOption(month);
+    yearInput.fill(year);
+  }
+
   public void fillTypeaheadInput(String inputKey, String value) {
     var caseDetailInput = page.locator(String.format("input#%s", inputKey));
     assertThat(caseDetailInput).isVisible();

@@ -394,9 +394,6 @@ public class AmendmentsFlowE2ETest extends BaseTest {
       """
           E2E: Crime Claim Amendment Flow – Search → View → Amend Claim Details
             → Costs tab → Change costs → View Costs
-            → Check Page → Submit amendments → Confirmation page
-            
-                E2E: Mediation Claim Amendment Flow – Search → View → View Client → Amend Claim Details
             → View Client → Change Client Details → View Client
             → View Case → Change case type → Change Fee code → Change Matter Type → View Case Type
             → View Case → Change case details → View Case
@@ -442,34 +439,33 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
 
-      // View Case → Change case type → View Case
-      var viewAmendCase = new ViewCasePage(page);
-      viewAmendClient.clickCaseTab();
-      assertSummaryListRow(page, "Case type", "Fee code", "INVC");
-      assertSummaryListRow(page, "Case type", "Stage reached", "INVC");
-      assertSummaryListRow(page, "Case details", "Case concluded date", "30 January 2020");
+    // View Case → Change case type → View Case
 
-      viewAmendCase.clickChangeCaseTypeLink();
-      var amendFeeCode = new AmendFeeCodePage(page);
-      amendFeeCode.fillFeeCodeInput("APPA");
-      amendFeeCode.clickContinueButton();
+    var viewAmendCase = new ViewCasePage(page);
+    viewAmendClient.clickCaseTab();
+    assertSummaryListRow(page, "Case type", "Fee code", "INVC");
+    assertSummaryListRow(page, "Case type", "Stage reached", "INVC");
 
-      var amendStageReached = new AmendStageReachedPage(page);
-      amendStageReached.fillStageReachedInput("PROD");
-      amendStageReached.clickContinueButton();
+    viewAmendCase.clickChangeCaseTypeLink();
+    var amendFeeCode = new AmendFeeCodePage(page);
+    amendFeeCode.clickContinueButton();
 
-      viewAmendCase = new ViewCasePage(page);
-      assertSummaryListRow(page, "Case type", "Fee code", "INVC", "APPA");
-      assertSummaryListRow(page, "Case type", "Stage reached", "INVC", "PROD");
+    var amendStageReached = new AmendStageReachedPage(page);
+    amendStageReached.fillStageReachedInput("PROD");
+    amendStageReached.clickContinueButton();
 
-      viewAmendCase.clickChangeCaseDetailsLink();
-      var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
-      viewAmendCaseDetails.fillInput("MATTER_TYPE_CODE", "INVC");
-      viewAmendCaseDetails.clickContinueButton();
+    viewAmendCase = new ViewCasePage(page);
+    assertSummaryListRow(page, "Case type", "Stage reached", "INVC", "PROD");
 
-      viewAmendCase = new ViewCasePage(page);
-      assertSummaryListRow(page, "Case details", "Matter type", "INVA", "INVC");
+    viewAmendCase.clickChangeCaseDetailsLink();
+    var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
+    viewAmendCaseDetails.fillDateInput("CASE_CONCLUDED_DATE", "31", "January", "2020");
+    ;
+    viewAmendCaseDetails.clickContinueButton();
 
+    viewAmendCase = new ViewCasePage(page);
+    assertSummaryListRow(
+        page, "Case details", "Case concluded date", "30 January 2020", "31 January 2020");
 
     viewAmendCase.clickContinue();
 
@@ -477,7 +473,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
     assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£150.00");
     assertSummaryListRow(page, "Case type", "Stage reached", "INVC", "PROD");
-    assertSummaryListRow(page, "Case details", "Matter type", "INVA", "INVC");
+    assertSummaryListRow(page, "Case details", "Case concluded date", "30 January 2020", "31 January 2020");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);

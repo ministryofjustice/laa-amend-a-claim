@@ -70,13 +70,16 @@ public class AmendCaseTypeController {
           .formatted(submissionId, claimId);
     }
 
-    return "redirect:/submissions/%s/claims/%s/amendments/amend-matter-type".formatted(
-        submissionId, claimId);
+    return "redirect:/submissions/%s/claims/%s/amendments/amend-matter-type"
+        .formatted(submissionId, claimId);
   }
 
   @GetMapping("/amend-stage-reached")
   public String getAmendStageReached(
-      HttpSession session, Model model, @PathVariable UUID submissionId, @PathVariable UUID claimId) {
+      HttpSession session,
+      Model model,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
     var amendmentForms = getAmendmentForms(session, claimId);
 
     model.addAttribute("forms", amendmentForms);
