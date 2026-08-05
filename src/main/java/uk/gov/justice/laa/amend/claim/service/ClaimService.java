@@ -16,7 +16,6 @@ import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.search.SearchSort;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
@@ -141,15 +140,6 @@ public class ClaimService {
     } catch (Exception e) {
       log.error("Error voiding claim {}", claimId, e);
       voidClaimFailureCounter.increment();
-      throw e;
-    }
-  }
-
-  public AmendmentRequestedByReferenceList getAmendmentRequestedByReferenceList() {
-    try {
-      return claimsApiClient.getAmendmentRequestedByReferenceList().block();
-    } catch (Exception e) {
-      log.error("Error getting amendment requested by reference list", e);
       throw e;
     }
   }
