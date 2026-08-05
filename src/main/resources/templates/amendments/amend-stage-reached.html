@@ -10,7 +10,7 @@
 <body>
 <main class="govuk-main-wrapper" id="main-content">
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-half">
+    <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-l">
         <span th:text="#{amendments.stageReached.title}"></span>
@@ -30,19 +30,20 @@
       <form method="post"
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-stage-reached(submissionId=${submissionId}, claimId=${claimId})}"
             th:object="${caseTypeForm}">
-        <input type="hidden" th:field="*{inputs['FEE_CODE']}"/>
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-!-font-weight-bold"
-                 for="stage-reached-input"
-                 th:text="#{amendments.stageReached.amended}"></label>
+        <input type="hidden" th:each="entry : *{inputs}"
+               th:if="${entry.key != 'STAGE_REACHED'}"
+               th:field="*{inputs[__${entry.key}__]}"
+               th:value="${entry.value}"/>
+
+        <div class="govuk-body">
           <div class="autocomplete-wrapper">
-            <select class="govuk-select"
-                    id="stage-reached-input"
+            <label class="govuk-label govuk-!-font-weight-bold" for="stage-reached-input"
+                   th:text="#{amendments.stageReached.amended}"></label>
+            <select class="govuk-select" id="stage-reached-input"
                     th:field="*{inputs['STAGE_REACHED']}"
                     data-module="make-autocomplete">
-              <option value=""></option>
-              <option th:each="option : ${stageReachedOptions}"
-                      th:value="${option.value()}"
+              <option value="" selected></option>
+              <option th:each="option : ${stageReachedOptions}" th:value="${option.value()}"
                       th:text="#{${option.messageKey()}}"></option>
             </select>
           </div>

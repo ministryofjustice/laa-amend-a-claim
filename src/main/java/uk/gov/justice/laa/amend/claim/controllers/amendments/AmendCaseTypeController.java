@@ -85,9 +85,7 @@ public class AmendCaseTypeController {
       return "redirect:/submissions/%s/claims/%s/amendments/amend-matter-type"
           .formatted(submissionId, claimId);
     }
-
     var amendmentForms = getAmendmentForms(session, claimId);
-
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("stageReachedOptions", FieldOptions.CRIME_STAGE_REACHED);
     model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
