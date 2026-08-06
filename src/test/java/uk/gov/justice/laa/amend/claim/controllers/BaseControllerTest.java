@@ -14,6 +14,7 @@ import uk.gov.justice.laa.amend.claim.config.security.LocalSecurityConfig;
 import uk.gov.justice.laa.amend.claim.models.enums.Role;
 import uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService;
 import uk.gov.justice.laa.amend.claim.service.MaintenanceService;
+import uk.gov.justice.laa.amend.claim.viewmodels.AmendmentsHeaderViewFactory;
 
 @ActiveProfiles("local")
 @WebMvcTest(ConfirmationController.class)
@@ -29,6 +30,8 @@ public abstract class BaseControllerTest {
   @MockitoBean protected MaintenanceService maintenanceService;
 
   @MockitoBean protected OutageBannerAdvice outageBannerAdvice;
+
+  @MockitoBean protected AmendmentsHeaderViewFactory amendmentsHeaderViewFactory;
 
   @BeforeEach
   public void beforeEach() {

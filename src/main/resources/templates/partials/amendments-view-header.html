@@ -1,5 +1,7 @@
 <th:block th:fragment="viewHeader(currentPage)" xmlns:th="http://www.thymeleaf.org">
 
+    <th:block th:replace="~{partials/amendments-assessed-banner :: assessedBanner}"></th:block>
+
     <h1 class="govuk-heading-l">
         <span th:text="#{amendments.title}"></span>
     </h1>

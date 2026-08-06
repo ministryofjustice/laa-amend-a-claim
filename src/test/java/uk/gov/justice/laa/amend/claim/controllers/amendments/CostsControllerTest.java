@@ -1,6 +1,8 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,7 +21,10 @@ import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.viewmodels.AmendmentsHeaderView;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @WebMvcTest(controllers = CostsController.class)
 class CostsControllerTest extends BaseControllerTest {
@@ -41,6 +46,8 @@ class CostsControllerTest extends BaseControllerTest {
     claim.setClaimId(claimId);
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
     session.setAttribute(claimId.toString(), claim);
+    when(amendmentsHeaderViewFactory.create(any()))
+        .thenReturn(new AmendmentsHeaderView(false, null));
   }
 
   @Test
@@ -78,6 +85,54 @@ class CostsControllerTest extends BaseControllerTest {
   }
 
   @Test
+  void getAmendCostsReturnsNotFoundWhenClaimAssessed() throws Exception {
+    claim.setStatus(ClaimStatus.VALID);
+    claim.setHasAssessment(true);
+    claim.setLastAssessment(
+        MockClaimsFunctions.createAssessment(AssessmentTypeEnum.ESCAPE_CASE_ASSESSMENT));
+
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    mockMvc
+        .perform(get(buildAmendCostsPath()).session(session).with(csrf()))
+        .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void postAmendCostsReturnsNotFoundWithoutSavingWhenClaimAssessed() throws Exception {
+    claim.setStatus(ClaimStatus.VALID);
+    claim.setHasAssessment(true);
+    claim.setLastAssessment(
+        MockClaimsFunctions.createAssessment(AssessmentTypeEnum.ESCAPE_CASE_ASSESSMENT));
+
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    mockMvc
+        .perform(
+            post(buildAmendCostsPath())
+                .param(INPUTS.formatted("PROFIT_COST"), "150.25")
+                .session(session)
+                .with(csrf()))
+        .andExpect(status().isNotFound());
+
+    AmendmentForms unchanged =
+        (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
+    assertThat(unchanged.getCostsForm().getCurrent().getInputs().get("PROFIT_COST")).isNull();
+  }
+
+  @Test
   void postCostsAsExpected() throws Exception {
     var forms =
         AmendmentForms.builder()
@@ -102,6 +157,58 @@ class CostsControllerTest extends BaseControllerTest {
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCostsForm().getCurrent().getInputs().get("PROFIT_COST"))
         .isEqualTo("150.25");
+  }
+
+  @Test
+  void postIgnoresTamperedNonEditableCostInput() throws Exception {
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var request =
+        post(buildAmendCostsPath())
+            .param(INPUTS.formatted("FIXED_FEE"), "9999")
+            .param(INPUTS.formatted("PROFIT_COST"), "150.25")
+            .session(session)
+            .with(csrf());
+
+    mockMvc.perform(request).andExpect(status().is3xxRedirection());
+
+    AmendmentForms updatedForm =
+        (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
+    var inputs = updatedForm.getCostsForm().getCurrent().getInputs();
+    assertThat(inputs.get("FIXED_FEE")).isNull();
+    assertThat(inputs.get("PROFIT_COST")).isEqualTo("150.25");
+  }
+
+  @Test
+  void postDropsUnknownCostInput() throws Exception {
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var request =
+        post(buildAmendCostsPath())
+            .param(INPUTS.formatted("NOT_A_REAL_FIELD"), "666")
+            .param(INPUTS.formatted("PROFIT_COST"), "150.25")
+            .session(session)
+            .with(csrf());
+
+    mockMvc.perform(request).andExpect(status().is3xxRedirection());
+
+    AmendmentForms updatedForm =
+        (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
+    var inputs = updatedForm.getCostsForm().getCurrent().getInputs();
+    assertThat(inputs.containsKey("NOT_A_REAL_FIELD")).isFalse();
+    assertThat(inputs.get("PROFIT_COST")).isEqualTo("150.25");
   }
 
   private String buildCostsPath() {

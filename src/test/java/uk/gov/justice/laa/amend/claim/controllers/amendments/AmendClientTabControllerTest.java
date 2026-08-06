@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -17,6 +19,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.viewmodels.AmendmentsHeaderView;
 
 @WebMvcTest(controllers = {AmendClientTabController.class})
 class AmendClientTabControllerTest extends BaseControllerTest {
@@ -44,6 +47,8 @@ class AmendClientTabControllerTest extends BaseControllerTest {
     claim.setClaimId(claimId);
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
     session.setAttribute(claimId.toString(), claim);
+    when(amendmentsHeaderViewFactory.create(any()))
+        .thenReturn(new AmendmentsHeaderView(false, null));
   }
 
   @Test

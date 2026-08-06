@@ -117,6 +117,19 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
     Assertions.assertEquals("1", selectedMonth.attr("value"), "Selected month value");
   }
 
+  @Test
+  void showsAssessedBanner() {
+    var claim = MockClaimsFunctions.createMockMediationClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    markAssessed(claim);
+    session.setAttribute(
+        AMENDMENTS_KEY.formatted(claimId), MockAmendmentFormsFunctions.justClient2Filled(claim));
+
+    assertShowsAssessedBanner(renderDocument());
+  }
+
   private void assertCommonPageContent(Document doc) {
     assertPageHasTitle(doc, "Amend claim details");
     assertPageHasHeading(doc, "Amend claim details");

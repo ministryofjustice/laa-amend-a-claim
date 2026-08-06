@@ -83,6 +83,33 @@ class ViewCostsViewTest extends AmendmentsBaseTest {
     Assertions.assertEquals(3, costs.getFirst().size(), "Amended column should not be shown");
   }
 
+  @Test
+  void hidesChangeLinkWhenClaimAssessed() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    markAssessed(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCostsForms(claim));
+
+    var doc = renderDocument();
+
+    Assertions.assertTrue(
+        doc.select("#amend-costs-link").isEmpty(), "Change link should be hidden when assessed");
+  }
+
+  @Test
+  void showsAssessedBanner() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    markAssessed(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCostsForms(claim));
+
+    assertShowsAssessedBanner(renderDocument());
+  }
+
   private static AmendmentForms createCostsForms(ClaimDetails claimDetails) {
     var costsForm = new AmendmentForm(ClaimCostsViewFactory.create(claimDetails).costRows());
     return AmendmentForms.builder()

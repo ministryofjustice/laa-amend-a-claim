@@ -49,6 +49,20 @@ class AmendFeeCodeViewTest extends AmendmentsBaseTest {
     assertAutocompleteDropDownList(doc, "Amended fee code", "ABC");
   }
 
+  @Test
+  void showsAssessedBanner() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setFeeCode(FEE_CODE);
+    markAssessed(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCaseTypeForm(claim));
+    when(availableFeeCodesService.getAvailableFeeCodes(any())).thenReturn(Map.of(FEE_CODE, "ABC"));
+
+    assertShowsAssessedBanner(renderDocument());
+  }
+
   private AmendmentForms createCaseTypeForm(ClaimDetails claim) {
     var view = ClaimCaseViewFactory.create(claim);
     return AmendmentForms.builder()

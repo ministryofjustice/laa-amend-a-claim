@@ -240,6 +240,18 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
     assertPageHasLink(doc, "change-costs", "Change", amendCostsUrl);
   }
 
+  @Test
+  void showsAssessedBanner() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    setupClaim(claim);
+    markAssessed(claim);
+    var forms = createCrimeForms(claim);
+    forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    assertShowsAssessedBanner(renderDocument());
+  }
+
   private void setupClaim(ClaimDetails claim) {
     this.claim = claim;
     claim.setSubmissionId(submissionId);
