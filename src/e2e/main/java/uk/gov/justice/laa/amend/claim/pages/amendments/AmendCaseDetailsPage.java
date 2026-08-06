@@ -5,6 +5,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import com.microsoft.playwright.options.SelectOption;
 import uk.gov.justice.laa.amend.claim.pages.LaaPage;
 
 public class AmendCaseDetailsPage extends LaaPage {
@@ -21,6 +22,20 @@ public class AmendCaseDetailsPage extends LaaPage {
     var caseDetailInput = page.locator(String.format("input#inputs%s", inputKey));
     assertThat(caseDetailInput).isVisible();
     caseDetailInput.fill(value);
+  }
+
+  public void fillDateInput(String inputKey, String day, String month, String year) {
+    var dayInput = page.locator(String.format("#%s-day", inputKey));
+    var monthInput = page.locator(String.format("#%s-month", inputKey));
+    var yearInput = page.locator(String.format("#%s-year", inputKey));
+
+    assertThat(dayInput).isVisible();
+    assertThat(monthInput).isVisible();
+    assertThat(yearInput).isVisible();
+
+    dayInput.fill(day);
+    monthInput.selectOption(new SelectOption().setLabel(month));
+    yearInput.fill(year);
   }
 
   public void fillTypeaheadInput(String inputKey, String value) {

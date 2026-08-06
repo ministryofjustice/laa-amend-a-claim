@@ -19,7 +19,9 @@ import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldOptions;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
@@ -57,13 +59,57 @@ public class AmendCaseTypeController {
       @ModelAttribute("caseTypeForm") AmendmentForm caseTypeForm,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
 
     amendmentForms.getCaseTypeForm().setCurrent(caseTypeForm);
     saveAmendmentForms(session, claimId, amendmentForms);
 
+    if (claim.getAreaOfLaw() == AreaOfLaw.CRIME_LOWER) {
+      return "redirect:/submissions/%s/claims/%s/amendments/amend-stage-reached"
+          .formatted(submissionId, claimId);
+    }
+
     return "redirect:/submissions/%s/claims/%s/amendments/amend-matter-type"
         .formatted(submissionId, claimId);
+  }
+
+  @GetMapping("/amend-stage-reached")
+  public String getAmendStageReached(
+      HttpSession session,
+      Model model,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
+    if (claim.getAreaOfLaw() != AreaOfLaw.CRIME_LOWER) {
+      return "redirect:/submissions/%s/claims/%s/amendments/amend-matter-type"
+          .formatted(submissionId, claimId);
+    }
+    var amendmentForms = getAmendmentForms(session, claimId);
+    model.addAttribute("forms", amendmentForms);
+    model.addAttribute("stageReachedOptions", FieldOptions.CRIME_STAGE_REACHED);
+    model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
+    return "amendments/amend-stage-reached";
+  }
+
+  @PostMapping("/amend-stage-reached")
+  public String postAmendStageReached(
+      HttpSession session,
+      @ModelAttribute("caseTypeForm") AmendmentForm caseTypeForm,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
+    if (claim.getAreaOfLaw() != AreaOfLaw.CRIME_LOWER) {
+      return "redirect:/submissions/%s/claims/%s/amendments/amend-matter-type"
+          .formatted(submissionId, claimId);
+    }
+
+    var amendmentForms = getAmendmentForms(session, claimId);
+
+    amendmentForms.getCaseTypeForm().setCurrent(caseTypeForm);
+    saveAmendmentForms(session, claimId, amendmentForms);
+
+    return "redirect:/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
   }
 
   @GetMapping("/amend-matter-type")
@@ -77,7 +123,6 @@ public class AmendCaseTypeController {
 
     var amendmentForms = getAmendmentForms(session, claimId);
 
-    model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
 

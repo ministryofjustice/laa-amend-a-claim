@@ -53,9 +53,10 @@ public class CheckAmendmentsService {
     } catch (WebClientResponseException ex) {
       // TODO: This will be handled gracefully by BC-651
       log.error(
-          "Failed to submit amendment for submission {} claim {}: {}",
+          "Failed to submit amendment for submission {} claim {} with status {}: {}",
           submissionId,
           claimId,
+          ex.getStatusCode(),
           ex.getResponseBodyAsString(),
           ex);
       throw ex;

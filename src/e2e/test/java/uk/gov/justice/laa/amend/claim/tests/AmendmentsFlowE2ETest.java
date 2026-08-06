@@ -27,6 +27,7 @@ import uk.gov.justice.laa.amend.claim.pages.amendments.AmendClient2Page;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendFeeCodePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendMatterTypePage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendStageReachedPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.CheckPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ConfirmationPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCasePage;
@@ -404,9 +405,14 @@ public class AmendmentsFlowE2ETest extends BaseTest {
       """
           E2E: Crime Claim Amendment Flow – Search → View → Amend Claim Details
             → Costs tab → Change costs → View Costs
+            → View Client → Change Client Details → View Client
+            → View Case → Change case type → Change Fee code → Change Matter Type → View Case Type
+            → View Case → Change case details → View Case
             → Check Page → Submit amendments → Confirmation page
           """)
-  void crimeCostsAmendmentFlow() {
+  void fullCrimeAmendmentFlow() {
+    // TODO:  When case start date bug is fixed on DSTEW side we need to remove cas estart date from
+    // the test data here
     var search = new SearchPage(page);
 
     search.searchForClaim(PROVIDER_ACCOUNT, "03", "2020", CRIME_UFN, "", "", "");
@@ -415,6 +421,8 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var details = new ClaimDetailsPage(page);
     details.clickAmendClaim();
+
+    // View Costs → Change Client Details → View Client
 
     var viewAmendClient = new ViewClientPage(page);
     viewAmendClient.clickCostsTab();
@@ -444,11 +452,41 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
 
-    viewAmendCosts.clickContinue();
+    // View Case → Change case type → View Case
+
+    var viewAmendCase = new ViewCasePage(page);
+    viewAmendClient.clickCaseTab();
+    assertSummaryListRow(page, "Case type", "Fee code", "INVC");
+    assertSummaryListRow(page, "Case type", "Stage reached", "INVC");
+
+    viewAmendCase.clickChangeCaseTypeLink();
+    var amendFeeCode = new AmendFeeCodePage(page);
+    amendFeeCode.clickContinueButton();
+
+    var amendStageReached = new AmendStageReachedPage(page);
+    amendStageReached.fillStageReachedInput("PROD");
+    amendStageReached.clickContinueButton();
+
+    viewAmendCase = new ViewCasePage(page);
+    assertSummaryListRow(page, "Case type", "Stage reached", "INVC", "PROD");
+
+    viewAmendCase.clickChangeCaseDetailsLink();
+    var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
+    viewAmendCaseDetails.fillDateInput("CASE_CONCLUDED_DATE", "31", "January", "2020");
+    viewAmendCaseDetails.clickContinueButton();
+
+    viewAmendCase = new ViewCasePage(page);
+    assertSummaryListRow(
+        page, "Case details", "Case concluded date", "30 January 2020", "31 January 2020");
+
+    viewAmendCase.clickContinue();
 
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
     assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£150.00");
+    assertSummaryListRow(page, "Case type", "Stage reached", "INVC", "PROD");
+    assertSummaryListRow(
+        page, "Case details", "Case concluded date", "30 January 2020", "31 January 2020");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);
