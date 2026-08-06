@@ -12,7 +12,6 @@ import uk.gov.justice.laa.amend.claim.models.enums.EthnicityCode;
 import uk.gov.justice.laa.amend.claim.models.enums.ExemptionCriteriaSatisfied;
 import uk.gov.justice.laa.amend.claim.models.enums.GenderCode;
 import uk.gov.justice.laa.amend.claim.models.enums.MeetingsAttended;
-import uk.gov.justice.laa.amend.claim.models.enums.OutcomeCode;
 import uk.gov.justice.laa.amend.claim.models.enums.ReferralSource;
 import uk.gov.justice.laa.amend.claim.models.enums.StageReached;
 import uk.gov.justice.laa.amend.claim.models.enums.StandardFeeCategory;
