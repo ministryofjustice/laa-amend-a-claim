@@ -6,8 +6,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.models.enums.FieldType;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldType;
 
 @Component
 public class BooleanAmendmentFieldValidator implements GenericAmendmentFieldValidator {
