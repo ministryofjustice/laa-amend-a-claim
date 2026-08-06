@@ -1,8 +1,11 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
@@ -15,23 +18,32 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.DateAmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.EnumAmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.TextAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 @WebMvcTest(controllers = AmendClientController.class)
+@Import({
+  DateAmendmentFieldValidator.class,
+  TextAmendmentFieldValidator.class,
+  EnumAmendmentFieldValidator.class
+})
 class AmendClientControllerTest extends BaseControllerTest {
 
   private static final String INPUTS = "inputs[%s]";
 
   private static final String FORENAME = "forename";
   private static final String SURNAME = "surname";
-  private static final String GENDER = "gender";
-  private static final String ETHNICITY = "ethnicity";
-  private static final String DISABILITY = "disability";
+  private static final String GENDER = "M";
+  private static final String ETHNICITY = "00";
+  private static final String DISABILITY = "NCD";
 
   private UUID submissionId;
   private UUID claimId;
@@ -98,7 +110,7 @@ class AmendClientControllerTest extends BaseControllerTest {
 
   @Test
   void savesFormsIntoSessionThenRedirectsClient2() throws Exception {
-    claim = MockClaimsFunctions.createMockMediationClaim();
+    useMediationClaim();
     claim.setClientForename("forename");
     claim.setClientSurname("surname");
     claim.setClientGender("gender");
@@ -116,7 +128,7 @@ class AmendClientControllerTest extends BaseControllerTest {
 
     var client2Rows =
         Map.of(
-            "CLIENT_2_INITIAL", FORENAME,
+            "CLIENT_2_FORENAME", FORENAME,
             "CLIENT_2_SURNAME", SURNAME,
             "CLIENT_2_GENDER", GENDER,
             "CLIENT_2_ETHNICITY", ETHNICITY,
@@ -147,6 +159,8 @@ class AmendClientControllerTest extends BaseControllerTest {
 
   @Test
   void persistsDateSubInputsIntoSessionThenRedirects() throws Exception {
+    useMediationClaim();
+
     var existingForms =
         AmendmentForms.builder()
             .client1(new AmendmentForm())
@@ -224,6 +238,8 @@ class AmendClientControllerTest extends BaseControllerTest {
 
   @Test
   void savesClient2FormsIntoSessionThenRedirects() throws Exception {
+    useMediationClaim();
+
     var existingForms =
         AmendmentForms.builder()
             .client1(new AmendmentForm())
@@ -266,6 +282,8 @@ class AmendClientControllerTest extends BaseControllerTest {
 
   @Test
   void persistsClient2DateSubInputsIntoSessionThenRedirects() throws Exception {
+    useMediationClaim();
+
     var existingForms =
         AmendmentForms.builder()
             .client1(new AmendmentForm())
@@ -302,6 +320,144 @@ class AmendClientControllerTest extends BaseControllerTest {
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(buildViewClientPath()))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
+  @Test
+  void postClient1WithInvalidValueRedirectsBackAndPreservesInput() throws Exception {
+    var existingForms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    var tooLong = "a".repeat(51);
+    var request =
+        post(buildAmendClient1Path())
+            .param(INPUTS.formatted("SURNAME"), tooLong)
+            .session(session)
+            .with(csrf());
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildAmendClient1Path()));
+
+    AmendmentForms updatedForms =
+        (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
+    assertThat(updatedForms.getClient1Form().getCurrent().getInputs().get("SURNAME"))
+        .isEqualTo(tooLong);
+  }
+
+  @Test
+  void postClient2WithInvalidValueRedirectsBackAndPreservesInput() throws Exception {
+    useMediationClaim();
+
+    var existingForms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .client2(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    var tooLong = "a".repeat(51);
+    var request =
+        post(buildAmendClient2Path())
+            .param(INPUTS.formatted("CLIENT_2_SURNAME"), tooLong)
+            .session(session)
+            .with(csrf());
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildAmendClient2Path()));
+
+    AmendmentForms updatedForms =
+        (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
+    assertThat(updatedForms.getClient2Form().getCurrent().getInputs().get("CLIENT_2_SURNAME"))
+        .isEqualTo(tooLong);
+  }
+
+  @Test
+  void postClient1WithInvalidValueRendersErrorSummaryAndInlineErrorOnRedirect() throws Exception {
+    var existingForms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    var tooLong = "a".repeat(51);
+    var postRequest =
+        post(buildAmendClient1Path())
+            .param(INPUTS.formatted("SURNAME"), tooLong)
+            .session(session)
+            .with(csrf());
+
+    var postResult =
+        mockMvc.perform(postRequest).andExpect(status().is3xxRedirection()).andReturn();
+
+    var getRequest =
+        get(buildAmendClient1Path())
+            .session(session)
+            .flashAttrs(postResult.getFlashMap())
+            .with(csrf());
+
+    mockMvc
+        .perform(getRequest)
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("govuk-error-summary")))
+        .andExpect(content().string(containsString("govuk-error-message")))
+        .andExpect(content().string(containsString("Last name must be 50 characters or less")));
+  }
+
+  @Test
+  void postClient2WithInvalidValueRendersErrorSummaryAndInlineErrorOnRedirect() throws Exception {
+    useMediationClaim();
+
+    var existingForms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .client2(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), existingForms);
+
+    var tooLong = "a".repeat(51);
+    var postRequest =
+        post(buildAmendClient2Path())
+            .param(INPUTS.formatted("CLIENT_2_SURNAME"), tooLong)
+            .session(session)
+            .with(csrf());
+
+    var postResult =
+        mockMvc.perform(postRequest).andExpect(status().is3xxRedirection()).andReturn();
+
+    var getRequest =
+        get(buildAmendClient2Path())
+            .session(session)
+            .flashAttrs(postResult.getFlashMap())
+            .with(csrf());
+
+    mockMvc
+        .perform(getRequest)
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("govuk-error-summary")))
+        .andExpect(content().string(containsString("govuk-error-message")))
+        .andExpect(content().string(containsString("Last name must be 50 characters or less")));
+  }
+
+  private void useMediationClaim() {
+    claim = MockClaimsFunctions.createMockMediationClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
+    session.setAttribute(claimId.toString(), claim);
   }
 
   private String buildViewClientPath() {

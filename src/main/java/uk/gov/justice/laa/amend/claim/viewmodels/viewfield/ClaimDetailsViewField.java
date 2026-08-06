@@ -62,6 +62,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       ClaimPatch.Builder::uniqueFileNumber),
   CASE_CONCLUDED_DATE(
       FieldType.DATE, String.class, Claim::getCaseEndDate, ClaimPatch.Builder::caseConcludedDate),
+  FEE_CODE(FieldType.TEXT, String.class, ClaimDetails::getFeeCode, ClaimPatch.Builder::feeCode),
 
   // Common cost fields
   FIXED_FEE(FieldType.TEXT, Object.class, ClaimDetails::getFixedFee, (b, v) -> b, List.of(), false),

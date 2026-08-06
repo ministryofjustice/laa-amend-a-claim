@@ -1,36 +1,60 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
+import static uk.gov.justice.laa.amend.claim.utils.AmendmentFormRedirects.redirectWithErrors;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getAmendmentForms;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveAmendmentForms;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.GenericAmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldOptions;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments")
-@RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
-public class AmendCaseTypeController {
+public class AmendCaseTypeController extends AbstractAmendController {
 
   private final AvailableFeeCodesService availableFeeCodesService;
+
+  public AmendCaseTypeController(
+      List<GenericAmendmentFieldValidator> genericAmendmentFieldValidators,
+      List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators,
+      AvailableFeeCodesService availableFeeCodesService) {
+    super(genericAmendmentFieldValidators, fieldSpecificAmendmentValidators);
+    this.availableFeeCodesService = availableFeeCodesService;
+  }
+
+  @InitBinder("caseTypeForm")
+  public void initCaseTypeFormBinder(
+      WebDataBinder binder,
+      HttpSession session,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    initBinder(binder, session, submissionId, claimId);
+  }
 
   @GetMapping("/amend-fee-code")
   public String amendFeeCode(
@@ -56,15 +80,25 @@ public class AmendCaseTypeController {
   @PostMapping("/amend-fee-code")
   public String postAmendFeeCode(
       HttpSession session,
-      @ModelAttribute("caseTypeForm") AmendmentForm caseTypeForm,
+      @Valid @ModelAttribute("caseTypeForm") AmendmentForm caseTypeForm,
+      BindingResult bindingResult,
+      RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
 
     amendmentForms.getCaseTypeForm().setCurrent(caseTypeForm);
     saveAmendmentForms(session, claimId, amendmentForms);
 
+    if (bindingResult.hasErrors()) {
+      return redirectWithErrors(
+          redirectAttributes,
+          bindingResult,
+          "caseTypeFormErrors",
+          "/submissions/%s/claims/%s/amendments/amend-fee-code".formatted(submissionId, claimId));
+    }
+
+    var claim = getValidClaim(session, submissionId, claimId);
     if (claim.getAreaOfLaw() == AreaOfLaw.CRIME_LOWER) {
       return "redirect:/submissions/%s/claims/%s/amendments/amend-stage-reached"
           .formatted(submissionId, claimId);
@@ -116,7 +150,6 @@ public class AmendCaseTypeController {
   public String getAmendMatterType(
       HttpSession session,
       Model model,
-      @ModelAttribute("caseTypeForm") AmendmentForm amendmentForm,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
@@ -132,13 +165,24 @@ public class AmendCaseTypeController {
   @PostMapping("/amend-matter-type")
   public String postAmendMatterType(
       HttpSession session,
-      @ModelAttribute("caseTypeForm") AmendmentForm caseTypeForm,
+      @Valid @ModelAttribute("caseTypeForm") AmendmentForm caseTypeForm,
+      BindingResult bindingResult,
+      RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var amendmentForms = getAmendmentForms(session, claimId);
 
     amendmentForms.getCaseTypeForm().setCurrent(caseTypeForm);
     saveAmendmentForms(session, claimId, amendmentForms);
+
+    if (bindingResult.hasErrors()) {
+      return redirectWithErrors(
+          redirectAttributes,
+          bindingResult,
+          "caseTypeFormErrors",
+          "/submissions/%s/claims/%s/amendments/amend-matter-type"
+              .formatted(submissionId, claimId));
+    }
 
     return "redirect:/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
   }

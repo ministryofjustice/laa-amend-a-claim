@@ -20,7 +20,10 @@
 
       <form method="post"
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-client(submissionId=${submissionId}, claimId=${claimId})}"
-            th:object="${client1Form}">
+            th:object="${client1Form}"
+            th:with="formErrors=${@ThymeleafUtils.orEmpty(client1FormErrors)}">
+
+        <th:block th:replace="~{partials/error-summary :: error-summary(${formErrors})}"></th:block>
 
         <div class="govuk-summary-card">
           <div class="govuk-summary-card__title-wrapper">
@@ -44,7 +47,7 @@
                 <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key.name()}}"></dt>
                 <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
                 <dd class="govuk-summary-list__value">
-                  <th:block th:replace="~{partials/amendments/amendment-input :: amendmentInput(${entry.key}, ${'claimClient.rows.' + entry.key.name()})}"></th:block>
+                  <th:block th:replace="~{partials/amendments/amendment-input :: amendmentInput(${entry.key}, ${'claimClient.rows.' + entry.key.name()}, ${formErrors})}"></th:block>
                 </dd>
               </div>
             </dl>

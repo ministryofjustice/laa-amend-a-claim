@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -19,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import uk.gov.justice.laa.amend.claim.forms.errors.AmendmentFormError;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
@@ -125,6 +127,21 @@ class SessionConfigTest {
     Object deserialized = serializer.deserialize(serialized);
 
     assertThat(deserialized).isInstanceOf(CrimeClaimDetails.class);
+  }
+
+  @Test
+  void roundTripsAmendmentFormErrorList() {
+    List<AmendmentFormError> errors =
+        new ArrayList<>(
+            List.of(new AmendmentFormError("FEE_CODE", "Value exceeds maximum length")));
+
+    byte[] serialized = serializer.serialize(errors);
+    Object deserialized = serializer.deserialize(serialized);
+
+    assertThat(deserialized).isInstanceOf(List.class);
+    List<AmendmentFormError> restored = (List<AmendmentFormError>) deserialized;
+    assertThat(restored)
+        .containsExactly(new AmendmentFormError("FEE_CODE", "Value exceeds maximum length"));
   }
 
   @Test

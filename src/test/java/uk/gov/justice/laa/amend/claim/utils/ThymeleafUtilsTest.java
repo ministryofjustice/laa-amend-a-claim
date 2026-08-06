@@ -8,7 +8,9 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.validation.FieldError;
 import org.thymeleaf.spring6.util.DetailedError;
+import uk.gov.justice.laa.amend.claim.forms.errors.AmendmentFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessedTotalFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.AssessmentOutcomeFormError;
 import uk.gov.justice.laa.amend.claim.forms.errors.SearchFormError;
@@ -19,6 +21,7 @@ public class ThymeleafUtilsTest {
 
   @Nested
   class ToSearchFormErrorsTests {
+
     @Test
     void sortErrorsByFieldOrder() {
       List<DetailedError> errors =
@@ -87,6 +90,7 @@ public class ThymeleafUtilsTest {
 
   @Nested
   class ToAssessmentOutcomeErrorsTests {
+
     @Test
     void sortErrorsByFieldOrder() {
       List<DetailedError> errors =
@@ -115,6 +119,7 @@ public class ThymeleafUtilsTest {
 
   @Nested
   class ToAssessedTotalFormErrorsTests {
+
     @Test
     void sortErrorsByFieldOrder() {
       List<DetailedError> errors =
@@ -132,6 +137,144 @@ public class ThymeleafUtilsTest {
               new AssessedTotalFormError("assessedTotalInclVat", "foo"));
 
       Assertions.assertEquals(expectedResult, result);
+    }
+  }
+
+  @Nested
+  class ToAmendmentFormErrorsTests {
+
+    @Test
+    void extractsFieldNameFromInputsPathAcrossMultipleForms() {
+      List<FieldError> errors =
+          List.of(
+              new FieldError(
+                  "caseDetailsForm",
+                  "inputs[CASE_REFERENCE_NUMBER]",
+                  null,
+                  false,
+                  new String[] {"Value exceeds maximum length"},
+                  new Object[] {},
+                  null),
+              new FieldError(
+                  "caseTypeForm",
+                  "inputs[MATTER_TYPE_CODE_1]",
+                  null,
+                  false,
+                  new String[] {"Value is not a valid option"},
+                  new Object[] {},
+                  null));
+
+      ThymeleafUtils sut = new ThymeleafUtils();
+
+      List<AmendmentFormError> result = sut.toAmendmentFormErrors(errors);
+
+      List<AmendmentFormError> expectedResult =
+          List.of(
+              new AmendmentFormError("CASE_REFERENCE_NUMBER", "Value exceeds maximum length"),
+              new AmendmentFormError("MATTER_TYPE_CODE_1", "Value is not a valid option"));
+
+      Assertions.assertEquals(expectedResult, result);
+      Assertions.assertEquals("CASE_REFERENCE_NUMBER", result.get(0).getFieldId());
+      Assertions.assertEquals("MATTER_TYPE_CODE_1", result.get(1).getFieldId());
+    }
+
+    @Test
+    void filterOutDuplicateErrorMessages() {
+      List<FieldError> errors =
+          List.of(
+              new FieldError(
+                  "caseTypeForm",
+                  "inputs[FEE_CODE]",
+                  null,
+                  false,
+                  new String[] {"Value is required"},
+                  new Object[] {},
+                  null),
+              new FieldError(
+                  "caseTypeForm",
+                  "inputs[MATTER_TYPE_CODE]",
+                  null,
+                  false,
+                  new String[] {"Value is required"},
+                  new Object[] {},
+                  null));
+
+      ThymeleafUtils sut = new ThymeleafUtils();
+
+      List<AmendmentFormError> result = sut.toAmendmentFormErrors(errors);
+
+      List<AmendmentFormError> expectedResult =
+          List.of(new AmendmentFormError("FEE_CODE", "Value is required"));
+
+      Assertions.assertEquals(expectedResult, result);
+    }
+  }
+
+  @Nested
+  class OrEmptyTests {
+
+    @Test
+    void returnsEmptyListWhenNull() {
+      ThymeleafUtils sut = new ThymeleafUtils();
+
+      Assertions.assertEquals(List.of(), sut.orEmpty(null));
+    }
+
+    @Test
+    void returnsGivenListWhenNotNull() {
+      ThymeleafUtils sut = new ThymeleafUtils();
+      var errors = List.of(new AmendmentFormError("FEE_CODE", "Value is required"));
+
+      Assertions.assertEquals(errors, sut.orEmpty(errors));
+    }
+  }
+
+  @Nested
+  class HasAmendmentFieldErrorTests {
+
+    @Test
+    void trueWhenFieldHasAnError() {
+      ThymeleafUtils sut = new ThymeleafUtils();
+      var errors = List.of(new AmendmentFormError("FEE_CODE", "Value is required"));
+
+      Assertions.assertTrue(sut.hasAmendmentFieldError(errors, "FEE_CODE"));
+    }
+
+    @Test
+    void falseWhenFieldHasNoError() {
+      ThymeleafUtils sut = new ThymeleafUtils();
+      var errors = List.of(new AmendmentFormError("FEE_CODE", "Value is required"));
+
+      Assertions.assertFalse(sut.hasAmendmentFieldError(errors, "MATTER_TYPE_CODE"));
+    }
+
+    @Test
+    void falseWhenErrorsIsNull() {
+      ThymeleafUtils sut = new ThymeleafUtils();
+
+      Assertions.assertFalse(sut.hasAmendmentFieldError(null, "FEE_CODE"));
+    }
+  }
+
+  @Nested
+  class AmendmentFieldErrorMessageTests {
+
+    @Test
+    void returnsMessageForField() {
+      ThymeleafUtils sut = new ThymeleafUtils();
+      var errors = List.of(new AmendmentFormError("FEE_CODE", "Value is required"));
+
+      Assertions.assertEquals(
+          new AmendmentFormError("FEE_CODE", "Value is required"),
+          sut.amendmentFieldErrorMessage(errors, "FEE_CODE"));
+    }
+
+    @Test
+    void returnsNullWhenFieldHasNoError() {
+      ThymeleafUtils sut = new ThymeleafUtils();
+      var errors = List.of(new AmendmentFormError("FEE_CODE", "Value is required"));
+
+      Assertions.assertNull(sut.amendmentFieldErrorMessage(errors, "MATTER_TYPE_CODE"));
     }
   }
 

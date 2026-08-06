@@ -252,11 +252,14 @@ class AmendmentFormTest {
   }
 
   @Test
-  void getAmendedValueReturnsNullForNonNumericNumberInput() {
+  void getAmendedValueThrowsForNonNumericNumberInput() {
     var form = new AmendmentForm();
     form.setInputs(new HashMap<>(Map.of("TRAVEL_TIME", "not-a-number")));
 
-    assertThat(form.getAmendedValue(CivilClaimDetailsViewField.TRAVEL_TIME)).isNull();
+    assertThatThrownBy(() -> form.getAmendedValue(CivilClaimDetailsViewField.TRAVEL_TIME))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Invalid Integer value")
+        .hasMessageContaining("TRAVEL_TIME");
   }
 
   @Test
@@ -283,6 +286,7 @@ class AmendmentFormTest {
 
     assertThatThrownBy(() -> form.getBooleanValue("IS_ELIGIBLE_CLIENT"))
         .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Invalid Boolean value")
         .hasMessageContaining("IS_ELIGIBLE_CLIENT");
   }
 

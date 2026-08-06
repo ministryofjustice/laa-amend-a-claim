@@ -1,9 +1,11 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,15 +17,19 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.TextAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.resources.MockAmendmentFormsFunctions;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 @WebMvcTest(AmendCaseDetailsController.class)
+@Import({TextAmendmentFieldValidator.class})
 class AmendCaseDetailsControllerTest extends BaseControllerTest {
 
   private static final String INPUTS = "inputs[%s]";
@@ -60,12 +66,9 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
     var caseDetailsForm = new AmendmentForm();
     caseDetailsForm.setInputs(caseDetailsRows);
 
-    var updatedForms =
-        AmendmentForms.builder()
-            .client1(new AmendmentForm())
-            .caseType(new AmendmentForm())
-            .caseDetails(caseDetailsForm)
-            .build();
+    var updatedForms = MockAmendmentFormsFunctions.justCaseDetailsFilled(claim);
+    updatedForms.getCaseDetailsForm().setCurrent(caseDetailsForm);
+
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request = get(buildAmendCaseDetailsPath()).session(session).with(csrf());
@@ -83,13 +86,10 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
     var caseDetailsForm = new AmendmentForm();
     caseDetailsForm.setInputs(caseDetailsRows);
 
-    var forms =
-        AmendmentForms.builder()
-            .client1(new AmendmentForm())
-            .caseType(new AmendmentForm())
-            .caseDetails(caseDetailsForm)
-            .build();
-    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+    var updatedForms = MockAmendmentFormsFunctions.empty();
+    updatedForms.getCaseDetailsForm().setCurrent(caseDetailsForm);
+
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request =
         post(buildAmendCaseDetailsPath())
@@ -101,11 +101,80 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
         .perform(request)
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(buildAmendCaseTabPath()))
-        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), forms));
+        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCaseDetailsForm().getCurrent().getInputs().get("FEE_CODE"))
         .isEqualTo("updated");
+  }
+
+  @Test
+  void postCaseDetailsWithInvalidValueRedirectsBackAndPreservesInput() throws Exception {
+    var caseDetailsRows = Map.of("FEE_CODE", FEE_CODE);
+    var caseDetailsForm = new AmendmentForm();
+    caseDetailsForm.setInputs(caseDetailsRows);
+
+    var updatedForms = MockAmendmentFormsFunctions.empty();
+    updatedForms.getCaseDetailsForm().setCurrent(caseDetailsForm);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
+
+    var tooLong = "a".repeat(51);
+    var request =
+        post(buildAmendCaseDetailsPath())
+            .param(INPUTS.formatted("FEE_CODE"), tooLong)
+            .session(session)
+            .with(csrf());
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildAmendCaseDetailsPath()));
+
+    AmendmentForms updatedForm =
+        (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
+    assertThat(updatedForm.getCaseDetailsForm().getCurrent().getInputs().get("FEE_CODE"))
+        .isEqualTo(tooLong);
+  }
+
+  @Test
+  void postCaseDetailsWithInvalidValueRendersErrorSummaryAndInlineErrorOnRedirect()
+      throws Exception {
+    var caseDetailsRows = Map.of("UNIQUE_FILE_NUMBER", "abc");
+    var caseDetailsForm = new AmendmentForm();
+    caseDetailsForm.setInputs(caseDetailsRows);
+
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(caseDetailsForm)
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var tooLong = "a".repeat(51);
+    var postRequest =
+        post(buildAmendCaseDetailsPath())
+            .param(INPUTS.formatted("UNIQUE_FILE_NUMBER"), tooLong)
+            .session(session)
+            .with(csrf());
+
+    var postResult =
+        mockMvc.perform(postRequest).andExpect(status().is3xxRedirection()).andReturn();
+
+    var getRequest =
+        get(buildAmendCaseDetailsPath())
+            .session(session)
+            .flashAttrs(postResult.getFlashMap())
+            .with(csrf());
+
+    mockMvc
+        .perform(getRequest)
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("govuk-error-summary")))
+        .andExpect(content().string(containsString("govuk-error-message")))
+        .andExpect(
+            content()
+                .string(containsString("Unique file number (UFN) must be 50 characters or less")));
   }
 
   public String buildAmendCaseDetailsPath() {

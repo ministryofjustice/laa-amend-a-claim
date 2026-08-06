@@ -1,5 +1,5 @@
 <th:block th:fragment="error-summary(errors)" xmlns:th="http://www.thymeleaf.org">
-    <div th:unless="${errors.isEmpty()}" class="govuk-error-summary" data-module="govuk-error-summary">
+    <div th:unless="${errors?.isEmpty()}" class="govuk-error-summary" data-module="govuk-error-summary">
         <div role="alert">
             <h2 class="govuk-error-summary__title" th:text="#{form.error.summary}"></h2>
             <div class="govuk-error-summary__body">
@@ -7,7 +7,10 @@
                     <li th:each="error : ${errors}"
                         th:with="id=${error.fieldId}">
                         <a th:if="${#messages.msgOrNull(error.message) == null}" th:href="'#' + ${id}" th:text="${error.message}"></a>
-                        <a th:unless="${#messages.msgOrNull(error.message) == null}" th:href="'#' + ${id}" th:text="#{${error.message}}"></a>
+                        <th:block th:if="${#messages.msgOrNull(error.message) != null}">
+                            <a th:if="${error.args?.length > 0}" th:href="'#' + ${id}" th:text="${#messages.msgWithParams(error.message, error.args)}"></a>
+                            <a th:if="${error.args?.length == 0}" th:href="'#' + ${id}" th:text="${#messages.msg(error.message)}"></a>
+                        </th:block>
                     </li>
                 </ul>
             </div>

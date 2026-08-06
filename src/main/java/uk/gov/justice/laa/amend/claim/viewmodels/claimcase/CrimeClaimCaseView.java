@@ -1,11 +1,11 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcase;
 
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_CONCLUDED_DATE;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.FEE_CODE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.UNIQUE_FILE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.asCrimeField;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.DSCC_NUMBER;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.FEE_CODE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.IS_DUTY_SOLICITOR;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.IS_YOUTH_COURT;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.MAAT_ID;
@@ -37,7 +37,7 @@ public record CrimeClaimCaseView(
   private static LinkedHashMap<ClaimViewField<CrimeClaimDetails>, Object> createCaseTypeRows(
       CrimeClaimDetails claim) {
     Stream<ClaimViewField<CrimeClaimDetails>> fields =
-        Stream.of(FEE_CODE, asCrimeField(STAGE_REACHED));
+        Stream.of(asCrimeField(FEE_CODE), asCrimeField(STAGE_REACHED));
 
     return toFieldMap(fields, claim);
   }

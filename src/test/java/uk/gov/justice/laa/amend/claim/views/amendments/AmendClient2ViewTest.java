@@ -10,11 +10,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendClientController;
-import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
-import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
+import uk.gov.justice.laa.amend.claim.resources.MockAmendmentFormsFunctions;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @WebMvcTest(AmendClientController.class)
 class AmendClient2ViewTest extends AmendmentsBaseTest {
@@ -54,7 +51,7 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
     claim.setIsClient2LegallyAided(false);
     claim.setIsClient2PostalApplicationAccepted(true);
 
-    var forms = createClient2Forms(claim);
+    var forms = MockAmendmentFormsFunctions.justClient2Filled(claim);
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var doc = renderDocument();
@@ -118,16 +115,6 @@ class AmendClient2ViewTest extends AmendmentsBaseTest {
     Element selectedMonth = selectFirst(monthSelect, "option[selected]");
     Assertions.assertEquals("January", selectedMonth.text(), "Selected month name");
     Assertions.assertEquals("1", selectedMonth.attr("value"), "Selected month value");
-  }
-
-  private AmendmentForms createClient2Forms(MediationClaimDetails claim) {
-    var view = ClaimClientViewFactory.create(claim);
-    return AmendmentForms.builder()
-        .client1(new AmendmentForm())
-        .client2(new AmendmentForm(view.client2Rows()))
-        .caseType(new AmendmentForm())
-        .caseDetails(new AmendmentForm())
-        .build();
   }
 
   private void assertCommonPageContent(Document doc) {

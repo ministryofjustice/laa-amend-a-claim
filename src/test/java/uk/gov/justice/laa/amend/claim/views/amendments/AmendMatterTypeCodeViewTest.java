@@ -10,13 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendCaseTypeController;
-import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.resources.MockAmendmentFormsFunctions;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
-import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
 @WebMvcTest(AmendCaseTypeController.class)
 class AmendMatterTypeCodeViewTest extends AmendmentsBaseTest {
@@ -42,7 +39,7 @@ class AmendMatterTypeCodeViewTest extends AmendmentsBaseTest {
     claim.setMatterType1(MATTER_TYPE_CODE_1);
     claim.setMatterType2(MATTER_TYPE_CODE_2);
 
-    var forms = createCaseTypeForm(claim);
+    var forms = MockAmendmentFormsFunctions.justCaseTypeFilled(claim);
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     when(availableFeeCodesService.getAvailableFeeCodes(any())).thenReturn(Map.of(FEE_CODE, "ABC"));
@@ -70,7 +67,7 @@ class AmendMatterTypeCodeViewTest extends AmendmentsBaseTest {
     claim.setMatterType1(MATTER_TYPE_CODE_1);
     claim.setMatterType2(MATTER_TYPE_CODE_2);
 
-    var forms = createCaseTypeForm(claim);
+    var forms = MockAmendmentFormsFunctions.justCaseTypeFilled(claim);
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     when(availableFeeCodesService.getAvailableFeeCodes(any())).thenReturn(Map.of(FEE_CODE, "ABC"));
@@ -85,15 +82,6 @@ class AmendMatterTypeCodeViewTest extends AmendmentsBaseTest {
         matterTypeSummaryList.get(1), "Current matter type 2", MATTER_TYPE_CODE_2);
     assertPageHasLabel(doc, "matter-type-one-input", "Amended matter type 1");
     assertPageHasLabel(doc, "matter-type-two-input", "Amended matter type 2");
-  }
-
-  private AmendmentForms createCaseTypeForm(ClaimDetails claim) {
-    var view = ClaimCaseViewFactory.create(claim);
-    return AmendmentForms.builder()
-        .client1(new AmendmentForm())
-        .caseType(new AmendmentForm(view.caseTypeRows()))
-        .caseDetails(new AmendmentForm())
-        .build();
   }
 
   private void assertCommonPageContent(Document doc) {

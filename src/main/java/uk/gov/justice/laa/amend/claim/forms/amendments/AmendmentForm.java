@@ -140,18 +140,14 @@ public class AmendmentForm {
         || inputs.containsKey(fieldName + YEAR_SUFFIX);
   }
 
-  public Object getAmendedValue(String fieldName) {
-    return isDateField(fieldName) ? getDateValue(fieldName) : inputs.get(fieldName);
+  public boolean isDateInputProvided(String fieldName) {
+    return !isBlank(inputs.get(fieldName + DAY_SUFFIX))
+        || !isBlank(inputs.get(fieldName + MONTH_SUFFIX))
+        || !isBlank(inputs.get(fieldName + YEAR_SUFFIX));
   }
 
-  public Object getAmendedValue(String fieldName, FieldType fieldType) {
-    return switch (fieldType) {
-      case BIG_DECIMAL -> getBigDecimalValue(fieldName);
-      case DATE -> getDateValue(fieldName);
-      case BOOLEAN -> getBooleanValue(fieldName);
-      case NUMBER -> getIntegerValue(fieldName);
-      case ENUM, TEXT -> inputs.get(fieldName);
-    };
+  public Object getAmendedValue(String fieldName) {
+    return isDateField(fieldName) ? getDateValue(fieldName) : inputs.get(fieldName);
   }
 
   public Object getAmendedValue(ClaimViewField<?> field) {
@@ -160,8 +156,7 @@ public class AmendmentForm {
       case BOOLEAN -> getBooleanValue(field.name());
       case BIG_DECIMAL -> getBigDecimalValue(field.name());
       case NUMBER -> getIntegerValue(field.name());
-      case ENUM -> inputs.get(field.name());
-      case TEXT -> inputs.get(field.name());
+      case ENUM, TEXT -> inputs.get(field.name());
     };
   }
 
@@ -173,11 +168,12 @@ public class AmendmentForm {
     try {
       return Integer.valueOf(value.trim());
     } catch (NumberFormatException e) {
-      return null;
+      throw new IllegalArgumentException(
+          "Invalid Integer value (%s) for field '%s'".formatted(value, fieldName), e);
     }
   }
 
-  public Boolean getBooleanValue(String fieldName) {
+  public Boolean getBooleanValue(String fieldName) throws IllegalArgumentException {
     var value = inputs.get(fieldName);
     if (isBlank(value)) {
       return null;
@@ -186,11 +182,11 @@ public class AmendmentForm {
       return StringToBooleanConverter.convertStrict(value);
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException(
-          "Invalid boolean value for field '%s'".formatted(fieldName), e);
+          "Invalid Boolean value (%s) for field '%s'".formatted(value, fieldName), e);
     }
   }
 
-  public BigDecimal getBigDecimalValue(String fieldName) {
+  public BigDecimal getBigDecimalValue(String fieldName) throws IllegalArgumentException {
     var value = inputs.get(fieldName);
     if (isBlank(value)) {
       return null;
@@ -199,7 +195,8 @@ public class AmendmentForm {
       var parsed = NumberUtils.parse(value);
       return parsed.scale() > 2 ? null : setScale(parsed);
     } catch (NumberFormatException | ParseException e) {
-      return null;
+      throw new IllegalArgumentException(
+          "Invalid BigDecimal value (%s) for field '%s'".formatted(value, fieldName), e);
     }
   }
 
