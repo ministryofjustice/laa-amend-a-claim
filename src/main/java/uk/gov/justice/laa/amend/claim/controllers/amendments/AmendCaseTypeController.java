@@ -129,7 +129,9 @@ public class AmendCaseTypeController extends AbstractAmendController {
   @PostMapping("/amend-stage-reached")
   public String postAmendStageReached(
       HttpSession session,
-      @ModelAttribute("caseTypeForm") AmendmentForm caseTypeForm,
+      @Valid @ModelAttribute("caseTypeForm") AmendmentForm caseTypeForm,
+      BindingResult bindingResult,
+      RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
@@ -142,6 +144,15 @@ public class AmendCaseTypeController extends AbstractAmendController {
 
     amendmentForms.getCaseTypeForm().setCurrent(caseTypeForm);
     saveAmendmentForms(session, claimId, amendmentForms);
+
+    if (bindingResult.hasErrors()) {
+      return redirectWithErrors(
+          redirectAttributes,
+          bindingResult,
+          "caseTypeFormErrors",
+          "/submissions/%s/claims/%s/amendments/amend-stage-reached"
+              .formatted(submissionId, claimId));
+    }
 
     return "redirect:/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
   }

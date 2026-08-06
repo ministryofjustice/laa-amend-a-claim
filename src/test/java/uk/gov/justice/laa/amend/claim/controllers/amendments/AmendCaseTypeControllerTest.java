@@ -25,6 +25,7 @@ import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.EnumAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FeeCodeAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.TextAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -33,7 +34,11 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 
 @WebMvcTest(AmendCaseTypeController.class)
-@Import({FeeCodeAmendmentFieldValidator.class, TextAmendmentFieldValidator.class})
+@Import({
+  FeeCodeAmendmentFieldValidator.class,
+  TextAmendmentFieldValidator.class,
+  EnumAmendmentFieldValidator.class
+})
 class AmendCaseTypeControllerTest extends BaseControllerTest {
 
   private static final String INPUTS = "inputs[%s]";
@@ -246,6 +251,9 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
+    when(availableFeeCodesService.getAvailableFeeCodes(AreaOfLaw.CRIME_LOWER))
+        .thenReturn(Map.of(FEE_CODE, FEE_CODE));
+
     var request = post(buildAmendStageReachedPath()).session(session).with(csrf());
     for (var entry : caseTypeRows.entrySet()) {
       request.param(INPUTS.formatted(entry.getKey()), entry.getValue());
@@ -256,6 +264,91 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(buildAmendCasePath()))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
+  @Test
+  void postAmendStageReachedWithInvalidValueRedirectsBackAndPreservesInput() throws Exception {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setFeeCode(FEE_CODE);
+    claim.setStageReached(STAGE_REACHED);
+    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeRows = Map.of("FEE_CODE", FEE_CODE, "STAGE_REACHED", STAGE_REACHED);
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(caseTypeForm)
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var invalidStageReached = "NOT_A_VALID_STAGE";
+    var request =
+        post(buildAmendStageReachedPath())
+            .param(INPUTS.formatted("FEE_CODE"), FEE_CODE)
+            .param(INPUTS.formatted("STAGE_REACHED"), invalidStageReached)
+            .session(session)
+            .with(csrf());
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildAmendStageReachedPath()));
+
+    AmendmentForms updatedForm =
+        (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
+    assertThat(updatedForm.getCaseTypeForm().getCurrent().getInputs().get("STAGE_REACHED"))
+        .isEqualTo(invalidStageReached);
+  }
+
+  @Test
+  void postAmendStageReachedWithInvalidValueRendersErrorSummaryAndInlineErrorOnRedirect()
+      throws Exception {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setFeeCode(FEE_CODE);
+    claim.setStageReached(STAGE_REACHED);
+    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeRows = Map.of("FEE_CODE", FEE_CODE, "STAGE_REACHED", STAGE_REACHED);
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(caseTypeRows);
+
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(caseTypeForm)
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var invalidStageReached = "NOT_A_VALID_STAGE";
+    var postRequest =
+        post(buildAmendStageReachedPath())
+            .param(INPUTS.formatted("FEE_CODE"), FEE_CODE)
+            .param(INPUTS.formatted("STAGE_REACHED"), invalidStageReached)
+            .session(session)
+            .with(csrf());
+
+    var postResult =
+        mockMvc.perform(postRequest).andExpect(status().is3xxRedirection()).andReturn();
+
+    var getRequest =
+        get(buildAmendStageReachedPath())
+            .session(session)
+            .flashAttrs(postResult.getFlashMap())
+            .with(csrf());
+
+    mockMvc
+        .perform(getRequest)
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("govuk-error-summary")))
+        .andExpect(content().string(containsString("govuk-error-message")))
+        .andExpect(content().string(containsString("Stage reached must be a valid option")));
   }
 
   @Test

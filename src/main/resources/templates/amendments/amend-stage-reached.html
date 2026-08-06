@@ -12,34 +12,43 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-l">
-        <span th:text="#{amendments.stageReached.title}"></span>
-      </h1>
-
-      <dl class="govuk-summary-list"
-          th:with="currentStageReachedCode=${forms.caseTypeForm.original.inputs['STAGE_REACHED']}">
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key govuk-!-width-one-half" th:text="#{amendments.stageReached.current}">
-          </dt>
-          <dd class="govuk-summary-list__value"
-              th:text="${#messages.msgOrNull('claimCase.options.stageReached.' + currentStageReachedCode) ?: currentStageReachedCode}">
-          </dd>
-        </div>
-      </dl>
 
       <form method="post"
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-stage-reached(submissionId=${submissionId}, claimId=${claimId})}"
-            th:object="${caseTypeForm}">
+            th:object="${caseTypeForm}"
+            th:with="formErrors=${@ThymeleafUtils.orEmpty(caseTypeFormErrors)}">
+
+        <th:block th:replace="~{partials/error-summary :: error-summary(${formErrors})}"></th:block>
+
+        <h1 class="govuk-heading-l">
+          <span th:text="#{amendments.stageReached.title}"></span>
+        </h1>
+
+        <dl class="govuk-summary-list"
+            th:with="currentStageReachedCode=${forms.caseTypeForm.original.inputs['STAGE_REACHED']}">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key govuk-!-width-one-half"
+                th:text="#{amendments.stageReached.current}">
+            </dt>
+            <dd class="govuk-summary-list__value"
+                th:text="${#messages.msgOrNull('claimCase.options.stageReached.' + currentStageReachedCode) ?: currentStageReachedCode}">
+            </dd>
+          </div>
+        </dl>
+
         <input type="hidden" th:each="entry : *{inputs}"
                th:if="${entry.key != 'STAGE_REACHED'}"
                th:field="*{inputs[__${entry.key}__]}"
                th:value="${entry.value}"/>
 
-        <div class="govuk-body">
+        <div class="govuk-form-group" th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, 'STAGE_REACHED') ? 'govuk-form-group--error' : ''}">
           <div class="autocomplete-wrapper">
+            <span id="STAGE_REACHED"></span>
             <label class="govuk-label govuk-!-font-weight-bold" for="stage-reached-input"
                    th:text="#{amendments.stageReached.amended}"></label>
+            <th:block th:replace="~{partials/amendments/field-error :: fieldError('STAGE_REACHED', ${formErrors})}"></th:block>
             <select class="govuk-select" id="stage-reached-input"
+                    th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, 'STAGE_REACHED') ? 'govuk-select--error' : ''}"
                     th:field="*{inputs['STAGE_REACHED']}"
                     data-module="make-autocomplete">
               <option value="" selected></option>
