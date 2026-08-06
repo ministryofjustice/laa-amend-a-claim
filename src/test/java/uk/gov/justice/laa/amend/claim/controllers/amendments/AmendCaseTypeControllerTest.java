@@ -146,6 +146,9 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
+    when(availableFeeCodesService.getAvailableFeeCodes(AreaOfLaw.CRIME_LOWER))
+        .thenReturn(Map.of(FEE_CODE, FEE_CODE));
+
     var request = post(buildAmendFeeCodePath()).session(session).with(csrf());
     for (var entry : caseTypeRows.entrySet()) {
       request.param(INPUTS.formatted(entry.getKey()), entry.getValue());
@@ -179,7 +182,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
-    when(availableFeeCodesService.getAvailableFeeCodes(AreaOfLaw.CRIME_LOWER))
+    when(availableFeeCodesService.getAvailableFeeCodes(AreaOfLaw.LEGAL_HELP))
         .thenReturn(Map.of(FEE_CODE, FEE_CODE));
 
     var request = post(buildAmendFeeCodePath()).session(session).with(csrf());
