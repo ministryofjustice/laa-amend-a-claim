@@ -13,16 +13,17 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-l">
-        <span th:text="#{amendments.feeCode.title}"></span>
-      </h1>
 
       <form method="post"
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-fee-code(submissionId=${submissionId}, claimId=${claimId})}"
             th:object="${caseTypeForm}"
             th:with="formErrors=${@ThymeleafUtils.orEmpty(caseTypeFormErrors)}">
-
         <th:block th:replace="~{partials/error-summary :: error-summary(${formErrors})}"></th:block>
+
+
+        <h1 class="govuk-heading-l">
+          <span th:text="#{amendments.feeCode.title}"></span>
+        </h1>
 
         <input type="hidden" th:each="entry : *{inputs}"
                th:if="${entry.key != 'FEE_CODE'}"
@@ -39,11 +40,14 @@
           </div>
         </dl>
 
-        <div class="govuk-body">
+        <div class="govuk-form-group"
+             th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, 'FEE_CODE') ? 'govuk-form-group--error' : ''}">
           <div class="autocomplete-wrapper">
             <span id="FEE_CODE"></span>
-            <label class="govuk-label govuk-!-font-weight-bold" for="fee-code-input" th:text="#{amendments.feeCode.amended}"></label>
-            <th:block th:replace="~{partials/amendments/field-error :: fieldError('FEE_CODE', ${formErrors})}"></th:block>
+            <label class="govuk-label govuk-!-font-weight-bold" for="fee-code-input"
+                   th:text="#{amendments.feeCode.amended}"></label>
+            <th:block
+                th:replace="~{partials/amendments/field-error :: fieldError('FEE_CODE', ${formErrors})}"></th:block>
             <select class="govuk-select" id="fee-code-input"
                     th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, 'FEE_CODE') ? 'govuk-select--error' : ''}"
                     th:field="*{inputs['FEE_CODE']}"
