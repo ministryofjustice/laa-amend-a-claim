@@ -155,7 +155,7 @@ class EnumAmendmentFieldValidatorTest {
 
   @Test
   void acceptsOutcomeValueMatchingAnAllowedOption() {
-    var errors = validate(MediationClaimDetailsViewField.OUTCOME, Map.of("OUTCOME", "CN01"));
+    var errors = validate(MediationClaimDetailsViewField.OUTCOME, Map.of("OUTCOME", "A"));
 
     assertThat(errors.hasErrors()).isFalse();
   }

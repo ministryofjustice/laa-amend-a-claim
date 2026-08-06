@@ -22,10 +22,10 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField;
 
-class CuratedFieldRuleValidatorTest {
+class ClaimFieldRuleValidatorTest {
 
-  private final CuratedFieldRuleValidator validator =
-      new CuratedFieldRuleValidator(TestMessageSources.real());
+  private final ClaimFieldRuleValidator validator =
+      new ClaimFieldRuleValidator(TestMessageSources.real());
 
   @Test
   void appliesOnlyToCuratedFields() {

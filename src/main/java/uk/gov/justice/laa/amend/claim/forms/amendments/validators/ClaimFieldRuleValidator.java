@@ -7,30 +7,23 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.CuratedFieldRules;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.ClaimFieldRules;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.FieldRuleEngine;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 
-/**
- * Runs the curated {@code FieldRuleSpec} rule engine as an additive dispatch step, alongside (not
- * instead of) the existing {@link GenericAmendmentFieldValidator} and other {@link
- * FieldSpecificAmendmentValidator} checks. Only fields present in {@link CuratedFieldRules} are
- * affected; every other field's validation behaviour is unchanged. Requiredness stays owned by the
- * generic layer, so curated rules only run against present values.
- */
 @Component
-public class CuratedFieldRuleValidator implements FieldSpecificAmendmentValidator {
+public class ClaimFieldRuleValidator implements FieldSpecificAmendmentValidator {
 
   private final MessageSource messageSource;
 
-  public CuratedFieldRuleValidator(MessageSource messageSource) {
+  public ClaimFieldRuleValidator(MessageSource messageSource) {
     this.messageSource = messageSource;
   }
 
   @Override
   public boolean appliesTo(ClaimViewField<?> field) {
-    return CuratedFieldRules.hasRules(field);
+    return ClaimFieldRules.hasRules(field);
   }
 
   @Override
@@ -41,7 +34,7 @@ public class CuratedFieldRuleValidator implements FieldSpecificAmendmentValidato
       return;
     }
 
-    var rules = CuratedFieldRules.rulesFor(field);
+    var rules = ClaimFieldRules.rulesFor(field);
     FieldRuleEngine.firstFailingRule(rules, value)
         .ifPresent(
             rule -> {
