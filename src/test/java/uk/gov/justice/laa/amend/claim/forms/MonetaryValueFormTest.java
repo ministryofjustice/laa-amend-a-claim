@@ -4,7 +4,7 @@ import jakarta.validation.ConstraintViolation;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.models.Cost;
+import uk.gov.justice.laa.amend.claim.models.enums.Cost;
 
 public class MonetaryValueFormTest extends FormTest {
 

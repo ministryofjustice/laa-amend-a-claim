@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 
 public record BulkUploadAssessmentSummary(
     UUID submissionId,

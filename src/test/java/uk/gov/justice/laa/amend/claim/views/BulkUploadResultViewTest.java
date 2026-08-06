@@ -17,7 +17,7 @@ import uk.gov.justice.laa.amend.claim.bulkupload.BulkUploadError;
 import uk.gov.justice.laa.amend.claim.controllers.BulkUploadController;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadAssessmentSummary;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.BulkUploadService;
 
 @WebMvcTest(BulkUploadController.class)

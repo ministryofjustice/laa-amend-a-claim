@@ -3,11 +3,11 @@ package uk.gov.justice.laa.amend.claim.service;
 import static java.lang.Boolean.TRUE;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
-import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_ASSESSED_ESCAPE_CASE;
-import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_ASSESSED_STAGE_DISBURSEMENT;
-import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_CREATED;
-import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
-import static uk.gov.justice.laa.amend.claim.models.ClaimHistoryEventType.CLAIM_VOIDED;
+import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_ASSESSED_ESCAPE_CASE;
+import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_ASSESSED_STAGE_DISBURSEMENT;
+import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_CREATED;
+import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
+import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_VOIDED;
 
 import java.util.HashMap;
 import java.util.List;

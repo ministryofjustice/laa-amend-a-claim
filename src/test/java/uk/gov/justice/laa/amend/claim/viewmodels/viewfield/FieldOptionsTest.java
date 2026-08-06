@@ -3,6 +3,8 @@ package uk.gov.justice.laa.amend.claim.viewmodels.viewfield;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeCode;
+import uk.gov.justice.laa.amend.claim.models.enums.ReferralSource;
 
 class FieldOptionsTest {
 

@@ -27,24 +27,24 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
-import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
-import uk.gov.justice.laa.amend.claim.models.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
 import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
-import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
 import uk.gov.justice.laa.amend.claim.models.SubmittedClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
+import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
+import uk.gov.justice.laa.amend.claim.models.enums.Cost;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 public class MockClaimsFunctions {

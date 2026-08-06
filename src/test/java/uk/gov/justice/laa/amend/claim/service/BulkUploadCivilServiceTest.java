@@ -36,7 +36,7 @@ import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadResult;
 import uk.gov.justice.laa.amend.claim.models.BulkUploadValidationOutcome;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 
 @ExtendWith(MockitoExtension.class)

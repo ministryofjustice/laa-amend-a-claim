@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;
 import uk.gov.justice.laa.amend.claim.config.security.SecurityConfig;
-import uk.gov.justice.laa.amend.claim.models.Role;
+import uk.gov.justice.laa.amend.claim.models.enums.Role;
 
 public class SecurityConfigTest {
 

@@ -7,6 +7,7 @@ import java.util.function.Function;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.enums.FieldType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
 @Getter

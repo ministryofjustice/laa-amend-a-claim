@@ -13,16 +13,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static uk.gov.justice.laa.amend.claim.models.Cost.COUNSEL_COSTS;
-import static uk.gov.justice.laa.amend.claim.models.Cost.DETENTION_TRAVEL_AND_WAITING_COSTS;
-import static uk.gov.justice.laa.amend.claim.models.Cost.DISBURSEMENTS;
-import static uk.gov.justice.laa.amend.claim.models.Cost.DISBURSEMENTS_VAT;
-import static uk.gov.justice.laa.amend.claim.models.Cost.JR_FORM_FILLING_COSTS;
-import static uk.gov.justice.laa.amend.claim.models.Cost.PROFIT_COSTS;
-import static uk.gov.justice.laa.amend.claim.models.Cost.TRAVEL_COSTS;
-import static uk.gov.justice.laa.amend.claim.models.Cost.WAITING_COSTS;
-import static uk.gov.justice.laa.amend.claim.models.Role.ROLE_ESCAPE_CASE_CASEWORKER;
-import static uk.gov.justice.laa.amend.claim.models.Role.allRolesApartFrom;
+import static uk.gov.justice.laa.amend.claim.models.enums.Cost.COUNSEL_COSTS;
+import static uk.gov.justice.laa.amend.claim.models.enums.Cost.DETENTION_TRAVEL_AND_WAITING_COSTS;
+import static uk.gov.justice.laa.amend.claim.models.enums.Cost.DISBURSEMENTS;
+import static uk.gov.justice.laa.amend.claim.models.enums.Cost.DISBURSEMENTS_VAT;
+import static uk.gov.justice.laa.amend.claim.models.enums.Cost.JR_FORM_FILLING_COSTS;
+import static uk.gov.justice.laa.amend.claim.models.enums.Cost.PROFIT_COSTS;
+import static uk.gov.justice.laa.amend.claim.models.enums.Cost.TRAVEL_COSTS;
+import static uk.gov.justice.laa.amend.claim.models.enums.Cost.WAITING_COSTS;
+import static uk.gov.justice.laa.amend.claim.models.enums.Role.ROLE_ESCAPE_CASE_CASEWORKER;
+import static uk.gov.justice.laa.amend.claim.models.enums.Role.allRolesApartFrom;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -38,10 +38,10 @@ import org.springframework.mock.web.MockHttpSession;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.enums.Cost;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 @WebMvcTest(ChangeMonetaryValueController.class)

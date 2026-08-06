@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.models;
 
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimFieldRow;
 
 @NoArgsConstructor

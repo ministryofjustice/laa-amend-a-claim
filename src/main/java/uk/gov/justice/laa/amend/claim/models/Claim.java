@@ -8,6 +8,7 @@ import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.annotation.JsonSerialize;
 import tools.jackson.databind.ext.javatime.deser.YearMonthDeserializer;
 import tools.jackson.databind.ext.javatime.ser.YearMonthSerializer;
+import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;

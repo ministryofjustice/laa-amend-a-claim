@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.views.claimdetails;
 
 import static org.mockito.Mockito.when;
-import static uk.gov.justice.laa.amend.claim.models.OutcomeType.PAID_IN_FULL;
+import static uk.gov.justice.laa.amend.claim.models.enums.OutcomeType.PAID_IN_FULL;
 
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeEach;

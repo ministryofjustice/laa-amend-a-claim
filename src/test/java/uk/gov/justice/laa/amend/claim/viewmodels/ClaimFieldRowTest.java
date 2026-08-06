@@ -7,11 +7,11 @@ import uk.gov.justice.laa.amend.claim.models.AllowedClaimField;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
 import uk.gov.justice.laa.amend.claim.models.BoltOnClaimField;
 import uk.gov.justice.laa.amend.claim.models.CalculatedTotalClaimField;
-import uk.gov.justice.laa.amend.claim.models.Cost;
 import uk.gov.justice.laa.amend.claim.models.CostClaimField;
 import uk.gov.justice.laa.amend.claim.models.FixedFeeClaimField;
 import uk.gov.justice.laa.amend.claim.models.SubmittedClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
+import uk.gov.justice.laa.amend.claim.models.enums.Cost;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 
 public class ClaimFieldRowTest {

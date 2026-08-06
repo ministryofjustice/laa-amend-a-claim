@@ -20,7 +20,7 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
-import uk.gov.justice.laa.amend.claim.models.Role;
+import uk.gov.justice.laa.amend.claim.models.enums.Role;
 
 @Profile({"local", "ephemeral", "e2e"})
 @Service

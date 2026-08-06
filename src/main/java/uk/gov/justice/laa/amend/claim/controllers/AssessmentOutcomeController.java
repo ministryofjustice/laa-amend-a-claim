@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 import uk.gov.justice.laa.amend.claim.forms.AssessmentOutcomeForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.OutcomeType;
+import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 
 @Controller
