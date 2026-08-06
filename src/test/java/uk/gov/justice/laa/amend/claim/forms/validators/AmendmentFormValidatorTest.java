@@ -16,7 +16,7 @@ import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.BigDecimalAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.BooleanAmendmentFieldValidator;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.CuratedFieldRuleValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.ClaimFieldRuleValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.DateAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.EnumAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FeeCodeAmendmentFieldValidator;
@@ -24,8 +24,8 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificA
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.GenericAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.NumberAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.TextAmendmentFieldValidator;
-import uk.gov.justice.laa.amend.claim.models.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.enums.FieldType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
@@ -174,7 +174,7 @@ class AmendmentFormValidatorTest {
             MockClaimsFunctions.createMockCrimeClaim(),
             defaultFieldValidators(),
             List.of(
-                new CuratedFieldRuleValidator(TestMessageSources.real()),
+                new ClaimFieldRuleValidator(TestMessageSources.real()),
                 new FeeCodeAmendmentFieldValidator(availableFeeCodesService)));
 
     var errors = validate(validator, Map.of("SURNAME", "#".repeat(31), "FEE_CODE", "NOTACODE"));
