@@ -399,6 +399,18 @@ class AmendClientTabViewTest extends AmendmentsBaseTest {
     assertPageHasLink(doc, "cancel", "Cancel", overviewUrl);
   }
 
+  @Test
+  void showsAssessedBanner() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    markAssessed(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createClientForms(claim));
+
+    assertShowsAssessedBanner(renderDocument());
+  }
+
   private AmendmentForms createClientForms(ClaimDetails claim) {
     var view = ClaimClientViewFactory.create(claim);
     return AmendmentForms.builder()

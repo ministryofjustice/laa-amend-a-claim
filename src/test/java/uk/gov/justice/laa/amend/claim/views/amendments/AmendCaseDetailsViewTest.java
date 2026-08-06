@@ -435,6 +435,18 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertPageHasLink(doc, "cancel", "Cancel", caseUrl);
   }
 
+  @Test
+  void showsAssessedBanner() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    markAssessed(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCaseForms(claim));
+
+    assertShowsAssessedBanner(renderDocument());
+  }
+
   private static @NonNull AmendmentForms createCaseForms(ClaimDetails claimDetails) {
     var view = ClaimCaseViewFactory.create(claimDetails);
     return AmendmentForms.builder()

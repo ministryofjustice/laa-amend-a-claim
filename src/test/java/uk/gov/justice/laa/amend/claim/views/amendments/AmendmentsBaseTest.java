@@ -1,13 +1,19 @@
 package uk.gov.justice.laa.amend.claim.views.amendments;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
+import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.utils.CurrencyUtils;
 import uk.gov.justice.laa.amend.claim.views.ViewTestBase;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 public abstract class AmendmentsBaseTest extends ViewTestBase {
 
@@ -58,6 +64,26 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
     checkUrl = "/submissions/%s/claims/%s/amendments/check".formatted(submissionId, claimId);
     confirmationUrl =
         "/submissions/%s/claims/%s/amendments/confirmation".formatted(submissionId, claimId);
+  }
+
+  protected void markAssessed(ClaimDetails claim) {
+    claim.setStatus(ClaimStatus.VALID);
+    claim.setHasAssessment(true);
+    claim.setLastAssessment(
+        MockClaimsFunctions.createAssessment(AssessmentTypeEnum.ESCAPE_CASE_ASSESSMENT));
+    claim.setLastUpdatedDateTime(OffsetDateTime.now());
+  }
+
+  protected void assertShowsAssessedBanner(Document doc) {
+    Element alert = selectFirst(doc, "#warning-alert");
+    Assertions.assertEquals(
+        "This claim has been assessed", selectFirst(alert, ".moj-alert__heading").text());
+    Assertions.assertTrue(
+        alert
+            .text()
+            .contains(
+                "You cannot amend anything that would change the overall value of the claim."),
+        "Expected assessed warning banner body text");
   }
 
   protected void assertBooleanSelectRow(

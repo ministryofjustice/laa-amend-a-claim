@@ -20,7 +20,8 @@
       <div class="govuk-summary-card">
         <div class="govuk-summary-card__title-wrapper">
           <h2 class="govuk-summary-card__title" th:text="#{claimCosts.listOfCosts}"></h2>
-          <ul class="govuk-summary-card__actions">
+          <ul class="govuk-summary-card__actions"
+              th:if="${amendmentsHeaderView == null || !amendmentsHeaderView.assessedAlertPresent}">
             <li class="govuk-summary-card__action">
               <a class="govuk-link"
                  id="amend-costs-link"
