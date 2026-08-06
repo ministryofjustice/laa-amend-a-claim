@@ -9,14 +9,17 @@
     )}">
 <body>
 <main class="govuk-main-wrapper" id="main-content">
-  <th:block th:replace="~{partials/amendments-assessed-banner :: assessedBannerRow}"></th:block>
-  <div class="govuk-grid-row">
 
 
-    <form method="post"
-          th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-matter-type(submissionId=${submissionId}, claimId=${claimId})}"
-          th:object="${caseTypeForm}"
-          th:with="formErrors=${@ThymeleafUtils.orEmpty(caseTypeFormErrors)}">
+  <form method="post"
+        th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-matter-type(submissionId=${submissionId}, claimId=${claimId})}"
+        th:object="${caseTypeForm}"
+        th:with="formErrors=${@ThymeleafUtils.orEmpty(caseTypeFormErrors)}">
+    <div class="govuk-grid-row">
+
+      <th:block th:replace="~{partials/amendments-assessed-banner :: assessedBannerRow}"></th:block>
+
+
       <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">
           <span th:text="#{amendments.matterType.title}"></span>
@@ -41,7 +44,8 @@
         </dl>
 
         <input type="hidden" th:field="*{inputs['FEE_CODE']}"/>
-        <div class="govuk-form-group" th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, 'MATTER_TYPE_CODE_1') ? 'govuk-form-group--error' : ''}">
+        <div class="govuk-form-group"
+             th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, 'MATTER_TYPE_CODE_1') ? 'govuk-form-group--error' : ''}">
           <span id="MATTER_TYPE_CODE_1"></span>
           <label class="govuk-label govuk-!-font-weight-bold" for="matter-type-one-input"
                  th:text="#{amendments.matterType.amended.one}"/>
@@ -52,7 +56,8 @@
                  th:field="*{inputs['MATTER_TYPE_CODE_1']}"
                  type="text">
         </div>
-        <div class="govuk-form-group" th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, 'MATTER_TYPE_CODE_2') ? 'govuk-form-group--error' : ''}">
+        <div class="govuk-form-group"
+             th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, 'MATTER_TYPE_CODE_2') ? 'govuk-form-group--error' : ''}">
           <span id="MATTER_TYPE_CODE_2"></span>
           <label class="govuk-label govuk-!-font-weight-bold" for="matter-type-two-input"
                  th:text="#{amendments.matterType.amended.two}"/>
@@ -72,8 +77,8 @@
           </a>
         </div>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 </main>
 </body>
 </html>

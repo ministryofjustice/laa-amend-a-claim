@@ -286,6 +286,9 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .build();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
+    when(availableFeeCodesService.getAvailableFeeCodes(AreaOfLaw.CRIME_LOWER))
+        .thenReturn(Map.of(FEE_CODE, FEE_CODE));
+
     var invalidStageReached = "NOT_A_VALID_STAGE";
     var request =
         post(buildAmendStageReachedPath())
@@ -333,6 +336,9 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .param(INPUTS.formatted("STAGE_REACHED"), invalidStageReached)
             .session(session)
             .with(csrf());
+
+    when(availableFeeCodesService.getAvailableFeeCodes(AreaOfLaw.CRIME_LOWER))
+        .thenReturn(Map.of(FEE_CODE, FEE_CODE));
 
     var postResult =
         mockMvc.perform(postRequest).andExpect(status().is3xxRedirection()).andReturn();
