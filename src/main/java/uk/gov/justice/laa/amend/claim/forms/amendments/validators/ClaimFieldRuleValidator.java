@@ -7,7 +7,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.ClaimFieldRules;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.ClaimFieldRuleJsonLoader;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.FieldRuleEngine;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
@@ -23,7 +23,7 @@ public class ClaimFieldRuleValidator implements FieldSpecificAmendmentValidator 
 
   @Override
   public boolean appliesTo(ClaimViewField<?> field) {
-    return ClaimFieldRules.hasRules(field);
+    return ClaimFieldRuleJsonLoader.hasRules(field);
   }
 
   @Override
@@ -34,7 +34,7 @@ public class ClaimFieldRuleValidator implements FieldSpecificAmendmentValidator 
       return;
     }
 
-    var rules = ClaimFieldRules.rulesFor(field);
+    var rules = ClaimFieldRuleJsonLoader.rulesFor(field);
     FieldRuleEngine.firstFailingRule(rules, value)
         .ifPresent(
             rule -> {
