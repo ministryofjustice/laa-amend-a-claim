@@ -60,11 +60,14 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final boolean TOLERANCE_INDICATOR = true;
   private static final boolean LEGACY_CASE = true;
   private static final String MEETINGS_ATTENDED = "MTGA02";
+  private static final String MEETINGS_ATTENDED_LABEL = "MTGA02 - Tribunal Hearing only";
   private static final String ADVICE_TYPE = "FTF";
   private static final String ADVICE_TYPE_LABEL = "FTF - Face to Face";
   private static final LocalDate TRANSFER_DATE = LocalDate.of(2020, 3, 1);
   private static final int MEDICAL_REPORTS_CLAIMED = 4;
   private static final String EXEMPTION_CRITERIA_SATISFIED = "DV001";
+  private static final String EXEMPTION_CRITERIA_SATISFIED_LABEL =
+      "DV001 - Domestic Abuse - injunction or protective order";
   private static final boolean IRC_SURGERY = true;
   private static final LocalDate SURGERY_DATE = LocalDate.of(2020, 4, 1);
   private static final int SURGERY_CLIENTS_COUNT = 5;
@@ -73,6 +76,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final boolean IS_NRM_ADVICE = true;
   private static final LocalDate REPRESENTATION_ORDER_DATE = LocalDate.of(2020, 5, 1);
   private static final String STANDARD_FEE_CATEGORY = "1EW";
+  private static final String STANDARD_FEE_CATEGORY_LABEL = "1EW - Magistrates' Court Category 1A";
   private static final int SUSPECTS_DEFENDANTS_COUNT = 7;
   private static final int POLICE_ATTENDANCES_COURT = 8;
   private static final String POLICE_STATION_COURT_PRISON_ID = "policestationcourtprisonid";
@@ -234,7 +238,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertEnumTypeaheadRow(
         caseDetails.get(28),
         "Meetings attended",
-        MEETINGS_ATTENDED,
+        MEETINGS_ATTENDED_LABEL,
         "MEETINGS_ATTENDED",
         MEETINGS_ATTENDED);
     assertEnumTypeaheadRow(
@@ -248,7 +252,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertEnumTypeaheadRow(
         caseDetails.get(32),
         "Exemption criteria satisfied",
-        EXEMPTION_CRITERIA_SATISFIED,
+        EXEMPTION_CRITERIA_SATISFIED_LABEL,
         "EXEMPTION_CRITERIA_SATISFIED",
         EXEMPTION_CRITERIA_SATISFIED);
     assertBooleanSelectRow(
@@ -321,7 +325,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertEnumTypeaheadRow(
         caseDetails.get(5),
         "Standard fee category",
-        STANDARD_FEE_CATEGORY,
+        STANDARD_FEE_CATEGORY_LABEL,
         "STANDARD_FEE_CATEGORY",
         STANDARD_FEE_CATEGORY);
     assertEnumTypeaheadRow(
