@@ -29,6 +29,8 @@ import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.OriginalAndCurrent;
+import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
+import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.CheckAmendmentsService;
@@ -133,7 +135,9 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
             new OriginalAndCurrent(emptyForm, emptyForm),
             new OriginalAndCurrent(emptyForm, emptyForm),
             new OriginalAndCurrent(emptyForm, emptyForm),
-            new OriginalAndCurrent(emptyForm, emptyForm));
+            new OriginalAndCurrent(emptyForm, emptyForm),
+            new RequestedByForm(),
+            new RequestedReasonForm());
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     mockMvc

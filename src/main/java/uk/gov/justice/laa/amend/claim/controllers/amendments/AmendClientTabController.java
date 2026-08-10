@@ -42,7 +42,6 @@ public class AmendClientTabController {
     }
     model.addAttribute("forms", amendmentForms);
 
-    return "redirect:/submissions/%s/claims/%s/amendments/requested-by"
-        .formatted(submissionId, claimId);
+    return "amendments/view-client";
   }
 }
