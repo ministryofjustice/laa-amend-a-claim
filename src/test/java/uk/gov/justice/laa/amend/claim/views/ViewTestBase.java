@@ -5,6 +5,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import jakarta.servlet.RequestDispatcher;
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public abstract class ViewTestBase {
 
   private Document renderDocument(
       MockHttpServletRequestBuilder requestBuilder, int expectedStatus) {
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     try {
       String html =

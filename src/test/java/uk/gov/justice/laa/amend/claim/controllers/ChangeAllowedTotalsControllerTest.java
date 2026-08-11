@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.ROLE_ESCAPE_CASE_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.allRolesApartFrom;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -141,7 +142,7 @@ class ChangeAllowedTotalsControllerTest extends BaseControllerTest {
     Assertions.assertNotNull(crimeClaim.getAllowedTotalVat());
     Assertions.assertNotNull(crimeClaim.getAllowedTotalInclVat());
 
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc
         .perform(
@@ -180,7 +181,7 @@ class ChangeAllowedTotalsControllerTest extends BaseControllerTest {
     Assertions.assertNotNull(crimeClaim.getAllowedTotalVat());
     Assertions.assertNotNull(crimeClaim.getAllowedTotalInclVat());
 
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc
         .perform(

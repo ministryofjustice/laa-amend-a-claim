@@ -26,6 +26,8 @@ public interface ClaimViewField<T extends Claim> {
 
   FieldType getFieldType();
 
+  String getClaimsApiFieldName();
+
   ClaimViewFieldPatcher<?> getPatcher();
 
   default String label(MessageSource messageSource) {

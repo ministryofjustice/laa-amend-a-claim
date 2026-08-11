@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.removeAllForClaim;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -56,7 +57,7 @@ public class VoidConfirmationController {
       String searchUrl =
           (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
       redirectAttributes.addFlashAttribute("voided", true);
-      session.removeAttribute(claimId.toString());
+      removeAllForClaim(session, claimId);
 
       return "redirect:" + searchUrl;
     } catch (Exception ex) {

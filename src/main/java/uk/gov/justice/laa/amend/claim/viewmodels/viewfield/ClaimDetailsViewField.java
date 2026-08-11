@@ -18,80 +18,111 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       FieldType.TEXT,
       String.class,
       ClaimDetails::getClientForename,
-      ClaimPatch.Builder::clientForename),
+      ClaimPatch.Builder::clientForename,
+      "client.clientForename"),
   FORENAME(
       FieldType.TEXT,
       String.class,
       ClaimDetails::getClientForename,
-      ClaimPatch.Builder::clientForename),
+      ClaimPatch.Builder::clientForename,
+      "client.clientForename"),
   SURNAME(
       FieldType.TEXT,
       String.class,
       ClaimDetails::getClientSurname,
-      ClaimPatch.Builder::clientSurname),
+      ClaimPatch.Builder::clientSurname,
+      "client.clientSurname"),
   GENDER(
       FieldType.ENUM,
       String.class,
       ClaimDetails::getClientGender,
       ClaimPatch.Builder::genderCode,
-      FieldOptions.GENDER),
+      FieldOptions.GENDER,
+      "client.genderCode"),
   ETHNICITY(
       FieldType.ENUM,
       String.class,
       ClaimDetails::getClientEthnicity,
       ClaimPatch.Builder::ethnicityCode,
-      FieldOptions.ETHNICITY_CODE),
+      FieldOptions.ETHNICITY_CODE,
+      "client.ethnicityCode"),
   DISABILITY(
       FieldType.ENUM,
       String.class,
       ClaimDetails::getClientDisability,
       ClaimPatch.Builder::disabilityCode,
-      FieldOptions.DISABILITY_CODE),
+      FieldOptions.DISABILITY_CODE,
+      "client.disabilityCode"),
 
   // Common case details fields
   CASE_REFERENCE_NUMBER(
       FieldType.TEXT,
       String.class,
       Claim::getCaseReferenceNumber,
-      ClaimPatch.Builder::caseReferenceNumber),
+      ClaimPatch.Builder::caseReferenceNumber,
+      "claim.caseReferenceNumber"),
   CASE_START_DATE(
       FieldType.DATE,
       String.class,
       Claim::getCaseStartDate,
       ClaimPatch.Builder::caseStartDate,
-      Amendability.UNTIL_ASSESSED),
+      Amendability.UNTIL_ASSESSED,
+      "claim.caseStartDate"),
+  UNIQUE_FILE_NUMBER(
+      FieldType.TEXT,
+      String.class,
+      Claim::getUniqueFileNumber,
+      ClaimPatch.Builder::uniqueFileNumber,
+      "claim.uniqueFileNumber"),
+  CASE_CONCLUDED_DATE(
+      FieldType.DATE,
+      String.class,
+      Claim::getCaseEndDate,
+      ClaimPatch.Builder::caseConcludedDate,
+      "claim.caseConcludedDate"),
   FEE_CODE(
       FieldType.TEXT,
       String.class,
       ClaimDetails::getFeeCode,
       ClaimPatch.Builder::feeCode,
-      Amendability.UNTIL_ASSESSED),
+      Amendability.UNTIL_ASSESSED,
+      "claim.feeCode"),
 
   // Common cost fields
   FIXED_FEE(
-      FieldType.TEXT, Object.class, ClaimDetails::getFixedFee, (b, v) -> b, Amendability.NEVER),
+      FieldType.TEXT,
+      Object.class,
+      ClaimDetails::getFixedFee,
+      (b, v) -> b,
+      Amendability.NEVER,
+      "fee.fixedFeeAmount"),
   PROFIT_COST(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       ClaimDetails::getNetProfitCost,
-      ClaimPatch.Builder::netProfitCostsAmount),
+      ClaimPatch.Builder::netProfitCostsAmount,
+      "claimSummaryFee.netProfitCostsAmount"),
   DISBURSEMENTS(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       ClaimDetails::getNetDisbursementAmount,
-      ClaimPatch.Builder::netDisbursementAmount),
+      ClaimPatch.Builder::netDisbursementAmount,
+      "claimSummaryFee.netDisbursementAmount"),
   DISBURSEMENTS_VAT(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       ClaimDetails::getDisbursementVatAmount,
-      ClaimPatch.Builder::disbursementsVatAmount),
+      ClaimPatch.Builder::disbursementsVatAmount,
+      "claimSummaryFee.disbursementsVatAmount"),
   VAT(
       FieldType.BOOLEAN,
       Boolean.class,
       ClaimDetails::getVatClaimed,
-      ClaimPatch.Builder::isVatApplicable);
+      ClaimPatch.Builder::isVatApplicable,
+      "claimSummaryFee.isVatApplicable");
 
   private final ClaimDetailsViewFieldGetter<?> getter;
+  private final String claimsApiFieldName;
   private final FieldType fieldType;
   private final ClaimViewFieldPatcher<?> patcher;
   private final Amendability amendability;
@@ -101,26 +132,16 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       FieldType fieldType,
       Class<T> patchType,
       Function<ClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher) {
-    this(fieldType, patchType, getter, patcher, List.of(), Amendability.ALWAYS);
-  }
-
-  <T> ClaimDetailsViewField(
-      FieldType fieldType,
-      Class<T> patchType,
-      Function<ClaimDetails, ?> getter,
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
-      List<FieldOption> options) {
-    this(fieldType, patchType, getter, patcher, options, Amendability.ALWAYS);
-  }
-
-  <T> ClaimDetailsViewField(
-      FieldType fieldType,
-      Class<T> patchType,
-      Function<ClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
-      Amendability amendability) {
-    this(fieldType, patchType, getter, patcher, List.of(), amendability);
+      String claimsApiFieldName) {
+    this(
+        fieldType,
+        patchType,
+        getter,
+        patcher,
+        List.of(),
+        Amendability.ALWAYS,
+        claimsApiFieldName);
   }
 
   <T> ClaimDetailsViewField(
@@ -129,8 +150,37 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Function<ClaimDetails, ?> getter,
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       List<FieldOption> options,
-      Amendability amendability) {
+      String claimsApiFieldName) {
+    this(
+        fieldType,
+        patchType,
+        getter,
+        patcher,
+        options,
+        Amendability.ALWAYS,
+        claimsApiFieldName);
+  }
+
+  <T> ClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<ClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      Amendability amendability,
+      String claimsApiFieldName) {
+    this(fieldType, patchType, getter, patcher, List.of(), amendability, claimsApiFieldName);
+  }
+
+  <T> ClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<ClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      List<FieldOption> options,
+      Amendability amendability,
+      String claimsApiFieldName) {
     this.getter = new ClaimDetailsViewFieldGetter<>(getter);
+    this.claimsApiFieldName = claimsApiFieldName;
     this.fieldType = fieldType;
     this.patcher = new ClaimViewFieldPatcher<>(patchType, patcher);
     this.options = List.copyOf(options);

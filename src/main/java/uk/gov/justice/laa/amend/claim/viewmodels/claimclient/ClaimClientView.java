@@ -10,6 +10,4 @@ public interface ClaimClientView<K extends ClaimViewField<? extends ClaimDetails
   LinkedHashMap<K, Object> client1Rows();
 
   LinkedHashMap<K, Object> client2Rows();
-
-  Class<?> claimDetailsType();
 }

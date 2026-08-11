@@ -8,15 +8,19 @@ import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_CREATED;
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_VOIDED;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistory;
@@ -32,6 +36,7 @@ public class ClaimHistoryService {
   public static final int MAXIMUM_ASSESSMENTS = 100;
 
   private final AssessmentService assessmentService;
+  private final ClaimsApiClient claimsApiClient;
   private final ProviderService providerService;
   private final UserRetrievalService userRetrievalService;
 
@@ -54,6 +59,29 @@ public class ClaimHistoryService {
         assessments.stream().findFirst().map(AssessmentInfo::lastAssessedBy).map(userIdToUser::get);
 
     return new ClaimHistory(events, latestAssessmentUser);
+  }
+
+  public Set<String> getAmendedFields(ClaimDetails claim) {
+    // TODO: Reinstate this once isAmended is wired up in claims API
+    //    if (!claim.isAmended()) {
+    //      return Set.of();
+    //    }
+    var history = claimsApiClient.getClaimHistory(claim.getClaimId()).block();
+
+    if (history == null || history.getEvents() == null) {
+      return Set.of();
+    }
+
+    var claimsApiFields =
+        history.getEvents().stream()
+            .filter(event -> event.getEventType() == AMENDMENT)
+            .map(event -> event.getMetadata().getOrDefault("changes", List.of()))
+            .flatMap(list -> ((List<LinkedHashMap<String, String>>) list).stream())
+            .filter(change -> "REQUESTED".equals(change.get("change_source")))
+            .map(change -> change.get("field_identifier"))
+            .collect(toSet());
+
+    return claimsApiFields;
   }
 
   private Map<String, MicrosoftApiUser> getUserIdToUser(final List<AssessmentInfo> assessments) {

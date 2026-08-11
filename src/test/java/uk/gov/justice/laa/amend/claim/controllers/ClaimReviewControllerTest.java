@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.ROLE_ESCAPE_CASE_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.allRolesApartFrom;
 import static uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService.USER_ID;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
@@ -52,7 +53,7 @@ public class ClaimReviewControllerTest extends BaseControllerTest {
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
   }
 
   @Test
@@ -61,7 +62,7 @@ public class ClaimReviewControllerTest extends BaseControllerTest {
     claim.setAssessmentOutcome(OutcomeType.PAID_IN_FULL);
     MockClaimsFunctions.updateStatus(claim, OutcomeType.PAID_IN_FULL);
 
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc
         .perform(get(buildPath()).session(session))
@@ -77,7 +78,7 @@ public class ClaimReviewControllerTest extends BaseControllerTest {
   @Test
   public void testOnPageLoadRedirectsToAssessmentOutcomeWhenNotPresent() throws Exception {
     claim.setAssessmentOutcome(null);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     String expectedRedirectUrl =
         String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);
@@ -137,7 +138,7 @@ public class ClaimReviewControllerTest extends BaseControllerTest {
     claimField.setAssessed(null);
     claim.setNetProfitCost(claimField);
 
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc
         .perform(post(buildPath()).session(session).with(csrf()))

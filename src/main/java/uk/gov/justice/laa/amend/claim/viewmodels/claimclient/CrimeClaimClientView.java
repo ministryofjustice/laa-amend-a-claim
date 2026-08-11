@@ -22,10 +22,6 @@ public record CrimeClaimClientView(
     this(createRows(claim), new LinkedHashMap<>());
   }
 
-  public Class<?> claimDetailsType() {
-    return CrimeClaimDetails.class;
-  }
-
   private static LinkedHashMap<ClaimViewField<CrimeClaimDetails>, Object> createRows(
       CrimeClaimDetails claim) {
     var fields =

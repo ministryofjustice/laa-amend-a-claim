@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService.USER_ID;
 import static uk.gov.justice.laa.amend.claim.service.DummyUserSecurityService.createAuthToken;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import java.util.Map;
 import java.util.Set;
@@ -116,7 +117,7 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var originalClientForm = new AmendmentForm();
     originalClientForm.setInputs(Map.of("INITIAL", "OLD"));
@@ -154,7 +155,7 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
     claim.setClientForename("forename");
     claim.setClientSurname("surname");
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
   }
 
   private AmendmentForms createCrimeForms() {

@@ -37,10 +37,6 @@ public record MediationClaimClientView(
     this(createClient1Rows(claim), createClient2Rows(claim));
   }
 
-  public Class<?> claimDetailsType() {
-    return MediationClaimDetails.class;
-  }
-
   private static LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> createClient1Rows(
       MediationClaimDetails claim) {
     var fields =

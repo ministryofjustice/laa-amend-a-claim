@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.allRolesApartFrom;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,7 @@ public class VoidConfirmationControllerTest extends BaseControllerTest {
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
   }
 
   @Test

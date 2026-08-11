@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.controllers;
 
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.removeAllForClaim;
+
 import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,13 +30,13 @@ public class DiscardController {
     return "discard";
   }
 
-  @PostMapping()
+  @PostMapping
   public String discard(
       HttpSession session,
       RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    session.removeAttribute(claimId.toString());
+    removeAllForClaim(session, claimId);
     String searchUrl = (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
 
     redirectAttributes.addFlashAttribute("discarded", true);

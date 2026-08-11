@@ -5,6 +5,7 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSES
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_STAGE_DISBURSEMENT;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_STAGE_DISBURSEMENT_CONTINGENCY;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -81,7 +82,7 @@ public class AssessmentOutcomeController {
               : ASSESSMENT_REASON_ESCAPE_CASE);
     }
 
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
   }

@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +70,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
   }
 
   @Test
@@ -78,7 +79,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setMatterTypeCode(MATTER_TYPE_CODE_1);
     claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
     var caseTypeForm = new AmendmentForm();
@@ -109,7 +110,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setMatterTypeCode(MATTER_TYPE_CODE_1);
     claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
     var caseTypeForm = new AmendmentForm();
@@ -142,7 +143,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
     claim.setStageReached(STAGE_REACHED);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
     var caseTypeForm = new AmendmentForm();
@@ -178,7 +179,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
     claim.setMatterType1(MATTER_TYPE_CODE_1);
     claim.setMatterType2(MATTER_TYPE_CODE_2);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
     var caseTypeForm = new AmendmentForm();
@@ -213,7 +214,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setStageReached(STAGE_REACHED);
     claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE, "STAGE_REACHED", STAGE_REACHED);
     var caseTypeForm = new AmendmentForm();
@@ -242,7 +243,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setStageReached(STAGE_REACHED);
     claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE, "STAGE_REACHED", STAGE_REACHED);
     var caseTypeForm = new AmendmentForm();
@@ -367,7 +368,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setFeeCode(FEE_CODE);
     claim.setMatterTypeCode(MATTER_TYPE_CODE_1);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
     var caseTypeForm = new AmendmentForm();
@@ -405,7 +406,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setMatterTypeCode(MATTER_TYPE_CODE_1);
     claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
     var caseTypeForm = new AmendmentForm();
@@ -452,7 +453,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setMatterTypeCode(MATTER_TYPE_CODE_1);
     claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
     var caseTypeForm = new AmendmentForm();
@@ -492,7 +493,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setMatterTypeCode(MATTER_TYPE_CODE_1);
     claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
     var caseTypeForm = new AmendmentForm();
@@ -532,7 +533,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setMatterTypeCode(MATTER_TYPE_CODE_1);
     claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows = Map.of("FEE_CODE", FEE_CODE);
     var caseTypeForm = new AmendmentForm();
@@ -572,7 +573,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setMatterType1(MATTER_TYPE_CODE_1);
     claim.setMatterType2(MATTER_TYPE_CODE_2);
     claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows =
         Map.of(
@@ -619,7 +620,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setMatterType1(MATTER_TYPE_CODE_1);
     claim.setMatterType2(MATTER_TYPE_CODE_2);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows =
         Map.of(
@@ -668,7 +669,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setMatterType1(MATTER_TYPE_CODE_1);
     claim.setMatterType2(MATTER_TYPE_CODE_2);
     claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows =
         Map.of(
@@ -723,7 +724,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setMatterType1(MATTER_TYPE_CODE_1);
     claim.setMatterType2(MATTER_TYPE_CODE_2);
     claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows =
         Map.of(
@@ -774,7 +775,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setMatterType1(MATTER_TYPE_CODE_1);
     claim.setMatterType2(MATTER_TYPE_CODE_2);
     claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows =
         Map.of(
@@ -824,7 +825,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setMatterType1(MATTER_TYPE_CODE_1);
     claim.setMatterType2(MATTER_TYPE_CODE_2);
     claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows =
         Map.of(
@@ -861,7 +862,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setMatterType1(MATTER_TYPE_CODE_1);
     claim.setMatterType2(MATTER_TYPE_CODE_2);
     claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows =
         Map.of(
@@ -897,7 +898,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setMatterType1(MATTER_TYPE_CODE_1);
     claim.setMatterType2(MATTER_TYPE_CODE_2);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows =
         Map.of(
@@ -939,7 +940,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setMatterType1(MATTER_TYPE_CODE_1);
     claim.setMatterType2(MATTER_TYPE_CODE_2);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseTypeRows =
         Map.of(

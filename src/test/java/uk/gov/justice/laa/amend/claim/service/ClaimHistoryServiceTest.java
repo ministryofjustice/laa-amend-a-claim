@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistoryEvent;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
@@ -53,6 +54,8 @@ public class ClaimHistoryServiceTest {
 
   @Mock private AssessmentService assessmentService;
 
+  @Mock private ClaimsApiClient claimsApiClient;
+
   @Mock private ProviderService providerService;
 
   @Mock private UserRetrievalService userRetrievalService;
@@ -62,7 +65,8 @@ public class ClaimHistoryServiceTest {
   @BeforeEach
   void setUp() {
     claimHistoryService =
-        new ClaimHistoryService(assessmentService, providerService, userRetrievalService);
+        new ClaimHistoryService(
+            assessmentService, claimsApiClient, providerService, userRetrievalService);
   }
 
   @Test

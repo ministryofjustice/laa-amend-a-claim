@@ -129,6 +129,7 @@ class SessionConfigTest {
     assertThat(deserialized).isInstanceOf(CrimeClaimDetails.class);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   void roundTripsAmendmentFormErrorList() {
     List<AmendmentFormError> errors =

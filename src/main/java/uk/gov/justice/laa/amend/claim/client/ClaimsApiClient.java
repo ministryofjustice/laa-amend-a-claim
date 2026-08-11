@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
@@ -67,4 +68,7 @@ public interface ClaimsApiClient {
   @PostExchange(url = "/v1/claims/{claimId}/void", accept = MediaType.APPLICATION_JSON_VALUE)
   Mono<VoidClaim201Response> voidClaim(
       @PathVariable UUID claimId, @RequestBody VoidClaimRequest body);
+
+  @GetExchange(url = "/v1/claims/{claimId}/history", accept = MediaType.APPLICATION_JSON_VALUE)
+  Mono<ClaimHistoryResultSet> getClaimHistory(@PathVariable UUID claimId);
 }

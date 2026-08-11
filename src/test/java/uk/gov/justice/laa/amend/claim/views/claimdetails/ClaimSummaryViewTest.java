@@ -42,6 +42,7 @@ import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
+import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.MicrosoftUserRetrievalService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -52,6 +53,8 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
 
   @MockitoBean private ClaimService claimService;
+
+  @MockitoBean private ClaimHistoryService claimHistoryService;
 
   @MockitoBean private ClaimMapper claimMapper;
 

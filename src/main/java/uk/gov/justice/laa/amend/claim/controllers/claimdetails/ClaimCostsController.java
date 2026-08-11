@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
+import uk.gov.justice.laa.amend.claim.utils.SessionUtils;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactory;
 
 @Controller
@@ -35,6 +36,9 @@ public class ClaimCostsController extends ClaimDetailsBaseController {
 
     var claimView = ClaimCostsViewFactory.create(claim);
     model.addAttribute("claim", claimView);
+
+    var amendedFields = SessionUtils.getAmendedFields(session, claimId);
+    model.addAttribute("amendedFields", amendedFields);
 
     var user = setLatestAssessment(claim);
     setCommonModelAttributes(model, session, request, claim, user);

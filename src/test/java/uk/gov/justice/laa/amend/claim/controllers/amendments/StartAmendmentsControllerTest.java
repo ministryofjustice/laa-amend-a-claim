@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     claim.setFeeCode("ABC");
     claim.setMatterTypeCode("MAT1");
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     claim.setClientForename("forename");
     claim.setClientSurname("surname");
@@ -146,7 +147,7 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     claim.setMatterType1("MAT1");
     claim.setMatterType2("MAT2");
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     claim.setClientForename("forename");
     claim.setClientSurname("surname");

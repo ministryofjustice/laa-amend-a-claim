@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +30,7 @@ class AmendmentsConfirmationControllerTest extends BaseControllerTest {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
   }
 
   @Test
