@@ -10,7 +10,7 @@ public record CivilClaimDetailsView(CivilClaimDetails claim)
 
   @Override
   public void addUcnSummaryRow(Map<String, Object> summaryRows) {
-    summaryRows.put("ucn", claim.getUniqueClientNumber());
+    summaryRows.put("UNIQUE_CLIENT_NUMBER", claim.getUniqueClientNumber());
   }
 
   @Override
@@ -21,8 +21,8 @@ public record CivilClaimDetailsView(CivilClaimDetails claim)
 
   @Override
   public void addMatterTypeCodeRow(Map<String, Object> summaryRows) {
-    summaryRows.put("matterTypeCodeOne", claim.getMatterType1());
-    summaryRows.put("matterTypeCodeTwo", claim.getMatterType2());
+    summaryRows.put("MATTER_TYPE_CODE_1", claim.getMatterType1());
+    summaryRows.put("MATTER_TYPE_CODE_2", claim.getMatterType2());
   }
 
   @Override

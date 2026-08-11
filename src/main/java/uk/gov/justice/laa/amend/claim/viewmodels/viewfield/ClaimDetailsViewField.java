@@ -9,10 +9,23 @@ import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.Amendability;
 import uk.gov.justice.laa.amend.claim.models.enums.FieldType;
+import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
 @Getter
 public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
+  // Claim overview only fields
+  CLIENT_NAME(FieldType.TEXT, ClaimDetailsViewField::getClientName),
+  PROVIDER_NAME(FieldType.TEXT, ClaimDetailsViewField::getProviderName),
+  OFFICE_CODE(FieldType.TEXT, ClaimDetails::getOfficeCode),
+  SUBMITTED_DATE(FieldType.DATE, ClaimDetails::getSubmittedDate),
+  AREA_OF_LAW(FieldType.TEXT, ClaimDetailsViewField::getAreaOfLaw),
+  CATEGORY_OF_LAW(FieldType.TEXT, ClaimDetails::getCategoryOfLaw),
+  FEE_CODE_DESCRIPTION(FieldType.TEXT, ClaimDetails::getFeeCodeDescription),
+  ESCAPED(FieldType.BOOLEAN, ClaimDetails::getEscaped),
+  VAT_REQUESTED(FieldType.BOOLEAN, ClaimDetails::getVatApplicable),
+  TOTAL(FieldType.TEXT, ClaimDetails::getTotalAmount),
+
   // Common client fields
   INITIAL(
       FieldType.TEXT,
@@ -128,6 +141,10 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   private final Amendability amendability;
   private final List<FieldOption> options;
 
+  <T> ClaimDetailsViewField(FieldType fieldType, Function<ClaimDetails, ?> getter) {
+    this(fieldType, Object.class, getter, (b, v) -> b, List.of(), false, "");
+  }
+
   <T> ClaimDetailsViewField(
       FieldType fieldType,
       Class<T> patchType,
@@ -189,4 +206,20 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
 
   public record ClaimDetailsViewFieldGetter<T>(Function<ClaimDetails, T> getter)
       implements ClaimViewFieldGetter<ClaimDetails, T> {}
+
+  private static String getClientName(ClaimDetails claim) {
+    return "%s %s".formatted(claim.getClientForename(), claim.getClientSurname()).trim();
+  }
+
+  private static Object getProviderName(ClaimDetails claim) {
+    return claim.getProviderName() == null
+        ? new ThymeleafMessage("provider.firmName.notAvailable")
+        : claim.getProviderName();
+  }
+
+  private static Object getAreaOfLaw(ClaimDetails claim) {
+    return claim.getAreaOfLaw() != null
+        ? new ThymeleafMessage(claim.getAreaOfLaw().getMessageKey())
+        : null;
+  }
 }

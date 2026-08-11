@@ -73,22 +73,23 @@ public class CivilClaimDetailsViewTest
       claim.setVatApplicable(false);
 
       Map<String, Object> expectedResult = new LinkedHashMap<>();
-      expectedResult.put("clientName", "John Smith");
-      expectedResult.put("ufn", "unique file number");
-      expectedResult.put("ucn", "unique client number");
-      expectedResult.put("providerName", "provider name");
-      expectedResult.put("officeCode", "office code");
-      expectedResult.put("submittedDate", submittedDate);
-      expectedResult.put("areaOfLaw", new ThymeleafMessage(AreaOfLaw.CRIME_LOWER.getMessageKey()));
-      expectedResult.put("categoryOfLaw", "category of law");
-      expectedResult.put("feeCode", "fee code");
-      expectedResult.put("feeCodeDescription", "fee code description");
-      expectedResult.put("matterTypeCodeOne", "IMLB");
-      expectedResult.put("matterTypeCodeTwo", "AHQS");
-      expectedResult.put("caseStartDate", caseStartDate);
-      expectedResult.put("caseEndDate", caseEndDate);
-      expectedResult.put("escaped", true);
-      expectedResult.put("vatRequested", false);
+      expectedResult.put("CLIENT_NAME", "John Smith");
+      expectedResult.put("UNIQUE_FILE_NUMBER", "unique file number");
+      expectedResult.put("UNIQUE_CLIENT_NUMBER", "unique client number");
+      expectedResult.put("PROVIDER_NAME", "provider name");
+      expectedResult.put("OFFICE_CODE", "office code");
+      expectedResult.put("SUBMITTED_DATE", submittedDate);
+      expectedResult.put(
+          "AREA_OF_LAW", new ThymeleafMessage(AreaOfLaw.CRIME_LOWER.getMessageKey()));
+      expectedResult.put("CATEGORY_OF_LAW", "category of law");
+      expectedResult.put("FEE_CODE", "fee code");
+      expectedResult.put("FEE_CODE_DESCRIPTION", "fee code description");
+      expectedResult.put("MATTER_TYPE_CODE_1", "IMLB");
+      expectedResult.put("MATTER_TYPE_CODE_2", "AHQS");
+      expectedResult.put("CASE_START_DATE", caseStartDate);
+      expectedResult.put("CASE_CONCLUDED_DATE", caseEndDate);
+      expectedResult.put("ESCAPED", true);
+      expectedResult.put("VAT_REQUESTED", false);
 
       CivilClaimDetailsView viewModel = createView(claim);
       Map<String, Object> result = viewModel.getSummaryRows();
@@ -575,15 +576,15 @@ public class CivilClaimDetailsViewTest
 
       List<ReviewAndAmendFormError> expectedErrors =
           List.of(
-              new ReviewAndAmendFormError("profit-cost", "claimSummary.rows.profitCost.error"),
+              new ReviewAndAmendFormError("profit-cost", "claimSummary.rows.PROFIT_COST.error"),
               new ReviewAndAmendFormError(
-                  "assessed-total-vat", "claimSummary.rows.assessedTotalVat.error"),
+                  "assessed-total-vat", "claimSummary.rows.ASSESSED_TOTAL_VAT.error"),
               new ReviewAndAmendFormError(
-                  "assessed-total-incl-vat", "claimSummary.rows.assessedTotalInclVat.error"),
+                  "assessed-total-incl-vat", "claimSummary.rows.ASSESSED_TOTAL_INCL_VAT.error"),
               new ReviewAndAmendFormError(
-                  "allowed-total-vat", "claimSummary.rows.allowedTotalVat.error"),
+                  "allowed-total-vat", "claimSummary.rows.ALLOWED_TOTAL_VAT.error"),
               new ReviewAndAmendFormError(
-                  "allowed-total-incl-vat", "claimSummary.rows.allowedTotalInclVat.error"));
+                  "allowed-total-incl-vat", "claimSummary.rows.ALLOWED_TOTAL_INCL_VAT.error"));
 
       Assertions.assertEquals(expectedErrors, viewModel.getErrors());
     }

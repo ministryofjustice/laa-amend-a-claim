@@ -25,6 +25,7 @@ import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimoverview.ClaimOverviewViewFactory;
 
 @Controller
 @Slf4j
@@ -67,7 +68,7 @@ public class ClaimSummaryController extends ClaimDetailsBaseController {
 
     setCommonModelAttributes(model, session, request, claim, user);
 
-    model.addAttribute("claim", claim.toViewModel());
+    model.addAttribute("claim", ClaimOverviewViewFactory.create(claim));
     model.addAttribute("amendedFields", amendedFields);
 
     return "claimdetails/claim-summary";

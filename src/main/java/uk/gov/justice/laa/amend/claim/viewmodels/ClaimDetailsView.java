@@ -16,40 +16,40 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
   // 'Summary' rows for the 'Claim details' page
   default Map<String, Object> getSummaryRows() {
     var rows = new LinkedHashMap<String, Object>();
-    rows.put("clientName", getClientName());
-    rows.put("ufn", claim().getUniqueFileNumber());
+    rows.put("CLIENT_NAME", getClientName());
+    rows.put("UNIQUE_FILE_NUMBER", claim().getUniqueFileNumber());
     addUcnSummaryRow(rows);
-    rows.put("providerName", getProviderName());
-    rows.put("officeCode", claim().getOfficeCode());
-    rows.put("submittedDate", claim().getSubmittedDate());
+    rows.put("PROVIDER_NAME", getProviderName());
+    rows.put("OFFICE_CODE", claim().getOfficeCode());
+    rows.put("SUBMITTED_DATE", claim().getSubmittedDate());
     rows.put(
-        "areaOfLaw",
+        "AREA_OF_LAW",
         claim().getAreaOfLaw() != null
             ? new ThymeleafMessage(claim().getAreaOfLaw().getMessageKey())
             : null);
-    rows.put("categoryOfLaw", claim().getCategoryOfLaw());
-    rows.put("feeCode", claim().getFeeCode());
-    rows.put("feeCodeDescription", claim().getFeeCodeDescription());
+    rows.put("CATEGORY_OF_LAW", claim().getCategoryOfLaw());
+    rows.put("FEE_CODE", claim().getFeeCode());
+    rows.put("FEE_CODE_DESCRIPTION", claim().getFeeCodeDescription());
     addPoliceStationCourtPrisonIdRow(rows);
     addSchemeIdRow(rows);
     addMatterTypeCodeRow(rows);
-    rows.put("caseStartDate", claim().getCaseStartDate());
-    rows.put("caseEndDate", claim().getCaseEndDate());
-    rows.put("escaped", claim().getEscaped());
-    rows.put("vatRequested", claim().getVatApplicable());
+    rows.put("CASE_START_DATE", claim().getCaseStartDate());
+    rows.put("CASE_CONCLUDED_DATE", claim().getCaseEndDate());
+    rows.put("ESCAPED", claim().getEscaped());
+    rows.put("VAT_REQUESTED", claim().getVatApplicable());
     return rows;
   }
 
   default Map<String, Object> getVoidConfirmationRows() {
     var rows = new LinkedHashMap<String, Object>();
-    rows.put("clientName", getClientName());
-    rows.put("ufn", claim().getUniqueFileNumber());
+    rows.put("CLIENT_NAME", getClientName());
+    rows.put("UNIQUE_FILE_NUMBER", claim().getUniqueFileNumber());
     addUcnSummaryRow(rows);
-    rows.put("providerName", getProviderName());
-    rows.put("officeCode", claim().getOfficeCode());
-    rows.put("submittedDate", claim().getSubmittedDate());
-    rows.put("categoryOfLaw", claim().getCategoryOfLaw());
-    rows.put("feeCodeDescription", claim().getFeeCodeDescription());
+    rows.put("PROVIDER_NAME", getProviderName());
+    rows.put("OFFICE_CODE", claim().getOfficeCode());
+    rows.put("SUBMITTED_DATE", claim().getSubmittedDate());
+    rows.put("CATEGORY_OF_LAW", claim().getCategoryOfLaw());
+    rows.put("FEE_CODE_DESCRIPTION", claim().getFeeCodeDescription());
     return rows;
   }
 
@@ -102,7 +102,10 @@ public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<
 
     return toClaimFieldRows(claimFields)
         .filter(ClaimFieldRow::isAssessableAndUnassessed)
-        .map(f -> new ReviewAndAmendFormError(f.getId(), f.getErrorKey()))
+        .map(
+            f ->
+                new ReviewAndAmendFormError(
+                    f.getId(), "claimSummary.rows.%s.error".formatted(f.key())))
         .toList();
   }
 

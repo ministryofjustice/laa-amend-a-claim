@@ -36,29 +36,29 @@ public class AmendClaimConstants {
       "{assessmentOutcome.contingencyAssessmentRequiredError}";
 
   public static class Label {
-    public static final String FIXED_FEE = "fixedFee";
-    public static final String NET_PROFIT_COST = "profitCost";
-    public static final String DISBURSEMENT_VAT = "disbursementsVat";
-    public static final String NET_DISBURSEMENTS_COST = "disbursements";
-    public static final String COUNSELS_COST = "counselsCost";
-    public static final String DETENTION_TRAVEL_COST = "detentionTravel";
-    public static final String JR_FORM_FILLING = "jrFormFilling";
-    public static final String ADJOURNED_FEE = "adjournedHearingFee";
-    public static final String CMRH_TELEPHONE = "cmrhTelephone";
-    public static final String CMRH_ORAL = "cmrhOral";
-    public static final String HO_INTERVIEW = "homeOffice";
-    public static final String SUBSTANTIVE_HEARING = "substantiveHearing";
-    public static final String VAT = "vat";
-    public static final String TOTAL = "total";
-    public static final String TRAVEL_COSTS = "travel";
-    public static final String WAITING_COSTS = "waiting";
-    public static final String ASSESSED_TOTAL_VAT = "assessedTotalVat";
-    public static final String ASSESSED_TOTAL_INCL_VAT = "assessedTotalInclVat";
-    public static final String ALLOWED_TOTAL_VAT = "allowedTotalVat";
-    public static final String ALLOWED_TOTAL_INCL_VAT = "allowedTotalInclVat";
-    public static final String TRAVEL_AND_WAITING_COSTS = "travelAndWaitingCosts";
-    public static final String IS_LONDON_RATE = "isLondonRate";
-    public static final String PRIOR_AUTHORITY_REFERENCE = "priorAuthorityReference";
+    public static final String FIXED_FEE = "FIXED_FEE";
+    public static final String NET_PROFIT_COST = "PROFIT_COST";
+    public static final String DISBURSEMENT_VAT = "DISBURSEMENTS_VAT";
+    public static final String NET_DISBURSEMENTS_COST = "DISBURSEMENTS";
+    public static final String COUNSELS_COST = "COUNSELS_COST";
+    public static final String DETENTION_TRAVEL_COST = "DETENTION_TRAVEL";
+    public static final String JR_FORM_FILLING = "JR_FORM_FILLING";
+    public static final String ADJOURNED_FEE = "ADJOURNED_HEARING_FEE";
+    public static final String CMRH_TELEPHONE = "CMRH_TELEPHONE";
+    public static final String CMRH_ORAL = "CMRH_ORAL";
+    public static final String HO_INTERVIEW = "HOME_OFFICE";
+    public static final String SUBSTANTIVE_HEARING = "SUBSTANTIVE_HEARING";
+    public static final String VAT = "VAT";
+    public static final String TOTAL = "TOTAL";
+    public static final String TRAVEL_COSTS = "TRAVEL_COSTS";
+    public static final String WAITING_COSTS = "WAITING_COSTS";
+    public static final String ASSESSED_TOTAL_VAT = "ASSESSED_TOTAL_VAT";
+    public static final String ASSESSED_TOTAL_INCL_VAT = "ASSESSED_TOTAL_INCL_VAT";
+    public static final String ALLOWED_TOTAL_VAT = "ALLOWED_TOTAL_VAT";
+    public static final String ALLOWED_TOTAL_INCL_VAT = "ALLOWED_TOTAL_INCL_VAT";
+    public static final String TRAVEL_AND_WAITING_COSTS = "TRAVEL_AND_WAITING_COSTS";
+    public static final String IS_LONDON_RATE = "IS_LONDON_RATE";
+    public static final String PRIOR_AUTHORITY_REFERENCE = "PRIOR_AUTHORITY_REFERENCE";
   }
 
   public static final String ASSESSMENT_ID = "assessmentId";

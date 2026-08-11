@@ -13,17 +13,17 @@ public record CrimeClaimDetailsView(CrimeClaimDetails claim)
 
   @Override
   public void addPoliceStationCourtPrisonIdRow(Map<String, Object> summaryRows) {
-    summaryRows.put("policeStationCourtPrisonId", claim.getPoliceStationCourtPrisonId());
+    summaryRows.put("POLICE_STATION_COURT_PRISON_ID", claim.getPoliceStationCourtPrisonId());
   }
 
   @Override
   public void addSchemeIdRow(Map<String, Object> summaryRows) {
-    summaryRows.put("schemeId", claim.getSchemeId());
+    summaryRows.put("SCHEME_ID", claim.getSchemeId());
   }
 
   @Override
   public void addMatterTypeCodeRow(Map<String, Object> summaryRows) {
-    summaryRows.put("legalMatterCode", claim.getMatterTypeCode());
+    summaryRows.put("MATTER_TYPE_CODE", claim.getMatterTypeCode());
   }
 
   @Override

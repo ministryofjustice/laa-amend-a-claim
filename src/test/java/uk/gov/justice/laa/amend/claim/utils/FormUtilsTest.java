@@ -21,6 +21,12 @@ public class FormUtilsTest {
     }
 
     @Test
+    void macroCaseStringConverted() {
+      String result = FormUtils.toFieldId("SOME_RANDOM_ID");
+      Assertions.assertEquals("some-random-id", result);
+    }
+
+    @Test
     void lowerCaseHyphenatedStringUnaffected() {
       String result = FormUtils.toFieldId("some-random-id");
       Assertions.assertEquals("some-random-id", result);

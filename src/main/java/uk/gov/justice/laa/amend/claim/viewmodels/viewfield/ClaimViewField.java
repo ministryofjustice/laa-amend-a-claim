@@ -18,7 +18,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 public interface ClaimViewField<T extends Claim> {
 
   List<String> ROW_LABEL_KEY_PREFIXES =
-      List.of("claimCase.rows.", "claimClient.rows.", "claimCosts.rows.");
+      List.of("claimCase.rows.", "claimClient.rows.", "claimCosts.rows.", "claimSummary.rows.");
 
   String name();
 
