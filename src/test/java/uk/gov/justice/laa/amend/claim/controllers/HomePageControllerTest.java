@@ -18,12 +18,15 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
+import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 @WebMvcTest(HomePageController.class)
 public class HomePageControllerTest extends BaseControllerTest {
 
   @MockitoBean private ClaimService claimService;
+
+  @MockitoBean private AssessmentService assessmentService;
 
   @MockitoBean private ClaimResultMapper claimResultMapper;
 

@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.UUID;
@@ -38,6 +39,8 @@ public class Claim {
   private String officeCode;
   private ClaimStatus status;
   private String uniqueCaseId;
+  private Boolean hasAssessment;
+  private BigDecimal claimValue;
 
   public BaseClaimView<? extends Claim> toViewModel() {
     return new ClaimView(this);

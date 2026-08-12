@@ -32,6 +32,7 @@ import uk.gov.justice.laa.amend.claim.handlers.ClaimStatusHandler;
 import uk.gov.justice.laa.amend.claim.mappers.AssessmentMapper;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
@@ -470,6 +471,67 @@ class AssessmentServiceTest {
       var result = assessmentService.getLatestAssessmentsByClaim(claimId, 5);
 
       assertEquals(List.of(escapeCaseAssessmentInfo, voidAssessmentInfo), result);
+    }
+  }
+
+  @Nested
+  class PopulateClaimValuesTest {
+    @Test
+    void usesLatestAssessmentValueForAssessedClaim() {
+      Claim claim = new Claim();
+      claim.setClaimId(claimId);
+      claim.setHasAssessment(true);
+      claim.setClaimValue(BigDecimal.valueOf(120));
+      claim.setStatus(ClaimStatus.VALID);
+
+      AssessmentGet assessment = new AssessmentGet();
+      assessment.setAssessmentType(AssessmentType.ESCAPE_CASE_ASSESSMENT);
+      assessment.setAssessedTotalInclVat(BigDecimal.valueOf(345));
+
+      AssessmentResultSet assessmentResultSet = new AssessmentResultSet();
+      assessmentResultSet.setAssessments(List.of(assessment));
+
+      when(claimsApiClient.getAssessments(claimId, 0, 5, sort))
+          .thenReturn(Mono.just(assessmentResultSet));
+
+      assessmentService.populateClaimValues(List.of(claim));
+
+      assertEquals(BigDecimal.valueOf(345), claim.getClaimValue());
+    }
+
+    @Test
+    void usesLatestAssessmentValueForVoidedClaim() {
+      Claim claim = new Claim();
+      claim.setClaimId(claimId);
+      claim.setStatus(ClaimStatus.VOID);
+      claim.setClaimValue(BigDecimal.valueOf(120));
+
+      AssessmentGet voidAssessment = new AssessmentGet();
+      voidAssessment.setAssessmentType(AssessmentType.VOID);
+      voidAssessment.setAssessedTotalInclVat(BigDecimal.valueOf(456));
+
+      AssessmentResultSet assessmentResultSet = new AssessmentResultSet();
+      assessmentResultSet.setAssessments(List.of(voidAssessment));
+
+      when(claimsApiClient.getAssessments(claimId, 0, 5, sort))
+          .thenReturn(Mono.just(assessmentResultSet));
+
+      assessmentService.populateClaimValues(List.of(claim));
+
+      assertEquals(BigDecimal.valueOf(456), claim.getClaimValue());
+    }
+
+    @Test
+    void leavesUnassessedClaimValueAsCalculatedTotal() {
+      Claim claim = new Claim();
+      claim.setClaimId(claimId);
+      claim.setClaimValue(BigDecimal.valueOf(120));
+      claim.setStatus(ClaimStatus.VALID);
+
+      assessmentService.populateClaimValues(List.of(claim));
+
+      assertEquals(BigDecimal.valueOf(120), claim.getClaimValue());
+      verifyNoInteractions(claimsApiClient);
     }
   }
 

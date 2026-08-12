@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants;
 import uk.gov.justice.laa.amend.claim.models.AssessedClaimField;
+import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimField;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
@@ -45,6 +46,20 @@ class ClaimMapperTest {
     assertNull(claimField.getSubmitted());
     assertEquals(BigDecimal.valueOf(120), claimField.getCalculated());
     assertNull(claimField.getAssessed());
+  }
+
+  @Test
+  void testMapClaimValueAndAssessmentFlag() {
+    var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
+    response.setHasAssessment(true);
+    FeeCalculationPatch feeCalc = new FeeCalculationPatch();
+    feeCalc.setTotalAmount(BigDecimal.valueOf(120));
+    response.setFeeCalculationResponse(feeCalc);
+
+    Claim claim = mapper.mapToClaim(response);
+
+    assertEquals(true, claim.getHasAssessment());
+    assertEquals(BigDecimal.valueOf(120), claim.getClaimValue());
   }
 
   @Test

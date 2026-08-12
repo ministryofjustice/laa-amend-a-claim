@@ -26,7 +26,9 @@ import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.search.SearchQuery;
 import uk.gov.justice.laa.amend.claim.models.search.SearchSortField;
+import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
+import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
@@ -38,6 +40,7 @@ public class HomePageController {
       List.of(ClaimStatus.VALID, ClaimStatus.VOID);
 
   private final ClaimService claimService;
+  private final AssessmentService assessmentService;
   private final ClaimResultMapper claimResultMapper;
   private final ClaimMapper claimMapper;
   private final Validator validator;
@@ -79,6 +82,10 @@ public class HomePageController {
               query.getSort());
       String redirectUrl = query.getRedirectUrl();
       SearchResultView viewModel = claimResultMapper.toDto(result, redirectUrl, claimMapper);
+      if (viewModel != null && viewModel.claims() != null) {
+        assessmentService.populateClaimValues(
+            viewModel.claims().stream().map(BaseClaimView::getClaim).toList());
+      }
       model.addAttribute("viewModel", viewModel);
       session.setAttribute("searchUrl", redirectUrl);
     }

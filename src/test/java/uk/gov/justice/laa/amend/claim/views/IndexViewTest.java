@@ -1,5 +1,8 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +19,7 @@ import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
@@ -26,6 +30,8 @@ import uk.gov.justice.laa.amend.claim.viewmodels.SearchResultView;
 class IndexViewTest extends ViewTestBase {
 
   @MockitoBean private ClaimService claimService;
+
+  @MockitoBean private AssessmentService assessmentService;
 
   @MockitoBean private ClaimResultMapper claimResultMapper;
 
@@ -95,24 +101,24 @@ class IndexViewTest extends ViewTestBase {
 
     Elements headers = getTableHeaders(doc);
 
-    assertTableHeaderIsNotSortable(headers.get(0), "Claim");
+    assertTableHeaderIsSortable(
+        headers.get(0), "none", "Client surname", "/?page=1&sort=client_surname,asc");
     assertTableHeaderIsSortable(
         headers.get(1), "ascending", "UFN", "/?page=1&sort=unique_file_number,desc");
     assertTableHeaderIsSortable(
         headers.get(2), "none", "CRN", "/?page=1&sort=case_reference_number,asc");
     assertTableHeaderIsSortable(
-        headers.get(3), "none", "Client surname", "/?page=1&sort=client_surname,asc");
+        headers.get(3), "none", "Submission period", "/?page=1&sort=submission_period,asc");
     assertTableHeaderIsSortable(
-        headers.get(4), "none", "Submission period", "/?page=1&sort=submission_period,asc");
-    assertTableHeaderIsSortable(
-        headers.get(5), "none", "Category of law", "/?page=1&sort=category_of_law,asc");
-    assertTableHeaderIsSortable(headers.get(6), "none", "Voided", "/?page=1&sort=status,asc");
-    assertTableHeaderIsNotSortable(headers.get(7), "Escape case");
+        headers.get(4), "none", "Category of law", "/?page=1&sort=category_of_law,asc");
+    assertTableHeaderIsNotSortable(headers.get(5), "Claim value");
+    assertTableHeaderIsNotSortable(headers.get(6), "Escape case");
   }
 
   @Test
   void testPageWithOneResult() {
     ClaimView claimViewModel = new ClaimView(MockClaimsFunctions.createMockCivilClaim());
+    claimViewModel.getClaim().setClaimValue(BigDecimal.valueOf(200));
     List<BaseClaimView<Claim>> claims = List.of(claimViewModel);
 
     Pagination pagination = new Pagination(1, 10, 1, "/");
@@ -122,6 +128,7 @@ class IndexViewTest extends ViewTestBase {
     Document doc = renderDocument(variables);
 
     assertH2Exists(doc, "1 search result");
+    assertEquals("£200.00", doc.select("tbody tr td").get(5).text());
   }
 
   @Test
