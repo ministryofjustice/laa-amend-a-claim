@@ -99,6 +99,41 @@ class ViewCostsViewTest extends AmendmentsBaseTest {
   }
 
   @Test
+  void showsAssessedColumnWhenClaimAssessed() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    markAssessed(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCostsForms(claim));
+
+    var doc = renderDocument();
+
+    var costs = getSummaryListInCard(doc, "List of costs");
+    assertSummaryListRowContainsValues(
+        costs.getFirst(), "Item", "Reported", "Calculated", "Assessed");
+    assertSummaryListRowContainsValues(
+        costs.get(1), "Fixed fee", "Not applicable", "£200.00", "£300.00");
+    assertSummaryListRowContainsValues(
+        costs.get(2), "Net profit costs", "£100.00", "Not applicable", "£300.00");
+  }
+
+  @Test
+  void doesNotShowAssessedColumnWhenClaimNotAssessed() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCostsForms(claim));
+
+    var doc = renderDocument();
+
+    var costs = getSummaryListInCard(doc, "List of costs");
+    Assertions.assertEquals(3, costs.getFirst().size(), "Assessed column should not be shown");
+  }
+
+  @Test
   void showsAssessedBanner() {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     this.claim = claim;

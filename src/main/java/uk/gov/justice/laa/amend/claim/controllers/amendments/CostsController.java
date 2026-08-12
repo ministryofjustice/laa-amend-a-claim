@@ -108,6 +108,7 @@ public class CostsController {
     model.addAttribute("costFields", costFields);
     model.addAttribute("costsForm", costs.getCurrent());
     model.addAttribute("costsFormIsAmended", costsFormIsAmended);
+    model.addAttribute("claimIsAssessed", AmendmentsHeaderView.isAssessed(claim));
     model.addAttribute("forms", amendmentForms);
   }
 }

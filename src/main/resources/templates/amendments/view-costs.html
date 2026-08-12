@@ -37,6 +37,9 @@
               <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimCosts.submitted}"></dd>
               <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimCosts.calculated}"></dd>
               <dd class="govuk-summary-list__value govuk-!-font-weight-bold"
+                  th:if="${claimIsAssessed}"
+                  th:text="#{claimCosts.assessed}"></dd>
+              <dd class="govuk-summary-list__value govuk-!-font-weight-bold"
                   th:if="${costsFormIsAmended}"
                   th:text="#{amendments.amended}"></dd>
             </div>
@@ -48,6 +51,9 @@
               <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></dd>
               <dd class="govuk-summary-list__value"
                   th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
+              <dd class="govuk-summary-list__value"
+                  th:if="${claimIsAssessed}"
+                  th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></dd>
               <dd class="govuk-summary-list__value"
                   th:if="${costsFormIsAmended}"
                   th:text="${costsForm.isAmendment(field.name(), originalCostsForm, field.fieldType) ? @ThymeleafUtils.getFormattedValue(costsForm.getAmendedValue(field)).resolve(#messages) : ''}"></dd>
