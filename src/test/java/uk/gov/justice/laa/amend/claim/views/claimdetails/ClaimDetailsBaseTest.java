@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.views.claimdetails;
 
+import org.jsoup.nodes.Document;
 import uk.gov.justice.laa.amend.claim.views.ViewTestBase;
 
 public abstract class ClaimDetailsBaseTest extends ViewTestBase {
@@ -16,5 +17,11 @@ public abstract class ClaimDetailsBaseTest extends ViewTestBase {
     caseUrl = String.format("/submissions/%s/claims/%s/case", submissionId, claimId);
     costsUrl = String.format("/submissions/%s/claims/%s/costs", submissionId, claimId);
     historyUrl = String.format("/submissions/%s/claims/%s/history", submissionId, claimId);
+  }
+
+  protected void assertRowsHaveAmendedTags(Document doc, String cardTitle, String... rowLabels) {
+    for (String rowLabel : rowLabels) {
+      assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, cardTitle, rowLabel));
+    }
   }
 }

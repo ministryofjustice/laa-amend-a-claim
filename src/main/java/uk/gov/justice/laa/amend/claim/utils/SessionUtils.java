@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.utils;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
@@ -86,7 +87,7 @@ public class SessionUtils {
 
   public static void saveAmendedFields(HttpSession session, UUID claimId, Set<String> fields) {
     var key = AMENDED_FIELDS_KEY.formatted(claimId.toString());
-    session.setAttribute(key, fields);
+    session.setAttribute(key, new HashSet<>(fields));
   }
 
   @SuppressWarnings("unchecked")

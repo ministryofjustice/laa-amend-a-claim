@@ -5,8 +5,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.base.WireMockSetup.setupGetClaimHistoryStub;
 import static uk.gov.justice.laa.amend.claim.base.WireMockSetup.setupGetClaimStub;
 import static uk.gov.justice.laa.amend.claim.base.WireMockSetup.setupGetProviderOfficeStub;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.PROVIDER_NAME;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.ModelAndView;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimoverview.ClaimOverviewView;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -34,6 +35,7 @@ class ClaimDetailsIntegrationTest extends ControllerIntegrationTest {
   void setUp() {
     setupGetClaimStub(SUBMISSION_ID, CLAIM_ID, OFFICE_CODE);
     setupGetProviderOfficeStub(OFFICE_CODE, FIRM_NAME);
+    setupGetClaimHistoryStub(CLAIM_ID);
   }
 
   @Test
@@ -50,10 +52,8 @@ class ClaimDetailsIntegrationTest extends ControllerIntegrationTest {
 
     ModelAndView modelAndView = result.getModelAndView();
     Assertions.assertNotNull(modelAndView);
-    @SuppressWarnings("unchecked")
-    ClaimDetailsView<ClaimDetails> claim =
-        (ClaimDetailsView<ClaimDetails>) modelAndView.getModel().get("claim");
+    ClaimOverviewView claim = (ClaimOverviewView) modelAndView.getModel().get("claim");
     assertThat(claim).isNotNull();
-    assertThat(claim.claim().getProviderName()).isEqualTo(FIRM_NAME);
+    assertThat(claim.summaryRows().get(PROVIDER_NAME)).isEqualTo(FIRM_NAME);
   }
 }

@@ -10,6 +10,7 @@ import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_VOIDED;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -62,7 +63,7 @@ public class ClaimHistoryService {
   }
 
   public Set<String> getAmendedFields(ClaimDetails claim) {
-    // TODO: Reinstate this once isAmended is wired up in claims API
+    // TODO: Reinstate this once isAmended is wired up in claims API (DSTEW-2140)
     //    if (!claim.isAmended()) {
     //      return Set.of();
     //    }
@@ -72,16 +73,13 @@ public class ClaimHistoryService {
       return Set.of();
     }
 
-    var claimsApiFields =
-        history.getEvents().stream()
-            .filter(event -> event.getEventType() == AMENDMENT)
-            .map(event -> event.getMetadata().getOrDefault("changes", List.of()))
-            .flatMap(list -> ((List<LinkedHashMap<String, String>>) list).stream())
-            .filter(change -> "REQUESTED".equals(change.get("change_source")))
-            .map(change -> change.get("field_identifier"))
-            .collect(toSet());
-
-    return claimsApiFields;
+    return history.getEvents().stream()
+        .filter(event -> event.getEventType() == AMENDMENT)
+        .map(ClaimHistoryService::getChanges)
+        .flatMap(Collection::stream)
+        .filter(ClaimHistoryService::isRequested)
+        .map(ClaimHistoryService::getFieldIdentifier)
+        .collect(toSet());
   }
 
   private Map<String, MicrosoftApiUser> getUserIdToUser(final List<AssessmentInfo> assessments) {
@@ -138,5 +136,20 @@ public class ClaimHistoryService {
         assessment.lastAssessmentDate(),
         userName,
         Optional.ofNullable(assessment.lastAssessmentOutcome()));
+  }
+
+  @SuppressWarnings("unchecked")
+  private static List<LinkedHashMap<String, String>> getChanges(
+      uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent claimHistoryEvent) {
+    return ((List<LinkedHashMap<String, String>>)
+        claimHistoryEvent.getMetadata().getOrDefault("changes", List.of()));
+  }
+
+  private static boolean isRequested(LinkedHashMap<String, String> change) {
+    return "REQUESTED".equals(change.get("change_source"));
+  }
+
+  private static String getFieldIdentifier(LinkedHashMap<String, String> change) {
+    return change.get("field_identifier");
   }
 }

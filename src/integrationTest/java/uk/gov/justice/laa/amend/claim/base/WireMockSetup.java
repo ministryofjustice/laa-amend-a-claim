@@ -255,6 +255,44 @@ public class WireMockSetup {
                     .withBody(response)));
   }
 
+  public static void setupGetClaimHistoryStub(String claimId) {
+    String response =
+        String.format(
+            """
+            {
+                "claim_id": "%s",
+                "events": [
+                    {
+                        "event_type": "SUBMISSION",
+                        "metadata": {}
+                    },
+                    {
+                        "event_type": "AMENDMENT",
+                        "metadata": {
+                            "changes": [
+                                {
+                                    "field_identifier": "client.clientForename",
+                                    "before": "Jane",
+                                    "after": "Janet",
+                                    "change_source": "REQUESTED"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+            """,
+            claimId);
+
+    stubFor(
+        get(urlPathMatching(String.format("/api/v1/claims/%s/history", claimId)))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(response)));
+  }
+
   public static void setupPostAssessment202StubForAnyClaim() {
     stubFor(
         post(urlPathMatching("/api/v1/claims/[a-fA-F0-9\\-]+/assessments"))

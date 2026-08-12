@@ -5,6 +5,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveAmendedFields;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import jakarta.servlet.RequestDispatcher;
@@ -116,6 +117,10 @@ public abstract class ViewTestBase {
   protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) {
     MockHttpServletRequestBuilder requestBuilder = post(mapping).with(csrf()).params(params);
     return renderDocument(requestBuilder, 400);
+  }
+
+  protected void amendFields(String... fields) {
+    saveAmendedFields(session, claimId, Set.of(fields));
   }
 
   protected void assertPageHasHeading(Document doc, String expectedText) {
@@ -354,6 +359,24 @@ public abstract class ViewTestBase {
     return extractElementsInSummaryList(summaryList);
   }
 
+  protected List<Element> getSummaryListRowsInCard(Document doc, String summaryCardTitle) {
+    Element summaryCard = getSummaryCard(doc, summaryCardTitle);
+    Element summaryList = selectFirst(summaryCard, "dl.govuk-summary-list");
+    return summaryList.select(".govuk-summary-list__row").stream().toList();
+  }
+
+  protected Element getSummaryListRowInCard(
+      Document doc, String summaryCardTitle, String summaryRowLabel) {
+    return getSummaryListRowsInCard(doc, summaryCardTitle).stream()
+        .filter(row -> summaryRowLabel.equals(selectFirst(row, ".govuk-summary-list__key").text()))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new AssertionError(
+                    "Expected summary row '%s' in card '%s'"
+                        .formatted(summaryRowLabel, summaryCardTitle)));
+  }
+
   protected List<List<Element>> getFirstSummaryList(Document doc) {
     Element summaryList = selectFirst(doc, "dl.govuk-summary-list");
     return extractElementsInSummaryList(summaryList);
@@ -384,6 +407,15 @@ public abstract class ViewTestBase {
     var allText = cell.text() + cell.select("input").attr("value");
     Assertions.assertEquals(
         expectedText, allText, "Cell does not contain expected text: " + expectedText);
+  }
+
+  protected void assertSummaryListRowHasAmendedTag(Element row) {
+    Element tag = selectFirst(row, ".govuk-summary-list__actions .govuk-tag");
+    Assertions.assertEquals("Amended", tag.text());
+  }
+
+  protected void assertPageHasNoAmendedTags(Document doc) {
+    Assertions.assertTrue(doc.select(".govuk-summary-list__actions .govuk-tag").isEmpty());
   }
 
   private void assertCellIsEmpty(Element cell) {

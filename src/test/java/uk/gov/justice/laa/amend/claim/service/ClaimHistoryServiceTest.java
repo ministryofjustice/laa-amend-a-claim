@@ -13,9 +13,13 @@ import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.
 import static uk.gov.justice.laa.amend.claim.models.enums.OutcomeType.PAID_IN_FULL;
 import static uk.gov.justice.laa.amend.claim.models.enums.OutcomeType.REDUCED;
 import static uk.gov.justice.laa.amend.claim.service.ClaimHistoryService.MAXIMUM_ASSESSMENTS;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.ASSESSMENT;
 
 import java.time.OffsetDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,11 +27,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistoryEvent;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
 
@@ -140,5 +146,60 @@ public class ClaimHistoryServiceTest {
     assertThat(claimHistory.events())
         .containsExactly(
             voidedEvent, assessedStageDisbursementEvent, assessedEscapeCaseEvent, createdEvent);
+  }
+
+  @Test
+  void getAmendedFieldsReturnsEmptySetWhenHistoryIsNull() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+
+    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.empty());
+
+    assertThat(claimHistoryService.getAmendedFields(claim)).isEmpty();
+  }
+
+  @Test
+  void getAmendedFieldsReturnsEmptySetWhenHistoryEventsAreNull() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+
+    when(claimsApiClient.getClaimHistory(claim.getClaimId()))
+        .thenReturn(Mono.just(new ClaimHistoryResultSet().claimId(claim.getClaimId())));
+
+    assertThat(claimHistoryService.getAmendedFields(claim)).isEmpty();
+  }
+
+  @Test
+  void getAmendedFieldsReturnsRequestedAmendmentFieldIdentifiers() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+
+    var requestedChanges =
+        List.of(
+            change("REQUESTED", "claim.feeCode"),
+            change("REQUESTED", "claimSummaryFee.netProfitCostsAmount"),
+            change("CALCULATED", "claim.caseStartDate"),
+            change("REQUESTED", "claim.feeCode"));
+
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(ASSESSMENT)
+                        .metadata(Map.of("changes", requestedChanges)),
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .metadata(Map.of("changes", requestedChanges))));
+
+    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
+
+    assertThat(claimHistoryService.getAmendedFields(claim))
+        .containsExactlyInAnyOrder("claim.feeCode", "claimSummaryFee.netProfitCostsAmount");
+  }
+
+  private static LinkedHashMap<String, String> change(String source, String fieldIdentifier) {
+    var change = new LinkedHashMap<String, String>();
+    change.put("change_source", source);
+    change.put("field_identifier", fieldIdentifier);
+    return change;
   }
 }

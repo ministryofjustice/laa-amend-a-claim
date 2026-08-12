@@ -25,6 +25,9 @@
                                     <div class="govuk-summary-list__row" th:each="entry : ${claim.summaryRows}">
                                         <dt class="govuk-summary-list__key" th:text="#{${'claimSummary.rows.' + entry.key}}"></dt>
                                         <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
+                                        <dd class="govuk-summary-list__actions" th:if="${amendedFields.contains(entry.key.claimsApiFieldName)}">
+                                            <strong class="govuk-tag govuk-tag--yellow" th:text="#{service.amended}"></strong>
+                                        </dd>
                                     </div>
                                 </dl>
                             </div>
@@ -49,6 +52,9 @@
                                         <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></dd>
                                         <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
                                         <dd class="govuk-summary-list__value" th:if="${claim.hasAssessment}" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></dd>
+                                        <dd class="govuk-summary-list__actions" th:if="${amendedFields.contains(field.claimsApiFieldName)}">
+                                            <strong class="govuk-tag govuk-tag--yellow" th:text="#{service.amended}"></strong>
+                                        </dd>
                                     </div>
                                 </dl>
                             </div>
