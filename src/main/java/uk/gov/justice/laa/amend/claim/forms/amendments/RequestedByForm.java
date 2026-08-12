@@ -1,15 +1,8 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class RequestedByForm {
-
-    private String requestedBy;
+  private String requestedBy;
 }

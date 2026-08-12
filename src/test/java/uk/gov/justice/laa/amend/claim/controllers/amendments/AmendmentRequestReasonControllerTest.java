@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,17 +28,19 @@ import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
-import uk.gov.justice.laa.amend.claim.forms.validators.RequestByFormValidator;
+import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
+import uk.gov.justice.laa.amend.claim.forms.validators.RequestReasonFormValidator;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 
-@WebMvcTest(controllers = AmendmentRequestByController.class)
-class AmendmentRequestByControllerTest extends BaseControllerTest {
+@WebMvcTest(controllers = AmendmentRequestReasonController.class)
+class AmendmentRequestReasonControllerTest extends BaseControllerTest {
 
   private static final String REQUESTED_BY = "COURT";
-  private static final String REQUESTED_BY_FAIL = "COURT_FAIL";
+  private static final String REQUESTED_REASON = "REASON_1";
+  private static final String REQUESTED_REASON_FAIL = "REASON_FAIL";
 
   @MockitoBean private SystemReferenceService systemReferenceService;
-  @MockitoBean private RequestByFormValidator requestedByFormValidator;
+  @MockitoBean private RequestReasonFormValidator requestReasonFormValidator;
 
   private UUID submissionId;
   private UUID claimId;
@@ -52,111 +54,119 @@ class AmendmentRequestByControllerTest extends BaseControllerTest {
   }
 
   @Test
-  void getRequestedByAsExpected() throws Exception {
+  void getAmendReasonAsExpected() throws Exception {
+    when(systemReferenceService.getAmendmentReasonByProvider(REQUESTED_BY)).thenReturn(List.of());
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createForms());
-    when(requestedByFormValidator.supports(any())).thenReturn(true);
+    when(requestReasonFormValidator.supports(any())).thenReturn(true);
 
     mockMvc
-        .perform(get(buildRequestedByPath()).session(session))
+        .perform(get(buildRequestedReasonPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-request-by"))
-        .andExpect(model().attributeExists("claimId", "submissionId", "requestedByForm"))
-        .andExpect(model().attribute("amendmentRequestByOptions", Map.of()))
+        .andExpect(view().name("amendments/amend-request-reason"))
+        .andExpect(model().attributeExists("claimId", "submissionId", "requestedReasonForm"))
+        .andExpect(model().attribute("amendmentReasonOptions", java.util.Map.of()))
         .andExpect(model().attribute("claimId", claimId))
         .andExpect(model().attribute("submissionId", submissionId));
   }
 
   @Test
-  void postRequestedByRedirectsToRequestedReason() throws Exception {
+  void postRequestedReasonRedirectsToClient() throws Exception {
     var forms = createForms();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
-    when(requestedByFormValidator.supports(any())).thenReturn(true);
+    when(requestReasonFormValidator.supports(any())).thenReturn(true);
+
     mockMvc
         .perform(
-            post(buildRequestedByPath())
+            post(buildRequestedReasonPath())
                 .session(session)
                 .with(csrf())
-                .param("requestedBy", REQUESTED_BY))
+                .param("requestedReason", REQUESTED_REASON))
         .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildRequestedReasonPath()))
+        .andExpect(redirectedUrl(buildClientPath()))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), forms));
   }
 
   @Test
   void postRequestedByWithoutValueShowsValidationError() throws Exception {
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createForms());
-    when(requestedByFormValidator.supports(any())).thenReturn(true);
+    when(requestReasonFormValidator.supports(any())).thenReturn(true);
     doAnswer(
             invocation -> {
               Errors errors = invocation.getArgument(1);
-              errors.rejectValue("requestedBy", "amendments.requestBy.invalid");
+              errors.rejectValue("requestedReason", "amendments.requestReason.invalid");
               return null;
             })
-        .when(requestedByFormValidator)
+        .when(requestReasonFormValidator)
         .validate(any(), any());
 
     var postResult =
         mockMvc
             .perform(
-                post(buildRequestedByPath())
+                post(buildRequestedReasonPath())
                     .session(session)
                     .with(csrf())
-                    .param("requestedBy", REQUESTED_BY_FAIL))
+                    .param("requestedReason", REQUESTED_REASON_FAIL))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl(buildRequestedByPath()))
-            .andExpect(flash().attributeExists("requestedByFormErrors"))
+            .andExpect(redirectedUrl(buildRequestedReasonPath()))
+            .andExpect(flash().attributeExists("requestedReasonFormErrors"))
             .andReturn();
 
     mockMvc
-        .perform(get(buildRequestedByPath()).session(session).flashAttrs(postResult.getFlashMap()))
+        .perform(
+            get(buildRequestedReasonPath()).session(session).flashAttrs(postResult.getFlashMap()))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("govuk-error-summary")))
-        .andExpect(content().string(containsString("Select who requested the amendment")));
+        .andExpect(content().string(containsString("Select the reason for the amendment")));
   }
 
   @Test
   void postRequestedByInvalidValueShowsValidationError() throws Exception {
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createForms());
-    when(requestedByFormValidator.supports(any())).thenReturn(true);
+    when(requestReasonFormValidator.supports(any())).thenReturn(true);
     doAnswer(
             invocation -> {
               Errors errors = invocation.getArgument(1);
-              errors.rejectValue("requestedBy", "amendments.requestBy.required");
+              errors.rejectValue("requestedReason", "amendments.requestReason.required");
               return null;
             })
-        .when(requestedByFormValidator)
+        .when(requestReasonFormValidator)
         .validate(any(), any());
 
     var postResult =
         mockMvc
-            .perform(post(buildRequestedByPath()).session(session).with(csrf()))
+            .perform(post(buildRequestedReasonPath()).session(session).with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl(buildRequestedByPath()))
-            .andExpect(flash().attributeExists("requestedByFormErrors"))
+            .andExpect(redirectedUrl(buildRequestedReasonPath()))
+            .andExpect(flash().attributeExists("requestedReasonFormErrors"))
             .andReturn();
 
     mockMvc
-        .perform(get(buildRequestedByPath()).session(session).flashAttrs(postResult.getFlashMap()))
+        .perform(
+            get(buildRequestedReasonPath()).session(session).flashAttrs(postResult.getFlashMap()))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("govuk-error-summary")))
-        .andExpect(content().string(containsString("Select who requested the amendment")));
+        .andExpect(content().string(containsString("Select the reason for the amendment")));
   }
 
   private AmendmentForms createForms() {
-    return AmendmentForms.builder()
-        .client1(new AmendmentForm())
-        .caseType(new AmendmentForm())
-        .caseDetails(new AmendmentForm())
-        .costs(new AmendmentForm())
-        .requestedBy(new RequestedByForm())
-        .build();
-  }
-
-  private String buildRequestedByPath() {
-    return "/submissions/%s/claims/%s/amendments/requested-by".formatted(submissionId, claimId);
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .costs(new AmendmentForm())
+            .requestedBy(new RequestedByForm())
+            .requestedReason(new RequestedReasonForm())
+            .build();
+    forms.getRequestedByForm().setRequestedBy(REQUESTED_BY);
+    return forms;
   }
 
   private String buildRequestedReasonPath() {
     return "/submissions/%s/claims/%s/amendments/requested-reason".formatted(submissionId, claimId);
+  }
+
+  private String buildClientPath() {
+    return "/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
   }
 }

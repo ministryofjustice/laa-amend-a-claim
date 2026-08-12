@@ -27,14 +27,14 @@ public class AmendmentForms {
       AmendmentForm caseDetails,
       AmendmentForm costs,
       RequestedByForm requestedBy,
-      RequestedReasonForm requestedReason
-  ) {
+      RequestedReasonForm requestedReason) {
     this.client1Form = originalAndCurrent(client1);
     this.caseTypeForm = originalAndCurrent(caseType);
     this.caseDetailsForm = originalAndCurrent(caseDetails);
     this.costsForm = originalAndCurrent(costs == null ? new AmendmentForm() : costs);
     this.requestedByForm = requestedBy == null ? new RequestedByForm() : requestedBy;
-    this.requestedReasonForm = requestedReason == null ? new RequestedReasonForm() : requestedReason;
+    this.requestedReasonForm =
+        requestedReason == null ? new RequestedReasonForm() : requestedReason;
 
     if (client2 != null) {
       this.client2Form = originalAndCurrent(client2);

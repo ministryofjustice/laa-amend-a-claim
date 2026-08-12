@@ -15,9 +15,9 @@ import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
-import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
+import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactory;
@@ -59,6 +59,7 @@ public class StartAmendmentsController {
 
     saveAmendmentForms(session, claimId, amendmentForms);
 
-    return "redirect:/submissions/%s/claims/%s/amendments/requested-by".formatted(submissionId, claimId);
+    return "redirect:/submissions/%s/claims/%s/amendments/requested-by"
+        .formatted(submissionId, claimId);
   }
 }

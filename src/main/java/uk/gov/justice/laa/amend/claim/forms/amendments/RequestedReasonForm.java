@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestedReasonForm {
-
-    private String requestedReason;
+  private String requestedBy;
+  private String requestedReason;
 }
