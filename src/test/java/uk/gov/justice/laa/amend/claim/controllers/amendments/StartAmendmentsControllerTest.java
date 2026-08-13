@@ -18,6 +18,8 @@ import org.springframework.mock.web.MockHttpSession;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
+import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
@@ -123,12 +125,17 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     var costsForm = new AmendmentForm();
     costsForm.setInputs(costsRows);
 
+    var requestByForm = new RequestedByForm();
+    var requestReasonForm = new RequestedReasonForm();
+
     AmendmentForms forms =
         AmendmentForms.builder()
             .client1(client1Form)
             .caseType(caseTypeForm)
             .caseDetails(caseDetailsForm)
             .costs(costsForm)
+            .requestedBy(requestByForm)
+            .requestedReason(requestReasonForm)
             .build();
 
     mockMvc
@@ -245,6 +252,9 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
 
     var costsForm = new AmendmentForm(ClaimCostsViewFactory.create(claim).costRows());
 
+    var requestByForm = new RequestedByForm();
+    var requestReasonForm = new RequestedReasonForm();
+
     AmendmentForms forms =
         AmendmentForms.builder()
             .client1(client1Form)
@@ -252,6 +262,8 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
             .caseType(caseTypeForm)
             .caseDetails(caseDetailsForm)
             .costs(costsForm)
+            .requestedBy(requestByForm)
+            .requestedReason(requestReasonForm)
             .build();
 
     mockMvc
@@ -266,6 +278,6 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
   }
 
   private String buildRedirectPath() {
-    return "/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
+    return "/submissions/%s/claims/%s/amendments/requested-by".formatted(submissionId, claimId);
   }
 }
