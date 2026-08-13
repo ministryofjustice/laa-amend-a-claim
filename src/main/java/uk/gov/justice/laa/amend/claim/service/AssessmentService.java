@@ -158,6 +158,10 @@ public class AssessmentService {
     claim.setClaimValue(assessments.getFirst().getAssessedTotalInclVat());
   }
 
+  /**
+   * Validates the latest assessment for VOID and non-VOID claims. - VOID claims: latest assessment
+   * must be VOID - Non-VOID claims: latest assessment must not be VOID
+   */
   private List<AssessmentGet> getValidatedAssessments(UUID claimId, boolean isVoided) {
     AssessmentResultSet assessmentResults =
         claimsApiClient.getAssessments(claimId, 0, 5, "createdOn,desc").block();

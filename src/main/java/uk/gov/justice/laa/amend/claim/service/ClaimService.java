@@ -98,14 +98,14 @@ public class ClaimService {
                     Objects.toString(sort, null))
                 .block();
       }
-      return moveClaimsWithoutClientSurnameToBottom(claimResultSet, sort);
+      return sortClaimsClientSurname(claimResultSet, sort);
     } catch (Exception e) {
       log.error("Error searching claims", e);
       throw e;
     }
   }
 
-  private ClaimResultSetV2 moveClaimsWithoutClientSurnameToBottom(
+  private ClaimResultSetV2 sortClaimsClientSurname(
       ClaimResultSetV2 claimResultSet, SearchSort sort) {
     if (claimResultSet == null
         || claimResultSet.getContent() == null
