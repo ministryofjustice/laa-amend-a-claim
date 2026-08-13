@@ -124,6 +124,59 @@ class ClaimServiceTest {
   }
 
   @Test
+  @DisplayName("Should keep claims without a client surname at the bottom when sorting by surname")
+  void testSearchClaims_ClientSurnameSortMovesClaimsWithoutSurnameToBottom() {
+    var claimWithSurname = new ClaimResponseV2();
+    claimWithSurname.setClientSurname("Adams");
+
+    var claimWithoutSurname = new ClaimResponseV2();
+    claimWithoutSurname.setClientSurname(null);
+
+    var blankSurnameClaim = new ClaimResponseV2();
+    blankSurnameClaim.setClientSurname(" ");
+
+    var mockApiResponse = new ClaimResultSetV2();
+    mockApiResponse.setContent(List.of(claimWithoutSurname, claimWithSurname, blankSurnameClaim));
+
+    when(claimsApiClient.searchClaims(
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "client_surname,desc"))
+        .thenReturn(Mono.just(mockApiResponse));
+
+    var sort =
+        SearchSort.builder()
+            .field(SearchSortField.CLIENT_SURNAME)
+            .direction(SortDirection.DESCENDING)
+            .build();
+
+    var result =
+        claimService.searchClaims(
+            "0P322F",
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            STATUSES,
+            1,
+            10,
+            sort);
+
+    assertNotNull(result);
+    assertEquals(
+        List.of(claimWithSurname, claimWithoutSurname, blankSurnameClaim), result.getContent());
+  }
+
+  @Test
   @DisplayName(
       "Should return valid unsorted ClaimResultSet when API client provides valid response")
   void testUnsortedSearchClaims_ValidResponse() {

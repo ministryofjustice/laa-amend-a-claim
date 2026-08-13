@@ -127,11 +127,13 @@
                                     </thead>
                                     <tbody class="govuk-table__body">
                                         <tr class="govuk-table__row" th:each="claim : ${viewModel.claims}">
-                                            <td class="govuk-table__cell" th:data-submission-id="${claim.claim.submissionId}"
+                                            <td class="govuk-table__cell"
+                                                th:with="multipleClients=#{index.results.multipleClients}"
+                                                th:data-submission-id="${claim.claim.submissionId}"
                                                 th:data-claim-id="${claim.claim.claimId}">
                                                 <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.claim.submissionId}, claimId=${claim.claim.claimId})}" class="govuk-link govuk-link--no-visited-state">
-                                                    <span th:text="${claim.claim.clientSurname}"></span>
-                                                    <span class="govuk-visually-hidden" th:text=" #{index.view.hidden(${claim.clientName})}"></span>
+                                                    <span th:text="${claim.claim.clientSurname ?: multipleClients}"></span>
+                                                    <span class="govuk-visually-hidden" th:text="#{index.view.hidden(${claim.clientName ?: multipleClients})}"></span>
                                                 </a>
                                             </td>
 

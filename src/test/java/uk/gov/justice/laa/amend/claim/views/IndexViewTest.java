@@ -102,7 +102,7 @@ class IndexViewTest extends ViewTestBase {
     Elements headers = getTableHeaders(doc);
 
     assertTableHeaderIsSortable(
-        headers.get(0), "none", "Client surname", "/?page=1&sort=client_surname,asc");
+        headers.get(0), "none", "Client last name", "/?page=1&sort=client_surname,asc");
     assertTableHeaderIsSortable(
         headers.get(1), "ascending", "UFN", "/?page=1&sort=unique_file_number,desc");
     assertTableHeaderIsSortable(
@@ -129,6 +129,22 @@ class IndexViewTest extends ViewTestBase {
 
     assertH2Exists(doc, "1 search result");
     assertEquals("£200.00", doc.select("tbody tr td").get(5).text());
+  }
+
+  @Test
+  void testPageWithClaimWithoutClientSurnameDisplaysMultipleClients() {
+    ClaimView claimViewModel = new ClaimView(MockClaimsFunctions.createMockCivilClaim());
+    claimViewModel.getClaim().setClientSurname(null);
+    claimViewModel.getClaim().setClientForename(null);
+    List<BaseClaimView<Claim>> claims = List.of(claimViewModel);
+
+    Pagination pagination = new Pagination(1, 10, 1, "/");
+    SearchResultView viewModel = new SearchResultView(claims, pagination);
+
+    Map<String, Object> variables = Map.of("viewModel", viewModel);
+    Document doc = renderDocument(variables);
+
+    assertEquals("Multiple Clients", doc.select("tbody tr td a span").getFirst().text());
   }
 
   @Test

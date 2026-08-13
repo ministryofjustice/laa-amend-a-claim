@@ -49,17 +49,25 @@ class ClaimMapperTest {
   }
 
   @Test
-  void testMapClaimValueAndAssessmentFlag() {
+  void testMapClaimValue() {
     var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
-    response.setHasAssessment(true);
     FeeCalculationPatch feeCalc = new FeeCalculationPatch();
     feeCalc.setTotalAmount(BigDecimal.valueOf(120));
     response.setFeeCalculationResponse(feeCalc);
 
     Claim claim = mapper.mapToClaim(response);
 
-    assertEquals(true, claim.getHasAssessment());
     assertEquals(BigDecimal.valueOf(120), claim.getClaimValue());
+  }
+
+  @Test
+  void testMapAssessmentFlag() {
+    var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
+    response.setHasAssessment(true);
+
+    Claim claim = mapper.mapToClaim(response);
+
+    assertEquals(true, claim.getHasAssessment());
   }
 
   @Test
