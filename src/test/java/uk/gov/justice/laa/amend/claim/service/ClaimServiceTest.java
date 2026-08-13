@@ -139,17 +139,7 @@ class ClaimServiceTest {
     mockApiResponse.setContent(List.of(claimWithoutSurname, claimWithSurname, blankSurnameClaim));
 
     when(claimsApiClient.searchClaims(
-            "0P322F",
-            null,
-            null,
-            null,
-            null,
-            null,
-            STATUSES,
-            null,
-            0,
-            10,
-            "client_surname,desc"))
+            "0P322F", null, null, null, null, null, STATUSES, null, 0, 10, "client_surname,desc"))
         .thenReturn(Mono.just(mockApiResponse));
 
     var sort =

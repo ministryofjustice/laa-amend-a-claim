@@ -1,7 +1,5 @@
 package uk.gov.justice.laa.amend.claim.service;
 
-import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VOID;
-
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.math.BigDecimal;
