@@ -31,6 +31,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
 import uk.gov.justice.laa.amend.claim.forms.validators.RequestReasonFormValidator;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentReasonReference;
 
 @WebMvcTest(controllers = AmendmentRequestReasonController.class)
 class AmendmentRequestReasonControllerTest extends BaseControllerTest {
@@ -55,7 +56,7 @@ class AmendmentRequestReasonControllerTest extends BaseControllerTest {
 
   @Test
   void getAmendReasonAsExpected() throws Exception {
-    when(systemReferenceService.getAmendmentReasonByProvider(REQUESTED_BY)).thenReturn(List.of());
+    when(systemReferenceService.getAmendmentReasonByProvider(REQUESTED_BY)).thenReturn(List.of(new AmendmentReasonReference().code(REQUESTED_BY)));
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createForms());
     when(requestReasonFormValidator.supports(any())).thenReturn(true);
 
