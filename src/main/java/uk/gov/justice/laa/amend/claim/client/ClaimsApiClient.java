@@ -71,7 +71,7 @@ public interface ClaimsApiClient {
       @PathVariable UUID claimId, @RequestBody VoidClaimRequest body);
 
   @GetExchange(
-      url = "v1/system/references/amendment-requested-by",
+      url = "/v1/system/references/amendment-requested-by",
       accept = MediaType.APPLICATION_JSON_VALUE)
   Mono<AmendmentRequestedByReferenceList> getAmendmentRequestedByReferenceList();
 
