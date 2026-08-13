@@ -83,8 +83,8 @@ public class AssessmentService {
     AssessmentPost assessment = claim.toAssessment(assessmentMapper, userId);
 
     try {
-        ResponseEntity<CreateAssessment201Response> response =
-                claimsApiClient.submitAssessment(claim.getClaimId(), assessment).block();
+      ResponseEntity<CreateAssessment201Response> response =
+          claimsApiClient.submitAssessment(claim.getClaimId(), assessment).block();
 
       if (response == null
           || response.getBody() == null
@@ -198,8 +198,7 @@ public class AssessmentService {
     if (!(claim.isVoided() || Boolean.TRUE.equals(claim.getHasAssessment()))) {
       return;
     }
-    List<AssessmentGet> assessments =
-        getValidatedAssessments(claim.getClaimId(), claim.isVoided());
+    List<AssessmentGet> assessments = getValidatedAssessments(claim.getClaimId(), claim.isVoided());
     claim.setClaimValue(assessments.getFirst().getAssessedTotalInclVat());
   }
 
