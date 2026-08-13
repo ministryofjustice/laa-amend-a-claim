@@ -44,7 +44,6 @@ public abstract class ClaimDetails extends Claim {
   private OffsetDateTime submittedDate;
   private String feeCode;
   private String feeCodeDescription;
-  private boolean hasAssessment;
   private AssessmentInfo lastAssessment;
   private String lastUpdatedUser;
   private OffsetDateTime lastUpdatedDateTime;

@@ -146,6 +146,6 @@ public class SearchPage extends LaaPage {
   public void clickViewForUfn(String ufn) {
     waitForResults();
     Locator row = resultRows.filter(new Locator.FilterOptions().setHasText(ufn)).first();
-    row.locator("a.govuk-link:has-text('View')").click();
+    row.locator("td.govuk-table__cell a.govuk-link").first().click();
   }
 }

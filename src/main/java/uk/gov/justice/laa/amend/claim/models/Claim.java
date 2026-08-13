@@ -42,6 +42,10 @@ public class Claim {
   private Boolean hasAssessment;
   private BigDecimal claimValue;
 
+  public boolean isHasAssessment() {
+    return Boolean.TRUE.equals(hasAssessment);
+  }
+
   public BaseClaimView<? extends Claim> toViewModel() {
     return new ClaimView(this);
   }

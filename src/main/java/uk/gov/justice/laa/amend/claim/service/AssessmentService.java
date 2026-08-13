@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.amend.claim.service;
 
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VOID;
+
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.math.BigDecimal;
@@ -113,8 +115,10 @@ public class AssessmentService {
    *     assessment
    */
   public ClaimDetails getLatestAssessmentByClaim(ClaimDetails claimDetails) {
-    List<AssessmentGet> assessments =
-        getValidatedAssessments(claimDetails.getClaimId(), claimDetails.isVoided());
+    AssessmentResultSet assessmentResults =
+        claimsApiClient.getAssessments(claimDetails.getClaimId(), 0, 5, "createdOn,desc").block();
+
+    List<AssessmentGet> assessments = validateAndGetAssessments(assessmentResults, claimDetails);
 
     setLastUpdatedDateTime(claimDetails, assessments.getFirst());
 
@@ -155,40 +159,35 @@ public class AssessmentService {
    * must be VOID - Non-VOID claims: latest assessment must not be VOID
    */
   private List<AssessmentGet> validateAndGetAssessments(
-      AssessmentResultSet assessmentResults, UUID claimId, boolean isVoided) {
-    return validateAssessmentResults(assessmentResults, claimId, isVoided);
-  }
-
-  private List<AssessmentGet> validateAssessmentResults(
-      AssessmentResultSet assessmentResults, UUID claimId, boolean isVoided) {
+      AssessmentResultSet assessmentResults, ClaimDetails claimDetails) {
     if (assessmentResults == null || assessmentResults.getAssessments().isEmpty()) {
       throw new RuntimeException(
-          String.format("Failed to get assessments for claim ID: %s", claimId));
+          String.format("Failed to get assessments for claim ID: %s", claimDetails.getClaimId()));
     }
 
     log.info(
         "Number of total assessments found: {} for claim Id: {}",
         assessmentResults.getTotalElements(),
-        claimId);
+        claimDetails.getClaimId());
 
     List<AssessmentGet> assessments =
         assessmentResults.getAssessments().stream().filter(Objects::nonNull).toList();
 
     AssessmentGet firstAssessment = assessments.getFirst();
 
-    if (isVoided) {
+    if (claimDetails.getStatus() == VOID) {
       if (firstAssessment.getAssessmentType() != AssessmentType.VOID) {
         throw new InvalidAssessmentException(
             String.format(
                 "VOID Assessment state failed, latest Assessment must be VOID for claim ID: %s",
-                claimId));
+                claimDetails.getClaimId()));
       }
     } else {
       if (firstAssessment.getAssessmentType() == AssessmentType.VOID) {
         throw new InvalidAssessmentException(
             String.format(
                 "Assessment state failed, latest Assessment must not be VOID for claim ID: %s",
-                claimId));
+                claimDetails.getClaimId()));
       }
     }
     return assessments;
@@ -205,7 +204,36 @@ public class AssessmentService {
   private List<AssessmentGet> getValidatedAssessments(UUID claimId, boolean isVoided) {
     AssessmentResultSet assessmentResults =
         claimsApiClient.getAssessments(claimId, 0, 5, "createdOn,desc").block();
-    return validateAndGetAssessments(assessmentResults, claimId, isVoided);
+    return validateAssessmentResults(assessmentResults, claimId, isVoided);
+  }
+
+  private List<AssessmentGet> validateAssessmentResults(
+      AssessmentResultSet assessmentResults, UUID claimId, boolean isVoided) {
+    if (assessmentResults == null || assessmentResults.getAssessments().isEmpty()) {
+      throw new RuntimeException(
+          String.format("Failed to get assessments for claim ID: %s", claimId));
+    }
+
+    List<AssessmentGet> assessments =
+        assessmentResults.getAssessments().stream().filter(Objects::nonNull).toList();
+
+    AssessmentGet firstAssessment = assessments.getFirst();
+
+    if (isVoided && firstAssessment.getAssessmentType() != AssessmentType.VOID) {
+      throw new InvalidAssessmentException(
+          String.format(
+              "VOID Assessment state failed, latest Assessment must be VOID for claim ID: %s",
+              claimId));
+    }
+
+    if (!isVoided && firstAssessment.getAssessmentType() == AssessmentType.VOID) {
+      throw new InvalidAssessmentException(
+          String.format(
+              "Assessment state failed, latest Assessment must not be VOID for claim ID: %s",
+              claimId));
+    }
+
+    return assessments;
   }
 
   private void setLastUpdatedDateTime(ClaimDetails claimDetails, AssessmentGet latestAssessment) {
