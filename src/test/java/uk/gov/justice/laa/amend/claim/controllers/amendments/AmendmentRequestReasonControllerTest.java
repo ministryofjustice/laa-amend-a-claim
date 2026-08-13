@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,6 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
 import uk.gov.justice.laa.amend.claim.forms.validators.RequestReasonFormValidator;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentReasonReference;
 
 @WebMvcTest(controllers = AmendmentRequestReasonController.class)
 class AmendmentRequestReasonControllerTest extends BaseControllerTest {
@@ -56,7 +55,9 @@ class AmendmentRequestReasonControllerTest extends BaseControllerTest {
 
   @Test
   void getAmendReasonAsExpected() throws Exception {
-    when(systemReferenceService.getAmendmentReasonByProvider(REQUESTED_BY)).thenReturn(List.of(new AmendmentReasonReference().code(REQUESTED_BY)));
+
+    when(systemReferenceService.getAmendmentRequestReason(any()))
+        .thenReturn(Map.of(REQUESTED_REASON, REQUESTED_REASON));
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createForms());
     when(requestReasonFormValidator.supports(any())).thenReturn(true);
 
@@ -65,7 +66,10 @@ class AmendmentRequestReasonControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(view().name("amendments/amend-request-reason"))
         .andExpect(model().attributeExists("claimId", "submissionId", "requestedReasonForm"))
-        .andExpect(model().attribute("amendmentReasonOptions", java.util.Map.of()))
+        .andExpect(
+            model()
+                .attribute(
+                    "amendmentReasonOptions", java.util.Map.of(REQUESTED_REASON, REQUESTED_REASON)))
         .andExpect(model().attribute("claimId", claimId))
         .andExpect(model().attribute("submissionId", submissionId));
   }
