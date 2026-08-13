@@ -7,6 +7,7 @@ import java.util.function.Function;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.Claim;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.enums.Amendability;
 import uk.gov.justice.laa.amend.claim.models.enums.FieldType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
@@ -54,18 +55,21 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Claim::getCaseReferenceNumber,
       ClaimPatch.Builder::caseReferenceNumber),
   CASE_START_DATE(
-      FieldType.DATE, String.class, Claim::getCaseStartDate, ClaimPatch.Builder::caseStartDate),
-  UNIQUE_FILE_NUMBER(
+      FieldType.DATE,
+      String.class,
+      Claim::getCaseStartDate,
+      ClaimPatch.Builder::caseStartDate,
+      Amendability.UNTIL_ASSESSED),
+  FEE_CODE(
       FieldType.TEXT,
       String.class,
-      Claim::getUniqueFileNumber,
-      ClaimPatch.Builder::uniqueFileNumber),
-  CASE_CONCLUDED_DATE(
-      FieldType.DATE, String.class, Claim::getCaseEndDate, ClaimPatch.Builder::caseConcludedDate),
-  FEE_CODE(FieldType.TEXT, String.class, ClaimDetails::getFeeCode, ClaimPatch.Builder::feeCode),
+      ClaimDetails::getFeeCode,
+      ClaimPatch.Builder::feeCode,
+      Amendability.UNTIL_ASSESSED),
 
   // Common cost fields
-  FIXED_FEE(FieldType.TEXT, Object.class, ClaimDetails::getFixedFee, (b, v) -> b, List.of(), false),
+  FIXED_FEE(
+      FieldType.TEXT, Object.class, ClaimDetails::getFixedFee, (b, v) -> b, Amendability.NEVER),
   PROFIT_COST(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
@@ -90,7 +94,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   private final ClaimDetailsViewFieldGetter<?> getter;
   private final FieldType fieldType;
   private final ClaimViewFieldPatcher<?> patcher;
-  private final boolean editable;
+  private final Amendability amendability;
   private final List<FieldOption> options;
 
   <T> ClaimDetailsViewField(
@@ -98,7 +102,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Class<T> patchType,
       Function<ClaimDetails, ?> getter,
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher) {
-    this(fieldType, patchType, getter, patcher, List.of(), true);
+    this(fieldType, patchType, getter, patcher, List.of(), Amendability.ALWAYS);
   }
 
   <T> ClaimDetailsViewField(
@@ -107,7 +111,16 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Function<ClaimDetails, ?> getter,
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       List<FieldOption> options) {
-    this(fieldType, patchType, getter, patcher, options, true);
+    this(fieldType, patchType, getter, patcher, options, Amendability.ALWAYS);
+  }
+
+  <T> ClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<ClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      Amendability amendability) {
+    this(fieldType, patchType, getter, patcher, List.of(), amendability);
   }
 
   <T> ClaimDetailsViewField(
@@ -116,12 +129,12 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Function<ClaimDetails, ?> getter,
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       List<FieldOption> options,
-      boolean editable) {
+      Amendability amendability) {
     this.getter = new ClaimDetailsViewFieldGetter<>(getter);
     this.fieldType = fieldType;
     this.patcher = new ClaimViewFieldPatcher<>(patchType, patcher);
     this.options = List.copyOf(options);
-    this.editable = editable;
+    this.amendability = amendability;
   }
 
   public record ClaimDetailsViewFieldGetter<T>(Function<ClaimDetails, T> getter)

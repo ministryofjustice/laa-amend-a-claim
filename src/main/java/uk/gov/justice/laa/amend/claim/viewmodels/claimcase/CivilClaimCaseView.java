@@ -35,12 +35,12 @@ import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDeta
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.TOLERANCE_INDICATOR;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.TRANSFER_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.TRAVEL_TIME;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.UNIQUE_FILE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.VALUE_OF_COSTS;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.WAITING_TIME;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_REFERENCE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_START_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.FEE_CODE;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.UNIQUE_FILE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.asCivilField;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
 
@@ -75,7 +75,7 @@ public record CivilClaimCaseView(
             asCivilField(CASE_REFERENCE_NUMBER),
             asCivilField(CASE_START_DATE),
             CASE_CONCLUDED_CLAIMED_DATE,
-            asCivilField(UNIQUE_FILE_NUMBER),
+            UNIQUE_FILE_NUMBER,
             CASE_STAGE,
             VALUE_OF_COSTS,
             PROCUREMENT_AREA,

@@ -9,6 +9,8 @@ import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
 
 class DateAmendmentFieldValidatorTest {
 
@@ -61,7 +63,7 @@ class DateAmendmentFieldValidatorTest {
   void rejectsImpossibleDateNamingDifferentField() {
     var errors =
         validate(
-            ClaimDetailsViewField.CASE_CONCLUDED_DATE,
+            CrimeClaimDetailsViewField.CASE_CONCLUDED_DATE,
             Map.of(
                 "CASE_CONCLUDED_DATE-day", "31",
                 "CASE_CONCLUDED_DATE-month", "2",
@@ -73,7 +75,7 @@ class DateAmendmentFieldValidatorTest {
     assertThat(fieldError.getArguments()[0]).isEqualTo("Case concluded date");
   }
 
-  private Errors validate(ClaimDetailsViewField field, Map<String, String> inputs) {
+  private Errors validate(ClaimViewField<?> field, Map<String, String> inputs) {
     var form = new AmendmentForm();
     form.setInputs(inputs);
 

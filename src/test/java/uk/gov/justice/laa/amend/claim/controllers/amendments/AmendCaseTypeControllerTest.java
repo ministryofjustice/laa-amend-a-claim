@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
@@ -13,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,8 +32,10 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FeeCodeAmendme
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.TextAmendmentFieldValidator;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
 @WebMvcTest(AmendCaseTypeController.class)
 @Import({
@@ -968,6 +972,135 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
         .andExpect(status().is3xxRedirection())
         .andExpect(redirectedUrl(buildAmendCasePath()))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
+  }
+
+  @Test
+  void getAmendFeeCodeReturnsNotFoundWhenClaimAssessed() throws Exception {
+    markAssessed(claim);
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc.perform(get(buildAmendFeeCodePath()).session(session)).andExpect(status().isNotFound());
+  }
+
+  @Test
+  void postAmendFeeCodeReturnsNotFoundWithoutSavingWhenClaimAssessed() throws Exception {
+    markAssessed(claim);
+    session.setAttribute(claimId.toString(), claim);
+
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    mockMvc
+        .perform(
+            post(buildAmendFeeCodePath())
+                .param(INPUTS.formatted("FEE_CODE"), "NEWFEE")
+                .session(session)
+                .with(csrf()))
+        .andExpect(status().isNotFound());
+
+    var unchanged = requireNonNull((AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId)));
+    assertThat(unchanged.getCaseTypeForm().getCurrent().getInputs().get("FEE_CODE")).isNull();
+  }
+
+  @Test
+  void getAmendStageReachedStillServedForAnAssessedCrimeClaim() throws Exception {
+    markAssessed(claim);
+    session.setAttribute(claimId.toString(), claim);
+
+    var caseTypeForm = new AmendmentForm();
+    caseTypeForm.setInputs(new HashMap<>(Map.of("STAGE_REACHED", STAGE_REACHED)));
+    session.setAttribute(
+        AMENDMENTS_KEY.formatted(claimId),
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(caseTypeForm)
+            .caseDetails(new AmendmentForm())
+            .build());
+
+    mockMvc
+        .perform(get(buildAmendStageReachedPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("amendments/amend-stage-reached"));
+  }
+
+  @Test
+  void postAmendStageReachedKeepsTheLockedFeeCodeWhenClaimAssessed() throws Exception {
+    claim.setFeeCode(FEE_CODE);
+    claim.setStageReached(STAGE_REACHED);
+    markAssessed(claim);
+    session.setAttribute(claimId.toString(), claim);
+
+    var view = ClaimCaseViewFactory.create(claim);
+    session.setAttribute(
+        AMENDMENTS_KEY.formatted(claimId),
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm(view.caseTypeRows()))
+            .caseDetails(new AmendmentForm())
+            .build());
+
+    mockMvc
+        .perform(
+            post(buildAmendStageReachedPath())
+                .param(INPUTS.formatted("STAGE_REACHED"), "INVB")
+                .param(INPUTS.formatted("FEE_CODE"), "tampered")
+                .session(session)
+                .with(csrf()))
+        .andExpect(status().is3xxRedirection());
+
+    var saved = requireNonNull((AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId)));
+    var current = saved.getCaseTypeForm().getCurrent();
+
+    assertThat(current.getInputs().get("STAGE_REACHED")).isEqualTo("INVB");
+    assertThat(current.getInputs().get("FEE_CODE")).isEqualTo(FEE_CODE);
+  }
+
+  @Test
+  void postAmendMatterTypeKeepsTheLockedFeeCodeWhenClaimAssessed() throws Exception {
+    var civilClaim = MockClaimsFunctions.createMockCivilClaim();
+    civilClaim.setSubmissionId(submissionId);
+    civilClaim.setClaimId(claimId);
+    civilClaim.setFeeCode(FEE_CODE);
+    civilClaim.setMatterType1(MATTER_TYPE_CODE_1);
+    civilClaim.setMatterType2(MATTER_TYPE_CODE_2);
+    markAssessed(civilClaim);
+    session.setAttribute(claimId.toString(), civilClaim);
+
+    var view = ClaimCaseViewFactory.create(civilClaim);
+    session.setAttribute(
+        AMENDMENTS_KEY.formatted(claimId),
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm(view.caseTypeRows()))
+            .caseDetails(new AmendmentForm())
+            .build());
+
+    mockMvc
+        .perform(
+            post(buildAmendMatterTypeCodePath())
+                .param(INPUTS.formatted("MATTER_TYPE_CODE_1"), "NEW1")
+                .param(INPUTS.formatted("MATTER_TYPE_CODE_2"), "NEW2")
+                .param(INPUTS.formatted("FEE_CODE"), "tampered")
+                .session(session)
+                .with(csrf()))
+        .andExpect(status().is3xxRedirection());
+
+    var saved = requireNonNull((AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId)));
+    var current = saved.getCaseTypeForm().getCurrent();
+
+    assertThat(current.getInputs().get("MATTER_TYPE_CODE_1")).isEqualTo("NEW1");
+    assertThat(current.getInputs().get("FEE_CODE")).isEqualTo(FEE_CODE);
+  }
+
+  private static void markAssessed(ClaimDetails claim) {
+    claim.setHasAssessment(true);
+    claim.setLastAssessment(
+        MockClaimsFunctions.createAssessment(AssessmentTypeEnum.ESCAPE_CASE_ASSESSMENT));
   }
 
   private String buildAmendCasePath() {

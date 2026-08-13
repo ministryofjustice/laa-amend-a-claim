@@ -9,6 +9,8 @@ import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
 
 class TextAmendmentFieldValidatorTest {
 
@@ -19,7 +21,8 @@ class TextAmendmentFieldValidatorTest {
   void acceptsTextValueAtMaxLength() {
     var value = "a".repeat(TextAmendmentFieldValidator.MAX_TEXT_LENGTH);
     var errors =
-        validate(ClaimDetailsViewField.UNIQUE_FILE_NUMBER, Map.of("UNIQUE_FILE_NUMBER", value));
+        validate(
+            CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER, Map.of("UNIQUE_FILE_NUMBER", value));
 
     assertThat(errors.hasErrors()).isFalse();
   }
@@ -28,7 +31,8 @@ class TextAmendmentFieldValidatorTest {
   void rejectsTextValueOverMaxLengthNamingTheField() {
     var value = "a".repeat(TextAmendmentFieldValidator.MAX_TEXT_LENGTH + 1);
     var errors =
-        validate(ClaimDetailsViewField.UNIQUE_FILE_NUMBER, Map.of("UNIQUE_FILE_NUMBER", value));
+        validate(
+            CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER, Map.of("UNIQUE_FILE_NUMBER", value));
 
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[UNIQUE_FILE_NUMBER]");
@@ -50,7 +54,7 @@ class TextAmendmentFieldValidatorTest {
     assertThat(fieldError.getArguments()[1]).isEqualTo("50");
   }
 
-  private Errors validate(ClaimDetailsViewField field, Map<String, String> inputs) {
+  private Errors validate(ClaimViewField<?> field, Map<String, String> inputs) {
     var form = new AmendmentForm();
     form.setInputs(inputs);
 

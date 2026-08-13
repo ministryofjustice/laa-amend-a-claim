@@ -24,7 +24,6 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.FieldType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
 
@@ -118,7 +117,9 @@ class AmendmentFormValidatorTest {
             new AmendmentFormValidator(
                 MockClaimsFunctions.createMockCrimeClaim(),
                 defaultFieldValidators(),
-                List.of(rejectingFieldSpecificValidator(ClaimDetailsViewField.UNIQUE_FILE_NUMBER))),
+                List.of(
+                    rejectingFieldSpecificValidator(
+                        CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER))),
             Map.of("UNIQUE_FILE_NUMBER", "a".repeat(51)));
 
     assertThat(errors.getFieldErrors("inputs[UNIQUE_FILE_NUMBER]")).hasSize(1);

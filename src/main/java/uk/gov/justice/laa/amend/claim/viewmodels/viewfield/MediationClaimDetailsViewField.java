@@ -145,6 +145,11 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       String.class,
       MediationClaimDetails::getScheduleReference,
       ClaimPatch.Builder::scheduleReference),
+  CASE_CONCLUDED_DATE(
+      FieldType.DATE,
+      String.class,
+      MediationClaimDetails::getCaseEndDate,
+      ClaimPatch.Builder::caseConcludedDate),
   ;
 
   private final MediationClaimViewFieldGetter<?> getter;
