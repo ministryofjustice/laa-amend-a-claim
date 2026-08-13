@@ -49,9 +49,9 @@ class IndexViewTest extends ViewTestBase {
 
     assertPageHasHeading(doc, "Search for a claim");
 
-    assertPageHasHint(doc, "search-hint", "Enter at least an office code to search.");
+    assertPageHasHint(doc, "search-hint", "Enter at least an office account number to search.");
 
-    assertPageHasLabel(doc, "office-code", "Office code");
+    assertPageHasLabel(doc, "office-code", "Office account number");
 
     assertPageHasHint(doc, "office-code-hint", "For example, 0P322F");
 
