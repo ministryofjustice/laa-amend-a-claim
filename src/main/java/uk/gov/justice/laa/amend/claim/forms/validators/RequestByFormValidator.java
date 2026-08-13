@@ -31,11 +31,7 @@ public class RequestByFormValidator implements Validator {
       return;
     }
     if (systemReferenceService.getAmendmentRequestedByReferenceList().getRequestedBy().stream()
-        .noneMatch(
-            item -> {
-              assert item.getCode() != null;
-              return item.getCode().equals(value);
-            })) {
+        .noneMatch(item -> value.equals(item.getCode()))) {
       errors.rejectValue("requestedBy", "amendments.requestBy.invalid");
     }
   }

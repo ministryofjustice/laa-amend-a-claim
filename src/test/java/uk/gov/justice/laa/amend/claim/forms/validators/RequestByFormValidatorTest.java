@@ -105,6 +105,18 @@ class RequestByFormValidatorTest {
     assertThat(errors.hasErrors()).isFalse();
   }
 
+  @Test
+  void acceptsValidRequestedByCodeWhenReferenceListContainsNullCode() {
+    setupReferenceList(null, "PROVIDER");
+
+    var form = new RequestedByForm();
+    form.setRequestedBy("PROVIDER");
+
+    var errors = validate(form);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
   private void setupReferenceList(String... codes) {
     var referenceList = new AmendmentRequestedByReferenceList();
     var references =
