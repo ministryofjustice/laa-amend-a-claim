@@ -8,29 +8,29 @@ import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendmentRequestByController;
+import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendmentRequestReasonController;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
-import uk.gov.justice.laa.amend.claim.forms.validators.RequestByFormValidator;
+import uk.gov.justice.laa.amend.claim.forms.validators.RequestReasonFormValidator;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 
-@WebMvcTest(AmendmentRequestByController.class)
-public class AmendmentsRequestByViewTest extends AmendmentsBaseTest {
+@WebMvcTest(AmendmentRequestReasonController.class)
+public class AmendmentsRequestReasonViewTest extends AmendmentsBaseTest {
 
   @MockitoBean private SystemReferenceService systemReferenceService;
-  @MockitoBean private RequestByFormValidator requestByFormValidator;
+  @MockitoBean private RequestReasonFormValidator requestReasonFormValidator;
 
-  AmendmentsRequestByViewTest() {
+  AmendmentsRequestReasonViewTest() {
     this.mapping =
-        "/submissions/%s/claims/%s/amendments/requested-by".formatted(submissionId, claimId);
+        "/submissions/%s/claims/%s/amendments/requested-reason".formatted(submissionId, claimId);
   }
 
   @Test
   void testPage() {
     when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
-    when(requestByFormValidator.supports(any())).thenReturn(true);
+    when(requestReasonFormValidator.supports(any())).thenReturn(true);
 
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     this.claim = claim;
@@ -43,7 +43,7 @@ public class AmendmentsRequestByViewTest extends AmendmentsBaseTest {
 
     assertPageHasTitle(doc, "Amend claim details");
 
-    assertPageHasHeading(doc, "Who requested the amendment?");
+    assertPageHasHeading(doc, "Why was the amendment requested?");
 
     assertPageHasPrimaryButton(doc, "Continue");
     assertPageHasSecondaryLink(doc, "Cancel");

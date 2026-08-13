@@ -53,8 +53,7 @@ public class AmendmentRequestByController {
     binder.addValidators(requestByFormValidator);
   }
 
-  @ModelAttribute("amendmentRequestByOptions")
-  public Map<String, String> getAmendmentRequestByOptions() {
+  private Map<String, String> getAmendmentRequestByOptions() {
     var amendmentRequestedByReferenceList =
         systemReferenceService.getAmendmentRequestedByReferenceList();
     Map<String, String> codeToLabelMap = new LinkedHashMap<>();
@@ -83,10 +82,11 @@ public class AmendmentRequestByController {
 
     var amendmentForms = getAmendmentForms(session, claimId);
     setModelAttributesForDisplay(model, claimId, submissionId, amendmentForms);
+    model.addAttribute("amendmentRequestByOptions", getAmendmentRequestByOptions());
     return "amendments/amend-request-by";
   }
 
-  private static void setModelAttributesForDisplay(
+  private void setModelAttributesForDisplay(
       Model model, UUID claimId, UUID submissionId, AmendmentForms amendmentForms) {
     model.addAttribute("claimId", claimId);
     model.addAttribute("submissionId", submissionId);
@@ -110,7 +110,6 @@ public class AmendmentRequestByController {
           "requestedByFormErrors",
           "/submissions/%s/claims/%s/amendments/requested-by".formatted(submissionId, claimId));
     }
-
     amendmentForms.getRequestedByForm().setRequestedBy(form.getRequestedBy());
     saveAmendmentForms(session, claimId, amendmentForms);
     return "redirect:/submissions/%s/claims/%s/amendments/requested-reason"

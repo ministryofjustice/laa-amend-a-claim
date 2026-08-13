@@ -1,8 +1,11 @@
 package uk.gov.justice.laa.amend.claim.service;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,5 +44,24 @@ public class SystemReferenceService {
             requestedBy ->
                 Optional.ofNullable(requestedBy.getReasons()).orElse(Collections.emptyList()))
         .orElse(Collections.emptyList());
+  }
+
+  public Map<String, String> getAmendmentRequestReason(String requestBy) {
+    var amendmentReasons = getAmendmentReasonByProvider(requestBy);
+
+    Map<String, String> codeToLabelMap = new LinkedHashMap<>();
+    if (amendmentReasons != null && !amendmentReasons.isEmpty()) {
+      codeToLabelMap =
+          amendmentReasons.stream()
+              .filter(
+                  item -> item != null && item.getCode() != null && item.getDisplayLabel() != null)
+              .collect(
+                  Collectors.toMap(
+                      AmendmentReasonReference::getCode,
+                      AmendmentReasonReference::getDisplayLabel,
+                      (existing, replacement) -> existing,
+                      LinkedHashMap::new));
+    }
+    return codeToLabelMap;
   }
 }

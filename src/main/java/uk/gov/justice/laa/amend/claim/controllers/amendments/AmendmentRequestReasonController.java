@@ -24,6 +24,7 @@ import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
 import uk.gov.justice.laa.amend.claim.forms.validators.RequestReasonFormValidator;
+import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/requested-reason")
@@ -33,14 +34,17 @@ import uk.gov.justice.laa.amend.claim.forms.validators.RequestReasonFormValidato
 public class AmendmentRequestReasonController {
 
   private final RequestReasonFormValidator requestReasonFormValidator;
+  private final SystemReferenceService systemReferenceService;
 
-  public AmendmentRequestReasonController(RequestReasonFormValidator requestReasonFormValidator) {
+  public AmendmentRequestReasonController(
+      RequestReasonFormValidator requestReasonFormValidator,
+      SystemReferenceService systemReferenceService) {
     this.requestReasonFormValidator = requestReasonFormValidator;
+    this.systemReferenceService = systemReferenceService;
   }
 
   @InitBinder("requestedReasonForm")
-  public void initRequestedReasonFormBinder(
-      WebDataBinder binder) {
+  public void initRequestedReasonFormBinder(WebDataBinder binder) {
     binder.addValidators(requestReasonFormValidator);
   }
 
@@ -48,7 +52,7 @@ public class AmendmentRequestReasonController {
   public Map<String, String> populateAmendmentReasons(
       HttpSession session, @PathVariable UUID claimId) {
     var amendmentForms = getAmendmentForms(session, claimId);
-    return requestReasonFormValidator.getAmendmentRequestReason(
+    return systemReferenceService.getAmendmentRequestReason(
         amendmentForms.getRequestedByForm().getRequestedBy());
   }
 
@@ -59,10 +63,6 @@ public class AmendmentRequestReasonController {
       @PathVariable UUID claimId,
       @PathVariable UUID submissionId) {
     var amendmentForms = getAmendmentForms(session, claimId);
-    amendmentForms
-        .getRequestedReasonForm()
-        .setRequestedBy(amendmentForms.getRequestedByForm().getRequestedBy());
-    saveAmendmentForms(session, claimId, amendmentForms);
     model.addAttribute("claimId", claimId);
     model.addAttribute("submissionId", submissionId);
     model.addAttribute("requestedReasonForm", amendmentForms.getRequestedReasonForm());
@@ -79,10 +79,8 @@ public class AmendmentRequestReasonController {
       @PathVariable UUID claimId) {
     var amendmentForms = getAmendmentForms(session, claimId);
 
-    // Set the runtime value from session before validation
+    // Set the requested by as this is needed for the validator
     form.setRequestedBy(amendmentForms.getRequestedByForm().getRequestedBy());
-
-    // Manually validate after setting the runtime value
     requestReasonFormValidator.validate(form, bindingResult);
 
     if (bindingResult.hasErrors()) {
