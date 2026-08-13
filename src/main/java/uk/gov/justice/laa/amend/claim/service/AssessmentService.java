@@ -138,6 +138,9 @@ public class AssessmentService {
   }
 
   public void populateClaimValues(List<Claim> claims) {
+    if (claims == null) {
+      return;
+    }
     claims.stream().filter(Objects::nonNull).forEach(this::populateClaimValue);
   }
 
@@ -170,7 +173,9 @@ public class AssessmentService {
 
   private List<AssessmentGet> validateAssessmentResults(
       AssessmentResultSet assessmentResults, UUID claimId, boolean isVoided) {
-    if (assessmentResults == null || assessmentResults.getAssessments().isEmpty()) {
+    if (assessmentResults == null
+        || assessmentResults.getAssessments() == null
+        || assessmentResults.getAssessments().isEmpty()) {
       throw new RuntimeException(
           String.format("Failed to get assessments for claim ID: %s", claimId));
     }
