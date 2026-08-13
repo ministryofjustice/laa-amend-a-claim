@@ -91,18 +91,13 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
 
   @Test
   void postCaseDetailsAsExpected() throws Exception {
-    var caseDetailsRows = Map.of("FEE_CODE", FEE_CODE);
-    var caseDetailsForm = new AmendmentForm();
-    caseDetailsForm.setInputs(caseDetailsRows);
-
-    var updatedForms = MockAmendmentFormsFunctions.empty();
-    updatedForms.getCaseDetailsForm().setCurrent(caseDetailsForm);
+    var updatedForms = MockAmendmentFormsFunctions.justCaseDetailsFilled(claim);
 
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var request =
         post(buildAmendCaseDetailsPath())
-            .param(INPUTS.formatted("FEE_CODE"), "updated")
+            .param(INPUTS.formatted("MAAT_ID"), "updated")
             .session(session)
             .with(csrf());
 
@@ -113,24 +108,38 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
-    assertThat(updatedForm.getCaseDetailsForm().getCurrent().getInputs().get("FEE_CODE"))
+    assertThat(updatedForm.getCaseDetailsForm().getCurrent().getInputs().get("MAAT_ID"))
         .isEqualTo("updated");
   }
 
   @Test
-  void postCaseDetailsWithInvalidValueRedirectsBackAndPreservesInput() throws Exception {
-    var caseDetailsRows = Map.of("FEE_CODE", FEE_CODE);
-    var caseDetailsForm = new AmendmentForm();
-    caseDetailsForm.setInputs(caseDetailsRows);
+  void postCaseDetailsIgnoresInputsNotBelongingToTheForm() throws Exception {
+    var updatedForms = MockAmendmentFormsFunctions.justCaseDetailsFilled(claim);
 
-    var updatedForms = MockAmendmentFormsFunctions.empty();
-    updatedForms.getCaseDetailsForm().setCurrent(caseDetailsForm);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
+
+    var request =
+        post(buildAmendCaseDetailsPath())
+            .param(INPUTS.formatted("FEE_CODE"), "tampered")
+            .session(session)
+            .with(csrf());
+
+    mockMvc.perform(request).andExpect(status().is3xxRedirection());
+
+    var saved =
+        requireNonNull((AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId)));
+    assertThat(saved.getCaseDetailsForm().getCurrent().getInputs().get("FEE_CODE")).isNull();
+  }
+
+  @Test
+  void postCaseDetailsWithInvalidValueRedirectsBackAndPreservesInput() throws Exception {
+    var updatedForms = MockAmendmentFormsFunctions.justCaseDetailsFilled(claim);
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var tooLong = "a".repeat(51);
     var request =
         post(buildAmendCaseDetailsPath())
-            .param(INPUTS.formatted("FEE_CODE"), tooLong)
+            .param(INPUTS.formatted("UNIQUE_FILE_NUMBER"), tooLong)
             .session(session)
             .with(csrf());
 
@@ -141,7 +150,7 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
 
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
-    assertThat(updatedForm.getCaseDetailsForm().getCurrent().getInputs().get("FEE_CODE"))
+    assertThat(updatedForm.getCaseDetailsForm().getCurrent().getInputs().get("UNIQUE_FILE_NUMBER"))
         .isEqualTo(tooLong);
   }
 

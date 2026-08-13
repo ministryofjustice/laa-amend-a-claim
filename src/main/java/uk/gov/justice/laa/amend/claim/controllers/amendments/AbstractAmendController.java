@@ -57,6 +57,7 @@ public abstract class AbstractAmendController {
 
     var merged = new AmendmentForm(original);
     submitted.getInputs().entrySet().stream()
+        .filter(entry -> original.getInputs().containsKey(entry.getKey()))
         .filter(entry -> !lockedKeys.contains(entry.getKey()))
         .forEach(entry -> merged.getInputs().put(entry.getKey(), entry.getValue()));
     return merged;

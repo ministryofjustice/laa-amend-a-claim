@@ -173,6 +173,8 @@ public class AmendCaseTypeController extends AbstractAmendController {
       Model model,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
+    getValidClaim(session, submissionId, claimId);
+
     var amendmentForms = getAmendmentForms(session, claimId);
 
     model.addAttribute("forms", amendmentForms);

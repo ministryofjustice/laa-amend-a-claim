@@ -36,6 +36,7 @@ import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @WebMvcTest(AmendCaseTypeController.class)
 @Import({
@@ -1003,7 +1004,8 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
                 .with(csrf()))
         .andExpect(status().isNotFound());
 
-    var unchanged = requireNonNull((AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId)));
+    var unchanged =
+        requireNonNull((AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId)));
     assertThat(unchanged.getCaseTypeForm().getCurrent().getInputs().get("FEE_CODE")).isNull();
   }
 
@@ -1053,7 +1055,8 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
                 .with(csrf()))
         .andExpect(status().is3xxRedirection());
 
-    var saved = requireNonNull((AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId)));
+    var saved =
+        requireNonNull((AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId)));
     var current = saved.getCaseTypeForm().getCurrent();
 
     assertThat(current.getInputs().get("STAGE_REACHED")).isEqualTo("INVB");
@@ -1090,11 +1093,29 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
                 .with(csrf()))
         .andExpect(status().is3xxRedirection());
 
-    var saved = requireNonNull((AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId)));
+    var saved =
+        requireNonNull((AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId)));
     var current = saved.getCaseTypeForm().getCurrent();
 
     assertThat(current.getInputs().get("MATTER_TYPE_CODE_1")).isEqualTo("NEW1");
     assertThat(current.getInputs().get("FEE_CODE")).isEqualTo(FEE_CODE);
+  }
+
+  @Test
+  void getAmendMatterTypeReturnsNotFoundWhenClaimNotValid() throws Exception {
+    claim.setStatus(ClaimStatus.VOID);
+    session.setAttribute(claimId.toString(), claim);
+    session.setAttribute(
+        AMENDMENTS_KEY.formatted(claimId),
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build());
+
+    mockMvc
+        .perform(get(buildAmendMatterTypeCodePath()).session(session))
+        .andExpect(status().isNotFound());
   }
 
   private static void markAssessed(ClaimDetails claim) {
