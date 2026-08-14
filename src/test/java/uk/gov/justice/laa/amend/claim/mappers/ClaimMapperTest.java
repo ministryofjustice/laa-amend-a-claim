@@ -746,7 +746,8 @@ class ClaimMapperTest {
     feeCalc.setBoltOnDetails(boltOn);
     response.setFeeCalculationResponse(feeCalc);
 
-    response.setMatterTypeCode("INVC");
+    response.setMatterTypeCode("StageReachedValue");
+    response.setCrimeMatterTypeCode("INVC");
     response.setPoliceStationCourtPrisonId("PrisonCode");
     response.setSchemeId("SchemeId");
     response.setStageReachedCode("StageReachedCode");

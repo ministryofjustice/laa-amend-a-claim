@@ -233,7 +233,7 @@ public interface ClaimMapper {
   @Mapping(target = "prisonLawPriorApprovalNumber", source = "prisonLawPriorApprovalNumber")
   @Mapping(target = "isDutySolicitor", source = "isDutySolicitor")
   @Mapping(target = "isYouthCourt", source = "isYouthCourt")
-  @Mapping(target = "matterTypeCode", source = "matterTypeCode")
+  @Mapping(target = "matterTypeCode", source = "crimeMatterTypeCode")
   CrimeClaimDetails mapToCrimeClaimDetails(ClaimResponseV2 claimResponse);
 
   /**
