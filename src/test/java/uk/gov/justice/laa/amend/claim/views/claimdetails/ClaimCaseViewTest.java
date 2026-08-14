@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.claimdetails.ClaimCaseController;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
@@ -98,27 +101,7 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
 
   @Test
   void testShowsCrimeClientDetails() {
-    var claim = MockClaimsFunctions.createMockCrimeClaim();
-    this.claim = claim;
-    claim.setSubmissionId(submissionId);
-    claim.setClaimId(claimId);
-    claim.setFeeCode(FEE_CODE);
-    claim.setMatterTypeCode(MATTER_TYPE);
-    claim.setStageReached(STAGE_REACHED);
-    claim.setUniqueFileNumber(UFN);
-    claim.setRepresentationOrderDate(REPRESENTATION_ORDER_DATE);
-    claim.setCaseEndDate(CASE_END_DATE);
-    claim.setStandardFeeCategory(STANDARD_FEE_CATEGORY);
-    claim.setOutcome(OUTCOME);
-    claim.setSuspectsDefendantsCount(SUSPECTS_DEFENDANTS_COUNT);
-    claim.setPoliceStationCourtAttendancesCount(POLICE_STATION_COURT_ATTENDANCES_COUNT);
-    claim.setPoliceStationCourtPrisonId(POLICE_STATION_COURT_PRISON_ID);
-    claim.setSchemeId(SCHEME_ID);
-    claim.setDsccNumber(DSCC_NUMBER);
-    claim.setMaatId(MAAT_ID);
-    claim.setPrisonLawPriorApprovalNumber(PRISON_LAW_PRIOR_APPROVAL_NUMBER);
-    claim.setIsDutySolicitor(true);
-    claim.setIsYouthCourt(false);
+    claim = createCrimeClaim();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -155,29 +138,56 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
         caseDetails.get(12), "Prison Law Prior Approval number", PRISON_LAW_PRIOR_APPROVAL_NUMBER);
     assertSummaryListRowContainsValues(caseDetails.get(13), "Duty solicitor", "Yes");
     assertSummaryListRowContainsValues(caseDetails.get(14), "Youth court", "No");
+    assertPageHasNoAmendedTags(doc);
+  }
+
+  @Test
+  void testShowsAmendedTagsForCrimeClientDetails() {
+    claim = createCrimeClaim();
+    amendFields(
+        "claim.feeCode",
+        "claim.crimeMatterTypeCode",
+        "claimCase.stageReachedCode",
+        "claim.uniqueFileNumber",
+        "claim.representationOrderDate",
+        "claim.caseConcludedDate",
+        "claimCase.standardFeeCategoryCode",
+        "claimCase.outcomeCode",
+        "claim.suspectsDefendantsCount",
+        "claim.policeStationCourtAttendancesCount",
+        "claim.policeStationCourtPrisonId",
+        "claim.schemeId",
+        "claim.dsccNumber",
+        "claim.maatId",
+        "claim.prisonLawPriorApprovalNumber",
+        "claim.dutySolicitor",
+        "claim.youthCourt");
+
+    var doc = renderDocument();
+    assertRowsHaveAmendedTags(doc, "Case type", "Fee code", "Stage reached");
+    assertRowsHaveAmendedTags(
+        doc,
+        "Case details",
+        "Matter type",
+        "Unique file number (UFN)",
+        "Representation order date",
+        "Case concluded date",
+        "Standard fee category",
+        "Outcome for client",
+        "Number of suspects or defendants",
+        "Number of police station or court attendances",
+        "Police station/Court ID/Prison ID",
+        "Scheme ID",
+        "Defence Solicitor Call Centre (DSCC) number",
+        "MAAT ID",
+        "Prison Law Prior Approval number",
+        "Duty solicitor",
+        "Youth court");
   }
 
   @Test
   void testShowsMediationClientDetails() {
-    var claim = MockClaimsFunctions.createMockMediationClaim();
-    this.claim = claim;
-    claim.setSubmissionId(submissionId);
-    claim.setClaimId(claimId);
-    claim.setFeeCode(FEE_CODE);
-    claim.setMatterType1(MATTER_TYPE1);
-    claim.setMatterType2(MATTER_TYPE2);
-
-    claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
-    claim.setCaseStartDate(CASE_START_DATE);
-    claim.setCaseId(CASE_ID);
-    claim.setUniqueCaseId(UNIQUE_CASE_ID);
-    claim.setCaseEndDate(CASE_END_DATE);
-    claim.setMediationSessionsCount(1);
-    claim.setMediationTimeMinutes(2);
-    claim.setOutcome(OUTCOME);
-    claim.setOutreachLocation(OUTREACH_LOCATION);
-    claim.setReferralSource(REFERRAL_SOURCE);
-    claim.setScheduleReference(SCHEDULE_REFERENCE);
+    claim = createMediationClaim();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -203,56 +213,48 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(caseDetails.get(9), "Referral", REFERRAL_SOURCE);
     assertSummaryListRowContainsValues(
         caseDetails.get(10), "Schedule reference (outcome)", SCHEDULE_REFERENCE);
+    assertPageHasNoAmendedTags(doc);
+  }
+
+  @Test
+  void testShowsAmendedTagsForMediationClientDetails() {
+    claim = createMediationClaim();
+    amendFields(
+        "claim.feeCode",
+        "claim.matterTypeCode",
+        "claimCase.caseId",
+        "claimCase.uniqueCaseId",
+        "claim.mediationSessionsCount",
+        "claim.mediationTimeMinutes",
+        "claimCase.outcomeCode",
+        "claim.outreachLocation",
+        "claim.referralSource",
+        "claim.scheduleReference",
+        "claim.caseReferenceNumber",
+        "claim.caseStartDate",
+        "claim.caseConcludedDate");
+
+    var doc = renderDocument();
+    assertRowsHaveAmendedTags(doc, "Case type", "Fee code", "Matter type 1", "Matter type 2");
+    assertRowsHaveAmendedTags(
+        doc,
+        "Case details",
+        "Case reference number (CRN)",
+        "Case start date",
+        "Claim ID",
+        "Unique case ID",
+        "Case concluded date",
+        "Number of mediation sessions",
+        "Mediation time (minutes)",
+        "Outcome",
+        "Outreach location",
+        "Referral",
+        "Schedule reference (outcome)");
   }
 
   @Test
   void testShowsCivilClientDetails() {
-    var claim = MockClaimsFunctions.createMockCivilClaim();
-    this.claim = claim;
-    claim.setSubmissionId(submissionId);
-    claim.setClaimId(claimId);
-    claim.setFeeCode(FEE_CODE);
-    claim.setMatterType1(MATTER_TYPE1);
-    claim.setMatterType2(MATTER_TYPE2);
-
-    claim.setScheduleReference(SCHEDULE_REFERENCE);
-    claim.setCaseId(CASE_ID);
-    claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
-    claim.setCaseStartDate(CASE_START_DATE);
-    claim.setCaseConcludedDate(CASE_CONCLUDED_DATE);
-    claim.setUniqueFileNumber(UNIQUE_FILE_NUMBER);
-    claim.setCaseStage(CASE_STAGE);
-    claim.setValueOfCosts(VALUE_OF_COSTS);
-    claim.setProcurementArea(PROCUREMENT_AREA);
-    claim.setAccessPoint(ACCESS_POINT);
-    claim.setStageReached(STAGE_REACHED);
-    claim.setOutcome(OUTCOME);
-    claim.setExceptionalCaseFundingReference(EXCEPTIONAL_CASE_FUNDING_REFERENCE);
-    claim.setCivilLegalAdviceReference(CLA_REFERENCE);
-    claim.setCivilLegalAdviceExemption(CLA_EXEMPTION);
-    claim.setDeliveryLocation(DELIVERY_LOCATION);
-    claim.setCourtLocation(COURT_LOCATION);
-    claim.setAitHearingCentre(AIT_HEARING_CENTRE);
-    claim.setLocalAuthorityNumber(LOCAL_AUTHORITY_NUMBER);
-    claim.setDesignatedAccreditedRepresentative(DESIGNATED_ACCREDITED_REPRESENTATIVE);
-    claim.setAdviceTime(ADVICE_TIME);
-    claim.setTravelTime(TRAVEL_TIME);
-    claim.setWaitingTime(WAITING_TIME);
-    claim.setIsAdditionalTravelPayment(IS_ADDITIONAL_TRAVEL_PAYMENT);
-    claim.setFollowOnWork(FOLLOW_ON_WORK);
-    claim.setIsToleranceApplicable(IS_TOLERANCE_APPLICABLE);
-    claim.setIsLegacyCase(IS_LEGACY_CASE);
-    claim.setMeetingsAttended(MEETINGS_ATTENDED);
-    claim.setAdviceType(ADVICE_TYPE);
-    claim.setTransferDate(TRANSFER_DATE);
-    claim.setMedicalReportsClaimed(MEDICAL_REPORTS_CLAIMED);
-    claim.setExemptionCriteriaSatisfied(EXEMPTION_CRITERIA_SATISFIED);
-    claim.setIsIrcSurgery(IS_IRC_SURGERY);
-    claim.setSurgeryDate(SURGERY_DATE);
-    claim.setSurgeryClientsCount(SURGERY_CLIENTS_COUNT);
-    claim.setSurgeryMattersCount(SURGERY_MATTERS_COUNT);
-    claim.setMentalHealthTribunalReference(MENTAL_HEALTH_TRIBUNAL_REFERENCE);
-    claim.setIsNrmAdvice(IS_NRM_ADVICE);
+    claim = createCivilClaim();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -337,6 +339,190 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
         caseDetails.get(36), "Mental health tribunal reference", MENTAL_HEALTH_TRIBUNAL_REFERENCE);
     assertSummaryListRowContainsValues(
         caseDetails.get(37), "National referral mechanism (NRM) advice", "No");
+    assertPageHasNoAmendedTags(doc);
+  }
+
+  @Test
+  void testShowsAmendedTagsForCivilClientDetails() {
+    claim = createCivilClaim();
+    amendFields(
+        "claim.feeCode",
+        "claim.matterTypeCode",
+        "claim.scheduleReference",
+        "claimCase.caseId",
+        "claim.caseReferenceNumber",
+        "claim.caseStartDate",
+        "claim.caseConcludedDate",
+        "claim.uniqueFileNumber",
+        "claimCase.caseStageCode",
+        "claimSummaryFee.costsDamagesRecoveredAmount",
+        "claim.procurementAreaCode",
+        "claim.accessPointCode",
+        "claimCase.stageReachedCode",
+        "claimCase.outcomeCode",
+        "claimCase.exceptionalCaseFundingReference",
+        "client.claReferenceNumber",
+        "client.claExemptionCode",
+        "claim.deliveryLocation",
+        "claimSummaryFee.courtLocationCode",
+        "claimSummaryFee.aitHearingCentreCode",
+        "claimSummaryFee.localAuthorityNumber",
+        "claimCase.designatedAccreditedRepresentativeCode",
+        "claimSummaryFee.adviceTime",
+        "claimSummaryFee.travelTime",
+        "claimSummaryFee.waitingTime",
+        "claimSummaryFee.isAdditionalTravelPayment",
+        "claimCase.followOnWork",
+        "claimSummaryFee.isToleranceApplicable",
+        "claimCase.isLegacyCase",
+        "claimSummaryFee.meetingsAttendedCode",
+        "claimSummaryFee.adviceTypeCode",
+        "claimCase.transferDate",
+        "claimSummaryFee.medicalReportsCount",
+        "claimCase.exemptionCriteriaSatisfied",
+        "claimSummaryFee.isIrcSurgery",
+        "claimSummaryFee.surgeryDate",
+        "claimSummaryFee.surgeryClientsCount",
+        "claimSummaryFee.surgeryMattersCount",
+        "claimCase.mentalHealthTribunalReference",
+        "claimCase.isNrmAdvice");
+
+    var doc = renderDocument();
+    assertRowsHaveAmendedTags(doc, "Case type", "Fee code", "Matter type 1", "Matter type 2");
+    assertRowsHaveAmendedTags(
+        doc,
+        "Case details",
+        "Schedule reference",
+        "Case ID",
+        "Case reference number (CRN)",
+        "Case start date",
+        "Case concluded date or case claimed date",
+        "Unique file number (UFN)",
+        "Case stage or level",
+        "Value of costs or damages recovered",
+        "Procurement area",
+        "Access point",
+        "Stage reached",
+        "Outcome for client",
+        "Exceptional case funding (ECF) reference",
+        "Civil Legal Advice (CLA) reference number",
+        "Civil Legal Advice (CLA) exemption code",
+        "Delivery location",
+        "Court location (Housing Possession Court Duty Scheme (HPCDS))",
+        "Asylum and Immigration Tribunal (AIT) hearing centre",
+        "Local authority number",
+        "Designated accredited representative",
+        "Advice time (minutes)",
+        "Travel time (minutes)",
+        "Waiting time (minutes)",
+        "Additional travel payment",
+        "Follow on work",
+        "Tolerance indicator",
+        "Legacy case",
+        "Meetings attended",
+        "Type of advice",
+        "Transfer date",
+        "Medical reports claimed",
+        "Exemption criteria satisfied",
+        "Immigration removal centre (IRC) surgery",
+        "Surgery date",
+        "Number of clients seen at surgery",
+        "Number of clients resulting in legal help matter opened",
+        "Mental health tribunal reference",
+        "National referral mechanism (NRM) advice");
+  }
+
+  private CrimeClaimDetails createCrimeClaim() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setFeeCode(FEE_CODE);
+    claim.setMatterTypeCode(MATTER_TYPE);
+    claim.setStageReached(STAGE_REACHED);
+    claim.setUniqueFileNumber(UFN);
+    claim.setRepresentationOrderDate(REPRESENTATION_ORDER_DATE);
+    claim.setCaseEndDate(CASE_END_DATE);
+    claim.setStandardFeeCategory(STANDARD_FEE_CATEGORY);
+    claim.setOutcome(OUTCOME);
+    claim.setSuspectsDefendantsCount(SUSPECTS_DEFENDANTS_COUNT);
+    claim.setPoliceStationCourtAttendancesCount(POLICE_STATION_COURT_ATTENDANCES_COUNT);
+    claim.setPoliceStationCourtPrisonId(POLICE_STATION_COURT_PRISON_ID);
+    claim.setSchemeId(SCHEME_ID);
+    claim.setDsccNumber(DSCC_NUMBER);
+    claim.setMaatId(MAAT_ID);
+    claim.setPrisonLawPriorApprovalNumber(PRISON_LAW_PRIOR_APPROVAL_NUMBER);
+    claim.setIsDutySolicitor(true);
+    claim.setIsYouthCourt(false);
+    return claim;
+  }
+
+  private MediationClaimDetails createMediationClaim() {
+    var claim = MockClaimsFunctions.createMockMediationClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setFeeCode(FEE_CODE);
+    claim.setMatterType1(MATTER_TYPE1);
+    claim.setMatterType2(MATTER_TYPE2);
+    claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
+    claim.setCaseStartDate(CASE_START_DATE);
+    claim.setCaseId(CASE_ID);
+    claim.setUniqueCaseId(UNIQUE_CASE_ID);
+    claim.setCaseEndDate(CASE_END_DATE);
+    claim.setMediationSessionsCount(1);
+    claim.setMediationTimeMinutes(2);
+    claim.setOutcome(OUTCOME);
+    claim.setOutreachLocation(OUTREACH_LOCATION);
+    claim.setReferralSource(REFERRAL_SOURCE);
+    claim.setScheduleReference(SCHEDULE_REFERENCE);
+    return claim;
+  }
+
+  private CivilClaimDetails createCivilClaim() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setFeeCode(FEE_CODE);
+    claim.setMatterType1(MATTER_TYPE1);
+    claim.setMatterType2(MATTER_TYPE2);
+    claim.setScheduleReference(SCHEDULE_REFERENCE);
+    claim.setCaseId(CASE_ID);
+    claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
+    claim.setCaseStartDate(CASE_START_DATE);
+    claim.setCaseConcludedDate(CASE_CONCLUDED_DATE);
+    claim.setUniqueFileNumber(UNIQUE_FILE_NUMBER);
+    claim.setCaseStage(CASE_STAGE);
+    claim.setValueOfCosts(VALUE_OF_COSTS);
+    claim.setProcurementArea(PROCUREMENT_AREA);
+    claim.setAccessPoint(ACCESS_POINT);
+    claim.setStageReached(STAGE_REACHED);
+    claim.setOutcome(OUTCOME);
+    claim.setExceptionalCaseFundingReference(EXCEPTIONAL_CASE_FUNDING_REFERENCE);
+    claim.setCivilLegalAdviceReference(CLA_REFERENCE);
+    claim.setCivilLegalAdviceExemption(CLA_EXEMPTION);
+    claim.setDeliveryLocation(DELIVERY_LOCATION);
+    claim.setCourtLocation(COURT_LOCATION);
+    claim.setAitHearingCentre(AIT_HEARING_CENTRE);
+    claim.setLocalAuthorityNumber(LOCAL_AUTHORITY_NUMBER);
+    claim.setDesignatedAccreditedRepresentative(DESIGNATED_ACCREDITED_REPRESENTATIVE);
+    claim.setAdviceTime(ADVICE_TIME);
+    claim.setTravelTime(TRAVEL_TIME);
+    claim.setWaitingTime(WAITING_TIME);
+    claim.setIsAdditionalTravelPayment(IS_ADDITIONAL_TRAVEL_PAYMENT);
+    claim.setFollowOnWork(FOLLOW_ON_WORK);
+    claim.setIsToleranceApplicable(IS_TOLERANCE_APPLICABLE);
+    claim.setIsLegacyCase(IS_LEGACY_CASE);
+    claim.setMeetingsAttended(MEETINGS_ATTENDED);
+    claim.setAdviceType(ADVICE_TYPE);
+    claim.setTransferDate(TRANSFER_DATE);
+    claim.setMedicalReportsClaimed(MEDICAL_REPORTS_CLAIMED);
+    claim.setExemptionCriteriaSatisfied(EXEMPTION_CRITERIA_SATISFIED);
+    claim.setIsIrcSurgery(IS_IRC_SURGERY);
+    claim.setSurgeryDate(SURGERY_DATE);
+    claim.setSurgeryClientsCount(SURGERY_CLIENTS_COUNT);
+    claim.setSurgeryMattersCount(SURGERY_MATTERS_COUNT);
+    claim.setMentalHealthTribunalReference(MENTAL_HEALTH_TRIBUNAL_REFERENCE);
+    claim.setIsNrmAdvice(IS_NRM_ADVICE);
+    return claim;
   }
 
   private void assertCommonPageContent(Document doc) {

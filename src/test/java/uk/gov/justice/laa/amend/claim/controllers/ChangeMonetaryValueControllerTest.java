@@ -23,6 +23,7 @@ import static uk.gov.justice.laa.amend.claim.models.enums.Cost.TRAVEL_COSTS;
 import static uk.gov.justice.laa.amend.claim.models.enums.Cost.WAITING_COSTS;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.ROLE_ESCAPE_CASE_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.allRolesApartFrom;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -86,7 +87,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
   void testGetReturnsView(Cost cost, Class<?> targetClass) throws Exception {
     var claim = createClaimFor(cost, targetClass);
     var claimField = claim.getClaimField(cost);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc
         .perform(get(buildPath(cost.getPath())).session(session))
@@ -101,7 +102,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
   @MethodSource("validCosts")
   void testGetReturns404_whenFieldIsNull(Cost cost, Class<?> targetClass) throws Exception {
     var claim = createClaimWithNullFieldFor(cost, targetClass);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc
         .perform(get(buildPath(cost.getPath())).session(session))
@@ -113,7 +114,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
   void testGetReturns404_whenFieldIsNotAssessable(Cost cost, Class<?> targetClass)
       throws Exception {
     var claim = createClaimWithUnassessableFieldFor(cost, targetClass);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc
         .perform(get(buildPath(cost.getPath())).session(session))
@@ -128,7 +129,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
     var claimField = claim.getClaimField(cost);
     Assertions.assertNotNull(claimField);
     claimField.setAssessed(BigDecimal.valueOf(100));
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc
         .perform(get(buildPath(cost.getPath())).session(session))
@@ -145,7 +146,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
     var claimField = claim.getClaimField(cost);
     ;
     Assertions.assertNotNull(claimField);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc
         .perform(
@@ -163,7 +164,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
   @MethodSource("validCosts")
   void testPostReturnsBadRequestForInvalidValue(Cost cost, Class<?> targetClass) throws Exception {
     var claim = createClaimFor(cost, targetClass);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc
         .perform(post(buildPath(cost.getPath())).session(session).with(csrf()).param("value", "-1"))
@@ -187,7 +188,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
   @Test
   void testGetReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
     var claim = new CivilClaimDetails();
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc
         .perform(get(buildPath("travel-costs")).session(session))
@@ -197,7 +198,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
   @Test
   void testPostReturnsNotFoundWhenClaimTypeMismatch() throws Exception {
     var claim = new CivilClaimDetails();
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc
         .perform(post(buildPath("travel-costs")).session(session).with(csrf()).param("value", "1"))

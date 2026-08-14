@@ -15,6 +15,7 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSES
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_REASON_STAGE_DISBURSEMENT_CONTINGENCY;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.ROLE_ESCAPE_CASE_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.allRolesApartFrom;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -84,7 +85,7 @@ public class AssessmentOutcomeControllerTest extends BaseControllerTest {
   public void testOnSubmitSetsEscapeCaseReasonForEscapedClaim() throws Exception {
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setEscaped(true);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc.perform(
         post(buildPath())
@@ -102,7 +103,7 @@ public class AssessmentOutcomeControllerTest extends BaseControllerTest {
   public void testOnSubmitSetsEscapeCaseContingencyReasonForEscapedClaim() throws Exception {
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setEscaped(true);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc.perform(
         post(buildPath())
@@ -122,7 +123,7 @@ public class AssessmentOutcomeControllerTest extends BaseControllerTest {
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setEscaped(false);
     claim.setFeeCode("ILHSD");
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc.perform(
         post(buildPath())
@@ -142,7 +143,7 @@ public class AssessmentOutcomeControllerTest extends BaseControllerTest {
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setEscaped(false);
     claim.setFeeCode("ILHSD");
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     mockMvc.perform(
         post(buildPath())

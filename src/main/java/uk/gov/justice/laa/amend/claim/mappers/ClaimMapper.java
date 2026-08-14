@@ -48,6 +48,7 @@ public interface ClaimMapper {
   @Mapping(target = "allowedTotalVat", source = ".", qualifiedByName = "mapAllowedTotalVat")
   @Mapping(target = "allowedTotalInclVat", source = ".", qualifiedByName = "mapAllowedTotalInclVat")
   @Mapping(target = "hasAssessment", source = "hasAssessment")
+  @Mapping(target = "amended", source = "isAmended")
   @Mapping(target = "areaOfLaw", expression = "java(mapAreaOfLaw(claimResponse))")
   @Mapping(target = "providerName", ignore = true)
   @Mapping(target = "submittedDate", source = "dateSubmitted")

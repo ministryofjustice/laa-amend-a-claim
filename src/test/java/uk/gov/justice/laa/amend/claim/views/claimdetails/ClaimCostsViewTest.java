@@ -10,6 +10,9 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.claimdetails.ClaimCostsController;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
@@ -34,13 +37,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
 
   @Test
   void testShowsCrimeCosts() {
-    var claim = MockClaimsFunctions.createMockCrimeClaim();
-    this.claim = claim;
-    claim.setSubmissionId(submissionId);
-    claim.setClaimId(claimId);
-    claim.setHasAssessment(true);
-    claim.setLastAssessment(AssessmentInfo.builder().lastAssessmentOutcome(PAID_IN_FULL).build());
-    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    claim = createCrimeClaim();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -60,17 +57,35 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(6), "VAT indicator", "Yes", "No", "Yes");
     assertSummaryListRowContainsValues(
         clientDetails.get(7), "Disbursements VAT", SUBMITTED, CALCULATED, ASSESSED);
+    assertPageHasNoAmendedTags(doc);
+  }
+
+  @Test
+  void testShowsAmendedTagsForCrimeCosts() {
+    claim = createCrimeClaim();
+    amendFields(
+        "claimSummaryFee.netProfitCostsAmount",
+        "claimSummaryFee.netDisbursementAmount",
+        "claimSummaryFee.travelWaitingCostsAmount",
+        "claimSummaryFee.netWaitingCostsAmount",
+        "claimSummaryFee.isVatApplicable",
+        "claimSummaryFee.disbursementsVatAmount");
+
+    var doc = renderDocument();
+    assertRowsHaveAmendedTags(
+        doc,
+        "List of costs",
+        "Net profit costs",
+        "Net disbursements",
+        "Net travel costs",
+        "Net waiting costs",
+        "VAT indicator",
+        "Disbursements VAT");
   }
 
   @Test
   void testShowsMediationCosts() {
-    var claim = MockClaimsFunctions.createMockMediationClaim();
-    this.claim = claim;
-    claim.setSubmissionId(submissionId);
-    claim.setClaimId(claimId);
-    claim.setHasAssessment(true);
-    claim.setLastAssessment(AssessmentInfo.builder().lastAssessmentOutcome(PAID_IN_FULL).build());
-    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    claim = createMediationClaim();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -84,17 +99,25 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
         clientDetails.get(3), "Net disbursements", SUBMITTED, CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(
         clientDetails.get(4), "Disbursements VAT", SUBMITTED, CALCULATED, ASSESSED);
+    assertPageHasNoAmendedTags(doc);
+  }
+
+  @Test
+  void testShowsAmendedTagsForMediationCosts() {
+    claim = createMediationClaim();
+    amendFields(
+        "claimSummaryFee.netDisbursementAmount",
+        "claimSummaryFee.disbursementsVatAmount",
+        "claimSummaryFee.isVatApplicable");
+
+    var doc = renderDocument();
+    assertRowsHaveAmendedTags(
+        doc, "List of costs", "VAT indicator", "Net disbursements", "Disbursements VAT");
   }
 
   @Test
   void testShowsCivilCosts() {
-    var claim = MockClaimsFunctions.createMockCivilClaim();
-    this.claim = claim;
-    claim.setSubmissionId(submissionId);
-    claim.setClaimId(claimId);
-    claim.setHasAssessment(true);
-    claim.setLastAssessment(AssessmentInfo.builder().lastAssessmentOutcome(PAID_IN_FULL).build());
-    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    claim = createCivilClaim();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -148,6 +171,78 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
         "PRIOR_AUTHORITY_REF",
         NOT_APPLICABLE,
         NOT_APPLICABLE);
+    assertPageHasNoAmendedTags(doc);
+  }
+
+  @Test
+  void testShowsAmendedTagsForCivilCosts() {
+    claim = createCivilClaim();
+    amendFields(
+        "claimSummaryFee.netProfitCostsAmount",
+        "claimSummaryFee.netDisbursementAmount",
+        "claimSummaryFee.netCounselCostsAmount",
+        "claimSummaryFee.disbursementsVatAmount",
+        "claimSummaryFee.travelWaitingCostsAmount",
+        "claimSummaryFee.isVatApplicable",
+        "claimSummaryFee.adjournedHearingFeeAmount",
+        "claimSummaryFee.detentionTravelWaitingCostsAmount",
+        "claimSummaryFee.jrFormFillingAmount",
+        "claimSummaryFee.isSubstantiveHearing",
+        "claimSummaryFee.hoInterview",
+        "claimSummaryFee.cmrhOralCount",
+        "claimSummaryFee.cmrhTelephoneCount",
+        "claimSummaryFee.isLondonRate",
+        "claimSummaryFee.priorAuthorityReference");
+
+    var doc = renderDocument();
+    assertRowsHaveAmendedTags(
+        doc,
+        "List of costs",
+        "Net profit costs",
+        "Net disbursements",
+        "Net cost of counsel",
+        "Disbursements VAT",
+        "Travel and waiting costs",
+        "VAT indicator",
+        "Adjourned hearing fee",
+        "Detention, travel and waiting (DTW) costs",
+        "Judicial review or form filling",
+        "Substantive hearing",
+        "Home Office Interview",
+        "Case management review hearing (CMRH)-oral",
+        "Case management review hearing (CMRH)-telephone",
+        "London rate",
+        "National Immigration Asylum Team Disbursement prior authority number");
+  }
+
+  private CrimeClaimDetails createCrimeClaim() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setHasAssessment(true);
+    claim.setLastAssessment(AssessmentInfo.builder().lastAssessmentOutcome(PAID_IN_FULL).build());
+    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    return claim;
+  }
+
+  private MediationClaimDetails createMediationClaim() {
+    var claim = MockClaimsFunctions.createMockMediationClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setHasAssessment(true);
+    claim.setLastAssessment(AssessmentInfo.builder().lastAssessmentOutcome(PAID_IN_FULL).build());
+    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    return claim;
+  }
+
+  private CivilClaimDetails createCivilClaim() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setHasAssessment(true);
+    claim.setLastAssessment(AssessmentInfo.builder().lastAssessmentOutcome(PAID_IN_FULL).build());
+    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    return claim;
   }
 
   private void assertCommonPageContent(Document doc) {

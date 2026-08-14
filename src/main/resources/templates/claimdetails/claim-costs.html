@@ -27,11 +27,18 @@
                             <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{claimCosts.calculated}"></dd>
                             <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:if="${claim.hasAssessment}" th:text="#{claimCosts.assessed}"></dd>
                         </div>
-                        <div class="govuk-summary-list__row" th:each="row : ${claim.rows}">
-                            <dt class="govuk-summary-list__key" th:text="#{${'claimCosts.rows.' + row.key}}"></dt>
+
+                        <div class="govuk-summary-list__row"
+                             th:each="entry : ${claim.costFields}"
+                             th:with="field=${entry.key}, row=${entry.value}">
+                            <dt class="govuk-summary-list__key" th:text="#{${'claimCosts.rows.' + field.name()}}"></dt>
                             <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></dd>
-                            <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
+                            <dd class="govuk-summary-list__value"
+                                th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
                             <dd class="govuk-summary-list__value" th:if="${claim.hasAssessment}" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></dd>
+                            <dd class="govuk-summary-list__actions" th:if="${amendedFields.contains(field.claimsApiFieldName)}">
+                                <strong class="govuk-tag govuk-tag--yellow" th:text="#{service.amended}"></strong>
+                            </dd>
                         </div>
                     </dl>
                 </div>

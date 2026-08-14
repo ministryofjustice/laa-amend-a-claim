@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -81,6 +83,27 @@ public class SessionUtilsTest {
 
       assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     }
+  }
+
+  @Test
+  void saveAmendedFieldsStoresMutableSetInSession() {
+    var session = new MockHttpSession();
+    SessionUtils.saveAmendedFields(session, CLAIM_ID, Set.of());
+
+    var stored =
+        session.getAttribute(SessionUtils.AMENDED_FIELDS_KEY.formatted(CLAIM_ID.toString()));
+
+    assertThat(stored).isInstanceOf(HashSet.class);
+    assertThat(SessionUtils.getAmendedFields(session, CLAIM_ID)).isEmpty();
+  }
+
+  @Test
+  void getAmendedFieldsReturnsSavedValues() {
+    var session = new MockHttpSession();
+    SessionUtils.saveAmendedFields(session, CLAIM_ID, Set.of("client.clientForename"));
+
+    assertThat(SessionUtils.getAmendedFields(session, CLAIM_ID))
+        .containsExactly("client.clientForename");
   }
 
   @Test

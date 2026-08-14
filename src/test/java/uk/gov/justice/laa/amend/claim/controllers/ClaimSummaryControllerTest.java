@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.ROLE_ESCAPE_CASE_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.allRolesApartFrom;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import java.time.OffsetDateTime;
 import java.util.Set;
@@ -33,6 +34,7 @@ import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.amend.claim.models.enums.Role;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
+import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.MicrosoftUserRetrievalService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
@@ -41,6 +43,8 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 public class ClaimSummaryControllerTest extends BaseControllerTest {
 
   @MockitoBean private ClaimService claimService;
+
+  @MockitoBean private ClaimHistoryService claimHistoryService;
 
   @MockitoBean private MicrosoftUserRetrievalService userRetrievalService;
 
@@ -128,7 +132,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
     claim.setHasAssessment(true);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     String expectedRedirectUrl =
         String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
@@ -146,7 +150,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
     claim.setHasAssessment(false);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     String expectedRedirectUrl =
         String.format("/submissions/%s/claims/%s/assessment-outcome", submissionId, claimId);

@@ -8,15 +8,20 @@ import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_CREATED;
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_VOIDED;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistory;
@@ -32,6 +37,7 @@ public class ClaimHistoryService {
   public static final int MAXIMUM_ASSESSMENTS = 100;
 
   private final AssessmentService assessmentService;
+  private final ClaimsApiClient claimsApiClient;
   private final ProviderService providerService;
   private final UserRetrievalService userRetrievalService;
 
@@ -54,6 +60,26 @@ public class ClaimHistoryService {
         assessments.stream().findFirst().map(AssessmentInfo::lastAssessedBy).map(userIdToUser::get);
 
     return new ClaimHistory(events, latestAssessmentUser);
+  }
+
+  public Set<String> getAmendedFields(ClaimDetails claim) {
+    // TODO: Reinstate this once isAmended is wired up in claims API (DSTEW-2140)
+    //    if (!claim.isAmended()) {
+    //      return Set.of();
+    //    }
+    var history = claimsApiClient.getClaimHistory(claim.getClaimId()).block();
+
+    if (history == null || history.getEvents() == null) {
+      return Set.of();
+    }
+
+    return history.getEvents().stream()
+        .filter(event -> event.getEventType() == AMENDMENT)
+        .map(ClaimHistoryService::getChanges)
+        .flatMap(Collection::stream)
+        .filter(ClaimHistoryService::isRequested)
+        .map(ClaimHistoryService::getFieldIdentifier)
+        .collect(toSet());
   }
 
   private Map<String, MicrosoftApiUser> getUserIdToUser(final List<AssessmentInfo> assessments) {
@@ -110,5 +136,20 @@ public class ClaimHistoryService {
         assessment.lastAssessmentDate(),
         userName,
         Optional.ofNullable(assessment.lastAssessmentOutcome()));
+  }
+
+  @SuppressWarnings("unchecked")
+  private static List<LinkedHashMap<String, String>> getChanges(
+      uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent claimHistoryEvent) {
+    return ((List<LinkedHashMap<String, String>>)
+        claimHistoryEvent.getMetadata().getOrDefault("changes", List.of()));
+  }
+
+  private static boolean isRequested(LinkedHashMap<String, String> change) {
+    return "REQUESTED".equals(change.get("change_source"));
+  }
+
+  private static String getFieldIdentifier(LinkedHashMap<String, String> change) {
+    return change.get("field_identifier");
   }
 }

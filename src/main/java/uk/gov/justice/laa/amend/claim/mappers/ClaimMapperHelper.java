@@ -260,6 +260,6 @@ public class ClaimMapperHelper {
             ? claimResponse.getFeeCalculationResponse().getTravelAndWaitingCostsAmount()
             : null;
     return new CostClaimField(
-        TRAVEL_AND_WAITING_COSTS, submitted, calculated, Cost.TRAVEL_AND_WAITING_COSTS);
+        TRAVEL_AND_WAITING_COSTS, submitted, calculated, null, Cost.TRAVEL_AND_WAITING_COSTS);
   }
 }

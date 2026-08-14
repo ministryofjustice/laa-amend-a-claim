@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getAmendmentForms;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidClaim;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.removeAmendmentForms;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.UUID;
@@ -88,6 +89,7 @@ public class CheckAmendmentsController {
     }
 
     checkAmendmentsService.submitAmendments(submissionId, claimId, userId, claim, amendmentForms);
+    removeAmendmentForms(session, claimId);
 
     return "redirect:/submissions/%s/claims/%s/amendments/confirmation"
         .formatted(submissionId, claimId);

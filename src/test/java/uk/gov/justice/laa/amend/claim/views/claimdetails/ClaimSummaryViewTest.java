@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -42,6 +43,7 @@ import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
+import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.MicrosoftUserRetrievalService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -52,6 +54,8 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
 
   @MockitoBean private ClaimService claimService;
+
+  @MockitoBean private ClaimHistoryService claimHistoryService;
 
   @MockitoBean private ClaimMapper claimMapper;
 
@@ -79,9 +83,11 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setMatterType2("AHQS");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
 
     Document doc = renderDocument();
     assertCommonPageContent(doc);
+    assertPageHasNoAmendedTags(doc);
 
     List<List<Element>> summaryList1 = getSummaryListInCard(doc, "Summary");
     Assertions.assertEquals(16, summaryList1.size());
@@ -154,6 +160,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     when(authorizedClientService.loadAuthorizedClient(eq("entra"), any())).thenReturn(mockClient);
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
 
     var lastAssessment =
         AssessmentInfo.builder()
@@ -173,6 +180,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
 
     Document doc = renderDocument();
     assertCommonPageContent(doc);
+    assertPageHasNoAmendedTags(doc);
 
     assertPageHasInformationAlert(
         doc,
@@ -226,9 +234,11 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     ClaimResponse claimResponse = new ClaimResponse();
     claimResponse.feeCalculationResponse(new FeeCalculationPatch().categoryOfLaw("CRIME"));
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
 
     Document doc = renderDocument();
     assertCommonPageContent(doc);
+    assertPageHasNoAmendedTags(doc);
 
     List<List<Element>> summaryList1 = getSummaryListInCard(doc, "Summary");
     Assertions.assertEquals(16, summaryList1.size());
@@ -284,9 +294,11 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setMatterType2("AHQS");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
 
     Document doc = renderDocument();
     assertCommonPageContent(doc);
+    assertPageHasNoAmendedTags(doc);
 
     List<List<Element>> summaryList1 = getSummaryListInCard(doc, "Summary");
     Assertions.assertEquals(16, summaryList1.size());
@@ -324,8 +336,10 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setEscaped(false);
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
 
     Document doc = renderDocument();
+    assertPageHasNoAmendedTags(doc);
 
     assertPageHasPrimaryButtonHidden(doc, "Add assessment outcome");
 
@@ -337,10 +351,171 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     session.setAttribute("searchUrl", "/?officeCode=0P322F&page=1");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
+
+    Document doc = renderDocument();
+    assertPageHasNoAmendedTags(doc);
+
+    assertPageHasLink(doc, "back-to-search", "Back to search", "/?officeCode=0P322F&page=1");
+  }
+
+  @Test
+  void testAmendedCivilClaim() {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    createClaimSummary(claim);
+    claim.setClaimId(claimId);
+    claim.setSubmissionId(submissionId);
+    claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
+    claim.setCategoryOfLaw("TEST");
+    claim.setMatterType1("IMLB");
+    claim.setMatterType2("AHQS");
+
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getAmendedFields(any()))
+        .thenReturn(
+            Set.of(
+                "claim.uniqueFileNumber",
+                "client.uniqueClientNumber",
+                "claim.feeCode",
+                "claim.matterTypeCode",
+                "claim.caseStartDate",
+                "claim.caseConcludedDate",
+                "claimSummaryFee.netProfitCostsAmount",
+                "claimSummaryFee.netDisbursementAmount",
+                "claimSummaryFee.disbursementsVatAmount",
+                "claimSummaryFee.detentionTravelWaitingCostsAmount",
+                "claimSummaryFee.jrFormFillingAmount",
+                "claimSummaryFee.netCounselCostsAmount",
+                "claimSummaryFee.cmrhOralCount",
+                "claimSummaryFee.cmrhTelephoneCount",
+                "claimSummaryFee.hoInterview",
+                "claimSummaryFee.isSubstantiveHearing",
+                "claimSummaryFee.adjournedHearingFeeAmount",
+                "claimSummaryFee.isVatApplicable"));
 
     Document doc = renderDocument();
 
-    assertPageHasLink(doc, "back-to-search", "Back to search", "/?officeCode=0P322F&page=1");
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Summary", "Unique file number (UFN)"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Summary", "Unique client number (UCN)"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Fee code"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type 1"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type 2"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case start date"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case end date"));
+
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net profit costs"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net disbursements"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Disbursement VAT"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Values", "Detention travel and waiting costs"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Values", "JR and form filling"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Values", "Net cost of counsel"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Oral CMRH"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Telephone CMRH"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Values", "Home office interview"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Values", "Substantive hearing"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Values", "Adjourned hearing fee"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "VAT indicator"));
+  }
+
+  @Test
+  void testAmendedCrimeLowerClaim() {
+    CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
+    createClaimSummary(claim);
+    claim.setClaimId(claimId);
+    claim.setSubmissionId(submissionId);
+    claim.setMatterTypeCode("IMLB");
+    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    claim.setSchemeId("SCHEME");
+    claim.setPoliceStationCourtPrisonId("POLICE_STATION_COURT_PRISON");
+
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getAmendedFields(any()))
+        .thenReturn(
+            Set.of(
+                "claim.uniqueFileNumber",
+                "claim.feeCode",
+                "claim.policeStationCourtPrisonId",
+                "claim.schemeId",
+                "claim.crimeMatterTypeCode",
+                "claim.caseStartDate",
+                "claim.caseConcludedDate",
+                "claimSummaryFee.netProfitCostsAmount",
+                "claimSummaryFee.netDisbursementAmount",
+                "claimSummaryFee.disbursementsVatAmount",
+                "claimSummaryFee.travelWaitingCostsAmount",
+                "claimSummaryFee.netWaitingCostsAmount",
+                "claimSummaryFee.isVatApplicable"));
+
+    Document doc = renderDocument();
+
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Summary", "Unique file number (UFN)"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Fee code"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Summary", "Police Station / Court / Prison ID"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Scheme ID"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case start date"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case end date"));
+
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net profit costs"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net disbursements"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Disbursement VAT"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net travel costs"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net waiting costs"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "VAT indicator"));
+  }
+
+  @Test
+  void testAmendedMediationClaim() {
+    MediationClaimDetails claim = MockClaimsFunctions.createMockMediationClaim();
+    createClaimSummary(claim);
+    claim.setClaimId(claimId);
+    claim.setSubmissionId(submissionId);
+    claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
+    claim.setCategoryOfLaw("TEST");
+    claim.setMatterType1("IMLB");
+    claim.setMatterType2("AHQS");
+
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getAmendedFields(any()))
+        .thenReturn(
+            Set.of(
+                "claim.uniqueFileNumber",
+                "client.uniqueClientNumber",
+                "claim.feeCode",
+                "claim.matterTypeCode",
+                "claim.caseStartDate",
+                "claim.caseConcludedDate",
+                "claimSummaryFee.netProfitCostsAmount",
+                "claimSummaryFee.netDisbursementAmount",
+                "claimSummaryFee.disbursementsVatAmount",
+                "claimSummaryFee.isVatApplicable"));
+
+    Document doc = renderDocument();
+
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Summary", "Unique file number (UFN)"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Summary", "Unique client number (UCN)"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Fee code"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type 1"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type 2"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case start date"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case end date"));
+
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net profit costs"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net disbursements"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Disbursement VAT"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "VAT indicator"));
   }
 
   @ParameterizedTest
@@ -356,10 +531,12 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setLastUpdatedUser(lastAssessment.lastAssessedBy());
 
     when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
+    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
     when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
     when(userRetrievalService.getUser(lastAssessment.lastAssessedBy())).thenReturn(createUser());
 
     Document doc = renderDocument();
+    assertPageHasNoAmendedTags(doc);
 
     assertPageHasTitle(doc, "Claim details");
     assertPageHasHeading(doc, "Claim details");
@@ -397,10 +574,12 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setLastUpdatedUser(lastAssessment.lastAssessedBy());
 
     when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
+    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
     when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
     when(userRetrievalService.getUser(lastAssessment.lastAssessedBy())).thenReturn(createUser());
 
     Document doc = renderDocument();
+    assertPageHasNoAmendedTags(doc);
 
     Element banner = doc.selectFirst(".moj-alert.moj-alert--error");
     assertNotNull(banner, "Expected VOID banner to be visible even without previous assessment");

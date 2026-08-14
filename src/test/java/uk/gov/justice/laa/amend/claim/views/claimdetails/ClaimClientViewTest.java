@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.claimdetails.ClaimClientController;
+import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
@@ -47,15 +50,7 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
 
   @Test
   void testShowsCrimeClientDetails() {
-    var claim = MockClaimsFunctions.createMockCrimeClaim();
-    this.claim = claim;
-    claim.setSubmissionId(submissionId);
-    claim.setClaimId(claimId);
-    claim.setClientForename(FORENAME);
-    claim.setClientSurname(SURNAME);
-    claim.setClientGender(GENDER);
-    claim.setClientEthnicity(ETHNICITY);
-    claim.setClientDisability(DISABILITY);
+    claim = createCrimeClaim();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -66,36 +61,27 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(clientDetails.get(2), "Gender", GENDER);
     assertSummaryListRowContainsValues(clientDetails.get(3), "Ethnicity", ETHNICITY);
     assertSummaryListRowContainsValues(clientDetails.get(4), "Disability", DISABILITY);
+    assertPageHasNoAmendedTags(doc);
+  }
+
+  @Test
+  void testShowsAmendedTagsForCrimeClientDetails() {
+    claim = createCrimeClaim();
+    amendFields(
+        "client.clientForename",
+        "client.clientSurname",
+        "client.genderCode",
+        "client.ethnicityCode",
+        "client.disabilityCode");
+
+    var doc = renderDocument();
+    assertRowsHaveAmendedTags(
+        doc, "Client details", "Initial", "Last name", "Gender", "Ethnicity", "Disability");
   }
 
   @Test
   void testShowsMediationClientDetails() {
-    var claim = MockClaimsFunctions.createMockMediationClaim();
-    this.claim = claim;
-    claim.setSubmissionId(submissionId);
-    claim.setClaimId(claimId);
-
-    claim.setClientForename(FORENAME);
-    claim.setClientSurname(SURNAME);
-    claim.setClientDateOfBirth(DATE_OF_BIRTH);
-    claim.setUniqueClientNumber(UCN);
-    claim.setClientPostcode(POSTCODE);
-    claim.setClientGender(GENDER);
-    claim.setClientEthnicity(ETHNICITY);
-    claim.setClientDisability(DISABILITY);
-    claim.setIsClientLegallyAided(true);
-    claim.setIsClientPostalApplicationAccepted(false);
-
-    claim.setClient2Forename(CLIENT_2_FORENAME);
-    claim.setClient2Surname(CLIENT_2_SURNAME);
-    claim.setClient2DateOfBirth(CLIENT_2_DATE_OF_BIRTH);
-    claim.setClient2Ucn(CLIENT_2_UCN);
-    claim.setClient2Postcode(CLIENT_2_POSTCODE);
-    claim.setClient2Gender(CLIENT_2_GENDER);
-    claim.setClient2Ethnicity(CLIENT_2_ETHNICITY);
-    claim.setClient2Disability(CLIENT_2_DISABILITY);
-    claim.setIsClient2LegallyAided(false);
-    claim.setIsClient2PostalApplicationAccepted(true);
+    claim = createMediationClaim();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -126,27 +112,66 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(client2Details.get(7), "Disability", CLIENT_2_DISABILITY);
     assertSummaryListRowContainsValues(client2Details.get(8), "Legally aided", "No");
     assertSummaryListRowContainsValues(client2Details.get(9), "Postal application accepted", "Yes");
+    assertPageHasNoAmendedTags(doc);
+  }
+
+  @Test
+  void testShowsAmendedTagsForMediationClientDetails() {
+    claim = createMediationClaim();
+    amendFields(
+        "client.clientForename",
+        "client.clientSurname",
+        "client.clientDateOfBirth",
+        "client.clientPostcode",
+        "client.uniqueClientNumber",
+        "client.genderCode",
+        "client.ethnicityCode",
+        "client.disabilityCode",
+        "client.isLegallyAided",
+        "claimCase.isPostalApplicationAccepted",
+        "client.client2Forename",
+        "client.client2Surname",
+        "client.client2DateOfBirth",
+        "client.client2Ucn",
+        "client.client2Postcode",
+        "client.client2GenderCode",
+        "client.client2EthnicityCode",
+        "client.client2DisabilityCode",
+        "client.client2IsLegallyAided",
+        "claimCase.isClient2PostalApplicationAccepted");
+
+    var doc = renderDocument();
+    assertRowsHaveAmendedTags(
+        doc,
+        "Client 1 details",
+        "First name",
+        "Last name",
+        "Date of birth",
+        "Unique client number (UCN)",
+        "Postcode",
+        "Gender",
+        "Ethnicity",
+        "Disability",
+        "Legally aided",
+        "Postal application accepted");
+    assertRowsHaveAmendedTags(
+        doc,
+        "Client 2 details",
+        "First name",
+        "Last name",
+        "Date of birth",
+        "Unique client number (UCN)",
+        "Postcode",
+        "Gender",
+        "Ethnicity",
+        "Disability",
+        "Legally aided",
+        "Postal application accepted");
   }
 
   @Test
   void testShowsCivilClientDetails() {
-    var claim = MockClaimsFunctions.createMockCivilClaim();
-    this.claim = claim;
-    claim.setSubmissionId(submissionId);
-    claim.setClaimId(claimId);
-
-    claim.setClientForename(FORENAME);
-    claim.setClientSurname(SURNAME);
-    claim.setClientDateOfBirth(DATE_OF_BIRTH);
-    claim.setUniqueClientNumber(UCN);
-    claim.setClientPostcode(POSTCODE);
-    claim.setClientGender(GENDER);
-    claim.setClientEthnicity(ETHNICITY);
-    claim.setClientDisability(DISABILITY);
-    claim.setIsEligibleClient(true);
-    claim.setClientType(CLIENT_TYPE);
-    claim.setHomeOfficeClientNumber(HOME_OFFICE_CLIENT_NUMBER);
-    claim.setIsPostalApplication(false);
+    claim = createCivilClaim();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -168,6 +193,102 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
         "Home Office unique client number (HO UCN)",
         HOME_OFFICE_CLIENT_NUMBER);
     assertSummaryListRowContainsValues(clientDetails.get(11), "Postal application accepted", "No");
+    assertPageHasNoAmendedTags(doc);
+  }
+
+  @Test
+  void testShowsAmendedTagsForCivilClientDetails() {
+    claim = createCivilClaim();
+    amendFields(
+        "client.clientForename",
+        "client.clientSurname",
+        "client.clientDateOfBirth",
+        "client.genderCode",
+        "client.ethnicityCode",
+        "client.disabilityCode",
+        "client.clientPostcode",
+        "claimSummaryFee.isEligibleClient",
+        "client.clientTypeCode",
+        "client.uniqueClientNumber",
+        "client.homeOfficeClientNumber",
+        "claimCase.isPostalApplicationAccepted");
+
+    var doc = renderDocument();
+    assertRowsHaveAmendedTags(
+        doc,
+        "Client details",
+        "First name",
+        "Last name",
+        "Date of birth",
+        "Gender",
+        "Ethnicity",
+        "Disability",
+        "Postcode",
+        "Eligible client",
+        "Client type",
+        "Unique client number (UCN)",
+        "Home Office unique client number (HO UCN)",
+        "Postal application accepted");
+  }
+
+  private CrimeClaimDetails createCrimeClaim() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setClientForename(FORENAME);
+    claim.setClientSurname(SURNAME);
+    claim.setClientGender(GENDER);
+    claim.setClientEthnicity(ETHNICITY);
+    claim.setClientDisability(DISABILITY);
+    return claim;
+  }
+
+  private MediationClaimDetails createMediationClaim() {
+    var claim = MockClaimsFunctions.createMockMediationClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+
+    claim.setClientForename(FORENAME);
+    claim.setClientSurname(SURNAME);
+    claim.setClientDateOfBirth(DATE_OF_BIRTH);
+    claim.setUniqueClientNumber(UCN);
+    claim.setClientPostcode(POSTCODE);
+    claim.setClientGender(GENDER);
+    claim.setClientEthnicity(ETHNICITY);
+    claim.setClientDisability(DISABILITY);
+    claim.setIsClientLegallyAided(true);
+    claim.setIsClientPostalApplicationAccepted(false);
+
+    claim.setClient2Forename(CLIENT_2_FORENAME);
+    claim.setClient2Surname(CLIENT_2_SURNAME);
+    claim.setClient2DateOfBirth(CLIENT_2_DATE_OF_BIRTH);
+    claim.setClient2Ucn(CLIENT_2_UCN);
+    claim.setClient2Postcode(CLIENT_2_POSTCODE);
+    claim.setClient2Gender(CLIENT_2_GENDER);
+    claim.setClient2Ethnicity(CLIENT_2_ETHNICITY);
+    claim.setClient2Disability(CLIENT_2_DISABILITY);
+    claim.setIsClient2LegallyAided(false);
+    claim.setIsClient2PostalApplicationAccepted(true);
+    return claim;
+  }
+
+  private CivilClaimDetails createCivilClaim() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setClientForename(FORENAME);
+    claim.setClientSurname(SURNAME);
+    claim.setClientDateOfBirth(DATE_OF_BIRTH);
+    claim.setUniqueClientNumber(UCN);
+    claim.setClientPostcode(POSTCODE);
+    claim.setClientGender(GENDER);
+    claim.setClientEthnicity(ETHNICITY);
+    claim.setClientDisability(DISABILITY);
+    claim.setIsEligibleClient(true);
+    claim.setClientType(CLIENT_TYPE);
+    claim.setHomeOfficeClientNumber(HOME_OFFICE_CLIENT_NUMBER);
+    claim.setIsPostalApplication(false);
+    return claim;
   }
 
   private void assertCommonPageContent(Document doc) {

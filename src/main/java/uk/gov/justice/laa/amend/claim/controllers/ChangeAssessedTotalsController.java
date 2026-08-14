@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.controllers;
 
 import static uk.gov.justice.laa.amend.claim.utils.CurrencyUtils.setScale;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -85,7 +86,7 @@ public class ChangeAssessedTotalsController {
     totalInclVatField.setAssessed(totalInclVat);
 
     // Save updated Claim back to session
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
   }

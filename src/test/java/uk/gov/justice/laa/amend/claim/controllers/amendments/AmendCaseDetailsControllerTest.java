@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -60,7 +61,7 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
     MockClaimsFunctions.updateStatus(claim, claim.getAssessmentOutcome());
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
   }
 
   @Test
@@ -69,7 +70,7 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
     claim.setFeeCode(FEE_CODE);
     claim.setMatterTypeCode(MATTER_TYPE_CODE);
     claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
 
     var caseDetailsRows = Map.of("FEE_CODE", FEE_CODE);
     var caseDetailsForm = new AmendmentForm();

@@ -2,6 +2,7 @@ package uk.gov.justice.laa.amend.claim.controllers;
 
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSESSMENT_ID;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.removeAllForClaim;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -60,7 +61,7 @@ public class ClaimReviewController {
       try {
         CreateAssessment201Response result =
             assessmentService.submitAssessment(claim, userId.toString());
-        session.removeAttribute(claimId.toString());
+        removeAllForClaim(session, claimId);
         UUID assessmentId = result.getId();
         session.setAttribute(ASSESSMENT_ID, assessmentId);
         return String.format(

@@ -14,7 +14,7 @@ INSERT INTO claims.claim (
   ?::uuid,
   ?,
   '0U733A/2018/02',
-  1,
+  ?::integer,
   'EF/4560/2018/4364684',
   ?,
   '2020-08-01',

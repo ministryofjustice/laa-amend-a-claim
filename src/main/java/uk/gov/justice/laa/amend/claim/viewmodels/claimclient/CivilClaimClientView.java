@@ -29,10 +29,6 @@ public record CivilClaimClientView(
     this(createRows(claim), new LinkedHashMap<>());
   }
 
-  public Class<?> claimDetailsType() {
-    return CivilClaimDetails.class;
-  }
-
   private static LinkedHashMap<ClaimViewField<CivilClaimDetails>, Object> createRows(
       CivilClaimDetails claim) {
     var fields =

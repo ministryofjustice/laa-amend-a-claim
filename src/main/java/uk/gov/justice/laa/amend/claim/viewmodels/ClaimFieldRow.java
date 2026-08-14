@@ -120,16 +120,8 @@ public record ClaimFieldRow(
     return createRow(claimField, claimField.getSubmitted(), claimField.getCalculated());
   }
 
-  public String getLabel() {
-    return String.format("claimSummary.rows.%s", key);
-  }
-
   public String getId() {
     return FormUtils.toFieldId(key);
-  }
-
-  public String getErrorKey() {
-    return String.format("claimSummary.rows.%s.error", key);
   }
 
   public String getChangeUrl(String submissionId, String claimId) {

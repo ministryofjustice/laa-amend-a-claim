@@ -1,6 +1,8 @@
 package uk.gov.justice.laa.amend.claim.controllers.claimdetails;
 
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.getValidAssessableClaim;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveAmendedFields;
+import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VALID;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VOID;
 
@@ -20,22 +22,27 @@ import uk.gov.justice.laa.amend.claim.annotations.HasRoleEscapeCaseCaseworker;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
+import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimoverview.ClaimOverviewViewFactory;
 
 @Controller
 @Slf4j
 public class ClaimSummaryController extends ClaimDetailsBaseController {
 
   private final ClaimService claimService;
+  private final ClaimHistoryService claimHistoryService;
 
   public ClaimSummaryController(
       AssessmentService assessmentService,
       UserRetrievalService userRetrievalService,
       ClaimService claimService,
+      ClaimHistoryService claimHistoryService,
       FeatureFlagsConfig featureFlagsConfig) {
     super(assessmentService, userRetrievalService, featureFlagsConfig);
     this.claimService = claimService;
+    this.claimHistoryService = claimHistoryService;
   }
 
   @GetMapping("/submissions/{submissionId}/claims/{claimId}")
@@ -53,14 +60,16 @@ public class ClaimSummaryController extends ClaimDetailsBaseController {
           claim.getStatus());
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
-
     var user = setLatestAssessment(claim);
+    var amendedFields = claimHistoryService.getAmendedFields(claim);
 
-    session.setAttribute(claimId.toString(), claim);
+    saveClaim(session, claimId, claim);
+    saveAmendedFields(session, claimId, amendedFields);
 
     setCommonModelAttributes(model, session, request, claim, user);
 
-    model.addAttribute("claim", claim.toViewModel());
+    model.addAttribute("claim", ClaimOverviewViewFactory.create(claim));
+    model.addAttribute("amendedFields", amendedFields);
 
     return "claimdetails/claim-summary";
   }
