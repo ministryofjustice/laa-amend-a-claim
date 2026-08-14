@@ -19,7 +19,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsView
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField;
 
 /**
- * Parses {@code /validationa/amendments-claim-field-rules.json} once at class-init into the {@code
+ * Parses {@code /validation/amendments-claim-field-rules.json} once at class-init into the {@code
  * Map<ClaimViewField<?>, List<FieldRuleSpec>>}.
  */
 public final class ClaimFieldRuleJsonLoader {

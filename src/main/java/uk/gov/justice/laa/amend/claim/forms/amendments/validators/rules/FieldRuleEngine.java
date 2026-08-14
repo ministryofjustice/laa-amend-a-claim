@@ -11,8 +11,7 @@ public class FieldRuleEngine {
 
   public Optional<FieldRuleSpec> firstFailingRule(List<FieldRuleSpec> rules, String value) {
     return rules.stream()
-        .sorted(Comparator.comparing(FieldRuleSpec::category))
         .filter(rule -> rule.isInvalid().test(value))
-        .findFirst();
+        .min(Comparator.comparing(FieldRuleSpec::category));
   }
 }
