@@ -1,10 +1,9 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcase;
 
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_CONCLUDED_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.FEE_CODE;
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.UNIQUE_FILE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.asCrimeField;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.CASE_CONCLUDED_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.DSCC_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.IS_DUTY_SOLICITOR;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.IS_YOUTH_COURT;
@@ -19,6 +18,7 @@ import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDeta
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.STAGE_REACHED;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.STANDARD_FEE_CATEGORY;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.SUSPECTS_DEFENDANTS_COUNT;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER;
 
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
@@ -47,9 +47,9 @@ public record CrimeClaimCaseView(
     Stream<ClaimViewField<CrimeClaimDetails>> fields =
         Stream.of(
             MATTER_TYPE_CODE,
-            asCrimeField(UNIQUE_FILE_NUMBER),
+            UNIQUE_FILE_NUMBER,
             REPRESENTATION_ORDER_DATE,
-            asCrimeField(CASE_CONCLUDED_DATE),
+            CASE_CONCLUDED_DATE,
             STANDARD_FEE_CATEGORY,
             OUTCOME_FOR_CLIENT,
             SUSPECTS_DEFENDANTS_COUNT,

@@ -25,10 +25,15 @@ import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.exceptions.FeeCodeNotFoundException;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.GenericAmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.service.AvailableFeeCodesService;
+import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldOptions;
 
 @Controller
@@ -63,6 +68,8 @@ public class AmendCaseTypeController extends AbstractAmendController {
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
+    requireEditable(ClaimDetailsViewField.FEE_CODE, claim);
+
     var availableFeeCodes = availableFeeCodesService.getAvailableFeeCodes(claim.getAreaOfLaw());
     if (!availableFeeCodes.containsKey(claim.getFeeCode())) {
       throw new FeeCodeNotFoundException(claim.getFeeCode());
@@ -85,10 +92,12 @@ public class AmendCaseTypeController extends AbstractAmendController {
       RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
+    requireEditable(ClaimDetailsViewField.FEE_CODE, claim);
+
     var amendmentForms = getAmendmentForms(session, claimId);
 
-    amendmentForms.getCaseTypeForm().setCurrent(caseTypeForm);
-    saveAmendmentForms(session, claimId, amendmentForms);
+    saveCaseTypeForm(session, claimId, amendmentForms, caseTypeForm, claim);
 
     if (bindingResult.hasErrors()) {
       return redirectWithErrors(
@@ -98,7 +107,6 @@ public class AmendCaseTypeController extends AbstractAmendController {
           "/submissions/%s/claims/%s/amendments/amend-fee-code".formatted(submissionId, claimId));
     }
 
-    var claim = getValidClaim(session, submissionId, claimId);
     if (claim.getAreaOfLaw() == AreaOfLaw.CRIME_LOWER) {
       return "redirect:/submissions/%s/claims/%s/amendments/amend-stage-reached"
           .formatted(submissionId, claimId);
@@ -119,6 +127,8 @@ public class AmendCaseTypeController extends AbstractAmendController {
       return "redirect:/submissions/%s/claims/%s/amendments/amend-matter-type"
           .formatted(submissionId, claimId);
     }
+    requireEditable(CrimeClaimDetailsViewField.STAGE_REACHED, claim);
+
     var amendmentForms = getAmendmentForms(session, claimId);
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("stageReachedOptions", FieldOptions.CRIME_STAGE_REACHED);
@@ -139,11 +149,11 @@ public class AmendCaseTypeController extends AbstractAmendController {
       return "redirect:/submissions/%s/claims/%s/amendments/amend-matter-type"
           .formatted(submissionId, claimId);
     }
+    requireEditable(CrimeClaimDetailsViewField.STAGE_REACHED, claim);
 
     var amendmentForms = getAmendmentForms(session, claimId);
 
-    amendmentForms.getCaseTypeForm().setCurrent(caseTypeForm);
-    saveAmendmentForms(session, claimId, amendmentForms);
+    saveCaseTypeForm(session, claimId, amendmentForms, caseTypeForm, claim);
 
     if (bindingResult.hasErrors()) {
       return redirectWithErrors(
@@ -163,7 +173,7 @@ public class AmendCaseTypeController extends AbstractAmendController {
       Model model,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    var claim = getValidClaim(session, submissionId, claimId);
+    getValidClaim(session, submissionId, claimId);
 
     var amendmentForms = getAmendmentForms(session, claimId);
 
@@ -181,10 +191,10 @@ public class AmendCaseTypeController extends AbstractAmendController {
       RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
 
-    amendmentForms.getCaseTypeForm().setCurrent(caseTypeForm);
-    saveAmendmentForms(session, claimId, amendmentForms);
+    saveCaseTypeForm(session, claimId, amendmentForms, caseTypeForm, claim);
 
     if (bindingResult.hasErrors()) {
       return redirectWithErrors(
@@ -196,5 +206,19 @@ public class AmendCaseTypeController extends AbstractAmendController {
     }
 
     return "redirect:/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
+  }
+
+  private static void saveCaseTypeForm(
+      HttpSession session,
+      UUID claimId,
+      AmendmentForms amendmentForms,
+      AmendmentForm caseTypeForm,
+      ClaimDetails claim) {
+    var caseType = amendmentForms.getCaseTypeForm();
+    var lockedFields =
+        lockedFields(ClaimCaseViewFactory.create(claim).caseTypeRows().keySet(), claim);
+
+    caseType.setCurrent(retainLockedInputs(caseTypeForm, caseType.getOriginal(), lockedFields));
+    saveAmendmentForms(session, claimId, amendmentForms);
   }
 }

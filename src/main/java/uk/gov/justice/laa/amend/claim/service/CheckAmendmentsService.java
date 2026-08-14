@@ -14,6 +14,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.OriginalAndCurrent;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
+import uk.gov.justice.laa.amend.claim.viewmodels.AmendmentsHeaderView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
 @Service
@@ -37,16 +38,16 @@ public class CheckAmendmentsService {
             .amendmentRequestedBy("PROVIDER")
             .version(claim.getVersion());
 
-    applyAmendments(patchBuilder, amendmentForms.getClient1Form(), claim.getClass());
+    applyAmendments(patchBuilder, amendmentForms.getClient1Form(), claim);
     if (amendmentForms.getClient2Form() != null) {
-      applyAmendments(patchBuilder, amendmentForms.getClient2Form(), claim.getClass());
+      applyAmendments(patchBuilder, amendmentForms.getClient2Form(), claim);
     }
-    applyAmendments(patchBuilder, amendmentForms.getCaseTypeForm(), claim.getClass());
+    applyAmendments(patchBuilder, amendmentForms.getCaseTypeForm(), claim);
     if (claim instanceof CivilClaimDetails || claim instanceof MediationClaimDetails) {
       applyLegalHelpMatterTypeAmendments(patchBuilder, amendmentForms.getCaseTypeForm());
     }
-    applyAmendments(patchBuilder, amendmentForms.getCaseDetailsForm(), claim.getClass());
-    applyAmendments(patchBuilder, amendmentForms.getCostsForm(), claim.getClass());
+    applyAmendments(patchBuilder, amendmentForms.getCaseDetailsForm(), claim);
+    applyAmendments(patchBuilder, amendmentForms.getCostsForm(), claim);
 
     try {
       claimsApiClient.updateClaim(submissionId, claimId, patchBuilder.build()).block();
@@ -67,16 +68,16 @@ public class CheckAmendmentsService {
   }
 
   private void applyAmendments(
-      ClaimPatch.Builder builder,
-      OriginalAndCurrent forms,
-      Class<? extends ClaimDetails> claimDetailsType) {
+      ClaimPatch.Builder builder, OriginalAndCurrent forms, ClaimDetails claim) {
 
     var original = forms.getOriginal();
     var current = forms.getCurrent();
+    var claimIsAssessed = AmendmentsHeaderView.isAssessed(claim);
 
-    for (var fieldValue : current.getFieldValues(claimDetailsType).entrySet()) {
+    for (var fieldValue : current.getFieldValues(claim.getClass()).entrySet()) {
       var field = fieldValue.getKey();
-      if (field.isEditable() && current.isAmendment(field.name(), original, field.getFieldType())) {
+      if (field.isEditable(claimIsAssessed)
+          && current.isAmendment(field.name(), original, field.getFieldType())) {
         field.applyPatch(builder, fieldValue.getValue());
       }
     }

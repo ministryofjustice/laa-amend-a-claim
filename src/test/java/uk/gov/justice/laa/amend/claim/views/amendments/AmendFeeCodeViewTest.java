@@ -2,6 +2,8 @@ package uk.gov.justice.laa.amend.claim.views.amendments;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
 import java.util.Map;
@@ -50,7 +52,7 @@ class AmendFeeCodeViewTest extends AmendmentsBaseTest {
   }
 
   @Test
-  void showsAssessedBanner() {
+  void isNotReachableWhenTheClaimHasBeenAssessed() throws Exception {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     this.claim = claim;
     claim.setSubmissionId(submissionId);
@@ -58,9 +60,10 @@ class AmendFeeCodeViewTest extends AmendmentsBaseTest {
     claim.setFeeCode(FEE_CODE);
     markAssessed(claim);
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCaseTypeForm(claim));
-    when(availableFeeCodesService.getAvailableFeeCodes(any())).thenReturn(Map.of(FEE_CODE, "ABC"));
 
-    assertShowsAssessedBanner(renderDocument());
+    session.setAttribute(claimId.toString(), claim);
+
+    mockMvc.perform(get(amendFeeCodeUrl).session(session)).andExpect(status().isNotFound());
   }
 
   private AmendmentForms createCaseTypeForm(ClaimDetails claim) {

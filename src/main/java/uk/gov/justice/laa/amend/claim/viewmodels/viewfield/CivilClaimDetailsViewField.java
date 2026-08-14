@@ -7,6 +7,7 @@ import java.util.function.Function;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.enums.Amendability;
 import uk.gov.justice.laa.amend.claim.models.enums.FieldType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
@@ -78,7 +79,13 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       FieldType.DATE,
       String.class,
       CivilClaimDetails::getCaseConcludedDate,
-      ClaimPatch.Builder::caseConcludedDate),
+      ClaimPatch.Builder::caseConcludedDate,
+      Amendability.UNTIL_ASSESSED),
+  UNIQUE_FILE_NUMBER(
+      FieldType.TEXT,
+      String.class,
+      CivilClaimDetails::getUniqueFileNumber,
+      ClaimPatch.Builder::uniqueFileNumber),
   CASE_STAGE(
       FieldType.ENUM,
       String.class,
@@ -298,6 +305,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   private final CivilClaimViewFieldGetter<?> getter;
   private final FieldType fieldType;
   private final ClaimViewFieldPatcher<?> patcher;
+  private final Amendability amendability;
   private final List<FieldOption> options;
 
   <T> CivilClaimDetailsViewField(
@@ -305,7 +313,16 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Class<T> patchType,
       Function<CivilClaimDetails, ?> getter,
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher) {
-    this(fieldType, patchType, getter, patcher, List.of());
+    this(fieldType, patchType, getter, patcher, List.of(), Amendability.ALWAYS);
+  }
+
+  <T> CivilClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<CivilClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      Amendability amendability) {
+    this(fieldType, patchType, getter, patcher, List.of(), amendability);
   }
 
   <T> CivilClaimDetailsViewField(
@@ -314,10 +331,21 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Function<CivilClaimDetails, ?> getter,
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       List<FieldOption> options) {
+    this(fieldType, patchType, getter, patcher, options, Amendability.ALWAYS);
+  }
+
+  <T> CivilClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<CivilClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      List<FieldOption> options,
+      Amendability amendability) {
     this.getter = new CivilClaimViewFieldGetter<>(getter);
     this.fieldType = fieldType;
     this.patcher = new ClaimViewFieldPatcher<>(patchType, patcher);
     this.options = List.copyOf(options);
+    this.amendability = amendability;
   }
 
   public record CivilClaimViewFieldGetter<T>(Function<CivilClaimDetails, T> getter)

@@ -26,6 +26,7 @@ import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.GenericAmendmentFieldValidator;
+import uk.gov.justice.laa.amend.claim.viewmodels.AmendmentsHeaderView;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 
 @Controller
@@ -62,6 +63,7 @@ public class AmendCaseDetailsController extends AbstractAmendController {
     model.addAttribute("caseView", caseView);
     model.addAttribute("caseDetailsForm", amendmentForms.getCaseDetailsForm().getCurrent());
     model.addAttribute("forms", amendmentForms);
+    model.addAttribute("claimIsAssessed", AmendmentsHeaderView.isAssessed(claim));
     return "amendments/amend-case-details";
   }
 
@@ -73,9 +75,15 @@ public class AmendCaseDetailsController extends AbstractAmendController {
       RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
+    var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
+    var caseDetails = amendmentForms.getCaseDetailsForm();
 
-    amendmentForms.getCaseDetailsForm().setCurrent(caseDetailsForm);
+    caseDetails.setCurrent(
+        retainLockedInputs(
+            caseDetailsForm,
+            caseDetails.getOriginal(),
+            lockedFields(ClaimCaseViewFactory.create(claim).caseDetailsRows().keySet(), claim)));
     saveAmendmentForms(session, claimId, amendmentForms);
 
     if (bindingResult.hasErrors()) {

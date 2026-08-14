@@ -81,6 +81,13 @@ public class AmendmentForm {
     return fieldInputs;
   }
 
+  public static List<String> inputKeys(ClaimViewField<?> field) {
+    if (field.getFieldType() != FieldType.DATE) {
+      return List.of(field.name());
+    }
+    return DATE_SUFFIXES.stream().map(suffix -> field.name() + suffix).toList();
+  }
+
   private static String dateFieldNameOrNull(String key) {
     for (var suffix : DATE_SUFFIXES) {
       if (key.endsWith(suffix)) {

@@ -666,6 +666,44 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     assertShowsAssessedBanner(renderDocument());
   }
 
+  @Test
+  void caseTypeChangeLinkSkipsFeeCodeForAnAssessedLegalHelpClaim() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    markAssessed(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCaseForms(claim));
+
+    var doc = renderDocument();
+
+    assertPageHasLink(doc, "amend-case-type-link", "Change", amendMatterTypeCodeUrl);
+    assertPageHasLink(doc, "amend-case-details-link", "Change", amendCaseDetailsUrl);
+  }
+
+  @Test
+  void caseTypeChangeLinkSkipsFeeCodeForAnAssessedCrimeClaim() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    markAssessed(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCaseForms(claim));
+
+    assertPageHasLink(renderDocument(), "amend-case-type-link", "Change", amendStageReachedUrl);
+  }
+
+  @Test
+  void caseTypeChangeLinkStartsAtFeeCodeWhenTheClaimIsNotAssessed() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCaseForms(claim));
+
+    assertPageHasLink(renderDocument(), "amend-case-type-link", "Change", amendFeeCodeUrl);
+  }
+
   private static @NonNull AmendmentForms createCaseForms(ClaimDetails claimDetails) {
     var view = ClaimCaseViewFactory.create(claimDetails);
     return AmendmentForms.builder()

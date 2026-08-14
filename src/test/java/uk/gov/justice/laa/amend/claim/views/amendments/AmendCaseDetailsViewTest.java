@@ -447,6 +447,95 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertShowsAssessedBanner(renderDocument());
   }
 
+  @Test
+  void assessedLegalHelpClaimLocksTheFinancialRowsOnly() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setScheduleReference(SCHEDULE_REFERENCE);
+    claim.setCaseStartDate(CASE_START_DATE);
+    claim.setCaseConcludedDate(CASE_CONCLUDED_DATE);
+    claim.setUniqueFileNumber(UFN);
+    markAssessed(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCaseForms(claim));
+
+    var caseDetails = getSummaryListInCard(renderDocument(), "Case details");
+
+    assertRowIsLocked(caseDetails.get(4), "Case start date", CASE_START_DATE.format(testFormatter));
+    assertRowIsLocked(
+        caseDetails.get(5),
+        "Case concluded date or case claimed date",
+        CASE_CONCLUDED_DATE.format(testFormatter));
+
+    assertRowIsEditable(caseDetails.get(1), "Schedule reference");
+    assertRowIsEditable(caseDetails.get(6), "Unique file number (UFN)");
+  }
+
+  @Test
+  void assessedCrimeClaimLocksTheFinancialRowsOnly() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setMatterTypeCode(MATTER_TYPE_CODE);
+    claim.setUniqueFileNumber(UFN);
+    claim.setRepresentationOrderDate(REPRESENTATION_ORDER_DATE);
+    claim.setCaseEndDate(CASE_CONCLUDED_DATE);
+    claim.setPoliceStationCourtPrisonId(POLICE_STATION_COURT_PRISON_ID);
+    claim.setSchemeId(SCHEME_ID);
+    markAssessed(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCaseForms(claim));
+
+    var caseDetails = getSummaryListInCard(renderDocument(), "Case details");
+
+    assertRowIsLocked(caseDetails.get(2), "Unique file number (UFN)", UFN);
+    assertRowIsLocked(
+        caseDetails.get(3),
+        "Representation order date",
+        REPRESENTATION_ORDER_DATE.format(testFormatter));
+    assertRowIsLocked(
+        caseDetails.get(9), "Police station/Court ID/Prison ID", POLICE_STATION_COURT_PRISON_ID);
+    assertRowIsLocked(caseDetails.get(10), "Scheme ID", SCHEME_ID);
+
+    assertRowIsLocked(
+        caseDetails.get(4), "Case concluded date", CASE_CONCLUDED_DATE.format(testFormatter));
+
+    assertRowIsEditable(caseDetails.get(1), "Matter type");
+    assertRowIsEditable(caseDetails.get(5), "Standard fee category");
+  }
+
+  @Test
+  void unassessedClaimLeavesEveryRowEditable() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    claim.setUniqueFileNumber(UFN);
+    claim.setSchemeId(SCHEME_ID);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCaseForms(claim));
+
+    var caseDetails = getSummaryListInCard(renderDocument(), "Case details");
+
+    assertRowIsEditable(caseDetails.get(2), "Unique file number (UFN)");
+    assertRowIsEditable(caseDetails.get(10), "Scheme ID");
+  }
+
+  private void assertRowIsLocked(List<Element> row, String label, String currentValue) {
+    assertCellContainsText(row.getFirst(), label);
+    assertCellContainsText(row.get(1), currentValue);
+    Assertions.assertTrue(
+        row.get(2).select("input, select, textarea").isEmpty(),
+        "Expected no amend input for locked row '%s'".formatted(label));
+  }
+
+  private void assertRowIsEditable(List<Element> row, String label) {
+    assertCellContainsText(row.getFirst(), label);
+    Assertions.assertFalse(
+        row.get(2).select("input, select, textarea").isEmpty(),
+        "Expected an amend input for editable row '%s'".formatted(label));
+  }
+
   private static @NonNull AmendmentForms createCaseForms(ClaimDetails claimDetails) {
     var view = ClaimCaseViewFactory.create(claimDetails);
     return AmendmentForms.builder()

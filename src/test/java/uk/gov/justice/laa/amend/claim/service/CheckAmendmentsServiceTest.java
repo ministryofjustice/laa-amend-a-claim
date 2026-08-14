@@ -22,6 +22,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.OriginalAndCurrent;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
 
@@ -592,6 +593,47 @@ class CheckAmendmentsServiceTest {
             .build();
 
     assertThat(patch).usingRecursiveComparison().isEqualTo(expected);
+  }
+
+  @Test
+  void doesNotPatchFieldsLockedByAssessmentButStillPatchesTheRest() {
+    var submissionId = UUID.randomUUID();
+    var claimId = UUID.randomUUID();
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setVersion(1L);
+    claim.setHasAssessment(true);
+    claim.setLastAssessment(
+        MockClaimsFunctions.createAssessment(AssessmentTypeEnum.ESCAPE_CASE_ASSESSMENT));
+
+    var amendmentForms =
+        amendmentForms(
+            forms(Map.of(), Map.of()),
+            forms(Map.of("FEE_CODE", "OLD_FEE"), Map.of("FEE_CODE", "NEW_FEE")),
+            forms(
+                Map.ofEntries(
+                    entry("UNIQUE_FILE_NUMBER", "OLD_UFN"),
+                    entry("SCHEME_ID", "OLD_SCHEME"),
+                    entry("POLICE_STATION_COURT_PRISON_ID", "OLD_STATION"),
+                    entry("MAAT_ID", "OLD_MAAT"),
+                    entry("STAGE_REACHED", "OLD_STAGE")),
+                Map.ofEntries(
+                    entry("UNIQUE_FILE_NUMBER", "NEW_UFN"),
+                    entry("SCHEME_ID", "NEW_SCHEME"),
+                    entry("POLICE_STATION_COURT_PRISON_ID", "NEW_STATION"),
+                    entry("MAAT_ID", "NEW_MAAT"),
+                    entry("STAGE_REACHED", "NEW_STAGE"))),
+            null,
+            forms(Map.of(), Map.of()));
+
+    var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
+
+    assertThat(patch.getFeeCode()).isNull();
+    assertThat(patch.getUniqueFileNumber()).isNull();
+    assertThat(patch.getSchemeId()).isNull();
+    assertThat(patch.getPoliceStationCourtPrisonId()).isNull();
+
+    assertThat(patch.getMaatId()).isEqualTo("NEW_MAAT");
+    assertThat(patch.getStageReachedCode()).isEqualTo("NEW_STAGE");
   }
 
   private ClaimPatch submitAndCapturePatch(

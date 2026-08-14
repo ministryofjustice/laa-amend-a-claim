@@ -54,6 +54,18 @@ class AmendStageReachedViewTest extends AmendmentsBaseTest {
     assertPageHasLabel(doc, "stage-reached-input", "Amended stage reached");
   }
 
+  @Test
+  void showsAssessedBanner() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+    markAssessed(claim);
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createCaseTypeForm(claim));
+
+    assertShowsAssessedBanner(renderDocument());
+  }
+
   private AmendmentForms createCaseTypeForm(ClaimDetails claim) {
     var view = ClaimCaseViewFactory.create(claim);
     return AmendmentForms.builder()

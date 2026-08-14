@@ -1,11 +1,11 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcase;
 
-import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_CONCLUDED_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_REFERENCE_NUMBER;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.CASE_START_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.FEE_CODE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.asMediationField;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField.toFieldMap;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CASE_CONCLUDED_DATE;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.CLAIM_ID;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.MATTER_TYPE_CODE_1;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField.MATTER_TYPE_CODE_2;
@@ -48,7 +48,7 @@ public record MediationClaimCaseView(
             asMediationField(CASE_START_DATE),
             CLAIM_ID,
             UNIQUE_CASE_ID,
-            asMediationField(CASE_CONCLUDED_DATE),
+            CASE_CONCLUDED_DATE,
             MEDIATION_SESSIONS_COUNT,
             MEDIATION_TIME_MINUTES,
             OUTCOME,
