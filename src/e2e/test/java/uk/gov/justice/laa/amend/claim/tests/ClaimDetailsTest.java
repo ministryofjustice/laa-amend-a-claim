@@ -80,18 +80,21 @@ public class ClaimDetailsTest extends BaseTest {
         ClaimInsert.builder()
             .id(CRIME_CLAIM_ID)
             .submissionId(CRIME_SUBMISSION_ID)
+            .lineNumber(1)
             .uniqueFileNumber(CRIME_UFN)
             .userId(USER_ID)
             .build(),
         ClaimInsert.builder()
             .id(CIVIL_CLAIM_ID)
             .submissionId(CIVIL_SUBMISSION_ID)
+            .lineNumber(2)
             .uniqueFileNumber(CIVIL_UFN)
             .userId(USER_ID)
             .build(),
         ClaimInsert.builder()
             .id(UNESCAPED_CLAIM_ID)
             .submissionId(CRIME_SUBMISSION_ID)
+            .lineNumber(3)
             .uniqueFileNumber(UNESCAPED_UFN)
             .userId(USER_ID)
             .build(),

@@ -79,7 +79,7 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
   }
 
   public void clickAddProfitCosts() {
-    clickAddLink("Net profit costs", "claim-field-profitCost", claimCostsTable);
+    clickAddLink("Net profit costs", "claim-field-PROFIT_COST", claimCostsTable);
   }
 
   public void clickChangeDisbursements() {
@@ -115,12 +115,12 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
   }
 
   public void clickAddAssessedTotalVat() {
-    Locator link = totalClaimValueTable.getByTestId("totals-assessedTotalVat");
+    Locator link = totalClaimValueTable.getByTestId("totals-ASSESSED_TOTAL_VAT");
     clickAddLink(link);
   }
 
   public void clickAddAllowedTotalVat() {
-    Locator link = totalAllowedValueTable.getByTestId("totals-allowedTotalVat");
+    Locator link = totalAllowedValueTable.getByTestId("totals-ALLOWED_TOTAL_VAT");
     clickAddLink(link);
   }
 
