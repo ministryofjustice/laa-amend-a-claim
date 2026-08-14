@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
+import java.util.Map;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -15,6 +16,8 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
 import uk.gov.justice.laa.amend.claim.forms.validators.RequestByFormValidator;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReference;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
 
 @WebMvcTest(AmendmentRequestByController.class)
 public class AmendmentsRequestByViewTest extends AmendmentsBaseTest {
@@ -28,9 +31,15 @@ public class AmendmentsRequestByViewTest extends AmendmentsBaseTest {
   }
 
   @Test
-  void testPage() {
+  void requestByDisplayContent() {
     when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
     when(requestByFormValidator.supports(any())).thenReturn(true);
+    when(systemReferenceService.getAmendmentRequestedByReferenceList())
+        .thenReturn(
+            createReferenceList(
+                Map.of(
+                    "code1", "RequestBy Label 1",
+                    "code2", "RequestBy Label 2")));
 
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     this.claim = claim;
@@ -45,8 +54,23 @@ public class AmendmentsRequestByViewTest extends AmendmentsBaseTest {
 
     assertPageHasHeading(doc, "Who requested the amendment?");
 
+    assertPageHasRadioButtons(doc, "RequestBy Label 1", "RequestBy Label 2");
+    assertNoRadioSelected(doc);
+
     assertPageHasPrimaryButton(doc, "Continue");
     assertPageHasSecondaryLink(doc, "Cancel");
+  }
+
+  private AmendmentRequestedByReferenceList createReferenceList(Map<String, String> codes) {
+    var referenceList = new AmendmentRequestedByReferenceList();
+    codes.forEach(
+        (code, displayLabel) -> {
+          var reference = new AmendmentRequestedByReference();
+          reference.setCode(code);
+          reference.setDisplayLabel(displayLabel);
+          referenceList.getRequestedBy().add(reference);
+        });
+    return referenceList;
   }
 
   private static AmendmentForms createRequestByForms() {

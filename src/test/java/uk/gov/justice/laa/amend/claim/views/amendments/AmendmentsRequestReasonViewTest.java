@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
+import java.util.Map;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -28,9 +29,14 @@ public class AmendmentsRequestReasonViewTest extends AmendmentsBaseTest {
   }
 
   @Test
-  void testPage() {
+  void requestReasonDisplayContent() {
     when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
     when(requestReasonFormValidator.supports(any())).thenReturn(true);
+    when(systemReferenceService.getAmendmentRequestReason(any()))
+        .thenReturn(
+            Map.of(
+                "code1", "Reason Label 1",
+                "code2", "Reason Label 2"));
 
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     this.claim = claim;
@@ -44,6 +50,9 @@ public class AmendmentsRequestReasonViewTest extends AmendmentsBaseTest {
     assertPageHasTitle(doc, "Amend claim details");
 
     assertPageHasHeading(doc, "Why was the amendment requested?");
+
+    assertPageHasRadioButtons(doc, "Reason Label 1", "Reason Label 2");
+    assertNoRadioSelected(doc);
 
     assertPageHasPrimaryButton(doc, "Continue");
     assertPageHasSecondaryLink(doc, "Cancel");
