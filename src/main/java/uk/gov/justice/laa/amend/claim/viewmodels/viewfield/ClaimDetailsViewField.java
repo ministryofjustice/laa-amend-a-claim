@@ -142,7 +142,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   private final List<FieldOption> options;
 
   <T> ClaimDetailsViewField(FieldType fieldType, Function<ClaimDetails, ?> getter) {
-    this(fieldType, Object.class, getter, (b, v) -> b, List.of(), false, "");
+    this(fieldType, Object.class, getter, (b, v) -> b, List.of(), Amendability.NEVER, "");
   }
 
   <T> ClaimDetailsViewField(
@@ -151,14 +151,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Function<ClaimDetails, ?> getter,
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       String claimsApiFieldName) {
-    this(
-        fieldType,
-        patchType,
-        getter,
-        patcher,
-        List.of(),
-        Amendability.ALWAYS,
-        claimsApiFieldName);
+    this(fieldType, patchType, getter, patcher, List.of(), Amendability.ALWAYS, claimsApiFieldName);
   }
 
   <T> ClaimDetailsViewField(
@@ -168,14 +161,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       List<FieldOption> options,
       String claimsApiFieldName) {
-    this(
-        fieldType,
-        patchType,
-        getter,
-        patcher,
-        options,
-        Amendability.ALWAYS,
-        claimsApiFieldName);
+    this(fieldType, patchType, getter, patcher, options, Amendability.ALWAYS, claimsApiFieldName);
   }
 
   <T> ClaimDetailsViewField(

@@ -384,14 +384,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Function<CivilClaimDetails, ?> getter,
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       String claimsApiFieldName) {
-    this(
-        fieldType,
-        patchType,
-        getter,
-        patcher,
-        List.of(),
-        Amendability.ALWAYS,
-        claimsApiFieldName);
+    this(fieldType, patchType, getter, patcher, List.of(), Amendability.ALWAYS, claimsApiFieldName);
   }
 
   <T> CivilClaimDetailsViewField(
@@ -411,14 +404,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       List<FieldOption> options,
       String claimsApiFieldName) {
-    this(
-        fieldType,
-        patchType,
-        getter,
-        patcher,
-        options,
-        Amendability.ALWAYS,
-        claimsApiFieldName);
+    this(fieldType, patchType, getter, patcher, options, Amendability.ALWAYS, claimsApiFieldName);
   }
 
   <T> CivilClaimDetailsViewField(

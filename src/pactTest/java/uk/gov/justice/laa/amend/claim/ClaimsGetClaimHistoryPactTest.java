@@ -50,26 +50,49 @@ public final class ClaimsGetClaimHistoryPactTest extends AbstractPactTest {
             LambdaDsl.newJsonBody(
                     body -> {
                       body.uuid("claim_id", CLAIM_ID);
-                      body.minArrayLike(
+                      body.arrayContaining(
                           "events",
-                          1,
-                          event -> {
-                            event.stringMatcher("event_type", "AMENDMENT|SUBMISSION", "AMENDMENT");
-                            event.datetime("event_timestamp", "yyyy-MM-dd'T'HH:mm:ssXXX");
-                            event.stringType("actor_id", "user-123");
-                            event.uuid("source_id");
-                            event.object(
-                                "metadata",
-                                metadata -> {
-                                  metadata.minArrayLike(
-                                      "changes",
-                                      1,
-                                      change -> {
-                                        change.stringType("field_identifier", "fee.schemeId");
-                                        change.nullValue("before");
-                                        change.stringType("after", "SCHEME-TEST");
-                                        change.stringMatcher(
-                                            "change_source", "REQUESTED|FSP", "FSP");
+                          events -> {
+                            events.object(
+                                amendmentEvent -> {
+                                  amendmentEvent.stringMatcher(
+                                      "event_type", "AMENDMENT", "AMENDMENT");
+                                  amendmentEvent.datetime(
+                                      "event_timestamp", "yyyy-MM-dd'T'HH:mm:ssXXX");
+                                  amendmentEvent.stringType("actor_id", "user-123");
+                                  amendmentEvent.uuid("source_id");
+                                  amendmentEvent.object(
+                                      "metadata",
+                                      metadata ->
+                                          metadata.arrayContaining(
+                                              "changes",
+                                              changes ->
+                                                  changes.object(
+                                                      change -> {
+                                                        change.stringType(
+                                                            "field_identifier", "fee.schemeId");
+                                                        change.nullValue("before");
+                                                        change.stringType("after", "SCHEME-TEST");
+                                                        change.stringMatcher(
+                                                            "change_source",
+                                                            "REQUESTED|FSP",
+                                                            "FSP");
+                                                      })));
+                                });
+                            events.object(
+                                submissionEvent -> {
+                                  submissionEvent.stringMatcher(
+                                      "event_type", "SUBMISSION", "SUBMISSION");
+                                  submissionEvent.datetime(
+                                      "event_timestamp", "yyyy-MM-dd'T'HH:mm:ssXXX");
+                                  submissionEvent.stringType("actor_id", "user-123");
+                                  submissionEvent.uuid("source_id");
+                                  submissionEvent.object(
+                                      "metadata",
+                                      metadata -> {
+                                        metadata.stringType("submission_period", "APR-2025");
+                                        metadata.stringType("office_account_number", "OFF_123");
+                                        metadata.stringType("area_of_law", "LEGAL HELP");
                                       });
                                 });
                           });
@@ -104,22 +127,45 @@ public final class ClaimsGetClaimHistoryPactTest extends AbstractPactTest {
     assertThat(result.getClaimId()).isEqualTo(CLAIM_ID);
     assertThat(result.getEvents()).isNotNull();
     assertThat(result.getEvents()).isNotEmpty();
-    assertThat(result.getEvents().getFirst().getEventType())
-        .isEqualTo(ClaimHistoryEventType.AMENDMENT);
-    assertThat(result.getEvents().getFirst().getEventTimestamp()).isNotNull();
-    assertThat(result.getEvents().getFirst().getActorId()).isNotBlank();
-    assertThat(result.getEvents().getFirst().getSourceId()).isNotNull();
-    assertThat(result.getEvents().getFirst().getMetadata()).containsKey("changes");
-    assertThat(result.getEvents().getFirst().getMetadata().get("changes")).isInstanceOf(List.class);
+    assertThat(result.getEvents())
+        .extracting(event -> event.getEventType().getValue())
+        .contains("AMENDMENT", "SUBMISSION");
+    assertThat(result.getEvents())
+        .allSatisfy(
+            event -> {
+              assertThat(event.getEventTimestamp()).isNotNull();
+              assertThat(event.getActorId()).isNotBlank();
+              assertThat(event.getSourceId()).isNotNull();
+              assertThat(event.getMetadata()).isNotNull();
+            });
+
+    var amendmentEvent =
+        result.getEvents().stream()
+            .filter(event -> event.getEventType() == ClaimHistoryEventType.AMENDMENT)
+            .findFirst()
+            .orElseThrow();
+    assertThat(amendmentEvent.getMetadata()).containsKey("changes");
+    assertThat(amendmentEvent.getMetadata().get("changes")).isInstanceOf(List.class);
 
     @SuppressWarnings("unchecked")
-    var changes =
-        (List<Map<String, Object>>) result.getEvents().getFirst().getMetadata().get("changes");
+    var changes = (List<Map<String, Object>>) amendmentEvent.getMetadata().get("changes");
     assertThat(changes).isNotEmpty();
-    assertThat(changes.getFirst())
-        .containsKeys("field_identifier", "before", "after", "change_source")
-        .containsEntry("before", null);
-    assertThat(changes.getFirst().get("change_source")).isIn("REQUESTED", "FSP");
+    assertThat(changes)
+        .anySatisfy(
+            change ->
+                assertThat(change)
+                    .containsKeys("field_identifier", "before", "after", "change_source")
+                    .containsEntry("before", null));
+    assertThat(changes)
+        .allSatisfy(change -> assertThat(change.get("change_source")).isIn("REQUESTED", "FSP"));
+
+    var submissionEvent =
+        result.getEvents().stream()
+            .filter(event -> event.getEventType() == ClaimHistoryEventType.SUBMISSION)
+            .findFirst()
+            .orElseThrow();
+    assertThat(submissionEvent.getMetadata())
+        .containsKeys("submission_period", "office_account_number", "area_of_law");
   }
 
   @Test
