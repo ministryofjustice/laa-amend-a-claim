@@ -28,6 +28,10 @@ public interface ClaimViewField<T extends Claim> {
 
   String getClaimsApiFieldName();
 
+  default String getFeeApiFieldName() {
+    return null;
+  }
+
   ClaimViewFieldPatcher<?> getPatcher();
 
   default String label(MessageSource messageSource) {

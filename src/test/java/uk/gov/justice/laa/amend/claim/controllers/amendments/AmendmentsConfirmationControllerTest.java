@@ -1,21 +1,33 @@
 package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
+import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
+import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 @WebMvcTest(AmendmentsConfirmationController.class)
 class AmendmentsConfirmationControllerTest extends BaseControllerTest {
+
+  @MockitoBean private ClaimService claimService;
+
+  @MockitoBean private ClaimHistoryService claimHistoryService;
 
   private UUID submissionId;
   private UUID claimId;
@@ -30,7 +42,12 @@ class AmendmentsConfirmationControllerTest extends BaseControllerTest {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
+    claim.setAmended(true);
     saveClaim(session, claimId, claim);
+
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getAmendmentConfirmation(claim))
+        .thenReturn(new ClaimHistoryService.AmendmentConfirmation(false, Set.of()));
   }
 
   @Test
@@ -53,6 +70,18 @@ class AmendmentsConfirmationControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(view().name("amendments/confirmation"))
         .andExpect(model().attribute("searchUrl", "/?officeCode=0P322F&page=1"));
+  }
+
+  @Test
+  void getsConfirmationPageWithUpdatedClaimTotalWhenCalculatedCostsChanged() throws Exception {
+    when(claimHistoryService.getAmendmentConfirmation(any()))
+        .thenReturn(new ClaimHistoryService.AmendmentConfirmation(true, new HashSet<>()));
+
+    mockMvc
+        .perform(get(buildPath()).session(session))
+        .andExpect(status().isOk())
+        .andExpect(view().name("amendments/confirmation"))
+        .andExpect(model().attribute("updatedClaimTotal", BigDecimal.valueOf(200)));
   }
 
   private String buildPath() {

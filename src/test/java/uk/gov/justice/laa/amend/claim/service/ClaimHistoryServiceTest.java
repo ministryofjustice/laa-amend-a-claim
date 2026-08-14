@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -194,6 +195,56 @@ public class ClaimHistoryServiceTest {
 
     assertThat(claimHistoryService.getAmendedFields(claim))
         .containsExactlyInAnyOrder("claim.feeCode", "claimSummaryFee.netProfitCostsAmount");
+  }
+
+  @Test
+  void getAmendmentConfirmationReturnsChangedCalculatedCostFieldIdentifiers() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+
+    var changes =
+        List.of(
+            change("REQUESTED", "claimSummaryFee.netProfitCostsAmount"),
+            change("FSP", "fee.netProfitCostsAmount"),
+            change("FSP", "fee.disbursementAmount"));
+
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .metadata(Map.of("price_changed", true, "changes", changes))));
+
+    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
+
+    assertThat(claimHistoryService.getAmendmentConfirmation(claim))
+        .isEqualTo(
+            new ClaimHistoryService.AmendmentConfirmation(
+                true,
+                Set.of(
+                    "claimSummaryFee.netProfitCostsAmount",
+                    "fee.netProfitCostsAmount",
+                    "fee.disbursementAmount")));
+  }
+
+  @Test
+  void getAmendmentConfirmationReturnsEmptyFieldSetWhenPriceHasNotChanged() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .metadata(Map.of("price_changed", false, "changes", List.of()))));
+
+    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
+
+    assertThat(claimHistoryService.getAmendmentConfirmation(claim))
+        .isEqualTo(new ClaimHistoryService.AmendmentConfirmation(false, Set.of()));
   }
 
   private static LinkedHashMap<String, String> change(String source, String fieldIdentifier) {
