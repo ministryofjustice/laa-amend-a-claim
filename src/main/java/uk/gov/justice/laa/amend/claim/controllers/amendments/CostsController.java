@@ -83,9 +83,10 @@ public class CostsController {
   }
 
   private static void retainEditableInputs(AmendmentForm costsForm, ClaimDetails claim) {
+    var claimIsAssessed = AmendmentsHeaderView.isAssessed(claim);
     var editableFieldNames =
         ClaimCostsViewFactory.create(claim).costFields().keySet().stream()
-            .filter(field -> field.isEditable())
+            .filter(field -> field.isEditable(claimIsAssessed))
             .map(field -> field.name())
             .toList();
     costsForm.getInputs().keySet().retainAll(editableFieldNames);

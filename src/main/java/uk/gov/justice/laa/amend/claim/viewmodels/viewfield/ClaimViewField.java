@@ -42,10 +42,6 @@ public interface ClaimViewField<T extends Claim> {
     return Amendability.ALWAYS;
   }
 
-  default boolean isEditable() {
-    return isEditable(false);
-  }
-
   default boolean isEditable(boolean claimIsAssessed) {
     return switch (getAmendability()) {
       case ALWAYS -> true;

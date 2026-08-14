@@ -76,16 +76,8 @@ class AssessedFieldLockTest {
   @Test
   void stillHonoursFieldsThatAreNeverEditable() {
     assertThat(ClaimDetailsViewField.FIXED_FEE.getAmendability()).isEqualTo(Amendability.NEVER);
-    assertThat(ClaimDetailsViewField.FIXED_FEE.isEditable()).isFalse();
     assertThat(ClaimDetailsViewField.FIXED_FEE.isEditable(false)).isFalse();
     assertThat(ClaimDetailsViewField.FIXED_FEE.isEditable(true)).isFalse();
-  }
-
-  @Test
-  void treatsNoArgIsEditableAsTheUnassessedCase() {
-    assertThat(ClaimDetailsViewField.FEE_CODE.isEditable()).isTrue();
-    assertThat(CrimeClaimDetailsViewField.SCHEME_ID.isEditable()).isTrue();
-    assertThat(CrimeClaimDetailsViewField.MAAT_ID.isEditable()).isTrue();
   }
 
   private static Stream<ClaimViewField<?>> lockedIn(ClaimViewField<?>[] fields) {
