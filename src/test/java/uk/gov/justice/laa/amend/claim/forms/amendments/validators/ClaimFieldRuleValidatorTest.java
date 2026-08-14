@@ -98,8 +98,8 @@ class ClaimFieldRuleValidatorTest {
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.SCHEDULE_REFERENCE)).isFalse();
     assertThat(validator.appliesTo(ClaimDetailsViewField.CASE_REFERENCE_NUMBER)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.CASE_START_DATE)).isFalse();
-    assertThat(validator.appliesTo(ClaimDetailsViewField.UNIQUE_FILE_NUMBER)).isTrue();
-    assertThat(validator.appliesTo(ClaimDetailsViewField.CASE_CONCLUDED_DATE)).isFalse();
+    assertThat(validator.appliesTo(CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER)).isTrue();
+    assertThat(validator.appliesTo(CrimeClaimDetailsViewField.CASE_CONCLUDED_DATE)).isFalse();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.CASE_ID)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE))
         .isFalse();
@@ -997,7 +997,7 @@ class ClaimFieldRuleValidatorTest {
   @ParameterizedTest
   @ValueSource(strings = {"120223/001", "010199/999"})
   void acceptsValidUniqueFileNumberValues(String value) {
-    var errors = validate(ClaimDetailsViewField.UNIQUE_FILE_NUMBER, value);
+    var errors = validate(CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER, value);
 
     assertThat(errors.hasErrors()).isFalse();
   }
@@ -1005,7 +1005,7 @@ class ClaimFieldRuleValidatorTest {
   @ParameterizedTest
   @ValueSource(strings = {"12022/001", "120223/01", "120223-001", "ABCDEF/001"})
   void rejectsInvalidUniqueFileNumberValuesNamingTheField(String value) {
-    var errors = validate(ClaimDetailsViewField.UNIQUE_FILE_NUMBER, value);
+    var errors = validate(CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER, value);
 
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[UNIQUE_FILE_NUMBER]");

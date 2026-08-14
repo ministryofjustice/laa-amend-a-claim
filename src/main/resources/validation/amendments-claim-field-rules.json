@@ -497,7 +497,8 @@
     },
     "MediationClaimDetailsViewField.OUTREACH_LOCATION": { "ruleGroup": "outreachLocation" },
     "ClaimDetailsViewField.CASE_REFERENCE_NUMBER": { "ruleGroup": "caseReferenceNumber" },
-    "ClaimDetailsViewField.UNIQUE_FILE_NUMBER": { "ruleGroup": "uniqueFileNumber" },
+    "CivilClaimDetailsViewField.UNIQUE_FILE_NUMBER": { "ruleGroup": "uniqueFileNumber" },
+    "CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER": { "ruleGroup": "uniqueFileNumber" },
     "CivilClaimDetailsViewField.CASE_ID": { "ruleGroup": "claimId" },
     "CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL": {
       "ruleGroup": "scheduleReferenceCivil"
