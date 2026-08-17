@@ -28,6 +28,8 @@ import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendFeeCodePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendMatterTypePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendStageReachedPage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendmentRequestByPage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendmentRequestReasonPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.CheckPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ConfirmationPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCasePage;
@@ -238,6 +240,14 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var details = new ClaimDetailsPage(page);
     details.clickAmendClaim();
 
+    var amendmentRequestBy = new AmendmentRequestByPage(page);
+    amendmentRequestBy.getProviderRadio().click();
+    amendmentRequestBy.getContinueButton().click();
+
+    var amendmentRequestReason = new AmendmentRequestReasonPage(page);
+    amendmentRequestReason.getProviderErrorRadio().click();
+    amendmentRequestReason.getContinueButton().click();
+
     var viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable");
     viewAmendClient.getChangeClientOneLink().click();
@@ -323,6 +333,14 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     // View Client → Change Client Details → View Client
     var details = new ClaimDetailsPage(page);
     details.clickAmendClaim();
+
+    var amendmentRequestBy = new AmendmentRequestByPage(page);
+    amendmentRequestBy.getProviderRadio().click();
+    amendmentRequestBy.getContinueButton().click();
+
+    var amendmentRequestReason = new AmendmentRequestReasonPage(page);
+    amendmentRequestReason.getProviderErrorRadio().click();
+    amendmentRequestReason.getContinueButton().click();
 
     var viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client 1 details", "Last name", "Elonga");
@@ -423,6 +441,13 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     details.clickAmendClaim();
 
     // View Costs → Change Client Details → View Client
+    var amendmentRequestBy = new AmendmentRequestByPage(page);
+    amendmentRequestBy.getProviderRadio().click();
+    amendmentRequestBy.getContinueButton().click();
+
+    var amendmentRequestReason = new AmendmentRequestReasonPage(page);
+    amendmentRequestReason.getProviderErrorRadio().click();
+    amendmentRequestReason.getContinueButton().click();
 
     var viewAmendClient = new ViewClientPage(page);
     viewAmendClient.clickCostsTab();
