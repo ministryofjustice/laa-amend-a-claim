@@ -1,11 +1,11 @@
 package uk.gov.justice.laa.amend.claim.pages.amendments;
 
+import static com.microsoft.playwright.options.AriaRole.BUTTON;
+
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.pages.LaaPage;
-
-import static com.microsoft.playwright.options.AriaRole.BUTTON;
 
 @Getter
 public class AmendmentRequestReasonPage extends LaaPage {
