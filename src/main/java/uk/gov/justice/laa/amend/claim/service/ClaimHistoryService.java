@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistory;
@@ -38,6 +39,7 @@ public class ClaimHistoryService {
 
   private final AssessmentService assessmentService;
   private final ClaimsApiClient claimsApiClient;
+  private final FeatureFlagsConfig featureFlagsConfig;
   private final ProviderService providerService;
   private final UserRetrievalService userRetrievalService;
 
@@ -63,6 +65,10 @@ public class ClaimHistoryService {
   }
 
   public Set<String> getAmendedFields(ClaimDetails claim) {
+    if (!TRUE.equals(featureFlagsConfig.getIsClaimAmendmentEnabled())) {
+      return Set.of();
+    }
+
     // TODO: Reinstate this once isAmended is wired up in claims API (DSTEW-2140)
     //    if (!claim.isAmended()) {
     //      return Set.of();
