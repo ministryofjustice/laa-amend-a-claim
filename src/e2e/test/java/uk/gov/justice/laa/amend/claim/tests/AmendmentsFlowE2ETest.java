@@ -205,7 +205,6 @@ public class AmendmentsFlowE2ETest extends BaseTest {
         ClaimCaseInsert.builder()
             .id(UUID.randomUUID().toString())
             .claimId(CRIME_CLAIM_ID)
-<<<<<<< HEAD
             .stageReachedCode(CRIME_STAGE_REACHED)
             .userId(USER_ID)
             .build(),
@@ -463,7 +462,6 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var viewAmendCase = new ViewCasePage(page);
     viewAmendClient.clickCaseTab();
     assertSummaryListRow(page, "Case type", "Fee code", "INVC");
-<<<<<<< HEAD
     assertSummaryListRow(page, "Case type", "Stage reached", CRIME_STAGE_REACHED_LABEL);
 
     viewAmendCase.clickChangeCaseTypeLink();
@@ -475,7 +473,6 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendStageReached.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
-<<<<<<< HEAD
     assertSummaryListRow(
         page,
         "Case type",
@@ -497,7 +494,6 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
     assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£150.00");
-<<<<<<< HEAD
     assertSummaryListRow(
         page,
         "Case type",
