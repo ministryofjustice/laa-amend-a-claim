@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
+import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistoryEvent;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
@@ -62,6 +63,8 @@ public class ClaimHistoryServiceTest {
 
   @Mock private ClaimsApiClient claimsApiClient;
 
+  @Mock private FeatureFlagsConfig featureFlagsConfig;
+
   @Mock private ProviderService providerService;
 
   @Mock private UserRetrievalService userRetrievalService;
@@ -72,7 +75,11 @@ public class ClaimHistoryServiceTest {
   void setUp() {
     claimHistoryService =
         new ClaimHistoryService(
-            assessmentService, claimsApiClient, providerService, userRetrievalService);
+            assessmentService,
+            claimsApiClient,
+            featureFlagsConfig,
+            providerService,
+            userRetrievalService);
   }
 
   @Test
@@ -150,6 +157,8 @@ public class ClaimHistoryServiceTest {
 
   @Test
   void getAmendedFieldsReturnsEmptySetWhenHistoryIsNull() {
+    when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
+
     var claim = MockClaimsFunctions.createMockCivilClaim();
 
     when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.empty());
@@ -159,6 +168,8 @@ public class ClaimHistoryServiceTest {
 
   @Test
   void getAmendedFieldsReturnsEmptySetWhenHistoryEventsAreNull() {
+    when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
+
     var claim = MockClaimsFunctions.createMockCivilClaim();
 
     when(claimsApiClient.getClaimHistory(claim.getClaimId()))
@@ -169,6 +180,8 @@ public class ClaimHistoryServiceTest {
 
   @Test
   void getAmendedFieldsReturnsRequestedAmendmentFieldIdentifiers() {
+    when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
+
     var claim = MockClaimsFunctions.createMockCivilClaim();
 
     var requestedChanges =
