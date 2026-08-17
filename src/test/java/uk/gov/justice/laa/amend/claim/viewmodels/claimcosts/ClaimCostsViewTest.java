@@ -1,8 +1,11 @@
 package uk.gov.justice.laa.amend.claim.viewmodels.claimcosts;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.COUNSELS_COST;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField.SUBSTANTIVE_HEARING;
 import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.PROFIT_COST;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField.VAT;
+import static uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField.TRAVEL_COSTS;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
@@ -33,5 +36,13 @@ class ClaimCostsViewTest {
     assertThat(form.getInputs())
         .containsEntry("SUBSTANTIVE_HEARING", null)
         .containsEntry("PROFIT_COST", "100.00");
+  }
+
+  @Test
+  void costFieldsExposeFeeApiFieldNamesForCalculatedCostRows() {
+    assertThat(PROFIT_COST.getFeeApiFieldName()).isEqualTo("fee.netProfitCostsAmount");
+    assertThat(VAT.getFeeApiFieldName()).isEqualTo("fee.vatIndicator");
+    assertThat(COUNSELS_COST.getFeeApiFieldName()).isEqualTo("fee.netCostOfCounselAmount");
+    assertThat(TRAVEL_COSTS.getFeeApiFieldName()).isEqualTo("fee.netTravelCostsAmount");
   }
 }

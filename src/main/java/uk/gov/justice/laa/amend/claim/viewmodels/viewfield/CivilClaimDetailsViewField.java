@@ -309,55 +309,64 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       BigDecimal.class,
       CivilClaimDetails::getCounselsCost,
       ClaimPatch.Builder::netCounselCostsAmount,
-      "claimSummaryFee.netCounselCostsAmount"),
+      "claimSummaryFee.netCounselCostsAmount",
+      "fee.netCostOfCounselAmount"),
   TRAVEL_AND_WAITING_COSTS(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       CivilClaimDetails::getTravelAndWaitingCosts,
       ClaimPatch.Builder::travelWaitingCostsAmount,
-      "claimSummaryFee.travelWaitingCostsAmount"),
+      "claimSummaryFee.travelWaitingCostsAmount",
+      "fee.travelAndWaitingCostsAmount"),
   DETENTION_TRAVEL(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       CivilClaimDetails::getDetentionTravelWaitingCosts,
       ClaimPatch.Builder::detentionTravelWaitingCostsAmount,
-      "claimSummaryFee.detentionTravelWaitingCostsAmount"),
+      "claimSummaryFee.detentionTravelWaitingCostsAmount",
+      "fee.detentionTravelAndWaitingCostsAmount"),
   JR_FORM_FILLING(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       CivilClaimDetails::getJrFormFillingCost,
       ClaimPatch.Builder::jrFormFillingAmount,
-      "claimSummaryFee.jrFormFillingAmount"),
+      "claimSummaryFee.jrFormFillingAmount",
+      "fee.jrFormFillingAmount"),
   ADJOURNED_HEARING_FEE(
       FieldType.NUMBER,
       Integer.class,
       CivilClaimDetails::getAdjournedHearing,
       ClaimPatch.Builder::adjournedHearingFeeAmount,
-      "claimSummaryFee.adjournedHearingFeeAmount"),
+      "claimSummaryFee.adjournedHearingFeeAmount",
+      "fee.boltOnAdjournedHearingFee"),
   CMRH_TELEPHONE(
       FieldType.NUMBER,
       Integer.class,
       CivilClaimDetails::getCmrhTelephone,
       ClaimPatch.Builder::cmrhTelephoneCount,
-      "claimSummaryFee.cmrhTelephoneCount"),
+      "claimSummaryFee.cmrhTelephoneCount",
+      "fee.boltOnCmrhTelephoneFee"),
   CMRH_ORAL(
       FieldType.NUMBER,
       Integer.class,
       CivilClaimDetails::getCmrhOral,
       ClaimPatch.Builder::cmrhOralCount,
-      "claimSummaryFee.cmrhOralCount"),
+      "claimSummaryFee.cmrhOralCount",
+      "fee.boltOnCmrhOralFee"),
   HOME_OFFICE(
       FieldType.NUMBER,
       Integer.class,
       CivilClaimDetails::getHoInterview,
       ClaimPatch.Builder::hoInterview,
-      "claimSummaryFee.hoInterview"),
+      "claimSummaryFee.hoInterview",
+      "fee.boltOnHomeOfficeInterviewFee"),
   SUBSTANTIVE_HEARING(
       FieldType.BOOLEAN,
       Boolean.class,
       CivilClaimDetails::getSubstantiveHearing,
       ClaimPatch.Builder::isSubstantiveHearing,
-      "claimSummaryFee.isSubstantiveHearing"),
+      "claimSummaryFee.isSubstantiveHearing",
+      "fee.boltOnSubstantiveHearingFee"),
   IS_LONDON_RATE(
       FieldType.BOOLEAN,
       Boolean.class,
@@ -373,6 +382,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
 
   private final CivilClaimViewFieldGetter<?> getter;
   private final String claimsApiFieldName;
+  private final String feeApiFieldName;
   private final FieldType fieldType;
   private final ClaimViewFieldPatcher<?> patcher;
   private final Amendability amendability;
@@ -384,7 +394,51 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Function<CivilClaimDetails, ?> getter,
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       String claimsApiFieldName) {
-    this(fieldType, patchType, getter, patcher, List.of(), Amendability.ALWAYS, claimsApiFieldName);
+    this(
+        fieldType,
+        patchType,
+        getter,
+        patcher,
+        List.of(),
+        Amendability.ALWAYS,
+        claimsApiFieldName,
+        null);
+  }
+
+  <T> CivilClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<CivilClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      List<FieldOption> options,
+      String claimsApiFieldName) {
+    this(
+        fieldType,
+        patchType,
+        getter,
+        patcher,
+        options,
+        Amendability.ALWAYS,
+        claimsApiFieldName,
+        null);
+  }
+
+  <T> CivilClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<CivilClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      String claimsApiFieldName,
+      String feeApiFieldName) {
+    this(
+        fieldType,
+        patchType,
+        getter,
+        patcher,
+        List.of(),
+        Amendability.ALWAYS,
+        claimsApiFieldName,
+        feeApiFieldName);
   }
 
   <T> CivilClaimDetailsViewField(
@@ -394,17 +448,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       Amendability amendability,
       String claimsApiFieldName) {
-    this(fieldType, patchType, getter, patcher, List.of(), amendability, claimsApiFieldName);
-  }
-
-  <T> CivilClaimDetailsViewField(
-      FieldType fieldType,
-      Class<T> patchType,
-      Function<CivilClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
-      List<FieldOption> options,
-      String claimsApiFieldName) {
-    this(fieldType, patchType, getter, patcher, options, Amendability.ALWAYS, claimsApiFieldName);
+    this(fieldType, patchType, getter, patcher, List.of(), amendability, claimsApiFieldName, null);
   }
 
   <T> CivilClaimDetailsViewField(
@@ -414,9 +458,11 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       List<FieldOption> options,
       Amendability amendability,
-      String claimsApiFieldName) {
+      String claimsApiFieldName,
+      String feeApiFieldName) {
     this.getter = new CivilClaimViewFieldGetter<>(getter);
     this.claimsApiFieldName = claimsApiFieldName;
+    this.feeApiFieldName = feeApiFieldName;
     this.fieldType = fieldType;
     this.patcher = new ClaimViewFieldPatcher<>(patchType, patcher);
     this.options = List.copyOf(options);

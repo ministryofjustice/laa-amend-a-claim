@@ -127,16 +127,19 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       BigDecimal.class,
       CrimeClaimDetails::getTravelCosts,
       ClaimPatch.Builder::travelWaitingCostsAmount,
-      "claimSummaryFee.travelWaitingCostsAmount"),
+      "claimSummaryFee.travelWaitingCostsAmount",
+      "fee.netTravelCostsAmount"),
   WAITING_COSTS(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       CrimeClaimDetails::getWaitingCosts,
       ClaimPatch.Builder::netWaitingCostsAmount,
-      "claimSummaryFee.netWaitingCostsAmount");
+      "claimSummaryFee.netWaitingCostsAmount",
+      "fee.netWaitingCostsAmount");
 
   private final CrimeClaimViewFieldGetter<?> getter;
   private final String claimsApiFieldName;
+  private final String feeApiFieldName;
   private final FieldType fieldType;
   private final ClaimViewFieldPatcher<?> patcher;
   private final Amendability amendability;
@@ -148,7 +151,51 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       Function<CrimeClaimDetails, ?> getter,
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       String claimsApiFieldName) {
-    this(fieldType, patchType, getter, patcher, List.of(), Amendability.ALWAYS, claimsApiFieldName);
+    this(
+        fieldType,
+        patchType,
+        getter,
+        patcher,
+        List.of(),
+        Amendability.ALWAYS,
+        claimsApiFieldName,
+        null);
+  }
+
+  <T> CrimeClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<CrimeClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      List<FieldOption> options,
+      String claimsApiFieldName) {
+    this(
+        fieldType,
+        patchType,
+        getter,
+        patcher,
+        options,
+        Amendability.ALWAYS,
+        claimsApiFieldName,
+        null);
+  }
+
+  <T> CrimeClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<CrimeClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      String claimsApiFieldName,
+      String feeApiFieldName) {
+    this(
+        fieldType,
+        patchType,
+        getter,
+        patcher,
+        List.of(),
+        Amendability.ALWAYS,
+        claimsApiFieldName,
+        feeApiFieldName);
   }
 
   <T> CrimeClaimDetailsViewField(
@@ -158,17 +205,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       Amendability amendability,
       String claimsApiFieldName) {
-    this(fieldType, patchType, getter, patcher, List.of(), amendability, claimsApiFieldName);
-  }
-
-  <T> CrimeClaimDetailsViewField(
-      FieldType fieldType,
-      Class<T> patchType,
-      Function<CrimeClaimDetails, ?> getter,
-      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
-      List<FieldOption> options,
-      String claimsApiFieldName) {
-    this(fieldType, patchType, getter, patcher, options, Amendability.ALWAYS, claimsApiFieldName);
+    this(fieldType, patchType, getter, patcher, List.of(), amendability, claimsApiFieldName, null);
   }
 
   <T> CrimeClaimDetailsViewField(
@@ -178,9 +215,11 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       List<FieldOption> options,
       Amendability amendability,
-      String claimsApiFieldName) {
+      String claimsApiFieldName,
+      String feeApiFieldName) {
     this.getter = new CrimeClaimViewFieldGetter<>(getter);
     this.claimsApiFieldName = claimsApiFieldName;
+    this.feeApiFieldName = feeApiFieldName;
     this.fieldType = fieldType;
     this.patcher = new ClaimViewFieldPatcher<>(patchType, patcher);
     this.options = List.copyOf(options);

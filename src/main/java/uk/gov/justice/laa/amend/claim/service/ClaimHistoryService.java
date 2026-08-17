@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
@@ -33,6 +34,7 @@ import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ClaimHistoryService {
 
   public static final int MAXIMUM_ASSESSMENTS = 100;
@@ -76,6 +78,7 @@ public class ClaimHistoryService {
     var history = claimsApiClient.getClaimHistory(claim.getClaimId()).block();
 
     if (history == null || history.getEvents() == null) {
+      log.error("Could not get claim history for claim {}", claim.getClaimId());
       return Set.of();
     }
 
@@ -87,6 +90,39 @@ public class ClaimHistoryService {
         .map(ClaimHistoryService::getFieldIdentifier)
         .collect(toSet());
   }
+
+  public AmendmentConfirmation getAmendmentConfirmation(ClaimDetails claim) {
+    var history = claimsApiClient.getClaimHistory(claim.getClaimId()).block();
+
+    if (history == null || history.getEvents() == null) {
+      log.error("Could not get claim history for claim {}", claim.getClaimId());
+      return new AmendmentConfirmation(false, Set.of());
+    }
+
+    var amendmentEvent =
+        history.getEvents().stream().filter(event -> event.getEventType() == AMENDMENT).findFirst();
+
+    if (amendmentEvent.isEmpty()) {
+      log.error("Could not get claim history for claim {}", claim.getClaimId());
+      return new AmendmentConfirmation(false, Set.of());
+    }
+
+    var amendment = amendmentEvent.get();
+
+    if (!TRUE.equals(amendment.getMetadata().get("price_changed"))) {
+      return new AmendmentConfirmation(false, Set.of());
+    }
+
+    var changedCalculatedCosts =
+        getChanges(amendment).stream()
+            .map(ClaimHistoryService::getFieldIdentifier)
+            .collect(toSet());
+
+    return new AmendmentConfirmation(true, changedCalculatedCosts);
+  }
+
+  public record AmendmentConfirmation(
+      Boolean hasCalculatedCostsChanged, Set<String> amendedFields) {}
 
   private Map<String, MicrosoftApiUser> getUserIdToUser(final List<AssessmentInfo> assessments) {
     var userIds =

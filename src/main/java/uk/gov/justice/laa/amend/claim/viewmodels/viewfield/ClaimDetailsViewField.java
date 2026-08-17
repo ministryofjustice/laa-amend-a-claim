@@ -114,35 +114,40 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       BigDecimal.class,
       ClaimDetails::getNetProfitCost,
       ClaimPatch.Builder::netProfitCostsAmount,
-      "claimSummaryFee.netProfitCostsAmount"),
+      "claimSummaryFee.netProfitCostsAmount",
+      "fee.netProfitCostsAmount"),
   DISBURSEMENTS(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       ClaimDetails::getNetDisbursementAmount,
       ClaimPatch.Builder::netDisbursementAmount,
-      "claimSummaryFee.netDisbursementAmount"),
+      "claimSummaryFee.netDisbursementAmount",
+      "fee.disbursementAmount"),
   DISBURSEMENTS_VAT(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
       ClaimDetails::getDisbursementVatAmount,
       ClaimPatch.Builder::disbursementsVatAmount,
-      "claimSummaryFee.disbursementsVatAmount"),
+      "claimSummaryFee.disbursementsVatAmount",
+      "fee.disbursementVatAmount"),
   VAT(
       FieldType.BOOLEAN,
       Boolean.class,
       ClaimDetails::getVatClaimed,
       ClaimPatch.Builder::isVatApplicable,
-      "claimSummaryFee.isVatApplicable");
+      "claimSummaryFee.isVatApplicable",
+      "fee.vatIndicator");
 
   private final ClaimDetailsViewFieldGetter<?> getter;
   private final String claimsApiFieldName;
+  private final String feeApiFieldName;
   private final FieldType fieldType;
   private final ClaimViewFieldPatcher<?> patcher;
   private final Amendability amendability;
   private final List<FieldOption> options;
 
   <T> ClaimDetailsViewField(FieldType fieldType, Function<ClaimDetails, ?> getter) {
-    this(fieldType, Object.class, getter, (b, v) -> b, List.of(), Amendability.NEVER, "");
+    this(fieldType, Object.class, getter, (b, v) -> b, List.of(), Amendability.NEVER, "", null);
   }
 
   <T> ClaimDetailsViewField(
@@ -151,7 +156,33 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Function<ClaimDetails, ?> getter,
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       String claimsApiFieldName) {
-    this(fieldType, patchType, getter, patcher, List.of(), Amendability.ALWAYS, claimsApiFieldName);
+    this(
+        fieldType,
+        patchType,
+        getter,
+        patcher,
+        List.of(),
+        Amendability.ALWAYS,
+        claimsApiFieldName,
+        null);
+  }
+
+  <T> ClaimDetailsViewField(
+      FieldType fieldType,
+      Class<T> patchType,
+      Function<ClaimDetails, ?> getter,
+      BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
+      String claimsApiFieldName,
+      String feeApiFieldName) {
+    this(
+        fieldType,
+        patchType,
+        getter,
+        patcher,
+        List.of(),
+        Amendability.ALWAYS,
+        claimsApiFieldName,
+        feeApiFieldName);
   }
 
   <T> ClaimDetailsViewField(
@@ -161,7 +192,15 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       List<FieldOption> options,
       String claimsApiFieldName) {
-    this(fieldType, patchType, getter, patcher, options, Amendability.ALWAYS, claimsApiFieldName);
+    this(
+        fieldType,
+        patchType,
+        getter,
+        patcher,
+        options,
+        Amendability.ALWAYS,
+        claimsApiFieldName,
+        null);
   }
 
   <T> ClaimDetailsViewField(
@@ -171,7 +210,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       Amendability amendability,
       String claimsApiFieldName) {
-    this(fieldType, patchType, getter, patcher, List.of(), amendability, claimsApiFieldName);
+    this(fieldType, patchType, getter, patcher, List.of(), amendability, claimsApiFieldName, null);
   }
 
   <T> ClaimDetailsViewField(
@@ -181,9 +220,11 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       BiFunction<ClaimPatch.Builder, T, ClaimPatch.Builder> patcher,
       List<FieldOption> options,
       Amendability amendability,
-      String claimsApiFieldName) {
+      String claimsApiFieldName,
+      String feeApiFieldName) {
     this.getter = new ClaimDetailsViewFieldGetter<>(getter);
     this.claimsApiFieldName = claimsApiFieldName;
+    this.feeApiFieldName = feeApiFieldName;
     this.fieldType = fieldType;
     this.patcher = new ClaimViewFieldPatcher<>(patchType, patcher);
     this.options = List.copyOf(options);
