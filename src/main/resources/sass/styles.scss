@@ -1,6 +1,14 @@
+@use "govuk-frontend/dist/govuk/helpers/typography" as govuk-typography;
+
 .search-panel {
   padding: 15px 20px 0px 20px;
   background-color: #f3f2f1;
+}
+
+.autocomplete__input,
+.autocomplete__option,
+.autocomplete__hint {
+  @include govuk-typography.govuk-typography-common;
 }
 
 .amend-date-input .govuk-date-input__item {

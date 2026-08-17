@@ -55,12 +55,7 @@ public enum CrimeLowerOutcomeCode implements FieldOption {
   PAROLE_ORAL_HEARING_NOT_SUCCESSFUL("PL11"),
   PROCEEDED_TO_RECONSIDERATION_JUDICIAL_REVIEW("PL12"),
   NO_FURTHER_ACTION_PL13("PL13"),
-  MINIMUM_TERM_REVIEWED_AT_THE_HIGH_COURT("PL14"),
-  A("A"),
-  B("B"),
-  S("S"),
-  C("C"),
-  P("P");
+  MINIMUM_TERM_REVIEWED_AT_THE_HIGH_COURT("PL14");
 
   private final String value;
 

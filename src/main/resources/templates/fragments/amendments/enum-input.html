@@ -5,7 +5,7 @@
           th:with="fieldKey=${field.name()},
                    label=${#messages.msgOrNull(labelMessageKey) ?: fieldKey},
                    options=${field.getOptions()}">
-  <div class="autocomplete-wrapper amend-enum-input">
+  <div class="autocomplete-wrapper">
     <label class="govuk-label govuk-visually-hidden"
            th:for="${fieldKey}"
            th:text="${label}"></label>

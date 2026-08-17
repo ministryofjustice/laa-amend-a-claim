@@ -41,6 +41,8 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
   private static final String LEGAL_HELP_STAGE_REACHED = "BB";
   private static final String CRIME_STAGE_REACHED = "INVA";
   private static final String OUTCOME_FOR_CLIENT = "A";
+  private static final String CRIME_OUTCOME_FOR_CLIENT = "CN01";
+  private static final String CRIME_OUTCOME_FOR_CLIENT_LABEL = "CN01 - No further instructions";
   private static final String EXCEPTIONAL_CASE_FUNDING = "exceptionalcasefunding";
   private static final String CLA_REFERENCE = "clareference";
   private static final String CLA_EXEMPTION = "claexemption";
@@ -292,7 +294,7 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     claim.setRepresentationOrderDate(REPRESENTATION_ORDER_DATE);
     claim.setCaseEndDate(CASE_CONCLUDED_DATE);
     claim.setStandardFeeCategory(STANDARD_FEE_CATEGORY);
-    claim.setOutcome(OUTCOME_FOR_CLIENT);
+    claim.setOutcome(CRIME_OUTCOME_FOR_CLIENT);
     claim.setSuspectsDefendantsCount(SUSPECTS_DEFENDANTS_COUNT);
     claim.setPoliceStationCourtAttendancesCount(POLICE_ATTENDANCES_COURT);
     claim.setPoliceStationCourtPrisonId(POLICE_STATION_COURT_PRISON_ID);
@@ -331,9 +333,9 @@ class AmendCaseDetailsViewTest extends AmendmentsBaseTest {
     assertEnumTypeaheadRow(
         caseDetails.get(6),
         "Outcome for client",
-        OUTCOME_FOR_CLIENT,
+        CRIME_OUTCOME_FOR_CLIENT_LABEL,
         "OUTCOME_FOR_CLIENT",
-        OUTCOME_FOR_CLIENT);
+        CRIME_OUTCOME_FOR_CLIENT);
     assertNumberInputRow(
         caseDetails.get(7),
         "Number of suspects or defendants",

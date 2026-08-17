@@ -37,6 +37,8 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
   private static final String STAGE_REACHED_LABEL =
       "INVA - Advice and Assistance (not at the police station)";
   private static final String OUTCOME_FOR_CLIENT = "A";
+  private static final String CRIME_OUTCOME_FOR_CLIENT = "CN01";
+  private static final String CRIME_OUTCOME_FOR_CLIENT_LABEL = "CN01 - No further instructions";
   private static final String EXCEPTIONAL_CASE_FUNDING = "exceptionalcasefunding";
   private static final String CLA_REFERENCE = "clareference";
   private static final String CLA_EXEMPTION = "claexemption";
@@ -394,7 +396,7 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     claim.setRepresentationOrderDate(REPRESENTATION_ORDER_DATE);
     claim.setCaseEndDate(CASE_CONCLUDED_DATE);
     claim.setStandardFeeCategory(STANDARD_FEE_CATEGORY);
-    claim.setOutcome(OUTCOME_FOR_CLIENT);
+    claim.setOutcome(CRIME_OUTCOME_FOR_CLIENT);
     claim.setSuspectsDefendantsCount(SUSPECTS_DEFENDANTS_COUNT);
     claim.setPoliceStationCourtAttendancesCount(POLICE_ATTENDANCES_COURT);
     claim.setPoliceStationCourtPrisonId(POLICE_STATION_COURT_PRISON_ID);
@@ -427,7 +429,7 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(4), "Standard fee category", STANDARD_FEE_CATEGORY_LABEL);
     assertSummaryListRowContainsValues(
-        caseDetails.get(5), "Outcome for client", OUTCOME_FOR_CLIENT);
+        caseDetails.get(5), "Outcome for client", CRIME_OUTCOME_FOR_CLIENT_LABEL);
     assertSummaryListRowContainsValues(
         caseDetails.get(6),
         "Number of suspects or defendants",
@@ -461,7 +463,7 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     claim.setRepresentationOrderDate(REPRESENTATION_ORDER_DATE);
     claim.setCaseEndDate(CASE_CONCLUDED_DATE);
     claim.setStandardFeeCategory(STANDARD_FEE_CATEGORY);
-    claim.setOutcome(OUTCOME_FOR_CLIENT);
+    claim.setOutcome(CRIME_OUTCOME_FOR_CLIENT);
     claim.setSuspectsDefendantsCount(SUSPECTS_DEFENDANTS_COUNT);
     claim.setPoliceStationCourtAttendancesCount(POLICE_ATTENDANCES_COURT);
     claim.setPoliceStationCourtPrisonId(POLICE_STATION_COURT_PRISON_ID);
@@ -499,7 +501,7 @@ class AmendCaseTabViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         caseDetails.get(5), "Standard fee category", STANDARD_FEE_CATEGORY_LABEL);
     assertSummaryListRowContainsValues(
-        caseDetails.get(6), "Outcome for client", OUTCOME_FOR_CLIENT);
+        caseDetails.get(6), "Outcome for client", CRIME_OUTCOME_FOR_CLIENT_LABEL);
     assertSummaryListRowContainsValues(
         caseDetails.get(7),
         "Number of suspects or defendants",
