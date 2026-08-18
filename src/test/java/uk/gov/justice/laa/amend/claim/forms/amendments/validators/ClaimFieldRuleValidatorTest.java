@@ -112,7 +112,7 @@ class ClaimFieldRuleValidatorTest {
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.AIT_HEARING_CENTRE)).isFalse();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.VALUE_OF_COSTS)).isTrue();
-    assertThat(validator.appliesTo(CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.EXCEPTIONAL_CASE_FUNDING)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_REFERENCE))
         .isTrue();
@@ -151,8 +151,8 @@ class ClaimFieldRuleValidatorTest {
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.CMRH_TELEPHONE)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.CMRH_ORAL)).isTrue();
-    assertThat(validator.appliesTo(CivilClaimDetailsViewField.CIVIL_OUTCOME_CODE)).isTrue();
-    assertThat(validator.appliesTo(CivilClaimDetailsViewField.CIVIL_STAGE_REACHED)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.STAGE_REACHED)).isTrue();
   }
 
   @ParameterizedTest
@@ -1722,7 +1722,7 @@ class ClaimFieldRuleValidatorTest {
   @ParameterizedTest
   @ValueSource(strings = {"AB", "a-", "1A"})
   void acceptsValidCivilOutcomeCodeValues(String value) {
-    var errors = validate(CivilClaimDetailsViewField.CIVIL_OUTCOME_CODE, value);
+    var errors = validate(CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT, value);
 
     assertThat(errors.hasErrors()).isFalse();
   }
@@ -1730,19 +1730,19 @@ class ClaimFieldRuleValidatorTest {
   @ParameterizedTest
   @ValueSource(strings = {"ABC", "A", "A*"})
   void rejectsInvalidCivilOutcomeCodeValuesNamingTheField(String value) {
-    var errors = validate(CivilClaimDetailsViewField.CIVIL_OUTCOME_CODE, value);
+    var errors = validate(CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CIVIL_OUTCOME_CODE]");
+    var fieldError = errors.getFieldError("inputs[OUTCOME_FOR_CLIENT]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.civilOutcomeCode.invalidFormat");
     assertThat(fieldError.getArguments()[0])
-        .isEqualTo(CivilClaimDetailsViewField.CIVIL_OUTCOME_CODE.label(TestMessageSources.real()));
+        .isEqualTo(CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT.label(TestMessageSources.real()));
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"AB", "a1", "1A"})
   void acceptsValidCivilStageReachedValues(String value) {
-    var errors = validate(CivilClaimDetailsViewField.CIVIL_STAGE_REACHED, value);
+    var errors = validate(CivilClaimDetailsViewField.STAGE_REACHED, value);
 
     assertThat(errors.hasErrors()).isFalse();
   }
@@ -1750,13 +1750,13 @@ class ClaimFieldRuleValidatorTest {
   @ParameterizedTest
   @ValueSource(strings = {"ABC", "A", "A*"})
   void rejectsInvalidCivilStageReachedValuesNamingTheField(String value) {
-    var errors = validate(CivilClaimDetailsViewField.CIVIL_STAGE_REACHED, value);
+    var errors = validate(CivilClaimDetailsViewField.STAGE_REACHED, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CIVIL_STAGE_REACHED]");
+    var fieldError = errors.getFieldError("inputs[STAGE_REACHED]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.civilOutcomeCode.invalidFormat");
     assertThat(fieldError.getArguments()[0])
-        .isEqualTo(CivilClaimDetailsViewField.CIVIL_STAGE_REACHED.label(TestMessageSources.real()));
+        .isEqualTo(CivilClaimDetailsViewField.STAGE_REACHED.label(TestMessageSources.real()));
   }
 
   private Errors validate(ClaimViewField<?> field, String value) {
