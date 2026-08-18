@@ -206,7 +206,7 @@
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/check(submissionId=${submissionId}, claimId=${claimId})}">
 
         <div class="govuk-button-group">
-          <button class="govuk-button" type="submit" th:text="#{amendments.check.submit}"></button>
+          <button class="govuk-button" type="submit" data-prevent-double-click="true" th:text="#{amendments.check.submit}"></button>
           <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
              id="cancel"
              class="govuk-link govuk-link--no-visited-state"
