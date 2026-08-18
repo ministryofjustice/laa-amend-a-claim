@@ -71,7 +71,7 @@ public class ClaimSummaryController extends ClaimDetailsBaseController {
     model.addAttribute("claim", ClaimOverviewViewFactory.create(claim));
     model.addAttribute("amendedFields", amendedFields);
 
-    return "claimdetails/claim-summary";
+    return "pages/claimdetails/claim-summary";
   }
 
   @HasRoleEscapeCaseCaseworker

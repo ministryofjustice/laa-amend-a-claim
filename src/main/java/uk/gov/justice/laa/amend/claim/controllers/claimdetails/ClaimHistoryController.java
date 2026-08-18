@@ -47,6 +47,6 @@ public class ClaimHistoryController extends ClaimDetailsBaseController {
     var events = claimHistory.events().stream().map(ClaimHistoryEventViewModel::create).toList();
     model.addAttribute("events", events);
 
-    return "claimdetails/claim-history";
+    return "pages/claimdetails/claim-history";
   }
 }

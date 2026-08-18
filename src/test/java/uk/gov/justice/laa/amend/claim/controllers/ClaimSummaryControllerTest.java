@@ -79,7 +79,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("claimdetails/claim-summary"))
+        .andExpect(view().name("pages/claimdetails/claim-summary"))
         .andExpect(model().attributeExists("claim"))
         .andExpect(model().attribute("searchUrl", "/"))
         .andExpect(request().sessionAttribute(claimId.toString(), claim));
@@ -105,7 +105,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("claimdetails/claim-summary"))
+        .andExpect(view().name("pages/claimdetails/claim-summary"))
         .andExpect(model().attributeExists("claim"))
         .andExpect(model().attribute("searchUrl", "/?officeCode=12345&page=1"))
         .andExpect(request().sessionAttribute(claimId.toString(), claim));
