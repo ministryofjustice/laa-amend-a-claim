@@ -154,7 +154,7 @@ class ClaimFieldRuleValidatorTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SW1A 1AA", "sw1a1aa", "EC1A1BB", "NFA", "nfa", "M1 1AE"})
+  @ValueSource(strings = {"SW1A 1AA", "EC1A1BB", "NFA", "M1 1AE"})
   void acceptsValidCivilPostcodeValues(String value) {
     var errors = validate(CivilClaimDetailsViewField.POSTCODE, value);
 
@@ -162,7 +162,7 @@ class ClaimFieldRuleValidatorTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SW1A 1AA", "sw1a1aa", "EC1A1BB", "NFA", "nfa", "M1 1AE"})
+  @ValueSource(strings = {"SW1A 1AA", "EC1A1BB", "NFA", "M1 1AE"})
   void acceptsValidMediationPostcodeValues(String value) {
     var errors = validate(MediationClaimDetailsViewField.POSTCODE, value);
 
@@ -170,7 +170,7 @@ class ClaimFieldRuleValidatorTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"NOTAPOSTCODE", "SW1A", "12345", "AB1 2C"})
+  @ValueSource(strings = {"NOTAPOSTCODE", "SW1A", "12345", "AB1 2C", "sw1a1aa", "nfa"})
   void rejectsInvalidCivilPostcodeValuesNamingTheField(String value) {
     var errors = validate(CivilClaimDetailsViewField.POSTCODE, value);
 
@@ -181,7 +181,7 @@ class ClaimFieldRuleValidatorTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"NOTAPOSTCODE", "SW1A", "12345", "AB1 2C"})
+  @ValueSource(strings = {"NOTAPOSTCODE", "SW1A", "12345", "AB1 2C", "sw1a1aa", "nfa"})
   void rejectsInvalidMediationPostcodeValues(String value) {
     var errors = validate(MediationClaimDetailsViewField.POSTCODE, value);
 
@@ -191,7 +191,7 @@ class ClaimFieldRuleValidatorTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"SW1A 1AA", "sw1a1aa", "EC1A1BB", "NFA", "nfa", "M1 1AE"})
+  @ValueSource(strings = {"SW1A 1AA", "EC1A1BB", "NFA", "M1 1AE"})
   void acceptsValidClient2PostcodeValues(String value) {
     var errors = validate(MediationClaimDetailsViewField.CLIENT_2_POSTCODE, value);
 
@@ -199,7 +199,7 @@ class ClaimFieldRuleValidatorTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"NOTAPOSTCODE", "SW1A", "12345", "AB1 2C"})
+  @ValueSource(strings = {"NOTAPOSTCODE", "SW1A", "12345", "AB1 2C", "sw1a1aa", "nfa"})
   void rejectsInvalidClient2PostcodeValuesNamingTheField(String value) {
     var errors = validate(MediationClaimDetailsViewField.CLIENT_2_POSTCODE, value);
 

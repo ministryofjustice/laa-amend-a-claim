@@ -19,8 +19,7 @@
       {
         "category": "FORMAT",
         "kind": "regex",
-        "pattern": "^(NFA|[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\\s?[0-9][A-Za-z]{2})$",
-        "flags": ["CASE_INSENSITIVE"],
+        "pattern": "^NFA|[A-Z]{1,2}[0-9][0-9A-Z]?\\s?[0-9][A-Z]{2}$",
         "messageCode": "amendmentForm.postcode.invalidFormat"
       }
     ],
