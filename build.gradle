@@ -1,8 +1,8 @@
 plugins {
-    id 'uk.gov.justice.service.laa.laa-spring-boot-gradle-plugin' version '3.0.0'
-    id "com.diffplug.spotless" version "8.8.0"
-    id "io.sentry.jvm.gradle" version "6.16.0"
-    id 'au.com.dius.pact' version '4.7.3'
+    id 'uk.gov.justice.service.laa.laa-spring-boot-gradle-plugin' version '3.0.1'
+    id "com.diffplug.spotless" version "8.9.0"
+    id "io.sentry.jvm.gradle" version "6.18.0"
+    id 'au.com.dius.pact' version '4.7.5'
 }
 
 def frontendResourcesDir = layout.projectDirectory.dir('src/main/resources/static')
@@ -86,14 +86,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     implementation 'org.webjars.npm:govuk-frontend:6.4.0'
-    implementation 'org.webjars.npm:ministryofjustice__frontend:10.0.0'
+    implementation 'org.webjars.npm:ministryofjustice__frontend:10.0.1'
     implementation 'org.webjars.npm:accessible-autocomplete:3.0.1'
     implementation("org.apache.commons:commons-csv:1.14.1")
 
     implementation("io.vavr:vavr:1.0.1")
 
     // Sentry observability for Spring Boot 4
-    implementation enforcedPlatform('io.sentry:sentry-bom:8.50.1')
+    implementation enforcedPlatform('io.sentry:sentry-bom:8.52.0')
     implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
@@ -106,7 +106,7 @@ dependencies {
     implementation 'io.micrometer:micrometer-tracing-bridge-brave'
 
     // Pact consumer testing
-    testImplementation 'au.com.dius.pact.consumer:junit5:4.7.3'
+    testImplementation 'au.com.dius.pact.consumer:junit5:4.7.5'
     // test dependencies
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:5.0.3'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -118,7 +118,7 @@ dependencies {
     testImplementation 'org.jmockit:jmockit:1.50'
     testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-    testImplementation 'org.jsoup:jsoup:1.22.2'
+    testImplementation 'org.jsoup:jsoup:1.23.1'
     testImplementation 'com.github.codemonstur:embedded-redis:1.4.3'
 }
 
