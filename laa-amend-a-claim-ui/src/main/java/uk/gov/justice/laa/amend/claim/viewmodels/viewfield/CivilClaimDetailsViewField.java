@@ -79,11 +79,6 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       ClaimDetails::getStageReached,
       ClaimPatch.Builder::stageReachedCode,
       "claimCase.stageReachedCode"),
-  CIVIL_STAGE_REACHED(
-      FieldType.TEXT,
-      String.class,
-      ClaimDetails::getStageReached,
-      ClaimPatch.Builder::stageReachedCode),
   SCHEDULE_REFERENCE_CIVIL(
       FieldType.TEXT,
       String.class,
@@ -146,8 +141,6 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       CivilClaimDetails::getOutcome,
       ClaimPatch.Builder::outcomeCode,
       "claimCase.outcomeCode"),
-  CIVIL_OUTCOME_CODE(
-      FieldType.TEXT, String.class, CivilClaimDetails::getOutcome, ClaimPatch.Builder::outcomeCode),
   EXCEPTIONAL_CASE_FUNDING(
       FieldType.TEXT,
       String.class,
