@@ -287,7 +287,7 @@
 
     <form th:action="@{/submissions/{submissionId}/claims/{claimId}/review(submissionId=${submissionId}, claimId=${claimId})}" method="post">
         <div class="govuk-button-group">
-            <button class="govuk-button" type="submit" data-module="govuk-button" th:text="#{claimReview.submit}"></button>
+            <button class="govuk-button" type="submit" data-module="govuk-button" data-prevent-double-click="true" th:text="#{claimReview.submit}"></button>
 
             <a th:href="@{/submissions/{submissionId}/claims/{claimId}/discard(submissionId=${submissionId}, claimId=${claimId})}"
                id="discard"

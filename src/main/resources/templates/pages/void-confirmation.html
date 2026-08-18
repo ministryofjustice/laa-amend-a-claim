@@ -29,7 +29,7 @@
 
             <form th:action="@{/submissions/{submissionId}/claims/{claimId}/void(submissionId=${submissionId}, claimId=${claimId})}" method="post">
                 <div class="govuk-button-group">
-                    <button class="govuk-button govuk-button--warning" type="submit" data-module="govuk-button" th:text="#{voidConfirmation.voidClaim}"></button>
+                    <button class="govuk-button govuk-button--warning" type="submit" data-module="govuk-button" data-prevent-double-click="true" th:text="#{voidConfirmation.voidClaim}"></button>
 
                     <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
                        class="govuk-link govuk-link--no-visited-state"
