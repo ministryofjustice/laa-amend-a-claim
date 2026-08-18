@@ -71,6 +71,22 @@
         "messageCode": "amendmentForm.matterTypeCode.invalidUppercaseFormat"
       }
     ],
+    "civilOutcomeCode": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Za-z0-9-]{2}$",
+        "messageCode": "amendmentForm.civilOutcomeCode.invalidFormat"
+      }
+    ],
+    "civilStageReached": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[a-zA-Z0-9]{2}$",
+        "messageCode": "amendmentForm.civilOutcomeCode.invalidFormat"
+      }
+    ],
     "feeCode": [
       {
         "category": "FORMAT",
@@ -540,6 +556,8 @@
     "CivilClaimDetailsViewField.JR_FORM_FILLING": { "ruleGroup": "travelCosts" },
     "CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE": { "ruleGroup": "smallCountRange" },
     "CivilClaimDetailsViewField.CMRH_TELEPHONE": { "ruleGroup": "smallCountRange" },
-    "CivilClaimDetailsViewField.CMRH_ORAL": { "ruleGroup": "smallCountRange" }
+    "CivilClaimDetailsViewField.CMRH_ORAL": { "ruleGroup": "smallCountRange" },
+    "CivilClaimDetailsViewField.CIVIL_OUTCOME_CODE": { "ruleGroup": "civilOutcomeCode" },
+    "CivilClaimDetailsViewField.CIVIL_STAGE_REACHED": { "ruleGroup": "civilStageReached" }
   }
 }

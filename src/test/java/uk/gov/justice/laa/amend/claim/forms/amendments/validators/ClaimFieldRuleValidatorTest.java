@@ -151,6 +151,8 @@ class ClaimFieldRuleValidatorTest {
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.CMRH_TELEPHONE)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.CMRH_ORAL)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.CIVIL_OUTCOME_CODE)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.CIVIL_STAGE_REACHED)).isTrue();
   }
 
   @ParameterizedTest
@@ -1715,6 +1717,46 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.CMRH_ORAL, "notanumber");
 
     assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"AB", "a-", "1A"})
+  void acceptsValidCivilOutcomeCodeValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CIVIL_OUTCOME_CODE, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"ABC", "A", "A*"})
+  void rejectsInvalidCivilOutcomeCodeValuesNamingTheField(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CIVIL_OUTCOME_CODE, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CIVIL_OUTCOME_CODE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.civilOutcomeCode.invalidFormat");
+    assertThat(fieldError.getArguments()[0])
+        .isEqualTo(CivilClaimDetailsViewField.CIVIL_OUTCOME_CODE.label(TestMessageSources.real()));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"AB", "a1", "1A"})
+  void acceptsValidCivilStageReachedValues(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CIVIL_STAGE_REACHED, value);
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"ABC", "A", "A*"})
+  void rejectsInvalidCivilStageReachedValuesNamingTheField(String value) {
+    var errors = validate(CivilClaimDetailsViewField.CIVIL_STAGE_REACHED, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CIVIL_STAGE_REACHED]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.civilOutcomeCode.invalidFormat");
+    assertThat(fieldError.getArguments()[0])
+        .isEqualTo(CivilClaimDetailsViewField.CIVIL_STAGE_REACHED.label(TestMessageSources.real()));
   }
 
   private Errors validate(ClaimViewField<?> field, String value) {
