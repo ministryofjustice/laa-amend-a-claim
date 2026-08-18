@@ -63,7 +63,7 @@ public class AmendClientController extends AbstractAmendController {
     model.addAttribute("client1Form", amendmentForms.getClient1Form().getCurrent());
     model.addAttribute("forms", amendmentForms);
 
-    return "amendments/amend-client-1";
+    return "pages/amendments/amend-client-1";
   }
 
   @PostMapping("/amend-client")
@@ -104,7 +104,7 @@ public class AmendClientController extends AbstractAmendController {
     model.addAttribute("client2Form", amendmentForms.getClient2Form().getCurrent());
     model.addAttribute("forms", amendmentForms);
 
-    return "amendments/amend-client-2";
+    return "pages/amendments/amend-client-2";
   }
 
   @PostMapping("/amend-client-two")

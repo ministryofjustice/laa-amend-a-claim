@@ -86,7 +86,7 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
     mockMvc
         .perform(request)
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-case-details"))
+        .andExpect(view().name("pages/amendments/amend-case-details"))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
   }
 

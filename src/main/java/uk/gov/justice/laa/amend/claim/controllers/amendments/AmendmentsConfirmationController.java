@@ -61,6 +61,6 @@ public class AmendmentsConfirmationController {
       model.addAttribute("updatedClaimTotal", claim.getTotalAmount().getCalculated());
     }
 
-    return "amendments/confirmation";
+    return "pages/amendments/confirmation";
   }
 }

@@ -39,7 +39,7 @@ public class CostsController {
       @PathVariable UUID claimId) {
     addCostsModelAttributes(session, model, submissionId, claimId);
 
-    return "amendments/view-costs";
+    return "pages/amendments/view-costs";
   }
 
   @GetMapping("/amend-costs")
@@ -55,7 +55,7 @@ public class CostsController {
 
     addCostsModelAttributes(session, model, submissionId, claimId);
 
-    return "amendments/amend-costs";
+    return "pages/amendments/amend-costs";
   }
 
   @PostMapping("/amend-costs")

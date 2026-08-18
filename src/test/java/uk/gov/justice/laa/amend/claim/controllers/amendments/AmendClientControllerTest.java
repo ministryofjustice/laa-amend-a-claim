@@ -211,7 +211,7 @@ class AmendClientControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildAmendClient1Path()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-client-1"))
+        .andExpect(view().name("pages/amendments/amend-client-1"))
         .andExpect(model().attributeExists("clientView"))
         .andExpect(model().attribute("client1Form", existingForms.getClient1Form().getCurrent()))
         .andExpect(model().attribute("forms", existingForms));
@@ -231,7 +231,7 @@ class AmendClientControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildAmendClient2Path()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-client-2"))
+        .andExpect(view().name("pages/amendments/amend-client-2"))
         .andExpect(model().attributeExists("clientView"))
         .andExpect(model().attribute("client2Form", existingForms.getClient2Form().getCurrent()))
         .andExpect(model().attribute("forms", existingForms));

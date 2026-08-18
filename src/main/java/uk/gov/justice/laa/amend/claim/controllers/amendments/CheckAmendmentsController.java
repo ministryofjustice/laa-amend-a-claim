@@ -69,7 +69,7 @@ public class CheckAmendmentsController {
     model.addAttribute("claim", caseView);
     model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
 
-    return "amendments/check-your-answers";
+    return "pages/amendments/check-your-answers";
   }
 
   @PostMapping

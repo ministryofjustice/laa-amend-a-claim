@@ -42,6 +42,6 @@ public class AmendClientTabController {
     }
     model.addAttribute("forms", amendmentForms);
 
-    return "amendments/view-client";
+    return "pages/amendments/view-client";
   }
 }

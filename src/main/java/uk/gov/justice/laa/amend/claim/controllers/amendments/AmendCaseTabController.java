@@ -41,7 +41,7 @@ public class AmendCaseTabController {
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("caseTypeAmendUrl", caseTypeAmendUrl(claim, submissionId, claimId));
 
-    return "amendments/view-case";
+    return "pages/amendments/view-case";
   }
 
   private static String caseTypeAmendUrl(ClaimDetails claim, UUID submissionId, UUID claimId) {

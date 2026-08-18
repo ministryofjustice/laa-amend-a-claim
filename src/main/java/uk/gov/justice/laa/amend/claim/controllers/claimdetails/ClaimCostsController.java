@@ -43,6 +43,6 @@ public class ClaimCostsController extends ClaimDetailsBaseController {
     var user = setLatestAssessment(claim);
     setCommonModelAttributes(model, session, request, claim, user);
 
-    return "claimdetails/claim-costs";
+    return "pages/claimdetails/claim-costs";
   }
 }

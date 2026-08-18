@@ -61,7 +61,7 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildCheckPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/check-your-answers"))
+        .andExpect(view().name("pages/amendments/check-your-answers"))
         .andExpect(
             model()
                 .attributeExists(
@@ -84,7 +84,7 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildCheckPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/check-your-answers"))
+        .andExpect(view().name("pages/amendments/check-your-answers"))
         .andExpect(
             model()
                 .attributeExists(

@@ -55,7 +55,7 @@ class AmendmentsConfirmationControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/confirmation"))
+        .andExpect(view().name("pages/amendments/confirmation"))
         .andExpect(model().attribute("submissionId", submissionId))
         .andExpect(model().attribute("claimId", claimId))
         .andExpect(model().attribute("searchUrl", "/"));
@@ -68,7 +68,7 @@ class AmendmentsConfirmationControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/confirmation"))
+        .andExpect(view().name("pages/amendments/confirmation"))
         .andExpect(model().attribute("searchUrl", "/?officeCode=0P322F&page=1"));
   }
 
@@ -80,7 +80,7 @@ class AmendmentsConfirmationControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/confirmation"))
+        .andExpect(view().name("pages/amendments/confirmation"))
         .andExpect(model().attribute("updatedClaimTotal", BigDecimal.valueOf(200)));
   }
 
