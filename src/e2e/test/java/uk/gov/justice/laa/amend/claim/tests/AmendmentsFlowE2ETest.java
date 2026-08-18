@@ -192,15 +192,15 @@ public class AmendmentsFlowE2ETest extends BaseTest {
             .id(CRIME_CLAIM_ID)
             .submissionId(CRIME_SUBMISSION_ID)
             .uniqueFileNumber(CRIME_UFN)
-            .matterType("INVA")
-            .crimeMatterType("1")
+            .matterType("01")
+            .crimeMatterType("01")
             .feeCode("INVC")
             .userId(USER_ID)
             .build(),
         ClaimCaseInsert.builder()
             .id(UUID.randomUUID().toString())
             .claimId(CRIME_CLAIM_ID)
-            .stageReachedCode("INVC")
+            .stageReachedCode("PROL")
             .userId(USER_ID)
             .build(),
         ClaimSummaryFeeInsert.builder()
@@ -457,7 +457,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var viewAmendCase = new ViewCasePage(page);
     viewAmendClient.clickCaseTab();
     assertSummaryListRow(page, "Case type", "Fee code", "INVC");
-    assertSummaryListRow(page, "Case type", "Stage reached", "INVC");
+    assertSummaryListRow(page, "Case type", "Stage reached", "PROL");
 
     viewAmendCase.clickChangeCaseTypeLink();
     var amendFeeCode = new AmendFeeCodePage(page);
@@ -468,7 +468,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendStageReached.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
-    assertSummaryListRow(page, "Case type", "Stage reached", "INVC", "PROD");
+    assertSummaryListRow(page, "Case type", "Stage reached", "PROL", "PROD");
 
     viewAmendCase.clickChangeCaseDetailsLink();
     var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
@@ -484,7 +484,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
     assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£150.00");
-    assertSummaryListRow(page, "Case type", "Stage reached", "INVC", "PROD");
+    assertSummaryListRow(page, "Case type", "Stage reached", "PROL", "PROD");
     assertSummaryListRow(
         page, "Case details", "Case concluded date", "30 January 2020", "31 January 2020");
 

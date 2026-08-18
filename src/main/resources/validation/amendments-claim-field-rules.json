@@ -1,0 +1,563 @@
+{
+  "ruleGroups": {
+    "name": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[\\p{L}\\p{N}\\p{Zs}'&-]+$",
+        "messageCode": "amendmentForm.text.invalidFormat"
+      },
+      {
+        "category": "LENGTH",
+        "kind": "maxLength",
+        "max": "30",
+        "messageCode": "amendmentForm.text.tooLong",
+        "messageArgs": ["30"]
+      }
+    ],
+    "postcode": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^NFA|[A-Z]{1,2}[0-9][0-9A-Z]?\\s?[0-9][A-Z]{2}$",
+        "messageCode": "amendmentForm.postcode.invalidFormat"
+      }
+    ],
+    "uniqueClientNumber": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[0-2])[0-9]{4}/[\\p{L}0-9 '&-]/[\\p{L}0-9 '&-]{1,4}$",
+        "messageCode": "amendmentForm.uniqueClientNumber.invalidFormat"
+      }
+    ],
+    "homeOfficeClientNumber": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Za-z0-9]+$",
+        "messageCode": "amendmentForm.alphanumeric.invalidFormat"
+      },
+      {
+        "category": "LENGTH",
+        "kind": "maxLength",
+        "max": "16",
+        "messageCode": "amendmentForm.text.tooLong",
+        "messageArgs": ["16"]
+      }
+    ],
+    "crimeMatterTypeCode": [
+      {
+        "category": "MEMBERSHIP",
+        "kind": "regex",
+        "pattern": "^(0[1-9]|[1-9]|1[0-3]|1[56]|1[89]|2[13]|3[3-8])$",
+        "messageCode": "amendmentForm.matterTypeCode.invalid"
+      }
+    ],
+    "civilMatterTypeCode": [
+      {
+        "category": "LENGTH",
+        "kind": "exactLength",
+        "length": 4,
+        "messageCode": "amendmentForm.matterTypeCode.wrongLength",
+        "messageArgs": ["4"]
+      }
+    ],
+    "mediationMatterTypeCode": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Z0-9]{4}$",
+        "messageCode": "amendmentForm.matterTypeCode.invalidUppercaseFormat"
+      }
+    ],
+    "civilOutcomeCode": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Za-z0-9-]{2}$",
+        "messageCode": "amendmentForm.civilOutcomeCode.invalidFormat"
+      }
+    ],
+    "civilStageReached": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[a-zA-Z0-9]{2}$",
+        "messageCode": "amendmentForm.civilOutcomeCode.invalidFormat"
+      }
+    ],
+    "feeCode": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Za-z0-9]+$",
+        "messageCode": "amendmentForm.alphanumeric.invalidFormat"
+      },
+      {
+        "category": "LENGTH",
+        "kind": "maxLength",
+        "max": "10",
+        "messageCode": "amendmentForm.text.tooLong",
+        "messageArgs": ["10"]
+      }
+    ],
+    "policeStationCourtPrisonId": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^(?=.*[A-Za-z])[A-Za-z0-9]+$",
+        "messageCode": "amendmentForm.alphanumericWithLetter.invalidFormat"
+      },
+      {
+        "category": "LENGTH",
+        "kind": "maxLength",
+        "max": "6",
+        "messageCode": "amendmentForm.text.tooLong",
+        "messageArgs": ["6"]
+      }
+    ],
+    "schemeId": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Za-z0-9]+$",
+        "messageCode": "amendmentForm.alphanumeric.invalidFormat"
+      },
+      {
+        "category": "LENGTH",
+        "kind": "exactLength",
+        "length": 4,
+        "messageCode": "amendmentForm.text.wrongLength",
+        "messageArgs": ["4"]
+      }
+    ],
+    "dsccNumber": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Za-z0-9]+$",
+        "messageCode": "amendmentForm.alphanumeric.invalidFormat"
+      },
+      {
+        "category": "LENGTH",
+        "kind": "exactLength",
+        "length": 10,
+        "messageCode": "amendmentForm.text.wrongLength",
+        "messageArgs": ["10"]
+      }
+    ],
+    "maatId": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Za-z0-9]+$",
+        "messageCode": "amendmentForm.alphanumeric.invalidFormat"
+      },
+      {
+        "category": "LENGTH",
+        "kind": "maxLength",
+        "max": "10",
+        "messageCode": "amendmentForm.text.tooLong",
+        "messageArgs": ["10"]
+      }
+    ],
+    "prisonLawPriorApprovalNumber": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Za-z0-9]+$",
+        "messageCode": "amendmentForm.alphanumeric.invalidFormat"
+      },
+      {
+        "category": "LENGTH",
+        "kind": "exactLength",
+        "length": 10,
+        "messageCode": "amendmentForm.text.wrongLength",
+        "messageArgs": ["10"]
+      }
+    ],
+    "countRange": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "intRange",
+        "min": "0",
+        "max": "99",
+        "messageCode": "amendmentForm.number.range",
+        "messageArgs": ["0", "99"]
+      }
+    ],
+    "travelCosts": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "decimalRange",
+        "min": "0.00",
+        "max": "9999.99",
+        "messageCode": "amendmentForm.bigDecimal.range",
+        "messageArgs": ["0.00", "9999.99"]
+      }
+    ],
+    "waitingCosts": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "decimalRange",
+        "min": "0.00",
+        "max": "999999.99",
+        "messageCode": "amendmentForm.bigDecimal.range",
+        "messageArgs": ["0.00", "999999.99"]
+      }
+    ],
+    "claimId": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[0-9]{3}$",
+        "messageCode": "amendmentForm.claimId.invalidFormat"
+      }
+    ],
+    "caseReferenceNumber": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Za-z0-9/.\\-\\s]+$",
+        "messageCode": "amendmentForm.caseReferenceNumber.invalidFormat"
+      },
+      {
+        "category": "LENGTH",
+        "kind": "maxLength",
+        "max": "30",
+        "messageCode": "amendmentForm.text.tooLong",
+        "messageArgs": ["30"]
+      }
+    ],
+    "uniqueFileNumber": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[0-9]{6}/[0-9]{3}$",
+        "messageCode": "amendmentForm.uniqueFileNumber.invalidFormat"
+      }
+    ],
+    "scheduleReferenceCivil": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Za-z0-9/.\\-]+$",
+        "messageCode": "amendmentForm.scheduleReference.invalidFormat"
+      },
+      {
+        "category": "LENGTH",
+        "kind": "maxLength",
+        "max": "20",
+        "messageCode": "amendmentForm.text.tooLong",
+        "messageArgs": ["20"]
+      }
+    ],
+    "locationCode": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Z]{2}[0-9]{5}$",
+        "messageCode": "amendmentForm.locationCode.invalidFormat"
+      }
+    ],
+    "accessPoint": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^AP[0-9]{5}$",
+        "messageCode": "amendmentForm.accessPoint.invalidFormat"
+      }
+    ],
+    "localAuthorityNumber": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Za-z0-9]+$",
+        "messageCode": "amendmentForm.alphanumeric.invalidFormat"
+      },
+      {
+        "category": "LENGTH",
+        "kind": "maxLength",
+        "max": "30",
+        "messageCode": "amendmentForm.text.tooLong",
+        "messageArgs": ["30"]
+      }
+    ],
+    "mediationSessionsCount": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "intRange",
+        "min": "1",
+        "max": "99",
+        "messageCode": "amendmentForm.number.range",
+        "messageArgs": ["1", "99"]
+      }
+    ],
+    "mediationTimeMinutes": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "intRange",
+        "min": "0",
+        "max": "99999",
+        "messageCode": "amendmentForm.number.range",
+        "messageArgs": ["0", "99999"]
+      }
+    ],
+    "outreachLocation": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Za-z0-9]+$",
+        "messageCode": "amendmentForm.alphanumeric.invalidFormat"
+      },
+      {
+        "category": "LENGTH",
+        "kind": "exactLength",
+        "length": 3,
+        "messageCode": "amendmentForm.text.wrongLength",
+        "messageArgs": ["3"]
+      }
+    ],
+    "mediumCostRange": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "decimalRange",
+        "min": "0.00",
+        "max": "99999.99",
+        "messageCode": "amendmentForm.bigDecimal.range",
+        "messageArgs": ["0.00", "99999.99"]
+      }
+    ],
+    "exceptionalCaseFunding": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[0-9]{7}[A-Z]{2}$",
+        "messageCode": "amendmentForm.exceptionalCaseFunding.invalidFormat"
+      }
+    ],
+    "civilLegalAdviceReference": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[0-9]{1,7}$",
+        "messageCode": "amendmentForm.civilLegalAdviceReference.invalidFormat"
+      }
+    ],
+    "civilLegalAdviceExemption": [
+      {
+        "category": "LENGTH",
+        "kind": "exactLength",
+        "length": 4,
+        "messageCode": "amendmentForm.text.wrongLength",
+        "messageArgs": ["4"]
+      }
+    ],
+    "timeRange": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "intRange",
+        "min": "0",
+        "max": "99999",
+        "messageCode": "amendmentForm.number.range",
+        "messageArgs": ["0", "99999"]
+      }
+    ],
+    "medicalReportsClaimed": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "intRange",
+        "min": "0",
+        "max": "10",
+        "messageCode": "amendmentForm.number.range",
+        "messageArgs": ["0", "10"]
+      }
+    ],
+    "surgeryClientsCount": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "intRange",
+        "min": "1",
+        "max": "20",
+        "messageCode": "amendmentForm.number.range",
+        "messageArgs": ["1", "20"]
+      }
+    ],
+    "surgeryMattersCount": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "intRange",
+        "min": "0",
+        "max": "99",
+        "messageCode": "amendmentForm.number.range",
+        "messageArgs": ["0", "99"]
+      }
+    ],
+    "homeOffice": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "intRange",
+        "min": "0",
+        "max": "9",
+        "messageCode": "amendmentForm.number.range",
+        "messageArgs": ["0", "9"]
+      }
+    ],
+    "mentalHealthTribunalReference": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^([A-Z]{2}/[0-9]{4}/[0-9]{5}|[A-Z]{2}[0-9]{5})$",
+        "messageCode": "amendmentForm.mentalHealthTribunalReference.invalidFormat"
+      }
+    ],
+    "priorAuthorityReference": [
+      {
+        "category": "FORMAT",
+        "kind": "regex",
+        "pattern": "^[A-Za-z0-9]+$",
+        "messageCode": "amendmentForm.alphanumeric.invalidFormat"
+      },
+      {
+        "category": "LENGTH",
+        "kind": "exactLength",
+        "length": 7,
+        "messageCode": "amendmentForm.text.wrongLength",
+        "messageArgs": ["7"]
+      }
+    ],
+    "largeCostRange": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "decimalRange",
+        "min": "0.00",
+        "max": "999999999.99",
+        "messageCode": "amendmentForm.bigDecimal.range",
+        "messageArgs": ["0.00", "999999999.99"]
+      }
+    ],
+    "disbursementsVat": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "decimalMin",
+        "min": "0.00",
+        "messageCode": "amendmentForm.bigDecimal.min",
+        "messageArgs": ["0.00"]
+      }
+    ],
+    "detentionTravel": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "decimalRange",
+        "min": "0.00",
+        "max": "99999999.99",
+        "messageCode": "amendmentForm.bigDecimal.range",
+        "messageArgs": ["0.00", "99999999.99"]
+      }
+    ],
+    "smallCountRange": [
+      {
+        "category": "NUMERIC_RANGE",
+        "kind": "intRange",
+        "min": "0",
+        "max": "9",
+        "messageCode": "amendmentForm.number.range",
+        "messageArgs": ["0", "9"]
+      }
+    ]
+  },
+  "fields": {
+    "ClaimDetailsViewField.INITIAL": { "ruleGroup": "name" },
+    "ClaimDetailsViewField.FORENAME": { "ruleGroup": "name" },
+    "ClaimDetailsViewField.SURNAME": { "ruleGroup": "name" },
+    "CivilClaimDetailsViewField.POSTCODE": { "ruleGroup": "postcode" },
+    "MediationClaimDetailsViewField.POSTCODE": { "ruleGroup": "postcode" },
+    "CivilClaimDetailsViewField.UNIQUE_CLIENT_NUMBER": { "ruleGroup": "uniqueClientNumber" },
+    "MediationClaimDetailsViewField.UNIQUE_CLIENT_NUMBER": { "ruleGroup": "uniqueClientNumber" },
+    "CivilClaimDetailsViewField.HOME_OFFICE_CLIENT_NUMBER": {
+      "ruleGroup": "homeOfficeClientNumber"
+    },
+    "MediationClaimDetailsViewField.CLIENT_2_FORENAME": { "ruleGroup": "name" },
+    "MediationClaimDetailsViewField.CLIENT_2_SURNAME": { "ruleGroup": "name" },
+    "MediationClaimDetailsViewField.CLIENT_2_POSTCODE": { "ruleGroup": "postcode" },
+    "MediationClaimDetailsViewField.CLIENT_2_UCN": { "ruleGroup": "uniqueClientNumber" },
+    "CrimeClaimDetailsViewField.MATTER_TYPE_CODE": { "ruleGroup": "crimeMatterTypeCode" },
+    "CivilClaimDetailsViewField.MATTER_TYPE_CODE_1": { "ruleGroup": "civilMatterTypeCode" },
+    "CivilClaimDetailsViewField.MATTER_TYPE_CODE_2": { "ruleGroup": "civilMatterTypeCode" },
+    "MediationClaimDetailsViewField.MATTER_TYPE_CODE_1": { "ruleGroup": "mediationMatterTypeCode" },
+    "MediationClaimDetailsViewField.MATTER_TYPE_CODE_2": { "ruleGroup": "mediationMatterTypeCode" },
+    "ClaimDetailsViewField.FEE_CODE": { "ruleGroup": "feeCode" },
+    "CrimeClaimDetailsViewField.POLICE_STATION_COURT_PRISON_ID": {
+      "ruleGroup": "policeStationCourtPrisonId"
+    },
+    "CrimeClaimDetailsViewField.SCHEME_ID": { "ruleGroup": "schemeId" },
+    "CrimeClaimDetailsViewField.DSCC_NUMBER": { "ruleGroup": "dsccNumber" },
+    "CrimeClaimDetailsViewField.MAAT_ID": { "ruleGroup": "maatId" },
+    "CrimeClaimDetailsViewField.PRISON_LAW_PRIOR_APPROVAL_NUMBER": {
+      "ruleGroup": "prisonLawPriorApprovalNumber"
+    },
+    "CrimeClaimDetailsViewField.SUSPECTS_DEFENDANTS_COUNT": { "ruleGroup": "countRange" },
+    "CrimeClaimDetailsViewField.POLICE_STATION_COURT_ATTENDANCES_COUNT": {
+      "ruleGroup": "countRange"
+    },
+    "CrimeClaimDetailsViewField.TRAVEL_COSTS": { "ruleGroup": "travelCosts" },
+    "CrimeClaimDetailsViewField.WAITING_COSTS": { "ruleGroup": "waitingCosts" },
+    "MediationClaimDetailsViewField.CLAIM_ID": { "ruleGroup": "claimId" },
+    "MediationClaimDetailsViewField.MEDIATION_SESSIONS_COUNT": {
+      "ruleGroup": "mediationSessionsCount"
+    },
+    "MediationClaimDetailsViewField.MEDIATION_TIME_MINUTES": {
+      "ruleGroup": "mediationTimeMinutes"
+    },
+    "MediationClaimDetailsViewField.OUTREACH_LOCATION": { "ruleGroup": "outreachLocation" },
+    "ClaimDetailsViewField.CASE_REFERENCE_NUMBER": { "ruleGroup": "caseReferenceNumber" },
+    "CivilClaimDetailsViewField.UNIQUE_FILE_NUMBER": { "ruleGroup": "uniqueFileNumber" },
+    "CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER": { "ruleGroup": "uniqueFileNumber" },
+    "CivilClaimDetailsViewField.CASE_ID": { "ruleGroup": "claimId" },
+    "CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL": {
+      "ruleGroup": "scheduleReferenceCivil"
+    },
+    "CivilClaimDetailsViewField.PROCUREMENT_AREA": { "ruleGroup": "locationCode" },
+    "CivilClaimDetailsViewField.DELIVERY_LOCATION": { "ruleGroup": "locationCode" },
+    "CivilClaimDetailsViewField.ACCESS_POINT": { "ruleGroup": "accessPoint" },
+    "CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER": { "ruleGroup": "localAuthorityNumber" },
+    "CivilClaimDetailsViewField.VALUE_OF_COSTS": { "ruleGroup": "mediumCostRange" },
+    "CivilClaimDetailsViewField.EXCEPTIONAL_CASE_FUNDING": {
+      "ruleGroup": "exceptionalCaseFunding"
+    },
+    "CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_REFERENCE": {
+      "ruleGroup": "civilLegalAdviceReference"
+    },
+    "CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_EXEMPTION": {
+      "ruleGroup": "civilLegalAdviceExemption"
+    },
+    "CivilClaimDetailsViewField.ADVICE_TIME": { "ruleGroup": "timeRange" },
+    "CivilClaimDetailsViewField.TRAVEL_TIME": { "ruleGroup": "timeRange" },
+    "CivilClaimDetailsViewField.WAITING_TIME": { "ruleGroup": "timeRange" },
+    "CivilClaimDetailsViewField.MEDICAL_REPORTS_CLAIMED": {
+      "ruleGroup": "medicalReportsClaimed"
+    },
+    "CivilClaimDetailsViewField.SURGERY_CLIENTS_COUNT": { "ruleGroup": "surgeryClientsCount" },
+    "CivilClaimDetailsViewField.SURGERY_MATTERS_COUNT": { "ruleGroup": "surgeryMattersCount" },
+    "CivilClaimDetailsViewField.HOME_OFFICE": { "ruleGroup": "homeOffice" },
+    "CivilClaimDetailsViewField.MENTAL_HEALTH_TRIBUNAL_REFERENCE": {
+      "ruleGroup": "mentalHealthTribunalReference"
+    },
+    "CivilClaimDetailsViewField.PRIOR_AUTHORITY_REFERENCE": {
+      "ruleGroup": "priorAuthorityReference"
+    },
+    "ClaimDetailsViewField.PROFIT_COST": { "ruleGroup": "largeCostRange" },
+    "ClaimDetailsViewField.DISBURSEMENTS": { "ruleGroup": "largeCostRange" },
+    "ClaimDetailsViewField.DISBURSEMENTS_VAT": { "ruleGroup": "disbursementsVat" },
+    "CivilClaimDetailsViewField.COUNSELS_COST": { "ruleGroup": "mediumCostRange" },
+    "CivilClaimDetailsViewField.TRAVEL_AND_WAITING_COSTS": { "ruleGroup": "travelCosts" },
+    "CivilClaimDetailsViewField.DETENTION_TRAVEL": { "ruleGroup": "detentionTravel" },
+    "CivilClaimDetailsViewField.JR_FORM_FILLING": { "ruleGroup": "travelCosts" },
+    "CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE": { "ruleGroup": "smallCountRange" },
+    "CivilClaimDetailsViewField.CMRH_TELEPHONE": { "ruleGroup": "smallCountRange" },
+    "CivilClaimDetailsViewField.CMRH_ORAL": { "ruleGroup": "smallCountRange" },
+    "CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT": { "ruleGroup": "civilOutcomeCode" },
+    "CivilClaimDetailsViewField.STAGE_REACHED": { "ruleGroup": "civilStageReached" }
+  }
+}

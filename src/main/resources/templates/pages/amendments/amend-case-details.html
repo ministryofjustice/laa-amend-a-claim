@@ -12,20 +12,20 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 
-      <th:block th:replace="~{fragments/amendments-assessed-banner :: assessedBanner}"></th:block>
-
-      <h1 class="govuk-heading-l">
-        <span th:text="#{amendments.title}"></span>
-      </h1>
-
-      <h2 class="govuk-heading-m" th:text="#{claimDetails.caseHeading}"></h2>
-
       <form method="post"
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-case-details(submissionId=${submissionId}, claimId=${claimId})}"
             th:object="${caseDetailsForm}"
             th:with="formErrors=${@ThymeleafUtils.orEmpty(caseDetailsFormErrors)}">
 
+        <th:block th:replace="~{fragments/amendments-assessed-banner :: assessedBanner}"></th:block>
         <th:block th:replace="~{fragments/error-summary :: error-summary(${formErrors})}"></th:block>
+
+        <h1 class="govuk-heading-l">
+          <span th:text="#{amendments.title}"></span>
+        </h1>
+
+        <h2 class="govuk-heading-m" th:text="#{claimDetails.caseHeading}"></h2>
+
 
         <div class="govuk-summary-card">
           <div class="govuk-summary-card__title-wrapper">
@@ -38,17 +38,22 @@
 
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key" th:text="#{amendments.item}"></dt>
-                <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.current}"></dd>
-                <dd class="govuk-summary-list__value govuk-!-font-weight-bold" th:text="#{amendments.amended}"></dd>
+                <dd class="govuk-summary-list__value govuk-!-font-weight-bold"
+                    th:text="#{amendments.current}"></dd>
+                <dd class="govuk-summary-list__value govuk-!-font-weight-bold"
+                    th:text="#{amendments.amended}"></dd>
               </div>
 
               <div class="govuk-summary-list__row"
                    th:each="entry : ${caseView.caseDetailsRows()}">
-                <dt class="govuk-summary-list__key" th:text="#{${'claimCase.rows.' + entry.key.name()}}"></dt>
-                <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
+                <dt class="govuk-summary-list__key"
+                    th:text="#{${'claimCase.rows.' + entry.key.name()}}"></dt>
+                <dd class="govuk-summary-list__value"
+                    th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
                 <dd class="govuk-summary-list__value">
                   <th:block th:if="${entry.key.isEditable(claimIsAssessed)}">
-                    <th:block th:replace="~{fragments/amendments/amendment-input :: amendmentInput(${entry.key}, ${'claimCase.rows.' + entry.key.name()}, ${formErrors})}"></th:block>
+                    <th:block
+                        th:replace="~{fragments/amendments/amendment-input :: amendmentInput(${entry.key}, ${'claimCase.rows.' + entry.key.name()}, ${formErrors})}"></th:block>
                   </th:block>
                 </dd>
               </div>

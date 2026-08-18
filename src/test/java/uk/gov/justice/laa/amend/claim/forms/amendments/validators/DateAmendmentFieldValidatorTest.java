@@ -8,9 +8,11 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField;
 
 class DateAmendmentFieldValidatorTest {
 
@@ -73,6 +75,321 @@ class DateAmendmentFieldValidatorTest {
     var fieldError = errors.getFieldError("inputs[CASE_CONCLUDED_DATE]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
     assertThat(fieldError.getArguments()[0]).isEqualTo("Case concluded date");
+  }
+
+  @Test
+  void acceptsWellFormedCivilCaseConcludedClaimedDate() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE,
+            Map.of(
+                "CASE_CONCLUDED_CLAIMED_DATE-day", "1",
+                "CASE_CONCLUDED_CLAIMED_DATE-month", "6",
+                "CASE_CONCLUDED_CLAIMED_DATE-year", "2025"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void acceptsCompletelyBlankCivilCaseConcludedClaimedDate() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE,
+            Map.of(
+                "CASE_CONCLUDED_CLAIMED_DATE-day", "",
+                "CASE_CONCLUDED_CLAIMED_DATE-month", "",
+                "CASE_CONCLUDED_CLAIMED_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleCivilCaseConcludedClaimedDateNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE,
+            Map.of(
+                "CASE_CONCLUDED_CLAIMED_DATE-day", "31",
+                "CASE_CONCLUDED_CLAIMED_DATE-month", "2",
+                "CASE_CONCLUDED_CLAIMED_DATE-year", "2025"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CASE_CONCLUDED_CLAIMED_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Case concluded date or case claimed date");
+  }
+
+  @Test
+  void rejectsPartiallyFilledCivilCaseConcludedClaimedDateNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE,
+            Map.of(
+                "CASE_CONCLUDED_CLAIMED_DATE-day", "1",
+                "CASE_CONCLUDED_CLAIMED_DATE-month", "",
+                "CASE_CONCLUDED_CLAIMED_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CASE_CONCLUDED_CLAIMED_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+  }
+
+  @Test
+  void acceptsWellFormedTransferDate() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.TRANSFER_DATE,
+            Map.of(
+                "TRANSFER_DATE-day", "1",
+                "TRANSFER_DATE-month", "6",
+                "TRANSFER_DATE-year", "2025"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void acceptsCompletelyBlankTransferDate() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.TRANSFER_DATE,
+            Map.of(
+                "TRANSFER_DATE-day", "",
+                "TRANSFER_DATE-month", "",
+                "TRANSFER_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleTransferDateNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.TRANSFER_DATE,
+            Map.of(
+                "TRANSFER_DATE-day", "31",
+                "TRANSFER_DATE-month", "2",
+                "TRANSFER_DATE-year", "2025"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[TRANSFER_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Transfer date");
+  }
+
+  @Test
+  void rejectsPartiallyFilledTransferDateNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.TRANSFER_DATE,
+            Map.of(
+                "TRANSFER_DATE-day", "1",
+                "TRANSFER_DATE-month", "",
+                "TRANSFER_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[TRANSFER_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+  }
+
+  @Test
+  void acceptsWellFormedSurgeryDate() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.SURGERY_DATE,
+            Map.of(
+                "SURGERY_DATE-day", "1",
+                "SURGERY_DATE-month", "6",
+                "SURGERY_DATE-year", "2025"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void acceptsCompletelyBlankSurgeryDate() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.SURGERY_DATE,
+            Map.of(
+                "SURGERY_DATE-day", "",
+                "SURGERY_DATE-month", "",
+                "SURGERY_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleSurgeryDateNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.SURGERY_DATE,
+            Map.of(
+                "SURGERY_DATE-day", "31",
+                "SURGERY_DATE-month", "2",
+                "SURGERY_DATE-year", "2025"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[SURGERY_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Surgery date");
+  }
+
+  @Test
+  void rejectsPartiallyFilledSurgeryDateNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.SURGERY_DATE,
+            Map.of(
+                "SURGERY_DATE-day", "1",
+                "SURGERY_DATE-month", "",
+                "SURGERY_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[SURGERY_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+  }
+
+  @Test
+  void acceptsWellFormedCivilDateOfBirth() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.DATE_OF_BIRTH,
+            Map.of(
+                "DATE_OF_BIRTH-day", "15",
+                "DATE_OF_BIRTH-month", "3",
+                "DATE_OF_BIRTH-year", "1990"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleCivilDateOfBirthNamingTheField() {
+    var errors =
+        validate(
+            CivilClaimDetailsViewField.DATE_OF_BIRTH,
+            Map.of(
+                "DATE_OF_BIRTH-day", "31",
+                "DATE_OF_BIRTH-month", "2",
+                "DATE_OF_BIRTH-year", "1990"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[DATE_OF_BIRTH]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Date of birth");
+  }
+
+  @Test
+  void acceptsWellFormedMediationDateOfBirth() {
+    var errors =
+        validate(
+            MediationClaimDetailsViewField.DATE_OF_BIRTH,
+            Map.of(
+                "DATE_OF_BIRTH-day", "15",
+                "DATE_OF_BIRTH-month", "3",
+                "DATE_OF_BIRTH-year", "1990"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleMediationDateOfBirthNamingTheField() {
+    var errors =
+        validate(
+            MediationClaimDetailsViewField.DATE_OF_BIRTH,
+            Map.of(
+                "DATE_OF_BIRTH-day", "31",
+                "DATE_OF_BIRTH-month", "2",
+                "DATE_OF_BIRTH-year", "1990"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[DATE_OF_BIRTH]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Date of birth");
+  }
+
+  @Test
+  void acceptsWellFormedClient2DateOfBirth() {
+    var errors =
+        validate(
+            MediationClaimDetailsViewField.CLIENT_2_DATE_OF_BIRTH,
+            Map.of(
+                "CLIENT_2_DATE_OF_BIRTH-day", "15",
+                "CLIENT_2_DATE_OF_BIRTH-month", "3",
+                "CLIENT_2_DATE_OF_BIRTH-year", "1990"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleClient2DateOfBirthNamingTheField() {
+    var errors =
+        validate(
+            MediationClaimDetailsViewField.CLIENT_2_DATE_OF_BIRTH,
+            Map.of(
+                "CLIENT_2_DATE_OF_BIRTH-day", "31",
+                "CLIENT_2_DATE_OF_BIRTH-month", "2",
+                "CLIENT_2_DATE_OF_BIRTH-year", "1990"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[CLIENT_2_DATE_OF_BIRTH]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Date of birth");
+  }
+
+  @Test
+  void acceptsWellFormedRepresentationOrderDate() {
+    var errors =
+        validate(
+            CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE,
+            Map.of(
+                "REPRESENTATION_ORDER_DATE-day", "15",
+                "REPRESENTATION_ORDER_DATE-month", "3",
+                "REPRESENTATION_ORDER_DATE-year", "2020"));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void acceptsCompletelyBlankRepresentationOrderDate() {
+    var errors =
+        validate(
+            CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE,
+            Map.of(
+                "REPRESENTATION_ORDER_DATE-day", "",
+                "REPRESENTATION_ORDER_DATE-month", "",
+                "REPRESENTATION_ORDER_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isFalse();
+  }
+
+  @Test
+  void rejectsImpossibleRepresentationOrderDateNamingTheField() {
+    var errors =
+        validate(
+            CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE,
+            Map.of(
+                "REPRESENTATION_ORDER_DATE-day", "31",
+                "REPRESENTATION_ORDER_DATE-month", "2",
+                "REPRESENTATION_ORDER_DATE-year", "2020"));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[REPRESENTATION_ORDER_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Representation order date");
+  }
+
+  @Test
+  void rejectsPartiallyFilledRepresentationOrderDateNamingTheField() {
+    var errors =
+        validate(
+            CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE,
+            Map.of(
+                "REPRESENTATION_ORDER_DATE-day", "15",
+                "REPRESENTATION_ORDER_DATE-month", "3",
+                "REPRESENTATION_ORDER_DATE-year", ""));
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[REPRESENTATION_ORDER_DATE]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.date.invalid");
   }
 
   private Errors validate(ClaimViewField<?> field, Map<String, String> inputs) {
