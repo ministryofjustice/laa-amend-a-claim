@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments.validators.unique;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
