@@ -98,6 +98,6 @@ public class AssessmentOutcomeController {
     model.addAttribute("form", form);
     model.addAttribute("hasAssessment", claim.isHasAssessment());
 
-    return "assessment-outcome";
+    return "pages/assessment-outcome";
   }
 }

@@ -45,7 +45,7 @@ public class BulkUploadControllerTest extends BaseControllerTest {
 
   @Test
   void testOnPageLoadReturnsView() throws Exception {
-    mockMvc.perform(get(PATH)).andExpect(status().isOk()).andExpect(view().name("bulk-upload"));
+    mockMvc.perform(get(PATH)).andExpect(status().isOk()).andExpect(view().name("pages/bulk-upload"));
   }
 
   @Test
@@ -67,7 +67,7 @@ public class BulkUploadControllerTest extends BaseControllerTest {
     mockMvc
         .perform(multipart(PATH).with(csrf()))
         .andExpect(status().isBadRequest())
-        .andExpect(view().name("bulk-upload"))
+        .andExpect(view().name("pages/bulk-upload"))
         .andExpect(
             model().attribute("fileError", new ThymeleafMessage("bulkUpload.fileError.required")));
   }
@@ -78,7 +78,7 @@ public class BulkUploadControllerTest extends BaseControllerTest {
     mockMvc
         .perform(multipart(PATH).file(file).with(csrf()))
         .andExpect(status().isBadRequest())
-        .andExpect(view().name("bulk-upload"))
+        .andExpect(view().name("pages/bulk-upload"))
         .andExpect(
             model().attribute("fileError", new ThymeleafMessage("bulkUpload.fileError.required")));
   }
@@ -89,7 +89,7 @@ public class BulkUploadControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(RESULT_PATH).flashAttr("result", result))
         .andExpect(status().isOk())
-        .andExpect(view().name("bulk-upload-result"));
+        .andExpect(view().name("pages/bulk-upload-result"));
   }
 
   @Test

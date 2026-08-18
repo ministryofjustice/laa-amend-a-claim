@@ -38,7 +38,7 @@ public class BulkUploadController {
 
   @GetMapping
   public String onPageLoad() {
-    return "bulk-upload";
+    return "pages/bulk-upload";
   }
 
   @GetMapping("/result")
@@ -47,7 +47,7 @@ public class BulkUploadController {
       return "redirect:/bulk-upload";
     }
 
-    return "bulk-upload-result";
+    return "pages/bulk-upload-result";
   }
 
   @GetMapping(value = "/example", produces = "text/csv")
@@ -72,7 +72,7 @@ public class BulkUploadController {
     if (file == null || Strings.isBlank(file.getOriginalFilename())) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       model.addAttribute("fileError", new ThymeleafMessage("bulkUpload.fileError.required"));
-      return "bulk-upload";
+      return "pages/bulk-upload";
     }
 
     var result = bulkUploadService.upload(file, userId);

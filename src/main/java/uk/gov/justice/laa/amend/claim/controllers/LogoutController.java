@@ -15,6 +15,6 @@ public class LogoutController {
     if (message != null && message.contains("expired")) {
       model.addAttribute("timeout", true);
     }
-    return "logout";
+    return "pages/logout";
   }
 }

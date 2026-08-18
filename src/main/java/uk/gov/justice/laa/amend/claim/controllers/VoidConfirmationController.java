@@ -74,6 +74,6 @@ public class VoidConfirmationController {
     model.addAttribute("submissionId", submissionId);
     model.addAttribute("submissionFailed", submissionFailed);
 
-    return "void-confirmation";
+    return "pages/void-confirmation";
   }
 }

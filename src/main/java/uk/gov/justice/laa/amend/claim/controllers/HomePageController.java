@@ -63,7 +63,7 @@ public class HomePageController {
       if (errors.hasErrors()) {
         model.addAttribute("org.springframework.validation.BindingResult.form", errors);
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        return "index";
+        return "pages/index";
       }
       var result =
           claimService.searchClaims(
@@ -83,7 +83,7 @@ public class HomePageController {
       session.setAttribute("searchUrl", redirectUrl);
     }
 
-    return "index";
+    return "pages/index";
   }
 
   @PostMapping("/")
@@ -93,7 +93,7 @@ public class HomePageController {
       HttpServletResponse response) {
     if (bindingResult.hasErrors()) {
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      return "index";
+      return "pages/index";
     }
     return "redirect:" + SearchQuery.from(form).getRedirectUrl();
   }

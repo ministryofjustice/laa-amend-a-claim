@@ -24,7 +24,7 @@ public class DummyUserSecurityController {
   @GetMapping()
   public String onPageLoad(Model model) {
     model.addAttribute("roles", service.getRoles());
-    return "dummy-user-security";
+    return "pages/dummy-user-security";
   }
 
   @PostMapping()

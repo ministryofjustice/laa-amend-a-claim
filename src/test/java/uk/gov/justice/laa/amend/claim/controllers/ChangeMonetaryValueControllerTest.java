@@ -92,7 +92,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath(cost.getPath())).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("change-monetary-value"))
+        .andExpect(view().name("pages/change-monetary-value"))
         .andExpect(model().attribute("cost", equalTo(cost)))
         .andExpect(model().attribute("form", hasProperty("value", nullValue())))
         .andExpect(model().attribute("claimFieldRow", claimField.toClaimFieldRow()));
@@ -134,7 +134,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath(cost.getPath())).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("change-monetary-value"))
+        .andExpect(view().name("pages/change-monetary-value"))
         .andExpect(model().attribute("cost", equalTo(cost)))
         .andExpect(model().attribute("form", hasProperty("value", is("100.00"))));
   }
@@ -169,7 +169,7 @@ class ChangeMonetaryValueControllerTest extends BaseControllerTest {
     mockMvc
         .perform(post(buildPath(cost.getPath())).session(session).with(csrf()).param("value", "-1"))
         .andExpect(status().isBadRequest())
-        .andExpect(view().name("change-monetary-value"))
+        .andExpect(view().name("pages/change-monetary-value"))
         .andExpect(content().string(containsString("must not be negative")));
   }
 

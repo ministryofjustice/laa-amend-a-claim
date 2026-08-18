@@ -30,7 +30,7 @@ public class ConfirmationController {
       model.addAttribute("submissionId", submissionId);
       model.addAttribute("claimId", claimId);
 
-      return "confirmation";
+      return "pages/confirmation";
     }
 
     throw new ResponseStatusException(HttpStatus.NOT_FOUND);

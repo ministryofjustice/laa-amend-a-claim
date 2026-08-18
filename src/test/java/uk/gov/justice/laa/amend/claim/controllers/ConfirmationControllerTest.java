@@ -37,7 +37,7 @@ public class ConfirmationControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("confirmation"))
+        .andExpect(view().name("pages/confirmation"))
         .andExpect(model().attribute("submissionId", submissionId))
         .andExpect(model().attribute("claimId", claimId));
   }

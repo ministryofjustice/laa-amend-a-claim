@@ -39,7 +39,7 @@ public class MaintenancePageControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get("/maintenance"))
         .andExpect(status().isOk())
-        .andExpect(view().name("maintenance"))
+        .andExpect(view().name("pages/maintenance"))
         .andExpect(model().attribute("maintenanceMessage", pageMessage))
         .andExpect(model().attribute("maintenanceTitle", pageTitle));
   }

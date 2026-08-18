@@ -50,7 +50,7 @@ public class AssessmentOutcomeControllerTest extends BaseControllerTest {
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
         .andExpect(model().attributeExists("form"))
-        .andExpect(view().name("assessment-outcome"));
+        .andExpect(view().name("pages/assessment-outcome"));
   }
 
   @Test
@@ -63,7 +63,7 @@ public class AssessmentOutcomeControllerTest extends BaseControllerTest {
                 .param("assessmentOutcome", "")
                 .param("contingencyAssessment", ""))
         .andExpect(status().isBadRequest())
-        .andExpect(view().name("assessment-outcome"));
+        .andExpect(view().name("pages/assessment-outcome"));
   }
 
   @Test

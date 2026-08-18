@@ -95,6 +95,6 @@ public class ChangeAssessedTotalsController {
     model.addAttribute("form", form);
     String redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
     model.addAttribute("redirectUrl", redirectUrl);
-    return "assessed-totals";
+    return "pages/assessed-totals";
   }
 }
