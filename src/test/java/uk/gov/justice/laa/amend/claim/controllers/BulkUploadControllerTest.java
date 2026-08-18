@@ -45,7 +45,10 @@ public class BulkUploadControllerTest extends BaseControllerTest {
 
   @Test
   void testOnPageLoadReturnsView() throws Exception {
-    mockMvc.perform(get(PATH)).andExpect(status().isOk()).andExpect(view().name("pages/bulk-upload"));
+    mockMvc
+        .perform(get(PATH))
+        .andExpect(status().isOk())
+        .andExpect(view().name("pages/bulk-upload"));
   }
 
   @Test
