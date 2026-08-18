@@ -97,6 +97,6 @@ public class ClaimReviewController {
     model.addAttribute("submissionFailed", submissionFailed);
     model.addAttribute("validationFailed", validationFailed);
 
-    return "review-and-amend";
+    return "pages/review-and-amend";
   }
 }

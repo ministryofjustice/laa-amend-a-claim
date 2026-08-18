@@ -108,7 +108,7 @@ public class ChangeMonetaryValueController {
     model.addAttribute("redirectUrl", getRedirectUrl(submissionId, claimId));
     model.addAttribute("claimFieldRow", claimField.toClaimFieldRow());
 
-    return "change-monetary-value";
+    return "pages/change-monetary-value";
   }
 
   private String getAction(UUID submissionId, UUID claimId, Cost cost) {

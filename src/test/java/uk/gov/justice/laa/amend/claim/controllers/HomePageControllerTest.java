@@ -34,7 +34,7 @@ public class HomePageControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get("/"))
         .andExpect(status().isOk())
-        .andExpect(view().name("index"))
+        .andExpect(view().name("pages/index"))
         .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
   }
 
@@ -58,7 +58,7 @@ public class HomePageControllerTest extends BaseControllerTest {
                 .param("uniqueFileNumber", "123456/789")
                 .param("caseReferenceNumber", "789"))
         .andExpect(status().isOk())
-        .andExpect(view().name("index"))
+        .andExpect(view().name("pages/index"))
         .andExpect(model().attribute("form", hasProperty("officeCode", is("123456"))))
         .andExpect(model().attribute("form", hasProperty("submissionDateMonth", is("3"))))
         .andExpect(model().attribute("form", hasProperty("submissionDateYear", is("2007"))))
@@ -113,7 +113,7 @@ public class HomePageControllerTest extends BaseControllerTest {
     mockMvc
         .perform(post("/").with(csrf()).param("officeCode", "").param("uniqueFileNumber", "123"))
         .andExpect(status().isBadRequest())
-        .andExpect(view().name("index"));
+        .andExpect(view().name("pages/index"));
   }
 
   @Test

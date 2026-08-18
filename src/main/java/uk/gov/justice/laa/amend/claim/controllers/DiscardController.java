@@ -27,7 +27,7 @@ public class DiscardController {
     model.addAttribute("submissionId", submissionId);
     model.addAttribute("claimId", claimId);
 
-    return "discard";
+    return "pages/discard";
   }
 
   @PostMapping

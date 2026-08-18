@@ -39,13 +39,13 @@ public class ErrorPageController implements ErrorController {
       String referenceNumber = referenceNumberFactory.create();
       model.addAttribute("referenceNumber", referenceNumber);
       log.error("Something went wrong. Reference: {}. Status: {}", referenceNumber, status);
-      return "error";
+      return "pages/error";
     }
   }
 
   @RequestMapping("not-found")
   public String handleNotFound(HttpServletResponse response) {
     response.setStatus(SC_NOT_FOUND);
-    return "not-found";
+    return "pages/not-found";
   }
 }

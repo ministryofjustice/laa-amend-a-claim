@@ -105,6 +105,6 @@ public class ChangeAllowedTotalsController {
     model.addAttribute("form", form);
     String redirectUrl = String.format("/submissions/%s/claims/%s/review", submissionId, claimId);
     model.addAttribute("redirectUrl", redirectUrl);
-    return "allowed-totals";
+    return "pages/allowed-totals";
   }
 }

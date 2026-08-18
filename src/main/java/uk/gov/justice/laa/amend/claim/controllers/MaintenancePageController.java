@@ -22,6 +22,6 @@ public class MaintenancePageController {
 
     model.addAttribute("maintenanceMessage", maintenanceService.getMessage());
     model.addAttribute("maintenanceTitle", maintenanceService.getTitle());
-    return "maintenance";
+    return "pages/maintenance";
   }
 }

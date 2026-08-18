@@ -58,7 +58,7 @@ class ChangeAllowedTotalsControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("allowed-totals"))
+        .andExpect(view().name("pages/allowed-totals"))
         .andExpect(model().attribute("form", hasProperty("allowedTotalVat", nullValue())))
         .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", nullValue())));
   }
@@ -72,7 +72,7 @@ class ChangeAllowedTotalsControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("allowed-totals"))
+        .andExpect(view().name("pages/allowed-totals"))
         .andExpect(model().attribute("form", hasProperty("allowedTotalVat", nullValue())))
         .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", nullValue())));
   }
@@ -113,7 +113,7 @@ class ChangeAllowedTotalsControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("allowed-totals"))
+        .andExpect(view().name("pages/allowed-totals"))
         .andExpect(model().attribute("form", hasProperty("allowedTotalVat", is("300.00"))))
         .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", is("300.00"))));
   }
@@ -128,7 +128,7 @@ class ChangeAllowedTotalsControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("allowed-totals"))
+        .andExpect(view().name("pages/allowed-totals"))
         .andExpect(model().attribute("form", hasProperty("allowedTotalVat", is("300.00"))))
         .andExpect(model().attribute("form", hasProperty("allowedTotalInclVat", is("300.00"))));
   }
@@ -218,7 +218,7 @@ class ChangeAllowedTotalsControllerTest extends BaseControllerTest {
                 .param("allowedTotalVat", "-1")
                 .param("allowedTotalInclVat", "-1"))
         .andExpect(status().isBadRequest())
-        .andExpect(view().name("allowed-totals"))
+        .andExpect(view().name("pages/allowed-totals"))
         .andExpect(model().hasErrors());
   }
 
@@ -234,7 +234,7 @@ class ChangeAllowedTotalsControllerTest extends BaseControllerTest {
                 .param("allowedTotalVat", "100.000")
                 .param("allowedTotalInclVat", "100.000"))
         .andExpect(status().isBadRequest())
-        .andExpect(view().name("allowed-totals"))
+        .andExpect(view().name("pages/allowed-totals"))
         .andExpect(model().hasErrors());
   }
 

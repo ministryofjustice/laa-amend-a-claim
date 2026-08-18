@@ -58,7 +58,7 @@ public class VoidConfirmationControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("void-confirmation"))
+        .andExpect(view().name("pages/void-confirmation"))
         .andExpect(model().attributeExists("claim"))
         .andExpect(model().attribute("claimId", claimId))
         .andExpect(model().attribute("submissionId", submissionId))
@@ -103,7 +103,7 @@ public class VoidConfirmationControllerTest extends BaseControllerTest {
     mockMvc
         .perform(post(buildPath()).session(session).with(csrf()))
         .andExpect(status().is4xxClientError())
-        .andExpect(view().name("void-confirmation"))
+        .andExpect(view().name("pages/void-confirmation"))
         .andExpect(model().attributeExists("claim"))
         .andExpect(model().attribute("claimId", claimId))
         .andExpect(model().attribute("submissionId", submissionId))

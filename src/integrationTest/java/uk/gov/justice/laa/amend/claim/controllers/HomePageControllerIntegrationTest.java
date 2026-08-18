@@ -32,7 +32,7 @@ class HomePageControllerIntegrationTest extends ControllerIntegrationTest {
     mockMvc
         .perform(get("/"))
         .andExpect(status().isOk())
-        .andExpect(view().name("index"))
+        .andExpect(view().name("pages/index"))
         .andExpect(model().attributeExists("form"));
   }
 
@@ -50,7 +50,7 @@ class HomePageControllerIntegrationTest extends ControllerIntegrationTest {
                 .formField("areaOfLaw", "")
                 .formField("escapeCase", ""))
         .andExpect(status().isBadRequest())
-        .andExpect(view().name("index"));
+        .andExpect(view().name("pages/index"));
   }
 
   @Test
@@ -67,7 +67,7 @@ class HomePageControllerIntegrationTest extends ControllerIntegrationTest {
                 .formField("areaOfLaw", "")
                 .formField("escapeCase", ""))
         .andExpect(status().isBadRequest())
-        .andExpect(view().name("index"));
+        .andExpect(view().name("pages/index"));
   }
 
   @Test
@@ -92,7 +92,7 @@ class HomePageControllerIntegrationTest extends ControllerIntegrationTest {
     mockMvc
         .perform(get("/").param("page", "1").param("officeCode", "0P322F"))
         .andExpect(status().isOk())
-        .andExpect(view().name("index"))
+        .andExpect(view().name("pages/index"))
         .andExpect(model().attributeExists("viewModel"));
   }
 
@@ -108,7 +108,7 @@ class HomePageControllerIntegrationTest extends ControllerIntegrationTest {
                 .formField("uniqueFileNumber", "invalid!")
                 .formField("caseReferenceNumber", ""))
         .andExpect(status().isBadRequest())
-        .andExpect(view().name("index"));
+        .andExpect(view().name("pages/index"));
   }
 
   @Test
