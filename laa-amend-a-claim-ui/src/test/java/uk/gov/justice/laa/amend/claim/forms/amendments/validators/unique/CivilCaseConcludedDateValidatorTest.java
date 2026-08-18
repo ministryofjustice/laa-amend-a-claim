@@ -55,17 +55,17 @@ class CivilCaseConcludedDateValidatorTest {
         // Mixed valid and invalid characters
         Arguments.of("1a", "12", "2020"),
         Arguments.of("15", "1b", "2020"),
-        Arguments.of("15", "12", "20c0")
-    );
+        Arguments.of("15", "12", "20c0"));
   }
 
   @ParameterizedTest
   @MethodSource("invalidDateProvider")
   void shouldNotAddErrorsForInvalidDates(String day, String month, String year) {
-    Map<String, String> input = Map.of(
-        "CASE_CONCLUDED_CLAIMED_DATE-day", day,
-        "CASE_CONCLUDED_CLAIMED_DATE-month", month,
-        "CASE_CONCLUDED_CLAIMED_DATE-year", year);
+    Map<String, String> input =
+        Map.of(
+            "CASE_CONCLUDED_CLAIMED_DATE-day", day,
+            "CASE_CONCLUDED_CLAIMED_DATE-month", month,
+            "CASE_CONCLUDED_CLAIMED_DATE-year", year);
 
     Errors result = validate(input);
 
@@ -74,10 +74,11 @@ class CivilCaseConcludedDateValidatorTest {
 
   @Test
   void shouldNotAddErrorsForValidDate() {
-    Map<String, String> input = Map.of(
-        "CASE_CONCLUDED_CLAIMED_DATE-day", "15",
-        "CASE_CONCLUDED_CLAIMED_DATE-month", "12",
-        "CASE_CONCLUDED_CLAIMED_DATE-year", "2020");
+    Map<String, String> input =
+        Map.of(
+            "CASE_CONCLUDED_CLAIMED_DATE-day", "15",
+            "CASE_CONCLUDED_CLAIMED_DATE-month", "12",
+            "CASE_CONCLUDED_CLAIMED_DATE-year", "2020");
 
     Errors result = validate(input);
 
@@ -86,10 +87,11 @@ class CivilCaseConcludedDateValidatorTest {
 
   @Test
   void shouldNotAddErrorsForFirstValidDate() {
-    Map<String, String> input = Map.of(
-        "CASE_CONCLUDED_CLAIMED_DATE-day", "1",
-        "CASE_CONCLUDED_CLAIMED_DATE-month", "4",
-        "CASE_CONCLUDED_CLAIMED_DATE-year", "2013");
+    Map<String, String> input =
+        Map.of(
+            "CASE_CONCLUDED_CLAIMED_DATE-day", "1",
+            "CASE_CONCLUDED_CLAIMED_DATE-month", "4",
+            "CASE_CONCLUDED_CLAIMED_DATE-year", "2013");
 
     Errors result = validate(input);
 
@@ -98,10 +100,11 @@ class CivilCaseConcludedDateValidatorTest {
 
   @Test
   void shouldAddErrorsForOldDate() {
-    Map<String, String> input = Map.of(
-        "CASE_CONCLUDED_CLAIMED_DATE-day", "31",
-        "CASE_CONCLUDED_CLAIMED_DATE-month", "3",
-        "CASE_CONCLUDED_CLAIMED_DATE-year", "2013");
+    Map<String, String> input =
+        Map.of(
+            "CASE_CONCLUDED_CLAIMED_DATE-day", "31",
+            "CASE_CONCLUDED_CLAIMED_DATE-month", "3",
+            "CASE_CONCLUDED_CLAIMED_DATE-year", "2013");
 
     Errors result = validate(input);
 
@@ -112,11 +115,9 @@ class CivilCaseConcludedDateValidatorTest {
         .isEqualTo("Case concluded date or case claimed date");
     assertThat(result.getFieldError("inputs['CASE_CONCLUDED_CLAIMED_DATE']").getArguments()[1])
         .isEqualTo("1 April 2013");
-
   }
 
-  private Errors validate(
-      Map<String, String> inputs) {
+  private Errors validate(Map<String, String> inputs) {
     ClaimDetails claimDetails = MockClaimsFunctions.createMockCivilClaim();
 
     var form = new AmendmentForm();
@@ -127,5 +128,4 @@ class CivilCaseConcludedDateValidatorTest {
         claimDetails, CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE, form, errors);
     return errors;
   }
-
 }

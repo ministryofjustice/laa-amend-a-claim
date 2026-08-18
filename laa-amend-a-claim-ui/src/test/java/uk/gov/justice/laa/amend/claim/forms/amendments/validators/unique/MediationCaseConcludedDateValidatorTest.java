@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments.validators.unique;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -13,23 +13,24 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField;
 
-class CaseStartDateValidatorTest {
+class MediationCaseConcludedDateValidatorTest {
 
-  CaseStartDateValidator validator;
+  MediationCaseConcludedDateValidator validator;
 
   @BeforeEach
   void beforeEach() {
-    validator = new CaseStartDateValidator(TestMessageSources.real());
+    validator = new MediationCaseConcludedDateValidator(TestMessageSources.real());
   }
 
   @Test
   void testAppliesTo() {
-    assertTrue(validator.appliesTo(ClaimDetailsViewField.CASE_START_DATE));
+    assertTrue(validator.appliesTo(MediationClaimDetailsViewField.CASE_CONCLUDED_DATE));
   }
 
   static Stream<Arguments> invalidDateProvider() {
@@ -62,9 +63,9 @@ class CaseStartDateValidatorTest {
   void shouldNotAddErrorsForInvalidDates(String day, String month, String year) {
     Map<String, String> input =
         Map.of(
-            "CASE_START_DATE-day", day,
-            "CASE_START_DATE-month", month,
-            "CASE_START_DATE-year", year);
+            "CASE_CONCLUDED_DATE-day", day,
+            "CASE_CONCLUDED_DATE-month", month,
+            "CASE_CONCLUDED_DATE-year", year);
 
     Errors result = validate(input);
 
@@ -75,9 +76,9 @@ class CaseStartDateValidatorTest {
   void shouldNotAddErrorsForValidDate() {
     Map<String, String> input =
         Map.of(
-            "CASE_START_DATE-day", "15",
-            "CASE_START_DATE-month", "12",
-            "CASE_START_DATE-year", "2020");
+            "CASE_CONCLUDED_DATE-day", "15",
+            "CASE_CONCLUDED_DATE-month", "12",
+            "CASE_CONCLUDED_DATE-year", "2020");
 
     Errors result = validate(input);
 
@@ -88,9 +89,9 @@ class CaseStartDateValidatorTest {
   void shouldNotAddErrorsForFirstValidDate() {
     Map<String, String> input =
         Map.of(
-            "CASE_START_DATE-day", "1",
-            "CASE_START_DATE-month", "1",
-            "CASE_START_DATE-year", "1995");
+            "CASE_CONCLUDED_DATE-day", "1",
+            "CASE_CONCLUDED_DATE-month", "4",
+            "CASE_CONCLUDED_DATE-year", "2013");
 
     Errors result = validate(input);
 
@@ -101,29 +102,30 @@ class CaseStartDateValidatorTest {
   void shouldAddErrorsForOldDate() {
     Map<String, String> input =
         Map.of(
-            "CASE_START_DATE-day", "31",
-            "CASE_START_DATE-month", "12",
-            "CASE_START_DATE-year", "1994");
+            "CASE_CONCLUDED_DATE-day", "31",
+            "CASE_CONCLUDED_DATE-month", "3",
+            "CASE_CONCLUDED_DATE-year", "2013");
 
     Errors result = validate(input);
 
     assertThat(result.hasFieldErrors()).isTrue();
-    assertThat(result.getFieldError("inputs['CASE_START_DATE']").getCode())
-        .isEqualTo(CaseStartDateValidator.INVALID_CODE);
-    assertThat(result.getFieldError("inputs['CASE_START_DATE']").getArguments()[0])
-        .isEqualTo("Case start date");
-    assertThat(result.getFieldError("inputs['CASE_START_DATE']").getArguments()[1])
-        .isEqualTo("1 January 1995");
+    assertThat(result.getFieldError("inputs['CASE_CONCLUDED_DATE']").getCode())
+        .isEqualTo(FieldSpecificAmendmentValidator.DATE_CANT_BE_BEFORE_CODE);
+    assertThat(result.getFieldError("inputs['CASE_CONCLUDED_DATE']").getArguments()[0])
+        .isEqualTo("Case concluded date");
+    assertThat(result.getFieldError("inputs['CASE_CONCLUDED_DATE']").getArguments()[1])
+        .isEqualTo("1 April 2013");
   }
 
   private Errors validate(Map<String, String> inputs) {
-    ClaimDetails claimDetails = MockClaimsFunctions.createMockCivilClaim();
+    ClaimDetails claimDetails = MockClaimsFunctions.createMockMediationClaim();
 
     var form = new AmendmentForm();
     form.setInputs(inputs);
 
     var errors = new BeanPropertyBindingResult(form, "amendmentForm");
-    validator.validate(claimDetails, ClaimDetailsViewField.CASE_START_DATE, form, errors);
+    validator.validate(
+        claimDetails, MediationClaimDetailsViewField.CASE_CONCLUDED_DATE, form, errors);
     return errors;
   }
 }
