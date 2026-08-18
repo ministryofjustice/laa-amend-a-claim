@@ -1,13 +1,13 @@
 <th:block th:fragment="assessedBanner" xmlns:th="http://www.thymeleaf.org">
     <th:block th:if="${amendmentsHeaderView != null && amendmentsHeaderView.assessedAlertPresent}">
-        <th:block th:replace="~{partials/warning-alert :: warningAlert('amendments.assessed', ${amendmentsHeaderView.alertContent.resolve(#messages)})}"></th:block>
+        <th:block th:replace="~{fragments/warning-alert :: warningAlert('amendments.assessed', ${amendmentsHeaderView.alertContent.resolve(#messages)})}"></th:block>
     </th:block>
 </th:block>
 
 <th:block th:fragment="assessedBannerRow" xmlns:th="http://www.thymeleaf.org">
     <div class="govuk-grid-row" th:if="${amendmentsHeaderView != null && amendmentsHeaderView.assessedAlertPresent}">
         <div class="govuk-grid-column-full">
-            <th:block th:replace="~{partials/warning-alert :: warningAlert('amendments.assessed', ${amendmentsHeaderView.alertContent.resolve(#messages)})}"></th:block>
+            <th:block th:replace="~{fragments/warning-alert :: warningAlert('amendments.assessed', ${amendmentsHeaderView.alertContent.resolve(#messages)})}"></th:block>
         </div>
     </div>
 </th:block>

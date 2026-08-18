@@ -1,13 +1,13 @@
 <html th:fragment="layout(title,mainContent,pageCategory,showBackLink)" lang="en" class="govuk-template govuk-template--rebranded">
 
-    <head th:replace="~{partials/head :: head(title=${title})}"></head>
+    <head th:replace="~{fragments/head :: head(title=${title})}"></head>
 
     <body class="govuk-template__body">
         <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
 
-        <th:block th:replace="~{partials/header :: header}"></th:block>
+        <th:block th:replace="~{fragments/header :: header}"></th:block>
 
-        <th:block th:replace="~{partials/service-navigation :: serviceNavigation(pageCategory=${pageCategory})}"></th:block>
+        <th:block th:replace="~{fragments/service-navigation :: serviceNavigation(pageCategory=${pageCategory})}"></th:block>
 
         <div class="govuk-width-container">
             <div class="govuk-phase-banner" id="feedback">
@@ -25,11 +25,11 @@
                class="govuk-back-link"
                th:text="#{service.back}">
             </a>
-            <th:block th:replace="~{partials/outage-banner :: outage-banner}"/>
+            <th:block th:replace="~{fragments/outage-banner :: outage-banner}"/>
             <th:block th:replace="${mainContent}">Default Main Content</th:block>
         </div>
 
-        <th:block th:replace="~{partials/footer :: footer}"></th:block>
+        <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
         <script th:src="@{/js/accessible-autocomplete.min.js}"></script>
         <script type="module" th:src="@{/js/app.min.js}"></script>

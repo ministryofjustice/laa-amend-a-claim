@@ -62,7 +62,7 @@
                         </th:block>
 
                         <th:block th:if="${result.isError()}">
-                            <th:block th:replace="~{partials/error-alert :: errorAlert('bulkUploadResult.error', #{bulkUploadResult.error.alert.content})}"></th:block>
+                            <th:block th:replace="~{fragments/error-alert :: errorAlert('bulkUploadResult.error', #{bulkUploadResult.error.alert.content})}"></th:block>
 
                             <table class="govuk-table" id="error-summary-list">
                                 <thead class="govuk-table__head">

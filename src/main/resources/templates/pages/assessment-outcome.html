@@ -16,7 +16,7 @@
                           method="post">
 
                         <th:block th:with="formErrors=${@ThymeleafUtils.toAssessmentOutcomeErrors(#fields.detailedErrors())}">
-                            <th:block th:replace="~{partials/error-summary :: error-summary(${formErrors})}"></th:block>
+                            <th:block th:replace="~{fragments/error-summary :: error-summary(${formErrors})}"></th:block>
                         </th:block>
 
                         <fieldset class="govuk-fieldset">

@@ -3,22 +3,22 @@
 <body>
 <th:block th:fragment="amendmentInput(field, labelMessageKey, formErrors)">
   <th:block th:if="${field.fieldType.name() == 'DATE'}">
-    <th:block th:replace="~{partials/amendments/date-input :: amendmentDateInput(${field.name()}, ${formErrors})}"></th:block>
+    <th:block th:replace="~{fragments/amendments/date-input :: amendmentDateInput(${field.name()}, ${formErrors})}"></th:block>
   </th:block>
   <th:block th:if="${field.fieldType.name() == 'BOOLEAN'}">
-    <th:block th:replace="~{partials/amendments/boolean-input :: amendmentBooleanInput(${field.name()}, ${labelMessageKey}, ${formErrors})}"></th:block>
+    <th:block th:replace="~{fragments/amendments/boolean-input :: amendmentBooleanInput(${field.name()}, ${labelMessageKey}, ${formErrors})}"></th:block>
   </th:block>
   <th:block th:if="${field.fieldType.name() == 'ENUM'}">
-    <th:block th:replace="~{partials/amendments/enum-input :: amendmentEnumInput(${field}, ${labelMessageKey}, ${formErrors})}"></th:block>
+    <th:block th:replace="~{fragments/amendments/enum-input :: amendmentEnumInput(${field}, ${labelMessageKey}, ${formErrors})}"></th:block>
   </th:block>
   <th:block th:if="${field.fieldType.name() == 'BIG_DECIMAL'}">
-    <th:block th:replace="~{partials/amendments/big-decimal-input :: amendmentBigDecimalInput(${field.name()}, ${labelMessageKey}, ${formErrors})}"></th:block>
+    <th:block th:replace="~{fragments/amendments/big-decimal-input :: amendmentBigDecimalInput(${field.name()}, ${labelMessageKey}, ${formErrors})}"></th:block>
   </th:block>
   <th:block th:if="${field.fieldType.name() == 'NUMBER'}">
-    <th:block th:replace="~{partials/amendments/number-input :: amendmentNumberInput(${field.name()}, ${labelMessageKey}, ${formErrors})}"></th:block>
+    <th:block th:replace="~{fragments/amendments/number-input :: amendmentNumberInput(${field.name()}, ${labelMessageKey}, ${formErrors})}"></th:block>
   </th:block>
   <th:block th:if="${field.fieldType.name() == 'TEXT'}">
-    <th:block th:replace="~{partials/amendments/field-error :: fieldError(${field.name()}, ${formErrors})}"></th:block>
+    <th:block th:replace="~{fragments/amendments/field-error :: fieldError(${field.name()}, ${formErrors})}"></th:block>
     <input class="govuk-input"
            th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, field.name()) ? 'govuk-input--error' : ''}"
            type="text"

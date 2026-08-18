@@ -17,14 +17,14 @@
         th:with="formErrors=${@ThymeleafUtils.orEmpty(caseTypeFormErrors)}">
     <div class="govuk-grid-row">
 
-      <th:block th:replace="~{partials/amendments-assessed-banner :: assessedBannerRow}"></th:block>
+      <th:block th:replace="~{fragments/amendments-assessed-banner :: assessedBannerRow}"></th:block>
 
 
       <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">
           <span th:text="#{amendments.matterType.title}"></span>
         </h1>
-        <th:block th:replace="~{partials/error-summary :: error-summary(${formErrors})}"></th:block>
+        <th:block th:replace="~{fragments/error-summary :: error-summary(${formErrors})}"></th:block>
       </div>
       <div class="govuk-grid-column-one-half">
         <dl class="govuk-summary-list"
@@ -50,7 +50,7 @@
           <label class="govuk-label govuk-!-font-weight-bold" for="matter-type-one-input"
                  th:text="#{amendments.matterType.amended.one}"/>
           <th:block
-              th:replace="~{partials/amendments/field-error :: fieldError('MATTER_TYPE_CODE_1', ${formErrors})}"></th:block>
+              th:replace="~{fragments/amendments/field-error :: fieldError('MATTER_TYPE_CODE_1', ${formErrors})}"></th:block>
           <input class="govuk-input govuk-input--width-20" id="matter-type-one-input"
                  th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, 'MATTER_TYPE_CODE_1') ? 'govuk-input--error' : ''}"
                  th:field="*{inputs['MATTER_TYPE_CODE_1']}"
@@ -62,7 +62,7 @@
           <label class="govuk-label govuk-!-font-weight-bold" for="matter-type-two-input"
                  th:text="#{amendments.matterType.amended.two}"/>
           <th:block
-              th:replace="~{partials/amendments/field-error :: fieldError('MATTER_TYPE_CODE_2', ${formErrors})}"></th:block>
+              th:replace="~{fragments/amendments/field-error :: fieldError('MATTER_TYPE_CODE_2', ${formErrors})}"></th:block>
           <input class="govuk-input govuk-input--width-20" id="matter-type-two-input"
                  th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, 'MATTER_TYPE_CODE_2') ? 'govuk-input--error' : ''}"
                  th:field="*{inputs['MATTER_TYPE_CODE_2']}"

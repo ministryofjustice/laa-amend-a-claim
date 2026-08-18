@@ -9,7 +9,7 @@
     )}">
 <body>
 <main class="govuk-main-wrapper" id="main-content">
-  <th:block th:replace="~{partials/amendments-assessed-banner :: assessedBannerRow}"></th:block>
+  <th:block th:replace="~{fragments/amendments-assessed-banner :: assessedBannerRow}"></th:block>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -19,7 +19,7 @@
             th:object="${caseTypeForm}"
             th:with="formErrors=${@ThymeleafUtils.orEmpty(caseTypeFormErrors)}">
 
-        <th:block th:replace="~{partials/error-summary :: error-summary(${formErrors})}"></th:block>
+        <th:block th:replace="~{fragments/error-summary :: error-summary(${formErrors})}"></th:block>
 
         <h1 class="govuk-heading-l">
           <span th:text="#{amendments.stageReached.title}"></span>
@@ -47,7 +47,7 @@
             <span id="STAGE_REACHED"></span>
             <label class="govuk-label govuk-!-font-weight-bold" for="stage-reached-input"
                    th:text="#{amendments.stageReached.amended}"></label>
-            <th:block th:replace="~{partials/amendments/field-error :: fieldError('STAGE_REACHED', ${formErrors})}"></th:block>
+            <th:block th:replace="~{fragments/amendments/field-error :: fieldError('STAGE_REACHED', ${formErrors})}"></th:block>
             <select class="govuk-select" id="stage-reached-input"
                     th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, 'STAGE_REACHED') ? 'govuk-select--error' : ''}"
                     th:field="*{inputs['STAGE_REACHED']}"

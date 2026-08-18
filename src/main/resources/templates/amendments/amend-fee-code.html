@@ -9,7 +9,7 @@
     )}">
 <body>
 <main class="govuk-main-wrapper" id="main-content">
-  <th:block th:replace="~{partials/amendments-assessed-banner :: assessedBannerRow}"></th:block>
+  <th:block th:replace="~{fragments/amendments-assessed-banner :: assessedBannerRow}"></th:block>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -18,7 +18,7 @@
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-fee-code(submissionId=${submissionId}, claimId=${claimId})}"
             th:object="${caseTypeForm}"
             th:with="formErrors=${@ThymeleafUtils.orEmpty(caseTypeFormErrors)}">
-        <th:block th:replace="~{partials/error-summary :: error-summary(${formErrors})}"></th:block>
+        <th:block th:replace="~{fragments/error-summary :: error-summary(${formErrors})}"></th:block>
 
 
         <h1 class="govuk-heading-l">
@@ -47,7 +47,7 @@
             <label class="govuk-label govuk-!-font-weight-bold" for="fee-code-input"
                    th:text="#{amendments.feeCode.amended}"></label>
             <th:block
-                th:replace="~{partials/amendments/field-error :: fieldError('FEE_CODE', ${formErrors})}"></th:block>
+                th:replace="~{fragments/amendments/field-error :: fieldError('FEE_CODE', ${formErrors})}"></th:block>
             <select class="govuk-select" id="fee-code-input"
                     th:classappend="${@ThymeleafUtils.hasAmendmentFieldError(formErrors, 'FEE_CODE') ? 'govuk-select--error' : ''}"
                     th:field="*{inputs['FEE_CODE']}"

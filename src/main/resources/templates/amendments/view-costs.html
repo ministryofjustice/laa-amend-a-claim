@@ -13,7 +13,7 @@
     <div class="govuk-grid-column-full"
          th:with="originalCostsForm=${forms.getCostsForm().getOriginal()},
                   costsForm=${forms.getCostsForm().getCurrent()}">
-      <th:block th:replace="~{partials/amendments-view-header :: viewHeader(currentPage='costs')}"></th:block>
+      <th:block th:replace="~{fragments/amendments-view-header :: viewHeader(currentPage='costs')}"></th:block>
 
       <h2 class="govuk-heading-m" th:text="#{claimDetails.costsHeading}"></h2>
 
@@ -62,7 +62,7 @@
         </div>
       </div>
 
-      <th:block th:replace="~{partials/amendments-view-footer :: viewFooter()}"></th:block>
+      <th:block th:replace="~{fragments/amendments-view-footer :: viewFooter()}"></th:block>
     </div>
   </div>
 </main>

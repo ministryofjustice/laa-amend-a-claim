@@ -6,7 +6,7 @@
   <label class="govuk-label govuk-visually-hidden"
          th:for="${fieldKey}"
          th:text="${label}"></label>
-  <th:block th:replace="~{partials/amendments/field-error :: fieldError(${fieldKey}, ${formErrors})}"></th:block>
+  <th:block th:replace="~{fragments/amendments/field-error :: fieldError(${fieldKey}, ${formErrors})}"></th:block>
   <div class="govuk-input__wrapper amend-big-decimal-input">
     <div class="govuk-input__prefix" aria-hidden="true">£</div>
     <input class="govuk-input govuk-input--width-10"
