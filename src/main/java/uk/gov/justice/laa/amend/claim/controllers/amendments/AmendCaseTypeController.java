@@ -81,7 +81,7 @@ public class AmendCaseTypeController extends AbstractAmendController {
     model.addAttribute("currentFeeCode", currentFeeCode);
     model.addAttribute("feeCodes", availableFeeCodes);
     model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
-    return "amendments/amend-fee-code";
+    return "pages/amendments/amend-fee-code";
   }
 
   @PostMapping("/amend-fee-code")
@@ -133,7 +133,7 @@ public class AmendCaseTypeController extends AbstractAmendController {
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("stageReachedOptions", FieldOptions.CRIME_STAGE_REACHED);
     model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
-    return "amendments/amend-stage-reached";
+    return "pages/amendments/amend-stage-reached";
   }
 
   @PostMapping("/amend-stage-reached")
@@ -180,7 +180,7 @@ public class AmendCaseTypeController extends AbstractAmendController {
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
 
-    return "amendments/amend-matter-type";
+    return "pages/amendments/amend-matter-type";
   }
 
   @PostMapping("/amend-matter-type")

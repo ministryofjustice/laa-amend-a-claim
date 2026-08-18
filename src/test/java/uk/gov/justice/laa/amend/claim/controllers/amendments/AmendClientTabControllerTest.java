@@ -65,7 +65,7 @@ class AmendClientTabControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildViewClientPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/view-client"))
+        .andExpect(view().name("pages/amendments/view-client"))
         .andExpect(model().attributeExists("clientView"))
         .andExpect(model().attribute("client1Form", existingForms.getClient1Form().getCurrent()))
         .andExpect(model().attributeDoesNotExist("client2Form"))
@@ -93,7 +93,7 @@ class AmendClientTabControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildViewClientPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/view-client"))
+        .andExpect(view().name("pages/amendments/view-client"))
         .andExpect(model().attributeExists("clientView"))
         .andExpect(model().attribute("client1Form", existingForms.getClient1Form().getCurrent()))
         .andExpect(model().attribute("client2Form", existingForms.getClient2Form().getCurrent()))

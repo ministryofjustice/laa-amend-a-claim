@@ -100,7 +100,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     mockMvc
         .perform(request)
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-fee-code"))
+        .andExpect(view().name("pages/amendments/amend-fee-code"))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
   }
 
@@ -233,7 +233,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     mockMvc
         .perform(request)
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-stage-reached"))
+        .andExpect(view().name("pages/amendments/amend-stage-reached"))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
   }
 
@@ -851,7 +851,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     mockMvc
         .perform(request)
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-matter-type"))
+        .andExpect(view().name("pages/amendments/amend-matter-type"))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
   }
 
@@ -888,7 +888,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     mockMvc
         .perform(request)
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-matter-type"))
+        .andExpect(view().name("pages/amendments/amend-matter-type"))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms));
   }
 
@@ -1028,7 +1028,7 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildAmendStageReachedPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-stage-reached"));
+        .andExpect(view().name("pages/amendments/amend-stage-reached"));
   }
 
   @Test

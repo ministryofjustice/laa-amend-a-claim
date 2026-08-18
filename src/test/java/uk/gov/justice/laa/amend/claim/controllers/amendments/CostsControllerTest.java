@@ -64,7 +64,7 @@ class CostsControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildCostsPath()).session(session).with(csrf()))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/view-costs"))
+        .andExpect(view().name("pages/amendments/view-costs"))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), forms));
   }
 
@@ -81,7 +81,7 @@ class CostsControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildAmendCostsPath()).session(session).with(csrf()))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-costs"))
+        .andExpect(view().name("pages/amendments/amend-costs"))
         .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), forms));
   }
 
