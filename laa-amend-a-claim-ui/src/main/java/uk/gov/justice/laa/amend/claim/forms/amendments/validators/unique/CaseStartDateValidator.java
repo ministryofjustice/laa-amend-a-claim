@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments.validators.unique;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -22,7 +23,7 @@ public class CaseStartDateValidator implements FieldSpecificAmendmentValidator {
   public static final DateTimeFormatter DATE_FORMATTER_D_MMM_YYYY =
       DateTimeFormatter.ofPattern(DATE_FORMAT_D_MMM_YYYY);
 
-  private static final LocalDate OLDEST_DATE_ALLOWED = LocalDate.of(1995, 1, 1);
+  private static final LocalDate OLDEST_DATE_ALLOWED = LocalDate.of(1995, Month.JANUARY, 1);
 
   private final MessageSource messageSource;
 
