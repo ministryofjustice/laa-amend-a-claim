@@ -13,7 +13,7 @@
                     Menu
                 </button>
                 <ul class="govuk-service-navigation__list" id="navigation">
-                    <th:block th:replace="~{partials/service-navigation-item :: serviceNavigationItem(
+                    <th:block th:replace="~{fragments/service-navigation-item :: serviceNavigationItem(
                         pageCategory=${pageCategory},
                         itemCategory='search',
                         text=#{service.navigation.search},
@@ -21,7 +21,7 @@
                     )}"></th:block>
                     <th:block th:if="${featureFlagsConfig.isBulkUploadEnabled}"
                             sec:authorize="${hasRole('ROLE_ESCAPE_CASE_BULK_UPLOADER')}">
-                        <th:block th:replace="~{partials/service-navigation-item :: serviceNavigationItem(
+                        <th:block th:replace="~{fragments/service-navigation-item :: serviceNavigationItem(
                                 pageCategory=${pageCategory},
                                 itemCategory='bulk-upload',
                                 text=#{service.navigation.bulkUpload},

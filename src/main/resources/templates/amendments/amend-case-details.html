@@ -12,7 +12,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
 
-      <th:block th:replace="~{partials/amendments-assessed-banner :: assessedBanner}"></th:block>
+      <th:block th:replace="~{fragments/amendments-assessed-banner :: assessedBanner}"></th:block>
 
       <h1 class="govuk-heading-l">
         <span th:text="#{amendments.title}"></span>
@@ -25,7 +25,7 @@
             th:object="${caseDetailsForm}"
             th:with="formErrors=${@ThymeleafUtils.orEmpty(caseDetailsFormErrors)}">
 
-        <th:block th:replace="~{partials/error-summary :: error-summary(${formErrors})}"></th:block>
+        <th:block th:replace="~{fragments/error-summary :: error-summary(${formErrors})}"></th:block>
 
         <div class="govuk-summary-card">
           <div class="govuk-summary-card__title-wrapper">
@@ -48,7 +48,7 @@
                 <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
                 <dd class="govuk-summary-list__value">
                   <th:block th:if="${entry.key.isEditable(claimIsAssessed)}">
-                    <th:block th:replace="~{partials/amendments/amendment-input :: amendmentInput(${entry.key}, ${'claimCase.rows.' + entry.key.name()}, ${formErrors})}"></th:block>
+                    <th:block th:replace="~{fragments/amendments/amendment-input :: amendmentInput(${entry.key}, ${'claimCase.rows.' + entry.key.name()}, ${formErrors})}"></th:block>
                   </th:block>
                 </dd>
               </div>

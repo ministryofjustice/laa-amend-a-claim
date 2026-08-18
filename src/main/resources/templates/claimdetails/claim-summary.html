@@ -11,7 +11,7 @@
         <main class="govuk-main-wrapper" id="main-content">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-full">
-                    <th:block th:replace="~{partials/claim-details-header :: claimDetailsHeader(currentPage='overview')}"></th:block>
+                    <th:block th:replace="~{fragments/claim-details-header :: claimDetailsHeader(currentPage='overview')}"></th:block>
 
                     <h2 class="govuk-heading-m" th:text="#{claimDetails.overviewHeading}"></h2>
 
@@ -114,7 +114,7 @@
                             </div>
                         </th:block>
 
-                        <th:block th:replace="~{partials/claim-details-footer :: claimDetailsFooter()}"></th:block>
+                        <th:block th:replace="~{fragments/claim-details-footer :: claimDetailsFooter()}"></th:block>
                     </th:block>
                 </div>
             </div>

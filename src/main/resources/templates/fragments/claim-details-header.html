@@ -3,11 +3,11 @@
     <!--/*@thymesVar id="claimDetailsHeaderView" type="uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsHeaderView"*/-->
 
     <th:block th:if="${claimDetailsHeaderView.isLastAssessedAlertPresent}">
-        <th:block th:replace="~{partials/information-alert :: informationAlert('claimSummary', ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)})}"></th:block>
+        <th:block th:replace="~{fragments/information-alert :: informationAlert('claimSummary', ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)})}"></th:block>
     </th:block>
 
     <th:block th:if="${claimDetailsHeaderView.isVoidedAlertPresent}">
-        <th:block th:replace="~{partials/error-alert :: errorAlert('claimSummary.error', ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)})}"></th:block>
+        <th:block th:replace="~{fragments/error-alert :: errorAlert('claimSummary.error', ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)})}"></th:block>
     </th:block>
 
     <h1 class="govuk-heading-l">

@@ -16,7 +16,7 @@
                 caseDetailsForm=${forms.getCaseDetailsForm().getCurrent()}">
     <div class="govuk-grid-column-full">
       <th:block
-          th:replace="~{partials/amendments-view-header :: viewHeader(currentPage='case')}"></th:block>
+          th:replace="~{fragments/amendments-view-header :: viewHeader(currentPage='case')}"></th:block>
 
       <h2 class="govuk-heading-m" th:text="#{claimDetails.caseHeading}"></h2>
     </div>
@@ -97,7 +97,7 @@
     </div>
 
     <div class="govuk-grid-column-full">
-      <th:block th:replace="~{partials/amendments-view-footer :: viewFooter()}"></th:block>
+      <th:block th:replace="~{fragments/amendments-view-footer :: viewFooter()}"></th:block>
     </div>
   </div>
 </main>
