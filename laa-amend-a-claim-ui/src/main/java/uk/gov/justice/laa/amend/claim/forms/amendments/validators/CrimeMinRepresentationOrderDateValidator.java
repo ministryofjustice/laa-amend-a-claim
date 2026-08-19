@@ -32,10 +32,7 @@ public class CrimeMinRepresentationOrderDateValidator extends AmendmentDateValid
 
     if (representationOrderDate != null
         && representationOrderDate.isBefore(EARLIEST_MIN_REP_ORDER_DATE)) {
-      addDateTooEarlyMessage(
-          errors,
-          field,
-          EARLIEST_MIN_REP_ORDER_DATE);
+      addDateTooEarlyMessage(errors, field, EARLIEST_MIN_REP_ORDER_DATE);
     }
   }
 }
