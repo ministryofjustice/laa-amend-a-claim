@@ -32,10 +32,7 @@ public class CaseStartDateValidator extends AmendmentDateValidator {
     var caseStartDate = form.getDateValue(ClaimDetailsViewField.CASE_START_DATE.toString());
 
     if (caseStartDate != null && caseStartDate.isBefore(OLDEST_DATE_ALLOWED)) {
-      addDateTooEarlyMessage(
-          errors,
-          ClaimDetailsViewField.CASE_START_DATE,
-          OLDEST_DATE_ALLOWED);
+      addDateTooEarlyMessage(errors, ClaimDetailsViewField.CASE_START_DATE, OLDEST_DATE_ALLOWED);
     }
   }
 }
