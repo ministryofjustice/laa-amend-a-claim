@@ -59,7 +59,7 @@ class AmendmentRequestedByControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildRequestedByPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-requested-by"))
+        .andExpect(view().name("pages/amendments/amend-requested-by"))
         .andExpect(model().attributeExists("claimId", "submissionId", "requestedByForm"))
         .andExpect(model().attribute("amendmentRequestedByOptions", Map.of()))
         .andExpect(model().attribute("claimId", claimId))

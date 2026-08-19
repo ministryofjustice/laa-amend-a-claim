@@ -59,7 +59,7 @@ public class AmendmentRequestedByController {
 
     setModelAttributesForDisplay(model, claimId, submissionId, amendmentForms);
     model.addAttribute("amendmentRequestedByOptions", getAmendmentRequestedByOptions());
-    return "amendments/amend-requested-by";
+    return "pages/amendments/amend-requested-by";
   }
 
   @PostMapping

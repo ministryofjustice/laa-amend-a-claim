@@ -63,7 +63,7 @@ public class AmendmentRequestedReasonController {
     model.addAttribute("claimId", claimId);
     model.addAttribute("submissionId", submissionId);
     model.addAttribute("requestedReasonForm", amendmentForms.getRequestedReasonForm());
-    return "amendments/amend-request-reason";
+    return "pages/amendments/amend-request-reason";
   }
 
   @PostMapping

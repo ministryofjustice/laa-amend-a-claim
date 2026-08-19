@@ -63,7 +63,7 @@ class AmendmentRequestedReasonControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildRequestedReasonPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-request-reason"))
+        .andExpect(view().name("pages/amendments/amend-request-reason"))
         .andExpect(model().attributeExists("claimId", "submissionId", "requestedReasonForm"))
         .andExpect(
             model()
