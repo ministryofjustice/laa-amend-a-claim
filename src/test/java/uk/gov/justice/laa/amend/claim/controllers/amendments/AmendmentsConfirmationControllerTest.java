@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VOID;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -18,6 +19,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
@@ -32,6 +34,7 @@ class AmendmentsConfirmationControllerTest extends BaseControllerTest {
   private UUID submissionId;
   private UUID claimId;
   private MockHttpSession session;
+  private ClaimDetails claim;
 
   @BeforeEach
   void setup() {
@@ -39,7 +42,7 @@ class AmendmentsConfirmationControllerTest extends BaseControllerTest {
     claimId = UUID.randomUUID();
     session = new MockHttpSession();
 
-    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
     claim.setAmended(true);
@@ -82,6 +85,18 @@ class AmendmentsConfirmationControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(view().name("pages/amendments/confirmation"))
         .andExpect(model().attribute("updatedClaimTotal", BigDecimal.valueOf(200)));
+  }
+
+  @Test
+  void returnsNotFoundForNonAmendedClaim() throws Exception {
+    claim.setAmended(false);
+    mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isNotFound());
+  }
+
+  @Test
+  void returnsNotFoundForNonValidClaim() throws Exception {
+    claim.setStatus(VOID);
+    mockMvc.perform(get(buildPath()).session(session)).andExpect(status().isNotFound());
   }
 
   private String buildPath() {

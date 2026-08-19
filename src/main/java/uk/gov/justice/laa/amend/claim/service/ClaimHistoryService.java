@@ -71,10 +71,9 @@ public class ClaimHistoryService {
       return Set.of();
     }
 
-    // TODO: Reinstate this once isAmended is wired up in claims API (DSTEW-2140)
-    //    if (!claim.isAmended()) {
-    //      return Set.of();
-    //    }
+    if (!claim.isAmended()) {
+      return Set.of();
+    }
     var history = claimsApiClient.getClaimHistory(claim.getClaimId()).block();
 
     if (history == null || history.getEvents() == null) {

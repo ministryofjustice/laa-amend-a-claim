@@ -62,6 +62,7 @@ public final class ClaimsGetClaimPactTest extends AbstractPactTest {
                       body.stringType("client_surname", "Smith");
                       body.stringType("submission_period", "Jan-2024");
                       body.booleanType("has_assessment", true);
+                      body.booleanType("is_amended", true);
                       body.booleanType("is_vat_applicable", true);
                       body.datetime("date_submitted", "yyyy-MM-dd'T'HH:mm:ssXXX");
                       body.object(
