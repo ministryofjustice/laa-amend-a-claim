@@ -53,6 +53,11 @@ public class AmendmentsFlowE2ETest extends BaseTest {
   private static final String CRIME_CLAIM_ID = UUID.randomUUID().toString();
   private static final String CRIME_CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
   private static final String LEGAL_HELP_STAGE_REACHED = "AB";
+  private static final String CRIME_STAGE_REACHED = "INVC";
+  private static final String CRIME_STAGE_REACHED_LABEL = "INVC - Police station: attendance";
+  private static final String AMENDED_CRIME_STAGE_REACHED = "PROD";
+  private static final String AMENDED_CRIME_STAGE_REACHED_LABEL =
+      "PROD - Advice and Assistance and Advocacy Assistance by a court Duty Solicitor";
 
   @Override
   protected List<Insert> inserts() {
@@ -200,7 +205,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
         ClaimCaseInsert.builder()
             .id(UUID.randomUUID().toString())
             .claimId(CRIME_CLAIM_ID)
-            .stageReachedCode("PROL")
+            .stageReachedCode(CRIME_STAGE_REACHED)
             .userId(USER_ID)
             .build(),
         ClaimSummaryFeeInsert.builder()
@@ -457,18 +462,23 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var viewAmendCase = new ViewCasePage(page);
     viewAmendClient.clickCaseTab();
     assertSummaryListRow(page, "Case type", "Fee code", "INVC");
-    assertSummaryListRow(page, "Case type", "Stage reached", "PROL");
+    assertSummaryListRow(page, "Case type", "Stage reached", CRIME_STAGE_REACHED_LABEL);
 
     viewAmendCase.clickChangeCaseTypeLink();
     var amendFeeCode = new AmendFeeCodePage(page);
     amendFeeCode.clickContinueButton();
 
     var amendStageReached = new AmendStageReachedPage(page);
-    amendStageReached.fillStageReachedInput("PROD");
+    amendStageReached.fillStageReachedInput(AMENDED_CRIME_STAGE_REACHED);
     amendStageReached.clickContinueButton();
 
     viewAmendCase = new ViewCasePage(page);
-    assertSummaryListRow(page, "Case type", "Stage reached", "PROL", "PROD");
+    assertSummaryListRow(
+        page,
+        "Case type",
+        "Stage reached",
+        CRIME_STAGE_REACHED_LABEL,
+        AMENDED_CRIME_STAGE_REACHED_LABEL);
 
     viewAmendCase.clickChangeCaseDetailsLink();
     var viewAmendCaseDetails = new AmendCaseDetailsPage(page);
@@ -484,7 +494,12 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
     assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£150.00");
-    assertSummaryListRow(page, "Case type", "Stage reached", "PROL", "PROD");
+    assertSummaryListRow(
+        page,
+        "Case type",
+        "Stage reached",
+        CRIME_STAGE_REACHED_LABEL,
+        AMENDED_CRIME_STAGE_REACHED_LABEL);
     assertSummaryListRow(
         page, "Case details", "Case concluded date", "30 January 2020", "31 January 2020");
 
