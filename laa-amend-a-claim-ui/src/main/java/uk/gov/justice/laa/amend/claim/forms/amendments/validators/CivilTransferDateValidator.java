@@ -27,7 +27,7 @@ public class CivilTransferDateValidator extends AmendmentDateValidator {
   @Override
   public void validate(
       ClaimDetails claim, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
-    var transferDate = form.getDateValue(field.toString());
+    var transferDate = form.getDateValue(field.name());
 
     if (transferDate != null && transferDate.isBefore(EARLIEST_TRANSFER_DATE)) {
       addDateTooEarlyMessage(errors, field, EARLIEST_TRANSFER_DATE);

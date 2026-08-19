@@ -36,19 +36,26 @@ public class CaseConcludedDateValidator extends AmendmentDateValidator {
   @Override
   public void validate(
       ClaimDetails claim, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
-    var caseConcludedDate = form.getDateValue(field.toString());
+    var caseConcludedDate = form.getDateValue(field.name());
     var earliestDate =
         AreaOfLaw.CRIME_LOWER.equals(claim.getAreaOfLaw())
             ? EARLIEST_CRIME_CASE_CONCLUDED_DATE_ALLOWED
             : EARLIEST_CASE_CONCLUDED_DATE_ALLOWED;
+    if (caseConcludedDate == null) {
+      return;
+    }
+
+    if (claim.getSubmissionPeriod() == null) {
+      throw new IllegalArgumentException(
+          "Claim is missing submission period: " + claim.getClaimId());
+    }
 
     var twentiethOfNextMonth = getTwentiethOfNextMonth(claim.getSubmissionPeriod());
-    if (caseConcludedDate != null
-        && caseConcludedDate.isAfter(LocalDate.now(ZoneId.systemDefault()))) {
+    if (caseConcludedDate.isAfter(LocalDate.now(ZoneId.systemDefault()))) {
       addDateInTheFutureMessage(errors, field);
-    } else if (caseConcludedDate != null && caseConcludedDate.isBefore(earliestDate)) {
-      addDateTooEarlyMessage(errors, field, EARLIEST_CASE_CONCLUDED_DATE_ALLOWED);
-    } else if (caseConcludedDate != null && caseConcludedDate.isAfter(twentiethOfNextMonth)) {
+    } else if (caseConcludedDate.isBefore(earliestDate)) {
+      addDateTooEarlyMessage(errors, field, earliestDate);
+    } else if (caseConcludedDate.isAfter(twentiethOfNextMonth)) {
       addDateOutsideSubmissionPeriodMessage(errors, field);
     }
   }
