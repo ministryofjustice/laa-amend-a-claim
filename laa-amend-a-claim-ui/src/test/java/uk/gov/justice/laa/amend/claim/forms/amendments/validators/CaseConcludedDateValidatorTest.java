@@ -2,40 +2,32 @@ package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
-import uk.gov.justice.laa.amend.claim.utils.DateWrapperUtil;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.MediationClaimDetailsViewField;
 
-@ExtendWith(MockitoExtension.class)
 class CaseConcludedDateValidatorTest {
 
   CaseConcludedDateValidator validator;
 
-  @Mock DateWrapperUtil dateWrapperUtil;
-
   @BeforeEach
   void beforeEach() {
-    validator = new CaseConcludedDateValidator(TestMessageSources.real(), dateWrapperUtil);
+    validator = new CaseConcludedDateValidator(TestMessageSources.real());
   }
 
   @Nested
@@ -110,12 +102,12 @@ class CaseConcludedDateValidatorTest {
 
     @Test
     void shouldAddErrorsForDateInFuture() {
-      when(dateWrapperUtil.isFutureDate(any())).thenReturn(true);
+      var tomorrow = LocalDate.now().plusDays(1);
       Map<String, String> input =
           Map.of(
-              "CASE_CONCLUDED_CLAIMED_DATE-day", "2",
-              "CASE_CONCLUDED_CLAIMED_DATE-month", "1",
-              "CASE_CONCLUDED_CLAIMED_DATE-year", "2020");
+              "CASE_CONCLUDED_CLAIMED_DATE-day", String.valueOf(tomorrow.getDayOfMonth()),
+              "CASE_CONCLUDED_CLAIMED_DATE-month", String.valueOf(tomorrow.getMonthValue()),
+              "CASE_CONCLUDED_CLAIMED_DATE-year", String.valueOf(tomorrow.getYear()));
 
       Errors result = validateCivil(input);
 
@@ -128,6 +120,7 @@ class CaseConcludedDateValidatorTest {
 
     @Test
     void shouldAddErrorsForDateNotInCorrectPeriod() {
+      var tomorrow = LocalDate.now().plusDays(1);
       Map<String, String> input =
           Map.of(
               "CASE_CONCLUDED_CLAIMED_DATE-day", "21",
@@ -228,12 +221,12 @@ class CaseConcludedDateValidatorTest {
 
     @Test
     void shouldAddErrorsForDateInFuture() {
-      when(dateWrapperUtil.isFutureDate(any())).thenReturn(true);
+      var tomorrow = LocalDate.now().plusDays(1);
       Map<String, String> input =
           Map.of(
-              "CASE_CONCLUDED_DATE-day", "2",
-              "CASE_CONCLUDED_DATE-month", "1",
-              "CASE_CONCLUDED_DATE-year", "2020");
+              "CASE_CONCLUDED_DATE-day", String.valueOf(tomorrow.getDayOfMonth()),
+              "CASE_CONCLUDED_DATE-month", String.valueOf(tomorrow.getMonthValue()),
+              "CASE_CONCLUDED_DATE-year", String.valueOf(tomorrow.getYear()));
 
       Errors result = validationMediation(input);
 
@@ -341,17 +334,17 @@ class CaseConcludedDateValidatorTest {
       assertThat(result.getFieldError("inputs['CASE_CONCLUDED_DATE']").getArguments()[0])
           .isEqualTo("Case concluded date");
       assertThat(result.getFieldError("inputs['CASE_CONCLUDED_DATE']").getArguments()[1])
-          .isEqualTo("1 April 2016");
+          .isEqualTo("1 April 2013");
     }
 
     @Test
     void shouldAddErrorsForDateInFuture() {
-      when(dateWrapperUtil.isFutureDate(any())).thenReturn(true);
+      var tomorrow = LocalDate.now().plusDays(1);
       Map<String, String> input =
           Map.of(
-              "CASE_CONCLUDED_DATE-day", "2",
-              "CASE_CONCLUDED_DATE-month", "5",
-              "CASE_CONCLUDED_DATE-year", "2016");
+              "CASE_CONCLUDED_DATE-day", String.valueOf(tomorrow.getDayOfMonth()),
+              "CASE_CONCLUDED_DATE-month", String.valueOf(tomorrow.getMonthValue()),
+              "CASE_CONCLUDED_DATE-year", String.valueOf(tomorrow.getYear()));
 
       Errors result = validateCrime(input);
 
@@ -364,6 +357,7 @@ class CaseConcludedDateValidatorTest {
 
     @Test
     void shouldAddErrorsForDateNotInCorrectPeriod() {
+      var tomorrow = LocalDate.now().plusDays(1);
       Map<String, String> input =
           Map.of(
               "CASE_CONCLUDED_DATE-day", "21",
