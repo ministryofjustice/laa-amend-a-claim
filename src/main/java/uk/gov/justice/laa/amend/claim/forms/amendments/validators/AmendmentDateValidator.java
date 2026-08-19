@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.forms.amendments.validators.unique;
+package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -8,7 +8,6 @@ import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 
 @RequiredArgsConstructor

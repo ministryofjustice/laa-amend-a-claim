@@ -1,5 +1,4 @@
-package uk.gov.justice.laa.amend.claim.forms.amendments.validators.unique;
-
+package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,21 +14,20 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
 
-class CivilTransferDateValidatorTest {
+class CrimeMinRepresentationOrderDateValidatorTest {
 
-  CivilTransferDateValidator validator;
+  CrimeMinRepresentationOrderDateValidator validator;
 
   @BeforeEach
   void beforeEach() {
-    validator = new CivilTransferDateValidator(TestMessageSources.real());
+    validator = new CrimeMinRepresentationOrderDateValidator(TestMessageSources.real());
   }
 
   @Test
   void testAppliesTo() {
-    assertTrue(validator.appliesTo(CivilClaimDetailsViewField.TRANSFER_DATE));
+    assertTrue(validator.appliesTo(CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE));
   }
 
   @ParameterizedTest
@@ -38,9 +36,9 @@ class CivilTransferDateValidatorTest {
   void shouldNotAddErrorsForInvalidDates(String day, String month, String year) {
     Map<String, String> input =
         Map.of(
-            "TRANSFER_DATE-day", day,
-            "TRANSFER_DATE-month", month,
-            "TRANSFER_DATE-year", year);
+            "REPRESENTATION_ORDER_DATE-day", day,
+            "REPRESENTATION_ORDER_DATE-month", month,
+            "REPRESENTATION_ORDER_DATE-year", year);
 
     Errors result = validate(input);
 
@@ -51,9 +49,9 @@ class CivilTransferDateValidatorTest {
   void shouldNotAddErrorsForValidDate() {
     Map<String, String> input =
         Map.of(
-            "TRANSFER_DATE-day", "15",
-            "TRANSFER_DATE-month", "12",
-            "TRANSFER_DATE-year", "2020");
+            "REPRESENTATION_ORDER_DATE-day", "15",
+            "REPRESENTATION_ORDER_DATE-month", "12",
+            "REPRESENTATION_ORDER_DATE-year", "2020");
 
     Errors result = validate(input);
 
@@ -64,9 +62,9 @@ class CivilTransferDateValidatorTest {
   void shouldNotAddErrorsForFirstValidDate() {
     Map<String, String> input =
         Map.of(
-            "TRANSFER_DATE-day", "1",
-            "TRANSFER_DATE-month", "1",
-            "TRANSFER_DATE-year", "1995");
+            "REPRESENTATION_ORDER_DATE-day", "1",
+            "REPRESENTATION_ORDER_DATE-month", "4",
+            "REPRESENTATION_ORDER_DATE-year", "2016");
 
     Errors result = validate(input);
 
@@ -77,29 +75,29 @@ class CivilTransferDateValidatorTest {
   void shouldAddErrorsForOldDate() {
     Map<String, String> input =
         Map.of(
-            "TRANSFER_DATE-day", "31",
-            "TRANSFER_DATE-month", "12",
-            "TRANSFER_DATE-year", "1994");
+            "REPRESENTATION_ORDER_DATE-day", "31",
+            "REPRESENTATION_ORDER_DATE-month", "3",
+            "REPRESENTATION_ORDER_DATE-year", "2016");
 
     Errors result = validate(input);
 
     assertThat(result.hasFieldErrors()).isTrue();
-    assertThat(result.getFieldError("inputs['TRANSFER_DATE']").getCode())
+    assertThat(result.getFieldError("inputs['REPRESENTATION_ORDER_DATE']").getCode())
         .isEqualTo(AmendmentDateValidator.DATE_CANT_BE_BEFORE_CODE);
-    assertThat(result.getFieldError("inputs['TRANSFER_DATE']").getArguments()[0])
-        .isEqualTo("Transfer date");
-    assertThat(result.getFieldError("inputs['TRANSFER_DATE']").getArguments()[1])
-        .isEqualTo("1 January 1995");
+    assertThat(result.getFieldError("inputs['REPRESENTATION_ORDER_DATE']").getArguments()[0])
+        .isEqualTo("Representation order date");
+    assertThat(result.getFieldError("inputs['REPRESENTATION_ORDER_DATE']").getArguments()[1])
+        .isEqualTo("1 April 2016");
   }
 
   private Errors validate(Map<String, String> inputs) {
-    ClaimDetails claimDetails = MockClaimsFunctions.createMockCivilClaim();
-
+    ClaimDetails claimDetails = MockClaimsFunctions.createMockCrimeClaim();
     var form = new AmendmentForm();
     form.setInputs(inputs);
 
     var errors = new BeanPropertyBindingResult(form, "amendmentForm");
-    validator.validate(claimDetails, CivilClaimDetailsViewField.TRANSFER_DATE, form, errors);
+    validator.validate(
+        claimDetails, CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE, form, errors);
     return errors;
   }
 }
