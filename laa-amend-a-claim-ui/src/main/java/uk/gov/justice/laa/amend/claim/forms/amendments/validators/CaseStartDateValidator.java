@@ -33,10 +33,13 @@ public class CaseStartDateValidator extends AmendmentDateValidator {
       ClaimDetails claim, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
     var caseStartDate = form.getDateValue(field.name());
 
-    if(dateWrapperUtil.isFutureDate(caseStartDate)){
-      addDateInTheFutureMessage(errors, field);
+    if (caseStartDate == null) {
+      return;
     }
-    if (caseStartDate != null && caseStartDate.isBefore(OLDEST_DATE_ALLOWED)) {
+
+    if (dateWrapperUtil.isFutureDate(caseStartDate)) {
+      addDateInTheFutureMessage(errors, field);
+    } else if (caseStartDate.isBefore(OLDEST_DATE_ALLOWED)) {
       addDateTooEarlyMessage(errors, field, OLDEST_DATE_ALLOWED);
     }
   }
