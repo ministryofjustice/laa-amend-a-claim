@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
 
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -53,7 +54,7 @@ public abstract class AmendmentDateValidator implements FieldSpecificAmendmentVa
         errors);
   }
 
-  protected LocalDate getTwentiethOfNextMonth(YearMonth submissionPeriod) {
+  protected final LocalDate getTwentiethOfNextMonth(@NotNull YearMonth submissionPeriod) {
     return submissionPeriod.plusMonths(1).atDay(20);
   }
 }

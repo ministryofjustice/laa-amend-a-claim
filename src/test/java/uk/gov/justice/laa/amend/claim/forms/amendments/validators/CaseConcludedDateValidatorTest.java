@@ -334,7 +334,7 @@ class CaseConcludedDateValidatorTest {
       assertThat(result.getFieldError("inputs['CASE_CONCLUDED_DATE']").getArguments()[0])
           .isEqualTo("Case concluded date");
       assertThat(result.getFieldError("inputs['CASE_CONCLUDED_DATE']").getArguments()[1])
-          .isEqualTo("1 April 2013");
+          .isEqualTo("1 April 2016");
     }
 
     @Test

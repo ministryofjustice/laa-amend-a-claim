@@ -27,8 +27,7 @@ public class CrimeRepresentationOrderDateValidator extends AmendmentDateValidato
   @Override
   public void validate(
       ClaimDetails claim, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
-    var representationOrderDate =
-        form.getDateValue(CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE.toString());
+    var representationOrderDate = form.getDateValue(field.name());
 
     if (representationOrderDate != null
         && representationOrderDate.isBefore(EARLIEST_MIN_REP_ORDER_DATE)) {
