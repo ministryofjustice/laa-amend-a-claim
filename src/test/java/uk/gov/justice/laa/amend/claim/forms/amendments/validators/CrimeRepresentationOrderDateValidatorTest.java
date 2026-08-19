@@ -16,13 +16,13 @@ import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
 
-class CrimeMinRepresentationOrderDateValidatorTest {
+class CrimeRepresentationOrderDateValidatorTest {
 
-  CrimeMinRepresentationOrderDateValidator validator;
+  CrimeRepresentationOrderDateValidator validator;
 
   @BeforeEach
   void beforeEach() {
-    validator = new CrimeMinRepresentationOrderDateValidator(TestMessageSources.real());
+    validator = new CrimeRepresentationOrderDateValidator(TestMessageSources.real());
   }
 
   @Test

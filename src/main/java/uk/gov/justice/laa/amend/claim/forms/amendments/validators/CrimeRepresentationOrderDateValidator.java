@@ -11,11 +11,11 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
 
 @Component
-public class CrimeMinRepresentationOrderDateValidator extends AmendmentDateValidator {
+public class CrimeRepresentationOrderDateValidator extends AmendmentDateValidator {
 
   private static final LocalDate EARLIEST_MIN_REP_ORDER_DATE = LocalDate.of(2016, Month.APRIL, 1);
 
-  public CrimeMinRepresentationOrderDateValidator(MessageSource messageSource) {
+  public CrimeRepresentationOrderDateValidator(MessageSource messageSource) {
     super(messageSource);
   }
 
