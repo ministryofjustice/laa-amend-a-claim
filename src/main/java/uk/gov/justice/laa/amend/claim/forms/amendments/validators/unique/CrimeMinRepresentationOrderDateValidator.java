@@ -2,7 +2,6 @@ package uk.gov.justice.laa.amend.claim.forms.amendments.validators.unique;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -14,8 +13,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsView
 @Component
 public class CrimeMinRepresentationOrderDateValidator extends AmendmentDateValidator {
 
-  private static final LocalDate EARLIEST_MIN_REP_ORDER_DATE
-      = LocalDate.of(2016, Month.APRIL, 1);
+  private static final LocalDate EARLIEST_MIN_REP_ORDER_DATE = LocalDate.of(2016, Month.APRIL, 1);
 
   public CrimeMinRepresentationOrderDateValidator(MessageSource messageSource) {
     super(messageSource);
