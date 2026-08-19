@@ -24,7 +24,7 @@ import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCasework
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
-import uk.gov.justice.laa.amend.claim.forms.validators.RequestReasonFormValidator;
+import uk.gov.justice.laa.amend.claim.forms.validators.RequestedReasonFormValidator;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 
 @Controller
@@ -33,9 +33,9 @@ import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 @HasRoleClaimAmendmentsCaseworker
 @AllArgsConstructor
 @Slf4j
-public class AmendmentRequestReasonController {
+public class AmendmentRequestedReasonController {
 
-  private final RequestReasonFormValidator requestReasonFormValidator;
+  private final RequestedReasonFormValidator requestedReasonFormValidator;
   private final SystemReferenceService systemReferenceService;
 
   @ModelAttribute("amendmentReasonOptions")
@@ -76,7 +76,7 @@ public class AmendmentRequestReasonController {
       @PathVariable UUID claimId) {
     var amendmentForms = getAmendmentForms(session, claimId);
     // Manual invoke valida
-    requestReasonFormValidator.validate(
+    requestedReasonFormValidator.validate(
         form, bindingResult, amendmentForms.getRequestedByForm().getRequestedBy());
 
     if (bindingResult.hasErrors()) {

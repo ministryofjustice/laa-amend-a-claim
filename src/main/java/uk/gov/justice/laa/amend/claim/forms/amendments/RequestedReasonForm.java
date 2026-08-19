@@ -6,4 +6,8 @@ import lombok.Data;
 public class RequestedReasonForm {
   // private String requestedBy;
   private String requestedReason;
+
+  public boolean isBlank() {
+    return requestedReason == null || requestedReason.isBlank();
+  }
 }

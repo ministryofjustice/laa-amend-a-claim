@@ -9,19 +9,19 @@ import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendmentRequestReasonController;
+import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendmentRequestedReasonController;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
-import uk.gov.justice.laa.amend.claim.forms.validators.RequestReasonFormValidator;
+import uk.gov.justice.laa.amend.claim.forms.validators.RequestedReasonFormValidator;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 
-@WebMvcTest(AmendmentRequestReasonController.class)
+@WebMvcTest(AmendmentRequestedReasonController.class)
 public class AmendmentsRequestReasonViewTest extends AmendmentsBaseTest {
 
   @MockitoBean private SystemReferenceService systemReferenceService;
-  @MockitoBean private RequestReasonFormValidator requestReasonFormValidator;
+  @MockitoBean private RequestedReasonFormValidator requestedReasonFormValidator;
 
   AmendmentsRequestReasonViewTest() {
     this.mapping =
@@ -31,7 +31,7 @@ public class AmendmentsRequestReasonViewTest extends AmendmentsBaseTest {
   @Test
   void requestReasonDisplayContent() {
     when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
-    when(requestReasonFormValidator.supports(any())).thenReturn(true);
+    when(requestedReasonFormValidator.supports(any())).thenReturn(true);
     when(systemReferenceService.getAmendmentRequestReason(any()))
         .thenReturn(
             Map.of(

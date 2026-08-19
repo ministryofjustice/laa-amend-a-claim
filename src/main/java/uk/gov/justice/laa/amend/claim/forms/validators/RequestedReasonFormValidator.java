@@ -12,12 +12,12 @@ import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 
 @AllArgsConstructor
 @Component
-public class RequestReasonFormValidator implements Validator {
+public class RequestedReasonFormValidator implements Validator {
 
   private final SystemReferenceService systemReferenceService;
 
   @Override
-  public boolean supports(Class<?> clazz) {
+  public boolean supports(@NonNull Class<?> clazz) {
     return RequestedReasonForm.class.isAssignableFrom(clazz);
   }
 

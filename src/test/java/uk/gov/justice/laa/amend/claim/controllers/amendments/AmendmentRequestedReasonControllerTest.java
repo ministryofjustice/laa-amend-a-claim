@@ -29,18 +29,18 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
-import uk.gov.justice.laa.amend.claim.forms.validators.RequestReasonFormValidator;
+import uk.gov.justice.laa.amend.claim.forms.validators.RequestedReasonFormValidator;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 
-@WebMvcTest(controllers = AmendmentRequestReasonController.class)
-class AmendmentRequestReasonControllerTest extends BaseControllerTest {
+@WebMvcTest(controllers = AmendmentRequestedReasonController.class)
+class AmendmentRequestedReasonControllerTest extends BaseControllerTest {
 
   private static final String REQUESTED_BY = "COURT";
   private static final String REQUESTED_REASON = "REASON_1";
   private static final String REQUESTED_REASON_FAIL = "REASON_FAIL";
 
   @MockitoBean private SystemReferenceService systemReferenceService;
-  @MockitoBean private RequestReasonFormValidator requestReasonFormValidator;
+  @MockitoBean private RequestedReasonFormValidator requestedReasonFormValidator;
 
   private UUID submissionId;
   private UUID claimId;
@@ -59,7 +59,7 @@ class AmendmentRequestReasonControllerTest extends BaseControllerTest {
     when(systemReferenceService.getAmendmentRequestReason(any()))
         .thenReturn(Map.of(REQUESTED_REASON, REQUESTED_REASON));
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createForms());
-    when(requestReasonFormValidator.supports(any())).thenReturn(true);
+    when(requestedReasonFormValidator.supports(any())).thenReturn(true);
 
     mockMvc
         .perform(get(buildRequestedReasonPath()).session(session))
@@ -78,7 +78,7 @@ class AmendmentRequestReasonControllerTest extends BaseControllerTest {
   void postRequestedReasonRedirectsToClient() throws Exception {
     var forms = createForms();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
-    when(requestReasonFormValidator.supports(any())).thenReturn(true);
+    when(requestedReasonFormValidator.supports(any())).thenReturn(true);
 
     mockMvc
         .perform(
@@ -100,7 +100,7 @@ class AmendmentRequestReasonControllerTest extends BaseControllerTest {
               errors.rejectValue("requestedReason", "amendments.requestReason.invalid");
               return null;
             })
-        .when(requestReasonFormValidator)
+        .when(requestedReasonFormValidator)
         .validate(any(), any(), any());
 
     var postResult =
@@ -132,7 +132,7 @@ class AmendmentRequestReasonControllerTest extends BaseControllerTest {
               errors.rejectValue("requestedReason", "amendments.requestReason.required");
               return null;
             })
-        .when(requestReasonFormValidator)
+        .when(requestedReasonFormValidator)
         .validate(any(), any(), any());
 
     var postResult =

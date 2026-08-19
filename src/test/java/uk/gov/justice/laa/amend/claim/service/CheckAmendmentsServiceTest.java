@@ -45,8 +45,6 @@ class CheckAmendmentsServiceTest {
 
   @Test
   void submitPopulatesCrimePatchFromAllFormFields() {
-    var submissionId = UUID.randomUUID();
-    var claimId = UUID.randomUUID();
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setVersion(1L);
 
@@ -132,6 +130,8 @@ class CheckAmendmentsServiceTest {
     amendmentForms.setRequestedByForm(createRequestedByForm());
     amendmentForms.setRequestedReasonForm(createRequestReasonForm());
 
+    var submissionId = UUID.randomUUID();
+    var claimId = UUID.randomUUID();
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     var expected =
@@ -175,8 +175,6 @@ class CheckAmendmentsServiceTest {
 
   @Test
   void submitPopulatesCivilPatchFromAllFormFields() {
-    var submissionId = UUID.randomUUID();
-    var claimId = UUID.randomUUID();
     var claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setVersion(1L);
 
@@ -356,6 +354,8 @@ class CheckAmendmentsServiceTest {
     amendmentForms.setRequestedByForm(createRequestedByForm());
     amendmentForms.setRequestedReasonForm(createRequestReasonForm());
 
+    var submissionId = UUID.randomUUID();
+    var claimId = UUID.randomUUID();
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     var expected =
@@ -438,8 +438,6 @@ class CheckAmendmentsServiceTest {
 
   @Test
   void submitPopulatesMediationPatchFromAllFormFields() {
-    var submissionId = UUID.randomUUID();
-    var claimId = UUID.randomUUID();
     var claim = MockClaimsFunctions.createMockMediationClaim();
     claim.setVersion(1L);
 
@@ -555,6 +553,8 @@ class CheckAmendmentsServiceTest {
     amendmentForms.setRequestedByForm(createRequestedByForm());
     amendmentForms.setRequestedReasonForm(createRequestReasonForm());
 
+    var submissionId = UUID.randomUUID();
+    var claimId = UUID.randomUUID();
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     var expected =
@@ -618,8 +618,6 @@ class CheckAmendmentsServiceTest {
 
   @Test
   void doesNotPatchFieldsLockedByAssessmentButStillPatchesTheRest() {
-    var submissionId = UUID.randomUUID();
-    var claimId = UUID.randomUUID();
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setVersion(1L);
     claim.setHasAssessment(true);
@@ -648,6 +646,8 @@ class CheckAmendmentsServiceTest {
     amendmentForms.setRequestedByForm(createRequestedByForm());
     amendmentForms.setRequestedReasonForm(createRequestReasonForm());
 
+    var submissionId = UUID.randomUUID();
+    var claimId = UUID.randomUUID();
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     assertThat(patch.getFeeCode()).isNull();

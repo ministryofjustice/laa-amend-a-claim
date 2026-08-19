@@ -64,4 +64,16 @@ public class AmendmentForms {
   private static boolean hasAmendments(OriginalAndCurrent form) {
     return form != null && form.hasAmendments();
   }
+
+  public boolean hasRequiredFields() {
+    return !hasRequestedBy() || !hasRequestReason();
+  }
+
+  private boolean hasRequestedBy() {
+    return requestedByForm != null && !requestedByForm.isBlank();
+  }
+
+  private boolean hasRequestReason() {
+    return requestedReasonForm != null && !requestedReasonForm.isBlank();
+  }
 }

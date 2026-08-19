@@ -28,8 +28,8 @@ import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendFeeCodePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendMatterTypePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendStageReachedPage;
-import uk.gov.justice.laa.amend.claim.pages.amendments.AmendmentRequestReasonPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendmentRequestedByPage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendmentRequestedReasonPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.CheckPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ConfirmationPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCasePage;
@@ -244,7 +244,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendmentRequestedByPage.getProviderRadio().click();
     amendmentRequestedByPage.getContinueButton().click();
 
-    var amendmentRequestReason = new AmendmentRequestReasonPage(page);
+    var amendmentRequestReason = new AmendmentRequestedReasonPage(page);
     amendmentRequestReason.getProviderErrorRadio().click();
     amendmentRequestReason.getContinueButton().click();
 
@@ -338,7 +338,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendmentRequestBy.getProviderRadio().click();
     amendmentRequestBy.getContinueButton().click();
 
-    var amendmentRequestReason = new AmendmentRequestReasonPage(page);
+    var amendmentRequestReason = new AmendmentRequestedReasonPage(page);
     amendmentRequestReason.getProviderErrorRadio().click();
     amendmentRequestReason.getContinueButton().click();
 
@@ -445,7 +445,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     amendmentRequestBy.getProviderRadio().click();
     amendmentRequestBy.getContinueButton().click();
 
-    var amendmentRequestReason = new AmendmentRequestReasonPage(page);
+    var amendmentRequestReason = new AmendmentRequestedReasonPage(page);
     amendmentRequestReason.getProviderErrorRadio().click();
     amendmentRequestReason.getContinueButton().click();
 

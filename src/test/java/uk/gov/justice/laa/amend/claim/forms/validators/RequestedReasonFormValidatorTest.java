@@ -13,15 +13,15 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentReasonReference;
 
-class RequestReasonFormValidatorTest {
+class RequestedReasonFormValidatorTest {
 
-  private RequestReasonFormValidator validator;
+  private RequestedReasonFormValidator validator;
   private SystemReferenceService systemReferenceService;
 
   @BeforeEach
   void setUp() {
     systemReferenceService = mock(SystemReferenceService.class);
-    validator = new RequestReasonFormValidator(systemReferenceService);
+    validator = new RequestedReasonFormValidator(systemReferenceService);
   }
 
   @Test
