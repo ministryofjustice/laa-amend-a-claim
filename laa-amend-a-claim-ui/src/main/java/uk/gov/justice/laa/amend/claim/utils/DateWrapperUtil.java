@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
@@ -13,5 +14,8 @@ public class DateWrapperUtil {
 
   public LocalDateTime timeNow() {
     return LocalDateTime.now();
+  }
+  public boolean isFutureDate(LocalDate date) {
+    return date.isAfter(LocalDate.now());
   }
 }
