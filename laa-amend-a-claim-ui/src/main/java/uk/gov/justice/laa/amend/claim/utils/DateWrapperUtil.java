@@ -15,6 +15,7 @@ public class DateWrapperUtil {
   public LocalDateTime timeNow() {
     return LocalDateTime.now();
   }
+
   public boolean isFutureDate(LocalDate date) {
     return date.isAfter(LocalDate.now());
   }

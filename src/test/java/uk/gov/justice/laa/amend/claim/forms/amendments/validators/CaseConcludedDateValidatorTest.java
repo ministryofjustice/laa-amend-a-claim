@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,8 +31,7 @@ class CaseConcludedDateValidatorTest {
 
   CaseConcludedDateValidator validator;
 
-  @Mock
-  DateWrapperUtil dateWrapperUtil;
+  @Mock DateWrapperUtil dateWrapperUtil;
 
   @BeforeEach
   void beforeEach() {
