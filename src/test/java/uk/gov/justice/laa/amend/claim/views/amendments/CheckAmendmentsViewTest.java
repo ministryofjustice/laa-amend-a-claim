@@ -4,12 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
 import org.jsoup.nodes.Document;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.amendments.CheckAmendmentsController;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
+import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
@@ -262,11 +265,16 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
     var view = ClaimClientViewFactory.create(claim);
     var caseView = ClaimCaseViewFactory.create(claim);
     var costsView = ClaimCostsViewFactory.create(claim);
+    var requestedByForm = createRequestedByForm();
+    var requestedReasonForm = createRequestedReasonForm();
+
     return AmendmentForms.builder()
         .client1(new AmendmentForm(view.client1Rows()))
         .caseType(new AmendmentForm(caseView.caseTypeRows()))
         .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
         .costs(new AmendmentForm(costsView.costRows()))
+        .requestedBy(requestedByForm)
+        .requestedReason(requestedReasonForm)
         .build();
   }
 
@@ -274,13 +282,30 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
     var view = ClaimClientViewFactory.create(claim);
     var caseView = ClaimCaseViewFactory.create(claim);
     var costsView = ClaimCostsViewFactory.create(claim);
+    var requestedByForm = createRequestedByForm();
+    var requestedReasonForm = createRequestedReasonForm();
+
     return AmendmentForms.builder()
         .client1(new AmendmentForm(view.client1Rows()))
         .client2(new AmendmentForm(view.client2Rows()))
         .caseType(new AmendmentForm(caseView.caseTypeRows()))
         .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
         .costs(new AmendmentForm(costsView.costRows()))
+        .requestedBy(requestedByForm)
+        .requestedReason(requestedReasonForm)
         .build();
+  }
+
+  private static @NonNull RequestedByForm createRequestedByForm() {
+    var requestedByForm = new RequestedByForm();
+    requestedByForm.setRequestedBy("requestedBy");
+    return requestedByForm;
+  }
+
+  private static @NonNull RequestedReasonForm createRequestedReasonForm() {
+    var requestedReasonForm = new RequestedReasonForm();
+    requestedReasonForm.setRequestedReason("reason");
+    return requestedReasonForm;
   }
 
   private void assertCommonPageContent(Document doc) {

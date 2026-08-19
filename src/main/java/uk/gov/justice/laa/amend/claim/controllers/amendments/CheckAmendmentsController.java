@@ -44,7 +44,7 @@ public class CheckAmendmentsController {
     var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
 
-    if (!amendmentForms.hasAmendments()) {
+    if (!amendmentForms.hasAmendments() || amendmentForms.isMissingRequiredFields()) {
       throw new ResponseStatusException(
           HttpStatus.NOT_FOUND,
           "No amendments found for submission %s claim %s".formatted(submissionId, claimId));
@@ -82,7 +82,7 @@ public class CheckAmendmentsController {
     var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
 
-    if (!amendmentForms.hasAmendments()) {
+    if (!amendmentForms.hasAmendments() || amendmentForms.isMissingRequiredFields()) {
       throw new ResponseStatusException(
           HttpStatus.NOT_FOUND,
           "No amendments found for submission %s claim %s".formatted(submissionId, claimId));

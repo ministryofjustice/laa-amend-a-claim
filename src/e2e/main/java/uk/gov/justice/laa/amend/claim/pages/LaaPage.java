@@ -51,7 +51,7 @@ public abstract class LaaPage {
 
   private void generateAxeReport(int status) {
     try {
-      String fileName = heading.textContent().trim().replace(" ", "_");
+      String fileName = sanitizeFileName(heading.textContent().trim().replace(" ", "_"));
       String path = String.format("%s/%s_%d.json", directory, fileName, status);
       if (Files.notExists(Paths.get(path))) {
         AxeResults axeResults = axeBuilder.analyze();
@@ -62,5 +62,10 @@ public abstract class LaaPage {
     } catch (RuntimeException | IOException e) {
       System.err.println(e.getMessage());
     }
+  }
+
+  private String sanitizeFileName(String fileName) {
+    String sanitized = fileName.replaceAll("[\\\\/:*?\"<>|]", "");
+    return sanitized.isBlank() ? "axe_report" : sanitized;
   }
 }

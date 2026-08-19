@@ -16,6 +16,8 @@ public class AmendmentForms {
   @NotNull private OriginalAndCurrent caseDetailsForm;
   private OriginalAndCurrent client2Form;
   @NotNull private OriginalAndCurrent costsForm;
+  @NotNull private RequestedByForm requestedByForm;
+  @NotNull private RequestedReasonForm requestedReasonForm;
 
   @Builder
   private AmendmentForms(
@@ -23,11 +25,16 @@ public class AmendmentForms {
       AmendmentForm client2,
       AmendmentForm caseType,
       AmendmentForm caseDetails,
-      AmendmentForm costs) {
+      AmendmentForm costs,
+      RequestedByForm requestedBy,
+      RequestedReasonForm requestedReason) {
     this.client1Form = originalAndCurrent(client1);
     this.caseTypeForm = originalAndCurrent(caseType);
     this.caseDetailsForm = originalAndCurrent(caseDetails);
     this.costsForm = originalAndCurrent(costs == null ? new AmendmentForm() : costs);
+    this.requestedByForm = requestedBy == null ? new RequestedByForm() : requestedBy;
+    this.requestedReasonForm =
+        requestedReason == null ? new RequestedReasonForm() : requestedReason;
 
     if (client2 != null) {
       this.client2Form = originalAndCurrent(client2);
@@ -56,5 +63,17 @@ public class AmendmentForms {
 
   private static boolean hasAmendments(OriginalAndCurrent form) {
     return form != null && form.hasAmendments();
+  }
+
+  public boolean isMissingRequiredFields() {
+    return !hasRequestedBy() || !hasRequestReason();
+  }
+
+  private boolean hasRequestedBy() {
+    return requestedByForm != null && !requestedByForm.isBlank();
+  }
+
+  private boolean hasRequestReason() {
+    return requestedReasonForm != null && !requestedReasonForm.isBlank();
   }
 }
