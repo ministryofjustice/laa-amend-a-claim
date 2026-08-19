@@ -27,8 +27,7 @@ class CaseStartDateValidatorTest {
 
   CaseStartDateValidator validator;
 
-  @Mock
-  DateWrapperUtil dateWrapperUtil;
+  @Mock DateWrapperUtil dateWrapperUtil;
 
   @BeforeEach
   void beforeEach() {
