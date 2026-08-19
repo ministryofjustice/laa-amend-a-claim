@@ -11,11 +11,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.FieldSpecificAmendmentValidator;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
 
 class CrimeMinRepresentationOrderDateValidatorTest {
@@ -85,7 +83,7 @@ class CrimeMinRepresentationOrderDateValidatorTest {
 
     assertThat(result.hasFieldErrors()).isTrue();
     assertThat(result.getFieldError("inputs['REPRESENTATION_ORDER_DATE']").getCode())
-        .isEqualTo(FieldSpecificAmendmentValidator.DATE_CANT_BE_BEFORE_CODE);
+        .isEqualTo(AmendmentDateValidator.DATE_CANT_BE_BEFORE_CODE);
     assertThat(result.getFieldError("inputs['REPRESENTATION_ORDER_DATE']").getArguments()[0])
         .isEqualTo("Representation order date");
     assertThat(result.getFieldError("inputs['REPRESENTATION_ORDER_DATE']").getArguments()[1])
@@ -94,7 +92,6 @@ class CrimeMinRepresentationOrderDateValidatorTest {
 
   private Errors validate(Map<String, String> inputs) {
     ClaimDetails claimDetails = MockClaimsFunctions.createMockCrimeClaim();
-
     var form = new AmendmentForm();
     form.setInputs(inputs);
 
