@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
