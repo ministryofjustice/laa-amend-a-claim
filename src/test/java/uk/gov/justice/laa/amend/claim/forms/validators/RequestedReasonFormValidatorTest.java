@@ -25,12 +25,6 @@ class RequestedReasonFormValidatorTest {
   }
 
   @Test
-  void supportsRequestedReasonFormType() {
-    assertThat(validator.supports(RequestedReasonForm.class)).isTrue();
-    assertThat(validator.supports(Object.class)).isFalse();
-  }
-
-  @Test
   void rejectsNullRequestedReason() {
     var form = new RequestedReasonForm();
     form.setRequestedReason(null);

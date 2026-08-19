@@ -31,7 +31,6 @@ public class AmendmentsRequestReasonViewTest extends AmendmentsBaseTest {
   @Test
   void requestReasonDisplayContent() {
     when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
-    when(requestedReasonFormValidator.supports(any())).thenReturn(true);
     when(systemReferenceService.getAmendmentRequestReason(any()))
         .thenReturn(
             Map.of(

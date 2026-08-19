@@ -58,7 +58,7 @@ public class AmendmentRequestedByController {
     var amendmentForms = getAmendmentForms(session, claimId);
 
     setModelAttributesForDisplay(model, claimId, submissionId, amendmentForms);
-    model.addAttribute("amendmentRequestByOptions", getAmendmentRequestByOptions());
+    model.addAttribute("amendmentRequestedByOptions", getAmendmentRequestedByOptions());
     return "amendments/amend-requested-by";
   }
 
@@ -85,7 +85,7 @@ public class AmendmentRequestedByController {
         .formatted(submissionId, claimId);
   }
 
-  private Map<String, String> getAmendmentRequestByOptions() {
+  private Map<String, String> getAmendmentRequestedByOptions() {
     var amendmentRequestedByReferenceList =
         systemReferenceService.getAmendmentRequestedByReferenceList();
     Map<String, String> codeToLabelMap = new LinkedHashMap<>();

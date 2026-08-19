@@ -59,7 +59,6 @@ class AmendmentRequestedReasonControllerTest extends BaseControllerTest {
     when(systemReferenceService.getAmendmentRequestReason(any()))
         .thenReturn(Map.of(REQUESTED_REASON, REQUESTED_REASON));
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createForms());
-    when(requestedReasonFormValidator.supports(any())).thenReturn(true);
 
     mockMvc
         .perform(get(buildRequestedReasonPath()).session(session))
@@ -78,7 +77,6 @@ class AmendmentRequestedReasonControllerTest extends BaseControllerTest {
   void postRequestedReasonRedirectsToClient() throws Exception {
     var forms = createForms();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
-    when(requestedReasonFormValidator.supports(any())).thenReturn(true);
 
     mockMvc
         .perform(

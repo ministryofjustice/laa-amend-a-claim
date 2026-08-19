@@ -61,7 +61,7 @@ class AmendmentRequestedByControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(view().name("amendments/amend-requested-by"))
         .andExpect(model().attributeExists("claimId", "submissionId", "requestedByForm"))
-        .andExpect(model().attribute("amendmentRequestByOptions", Map.of()))
+        .andExpect(model().attribute("amendmentRequestedByOptions", Map.of()))
         .andExpect(model().attribute("claimId", claimId))
         .andExpect(model().attribute("submissionId", submissionId));
   }

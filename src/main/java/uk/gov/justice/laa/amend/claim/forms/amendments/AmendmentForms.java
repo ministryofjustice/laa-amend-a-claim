@@ -65,7 +65,7 @@ public class AmendmentForms {
     return form != null && form.hasAmendments();
   }
 
-  public boolean hasRequiredFields() {
+  public boolean isMissingRequiredFields() {
     return !hasRequestedBy() || !hasRequestReason();
   }
 
