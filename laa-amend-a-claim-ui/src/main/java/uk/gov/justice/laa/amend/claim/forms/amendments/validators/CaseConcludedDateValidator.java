@@ -2,13 +2,13 @@ package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.ZoneId;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
-import uk.gov.justice.laa.amend.claim.utils.DateWrapperUtil;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
@@ -22,11 +22,8 @@ public class CaseConcludedDateValidator extends AmendmentDateValidator {
   private static final LocalDate EARLIEST_CRIME_CASE_CONCLUDED_DATE_ALLOWED =
       LocalDate.of(2016, Month.APRIL, 1);
 
-  private final DateWrapperUtil dateWrapperUtil;
-
-  public CaseConcludedDateValidator(MessageSource messageSource, DateWrapperUtil dateWrapperUtil) {
+  public CaseConcludedDateValidator(MessageSource messageSource) {
     super(messageSource);
-    this.dateWrapperUtil = dateWrapperUtil;
   }
 
   @Override
@@ -39,21 +36,19 @@ public class CaseConcludedDateValidator extends AmendmentDateValidator {
   @Override
   public void validate(
       ClaimDetails claim, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
-    var caseConcludedDate = form.getDateValue(field.name());
+    var caseConcludedDate = form.getDateValue(field.toString());
     var earliestDate =
         AreaOfLaw.CRIME_LOWER.equals(claim.getAreaOfLaw())
             ? EARLIEST_CRIME_CASE_CONCLUDED_DATE_ALLOWED
             : EARLIEST_CASE_CONCLUDED_DATE_ALLOWED;
-    if (caseConcludedDate == null || claim.getSubmissionPeriod() == null) {
-      return;
-    }
 
-    var twentiethOfNextMonth = getSubmissionPeriodCutoffDate(claim.getSubmissionPeriod());
-    if (dateWrapperUtil.isFutureDate(caseConcludedDate)) {
+    var twentiethOfNextMonth = getTwentiethOfNextMonth(claim.getSubmissionPeriod());
+    if (caseConcludedDate != null
+        && caseConcludedDate.isAfter(LocalDate.now(ZoneId.systemDefault()))) {
       addDateInTheFutureMessage(errors, field);
-    } else if (caseConcludedDate.isBefore(earliestDate)) {
-      addDateTooEarlyMessage(errors, field, earliestDate);
-    } else if (caseConcludedDate.isAfter(twentiethOfNextMonth)) {
+    } else if (caseConcludedDate != null && caseConcludedDate.isBefore(earliestDate)) {
+      addDateTooEarlyMessage(errors, field, EARLIEST_CASE_CONCLUDED_DATE_ALLOWED);
+    } else if (caseConcludedDate != null && caseConcludedDate.isAfter(twentiethOfNextMonth)) {
       addDateOutsideSubmissionPeriodMessage(errors, field);
     }
   }

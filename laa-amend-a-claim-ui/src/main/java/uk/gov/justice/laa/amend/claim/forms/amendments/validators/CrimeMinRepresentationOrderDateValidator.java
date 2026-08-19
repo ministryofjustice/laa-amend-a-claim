@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.forms.amendments.validators.unique;
+package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
 
 import java.time.LocalDate;
 import java.time.Month;
