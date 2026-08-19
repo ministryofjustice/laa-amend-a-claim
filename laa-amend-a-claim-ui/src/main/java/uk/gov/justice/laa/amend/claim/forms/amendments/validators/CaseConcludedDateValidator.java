@@ -3,12 +3,14 @@ package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneId;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.utils.DateWrapperUtil;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
@@ -22,8 +24,11 @@ public class CaseConcludedDateValidator extends AmendmentDateValidator {
   private static final LocalDate EARLIEST_CRIME_CASE_CONCLUDED_DATE_ALLOWED =
       LocalDate.of(2016, Month.APRIL, 1);
 
-  public CaseConcludedDateValidator(MessageSource messageSource) {
+  private final DateWrapperUtil dateWrapperUtil;
+
+  public CaseConcludedDateValidator(MessageSource messageSource, DateWrapperUtil dateWrapperUtil) {
     super(messageSource);
+    this.dateWrapperUtil = dateWrapperUtil;
   }
 
   @Override
@@ -51,7 +56,7 @@ public class CaseConcludedDateValidator extends AmendmentDateValidator {
     }
 
     var twentiethOfNextMonth = getTwentiethOfNextMonth(claim.getSubmissionPeriod());
-    if (caseConcludedDate.isAfter(LocalDate.now(ZoneId.systemDefault()))) {
+    if (dateWrapperUtil.isFutureDate(caseConcludedDate)) {
       addDateInTheFutureMessage(errors, field);
     } else if (caseConcludedDate.isBefore(earliestDate)) {
       addDateTooEarlyMessage(errors, field, earliestDate);
