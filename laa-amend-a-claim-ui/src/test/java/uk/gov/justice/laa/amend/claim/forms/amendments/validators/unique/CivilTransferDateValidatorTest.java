@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments.validators.unique;
 
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -14,20 +15,21 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 
-class CaseStartDateValidatorTest {
+class CivilTransferDateValidatorTest {
 
-  CaseStartDateValidator validator;
+  CivilTransferDateValidator validator;
 
   @BeforeEach
   void beforeEach() {
-    validator = new CaseStartDateValidator(TestMessageSources.real());
+    validator = new CivilTransferDateValidator(TestMessageSources.real());
   }
 
   @Test
   void testAppliesTo() {
-    assertTrue(validator.appliesTo(ClaimDetailsViewField.CASE_START_DATE));
+    assertTrue(validator.appliesTo(CivilClaimDetailsViewField.TRANSFER_DATE));
   }
 
   @ParameterizedTest
@@ -36,9 +38,9 @@ class CaseStartDateValidatorTest {
   void shouldNotAddErrorsForInvalidDates(String day, String month, String year) {
     Map<String, String> input =
         Map.of(
-            "CASE_START_DATE-day", day,
-            "CASE_START_DATE-month", month,
-            "CASE_START_DATE-year", year);
+            "TRANSFER_DATE-day", day,
+            "TRANSFER_DATE-month", month,
+            "TRANSFER_DATE-year", year);
 
     Errors result = validate(input);
 
@@ -49,9 +51,9 @@ class CaseStartDateValidatorTest {
   void shouldNotAddErrorsForValidDate() {
     Map<String, String> input =
         Map.of(
-            "CASE_START_DATE-day", "15",
-            "CASE_START_DATE-month", "12",
-            "CASE_START_DATE-year", "2020");
+            "TRANSFER_DATE-day", "15",
+            "TRANSFER_DATE-month", "12",
+            "TRANSFER_DATE-year", "2020");
 
     Errors result = validate(input);
 
@@ -62,9 +64,9 @@ class CaseStartDateValidatorTest {
   void shouldNotAddErrorsForFirstValidDate() {
     Map<String, String> input =
         Map.of(
-            "CASE_START_DATE-day", "1",
-            "CASE_START_DATE-month", "1",
-            "CASE_START_DATE-year", "1995");
+            "TRANSFER_DATE-day", "1",
+            "TRANSFER_DATE-month", "1",
+            "TRANSFER_DATE-year", "1995");
 
     Errors result = validate(input);
 
@@ -75,18 +77,18 @@ class CaseStartDateValidatorTest {
   void shouldAddErrorsForOldDate() {
     Map<String, String> input =
         Map.of(
-            "CASE_START_DATE-day", "31",
-            "CASE_START_DATE-month", "12",
-            "CASE_START_DATE-year", "1994");
+            "TRANSFER_DATE-day", "31",
+            "TRANSFER_DATE-month", "12",
+            "TRANSFER_DATE-year", "1994");
 
     Errors result = validate(input);
 
     assertThat(result.hasFieldErrors()).isTrue();
-    assertThat(result.getFieldError("inputs['CASE_START_DATE']").getCode())
+    assertThat(result.getFieldError("inputs['TRANSFER_DATE']").getCode())
         .isEqualTo(AmendmentDateValidator.DATE_CANT_BE_BEFORE_CODE);
-    assertThat(result.getFieldError("inputs['CASE_START_DATE']").getArguments()[0])
-        .isEqualTo("Case start date");
-    assertThat(result.getFieldError("inputs['CASE_START_DATE']").getArguments()[1])
+    assertThat(result.getFieldError("inputs['TRANSFER_DATE']").getArguments()[0])
+        .isEqualTo("Transfer date");
+    assertThat(result.getFieldError("inputs['TRANSFER_DATE']").getArguments()[1])
         .isEqualTo("1 January 1995");
   }
 
@@ -97,7 +99,7 @@ class CaseStartDateValidatorTest {
     form.setInputs(inputs);
 
     var errors = new BeanPropertyBindingResult(form, "amendmentForm");
-    validator.validate(claimDetails, ClaimDetailsViewField.CASE_START_DATE, form, errors);
+    validator.validate(claimDetails, CivilClaimDetailsViewField.TRANSFER_DATE, form, errors);
     return errors;
   }
 }
