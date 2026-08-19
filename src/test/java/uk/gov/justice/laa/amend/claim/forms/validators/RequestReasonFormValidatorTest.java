@@ -33,10 +33,9 @@ class RequestReasonFormValidatorTest {
   @Test
   void rejectsNullRequestedReason() {
     var form = new RequestedReasonForm();
-    form.setRequestedBy("PROVIDER");
     form.setRequestedReason(null);
 
-    var errors = validate(form);
+    var errors = validate(form, null);
 
     assertThat(errors.hasErrors()).isTrue();
     assertThat(Objects.requireNonNull(errors.getFieldError("requestedReason")).getCode())
@@ -46,10 +45,9 @@ class RequestReasonFormValidatorTest {
   @Test
   void rejectsBlankRequestedReason() {
     var form = new RequestedReasonForm();
-    form.setRequestedBy("PROVIDER");
     form.setRequestedReason("");
 
-    var errors = validate(form);
+    var errors = validate(form, "");
 
     assertThat(errors.hasErrors()).isTrue();
     assertThat(Objects.requireNonNull(errors.getFieldError("requestedReason")).getCode())
@@ -62,10 +60,9 @@ class RequestReasonFormValidatorTest {
         "PROVIDER", createReason("REASON1", "Reason 1"), createReason("REASON2", "Reason 2"));
 
     var form = new RequestedReasonForm();
-    form.setRequestedBy("PROVIDER");
     form.setRequestedReason("INVALID_CODE");
 
-    var errors = validate(form);
+    var errors = validate(form, "PROVIDER");
 
     assertThat(errors.hasErrors()).isTrue();
     assertThat(Objects.requireNonNull(errors.getFieldError("requestedReason")).getCode())
@@ -81,10 +78,9 @@ class RequestReasonFormValidatorTest {
         createReason("REASON3", "Reason 3"));
 
     var form = new RequestedReasonForm();
-    form.setRequestedBy("PROVIDER");
     form.setRequestedReason("REASON2");
 
-    var errors = validate(form);
+    var errors = validate(form, "PROVIDER");
 
     assertThat(errors.hasErrors()).isFalse();
   }
@@ -97,10 +93,9 @@ class RequestReasonFormValidatorTest {
         createReason("LAA_REASON2", "LAA Reason 2"));
 
     var form = new RequestedReasonForm();
-    form.setRequestedBy("LAA");
     form.setRequestedReason("LAA_REASON1");
 
-    var errors = validate(form);
+    var errors = validate(form, "LAA");
 
     assertThat(errors.hasErrors()).isFalse();
   }
@@ -110,10 +105,9 @@ class RequestReasonFormValidatorTest {
     setupAmendmentReasons("PROVIDER", createReason("PROVIDER_REASON", "Provider Reason"));
 
     var form = new RequestedReasonForm();
-    form.setRequestedBy("PROVIDER");
     form.setRequestedReason("LAA_REASON");
 
-    var errors = validate(form);
+    var errors = validate(form, "PROVIDER");
 
     assertThat(errors.hasErrors()).isTrue();
     assertThat(Objects.requireNonNull(errors.getFieldError("requestedReason")).getCode())
@@ -139,9 +133,9 @@ class RequestReasonFormValidatorTest {
     return reason;
   }
 
-  private Errors validate(RequestedReasonForm form) {
+  private Errors validate(RequestedReasonForm form, String requestedBy) {
     var errors = new BeanPropertyBindingResult(form, "requestedReasonForm");
-    validator.validate(form, errors);
+    validator.validate(form, errors, requestedBy);
     return errors;
   }
 }

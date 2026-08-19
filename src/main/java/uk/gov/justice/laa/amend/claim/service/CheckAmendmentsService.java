@@ -33,9 +33,8 @@ public class CheckAmendmentsService {
     var patchBuilder =
         ClaimPatch.builder()
             .amendmentUserId(userId)
-            // TODO: BC-574 will cover these values
-            .amendmentReasonCode("CASE_REOPENED_REBILLED")
-            .amendmentRequestedBy("PROVIDER")
+            .amendmentReasonCode(amendmentForms.getRequestedReasonForm().getRequestedReason())
+            .amendmentRequestedBy(amendmentForms.getRequestedByForm().getRequestedBy())
             .version(claim.getVersion());
 
     applyAmendments(patchBuilder, amendmentForms.getClient1Form(), claim);

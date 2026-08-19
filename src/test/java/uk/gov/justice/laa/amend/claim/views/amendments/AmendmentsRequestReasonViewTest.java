@@ -59,11 +59,13 @@ public class AmendmentsRequestReasonViewTest extends AmendmentsBaseTest {
   }
 
   private static AmendmentForms createRequestByForms() {
+    var requestedByForm = new RequestedByForm();
+    requestedByForm.setRequestedBy("COURT");
     return AmendmentForms.builder()
         .client1(new AmendmentForm())
         .caseType(new AmendmentForm())
         .caseDetails(new AmendmentForm())
-        .requestedBy(new RequestedByForm())
+        .requestedBy(requestedByForm)
         .build();
   }
 }

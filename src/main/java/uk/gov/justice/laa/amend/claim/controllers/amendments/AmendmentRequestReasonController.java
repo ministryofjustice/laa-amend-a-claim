@@ -7,17 +7,18 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveAmendmentFor
 import jakarta.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.justice.laa.amend.claim.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
@@ -30,23 +31,12 @@ import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/requested-reason")
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
+@AllArgsConstructor
 @Slf4j
 public class AmendmentRequestReasonController {
 
   private final RequestReasonFormValidator requestReasonFormValidator;
   private final SystemReferenceService systemReferenceService;
-
-  public AmendmentRequestReasonController(
-      RequestReasonFormValidator requestReasonFormValidator,
-      SystemReferenceService systemReferenceService) {
-    this.requestReasonFormValidator = requestReasonFormValidator;
-    this.systemReferenceService = systemReferenceService;
-  }
-
-  @InitBinder("requestedReasonForm")
-  public void initRequestedReasonFormBinder(WebDataBinder binder) {
-    binder.addValidators(requestReasonFormValidator);
-  }
 
   @ModelAttribute("amendmentReasonOptions")
   public Map<String, String> populateAmendmentReasons(
@@ -63,6 +53,13 @@ public class AmendmentRequestReasonController {
       @PathVariable UUID claimId,
       @PathVariable UUID submissionId) {
     var amendmentForms = getAmendmentForms(session, claimId);
+    if (amendmentForms.getRequestedByForm() == null
+        || amendmentForms.getRequestedByForm().getRequestedBy().isEmpty()) {
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND,
+          "No requested by value found for submission %s claim %s"
+              .formatted(submissionId, claimId));
+    }
     model.addAttribute("claimId", claimId);
     model.addAttribute("submissionId", submissionId);
     model.addAttribute("requestedReasonForm", amendmentForms.getRequestedReasonForm());
@@ -78,10 +75,9 @@ public class AmendmentRequestReasonController {
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
     var amendmentForms = getAmendmentForms(session, claimId);
-
-    // Set the requested by as this is needed for the validator
-    form.setRequestedBy(amendmentForms.getRequestedByForm().getRequestedBy());
-    requestReasonFormValidator.validate(form, bindingResult);
+    // Manual invoke valida
+    requestReasonFormValidator.validate(
+        form, bindingResult, amendmentForms.getRequestedByForm().getRequestedBy());
 
     if (bindingResult.hasErrors()) {
       return redirectWithErrors(

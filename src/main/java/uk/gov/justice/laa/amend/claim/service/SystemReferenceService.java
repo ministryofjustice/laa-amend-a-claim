@@ -46,8 +46,8 @@ public class SystemReferenceService {
         .orElse(Collections.emptyList());
   }
 
-  public Map<String, String> getAmendmentRequestReason(String requestBy) {
-    var amendmentReasons = getAmendmentReasonByProvider(requestBy);
+  public Map<String, String> getAmendmentRequestReason(String requestedBy) {
+    var amendmentReasons = getAmendmentReasonByProvider(requestedBy);
 
     Map<String, String> codeToLabelMap = new LinkedHashMap<>();
     if (amendmentReasons != null && !amendmentReasons.isEmpty()) {
@@ -59,6 +59,15 @@ public class SystemReferenceService {
                   Collectors.toMap(
                       AmendmentReasonReference::getCode,
                       AmendmentReasonReference::getDisplayLabel,
+                      (existing, replacement) -> existing,
+                      LinkedHashMap::new));
+      codeToLabelMap =
+          codeToLabelMap.entrySet().stream()
+              .sorted(Map.Entry.comparingByValue(String.CASE_INSENSITIVE_ORDER))
+              .collect(
+                  Collectors.toMap(
+                      Map.Entry::getKey,
+                      Map.Entry::getValue,
                       (existing, replacement) -> existing,
                       LinkedHashMap::new));
     }

@@ -94,7 +94,6 @@ class AmendmentRequestReasonControllerTest extends BaseControllerTest {
   @Test
   void postRequestedByWithoutValueShowsValidationError() throws Exception {
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createForms());
-    when(requestReasonFormValidator.supports(any())).thenReturn(true);
     doAnswer(
             invocation -> {
               Errors errors = invocation.getArgument(1);
@@ -102,7 +101,7 @@ class AmendmentRequestReasonControllerTest extends BaseControllerTest {
               return null;
             })
         .when(requestReasonFormValidator)
-        .validate(any(), any());
+        .validate(any(), any(), any());
 
     var postResult =
         mockMvc
@@ -127,7 +126,6 @@ class AmendmentRequestReasonControllerTest extends BaseControllerTest {
   @Test
   void postRequestedByInvalidValueShowsValidationError() throws Exception {
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), createForms());
-    when(requestReasonFormValidator.supports(any())).thenReturn(true);
     doAnswer(
             invocation -> {
               Errors errors = invocation.getArgument(1);
@@ -135,7 +133,7 @@ class AmendmentRequestReasonControllerTest extends BaseControllerTest {
               return null;
             })
         .when(requestReasonFormValidator)
-        .validate(any(), any());
+        .validate(any(), any(), any());
 
     var postResult =
         mockMvc

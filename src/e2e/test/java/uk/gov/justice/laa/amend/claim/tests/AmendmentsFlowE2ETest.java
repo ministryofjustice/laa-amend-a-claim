@@ -28,8 +28,8 @@ import uk.gov.justice.laa.amend.claim.pages.amendments.AmendCostsPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendFeeCodePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendMatterTypePage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendStageReachedPage;
-import uk.gov.justice.laa.amend.claim.pages.amendments.AmendmentRequestByPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.AmendmentRequestReasonPage;
+import uk.gov.justice.laa.amend.claim.pages.amendments.AmendmentRequestedByPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.CheckPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ConfirmationPage;
 import uk.gov.justice.laa.amend.claim.pages.amendments.ViewCasePage;
@@ -240,9 +240,9 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var details = new ClaimDetailsPage(page);
     details.clickAmendClaim();
 
-    var amendmentRequestBy = new AmendmentRequestByPage(page);
-    amendmentRequestBy.getProviderRadio().click();
-    amendmentRequestBy.getContinueButton().click();
+    var amendmentRequestedByPage = new AmendmentRequestedByPage(page);
+    amendmentRequestedByPage.getProviderRadio().click();
+    amendmentRequestedByPage.getContinueButton().click();
 
     var amendmentRequestReason = new AmendmentRequestReasonPage(page);
     amendmentRequestReason.getProviderErrorRadio().click();
@@ -334,7 +334,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var details = new ClaimDetailsPage(page);
     details.clickAmendClaim();
 
-    var amendmentRequestBy = new AmendmentRequestByPage(page);
+    var amendmentRequestBy = new AmendmentRequestedByPage(page);
     amendmentRequestBy.getProviderRadio().click();
     amendmentRequestBy.getContinueButton().click();
 
@@ -441,7 +441,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     details.clickAmendClaim();
 
     // View Costs → Change Client Details → View Client
-    var amendmentRequestBy = new AmendmentRequestByPage(page);
+    var amendmentRequestBy = new AmendmentRequestedByPage(page);
     amendmentRequestBy.getProviderRadio().click();
     amendmentRequestBy.getContinueButton().click();
 

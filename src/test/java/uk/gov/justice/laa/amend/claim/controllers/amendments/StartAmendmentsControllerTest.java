@@ -125,7 +125,7 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
     var costsForm = new AmendmentForm();
     costsForm.setInputs(costsRows);
 
-    var requestByForm = new RequestedByForm();
+    var requestedByForm = new RequestedByForm();
     var requestReasonForm = new RequestedReasonForm();
 
     AmendmentForms forms =
@@ -134,7 +134,7 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
             .caseType(caseTypeForm)
             .caseDetails(caseDetailsForm)
             .costs(costsForm)
-            .requestedBy(requestByForm)
+            .requestedBy(requestedByForm)
             .requestedReason(requestReasonForm)
             .build();
 
@@ -252,7 +252,7 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
 
     var costsForm = new AmendmentForm(ClaimCostsViewFactory.create(claim).costRows());
 
-    var requestByForm = new RequestedByForm();
+    var requestedByForm = new RequestedByForm();
     var requestReasonForm = new RequestedReasonForm();
 
     AmendmentForms forms =
@@ -262,7 +262,7 @@ class StartAmendmentsControllerTest extends BaseControllerTest {
             .caseType(caseTypeForm)
             .caseDetails(caseDetailsForm)
             .costs(costsForm)
-            .requestedBy(requestByForm)
+            .requestedBy(requestedByForm)
             .requestedReason(requestReasonForm)
             .build();
 

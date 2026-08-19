@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class RequestedReasonForm {
-  private String requestedBy;
+  // private String requestedBy;
   private String requestedReason;
 }

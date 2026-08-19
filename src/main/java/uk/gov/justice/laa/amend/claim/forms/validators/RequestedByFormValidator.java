@@ -12,7 +12,7 @@ import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 
 @AllArgsConstructor
 @Component
-public class RequestByFormValidator implements Validator {
+public class RequestedByFormValidator implements Validator {
 
   private final SystemReferenceService systemReferenceService;
 
@@ -27,12 +27,12 @@ public class RequestByFormValidator implements Validator {
 
     var value = form.getRequestedBy();
     if (isBlank(value)) {
-      errors.rejectValue("requestedBy", "amendments.requestBy.required");
+      errors.rejectValue("requestedBy", "amendments.requestedBy.required");
       return;
     }
     if (systemReferenceService.getAmendmentRequestedByReferenceList().getRequestedBy().stream()
         .noneMatch(item -> value.equals(item.getCode()))) {
-      errors.rejectValue("requestedBy", "amendments.requestBy.invalid");
+      errors.rejectValue("requestedBy", "amendments.requestedBy.invalid");
     }
   }
 }

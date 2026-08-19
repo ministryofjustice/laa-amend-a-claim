@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +28,7 @@ import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
-import uk.gov.justice.laa.amend.claim.forms.validators.RequestByFormValidator;
+import uk.gov.justice.laa.amend.claim.forms.validators.RequestedByFormValidator;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReference;
 
@@ -35,42 +36,16 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByRe
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/requested-by")
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
+@RequiredArgsConstructor
 @Slf4j
-public class AmendmentRequestByController {
+public class AmendmentRequestedByController {
 
   private final SystemReferenceService systemReferenceService;
-  private final RequestByFormValidator requestByFormValidator;
-
-  public AmendmentRequestByController(
-      SystemReferenceService systemReferenceService,
-      RequestByFormValidator requestByFormValidator) {
-    this.systemReferenceService = systemReferenceService;
-    this.requestByFormValidator = requestByFormValidator;
-  }
+  private final RequestedByFormValidator requestedByFormValidator;
 
   @InitBinder("requestedByForm")
   public void initRequestedByFormBinder(WebDataBinder binder) {
-    binder.addValidators(requestByFormValidator);
-  }
-
-  private Map<String, String> getAmendmentRequestByOptions() {
-    var amendmentRequestedByReferenceList =
-        systemReferenceService.getAmendmentRequestedByReferenceList();
-    Map<String, String> codeToLabelMap = new LinkedHashMap<>();
-    if (amendmentRequestedByReferenceList != null
-        && amendmentRequestedByReferenceList.getRequestedBy() != null) {
-      codeToLabelMap =
-          amendmentRequestedByReferenceList.getRequestedBy().stream()
-              .filter(
-                  item -> item != null && item.getCode() != null && item.getDisplayLabel() != null)
-              .collect(
-                  Collectors.toMap(
-                      AmendmentRequestedByReference::getCode,
-                      AmendmentRequestedByReference::getDisplayLabel,
-                      (existing, replacement) -> existing,
-                      LinkedHashMap::new));
-    }
-    return codeToLabelMap;
+    binder.addValidators(requestedByFormValidator);
   }
 
   @GetMapping()
@@ -81,16 +56,10 @@ public class AmendmentRequestByController {
       @PathVariable UUID submissionId) {
 
     var amendmentForms = getAmendmentForms(session, claimId);
+
     setModelAttributesForDisplay(model, claimId, submissionId, amendmentForms);
     model.addAttribute("amendmentRequestByOptions", getAmendmentRequestByOptions());
-    return "amendments/amend-request-by";
-  }
-
-  private void setModelAttributesForDisplay(
-      Model model, UUID claimId, UUID submissionId, AmendmentForms amendmentForms) {
-    model.addAttribute("claimId", claimId);
-    model.addAttribute("submissionId", submissionId);
-    model.addAttribute("requestedByForm", amendmentForms.getRequestedByForm());
+    return "amendments/amend-requested-by";
   }
 
   @PostMapping
@@ -114,5 +83,41 @@ public class AmendmentRequestByController {
     saveAmendmentForms(session, claimId, amendmentForms);
     return "redirect:/submissions/%s/claims/%s/amendments/requested-reason"
         .formatted(submissionId, claimId);
+  }
+
+  private Map<String, String> getAmendmentRequestByOptions() {
+    var amendmentRequestedByReferenceList =
+        systemReferenceService.getAmendmentRequestedByReferenceList();
+    Map<String, String> codeToLabelMap = new LinkedHashMap<>();
+    if (amendmentRequestedByReferenceList != null
+        && amendmentRequestedByReferenceList.getRequestedBy() != null) {
+      codeToLabelMap =
+          amendmentRequestedByReferenceList.getRequestedBy().stream()
+              .filter(
+                  item -> item != null && item.getCode() != null && item.getDisplayLabel() != null)
+              .collect(
+                  Collectors.toMap(
+                      AmendmentRequestedByReference::getCode,
+                      AmendmentRequestedByReference::getDisplayLabel,
+                      (existing, replacement) -> existing,
+                      LinkedHashMap::new));
+      codeToLabelMap =
+          codeToLabelMap.entrySet().stream()
+              .sorted(Map.Entry.comparingByValue(String.CASE_INSENSITIVE_ORDER))
+              .collect(
+                  Collectors.toMap(
+                      Map.Entry::getKey,
+                      Map.Entry::getValue,
+                      (existing, replacement) -> existing,
+                      LinkedHashMap::new));
+    }
+    return codeToLabelMap;
+  }
+
+  private void setModelAttributesForDisplay(
+      Model model, UUID claimId, UUID submissionId, AmendmentForms amendmentForms) {
+    model.addAttribute("claimId", claimId);
+    model.addAttribute("submissionId", submissionId);
+    model.addAttribute("requestedByForm", amendmentForms.getRequestedByForm());
   }
 }

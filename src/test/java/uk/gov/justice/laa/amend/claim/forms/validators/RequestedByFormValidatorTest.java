@@ -14,15 +14,15 @@ import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReference;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
 
-class RequestByFormValidatorTest {
+class RequestedByFormValidatorTest {
 
-  private RequestByFormValidator validator;
+  private RequestedByFormValidator validator;
   private SystemReferenceService systemReferenceService;
 
   @BeforeEach
   void setUp() {
     systemReferenceService = mock(SystemReferenceService.class);
-    validator = new RequestByFormValidator(systemReferenceService);
+    validator = new RequestedByFormValidator(systemReferenceService);
   }
 
   @Test
@@ -40,7 +40,7 @@ class RequestByFormValidatorTest {
 
     assertThat(errors.hasErrors()).isTrue();
     assertThat(Objects.requireNonNull(errors.getFieldError("requestedBy")).getCode())
-        .isEqualTo("amendments.requestBy.required");
+        .isEqualTo("amendments.requestedBy.required");
   }
 
   @Test
@@ -52,7 +52,7 @@ class RequestByFormValidatorTest {
 
     assertThat(errors.hasErrors()).isTrue();
     assertThat(Objects.requireNonNull(errors.getFieldError("requestedBy")).getCode())
-        .isEqualTo("amendments.requestBy.required");
+        .isEqualTo("amendments.requestedBy.required");
   }
 
   @Test
@@ -64,7 +64,7 @@ class RequestByFormValidatorTest {
 
     assertThat(errors.hasErrors()).isTrue();
     assertThat(Objects.requireNonNull(errors.getFieldError("requestedBy")).getCode())
-        .isEqualTo("amendments.requestBy.required");
+        .isEqualTo("amendments.requestedBy.required");
   }
 
   @Test
@@ -78,7 +78,7 @@ class RequestByFormValidatorTest {
 
     assertThat(errors.hasErrors()).isTrue();
     assertThat(Objects.requireNonNull(errors.getFieldError("requestedBy")).getCode())
-        .isEqualTo("amendments.requestBy.invalid");
+        .isEqualTo("amendments.requestedBy.invalid");
   }
 
   @Test

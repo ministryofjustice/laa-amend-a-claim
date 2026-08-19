@@ -28,17 +28,17 @@ import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
-import uk.gov.justice.laa.amend.claim.forms.validators.RequestByFormValidator;
+import uk.gov.justice.laa.amend.claim.forms.validators.RequestedByFormValidator;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 
-@WebMvcTest(controllers = AmendmentRequestByController.class)
-class AmendmentRequestByControllerTest extends BaseControllerTest {
+@WebMvcTest(controllers = AmendmentRequestedByController.class)
+class AmendmentRequestedByControllerTest extends BaseControllerTest {
 
   private static final String REQUESTED_BY = "COURT";
   private static final String REQUESTED_BY_FAIL = "COURT_FAIL";
 
   @MockitoBean private SystemReferenceService systemReferenceService;
-  @MockitoBean private RequestByFormValidator requestedByFormValidator;
+  @MockitoBean private RequestedByFormValidator requestedByFormValidator;
 
   private UUID submissionId;
   private UUID claimId;
@@ -59,7 +59,7 @@ class AmendmentRequestByControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(buildRequestedByPath()).session(session))
         .andExpect(status().isOk())
-        .andExpect(view().name("amendments/amend-request-by"))
+        .andExpect(view().name("amendments/amend-requested-by"))
         .andExpect(model().attributeExists("claimId", "submissionId", "requestedByForm"))
         .andExpect(model().attribute("amendmentRequestByOptions", Map.of()))
         .andExpect(model().attribute("claimId", claimId))
@@ -89,7 +89,7 @@ class AmendmentRequestByControllerTest extends BaseControllerTest {
     doAnswer(
             invocation -> {
               Errors errors = invocation.getArgument(1);
-              errors.rejectValue("requestedBy", "amendments.requestBy.invalid");
+              errors.rejectValue("requestedBy", "amendments.requestedBy.invalid");
               return null;
             })
         .when(requestedByFormValidator)
@@ -121,7 +121,7 @@ class AmendmentRequestByControllerTest extends BaseControllerTest {
     doAnswer(
             invocation -> {
               Errors errors = invocation.getArgument(1);
-              errors.rejectValue("requestedBy", "amendments.requestBy.required");
+              errors.rejectValue("requestedBy", "amendments.requestedBy.required");
               return null;
             })
         .when(requestedByFormValidator)

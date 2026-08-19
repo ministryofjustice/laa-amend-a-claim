@@ -118,6 +118,20 @@ class SystemReferenceServiceTest {
     assertThat(result).hasSize(2).containsEntry("REASON1", "First Label");
   }
 
+  @Test
+  void getAmendmentRequestReasonSortsByDisplayLabelAlphabetically() {
+    var reasons =
+        List.of(
+            createReason("REASON_B", "Zulu"),
+            createReason("REASON_A", "Alpha"),
+            createReason("REASON_C", "Mike"));
+    doReturn(reasons).when(systemReferenceService).getAmendmentReasonByProvider("PROVIDER");
+
+    Map<String, String> result = systemReferenceService.getAmendmentRequestReason("PROVIDER");
+
+    assertThat(result.values()).containsExactly("Alpha", "Mike", "Zulu");
+  }
+
   private void setupAmendmentReasons(String requestedBy, AmendmentReasonReference... reasons) {
     doReturn(List.of(reasons))
         .when(systemReferenceService)

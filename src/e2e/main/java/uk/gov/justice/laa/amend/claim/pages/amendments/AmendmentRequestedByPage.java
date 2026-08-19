@@ -8,12 +8,12 @@ import lombok.Getter;
 import uk.gov.justice.laa.amend.claim.pages.LaaPage;
 
 @Getter
-public class AmendmentRequestByPage extends LaaPage {
+public class AmendmentRequestedByPage extends LaaPage {
 
   private final Locator providerRadio;
   private final Locator continueButton;
 
-  public AmendmentRequestByPage(Page page) {
+  public AmendmentRequestedByPage(Page page) {
     super(page, "Who requested the amendment?");
 
     providerRadio = page.getByLabel("Provider");

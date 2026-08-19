@@ -23,6 +23,11 @@ public class RequestReasonFormValidator implements Validator {
 
   @Override
   public void validate(@NonNull Object target, @NonNull Errors errors) {
+    throw new UnsupportedOperationException("Not supported as request reason must be supplied.");
+  }
+
+  public void validate(
+      @NonNull Object target, @NonNull Errors errors, @NonNull String requestedBy) {
     var form = (RequestedReasonForm) target;
 
     var value = form.getRequestedReason();
@@ -32,7 +37,7 @@ public class RequestReasonFormValidator implements Validator {
     }
 
     if (!systemReferenceService
-        .getAmendmentRequestReason(form.getRequestedBy())
+        .getAmendmentRequestReason(requestedBy)
         .containsKey(form.getRequestedReason())) {
       errors.rejectValue("requestedReason", "amendments.requestReason.invalid");
     }
