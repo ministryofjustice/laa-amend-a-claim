@@ -7,35 +7,35 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CrimeClaimDetailsViewField;
 
 @Component
-public class CrimeMinRepresentationOrderDateValidator extends AmendmentDateValidator {
+public class CivilTransferDateValidator extends AmendmentDateValidator {
 
-  private static final LocalDate EARLIEST_MIN_REP_ORDER_DATE = LocalDate.of(2016, Month.APRIL, 1);
+  private static final LocalDate EARLIEST_TRANSFER_DATE = LocalDate.of(1995, Month.JANUARY, 1);
 
-  public CrimeMinRepresentationOrderDateValidator(MessageSource messageSource) {
+  public CivilTransferDateValidator(MessageSource messageSource) {
     super(messageSource);
   }
 
   @Override
   public boolean appliesTo(ClaimViewField<?> field) {
-    return CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE.equals(field);
+    return CivilClaimDetailsViewField.TRANSFER_DATE.equals(field);
   }
 
   @Override
   public void validate(
       ClaimDetails claim, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
-    var representationOrderDate =
-        form.getDateValue(CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE.toString());
+    var transferDate =
+        form.getDateValue(field.toString());
 
-    if (representationOrderDate != null
-        && representationOrderDate.isBefore(EARLIEST_MIN_REP_ORDER_DATE)) {
+    if (transferDate != null
+        && transferDate.isBefore(EARLIEST_TRANSFER_DATE)) {
       addDateTooEarlyMessage(
           errors,
           field,
-          EARLIEST_MIN_REP_ORDER_DATE);
+          EARLIEST_TRANSFER_DATE);
     }
   }
 }

@@ -13,8 +13,6 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 @Component
 public class CaseStartDateValidator extends AmendmentDateValidator {
 
-  public static final String INVALID_CODE = "amendmentForm.dates.cantBeBefore";
-
   private static final LocalDate OLDEST_DATE_ALLOWED = LocalDate.of(1995, Month.JANUARY, 1);
 
   public CaseStartDateValidator(MessageSource messageSource) {
