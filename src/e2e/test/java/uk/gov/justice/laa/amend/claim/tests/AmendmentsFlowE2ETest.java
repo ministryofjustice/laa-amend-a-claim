@@ -334,13 +334,13 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     var details = new ClaimDetailsPage(page);
     details.clickAmendClaim();
 
-    var amendmentRequestBy = new AmendmentRequestedByPage(page);
-    amendmentRequestBy.getProviderRadio().click();
-    amendmentRequestBy.getContinueButton().click();
+    var amendmentRequestedBy = new AmendmentRequestedByPage(page);
+    amendmentRequestedBy.getProviderRadio().click();
+    amendmentRequestedBy.getContinueButton().click();
 
-    var amendmentRequestReason = new AmendmentRequestedReasonPage(page);
-    amendmentRequestReason.getProviderErrorRadio().click();
-    amendmentRequestReason.getContinueButton().click();
+    var amendmentRequestedReason = new AmendmentRequestedReasonPage(page);
+    amendmentRequestedReason.getProviderErrorRadio().click();
+    amendmentRequestedReason.getContinueButton().click();
 
     var viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client 1 details", "Last name", "Elonga");
@@ -441,13 +441,13 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     details.clickAmendClaim();
 
     // View Costs → Change Client Details → View Client
-    var amendmentRequestBy = new AmendmentRequestedByPage(page);
-    amendmentRequestBy.getProviderRadio().click();
-    amendmentRequestBy.getContinueButton().click();
+    var amendmentRequestedBy = new AmendmentRequestedByPage(page);
+    amendmentRequestedBy.getProviderRadio().click();
+    amendmentRequestedBy.getContinueButton().click();
 
-    var amendmentRequestReason = new AmendmentRequestedReasonPage(page);
-    amendmentRequestReason.getProviderErrorRadio().click();
-    amendmentRequestReason.getContinueButton().click();
+    var amendmentRequestedReason = new AmendmentRequestedReasonPage(page);
+    amendmentRequestedReason.getProviderErrorRadio().click();
+    amendmentRequestedReason.getContinueButton().click();
 
     var viewAmendClient = new ViewClientPage(page);
     viewAmendClient.clickCostsTab();

@@ -52,9 +52,9 @@ public class AmendmentsRequestedByViewTest extends AmendmentsBaseTest {
 
     assertPageHasHeading(doc, "Who requested the amendment?");
 
-    assertPageHasRadioButtons(doc, "RequestBy Label 1", "RequestBy Label 2");
+    assertPageHasRadioButtons(doc, "RequestedBy Label 1", "RequestedBy Label 2");
     assertThat(doc.getElementsByClass("govuk-radios__label").eachText())
-        .containsExactly("RequestBy Label 1", "RequestBy Label 2");
+        .containsExactly("RequestedBy Label 1", "RequestedBy Label 2");
     assertNoRadioSelected(doc);
 
     assertPageHasPrimaryButton(doc, "Continue");
@@ -75,8 +75,8 @@ public class AmendmentsRequestedByViewTest extends AmendmentsBaseTest {
 
   private Map<String, String> createUnsortedReferenceMap() {
     var unsortedMap = new LinkedHashMap<String, String>();
-    unsortedMap.put("code1", "RequestBy Label 2");
-    unsortedMap.put("code2", "RequestBy Label 1");
+    unsortedMap.put("code1", "RequestedBy Label 2");
+    unsortedMap.put("code2", "RequestedBy Label 1");
     return unsortedMap;
   }
 

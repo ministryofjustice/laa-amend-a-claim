@@ -41,7 +41,7 @@ public class AmendmentsRequestReasonViewTest extends AmendmentsBaseTest {
     this.claim = claim;
     claim.setSubmissionId(submissionId);
     claim.setClaimId(claimId);
-    var forms = createRequestByForms();
+    var forms = createRequestedByForms();
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     Document doc = renderDocument();
@@ -57,7 +57,7 @@ public class AmendmentsRequestReasonViewTest extends AmendmentsBaseTest {
     assertPageHasSecondaryLink(doc, "Cancel");
   }
 
-  private static AmendmentForms createRequestByForms() {
+  private static AmendmentForms createRequestedByForms() {
     var requestedByForm = new RequestedByForm();
     requestedByForm.setRequestedBy("COURT");
     return AmendmentForms.builder()
