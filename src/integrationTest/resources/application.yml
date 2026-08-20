@@ -27,7 +27,7 @@ provider-api:
   url: http://localhost:8089
   access-token: ""
 submission:
-  high-value-assessment-limit: 25000
+  high-value-assessment-limit: 50000
 
 feature-flags:
   is-bulk-upload-enabled: true

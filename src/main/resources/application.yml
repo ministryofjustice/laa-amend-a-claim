@@ -56,7 +56,7 @@ fee-scheme-api:
   url: ${FEE_SCHEME_PLATFORM_API_URL}
   access-token: ${FEE_SCHEME_PLATFORM_API_ACCESS_TOKEN}
 submission:
-  high-value-assessment-limit: 25000
+  high-value-assessment-limit: 50000
 app:
   feedback-url: ${FEEDBACK_URL}
   laa-url: ${LAA_URL}
