@@ -11,7 +11,7 @@ public enum SearchSortField implements SortField {
   CLIENT_SURNAME("client_surname"),
   SUBMISSION_PERIOD("submission_period"),
   CATEGORY_OF_LAW("category_of_law"),
-  VOIDED("status");
+  STATUS("status");
 
   private final String value;
 

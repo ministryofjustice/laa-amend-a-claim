@@ -122,7 +122,7 @@
 
                                             <th scope="col" class="govuk-table__header" th:text="#{index.results.escaped}"></th>
 
-                                            <th scope="col" class="govuk-table__header" th:text="#{index.results.status}"></th>
+                                            <th:block th:replace="~{fragments/sortable-header :: sortableHeader(${query}, ${SortField.STATUS}, 'index.results.status')}"></th:block>
                                         </tr>
                                     </thead>
                                     <tbody class="govuk-table__body">
