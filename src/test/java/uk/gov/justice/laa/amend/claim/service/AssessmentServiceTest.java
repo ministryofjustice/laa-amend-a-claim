@@ -47,7 +47,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.CreateAssessment201Res
 @ExtendWith(MockitoExtension.class)
 class AssessmentServiceTest {
 
-  private static final BigDecimal HIGH_VALUE_ASSESSMENT_LIMIT = new BigDecimal("25000");
+  private static final BigDecimal HIGH_VALUE_ASSESSMENT_LIMIT = new BigDecimal("50000");
 
   @Mock private ClaimsApiClient claimsApiClient;
 
