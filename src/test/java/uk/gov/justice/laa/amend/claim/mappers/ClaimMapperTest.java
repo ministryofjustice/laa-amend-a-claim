@@ -23,6 +23,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.BoltOnPatch;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.DerivedClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 
 @SpringJUnitConfig
@@ -903,6 +904,16 @@ class ClaimMapperTest {
     String claimField = claim.getUniqueCaseId();
     assertNotNull(claimField);
     assertEquals("112233/001", claimField);
+  }
+
+  @Test
+  void testMapDerivedClaimStatus() {
+    var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
+    response.setDerivedClaimStatus(DerivedClaimStatus.ACCEPTED);
+
+    var claim = mapper.mapToClaimDetails(response);
+
+    assertEquals("ACCEPTED", claim.getDerivedClaimStatus());
   }
 
   private static ClaimResponseV2 createClaimResponse(AreaOfLaw areaOfLaw) {

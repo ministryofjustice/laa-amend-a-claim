@@ -43,9 +43,9 @@ class IndexViewTest extends ViewTestBase {
 
     assertPageHasHeading(doc, "Search for a claim");
 
-    assertPageHasHint(doc, "search-hint", "Enter at least an office code to search.");
+    assertPageHasHint(doc, "search-hint", "Enter at least an office account number to search.");
 
-    assertPageHasLabel(doc, "office-code", "Office code");
+    assertPageHasLabel(doc, "office-code", "Office account number");
 
     assertPageHasHint(doc, "office-code-hint", "For example, 0P322F");
 
@@ -95,19 +95,18 @@ class IndexViewTest extends ViewTestBase {
 
     Elements headers = getTableHeaders(doc);
 
-    assertTableHeaderIsNotSortable(headers.get(0), "Claim");
+    assertTableHeaderIsSortable(
+        headers.get(0), "none", "Client last name", "/?page=1&sort=client_surname,asc");
     assertTableHeaderIsSortable(
         headers.get(1), "ascending", "UFN", "/?page=1&sort=unique_file_number,desc");
     assertTableHeaderIsSortable(
         headers.get(2), "none", "CRN", "/?page=1&sort=case_reference_number,asc");
     assertTableHeaderIsSortable(
-        headers.get(3), "none", "Client surname", "/?page=1&sort=client_surname,asc");
+        headers.get(3), "none", "Submission period", "/?page=1&sort=submission_period,asc");
     assertTableHeaderIsSortable(
-        headers.get(4), "none", "Submission period", "/?page=1&sort=submission_period,asc");
-    assertTableHeaderIsSortable(
-        headers.get(5), "none", "Category of law", "/?page=1&sort=category_of_law,asc");
-    assertTableHeaderIsSortable(headers.get(6), "none", "Voided", "/?page=1&sort=status,asc");
-    assertTableHeaderIsNotSortable(headers.get(7), "Escape case");
+        headers.get(4), "none", "Category of law", "/?page=1&sort=category_of_law,asc");
+    assertTableHeaderIsNotSortable(headers.get(5), "Escape case");
+    assertTableHeaderIsNotSortable(headers.get(6), "Status");
   }
 
   @Test
