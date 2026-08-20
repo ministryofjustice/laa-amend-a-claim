@@ -44,13 +44,8 @@ public class CaseConcludedDateValidator extends AmendmentDateValidator {
         AreaOfLaw.CRIME_LOWER.equals(claim.getAreaOfLaw())
             ? EARLIEST_CRIME_CASE_CONCLUDED_DATE_ALLOWED
             : EARLIEST_CASE_CONCLUDED_DATE_ALLOWED;
-    if (caseConcludedDate == null) {
+    if (caseConcludedDate == null || claim.getSubmissionPeriod() == null) {
       return;
-    }
-
-    if (claim.getSubmissionPeriod() == null) {
-      throw new IllegalArgumentException(
-          "Claim is missing submission period: " + claim.getClaimId());
     }
 
     var twentiethOfNextMonth = getTwentiethOfNextMonth(claim.getSubmissionPeriod());
