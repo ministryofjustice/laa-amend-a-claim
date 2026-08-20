@@ -37,4 +37,4 @@ exclude:
     - >-
       laa-amend-a-claim-ui/src/main/java/uk/gov/justice/laa/amend/claim/config/security/E2eSecurityConfig.java
     - >-
-      e2e/main/java/uk/gov/justice/laa/amend/claim/utils/OneTimePasswordUtils.java
+      e2e/src/main/java/uk/gov/justice/laa/amend/claim/utils/OneTimePasswordUtils.java
