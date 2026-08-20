@@ -3,6 +3,7 @@ package uk.gov.justice.laa.amend.claim.controllers.amendments;
 import static java.util.UUID.fromString;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -19,7 +20,6 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -35,6 +35,7 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.CheckAmendmentsService;
+import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactory;
@@ -43,6 +44,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactor
 class CheckAmendmentsControllerTest extends BaseControllerTest {
 
   @MockitoBean private CheckAmendmentsService checkService;
+  @MockitoBean private SystemReferenceService systemReferenceService;
 
   private UUID submissionId;
   private UUID claimId;
@@ -54,6 +56,10 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
     submissionId = UUID.randomUUID();
     claimId = UUID.randomUUID();
     session = new MockHttpSession();
+    when(systemReferenceService.getAmendmentRequestedByOptions())
+        .thenReturn(Map.of("requestedBy", "Provider"));
+    when(systemReferenceService.getAmendmentRequestReason("requestedBy"))
+        .thenReturn(Map.of("requestedReason", "Case reopened / rebilled"));
     setupClaim(MockClaimsFunctions.createMockCrimeClaim());
   }
 
@@ -75,7 +81,10 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
                     "caseDetailsForm",
                     "costsForm",
                     "costFields",
-                    "claim"));
+                    "claim",
+                    "areaOfLaw",
+                    "requestedByLabel",
+                    "requestedReasonLabel"));
   }
 
   @Test
@@ -99,7 +108,10 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
                     "caseDetailsForm",
                     "costsForm",
                     "costFields",
-                    "claim"));
+                    "claim",
+                    "areaOfLaw",
+                    "requestedByLabel",
+                    "requestedReasonLabel"));
   }
 
   @Test
@@ -195,6 +207,8 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
             .costs(new AmendmentForm(costsView.costRows()))
             .requestedBy(createRequestedByForm())
             .requestedReason(createRequestedReasonForm())
+            .requestedBy(createRequestedByForm())
+            .requestedReason(createRequestedReasonForm())
             .build();
     amendmentForms.getClient1Form().setCurrent(client1Form);
     return amendmentForms;
@@ -210,6 +224,8 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
         .caseType(new AmendmentForm(caseView.caseTypeRows()))
         .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
         .costs(new AmendmentForm(costsView.costRows()))
+        .requestedBy(createRequestedByForm())
+        .requestedReason(createRequestedReasonForm())
         .build();
   }
 
@@ -227,6 +243,8 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
             .costs(new AmendmentForm(costsView.costRows()))
             .requestedBy(createRequestedByForm())
             .requestedReason(createRequestedReasonForm())
+            .requestedBy(createRequestedByForm())
+            .requestedReason(createRequestedReasonForm())
             .build();
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
     forms
@@ -237,13 +255,13 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
     return forms;
   }
 
-  private static @NonNull RequestedByForm createRequestedByForm() {
+  private static RequestedByForm createRequestedByForm() {
     var requestedByForm = new RequestedByForm();
     requestedByForm.setRequestedBy("requestedBy");
     return requestedByForm;
   }
 
-  private static @NonNull RequestedReasonForm createRequestedReasonForm() {
+  private static RequestedReasonForm createRequestedReasonForm() {
     var requestedReasonForm = new RequestedReasonForm();
     requestedReasonForm.setRequestedReason("requestedReason");
     return requestedReasonForm;

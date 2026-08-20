@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentReasonReference;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReference;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
 
 @AllArgsConstructor
@@ -44,6 +45,29 @@ public class SystemReferenceService {
             requestedBy ->
                 Optional.ofNullable(requestedBy.getReasons()).orElse(Collections.emptyList()))
         .orElse(Collections.emptyList());
+  }
+
+  public Map<String, String> getAmendmentRequestedByOptions() {
+    return Optional.ofNullable(getAmendmentRequestedByReferenceList())
+        .map(AmendmentRequestedByReferenceList::getRequestedBy)
+        .orElse(Collections.emptyList())
+        .stream()
+        .filter(item -> item != null && item.getCode() != null && item.getDisplayLabel() != null)
+        .collect(
+            Collectors.toMap(
+                AmendmentRequestedByReference::getCode,
+                AmendmentRequestedByReference::getDisplayLabel,
+                (existing, replacement) -> existing,
+                LinkedHashMap::new))
+        .entrySet()
+        .stream()
+        .sorted(Map.Entry.comparingByValue(String.CASE_INSENSITIVE_ORDER))
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (existing, replacement) -> existing,
+                LinkedHashMap::new));
   }
 
   public Map<String, String> getAmendmentRequestReason(String requestedBy) {
