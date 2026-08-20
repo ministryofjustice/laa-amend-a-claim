@@ -4,22 +4,18 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.ASSES
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.exceptions.ClaimNotFoundException;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.search.SearchSort;
-import uk.gov.justice.laa.amend.claim.models.search.SearchSortField;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
@@ -98,33 +94,11 @@ public class ClaimService {
                     Objects.toString(sort, null))
                 .block();
       }
-      return sortClaimsClientSurname(claimResultSet, sort);
+      return claimResultSet;
     } catch (Exception e) {
       log.error("Error searching claims", e);
       throw e;
     }
-  }
-
-  // The API provides alphabetically sorted results,
-  // but this method secondary sorts to push entries without a surname ('Multiple Clients' field) to
-  // the end of the list.
-  private ClaimResultSetV2 sortClaimsClientSurname(
-      ClaimResultSetV2 claimResultSet, SearchSort sort) {
-    if (claimResultSet == null
-        || claimResultSet.getContent() == null
-        || sort == null
-        || sort.getField() != SearchSortField.CLIENT_SURNAME) {
-      return claimResultSet;
-    }
-
-    List<ClaimResponseV2> claims = new ArrayList<>(claimResultSet.getContent());
-    claims.sort(Comparator.comparing(this::isMissingClientSurname));
-    claimResultSet.setContent(claims);
-    return claimResultSet;
-  }
-
-  private boolean isMissingClientSurname(ClaimResponseV2 claim) {
-    return claim == null || !StringUtils.hasText(claim.getClientSurname());
   }
 
   private boolean isEmpty(ClaimResultSetV2 resultSet) {
