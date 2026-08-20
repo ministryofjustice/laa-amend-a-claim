@@ -59,9 +59,9 @@ wait_for "http://localhost:8282/actuator/health" "UP"
 wait_for "http://localhost:8082/v3/api-docs" "openapi"
 
 echo "[INFO] Installing node dependencies..."
-(cd src/e2e/ && npm install)
+(cd e2e/ && npm install)
 
-CMD="./gradlew test"
+CMD="../gradlew :e2e:test"
 for arg in "$@"; do
   case $arg in
     --allure-report)
@@ -76,4 +76,4 @@ for arg in "$@"; do
   esac
 done
 echo "[INFO] Running tests with $CMD"
-(cd src/e2e/ && eval $CMD)
+(cd e2e/ && eval $CMD)
