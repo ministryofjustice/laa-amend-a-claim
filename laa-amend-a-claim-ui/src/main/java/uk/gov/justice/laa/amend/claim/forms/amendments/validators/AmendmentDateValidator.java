@@ -25,8 +25,6 @@ public abstract class AmendmentDateValidator implements FieldSpecificAmendmentVa
   protected static final DateTimeFormatter DATE_FORMATTER_D_MMM_YYYY =
       DateTimeFormatter.ofPattern(DATE_FORMAT_D_MMM_YYYY);
 
-  private static final String DATE_FORMAT_MMM_YYYY = "MMM-yyyy";
-
   protected void addDateTooEarlyMessage(
       Errors errors, ClaimViewField<?> field, LocalDate earliestDate) {
     addUniqueFieldError(
