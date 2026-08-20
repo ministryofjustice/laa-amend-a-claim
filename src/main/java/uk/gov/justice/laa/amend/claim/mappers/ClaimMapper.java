@@ -18,6 +18,7 @@ import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.DerivedClaimStatus;
 
 @Mapper(
     componentModel = "spring",
@@ -78,6 +79,10 @@ public interface ClaimMapper {
   @Mapping(target = "categoryOfLaw", source = "feeCalculationResponse.categoryOfLaw")
   @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
   @Mapping(target = "uniqueCaseId", source = "uniqueCaseId")
+  @Mapping(
+      target = "derivedClaimStatus",
+      source = "claimResponse.derivedClaimStatus",
+      qualifiedByName = "toDerivedClaimStatus")
   Claim mapToClaim(ClaimResponseV2 claimResponse);
 
   @InheritConfiguration(name = "mapToCommonDetails")
@@ -236,6 +241,14 @@ public interface ClaimMapper {
   @Mapping(target = "isYouthCourt", source = "isYouthCourt")
   @Mapping(target = "matterTypeCode", source = "crimeMatterTypeCode")
   CrimeClaimDetails mapToCrimeClaimDetails(ClaimResponseV2 claimResponse);
+
+  @Named("toDerivedClaimStatus")
+  default String toDerivedClaimStatus(final DerivedClaimStatus claimStatus) {
+    if (claimStatus == null) {
+      return null;
+    }
+    return claimStatus.name();
+  }
 
   /**
    * Extracts the first part of the matter type code (matterType1).

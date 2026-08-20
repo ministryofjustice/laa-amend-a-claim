@@ -38,6 +38,7 @@ public class Claim {
   private String officeCode;
   private ClaimStatus status;
   private String uniqueCaseId;
+  private String derivedClaimStatus;
 
   public BaseClaimView<? extends Claim> toViewModel() {
     return new ClaimView(this);
