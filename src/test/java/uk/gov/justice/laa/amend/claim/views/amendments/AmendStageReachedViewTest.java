@@ -23,6 +23,7 @@ class AmendStageReachedViewTest extends AmendmentsBaseTest {
 
   private static final String FEE_CODE = "feecode";
   private static final String STAGE_REACHED = "INVC";
+  private static final String STAGE_REACHED_LABEL = "INVC - Police station: attendance";
 
   @MockitoBean AvailableFeeCodesService availableFeeCodesService;
 
@@ -49,8 +50,9 @@ class AmendStageReachedViewTest extends AmendmentsBaseTest {
     assertCommonPageContent(doc);
 
     var summaryList = getFirstSummaryList(doc);
-    assertSummaryListRowContainsValues(summaryList.getFirst(), "Current stage reached", "INVC");
-    assertAutocompleteDropDownList(doc, "Amended stage reached", "INVC");
+    assertSummaryListRowContainsValues(
+        summaryList.getFirst(), "Current stage reached", STAGE_REACHED_LABEL);
+    assertAutocompleteDropDownList(doc, "Amended stage reached", STAGE_REACHED_LABEL);
     assertPageHasLabel(doc, "stage-reached-input", "Amended stage reached");
   }
 

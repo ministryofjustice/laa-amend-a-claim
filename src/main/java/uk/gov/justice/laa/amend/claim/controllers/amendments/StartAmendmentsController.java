@@ -15,6 +15,8 @@ import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
+import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
@@ -39,6 +41,8 @@ public class StartAmendmentsController {
     var caseDetailsForm = new AmendmentForm(caseView.caseDetailsRows());
     var costsView = ClaimCostsViewFactory.create(claim);
     var costsForm = new AmendmentForm(costsView.costRows());
+    var requestedByForm = new RequestedByForm();
+    var requestedReasonForm = new RequestedReasonForm();
 
     boolean isMediation = AreaOfLaw.MEDIATION.equals(claim.getAreaOfLaw());
     var client2Form = isMediation ? new AmendmentForm(clientView.client2Rows()) : null;
@@ -49,10 +53,13 @@ public class StartAmendmentsController {
             .caseType(caseTypeForm)
             .caseDetails(caseDetailsForm)
             .costs(costsForm)
+            .requestedBy(requestedByForm)
+            .requestedReason(requestedReasonForm)
             .build();
 
     saveAmendmentForms(session, claimId, amendmentForms);
 
-    return "redirect:/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
+    return "redirect:/submissions/%s/claims/%s/amendments/requested-by"
+        .formatted(submissionId, claimId);
   }
 }

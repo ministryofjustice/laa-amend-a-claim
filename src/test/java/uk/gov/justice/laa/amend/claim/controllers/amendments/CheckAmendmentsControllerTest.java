@@ -19,6 +19,7 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -29,6 +30,8 @@ import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.OriginalAndCurrent;
+import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
+import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.CheckAmendmentsService;
@@ -113,6 +116,23 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
   }
 
   @Test
+  void getCheckPageThrows404WhenMissingRequiredFields() throws Exception {
+    var missingRequiredFields = createCrimeForms();
+    missingRequiredFields.setRequestedByForm(new RequestedByForm());
+    missingRequiredFields.setRequestedReasonForm(new RequestedReasonForm());
+
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), missingRequiredFields);
+
+    mockMvc
+        .perform(get(buildCheckPath()).session(session))
+        .andExpect(status().isNotFound())
+        .andExpect(
+            result ->
+                assertThat(result.getResolvedException() instanceof ResponseStatusException)
+                    .isTrue());
+  }
+
+  @Test
   void submitAndRedirect() throws Exception {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setSubmissionId(submissionId);
@@ -133,7 +153,9 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
             new OriginalAndCurrent(emptyForm, emptyForm),
             new OriginalAndCurrent(emptyForm, emptyForm),
             new OriginalAndCurrent(emptyForm, emptyForm),
-            new OriginalAndCurrent(emptyForm, emptyForm));
+            new OriginalAndCurrent(emptyForm, emptyForm),
+            createRequestedByForm(),
+            createRequestedReasonForm());
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     mockMvc
@@ -171,6 +193,8 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
             .caseType(new AmendmentForm(caseView.caseTypeRows()))
             .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
             .costs(new AmendmentForm(costsView.costRows()))
+            .requestedBy(createRequestedByForm())
+            .requestedReason(createRequestedReasonForm())
             .build();
     amendmentForms.getClient1Form().setCurrent(client1Form);
     return amendmentForms;
@@ -193,6 +217,7 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
     var clientView = ClaimClientViewFactory.create(claim);
     var caseView = ClaimCaseViewFactory.create(claim);
     var costsView = ClaimCostsViewFactory.create(claim);
+
     var forms =
         AmendmentForms.builder()
             .client1(new AmendmentForm(clientView.client1Rows()))
@@ -200,6 +225,8 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
             .caseType(new AmendmentForm(caseView.caseTypeRows()))
             .caseDetails(new AmendmentForm(caseView.caseDetailsRows()))
             .costs(new AmendmentForm(costsView.costRows()))
+            .requestedBy(createRequestedByForm())
+            .requestedReason(createRequestedReasonForm())
             .build();
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
     forms
@@ -208,6 +235,18 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
         .getInputs()
         .put("CLIENT_2_SURNAME", "changedClient2Surname");
     return forms;
+  }
+
+  private static @NonNull RequestedByForm createRequestedByForm() {
+    var requestedByForm = new RequestedByForm();
+    requestedByForm.setRequestedBy("requestedBy");
+    return requestedByForm;
+  }
+
+  private static @NonNull RequestedReasonForm createRequestedReasonForm() {
+    var requestedReasonForm = new RequestedReasonForm();
+    requestedReasonForm.setRequestedReason("requestedReason");
+    return requestedReasonForm;
   }
 
   private String buildCheckPath() {

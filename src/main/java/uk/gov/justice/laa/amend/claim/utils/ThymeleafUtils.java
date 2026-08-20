@@ -27,6 +27,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafLiteralString;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
 import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafString;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.FieldOption;
 
 @AllArgsConstructor
 public class ThymeleafUtils {
@@ -110,17 +111,23 @@ public class ThymeleafUtils {
 
   public ThymeleafString getFormattedValue(ClaimViewField<?> field, Object value) {
     if (field.getFieldType() == FieldType.ENUM && value != null) {
-      var selectedValue = value.toString();
-      var selectedOption =
-          field.getOptions().stream()
-              .filter(option -> option.value().equals(selectedValue))
-              .findFirst();
-      return selectedOption
-          .<ThymeleafString>map(option -> new ThymeleafMessage(option.messageKey()))
-          .orElseGet(() -> new ThymeleafLiteralString(selectedValue));
+      return getFormattedOptionValue(field.getOptions(), value);
     }
 
     return getFormattedValue(value);
+  }
+
+  public ThymeleafString getFormattedOptionValue(List<FieldOption> options, Object value) {
+    if (value == null) {
+      return getFormattedValue(null);
+    }
+
+    var selectedValue = value.toString();
+    return options.stream()
+        .filter(option -> option.value().equals(selectedValue))
+        .findFirst()
+        .<ThymeleafString>map(option -> new ThymeleafMessage(option.messageKey()))
+        .orElseGet(() -> new ThymeleafLiteralString(selectedValue));
   }
 
   public ThymeleafString getFormattedBoolean(Boolean value) {

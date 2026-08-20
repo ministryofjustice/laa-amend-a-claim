@@ -40,9 +40,7 @@ public class AmendmentsConfirmationController {
     getValidClaim(session, submissionId, claimId);
     var claim = claimService.getClaimDetails(submissionId, claimId);
 
-    // TODO: Reinstate this once isAmended is wired up in claims API (DSTEW-2140)
-    // if (!claim.isAmended() || claim.getStatus() != VALID) {
-    if (claim.getStatus() != VALID) {
+    if (!claim.isAmended() || claim.getStatus() != VALID) {
       throw new ResponseStatusException(NOT_FOUND, "Claim is not amended or not valid");
     }
 

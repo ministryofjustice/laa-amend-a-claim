@@ -32,7 +32,7 @@
                 th:text="#{amendments.stageReached.current}">
             </dt>
             <dd class="govuk-summary-list__value"
-                th:text="${#messages.msgOrNull('claimCase.options.stageReached.' + currentStageReachedCode) ?: currentStageReachedCode}">
+                th:text="${@ThymeleafUtils.getFormattedOptionValue(stageReachedOptions, currentStageReachedCode).resolve(#messages)}">
             </dd>
           </div>
         </dl>

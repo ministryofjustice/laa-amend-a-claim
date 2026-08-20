@@ -304,6 +304,20 @@ public abstract class ViewTestBase {
     Assertions.assertFalse(elements.isEmpty());
   }
 
+  protected void assertPageHasRadioButtons(Document doc, String... expectedLabels) {
+    assertPageHasRadioButtons(doc);
+    Elements radioLabels = doc.getElementsByClass("govuk-radios__label");
+    assertThat(radioLabels.eachText()).containsExactlyInAnyOrder(expectedLabels);
+  }
+
+  protected void assertNoRadioSelected(Document doc) {
+    Elements radioInputs = doc.getElementsByClass("govuk-radios__input");
+    Assertions.assertFalse(radioInputs.isEmpty());
+    Assertions.assertTrue(
+        radioInputs.stream().noneMatch(input -> input.hasAttr("checked")),
+        "Expected no radio button to be selected");
+  }
+
   protected void assertPageHasInlineRadioButtons(Document doc) {
     Elements elements = doc.getElementsByClass("govuk-radios--inline");
     Assertions.assertFalse(elements.isEmpty());

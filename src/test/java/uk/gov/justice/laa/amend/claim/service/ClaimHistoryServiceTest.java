@@ -157,10 +157,21 @@ public class ClaimHistoryServiceTest {
   }
 
   @Test
+  void getAmendedFieldsReturnsEmptySetWhenIsAmendedIsFalse() {
+    when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
+
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setAmended(false);
+
+    assertThat(claimHistoryService.getAmendedFields(claim)).isEmpty();
+  }
+
+  @Test
   void getAmendedFieldsReturnsEmptySetWhenHistoryIsNull() {
     when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
 
     var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setAmended(true);
 
     when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.empty());
 
@@ -172,6 +183,7 @@ public class ClaimHistoryServiceTest {
     when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
 
     var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setAmended(true);
 
     when(claimsApiClient.getClaimHistory(claim.getClaimId()))
         .thenReturn(Mono.just(new ClaimHistoryResultSet().claimId(claim.getClaimId())));
@@ -184,6 +196,7 @@ public class ClaimHistoryServiceTest {
     when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
 
     var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setAmended(true);
 
     var requestedChanges =
         List.of(

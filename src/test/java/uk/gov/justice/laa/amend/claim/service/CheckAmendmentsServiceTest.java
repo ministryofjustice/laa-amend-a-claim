@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +22,8 @@ import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.OriginalAndCurrent;
+import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
+import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedReasonForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
@@ -42,8 +45,6 @@ class CheckAmendmentsServiceTest {
 
   @Test
   void submitPopulatesCrimePatchFromAllFormFields() {
-    var submissionId = UUID.randomUUID();
-    var claimId = UUID.randomUUID();
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setVersion(1L);
 
@@ -126,7 +127,11 @@ class CheckAmendmentsServiceTest {
                     entry("WAITING_COSTS", "41.00"),
                     entry("VAT", "true"),
                     entry("DISBURSEMENTS_VAT", "51.00"))));
+    amendmentForms.setRequestedByForm(createRequestedByForm());
+    amendmentForms.setRequestedReasonForm(createRequestReasonForm());
 
+    var submissionId = UUID.randomUUID();
+    var claimId = UUID.randomUUID();
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     var expected =
@@ -170,8 +175,6 @@ class CheckAmendmentsServiceTest {
 
   @Test
   void submitPopulatesCivilPatchFromAllFormFields() {
-    var submissionId = UUID.randomUUID();
-    var claimId = UUID.randomUUID();
     var claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setVersion(1L);
 
@@ -348,7 +351,11 @@ class CheckAmendmentsServiceTest {
                     entry("CMRH_TELEPHONE", "5"),
                     entry("IS_LONDON_RATE", "true"),
                     entry("PRIOR_AUTHORITY_REFERENCE", "NEW_PRIOR"))));
+    amendmentForms.setRequestedByForm(createRequestedByForm());
+    amendmentForms.setRequestedReasonForm(createRequestReasonForm());
 
+    var submissionId = UUID.randomUUID();
+    var claimId = UUID.randomUUID();
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     var expected =
@@ -431,8 +438,6 @@ class CheckAmendmentsServiceTest {
 
   @Test
   void submitPopulatesMediationPatchFromAllFormFields() {
-    var submissionId = UUID.randomUUID();
-    var claimId = UUID.randomUUID();
     var claim = MockClaimsFunctions.createMockMediationClaim();
     claim.setVersion(1L);
 
@@ -545,7 +550,11 @@ class CheckAmendmentsServiceTest {
                     entry("VAT", "true"),
                     entry("DISBURSEMENTS", "31.00"),
                     entry("DISBURSEMENTS_VAT", "41.00"))));
+    amendmentForms.setRequestedByForm(createRequestedByForm());
+    amendmentForms.setRequestedReasonForm(createRequestReasonForm());
 
+    var submissionId = UUID.randomUUID();
+    var claimId = UUID.randomUUID();
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     var expected =
@@ -595,10 +604,20 @@ class CheckAmendmentsServiceTest {
     assertThat(patch).usingRecursiveComparison().isEqualTo(expected);
   }
 
+  private static @NonNull RequestedReasonForm createRequestReasonForm() {
+    var requestReasonForm = new RequestedReasonForm();
+    requestReasonForm.setRequestedReason("CASE_REOPENED_REBILLED");
+    return requestReasonForm;
+  }
+
+  private static @NonNull RequestedByForm createRequestedByForm() {
+    var requestedByForm = new RequestedByForm();
+    requestedByForm.setRequestedBy("PROVIDER");
+    return requestedByForm;
+  }
+
   @Test
   void doesNotPatchFieldsLockedByAssessmentButStillPatchesTheRest() {
-    var submissionId = UUID.randomUUID();
-    var claimId = UUID.randomUUID();
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setVersion(1L);
     claim.setHasAssessment(true);
@@ -624,7 +643,11 @@ class CheckAmendmentsServiceTest {
                     entry("STAGE_REACHED", "NEW_STAGE"))),
             null,
             forms(Map.of(), Map.of()));
+    amendmentForms.setRequestedByForm(createRequestedByForm());
+    amendmentForms.setRequestedReasonForm(createRequestReasonForm());
 
+    var submissionId = UUID.randomUUID();
+    var claimId = UUID.randomUUID();
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     assertThat(patch.getFeeCode()).isNull();
