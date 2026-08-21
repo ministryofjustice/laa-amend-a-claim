@@ -247,8 +247,6 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
             .costs(new AmendmentForm(costsView.costRows()))
             .requestedBy(createRequestedByForm())
             .requestedReason(createRequestedReasonForm())
-            .requestedBy(createRequestedByForm())
-            .requestedReason(createRequestedReasonForm())
             .build();
     forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
     forms

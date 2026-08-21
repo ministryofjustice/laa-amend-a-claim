@@ -135,26 +135,149 @@ class SystemReferenceServiceTest {
   }
 
   @Test
-  void getAmendmentRequestedByOptionsUsesProvidedReferenceList() {
-    var providerA = new AmendmentRequestedByReference();
-    providerA.setCode("PROVIDER_A");
-    providerA.setDisplayLabel("Zulu Provider");
-
-    var providerB = new AmendmentRequestedByReference();
-    providerB.setCode("PROVIDER_B");
-    providerB.setDisplayLabel("Alpha Provider");
-
+  void getAmendmentRequestedByOptionsSortsByDisplayLabelCaseInsensitively() {
     var referenceList = new AmendmentRequestedByReferenceList();
-    referenceList.setRequestedBy(List.of(providerA, providerB));
+    referenceList.setRequestedBy(
+        List.of(
+            createProvider("C", "zebra"),
+            createProvider("A", "Apple"),
+            createProvider("B", "mango")));
 
     Map<String, String> result =
         systemReferenceService.getAmendmentRequestedByOptions(referenceList);
 
-    assertThat(result)
-        .hasSize(2)
-        .containsEntry("PROVIDER_A", "Zulu Provider")
-        .containsEntry("PROVIDER_B", "Alpha Provider");
-    assertThat(result.values()).containsExactly("Alpha Provider", "Zulu Provider");
+    assertThat(result.values()).containsExactly("Apple", "mango", "zebra");
+  }
+
+  @Test
+  void getAmendmentRequestedByOptionsReturnsEmptyMapForNullReferenceList() {
+    Map<String, String> result = systemReferenceService.getAmendmentRequestedByOptions(null);
+
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  void getAmendmentRequestedByOptionsReturnsEmptyMapForNullRequestedByList() {
+    var referenceList = new AmendmentRequestedByReferenceList();
+    referenceList.setRequestedBy(null);
+
+    Map<String, String> result =
+        systemReferenceService.getAmendmentRequestedByOptions(referenceList);
+
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  void getAmendmentRequestedByOptionsFiltersOutNullEntries() {
+    var referenceList = new AmendmentRequestedByReferenceList();
+    referenceList.setRequestedBy(
+        java.util.Arrays.asList(createProvider("A", "Alpha"), null, createProvider("B", "Beta")));
+
+    Map<String, String> result =
+        systemReferenceService.getAmendmentRequestedByOptions(referenceList);
+
+    assertThat(result).hasSize(2).containsEntry("A", "Alpha").containsEntry("B", "Beta");
+  }
+
+  @Test
+  void getAmendmentRequestedByOptionsFiltersOutEntriesWithNullCode() {
+    var noCode = new AmendmentRequestedByReference();
+    noCode.setCode(null);
+    noCode.setDisplayLabel("No Code");
+
+    var referenceList = new AmendmentRequestedByReferenceList();
+    referenceList.setRequestedBy(List.of(noCode, createProvider("A", "Alpha")));
+
+    Map<String, String> result =
+        systemReferenceService.getAmendmentRequestedByOptions(referenceList);
+
+    assertThat(result).hasSize(1).containsEntry("A", "Alpha");
+  }
+
+  @Test
+  void getAmendmentRequestedByOptionsFiltersOutEntriesWithNullDisplayLabel() {
+    var noLabel = new AmendmentRequestedByReference();
+    noLabel.setCode("NO_LABEL");
+    noLabel.setDisplayLabel(null);
+
+    var referenceList = new AmendmentRequestedByReferenceList();
+    referenceList.setRequestedBy(List.of(noLabel, createProvider("A", "Alpha")));
+
+    Map<String, String> result =
+        systemReferenceService.getAmendmentRequestedByOptions(referenceList);
+
+    assertThat(result).hasSize(1).containsEntry("A", "Alpha");
+  }
+
+  @Test
+  void getAmendmentRequestedByOptionsHandlesDuplicateCodesKeepingFirst() {
+    var referenceList = new AmendmentRequestedByReferenceList();
+    referenceList.setRequestedBy(
+        List.of(
+            createProvider("DUP", "First Label"),
+            createProvider("DUP", "Second Label"),
+            createProvider("OTHER", "Other")));
+
+    Map<String, String> result =
+        systemReferenceService.getAmendmentRequestedByOptions(referenceList);
+
+    assertThat(result).hasSize(2).containsEntry("DUP", "First Label");
+  }
+
+  @Test
+  void getAmendmentRequestReasonWithReferenceListSortsByDisplayLabelCaseInsensitively() {
+    var provider = createProvider("PROVIDER", "Provider");
+    provider.setReasons(
+        List.of(
+            createReason("C", "zebra"), createReason("A", "Apple"), createReason("B", "mango")));
+
+    var referenceList = new AmendmentRequestedByReferenceList();
+    referenceList.setRequestedBy(List.of(provider));
+
+    Map<String, String> result =
+        systemReferenceService.getAmendmentRequestReason("PROVIDER", referenceList);
+
+    assertThat(result.values()).containsExactly("Apple", "mango", "zebra");
+  }
+
+  @Test
+  void getAmendmentRequestReasonWithNullReferenceListReturnsEmptyMap() {
+    Map<String, String> result = systemReferenceService.getAmendmentRequestReason("PROVIDER", null);
+
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  void getAmendmentRequestReasonWithReferenceListFiltersOutNullReasons() {
+    var provider = createProvider("PROVIDER", "Provider");
+    provider.setReasons(
+        java.util.Arrays.asList(createReason("R1", "First"), null, createReason("R2", "Second")));
+
+    var referenceList = new AmendmentRequestedByReferenceList();
+    referenceList.setRequestedBy(List.of(provider));
+
+    Map<String, String> result =
+        systemReferenceService.getAmendmentRequestReason("PROVIDER", referenceList);
+
+    assertThat(result).hasSize(2).containsEntry("R1", "First").containsEntry("R2", "Second");
+  }
+
+  @Test
+  void getAmendmentRequestReasonWithReferenceListHandlesDuplicateCodesKeepingFirst() {
+    var provider = createProvider("PROVIDER", "Provider");
+    provider.setReasons(
+        List.of(
+            createReason("DUP", "First Label"),
+            createReason("DUP", "Second Label"),
+            createReason("OTHER", "Other")));
+
+    var referenceList = new AmendmentRequestedByReferenceList();
+    referenceList.setRequestedBy(List.of(provider));
+
+    Map<String, String> result =
+        systemReferenceService.getAmendmentRequestReason("PROVIDER", referenceList);
+
+    assertThat(result).hasSize(2).containsEntry("DUP", "First Label");
   }
 
   @Test
@@ -162,9 +285,7 @@ class SystemReferenceServiceTest {
     var reason1 = createReason("R1", "Reason One");
     var reason2 = createReason("R2", "Reason Two");
 
-    var provider = new AmendmentRequestedByReference();
-    provider.setCode("PROVIDER");
-    provider.setDisplayLabel("Provider");
+    var provider = createProvider("PROVIDER", "Provider");
     provider.setReasons(List.of(reason1, reason2));
 
     var referenceList = new AmendmentRequestedByReferenceList();
@@ -190,5 +311,12 @@ class SystemReferenceServiceTest {
     reason.setCode(code);
     reason.setDisplayLabel(displayLabel);
     return reason;
+  }
+
+  private AmendmentRequestedByReference createProvider(String code, String displayLabel) {
+    var provider = new AmendmentRequestedByReference();
+    provider.setCode(code);
+    provider.setDisplayLabel(displayLabel);
+    return provider;
   }
 }
