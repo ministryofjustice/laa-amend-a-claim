@@ -18,6 +18,8 @@ services:
       - "8090:8090"
       - "8190:8190"
       - "5090:5005"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       AZURE_CLIENT_ID: ${AMEND_SILAS_CLIENT_ID}
       AZURE_CLIENT_SECRET: ${AMEND_SILAS_CLIENT_SECRET}
