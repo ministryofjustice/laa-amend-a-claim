@@ -24,6 +24,7 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
   final String caseUrl;
   final String costsUrl;
 
+  final String requestedByUrl;
   final String amendClientUrl;
   final String amendClientTwoUrl;
   final String amendFeeCodeUrl;
@@ -45,6 +46,8 @@ public abstract class AmendmentsBaseTest extends ViewTestBase {
     clientUrl = "/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
     caseUrl = "/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
     costsUrl = "/submissions/%s/claims/%s/amendments/costs".formatted(submissionId, claimId);
+    requestedByUrl =
+        "/submissions/%s/claims/%s/amendments/requested-by".formatted(submissionId, claimId);
 
     amendClientUrl =
         "/submissions/%s/claims/%s/amendments/amend-client".formatted(submissionId, claimId);

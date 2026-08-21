@@ -6,10 +6,7 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveAmendmentFor
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -30,7 +27,6 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
 import uk.gov.justice.laa.amend.claim.forms.validators.RequestedByFormValidator;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReference;
 
 @Controller
 @RequestMapping("/submissions/{submissionId}/claims/{claimId}/amendments/requested-by")
@@ -58,7 +54,8 @@ public class AmendmentRequestedByController {
     var amendmentForms = getAmendmentForms(session, claimId);
 
     setModelAttributesForDisplay(model, claimId, submissionId, amendmentForms);
-    model.addAttribute("amendmentRequestedByOptions", getAmendmentRequestedByOptions());
+    model.addAttribute(
+        "amendmentRequestedByOptions", systemReferenceService.getAmendmentRequestedByOptions());
     return "pages/amendments/amend-requested-by";
   }
 
@@ -83,35 +80,6 @@ public class AmendmentRequestedByController {
     saveAmendmentForms(session, claimId, amendmentForms);
     return "redirect:/submissions/%s/claims/%s/amendments/requested-reason"
         .formatted(submissionId, claimId);
-  }
-
-  private Map<String, String> getAmendmentRequestedByOptions() {
-    var amendmentRequestedByReferenceList =
-        systemReferenceService.getAmendmentRequestedByReferenceList();
-    Map<String, String> codeToLabelMap = new LinkedHashMap<>();
-    if (amendmentRequestedByReferenceList != null
-        && amendmentRequestedByReferenceList.getRequestedBy() != null) {
-      codeToLabelMap =
-          amendmentRequestedByReferenceList.getRequestedBy().stream()
-              .filter(
-                  item -> item != null && item.getCode() != null && item.getDisplayLabel() != null)
-              .collect(
-                  Collectors.toMap(
-                      AmendmentRequestedByReference::getCode,
-                      AmendmentRequestedByReference::getDisplayLabel,
-                      (existing, replacement) -> existing,
-                      LinkedHashMap::new));
-      codeToLabelMap =
-          codeToLabelMap.entrySet().stream()
-              .sorted(Map.Entry.comparingByValue(String.CASE_INSENSITIVE_ORDER))
-              .collect(
-                  Collectors.toMap(
-                      Map.Entry::getKey,
-                      Map.Entry::getValue,
-                      (existing, replacement) -> existing,
-                      LinkedHashMap::new));
-    }
-    return codeToLabelMap;
   }
 
   private void setModelAttributesForDisplay(

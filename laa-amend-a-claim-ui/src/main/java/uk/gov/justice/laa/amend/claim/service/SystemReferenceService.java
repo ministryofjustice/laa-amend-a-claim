@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentReasonReference;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReference;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
 
 @AllArgsConstructor
@@ -30,7 +31,12 @@ public class SystemReferenceService {
   }
 
   public List<AmendmentReasonReference> getAmendmentReasonByProvider(String providerCode) {
-    return Optional.ofNullable(getAmendmentRequestedByReferenceList())
+    return getAmendmentReasonByProvider(providerCode, getAmendmentRequestedByReferenceList());
+  }
+
+  public List<AmendmentReasonReference> getAmendmentReasonByProvider(
+      String providerCode, AmendmentRequestedByReferenceList referenceList) {
+    return Optional.ofNullable(referenceList)
         .map(AmendmentRequestedByReferenceList::getRequestedBy)
         .orElse(Collections.emptyList())
         .stream()
@@ -46,9 +52,45 @@ public class SystemReferenceService {
         .orElse(Collections.emptyList());
   }
 
-  public Map<String, String> getAmendmentRequestReason(String requestedBy) {
-    var amendmentReasons = getAmendmentReasonByProvider(requestedBy);
+  public Map<String, String> getAmendmentRequestedByOptions() {
+    return getAmendmentRequestedByOptions(getAmendmentRequestedByReferenceList());
+  }
 
+  public Map<String, String> getAmendmentRequestedByOptions(
+      AmendmentRequestedByReferenceList referenceList) {
+    return Optional.ofNullable(referenceList)
+        .map(AmendmentRequestedByReferenceList::getRequestedBy)
+        .orElse(Collections.emptyList())
+        .stream()
+        .filter(item -> item != null && item.getCode() != null && item.getDisplayLabel() != null)
+        .collect(
+            Collectors.toMap(
+                AmendmentRequestedByReference::getCode,
+                AmendmentRequestedByReference::getDisplayLabel,
+                (existing, replacement) -> existing,
+                LinkedHashMap::new))
+        .entrySet()
+        .stream()
+        .sorted(Map.Entry.comparingByValue(String.CASE_INSENSITIVE_ORDER))
+        .collect(
+            Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (existing, replacement) -> existing,
+                LinkedHashMap::new));
+  }
+
+  public Map<String, String> getAmendmentRequestReason(String requestedBy) {
+    return toAmendmentReasonMap(getAmendmentReasonByProvider(requestedBy));
+  }
+
+  public Map<String, String> getAmendmentRequestReason(
+      String requestedBy, AmendmentRequestedByReferenceList referenceList) {
+    return toAmendmentReasonMap(getAmendmentReasonByProvider(requestedBy, referenceList));
+  }
+
+  private Map<String, String> toAmendmentReasonMap(
+      List<AmendmentReasonReference> amendmentReasons) {
     Map<String, String> codeToLabelMap = new LinkedHashMap<>();
     if (amendmentReasons != null && !amendmentReasons.isEmpty()) {
       codeToLabelMap =

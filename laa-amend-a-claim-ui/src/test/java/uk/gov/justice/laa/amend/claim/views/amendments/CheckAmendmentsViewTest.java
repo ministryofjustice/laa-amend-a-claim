@@ -1,10 +1,15 @@
 package uk.gov.justice.laa.amend.claim.views.amendments;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.AMENDMENTS_KEY;
 
+import java.util.Map;
 import org.jsoup.nodes.Document;
 import org.jspecify.annotations.NonNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -17,9 +22,11 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.CheckAmendmentsService;
+import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactory;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
 
 @WebMvcTest(CheckAmendmentsController.class)
 class CheckAmendmentsViewTest extends AmendmentsBaseTest {
@@ -44,9 +51,20 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
   private static final String STAGE_REACHED = "INVA";
 
   @MockitoBean CheckAmendmentsService checkAmendmentsService;
+  @MockitoBean SystemReferenceService systemReferenceService;
 
   CheckAmendmentsViewTest() {
     this.mapping = checkUrl;
+  }
+
+  @BeforeEach
+  void setupReferenceData() {
+    var referenceList = new AmendmentRequestedByReferenceList();
+    when(systemReferenceService.getAmendmentRequestedByReferenceList()).thenReturn(referenceList);
+    when(systemReferenceService.getAmendmentRequestedByOptions(referenceList))
+        .thenReturn(Map.of("requestedBy", "Provider"));
+    when(systemReferenceService.getAmendmentRequestReason(eq("requestedBy"), any()))
+        .thenReturn(Map.of("reason", "Case reopened / rebilled"));
   }
 
   @Test
@@ -241,6 +259,26 @@ class CheckAmendmentsViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(costsDetails.getFirst(), "Item", "Current", "Amended");
     assertEquals(2, costsDetails.size());
     assertPageHasLink(doc, "change-costs", "Change", amendCostsUrl);
+  }
+
+  @Test
+  void testShowsAmendmentRequestDetailsCard() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    setupClaim(claim);
+    claim.setClientForename(FORENAME);
+    claim.setClientSurname(SURNAME);
+
+    var forms = createCrimeForms(claim);
+    forms.getClient1Form().getCurrent().getInputs().put("SURNAME", "changedSurname");
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var doc = renderDocument();
+
+    var requestDetails = getSummaryListInCard(doc, "Amendment request details");
+    assertSummaryListRowContainsValues(requestDetails.get(0), "Amendment requested by", "Provider");
+    assertSummaryListRowContainsValues(
+        requestDetails.get(1), "Reason for amendment", "Case reopened / rebilled");
+    assertPageHasLink(doc, "change-request-details", "Change", requestedByUrl);
   }
 
   @Test

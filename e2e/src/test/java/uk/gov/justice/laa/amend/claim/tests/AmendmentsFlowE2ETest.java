@@ -314,6 +314,9 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "MONE");
     assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL", "MTWO");
     assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£999.99");
+    assertSummaryListRow(page, "Amendment request details", "Amendment requested by", "Provider");
+    assertSummaryListRow(
+        page, "Amendment request details", "Reason for amendment", "Provider Error");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);
@@ -418,6 +421,9 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "MONE");
     assertSummaryListRow(page, "Case type", "Matter type 2", "IRVL", "MTWO");
     assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£200.00");
+    assertSummaryListRow(page, "Amendment request details", "Amendment requested by", "Provider");
+    assertSummaryListRow(
+        page, "Amendment request details", "Reason for amendment", "Provider Error");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);
@@ -527,6 +533,9 @@ public class AmendmentsFlowE2ETest extends BaseTest {
         AMENDED_CRIME_STAGE_REACHED_LABEL);
     assertSummaryListRow(
         page, "Case details", "Case concluded date", "30 January 2020", "31 January 2020");
+    assertSummaryListRow(page, "Amendment request details", "Amendment requested by", "Provider");
+    assertSummaryListRow(
+        page, "Amendment request details", "Reason for amendment", "Provider Error");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);

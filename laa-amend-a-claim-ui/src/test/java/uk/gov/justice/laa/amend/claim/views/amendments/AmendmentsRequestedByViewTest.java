@@ -18,8 +18,6 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.RequestedByForm;
 import uk.gov.justice.laa.amend.claim.forms.validators.RequestedByFormValidator;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReference;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
 
 @WebMvcTest(AmendmentRequestedByController.class)
 public class AmendmentsRequestedByViewTest extends AmendmentsBaseTest {
@@ -36,8 +34,8 @@ public class AmendmentsRequestedByViewTest extends AmendmentsBaseTest {
   void requestedByDisplayContent() {
     when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
     when(requestedByFormValidator.supports(any())).thenReturn(true);
-    when(systemReferenceService.getAmendmentRequestedByReferenceList())
-        .thenReturn(createReferenceList(createUnsortedReferenceMap()));
+    when(systemReferenceService.getAmendmentRequestedByOptions())
+        .thenReturn(createSortedReferenceMap());
 
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     this.claim = claim;
@@ -61,23 +59,11 @@ public class AmendmentsRequestedByViewTest extends AmendmentsBaseTest {
     assertPageHasSecondaryLink(doc, "Cancel");
   }
 
-  private AmendmentRequestedByReferenceList createReferenceList(Map<String, String> codes) {
-    var referenceList = new AmendmentRequestedByReferenceList();
-    codes.forEach(
-        (code, displayLabel) -> {
-          var reference = new AmendmentRequestedByReference();
-          reference.setCode(code);
-          reference.setDisplayLabel(displayLabel);
-          referenceList.getRequestedBy().add(reference);
-        });
-    return referenceList;
-  }
-
-  private Map<String, String> createUnsortedReferenceMap() {
-    var unsortedMap = new LinkedHashMap<String, String>();
-    unsortedMap.put("code1", "RequestedBy Label 2");
-    unsortedMap.put("code2", "RequestedBy Label 1");
-    return unsortedMap;
+  private Map<String, String> createSortedReferenceMap() {
+    var sortedMap = new LinkedHashMap<String, String>();
+    sortedMap.put("code2", "RequestedBy Label 1");
+    sortedMap.put("code1", "RequestedBy Label 2");
+    return sortedMap;
   }
 
   private static AmendmentForms createRequestedByForms() {

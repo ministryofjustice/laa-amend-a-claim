@@ -21,6 +21,7 @@ import uk.gov.justice.laa.amend.claim.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.amend.claim.config.features.Feature;
 import uk.gov.justice.laa.amend.claim.controllers.UserControllerAdvice;
 import uk.gov.justice.laa.amend.claim.service.CheckAmendmentsService;
+import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactory;
@@ -34,6 +35,7 @@ import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactor
 public class CheckAmendmentsController {
 
   private final CheckAmendmentsService checkAmendmentsService;
+  private final SystemReferenceService systemReferenceService;
 
   @GetMapping
   public String check(
@@ -54,6 +56,18 @@ public class CheckAmendmentsController {
     var caseView = ClaimCaseViewFactory.create(claim);
     var costFields = ClaimCostsViewFactory.create(claim).costFields();
 
+    var requestedBy = amendmentForms.getRequestedByForm().getRequestedBy();
+    var requestedReason = amendmentForms.getRequestedReasonForm().getRequestedReason();
+    var requestedByReferenceList = systemReferenceService.getAmendmentRequestedByReferenceList();
+    var requestedByLabel =
+        systemReferenceService
+            .getAmendmentRequestedByOptions(requestedByReferenceList)
+            .get(requestedBy);
+    var requestedReasonLabel =
+        systemReferenceService
+            .getAmendmentRequestReason(requestedBy, requestedByReferenceList)
+            .get(requestedReason);
+
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("client1Form", amendmentForms.getClient1Form().getCurrent());
     model.addAttribute(
@@ -68,6 +82,11 @@ public class CheckAmendmentsController {
     model.addAttribute("clientView", clientView);
     model.addAttribute("claim", caseView);
     model.addAttribute("areaOfLaw", claim.getAreaOfLaw());
+    model.addAttribute(
+        "requestedByLabel", requestedByLabel != null ? requestedByLabel : requestedBy);
+    model.addAttribute(
+        "requestedReasonLabel",
+        requestedReasonLabel != null ? requestedReasonLabel : requestedReason);
 
     return "pages/amendments/check-your-answers";
   }
