@@ -55,7 +55,7 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
 
       - name: Build JAR (without tests)
-        run: ./gradlew build -x test -x integrationTest
+        run: ./gradlew :laa-amend-a-claim-ui:build -x :laa-amend-a-claim-ui:test -x :laa-amend-a-claim-ui:integrationTest
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
@@ -63,11 +63,11 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: application-jar
-          path: build/libs/*.jar
+          path: laa-amend-a-claim-ui/build/libs/*.jar
           retention-days: 1
 
       - name: Publish package to GitHub Packages
-        run: ./gradlew publish
+        run: ./gradlew :laa-amend-a-claim-ui:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
