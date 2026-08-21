@@ -213,8 +213,6 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
             .costs(new AmendmentForm(costsView.costRows()))
             .requestedBy(createRequestedByForm())
             .requestedReason(createRequestedReasonForm())
-            .requestedBy(createRequestedByForm())
-            .requestedReason(createRequestedReasonForm())
             .build();
     amendmentForms.getClient1Form().setCurrent(client1Form);
     return amendmentForms;
