@@ -40,6 +40,7 @@ public interface ClaimMapper {
   @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
   @Mapping(target = "feeCode", source = "feeCalculationResponse.feeCode")
   @Mapping(target = "feeCodeDescription", source = "feeCalculationResponse.feeCodeDescription")
+  @Mapping(target = "feeType", source = "feeCalculationResponse.feeType")
   @Mapping(
       target = "assessedTotalVat",
       expression = "java(claimMapperHelper.mapAssessedTotalVat())")
