@@ -13,7 +13,7 @@
   partition "Build (.github/workflows/build.yml)" {
     :Checkout source code;
     :Setup JDK 25 (Amazon Corretto);
-    :Gradle build (skip tests)\n""./gradlew build -x test -x integrationTest"";
+    :Gradle build (skip tests)\n""./gradlew :laa-amend-a-claim-ui:build -x :laa-amend-a-claim-ui:test -x :laa-amend-a-claim-ui:integrationTest"";
     :Upload JAR artifact (1-day retention);
     :Publish to GitHub Packages;
     :Authenticate to ECR (OIDC);
@@ -30,9 +30,9 @@
 
       partition "Test (.github/workflows/test.yml)" {
         partition "Unit & Integration Tests" {
-          :""./gradlew test"" (unit tests);
-          :""./gradlew jacocoTestCoverageVerification""\n(coverage gate);
-          :""./gradlew integrationTest"";
+          :""./gradlew :laa-amend-a-claim-ui:test"" (unit tests);
+          :""./gradlew :laa-amend-a-claim-ui:jacocoTestCoverageVerification""\n(coverage gate);
+          :""./gradlew :laa-amend-a-claim-ui:integrationTest"";
           :Upload test reports (14-day retention);
         }
         partition "E2E Tests (.github/workflows/e2e-tests.yml)" {
