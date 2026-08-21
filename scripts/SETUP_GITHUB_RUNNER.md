@@ -101,8 +101,8 @@ jobs:
       
       - name: Run E2E Tests
         run: |
-          cd src/e2e
-          ./gradlew test
+          cd e2e
+          ../gradlew :e2e:test
 ```
 
 ### Why Self-Hosted Runner in K8s?
@@ -195,5 +195,3 @@ Runners auto-remove on graceful shutdown, but if pod crashes:
 # Via GitHub UI: Settings > Actions > Runners > Remove
 # Or via API/CLI if automated cleanup needed
 ```
-
-
