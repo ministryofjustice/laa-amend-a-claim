@@ -20,6 +20,7 @@ import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -255,13 +256,13 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
     return forms;
   }
 
-  private static RequestedByForm createRequestedByForm() {
+  private static @NonNull RequestedByForm createRequestedByForm() {
     var requestedByForm = new RequestedByForm();
     requestedByForm.setRequestedBy("requestedBy");
     return requestedByForm;
   }
 
-  private static RequestedReasonForm createRequestedReasonForm() {
+  private static @NonNull RequestedReasonForm createRequestedReasonForm() {
     var requestedReasonForm = new RequestedReasonForm();
     requestedReasonForm.setRequestedReason("requestedReason");
     return requestedReasonForm;
