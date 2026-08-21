@@ -100,6 +100,11 @@
                     LITERAL_FINALLY, LITERAL_CATCH"/>
         </module>
         <module name="SuppressionXpathSingleFilter">
+            <property name="id" value="RightCurlySame"/>
+            <property name="query" value="//RCURLY[parent::SLIST[parent::LITERAL_CATCH
+                                     and not(parent::LITERAL_CATCH/following-sibling::*)]]"/>
+        </module>
+        <module name="SuppressionXpathSingleFilter">
             <!-- suppresion is required till https://github.com/checkstyle/checkstyle/issues/7541 -->
             <property name="id" value="RightCurlyAlone"/>
             <property name="query" value="//RCURLY[parent::SLIST[count(./*)=1
