@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Waits for actuator health to be UP for submit and data claims services.
+# Waits for actuator health to be UP for amend and data claims services.
 # Usage: ./wait-for-services.sh [max_attempts] [sleep_seconds]
 
 MAX_ATTEMPTS="${1:-60}"
