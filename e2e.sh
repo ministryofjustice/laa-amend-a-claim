@@ -38,7 +38,7 @@ popd >/dev/null
 echo "[INFO] Starting frontend application..."
 docker-compose down -v
 docker-compose up -d redis
-./gradlew bootRun >> "$FRONTEND_LOG" 2>&1 &
+./gradlew :laa-amend-a-claim-ui:bootRun >> "$FRONTEND_LOG" 2>&1 &
 BOOTRUN_PID=$!
 
 echo "[INFO] Waiting for application to be ready..."

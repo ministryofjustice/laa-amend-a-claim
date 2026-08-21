@@ -166,8 +166,8 @@ The GitHub Actions pipeline uploads the Allure report as an artifact:
 ## Project structure
 
 ```
-src/e2e/
- ├── main/java/uk/gov/justice/laa/amend/claim/
+e2e/
+ ├── src/main/java/uk/gov/justice/laa/amend/claim/
  │    ├── config/
  │    │     └── EnvConfig.java
  │    ├── drivers/
@@ -182,15 +182,15 @@ src/e2e/
  │    └── utils/
  │          └── TestDataUtils.java
  │
- ├── test/java/uk/gov/justice/laa/amend/claim/
+ ├── src/test/java/uk/gov/justice/laa/amend/claim/
  │    ├── base/
  │    │     └── BaseTest.java
  │    └── tests/
  │          ├── DbSeedSmokeTest.java
  │          └── SearchTest.java
  │
- ├── main/resources/allure.properties
- └── test/resources/junit-platform.properties
+ ├── src/main/resources/allure.properties
+ └── src/test/resources/junit-platform.properties
 ```
 
 ## Allure + JUnit gradle config (Summary)

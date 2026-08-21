@@ -15,4 +15,4 @@ fi
 
 docker-compose up -d
 
-./gradlew bootRun --args="--spring.profiles.active=${PROFILE}"
+./gradlew :laa-amend-a-claim-ui:bootRun --args="--spring.profiles.active=${PROFILE}"

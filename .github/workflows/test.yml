@@ -73,15 +73,15 @@ jobs:
         
       # Run tests
       - name: Run unit tests
-        run: ./gradlew test
+        run: ./gradlew :laa-amend-a-claim-ui:test
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Test coverage verification
-        run: ./gradlew jacocoTestCoverageVerification
+        run: ./gradlew :laa-amend-a-claim-ui:jacocoTestCoverageVerification
 
       - name: Integration test
-        run: ./gradlew integrationTest --tests '*IntegrationTest'
+        run: ./gradlew :laa-amend-a-claim-ui:integrationTest --tests '*IntegrationTest'
 
       # Upload artifacts
       - name: Upload test results
@@ -89,7 +89,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: test-results
-          path: build/test-results
+          path: laa-amend-a-claim-ui/build/test-results
           retention-days: 14
 
       - name: Upload checkstyle report
@@ -97,7 +97,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: checkstyle-report
-          path: build/reports/checkstyle
+          path: laa-amend-a-claim-ui/build/reports/checkstyle
           retention-days: 14
 
       - name: Upload test report
@@ -105,7 +105,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: test-report
-          path: build/reports/tests
+          path: laa-amend-a-claim-ui/build/reports/tests
           retention-days: 14
 
       - name: Upload jacoco coverage report
@@ -113,7 +113,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: jacoco-coverage-report
-          path: build/reports/jacoco
+          path: laa-amend-a-claim-ui/build/reports/jacoco
           retention-days: 14
 
   e2e-tests:
@@ -134,4 +134,3 @@ jobs:
       DATA_CLAIMS_API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
       E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
       E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
-

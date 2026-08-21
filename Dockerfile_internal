@@ -23,7 +23,7 @@ VOLUME /tmp
 WORKDIR /app
 
 # Copy only the built JAR from the builder stage
-COPY --from=spring-builder /app/build/libs/laa-amend-a-claim-1.0.0.jar /app/application.jar
+COPY --from=spring-builder /app/laa-amend-a-claim-ui/build/libs/laa-amend-a-claim-ui-1.0.0.jar /app/application.jar
 
 # Create a group and non-root user (Alpine syntax)
 RUN addgroup -S appgroup && adduser -u 1001 -S appuser -G appgroup

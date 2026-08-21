@@ -41,8 +41,8 @@ jobs:
         run: |
           echo "INFO: Running application..."
           docker compose up -d wiremock amend-redis
-          ./gradlew classes
-          ./gradlew bootRun > zap_output.log 2>&1 &
+          ./gradlew :laa-amend-a-claim-ui:classes
+          ./gradlew :laa-amend-a-claim-ui:bootRun > zap_output.log 2>&1 &
 
           url="http://localhost:8190/actuator/health"
           retries=30
