@@ -20,6 +20,7 @@ import uk.gov.justice.laa.amend.claim.models.enums.Cost;
 import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AssessmentPost;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationType;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -44,6 +45,7 @@ public abstract class ClaimDetails extends Claim {
   private OffsetDateTime submittedDate;
   private String feeCode;
   private String feeCodeDescription;
+  private FeeCalculationType feeType;
   private boolean hasAssessment;
   private boolean isAmended;
   private AssessmentInfo lastAssessment;
