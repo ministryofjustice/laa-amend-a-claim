@@ -291,6 +291,12 @@
                     LABELED_STAT, METHOD_REF, ELLIPSIS"/>
             <property name="allowLineBreaks" value="true"/>
         </module>
+        <module name="SuppressionXpathSingleFilter">
+            <property name="checks" value="NoWhitespaceBefore"/>
+            <property name="query"
+                      value="//ELLIPSIS[preceding-sibling::TYPE/ANNOTATIONS[ANNOTATION[LPAREN]
+                          or not(following-sibling::*)]]"/>
+        </module>
         <module name="ParenPad">
             <property name="tokens"
                       value="ANNOTATION, ANNOTATION_FIELD_DEF, CTOR_CALL, CTOR_DEF, DOT, ENUM_CONSTANT_DEF,
