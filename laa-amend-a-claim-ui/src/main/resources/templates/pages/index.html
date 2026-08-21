@@ -110,30 +110,30 @@
                                 <table class="govuk-table govuk-table--small-text-until-tablet search-table">
                                     <thead class="govuk-table__head">
                                         <tr class="govuk-table__row">
-                                            <th scope="col" class="govuk-table__header" th:text="#{index.results.claim}"></th>
+                                            <th:block th:replace="~{fragments/sortable-header :: sortableHeader(${query}, ${SortField.CLIENT_SURNAME}, 'index.results.clientSurname')}"></th:block>
 
                                             <th:block th:replace="~{fragments/sortable-header :: sortableHeader(${query}, ${SortField.UNIQUE_FILE_NUMBER}, 'index.results.uniqueFileNumber')}"></th:block>
 
                                             <th:block th:replace="~{fragments/sortable-header :: sortableHeader(${query}, ${SortField.CASE_REFERENCE_NUMBER}, 'index.results.caseReferenceNumber')}"></th:block>
 
-                                            <th:block th:replace="~{fragments/sortable-header :: sortableHeader(${query}, ${SortField.CLIENT_SURNAME}, 'index.results.clientSurname')}"></th:block>
-
                                             <th:block th:replace="~{fragments/sortable-header :: sortableHeader(${query}, ${SortField.SUBMISSION_PERIOD}, 'index.results.dateSubmitted')}"></th:block>
 
                                             <th:block th:replace="~{fragments/sortable-header :: sortableHeader(${query}, ${SortField.CATEGORY_OF_LAW}, 'index.results.categoryOfLaw')}"></th:block>
 
-                                            <th:block th:replace="~{fragments/sortable-header :: sortableHeader(${query}, ${SortField.VOIDED}, 'index.results.voided')}"></th:block>
-
                                             <th scope="col" class="govuk-table__header" th:text="#{index.results.escaped}"></th>
+
+                                            <th:block th:replace="~{fragments/sortable-header :: sortableHeader(${query}, ${SortField.STATUS}, 'index.results.status')}"></th:block>
                                         </tr>
                                     </thead>
                                     <tbody class="govuk-table__body">
                                         <tr class="govuk-table__row" th:each="claim : ${viewModel.claims}">
-                                            <td class="govuk-table__cell" th:data-submission-id="${claim.claim.submissionId}"
+                                            <td class="govuk-table__cell"
+                                                th:with="multipleClients=#{index.results.multipleClients}"
+                                                th:data-submission-id="${claim.claim.submissionId}"
                                                 th:data-claim-id="${claim.claim.claimId}">
                                                 <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${claim.claim.submissionId}, claimId=${claim.claim.claimId})}" class="govuk-link govuk-link--no-visited-state">
-                                                    <th:block th:text="#{index.view}"></th:block>
-                                                    <span class="govuk-visually-hidden" th:text=" #{index.view.hidden(${claim.clientName})}"></span>
+                                                    <span th:text="${#strings.isEmpty(#strings.trim(claim.claim.clientSurname)) ? multipleClients : claim.claim.clientSurname}"></span>
+                                                    <span class="govuk-visually-hidden" th:text="#{index.view.hidden(${#strings.isEmpty(#strings.trim(claim.clientName)) ? multipleClients : claim.clientName})}"></span>
                                                 </a>
                                             </td>
                                             <td class="govuk-table__cell"
@@ -142,18 +142,8 @@
                                                 th:text="${ufn}">
                                             </td>
                                             <td class="govuk-table__cell" th:text="${claim.claim.caseReferenceNumber}"></td>
-                                            <td class="govuk-table__cell" th:text="${claim.claim.clientSurname}"></td>
                                             <td class="govuk-table__cell" th:text="${claim.submissionPeriodForDisplay}" th:data-sort-value="${claim.submissionPeriodForSorting}"></td>
                                             <td class="govuk-table__cell" th:text="${claim.claim.categoryOfLaw}"></td>
-
-                                            <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.isVoided()).resolve(#messages)}">
-                                                <th:block th:if="${claim.claim.isVoided()}">
-                                                    <strong class="govuk-tag govuk-tag--red" th:text="${value}"></strong>
-                                                </th:block>
-                                                <th:block th:unless="${claim.claim.isVoided()}">
-                                                    <span th:text="${value}"></span>
-                                                </th:block>
-                                            </td>
 
                                             <td class="govuk-table__cell" th:with="value=${@ThymeleafUtils.getFormattedBoolean(claim.claim.escaped).resolve(#messages)}">
                                                 <th:block th:if="${claim.claim.escaped}">
@@ -162,6 +152,17 @@
                                                 <th:block th:unless="${claim.claim.escaped}">
                                                     <span th:text="${value}"></span>
                                                 </th:block>
+                                            </td>
+
+                                            <td class="govuk-table__cell">
+                                                <strong th:if="${claim.claim.derivedClaimStatus == 'ACCEPTED'}" class="govuk-tag govuk-tag--green"
+                                                        th:text="${#messages.msg('index.results.status.' + #strings.toLowerCase(claim.claim.derivedClaimStatus))}"></strong>
+                                                <strong th:if="${claim.claim.derivedClaimStatus == 'ASSESSED'}" class="govuk-tag govuk-tag--blue"
+                                                        th:text="${#messages.msg('index.results.status.' + #strings.toLowerCase(claim.claim.derivedClaimStatus))}"></strong>
+                                                <strong th:if="${claim.claim.derivedClaimStatus == 'AMENDED'}" class="govuk-tag govuk-tag--yellow"
+                                                        th:text="${#messages.msg('index.results.status.' + #strings.toLowerCase(claim.claim.derivedClaimStatus))}"></strong>
+                                                <strong th:if="${claim.claim.derivedClaimStatus == 'VOIDED'}" class="govuk-tag govuk-tag--red"
+                                                        th:text="${#messages.msg('index.results.status.' + #strings.toLowerCase(claim.claim.derivedClaimStatus))}"></strong>
                                             </td>
                                         </tr>
                                     </tbody>

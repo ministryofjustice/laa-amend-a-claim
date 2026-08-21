@@ -46,6 +46,13 @@ public class SearchSortFieldTest {
       Assertions.assertEquals(SearchSortField.CATEGORY_OF_LAW, result);
     }
 
+    @Test
+    void shouldConvertStatus() {
+      String str = "status";
+      SearchSortField result = SearchSortField.fromValue(str);
+      Assertions.assertEquals(SearchSortField.STATUS, result);
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"foo", "bar"})
     void shouldThrowExceptionForAnythingElse(String str) {
