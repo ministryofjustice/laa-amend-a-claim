@@ -58,9 +58,15 @@ public class CheckAmendmentsController {
 
     var requestedBy = amendmentForms.getRequestedByForm().getRequestedBy();
     var requestedReason = amendmentForms.getRequestedReasonForm().getRequestedReason();
-    var requestedByLabel = systemReferenceService.getAmendmentRequestedByOptions().get(requestedBy);
+    var requestedByReferenceList = systemReferenceService.getAmendmentRequestedByReferenceList();
+    var requestedByLabel =
+        systemReferenceService
+            .getAmendmentRequestedByOptions(requestedByReferenceList)
+            .get(requestedBy);
     var requestedReasonLabel =
-        systemReferenceService.getAmendmentRequestReason(requestedBy).get(requestedReason);
+        systemReferenceService
+            .getAmendmentRequestReason(requestedBy, requestedByReferenceList)
+            .get(requestedReason);
 
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("client1Form", amendmentForms.getClient1Form().getCurrent());

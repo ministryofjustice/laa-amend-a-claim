@@ -31,7 +31,12 @@ public class SystemReferenceService {
   }
 
   public List<AmendmentReasonReference> getAmendmentReasonByProvider(String providerCode) {
-    return Optional.ofNullable(getAmendmentRequestedByReferenceList())
+    return getAmendmentReasonByProvider(providerCode, getAmendmentRequestedByReferenceList());
+  }
+
+  public List<AmendmentReasonReference> getAmendmentReasonByProvider(
+      String providerCode, AmendmentRequestedByReferenceList referenceList) {
+    return Optional.ofNullable(referenceList)
         .map(AmendmentRequestedByReferenceList::getRequestedBy)
         .orElse(Collections.emptyList())
         .stream()
@@ -48,7 +53,12 @@ public class SystemReferenceService {
   }
 
   public Map<String, String> getAmendmentRequestedByOptions() {
-    return Optional.ofNullable(getAmendmentRequestedByReferenceList())
+    return getAmendmentRequestedByOptions(getAmendmentRequestedByReferenceList());
+  }
+
+  public Map<String, String> getAmendmentRequestedByOptions(
+      AmendmentRequestedByReferenceList referenceList) {
+    return Optional.ofNullable(referenceList)
         .map(AmendmentRequestedByReferenceList::getRequestedBy)
         .orElse(Collections.emptyList())
         .stream()
@@ -71,8 +81,16 @@ public class SystemReferenceService {
   }
 
   public Map<String, String> getAmendmentRequestReason(String requestedBy) {
-    var amendmentReasons = getAmendmentReasonByProvider(requestedBy);
+    return toAmendmentReasonMap(getAmendmentReasonByProvider(requestedBy));
+  }
 
+  public Map<String, String> getAmendmentRequestReason(
+      String requestedBy, AmendmentRequestedByReferenceList referenceList) {
+    return toAmendmentReasonMap(getAmendmentReasonByProvider(requestedBy, referenceList));
+  }
+
+  private Map<String, String> toAmendmentReasonMap(
+      List<AmendmentReasonReference> amendmentReasons) {
     Map<String, String> codeToLabelMap = new LinkedHashMap<>();
     if (amendmentReasons != null && !amendmentReasons.isEmpty()) {
       codeToLabelMap =

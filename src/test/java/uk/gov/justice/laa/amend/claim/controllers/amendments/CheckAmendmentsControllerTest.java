@@ -2,6 +2,8 @@ package uk.gov.justice.laa.amend.claim.controllers.amendments;
 
 import static java.util.UUID.fromString;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
@@ -40,6 +42,7 @@ import uk.gov.justice.laa.amend.claim.service.SystemReferenceService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcase.ClaimCaseViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimcosts.ClaimCostsViewFactory;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
 
 @WebMvcTest(CheckAmendmentsController.class)
 class CheckAmendmentsControllerTest extends BaseControllerTest {
@@ -57,9 +60,11 @@ class CheckAmendmentsControllerTest extends BaseControllerTest {
     submissionId = UUID.randomUUID();
     claimId = UUID.randomUUID();
     session = new MockHttpSession();
-    when(systemReferenceService.getAmendmentRequestedByOptions())
+    var referenceList = new AmendmentRequestedByReferenceList();
+    when(systemReferenceService.getAmendmentRequestedByReferenceList()).thenReturn(referenceList);
+    when(systemReferenceService.getAmendmentRequestedByOptions(referenceList))
         .thenReturn(Map.of("requestedBy", "Provider"));
-    when(systemReferenceService.getAmendmentRequestReason("requestedBy"))
+    when(systemReferenceService.getAmendmentRequestReason(eq("requestedBy"), any()))
         .thenReturn(Map.of("requestedReason", "Case reopened / rebilled"));
     setupClaim(MockClaimsFunctions.createMockCrimeClaim());
   }

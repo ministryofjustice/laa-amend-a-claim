@@ -13,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentReasonReference;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReference;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
 
 class SystemReferenceServiceTest {
 
@@ -130,6 +132,51 @@ class SystemReferenceServiceTest {
     Map<String, String> result = systemReferenceService.getAmendmentRequestReason("PROVIDER");
 
     assertThat(result.values()).containsExactly("Alpha", "Mike", "Zulu");
+  }
+
+  @Test
+  void getAmendmentRequestedByOptionsUsesProvidedReferenceList() {
+    var providerA = new AmendmentRequestedByReference();
+    providerA.setCode("PROVIDER_A");
+    providerA.setDisplayLabel("Zulu Provider");
+
+    var providerB = new AmendmentRequestedByReference();
+    providerB.setCode("PROVIDER_B");
+    providerB.setDisplayLabel("Alpha Provider");
+
+    var referenceList = new AmendmentRequestedByReferenceList();
+    referenceList.setRequestedBy(List.of(providerA, providerB));
+
+    Map<String, String> result =
+        systemReferenceService.getAmendmentRequestedByOptions(referenceList);
+
+    assertThat(result)
+        .hasSize(2)
+        .containsEntry("PROVIDER_A", "Zulu Provider")
+        .containsEntry("PROVIDER_B", "Alpha Provider");
+    assertThat(result.values()).containsExactly("Alpha Provider", "Zulu Provider");
+  }
+
+  @Test
+  void getAmendmentRequestReasonUsesProvidedReferenceList() {
+    var reason1 = createReason("R1", "Reason One");
+    var reason2 = createReason("R2", "Reason Two");
+
+    var provider = new AmendmentRequestedByReference();
+    provider.setCode("PROVIDER");
+    provider.setDisplayLabel("Provider");
+    provider.setReasons(List.of(reason1, reason2));
+
+    var referenceList = new AmendmentRequestedByReferenceList();
+    referenceList.setRequestedBy(List.of(provider));
+
+    Map<String, String> result =
+        systemReferenceService.getAmendmentRequestReason("PROVIDER", referenceList);
+
+    assertThat(result)
+        .hasSize(2)
+        .containsEntry("R1", "Reason One")
+        .containsEntry("R2", "Reason Two");
   }
 
   private void setupAmendmentReasons(String requestedBy, AmendmentReasonReference... reasons) {
