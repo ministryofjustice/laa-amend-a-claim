@@ -116,6 +116,15 @@ jobs:
       - name: Install task
         uses: go-task/setup-task@01a4adf9db2d14c1de7a560f09170b6e0df736aa # v2.1.0
 
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+
+      - name: Install E2E dependencies
+        working-directory: laa-data-claims-parent/laa-amend-a-claim/e2e
+        run: npm ci
+
       - name: Build and start services
         working-directory: laa-data-claims-parent
         run: |
@@ -130,9 +139,10 @@ jobs:
           PROVIDER_DETAILS_API_HOSTNAME: "http://host.docker.internal:8186"
           PROVIDER_DETAILS_API_ACCESS_TOKEN: ${{ secrets.pda_api_token }}
           AMEND_UI_SPRING_PROFILES_ACTIVE: e2e
-          AZURE_CLIENT_ID: ${{ secrets.azure_client_id }}
-          AZURE_CLIENT_SECRET: ${{ secrets.azure_client_secret }}
-          AZURE_TENANT_ID: ${{ secrets.azure_tenant_id }}
+          AMEND_SILAS_CLIENT_ID: ${{ secrets.azure_client_id }}
+          AMEND_SILAS_CLIENT_SECRET: ${{ secrets.azure_client_secret }}
+          AMEND_SILAS_TENANT_ID: ${{ secrets.azure_tenant_id }}
+          CLAIMS_API_AMENDMENTS_ENABLED: true
 
       - name: Wait for services to be ready
         working-directory: laa-data-claims-parent/laa-amend-a-claim
@@ -148,12 +158,6 @@ jobs:
           DB_CONNECTION_URL: jdbc:postgresql://localhost:5432/laa_data_claims_api_dev
           DB_USER: user
           DB_PASSWORD: dev
-          REDIS_URL: redis://localhost:6390
-          FEEDBACK_URL: "https://www.smartsurvey.co.uk/s/AaBC_Beta_DevTest"
-          LAA_URL: "https://dev.your-legal-aid-services.service.justice.gov.uk"
-          BASE_URL_HOMEPAGE: "http://localhost:8090"
-          IS_BULK_UPLOAD_ENABLED: true
-          IS_CLAIM_AMENDMENT_ENABLED: true
 
       - name: Collect logs
         if: always()

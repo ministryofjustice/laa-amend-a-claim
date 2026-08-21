@@ -18,10 +18,12 @@ services:
       - "8090:8090"
       - "8190:8190"
       - "5090:5005"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
-      AZURE_CLIENT_ID: ${AZURE_CLIENT_ID}
-      AZURE_CLIENT_SECRET: ${AZURE_CLIENT_SECRET}
-      AZURE_TENANT_ID: ${AZURE_TENANT_ID}
+      AZURE_CLIENT_ID: ${AMEND_SILAS_CLIENT_ID}
+      AZURE_CLIENT_SECRET: ${AMEND_SILAS_CLIENT_SECRET}
+      AZURE_TENANT_ID: ${AMEND_SILAS_TENANT_ID}
       BASE_URL_HOMEPAGE: http://localhost:8090
       FEEDBACK_URL: https://www.smartsurvey.co.uk/s/AaBC_Beta_DevTest
       LAA_URL: https://dev.your-legal-aid-services.service.justice.gov.uk
