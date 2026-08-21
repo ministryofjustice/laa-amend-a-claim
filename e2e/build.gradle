@@ -15,8 +15,8 @@ java {
 }
 
 dependencies {
-    implementation 'com.microsoft.playwright:playwright:1.61.0'
-    implementation 'com.deque.html.axe-core:playwright:4.12.0'
+    implementation 'com.microsoft.playwright:playwright:1.62.0'
+    implementation 'com.deque.html.axe-core:playwright:4.13.0'
     testImplementation 'org.webjars.npm:axe-html-reporter:2.2.11'
     implementation 'io.github.cdimascio:dotenv-java:3.2.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.1'
@@ -26,9 +26,9 @@ dependencies {
     implementation 'tools.jackson.core:jackson-databind:3.2.1'
 
     implementation 'org.slf4j:slf4j-simple:2.0.18'
-    implementation 'org.junit.jupiter:junit-jupiter-api:6.1.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:6.1.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.1.2'
+    implementation 'org.junit.jupiter:junit-jupiter-api:6.1.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:6.1.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.1.3'
 
     testImplementation 'io.rest-assured:rest-assured:6.0.1'
 
