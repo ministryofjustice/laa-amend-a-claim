@@ -40,7 +40,7 @@ jobs:
           client_secret: ${{ secrets.SNYK_CLIENT_SECRET }}
 
       - name: Run Snyk app vulnerability scan
-        run: snyk test --severity-threshold=low --sarif-file-output=snyk-app.sarif
+        run: snyk test laa-amend-a-claim-ui/ --severity-threshold=low --sarif-file-output=snyk-app.sarif
         env:
           SNYK_OAUTH_TOKEN: ${{ steps.auth.outputs.token }}
 

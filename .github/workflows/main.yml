@@ -25,23 +25,31 @@ jobs:
 
   test:
     name: Test
-    needs: build
     uses: ./.github/workflows/test.yml
     with:
       branch: ${{ github.ref_name }}
       environment: dev
-      amend_a_claim_image_tag: ${{ needs.build.outputs.image_tag }}
-      sanitized_release_name: 'main'
     secrets:
-      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-      KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
-      KUBE_CERT: ${{ secrets.KUBE_CERT }}
-      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
-      KUBE_CLUSTER: ${{ secrets.KUBE_CLUSTER }}
-      ECR_ROLE_TO_ASSUME: ${{ secrets.ECR_ROLE_TO_ASSUME }}
-      DATA_CLAIMS_API_IMAGE: ${{ secrets.DATA_CLAIMS_API_IMAGE }}
-      E2E_DB_USER: ${{ secrets.E2E_DB_USER }}
-      E2E_DB_PASSWORD: ${{ secrets.E2E_DB_PASSWORD }}
+      pat_token: ${{ secrets.PAT_TOKEN }}
+
+  e2e-tests:
+    name: E2E Tests
+    uses: ./.github/workflows/e2e-tests.yml
+    secrets:
+      pat_token: ${{ secrets.PAT_TOKEN }}
+      kube_namespace_submit_a_bulk_claim_uat: ${{ secrets.KUBE_NAMESPACE_LAA_SUBMIT_A_BULK_CLAIM_UAT }}
+      kube_cert_submit_a_bulk_claim_uat: ${{ secrets.KUBE_CERT_LAA_SUBMIT_A_BULK_CLAIM_UAT }}
+      kube_token_submit_a_bulk_claim_uat: ${{ secrets.KUBE_TOKEN_LAA_SUBMIT_A_BULK_CLAIM_UAT }}
+      kube_cluster_submit_a_bulk_claim_uat: ${{ secrets.KUBE_CLUSTER_LAA_SUBMIT_A_BULK_CLAIM_UAT }}
+      kube_namespace_laa_fee_scheme_api_uat: ${{ secrets.KUBE_NAMESPACE_LAA_FEE_SCHEME_API_UAT }}
+      kube_cert_laa_fee_scheme_api_uat: ${{ secrets.KUBE_CERT_LAA_FEE_SCHEME_API_UAT }}
+      kube_token_laa_fee_scheme_api_uat: ${{ secrets.KUBE_TOKEN_LAA_FEE_SCHEME_API_UAT }}
+      kube_cluster_laa_fee_scheme_api_uat: ${{ secrets.KUBE_CLUSTER_LAA_FEE_SCHEME_API_UAT }}
+      fsp_api_token: ${{ secrets.FSP_API_TOKEN }}
+      pda_api_token: ${{ secrets.PDA_API_TOKEN }}
+      azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+      azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+      azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
 
   pact-test:
     name: Pact Test

@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   cleanup-stale:
-    name: Remove Stale Ephemeral & E2E Environments
+    name: Remove Stale Ephemeral Environments
     runs-on: ubuntu-latest
     environment: dev
 
@@ -46,11 +46,10 @@ jobs:
           )
           releases = json.loads(result.stdout)
 
-          PROTECTED_RELEASES = {"e2e-github-runner"}
-          stale_prefixes = ("ephemeral-", "e2e-")
-          targets = [r for r in releases if r["name"].startswith(stale_prefixes) and r["name"] not in PROTECTED_RELEASES]
+          stale_prefixes = ("ephemeral-",)
+          targets = [r for r in releases if r["name"].startswith(stale_prefixes)]
 
-          print(f"\n=== Processing {len(targets)} ephemeral/e2e release(s) ===")
+          print(f"\n=== Processing {len(targets)} ephemeral release(s) ===")
 
           for release in targets:
               name = release["name"]
