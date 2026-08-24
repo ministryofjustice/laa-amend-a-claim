@@ -4,23 +4,17 @@ import java.time.LocalDate;
 import java.time.Month;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.Errors;
-import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.utils.DateWrapperUtil;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 
 @Component
-public class CivilTransferDateValidator extends AmendmentDateValidator {
+public class CivilTransferDateValidator extends MinDateAmendmentValidator {
 
   private static final LocalDate EARLIEST_TRANSFER_DATE = LocalDate.of(1995, Month.JANUARY, 1);
 
-  private final DateWrapperUtil dateWrapperUtil;
-
   public CivilTransferDateValidator(MessageSource messageSource, DateWrapperUtil dateWrapperUtil) {
-    super(messageSource);
-    this.dateWrapperUtil = dateWrapperUtil;
+    super(messageSource, dateWrapperUtil);
   }
 
   @Override
@@ -29,18 +23,7 @@ public class CivilTransferDateValidator extends AmendmentDateValidator {
   }
 
   @Override
-  public void validate(
-      ClaimDetails claim, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
-    var transferDate = form.getDateValue(field.name());
-
-    if (transferDate == null) {
-      return;
-    }
-
-    if (dateWrapperUtil.isFutureDate(transferDate)) {
-      addDateInTheFutureMessage(errors, field);
-    } else if (transferDate.isBefore(EARLIEST_TRANSFER_DATE)) {
-      addDateTooEarlyMessage(errors, field, EARLIEST_TRANSFER_DATE);
-    }
+  protected LocalDate earliestAllowedDate() {
+    return EARLIEST_TRANSFER_DATE;
   }
 }
