@@ -3,9 +3,12 @@ package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.validation.FieldError;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
@@ -95,9 +98,8 @@ class DisbursementVatAmountValidatorTest {
 
     Errors result = validate(input);
 
-    assertThat(result.hasFieldErrors()).isTrue();
-    assertThat(result.getFieldError("inputs['DISBURSEMENTS_VAT']").getCode())
-        .isEqualTo(DisbursementVatAmountValidator.ERROR_CODE);
+    assertFieldError(
+        result, "areaOfLaw.legalHelp", DisbursementVatAmountValidator.MAX_LEGAL_HELP_VAT_AMOUNT);
   }
 
   @Test
@@ -107,9 +109,10 @@ class DisbursementVatAmountValidatorTest {
 
     Errors result = validate(input);
 
-    assertThat(result.hasFieldErrors()).isTrue();
-    assertThat(result.getFieldError("inputs['DISBURSEMENTS_VAT']").getCode())
-        .isEqualTo(DisbursementVatAmountValidator.ERROR_CODE);
+    assertFieldError(
+        result,
+        "areaOfLaw.crimeLower",
+        DisbursementVatAmountValidator.MAX_CRIME_LOWER_VAT_AMOUNT);
   }
 
   @Test
@@ -119,9 +122,20 @@ class DisbursementVatAmountValidatorTest {
 
     Errors result = validate(input);
 
+    assertFieldError(
+        result, "areaOfLaw.mediation", DisbursementVatAmountValidator.MAX_MEDIATION_VAT_AMOUNT);
+  }
+
+  private void assertFieldError(Errors result, String areaOfLawMessageKey, double maxVatAmount) {
     assertThat(result.hasFieldErrors()).isTrue();
-    assertThat(result.getFieldError("inputs['DISBURSEMENTS_VAT']").getCode())
-        .isEqualTo(DisbursementVatAmountValidator.ERROR_CODE);
+
+    FieldError fieldError = result.getFieldError("inputs['DISBURSEMENTS_VAT']");
+
+    assertThat(fieldError).isNotNull();
+    assertThat(fieldError.getCode()).isEqualTo(DisbursementVatAmountValidator.ERROR_CODE);
+    assertThat(((MessageSourceResolvable) fieldError.getArguments()[0]).getCodes())
+        .containsExactly(areaOfLawMessageKey);
+    assertThat(fieldError.getArguments()[1]).isEqualTo(BigDecimal.valueOf(maxVatAmount));
   }
 
   private Errors validate(Map<String, String> inputs) {

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
@@ -17,6 +18,9 @@ import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 public class DisbursementVatAmountValidator implements FieldSpecificAmendmentValidator {
 
   public static final String ERROR_CODE = "amendmentForm.dates.disbursementVatExceeded";
+  public static final double MAX_LEGAL_HELP_VAT_AMOUNT = 99999.99;
+  public static final double MAX_CRIME_LOWER_VAT_AMOUNT = 999999.99;
+  public static final double MAX_MEDIATION_VAT_AMOUNT = 9999999.99;
 
   @Override
   public boolean appliesTo(ClaimViewField<?> field) {
@@ -36,15 +40,17 @@ public class DisbursementVatAmountValidator implements FieldSpecificAmendmentVal
     BigDecimal maxAllowed = getMaxDisbursementVatAllowed(areaOfLaw);
 
     if (disbursementsVatValue.get().compareTo(maxAllowed) > 0) {
-      addUniqueFieldError(field, ERROR_CODE, errors);
+      addUniqueFieldError(field, ERROR_CODE, new Object[]{
+          new DefaultMessageSourceResolvable(new String[] { areaOfLaw.getMessageKey() }),
+          maxAllowed}, errors);
     }
   }
 
   private static @NonNull BigDecimal getMaxDisbursementVatAllowed(AreaOfLaw areaOfLaw) {
     return switch (areaOfLaw) {
-      case LEGAL_HELP -> BigDecimal.valueOf(99999.99);
-      case CRIME_LOWER -> BigDecimal.valueOf(999999.99);
-      case MEDIATION -> BigDecimal.valueOf(9999999.99);
+      case LEGAL_HELP -> BigDecimal.valueOf(MAX_LEGAL_HELP_VAT_AMOUNT);
+      case CRIME_LOWER -> BigDecimal.valueOf(MAX_CRIME_LOWER_VAT_AMOUNT);
+      case MEDIATION -> BigDecimal.valueOf(MAX_MEDIATION_VAT_AMOUNT);
     };
   }
 
