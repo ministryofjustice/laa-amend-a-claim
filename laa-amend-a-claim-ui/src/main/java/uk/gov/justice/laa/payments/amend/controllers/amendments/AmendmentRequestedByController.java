@@ -73,6 +73,8 @@ public class AmendmentRequestedByController {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
+          "requestedByForm",
+          form,
           "/submissions/%s/claims/%s/amendments/requested-by".formatted(submissionId, claimId));
     }
     amendmentForms.getRequestedByForm().setRequestedBy(form.getRequestedBy());
@@ -85,6 +87,8 @@ public class AmendmentRequestedByController {
       Model model, UUID claimId, UUID submissionId, AmendmentForms amendmentForms) {
     model.addAttribute("claimId", claimId);
     model.addAttribute("submissionId", submissionId);
-    model.addAttribute("requestedByForm", amendmentForms.getRequestedByForm());
+    if (!model.containsAttribute("requestedByForm")) {
+      model.addAttribute("requestedByForm", amendmentForms.getRequestedByForm());
+    }
   }
 }

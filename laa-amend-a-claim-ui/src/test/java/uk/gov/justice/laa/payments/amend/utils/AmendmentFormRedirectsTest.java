@@ -36,8 +36,7 @@ class AmendmentFormRedirectsTest {
 
     verify(redirectAttributes)
         .addFlashAttribute(
-            "formErrors",
-            List.of(new AmendmentFormError("FEE_CODE", "Value is required")));
+            "formErrors", List.of(new AmendmentFormError("FEE_CODE", "Value is required")));
     assertThat(result).isEqualTo("redirect:/some/redirect/url");
   }
 
@@ -50,5 +49,19 @@ class AmendmentFormRedirectsTest {
     AmendmentFormRedirects.redirectWithErrors(redirectAttributes, bindingResult, "/other/url");
 
     verify(redirectAttributes).addFlashAttribute("formErrors", List.of());
+  }
+
+  @Test
+  void flashesFormObjectWhenProvided() {
+    var redirectAttributes = mock(RedirectAttributes.class);
+    var bindingResult = mock(BindingResult.class);
+    var form = new Object();
+    when(bindingResult.getFieldErrors()).thenReturn(List.of());
+
+    AmendmentFormRedirects.redirectWithErrors(
+        redirectAttributes, bindingResult, "costsForm", form, "/other/url");
+
+    verify(redirectAttributes).addFlashAttribute("formErrors", List.of());
+    verify(redirectAttributes).addFlashAttribute("costsForm", form);
   }
 }

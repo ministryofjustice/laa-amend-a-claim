@@ -39,13 +39,15 @@ import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
 @HasRoleClaimAmendmentsCaseworker
 public class AmendCostsController extends AbstractAmendController {
 
+  public static final String COSTS_FORM = "costsForm";
+
   public AmendCostsController(
       List<GenericAmendmentFieldValidator> genericAmendmentFieldValidators,
       List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators) {
     super(genericAmendmentFieldValidators, fieldSpecificAmendmentValidators);
   }
 
-  @InitBinder("costsForm")
+  @InitBinder(COSTS_FORM)
   public void initClientFormBinder(
       WebDataBinder binder,
       HttpSession session,
@@ -67,18 +69,11 @@ public class AmendCostsController extends AbstractAmendController {
 
     var costFields = ClaimCostsViewFactory.create(claim).costFields();
     var amendmentForms = getAmendmentForms(session, claimId);
-    var costs = amendmentForms.getCostsForm();
-    var costsFormIsAmended =
-        costFields.keySet().stream()
-            .anyMatch(
-                field ->
-                    costs
-                        .getCurrent()
-                        .isAmendment(field.name(), costs.getOriginal(), field.getFieldType()));
 
     model.addAttribute("costFields", costFields);
-    model.addAttribute("costsForm", costs.getCurrent());
-    model.addAttribute("costsFormIsAmended", costsFormIsAmended);
+    if (!model.containsAttribute(COSTS_FORM)) {
+      model.addAttribute(COSTS_FORM, amendmentForms.getCostsForm().getCurrent());
+    }
     model.addAttribute("claimIsAssessed", AmendmentsHeaderView.isAssessed(claim));
     model.addAttribute("forms", amendmentForms);
 
@@ -88,7 +83,7 @@ public class AmendCostsController extends AbstractAmendController {
   @PostMapping
   public String postAmendCosts(
       HttpSession session,
-      @Valid @ModelAttribute("costsForm") AmendmentForm costsForm,
+      @Valid @ModelAttribute(COSTS_FORM) AmendmentForm costsForm,
       BindingResult bindingResult,
       RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
@@ -100,16 +95,18 @@ public class AmendCostsController extends AbstractAmendController {
 
     retainEditableInputs(costsForm, claim);
 
-    var amendmentForms = getAmendmentForms(session, claimId);
-    amendmentForms.getCostsForm().setCurrent(costsForm);
-    saveAmendmentForms(session, claimId, amendmentForms);
-
     if (bindingResult.hasErrors()) {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
+          COSTS_FORM,
+          costsForm,
           "/submissions/%s/claims/%s/amendments/amend-costs".formatted(submissionId, claimId));
     }
+
+    var amendmentForms = getAmendmentForms(session, claimId);
+    amendmentForms.getCostsForm().setCurrent(costsForm);
+    saveAmendmentForms(session, claimId, amendmentForms);
 
     return redirectToViewCosts(submissionId, claimId);
   }

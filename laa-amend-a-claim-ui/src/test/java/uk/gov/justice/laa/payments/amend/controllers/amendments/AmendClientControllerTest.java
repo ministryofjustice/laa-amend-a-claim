@@ -6,6 +6,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
@@ -340,15 +341,20 @@ class AmendClientControllerTest extends BaseControllerTest {
             .session(session)
             .with(csrf());
 
-    mockMvc
-        .perform(request)
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildAmendClient1Path()));
+    var postResult =
+        mockMvc
+            .perform(request)
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(buildAmendClient1Path()))
+            .andExpect(flash().attributeExists("formErrors", "client1Form"))
+            .andReturn();
+
+    var flashedForm = (AmendmentForm) postResult.getFlashMap().get("client1Form");
+    assertThat(flashedForm.getInputs().get("SURNAME")).isEqualTo(tooLong);
 
     AmendmentForms updatedForms =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
-    assertThat(updatedForms.getClient1Form().getCurrent().getInputs().get("SURNAME"))
-        .isEqualTo(tooLong);
+    assertThat(updatedForms.getClient1Form().getCurrent().getInputs().get("SURNAME")).isNull();
   }
 
   @Test
@@ -371,15 +377,21 @@ class AmendClientControllerTest extends BaseControllerTest {
             .session(session)
             .with(csrf());
 
-    mockMvc
-        .perform(request)
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildAmendClient2Path()));
+    var postResult =
+        mockMvc
+            .perform(request)
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(buildAmendClient2Path()))
+            .andExpect(flash().attributeExists("formErrors", "client2Form"))
+            .andReturn();
+
+    var flashedForm = (AmendmentForm) postResult.getFlashMap().get("client2Form");
+    assertThat(flashedForm.getInputs().get("CLIENT_2_SURNAME")).isEqualTo(tooLong);
 
     AmendmentForms updatedForms =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForms.getClient2Form().getCurrent().getInputs().get("CLIENT_2_SURNAME"))
-        .isEqualTo(tooLong);
+        .isNull();
   }
 
   @Test

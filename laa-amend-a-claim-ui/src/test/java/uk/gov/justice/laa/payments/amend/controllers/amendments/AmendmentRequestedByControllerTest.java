@@ -104,7 +104,7 @@ class AmendmentRequestedByControllerTest extends BaseControllerTest {
                     .param("requestedBy", REQUESTED_BY_FAIL))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl(buildRequestedByPath()))
-            .andExpect(flash().attributeExists("requestedByFormErrors"))
+            .andExpect(flash().attributeExists("formErrors", "requestedByForm"))
             .andReturn();
 
     mockMvc
@@ -132,7 +132,7 @@ class AmendmentRequestedByControllerTest extends BaseControllerTest {
             .perform(post(buildRequestedByPath()).session(session).with(csrf()))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl(buildRequestedByPath()))
-            .andExpect(flash().attributeExists("requestedByFormErrors"))
+            .andExpect(flash().attributeExists("formErrors", "requestedByForm"))
             .andReturn();
 
     mockMvc

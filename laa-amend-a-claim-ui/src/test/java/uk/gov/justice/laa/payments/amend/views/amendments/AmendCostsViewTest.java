@@ -112,7 +112,7 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
                 "amendmentForm.bigDecimal.invalid",
                 new Object[] {"Net profit costs"}));
 
-    var doc = renderDocument(Map.of("costFormErrors", errors));
+    var doc = renderDocument(Map.of("formErrors", errors));
 
     Assertions.assertFalse(
         doc.select(".govuk-error-summary").isEmpty(), "Error summary should be present");
@@ -141,7 +141,7 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
                 "amendmentForm.bigDecimal.invalid",
                 new Object[] {"Net profit costs"}));
 
-    var doc = renderDocument(Map.of("costFormErrors", errors));
+    var doc = renderDocument(Map.of("formErrors", errors));
 
     var costs = getSummaryListInCard(doc, "List of costs");
     List<Element> profitCostRow = costs.get(2);

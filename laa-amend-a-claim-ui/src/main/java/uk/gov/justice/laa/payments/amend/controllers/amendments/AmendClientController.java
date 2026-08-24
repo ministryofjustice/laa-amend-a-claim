@@ -34,13 +34,16 @@ import uk.gov.justice.laa.payments.amend.viewmodels.claimclient.ClaimClientViewF
 @HasRoleClaimAmendmentsCaseworker
 public class AmendClientController extends AbstractAmendController {
 
+  public static final String CLIENT_1_FORM = "client1Form";
+  public static final String CLIENT_2_FORM = "client2Form";
+
   public AmendClientController(
       List<GenericAmendmentFieldValidator> genericAmendmentFieldValidators,
       List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators) {
     super(genericAmendmentFieldValidators, fieldSpecificAmendmentValidators);
   }
 
-  @InitBinder({"client1Form", "client2Form"})
+  @InitBinder({CLIENT_1_FORM, CLIENT_2_FORM})
   public void initClientFormBinder(
       WebDataBinder binder,
       HttpSession session,
@@ -60,7 +63,9 @@ public class AmendClientController extends AbstractAmendController {
     var amendmentForms = getAmendmentForms(session, claimId);
 
     model.addAttribute("clientView", clientView);
-    model.addAttribute("client1Form", amendmentForms.getClient1Form().getCurrent());
+    if (!model.containsAttribute(CLIENT_1_FORM)) {
+      model.addAttribute(CLIENT_1_FORM, amendmentForms.getClient1Form().getCurrent());
+    }
     model.addAttribute("forms", amendmentForms);
 
     return "pages/amendments/amend-client-1";
@@ -69,22 +74,23 @@ public class AmendClientController extends AbstractAmendController {
   @PostMapping("/amend-client")
   public String amendClient1(
       HttpSession session,
-      @Valid @ModelAttribute("client1Form") AmendmentForm client1Form,
+      @Valid @ModelAttribute(CLIENT_1_FORM) AmendmentForm client1Form,
       BindingResult bindingResult,
       RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    var amendmentForms = getAmendmentForms(session, claimId);
-
-    amendmentForms.getClient1Form().setCurrent(client1Form);
-    saveAmendmentForms(session, claimId, amendmentForms);
-
     if (bindingResult.hasErrors()) {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
+          CLIENT_1_FORM,
+          client1Form,
           "/submissions/%s/claims/%s/amendments/amend-client".formatted(submissionId, claimId));
     }
+
+    var amendmentForms = getAmendmentForms(session, claimId);
+    amendmentForms.getClient1Form().setCurrent(client1Form);
+    saveAmendmentForms(session, claimId, amendmentForms);
 
     return "redirect:/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
   }
@@ -100,7 +106,9 @@ public class AmendClientController extends AbstractAmendController {
     var amendmentForms = getAmendmentForms(session, claimId);
 
     model.addAttribute("clientView", clientView);
-    model.addAttribute("client2Form", amendmentForms.getClient2Form().getCurrent());
+    if (!model.containsAttribute(CLIENT_2_FORM)) {
+      model.addAttribute(CLIENT_2_FORM, amendmentForms.getClient2Form().getCurrent());
+    }
     model.addAttribute("forms", amendmentForms);
 
     return "pages/amendments/amend-client-2";
@@ -109,22 +117,23 @@ public class AmendClientController extends AbstractAmendController {
   @PostMapping("/amend-client-two")
   public String postAmendClient2(
       HttpSession session,
-      @Valid @ModelAttribute("client2Form") AmendmentForm client2Form,
+      @Valid @ModelAttribute(CLIENT_2_FORM) AmendmentForm client2Form,
       BindingResult bindingResult,
       RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
       @PathVariable UUID claimId) {
-    var amendmentForms = getAmendmentForms(session, claimId);
-
-    amendmentForms.getClient2Form().setCurrent(client2Form);
-    saveAmendmentForms(session, claimId, amendmentForms);
-
     if (bindingResult.hasErrors()) {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
+          CLIENT_2_FORM,
+          client2Form,
           "/submissions/%s/claims/%s/amendments/amend-client-two".formatted(submissionId, claimId));
     }
+
+    var amendmentForms = getAmendmentForms(session, claimId);
+    amendmentForms.getClient2Form().setCurrent(client2Form);
+    saveAmendmentForms(session, claimId, amendmentForms);
 
     return "redirect:/submissions/%s/claims/%s/amendments/client".formatted(submissionId, claimId);
   }

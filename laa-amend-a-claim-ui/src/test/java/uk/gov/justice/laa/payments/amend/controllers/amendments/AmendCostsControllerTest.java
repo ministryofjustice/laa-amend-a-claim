@@ -223,16 +223,20 @@ class AmendCostsControllerTest extends BaseControllerTest {
             .session(session)
             .with(csrf());
 
-    mockMvc
-        .perform(request)
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildAmendCostsPath()))
-        .andExpect(flash().attributeExists("costFormErrors"));
+    var postResult =
+        mockMvc
+            .perform(request)
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(buildAmendCostsPath()))
+            .andExpect(flash().attributeExists("formErrors", "costsForm"))
+            .andReturn();
+
+    var flashedForm = (AmendmentForm) postResult.getFlashMap().get("costsForm");
+    assertThat(flashedForm.getInputs().get("PROFIT_COST")).isEqualTo("not-a-number");
 
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
-    assertThat(updatedForm.getCostsForm().getCurrent().getInputs().get("PROFIT_COST"))
-        .isEqualTo("not-a-number");
+    assertThat(updatedForm.getCostsForm().getCurrent().getInputs().get("PROFIT_COST")).isNull();
   }
 
   @Test
