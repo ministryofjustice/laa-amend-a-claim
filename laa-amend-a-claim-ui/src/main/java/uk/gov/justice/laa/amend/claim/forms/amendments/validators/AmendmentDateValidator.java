@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
@@ -22,15 +20,8 @@ public abstract class AmendmentDateValidator implements FieldSpecificAmendmentVa
       "amendmentForm.dates.cantBeLaterThanSubmissionPeriod";
 
   private static final String DATE_FORMAT_D_MMM_YYYY = "d MMMM yyyy";
-  private static final DateTimeFormatter DATE_FORMATTER_D_MMM_YYYY =
+  protected static final DateTimeFormatter DATE_FORMATTER_D_MMM_YYYY =
       DateTimeFormatter.ofPattern(DATE_FORMAT_D_MMM_YYYY);
-
-  private static final String DATE_FORMAT_MMM_YYYY = "MMM-yyyy";
-  public static final DateTimeFormatter SUBMISSION_PERIOD_FORMATTER =
-      new DateTimeFormatterBuilder()
-          .parseCaseInsensitive()
-          .appendPattern(DATE_FORMAT_MMM_YYYY)
-          .toFormatter(Locale.ENGLISH);
 
   protected void addDateTooEarlyMessage(
       Errors errors, ClaimViewField<?> field, LocalDate earliestDate) {
@@ -54,7 +45,7 @@ public abstract class AmendmentDateValidator implements FieldSpecificAmendmentVa
         errors);
   }
 
-  protected final LocalDate getTwentiethOfNextMonth(@NotNull YearMonth submissionPeriod) {
+  protected final LocalDate getSubmissionPeriodCutoffDate(@NotNull YearMonth submissionPeriod) {
     return submissionPeriod.plusMonths(1).atDay(20);
   }
 }
