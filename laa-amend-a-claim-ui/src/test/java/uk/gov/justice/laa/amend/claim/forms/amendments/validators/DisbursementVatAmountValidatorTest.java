@@ -7,10 +7,10 @@ import java.math.BigDecimal;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.validation.FieldError;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
@@ -110,9 +110,7 @@ class DisbursementVatAmountValidatorTest {
     Errors result = validate(input);
 
     assertFieldError(
-        result,
-        "areaOfLaw.crimeLower",
-        DisbursementVatAmountValidator.MAX_CRIME_LOWER_VAT_AMOUNT);
+        result, "areaOfLaw.crimeLower", DisbursementVatAmountValidator.MAX_CRIME_LOWER_VAT_AMOUNT);
   }
 
   @Test

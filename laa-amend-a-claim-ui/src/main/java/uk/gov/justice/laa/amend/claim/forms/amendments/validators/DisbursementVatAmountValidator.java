@@ -40,9 +40,13 @@ public class DisbursementVatAmountValidator implements FieldSpecificAmendmentVal
     BigDecimal maxAllowed = getMaxDisbursementVatAllowed(areaOfLaw);
 
     if (disbursementsVatValue.get().compareTo(maxAllowed) > 0) {
-      addUniqueFieldError(field, ERROR_CODE, new Object[]{
-          new DefaultMessageSourceResolvable(new String[] { areaOfLaw.getMessageKey() }),
-          maxAllowed}, errors);
+      addUniqueFieldError(
+          field,
+          ERROR_CODE,
+          new Object[] {
+            new DefaultMessageSourceResolvable(new String[] {areaOfLaw.getMessageKey()}), maxAllowed
+          },
+          errors);
     }
   }
 
