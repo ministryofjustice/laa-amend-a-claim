@@ -48,7 +48,7 @@ public class CaseConcludedDateValidator extends AmendmentDateValidator {
       return;
     }
 
-    var twentiethOfNextMonth = getTwentiethOfNextMonth(claim.getSubmissionPeriod());
+    var twentiethOfNextMonth = getSubmissionPeriodCutoffDate(claim.getSubmissionPeriod());
     if (dateWrapperUtil.isFutureDate(caseConcludedDate)) {
       addDateInTheFutureMessage(errors, field);
     } else if (caseConcludedDate.isBefore(earliestDate)) {

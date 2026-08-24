@@ -25,6 +25,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.DerivedClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationType;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {ClaimMapperImpl.class, ClaimMapperHelper.class})
@@ -651,6 +652,7 @@ class ClaimMapperTest {
     feeCalc.setClaimSummaryFeeId(claimSummaryFeeId);
     feeCalc.setFeeCode("FeeCode");
     feeCalc.setFeeCodeDescription("FeeCodeDesc");
+    feeCalc.setFeeType(FeeCalculationType.FIXED);
     feeCalc.setCategoryOfLaw("Civil");
     BoltOnPatch boltOn = new BoltOnPatch();
     boltOn.setEscapeCaseFlag(true);
@@ -671,6 +673,7 @@ class ClaimMapperTest {
     assertEquals("21121985/J/DOE", claim.getUniqueClientNumber());
     assertEquals("FeeCode", claim.getFeeCode());
     assertEquals("FeeCodeDesc", claim.getFeeCodeDescription());
+    assertEquals(FeeCalculationType.FIXED, claim.getFeeType());
     assertEquals("Civil", claim.getCategoryOfLaw());
     assertTrue(claim.getEscaped());
     assertEquals("MT1", claim.getMatterType1());
