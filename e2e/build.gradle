@@ -87,6 +87,7 @@ tasks.withType(Test).configureEach {
                 "node",
                 scriptFile.absolutePath
             )
+            .directory(projectDir)
             .redirectErrorStream(true)
             .start()
         process.inputStream.eachLine { println it }
