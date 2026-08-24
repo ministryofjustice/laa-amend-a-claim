@@ -19,11 +19,11 @@ dependencies {
     implementation 'com.deque.html.axe-core:playwright:4.13.0'
     testImplementation 'org.webjars.npm:axe-html-reporter:2.2.11'
     implementation 'io.github.cdimascio:dotenv-java:3.2.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.22.2'
 
     // Vulnerabilities
     // Update to fix snyk vulnerabilities SNYK-JAVA-TOOLSJACKSONCORE-17972609
-    implementation 'tools.jackson.core:jackson-databind:3.2.1'
+    implementation 'tools.jackson.core:jackson-databind:3.2.2'
 
     implementation 'org.slf4j:slf4j-simple:2.0.18'
     implementation 'org.junit.jupiter:junit-jupiter-api:6.1.3'

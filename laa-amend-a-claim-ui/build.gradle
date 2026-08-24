@@ -46,14 +46,14 @@ dependencyManagement {
         // === INSERT YOUR OVERRIDES HERE ===
         // Force jackson-core version to fix Snyk vulnerability
         dependency "com.fasterxml.jackson.core:jackson-annotations:2.22"
-        dependency "com.fasterxml.jackson.core:jackson-core:2.22.1"
-        dependency "com.fasterxml.jackson.core:jackson-databind:2.22.1"
+        dependency "com.fasterxml.jackson.core:jackson-core:2.22.2"
+        dependency "com.fasterxml.jackson.core:jackson-databind:2.22.2"
         // Force log4j version to fix Snyk vulnerability
         dependency "org.apache.logging.log4j:log4j-api:2.26.1"
         dependency "org.apache.logging.log4j:log4j-to-slf4j:2.26.1"
         // Force tools.jackson version to fix Snyk vulnerability
-        dependency "tools.jackson.core:jackson-core:3.2.1"
-        dependency "tools.jackson.core:jackson-databind:3.2.1"
+        dependency "tools.jackson.core:jackson-core:3.2.2"
+        dependency "tools.jackson.core:jackson-databind:3.2.2"
         // Force plexus-utils version to fix Snyk vulnerability
         dependency "org.codehaus.plexus:plexus-utils:4.0.3"
         // Force httpcore5-h2 version to fix Snyk vulnerability
