@@ -9,7 +9,7 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import uk.gov.justice.laa.payments.amend.controllers.amendments.CostsController;
+import uk.gov.justice.laa.payments.amend.controllers.amendments.AmendCostsController;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.payments.amend.models.BoltOnClaimField;
@@ -17,7 +17,7 @@ import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.payments.amend.viewmodels.claimcosts.ClaimCostsViewFactory;
 
-@WebMvcTest(CostsController.class)
+@WebMvcTest(AmendCostsController.class)
 class AmendCostsViewTest extends AmendmentsBaseTest {
 
   AmendCostsViewTest() {

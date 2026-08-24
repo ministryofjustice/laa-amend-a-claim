@@ -29,18 +29,7 @@ import uk.gov.justice.laa.payments.amend.viewmodels.claimcosts.ClaimCostsViewFac
 @RequiredArgsConstructor
 @RequiresFeatureFlag(Feature.CLAIM_AMENDMENT)
 @HasRoleClaimAmendmentsCaseworker
-public class CostsController {
-
-  @GetMapping("/costs")
-  public String viewCosts(
-      HttpSession session,
-      Model model,
-      @PathVariable UUID submissionId,
-      @PathVariable UUID claimId) {
-    addCostsModelAttributes(session, model, submissionId, claimId);
-
-    return "pages/amendments/view-costs";
-  }
+public class AmendCostsController {
 
   @GetMapping("/amend-costs")
   public String amendCosts(
@@ -53,7 +42,22 @@ public class CostsController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
-    addCostsModelAttributes(session, model, submissionId, claimId);
+    var costFields = ClaimCostsViewFactory.create(claim).costFields();
+    var amendmentForms = getAmendmentForms(session, claimId);
+    var costs = amendmentForms.getCostsForm();
+    var costsFormIsAmended =
+        costFields.keySet().stream()
+            .anyMatch(
+                field ->
+                    costs
+                        .getCurrent()
+                        .isAmendment(field.name(), costs.getOriginal(), field.getFieldType()));
+
+    model.addAttribute("costFields", costFields);
+    model.addAttribute("costsForm", costs.getCurrent());
+    model.addAttribute("costsFormIsAmended", costsFormIsAmended);
+    model.addAttribute("claimIsAssessed", AmendmentsHeaderView.isAssessed(claim));
+    model.addAttribute("forms", amendmentForms);
 
     return "pages/amendments/amend-costs";
   }
@@ -92,24 +96,4 @@ public class CostsController {
     costsForm.getInputs().keySet().retainAll(editableFieldNames);
   }
 
-  private void addCostsModelAttributes(
-      HttpSession session, Model model, UUID submissionId, UUID claimId) {
-    var claim = getValidClaim(session, submissionId, claimId);
-    var costFields = ClaimCostsViewFactory.create(claim).costFields();
-    var amendmentForms = getAmendmentForms(session, claimId);
-    var costs = amendmentForms.getCostsForm();
-    var costsFormIsAmended =
-        costFields.keySet().stream()
-            .anyMatch(
-                field ->
-                    costs
-                        .getCurrent()
-                        .isAmendment(field.name(), costs.getOriginal(), field.getFieldType()));
-
-    model.addAttribute("costFields", costFields);
-    model.addAttribute("costsForm", costs.getCurrent());
-    model.addAttribute("costsFormIsAmended", costsFormIsAmended);
-    model.addAttribute("claimIsAssessed", AmendmentsHeaderView.isAssessed(claim));
-    model.addAttribute("forms", amendmentForms);
-  }
 }

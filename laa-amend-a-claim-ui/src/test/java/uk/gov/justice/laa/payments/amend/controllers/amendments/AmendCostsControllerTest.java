@@ -27,8 +27,8 @@ import uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.payments.amend.viewmodels.AmendmentsHeaderView;
 
-@WebMvcTest(controllers = CostsController.class)
-class CostsControllerTest extends BaseControllerTest {
+@WebMvcTest(controllers = AmendCostsController.class)
+class AmendCostsControllerTest extends BaseControllerTest {
 
   private static final String INPUTS = "inputs[%s]";
 
@@ -49,23 +49,6 @@ class CostsControllerTest extends BaseControllerTest {
     saveClaim(session, claimId, claim);
     when(amendmentsHeaderViewFactory.create(any()))
         .thenReturn(new AmendmentsHeaderView(false, null));
-  }
-
-  @Test
-  void getCostsAsExpected() throws Exception {
-    var forms =
-        AmendmentForms.builder()
-            .client1(new AmendmentForm())
-            .caseType(new AmendmentForm())
-            .caseDetails(new AmendmentForm())
-            .build();
-    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
-
-    mockMvc
-        .perform(get(buildCostsPath()).session(session).with(csrf()))
-        .andExpect(status().isOk())
-        .andExpect(view().name("pages/amendments/view-costs"))
-        .andExpect(request().sessionAttribute(AMENDMENTS_KEY.formatted(claimId), forms));
   }
 
   @Test
