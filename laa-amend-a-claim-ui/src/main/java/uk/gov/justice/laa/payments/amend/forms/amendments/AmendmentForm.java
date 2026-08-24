@@ -63,6 +63,15 @@ public class AmendmentForm {
 
   public Map<ClaimViewField<?>, Object> getFieldValues(Class<?> claimDetailsType) {
     var fieldInputs = new LinkedHashMap<ClaimViewField<?>, Object>();
+    for (var field : getFields(claimDetailsType)) {
+      fieldInputs.put(field, getAmendedValue(field));
+    }
+
+    return fieldInputs;
+  }
+
+  public List<ClaimViewField<?>> getFields(Class<?> claimDetailsType) {
+    var fields = new LinkedHashMap<String, ClaimViewField<?>>();
     var processedDateFields = new HashSet<String>();
 
     for (var entry : inputs.entrySet()) {
@@ -71,26 +80,18 @@ public class AmendmentForm {
         if (processedDateFields.add(dateFieldName)) {
           var field = getField(dateFieldName, claimDetailsType);
           if (field != null) {
-            fieldInputs.put(field, getAmendedValueOrNull(field));
+            fields.putIfAbsent(field.name(), field);
           }
         }
       } else {
         var field = getField(entry.getKey(), claimDetailsType);
         if (field != null) {
-          fieldInputs.put(field, getAmendedValueOrNull(field));
+          fields.putIfAbsent(field.name(), field);
         }
       }
     }
 
-    return fieldInputs;
-  }
-
-  private Object getAmendedValueOrNull(ClaimViewField<?> field) {
-    try {
-      return getAmendedValue(field);
-    } catch (IllegalArgumentException e) {
-      return null;
-    }
+    return List.copyOf(fields.values());
   }
 
   public static List<String> inputKeys(ClaimViewField<?> field) {
