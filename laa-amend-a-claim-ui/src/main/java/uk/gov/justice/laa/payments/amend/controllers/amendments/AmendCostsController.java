@@ -39,7 +39,6 @@ import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
 @HasRoleClaimAmendmentsCaseworker
 public class AmendCostsController extends AbstractAmendController {
 
-
   public AmendCostsController(
       List<GenericAmendmentFieldValidator> genericAmendmentFieldValidators,
       List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators) {
@@ -129,5 +128,4 @@ public class AmendCostsController extends AbstractAmendController {
             .toList();
     costsForm.getInputs().keySet().retainAll(editableFieldNames);
   }
-
 }

@@ -2,25 +2,18 @@ package uk.gov.justice.laa.payments.amend.controllers.amendments;
 
 import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.getAmendmentForms;
 import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.getValidClaim;
-import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.saveAmendmentForms;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.payments.amend.annotations.HasRoleClaimAmendmentsCaseworker;
 import uk.gov.justice.laa.payments.amend.annotations.RequiresFeatureFlag;
 import uk.gov.justice.laa.payments.amend.config.features.Feature;
-import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
-import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.viewmodels.AmendmentsHeaderView;
 import uk.gov.justice.laa.payments.amend.viewmodels.claimcosts.ClaimCostsViewFactory;
 

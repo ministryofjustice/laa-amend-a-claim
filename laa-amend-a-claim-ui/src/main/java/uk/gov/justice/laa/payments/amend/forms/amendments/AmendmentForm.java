@@ -70,15 +70,27 @@ public class AmendmentForm {
       if (dateFieldName != null) {
         if (processedDateFields.add(dateFieldName)) {
           var field = getField(dateFieldName, claimDetailsType);
-          fieldInputs.put(field, getAmendedValue(field));
+          if (field != null) {
+            fieldInputs.put(field, getAmendedValueOrNull(field));
+          }
         }
       } else {
         var field = getField(entry.getKey(), claimDetailsType);
-        fieldInputs.put(field, getAmendedValue(field));
+        if (field != null) {
+          fieldInputs.put(field, getAmendedValueOrNull(field));
+        }
       }
     }
 
     return fieldInputs;
+  }
+
+  private Object getAmendedValueOrNull(ClaimViewField<?> field) {
+    try {
+      return getAmendedValue(field);
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
   }
 
   public static List<String> inputKeys(ClaimViewField<?> field) {
@@ -118,7 +130,11 @@ public class AmendmentForm {
 
   public boolean isAmendment(String key, AmendmentForm originalForm, FieldType fieldType) {
     if (fieldType == FieldType.BIG_DECIMAL) {
-      return !Objects.equals(originalForm.getBigDecimalValue(key), getBigDecimalValue(key));
+      try {
+        return !Objects.equals(originalForm.getBigDecimalValue(key), getBigDecimalValue(key));
+      } catch (IllegalArgumentException e) {
+        return true;
+      }
     }
 
     return isAmendment(key, originalForm);
@@ -296,7 +312,11 @@ public class AmendmentForm {
     try {
       return CrimeClaimDetailsViewField.valueOf(fieldName);
     } catch (IllegalArgumentException e) {
-      return ClaimDetailsViewField.valueOf(fieldName);
+      try {
+        return ClaimDetailsViewField.valueOf(fieldName);
+      } catch (IllegalArgumentException e2) {
+        return null;
+      }
     }
   }
 
@@ -304,7 +324,11 @@ public class AmendmentForm {
     try {
       return CivilClaimDetailsViewField.valueOf(fieldName);
     } catch (IllegalArgumentException e) {
-      return ClaimDetailsViewField.valueOf(fieldName);
+      try {
+        return ClaimDetailsViewField.valueOf(fieldName);
+      } catch (IllegalArgumentException e2) {
+        return null;
+      }
     }
   }
 
@@ -312,7 +336,11 @@ public class AmendmentForm {
     try {
       return MediationClaimDetailsViewField.valueOf(fieldName);
     } catch (IllegalArgumentException e) {
-      return ClaimDetailsViewField.valueOf(fieldName);
+      try {
+        return ClaimDetailsViewField.valueOf(fieldName);
+      } catch (IllegalArgumentException e2) {
+        return null;
+      }
     }
   }
 }

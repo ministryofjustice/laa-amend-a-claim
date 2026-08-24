@@ -133,8 +133,7 @@ class DisbursementVatAmountValidatorTest {
 
     Errors result = validate(input);
 
-    assertFieldError(
-        result, "Mediation", DisbursementVatAmountValidator.MAX_MEDIATION_VAT_AMOUNT);
+    assertFieldError(result, "Mediation", DisbursementVatAmountValidator.MAX_MEDIATION_VAT_AMOUNT);
   }
 
   private void assertFieldError(Errors result, String areaOfLawLabel, double maxVatAmount) {

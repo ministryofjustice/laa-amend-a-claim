@@ -48,8 +48,7 @@ public class DisbursementVatAmountValidator implements FieldSpecificAmendmentVal
       String areaOfLawLabel =
           messageSource.getMessage(
               areaOfLaw.getMessageKey(), null, LocaleContextHolder.getLocale());
-      addUniqueFieldError(
-          field, ERROR_CODE, new Object[] {areaOfLawLabel, maxAllowed}, errors);
+      addUniqueFieldError(field, ERROR_CODE, new Object[] {areaOfLawLabel, maxAllowed}, errors);
     }
   }
 

@@ -1,11 +1,14 @@
 package uk.gov.justice.laa.payments.amend.controllers.amendments;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -17,17 +20,26 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockHttpSession;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.payments.amend.controllers.BaseControllerTest;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.payments.amend.forms.amendments.validators.BigDecimalAmendmentFieldValidator;
+import uk.gov.justice.laa.payments.amend.forms.amendments.validators.BooleanAmendmentFieldValidator;
+import uk.gov.justice.laa.payments.amend.forms.amendments.validators.TextAmendmentFieldValidator;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.payments.amend.viewmodels.AmendmentsHeaderView;
 
 @WebMvcTest(controllers = AmendCostsController.class)
+@Import({
+  BigDecimalAmendmentFieldValidator.class,
+  BooleanAmendmentFieldValidator.class,
+  TextAmendmentFieldValidator.class
+})
 class AmendCostsControllerTest extends BaseControllerTest {
 
   private static final String INPUTS = "inputs[%s]";
@@ -193,6 +205,67 @@ class AmendCostsControllerTest extends BaseControllerTest {
     var inputs = updatedForm.getCostsForm().getCurrent().getInputs();
     assertThat(inputs.containsKey("NOT_A_REAL_FIELD")).isFalse();
     assertThat(inputs.get("PROFIT_COST")).isEqualTo("150.25");
+  }
+
+  @Test
+  void postCostsWithInvalidValueRedirectsBackAndPreservesInput() throws Exception {
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var request =
+        post(buildAmendCostsPath())
+            .param(INPUTS.formatted("PROFIT_COST"), "not-a-number")
+            .session(session)
+            .with(csrf());
+
+    mockMvc
+        .perform(request)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl(buildAmendCostsPath()))
+        .andExpect(flash().attributeExists("costFormErrors"));
+
+    AmendmentForms updatedForm =
+        (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
+    assertThat(updatedForm.getCostsForm().getCurrent().getInputs().get("PROFIT_COST"))
+        .isEqualTo("not-a-number");
+  }
+
+  @Test
+  void postCostsWithInvalidValueRendersErrorSummaryAndInlineErrorOnRedirect() throws Exception {
+    var forms =
+        AmendmentForms.builder()
+            .client1(new AmendmentForm())
+            .caseType(new AmendmentForm())
+            .caseDetails(new AmendmentForm())
+            .build();
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var postResult =
+        mockMvc
+            .perform(
+                post(buildAmendCostsPath())
+                    .param(INPUTS.formatted("PROFIT_COST"), "not-a-number")
+                    .session(session)
+                    .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andReturn();
+
+    mockMvc
+        .perform(
+            get(buildAmendCostsPath())
+                .session(session)
+                .flashAttrs(postResult.getFlashMap())
+                .with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString("govuk-error-summary")))
+        .andExpect(content().string(containsString("govuk-error-message")))
+        .andExpect(
+            content().string(containsString("Net profit costs must be entered as a valid amount")));
   }
 
   private String buildCostsPath() {
