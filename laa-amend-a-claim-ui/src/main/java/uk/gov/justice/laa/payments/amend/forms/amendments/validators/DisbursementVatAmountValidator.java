@@ -2,9 +2,11 @@ package uk.gov.justice.laa.payments.amend.forms.amendments.validators;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
@@ -15,7 +17,10 @@ import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class DisbursementVatAmountValidator implements FieldSpecificAmendmentValidator {
+
+  private final MessageSource messageSource;
 
   public static final String ERROR_CODE = "amendmentForm.dates.disbursementVatExceeded";
   public static final double MAX_LEGAL_HELP_VAT_AMOUNT = 99999.99;
@@ -40,13 +45,11 @@ public class DisbursementVatAmountValidator implements FieldSpecificAmendmentVal
     BigDecimal maxAllowed = getMaxDisbursementVatAllowed(areaOfLaw);
 
     if (disbursementsVatValue.get().compareTo(maxAllowed) > 0) {
+      String areaOfLawLabel =
+          messageSource.getMessage(
+              areaOfLaw.getMessageKey(), null, LocaleContextHolder.getLocale());
       addUniqueFieldError(
-          field,
-          ERROR_CODE,
-          new Object[] {
-            new DefaultMessageSourceResolvable(new String[] {areaOfLaw.getMessageKey()}), maxAllowed
-          },
-          errors);
+          field, ERROR_CODE, new Object[] {areaOfLawLabel, maxAllowed}, errors);
     }
   }
 
