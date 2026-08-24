@@ -108,7 +108,6 @@ public class AmendCostsController extends AbstractAmendController {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "costFormErrors",
           "/submissions/%s/claims/%s/amendments/amend-costs".formatted(submissionId, claimId));
     }
 

@@ -103,7 +103,6 @@ public class AmendCaseTypeController extends AbstractAmendController {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "caseTypeFormErrors",
           "/submissions/%s/claims/%s/amendments/amend-fee-code".formatted(submissionId, claimId));
     }
 
@@ -159,7 +158,6 @@ public class AmendCaseTypeController extends AbstractAmendController {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "caseTypeFormErrors",
           "/submissions/%s/claims/%s/amendments/amend-stage-reached"
               .formatted(submissionId, claimId));
     }
@@ -200,7 +198,6 @@ public class AmendCaseTypeController extends AbstractAmendController {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "caseTypeFormErrors",
           "/submissions/%s/claims/%s/amendments/amend-matter-type"
               .formatted(submissionId, claimId));
     }

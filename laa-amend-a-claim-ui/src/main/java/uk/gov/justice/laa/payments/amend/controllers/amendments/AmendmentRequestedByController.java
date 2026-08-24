@@ -73,7 +73,6 @@ public class AmendmentRequestedByController {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "requestedByFormErrors",
           "/submissions/%s/claims/%s/amendments/requested-by".formatted(submissionId, claimId));
     }
     amendmentForms.getRequestedByForm().setRequestedBy(form.getRequestedBy());

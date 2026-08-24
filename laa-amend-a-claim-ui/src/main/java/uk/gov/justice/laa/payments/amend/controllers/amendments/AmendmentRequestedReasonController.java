@@ -83,7 +83,6 @@ public class AmendmentRequestedReasonController {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "requestedReasonFormErrors",
           "/submissions/%s/claims/%s/amendments/requested-reason".formatted(submissionId, claimId));
     }
 

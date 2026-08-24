@@ -15,7 +15,7 @@
       <form method="post"
             th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/amend-client(submissionId=${submissionId}, claimId=${claimId})}"
             th:object="${client1Form}"
-            th:with="formErrors=${@ThymeleafUtils.orEmpty(client1FormErrors)}">
+            th:with="formErrors=${@ThymeleafUtils.orEmpty(formErrors)}">
 
         <th:block th:replace="~{fragments/amendments-assessed-banner :: assessedBanner}"></th:block>
         <th:block th:replace="~{fragments/error-summary :: error-summary(${formErrors})}"></th:block>

@@ -83,7 +83,6 @@ public class AmendClientController extends AbstractAmendController {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "client1FormErrors",
           "/submissions/%s/claims/%s/amendments/amend-client".formatted(submissionId, claimId));
     }
 
@@ -124,7 +123,6 @@ public class AmendClientController extends AbstractAmendController {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "client2FormErrors",
           "/submissions/%s/claims/%s/amendments/amend-client-two".formatted(submissionId, claimId));
     }
 

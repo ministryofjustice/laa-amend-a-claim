@@ -90,7 +90,6 @@ public class AmendCaseDetailsController extends AbstractAmendController {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "caseDetailsFormErrors",
           "/submissions/%s/claims/%s/amendments/amend-case-details"
               .formatted(submissionId, claimId));
     }

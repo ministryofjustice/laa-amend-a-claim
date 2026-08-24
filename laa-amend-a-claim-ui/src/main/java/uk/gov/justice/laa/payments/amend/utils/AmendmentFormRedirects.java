@@ -13,11 +13,10 @@ public class AmendmentFormRedirects {
   public static String redirectWithErrors(
       RedirectAttributes redirectAttributes,
       BindingResult bindingResult,
-      String errorsAttributeName,
       String redirectUrl) {
     var errors =
         new ArrayList<>(THYMELEAF_UTILS.toAmendmentFormErrors(bindingResult.getFieldErrors()));
-    redirectAttributes.addFlashAttribute(errorsAttributeName, errors);
+    redirectAttributes.addFlashAttribute("formErrors", errors);
     return "redirect:" + redirectUrl;
   }
 }
