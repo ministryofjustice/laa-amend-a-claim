@@ -1,5 +1,5 @@
 plugins {
-    id 'uk.gov.justice.service.laa.laa-spring-boot-gradle-plugin' version '3.0.2'
+    id 'uk.gov.justice.service.laa.laa-spring-boot-gradle-plugin' version '3.0.3'
     id "com.diffplug.spotless" version "8.9.0"
     id "io.sentry.jvm.gradle" version "6.19.0"
     id 'au.com.dius.pact' version '4.7.5'
@@ -34,29 +34,10 @@ repositories {
     mavenCentral()
 }
 
-// Upgrades to fix Snyk vulnerabilities
-ext['netty.version'] = '4.2.17.Final'
-ext['tomcat.version'] = '11.0.23'
-ext['logback.version'] = '1.5.36'
-ext['micrometer.version'] = '1.17.1'
 
 dependencyManagement {
     dependencies {
         // === INSERT YOUR OVERRIDES HERE ===
-        // Force jackson-core version to fix Snyk vulnerability
-        dependency "com.fasterxml.jackson.core:jackson-annotations:2.22"
-        dependency "com.fasterxml.jackson.core:jackson-core:2.22.1"
-        dependency "com.fasterxml.jackson.core:jackson-databind:2.22.1"
-        // Force log4j version to fix Snyk vulnerability
-        dependency "org.apache.logging.log4j:log4j-api:2.26.1"
-        dependency "org.apache.logging.log4j:log4j-to-slf4j:2.26.1"
-        // Force tools.jackson version to fix Snyk vulnerability
-        dependency "tools.jackson.core:jackson-core:3.2.1"
-        dependency "tools.jackson.core:jackson-databind:3.2.1"
-        // Force plexus-utils version to fix Snyk vulnerability
-        dependency "org.codehaus.plexus:plexus-utils:4.0.3"
-        // Force httpcore5-h2 version to fix Snyk vulnerability
-        dependency 'org.apache.httpcomponents.core5:httpcore5-h2:5.4.3'
     }
 }
 
