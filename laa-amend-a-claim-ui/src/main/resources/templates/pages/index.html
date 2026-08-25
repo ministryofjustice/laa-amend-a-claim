@@ -155,14 +155,14 @@
                                             </td>
 
                                             <td class="govuk-table__cell">
-                                                <strong th:if="${claim.claim.derivedClaimStatus == 'ACCEPTED'}" class="govuk-tag govuk-tag--green"
-                                                        th:text="${#messages.msg('index.results.status.' + #strings.toLowerCase(claim.claim.derivedClaimStatus))}"></strong>
-                                                <strong th:if="${claim.claim.derivedClaimStatus == 'ASSESSED'}" class="govuk-tag govuk-tag--blue"
-                                                        th:text="${#messages.msg('index.results.status.' + #strings.toLowerCase(claim.claim.derivedClaimStatus))}"></strong>
-                                                <strong th:if="${claim.claim.derivedClaimStatus == 'AMENDED'}" class="govuk-tag govuk-tag--yellow"
-                                                        th:text="${#messages.msg('index.results.status.' + #strings.toLowerCase(claim.claim.derivedClaimStatus))}"></strong>
-                                                <strong th:if="${claim.claim.derivedClaimStatus == 'VOIDED'}" class="govuk-tag govuk-tag--red"
-                                                        th:text="${#messages.msg('index.results.status.' + #strings.toLowerCase(claim.claim.derivedClaimStatus))}"></strong>
+                                                <strong th:if="${claim.claim.derivedClaimStatus == DerivedClaimStatus.ACCEPTED}" class="govuk-tag govuk-tag--green"
+                                                        th:text="${#messages.msg('index.results.status.' + #strings.toLowerCase(claim.claim.derivedClaimStatus.name()))}"></strong>
+                                                <strong th:if="${claim.claim.derivedClaimStatus == DerivedClaimStatus.ASSESSED}" class="govuk-tag govuk-tag--blue"
+                                                        th:text="${#messages.msg('index.results.status.' + #strings.toLowerCase(claim.claim.derivedClaimStatus.name()))}"></strong>
+                                                <strong th:if="${claim.claim.derivedClaimStatus == DerivedClaimStatus.AMENDED}" class="govuk-tag govuk-tag--yellow"
+                                                        th:text="${#messages.msg('index.results.status.' + #strings.toLowerCase(claim.claim.derivedClaimStatus.name()))}"></strong>
+                                                <strong th:if="${claim.claim.derivedClaimStatus == DerivedClaimStatus.VOIDED}" class="govuk-tag govuk-tag--red"
+                                                        th:text="${#messages.msg('index.results.status.' + #strings.toLowerCase(claim.claim.derivedClaimStatus.name()))}"></strong>
                                             </td>
                                         </tr>
                                     </tbody>

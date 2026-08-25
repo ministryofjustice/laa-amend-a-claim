@@ -18,6 +18,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
+import uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 
 @WebMvcTest(HomePageController.class)
@@ -35,6 +36,7 @@ public class HomePageControllerTest extends BaseControllerTest {
         .perform(get("/"))
         .andExpect(status().isOk())
         .andExpect(view().name("pages/index"))
+        .andExpect(model().attribute("DerivedClaimStatus", is(DerivedClaimStatus.class)))
         .andExpect(request().sessionAttributeDoesNotExist("searchUrl"));
   }
 

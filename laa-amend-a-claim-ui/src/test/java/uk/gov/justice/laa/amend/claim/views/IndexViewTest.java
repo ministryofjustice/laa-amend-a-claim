@@ -1,12 +1,18 @@
 package uk.gov.justice.laa.amend.claim.views;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.util.LinkedMultiValueMap;
@@ -15,6 +21,7 @@ import uk.gov.justice.laa.amend.claim.controllers.HomePageController;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
@@ -121,6 +128,36 @@ class IndexViewTest extends ViewTestBase {
     Document doc = renderDocument(variables);
 
     assertH2Exists(doc, "1 search result");
+  }
+
+  private static Stream<Arguments> derivedClaimStatusTags() {
+    return Stream.of(
+        Arguments.of(DerivedClaimStatus.ACCEPTED, "Accepted", "govuk-tag--green"),
+        Arguments.of(DerivedClaimStatus.ASSESSED, "Assessed", "govuk-tag--blue"),
+        Arguments.of(DerivedClaimStatus.AMENDED, "Amended", "govuk-tag--yellow"),
+        Arguments.of(DerivedClaimStatus.VOIDED, "Voided", "govuk-tag--red"));
+  }
+
+  @ParameterizedTest
+  @MethodSource("derivedClaimStatusTags")
+  void testPageShowsStatusTagForDerivedClaimStatus(
+      DerivedClaimStatus derivedClaimStatus, String expectedTagText, String expectedTagClass) {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setDerivedClaimStatus(derivedClaimStatus);
+
+    List<BaseClaimView<Claim>> claims = List.of(new ClaimView(claim));
+    var pagination = new Pagination(1, 10, 1, "/");
+    var viewModel = new SearchResultView(claims, pagination);
+
+    var doc = renderDocument(Map.of("viewModel", viewModel));
+
+    var row = doc.selectFirst("tbody.govuk-table__body tr.govuk-table__row");
+    assertThat(row).isNotNull();
+    var cells = row.select("td.govuk-table__cell");
+    var statusTag = cells.get(6).selectFirst("strong.govuk-tag");
+    assertThat(statusTag).isNotNull();
+    assertThat(statusTag.text()).isEqualTo(expectedTagText);
+    assertThat(statusTag.classNames()).contains(expectedTagClass);
   }
 
   @Test

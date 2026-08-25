@@ -9,6 +9,7 @@ import tools.jackson.databind.annotation.JsonSerialize;
 import tools.jackson.databind.ext.javatime.deser.YearMonthDeserializer;
 import tools.jackson.databind.ext.javatime.ser.YearMonthSerializer;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus;
 import uk.gov.justice.laa.amend.claim.viewmodels.BaseClaimView;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimView;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
@@ -38,7 +39,7 @@ public class Claim {
   private String officeCode;
   private ClaimStatus status;
   private String uniqueCaseId;
-  private String derivedClaimStatus;
+  private DerivedClaimStatus derivedClaimStatus;
 
   public BaseClaimView<? extends Claim> toViewModel() {
     return new ClaimView(this);
