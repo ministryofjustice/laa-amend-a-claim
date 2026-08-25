@@ -18,7 +18,7 @@
                                     <h1 class="govuk-fieldset__heading" th:text="#{dummyUserSecurity.rolesPrompt}"></h1>
                                 </legend>
                                 <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                                    <th:block th:each="role: ${T(uk.gov.justice.laa.amend.claim.models.enums.Role).values()}">
+                                    <th:block th:each="role: ${T(uk.gov.justice.laa.payments.amend.models.enums.Role).values()}">
                                         <div class="govuk-checkboxes__item">
                                             <input class="govuk-checkboxes__input"
                                                    type="checkbox"

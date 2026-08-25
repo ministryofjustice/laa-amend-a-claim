@@ -1,0 +1,64 @@
+package uk.gov.justice.laa.payments.amend.controllers.claimdetails;
+
+import static uk.gov.justice.laa.payments.amend.models.enums.Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER;
+import static uk.gov.justice.laa.payments.amend.models.enums.Role.ROLE_ESCAPE_CASE_CASEWORKER;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import java.util.Optional;
+import org.springframework.ui.Model;
+import uk.gov.justice.laa.payments.amend.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.MicrosoftApiUser;
+import uk.gov.justice.laa.payments.amend.service.AssessmentService;
+import uk.gov.justice.laa.payments.amend.service.UserRetrievalService;
+import uk.gov.justice.laa.payments.amend.viewmodels.ClaimDetailsFooterView;
+import uk.gov.justice.laa.payments.amend.viewmodels.ClaimDetailsHeaderView;
+
+public abstract class ClaimDetailsBaseController {
+
+  private final AssessmentService assessmentService;
+  private final UserRetrievalService userRetrievalService;
+  protected final FeatureFlagsConfig featureFlagsConfig;
+
+  public ClaimDetailsBaseController(
+      AssessmentService assessmentService,
+      UserRetrievalService userRetrievalService,
+      FeatureFlagsConfig featureFlagsConfig) {
+    this.assessmentService = assessmentService;
+    this.userRetrievalService = userRetrievalService;
+    this.featureFlagsConfig = featureFlagsConfig;
+  }
+
+  protected void setCommonModelAttributes(
+      Model model,
+      HttpSession session,
+      HttpServletRequest request,
+      ClaimDetails claim,
+      MicrosoftApiUser user) {
+    String searchUrl = (String) Optional.ofNullable(session.getAttribute("searchUrl")).orElse("/");
+    model.addAttribute("searchUrl", searchUrl);
+    model.addAttribute("claimId", claim.getClaimId());
+    model.addAttribute("submissionId", claim.getSubmissionId());
+
+    model.addAttribute("claimDetailsHeaderView", new ClaimDetailsHeaderView(claim, user));
+
+    model.addAttribute(
+        "claimDetailsFooterView",
+        new ClaimDetailsFooterView(
+            claim,
+            request.isUserInRole(ROLE_ESCAPE_CASE_CASEWORKER.name()),
+            request.isUserInRole(ROLE_CLAIM_AMENDMENTS_CASEWORKER.name()),
+            featureFlagsConfig));
+  }
+
+  protected MicrosoftApiUser setLatestAssessment(ClaimDetails claim) {
+    if (claim.isHasAssessment()) {
+      claim = assessmentService.getLatestAssessmentByClaim(claim);
+      if (claim.getLastUpdatedUser() != null) {
+        return userRetrievalService.getUser(claim.getLastUpdatedUser());
+      }
+    }
+    return null;
+  }
+}

@@ -1,0 +1,42 @@
+package uk.gov.justice.laa.payments.amend.viewmodels;
+
+import java.util.Map;
+import java.util.stream.Stream;
+import uk.gov.justice.laa.payments.amend.models.CivilClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.ClaimField;
+
+public record CivilClaimDetailsView(CivilClaimDetails claim)
+    implements ClaimDetailsView<CivilClaimDetails> {
+
+  @Override
+  public void addUcnSummaryRow(Map<String, Object> summaryRows) {
+    summaryRows.put("UNIQUE_CLIENT_NUMBER", claim.getUniqueClientNumber());
+  }
+
+  @Override
+  public void addPoliceStationCourtPrisonIdRow(Map<String, Object> summaryRows) {}
+
+  @Override
+  public void addSchemeIdRow(Map<String, Object> summaryRows) {}
+
+  @Override
+  public void addMatterTypeCodeRow(Map<String, Object> summaryRows) {
+    summaryRows.put("MATTER_TYPE_CODE_1", claim.getMatterType1());
+    summaryRows.put("MATTER_TYPE_CODE_2", claim.getMatterType2());
+  }
+
+  @Override
+  public Stream<ClaimField> claimFields() {
+    return Stream.concat(
+        ClaimDetailsView.super.claimFields(),
+        Stream.of(
+            claim.getDetentionTravelWaitingCosts(),
+            claim.getJrFormFillingCost(),
+            claim.getCounselsCost(),
+            claim.getCmrhOral(),
+            claim.getCmrhTelephone(),
+            claim.getHoInterview(),
+            claim.getSubstantiveHearing(),
+            claim.getAdjournedHearing()));
+  }
+}

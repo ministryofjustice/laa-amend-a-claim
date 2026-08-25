@@ -1,0 +1,146 @@
+package uk.gov.justice.laa.payments.amend.service;
+
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.ASSESSMENT_REASON_VOID;
+
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
+import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
+import uk.gov.justice.laa.payments.amend.exceptions.ClaimNotFoundException;
+import uk.gov.justice.laa.payments.amend.mappers.ClaimMapper;
+import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw;
+import uk.gov.justice.laa.payments.amend.models.search.SearchSort;
+
+@Service
+@Slf4j
+public class ClaimService {
+
+  private final ClaimsApiClient claimsApiClient;
+  private final ClaimMapper claimMapper;
+  private final ProviderService providerService;
+  private final Counter voidClaimCounter;
+  private final Counter voidClaimFailureCounter;
+
+  public ClaimService(
+      ClaimsApiClient claimsApiClient,
+      ClaimMapper claimMapper,
+      ProviderService providerService,
+      MeterRegistry meterRegistry) {
+    this.claimsApiClient = claimsApiClient;
+    this.claimMapper = claimMapper;
+    this.providerService = providerService;
+    this.voidClaimCounter =
+        Counter.builder("claim.void")
+            .description("Total number of successful void claim submissions")
+            .register(meterRegistry);
+    this.voidClaimFailureCounter =
+        Counter.builder("claim.void.failed")
+            .description("Total number of failed void claim submissions")
+            .register(meterRegistry);
+  }
+
+  public ClaimResultSetV2 searchClaims(
+      String officeCode,
+      Optional<String> uniqueFileNumber,
+      Optional<String> caseReferenceNumber,
+      Optional<String> submissionPeriod,
+      Optional<AreaOfLaw> areaOfLaw,
+      Optional<Boolean> escapeCase,
+      List<ClaimStatus> claimStatuses,
+      int page,
+      int size,
+      SearchSort sort) {
+    try {
+      ClaimResultSetV2 claimResultSet =
+          claimsApiClient
+              .searchClaims(
+                  officeCode.toUpperCase(),
+                  uniqueFileNumber.orElse(null),
+                  caseReferenceNumber.orElse(null),
+                  submissionPeriod.orElse(null),
+                  areaOfLaw.orElse(null),
+                  escapeCase.orElse(null),
+                  claimStatuses,
+                  null,
+                  page - 1,
+                  size,
+                  Objects.toString(sort, null))
+              .block();
+      if (uniqueFileNumber.isPresent() && isEmpty(claimResultSet)) {
+        claimResultSet =
+            claimsApiClient
+                .searchClaims(
+                    officeCode.toUpperCase(),
+                    null,
+                    caseReferenceNumber.orElse(null),
+                    submissionPeriod.orElse(null),
+                    areaOfLaw.orElse(null),
+                    escapeCase.orElse(null),
+                    claimStatuses,
+                    uniqueFileNumber.orElse(null),
+                    page - 1,
+                    size,
+                    Objects.toString(sort, null))
+                .block();
+      }
+      return claimResultSet;
+    } catch (Exception e) {
+      log.error("Error searching claims", e);
+      throw e;
+    }
+  }
+
+  private boolean isEmpty(ClaimResultSetV2 resultSet) {
+    return resultSet == null
+        || resultSet.getTotalElements() == null
+        || resultSet.getTotalElements() == 0;
+  }
+
+  public ClaimResponseV2 getClaim(UUID submissionId, UUID claimId) {
+    try {
+      return claimsApiClient.getClaim(submissionId, claimId).block();
+    } catch (Exception e) {
+      log.error("Error getting claim {}", claimId, e);
+      throw e;
+    }
+  }
+
+  public ClaimDetails getClaimDetails(UUID submissionId, UUID claimId) {
+    var claimResponse = getClaim(submissionId, claimId);
+    if (claimResponse == null) {
+      log.error("Claim not found for submission {} and claim {}", submissionId, claimId);
+      throw new ClaimNotFoundException(
+          String.format("Claim with ID %s not found for submission %s", claimId, submissionId));
+    }
+    var claimDetails = claimMapper.mapToClaimDetails(claimResponse);
+    var provider = providerService.getProviderFirm(claimDetails.getOfficeCode());
+    if (provider != null && provider.getFirm() != null) {
+      claimMapper.enrichWithProviderName(claimDetails, provider.getFirm().getFirmName());
+    }
+    return claimDetails;
+  }
+
+  public VoidClaim201Response voidClaim(UUID claimId, UUID userId) {
+    try {
+      var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
+      var response = claimsApiClient.voidClaim(claimId, request).block();
+      voidClaimCounter.increment();
+      return response;
+    } catch (Exception e) {
+      log.error("Error voiding claim {}", claimId, e);
+      voidClaimFailureCounter.increment();
+      throw e;
+    }
+  }
+}

@@ -1,0 +1,50 @@
+package uk.gov.justice.laa.payments.amend.viewmodels;
+
+import static java.lang.Boolean.TRUE;
+
+import uk.gov.justice.laa.payments.amend.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
+
+public record ClaimDetailsFooterView(
+    boolean hasAssessment,
+    boolean isAssessmentButtonPresent,
+    boolean isAmendmentButtonPresent,
+    boolean isVoidButtonPresent) {
+
+  public ClaimDetailsFooterView(
+      ClaimDetails claim,
+      boolean isEscapeCaseCaseworker,
+      boolean isClaimAmendmentsCaseworker,
+      FeatureFlagsConfig featureFlagsConfig) {
+    this(
+        hasAssessment(claim),
+        isAssessmentButtonPresent(claim, isEscapeCaseCaseworker),
+        isAmendmentButtonPresent(claim, isClaimAmendmentsCaseworker, featureFlagsConfig),
+        isVoidButtonPresent(claim, isClaimAmendmentsCaseworker));
+  }
+
+  private static boolean hasAssessment(ClaimDetails claim) {
+    return claim.isHasAssessment();
+  }
+
+  private static boolean isAssessmentButtonPresent(
+      ClaimDetails claim, boolean isEscapeCaseCaseworker) {
+    boolean isEscapedCase = claim.isEscapedCase();
+    boolean isStageDisbursement = claim.isStageDisbursement();
+    return isEscapeCaseCaseworker && claim.isValid() && (isEscapedCase || isStageDisbursement);
+  }
+
+  private static boolean isAmendmentButtonPresent(
+      ClaimDetails claim,
+      boolean isClaimAmendmentsCaseworker,
+      FeatureFlagsConfig featureFlagsConfig) {
+    return isClaimAmendmentsCaseworker
+        && claim.isValid()
+        && TRUE.equals(featureFlagsConfig.getIsClaimAmendmentEnabled());
+  }
+
+  public static boolean isVoidButtonPresent(
+      ClaimDetails claim, boolean isClaimAmendmentsCaseworker) {
+    return isClaimAmendmentsCaseworker && claim.isValid();
+  }
+}
