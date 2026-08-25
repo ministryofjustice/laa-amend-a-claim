@@ -24,6 +24,7 @@ import uk.gov.justice.laa.amend.claim.forms.SearchForm;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimMapper;
 import uk.gov.justice.laa.amend.claim.mappers.ClaimResultMapper;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus;
 import uk.gov.justice.laa.amend.claim.models.search.SearchQuery;
 import uk.gov.justice.laa.amend.claim.models.search.SearchSortField;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
@@ -57,6 +58,7 @@ public class HomePageController {
     model.addAttribute("form", form);
     model.addAttribute("query", query);
     model.addAttribute("SortField", SearchSortField.class);
+    model.addAttribute("DerivedClaimStatus", DerivedClaimStatus.class);
 
     if (form.anyNonEmpty()) {
       ValidationUtils.invokeValidator(validator, form, errors);

@@ -17,8 +17,8 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
+import uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.DerivedClaimStatus;
 
 @Mapper(
     componentModel = "spring",
@@ -80,10 +80,7 @@ public interface ClaimMapper {
   @Mapping(target = "categoryOfLaw", source = "feeCalculationResponse.categoryOfLaw")
   @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
   @Mapping(target = "uniqueCaseId", source = "uniqueCaseId")
-  @Mapping(
-      target = "derivedClaimStatus",
-      source = "claimResponse.derivedClaimStatus",
-      qualifiedByName = "toDerivedClaimStatus")
+  @Mapping(target = "derivedClaimStatus", expression = "java(mapDerivedClaimStatus(claimResponse))")
   Claim mapToClaim(ClaimResponseV2 claimResponse);
 
   @InheritConfiguration(name = "mapToCommonDetails")
@@ -243,12 +240,18 @@ public interface ClaimMapper {
   @Mapping(target = "matterTypeCode", source = "crimeMatterTypeCode")
   CrimeClaimDetails mapToCrimeClaimDetails(ClaimResponseV2 claimResponse);
 
-  @Named("toDerivedClaimStatus")
-  default String toDerivedClaimStatus(final DerivedClaimStatus claimStatus) {
-    if (claimStatus == null) {
+  default DerivedClaimStatus mapDerivedClaimStatus(ClaimResponseV2 claimResponse) {
+    if (claimResponse.getDerivedClaimStatus() == null) {
       return null;
     }
-    return claimStatus.name();
+    return switch (claimResponse.getDerivedClaimStatus()) {
+      case ACCEPTED -> DerivedClaimStatus.ACCEPTED;
+      case AMENDED -> DerivedClaimStatus.AMENDED;
+      case ASSESSED -> DerivedClaimStatus.ASSESSED;
+      case VOIDED -> DerivedClaimStatus.VOIDED;
+      case INVALID -> DerivedClaimStatus.INVALID;
+      case READY_TO_PROCESS -> DerivedClaimStatus.READY_TO_PROCESS;
+    };
   }
 
   /**

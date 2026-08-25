@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -909,14 +911,18 @@ class ClaimMapperTest {
     assertEquals("112233/001", claimField);
   }
 
-  @Test
-  void testMapDerivedClaimStatus() {
+  @ParameterizedTest
+  @ValueSource(
+      strings = {"ACCEPTED", "AMENDED", "ASSESSED", "VOIDED", "INVALID", "READY_TO_PROCESS"})
+  void testMapDerivedClaimStatus(String derivedClaimStatus) {
     var response = createClaimResponse(AreaOfLaw.CRIME_LOWER);
-    response.setDerivedClaimStatus(DerivedClaimStatus.ACCEPTED);
+    response.setDerivedClaimStatus(DerivedClaimStatus.valueOf(derivedClaimStatus));
 
     var claim = mapper.mapToClaimDetails(response);
 
-    assertEquals("ACCEPTED", claim.getDerivedClaimStatus());
+    assertEquals(
+        uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.valueOf(derivedClaimStatus),
+        claim.getDerivedClaimStatus());
   }
 
   private static ClaimResponseV2 createClaimResponse(AreaOfLaw areaOfLaw) {
