@@ -7,7 +7,7 @@
 
 ## Architecture
 
-- App code: `src/main`
+- App code: `laa-amend-a-claim-ui/src/main`
 - Related services:
   - All available at `../`
   - `../laa-data-claims-api` - claims data store - [repo](https://github.com/ministryofjustice/laa-data-claims-api)
