@@ -8,5 +8,5 @@ import org.springframework.security.access.prepost.PreAuthorize;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @PreAuthorize(
-    "hasRole(T(enums.models.uk.gov.justice.laa.payments.amend.Role).ROLE_CLAIM_AMENDMENTS_CASEWORKER)")
+    "hasRole(T(uk.gov.justice.laa.payments.amend.models.enums.Role).ROLE_CLAIM_AMENDMENTS_CASEWORKER)")
 public @interface HasRoleClaimAmendmentsCaseworker {}
