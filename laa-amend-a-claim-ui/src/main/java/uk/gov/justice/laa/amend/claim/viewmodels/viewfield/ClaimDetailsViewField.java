@@ -234,8 +234,16 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   public record ClaimDetailsViewFieldGetter<T>(Function<ClaimDetails, T> getter)
       implements ClaimViewFieldGetter<ClaimDetails, T> {}
 
-  private static String getClientName(ClaimDetails claim) {
-    return "%s %s".formatted(claim.getClientForename(), claim.getClientSurname()).trim();
+  public static String getClientName(Claim claim) {
+    String clientForename = claim.getClientForename();
+    String clientSurname = claim.getClientSurname();
+    if (clientForename != null && clientSurname != null) {
+      return String.format("%s %s", clientForename, clientSurname);
+    } else if (clientForename != null) {
+      return clientForename;
+    } else {
+      return clientSurname;
+    }
   }
 
   private static Object getProviderName(ClaimDetails claim) {

@@ -4,6 +4,7 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.DEFAU
 
 import java.time.format.DateTimeFormatter;
 import uk.gov.justice.laa.amend.claim.models.Claim;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 
 public interface BaseClaimView<T extends Claim> {
   T claim();
@@ -13,15 +14,7 @@ public interface BaseClaimView<T extends Claim> {
   }
 
   default String getClientName() {
-    String clientForename = claim().getClientForename();
-    String clientSurname = claim().getClientSurname();
-    if (clientForename != null & clientSurname != null) {
-      return String.format("%s %s", clientForename, clientSurname);
-    } else if (clientForename != null) {
-      return clientForename;
-    } else {
-      return clientSurname;
-    }
+    return ClaimDetailsViewField.getClientName(claim());
   }
 
   default String getSubmissionPeriodForDisplay() {
