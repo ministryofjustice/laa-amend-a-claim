@@ -113,7 +113,7 @@ public class AssessmentService {
    * @return the updated {@link ClaimDetails} populated with values from the latest relevant
    *     assessment
    */
-  public ClaimDetails getLatestAssessmentByClaim(ClaimDetails claimDetails) {
+  public ClaimDetails setLatestAssessmentOnClaim(ClaimDetails claimDetails) {
     AssessmentResultSet assessmentResults =
         claimsApiClient.getAssessments(claimDetails.getClaimId(), 0, 5, "createdOn,desc").block();
 

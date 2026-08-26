@@ -10,19 +10,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
-import uk.gov.justice.laa.amend.claim.service.AssessmentService;
-import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
-import uk.gov.justice.laa.amend.claim.utils.SessionUtils;
+import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
 import uk.gov.justice.laa.amend.claim.viewmodels.claimclient.ClaimClientViewFactory;
 
 @Controller
 public class ClaimClientController extends ClaimDetailsBaseController {
 
+  private final ClaimHistoryService claimHistoryService;
+
   public ClaimClientController(
-      AssessmentService assessmentService,
-      UserRetrievalService userRetrievalService,
-      FeatureFlagsConfig featureFlagsConfig) {
-    super(assessmentService, userRetrievalService, featureFlagsConfig);
+      ClaimHistoryService claimHistoryService, FeatureFlagsConfig featureFlagsConfig) {
+    super(featureFlagsConfig);
+    this.claimHistoryService = claimHistoryService;
   }
 
   @GetMapping("/submissions/{submissionId}/claims/{claimId}/client")
@@ -37,11 +36,11 @@ public class ClaimClientController extends ClaimDetailsBaseController {
     var claimView = ClaimClientViewFactory.create(claim);
     model.addAttribute("claim", claimView);
 
-    var amendedFields = SessionUtils.getAmendedFields(session, claimId);
-    model.addAttribute("amendedFields", amendedFields);
+    var history = claimHistoryService.getClaimHistorySummary(claim);
+    model.addAttribute("amendedFields", history.amendedFields());
 
-    var user = setLatestAssessment(claim);
-    setCommonModelAttributes(model, session, request, claim, user);
+    setCommonModelAttributes(
+        model, session, request, claim, history.lastUpdatedUser(), history.lastUpdatedDateTime());
 
     return "pages/claimdetails/claim-client";
   }

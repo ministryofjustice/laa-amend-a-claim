@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.amendments.AmendmentsConfirmationController;
+import uk.gov.justice.laa.amend.claim.models.AmendmentConfirmation;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
@@ -35,7 +36,7 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
     claim.setAmended(true);
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
     when(claimHistoryService.getAmendmentConfirmation(claim))
-        .thenReturn(new ClaimHistoryService.AmendmentConfirmation(false, java.util.Set.of()));
+        .thenReturn(new AmendmentConfirmation(false, java.util.Set.of()));
   }
 
   @Test
@@ -55,7 +56,7 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
   @Test
   void showsUpdatedClaimTotalMessageWhenCalculatedCostsChanged() {
     when(claimHistoryService.getAmendmentConfirmation(claim))
-        .thenReturn(new ClaimHistoryService.AmendmentConfirmation(true, new HashSet<>()));
+        .thenReturn(new AmendmentConfirmation(true, new HashSet<>()));
 
     Document doc = renderDocument();
 
@@ -76,7 +77,7 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
                 "fee.vatIndicator",
                 "fee.disbursementVatAmount"));
     when(claimHistoryService.getAmendmentConfirmation(claim))
-        .thenReturn(new ClaimHistoryService.AmendmentConfirmation(true, changedFields));
+        .thenReturn(new AmendmentConfirmation(true, changedFields));
 
     var doc = renderDocument();
     assertPageHasContent(doc, "The updated claim total is £200.00");
@@ -113,7 +114,7 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
                 "fee.disbursementAmount",
                 "fee.disbursementVatAmount"));
     when(claimHistoryService.getAmendmentConfirmation(claim))
-        .thenReturn(new ClaimHistoryService.AmendmentConfirmation(true, changedFields));
+        .thenReturn(new AmendmentConfirmation(true, changedFields));
 
     var doc = renderDocument();
     assertPageHasContent(doc, "The updated claim total is £200.00");
@@ -154,7 +155,7 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
                 "fee.boltOnCmrhOralFee",
                 "fee.boltOnCmrhTelephoneFee"));
     when(claimHistoryService.getAmendmentConfirmation(claim))
-        .thenReturn(new ClaimHistoryService.AmendmentConfirmation(true, changedFields));
+        .thenReturn(new AmendmentConfirmation(true, changedFields));
 
     var doc = renderDocument();
     assertPageHasContent(doc, "The updated claim total is £200.00");

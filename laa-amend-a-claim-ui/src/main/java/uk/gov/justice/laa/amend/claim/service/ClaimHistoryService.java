@@ -24,11 +24,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.models.AmendmentConfirmation;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistory;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistoryEvent;
+import uk.gov.justice.laa.amend.claim.models.ClaimHistorySummary;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
 
@@ -66,28 +70,64 @@ public class ClaimHistoryService {
     return new ClaimHistory(events, latestAssessmentUser);
   }
 
-  public Set<String> getAmendedFields(ClaimDetails claim) {
-    if (!TRUE.equals(featureFlagsConfig.getIsClaimAmendmentEnabled())) {
-      return Set.of();
-    }
-
-    if (!claim.isAmended()) {
-      return Set.of();
-    }
+  public ClaimHistorySummary getClaimHistorySummary(ClaimDetails claim) {
     var history = claimsApiClient.getClaimHistory(claim.getClaimId()).block();
 
     if (history == null || history.getEvents() == null) {
       log.error("Could not get claim history for claim {}", claim.getClaimId());
-      return Set.of();
+      return ClaimHistorySummary.builder()
+          .lastUpdatedUser(userRetrievalService.getUser(claim.getLastUpdatedUser()))
+          .lastUpdatedDateTime(claim.getLastUpdatedDateTime())
+          .amendedFields(Set.of())
+          .build();
     }
 
-    return history.getEvents().stream()
-        .filter(event -> event.getEventType() == AMENDMENT)
-        .map(ClaimHistoryService::getChanges)
-        .flatMap(Collection::stream)
-        .filter(ClaimHistoryService::isRequested)
-        .map(ClaimHistoryService::getFieldIdentifier)
-        .collect(toSet());
+    var builder = ClaimHistorySummary.builder();
+    var latestEvent = getLatestRelevantEvent(claim, history);
+    latestEvent.ifPresent(
+        event -> {
+          builder.lastUpdatedDateTime(event.getEventTimestamp());
+          builder.lastUpdatedUser(userRetrievalService.getUser(event.getActorId()));
+        });
+
+    if (claim.isAmended()) {
+      builder.amendedFields(
+          history.getEvents().stream()
+              .filter(event -> event.getEventType() == AMENDMENT)
+              .map(ClaimHistoryService::getChanges)
+              .flatMap(Collection::stream)
+              .filter(ClaimHistoryService::isRequested)
+              .map(ClaimHistoryService::getFieldIdentifier)
+              .collect(toSet()));
+    } else {
+      builder.amendedFields(Set.of());
+    }
+
+    return builder.build();
+  }
+
+  private static Optional<uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent>
+      getLatestRelevantEvent(ClaimDetails claim, ClaimHistoryResultSet claimHistoryResultSet) {
+    if (claim.getDerivedClaimStatus() == null) {
+      return Optional.empty();
+    }
+
+    var eventType =
+        switch (claim.getDerivedClaimStatus()) {
+          case ACCEPTED -> ClaimHistoryEventType.SUBMISSION;
+          case AMENDED -> ClaimHistoryEventType.AMENDMENT;
+          case ASSESSED -> ClaimHistoryEventType.ASSESSMENT;
+          case VOIDED -> ClaimHistoryEventType.VOID;
+          default -> null;
+        };
+
+    if (eventType == null) {
+      return Optional.empty();
+    }
+
+    return claimHistoryResultSet.getEvents().stream()
+        .filter(event -> event.getEventType() == eventType)
+        .findFirst();
   }
 
   public AmendmentConfirmation getAmendmentConfirmation(ClaimDetails claim) {
@@ -119,9 +159,6 @@ public class ClaimHistoryService {
 
     return new AmendmentConfirmation(true, changedCalculatedCosts);
   }
-
-  public record AmendmentConfirmation(
-      Boolean hasCalculatedCostsChanged, Set<String> amendedFields) {}
 
   private Map<String, MicrosoftApiUser> getUserIdToUser(final List<AssessmentInfo> assessments) {
     var userIds =

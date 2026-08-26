@@ -21,6 +21,13 @@ import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_AND_WAITING_COSTS;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
 import static uk.gov.justice.laa.amend.claim.constants.AmendClaimConstants.Label.WAITING_COSTS;
+import static uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw.CRIME_LOWER;
+import static uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw.LEGAL_HELP;
+import static uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw.MEDIATION;
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.ASSESSED;
+import static uk.gov.justice.laa.amend.claim.models.enums.OutcomeType.REDUCED;
+import static uk.gov.justice.laa.amend.claim.models.enums.OutcomeType.REDUCED_TO_FIXED_FEE;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VALID;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -41,11 +48,9 @@ import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.SubmittedClaimField;
 import uk.gov.justice.laa.amend.claim.models.VatLiabilityClaimField;
-import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.amend.claim.models.enums.Cost;
 import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 public class MockClaimsFunctions {
 
@@ -56,12 +61,13 @@ public class MockClaimsFunctions {
 
   public static CivilClaimDetails createMockCivilClaim() {
     CivilClaimDetails claim = new CivilClaimDetails();
-    claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
+    claim.setAreaOfLaw(LEGAL_HELP);
     claim.setClaimId(UUID.randomUUID());
     claim.setSubmissionId(UUID.randomUUID());
     claim.setClaimSummaryFeeId(UUID.randomUUID());
     claim.setEscaped(true);
-    claim.setStatus(ClaimStatus.VALID);
+    claim.setStatus(VALID);
+    claim.setDerivedClaimStatus(ASSESSED);
 
     claim.setFixedFee(createFixedFeeField());
     claim.setNetProfitCost(createNetProfitCostField());
@@ -77,7 +83,7 @@ public class MockClaimsFunctions {
     claim.setHoInterview(createHoInterviewField());
     claim.setSubstantiveHearing(createSubstantiveHearingField());
     claim.setVatClaimed(createVatClaimedField());
-    claim.setAssessmentOutcome(OutcomeType.REDUCED);
+    claim.setAssessmentOutcome(REDUCED);
     claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
     claim.setTravelAndWaitingCosts(createTravelAndWaitingCostsField());
     claim.setIsLondonRate(createIsLondonRateField());
@@ -92,12 +98,13 @@ public class MockClaimsFunctions {
 
   public static MediationClaimDetails createMockMediationClaim() {
     MediationClaimDetails claim = new MediationClaimDetails();
-    claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
+    claim.setAreaOfLaw(MEDIATION);
     claim.setClaimId(UUID.randomUUID());
     claim.setSubmissionId(UUID.randomUUID());
     claim.setClaimSummaryFeeId(UUID.randomUUID());
     claim.setEscaped(true);
-    claim.setStatus(ClaimStatus.VALID);
+    claim.setStatus(VALID);
+    claim.setDerivedClaimStatus(ASSESSED);
 
     claim.setFixedFee(createFixedFeeField());
     claim.setNetProfitCost(createNetProfitCostField());
@@ -113,7 +120,7 @@ public class MockClaimsFunctions {
     claim.setHoInterview(createHoInterviewField());
     claim.setSubstantiveHearing(createSubstantiveHearingField());
     claim.setVatClaimed(createVatClaimedField());
-    claim.setAssessmentOutcome(OutcomeType.REDUCED);
+    claim.setAssessmentOutcome(REDUCED);
     claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
 
     claim.setAssessedTotalVat(createAssessedTotalVatField());
@@ -125,12 +132,13 @@ public class MockClaimsFunctions {
 
   public static CrimeClaimDetails createMockCrimeClaim() {
     CrimeClaimDetails claim = new CrimeClaimDetails();
-    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    claim.setAreaOfLaw(CRIME_LOWER);
     claim.setClaimId(UUID.randomUUID());
     claim.setSubmissionId(UUID.randomUUID());
     claim.setClaimSummaryFeeId(UUID.randomUUID());
     claim.setEscaped(true);
-    claim.setStatus(ClaimStatus.VALID);
+    claim.setStatus(VALID);
+    claim.setDerivedClaimStatus(ASSESSED);
 
     claim.setNetProfitCost(createNetProfitCostField());
     claim.setTravelCosts(createTravelCostField());
@@ -146,7 +154,7 @@ public class MockClaimsFunctions {
 
     claim.setAllowedTotalVat(createAllowedTotalVatField());
     claim.setAllowedTotalInclVat(createAllowedTotalInclVatField());
-    claim.setAssessmentOutcome(OutcomeType.REDUCED_TO_FIXED_FEE);
+    claim.setAssessmentOutcome(REDUCED_TO_FIXED_FEE);
     claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
 
     return claim;

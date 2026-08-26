@@ -5,7 +5,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveAmendedFields;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
 
 import jakarta.servlet.RequestDispatcher;
@@ -117,10 +116,6 @@ public abstract class ViewTestBase {
   protected Document renderDocumentWithErrors(MultiValueMap<String, String> params) {
     MockHttpServletRequestBuilder requestBuilder = post(mapping).with(csrf()).params(params);
     return renderDocument(requestBuilder, 400);
-  }
-
-  protected void amendFields(String... fields) {
-    saveAmendedFields(session, claimId, Set.of(fields));
   }
 
   protected void assertPageHasHeading(Document doc, String expectedText) {
@@ -347,8 +342,12 @@ public abstract class ViewTestBase {
     Element title = selectFirst(element, ".moj-alert__heading");
     Assertions.assertEquals(expectedTitle, title.text());
 
-    Element content = selectFirst(element, ".moj-alert__content > span");
-    Assertions.assertEquals(expectedText, content.text());
+    String contentText =
+        element.select(".moj-alert__content > div").stream()
+            .map(Element::text)
+            .reduce((a, b) -> a + " " + b)
+            .orElse("");
+    Assertions.assertEquals(expectedText, contentText);
   }
 
   protected void assertPageHasPanel(Document doc) {

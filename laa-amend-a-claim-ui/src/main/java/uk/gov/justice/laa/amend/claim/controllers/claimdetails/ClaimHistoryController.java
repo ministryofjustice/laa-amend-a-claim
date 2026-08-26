@@ -11,9 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
-import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
-import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 import uk.gov.justice.laa.amend.claim.viewmodels.ClaimHistoryEventViewModel;
 
 @Controller
@@ -22,11 +20,8 @@ public class ClaimHistoryController extends ClaimDetailsBaseController {
   private final ClaimHistoryService claimHistoryService;
 
   public ClaimHistoryController(
-      AssessmentService assessmentService,
-      UserRetrievalService userRetrievalService,
-      ClaimHistoryService claimHistoryService,
-      FeatureFlagsConfig featureFlagsConfig) {
-    super(assessmentService, userRetrievalService, featureFlagsConfig);
+      ClaimHistoryService claimHistoryService, FeatureFlagsConfig featureFlagsConfig) {
+    super(featureFlagsConfig);
     this.claimHistoryService = claimHistoryService;
   }
 
@@ -42,7 +37,12 @@ public class ClaimHistoryController extends ClaimDetailsBaseController {
     var claimHistory = claimHistoryService.getClaimHistory(claim);
 
     setCommonModelAttributes(
-        model, session, request, claim, claimHistory.latestAssessmentUser().orElse(null));
+        model,
+        session,
+        request,
+        claim,
+        claimHistory.latestAssessmentUser().orElse(null),
+        claim.getLastUpdatedDateTime()); // TODO: BC-570: Will wire up user and time from history
 
     var events = claimHistory.events().stream().map(ClaimHistoryEventViewModel::create).toList();
     model.addAttribute("events", events);

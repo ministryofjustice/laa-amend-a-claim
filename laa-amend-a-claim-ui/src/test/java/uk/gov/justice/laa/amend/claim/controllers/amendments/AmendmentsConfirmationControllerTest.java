@@ -19,6 +19,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.BaseControllerTest;
+import uk.gov.justice.laa.amend.claim.models.AmendmentConfirmation;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
@@ -50,7 +51,7 @@ class AmendmentsConfirmationControllerTest extends BaseControllerTest {
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
     when(claimHistoryService.getAmendmentConfirmation(claim))
-        .thenReturn(new ClaimHistoryService.AmendmentConfirmation(false, Set.of()));
+        .thenReturn(new AmendmentConfirmation(false, Set.of()));
   }
 
   @Test
@@ -78,7 +79,7 @@ class AmendmentsConfirmationControllerTest extends BaseControllerTest {
   @Test
   void getsConfirmationPageWithUpdatedClaimTotalWhenCalculatedCostsChanged() throws Exception {
     when(claimHistoryService.getAmendmentConfirmation(any()))
-        .thenReturn(new ClaimHistoryService.AmendmentConfirmation(true, new HashSet<>()));
+        .thenReturn(new AmendmentConfirmation(true, new HashSet<>()));
 
     mockMvc
         .perform(get(buildPath()).session(session))

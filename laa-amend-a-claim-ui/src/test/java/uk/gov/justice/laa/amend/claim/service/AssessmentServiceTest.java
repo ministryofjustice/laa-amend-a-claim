@@ -304,7 +304,7 @@ class AssessmentServiceTest {
       when(assessmentMapper.updateClaim(assessment, claimDetails)).thenReturn(mappedDetails);
       when(assessmentMapper.mapAssessmentToClaimDetails(mappedDetails)).thenReturn(mappedDetails);
 
-      ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claimDetails);
+      ClaimDetails result = assessmentService.setLatestAssessmentOnClaim(claimDetails);
 
       assertEquals(result, mappedDetails);
       verify(claimsApiClient).getAssessments(claimId, page, size, sort);
@@ -324,7 +324,7 @@ class AssessmentServiceTest {
       RuntimeException ex =
           assertThrows(
               RuntimeException.class,
-              () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
+              () -> assessmentService.setLatestAssessmentOnClaim(claimDetails));
 
       assertThat(ex.getMessage()).contains("Failed to get assessments");
     }
@@ -339,7 +339,7 @@ class AssessmentServiceTest {
       RuntimeException ex =
           assertThrows(
               RuntimeException.class,
-              () -> assessmentService.getLatestAssessmentByClaim(claimDetails));
+              () -> assessmentService.setLatestAssessmentOnClaim(claimDetails));
 
       assertThat(ex.getMessage()).contains("Failed to get assessments");
     }
@@ -360,7 +360,7 @@ class AssessmentServiceTest {
 
       when(assessmentMapper.updateClaim(previous, claim)).thenReturn(claim);
       when(assessmentMapper.mapAssessmentToClaimDetails(claim)).thenReturn(claim);
-      ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claim);
+      ClaimDetails result = assessmentService.setLatestAssessmentOnClaim(claim);
 
       assertEquals(claim, result);
       verify(assessmentMapper).updateClaim(previous, claim);
@@ -380,7 +380,7 @@ class AssessmentServiceTest {
       resultSet.setAssessments(List.of(latest));
       when(claimsApiClient.getAssessments(any(), eq(0), eq(5), any()))
           .thenReturn(Mono.just(resultSet));
-      ClaimDetails result = assessmentService.getLatestAssessmentByClaim(claim);
+      ClaimDetails result = assessmentService.setLatestAssessmentOnClaim(claim);
       assertEquals(claim, result);
       verifyNoInteractions(assessmentMapper);
     }
@@ -398,7 +398,7 @@ class AssessmentServiceTest {
           .thenReturn(Mono.just(emptyResultSet));
 
       assertThrows(
-          RuntimeException.class, () -> assessmentService.getLatestAssessmentByClaim(claim));
+          RuntimeException.class, () -> assessmentService.setLatestAssessmentOnClaim(claim));
     }
 
     @Test
@@ -416,7 +416,7 @@ class AssessmentServiceTest {
 
       assertThrows(
           InvalidAssessmentException.class,
-          () -> assessmentService.getLatestAssessmentByClaim(claim));
+          () -> assessmentService.setLatestAssessmentOnClaim(claim));
     }
 
     @Test
@@ -436,7 +436,7 @@ class AssessmentServiceTest {
 
       assertThrows(
           InvalidAssessmentException.class,
-          () -> assessmentService.getLatestAssessmentByClaim(claim));
+          () -> assessmentService.setLatestAssessmentOnClaim(claim));
     }
   }
 

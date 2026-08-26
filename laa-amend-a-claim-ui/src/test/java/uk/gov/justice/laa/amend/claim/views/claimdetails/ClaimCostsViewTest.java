@@ -1,21 +1,17 @@
 package uk.gov.justice.laa.amend.claim.views.claimdetails;
 
-import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.amend.claim.models.enums.OutcomeType.PAID_IN_FULL;
 
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.claimdetails.ClaimCostsController;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.amend.claim.service.AssessmentService;
-import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 
 @WebMvcTest(ClaimCostsController.class)
 class ClaimCostsViewTest extends ClaimDetailsBaseTest {
@@ -26,9 +22,6 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
   private static final String CALCULATED = "£200.00";
   private static final String ASSESSED = "£300.00";
 
-  @MockitoBean private AssessmentService assessmentService;
-  @MockitoBean private UserRetrievalService userRetrievalService;
-
   @BeforeEach
   public void setup() {
     super.setup();
@@ -38,6 +31,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
   @Test
   void testShowsCrimeCosts() {
     claim = createCrimeClaim();
+    mockClaimHistorySummary();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -63,7 +57,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
   @Test
   void testShowsAmendedTagsForCrimeCosts() {
     claim = createCrimeClaim();
-    amendFields(
+    mockClaimHistorySummary(
         "claimSummaryFee.netProfitCostsAmount",
         "claimSummaryFee.netDisbursementAmount",
         "claimSummaryFee.travelWaitingCostsAmount",
@@ -86,6 +80,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
   @Test
   void testShowsMediationCosts() {
     claim = createMediationClaim();
+    mockClaimHistorySummary();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -105,7 +100,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
   @Test
   void testShowsAmendedTagsForMediationCosts() {
     claim = createMediationClaim();
-    amendFields(
+    mockClaimHistorySummary(
         "claimSummaryFee.netDisbursementAmount",
         "claimSummaryFee.disbursementsVatAmount",
         "claimSummaryFee.isVatApplicable");
@@ -118,6 +113,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
   @Test
   void testShowsCivilCosts() {
     claim = createCivilClaim();
+    mockClaimHistorySummary();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -177,7 +173,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
   @Test
   void testShowsAmendedTagsForCivilCosts() {
     claim = createCivilClaim();
-    amendFields(
+    mockClaimHistorySummary(
         "claimSummaryFee.netProfitCostsAmount",
         "claimSummaryFee.netDisbursementAmount",
         "claimSummaryFee.netCounselCostsAmount",
@@ -221,7 +217,6 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
     claim.setClaimId(claimId);
     claim.setHasAssessment(true);
     claim.setLastAssessment(AssessmentInfo.builder().lastAssessmentOutcome(PAID_IN_FULL).build());
-    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
     return claim;
   }
 
@@ -231,7 +226,6 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
     claim.setClaimId(claimId);
     claim.setHasAssessment(true);
     claim.setLastAssessment(AssessmentInfo.builder().lastAssessmentOutcome(PAID_IN_FULL).build());
-    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
     return claim;
   }
 
@@ -241,7 +235,6 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
     claim.setClaimId(claimId);
     claim.setHasAssessment(true);
     claim.setLastAssessment(AssessmentInfo.builder().lastAssessmentOutcome(PAID_IN_FULL).build());
-    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
     return claim;
   }
 
