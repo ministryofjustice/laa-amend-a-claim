@@ -37,6 +37,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.models.AmendmentConfirmation;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistoryEvent;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
@@ -369,7 +370,7 @@ public class ClaimHistoryServiceTest {
 
     assertThat(claimHistoryService.getAmendmentConfirmation(claim))
         .isEqualTo(
-            new ClaimHistoryService.AmendmentConfirmation(
+            new AmendmentConfirmation(
                 true,
                 Set.of(
                     "claimSummaryFee.netProfitCostsAmount",
@@ -393,7 +394,7 @@ public class ClaimHistoryServiceTest {
     when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
 
     assertThat(claimHistoryService.getAmendmentConfirmation(claim))
-        .isEqualTo(new ClaimHistoryService.AmendmentConfirmation(false, Set.of()));
+        .isEqualTo(new AmendmentConfirmation(false, Set.of()));
   }
 
   private static LinkedHashMap<String, String> change(String source, String fieldIdentifier) {

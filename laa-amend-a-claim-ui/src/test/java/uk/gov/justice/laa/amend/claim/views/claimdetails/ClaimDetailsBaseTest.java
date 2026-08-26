@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 import java.util.Set;
 import org.jsoup.nodes.Document;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import uk.gov.justice.laa.amend.claim.models.ClaimHistorySummary;
 import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
-import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService.ClaimHistorySummary;
 import uk.gov.justice.laa.amend.claim.views.ViewTestBase;
 
 public abstract class ClaimDetailsBaseTest extends ViewTestBase {

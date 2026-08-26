@@ -5,18 +5,17 @@
     <th:block th:if="${claimDetailsHeaderView.isAmendedAlertPresent}">
         <th:block th:replace="~{fragments/information-alert ::
             informationAlert(
-                'claimSummary.amended',
-                ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)},
-                null
+                prefix='claimSummary.amended',
+                contentLineOne=${claimDetailsHeaderView.lastEditedBy.resolve(#messages)}
             )}"></th:block>
     </th:block>
 
     <th:block th:if="${claimDetailsHeaderView.isLastAssessedAlertPresent}">
         <th:block th:replace="~{fragments/information-alert ::
             informationAlert(
-                'claimSummary',
-                ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)},
-                ${claimDetailsHeaderView.extraAlertText.resolve(#messages)}
+                prefix='claimSummary',
+                contentLineOne=${claimDetailsHeaderView.lastEditedBy.resolve(#messages)},
+                contentLineTwo=${claimDetailsHeaderView.extraAlertText.resolve(#messages)}
             )}"></th:block>
     </th:block>
 

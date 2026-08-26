@@ -91,7 +91,6 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
   public void setup() {
     super.setup();
     mapping = caseUrl;
-    mockClaimHistorySummary();
   }
 
   @Test

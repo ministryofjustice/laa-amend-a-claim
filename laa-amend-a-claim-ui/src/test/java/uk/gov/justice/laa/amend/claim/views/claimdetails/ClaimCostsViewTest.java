@@ -26,7 +26,6 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
   public void setup() {
     super.setup();
     mapping = costsUrl;
-    mockClaimHistorySummary();
   }
 
   @Test

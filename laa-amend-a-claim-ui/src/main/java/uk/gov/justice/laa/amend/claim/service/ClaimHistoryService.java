@@ -8,11 +8,8 @@ import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_CREATED;
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_VOIDED;
-import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.ACCEPTED;
-import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.AMENDED;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
 
-import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -22,16 +19,17 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.amend.claim.client.ClaimsApiClient;
 import uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig;
+import uk.gov.justice.laa.amend.claim.models.AmendmentConfirmation;
 import uk.gov.justice.laa.amend.claim.models.AssessmentInfo;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistory;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistoryEvent;
+import uk.gov.justice.laa.amend.claim.models.ClaimHistorySummary;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
@@ -70,17 +68,6 @@ public class ClaimHistoryService {
         assessments.stream().findFirst().map(AssessmentInfo::lastAssessedBy).map(userIdToUser::get);
 
     return new ClaimHistory(events, latestAssessmentUser);
-  }
-
-  @Builder
-  public record ClaimHistorySummary(
-      MicrosoftApiUser lastUpdatedUser,
-      OffsetDateTime lastUpdatedDateTime,
-      Set<String> amendedFields) {
-
-    public static ClaimHistorySummary empty() {
-      return ClaimHistorySummary.builder().amendedFields(Set.of()).build();
-    }
   }
 
   public ClaimHistorySummary getClaimHistorySummary(ClaimDetails claim) {
@@ -172,9 +159,6 @@ public class ClaimHistoryService {
 
     return new AmendmentConfirmation(true, changedCalculatedCosts);
   }
-
-  public record AmendmentConfirmation(
-      Boolean hasCalculatedCostsChanged, Set<String> amendedFields) {}
 
   private Map<String, MicrosoftApiUser> getUserIdToUser(final List<AssessmentInfo> assessments) {
     var userIds =

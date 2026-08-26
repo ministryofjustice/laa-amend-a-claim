@@ -40,7 +40,6 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
   public void setup() {
     super.setup();
     mapping = clientUrl;
-    mockClaimHistorySummary();
   }
 
   @Test
