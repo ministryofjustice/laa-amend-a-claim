@@ -2,12 +2,31 @@
     <!--/*@thymesVar id="featureFlagsConfig" type="uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig"*/-->
     <!--/*@thymesVar id="claimDetailsHeaderView" type="uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsHeaderView"*/-->
 
+    <th:block th:if="${claimDetailsHeaderView.isAmendedAlertPresent}">
+        <th:block th:replace="~{fragments/information-alert ::
+            informationAlert(
+                'claimSummary.amended',
+                ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)},
+                null
+            )}"></th:block>
+    </th:block>
+
     <th:block th:if="${claimDetailsHeaderView.isLastAssessedAlertPresent}">
-        <th:block th:replace="~{fragments/information-alert :: informationAlert('claimSummary', ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)})}"></th:block>
+        <th:block th:replace="~{fragments/information-alert ::
+            informationAlert(
+                'claimSummary',
+                ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)},
+                ${claimDetailsHeaderView.extraAlertText.resolve(#messages)}
+            )}"></th:block>
     </th:block>
 
     <th:block th:if="${claimDetailsHeaderView.isVoidedAlertPresent}">
-        <th:block th:replace="~{fragments/error-alert :: errorAlert('claimSummary.error', ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)})}"></th:block>
+        <th:block th:replace="~{fragments/error-alert ::
+            errorAlert(
+                'claimSummary.error',
+                ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)},
+                ${claimDetailsHeaderView.extraAlertText.resolve(#messages)}
+            )}"></th:block>
     </th:block>
 
     <h1 class="govuk-heading-l">

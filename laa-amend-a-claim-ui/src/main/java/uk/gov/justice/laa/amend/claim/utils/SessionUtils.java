@@ -1,8 +1,6 @@
 package uk.gov.justice.laa.amend.claim.utils;
 
 import jakarta.servlet.http.HttpSession;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
@@ -18,7 +16,6 @@ public class SessionUtils {
 
   public static final String CLAIM_KEY = "%s";
   public static final String AMENDMENTS_KEY = "amendments:%s";
-  public static final String AMENDED_FIELDS_KEY = "amendedFields:%s";
 
   public static void saveClaim(HttpSession session, UUID claimId, Claim claim) {
     var key = CLAIM_KEY.formatted(claimId.toString());
@@ -85,31 +82,8 @@ public class SessionUtils {
     session.removeAttribute(key);
   }
 
-  public static void saveAmendedFields(HttpSession session, UUID claimId, Set<String> fields) {
-    var key = AMENDED_FIELDS_KEY.formatted(claimId.toString());
-    session.setAttribute(key, new HashSet<>(fields));
-  }
-
-  @SuppressWarnings("unchecked")
-  public static Set<String> getAmendedFields(HttpSession session, UUID claimId) {
-    var key = AMENDED_FIELDS_KEY.formatted(claimId.toString());
-    var fields = session.getAttribute(key);
-
-    if (fields == null) {
-      return Set.of();
-    }
-
-    return (Set<String>) fields;
-  }
-
-  public static void removeAmendedFields(HttpSession session, UUID claimId) {
-    var key = AMENDED_FIELDS_KEY.formatted(claimId.toString());
-    session.removeAttribute(key);
-  }
-
   public static void removeAllForClaim(HttpSession session, UUID claimId) {
     removeClaim(session, claimId);
     removeAmendmentForms(session, claimId);
-    removeAmendedFields(session, claimId);
   }
 }

@@ -200,6 +200,7 @@ public class WireMockSetup {
                   "id": "%s",
                   "submission_id": "%s",
                   "status": "VALID",
+                  "derived_claim_status": "ACCEPTED",
                   "unique_file_number": "123456",
                   "case_reference_number": "REF123",
                   "client_forename": "Jane",

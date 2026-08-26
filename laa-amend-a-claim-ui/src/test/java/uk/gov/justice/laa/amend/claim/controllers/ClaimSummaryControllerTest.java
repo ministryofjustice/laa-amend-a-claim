@@ -12,10 +12,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.ACCEPTED;
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.VOIDED;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.ROLE_CLAIM_AMENDMENTS_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.ROLE_ESCAPE_CASE_CASEWORKER;
 import static uk.gov.justice.laa.amend.claim.models.enums.Role.allRolesApartFrom;
 import static uk.gov.justice.laa.amend.claim.utils.SessionUtils.saveClaim;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VOID;
 
 import java.time.OffsetDateTime;
 import java.util.Set;
@@ -35,6 +38,7 @@ import uk.gov.justice.laa.amend.claim.models.enums.Role;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
 import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
+import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService.ClaimHistorySummary;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.MicrosoftUserRetrievalService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
@@ -66,6 +70,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getClaimHistorySummary(claim)).thenReturn(ClaimHistorySummary.empty());
 
     var lastAssessment =
         AssessmentInfo.builder()
@@ -74,7 +79,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
             .lastAssessmentOutcome(OutcomeType.PAID_IN_FULL)
             .build();
     claim.setLastAssessment(lastAssessment);
-    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    when(assessmentService.setLatestAssessmentOnClaim(claim)).thenReturn(claim);
 
     mockMvc
         .perform(get(buildPath()).session(session))
@@ -92,6 +97,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     session.setAttribute("searchUrl", "/?officeCode=12345&page=1");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getClaimHistorySummary(claim)).thenReturn(ClaimHistorySummary.empty());
 
     var lastAssessment =
         AssessmentInfo.builder()
@@ -100,7 +106,7 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
             .lastAssessmentOutcome(OutcomeType.PAID_IN_FULL)
             .build();
     claim.setLastAssessment(lastAssessment);
-    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    when(assessmentService.setLatestAssessmentOnClaim(claim)).thenReturn(claim);
 
     mockMvc
         .perform(get(buildPath()).session(session))
@@ -167,7 +173,9 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
 
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setHasAssessment(false);
+    claim.setDerivedClaimStatus(ACCEPTED);
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getClaimHistorySummary(claim)).thenReturn(ClaimHistorySummary.empty());
 
     mockMvc
         .perform(get(buildPath()).session(session))
@@ -184,12 +192,14 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
 
     var user = MockClaimsFunctions.createUser();
     var claim = MockClaimsFunctions.createMockCivilClaim();
-    claim.setStatus(ClaimStatus.VOID);
+    claim.setStatus(VOID);
+    claim.setDerivedClaimStatus(VOIDED);
     claim.setLastUpdatedUser(user.id());
     claim.setLastUpdatedDateTime(OffsetDateTime.now());
 
     when(userRetrievalService.getUser(user.id())).thenReturn(user);
     when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
+    when(claimHistoryService.getClaimHistorySummary(claim)).thenReturn(ClaimHistorySummary.empty());
 
     mockMvc
         .perform(get(buildPath()).session(session))
@@ -207,8 +217,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setHasAssessment(false);
     claim.setEscaped(false);
+    claim.setDerivedClaimStatus(ACCEPTED);
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getClaimHistorySummary(claim)).thenReturn(ClaimHistorySummary.empty());
 
     mockMvc
         .perform(get(buildPath()).session(session))
@@ -225,8 +237,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
 
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setHasAssessment(false);
+    claim.setDerivedClaimStatus(ACCEPTED);
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getClaimHistorySummary(claim)).thenReturn(ClaimHistorySummary.empty());
 
     mockMvc
         .perform(get(buildPath()).session(session))
@@ -245,7 +259,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     claim.setEscaped(false);
     claim.setFeeCode("ILHSD");
     claim.setHasAssessment(false);
+    claim.setDerivedClaimStatus(ACCEPTED);
+
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getClaimHistorySummary(claim)).thenReturn(ClaimHistorySummary.empty());
 
     mockMvc
         .perform(get(buildPath()).session(session))
@@ -262,8 +279,10 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
 
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setStatus(ClaimStatus.VALID);
+    claim.setDerivedClaimStatus(ACCEPTED);
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getClaimHistorySummary(claim)).thenReturn(ClaimHistorySummary.empty());
 
     mockMvc
         .perform(get(buildPath()).session(session))
@@ -279,12 +298,14 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
 
     var user = MockClaimsFunctions.createUser();
     var claim = MockClaimsFunctions.createMockCivilClaim();
-    claim.setStatus(ClaimStatus.VOID);
+    claim.setStatus(VOID);
+    claim.setDerivedClaimStatus(VOIDED);
     claim.setLastUpdatedUser(user.id());
     claim.setLastUpdatedDateTime(OffsetDateTime.now());
 
     when(userRetrievalService.getUser(user.id())).thenReturn(user);
     when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
+    when(claimHistoryService.getClaimHistorySummary(claim)).thenReturn(ClaimHistorySummary.empty());
 
     mockMvc
         .perform(get(buildPath()).session(session))
@@ -301,11 +322,13 @@ public class ClaimSummaryControllerTest extends BaseControllerTest {
     var user = MockClaimsFunctions.createUser();
     var claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setStatus(ClaimStatus.VALID);
+    claim.setDerivedClaimStatus(ACCEPTED);
     claim.setLastUpdatedUser(user.id());
     claim.setLastUpdatedDateTime(OffsetDateTime.now());
 
     when(userRetrievalService.getUser(user.id())).thenReturn(user);
     when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
+    when(claimHistoryService.getClaimHistorySummary(claim)).thenReturn(ClaimHistorySummary.empty());
 
     mockMvc
         .perform(get(buildPath()).session(session))

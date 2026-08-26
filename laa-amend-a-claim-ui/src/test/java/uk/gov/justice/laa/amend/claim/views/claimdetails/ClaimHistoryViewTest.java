@@ -16,15 +16,11 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.claimdetails.ClaimHistoryController;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistory;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistoryEvent;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
-import uk.gov.justice.laa.amend.claim.service.AssessmentService;
-import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
-import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 
 @WebMvcTest(ClaimHistoryController.class)
 class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
@@ -36,10 +32,6 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
       OffsetDateTime.of(2026, 5, 15, 10, 40, 0, 0, ZoneOffset.UTC);
   private static final OffsetDateTime VOIDED_AT =
       OffsetDateTime.of(2026, 5, 16, 10, 40, 0, 0, ZoneOffset.UTC);
-
-  @MockitoBean private ClaimHistoryService claimHistoryService;
-  @MockitoBean private AssessmentService assessmentService;
-  @MockitoBean private UserRetrievalService userRetrievalService;
 
   @BeforeEach
   public void setup() {

@@ -7,6 +7,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw.CRIME_LOWER;
+import static uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw.LEGAL_HELP;
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.AMENDED;
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.ASSESSED;
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.VOIDED;
 import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.DISPLAY_NAME;
 import static uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions.createUser;
 
@@ -40,10 +45,11 @@ import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
+import uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus;
 import uk.gov.justice.laa.amend.claim.models.enums.OutcomeType;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.amend.claim.service.AssessmentService;
-import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
+import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService.ClaimHistorySummary;
 import uk.gov.justice.laa.amend.claim.service.ClaimService;
 import uk.gov.justice.laa.amend.claim.service.MicrosoftUserRetrievalService;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponse;
@@ -54,8 +60,6 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.FeeCalculationPatch;
 class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
 
   @MockitoBean private ClaimService claimService;
-
-  @MockitoBean private ClaimHistoryService claimHistoryService;
 
   @MockitoBean private ClaimMapper claimMapper;
 
@@ -69,6 +73,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
   public void setup() {
     super.setup();
     mapping = overviewUrl;
+    claim.setDerivedClaimStatus(AMENDED);
   }
 
   @Test
@@ -77,13 +82,13 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     createClaimSummary(claim);
     claim.setClaimId(claimId);
     claim.setSubmissionId(submissionId);
-    claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
+    claim.setAreaOfLaw(LEGAL_HELP);
     claim.setCategoryOfLaw("TEST");
     claim.setMatterType1("IMLB");
     claim.setMatterType2("AHQS");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
+    when(claimHistoryService.getClaimHistorySummary(any())).thenReturn(ClaimHistorySummary.empty());
 
     Document doc = renderDocument();
     assertCommonPageContent(doc);
@@ -147,6 +152,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setClaimId(claimId);
     claim.setSubmissionId(submissionId);
     claim.setHasAssessment(true);
+    claim.setDerivedClaimStatus(ASSESSED);
 
     OAuth2AuthorizedClient mockClient = mock(OAuth2AuthorizedClient.class);
     when(mockClient.getAccessToken())
@@ -160,7 +166,6 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     when(authorizedClientService.loadAuthorizedClient(eq("entra"), any())).thenReturn(mockClient);
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
 
     var lastAssessment =
         AssessmentInfo.builder()
@@ -173,7 +178,15 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setLastUpdatedDateTime(lastAssessment.lastAssessmentDate());
     claim.setLastUpdatedUser(lastAssessment.lastAssessedBy());
 
-    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    when(claimHistoryService.getClaimHistorySummary(any()))
+        .thenReturn(
+            ClaimHistorySummary.builder()
+                .lastUpdatedUser(new MicrosoftApiUser("test-id", "Bloggs, Joe", "Joe", "Bloggs"))
+                .lastUpdatedDateTime(lastAssessment.lastAssessmentDate())
+                .amendedFields(Set.of())
+                .build());
+
+    when(assessmentService.setLatestAssessmentOnClaim(claim)).thenReturn(claim);
 
     when(userRetrievalService.getUser(any()))
         .thenReturn(new MicrosoftApiUser("test-id", "Bloggs, Joe", "Joe", "Bloggs"));
@@ -185,7 +198,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertPageHasInformationAlert(
         doc,
         "This claim has been assessed",
-        "Last edited by Joe Bloggs on 18 December 2025 at 4:11pm Nilled.");
+        "Last edited by Joe Bloggs on 18 December 2025 at 4:11pm Nilled");
 
     assertPageHasSummaryCard(doc, "Summary");
 
@@ -227,14 +240,14 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setClaimId(claimId);
     claim.setSubmissionId(submissionId);
     claim.setMatterTypeCode("IMLB");
-    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    claim.setAreaOfLaw(CRIME_LOWER);
     claim.setSchemeId("SCHEME");
     claim.setPoliceStationCourtPrisonId("POLICE_STATION_COURT_PRISON");
 
     ClaimResponse claimResponse = new ClaimResponse();
     claimResponse.feeCalculationResponse(new FeeCalculationPatch().categoryOfLaw("CRIME"));
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
+    when(claimHistoryService.getClaimHistorySummary(any())).thenReturn(ClaimHistorySummary.empty());
 
     Document doc = renderDocument();
     assertCommonPageContent(doc);
@@ -294,7 +307,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setMatterType2("AHQS");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
+    when(claimHistoryService.getClaimHistorySummary(any())).thenReturn(ClaimHistorySummary.empty());
 
     Document doc = renderDocument();
     assertCommonPageContent(doc);
@@ -336,7 +349,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setEscaped(false);
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
+    when(claimHistoryService.getClaimHistorySummary(any())).thenReturn(ClaimHistorySummary.empty());
 
     Document doc = renderDocument();
     assertPageHasNoAmendedTags(doc);
@@ -351,7 +364,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     session.setAttribute("searchUrl", "/?officeCode=0P322F&page=1");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
+    when(claimHistoryService.getClaimHistorySummary(any())).thenReturn(ClaimHistorySummary.empty());
 
     Document doc = renderDocument();
     assertPageHasNoAmendedTags(doc);
@@ -365,33 +378,32 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     createClaimSummary(claim);
     claim.setClaimId(claimId);
     claim.setSubmissionId(submissionId);
-    claim.setAreaOfLaw(AreaOfLaw.LEGAL_HELP);
+    claim.setDerivedClaimStatus(AMENDED);
+    claim.setAreaOfLaw(LEGAL_HELP);
     claim.setCategoryOfLaw("TEST");
     claim.setMatterType1("IMLB");
     claim.setMatterType2("AHQS");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-    when(claimHistoryService.getAmendedFields(any()))
-        .thenReturn(
-            Set.of(
-                "claim.uniqueFileNumber",
-                "client.uniqueClientNumber",
-                "claim.feeCode",
-                "claim.matterTypeCode",
-                "claim.caseStartDate",
-                "claim.caseConcludedDate",
-                "claimSummaryFee.netProfitCostsAmount",
-                "claimSummaryFee.netDisbursementAmount",
-                "claimSummaryFee.disbursementsVatAmount",
-                "claimSummaryFee.detentionTravelWaitingCostsAmount",
-                "claimSummaryFee.jrFormFillingAmount",
-                "claimSummaryFee.netCounselCostsAmount",
-                "claimSummaryFee.cmrhOralCount",
-                "claimSummaryFee.cmrhTelephoneCount",
-                "claimSummaryFee.hoInterview",
-                "claimSummaryFee.isSubstantiveHearing",
-                "claimSummaryFee.adjournedHearingFeeAmount",
-                "claimSummaryFee.isVatApplicable"));
+    mockClaimHistorySummary(
+        "claim.uniqueFileNumber",
+        "client.uniqueClientNumber",
+        "claim.feeCode",
+        "claim.matterTypeCode",
+        "claim.caseStartDate",
+        "claim.caseConcludedDate",
+        "claimSummaryFee.netProfitCostsAmount",
+        "claimSummaryFee.netDisbursementAmount",
+        "claimSummaryFee.disbursementsVatAmount",
+        "claimSummaryFee.detentionTravelWaitingCostsAmount",
+        "claimSummaryFee.jrFormFillingAmount",
+        "claimSummaryFee.netCounselCostsAmount",
+        "claimSummaryFee.cmrhOralCount",
+        "claimSummaryFee.cmrhTelephoneCount",
+        "claimSummaryFee.hoInterview",
+        "claimSummaryFee.isSubstantiveHearing",
+        "claimSummaryFee.adjournedHearingFeeAmount",
+        "claimSummaryFee.isVatApplicable");
 
     Document doc = renderDocument();
 
@@ -431,28 +443,27 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     createClaimSummary(claim);
     claim.setClaimId(claimId);
     claim.setSubmissionId(submissionId);
+    claim.setDerivedClaimStatus(AMENDED);
     claim.setMatterTypeCode("IMLB");
-    claim.setAreaOfLaw(AreaOfLaw.CRIME_LOWER);
+    claim.setAreaOfLaw(CRIME_LOWER);
     claim.setSchemeId("SCHEME");
     claim.setPoliceStationCourtPrisonId("POLICE_STATION_COURT_PRISON");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-    when(claimHistoryService.getAmendedFields(any()))
-        .thenReturn(
-            Set.of(
-                "claim.uniqueFileNumber",
-                "claim.feeCode",
-                "claim.policeStationCourtPrisonId",
-                "claim.schemeId",
-                "claim.crimeMatterTypeCode",
-                "claim.caseStartDate",
-                "claim.caseConcludedDate",
-                "claimSummaryFee.netProfitCostsAmount",
-                "claimSummaryFee.netDisbursementAmount",
-                "claimSummaryFee.disbursementsVatAmount",
-                "claimSummaryFee.travelWaitingCostsAmount",
-                "claimSummaryFee.netWaitingCostsAmount",
-                "claimSummaryFee.isVatApplicable"));
+    mockClaimHistorySummary(
+        "claim.uniqueFileNumber",
+        "claim.feeCode",
+        "claim.policeStationCourtPrisonId",
+        "claim.schemeId",
+        "claim.crimeMatterTypeCode",
+        "claim.caseStartDate",
+        "claim.caseConcludedDate",
+        "claimSummaryFee.netProfitCostsAmount",
+        "claimSummaryFee.netDisbursementAmount",
+        "claimSummaryFee.disbursementsVatAmount",
+        "claimSummaryFee.travelWaitingCostsAmount",
+        "claimSummaryFee.netWaitingCostsAmount",
+        "claimSummaryFee.isVatApplicable");
 
     Document doc = renderDocument();
 
@@ -480,25 +491,24 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     createClaimSummary(claim);
     claim.setClaimId(claimId);
     claim.setSubmissionId(submissionId);
+    claim.setDerivedClaimStatus(AMENDED);
     claim.setAreaOfLaw(AreaOfLaw.MEDIATION);
     claim.setCategoryOfLaw("TEST");
     claim.setMatterType1("IMLB");
     claim.setMatterType2("AHQS");
 
     when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
-    when(claimHistoryService.getAmendedFields(any()))
-        .thenReturn(
-            Set.of(
-                "claim.uniqueFileNumber",
-                "client.uniqueClientNumber",
-                "claim.feeCode",
-                "claim.matterTypeCode",
-                "claim.caseStartDate",
-                "claim.caseConcludedDate",
-                "claimSummaryFee.netProfitCostsAmount",
-                "claimSummaryFee.netDisbursementAmount",
-                "claimSummaryFee.disbursementsVatAmount",
-                "claimSummaryFee.isVatApplicable"));
+    mockClaimHistorySummary(
+        "claim.uniqueFileNumber",
+        "client.uniqueClientNumber",
+        "claim.feeCode",
+        "claim.matterTypeCode",
+        "claim.caseStartDate",
+        "claim.caseConcludedDate",
+        "claimSummaryFee.netProfitCostsAmount",
+        "claimSummaryFee.netDisbursementAmount",
+        "claimSummaryFee.disbursementsVatAmount",
+        "claimSummaryFee.isVatApplicable");
 
     Document doc = renderDocument();
 
@@ -524,6 +534,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     createClaimSummary(claim);
 
     claim.setStatus(ClaimStatus.VOID);
+    claim.setDerivedClaimStatus(VOIDED);
     var lastAssessment = MockClaimsFunctions.createAssessment(AssessmentTypeEnum.VOID);
     claim.setHasAssessment(true);
     claim.setLastAssessment(lastAssessment);
@@ -531,8 +542,14 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     claim.setLastUpdatedUser(lastAssessment.lastAssessedBy());
 
     when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
-    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
-    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
+    when(claimHistoryService.getClaimHistorySummary(any()))
+        .thenReturn(
+            ClaimHistorySummary.builder()
+                .lastUpdatedUser(createUser())
+                .lastUpdatedDateTime(lastAssessment.lastAssessmentDate())
+                .amendedFields(Set.of())
+                .build());
+    when(assessmentService.setLatestAssessmentOnClaim(claim)).thenReturn(claim);
     when(userRetrievalService.getUser(lastAssessment.lastAssessedBy())).thenReturn(createUser());
 
     Document doc = renderDocument();
@@ -544,14 +561,10 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     Element banner = doc.selectFirst(".moj-alert.moj-alert--error");
     assertNotNull(banner, "Expected VOID banner to be visible");
 
-    assertTrue(
-        banner
-            .text()
-            .matches(
-                ".*This claim has been voided.*Last edited by "
-                    + DISPLAY_NAME
-                    + ".*You can no longer make changes\\..*"),
-        "VOID banner text is not in the expected order");
+    String bannerText = banner.text();
+    assertTrue(bannerText.contains("This claim has been voided"));
+    assertTrue(bannerText.contains("Last edited by " + DISPLAY_NAME));
+    assertTrue(bannerText.contains("You can no longer make changes"));
 
     Element assessmentButton = doc.selectFirst("[data-testid=claim-details-assessment-button]");
     assertNull(assessmentButton, "Expected assessment button to be hidden for VOID claims");
@@ -564,33 +577,28 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
   @MethodSource("claimTypes")
   void testVoidClaimPageWithNoPreviousAssessmentShowsVoidBanner(ClaimDetails claim) {
     createClaimSummary(claim);
-
     claim.setStatus(ClaimStatus.VOID);
-    claim.setLastAssessment(null);
-    var lastAssessment = MockClaimsFunctions.createAssessment(AssessmentTypeEnum.VOID);
-    claim.setHasAssessment(true);
-    claim.setLastAssessment(lastAssessment);
-    claim.setLastUpdatedDateTime(lastAssessment.lastAssessmentDate());
-    claim.setLastUpdatedUser(lastAssessment.lastAssessedBy());
+    claim.setDerivedClaimStatus(DerivedClaimStatus.VOIDED);
 
     when(claimService.getClaimDetails(submissionId, claimId)).thenReturn(claim);
-    when(claimHistoryService.getAmendedFields(any())).thenReturn(Set.of());
-    when(assessmentService.getLatestAssessmentByClaim(claim)).thenReturn(claim);
-    when(userRetrievalService.getUser(lastAssessment.lastAssessedBy())).thenReturn(createUser());
+
+    when(claimHistoryService.getClaimHistorySummary(any()))
+        .thenReturn(
+            ClaimHistorySummary.builder()
+                .lastUpdatedUser(createUser())
+                .lastUpdatedDateTime(OffsetDateTime.now())
+                .amendedFields(Set.of())
+                .build());
 
     Document doc = renderDocument();
     assertPageHasNoAmendedTags(doc);
 
     Element banner = doc.selectFirst(".moj-alert.moj-alert--error");
     assertNotNull(banner, "Expected VOID banner to be visible even without previous assessment");
-    assertTrue(
-        banner
-            .text()
-            .matches(
-                ".*This claim has been voided.*Last edited by "
-                    + DISPLAY_NAME
-                    + ".*You can no longer make changes\\..*"),
-        "VOID banner text is not in the expected order");
+    String bannerText = banner.text();
+    assertTrue(bannerText.contains("This claim has been voided"));
+    assertTrue(bannerText.contains("Last edited by " + DISPLAY_NAME));
+    assertTrue(bannerText.contains("You can no longer make changes"));
     Element assessmentButton = doc.selectFirst("[data-testid=claim-details-assessment-button]");
     assertNull(assessmentButton, "Expected assessment button to be hidden for VOID claims");
 
@@ -621,6 +629,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
   }
 
   private static void createClaimSummary(ClaimDetails claim) {
+    claim.setDerivedClaimStatus(AMENDED);
     claim.setEscaped(true);
     claim.setFeeCode("FC");
     claim.setFeeCodeDescription("FCD");

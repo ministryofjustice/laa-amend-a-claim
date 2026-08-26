@@ -1,19 +1,33 @@
 package uk.gov.justice.laa.amend.claim.viewmodels;
 
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.ASSESSED;
+
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 import uk.gov.justice.laa.amend.claim.utils.DateUtils;
 
 public record ClaimDetailsHeaderView(
+    boolean isAmendedAlertPresent,
     boolean isLastAssessedAlertPresent,
     boolean isVoidedAlertPresent,
-    ThymeleafMessage lastEditedBy) {
+    ThymeleafMessage lastEditedBy,
+    ThymeleafMessage extraAlertText) {
 
-  public ClaimDetailsHeaderView(ClaimDetails claim, MicrosoftApiUser user) {
-    this(isLastAssessedAlertPresent(claim), isVoidedAlertPresent(claim), lastEditedBy(claim, user));
+  public ClaimDetailsHeaderView(
+      ClaimDetails claim, MicrosoftApiUser lastUpdatedUser, OffsetDateTime lastUpdatedDateTime) {
+    this(
+        isAmendedAlertPresent(claim),
+        isLastAssessedAlertPresent(claim),
+        isVoidedAlertPresent(claim),
+        lastEditedBy(lastUpdatedUser, lastUpdatedDateTime),
+        extraAlertText(claim));
+  }
+
+  private static boolean isAmendedAlertPresent(ClaimDetails claim) {
+    return claim.isAmended() && !claim.isHasAssessment() && !claim.isVoided();
   }
 
   private static boolean isLastAssessedAlertPresent(ClaimDetails claim) {
@@ -24,13 +38,14 @@ public record ClaimDetailsHeaderView(
     return claim.isVoided();
   }
 
-  private static ThymeleafMessage lastEditedBy(ClaimDetails claim, MicrosoftApiUser user) {
-    String date = DateUtils.displayDateTimeDateValue(claim.getLastUpdatedDateTime());
-    String time = DateUtils.displayDateTimeTimeValue(claim.getLastUpdatedDateTime());
+  private static ThymeleafMessage lastEditedBy(
+      MicrosoftApiUser lastUpdatedUser, OffsetDateTime lastUpdatedDateTime) {
+    String date = DateUtils.displayDateTimeDateValue(lastUpdatedDateTime);
+    String time = DateUtils.displayDateTimeTimeValue(lastUpdatedDateTime);
 
-    List<Object> args = new ArrayList<>();
-    String editMessageKey = "claimSummary.lastAssessmentText.noUser";
-    Optional<String> userName = Optional.ofNullable(user).map(MicrosoftApiUser::name);
+    var args = new ArrayList<>();
+    var editMessageKey = "claimSummary.lastAssessmentText.noUser";
+    var userName = Optional.ofNullable(lastUpdatedUser).map(MicrosoftApiUser::name);
     if (userName.isPresent()) {
       args.add(userName.get());
       editMessageKey = "claimSummary.lastAssessmentText";
@@ -38,12 +53,25 @@ public record ClaimDetailsHeaderView(
     args.add(date);
     args.add(time);
 
-    String messageKey =
-        (claim.getLastAssessment() != null && !claim.isVoided())
-            ? claim.getLastAssessment().lastAssessmentOutcome().getMessageKey()
-            : "claimSummary.void.message";
-    args.add(new ThymeleafMessage(messageKey));
-
     return new ThymeleafMessage(editMessageKey, args.toArray());
+  }
+
+  private static ThymeleafMessage extraAlertText(ClaimDetails claim) {
+    if (claim.getDerivedClaimStatus() == null) {
+      return null;
+    }
+
+    return switch (claim.getDerivedClaimStatus()) {
+      case ASSESSED -> {
+        if (claim.getLastAssessment() != null) {
+          yield new ThymeleafMessage(
+              claim.getLastAssessment().lastAssessmentOutcome().getMessageKey());
+        } else {
+          yield null;
+        }
+      }
+      case VOIDED -> new ThymeleafMessage("claimSummary.void.message");
+      default -> null;
+    };
   }
 }

@@ -8,8 +8,11 @@ import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_CREATED;
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_VOIDED;
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.ACCEPTED;
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.AMENDED;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
 
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -19,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +33,8 @@ import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistory;
 import uk.gov.justice.laa.amend.claim.models.ClaimHistoryEvent;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
 
@@ -66,28 +72,75 @@ public class ClaimHistoryService {
     return new ClaimHistory(events, latestAssessmentUser);
   }
 
-  public Set<String> getAmendedFields(ClaimDetails claim) {
-    if (!TRUE.equals(featureFlagsConfig.getIsClaimAmendmentEnabled())) {
-      return Set.of();
-    }
+  @Builder
+  public record ClaimHistorySummary(
+      MicrosoftApiUser lastUpdatedUser,
+      OffsetDateTime lastUpdatedDateTime,
+      Set<String> amendedFields) {
 
-    if (!claim.isAmended()) {
-      return Set.of();
+    public static ClaimHistorySummary empty() {
+      return ClaimHistorySummary.builder().amendedFields(Set.of()).build();
     }
+  }
+
+  public ClaimHistorySummary getClaimHistorySummary(ClaimDetails claim) {
     var history = claimsApiClient.getClaimHistory(claim.getClaimId()).block();
 
     if (history == null || history.getEvents() == null) {
       log.error("Could not get claim history for claim {}", claim.getClaimId());
-      return Set.of();
+      return ClaimHistorySummary.builder()
+          .lastUpdatedUser(userRetrievalService.getUser(claim.getLastUpdatedUser()))
+          .lastUpdatedDateTime(claim.getLastUpdatedDateTime())
+          .amendedFields(Set.of())
+          .build();
     }
 
-    return history.getEvents().stream()
-        .filter(event -> event.getEventType() == AMENDMENT)
-        .map(ClaimHistoryService::getChanges)
-        .flatMap(Collection::stream)
-        .filter(ClaimHistoryService::isRequested)
-        .map(ClaimHistoryService::getFieldIdentifier)
-        .collect(toSet());
+    var builder = ClaimHistorySummary.builder();
+    var latestEvent = getLatestRelevantEvent(claim, history);
+    latestEvent.ifPresent(
+        event -> {
+          builder.lastUpdatedDateTime(event.getEventTimestamp());
+          builder.lastUpdatedUser(userRetrievalService.getUser(event.getActorId()));
+        });
+
+    if (claim.isAmended()) {
+      builder.amendedFields(
+          history.getEvents().stream()
+              .filter(event -> event.getEventType() == AMENDMENT)
+              .map(ClaimHistoryService::getChanges)
+              .flatMap(Collection::stream)
+              .filter(ClaimHistoryService::isRequested)
+              .map(ClaimHistoryService::getFieldIdentifier)
+              .collect(toSet()));
+    } else {
+      builder.amendedFields(Set.of());
+    }
+
+    return builder.build();
+  }
+
+  private static Optional<uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent>
+      getLatestRelevantEvent(ClaimDetails claim, ClaimHistoryResultSet claimHistoryResultSet) {
+    if (claim.getDerivedClaimStatus() == null) {
+      return Optional.empty();
+    }
+
+    var eventType =
+        switch (claim.getDerivedClaimStatus()) {
+          case ACCEPTED -> ClaimHistoryEventType.SUBMISSION;
+          case AMENDED -> ClaimHistoryEventType.AMENDMENT;
+          case ASSESSED -> ClaimHistoryEventType.ASSESSMENT;
+          case VOIDED -> ClaimHistoryEventType.VOID;
+          default -> null;
+        };
+
+    if (eventType == null) {
+      return Optional.empty();
+    }
+
+    return claimHistoryResultSet.getEvents().stream()
+        .filter(event -> event.getEventType() == eventType)
+        .findFirst();
   }
 
   public AmendmentConfirmation getAmendmentConfirmation(ClaimDetails claim) {

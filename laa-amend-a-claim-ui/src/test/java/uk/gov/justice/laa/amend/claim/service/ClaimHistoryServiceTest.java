@@ -10,11 +10,17 @@ import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_ASSESSED_STAGE_DISBURSEMENT;
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
 import static uk.gov.justice.laa.amend.claim.models.enums.ClaimHistoryEventType.CLAIM_VOIDED;
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.ACCEPTED;
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.AMENDED;
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.ASSESSED;
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.INVALID;
+import static uk.gov.justice.laa.amend.claim.models.enums.DerivedClaimStatus.VOIDED;
 import static uk.gov.justice.laa.amend.claim.models.enums.OutcomeType.PAID_IN_FULL;
 import static uk.gov.justice.laa.amend.claim.models.enums.OutcomeType.REDUCED;
 import static uk.gov.justice.laa.amend.claim.service.ClaimHistoryService.MAXIMUM_ASSESSMENTS;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.ASSESSMENT;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.SUBMISSION;
 
 import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
@@ -157,46 +163,45 @@ public class ClaimHistoryServiceTest {
   }
 
   @Test
-  void getAmendedFieldsReturnsEmptySetWhenIsAmendedIsFalse() {
-    when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
-
-    var claim = MockClaimsFunctions.createMockCivilClaim();
-    claim.setAmended(false);
-
-    assertThat(claimHistoryService.getAmendedFields(claim)).isEmpty();
-  }
-
-  @Test
-  void getAmendedFieldsReturnsEmptySetWhenHistoryIsNull() {
-    when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
-
+  void getHistorySummaryReturnsEmptySetWhenClaimHistoryIsNull() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setAmended(true);
+    claim.setDerivedClaimStatus(AMENDED);
 
     when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.empty());
 
-    assertThat(claimHistoryService.getAmendedFields(claim)).isEmpty();
+    var summary = claimHistoryService.getClaimHistorySummary(claim);
+
+    assertThat(summary.lastUpdatedUser()).isNull();
+    assertThat(summary.lastUpdatedDateTime()).isNull();
+    assertThat(summary.amendedFields()).isEmpty();
   }
 
   @Test
-  void getAmendedFieldsReturnsEmptySetWhenHistoryEventsAreNull() {
-    when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
-
+  void getHistorySummaryReturnsEmptySetWhenClaimHistoryEventsAreNull() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setAmended(true);
+    claim.setDerivedClaimStatus(AMENDED);
 
     when(claimsApiClient.getClaimHistory(claim.getClaimId()))
         .thenReturn(Mono.just(new ClaimHistoryResultSet().claimId(claim.getClaimId())));
 
-    assertThat(claimHistoryService.getAmendedFields(claim)).isEmpty();
+    var summary = claimHistoryService.getClaimHistorySummary(claim);
+
+    assertThat(summary.lastUpdatedUser()).isNull();
+    assertThat(summary.lastUpdatedDateTime()).isNull();
+    assertThat(summary.amendedFields()).isEmpty();
   }
 
   @Test
-  void getAmendedFieldsReturnsRequestedAmendmentFieldIdentifiers() {
-    when(featureFlagsConfig.getIsClaimAmendmentEnabled()).thenReturn(true);
-
+  void getClaimHistorySummaryReturnsRequestedAmendmentFieldIdentifiers() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setAmended(true);
+    claim.setDerivedClaimStatus(AMENDED);
+
+    var amendedDateTime = CREATED_DATE_TIME.plusDays(4);
+    var amendedUser =
+        new MicrosoftApiUser(UUID.randomUUID().toString(), "Amended user", null, null);
 
     var requestedChanges =
         List.of(
@@ -215,12 +220,130 @@ public class ClaimHistoryServiceTest {
                         .metadata(Map.of("changes", requestedChanges)),
                     new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
                         .eventType(AMENDMENT)
+                        .actorId(amendedUser.id())
+                        .eventTimestamp(amendedDateTime)
                         .metadata(Map.of("changes", requestedChanges))));
 
     when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
+    when(userRetrievalService.getUser(amendedUser.id())).thenReturn(amendedUser);
 
-    assertThat(claimHistoryService.getAmendedFields(claim))
+    var summary = claimHistoryService.getClaimHistorySummary(claim);
+
+    assertThat(summary.lastUpdatedUser()).isEqualTo(amendedUser);
+    assertThat(summary.lastUpdatedDateTime()).isEqualTo(amendedDateTime);
+    assertThat(summary.amendedFields())
         .containsExactlyInAnyOrder("claim.feeCode", "claimSummaryFee.netProfitCostsAmount");
+  }
+
+  @Test
+  void getClaimHistorySummaryReturnsSubmissionEventDetailsForAcceptedClaim() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setDerivedClaimStatus(ACCEPTED);
+
+    var submittedUser =
+        new MicrosoftApiUser(UUID.randomUUID().toString(), "Submitted user", null, null);
+    var submittedDateTime = CREATED_DATE_TIME;
+
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    historyEvent(SUBMISSION, submittedUser.id(), submittedDateTime, Map.of()),
+                    historyEvent(
+                        AMENDMENT,
+                        UUID.randomUUID().toString(),
+                        CREATED_DATE_TIME.plusDays(1),
+                        Map.of())));
+
+    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
+    when(userRetrievalService.getUser(submittedUser.id())).thenReturn(submittedUser);
+
+    var summary = claimHistoryService.getClaimHistorySummary(claim);
+
+    assertThat(summary.lastUpdatedUser()).isEqualTo(submittedUser);
+    assertThat(summary.lastUpdatedDateTime()).isEqualTo(submittedDateTime);
+    assertThat(summary.amendedFields()).isEmpty();
+  }
+
+  @Test
+  void getClaimHistorySummaryReturnsAssessmentEventDetailsForAssessedClaim() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setDerivedClaimStatus(ASSESSED);
+
+    var assessedUser =
+        new MicrosoftApiUser(UUID.randomUUID().toString(), "Assessed user", null, null);
+
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    historyEvent(
+                        ASSESSMENT, assessedUser.id(), ESCAPE_CASE_ASSESSED_DATE_TIME, Map.of()),
+                    historyEvent(
+                        SUBMISSION, UUID.randomUUID().toString(), CREATED_DATE_TIME, Map.of())));
+
+    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
+    when(userRetrievalService.getUser(assessedUser.id())).thenReturn(assessedUser);
+
+    var summary = claimHistoryService.getClaimHistorySummary(claim);
+
+    assertThat(summary.lastUpdatedUser()).isEqualTo(assessedUser);
+    assertThat(summary.lastUpdatedDateTime()).isEqualTo(ESCAPE_CASE_ASSESSED_DATE_TIME);
+    assertThat(summary.amendedFields()).isEmpty();
+  }
+
+  @Test
+  void getClaimHistorySummaryReturnsVoidEventDetailsForVoidedClaim() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setDerivedClaimStatus(VOIDED);
+
+    var voidedUser =
+        new MicrosoftApiUser(UUID.randomUUID().toString(), "Voided event user", null, null);
+
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    historyEvent(
+                        uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType
+                            .VOID,
+                        voidedUser.id(),
+                        VOIDED_DATE_TIME,
+                        Map.of())));
+
+    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
+    when(userRetrievalService.getUser(voidedUser.id())).thenReturn(voidedUser);
+
+    var summary = claimHistoryService.getClaimHistorySummary(claim);
+
+    assertThat(summary.lastUpdatedUser()).isEqualTo(voidedUser);
+    assertThat(summary.lastUpdatedDateTime()).isEqualTo(VOIDED_DATE_TIME);
+    assertThat(summary.amendedFields()).isEmpty();
+  }
+
+  @Test
+  void getClaimHistorySummaryReturnsNoLatestEventWhenDerivedClaimStatusIsUnsupported() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setDerivedClaimStatus(INVALID);
+
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    historyEvent(
+                        SUBMISSION, UUID.randomUUID().toString(), CREATED_DATE_TIME, Map.of())));
+
+    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
+
+    var summary = claimHistoryService.getClaimHistorySummary(claim);
+
+    assertThat(summary.lastUpdatedUser()).isNull();
+    assertThat(summary.lastUpdatedDateTime()).isNull();
+    assertThat(summary.amendedFields()).isEmpty();
   }
 
   @Test
@@ -278,5 +401,17 @@ public class ClaimHistoryServiceTest {
     change.put("change_source", source);
     change.put("field_identifier", fieldIdentifier);
     return change;
+  }
+
+  private static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent historyEvent(
+      uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType eventType,
+      String actorId,
+      OffsetDateTime eventTimestamp,
+      Map<String, Object> metadata) {
+    return new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+        .eventType(eventType)
+        .actorId(actorId)
+        .eventTimestamp(eventTimestamp)
+        .metadata(metadata);
   }
 }

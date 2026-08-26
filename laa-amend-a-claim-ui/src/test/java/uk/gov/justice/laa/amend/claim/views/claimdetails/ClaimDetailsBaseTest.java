@@ -1,9 +1,18 @@
 package uk.gov.justice.laa.amend.claim.views.claimdetails;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.util.Set;
 import org.jsoup.nodes.Document;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService;
+import uk.gov.justice.laa.amend.claim.service.ClaimHistoryService.ClaimHistorySummary;
 import uk.gov.justice.laa.amend.claim.views.ViewTestBase;
 
 public abstract class ClaimDetailsBaseTest extends ViewTestBase {
+
+  @MockitoBean protected ClaimHistoryService claimHistoryService;
 
   final String overviewUrl;
   final String clientUrl;
@@ -23,5 +32,10 @@ public abstract class ClaimDetailsBaseTest extends ViewTestBase {
     for (String rowLabel : rowLabels) {
       assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, cardTitle, rowLabel));
     }
+  }
+
+  protected void mockClaimHistorySummary(String... fields) {
+    when(claimHistoryService.getClaimHistorySummary(any()))
+        .thenReturn(ClaimHistorySummary.builder().amendedFields(Set.of(fields)).build());
   }
 }

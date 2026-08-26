@@ -5,14 +5,11 @@ import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.amend.claim.controllers.claimdetails.ClaimClientController;
 import uk.gov.justice.laa.amend.claim.models.CivilClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.CrimeClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.MediationClaimDetails;
 import uk.gov.justice.laa.amend.claim.resources.MockClaimsFunctions;
-import uk.gov.justice.laa.amend.claim.service.AssessmentService;
-import uk.gov.justice.laa.amend.claim.service.UserRetrievalService;
 
 @WebMvcTest(ClaimClientController.class)
 class ClaimClientViewTest extends ClaimDetailsBaseTest {
@@ -39,18 +36,17 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
   private static final String CLIENT_2_ETHNICITY = "ethnicity2";
   private static final String CLIENT_2_DISABILITY = "disability2";
 
-  @MockitoBean private AssessmentService assessmentService;
-  @MockitoBean private UserRetrievalService userRetrievalService;
-
   @BeforeEach
   public void setup() {
     super.setup();
     mapping = clientUrl;
+    mockClaimHistorySummary();
   }
 
   @Test
   void testShowsCrimeClientDetails() {
     claim = createCrimeClaim();
+    mockClaimHistorySummary();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -67,7 +63,7 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
   @Test
   void testShowsAmendedTagsForCrimeClientDetails() {
     claim = createCrimeClaim();
-    amendFields(
+    mockClaimHistorySummary(
         "client.clientForename",
         "client.clientSurname",
         "client.genderCode",
@@ -82,6 +78,7 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
   @Test
   void testShowsMediationClientDetails() {
     claim = createMediationClaim();
+    mockClaimHistorySummary();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -118,7 +115,9 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
   @Test
   void testShowsAmendedTagsForMediationClientDetails() {
     claim = createMediationClaim();
-    amendFields(
+    mockClaimHistorySummary();
+
+    mockClaimHistorySummary(
         "client.clientForename",
         "client.clientSurname",
         "client.clientDateOfBirth",
@@ -172,6 +171,7 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
   @Test
   void testShowsCivilClientDetails() {
     claim = createCivilClaim();
+    mockClaimHistorySummary();
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -199,7 +199,7 @@ class ClaimClientViewTest extends ClaimDetailsBaseTest {
   @Test
   void testShowsAmendedTagsForCivilClientDetails() {
     claim = createCivilClaim();
-    amendFields(
+    mockClaimHistorySummary(
         "client.clientForename",
         "client.clientSurname",
         "client.clientDateOfBirth",
