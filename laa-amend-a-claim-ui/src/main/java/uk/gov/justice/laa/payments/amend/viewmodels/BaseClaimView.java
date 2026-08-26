@@ -1,0 +1,31 @@
+package uk.gov.justice.laa.payments.amend.viewmodels;
+
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.DEFAULT_PERIOD_FORMAT;
+
+import java.time.format.DateTimeFormatter;
+import uk.gov.justice.laa.payments.amend.models.Claim;
+import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField;
+
+public interface BaseClaimView<T extends Claim> {
+  T claim();
+
+  default T getClaim() {
+    return claim();
+  }
+
+  default String getClientName() {
+    return ClaimDetailsViewField.getClientName(claim());
+  }
+
+  default String getSubmissionPeriodForDisplay() {
+    return claim().getSubmissionPeriod() != null
+        ? claim().getSubmissionPeriod().format(DateTimeFormatter.ofPattern(DEFAULT_PERIOD_FORMAT))
+        : null;
+  }
+
+  default long getSubmissionPeriodForSorting() {
+    return claim().getSubmissionPeriod() != null
+        ? claim().getSubmissionPeriod().atDay(1).toEpochDay()
+        : 0;
+  }
+}

@@ -1,0 +1,61 @@
+package uk.gov.justice.laa.payments.amend.viewmodels.claimcase;
+
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CASE_REFERENCE_NUMBER;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CASE_START_DATE;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.FEE_CODE;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.asMediationField;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.toFieldMap;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.CASE_CONCLUDED_DATE;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.CLAIM_ID;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.MATTER_TYPE_CODE_1;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.MATTER_TYPE_CODE_2;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.MEDIATION_SESSIONS_COUNT;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.MEDIATION_TIME_MINUTES;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.OUTCOME;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.OUTREACH_LOCATION;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.REFERRAL_SOURCE;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.SCHEDULE_REFERENCE;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.UNIQUE_CASE_ID;
+
+import java.util.LinkedHashMap;
+import java.util.stream.Stream;
+import uk.gov.justice.laa.payments.amend.models.MediationClaimDetails;
+import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
+
+public record MediationClaimCaseView(
+    LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> caseTypeRows,
+    LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> caseDetailsRows)
+    implements ClaimCaseView<ClaimViewField<MediationClaimDetails>> {
+
+  public MediationClaimCaseView(MediationClaimDetails claim) {
+    this(createCaseTypeRows(claim), createCaseDetailsRows(claim));
+  }
+
+  private static LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> createCaseTypeRows(
+      MediationClaimDetails claim) {
+    Stream<ClaimViewField<MediationClaimDetails>> fields =
+        Stream.of(asMediationField(FEE_CODE), MATTER_TYPE_CODE_1, MATTER_TYPE_CODE_2);
+
+    return toFieldMap(fields, claim);
+  }
+
+  private static LinkedHashMap<ClaimViewField<MediationClaimDetails>, Object> createCaseDetailsRows(
+      MediationClaimDetails claim) {
+
+    Stream<ClaimViewField<MediationClaimDetails>> fields =
+        Stream.of(
+            asMediationField(CASE_REFERENCE_NUMBER),
+            asMediationField(CASE_START_DATE),
+            CLAIM_ID,
+            UNIQUE_CASE_ID,
+            CASE_CONCLUDED_DATE,
+            MEDIATION_SESSIONS_COUNT,
+            MEDIATION_TIME_MINUTES,
+            OUTCOME,
+            OUTREACH_LOCATION,
+            REFERRAL_SOURCE,
+            SCHEDULE_REFERENCE);
+
+    return toFieldMap(fields, claim);
+  }
+}

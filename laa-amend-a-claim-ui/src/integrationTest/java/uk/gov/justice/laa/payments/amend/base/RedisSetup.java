@@ -1,0 +1,22 @@
+package uk.gov.justice.laa.payments.amend.base;
+
+import java.io.IOException;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import redis.embedded.RedisServer;
+
+public class RedisSetup {
+
+  private static RedisServer redisServer;
+
+  @BeforeAll
+  public static void setUpRedis() throws IOException {
+    redisServer = new RedisServer();
+    redisServer.start();
+  }
+
+  @AfterAll
+  public static void tearDown() throws IOException {
+    redisServer.stop();
+  }
+}

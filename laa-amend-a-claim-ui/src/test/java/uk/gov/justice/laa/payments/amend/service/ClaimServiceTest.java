@@ -1,0 +1,483 @@
+package uk.gov.justice.laa.payments.amend.service;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.ASSESSMENT_REASON_VOID;
+
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Mono;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResponseV2;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimResultSetV2;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaim201Response;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.VoidClaimRequest;
+import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
+import uk.gov.justice.laa.payments.amend.exceptions.ClaimNotFoundException;
+import uk.gov.justice.laa.payments.amend.mappers.ClaimMapper;
+import uk.gov.justice.laa.payments.amend.models.CivilClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.search.SearchSort;
+import uk.gov.justice.laa.payments.amend.models.search.SearchSortField;
+import uk.gov.justice.laa.payments.amend.models.sorting.SortDirection;
+import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
+import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
+
+@ExtendWith(MockitoExtension.class)
+class ClaimServiceTest {
+
+  private static final List<ClaimStatus> STATUSES = List.of(ClaimStatus.VALID, ClaimStatus.VOID);
+
+  @Mock private ClaimsApiClient claimsApiClient;
+
+  @Mock private ClaimMapper claimMapper;
+
+  @Mock private ProviderService providerService;
+
+  private SimpleMeterRegistry meterRegistry;
+  private ClaimService claimService;
+
+  private UUID submissionId;
+  private UUID claimId;
+  private UUID userId;
+
+  @BeforeEach
+  void setUp() {
+    submissionId = UUID.randomUUID();
+    claimId = UUID.randomUUID();
+    userId = UUID.randomUUID();
+    meterRegistry = new SimpleMeterRegistry();
+    claimService = new ClaimService(claimsApiClient, claimMapper, providerService, meterRegistry);
+  }
+
+  @Test
+  @DisplayName("Should return sorted valid ClaimResultSet when API client provides valid response")
+  void testSortedSearchClaims_ValidResponse() {
+    // Arrange
+    var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
+
+    when(claimsApiClient.searchClaims(
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc"))
+        .thenReturn(Mono.just(mockApiResponse));
+    var sort =
+        SearchSort.builder()
+            .field(SearchSortField.UNIQUE_FILE_NUMBER)
+            .direction(SortDirection.ASCENDING)
+            .build();
+
+    // Act
+    var result =
+        claimService.searchClaims(
+            "0p322f",
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            STATUSES,
+            1,
+            10,
+            sort);
+
+    // Assert
+    assertNotNull(result);
+    assertEquals(mockApiResponse, result);
+
+    verify(claimsApiClient, times(1))
+        .searchClaims(
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc");
+  }
+
+  @Test
+  @DisplayName(
+      "Should return valid unsorted ClaimResultSet when API client provides valid response")
+  void testUnsortedSearchClaims_ValidResponse() {
+    // Arrange
+    var mockApiResponse = new ClaimResultSetV2(); // Replace with appropriate type or mock object
+
+    when(claimsApiClient.searchClaims(
+            "0P322F", null, null, null, null, null, STATUSES, null, 0, 10, null))
+        .thenReturn(Mono.just(mockApiResponse));
+
+    // Act
+    var result =
+        claimService.searchClaims(
+            "0p322f",
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            STATUSES,
+            1,
+            10,
+            null);
+
+    // Assert
+    assertNotNull(result);
+    assertEquals(mockApiResponse, result);
+
+    verify(claimsApiClient, times(1))
+        .searchClaims("0P322F", null, null, null, null, null, STATUSES, null, 0, 10, null);
+  }
+
+  @Test
+  @DisplayName("Should throw RuntimeException when API client throws exception")
+  void testSearchClaims_ApiClientThrowsException() {
+    // Arrange
+    when(claimsApiClient.searchClaims(
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc"))
+        .thenThrow(new RuntimeException("API Error"));
+    var sort =
+        SearchSort.builder()
+            .field(SearchSortField.UNIQUE_FILE_NUMBER)
+            .direction(SortDirection.ASCENDING)
+            .build();
+
+    // Act & Assert
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class,
+            () ->
+                claimService.searchClaims(
+                    "0P322F",
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty(),
+                    STATUSES,
+                    1,
+                    10,
+                    sort));
+    assertTrue(exception.getMessage().contains("API Error"));
+
+    verify(claimsApiClient, times(1))
+        .searchClaims(
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc");
+  }
+
+  @Test
+  @DisplayName("Should handle empty API response without exception")
+  void testSearchClaims_EmptyResponse() {
+    // Arrange
+    when(claimsApiClient.searchClaims(
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc"))
+        .thenReturn(Mono.empty());
+    var sort =
+        SearchSort.builder()
+            .field(SearchSortField.UNIQUE_FILE_NUMBER)
+            .direction(SortDirection.ASCENDING)
+            .build();
+
+    // Act
+    var result =
+        claimService.searchClaims(
+            "0P322F",
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            STATUSES,
+            1,
+            10,
+            sort);
+
+    // Assert
+    assertNull(result);
+
+    verify(claimsApiClient, times(1))
+        .searchClaims(
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc");
+  }
+
+  @Test
+  @DisplayName("Should retry search on unique case id on an empty UFN search")
+  void testSearchClaims_SearchAgainAfterUfnSearchNotFound() {
+    // Arrange
+    var mockApiResponseEmpty = new ClaimResultSetV2();
+    mockApiResponseEmpty.setTotalElements(0);
+
+    var mockApiResponseSingle = new ClaimResultSetV2();
+    mockApiResponseSingle.setTotalElements(1);
+
+    String uniqueFileNumber = "112233/001";
+
+    when(claimsApiClient.searchClaims(
+            "0P322F",
+            uniqueFileNumber,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc"))
+        .thenReturn(Mono.just(mockApiResponseEmpty));
+
+    when(claimsApiClient.searchClaims(
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            uniqueFileNumber,
+            0,
+            10,
+            "unique_file_number,asc"))
+        .thenReturn(Mono.just(mockApiResponseSingle));
+    var sort =
+        SearchSort.builder()
+            .field(SearchSortField.UNIQUE_FILE_NUMBER)
+            .direction(SortDirection.ASCENDING)
+            .build();
+
+    // Act
+    var result =
+        claimService.searchClaims(
+            "0P322F",
+            Optional.of(uniqueFileNumber),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            Optional.empty(),
+            STATUSES,
+            1,
+            10,
+            sort);
+
+    // Assert
+    assertNotNull(result);
+    assertNotNull(result.getTotalElements());
+    assertEquals(Integer.valueOf(1), result.getTotalElements());
+
+    verify(claimsApiClient, times(1))
+        .searchClaims(
+            "0P322F",
+            uniqueFileNumber,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            null,
+            0,
+            10,
+            "unique_file_number,asc");
+
+    verify(claimsApiClient, times(1))
+        .searchClaims(
+            "0P322F",
+            null,
+            null,
+            null,
+            null,
+            null,
+            STATUSES,
+            uniqueFileNumber,
+            0,
+            10,
+            "unique_file_number,asc");
+  }
+
+  @Test
+  @DisplayName("Should return valid ClaimResponse when API client provides valid response")
+  void testGetClaim_ValidResponse() {
+    // Arrange
+    var mockApiResponse = new ClaimResponseV2(); // Replace with appropriate type or mock object
+
+    when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.just(mockApiResponse));
+
+    // Act
+    var result = claimService.getClaim(submissionId, claimId);
+
+    // Assert
+    assertNotNull(result);
+    assertEquals(mockApiResponse, result);
+
+    verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
+  }
+
+  @Test
+  @DisplayName("Should throw RuntimeException when API client throws exception")
+  void testGetClaim_ApiClientThrowsException() {
+    // Arrange
+    when(claimsApiClient.getClaim(submissionId, claimId))
+        .thenThrow(new RuntimeException("API Error"));
+
+    // Act & Assert
+    RuntimeException exception =
+        assertThrows(RuntimeException.class, () -> claimService.getClaim(submissionId, claimId));
+    assertTrue(exception.getMessage().contains("API Error"));
+
+    verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
+  }
+
+  @Test
+  @DisplayName("Should throw Not Found exception when API client returns null")
+  void testGetClaimDetails_ApiClientThrowsException() {
+    // Arrange
+    when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.empty());
+
+    // Act & Assert
+    ClaimNotFoundException exception =
+        assertThrows(
+            ClaimNotFoundException.class,
+            () -> claimService.getClaimDetails(submissionId, claimId));
+    assertTrue(
+        exception
+            .getMessage()
+            .contains(
+                String.format(
+                    "Claim with ID %s not found for submission %s", claimId, submissionId)));
+
+    verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
+  }
+
+  @Test
+  @DisplayName("Should return claim details")
+  void testGetClaimDetails_Success() {
+    // Arrange
+    when(claimsApiClient.getClaim(submissionId, claimId))
+        .thenReturn(Mono.just(new ClaimResponseV2()));
+
+    when(claimMapper.mapToClaimDetails(any())).thenReturn(new CivilClaimDetails());
+    // Act & Assert
+    var response = claimService.getClaimDetails(submissionId, claimId);
+    assertNotNull(response);
+
+    verify(claimsApiClient, times(1)).getClaim(submissionId, claimId);
+  }
+
+  @Test
+  @DisplayName("Should enrich claim details with provider name from provider API")
+  void testGetClaimDetailsEnrichesProviderName() {
+    // Arrange
+    ProviderFirmOfficeDto providerFirm = new ProviderFirmOfficeDto();
+    ProviderFirmSummary providerFirmSummary = new ProviderFirmSummary();
+    providerFirmSummary.setFirmName("Test Firm");
+    providerFirm.setFirm(providerFirmSummary);
+
+    var claimResponse = new ClaimResponseV2();
+    CivilClaimDetails claimDetails = new CivilClaimDetails();
+    claimDetails.setOfficeCode("0P322F");
+
+    when(claimsApiClient.getClaim(submissionId, claimId)).thenReturn(Mono.just(claimResponse));
+    when(claimMapper.mapToClaimDetails(claimResponse)).thenReturn(claimDetails);
+    when(providerService.getProviderFirm("0P322F")).thenReturn(providerFirm);
+
+    // Act
+    var result = claimService.getClaimDetails(submissionId, claimId);
+
+    // Assert
+    assertNotNull(result);
+    verify(providerService, times(1)).getProviderFirm("0P322F");
+    verify(claimMapper, times(1)).enrichWithProviderName(claimDetails, "Test Firm");
+  }
+
+  @Test
+  @DisplayName("Should return void response and increment success counter")
+  void voidClaim() {
+    var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
+    var expectedResponse = new VoidClaim201Response(UUID.randomUUID());
+    when(claimsApiClient.voidClaim(claimId, request)).thenReturn(Mono.just(expectedResponse));
+
+    var actualResponse = claimService.voidClaim(claimId, userId);
+
+    assertEquals(expectedResponse, actualResponse);
+    assertThat(meterRegistry.counter("claim.void").count()).isEqualTo(1.0);
+    assertThat(meterRegistry.counter("claim.void.failed").count()).isEqualTo(0.0);
+  }
+
+  @Test
+  @DisplayName("Should increment failure counter when void claim throws an exception")
+  void voidClaim_failure() {
+    var request = new VoidClaimRequest(userId, ASSESSMENT_REASON_VOID);
+    when(claimsApiClient.voidClaim(claimId, request)).thenThrow(new RuntimeException("API Error"));
+
+    assertThrows(RuntimeException.class, () -> claimService.voidClaim(claimId, userId));
+
+    assertThat(meterRegistry.counter("claim.void").count()).isEqualTo(0.0);
+    assertThat(meterRegistry.counter("claim.void.failed").count()).isEqualTo(1.0);
+  }
+}

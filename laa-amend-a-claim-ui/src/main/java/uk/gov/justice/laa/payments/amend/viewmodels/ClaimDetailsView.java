@@ -1,0 +1,138 @@
+package uk.gov.justice.laa.payments.amend.viewmodels;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
+import uk.gov.justice.laa.payments.amend.forms.errors.ReviewAndAmendFormError;
+import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.ClaimField;
+
+public interface ClaimDetailsView<T extends ClaimDetails> extends BaseClaimView<T> {
+
+  // 'Summary' rows for the 'Claim details' page
+  default Map<String, Object> getSummaryRows() {
+    var rows = new LinkedHashMap<String, Object>();
+    rows.put("CLIENT_NAME", getClientName());
+    rows.put("UNIQUE_FILE_NUMBER", claim().getUniqueFileNumber());
+    addUcnSummaryRow(rows);
+    rows.put("PROVIDER_NAME", getProviderName());
+    rows.put("OFFICE_CODE", claim().getOfficeCode());
+    rows.put("SUBMITTED_DATE", claim().getSubmittedDate());
+    rows.put(
+        "AREA_OF_LAW",
+        claim().getAreaOfLaw() != null
+            ? new ThymeleafMessage(claim().getAreaOfLaw().getMessageKey())
+            : null);
+    rows.put("CATEGORY_OF_LAW", claim().getCategoryOfLaw());
+    rows.put("FEE_CODE", claim().getFeeCode());
+    rows.put("FEE_CODE_DESCRIPTION", claim().getFeeCodeDescription());
+    addPoliceStationCourtPrisonIdRow(rows);
+    addSchemeIdRow(rows);
+    addMatterTypeCodeRow(rows);
+    rows.put("CASE_START_DATE", claim().getCaseStartDate());
+    rows.put("CASE_CONCLUDED_DATE", claim().getCaseEndDate());
+    rows.put("ESCAPED", claim().getEscaped());
+    rows.put("VAT_REQUESTED", claim().getVatApplicable());
+    return rows;
+  }
+
+  default Map<String, Object> getVoidConfirmationRows() {
+    var rows = new LinkedHashMap<String, Object>();
+    rows.put("CLIENT_NAME", getClientName());
+    rows.put("UNIQUE_FILE_NUMBER", claim().getUniqueFileNumber());
+    addUcnSummaryRow(rows);
+    rows.put("PROVIDER_NAME", getProviderName());
+    rows.put("OFFICE_CODE", claim().getOfficeCode());
+    rows.put("SUBMITTED_DATE", claim().getSubmittedDate());
+    rows.put("CATEGORY_OF_LAW", claim().getCategoryOfLaw());
+    rows.put("FEE_CODE_DESCRIPTION", claim().getFeeCodeDescription());
+    return rows;
+  }
+
+  void addUcnSummaryRow(Map<String, Object> summaryRows);
+
+  void addPoliceStationCourtPrisonIdRow(Map<String, Object> summaryRows);
+
+  void addSchemeIdRow(Map<String, Object> summaryRows);
+
+  void addMatterTypeCodeRow(Map<String, Object> summaryRows);
+
+  // 'Values' rows for the 'Claim details' page
+  default List<ClaimFieldRow> getSummaryClaimFieldRows() {
+    Stream<ClaimField> rows =
+        Stream.concat(
+            claimFields(),
+            Stream.of(
+                claim().getVatClaimed(),
+                claim().isHasAssessment() ? null : claim().getTotalAmount()));
+    return toClaimFieldRows(rows).toList();
+  }
+
+  // 'Claim costs' rows for the 'Review and amend' page
+  default List<ClaimFieldRow> getReviewClaimFieldRows() {
+    return toClaimFieldRows(claimFields()).toList();
+  }
+
+  // 'Total claim value' rows for the 'Review and amend' page
+  default List<ClaimFieldRow> getAssessedTotals() {
+    return toClaimFieldRows(claim().getAssessedTotalFields()).toList();
+  }
+
+  // 'Total allowed value' rows for the 'Review and amend' page
+  default List<ClaimFieldRow> getAllowedTotals() {
+    return toClaimFieldRows(claim().getAllowedTotalFields()).toList();
+  }
+
+  default Stream<ClaimField> claimFields() {
+    return Stream.of(
+        claim().getFixedFee(),
+        claim().getNetProfitCost(),
+        claim().getNetDisbursementAmount(),
+        claim().getDisbursementVatAmount());
+  }
+
+  default List<ReviewAndAmendFormError> getErrors() {
+    Stream<ClaimField> claimFields =
+        Stream.of(claimFields(), claim().getAssessedTotalFields(), claim().getAllowedTotalFields())
+            .flatMap(Function.identity());
+
+    return toClaimFieldRows(claimFields)
+        .filter(ClaimFieldRow::isAssessableAndUnassessed)
+        .map(
+            f ->
+                new ReviewAndAmendFormError(
+                    f.getId(), "claimSummary.rows.%s.error".formatted(f.key())))
+        .toList();
+  }
+
+  default boolean hasAssessment() {
+    return claim().isHasAssessment() && claim().getLastAssessment() != null;
+  }
+
+  private Stream<ClaimFieldRow> toClaimFieldRows(Stream<ClaimField> claimFields) {
+    return claimFields
+        .filter(Objects::nonNull)
+        .map(ClaimField::toClaimFieldRow)
+        .filter(Objects::nonNull);
+  }
+
+  default String reviewAssessmentChangeUrl(String submissionId, String claimId, String question) {
+    return String.format(
+        "/submissions/%s/claims/%s/assessment-outcome#%s", submissionId, claimId, question);
+  }
+
+  private Object getProviderName() {
+    if (claim().getProviderName() == null) {
+      return new ThymeleafMessage("provider.firmName.notAvailable");
+    }
+    return claim().getProviderName();
+  }
+
+  default boolean isVoidClaim() {
+    return ClaimStatus.VOID == claim().getStatus();
+  }
+}

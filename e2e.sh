@@ -71,7 +71,7 @@ for arg in "$@"; do
       CMD+=" allureServe"
       ;;
     *)
-      CMD+=" --tests uk.gov.justice.laa.amend.claim.tests.$arg"
+      CMD+=" --tests uk.gov.justice.laa.payments.amend.tests.$arg"
       ;;
   esac
 done

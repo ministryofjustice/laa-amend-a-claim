@@ -1,0 +1,15 @@
+package uk.gov.justice.laa.payments.amend.models;
+
+import lombok.Data;
+
+@Data
+public class SearchData {
+  private String officeCode;
+  private String submissionMonth;
+  private String submissionYear;
+  private String ufn;
+  private String crn;
+  private String areaOfLaw;
+  private String escapeCase;
+  private boolean expectedResults;
+}

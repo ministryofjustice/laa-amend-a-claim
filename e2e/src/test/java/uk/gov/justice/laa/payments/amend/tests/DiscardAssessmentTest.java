@@ -1,0 +1,147 @@
+package uk.gov.justice.laa.payments.amend.tests;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static uk.gov.justice.laa.payments.amend.utils.TestDataUtils.generateUfn;
+
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
+import java.util.List;
+import java.util.UUID;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.payments.amend.base.BaseTest;
+import uk.gov.justice.laa.payments.amend.models.BulkSubmissionInsert;
+import uk.gov.justice.laa.payments.amend.models.CalculatedFeeDetailInsert;
+import uk.gov.justice.laa.payments.amend.models.ClaimInsert;
+import uk.gov.justice.laa.payments.amend.models.ClaimSummaryFeeInsert;
+import uk.gov.justice.laa.payments.amend.models.Insert;
+import uk.gov.justice.laa.payments.amend.models.SubmissionInsert;
+import uk.gov.justice.laa.payments.amend.pages.AssessmentOutcomePage;
+import uk.gov.justice.laa.payments.amend.pages.ClaimDetailsPage;
+import uk.gov.justice.laa.payments.amend.pages.DiscardAssessmentPage;
+import uk.gov.justice.laa.payments.amend.pages.ReviewAndAmendPage;
+import uk.gov.justice.laa.payments.amend.pages.SearchPage;
+
+@Epic("Assessment Discard Flow")
+@Feature("Discard Assessment Confirmation & Behaviour")
+public class DiscardAssessmentTest extends BaseTest {
+
+  private final String OFFICE_CODE = "123456";
+  private final String UFN = generateUfn();
+  private final String MONTH = "04";
+  private final String YEAR = "2025";
+  private final String SUBMISSION_ID = UUID.randomUUID().toString();
+  private final String CLAIM_ID = UUID.randomUUID().toString();
+  private final String CLAIM_SUMMARY_FEE_ID = UUID.randomUUID().toString();
+  private final String CALCULATED_FEE_DETAIL_ID = UUID.randomUUID().toString();
+
+  @Override
+  protected List<Insert> inserts() {
+    return List.of(
+        BulkSubmissionInsert.builder().id(BULK_SUBMISSION_ID).userId(USER_ID).build(),
+        SubmissionInsert.builder()
+            .id(SUBMISSION_ID)
+            .bulkSubmissionId(BULK_SUBMISSION_ID)
+            .officeAccountNumber(OFFICE_CODE)
+            .submissionPeriod("APR-2025")
+            .areaOfLaw("CRIME_LOWER")
+            .userId(USER_ID)
+            .build(),
+        ClaimInsert.builder()
+            .id(CLAIM_ID)
+            .submissionId(SUBMISSION_ID)
+            .uniqueFileNumber(UFN)
+            .userId(USER_ID)
+            .build(),
+        ClaimSummaryFeeInsert.builder()
+            .id(CLAIM_SUMMARY_FEE_ID)
+            .claimId(CLAIM_ID)
+            .userId(USER_ID)
+            .build(),
+        CalculatedFeeDetailInsert.builder()
+            .id(CALCULATED_FEE_DETAIL_ID)
+            .claimSummaryFeeId(CLAIM_SUMMARY_FEE_ID)
+            .claimId(CLAIM_ID)
+            .escaped(true)
+            .userId(USER_ID)
+            .build());
+  }
+
+  @Test
+  @Story("AC 1 - Screen display")
+  @DisplayName("Discard Assessment: Screen displays correct heading, button, and return link")
+  @Severity(SeverityLevel.CRITICAL)
+  void discardAssessmentScreenDisplaysCorrectly() {
+    DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
+
+    assertThat(discard.getDiscardButton()).isVisible();
+    assertThat(discard.getReturnToClaimLink()).isVisible();
+  }
+
+  @Test
+  @Story("AC 2 - Discard assessment button")
+  @DisplayName("Discard Assessment: Clicking discard redirects to search page with success banner")
+  @Severity(SeverityLevel.CRITICAL)
+  void discardAssessmentRedirectsToSearchWithBanner() {
+    DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
+    discard.clickDiscardAssessment();
+
+    SearchPage searchAfterDiscard = new SearchPage(page);
+
+    assertThat(searchAfterDiscard.getSuccessBanner()).isVisible();
+    assertThat(searchAfterDiscard.getSuccessBannerHeading())
+        .hasText("You discarded the assessment");
+  }
+
+  @Test
+  @Story("AC 3 - Return to Claim link")
+  @DisplayName("Discard Assessment: Return to Claim navigates back to Review and Amend screen")
+  @Severity(SeverityLevel.CRITICAL)
+  void returnToClaimNavigatesBackToReviewScreen() {
+
+    DiscardAssessmentPage discard = goToDiscardAssessmentScreen();
+    discard.clickReturnToClaim();
+
+    ReviewAndAmendPage review = new ReviewAndAmendPage(page);
+  }
+
+  @Test
+  @Story("AC 4 - Discard changes on Review and Amend")
+  @DisplayName("Review & Amend: Discard changes navigates to Discard Assessment screen")
+  @Severity(SeverityLevel.CRITICAL)
+  void reviewAndAmendDiscardNavigatesToDiscardScreen() {
+
+    ReviewAndAmendPage review = goToReviewAndAmendPage();
+    review.cancel();
+
+    DiscardAssessmentPage discard = new DiscardAssessmentPage(page);
+  }
+
+  private DiscardAssessmentPage goToDiscardAssessmentScreen() {
+    ReviewAndAmendPage review = goToReviewAndAmendPage();
+    review.cancel();
+
+    return new DiscardAssessmentPage(page);
+  }
+
+  private ReviewAndAmendPage goToReviewAndAmendPage() {
+    SearchPage search = new SearchPage(page);
+
+    search.searchForClaim(OFFICE_CODE, MONTH, YEAR, UFN, "", "", "");
+
+    search.clickViewForUfn(UFN);
+
+    ClaimDetailsPage details = new ClaimDetailsPage(page);
+
+    assertThat(details.getAddAssessmentOutcomeButton()).isVisible();
+    details.clickAddUpdateAssessmentOutcome();
+
+    AssessmentOutcomePage outcome = new AssessmentOutcomePage(page);
+    outcome.completeAssessment("assessed in full", true);
+
+    return new ReviewAndAmendPage(page);
+  }
+}
