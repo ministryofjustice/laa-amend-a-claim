@@ -23,9 +23,9 @@
     <th:block th:if="${claimDetailsHeaderView.isVoidedAlertPresent}">
         <th:block th:replace="~{fragments/error-alert ::
             errorAlert(
-                'claimSummary.error',
-                ${claimDetailsHeaderView.lastEditedBy.resolve(#messages)},
-                ${claimDetailsHeaderView.extraAlertText.resolve(#messages)}
+                prefix='claimSummary.error',
+                contentLineOne=${claimDetailsHeaderView.lastEditedBy.resolve(#messages)},
+                contentLineTwo=${claimDetailsHeaderView.extraAlertText.resolve(#messages)}
             )}"></th:block>
     </th:block>
 

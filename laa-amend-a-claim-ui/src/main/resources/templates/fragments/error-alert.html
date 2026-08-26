@@ -1,4 +1,6 @@
-<th:block th:fragment="errorAlert(prefix, contentLineOne, contentLineTwo)" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="errorAlert(prefix)"
+          th:with="contentLineOne=${contentLineOne},contentLineTwo=${contentLineTwo}"
+          xmlns:th="http://www.thymeleaf.org">
     <div role="region" class="moj-alert moj-alert--error" th:with="key=${prefix} + '.alert.ariaLabel'" th:aria-label="#{${key}}" data-module="moj-alert">
         <div>
             <svg class="moj-alert__icon" role="presentation" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" height="30" width="30">
