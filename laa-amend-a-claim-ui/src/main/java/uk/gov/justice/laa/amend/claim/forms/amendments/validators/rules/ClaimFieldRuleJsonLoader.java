@@ -108,11 +108,11 @@ public final class ClaimFieldRuleJsonLoader {
     return new FieldRuleSpec(category, rule.messageCode(), toPredicate(rule), messageArgs);
   }
 
-  private static BiPredicate<ClaimDetails, String> toPredicate(RuleDto rule) {
+  static BiPredicate<ClaimDetails, String> toPredicate(RuleDto rule) {
     return switch (rule.kind()) {
       case "mandatory" -> {
         MandatoryValueValidator validation = new MandatoryValueValidator();
-        yield (claimDetails, value) -> validation.isValid(claimDetails, value, rule);
+        yield (claimDetails, value) -> !validation.isValid(claimDetails, value, rule);
       }
       case "regex" -> {
         var pattern = compilePattern(rule);

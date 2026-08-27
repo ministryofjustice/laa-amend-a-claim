@@ -10,6 +10,7 @@ import org.springframework.validation.Errors;
 import uk.gov.justice.laa.amend.claim.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.ClaimFieldRuleJsonLoader;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.FieldRuleEngine;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.RuleCategory;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
 
@@ -33,12 +34,13 @@ public class ClaimFieldRuleValidator implements FieldSpecificAmendmentValidator 
   public void validate(
       ClaimDetails claimDetails, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
     var value = form.getInputs().get(field.name());
-    if (isBlank(value)) {
-      return;
-    }
-
     var rules = ClaimFieldRuleJsonLoader.rulesFor(field);
-    FieldRuleEngine.firstFailingRule(rules, value, claimDetails)
+    var rulesToEvaluate =
+        isBlank(value)
+            ? rules.stream().filter(rule -> rule.category() == RuleCategory.MANDATORY).toList()
+            : rules;
+
+    FieldRuleEngine.firstFailingRule(rulesToEvaluate, value, claimDetails)
         .ifPresent(
             rule -> {
               var args = new ArrayList<>();

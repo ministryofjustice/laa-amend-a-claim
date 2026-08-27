@@ -438,10 +438,12 @@ class ClaimFieldRuleValidatorTest {
   }
 
   @Test
-  void skipsBlankValuesLeavingRequirednessToTheGenericLayer() {
+  void appliesMandatoryRuleForBlankValueWhenConfigured() {
     var errors = validate(ClaimDetailsViewField.SURNAME, "");
 
-    assertThat(errors.hasErrors()).isFalse();
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = errors.getFieldError("inputs[SURNAME]");
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.mandatoryField.error");
   }
 
   @Test
