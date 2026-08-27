@@ -131,10 +131,10 @@ spring:
       
   thymeleaf:
     cache: false
-    prefix: file:laa-amend-a-claim-ui/src/main/resources/templates/
+    prefix: file:src/main/resources/templates/
   web:
     resources:
-      static-locations: file:laa-amend-a-claim-ui/build/resources/main/static/
+      static-locations: file:build/resources/main/static/
       cache:
         period: 0
 ---
