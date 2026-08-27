@@ -167,7 +167,7 @@ The GitHub Actions pipeline uploads the Allure report as an artifact:
 
 ```
 e2e/
- ├── src/main/java/uk/gov/justice/laa/amend/claim/
+ ├── src/main/java/uk/gov/justice/laa/payments/amend/
  │    ├── config/
  │    │     └── EnvConfig.java
  │    ├── drivers/
@@ -182,7 +182,7 @@ e2e/
  │    └── utils/
  │          └── TestDataUtils.java
  │
- ├── src/test/java/uk/gov/justice/laa/amend/claim/
+ ├── src/test/java/uk/gov/justice/laa/payments/amend/
  │    ├── base/
  │    │     └── BaseTest.java
  │    └── tests/

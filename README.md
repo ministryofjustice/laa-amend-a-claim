@@ -284,7 +284,7 @@ By default, the application outputs logs in ECS JSON format with distributed tra
   },
   "log": {
     "level": "INFO",
-    "logger": "uk.gov.justice.laa.amend.claim.example.ExampleController"
+    "logger": "uk.gov.justice.laa.payments.amend.example.ExampleController"
   },
   "message": "This is an example log message",
   "process": {

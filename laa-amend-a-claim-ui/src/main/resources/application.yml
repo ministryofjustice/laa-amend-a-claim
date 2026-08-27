@@ -94,7 +94,7 @@ logging:
   level:
     root: ${ROOT_LOGGING_LEVEL:info}
     org.springframework: ${SPRING_LOGGING_LEVEL:info}
-    uk.gov.justice.laa.amend.claim: ${APP_LOGGING_LEVEL:info}
+    uk.gov.justice.laa.payments.amend: ${APP_LOGGING_LEVEL:info}
   structured:
     format:
       console: ecs

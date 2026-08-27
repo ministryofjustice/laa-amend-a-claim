@@ -1,0 +1,175 @@
+package uk.gov.justice.laa.payments.amend.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.Instant;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import reactor.core.publisher.Mono;
+import uk.gov.justice.laa.payments.amend.client.MicrosoftGraphApiClient;
+import uk.gov.justice.laa.payments.amend.models.MicrosoftApiUser;
+
+@ExtendWith(MockitoExtension.class)
+public class MicrosoftUserRetrievalServiceTest {
+
+  @Mock private MicrosoftGraphApiClient microsoftGraphApiClient;
+
+  @Mock private OAuth2AuthorizedClientManager authorizedClientManager;
+
+  @InjectMocks private MicrosoftUserRetrievalService userRetrievalService;
+
+  @Test
+  void testGetMicrosoftApiUserReturnsUser() {
+    // Arrange
+    String userId = "test-user";
+    String tokenValue = "dummy-token";
+
+    MicrosoftApiUser user = new MicrosoftApiUser(userId, "User, Dummy", "Dummy", "User");
+
+    // Mock OAuth2AuthorizedClient
+    OAuth2AuthorizedClient client =
+        new OAuth2AuthorizedClient(
+            ClientRegistration.withRegistrationId("test")
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .clientId("client-id")
+                .authorizationUri("https://example.com/auth")
+                .tokenUri("https://example.com/token")
+                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+                .build(),
+            "principalName",
+            new OAuth2AccessToken(
+                OAuth2AccessToken.TokenType.BEARER,
+                tokenValue,
+                Instant.now(),
+                Instant.now().plusSeconds(3600)));
+
+    when(authorizedClientManager.authorize(any())).thenReturn(client);
+
+    // Mock WebClient chain
+    when(microsoftGraphApiClient.getUser(anyString(), anyString())).thenReturn(Mono.just(user));
+
+    // Act
+    var result = userRetrievalService.getUser(userId);
+
+    // Assert
+    assertNotNull(result);
+    assertEquals(user, result);
+
+    verify(microsoftGraphApiClient).getUser("test-user", "dummy-token");
+  }
+
+  @Test
+  void testGetMicrosoftApiUserReturnsNullWhenNoClient() {
+    // Arrange
+    when(authorizedClientManager.authorize(any())).thenReturn(null);
+
+    // Act
+    var result = userRetrievalService.getUser("test-user");
+
+    // Assert
+    assertNull(result);
+  }
+
+  @Test
+  void testGetMicrosoftApiUserWhenClientManagerThrowsException() {
+    // Arrange
+    when(authorizedClientManager.authorize(any()))
+        .thenThrow(
+            new IllegalArgumentException("Could not find ClientRegistration with id 'test'"));
+
+    // Act
+    var result = userRetrievalService.getUser("test-user");
+
+    // Assert
+    assertNull(result);
+  }
+
+  @Test
+  void testGetMicrosoftApiUserWhenClientThrowsException() {
+    // Arrange
+    String userId = "test-user";
+    String tokenValue = "dummy-token";
+
+    // Mock OAuth2AuthorizedClient
+    OAuth2AuthorizedClient client =
+        new OAuth2AuthorizedClient(
+            ClientRegistration.withRegistrationId("test")
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .clientId("client-id")
+                .authorizationUri("https://example.com/auth")
+                .tokenUri("https://example.com/token")
+                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+                .build(),
+            "principalName",
+            new OAuth2AccessToken(
+                OAuth2AccessToken.TokenType.BEARER,
+                tokenValue,
+                Instant.now(),
+                Instant.now().plusSeconds(3600)));
+
+    when(authorizedClientManager.authorize(any())).thenReturn(client);
+
+    // Mock WebClient chain
+    when(microsoftGraphApiClient.getUser(anyString(), anyString()))
+        .thenReturn(Mono.error(new Exception("Error")));
+
+    // Act
+    var result = userRetrievalService.getUser(userId);
+
+    // Assert
+    assertNull(result);
+
+    verify(microsoftGraphApiClient).getUser("test-user", "dummy-token");
+  }
+
+  @Test
+  void testGetMicrosoftApiUserWhenClientReturnsEmptyResponse() {
+    // Arrange
+    String userId = "test-user";
+    String tokenValue = "dummy-token";
+
+    // Mock OAuth2AuthorizedClient
+    OAuth2AuthorizedClient client =
+        new OAuth2AuthorizedClient(
+            ClientRegistration.withRegistrationId("test")
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .clientId("client-id")
+                .authorizationUri("https://example.com/auth")
+                .tokenUri("https://example.com/token")
+                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+                .build(),
+            "principalName",
+            new OAuth2AccessToken(
+                OAuth2AccessToken.TokenType.BEARER,
+                tokenValue,
+                Instant.now(),
+                Instant.now().plusSeconds(3600)));
+
+    when(authorizedClientManager.authorize(any())).thenReturn(client);
+
+    // Mock WebClient chain
+    when(microsoftGraphApiClient.getUser(anyString(), anyString())).thenReturn(Mono.empty());
+
+    // Act
+    var result = userRetrievalService.getUser(userId);
+
+    // Assert
+    assertNull(result);
+
+    verify(microsoftGraphApiClient).getUser("test-user", "dummy-token");
+  }
+}

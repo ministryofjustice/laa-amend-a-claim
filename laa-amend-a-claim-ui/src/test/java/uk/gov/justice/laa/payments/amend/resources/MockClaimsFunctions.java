@@ -1,0 +1,343 @@
+package uk.gov.justice.laa.payments.amend.resources;
+
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus.VALID;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.ADJOURNED_FEE;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_INCL_VAT;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.ALLOWED_TOTAL_VAT;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_INCL_VAT;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.ASSESSED_TOTAL_VAT;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.CMRH_ORAL;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.CMRH_TELEPHONE;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.COUNSELS_COST;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.DETENTION_TRAVEL_COST;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.DISBURSEMENT_VAT;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.HO_INTERVIEW;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.IS_LONDON_RATE;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.JR_FORM_FILLING;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.NET_DISBURSEMENTS_COST;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.NET_PROFIT_COST;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.PRIOR_AUTHORITY_REFERENCE;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.SUBSTANTIVE_HEARING;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.TRAVEL_AND_WAITING_COSTS;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.TRAVEL_COSTS;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.Label.WAITING_COSTS;
+import static uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw.CRIME_LOWER;
+import static uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw.LEGAL_HELP;
+import static uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw.MEDIATION;
+import static uk.gov.justice.laa.payments.amend.models.enums.DerivedClaimStatus.ASSESSED;
+import static uk.gov.justice.laa.payments.amend.models.enums.OutcomeType.REDUCED;
+import static uk.gov.justice.laa.payments.amend.models.enums.OutcomeType.REDUCED_TO_FIXED_FEE;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.UUID;
+import uk.gov.justice.laa.payments.amend.handlers.ClaimStatusHandler;
+import uk.gov.justice.laa.payments.amend.models.AllowedClaimField;
+import uk.gov.justice.laa.payments.amend.models.AssessedClaimField;
+import uk.gov.justice.laa.payments.amend.models.AssessmentInfo;
+import uk.gov.justice.laa.payments.amend.models.BoltOnClaimField;
+import uk.gov.justice.laa.payments.amend.models.CalculatedTotalClaimField;
+import uk.gov.justice.laa.payments.amend.models.CivilClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.ClaimField;
+import uk.gov.justice.laa.payments.amend.models.CostClaimField;
+import uk.gov.justice.laa.payments.amend.models.CrimeClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.FixedFeeClaimField;
+import uk.gov.justice.laa.payments.amend.models.MediationClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.MicrosoftApiUser;
+import uk.gov.justice.laa.payments.amend.models.SubmittedClaimField;
+import uk.gov.justice.laa.payments.amend.models.VatLiabilityClaimField;
+import uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum;
+import uk.gov.justice.laa.payments.amend.models.enums.Cost;
+import uk.gov.justice.laa.payments.amend.models.enums.OutcomeType;
+
+public class MockClaimsFunctions {
+
+  private static final ClaimStatusHandler claimStatusHandler = new ClaimStatusHandler();
+  public static final String DISPLAY_NAME = "Test User";
+  public static final String GIVEN_NAME = "Test";
+  public static final String SURNAME = "User";
+
+  public static CivilClaimDetails createMockCivilClaim() {
+    CivilClaimDetails claim = new CivilClaimDetails();
+    claim.setAreaOfLaw(LEGAL_HELP);
+    claim.setClaimId(UUID.randomUUID());
+    claim.setSubmissionId(UUID.randomUUID());
+    claim.setClaimSummaryFeeId(UUID.randomUUID());
+    claim.setEscaped(true);
+    claim.setStatus(VALID);
+    claim.setDerivedClaimStatus(ASSESSED);
+
+    claim.setFixedFee(createFixedFeeField());
+    claim.setNetProfitCost(createNetProfitCostField());
+    claim.setNetDisbursementAmount(createDisbursementCostField());
+    claim.setDisbursementVatAmount(createDisbursementVatCostField());
+    claim.setTotalAmount(createTotalAmountField());
+    claim.setCounselsCost(createCounselCostField());
+    claim.setDetentionTravelWaitingCosts(createDetentionCostField());
+    claim.setJrFormFillingCost(createJrFormFillingCostField());
+    claim.setAdjournedHearing(createAdjournedHearingField());
+    claim.setCmrhTelephone(createCmrhTelephoneField());
+    claim.setCmrhOral(createCmrhOralField());
+    claim.setHoInterview(createHoInterviewField());
+    claim.setSubstantiveHearing(createSubstantiveHearingField());
+    claim.setVatClaimed(createVatClaimedField());
+    claim.setAssessmentOutcome(REDUCED);
+    claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
+    claim.setTravelAndWaitingCosts(createTravelAndWaitingCostsField());
+    claim.setIsLondonRate(createIsLondonRateField());
+    claim.setPriorAuthorityReference(createPriorAuthorityField());
+
+    claim.setAssessedTotalVat(createAssessedTotalVatField());
+    claim.setAssessedTotalInclVat(createAssessedTotalInclVatField());
+    claim.setAllowedTotalVat(createAllowedTotalVatField());
+    claim.setAllowedTotalInclVat(createAllowedTotalInclVatField());
+    return claim;
+  }
+
+  public static MediationClaimDetails createMockMediationClaim() {
+    MediationClaimDetails claim = new MediationClaimDetails();
+    claim.setAreaOfLaw(MEDIATION);
+    claim.setClaimId(UUID.randomUUID());
+    claim.setSubmissionId(UUID.randomUUID());
+    claim.setClaimSummaryFeeId(UUID.randomUUID());
+    claim.setEscaped(true);
+    claim.setStatus(VALID);
+    claim.setDerivedClaimStatus(ASSESSED);
+
+    claim.setFixedFee(createFixedFeeField());
+    claim.setNetProfitCost(createNetProfitCostField());
+    claim.setNetDisbursementAmount(createDisbursementCostField());
+    claim.setDisbursementVatAmount(createDisbursementVatCostField());
+    claim.setTotalAmount(createTotalAmountField());
+    claim.setCounselsCost(createCounselCostField());
+    claim.setDetentionTravelWaitingCosts(createDetentionCostField());
+    claim.setJrFormFillingCost(createJrFormFillingCostField());
+    claim.setAdjournedHearing(createAdjournedHearingField());
+    claim.setCmrhTelephone(createCmrhTelephoneField());
+    claim.setCmrhOral(createCmrhOralField());
+    claim.setHoInterview(createHoInterviewField());
+    claim.setSubstantiveHearing(createSubstantiveHearingField());
+    claim.setVatClaimed(createVatClaimedField());
+    claim.setAssessmentOutcome(REDUCED);
+    claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
+
+    claim.setAssessedTotalVat(createAssessedTotalVatField());
+    claim.setAssessedTotalInclVat(createAssessedTotalInclVatField());
+    claim.setAllowedTotalVat(createAllowedTotalVatField());
+    claim.setAllowedTotalInclVat(createAllowedTotalInclVatField());
+    return claim;
+  }
+
+  public static CrimeClaimDetails createMockCrimeClaim() {
+    CrimeClaimDetails claim = new CrimeClaimDetails();
+    claim.setAreaOfLaw(CRIME_LOWER);
+    claim.setClaimId(UUID.randomUUID());
+    claim.setSubmissionId(UUID.randomUUID());
+    claim.setClaimSummaryFeeId(UUID.randomUUID());
+    claim.setEscaped(true);
+    claim.setStatus(VALID);
+    claim.setDerivedClaimStatus(ASSESSED);
+
+    claim.setNetProfitCost(createNetProfitCostField());
+    claim.setTravelCosts(createTravelCostField());
+    claim.setWaitingCosts(createWaitingCostField());
+    claim.setFixedFee(createFixedFeeField());
+    claim.setNetDisbursementAmount(createDisbursementCostField());
+    claim.setDisbursementVatAmount(createDisbursementVatCostField());
+    claim.setVatClaimed(createVatClaimedField());
+    claim.setTotalAmount(createTotalAmountField());
+
+    claim.setAssessedTotalVat(createAssessedTotalVatField());
+    claim.setAssessedTotalInclVat(createAssessedTotalInclVatField());
+
+    claim.setAllowedTotalVat(createAllowedTotalVatField());
+    claim.setAllowedTotalInclVat(createAllowedTotalInclVatField());
+    claim.setAssessmentOutcome(REDUCED_TO_FIXED_FEE);
+    claim.setAssessmentReason(ASSESSMENT_REASON_ESCAPE_CASE);
+
+    return claim;
+  }
+
+  public static void updateStatus(ClaimDetails claim, OutcomeType outcome) {
+    claimStatusHandler.updateFieldStatuses(claim, outcome);
+  }
+
+  public static ClaimField updateClaimFieldSubmittedValue(ClaimField claimField, Object submitted) {
+    claimField.setSubmitted(submitted);
+    return claimField;
+  }
+
+  public static CostClaimField createNetProfitCostField() {
+    CostClaimField field = createCostField(NET_PROFIT_COST, Cost.PROFIT_COSTS);
+    field.setCalculated(null);
+    return field;
+  }
+
+  public static CostClaimField createDisbursementCostField() {
+    return createCostField(NET_DISBURSEMENTS_COST, Cost.DISBURSEMENTS);
+  }
+
+  public static CostClaimField createDisbursementVatCostField() {
+    return createCostField(DISBURSEMENT_VAT, Cost.DISBURSEMENTS_VAT);
+  }
+
+  public static CostClaimField createCounselCostField() {
+    return createCostField(COUNSELS_COST, Cost.COUNSEL_COSTS);
+  }
+
+  public static CostClaimField createTravelCostField() {
+    return createCostField(TRAVEL_COSTS, Cost.TRAVEL_COSTS);
+  }
+
+  public static CostClaimField createWaitingCostField() {
+    return createCostField(WAITING_COSTS, Cost.WAITING_COSTS);
+  }
+
+  public static CostClaimField createJrFormFillingCostField() {
+    return createCostField(JR_FORM_FILLING, Cost.JR_FORM_FILLING_COSTS);
+  }
+
+  public static CostClaimField createDetentionCostField() {
+    return createCostField(DETENTION_TRAVEL_COST, Cost.DETENTION_TRAVEL_AND_WAITING_COSTS);
+  }
+
+  private static CostClaimField createCostField(String key, Cost cost) {
+    return CostClaimField.builder()
+        .key(key)
+        .submitted(BigDecimal.valueOf(100))
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .cost(cost)
+        .build();
+  }
+
+  public static FixedFeeClaimField createFixedFeeField() {
+    return FixedFeeClaimField.builder()
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
+
+  public static CalculatedTotalClaimField createTotalAmountField() {
+    return CalculatedTotalClaimField.builder()
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
+
+  public static VatLiabilityClaimField createVatClaimedField() {
+    return VatLiabilityClaimField.builder()
+        .submitted(true)
+        .calculated(false)
+        .assessed(true)
+        .build();
+  }
+
+  public static BoltOnClaimField createAdjournedHearingField() {
+    return createCountBoltOnField(ADJOURNED_FEE);
+  }
+
+  public static BoltOnClaimField createTravelAndWaitingCostsField() {
+    return createBoltOnField(TRAVEL_AND_WAITING_COSTS);
+  }
+
+  public static SubmittedClaimField createIsLondonRateField() {
+    return SubmittedClaimField.builder().key(IS_LONDON_RATE).submitted(true).build();
+  }
+
+  public static SubmittedClaimField createPriorAuthorityField() {
+    return createSubmittedClaimField(PRIOR_AUTHORITY_REFERENCE, "PRIOR_AUTHORITY_REF");
+  }
+
+  public static BoltOnClaimField createCmrhOralField() {
+    return createCountBoltOnField(CMRH_ORAL);
+  }
+
+  public static BoltOnClaimField createCmrhTelephoneField() {
+    return createCountBoltOnField(CMRH_TELEPHONE);
+  }
+
+  public static BoltOnClaimField createHoInterviewField() {
+    return createCountBoltOnField(HO_INTERVIEW);
+  }
+
+  public static BoltOnClaimField createSubstantiveHearingField() {
+    return BoltOnClaimField.builder()
+        .key(SUBSTANTIVE_HEARING)
+        .submitted(true)
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
+
+  private static BoltOnClaimField createBoltOnField(String key) {
+    return BoltOnClaimField.builder()
+        .key(key)
+        .submitted(BigDecimal.valueOf(100))
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
+
+  private static BoltOnClaimField createCountBoltOnField(String key) {
+    return BoltOnClaimField.builder()
+        .key(key)
+        .submitted(100)
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
+
+  private static SubmittedClaimField createSubmittedClaimField(String key, String submitted) {
+    return SubmittedClaimField.builder().key(key).submitted(submitted).build();
+  }
+
+  public static AssessedClaimField createAssessedTotalVatField() {
+    return createAssessedTotalField(ASSESSED_TOTAL_VAT);
+  }
+
+  public static AssessedClaimField createAssessedTotalInclVatField() {
+    return createAssessedTotalField(ASSESSED_TOTAL_INCL_VAT);
+  }
+
+  private static AssessedClaimField createAssessedTotalField(String key) {
+    return AssessedClaimField.builder()
+        .key(key)
+        .submitted(BigDecimal.valueOf(100))
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
+
+  public static AllowedClaimField createAllowedTotalVatField() {
+    return createAllowedTotalField(ALLOWED_TOTAL_VAT);
+  }
+
+  public static AllowedClaimField createAllowedTotalInclVatField() {
+    return createAllowedTotalField(ALLOWED_TOTAL_INCL_VAT);
+  }
+
+  private static AllowedClaimField createAllowedTotalField(String key) {
+    return AllowedClaimField.builder()
+        .key(key)
+        .submitted(BigDecimal.valueOf(100))
+        .calculated(BigDecimal.valueOf(200))
+        .assessed(BigDecimal.valueOf(300))
+        .build();
+  }
+
+  public static AssessmentInfo createAssessment(AssessmentTypeEnum assessmentType) {
+    return AssessmentInfo.builder()
+        .id(UUID.randomUUID())
+        .assessmentType(assessmentType)
+        .lastAssessedBy("Test User")
+        .lastAssessmentDate(OffsetDateTime.now())
+        .build();
+  }
+
+  public static MicrosoftApiUser createUser() {
+    return new MicrosoftApiUser(UUID.randomUUID().toString(), DISPLAY_NAME, GIVEN_NAME, SURNAME);
+  }
+}

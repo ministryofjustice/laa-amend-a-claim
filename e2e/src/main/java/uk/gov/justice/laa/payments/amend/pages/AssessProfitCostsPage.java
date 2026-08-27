@@ -1,0 +1,10 @@
+package uk.gov.justice.laa.payments.amend.pages;
+
+import com.microsoft.playwright.Page;
+
+public class AssessProfitCostsPage extends LaaCostPage {
+
+  public AssessProfitCostsPage(Page page) {
+    super(page, "Assess profit costs");
+  }
+}

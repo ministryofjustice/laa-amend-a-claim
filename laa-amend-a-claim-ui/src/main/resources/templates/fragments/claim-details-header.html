@@ -1,6 +1,6 @@
 <th:block th:fragment="claimDetailsHeader(currentPage)" xmlns:th="http://www.thymeleaf.org">
-    <!--/*@thymesVar id="featureFlagsConfig" type="uk.gov.justice.laa.amend.claim.config.FeatureFlagsConfig"*/-->
-    <!--/*@thymesVar id="claimDetailsHeaderView" type="uk.gov.justice.laa.amend.claim.viewmodels.ClaimDetailsHeaderView"*/-->
+    <!--/*@thymesVar id="featureFlagsConfig" type="uk.gov.justice.laa.payments.amend.config.FeatureFlagsConfig"*/-->
+    <!--/*@thymesVar id="claimDetailsHeaderView" type="uk.gov.justice.laa.payments.amend.viewmodels.ClaimDetailsHeaderView"*/-->
 
     <th:block th:if="${claimDetailsHeaderView.isAmendedAlertPresent}">
         <th:block th:replace="~{fragments/information-alert ::

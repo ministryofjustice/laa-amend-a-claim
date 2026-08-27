@@ -1,0 +1,103 @@
+package uk.gov.justice.laa.payments.amend.controllers;
+
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.ASSESSMENT_REASON_STAGE_DISBURSEMENT;
+import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.ASSESSMENT_REASON_STAGE_DISBURSEMENT_CONTINGENCY;
+import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.getValidAssessableClaim;
+import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.saveClaim;
+
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import uk.gov.justice.laa.payments.amend.annotations.HasRoleEscapeCaseCaseworker;
+import uk.gov.justice.laa.payments.amend.forms.AssessmentOutcomeForm;
+import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.enums.OutcomeType;
+import uk.gov.justice.laa.payments.amend.service.AssessmentService;
+
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/submissions/{submissionId}/claims/{claimId}")
+@HasRoleEscapeCaseCaseworker
+public class AssessmentOutcomeController {
+
+  private final AssessmentService assessmentService;
+
+  @GetMapping("/assessment-outcome")
+  public String setAssessmentOutcome(
+      HttpSession session,
+      Model model,
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId) {
+    var claim = getValidAssessableClaim(session, submissionId, claimId);
+
+    AssessmentOutcomeForm form = new AssessmentOutcomeForm();
+    form.setAssessmentOutcome(claim.getAssessmentOutcome());
+    form.setContingencyAssessment(claim.isContingencyAssessment());
+
+    return renderView(model, form, submissionId, claimId, claim);
+  }
+
+  @PostMapping("/assessment-outcome")
+  public String selectAssessmentOutcome(
+      @PathVariable UUID submissionId,
+      @PathVariable UUID claimId,
+      @Valid @ModelAttribute("form") AssessmentOutcomeForm form,
+      BindingResult bindingResult,
+      HttpSession session,
+      Model model,
+      HttpServletResponse response) {
+    var claim = getValidAssessableClaim(session, submissionId, claimId);
+
+    if (bindingResult.hasErrors()) {
+      response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+      return renderView(model, form, submissionId, claimId, claim);
+    }
+
+    OutcomeType newOutcome = form.getAssessmentOutcome();
+
+    assessmentService.applyAssessmentOutcome(claim, newOutcome);
+    claim.setAssessmentOutcome(newOutcome);
+
+    if (claim.isStageDisbursement()) {
+      claim.setAssessmentReason(
+          Boolean.TRUE.equals(form.getContingencyAssessment())
+              ? ASSESSMENT_REASON_STAGE_DISBURSEMENT_CONTINGENCY
+              : ASSESSMENT_REASON_STAGE_DISBURSEMENT);
+    } else {
+      claim.setAssessmentReason(
+          Boolean.TRUE.equals(form.getContingencyAssessment())
+              ? ASSESSMENT_REASON_ESCAPE_CASE_CONTINGENCY
+              : ASSESSMENT_REASON_ESCAPE_CASE);
+    }
+
+    saveClaim(session, claimId, claim);
+
+    return String.format("redirect:/submissions/%s/claims/%s/review", submissionId, claimId);
+  }
+
+  private String renderView(
+      Model model,
+      AssessmentOutcomeForm form,
+      UUID submissionId,
+      UUID claimId,
+      ClaimDetails claim) {
+    model.addAttribute("submissionId", submissionId);
+    model.addAttribute("claimId", claimId);
+    model.addAttribute("form", form);
+    model.addAttribute("hasAssessment", claim.isHasAssessment());
+
+    return "pages/assessment-outcome";
+  }
+}

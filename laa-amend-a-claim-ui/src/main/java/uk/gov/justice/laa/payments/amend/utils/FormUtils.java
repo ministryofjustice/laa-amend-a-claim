@@ -1,0 +1,10 @@
+package uk.gov.justice.laa.payments.amend.utils;
+
+public class FormUtils {
+
+  public static String toFieldId(String fieldName) {
+    return fieldName != null
+        ? fieldName.replace('_', '-').replaceAll("([a-z])([A-Z]+)", "$1-$2").toLowerCase()
+        : "main-content";
+  }
+}
