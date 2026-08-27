@@ -4,11 +4,6 @@ import static java.lang.Boolean.TRUE;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_ASSESSED_ESCAPE_CASE;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_ASSESSED_STAGE_DISBURSEMENT;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_CREATED;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_VOIDED;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -34,10 +29,10 @@ import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryAssessedEvent;
 import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryCreatedEvent;
 import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryVoidedEvent;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
-import uk.gov.justice.laa.payments.amend.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.payments.amend.models.AmendmentConfirmation;
 import uk.gov.justice.laa.payments.amend.models.AssessmentInfo;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
@@ -69,9 +64,9 @@ public class ClaimHistoryService {
   private static final Map<AreaOfLaw, Map<String, ClaimViewField<?>>>
       AMENDABLE_FIELDS_BY_IDENTIFIER =
           Map.of(
-              AreaOfLaw.CRIME_LOWER, buildFieldLookup(AreaOfLaw.CRIME_LOWER),
-              AreaOfLaw.LEGAL_HELP, buildFieldLookup(AreaOfLaw.LEGAL_HELP),
-              AreaOfLaw.MEDIATION, buildFieldLookup(AreaOfLaw.MEDIATION));
+              AreaOfLaw.CRIME_LOWER, viewFieldsByAreaOfLaw(AreaOfLaw.CRIME_LOWER),
+              AreaOfLaw.LEGAL_HELP, viewFieldsByAreaOfLaw(AreaOfLaw.LEGAL_HELP),
+              AreaOfLaw.MEDIATION, viewFieldsByAreaOfLaw(AreaOfLaw.MEDIATION));
 
   public ClaimHistory getClaimHistory(ClaimDetails claim) {
     List<AssessmentInfo> assessments =
@@ -92,7 +87,7 @@ public class ClaimHistoryService {
             .sorted(comparing(BaseClaimHistoryEvent::eventDateTime).reversed())
             .toList();
 
-    var lastUpdated = resolveLastUpdatedInfo(claim, history);
+    var lastUpdated = getLastUpdated(claim, history);
     return new ClaimHistory(events, lastUpdated.user(), lastUpdated.dateTime());
   }
 
@@ -109,7 +104,7 @@ public class ClaimHistoryService {
     }
 
     var builder = ClaimHistorySummary.builder();
-    var lastUpdated = resolveLastUpdatedInfo(claim, history);
+    var lastUpdated = getLastUpdated(claim, history);
     builder.lastUpdatedUser(lastUpdated.user()).lastUpdatedDateTime(lastUpdated.dateTime());
 
     if (claim.isAmended()) {
@@ -128,26 +123,30 @@ public class ClaimHistoryService {
     return builder.build();
   }
 
-  private LastUpdatedInfo resolveLastUpdatedInfo(
+  private LastUpdated getLastUpdated(
       ClaimDetails claim, ClaimHistoryResultSet claimHistoryResultSet) {
     if (claimHistoryResultSet == null || claimHistoryResultSet.getEvents() == null) {
-      return new LastUpdatedInfo(
-          userRetrievalService.getUser(claim.getLastUpdatedUser()), claim.getLastUpdatedDateTime());
+      return getLastUpdated(claim);
     }
 
     return getLatestRelevantEvent(claim, claimHistoryResultSet)
         .map(
             event ->
-                new LastUpdatedInfo(
+                new LastUpdated(
                     Optional.ofNullable(event.getActorId())
                         .map(userRetrievalService::getUser)
                         .orElse(null),
                     event.getEventTimestamp()))
-        .orElse(new LastUpdatedInfo(null, null));
+        .orElse(getLastUpdated(claim));
   }
 
-  private static Optional<uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent>
-      getLatestRelevantEvent(ClaimDetails claim, ClaimHistoryResultSet claimHistoryResultSet) {
+  private LastUpdated getLastUpdated(ClaimDetails claim) {
+    return new LastUpdated(
+        userRetrievalService.getUser(claim.getLastUpdatedUser()), claim.getLastUpdatedDateTime());
+  }
+
+  private static Optional<ClaimHistoryEvent> getLatestRelevantEvent(
+      ClaimDetails claim, ClaimHistoryResultSet claimHistoryResultSet) {
     if (claim.getDerivedClaimStatus() == null) {
       return Optional.empty();
     }
@@ -265,7 +264,7 @@ public class ClaimHistoryService {
   }
 
   private BaseClaimHistoryEvent toAmendmentClaimHistoryEvent(
-      uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent apiEvent,
+      ClaimHistoryEvent apiEvent,
       ClaimDetails claim,
       AmendmentRequestedByReferenceList requestedByReferenceList) {
     var user =
@@ -274,7 +273,7 @@ public class ClaimHistoryService {
             .map(MicrosoftApiUser::name)
             .orElse(null);
 
-    var metadata = Optional.ofNullable(apiEvent.getMetadata()).orElse(Map.<String, Object>of());
+    var metadata = Optional.ofNullable(apiEvent.getMetadata()).orElse(Map.of());
     var changes = resolveAmendmentChanges(metadata, claim.getAreaOfLaw());
     var requestedByCode = toFallbackString(metadata.get("requested_by_code"));
     var amendmentReasonCode = toFallbackString(metadata.get("amendment_reason_code"));
@@ -290,34 +289,37 @@ public class ClaimHistoryService {
   @SuppressWarnings("unchecked")
   private List<ClaimHistoryAmendmentChange> resolveAmendmentChanges(
       Map<String, Object> metadata, AreaOfLaw areaOfLaw) {
-    var rawChanges = (List<Map<String, Object>>) metadata.getOrDefault("changes", List.of());
-    return rawChanges.stream()
-        .filter(c -> "REQUESTED".equals(c.get("change_source")))
-        .map(c -> resolveChange(c, areaOfLaw))
+    var changes = (List<Map<String, Object>>) metadata.getOrDefault("changes", List.of());
+    return changes.stream()
+        .filter(change -> "REQUESTED".equals(change.get("change_source")))
+        .map(change -> resolveChange(change, areaOfLaw))
         .toList();
   }
 
   private ClaimHistoryAmendmentChange resolveChange(
-      Map<String, Object> rawChange, AreaOfLaw areaOfLaw) {
-    var fieldIdentifier = (String) rawChange.get("field_identifier");
+      Map<String, Object> change, AreaOfLaw areaOfLaw) {
+    var fieldIdentifier = (String) change.get("field_identifier");
     var fieldOpt = resolveField(areaOfLaw, fieldIdentifier);
 
     if (fieldOpt.isEmpty()) {
       log.warn(
           "Unknown amendment field identifier '{}' for area of law {}", fieldIdentifier, areaOfLaw);
+      // Note: For amend it seems appropriate for us to show raw values to caseworker if we
+      // encounter an unknown field, but we should reconsider if we copy this approach over to
+      // submit.
       return new ClaimHistoryAmendmentChange(
           null,
           fieldIdentifier,
-          toFallbackString(rawChange.get("before")),
-          toFallbackString(rawChange.get("after")));
+          toFallbackString(change.get("before")),
+          toFallbackString(change.get("after")));
     }
 
     var field = fieldOpt.get();
     return new ClaimHistoryAmendmentChange(
         field,
         fieldIdentifier,
-        resolveValue(rawChange.get("before"), field),
-        resolveValue(rawChange.get("after"), field));
+        resolveValue(change.get("before"), field),
+        resolveValue(change.get("after"), field));
   }
 
   private static Optional<ClaimViewField<?>> resolveField(
@@ -345,33 +347,40 @@ public class ClaimHistoryService {
         case ENUM -> resolveEnumValue(raw, field.getOptions());
       };
     } catch (Exception e) {
-      log.warn("Failed to resolve value '{}' as field type {}: {}", raw, fieldType, e.getMessage());
+      log.warn(
+          "Using raw value as failed to resolve value '{}' as field type {}: {}",
+          raw,
+          fieldType,
+          e.getMessage(),
+          e);
     }
     return raw;
   }
 
   private static Object resolveEnumValue(Object raw, List<FieldOption> options) {
-    if (options == null || options.isEmpty()) {
-      return String.valueOf(raw);
-    }
-    var rawValue = String.valueOf(raw);
+    var rawString = String.valueOf(raw);
     return options.stream()
-        .filter(option -> option.value().equals(rawValue))
+        .filter(option -> option.value().equals(rawString))
         .findFirst()
-        .orElse(null);
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    "Unable to resolve value for option %s in options %s"
+                        .formatted(rawString, options)));
   }
 
   private static String toFallbackString(Object rawValue) {
     return rawValue == null ? null : String.valueOf(rawValue);
   }
 
-  private static Map<String, ClaimViewField<?>> buildFieldLookup(AreaOfLaw areaOfLaw) {
+  private static Map<String, ClaimViewField<?>> viewFieldsByAreaOfLaw(AreaOfLaw areaOfLaw) {
     var lookup = new LinkedHashMap<String, ClaimViewField<?>>();
-    areaViewFields(areaOfLaw).forEach(field -> putFieldIdentifiers(lookup, field));
+    areaOfLawViewFields(areaOfLaw)
+        .forEach(field -> putFieldIdentifier(lookup, field.getClaimsApiFieldName(), field));
     return Map.copyOf(lookup);
   }
 
-  private static Stream<ClaimViewField<?>> areaViewFields(AreaOfLaw areaOfLaw) {
+  private static Stream<ClaimViewField<?>> areaOfLawViewFields(AreaOfLaw areaOfLaw) {
     var commonFields =
         Arrays.stream(ClaimDetailsViewField.values()).map(field -> (ClaimViewField<?>) field);
 
@@ -383,12 +392,6 @@ public class ClaimHistoryService {
         };
 
     return Stream.concat(commonFields, areaSpecificFields.map(field -> (ClaimViewField<?>) field));
-  }
-
-  private static void putFieldIdentifiers(
-      Map<String, ClaimViewField<?>> fieldLookup, ClaimViewField<?> field) {
-    putFieldIdentifier(fieldLookup, field.getClaimsApiFieldName(), field);
-    putFieldIdentifier(fieldLookup, field.getFeeApiFieldName(), field);
   }
 
   private static void putFieldIdentifier(
@@ -428,7 +431,7 @@ public class ClaimHistoryService {
 
   @SuppressWarnings("unchecked")
   private static List<LinkedHashMap<String, String>> getChanges(
-      uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent claimHistoryEvent) {
+      ClaimHistoryEvent claimHistoryEvent) {
     return ((List<LinkedHashMap<String, String>>)
         claimHistoryEvent.getMetadata().getOrDefault("changes", List.of()));
   }
@@ -441,5 +444,5 @@ public class ClaimHistoryService {
     return change.get("field_identifier");
   }
 
-  private record LastUpdatedInfo(MicrosoftApiUser user, OffsetDateTime dateTime) {}
+  private record LastUpdated(MicrosoftApiUser user, OffsetDateTime dateTime) {}
 }
