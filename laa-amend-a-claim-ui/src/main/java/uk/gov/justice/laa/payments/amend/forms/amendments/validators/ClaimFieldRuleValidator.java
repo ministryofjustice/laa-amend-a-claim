@@ -37,8 +37,8 @@ public class ClaimFieldRuleValidator implements FieldSpecificAmendmentValidator 
       return;
     }
 
-    var rules = ClaimFieldRuleJsonLoader.rulesFor(field, claimDetails);
-    FieldRuleEngine.firstFailingRule(rules, value)
+    var rules = ClaimFieldRuleJsonLoader.rulesFor(field);
+    FieldRuleEngine.firstFailingRule(rules, value, claimDetails)
         .ifPresent(
             rule -> {
               var args = new ArrayList<>();
