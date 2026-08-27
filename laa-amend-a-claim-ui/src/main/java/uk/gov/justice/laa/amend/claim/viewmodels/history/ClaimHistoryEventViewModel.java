@@ -45,13 +45,13 @@ public record ClaimHistoryEventViewModel(
       "claimHistory.claimAssessedStageDisbursement.description";
 
   public static ClaimHistoryEventViewModel create(
-      BaseClaimHistoryEvent event, MessageSource messageSource, Locale locale) {
+      BaseClaimHistoryEvent event, MessageSource messageSource) {
     return new ClaimHistoryEventViewModel(
         toTypeMessage(event),
         event.eventDateTime(),
         toUserMessage(event),
-        toDescriptions(event, messageSource, locale),
-        toAmendmentChanges(event, messageSource, locale),
+        toDescriptions(event, messageSource),
+        toAmendmentChanges(event, messageSource),
         toAmendmentRequestedBy(event),
         toAmendmentReason(event),
         event instanceof ClaimHistoryAmendedEvent);
@@ -85,7 +85,7 @@ public record ClaimHistoryEventViewModel(
   }
 
   private static List<ThymeleafString> toDescriptions(
-      BaseClaimHistoryEvent event, MessageSource messageSource, Locale locale) {
+      BaseClaimHistoryEvent event, MessageSource messageSource) {
     if (event instanceof ClaimHistoryCreatedEvent createdEvent) {
       return createdEvent.escaped()
           ? List.of(
@@ -117,20 +117,19 @@ public record ClaimHistoryEventViewModel(
   }
 
   private static List<ClaimHistoryAmendmentChangeViewModel> toAmendmentChanges(
-      BaseClaimHistoryEvent event, MessageSource messageSource, Locale locale) {
+      BaseClaimHistoryEvent event, MessageSource messageSource) {
     if (!(event instanceof ClaimHistoryAmendedEvent amendedEvent)) {
       return List.of();
     }
-    return toAmendmentChanges(amendedEvent, messageSource, locale);
+    return toAmendmentChanges(amendedEvent, messageSource);
   }
 
   private static List<ClaimHistoryAmendmentChangeViewModel> toAmendmentChanges(
-      ClaimHistoryAmendedEvent event, MessageSource messageSource, Locale locale) {
+      ClaimHistoryAmendedEvent event, MessageSource messageSource) {
     return event.amendmentChanges().stream()
         .sorted(
             Comparator.comparing(
-                change -> resolvedFieldLabel(change, messageSource, locale),
-                String.CASE_INSENSITIVE_ORDER))
+                change -> resolvedFieldLabel(change, messageSource), String.CASE_INSENSITIVE_ORDER))
         .map(
             change ->
                 new ClaimHistoryAmendmentChangeViewModel(
@@ -139,9 +138,9 @@ public record ClaimHistoryEventViewModel(
   }
 
   private static String resolvedFieldLabel(
-      ClaimHistoryAmendmentChange change, MessageSource messageSource, Locale locale) {
+      ClaimHistoryAmendmentChange change, MessageSource messageSource) {
     return Optional.ofNullable(change.fieldMessageKey())
-        .map(key -> messageSource.getMessage(key, null, change.fieldIdentifier(), locale))
+        .map(key -> messageSource.getMessage(key, null, change.fieldIdentifier(), Locale.UK))
         .orElse(change.fieldIdentifier());
   }
 

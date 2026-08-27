@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.UUID;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,10 +49,9 @@ public class ClaimHistoryController extends ClaimDetailsBaseController {
         claimHistory.lastUpdatedUser(),
         claimHistory.lastUpdatedDateTime());
 
-    var locale = LocaleContextHolder.getLocale();
     var events =
         claimHistory.events().stream()
-            .map(event -> ClaimHistoryEventViewModel.create(event, messageSource, locale))
+            .map(event -> ClaimHistoryEventViewModel.create(event, messageSource))
             .toList();
     model.addAttribute("events", events);
 
