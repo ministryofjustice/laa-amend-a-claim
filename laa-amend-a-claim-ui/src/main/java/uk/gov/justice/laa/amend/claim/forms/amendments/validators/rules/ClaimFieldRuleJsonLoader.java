@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import tools.jackson.databind.ObjectMapper;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.model.RuleDto;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.model.RulesRoot;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
@@ -34,7 +35,9 @@ public final class ClaimFieldRuleJsonLoader {
     return RULES.containsKey(field);
   }
 
-  public static List<FieldRuleSpec> rulesFor(ClaimViewField<?> field) {
+  public static List<FieldRuleSpec> rulesFor(ClaimViewField<?> field, ClaimDetails claimDetails) {
+    //get Full List of Rules
+    //parse list for claimDetails.getAreaOfLaw()
     return RULES.getOrDefault(field, List.of());
   }
 

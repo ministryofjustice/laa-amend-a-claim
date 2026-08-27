@@ -232,8 +232,8 @@ class AmendmentFormValidatorTest {
       FieldType type, AtomicInteger calls) {
     return new GenericAmendmentFieldValidator() {
       @Override
-      public FieldType supportedType() {
-        return type;
+      public boolean appliesTo(ClaimViewField<?> field) {
+        return type == field.getFieldType();
       }
 
       @Override

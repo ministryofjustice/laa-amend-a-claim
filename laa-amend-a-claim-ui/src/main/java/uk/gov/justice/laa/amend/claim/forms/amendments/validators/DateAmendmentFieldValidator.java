@@ -19,8 +19,8 @@ public class DateAmendmentFieldValidator implements GenericAmendmentFieldValidat
   }
 
   @Override
-  public FieldType supportedType() {
-    return FieldType.DATE;
+  public boolean appliesTo(ClaimViewField<?> field) {
+    return field.getFieldType() == FieldType.DATE;
   }
 
   @Override

@@ -6,6 +6,7 @@ public record RuleDto(
     String category,
     String kind,
     String messageCode,
+    List<String> areasOfLaw,
     List<String> messageArgs,
     String pattern,
     List<String> flags,

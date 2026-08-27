@@ -21,8 +21,8 @@ public class NumberAmendmentFieldValidator implements GenericAmendmentFieldValid
   }
 
   @Override
-  public FieldType supportedType() {
-    return FieldType.NUMBER;
+  public boolean appliesTo(ClaimViewField<?> field) {
+    return field.getFieldType() == FieldType.NUMBER;
   }
 
   @Override
