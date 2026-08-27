@@ -528,6 +528,36 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "VAT indicator"));
   }
 
+  @Test
+  void testAmendedClaimShowsInformationAlertWithSingleContentLine() {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    createClaimSummary(claim);
+    claim.setClaimId(claimId);
+    claim.setSubmissionId(submissionId);
+    claim.setDerivedClaimStatus(AMENDED);
+    claim.setHasAssessment(false);
+    claim.setAmended(true);
+
+    var updatedAt = OffsetDateTime.of(2025, 12, 18, 16, 11, 27, 0, ZoneOffset.UTC);
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    when(claimHistoryService.getClaimHistorySummary(any()))
+        .thenReturn(
+            ClaimHistorySummary.builder()
+                .lastUpdatedUser(new MicrosoftApiUser("test-id", "Bloggs, Joe", "Joe", "Bloggs"))
+                .lastUpdatedDateTime(updatedAt)
+                .amendedFields(Set.of("claim.feeCode"))
+                .build());
+
+    Document doc = renderDocument();
+
+    assertPageHasInformationAlert(
+        doc,
+        "This claim has been amended",
+        "Last edited by Joe Bloggs on 18 December 2025 at 4:11pm");
+    var contentLines = doc.select("#information-alert .moj-alert__content > div");
+    Assertions.assertEquals(1, contentLines.size());
+  }
+
   @ParameterizedTest
   @MethodSource("claimTypes")
   void testVoidClaimPageWithEscapeAssessmentShowsVoidBanner(ClaimDetails claim) {
