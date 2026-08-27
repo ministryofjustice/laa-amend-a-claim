@@ -7,9 +7,10 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 import java.util.regex.Pattern;
 import tools.jackson.databind.ObjectMapper;
+import uk.gov.justice.laa.amend.claim.forms.amendments.validators.MandatoryValueValidator;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.model.RuleDto;
 import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.model.RulesRoot;
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
@@ -35,9 +36,9 @@ public final class ClaimFieldRuleJsonLoader {
     return RULES.containsKey(field);
   }
 
-  public static List<FieldRuleSpec> rulesFor(ClaimViewField<?> field, ClaimDetails claimDetails) {
-    //get Full List of Rules
-    //parse list for claimDetails.getAreaOfLaw()
+  public static List<FieldRuleSpec> rulesFor(ClaimViewField<?> field) {
+    // get Full List of Rules
+    // parse list for claimDetails.getAreaOfLaw()
     return RULES.getOrDefault(field, List.of());
   }
 
@@ -98,37 +99,41 @@ public final class ClaimFieldRuleJsonLoader {
     return new FieldRuleSpec(category, rule.messageCode(), toPredicate(rule), messageArgs);
   }
 
-  private static Predicate<String> toPredicate(RuleDto rule) {
+  private static BiPredicate<ClaimDetails, String> toPredicate(RuleDto rule) {
     return switch (rule.kind()) {
+      case "mandatory" -> {
+        MandatoryValueValidator validation = new MandatoryValueValidator();
+        yield (claimDetails, value) -> validation.isValid(claimDetails, value, rule);
+      }
       case "regex" -> {
         var pattern = compilePattern(rule);
-        yield value -> !pattern.matcher(value).matches();
+        yield (_, value) -> !pattern.matcher(value).matches();
       }
       case "maxLength" -> {
         var max = Integer.parseInt(rule.max());
-        yield value -> value.length() > max;
+        yield (_, value) -> value.length() > max;
       }
       case "minLength" -> {
         var min = Integer.parseInt(rule.min());
-        yield value -> value.length() < min;
+        yield (_, value) -> value.length() < min;
       }
       case "exactLength" -> {
         var length = rule.length();
-        yield value -> value.length() != length;
+        yield (_, value) -> value.length() != length;
       }
       case "intRange" -> {
         var min = Integer.parseInt(rule.min());
         var max = Integer.parseInt(rule.max());
-        yield value -> isIntegerOutOfRange(value, min, max);
+        yield (_, value) -> isIntegerOutOfRange(value, min, max);
       }
       case "decimalRange" -> {
         var min = new BigDecimal(rule.min());
         var max = new BigDecimal(rule.max());
-        yield value -> isDecimalOutOfRange(value, min, max);
+        yield (_, value) -> isDecimalOutOfRange(value, min, max);
       }
       case "decimalMin" -> {
         var min = new BigDecimal(rule.min());
-        yield value -> isDecimalBelowMin(value, min);
+        yield (_, value) -> isDecimalBelowMin(value, min);
       }
       default ->
           throw new IllegalStateException(

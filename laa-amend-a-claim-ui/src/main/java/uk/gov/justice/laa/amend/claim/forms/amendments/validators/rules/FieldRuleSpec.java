@@ -1,15 +1,17 @@
 package uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules;
 
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
+import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 
 public record FieldRuleSpec(
     RuleCategory category,
     String messageCode,
-    Predicate<String> isInvalid,
+    BiPredicate<ClaimDetails, String> isInvalid,
     List<Object> messageArgs) {
 
-  public FieldRuleSpec(RuleCategory category, String messageCode, Predicate<String> isInvalid) {
+  public FieldRuleSpec(
+      RuleCategory category, String messageCode, BiPredicate<ClaimDetails, String> isInvalid) {
     this(category, messageCode, isInvalid, List.of());
   }
 }
