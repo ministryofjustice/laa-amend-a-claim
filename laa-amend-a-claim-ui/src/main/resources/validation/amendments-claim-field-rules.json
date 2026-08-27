@@ -465,99 +465,123 @@
         "messageCode": "amendmentForm.number.range",
         "messageArgs": ["0", "9"]
       }
+    ],
+    "mandatoryCrime": [
+      {
+        "category": "MANDATORY",
+        "kind": "mandatory",
+        "areaOfLaw": "CRIME",
+        "messageCode": "amendmentForm.mandatoryField.error"
+      }
+    ],
+    "mandatoryCivil": [
+      {
+        "category": "MANDATORY",
+        "kind": "mandatory",
+        "areaOfLaw": "CIVIL",
+        "messageCode": "amendmentForm.mandatoryField.error"
+      }
+    ],
+    "mandatoryMediation": [
+      {
+        "category": "MANDATORY",
+        "kind": "mandatory",
+        "areaOfLaw": "MEDIATION",
+        "messageCode": "amendmentForm.mandatoryField.error"
+      }
     ]
   },
   "fields": {
-    "ClaimDetailsViewField.INITIAL": { "ruleGroup": "name" },
-    "ClaimDetailsViewField.FORENAME": { "ruleGroup": "name" },
-    "ClaimDetailsViewField.SURNAME": { "ruleGroup": "name" },
-    "CivilClaimDetailsViewField.POSTCODE": { "ruleGroup": "postcode" },
-    "MediationClaimDetailsViewField.POSTCODE": { "ruleGroup": "postcode" },
-    "CivilClaimDetailsViewField.UNIQUE_CLIENT_NUMBER": { "ruleGroup": "uniqueClientNumber" },
-    "MediationClaimDetailsViewField.UNIQUE_CLIENT_NUMBER": { "ruleGroup": "uniqueClientNumber" },
+    "ClaimDetailsViewField.INITIAL": { "ruleGroups": ["name"] },
+    "ClaimDetailsViewField.FORENAME": { "ruleGroups": ["name", "mandatoryCivil", "mandatoryCrime"] },
+    "ClaimDetailsViewField.SURNAME": { "ruleGroups": ["name"] },
+    "CivilClaimDetailsViewField.POSTCODE": { "ruleGroups": ["postcode"] },
+    "MediationClaimDetailsViewField.POSTCODE": { "ruleGroups": ["postcode"] },
+    "CivilClaimDetailsViewField.UNIQUE_CLIENT_NUMBER": { "ruleGroups": ["uniqueClientNumber"] },
+    "MediationClaimDetailsViewField.UNIQUE_CLIENT_NUMBER": { "ruleGroups": ["uniqueClientNumber"] },
     "CivilClaimDetailsViewField.HOME_OFFICE_CLIENT_NUMBER": {
-      "ruleGroup": "homeOfficeClientNumber"
+      "ruleGroups": ["homeOfficeClientNumber"]
     },
-    "MediationClaimDetailsViewField.CLIENT_2_FORENAME": { "ruleGroup": "name" },
-    "MediationClaimDetailsViewField.CLIENT_2_SURNAME": { "ruleGroup": "name" },
-    "MediationClaimDetailsViewField.CLIENT_2_POSTCODE": { "ruleGroup": "postcode" },
-    "MediationClaimDetailsViewField.CLIENT_2_UCN": { "ruleGroup": "uniqueClientNumber" },
-    "CrimeClaimDetailsViewField.MATTER_TYPE_CODE": { "ruleGroup": "crimeMatterTypeCode" },
-    "CivilClaimDetailsViewField.MATTER_TYPE_CODE_1": { "ruleGroup": "civilMatterTypeCode" },
-    "CivilClaimDetailsViewField.MATTER_TYPE_CODE_2": { "ruleGroup": "civilMatterTypeCode" },
-    "MediationClaimDetailsViewField.MATTER_TYPE_CODE_1": { "ruleGroup": "mediationMatterTypeCode" },
-    "MediationClaimDetailsViewField.MATTER_TYPE_CODE_2": { "ruleGroup": "mediationMatterTypeCode" },
-    "ClaimDetailsViewField.FEE_CODE": { "ruleGroup": "feeCode" },
+    "MediationClaimDetailsViewField.CLIENT_2_FORENAME": { "ruleGroups": ["name"] },
+    "MediationClaimDetailsViewField.CLIENT_2_SURNAME": { "ruleGroups": ["name"] },
+    "MediationClaimDetailsViewField.CLIENT_2_POSTCODE": { "ruleGroups": ["postcode"] },
+    "MediationClaimDetailsViewField.CLIENT_2_UCN": { "ruleGroups": ["uniqueClientNumber"] },
+    "CrimeClaimDetailsViewField.MATTER_TYPE_CODE": { "ruleGroups": ["crimeMatterTypeCode"] },
+    "CivilClaimDetailsViewField.MATTER_TYPE_CODE_1": { "ruleGroups": ["civilMatterTypeCode"] },
+    "CivilClaimDetailsViewField.MATTER_TYPE_CODE_2": { "ruleGroups": ["civilMatterTypeCode"] },
+    "MediationClaimDetailsViewField.MATTER_TYPE_CODE_1": { "ruleGroups": ["mediationMatterTypeCode"] },
+    "MediationClaimDetailsViewField.MATTER_TYPE_CODE_2": { "ruleGroups": ["mediationMatterTypeCode"] },
+    "ClaimDetailsViewField.FEE_CODE": { "ruleGroups": ["feeCode"] },
     "CrimeClaimDetailsViewField.POLICE_STATION_COURT_PRISON_ID": {
-      "ruleGroup": "policeStationCourtPrisonId"
+      "ruleGroups": ["policeStationCourtPrisonId"]
     },
-    "CrimeClaimDetailsViewField.SCHEME_ID": { "ruleGroup": "schemeId" },
-    "CrimeClaimDetailsViewField.DSCC_NUMBER": { "ruleGroup": "dsccNumber" },
-    "CrimeClaimDetailsViewField.MAAT_ID": { "ruleGroup": "maatId" },
+    "CrimeClaimDetailsViewField.SCHEME_ID": { "ruleGroups": ["schemeId"] },
+    "CrimeClaimDetailsViewField.DSCC_NUMBER": { "ruleGroups": ["dsccNumber"] },
+    "CrimeClaimDetailsViewField.MAAT_ID": { "ruleGroups": ["maatId"] },
     "CrimeClaimDetailsViewField.PRISON_LAW_PRIOR_APPROVAL_NUMBER": {
-      "ruleGroup": "prisonLawPriorApprovalNumber"
+      "ruleGroups": ["prisonLawPriorApprovalNumber"]
     },
-    "CrimeClaimDetailsViewField.SUSPECTS_DEFENDANTS_COUNT": { "ruleGroup": "countRange" },
+    "CrimeClaimDetailsViewField.SUSPECTS_DEFENDANTS_COUNT": { "ruleGroups": ["countRange"] },
     "CrimeClaimDetailsViewField.POLICE_STATION_COURT_ATTENDANCES_COUNT": {
-      "ruleGroup": "countRange"
+      "ruleGroups": ["countRange"]
     },
-    "CrimeClaimDetailsViewField.TRAVEL_COSTS": { "ruleGroup": "travelCosts" },
-    "CrimeClaimDetailsViewField.WAITING_COSTS": { "ruleGroup": "waitingCosts" },
-    "MediationClaimDetailsViewField.CLAIM_ID": { "ruleGroup": "claimId" },
+    "CrimeClaimDetailsViewField.TRAVEL_COSTS": { "ruleGroups": ["travelCosts"] },
+    "CrimeClaimDetailsViewField.WAITING_COSTS": { "ruleGroups": ["waitingCosts"] },
+    "MediationClaimDetailsViewField.CLAIM_ID": { "ruleGroups": ["claimId"] },
     "MediationClaimDetailsViewField.MEDIATION_SESSIONS_COUNT": {
-      "ruleGroup": "mediationSessionsCount"
+      "ruleGroups": ["mediationSessionsCount"]
     },
     "MediationClaimDetailsViewField.MEDIATION_TIME_MINUTES": {
-      "ruleGroup": "mediationTimeMinutes"
+      "ruleGroups": ["mediationTimeMinutes"]
     },
-    "MediationClaimDetailsViewField.OUTREACH_LOCATION": { "ruleGroup": "outreachLocation" },
-    "ClaimDetailsViewField.CASE_REFERENCE_NUMBER": { "ruleGroup": "caseReferenceNumber" },
-    "CivilClaimDetailsViewField.UNIQUE_FILE_NUMBER": { "ruleGroup": "uniqueFileNumber" },
-    "CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER": { "ruleGroup": "uniqueFileNumber" },
-    "CivilClaimDetailsViewField.CASE_ID": { "ruleGroup": "claimId" },
+    "MediationClaimDetailsViewField.OUTREACH_LOCATION": { "ruleGroups": ["outreachLocation"] },
+    "ClaimDetailsViewField.CASE_REFERENCE_NUMBER": { "ruleGroups": ["caseReferenceNumber"] },
+    "CivilClaimDetailsViewField.UNIQUE_FILE_NUMBER": { "ruleGroups": ["uniqueFileNumber"] },
+    "CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER": { "ruleGroups": ["uniqueFileNumber"] },
+    "CivilClaimDetailsViewField.CASE_ID": { "ruleGroups": ["claimId"] },
     "CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL": {
-      "ruleGroup": "scheduleReferenceCivil"
+      "ruleGroups": ["scheduleReferenceCivil"]
     },
-    "CivilClaimDetailsViewField.PROCUREMENT_AREA": { "ruleGroup": "locationCode" },
-    "CivilClaimDetailsViewField.DELIVERY_LOCATION": { "ruleGroup": "locationCode" },
-    "CivilClaimDetailsViewField.ACCESS_POINT": { "ruleGroup": "accessPoint" },
-    "CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER": { "ruleGroup": "localAuthorityNumber" },
-    "CivilClaimDetailsViewField.VALUE_OF_COSTS": { "ruleGroup": "mediumCostRange" },
+    "CivilClaimDetailsViewField.PROCUREMENT_AREA": { "ruleGroups": ["locationCode"] },
+    "CivilClaimDetailsViewField.DELIVERY_LOCATION": { "ruleGroups": ["locationCode"] },
+    "CivilClaimDetailsViewField.ACCESS_POINT": { "ruleGroups": ["accessPoint"] },
+    "CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER": { "ruleGroups": ["localAuthorityNumber"] },
+    "CivilClaimDetailsViewField.VALUE_OF_COSTS": { "ruleGroups": ["mediumCostRange"] },
     "CivilClaimDetailsViewField.EXCEPTIONAL_CASE_FUNDING": {
-      "ruleGroup": "exceptionalCaseFunding"
+      "ruleGroups": ["exceptionalCaseFunding"]
     },
     "CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_REFERENCE": {
-      "ruleGroup": "civilLegalAdviceReference"
+      "ruleGroups": ["civilLegalAdviceReference"]
     },
     "CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_EXEMPTION": {
-      "ruleGroup": "civilLegalAdviceExemption"
+      "ruleGroups": ["civilLegalAdviceExemption"]
     },
-    "CivilClaimDetailsViewField.ADVICE_TIME": { "ruleGroup": "timeRange" },
-    "CivilClaimDetailsViewField.TRAVEL_TIME": { "ruleGroup": "timeRange" },
-    "CivilClaimDetailsViewField.WAITING_TIME": { "ruleGroup": "timeRange" },
+    "CivilClaimDetailsViewField.ADVICE_TIME": { "ruleGroups": ["timeRange"] },
+    "CivilClaimDetailsViewField.TRAVEL_TIME": { "ruleGroups": ["timeRange"] },
+    "CivilClaimDetailsViewField.WAITING_TIME": { "ruleGroups": ["timeRange"] },
     "CivilClaimDetailsViewField.MEDICAL_REPORTS_CLAIMED": {
-      "ruleGroup": "medicalReportsClaimed"
+      "ruleGroups": ["medicalReportsClaimed"]
     },
-    "CivilClaimDetailsViewField.SURGERY_CLIENTS_COUNT": { "ruleGroup": "surgeryClientsCount" },
-    "CivilClaimDetailsViewField.SURGERY_MATTERS_COUNT": { "ruleGroup": "surgeryMattersCount" },
-    "CivilClaimDetailsViewField.HOME_OFFICE": { "ruleGroup": "homeOffice" },
+    "CivilClaimDetailsViewField.SURGERY_CLIENTS_COUNT": { "ruleGroups": ["surgeryClientsCount"] },
+    "CivilClaimDetailsViewField.SURGERY_MATTERS_COUNT": { "ruleGroups": ["surgeryMattersCount"] },
+    "CivilClaimDetailsViewField.HOME_OFFICE": { "ruleGroups": ["homeOffice"] },
     "CivilClaimDetailsViewField.MENTAL_HEALTH_TRIBUNAL_REFERENCE": {
-      "ruleGroup": "mentalHealthTribunalReference"
+      "ruleGroups": ["mentalHealthTribunalReference"]
     },
     "CivilClaimDetailsViewField.PRIOR_AUTHORITY_REFERENCE": {
-      "ruleGroup": "priorAuthorityReference"
+      "ruleGroups": ["priorAuthorityReference"]
     },
-    "ClaimDetailsViewField.PROFIT_COST": { "ruleGroup": "largeCostRange" },
-    "ClaimDetailsViewField.DISBURSEMENTS": { "ruleGroup": "largeCostRange" },
-    "ClaimDetailsViewField.DISBURSEMENTS_VAT": { "ruleGroup": "disbursementsVat" },
-    "CivilClaimDetailsViewField.COUNSELS_COST": { "ruleGroup": "mediumCostRange" },
-    "CivilClaimDetailsViewField.TRAVEL_AND_WAITING_COSTS": { "ruleGroup": "travelCosts" },
-    "CivilClaimDetailsViewField.DETENTION_TRAVEL": { "ruleGroup": "detentionTravel" },
-    "CivilClaimDetailsViewField.JR_FORM_FILLING": { "ruleGroup": "travelCosts" },
-    "CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE": { "ruleGroup": "smallCountRange" },
-    "CivilClaimDetailsViewField.CMRH_TELEPHONE": { "ruleGroup": "smallCountRange" },
-    "CivilClaimDetailsViewField.CMRH_ORAL": { "ruleGroup": "smallCountRange" },
-    "CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT": { "ruleGroup": "civilOutcomeCode" },
-    "CivilClaimDetailsViewField.STAGE_REACHED": { "ruleGroup": "civilStageReached" }
+    "ClaimDetailsViewField.PROFIT_COST": { "ruleGroups": ["largeCostRange"] },
+    "ClaimDetailsViewField.DISBURSEMENTS": { "ruleGroups": ["largeCostRange"] },
+    "ClaimDetailsViewField.DISBURSEMENTS_VAT": { "ruleGroups": ["disbursementsVat"] },
+    "CivilClaimDetailsViewField.COUNSELS_COST": { "ruleGroups": ["mediumCostRange"] },
+    "CivilClaimDetailsViewField.TRAVEL_AND_WAITING_COSTS": { "ruleGroups": ["travelCosts"] },
+    "CivilClaimDetailsViewField.DETENTION_TRAVEL": { "ruleGroups": ["detentionTravel"] },
+    "CivilClaimDetailsViewField.JR_FORM_FILLING": { "ruleGroups": ["travelCosts"] },
+    "CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE": { "ruleGroups": ["smallCountRange"] },
+    "CivilClaimDetailsViewField.CMRH_TELEPHONE": { "ruleGroups": ["smallCountRange"] },
+    "CivilClaimDetailsViewField.CMRH_ORAL": { "ruleGroups": ["smallCountRange"] },
+    "CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT": { "ruleGroups": ["civilOutcomeCode"] },
+    "CivilClaimDetailsViewField.STAGE_REACHED": { "ruleGroups": ["civilStageReached"] }
   }
 }

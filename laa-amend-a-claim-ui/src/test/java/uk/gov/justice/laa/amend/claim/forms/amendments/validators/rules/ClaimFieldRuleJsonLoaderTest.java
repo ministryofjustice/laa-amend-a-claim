@@ -39,11 +39,17 @@ class ClaimFieldRuleJsonLoaderTest {
 
     for (var entry : root.path("fields").properties()) {
       var fieldNode = entry.getValue();
-      if (fieldNode.has("ruleGroup")) {
-        var groupName = fieldNode.get("ruleGroup").asString();
-        assertThat(ruleGroupNames)
-            .as("field '%s' references ruleGroup '%s'", entry.getKey(), groupName)
-            .contains(groupName);
+      if (fieldNode.has("ruleGroups")) {
+        var configuredRuleGroups = fieldNode.get("ruleGroups");
+        assertThat(configuredRuleGroups.isArray())
+            .as("field '%s' should define ruleGroups as an array", entry.getKey())
+            .isTrue();
+        for (JsonNode groupNode : configuredRuleGroups) {
+          var groupName = groupNode.asString();
+          assertThat(ruleGroupNames)
+              .as("field '%s' references ruleGroup '%s'", entry.getKey(), groupName)
+              .contains(groupName);
+        }
       }
     }
   }

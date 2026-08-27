@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,15 +60,23 @@ public final class ClaimFieldRuleJsonLoader {
         .forEach(
             (fieldName, fieldConfig) -> {
               var field = resolveField(fieldName);
-              List<FieldRuleSpec> ruleSpecs = ruleGroups.get(fieldConfig.ruleGroup());
+              var ruleSpecs = new ArrayList<FieldRuleSpec>();
 
-              if (ruleSpecs == null) {
-                throw new IllegalStateException(
-                    "amendments-claim-field-rules.json: field '%s' references unknown ruleGroup '%s'"
-                        .formatted(fieldName, fieldConfig.ruleGroup()));
+              if (fieldConfig.ruleGroups() != null) {
+                for (String groupName : fieldConfig.ruleGroups()) {
+                  List<FieldRuleSpec> groupedRuleSpecs = ruleGroups.get(groupName);
+                  if (groupedRuleSpecs == null) {
+                    throw new IllegalStateException(
+                        "amendments-claim-field-rules.json: field '%s' references unknown ruleGroup '%s'"
+                            .formatted(fieldName, groupName));
+                  }
+                  ruleSpecs.addAll(groupedRuleSpecs);
+                }
               }
-
-              result.put(field, ruleSpecs);
+              if (fieldConfig.rules() != null) {
+                ruleSpecs.addAll(toRuleSpecs(fieldConfig.rules()));
+              }
+              result.put(field, List.copyOf(ruleSpecs));
             });
 
     return result;
