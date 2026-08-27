@@ -13,6 +13,14 @@ import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
 
 @Getter
 public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetails> {
+  // Client fields
+  INITIAL(
+      FieldType.TEXT,
+      String.class,
+      CrimeClaimDetails::getClientForename,
+      ClaimPatch.Builder::clientForename,
+      "client.clientForename"),
+
   // Case type fields
   MATTER_TYPE_CODE(
       FieldType.TEXT,

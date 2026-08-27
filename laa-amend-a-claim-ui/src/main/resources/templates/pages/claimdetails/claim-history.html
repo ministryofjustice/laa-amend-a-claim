@@ -25,7 +25,22 @@
                         <time th:datetime="${event.eventDateTime().toInstant().toString()}"
                               th:text="${@ThymeleafUtils.getFormattedValue(event.eventDateTime).resolve(#messages)}"></time>
                     </p>
-                    <div class="moj-timeline__description">
+                    <div class="moj-timeline__description" th:if="${event.amendmentEvent}">
+                        <p>
+                            <strong th:text="#{claimHistory.claimAmended.requested}"></strong>
+                            <span th:text="|by ${event.amendmentRequestedBy.resolve(#messages)}|"></span>
+                        </p>
+                        <p>
+                            <strong th:text="#{claimHistory.claimAmended.reason}"></strong>
+                            <span th:text="${event.amendmentReason.resolve(#messages)}"></span>
+                        </p>
+                        <p th:text="#{claimHistory.claimAmended.fieldsIntro}"></p>
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li th:each="change : ${event.amendmentChanges}"
+                                th:text="#{claimHistory.claimAmended.change(${change.fieldLabel.resolve(#messages)}, ${@ThymeleafUtils.getFormattedValue(change.before).resolve(#messages)}, ${@ThymeleafUtils.getFormattedValue(change.after).resolve(#messages)})}"></li>
+                        </ul>
+                    </div>
+                    <div class="moj-timeline__description" th:unless="${event.amendmentEvent}">
                         <p th:each="description : ${event.descriptions}" th:text="${description.resolve(#messages)}"></p>
                     </div>
                 </div>

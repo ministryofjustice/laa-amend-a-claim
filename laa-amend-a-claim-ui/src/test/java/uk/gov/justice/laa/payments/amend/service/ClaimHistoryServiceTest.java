@@ -26,7 +26,6 @@ import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,13 +34,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
+import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryAmendedEvent;
+import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryAssessedEvent;
+import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryCreatedEvent;
+import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryVoidedEvent;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
 import uk.gov.justice.laa.payments.amend.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.payments.amend.models.AmendmentConfirmation;
 import uk.gov.justice.laa.payments.amend.models.AssessmentInfo;
-import uk.gov.justice.laa.payments.amend.models.ClaimHistoryEvent;
 import uk.gov.justice.laa.payments.amend.models.MicrosoftApiUser;
+import uk.gov.justice.laa.payments.amend.models.enums.GenderCode;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
@@ -77,6 +81,8 @@ public class ClaimHistoryServiceTest {
 
   @Mock private UserRetrievalService userRetrievalService;
 
+  @Mock private SystemReferenceService systemReferenceService;
+
   private ClaimHistoryService claimHistoryService;
 
   @BeforeEach
@@ -87,7 +93,8 @@ public class ClaimHistoryServiceTest {
             claimsApiClient,
             featureFlagsConfig,
             providerService,
-            userRetrievalService);
+            userRetrievalService,
+            systemReferenceService);
   }
 
   @Test
@@ -135,32 +142,158 @@ public class ClaimHistoryServiceTest {
     var assessments = List.of(voided, assessedStageDisbursement, assessedEscapeCase);
     when(assessmentService.getLatestAssessmentsByClaim(claim.getClaimId(), MAXIMUM_ASSESSMENTS))
         .thenReturn(assessments);
+    when(claimsApiClient.getClaimHistory(claim.getClaimId()))
+        .thenReturn(
+            Mono.just(new ClaimHistoryResultSet().claimId(claim.getClaimId()).events(List.of())));
+    when(systemReferenceService.getAmendmentRequestedByReferenceList())
+        .thenReturn(new AmendmentRequestedByReferenceList().requestedBy(List.of()));
 
     var claimHistory = claimHistoryService.getClaimHistory(claim);
 
-    var voidedEvent =
-        new ClaimHistoryEvent(
-            CLAIM_VOIDED, VOIDED_DATE_TIME, VOIDED_USER.displayName(), Optional.empty());
+    var voidedEvent = new ClaimHistoryVoidedEvent(VOIDED_DATE_TIME, VOIDED_USER.displayName());
     var assessedStageDisbursementEvent =
-        new ClaimHistoryEvent(
-            CLAIM_ASSESSED_STAGE_DISBURSEMENT,
+        new ClaimHistoryAssessedEvent(
             STAGE_DISBURSEMENT_ASSESSED_DATE_TIME,
             STAGE_DISBURSEMENT_ASSESSED_USER.displayName(),
-            Optional.of(PAID_IN_FULL));
+            STAGE_DISBURSEMENT_ASSESSMENT,
+            PAID_IN_FULL);
     var assessedEscapeCaseEvent =
-        new ClaimHistoryEvent(
-            CLAIM_ASSESSED_ESCAPE_CASE,
+        new ClaimHistoryAssessedEvent(
             ESCAPE_CASE_ASSESSED_DATE_TIME,
             ESCAPE_CASE_ASSESSED_USER.displayName(),
-            Optional.of(REDUCED));
-    var createdEvent =
-        new ClaimHistoryEvent(
-            CLAIM_CREATED_AND_ESCAPED, CREATED_DATE_TIME, PROVIDER_NAME, Optional.empty());
+            ESCAPE_CASE_ASSESSMENT,
+            REDUCED);
+    var createdEvent = new ClaimHistoryCreatedEvent(CREATED_DATE_TIME, PROVIDER_NAME, true);
 
     assertThat(claimHistory.latestAssessmentUser()).contains(VOIDED_USER);
     assertThat(claimHistory.events())
         .containsExactly(
             voidedEvent, assessedStageDisbursementEvent, assessedEscapeCaseEvent, createdEvent);
+  }
+
+  @Test
+  void getClaimHistoryIncludesResolvedRequestedAmendmentChanges() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setSubmittedDate(CREATED_DATE_TIME);
+    claim.setHasAssessment(false);
+
+    var amendedDateTime = CREATED_DATE_TIME.plusDays(1);
+    var amendedUser =
+        new MicrosoftApiUser(UUID.randomUUID().toString(), "Amended user", null, null);
+    when(userRetrievalService.getUser(amendedUser.id())).thenReturn(amendedUser);
+    when(systemReferenceService.getAmendmentRequestedByReferenceList())
+        .thenReturn(new AmendmentRequestedByReferenceList().requestedBy(List.of()));
+    when(systemReferenceService.getAmendmentRequestedByOptions(org.mockito.ArgumentMatchers.any()))
+        .thenReturn(Map.of("PROVIDER", "Provider"));
+    when(systemReferenceService.getAmendmentRequestReason(
+            org.mockito.ArgumentMatchers.eq("PROVIDER"), org.mockito.ArgumentMatchers.any()))
+        .thenReturn(Map.of("CORRECTION", "Correction"));
+
+    var changes =
+        List.of(
+            change("REQUESTED", "client.genderCode", "M", "F"),
+            change("REQUESTED", "claim.caseStartDate", "2026-04-01", "2026-04-02"),
+            change("REQUESTED", "unknown.field", "before", "after"),
+            change("FSP", "claim.caseConcludedDate", "2026-04-05", "2026-04-06"));
+
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .actorId(amendedUser.id())
+                        .eventTimestamp(amendedDateTime)
+                        .metadata(
+                            Map.of(
+                                "requested_by_code",
+                                "PROVIDER",
+                                "amendment_reason_code",
+                                "CORRECTION",
+                                "changes",
+                                changes))));
+
+    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
+
+    var claimHistory = claimHistoryService.getClaimHistory(claim);
+
+    var amendmentEvent =
+        claimHistory.events().stream()
+            .filter(ClaimHistoryAmendedEvent.class::isInstance)
+            .map(ClaimHistoryAmendedEvent.class::cast)
+            .findFirst()
+            .orElseThrow();
+
+    assertThat(amendmentEvent.user()).isEqualTo(amendedUser.displayName());
+    assertThat(amendmentEvent.requestedByCode()).isEqualTo("Provider");
+    assertThat(amendmentEvent.amendmentReasonCode()).isEqualTo("Correction");
+    assertThat(amendmentEvent.amendmentChanges()).hasSize(3);
+
+    var genderChange =
+        amendmentEvent.amendmentChanges().stream()
+            .filter(change -> "client.genderCode".equals(change.fieldIdentifier()))
+            .findFirst()
+            .orElseThrow();
+    assertThat(genderChange.field()).isNotNull();
+    assertThat(genderChange.field().name()).isEqualTo("GENDER");
+    assertThat(genderChange.fieldMessageKey()).isEqualTo("claimHistory.amended.GENDER");
+    assertThat(genderChange.before()).isEqualTo(GenderCode.MALE);
+    assertThat(genderChange.after()).isEqualTo(GenderCode.FEMALE);
+
+    var unknownFieldChange =
+        amendmentEvent.amendmentChanges().stream()
+            .filter(change -> "unknown.field".equals(change.fieldIdentifier()))
+            .findFirst()
+            .orElseThrow();
+    assertThat(unknownFieldChange.field()).isNull();
+    assertThat(unknownFieldChange.fieldMessageKey()).isNull();
+    assertThat(unknownFieldChange.before()).isEqualTo("before");
+    assertThat(unknownFieldChange.after()).isEqualTo("after");
+  }
+
+  @Test
+  void getClaimHistorySetsAmendmentFieldMessageKeyForKnownField() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setSubmittedDate(CREATED_DATE_TIME);
+    claim.setHasAssessment(false);
+
+    var amendedDateTime = CREATED_DATE_TIME.plusDays(1);
+    var amendedUser =
+        new MicrosoftApiUser(UUID.randomUUID().toString(), "Amended user", null, null);
+    when(userRetrievalService.getUser(amendedUser.id())).thenReturn(amendedUser);
+    when(systemReferenceService.getAmendmentRequestedByReferenceList())
+        .thenReturn(new AmendmentRequestedByReferenceList().requestedBy(List.of()));
+
+    var changes = List.of(change("REQUESTED", "claim.maatId", "before", "after"));
+
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .actorId(amendedUser.id())
+                        .eventTimestamp(amendedDateTime)
+                        .metadata(Map.of("changes", changes))));
+
+    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
+
+    var claimHistory = claimHistoryService.getClaimHistory(claim);
+
+    var amendmentEvent =
+        claimHistory.events().stream()
+            .filter(ClaimHistoryAmendedEvent.class::isInstance)
+            .map(ClaimHistoryAmendedEvent.class::cast)
+            .findFirst()
+            .orElseThrow();
+
+    assertThat(amendmentEvent.amendmentChanges()).hasSize(1);
+    assertThat(amendmentEvent.amendmentChanges().getFirst().field()).isNotNull();
+    assertThat(amendmentEvent.amendmentChanges().getFirst().field().name()).isEqualTo("MAAT_ID");
+    assertThat(amendmentEvent.amendmentChanges().getFirst().fieldMessageKey())
+        .isEqualTo("claimHistory.amended.MAAT_ID");
   }
 
   @Test
@@ -401,6 +534,16 @@ public class ClaimHistoryServiceTest {
     var change = new LinkedHashMap<String, String>();
     change.put("change_source", source);
     change.put("field_identifier", fieldIdentifier);
+    return change;
+  }
+
+  private static LinkedHashMap<String, Object> change(
+      String source, String fieldIdentifier, Object before, Object after) {
+    var change = new LinkedHashMap<String, Object>();
+    change.put("change_source", source);
+    change.put("field_identifier", fieldIdentifier);
+    change.put("before", before);
+    change.put("after", after);
     return change;
   }
 

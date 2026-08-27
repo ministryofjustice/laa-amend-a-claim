@@ -27,18 +27,6 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   TOTAL(FieldType.TEXT, ClaimDetails::getTotalAmount),
 
   // Common client fields
-  INITIAL(
-      FieldType.TEXT,
-      String.class,
-      ClaimDetails::getClientForename,
-      ClaimPatch.Builder::clientForename,
-      "client.clientForename"),
-  FORENAME(
-      FieldType.TEXT,
-      String.class,
-      ClaimDetails::getClientForename,
-      ClaimPatch.Builder::clientForename,
-      "client.clientForename"),
   SURNAME(
       FieldType.TEXT,
       String.class,
