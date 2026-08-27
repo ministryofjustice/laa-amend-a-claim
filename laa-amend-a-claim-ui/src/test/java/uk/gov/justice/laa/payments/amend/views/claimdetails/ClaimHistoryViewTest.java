@@ -14,9 +14,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import uk.gov.justice.laa.payments.amend.controllers.claimdetails.ClaimHistoryController;
+import uk.gov.justice.laa.payments.amend.models.AssessmentInfo;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.MicrosoftApiUser;
 import uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum;
+import uk.gov.justice.laa.payments.amend.models.enums.DerivedClaimStatus;
 import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
 import uk.gov.justice.laa.payments.amend.models.enums.OutcomeType;
 import uk.gov.justice.laa.amend.claim.models.history.ClaimHistory;
@@ -28,6 +30,7 @@ import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryVoidedEvent;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewFieldGetter;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewFieldPatcher;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @WebMvcTest(ClaimHistoryController.class)
 class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
@@ -41,16 +44,6 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
       OffsetDateTime.of(2026, 5, 16, 10, 40, 0, 0, ZoneOffset.UTC);
   private static final List<String> ALL_AMENDABLE_FIELD_NAMES =
       List.of(
-          "CLIENT_NAME",
-          "PROVIDER_NAME",
-          "OFFICE_CODE",
-          "SUBMITTED_DATE",
-          "AREA_OF_LAW",
-          "CATEGORY_OF_LAW",
-          "FEE_CODE_DESCRIPTION",
-          "ESCAPED",
-          "VAT_REQUESTED",
-          "TOTAL",
           "INITIAL",
           "SURNAME",
           "GENDER",
@@ -61,7 +54,6 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
           "UNIQUE_FILE_NUMBER",
           "CASE_CONCLUDED_DATE",
           "FEE_CODE",
-          "FIXED_FEE",
           "PROFIT_COST",
           "DISBURSEMENTS",
           "DISBURSEMENTS_VAT",
@@ -174,7 +166,8 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
         .thenReturn(
             new ClaimHistory(
                 List.of(voidedEvent, assessedEvent, createdEvent),
-                Optional.of(new MicrosoftApiUser("test-id", "Bloggs, Joe", "Joe", "Bloggs"))));
+                new MicrosoftApiUser("test-id", "Bloggs, Joe", "Joe", "Bloggs"),
+                VOIDED_AT));
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -210,11 +203,74 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
   }
 
   @Test
+  void testPageWithAmendedBanner() {
+    claim.setAmended(true);
+    claim.setHasAssessment(false);
+    claim.setDerivedClaimStatus(DerivedClaimStatus.AMENDED);
+    claim.setStatus(ClaimStatus.VALID);
+
+    var createdEvent = new ClaimHistoryCreatedEvent(CREATED_AT, USER, true);
+    var lastUpdatedUser = new MicrosoftApiUser("test-id", "Bloggs, Joe", "Joe", "Bloggs");
+    when(claimHistoryService.getClaimHistory(claim))
+        .thenReturn(new ClaimHistory(List.of(createdEvent), lastUpdatedUser, ASSESSED_AT));
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    assertPageHasInformationAlert(
+        doc, "This claim has been amended", "Last edited by Joe Bloggs on 15 May 2026 at 11:40am");
+    assertThat(doc.select("#information-alert .moj-alert__content > div")).hasSize(1);
+  }
+
+  @Test
+  void testPageWithAssessedBanner() {
+    claim.setAmended(false);
+    claim.setHasAssessment(true);
+    claim.setDerivedClaimStatus(DerivedClaimStatus.ASSESSED);
+    claim.setStatus(ClaimStatus.VALID);
+    claim.setLastAssessment(
+        AssessmentInfo.builder().lastAssessmentOutcome(OutcomeType.PAID_IN_FULL).build());
+
+    var createdEvent = new ClaimHistoryCreatedEvent(CREATED_AT, USER, true);
+    var lastUpdatedUser = new MicrosoftApiUser("test-id", "Bloggs, Joe", "Joe", "Bloggs");
+    when(claimHistoryService.getClaimHistory(claim))
+        .thenReturn(new ClaimHistory(List.of(createdEvent), lastUpdatedUser, ASSESSED_AT));
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    assertPageHasInformationAlert(
+        doc,
+        "This claim has been assessed",
+        "Last edited by Joe Bloggs on 15 May 2026 at 11:40am Assessed in full");
+  }
+
+  @Test
+  void testPageWithVoidedBanner() {
+    claim.setStatus(ClaimStatus.VOID);
+    claim.setDerivedClaimStatus(DerivedClaimStatus.VOIDED);
+
+    var createdEvent = new ClaimHistoryCreatedEvent(CREATED_AT, USER, true);
+    var lastUpdatedUser = new MicrosoftApiUser("test-id", "Bloggs, Joe", "Joe", "Bloggs");
+    when(claimHistoryService.getClaimHistory(claim))
+        .thenReturn(new ClaimHistory(List.of(createdEvent), lastUpdatedUser, VOIDED_AT));
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    var banner = doc.selectFirst(".moj-alert.moj-alert--error");
+    assertThat(banner).isNotNull();
+    assertThat(banner.text()).contains("This claim has been voided");
+    assertThat(banner.text()).contains("Last edited by Joe Bloggs on 16 May 2026 at 11:40am");
+    assertThat(banner.text()).contains("You can no longer make changes");
+  }
+
+  @Test
   void testPageWithoutAssessments() {
     var createdEvent = new ClaimHistoryCreatedEvent(CREATED_AT, null, false);
 
     when(claimHistoryService.getClaimHistory(claim))
-        .thenReturn(new ClaimHistory(List.of(createdEvent), Optional.empty()));
+        .thenReturn(new ClaimHistory(List.of(createdEvent), null, null));
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -249,7 +305,7 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
         new ClaimHistoryAmendedEvent(ASSESSED_AT, USER, changes, "PROVIDER", "CORRECTION");
 
     when(claimHistoryService.getClaimHistory(claim))
-        .thenReturn(new ClaimHistory(List.of(amendedEvent), Optional.empty()));
+        .thenReturn(new ClaimHistory(List.of(amendedEvent), null, null));
 
     var doc = renderDocument();
     assertCommonPageContent(doc);
@@ -273,7 +329,6 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "additional travel payment changed from before to after",
             "adjourned hearing fee changed from before to after",
             "advice time (minutes) changed from before to after",
-            "area of law changed from before to after",
             "Asylum and Immigration Tribunal (AIT) hearing centre changed from before to after",
             "case concluded date changed from before to after",
             "case concluded date or case claimed date changed from before to after",
@@ -283,7 +338,6 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "case reference number (CRN) changed from before to after",
             "case stage or level changed from before to after",
             "case start date changed from before to after",
-            "category of law changed from before to after",
             "Civil Legal Advice (CLA) exemption code changed from before to after",
             "Civil Legal Advice (CLA) reference number changed from before to after",
             "claim ID changed from before to after",
@@ -297,11 +351,9 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "client 2 postal application accepted changed from before to after",
             "client 2 postcode changed from before to after",
             "client 2 unique client number (UCN) changed from before to after",
-            "client name changed from before to after",
             "client type changed from before to after",
             "court location (Housing Possession Court Duty Scheme (HPCDS)) changed from before to after",
             "date of birth changed from before to after",
-            "date submitted changed from before to after",
             "Defence Solicitor Call Centre (DSCC) number changed from before to after",
             "delivery location changed from before to after",
             "designated accredited representative changed from before to after",
@@ -310,14 +362,11 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "disbursement VAT changed from before to after",
             "duty solicitor changed from before to after",
             "eligible client changed from before to after",
-            "escape case changed from before to after",
             "ethnicity changed from before to after",
             "exceptional case funding (ECF) reference changed from before to after",
             "exemption criteria satisfied changed from before to after",
             "fee code changed from before to after",
-            "fee code description changed from before to after",
             "first name changed from before to after",
-            "fixed fee changed from before to after",
             "follow on work changed from before to after",
             "gender changed from before to after",
             "Home Office Interview changed from before to after",
@@ -350,7 +399,6 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "number of mediation sessions changed from before to after",
             "number of police station or court attendances changed from before to after",
             "number of suspects or defendants changed from before to after",
-            "office account number changed from before to after",
             "outcome changed from before to after",
             "outcome for client changed from before to after",
             "outreach location changed from before to after",
@@ -359,7 +407,6 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "postcode changed from before to after",
             "Prison Law Prior Approval number changed from before to after",
             "procurement area changed from before to after",
-            "provider name changed from before to after",
             "referral changed from before to after",
             "representation order date changed from before to after",
             "schedule reference changed from before to after",
@@ -370,7 +417,6 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "substantive hearing changed from before to after",
             "surgery date changed from before to after",
             "tolerance indicator changed from before to after",
-            "total changed from before to after",
             "transfer date changed from before to after",
             "travel and waiting costs changed from before to after",
             "travel time (minutes) changed from before to after",
@@ -380,7 +426,6 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "unique file number (UFN) changed from before to after",
             "value of costs or damages recovered changed from before to after",
             "VAT indicator changed from before to after",
-            "VAT requested changed from before to after",
             "waiting time (minutes) changed from before to after",
             "youth court changed from before to after");
   }

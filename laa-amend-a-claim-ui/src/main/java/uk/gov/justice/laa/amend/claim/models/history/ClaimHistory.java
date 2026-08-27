@@ -1,8 +1,10 @@
 package uk.gov.justice.laa.amend.claim.models.history;
 
+import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 import uk.gov.justice.laa.amend.claim.models.MicrosoftApiUser;
 
 public record ClaimHistory(
-    List<BaseClaimHistoryEvent> events, Optional<MicrosoftApiUser> latestAssessmentUser) {}
+    List<BaseClaimHistoryEvent> events,
+    MicrosoftApiUser lastUpdatedUser,
+    OffsetDateTime lastUpdatedDateTime) {}

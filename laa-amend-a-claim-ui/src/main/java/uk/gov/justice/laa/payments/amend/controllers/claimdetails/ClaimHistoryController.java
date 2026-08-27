@@ -47,8 +47,8 @@ public class ClaimHistoryController extends ClaimDetailsBaseController {
         session,
         request,
         claim,
-        claimHistory.latestAssessmentUser().orElse(null),
-        claim.getLastUpdatedDateTime()); // TODO: BC-570: Will wire up user and time from history
+        claimHistory.lastUpdatedUser(),
+        claimHistory.lastUpdatedDateTime());
 
     var locale = LocaleContextHolder.getLocale();
     var events =

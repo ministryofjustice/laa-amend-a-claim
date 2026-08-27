@@ -75,8 +75,6 @@ public class ClaimHistoryServiceTest {
 
   @Mock private ClaimsApiClient claimsApiClient;
 
-  @Mock private FeatureFlagsConfig featureFlagsConfig;
-
   @Mock private ProviderService providerService;
 
   @Mock private UserRetrievalService userRetrievalService;
@@ -91,7 +89,6 @@ public class ClaimHistoryServiceTest {
         new ClaimHistoryService(
             assessmentService,
             claimsApiClient,
-            featureFlagsConfig,
             providerService,
             userRetrievalService,
             systemReferenceService);
@@ -165,7 +162,8 @@ public class ClaimHistoryServiceTest {
             REDUCED);
     var createdEvent = new ClaimHistoryCreatedEvent(CREATED_DATE_TIME, PROVIDER_NAME, true);
 
-    assertThat(claimHistory.latestAssessmentUser()).contains(VOIDED_USER);
+    assertThat(claimHistory.lastUpdatedUser()).isNull();
+    assertThat(claimHistory.lastUpdatedDateTime()).isNull();
     assertThat(claimHistory.events())
         .containsExactly(
             voidedEvent, assessedStageDisbursementEvent, assessedEscapeCaseEvent, createdEvent);

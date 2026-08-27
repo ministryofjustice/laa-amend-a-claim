@@ -12,6 +12,7 @@ import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventTy
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -61,7 +62,6 @@ public class ClaimHistoryService {
 
   private final AssessmentService assessmentService;
   private final ClaimsApiClient claimsApiClient;
-  private final FeatureFlagsConfig featureFlagsConfig;
   private final ProviderService providerService;
   private final UserRetrievalService userRetrievalService;
   private final SystemReferenceService systemReferenceService;
@@ -92,10 +92,8 @@ public class ClaimHistoryService {
             .sorted(comparing(BaseClaimHistoryEvent::eventDateTime).reversed())
             .toList();
 
-    var latestAssessmentUser =
-        assessments.stream().findFirst().map(AssessmentInfo::lastAssessedBy).map(userIdToUser::get);
-
-    return new ClaimHistory(events, latestAssessmentUser);
+    var lastUpdated = resolveLastUpdatedInfo(claim, history);
+    return new ClaimHistory(events, lastUpdated.user(), lastUpdated.dateTime());
   }
 
   public ClaimHistorySummary getClaimHistorySummary(ClaimDetails claim) {
@@ -111,12 +109,8 @@ public class ClaimHistoryService {
     }
 
     var builder = ClaimHistorySummary.builder();
-    var latestEvent = getLatestRelevantEvent(claim, history);
-    latestEvent.ifPresent(
-        event -> {
-          builder.lastUpdatedDateTime(event.getEventTimestamp());
-          builder.lastUpdatedUser(userRetrievalService.getUser(event.getActorId()));
-        });
+    var lastUpdated = resolveLastUpdatedInfo(claim, history);
+    builder.lastUpdatedUser(lastUpdated.user()).lastUpdatedDateTime(lastUpdated.dateTime());
 
     if (claim.isAmended()) {
       builder.amendedFields(
@@ -132,6 +126,24 @@ public class ClaimHistoryService {
     }
 
     return builder.build();
+  }
+
+  private LastUpdatedInfo resolveLastUpdatedInfo(
+      ClaimDetails claim, ClaimHistoryResultSet claimHistoryResultSet) {
+    if (claimHistoryResultSet == null || claimHistoryResultSet.getEvents() == null) {
+      return new LastUpdatedInfo(
+          userRetrievalService.getUser(claim.getLastUpdatedUser()), claim.getLastUpdatedDateTime());
+    }
+
+    return getLatestRelevantEvent(claim, claimHistoryResultSet)
+        .map(
+            event ->
+                new LastUpdatedInfo(
+                    Optional.ofNullable(event.getActorId())
+                        .map(userRetrievalService::getUser)
+                        .orElse(null),
+                    event.getEventTimestamp()))
+        .orElse(new LastUpdatedInfo(null, null));
   }
 
   private static Optional<uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent>
@@ -428,4 +440,6 @@ public class ClaimHistoryService {
   private static String getFieldIdentifier(LinkedHashMap<String, String> change) {
     return change.get("field_identifier");
   }
+
+  private record LastUpdatedInfo(MicrosoftApiUser user, OffsetDateTime dateTime) {}
 }
