@@ -12,6 +12,7 @@ import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.Claim
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.FieldRuleEngine;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
+import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.RuleCategory;
 
 // Makes this validator run first before all others
 @Order(0)
@@ -33,12 +34,13 @@ public class ClaimFieldRuleValidator implements FieldSpecificAmendmentValidator 
   public void validate(
       ClaimDetails claimDetails, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
     var value = form.getInputs().get(field.name());
-    if (isBlank(value)) {
-      return;
-    }
-
     var rules = ClaimFieldRuleJsonLoader.rulesFor(field);
-    FieldRuleEngine.firstFailingRule(rules, value, claimDetails)
+    var rulesToEvaluate =
+        isBlank(value)
+            ? rules.stream().filter(rule -> rule.category() == RuleCategory.MANDATORY).toList()
+            : rules;
+
+    FieldRuleEngine.firstFailingRule(rulesToEvaluate, value, claimDetails)
         .ifPresent(
             rule -> {
               var args = new ArrayList<>();
