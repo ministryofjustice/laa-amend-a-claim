@@ -37,11 +37,11 @@ public class ClaimFieldRuleValidator implements FieldSpecificAmendmentValidator 
       return;
     }
 
-    var rules = ClaimFieldRuleJsonLoader.rulesFor(field);
+    var rules = ClaimFieldRuleJsonLoader.rulesFor(field, claimDetails);
     FieldRuleEngine.firstFailingRule(rules, value)
         .ifPresent(
             rule -> {
-              var args = new ArrayList<Object>();
+              var args = new ArrayList<>();
               args.add(field.label(messageSource));
               args.addAll(rule.messageArgs());
               addUniqueFieldError(field, rule.messageCode(), args.toArray(), errors);
