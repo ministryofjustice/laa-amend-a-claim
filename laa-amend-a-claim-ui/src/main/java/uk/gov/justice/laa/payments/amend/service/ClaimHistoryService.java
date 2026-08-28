@@ -4,12 +4,8 @@ import static java.lang.Boolean.TRUE;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_ASSESSED_ESCAPE_CASE;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_ASSESSED_STAGE_DISBURSEMENT;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_CREATED;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_VOIDED;
 
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -22,17 +18,20 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
-import uk.gov.justice.laa.payments.amend.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.payments.amend.models.AmendmentConfirmation;
 import uk.gov.justice.laa.payments.amend.models.AssessmentInfo;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
-import uk.gov.justice.laa.payments.amend.models.ClaimHistory;
-import uk.gov.justice.laa.payments.amend.models.ClaimHistoryEvent;
 import uk.gov.justice.laa.payments.amend.models.ClaimHistorySummary;
 import uk.gov.justice.laa.payments.amend.models.MicrosoftApiUser;
+import uk.gov.justice.laa.payments.amend.models.history.BaseClaimHistoryEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistory;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAssessedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryCreatedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryVoidedEvent;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
 
@@ -45,9 +44,9 @@ public class ClaimHistoryService {
 
   private final AssessmentService assessmentService;
   private final ClaimsApiClient claimsApiClient;
-  private final FeatureFlagsConfig featureFlagsConfig;
   private final ProviderService providerService;
   private final UserRetrievalService userRetrievalService;
+  private final ClaimHistoryAmendmentsService claimHistoryAmendmentsService;
 
   public ClaimHistory getClaimHistory(ClaimDetails claim) {
     List<AssessmentInfo> assessments =
@@ -55,19 +54,21 @@ public class ClaimHistoryService {
             ? assessmentService.getLatestAssessmentsByClaim(claim.getClaimId(), MAXIMUM_ASSESSMENTS)
             : List.of();
 
+    var history = claimsApiClient.getClaimHistory(claim.getClaimId()).block();
+
     var userIdToUser = getUserIdToUser(assessments);
 
     var events =
-        Stream.concat(
+        Stream.of(
                 Stream.of(getClaimCreatedEvent(claim)),
-                toClaimHistoryEvents(assessments, userIdToUser))
-            .sorted(comparing(ClaimHistoryEvent::eventDateTime).reversed())
+                toClaimHistoryEvents(assessments, userIdToUser),
+                claimHistoryAmendmentsService.toAmendmentClaimHistoryEvents(history, claim))
+            .flatMap(s -> s)
+            .sorted(comparing(BaseClaimHistoryEvent::eventDateTime).reversed())
             .toList();
 
-    var latestAssessmentUser =
-        assessments.stream().findFirst().map(AssessmentInfo::lastAssessedBy).map(userIdToUser::get);
-
-    return new ClaimHistory(events, latestAssessmentUser);
+    var lastUpdated = getLastUpdated(claim, history);
+    return new ClaimHistory(events, lastUpdated.user(), lastUpdated.dateTime());
   }
 
   public ClaimHistorySummary getClaimHistorySummary(ClaimDetails claim) {
@@ -83,12 +84,8 @@ public class ClaimHistoryService {
     }
 
     var builder = ClaimHistorySummary.builder();
-    var latestEvent = getLatestRelevantEvent(claim, history);
-    latestEvent.ifPresent(
-        event -> {
-          builder.lastUpdatedDateTime(event.getEventTimestamp());
-          builder.lastUpdatedUser(userRetrievalService.getUser(event.getActorId()));
-        });
+    var lastUpdated = getLastUpdated(claim, history);
+    builder.lastUpdatedUser(lastUpdated.user()).lastUpdatedDateTime(lastUpdated.dateTime());
 
     if (claim.isAmended()) {
       builder.amendedFields(
@@ -106,8 +103,30 @@ public class ClaimHistoryService {
     return builder.build();
   }
 
-  private static Optional<uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent>
-      getLatestRelevantEvent(ClaimDetails claim, ClaimHistoryResultSet claimHistoryResultSet) {
+  private LastUpdated getLastUpdated(
+      ClaimDetails claim, ClaimHistoryResultSet claimHistoryResultSet) {
+    if (claimHistoryResultSet == null || claimHistoryResultSet.getEvents() == null) {
+      return getLastUpdated(claim);
+    }
+
+    return getLatestRelevantEvent(claim, claimHistoryResultSet)
+        .map(
+            event ->
+                new LastUpdated(
+                    Optional.ofNullable(event.getActorId())
+                        .map(userRetrievalService::getUser)
+                        .orElse(null),
+                    event.getEventTimestamp()))
+        .orElseGet(() -> getLastUpdated(claim));
+  }
+
+  private LastUpdated getLastUpdated(ClaimDetails claim) {
+    return new LastUpdated(
+        userRetrievalService.getUser(claim.getLastUpdatedUser()), claim.getLastUpdatedDateTime());
+  }
+
+  private static Optional<ClaimHistoryEvent> getLatestRelevantEvent(
+      ClaimDetails claim, ClaimHistoryResultSet claimHistoryResultSet) {
     if (claim.getDerivedClaimStatus() == null) {
       return Optional.empty();
     }
@@ -177,10 +196,10 @@ public class ClaimHistoryService {
     return userIdToUser;
   }
 
-  private ClaimHistoryEvent getClaimCreatedEvent(ClaimDetails claim) {
+  private BaseClaimHistoryEvent getClaimCreatedEvent(ClaimDetails claim) {
     var user = getClaimCreatedUser(claim);
-    var type = TRUE.equals(claim.getEscaped()) ? CLAIM_CREATED_AND_ESCAPED : CLAIM_CREATED;
-    return new ClaimHistoryEvent(type, claim.getSubmittedDate(), user, Optional.empty());
+    return new ClaimHistoryCreatedEvent(
+        claim.getSubmittedDate(), user, TRUE.equals(claim.getEscaped()));
   }
 
   private String getClaimCreatedUser(ClaimDetails claim) {
@@ -190,35 +209,32 @@ public class ClaimHistoryService {
         .orElse(claim.getOfficeCode());
   }
 
-  private static Stream<ClaimHistoryEvent> toClaimHistoryEvents(
+  private static Stream<BaseClaimHistoryEvent> toClaimHistoryEvents(
       List<AssessmentInfo> assessments, Map<String, MicrosoftApiUser> userIdToUser) {
     return assessments.stream().map(assessment -> toClaimHistoryEvent(assessment, userIdToUser));
   }
 
-  private static ClaimHistoryEvent toClaimHistoryEvent(
+  private static BaseClaimHistoryEvent toClaimHistoryEvent(
       AssessmentInfo assessment, Map<String, MicrosoftApiUser> userIdToUser) {
     var userName =
         Optional.ofNullable(userIdToUser.get(assessment.lastAssessedBy()))
             .map(MicrosoftApiUser::name)
             .orElse(null);
 
-    var type =
-        switch (assessment.assessmentType()) {
-          case ESCAPE_CASE_ASSESSMENT -> CLAIM_ASSESSED_ESCAPE_CASE;
-          case STAGE_DISBURSEMENT_ASSESSMENT -> CLAIM_ASSESSED_STAGE_DISBURSEMENT;
-          case VOID -> CLAIM_VOIDED;
-        };
-
-    return new ClaimHistoryEvent(
-        type,
-        assessment.lastAssessmentDate(),
-        userName,
-        Optional.ofNullable(assessment.lastAssessmentOutcome()));
+    return switch (assessment.assessmentType()) {
+      case ESCAPE_CASE_ASSESSMENT, STAGE_DISBURSEMENT_ASSESSMENT ->
+          new ClaimHistoryAssessedEvent(
+              assessment.lastAssessmentDate(),
+              userName,
+              assessment.assessmentType(),
+              assessment.lastAssessmentOutcome());
+      case VOID -> new ClaimHistoryVoidedEvent(assessment.lastAssessmentDate(), userName);
+    };
   }
 
   @SuppressWarnings("unchecked")
   private static List<LinkedHashMap<String, String>> getChanges(
-      uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent claimHistoryEvent) {
+      ClaimHistoryEvent claimHistoryEvent) {
     return ((List<LinkedHashMap<String, String>>)
         claimHistoryEvent.getMetadata().getOrDefault("changes", List.of()));
   }
@@ -230,4 +246,6 @@ public class ClaimHistoryService {
   private static String getFieldIdentifier(LinkedHashMap<String, String> change) {
     return change.get("field_identifier");
   }
+
+  private record LastUpdated(MicrosoftApiUser user, OffsetDateTime dateTime) {}
 }

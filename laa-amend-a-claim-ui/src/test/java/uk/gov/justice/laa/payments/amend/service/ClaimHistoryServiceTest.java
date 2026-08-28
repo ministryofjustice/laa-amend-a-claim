@@ -9,10 +9,6 @@ import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEve
 import static uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum.ESCAPE_CASE_ASSESSMENT;
 import static uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum.STAGE_DISBURSEMENT_ASSESSMENT;
 import static uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum.VOID;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_ASSESSED_ESCAPE_CASE;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_ASSESSED_STAGE_DISBURSEMENT;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_CREATED_AND_ESCAPED;
-import static uk.gov.justice.laa.payments.amend.models.enums.ClaimHistoryEventType.CLAIM_VOIDED;
 import static uk.gov.justice.laa.payments.amend.models.enums.DerivedClaimStatus.ACCEPTED;
 import static uk.gov.justice.laa.payments.amend.models.enums.DerivedClaimStatus.AMENDED;
 import static uk.gov.justice.laa.payments.amend.models.enums.DerivedClaimStatus.ASSESSED;
@@ -26,7 +22,6 @@ import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,11 +32,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
-import uk.gov.justice.laa.payments.amend.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.payments.amend.models.AmendmentConfirmation;
 import uk.gov.justice.laa.payments.amend.models.AssessmentInfo;
-import uk.gov.justice.laa.payments.amend.models.ClaimHistoryEvent;
 import uk.gov.justice.laa.payments.amend.models.MicrosoftApiUser;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAssessedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryCreatedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryVoidedEvent;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
@@ -71,11 +67,11 @@ public class ClaimHistoryServiceTest {
 
   @Mock private ClaimsApiClient claimsApiClient;
 
-  @Mock private FeatureFlagsConfig featureFlagsConfig;
-
   @Mock private ProviderService providerService;
 
   @Mock private UserRetrievalService userRetrievalService;
+
+  @Mock private ClaimHistoryAmendmentsService claimHistoryAmendmentsService;
 
   private ClaimHistoryService claimHistoryService;
 
@@ -85,9 +81,9 @@ public class ClaimHistoryServiceTest {
         new ClaimHistoryService(
             assessmentService,
             claimsApiClient,
-            featureFlagsConfig,
             providerService,
-            userRetrievalService);
+            userRetrievalService,
+            claimHistoryAmendmentsService);
   }
 
   @Test
@@ -135,29 +131,32 @@ public class ClaimHistoryServiceTest {
     var assessments = List.of(voided, assessedStageDisbursement, assessedEscapeCase);
     when(assessmentService.getLatestAssessmentsByClaim(claim.getClaimId(), MAXIMUM_ASSESSMENTS))
         .thenReturn(assessments);
+    when(claimsApiClient.getClaimHistory(claim.getClaimId()))
+        .thenReturn(
+            Mono.just(new ClaimHistoryResultSet().claimId(claim.getClaimId()).events(List.of())));
+    when(claimHistoryAmendmentsService.toAmendmentClaimHistoryEvents(
+            org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any()))
+        .thenReturn(java.util.stream.Stream.empty());
 
     var claimHistory = claimHistoryService.getClaimHistory(claim);
 
-    var voidedEvent =
-        new ClaimHistoryEvent(
-            CLAIM_VOIDED, VOIDED_DATE_TIME, VOIDED_USER.displayName(), Optional.empty());
+    var voidedEvent = new ClaimHistoryVoidedEvent(VOIDED_DATE_TIME, VOIDED_USER.displayName());
     var assessedStageDisbursementEvent =
-        new ClaimHistoryEvent(
-            CLAIM_ASSESSED_STAGE_DISBURSEMENT,
+        new ClaimHistoryAssessedEvent(
             STAGE_DISBURSEMENT_ASSESSED_DATE_TIME,
             STAGE_DISBURSEMENT_ASSESSED_USER.displayName(),
-            Optional.of(PAID_IN_FULL));
+            STAGE_DISBURSEMENT_ASSESSMENT,
+            PAID_IN_FULL);
     var assessedEscapeCaseEvent =
-        new ClaimHistoryEvent(
-            CLAIM_ASSESSED_ESCAPE_CASE,
+        new ClaimHistoryAssessedEvent(
             ESCAPE_CASE_ASSESSED_DATE_TIME,
             ESCAPE_CASE_ASSESSED_USER.displayName(),
-            Optional.of(REDUCED));
-    var createdEvent =
-        new ClaimHistoryEvent(
-            CLAIM_CREATED_AND_ESCAPED, CREATED_DATE_TIME, PROVIDER_NAME, Optional.empty());
+            ESCAPE_CASE_ASSESSMENT,
+            REDUCED);
+    var createdEvent = new ClaimHistoryCreatedEvent(CREATED_DATE_TIME, PROVIDER_NAME, true);
 
-    assertThat(claimHistory.latestAssessmentUser()).contains(VOIDED_USER);
+    assertThat(claimHistory.lastUpdatedUser()).isNull();
+    assertThat(claimHistory.lastUpdatedDateTime()).isNull();
     assertThat(claimHistory.events())
         .containsExactly(
             voidedEvent, assessedStageDisbursementEvent, assessedEscapeCaseEvent, createdEvent);
@@ -401,6 +400,16 @@ public class ClaimHistoryServiceTest {
     var change = new LinkedHashMap<String, String>();
     change.put("change_source", source);
     change.put("field_identifier", fieldIdentifier);
+    return change;
+  }
+
+  private static LinkedHashMap<String, Object> change(
+      String source, String fieldIdentifier, Object before, Object after) {
+    var change = new LinkedHashMap<String, Object>();
+    change.put("change_source", source);
+    change.put("field_identifier", fieldIdentifier);
+    change.put("before", before);
+    change.put("after", after);
     return change;
   }
 

@@ -12,6 +12,12 @@ import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
 public enum MediationClaimDetailsViewField implements ClaimViewField<MediationClaimDetails> {
 
   // Client fields
+  FORENAME(
+      FieldType.TEXT,
+      String.class,
+      MediationClaimDetails::getClientForename,
+      ClaimPatch.Builder::clientForename,
+      "client.clientForename"),
   DATE_OF_BIRTH(
       FieldType.DATE,
       String.class,

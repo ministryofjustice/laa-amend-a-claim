@@ -3,10 +3,10 @@ package uk.gov.justice.laa.payments.amend.viewmodels.claimclient;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.DISABILITY;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.ETHNICITY;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.GENDER;
-import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.INITIAL;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.SURNAME;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.asCrimeField;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.toFieldMap;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CrimeClaimDetailsViewField.INITIAL;
 
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
@@ -26,7 +26,7 @@ public record CrimeClaimClientView(
       CrimeClaimDetails claim) {
     var fields =
         Stream.of(
-            asCrimeField(INITIAL),
+            INITIAL,
             asCrimeField(SURNAME),
             asCrimeField(GENDER),
             asCrimeField(ETHNICITY),

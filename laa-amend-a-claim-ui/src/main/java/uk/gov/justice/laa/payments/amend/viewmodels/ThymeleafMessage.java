@@ -27,7 +27,7 @@ public class ThymeleafMessage extends ThymeleafString {
   private String resolveParam(Object value, Messages messages) {
     return switch (value) {
       case null -> "";
-      case ThymeleafMessage tm -> tm.resolve(messages);
+      case ThymeleafString ts -> ts.resolve(messages);
       case String s -> s;
       default -> String.valueOf(value);
     };

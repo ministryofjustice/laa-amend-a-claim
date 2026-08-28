@@ -99,6 +99,7 @@ public class ThymeleafUtils {
       case BigDecimal bigDecimal -> new ThymeleafLiteralString(formatCurrency(bigDecimal));
       case Integer i -> new ThymeleafLiteralString(i.toString());
       case Boolean b -> getFormattedBoolean(b);
+      case FieldOption option -> new ThymeleafMessage(option.messageKey());
       case String s -> new ThymeleafLiteralString(s);
       case ThymeleafMessage s -> s;
       case OffsetDateTime o ->

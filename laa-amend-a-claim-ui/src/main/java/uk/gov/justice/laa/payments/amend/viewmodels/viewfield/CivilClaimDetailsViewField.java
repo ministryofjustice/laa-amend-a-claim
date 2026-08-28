@@ -14,6 +14,12 @@ import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
 @Getter
 public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetails> {
   // Client fields
+  FORENAME(
+      FieldType.TEXT,
+      String.class,
+      CivilClaimDetails::getClientForename,
+      ClaimPatch.Builder::clientForename,
+      "client.clientForename"),
   DATE_OF_BIRTH(
       FieldType.DATE,
       String.class,

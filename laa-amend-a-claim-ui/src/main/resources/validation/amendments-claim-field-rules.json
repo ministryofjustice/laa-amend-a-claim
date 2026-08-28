@@ -468,8 +468,9 @@
     ]
   },
   "fields": {
-    "ClaimDetailsViewField.INITIAL": { "ruleGroup": "name" },
-    "ClaimDetailsViewField.FORENAME": { "ruleGroup": "name" },
+    "CrimeClaimDetailsViewField.INITIAL": { "ruleGroup": "name" },
+    "CivilClaimDetailsViewField.FORENAME": { "ruleGroup": "name" },
+    "MediationClaimDetailsViewField.FORENAME": { "ruleGroup": "name" },
     "ClaimDetailsViewField.SURNAME": { "ruleGroup": "name" },
     "CivilClaimDetailsViewField.POSTCODE": { "ruleGroup": "postcode" },
     "MediationClaimDetailsViewField.POSTCODE": { "ruleGroup": "postcode" },

@@ -6,23 +6,28 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.UUID;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.justice.laa.payments.amend.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.payments.amend.service.ClaimHistoryService;
-import uk.gov.justice.laa.payments.amend.viewmodels.ClaimHistoryEventViewModel;
+import uk.gov.justice.laa.payments.amend.viewmodels.history.ClaimHistoryEventViewModel;
 
 @Controller
 public class ClaimHistoryController extends ClaimDetailsBaseController {
 
   private final ClaimHistoryService claimHistoryService;
+  private final MessageSource messageSource;
 
   public ClaimHistoryController(
-      ClaimHistoryService claimHistoryService, FeatureFlagsConfig featureFlagsConfig) {
+      ClaimHistoryService claimHistoryService,
+      FeatureFlagsConfig featureFlagsConfig,
+      MessageSource messageSource) {
     super(featureFlagsConfig);
     this.claimHistoryService = claimHistoryService;
+    this.messageSource = messageSource;
   }
 
   @GetMapping("/submissions/{submissionId}/claims/{claimId}/history")
@@ -41,10 +46,13 @@ public class ClaimHistoryController extends ClaimDetailsBaseController {
         session,
         request,
         claim,
-        claimHistory.latestAssessmentUser().orElse(null),
-        claim.getLastUpdatedDateTime()); // TODO: BC-570: Will wire up user and time from history
+        claimHistory.lastUpdatedUser(),
+        claimHistory.lastUpdatedDateTime());
 
-    var events = claimHistory.events().stream().map(ClaimHistoryEventViewModel::create).toList();
+    var events =
+        claimHistory.events().stream()
+            .map(event -> ClaimHistoryEventViewModel.create(event, messageSource))
+            .toList();
     model.addAttribute("events", events);
 
     return "pages/claimdetails/claim-history";

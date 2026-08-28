@@ -2,7 +2,6 @@ package uk.gov.justice.laa.payments.amend.viewmodels.claimclient;
 
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.DISABILITY;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.ETHNICITY;
-import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.FORENAME;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.GENDER;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.SURNAME;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.asMediationField;
@@ -16,6 +15,7 @@ import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationCl
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.CLIENT_2_SURNAME;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.CLIENT_2_UCN;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.DATE_OF_BIRTH;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.FORENAME;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.IS_CLIENT_2_LEGALLY_AIDED;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.IS_LEGALLY_AIDED;
@@ -41,7 +41,7 @@ public record MediationClaimClientView(
       MediationClaimDetails claim) {
     var fields =
         Stream.of(
-            asMediationField(FORENAME),
+            FORENAME,
             asMediationField(SURNAME),
             DATE_OF_BIRTH,
             UNIQUE_CLIENT_NUMBER,

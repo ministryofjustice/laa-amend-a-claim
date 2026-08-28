@@ -29,8 +29,8 @@ class ClaimFieldRuleValidatorTest {
 
   @Test
   void appliesOnlyToCuratedFields() {
-    assertThat(validator.appliesTo(ClaimDetailsViewField.INITIAL)).isTrue();
-    assertThat(validator.appliesTo(ClaimDetailsViewField.FORENAME)).isTrue();
+    assertThat(validator.appliesTo(CrimeClaimDetailsViewField.INITIAL)).isTrue();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.FORENAME)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.SURNAME)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.FEE_CODE)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.PROFIT_COST)).isTrue();
@@ -324,7 +324,8 @@ class ClaimFieldRuleValidatorTest {
     "SURNAME, Smith",
     "INITIAL, 'a'"
   })
-  void acceptsRepresentativeValidValues(ClaimDetailsViewField field, String value) {
+  void acceptsRepresentativeValidValues(String fieldName, String value) {
+    var field = resolveNameField(fieldName);
     var errors = validate(field, value);
 
     assertThat(errors.hasErrors()).isFalse();
@@ -332,7 +333,8 @@ class ClaimFieldRuleValidatorTest {
 
   @ParameterizedTest
   @CsvSource({"INITIAL", "FORENAME", "SURNAME"})
-  void acceptsValueAtMaxLength(ClaimDetailsViewField field) {
+  void acceptsValueAtMaxLength(String fieldName) {
+    var field = resolveNameField(fieldName);
     var errors = validate(field, "a".repeat(30));
 
     assertThat(errors.hasErrors()).isFalse();
@@ -340,7 +342,8 @@ class ClaimFieldRuleValidatorTest {
 
   @ParameterizedTest
   @CsvSource({"INITIAL", "FORENAME", "SURNAME"})
-  void rejectsValueOverMaxLengthNamingTheFieldAndLimit(ClaimDetailsViewField field) {
+  void rejectsValueOverMaxLengthNamingTheFieldAndLimit(String fieldName) {
+    var field = resolveNameField(fieldName);
     var errors = validate(field, "a".repeat(31));
 
     assertThat(errors.hasErrors()).isTrue();
@@ -351,7 +354,8 @@ class ClaimFieldRuleValidatorTest {
 
   @ParameterizedTest
   @CsvSource({"INITIAL, J@ne", "FORENAME, 'Jean_Paul'", "SURNAME, 'Smith#'", "SURNAME, 'Smith%'"})
-  void rejectsValuesWithDisallowedCharacters(ClaimDetailsViewField field, String value) {
+  void rejectsValuesWithDisallowedCharacters(String fieldName, String value) {
+    var field = resolveNameField(fieldName);
     var errors = validate(field, value);
 
     assertThat(errors.hasErrors()).isTrue();
@@ -1766,5 +1770,14 @@ class ClaimFieldRuleValidatorTest {
     var errors = new BeanPropertyBindingResult(form, "amendmentForm");
     validator.validate(MockClaimsFunctions.createMockCrimeClaim(), field, form, errors);
     return errors;
+  }
+
+  private ClaimViewField<?> resolveNameField(String fieldName) {
+    return switch (fieldName) {
+      case "INITIAL" -> CrimeClaimDetailsViewField.INITIAL;
+      case "FORENAME" -> CivilClaimDetailsViewField.FORENAME;
+      case "SURNAME" -> ClaimDetailsViewField.SURNAME;
+      default -> throw new IllegalArgumentException("Unexpected field name: " + fieldName);
+    };
   }
 }
