@@ -3,32 +3,34 @@ package uk.gov.justice.laa.payments.amend.service;
 import static java.lang.Boolean.TRUE;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryChangeEntry.ChangeSourceEnum.REQUESTED;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.ASSESSMENT;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.SUBMISSION;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.VOID;
 
 import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryAmendmentMetadata;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryAssessmentMetadata;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryChangeEntry;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistorySubmissionMetadata;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
 import uk.gov.justice.laa.payments.amend.models.AmendmentConfirmation;
-import uk.gov.justice.laa.payments.amend.models.AssessmentInfo;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.ClaimHistorySummary;
 import uk.gov.justice.laa.payments.amend.models.MicrosoftApiUser;
+import uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum;
+import uk.gov.justice.laa.payments.amend.models.enums.OutcomeType;
 import uk.gov.justice.laa.payments.amend.models.history.BaseClaimHistoryEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistory;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryApiEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAssessedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryCreatedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryVoidedEvent;
@@ -40,43 +42,31 @@ import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
 @Slf4j
 public class ClaimHistoryService {
 
-  public static final int MAXIMUM_ASSESSMENTS = 100;
-
-  private final AssessmentService assessmentService;
   private final ClaimsApiClient claimsApiClient;
   private final ProviderService providerService;
   private final UserRetrievalService userRetrievalService;
   private final ClaimHistoryAmendmentsService claimHistoryAmendmentsService;
 
   public ClaimHistory getClaimHistory(ClaimDetails claim) {
-    List<AssessmentInfo> assessments =
-        claim.isHasAssessment()
-            ? assessmentService.getLatestAssessmentsByClaim(claim.getClaimId(), MAXIMUM_ASSESSMENTS)
-            : List.of();
-
     var history = claimsApiClient.getClaimHistory(claim.getClaimId()).block();
-
-    var userIdToUser = getUserIdToUser(assessments);
+    var historyEvents = ClaimHistoryMetadataMapper.toApiEvents(history);
 
     var events =
-        Stream.of(
-                Stream.of(getClaimCreatedEvent(claim)),
-                toClaimHistoryEvents(assessments, userIdToUser),
-                claimHistoryAmendmentsService.toAmendmentClaimHistoryEvents(history, claim))
-            .flatMap(s -> s)
+        toClaimHistoryEvents(historyEvents, claim)
             .sorted(comparing(BaseClaimHistoryEvent::eventDateTime).reversed())
             .toList();
 
-    var lastUpdated = getLastUpdated(claim, history);
+    var lastUpdated = getLastUpdated(claim, historyEvents);
     return new ClaimHistory(events, lastUpdated.user(), lastUpdated.dateTime());
   }
 
   public ClaimHistorySummary getClaimHistorySummary(ClaimDetails claim) {
     var history = claimsApiClient.getClaimHistory(claim.getClaimId()).block();
+    var historyEvents = ClaimHistoryMetadataMapper.toApiEvents(history);
 
     if (history == null || history.getEvents() == null) {
       log.error("Could not get claim history for claim {}", claim.getClaimId());
-      var lastUpdated = getLastUpdated(claim, history);
+      var lastUpdated = getLastUpdated(claim, historyEvents);
       return ClaimHistorySummary.builder()
           .lastUpdatedUser(lastUpdated.user())
           .lastUpdatedDateTime(lastUpdated.dateTime())
@@ -85,17 +75,17 @@ public class ClaimHistoryService {
     }
 
     var builder = ClaimHistorySummary.builder();
-    var lastUpdated = getLastUpdated(claim, history);
+    var lastUpdated = getLastUpdated(claim, historyEvents);
     builder.lastUpdatedUser(lastUpdated.user()).lastUpdatedDateTime(lastUpdated.dateTime());
 
     if (claim.isAmended()) {
       builder.amendedFields(
-          history.getEvents().stream()
-              .filter(event -> event.getEventType() == AMENDMENT)
+          historyEvents.stream()
+              .filter(event -> event.eventType() == AMENDMENT)
               .map(ClaimHistoryService::getChanges)
-              .flatMap(Collection::stream)
+              .flatMap(List::stream)
               .filter(ClaimHistoryService::isRequested)
-              .map(ClaimHistoryService::getFieldIdentifier)
+              .map(ClaimHistoryChangeEntry::getFieldIdentifier)
               .collect(toSet()));
     } else {
       builder.amendedFields(Set.of());
@@ -104,20 +94,19 @@ public class ClaimHistoryService {
     return builder.build();
   }
 
-  private LastUpdated getLastUpdated(
-      ClaimDetails claim, ClaimHistoryResultSet claimHistoryResultSet) {
-    if (claimHistoryResultSet == null || claimHistoryResultSet.getEvents() == null) {
+  private LastUpdated getLastUpdated(ClaimDetails claim, List<ClaimHistoryApiEvent> historyEvents) {
+    if (historyEvents.isEmpty()) {
       return getLastUpdated(claim);
     }
 
-    return getLatestRelevantEvent(claim, claimHistoryResultSet)
+    return getLatestRelevantEvent(claim, historyEvents)
         .map(
             event ->
                 new LastUpdated(
-                    Optional.ofNullable(event.getActorId())
+                    Optional.ofNullable(event.actorId())
                         .map(userRetrievalService::getUser)
                         .orElse(null),
-                    event.getEventTimestamp()))
+                    event.eventTimestamp()))
         .orElseGet(() -> getLastUpdated(claim));
   }
 
@@ -129,8 +118,8 @@ public class ClaimHistoryService {
         userRetrievalService.getUser(claim.getLastUpdatedUser()), claim.getLastUpdatedDateTime());
   }
 
-  private static Optional<ClaimHistoryEvent> getLatestRelevantEvent(
-      ClaimDetails claim, ClaimHistoryResultSet claimHistoryResultSet) {
+  private static Optional<ClaimHistoryApiEvent> getLatestRelevantEvent(
+      ClaimDetails claim, List<ClaimHistoryApiEvent> historyEvents) {
     if (claim.getDerivedClaimStatus() == null) {
       return Optional.empty();
     }
@@ -140,9 +129,9 @@ public class ClaimHistoryService {
           // We are intentionally not using the SUBMISSION event because this does not have
           // an Entra ID as the actor ID, it just hardcodes Data-Claims-Event-Service
           case ACCEPTED -> null;
-          case AMENDED -> ClaimHistoryEventType.AMENDMENT;
-          case ASSESSED -> ClaimHistoryEventType.ASSESSMENT;
-          case VOIDED -> ClaimHistoryEventType.VOID;
+          case AMENDED -> AMENDMENT;
+          case ASSESSED -> ASSESSMENT;
+          case VOIDED -> VOID;
           default -> null;
         };
 
@@ -150,13 +139,12 @@ public class ClaimHistoryService {
       return Optional.empty();
     }
 
-    return claimHistoryResultSet.getEvents().stream()
-        .filter(event -> event.getEventType() == eventType)
-        .findFirst();
+    return historyEvents.stream().filter(event -> event.eventType() == eventType).findFirst();
   }
 
   public AmendmentConfirmation getAmendmentConfirmation(ClaimDetails claim) {
     var history = claimsApiClient.getClaimHistory(claim.getClaimId()).block();
+    var historyEvents = ClaimHistoryMetadataMapper.toApiEvents(history);
 
     if (history == null || history.getEvents() == null) {
       log.error("Could not get claim history for claim {}", claim.getClaimId());
@@ -164,93 +152,144 @@ public class ClaimHistoryService {
     }
 
     var amendmentEvent =
-        history.getEvents().stream().filter(event -> event.getEventType() == AMENDMENT).findFirst();
+        historyEvents.stream().filter(event -> event.eventType() == AMENDMENT).findFirst();
 
     if (amendmentEvent.isEmpty()) {
       log.error("Could not get claim history for claim {}", claim.getClaimId());
       return new AmendmentConfirmation(false, Set.of());
     }
 
-    var amendment = amendmentEvent.get();
+    var metadata = toAmendmentMetadata(amendmentEvent.get());
 
-    if (!TRUE.equals(amendment.getMetadata().get("price_changed"))) {
+    if (!TRUE.equals(metadata.getPriceChanged())) {
       return new AmendmentConfirmation(false, Set.of());
     }
 
     var changedCalculatedCosts =
-        getChanges(amendment).stream()
-            .map(ClaimHistoryService::getFieldIdentifier)
+        Optional.ofNullable(metadata.getChanges()).orElse(List.of()).stream()
+            .map(ClaimHistoryChangeEntry::getFieldIdentifier)
             .collect(toSet());
 
     return new AmendmentConfirmation(true, changedCalculatedCosts);
   }
 
-  private Map<String, MicrosoftApiUser> getUserIdToUser(final List<AssessmentInfo> assessments) {
-    var userIds =
-        assessments.stream()
-            .map(AssessmentInfo::lastAssessedBy)
-            .filter(Objects::nonNull)
-            .collect(toSet());
-    var userIdToUser = new HashMap<String, MicrosoftApiUser>();
-    userIds.forEach(
-        userId -> {
-          var user = userRetrievalService.getUser(userId);
-          if (user != null) {
-            userIdToUser.put(userId, user);
-          }
-        });
-    return userIdToUser;
+  private Stream<BaseClaimHistoryEvent> toClaimHistoryEvents(
+      List<ClaimHistoryApiEvent> historyEvents, ClaimDetails claim) {
+    if (historyEvents.isEmpty()) {
+      return Stream.empty();
+    }
+    return Stream.of(
+            toCreatedEvents(historyEvents, claim),
+            toAssessmentEvents(historyEvents),
+            toVoidEvents(historyEvents),
+            claimHistoryAmendmentsService.toAmendmentClaimHistoryEventsFromApiEvents(
+                historyEvents, claim))
+        .flatMap(s -> s);
   }
 
-  private BaseClaimHistoryEvent getClaimCreatedEvent(ClaimDetails claim) {
-    var user = getClaimCreatedUser(claim);
+  private Stream<BaseClaimHistoryEvent> toCreatedEvents(
+      List<ClaimHistoryApiEvent> historyEvents, ClaimDetails claim) {
+    return historyEvents.stream()
+        .filter(event -> event.eventType() == SUBMISSION)
+        .map(event -> toCreatedEvent(event, claim));
+  }
+
+  private BaseClaimHistoryEvent toCreatedEvent(ClaimHistoryApiEvent event, ClaimDetails claim) {
+    var submissionMetadata = event.submissionMetadata();
+    var officeCode =
+        Optional.ofNullable(submissionMetadata)
+            .map(ClaimHistorySubmissionMetadata::getOfficeAccountNumber)
+            .orElse(claim.getOfficeCode());
+    var user = getClaimCreatedUser(officeCode, claim.getOfficeCode());
     return new ClaimHistoryCreatedEvent(
-        claim.getSubmittedDate(), user, TRUE.equals(claim.getEscaped()));
+        event.eventTimestamp(), user, TRUE.equals(claim.getEscaped()));
   }
 
-  private String getClaimCreatedUser(ClaimDetails claim) {
-    return Optional.ofNullable(providerService.getProviderFirm(claim.getOfficeCode()))
-        .map(ProviderFirmOfficeDto::getFirm)
-        .map(ProviderFirmSummary::getFirmName)
-        .orElse(claim.getOfficeCode());
+  private Stream<BaseClaimHistoryEvent> toAssessmentEvents(
+      List<ClaimHistoryApiEvent> historyEvents) {
+    return historyEvents.stream()
+        .filter(event -> event.eventType() == ASSESSMENT)
+        .map(this::toAssessmentEvent)
+        .flatMap(Optional::stream);
   }
 
-  private static Stream<BaseClaimHistoryEvent> toClaimHistoryEvents(
-      List<AssessmentInfo> assessments, Map<String, MicrosoftApiUser> userIdToUser) {
-    return assessments.stream().map(assessment -> toClaimHistoryEvent(assessment, userIdToUser));
+  private Optional<BaseClaimHistoryEvent> toAssessmentEvent(ClaimHistoryApiEvent event) {
+    var metadata = event.assessmentMetadata();
+    var assessmentType = toAssessmentType(metadata);
+    var outcomeType = toOutcomeType(metadata);
+    if (assessmentType == null || outcomeType == null) {
+      log.warn("Skipping unparseable assessment history event metadata: {}", metadata);
+      return Optional.empty();
+    }
+
+    return Optional.of(
+        new ClaimHistoryAssessedEvent(
+            event.eventTimestamp(),
+            getHistoryUserName(event.actorId()),
+            assessmentType,
+            outcomeType));
   }
 
-  private static BaseClaimHistoryEvent toClaimHistoryEvent(
-      AssessmentInfo assessment, Map<String, MicrosoftApiUser> userIdToUser) {
-    var userName =
-        Optional.ofNullable(userIdToUser.get(assessment.lastAssessedBy()))
-            .map(MicrosoftApiUser::name)
-            .orElse(null);
+  private Stream<BaseClaimHistoryEvent> toVoidEvents(List<ClaimHistoryApiEvent> historyEvents) {
+    return historyEvents.stream().filter(event -> event.eventType() == VOID).map(this::toVoidEvent);
+  }
 
-    return switch (assessment.assessmentType()) {
-      case ESCAPE_CASE_ASSESSMENT, STAGE_DISBURSEMENT_ASSESSMENT ->
-          new ClaimHistoryAssessedEvent(
-              assessment.lastAssessmentDate(),
-              userName,
-              assessment.assessmentType(),
-              assessment.lastAssessmentOutcome());
-      case VOID -> new ClaimHistoryVoidedEvent(assessment.lastAssessmentDate(), userName);
+  private BaseClaimHistoryEvent toVoidEvent(ClaimHistoryApiEvent event) {
+    return new ClaimHistoryVoidedEvent(event.eventTimestamp(), getHistoryUserName(event.actorId()));
+  }
+
+  private String getHistoryUserName(String actorId) {
+    return Optional.ofNullable(actorId)
+        .map(userRetrievalService::getUser)
+        .map(MicrosoftApiUser::name)
+        .orElse(null);
+  }
+
+  private static AssessmentTypeEnum toAssessmentType(ClaimHistoryAssessmentMetadata metadata) {
+    if (metadata == null) {
+      return null;
+    }
+    try {
+      return Optional.ofNullable(metadata.getAssessmentType())
+          .map(AssessmentTypeEnum::valueOf)
+          .orElse(null);
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
+  }
+
+  private static OutcomeType toOutcomeType(ClaimHistoryAssessmentMetadata metadata) {
+    if (metadata == null || metadata.getAssessmentOutcome() == null) {
+      return null;
+    }
+    return switch (metadata.getAssessmentOutcome()) {
+      case "PAID_IN_FULL" -> OutcomeType.PAID_IN_FULL;
+      case "REDUCED_STILL_ESCAPED" -> OutcomeType.REDUCED;
+      case "REDUCED_TO_FIXED_FEE" -> OutcomeType.REDUCED_TO_FIXED_FEE;
+      case "NILLED" -> OutcomeType.NILLED;
+      default -> null;
     };
   }
 
-  @SuppressWarnings("unchecked")
-  private static List<LinkedHashMap<String, String>> getChanges(
-      ClaimHistoryEvent claimHistoryEvent) {
-    return ((List<LinkedHashMap<String, String>>)
-        claimHistoryEvent.getMetadata().getOrDefault("changes", List.of()));
+  private String getClaimCreatedUser(String officeCode, String fallbackOfficeCode) {
+    return Optional.ofNullable(providerService.getProviderFirm(officeCode))
+        .map(ProviderFirmOfficeDto::getFirm)
+        .map(ProviderFirmSummary::getFirmName)
+        .orElse(fallbackOfficeCode);
   }
 
-  private static boolean isRequested(LinkedHashMap<String, String> change) {
-    return "REQUESTED".equals(change.get("change_source"));
+  private static ClaimHistoryAmendmentMetadata toAmendmentMetadata(
+      ClaimHistoryApiEvent historyEvent) {
+    return Optional.ofNullable(historyEvent.amendmentMetadata())
+        .orElseGet(() -> new ClaimHistoryAmendmentMetadata().changes(List.of()));
   }
 
-  private static String getFieldIdentifier(LinkedHashMap<String, String> change) {
-    return change.get("field_identifier");
+  private static List<ClaimHistoryChangeEntry> getChanges(ClaimHistoryApiEvent historyEvent) {
+    return Optional.ofNullable(toAmendmentMetadata(historyEvent).getChanges()).orElse(List.of());
+  }
+
+  private static boolean isRequested(ClaimHistoryChangeEntry change) {
+    return change.getChangeSource() == REQUESTED;
   }
 
   private record LastUpdated(MicrosoftApiUser user, OffsetDateTime dateTime) {}

@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClientResponseException.NotFound;
+import tools.jackson.databind.ObjectMapper;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryAmendmentMetadata;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryChangeEntry;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
@@ -63,21 +66,23 @@ public final class ClaimsGetClaimHistoryPactTest extends AbstractPactTest {
                                   amendmentEvent.uuid("source_id");
                                   amendmentEvent.object(
                                       "metadata",
-                                      metadata ->
-                                          metadata.arrayContaining(
-                                              "changes",
-                                              changes ->
-                                                  changes.object(
-                                                      change -> {
-                                                        change.stringType(
-                                                            "field_identifier", "fee.schemeId");
-                                                        change.nullValue("before");
-                                                        change.stringType("after", "SCHEME-TEST");
-                                                        change.stringMatcher(
-                                                            "change_source",
-                                                            "REQUESTED|FSP",
-                                                            "FSP");
-                                                      })));
+                                      metadata -> {
+                                        metadata.stringType("requested_by_code", "PROVIDER");
+                                        metadata.stringType("amendment_reason_code", "CORRECTION");
+                                        metadata.booleanType("price_changed", true);
+                                        metadata.arrayContaining(
+                                            "changes",
+                                            changes ->
+                                                changes.object(
+                                                    change -> {
+                                                      change.stringType(
+                                                          "field_identifier", "fee.schemeId");
+                                                      change.nullValue("before");
+                                                      change.stringType("after", "SCHEME-TEST");
+                                                      change.stringMatcher(
+                                                          "change_source", "REQUESTED|FSP", "FSP");
+                                                    }));
+                                      });
                                 });
                             events.object(
                                 submissionEvent -> {
@@ -144,20 +149,38 @@ public final class ClaimsGetClaimHistoryPactTest extends AbstractPactTest {
             .filter(event -> event.getEventType() == ClaimHistoryEventType.AMENDMENT)
             .findFirst()
             .orElseThrow();
-    assertThat(amendmentEvent.getMetadata()).containsKey("changes");
+    assertThat(amendmentEvent.getMetadata())
+        .containsKeys("requested_by_code", "amendment_reason_code", "price_changed", "changes");
     assertThat(amendmentEvent.getMetadata().get("changes")).isInstanceOf(List.class);
 
-    @SuppressWarnings("unchecked")
-    var changes = (List<Map<String, Object>>) amendmentEvent.getMetadata().get("changes");
-    assertThat(changes).isNotEmpty();
-    assertThat(changes)
+    var amendmentMetadata =
+        new ObjectMapper()
+            .convertValue(amendmentEvent.getMetadata(), ClaimHistoryAmendmentMetadata.class);
+    assertThat(amendmentMetadata.getRequestedByCode()).isEqualTo("PROVIDER");
+    assertThat(amendmentMetadata.getAmendmentReasonCode()).isEqualTo("CORRECTION");
+    assertThat(amendmentMetadata.getPriceChanged()).isTrue();
+    assertThat(amendmentMetadata.getChanges()).isNotEmpty();
+    assertThat(amendmentMetadata.getChanges())
         .anySatisfy(
             change ->
                 assertThat(change)
-                    .containsKeys("field_identifier", "before", "after", "change_source")
-                    .containsEntry("before", null));
-    assertThat(changes)
-        .allSatisfy(change -> assertThat(change.get("change_source")).isIn("REQUESTED", "FSP"));
+                    .extracting(
+                        ClaimHistoryChangeEntry::getFieldIdentifier,
+                        ClaimHistoryChangeEntry::getBefore,
+                        ClaimHistoryChangeEntry::getAfter,
+                        ClaimHistoryChangeEntry::getChangeSource)
+                    .containsExactly(
+                        "fee.schemeId",
+                        null,
+                        "SCHEME-TEST",
+                        ClaimHistoryChangeEntry.ChangeSourceEnum.FSP));
+    assertThat(amendmentMetadata.getChanges())
+        .allSatisfy(
+            change ->
+                assertThat(change.getChangeSource())
+                    .isIn(
+                        ClaimHistoryChangeEntry.ChangeSourceEnum.REQUESTED,
+                        ClaimHistoryChangeEntry.ChangeSourceEnum.FSP));
 
     var submissionEvent =
         result.getEvents().stream()
