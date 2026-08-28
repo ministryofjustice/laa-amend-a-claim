@@ -466,19 +466,19 @@
         "messageArgs": ["0", "9"]
       }
     ],
-    "mandatoryCrime": [
+    "mandatoryCrimeLower": [
       {
         "category": "MANDATORY",
         "kind": "mandatory",
-        "areasOfLaw": ["CRIME"],
+        "areasOfLaw": ["CRIME_LOWER"],
         "messageCode": "amendmentForm.mandatoryField.error"
       }
     ],
-    "mandatoryCivil": [
+    "mandatoryLegalHelp": [
       {
         "category": "MANDATORY",
         "kind": "mandatory",
-        "areasOfLaw": ["CIVIL"],
+        "areasOfLaw": ["LEGAL_HELP"],
         "messageCode": "amendmentForm.mandatoryField.error"
       }
     ],
@@ -493,8 +493,8 @@
   },
   "fields": {
     "ClaimDetailsViewField.INITIAL": { "ruleGroups": ["name"] },
-    "ClaimDetailsViewField.FORENAME": { "ruleGroups": ["name", "mandatoryCivil", "mandatoryCrime"] },
-    "ClaimDetailsViewField.SURNAME": { "ruleGroups": ["name", "mandatoryCivil", "mandatoryCrime"] },
+    "ClaimDetailsViewField.FORENAME": { "ruleGroups": ["mandatoryLegalHelp", "mandatoryCrimeLower", "name"] },
+    "ClaimDetailsViewField.SURNAME": { "ruleGroups": ["mandatoryLegalHelp", "mandatoryCrimeLower", "name"] },
     "CivilClaimDetailsViewField.POSTCODE": { "ruleGroups": ["postcode"] },
     "MediationClaimDetailsViewField.POSTCODE": { "ruleGroups": ["postcode"] },
     "CivilClaimDetailsViewField.UNIQUE_CLIENT_NUMBER": { "ruleGroups": ["uniqueClientNumber"] },
