@@ -17,7 +17,7 @@ class MandatoryValueValidatorTest {
   @Test
   void rejectsBlankValueWhenRuleAppliesToCrimeArea() {
     var claimDetails = claimDetails(AreaOfLaw.CRIME_LOWER);
-    var rule = mandatoryRule(List.of("CRIME"));
+    var rule = mandatoryRule(List.of(AreaOfLaw.CRIME_LOWER.name()));
 
     assertThat(validator.isValid(claimDetails, "", rule)).isFalse();
     assertThat(validator.isValid(claimDetails, "   ", rule)).isFalse();
@@ -27,7 +27,7 @@ class MandatoryValueValidatorTest {
   @Test
   void rejectsBlankValueWhenRuleAppliesToCivilArea() {
     var claimDetails = claimDetails(AreaOfLaw.LEGAL_HELP);
-    var rule = mandatoryRule(List.of("CIVIL"));
+    var rule = mandatoryRule(List.of(AreaOfLaw.LEGAL_HELP.name()));
 
     assertThat(validator.isValid(claimDetails, "", rule)).isFalse();
     assertThat(validator.isValid(claimDetails, "value", rule)).isTrue();
@@ -36,7 +36,7 @@ class MandatoryValueValidatorTest {
   @Test
   void rejectsBlankValueWhenRuleAppliesToMediationArea() {
     var claimDetails = claimDetails(AreaOfLaw.MEDIATION);
-    var rule = mandatoryRule(List.of("MEDIATION"));
+    var rule = mandatoryRule(List.of(AreaOfLaw.MEDIATION.name()));
 
     assertThat(validator.isValid(claimDetails, " ", rule)).isFalse();
     assertThat(validator.isValid(claimDetails, "value", rule)).isTrue();
@@ -46,7 +46,7 @@ class MandatoryValueValidatorTest {
   void rejectsBlankValueWhenRuleAppliesToMoreThanOneAreaOfLaw() {
     var crimeClaimDetails = claimDetails(AreaOfLaw.CRIME_LOWER);
     var civilClaimDetails = claimDetails(AreaOfLaw.LEGAL_HELP);
-    var rule = mandatoryRule(List.of("CRIME", "CIVIL"));
+    var rule = mandatoryRule(List.of(AreaOfLaw.CRIME_LOWER.name(), AreaOfLaw.LEGAL_HELP.name()));
 
     assertThat(validator.isValid(crimeClaimDetails, "", rule)).isFalse();
     assertThat(validator.isValid(civilClaimDetails, "", rule)).isFalse();
@@ -55,7 +55,7 @@ class MandatoryValueValidatorTest {
   @Test
   void acceptsBlankValueWhenRuleDoesNotApplyToAreaOfLaw() {
     var claimDetails = claimDetails(AreaOfLaw.MEDIATION);
-    var rule = mandatoryRule(List.of("CRIME", "CIVIL"));
+    var rule = mandatoryRule(List.of(AreaOfLaw.CRIME_LOWER.name(), AreaOfLaw.LEGAL_HELP.name()));
 
     assertThat(validator.isValid(claimDetails, "", rule)).isTrue();
     assertThat(validator.isValid(claimDetails, null, rule)).isTrue();
