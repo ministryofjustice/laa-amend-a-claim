@@ -1,7 +1,7 @@
-package uk.gov.justice.laa.amend.claim.models.history;
+package uk.gov.justice.laa.payments.amend.models.history;
 
 import jakarta.annotation.Nullable;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimViewField;
+import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
 
 public record ClaimHistoryAmendmentChange(
     @Nullable ClaimViewField<?> field,

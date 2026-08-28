@@ -7,12 +7,12 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 import uk.gov.justice.laa.payments.amend.controllers.claimdetails.ClaimHistoryController;
 import uk.gov.justice.laa.payments.amend.models.AssessmentInfo;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
@@ -21,16 +21,15 @@ import uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.payments.amend.models.enums.DerivedClaimStatus;
 import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
 import uk.gov.justice.laa.payments.amend.models.enums.OutcomeType;
-import uk.gov.justice.laa.amend.claim.models.history.ClaimHistory;
-import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryAmendedEvent;
-import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryAmendmentChange;
-import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryAssessedEvent;
-import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryCreatedEvent;
-import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryVoidedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistory;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendmentChange;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAssessedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryCreatedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryVoidedEvent;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewFieldGetter;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewFieldPatcher;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimStatus;
 
 @WebMvcTest(ClaimHistoryController.class)
 class ClaimHistoryViewTest extends ClaimDetailsBaseTest {

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import uk.gov.justice.laa.payments.amend.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.payments.amend.service.ClaimHistoryService;
-import uk.gov.justice.laa.amend.claim.viewmodels.history.ClaimHistoryEventViewModel;
+import uk.gov.justice.laa.payments.amend.viewmodels.history.ClaimHistoryEventViewModel;
 
 @Controller
 public class ClaimHistoryController extends ClaimDetailsBaseController {

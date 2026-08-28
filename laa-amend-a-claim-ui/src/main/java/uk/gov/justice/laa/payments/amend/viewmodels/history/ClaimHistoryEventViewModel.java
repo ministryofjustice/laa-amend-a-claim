@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.viewmodels.history;
+package uk.gov.justice.laa.payments.amend.viewmodels.history;
 
 import java.time.OffsetDateTime;
 import java.util.Comparator;
@@ -6,16 +6,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import org.springframework.context.MessageSource;
-import uk.gov.justice.laa.amend.claim.models.enums.AssessmentTypeEnum;
-import uk.gov.justice.laa.amend.claim.models.history.BaseClaimHistoryEvent;
-import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryAmendedEvent;
-import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryAmendmentChange;
-import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryAssessedEvent;
-import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryCreatedEvent;
-import uk.gov.justice.laa.amend.claim.models.history.ClaimHistoryVoidedEvent;
-import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafLiteralString;
-import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafMessage;
-import uk.gov.justice.laa.amend.claim.viewmodels.ThymeleafString;
+import uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum;
+import uk.gov.justice.laa.payments.amend.models.history.BaseClaimHistoryEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendmentChange;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAssessedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryCreatedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryVoidedEvent;
+import uk.gov.justice.laa.payments.amend.viewmodels.ThymeleafLiteralString;
+import uk.gov.justice.laa.payments.amend.viewmodels.ThymeleafMessage;
+import uk.gov.justice.laa.payments.amend.viewmodels.ThymeleafString;
 
 public record ClaimHistoryEventViewModel(
     ThymeleafMessage type,

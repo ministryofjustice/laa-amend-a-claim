@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.models.history;
+package uk.gov.justice.laa.payments.amend.models.history;
 
 import java.time.OffsetDateTime;
 
