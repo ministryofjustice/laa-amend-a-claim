@@ -1,11 +1,12 @@
 package uk.gov.justice.laa.payments.amend.viewmodels.history;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import org.springframework.context.MessageSource;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum;
 import uk.gov.justice.laa.payments.amend.models.history.BaseClaimHistoryEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendedEvent;
@@ -133,21 +134,46 @@ public record ClaimHistoryEventViewModel(
         .map(
             change ->
                 new ClaimHistoryAmendmentChangeViewModel(
-                    toAmendmentFieldLabel(change), change.before(), change.after()))
+                    toAmendmentFieldLabel(change, messageSource), change.before(), change.after()))
         .toList();
   }
 
   private static String resolvedFieldLabel(
       ClaimHistoryAmendmentChange change, MessageSource messageSource) {
-    return Optional.ofNullable(change.fieldMessageKey())
-        .map(key -> messageSource.getMessage(key, null, change.fieldIdentifier(), Locale.UK))
-        .orElse(change.fieldIdentifier());
+
+    // If we weren't able to resolve a field for the change, just return the identifier from the
+    // history API
+    if (change.field() == null) {
+      return change.fieldIdentifier();
+    }
+
+    var messageKeys = new ArrayList<String>();
+
+    // field label should be lowercase in claim history bullet list
+    var lowercaseKey = "claimField." + change.field().name() + ".lower";
+
+    // some fields may require a different wording when they appear on the claim history page
+    // without the usual context we have on the Claim Details pages
+    // e.g. instead of "first name" we need "client first name"
+    var standaloneKey = "claimField." + change.field().name() + ".standaloneLower";
+
+    // some fields may require a different wording for a specific area of law
+    // e.g. instead of "first name" we need "client 1 first name"
+    if (change.areaOfLaw() != null) {
+      messageKeys.add(standaloneKey + "." + change.areaOfLaw().name());
+    }
+
+    messageKeys.add(standaloneKey);
+    messageKeys.add(lowercaseKey);
+
+    String[] codesArray = messageKeys.toArray(new String[0]);
+    return messageSource.getMessage(
+        new DefaultMessageSourceResolvable(codesArray, null, change.fieldIdentifier()), Locale.UK);
   }
 
-  private static ThymeleafString toAmendmentFieldLabel(ClaimHistoryAmendmentChange change) {
-    return Optional.ofNullable(change.fieldMessageKey())
-        .<ThymeleafString>map(ThymeleafMessage::new)
-        .orElseGet(() -> new ThymeleafLiteralString(change.fieldIdentifier()));
+  private static ThymeleafString toAmendmentFieldLabel(
+      ClaimHistoryAmendmentChange change, MessageSource messageSource) {
+    return new ThymeleafLiteralString(resolvedFieldLabel(change, messageSource));
   }
 
   private static ThymeleafString toAmendmentRequestedBy(BaseClaimHistoryEvent event) {

@@ -5,10 +5,7 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -21,7 +18,6 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
@@ -31,20 +27,11 @@ import uk.gov.justice.laa.payments.amend.models.AssessmentInfo;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.ClaimHistorySummary;
 import uk.gov.justice.laa.payments.amend.models.MicrosoftApiUser;
-import uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.payments.amend.models.history.BaseClaimHistoryEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistory;
-import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendedEvent;
-import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendmentChange;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAssessedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryCreatedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryVoidedEvent;
-import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField;
-import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField;
-import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
-import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CrimeClaimDetailsViewField;
-import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.FieldOption;
-import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
 
@@ -59,14 +46,7 @@ public class ClaimHistoryService {
   private final ClaimsApiClient claimsApiClient;
   private final ProviderService providerService;
   private final UserRetrievalService userRetrievalService;
-  private final SystemReferenceService systemReferenceService;
-
-  private static final Map<AreaOfLaw, Map<String, ClaimViewField<?>>>
-      AMENDABLE_FIELDS_BY_IDENTIFIER =
-          Map.of(
-              AreaOfLaw.CRIME_LOWER, viewFieldsByAreaOfLaw(AreaOfLaw.CRIME_LOWER),
-              AreaOfLaw.LEGAL_HELP, viewFieldsByAreaOfLaw(AreaOfLaw.LEGAL_HELP),
-              AreaOfLaw.MEDIATION, viewFieldsByAreaOfLaw(AreaOfLaw.MEDIATION));
+  private final ClaimHistoryAmendmentsService claimHistoryAmendmentsService;
 
   public ClaimHistory getClaimHistory(ClaimDetails claim) {
     List<AssessmentInfo> assessments =
@@ -82,7 +62,7 @@ public class ClaimHistoryService {
         Stream.of(
                 Stream.of(getClaimCreatedEvent(claim)),
                 toClaimHistoryEvents(assessments, userIdToUser),
-                toAmendmentClaimHistoryEvents(history, claim))
+                claimHistoryAmendmentsService.toAmendmentClaimHistoryEvents(history, claim))
             .flatMap(s -> s)
             .sorted(comparing(BaseClaimHistoryEvent::eventDateTime).reversed())
             .toList();
@@ -250,183 +230,6 @@ public class ClaimHistoryService {
               assessment.lastAssessmentOutcome());
       case VOID -> new ClaimHistoryVoidedEvent(assessment.lastAssessmentDate(), userName);
     };
-  }
-
-  private Stream<BaseClaimHistoryEvent> toAmendmentClaimHistoryEvents(
-      ClaimHistoryResultSet history, ClaimDetails claim) {
-    if (history == null || history.getEvents() == null) {
-      return Stream.empty();
-    }
-    var requestedByReferenceList = systemReferenceService.getAmendmentRequestedByReferenceList();
-    return history.getEvents().stream()
-        .filter(e -> e.getEventType() == AMENDMENT)
-        .map(e -> toAmendmentClaimHistoryEvent(e, claim, requestedByReferenceList));
-  }
-
-  private BaseClaimHistoryEvent toAmendmentClaimHistoryEvent(
-      ClaimHistoryEvent apiEvent,
-      ClaimDetails claim,
-      AmendmentRequestedByReferenceList requestedByReferenceList) {
-    var user =
-        Optional.ofNullable(apiEvent.getActorId())
-            .map(userRetrievalService::getUser)
-            .map(MicrosoftApiUser::name)
-            .orElse(null);
-
-    var metadata = Optional.ofNullable(apiEvent.getMetadata()).orElse(Map.of());
-    var changes = resolveAmendmentChanges(metadata, claim.getAreaOfLaw());
-    var requestedByCode = toFallbackString(metadata.get("requested_by_code"));
-    var amendmentReasonCode = toFallbackString(metadata.get("amendment_reason_code"));
-    var requestedByDisplay = resolveRequestedByDisplay(requestedByCode, requestedByReferenceList);
-    var amendmentReasonDisplay =
-        resolveAmendmentReasonDisplay(
-            requestedByCode, amendmentReasonCode, requestedByReferenceList);
-
-    return new ClaimHistoryAmendedEvent(
-        apiEvent.getEventTimestamp(), user, changes, requestedByDisplay, amendmentReasonDisplay);
-  }
-
-  @SuppressWarnings("unchecked")
-  private List<ClaimHistoryAmendmentChange> resolveAmendmentChanges(
-      Map<String, Object> metadata, AreaOfLaw areaOfLaw) {
-    var changes = (List<Map<String, Object>>) metadata.getOrDefault("changes", List.of());
-    return changes.stream()
-        .filter(change -> "REQUESTED".equals(change.get("change_source")))
-        .map(change -> resolveChange(change, areaOfLaw))
-        .toList();
-  }
-
-  private ClaimHistoryAmendmentChange resolveChange(
-      Map<String, Object> change, AreaOfLaw areaOfLaw) {
-    var fieldIdentifier = (String) change.get("field_identifier");
-    var fieldOpt = resolveField(areaOfLaw, fieldIdentifier);
-
-    if (fieldOpt.isEmpty()) {
-      log.warn(
-          "Unknown amendment field identifier '{}' for area of law {}", fieldIdentifier, areaOfLaw);
-      // Note: For amend it seems appropriate for us to show raw values to caseworker if we
-      // encounter an unknown field, but we should reconsider if we copy this approach over to
-      // submit.
-      return new ClaimHistoryAmendmentChange(
-          null,
-          fieldIdentifier,
-          toFallbackString(change.get("before")),
-          toFallbackString(change.get("after")));
-    }
-
-    var field = fieldOpt.get();
-    return new ClaimHistoryAmendmentChange(
-        field,
-        fieldIdentifier,
-        resolveValue(change.get("before"), field),
-        resolveValue(change.get("after"), field));
-  }
-
-  private static Optional<ClaimViewField<?>> resolveField(
-      AreaOfLaw areaOfLaw, String fieldIdentifier) {
-    if (areaOfLaw == null || fieldIdentifier == null) {
-      return Optional.empty();
-    }
-    return Optional.ofNullable(AMENDABLE_FIELDS_BY_IDENTIFIER.get(areaOfLaw))
-        .map(fields -> fields.get(fieldIdentifier));
-  }
-
-  private static Object resolveValue(Object raw, ClaimViewField<?> field) {
-    if (raw == null) {
-      return null;
-    }
-    var fieldType = field.getFieldType();
-    try {
-      return switch (fieldType) {
-        case TEXT -> String.valueOf(raw);
-        case BOOLEAN -> raw instanceof Boolean b ? b : Boolean.parseBoolean(String.valueOf(raw));
-        case NUMBER ->
-            raw instanceof Number n ? n.intValue() : Integer.parseInt(String.valueOf(raw));
-        case BIG_DECIMAL -> new BigDecimal(String.valueOf(raw));
-        case DATE -> LocalDate.parse(String.valueOf(raw));
-        case ENUM -> resolveEnumValue(raw, field.getOptions());
-      };
-    } catch (Exception e) {
-      log.warn(
-          "Using raw value as failed to resolve value '{}' as field type {}: {}",
-          raw,
-          fieldType,
-          e.getMessage(),
-          e);
-    }
-    return raw;
-  }
-
-  private static Object resolveEnumValue(Object raw, List<FieldOption> options) {
-    var rawString = String.valueOf(raw);
-    return options.stream()
-        .filter(option -> option.value().equals(rawString))
-        .findFirst()
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    "Unable to resolve value for option %s in options %s"
-                        .formatted(rawString, options)));
-  }
-
-  private static String toFallbackString(Object rawValue) {
-    return rawValue == null ? null : String.valueOf(rawValue);
-  }
-
-  private static Map<String, ClaimViewField<?>> viewFieldsByAreaOfLaw(AreaOfLaw areaOfLaw) {
-    var lookup = new LinkedHashMap<String, ClaimViewField<?>>();
-    areaOfLawViewFields(areaOfLaw)
-        .forEach(field -> putFieldIdentifier(lookup, field.getClaimsApiFieldName(), field));
-    return Map.copyOf(lookup);
-  }
-
-  private static Stream<ClaimViewField<?>> areaOfLawViewFields(AreaOfLaw areaOfLaw) {
-    var commonFields =
-        Arrays.stream(ClaimDetailsViewField.values()).map(field -> (ClaimViewField<?>) field);
-
-    var areaSpecificFields =
-        switch (areaOfLaw) {
-          case CRIME_LOWER -> Arrays.stream(CrimeClaimDetailsViewField.values());
-          case LEGAL_HELP -> Arrays.stream(CivilClaimDetailsViewField.values());
-          case MEDIATION -> Arrays.stream(MediationClaimDetailsViewField.values());
-        };
-
-    return Stream.concat(commonFields, areaSpecificFields.map(field -> (ClaimViewField<?>) field));
-  }
-
-  private static void putFieldIdentifier(
-      Map<String, ClaimViewField<?>> fieldLookup, String identifier, ClaimViewField<?> field) {
-    if (identifier == null || identifier.isBlank()) {
-      return;
-    }
-    fieldLookup.putIfAbsent(identifier, field);
-  }
-
-  private String resolveRequestedByDisplay(
-      String requestedByCode, AmendmentRequestedByReferenceList requestedByReferenceList) {
-    if (requestedByCode == null) {
-      return null;
-    }
-    var requestedByMap =
-        Optional.ofNullable(
-                systemReferenceService.getAmendmentRequestedByOptions(requestedByReferenceList))
-            .orElse(Map.of());
-    return requestedByMap.getOrDefault(requestedByCode, requestedByCode);
-  }
-
-  private String resolveAmendmentReasonDisplay(
-      String requestedByCode,
-      String amendmentReasonCode,
-      AmendmentRequestedByReferenceList requestedByReferenceList) {
-    if (amendmentReasonCode == null) {
-      return null;
-    }
-    var amendmentReasonMap =
-        Optional.ofNullable(
-                systemReferenceService.getAmendmentRequestReason(
-                    requestedByCode, requestedByReferenceList))
-            .orElse(Map.of());
-    return amendmentReasonMap.getOrDefault(amendmentReasonCode, amendmentReasonCode);
   }
 
   @SuppressWarnings("unchecked")

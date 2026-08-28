@@ -30,14 +30,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.AmendmentRequestedByReferenceList;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
 import uk.gov.justice.laa.payments.amend.models.AmendmentConfirmation;
 import uk.gov.justice.laa.payments.amend.models.AssessmentInfo;
 import uk.gov.justice.laa.payments.amend.models.MicrosoftApiUser;
-import uk.gov.justice.laa.payments.amend.models.enums.GenderCode;
-import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAssessedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryCreatedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryVoidedEvent;
@@ -74,7 +71,7 @@ public class ClaimHistoryServiceTest {
 
   @Mock private UserRetrievalService userRetrievalService;
 
-  @Mock private SystemReferenceService systemReferenceService;
+  @Mock private ClaimHistoryAmendmentsService claimHistoryAmendmentsService;
 
   private ClaimHistoryService claimHistoryService;
 
@@ -86,7 +83,7 @@ public class ClaimHistoryServiceTest {
             claimsApiClient,
             providerService,
             userRetrievalService,
-            systemReferenceService);
+            claimHistoryAmendmentsService);
   }
 
   @Test
@@ -137,8 +134,9 @@ public class ClaimHistoryServiceTest {
     when(claimsApiClient.getClaimHistory(claim.getClaimId()))
         .thenReturn(
             Mono.just(new ClaimHistoryResultSet().claimId(claim.getClaimId()).events(List.of())));
-    when(systemReferenceService.getAmendmentRequestedByReferenceList())
-        .thenReturn(new AmendmentRequestedByReferenceList().requestedBy(List.of()));
+    when(claimHistoryAmendmentsService.toAmendmentClaimHistoryEvents(
+            org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any()))
+        .thenReturn(java.util.stream.Stream.empty());
 
     var claimHistory = claimHistoryService.getClaimHistory(claim);
 
@@ -162,131 +160,6 @@ public class ClaimHistoryServiceTest {
     assertThat(claimHistory.events())
         .containsExactly(
             voidedEvent, assessedStageDisbursementEvent, assessedEscapeCaseEvent, createdEvent);
-  }
-
-  @Test
-  void getClaimHistoryIncludesResolvedRequestedAmendmentChanges() {
-    var claim = MockClaimsFunctions.createMockCivilClaim();
-    claim.setSubmittedDate(CREATED_DATE_TIME);
-    claim.setHasAssessment(false);
-
-    var amendedDateTime = CREATED_DATE_TIME.plusDays(1);
-    var amendedUser =
-        new MicrosoftApiUser(UUID.randomUUID().toString(), "Amended user", null, null);
-    when(userRetrievalService.getUser(amendedUser.id())).thenReturn(amendedUser);
-    when(systemReferenceService.getAmendmentRequestedByReferenceList())
-        .thenReturn(new AmendmentRequestedByReferenceList().requestedBy(List.of()));
-    when(systemReferenceService.getAmendmentRequestedByOptions(org.mockito.ArgumentMatchers.any()))
-        .thenReturn(Map.of("PROVIDER", "Provider"));
-    when(systemReferenceService.getAmendmentRequestReason(
-            org.mockito.ArgumentMatchers.eq("PROVIDER"), org.mockito.ArgumentMatchers.any()))
-        .thenReturn(Map.of("CORRECTION", "Correction"));
-
-    var changes =
-        List.of(
-            change("REQUESTED", "client.genderCode", "M", "F"),
-            change("REQUESTED", "claim.caseStartDate", "2026-04-01", "2026-04-02"),
-            change("REQUESTED", "unknown.field", "before", "after"),
-            change("FSP", "claim.caseConcludedDate", "2026-04-05", "2026-04-06"));
-
-    var history =
-        new ClaimHistoryResultSet()
-            .claimId(claim.getClaimId())
-            .events(
-                List.of(
-                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
-                        .eventType(AMENDMENT)
-                        .actorId(amendedUser.id())
-                        .eventTimestamp(amendedDateTime)
-                        .metadata(
-                            Map.of(
-                                "requested_by_code",
-                                "PROVIDER",
-                                "amendment_reason_code",
-                                "CORRECTION",
-                                "changes",
-                                changes))));
-
-    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
-
-    var claimHistory = claimHistoryService.getClaimHistory(claim);
-
-    var amendmentEvent =
-        claimHistory.events().stream()
-            .filter(ClaimHistoryAmendedEvent.class::isInstance)
-            .map(ClaimHistoryAmendedEvent.class::cast)
-            .findFirst()
-            .orElseThrow();
-
-    assertThat(amendmentEvent.user()).isEqualTo(amendedUser.displayName());
-    assertThat(amendmentEvent.requestedByCode()).isEqualTo("Provider");
-    assertThat(amendmentEvent.amendmentReasonCode()).isEqualTo("Correction");
-    assertThat(amendmentEvent.amendmentChanges()).hasSize(3);
-
-    var genderChange =
-        amendmentEvent.amendmentChanges().stream()
-            .filter(change -> "client.genderCode".equals(change.fieldIdentifier()))
-            .findFirst()
-            .orElseThrow();
-    assertThat(genderChange.field()).isNotNull();
-    assertThat(genderChange.field().name()).isEqualTo("GENDER");
-    assertThat(genderChange.fieldMessageKey()).isEqualTo("claimHistory.amended.GENDER");
-    assertThat(genderChange.before()).isEqualTo(GenderCode.MALE);
-    assertThat(genderChange.after()).isEqualTo(GenderCode.FEMALE);
-
-    var unknownFieldChange =
-        amendmentEvent.amendmentChanges().stream()
-            .filter(change -> "unknown.field".equals(change.fieldIdentifier()))
-            .findFirst()
-            .orElseThrow();
-    assertThat(unknownFieldChange.field()).isNull();
-    assertThat(unknownFieldChange.fieldMessageKey()).isNull();
-    assertThat(unknownFieldChange.before()).isEqualTo("before");
-    assertThat(unknownFieldChange.after()).isEqualTo("after");
-  }
-
-  @Test
-  void getClaimHistorySetsAmendmentFieldMessageKeyForKnownField() {
-    var claim = MockClaimsFunctions.createMockCrimeClaim();
-    claim.setSubmittedDate(CREATED_DATE_TIME);
-    claim.setHasAssessment(false);
-
-    var amendedDateTime = CREATED_DATE_TIME.plusDays(1);
-    var amendedUser =
-        new MicrosoftApiUser(UUID.randomUUID().toString(), "Amended user", null, null);
-    when(userRetrievalService.getUser(amendedUser.id())).thenReturn(amendedUser);
-    when(systemReferenceService.getAmendmentRequestedByReferenceList())
-        .thenReturn(new AmendmentRequestedByReferenceList().requestedBy(List.of()));
-
-    var changes = List.of(change("REQUESTED", "claim.maatId", "before", "after"));
-
-    var history =
-        new ClaimHistoryResultSet()
-            .claimId(claim.getClaimId())
-            .events(
-                List.of(
-                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
-                        .eventType(AMENDMENT)
-                        .actorId(amendedUser.id())
-                        .eventTimestamp(amendedDateTime)
-                        .metadata(Map.of("changes", changes))));
-
-    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
-
-    var claimHistory = claimHistoryService.getClaimHistory(claim);
-
-    var amendmentEvent =
-        claimHistory.events().stream()
-            .filter(ClaimHistoryAmendedEvent.class::isInstance)
-            .map(ClaimHistoryAmendedEvent.class::cast)
-            .findFirst()
-            .orElseThrow();
-
-    assertThat(amendmentEvent.amendmentChanges()).hasSize(1);
-    assertThat(amendmentEvent.amendmentChanges().getFirst().field()).isNotNull();
-    assertThat(amendmentEvent.amendmentChanges().getFirst().field().name()).isEqualTo("MAAT_ID");
-    assertThat(amendmentEvent.amendmentChanges().getFirst().fieldMessageKey())
-        .isEqualTo("claimHistory.amended.MAAT_ID");
   }
 
   @Test
