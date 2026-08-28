@@ -44,6 +44,7 @@ public class ClaimHistoryAmendmentsService {
 
   private final UserRetrievalService userRetrievalService;
   private final SystemReferenceService systemReferenceService;
+  private final AvailableFeeCodesService availableFeeCodesService;
 
   private static final Map<AreaOfLaw, Map<String, ClaimViewField<?>>>
       AMENDABLE_FIELDS_BY_IDENTIFIER =
@@ -90,10 +91,19 @@ public class ClaimHistoryAmendmentsService {
   private List<ClaimHistoryAmendmentChange> resolveAmendmentChanges(
       Map<String, Object> metadata, AreaOfLaw areaOfLaw) {
     var changes = (List<Map<String, Object>>) metadata.getOrDefault("changes", List.of());
+    var availableFeeCodes = resolveAvailableFeeCodes(changes, areaOfLaw);
     return changes.stream()
         .filter(ClaimHistoryAmendmentsService::isDisplayableChange)
-        .map(change -> resolveChange(change, areaOfLaw))
+        .map(change -> resolveChange(change, areaOfLaw, availableFeeCodes))
         .toList();
+  }
+
+  private Map<String, String> resolveAvailableFeeCodes(
+      List<Map<String, Object>> changes, AreaOfLaw areaOfLaw) {
+    if (areaOfLaw == null || changes.stream().noneMatch(this::isFeeCodeChange)) {
+      return Map.of();
+    }
+    return availableFeeCodesService.getAvailableFeeCodes(areaOfLaw);
   }
 
   private static boolean isDisplayableChange(Map<String, Object> change) {
@@ -107,8 +117,13 @@ public class ClaimHistoryAmendmentsService {
     return FIELD_IDENTIFIER_FEE_CODE.equals(change.get("field_identifier"));
   }
 
+  private boolean isFeeCodeChange(Map<String, Object> change) {
+    return isDisplayableChange(change)
+        && FIELD_IDENTIFIER_FEE_CODE.equals(change.get("field_identifier"));
+  }
+
   private ClaimHistoryAmendmentChange resolveChange(
-      Map<String, Object> change, AreaOfLaw areaOfLaw) {
+      Map<String, Object> change, AreaOfLaw areaOfLaw, Map<String, String> availableFeeCodes) {
     var fieldIdentifier = (String) change.get("field_identifier");
     var fieldOpt = resolveField(areaOfLaw, fieldIdentifier);
 
@@ -127,8 +142,8 @@ public class ClaimHistoryAmendmentsService {
     return new ClaimHistoryAmendmentChange(
         field,
         fieldIdentifier,
-        resolveValue(change.get("before"), field),
-        resolveValue(change.get("after"), field),
+        resolveValue(change.get("before"), field, availableFeeCodes),
+        resolveValue(change.get("after"), field, availableFeeCodes),
         areaOfLaw);
   }
 
@@ -139,6 +154,14 @@ public class ClaimHistoryAmendmentsService {
     }
     return Optional.ofNullable(AMENDABLE_FIELDS_BY_IDENTIFIER.get(areaOfLaw))
         .map(fields -> fields.get(fieldIdentifier));
+  }
+
+  private static Object resolveValue(
+      Object raw, ClaimViewField<?> field, Map<String, String> availableFeeCodes) {
+    if (field == ClaimDetailsViewField.FEE_CODE) {
+      return resolveFeeCodeDisplay(raw, availableFeeCodes);
+    }
+    return resolveValue(raw, field);
   }
 
   private static Object resolveValue(Object raw, ClaimViewField<?> field) {
@@ -165,6 +188,14 @@ public class ClaimHistoryAmendmentsService {
           e);
     }
     return raw;
+  }
+
+  private static String resolveFeeCodeDisplay(Object raw, Map<String, String> availableFeeCodes) {
+    var feeCode = toFallbackString(raw);
+    if (feeCode == null) {
+      return null;
+    }
+    return availableFeeCodes.getOrDefault(feeCode, feeCode);
   }
 
   private static Object resolveEnumValue(Object raw, List<FieldOption> options) {
