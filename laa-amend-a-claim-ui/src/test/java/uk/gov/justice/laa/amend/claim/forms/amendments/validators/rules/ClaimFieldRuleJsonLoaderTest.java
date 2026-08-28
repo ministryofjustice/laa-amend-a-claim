@@ -18,10 +18,28 @@ import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.model.Ru
 import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
 import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.amend.claim.support.TestMessageSources;
+import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
 
 class ClaimFieldRuleJsonLoaderTest {
 
   private final JsonNode root = readResource(ClaimFieldRuleJsonLoader.RESOURCE_PATH);
+
+  @Test
+  void ruleGroupsForFieldAreInJsonDeclarationOrder() {
+    // FORENAME declares ruleGroups: ["mandatoryLegalHelp", "mandatoryCrimeLower", "name"]
+    // mandatoryLegalHelp  -> 1 MANDATORY rule
+    // mandatoryCrimeLower -> 1 MANDATORY rule
+    // name                -> 1 FORMAT rule, then 1 LENGTH rule
+    // The combined list must appear in that exact order.
+    var rules = ClaimFieldRuleJsonLoader.load(ClaimFieldRuleJsonLoader.RESOURCE_PATH);
+    var foreNameRules = rules.get(ClaimDetailsViewField.FORENAME);
+
+    assertThat(foreNameRules).hasSize(4);
+    assertThat(foreNameRules.get(0).category()).isEqualTo(RuleCategory.MANDATORY);
+    assertThat(foreNameRules.get(1).category()).isEqualTo(RuleCategory.MANDATORY);
+    assertThat(foreNameRules.get(2).category()).isEqualTo(RuleCategory.FORMAT);
+    assertThat(foreNameRules.get(3).category()).isEqualTo(RuleCategory.LENGTH);
+  }
 
   @Test
   void loadsWithoutThrowing() {
