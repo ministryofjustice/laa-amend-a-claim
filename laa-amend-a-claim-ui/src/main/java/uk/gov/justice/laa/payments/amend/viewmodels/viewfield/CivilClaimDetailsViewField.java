@@ -91,6 +91,12 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       CivilClaimDetails::getCaseId,
       ClaimPatch.Builder::caseId,
       "claimCase.caseId"),
+  UNIQUE_CASE_ID(
+      FieldType.TEXT,
+      String.class,
+      CivilClaimDetails::getUniqueCaseId,
+      ClaimPatch.Builder::uniqueCaseId,
+      "claimCase.uniqueCaseId"),
   CASE_CONCLUDED_CLAIMED_DATE(
       FieldType.DATE,
       String.class,

@@ -23,7 +23,7 @@
                             <div class="govuk-summary-card__content">
                                 <dl class="govuk-summary-list">
                                     <div class="govuk-summary-list__row" th:each="entry : ${claim.summaryRows}">
-                                        <dt class="govuk-summary-list__key" th:text="#{${'claimSummary.rows.' + entry.key}}"></dt>
+                                        <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + entry.key}}"></dt>
                                         <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
                                         <dd class="govuk-summary-list__actions" th:if="${amendedFields.contains(entry.key.claimsApiFieldName)}">
                                             <strong class="govuk-tag govuk-tag--yellow" th:text="#{service.amended}"></strong>
@@ -48,7 +48,7 @@
                                     <div class="govuk-summary-list__row"
                                          th:each="entry : ${claim.summaryClaimFieldRows}"
                                          th:with="field=${entry.key}, row=${entry.value}">
-                                        <dt class="govuk-summary-list__key" th:text="#{${'claimSummary.rows.' + field.name()}}"></dt>
+                                        <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + field.name()}}"></dt>
                                         <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></dd>
                                         <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
                                         <dd class="govuk-summary-list__value" th:if="${claim.hasAssessment}" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></dd>
@@ -77,7 +77,7 @@
                                         </thead>
                                         <tbody class="govuk-table__body">
                                         <tr class="govuk-table__row" th:each="row : ${claim.assessedTotals}">
-                                            <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${'claimSummary.rows.' + row.key}}"></td>
+                                            <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${'claimField.' + row.key}}"></td>
                                             <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
                                             <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
                                             <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></td>
@@ -103,7 +103,7 @@
                                         </thead>
                                         <tbody class="govuk-table__body">
                                         <tr class="govuk-table__row" th:each="row : ${claim.allowedTotals}">
-                                            <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${'claimSummary.rows.' + row.key}}"></td>
+                                            <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${'claimField.' + row.key}}"></td>
                                             <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></td>
                                             <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></td>
                                             <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></td>

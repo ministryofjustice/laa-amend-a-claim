@@ -17,8 +17,7 @@ import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
 
 public interface ClaimViewField<T extends Claim> {
 
-  List<String> ROW_LABEL_KEY_PREFIXES =
-      List.of("claimCase.rows.", "claimClient.rows.", "claimCosts.rows.", "claimSummary.rows.");
+  List<String> ROW_LABEL_KEY_PREFIXES = List.of("claimField.");
 
   String name();
 

@@ -176,7 +176,7 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
     assertSummaryListRowContainsValues(
         costs.get(10), "Judicial review or form filling", SUBMITTED, CALCULATED);
     assertSummaryListRowContainsValues(costs.get(11), "Substantive hearing", "Yes", CALCULATED);
-    assertSummaryListRowContainsValues(costs.get(12), "Home Office Interview", "100", CALCULATED);
+    assertSummaryListRowContainsValues(costs.get(12), "Home Office interview", "100", CALCULATED);
     assertSummaryListRowContainsValues(
         costs.get(13), "Case management review hearing (CMRH)-oral", "100", CALCULATED);
     assertSummaryListRowContainsValues(
@@ -201,7 +201,7 @@ class AmendmentsConfirmationViewTest extends AmendmentsBaseTest {
         "Detention, travel and waiting (DTW) costs",
         "Judicial review or form filling",
         "Substantive hearing",
-        "Home Office Interview",
+        "Home Office interview",
         "Case management review hearing (CMRH)-oral",
         "Case management review hearing (CMRH)-telephone");
   }

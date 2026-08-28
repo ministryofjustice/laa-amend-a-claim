@@ -44,7 +44,7 @@
                     <div class="govuk-summary-list__row"
                          th:each="entry : ${clientView.client1Rows}"
                          th:if="${client1Form.isAmendment(entry.key.name(), forms.client1Form.original)}">
-                        <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key.name()}}"></dt>
+                        <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + entry.key.name()}}"></dt>
                         <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
 
                         <dd class="govuk-summary-list__value"
@@ -81,7 +81,7 @@
             <div class="govuk-summary-list__row"
                  th:each="entry : ${clientView.client2Rows}"
                  th:if="${client2Form.isAmendment(entry.key.name(), forms.client2Form.original)}">
-              <dt class="govuk-summary-list__key" th:text="#{${'claimClient.rows.' + entry.key.name()}}"></dt>
+              <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + entry.key.name()}}"></dt>
               <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.value).resolve(#messages)}"></dd>
 
               <dd class="govuk-summary-list__value"
@@ -118,7 +118,7 @@
             <div class="govuk-summary-list__row"
                  th:each="entry : ${claim.caseTypeRows}"
                  th:if="${caseTypeForm.isAmendment(entry.key.name(), forms.caseTypeForm.original)}">
-              <dt class="govuk-summary-list__key" th:text="#{${'claimCase.rows.' + entry.key}}"></dt>
+              <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + entry.key}}"></dt>
               <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
 
               <dd class="govuk-summary-list__value"
@@ -155,7 +155,7 @@
             <div class="govuk-summary-list__row"
                  th:each="entry : ${claim.caseDetailsRows}"
                  th:if="${caseDetailsForm.isAmendment(entry.key.name(), forms.caseDetailsForm.original)}">
-              <dt class="govuk-summary-list__key" th:text="#{${'claimCase.rows.' + entry.key}}"></dt>
+              <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + entry.key}}"></dt>
               <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
 
               <dd class="govuk-summary-list__value"
@@ -192,7 +192,7 @@
             <div class="govuk-summary-list__row"
                  th:each="entry : ${costFields}"
                  th:if="${costsForm.isAmendment(entry.key.name(), forms.costsForm.original, entry.key.fieldType)}">
-              <dt class="govuk-summary-list__key" th:text="#{${'claimCosts.rows.' + entry.key.name()}}"></dt>
+              <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + entry.key.name()}}"></dt>
               <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value.submitted).resolve(#messages)}"></dd>
 
               <dd class="govuk-summary-list__value"

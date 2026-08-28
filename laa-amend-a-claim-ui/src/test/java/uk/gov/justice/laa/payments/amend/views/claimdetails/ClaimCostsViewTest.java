@@ -146,7 +146,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(
         clientDetails.get(11), "Substantive hearing", "Yes", CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(
-        clientDetails.get(12), "Home Office Interview", "100", CALCULATED, ASSESSED);
+        clientDetails.get(12), "Home Office interview", "100", CALCULATED, ASSESSED);
     assertSummaryListRowContainsValues(
         clientDetails.get(13),
         "Case management review hearing (CMRH)-oral",
@@ -204,7 +204,7 @@ class ClaimCostsViewTest extends ClaimDetailsBaseTest {
         "Detention, travel and waiting (DTW) costs",
         "Judicial review or form filling",
         "Substantive hearing",
-        "Home Office Interview",
+        "Home Office interview",
         "Case management review hearing (CMRH)-oral",
         "Case management review hearing (CMRH)-telephone",
         "London rate",
