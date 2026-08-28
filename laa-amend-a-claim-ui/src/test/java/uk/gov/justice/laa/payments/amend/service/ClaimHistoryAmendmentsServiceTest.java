@@ -147,6 +147,72 @@ class ClaimHistoryAmendmentsServiceTest {
         .isEmpty();
   }
 
+  @Test
+  void toAmendmentClaimHistoryEventsResolvesMatterTypeTwoWhenOnlySecondPartChanges() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .metadata(
+                            Map.of(
+                                "changes",
+                                List.of(
+                                    change(
+                                        "REQUESTED",
+                                        "claim.matterTypeCode",
+                                        "ABC123:DEF456",
+                                        "ABC123:XYZ999"))))));
+
+    var events =
+        claimHistoryAmendmentsService.toAmendmentClaimHistoryEvents(history, claim).toList();
+
+    var amendmentEvent = (ClaimHistoryAmendedEvent) events.getFirst();
+    assertThat(amendmentEvent.amendmentChanges()).hasSize(1);
+    var change = amendmentEvent.amendmentChanges().getFirst();
+    assertThat(change.field()).isEqualTo(CivilClaimDetailsViewField.MATTER_TYPE_CODE_2);
+    assertThat(change.before()).isEqualTo("DEF456");
+    assertThat(change.after()).isEqualTo("XYZ999");
+  }
+
+  @Test
+  void toAmendmentClaimHistoryEventsResolvesMatterTypeOneAndTwoWhenBothPartsChange() {
+    var claim = MockClaimsFunctions.createMockMediationClaim();
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .metadata(
+                            Map.of(
+                                "changes",
+                                List.of(
+                                    change(
+                                        "REQUESTED",
+                                        "claim.matterTypeCode",
+                                        "AAA111:BBB222",
+                                        "CCC333:DDD444"))))));
+
+    var events =
+        claimHistoryAmendmentsService.toAmendmentClaimHistoryEvents(history, claim).toList();
+
+    var amendmentEvent = (ClaimHistoryAmendedEvent) events.getFirst();
+    assertThat(amendmentEvent.amendmentChanges()).hasSize(2);
+    assertThat(amendmentEvent.amendmentChanges().get(0).field())
+        .isEqualTo(MediationClaimDetailsViewField.MATTER_TYPE_CODE_1);
+    assertThat(amendmentEvent.amendmentChanges().get(0).before()).isEqualTo("AAA111");
+    assertThat(amendmentEvent.amendmentChanges().get(0).after()).isEqualTo("CCC333");
+    assertThat(amendmentEvent.amendmentChanges().get(1).field())
+        .isEqualTo(MediationClaimDetailsViewField.MATTER_TYPE_CODE_2);
+    assertThat(amendmentEvent.amendmentChanges().get(1).before()).isEqualTo("BBB222");
+    assertThat(amendmentEvent.amendmentChanges().get(1).after()).isEqualTo("DDD444");
+  }
+
   @ParameterizedTest(name = "{0} maps {1}")
   @MethodSource("allMappedFields")
   void toAmendmentClaimHistoryEventsResolvesAllMappedFields(

@@ -117,7 +117,7 @@ public class ClaimHistoryService {
                         .map(userRetrievalService::getUser)
                         .orElse(null),
                     event.getEventTimestamp()))
-        .orElse(getLastUpdated(claim));
+        .orElseGet(() -> getLastUpdated(claim));
   }
 
   private LastUpdated getLastUpdated(ClaimDetails claim) {

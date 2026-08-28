@@ -8,10 +8,12 @@ import static uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw.MEDIATION
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,7 @@ public class ClaimHistoryAmendmentsService {
   private static final String CHANGE_SOURCE_REQUESTED = "REQUESTED";
   private static final String CHANGE_SOURCE_FSP = "FSP";
   private static final String FIELD_IDENTIFIER_FEE_CODE = "claim.feeCode";
+  private static final String FIELD_IDENTIFIER_MATTER_TYPE_CODE = "claim.matterTypeCode";
 
   private final UserRetrievalService userRetrievalService;
   private final SystemReferenceService systemReferenceService;
@@ -94,7 +97,7 @@ public class ClaimHistoryAmendmentsService {
     var availableFeeCodes = resolveAvailableFeeCodes(changes, areaOfLaw);
     return changes.stream()
         .filter(ClaimHistoryAmendmentsService::isDisplayableChange)
-        .map(change -> resolveChange(change, areaOfLaw, availableFeeCodes))
+        .flatMap(change -> resolveChanges(change, areaOfLaw, availableFeeCodes).stream())
         .toList();
   }
 
@@ -145,6 +148,103 @@ public class ClaimHistoryAmendmentsService {
         resolveValue(change.get("before"), field, availableFeeCodes),
         resolveValue(change.get("after"), field, availableFeeCodes),
         areaOfLaw);
+  }
+
+  private List<ClaimHistoryAmendmentChange> resolveChanges(
+      Map<String, Object> change, AreaOfLaw areaOfLaw, Map<String, String> availableFeeCodes) {
+    var fieldIdentifier = toFallbackString(change.get("field_identifier"));
+    if (FIELD_IDENTIFIER_MATTER_TYPE_CODE.equals(fieldIdentifier)) {
+      return resolveMatterTypeChanges(change, areaOfLaw, availableFeeCodes);
+    }
+    return List.of(resolveChange(change, areaOfLaw, availableFeeCodes));
+  }
+
+  private List<ClaimHistoryAmendmentChange> resolveMatterTypeChanges(
+      Map<String, Object> change, AreaOfLaw areaOfLaw, Map<String, String> availableFeeCodes) {
+    var beforeParts = splitMatterTypeCode(change.get("before"));
+    var afterParts = splitMatterTypeCode(change.get("after"));
+    var resolvedChanges = new ArrayList<ClaimHistoryAmendmentChange>();
+
+    var firstMatterTypeIndex = 0;
+    addMatterTypeChangeIfChanged(
+        resolvedChanges,
+        areaOfLaw,
+        availableFeeCodes,
+        beforeParts,
+        afterParts,
+        firstMatterTypeIndex);
+
+    var secondMatterTypeIndex = 1;
+    addMatterTypeChangeIfChanged(
+        resolvedChanges,
+        areaOfLaw,
+        availableFeeCodes,
+        beforeParts,
+        afterParts,
+        secondMatterTypeIndex);
+
+    if (!resolvedChanges.isEmpty()) {
+      return List.copyOf(resolvedChanges);
+    }
+
+    return List.of(resolveChange(change, areaOfLaw, availableFeeCodes));
+  }
+
+  private void addMatterTypeChangeIfChanged(
+      List<ClaimHistoryAmendmentChange> resolvedChanges,
+      AreaOfLaw areaOfLaw,
+      Map<String, String> availableFeeCodes,
+      String[] beforeParts,
+      String[] afterParts,
+      int indexOfPart) {
+    var beforePart = matterTypePart(beforeParts, indexOfPart);
+    var afterPart = matterTypePart(afterParts, indexOfPart);
+    if (Objects.equals(beforePart, afterPart)) {
+      return;
+    }
+
+    var matterTypeField = resolveMatterTypeField(areaOfLaw, indexOfPart);
+    if (matterTypeField.isEmpty()) {
+      return;
+    }
+
+    var field = matterTypeField.get();
+    resolvedChanges.add(
+        new ClaimHistoryAmendmentChange(
+            field,
+            FIELD_IDENTIFIER_MATTER_TYPE_CODE,
+            resolveValue(beforePart, field, availableFeeCodes),
+            resolveValue(afterPart, field, availableFeeCodes),
+            areaOfLaw));
+  }
+
+  private static String[] splitMatterTypeCode(Object value) {
+    var raw = toFallbackString(value);
+    if (raw == null) {
+      return new String[0];
+    }
+    return raw.split("[+:]", -1);
+  }
+
+  private static String matterTypePart(String[] parts, int index) {
+    return parts.length > index ? parts[index] : null;
+  }
+
+  private static Optional<ClaimViewField<?>> resolveMatterTypeField(
+      AreaOfLaw areaOfLaw, int index) {
+    return switch (areaOfLaw) {
+      case LEGAL_HELP ->
+          Optional.of(
+              index == 0
+                  ? CivilClaimDetailsViewField.MATTER_TYPE_CODE_1
+                  : CivilClaimDetailsViewField.MATTER_TYPE_CODE_2);
+      case MEDIATION ->
+          Optional.of(
+              index == 0
+                  ? MediationClaimDetailsViewField.MATTER_TYPE_CODE_1
+                  : MediationClaimDetailsViewField.MATTER_TYPE_CODE_2);
+      default -> Optional.empty();
+    };
   }
 
   private static Optional<ClaimViewField<?>> resolveField(
