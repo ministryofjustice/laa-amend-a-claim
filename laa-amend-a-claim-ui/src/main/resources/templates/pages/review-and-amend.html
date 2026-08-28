@@ -109,7 +109,7 @@
                 <tbody class="govuk-table__body">
                 <tr class="govuk-table__row" th:each="row : ${viewModel.reviewClaimFieldRows}">
 
-                    <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${'claimSummary.rows.' + row.key}}" />
+                    <td class="govuk-table__cell govuk-!-font-weight-bold" th:text="#{${'claimField.' + row.key}}" />
 
                     <td class="govuk-table__cell" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"/>
 
@@ -123,7 +123,7 @@
                            th:data-testid="${'claim-field-' + row.key}"
                            class="govuk-link govuk-link--no-visited-state">
                             <th:block th:text="#{service.add}"></th:block>
-                            <span class="govuk-visually-hidden" th:text="| #{${'claimSummary.rows.' + row.key}}|"></span>
+                            <span class="govuk-visually-hidden" th:text="| #{${'claimField.' + row.key}}|"></span>
                         </a>
 
                         <span th:unless="${row.isAssessableAndUnassessed()}"
@@ -136,7 +136,7 @@
                            th:data-testid="${'claim-field-' + row.key}"
                            class="govuk-link govuk-link--no-visited-state">
                             <th:block th:text="#{service.change}"></th:block>
-                            <span class="govuk-visually-hidden" th:text="| #{${'claimSummary.rows.' + row.key}}|"></span>
+                            <span class="govuk-visually-hidden" th:text="| #{${'claimField.' + row.key}}|"></span>
                         </a>
                     </td>
                 </tr>
@@ -174,7 +174,7 @@
                 <tr class="govuk-table__row" th:each="row : ${viewModel.assessedTotals}">
 
                     <td class="govuk-table__cell govuk-!-font-weight-bold"
-                        th:text="#{${'claimSummary.rows.' + row.key}}">
+                        th:text="#{${'claimField.' + row.key}}">
                     </td>
 
                     <td class="govuk-table__cell"
@@ -191,7 +191,7 @@
                            th:data-testid="${'totals-' + row.key}"
                            class="govuk-link govuk-link--no-visited-state">
                             <th:block th:text="#{service.add}"></th:block>
-                            <span class="govuk-visually-hidden" th:text="| #{${'claimSummary.rows.' + row.key}}|"></span>
+                            <span class="govuk-visually-hidden" th:text="| #{${'claimField.' + row.key}}|"></span>
                         </a>
 
                         <span th:if="${row.hasAssessedValue()}"
@@ -205,7 +205,7 @@
                                th:data-testid="${'totals-' + row.key}"
                                class="govuk-link govuk-link--no-visited-state">
                                 <th:block th:text="#{service.change}"></th:block>
-                                <span class="govuk-visually-hidden" th:text="| #{${'claimSummary.rows.' + row.key}}|"></span>
+                                <span class="govuk-visually-hidden" th:text="| #{${'claimField.' + row.key}}|"></span>
                             </a>
                         </th:block>
                     </td>
@@ -243,7 +243,7 @@
                 <tr class="govuk-table__row" th:each="row : ${viewModel.allowedTotals}">
 
                     <td class="govuk-table__cell govuk-!-font-weight-bold"
-                        th:text="#{${'claimSummary.rows.' + row.key}}">
+                        th:text="#{${'claimField.' + row.key}}">
                     </td>
 
                     <td class="govuk-table__cell"
@@ -261,7 +261,7 @@
                            th:data-testid="${'totals-' + row.key}"
                            class="govuk-link govuk-link--no-visited-state">
                             <th:block th:text="#{service.add}"></th:block>
-                            <span class="govuk-visually-hidden" th:text="| #{${'claimSummary.rows.' + row.key}}|"></span>
+                            <span class="govuk-visually-hidden" th:text="| #{${'claimField.' + row.key}}|"></span>
                         </a>
 
                         <span th:unless="${row.isAssessableAndUnassessed()}"
@@ -275,7 +275,7 @@
                                th:data-testid="${'totals-' + row.key}"
                                class="govuk-link govuk-link--no-visited-state">
                                 <th:block th:text="#{service.change}"></th:block>
-                                <span class="govuk-visually-hidden" th:text="| #{${'claimSummary.rows.' + row.key}}|"></span>
+                                <span class="govuk-visually-hidden" th:text="| #{${'claimField.' + row.key}}|"></span>
                             </a>
                         </th:block>
                     </td>

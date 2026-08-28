@@ -31,7 +31,7 @@
                         <div class="govuk-summary-list__row"
                              th:each="entry : ${claim.costFields}"
                              th:with="field=${entry.key}, row=${entry.value}">
-                            <dt class="govuk-summary-list__key" th:text="#{${'claimCosts.rows.' + field.name()}}"></dt>
+                            <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + field.name()}}"></dt>
                             <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(row.submitted).resolve(#messages)}"></dd>
                             <dd class="govuk-summary-list__value"
                                 th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>

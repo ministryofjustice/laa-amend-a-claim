@@ -84,14 +84,14 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         String.format("/submissions/%s/claims/%s/disbursements", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(3),
-        "Disbursement VAT",
+        "Disbursements VAT",
         "£100.00",
         "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements-vat", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(4),
-        "Detention travel and waiting costs",
+        "Detention, travel and waiting (DTW) costs",
         "£100.00",
         "£200.00",
         "£300.00",
@@ -99,7 +99,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
             "/submissions/%s/claims/%s/detention-travel-and-waiting-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(5),
-        "JR and form filling",
+        "Judicial review or form filling",
         "£100.00",
         "£200.00",
         "£300.00",
@@ -112,11 +112,19 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         "£300.00",
         String.format("/submissions/%s/claims/%s/counsel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(7), "Oral CMRH", "100", "£200.00", "£300.00");
+        claimCostsTable.get(7),
+        "Case management review hearing (CMRH)-oral",
+        "100",
+        "£200.00",
+        "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(8), "Telephone CMRH", "100", "£200.00", "£300.00");
+        claimCostsTable.get(8),
+        "Case management review hearing (CMRH)-telephone",
+        "100",
+        "£200.00",
+        "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(9), "Home office interview", "100", "£200.00", "£300.00");
+        claimCostsTable.get(9), "Home Office interview", "100", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(10), "Substantive hearing", "Yes", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
@@ -197,7 +205,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         String.format("/submissions/%s/claims/%s/disbursements", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(3),
-        "Disbursement VAT",
+        "Disbursements VAT",
         "£100.00",
         "£200.00",
         "£300.00",
@@ -316,7 +324,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         String.format("/submissions/%s/claims/%s/disbursements", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(3),
-        "Disbursement VAT",
+        "Disbursements VAT",
         "£100.00",
         "£200.00",
         "£300.00",
@@ -431,14 +439,14 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         String.format("/submissions/%s/claims/%s/disbursements", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(3),
-        "Disbursement VAT",
+        "Disbursements VAT",
         "£100.00",
         "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements-vat", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(4),
-        "Detention travel and waiting costs",
+        "Detention, travel and waiting (DTW) costs",
         "£100.00",
         "£200.00",
         "£300.00",
@@ -446,7 +454,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
             "/submissions/%s/claims/%s/detention-travel-and-waiting-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(5),
-        "JR and form filling",
+        "Judicial review or form filling",
         "£100.00",
         "£200.00",
         "£300.00",
@@ -459,11 +467,19 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         "£300.00",
         String.format("/submissions/%s/claims/%s/counsel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(7), "Oral CMRH", "100", "£200.00", "£300.00");
+        claimCostsTable.get(7),
+        "Case management review hearing (CMRH)-oral",
+        "100",
+        "£200.00",
+        "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(8), "Telephone CMRH", "100", "£200.00", "£300.00");
+        claimCostsTable.get(8),
+        "Case management review hearing (CMRH)-telephone",
+        "100",
+        "£200.00",
+        "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(9), "Home office interview", "100", "£200.00", "£300.00");
+        claimCostsTable.get(9), "Home Office interview", "100", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(10), "Substantive hearing", "Yes", "£200.00", "£300.00");
     assertTableRowContainsValuesWithNoChangeLink(
@@ -605,14 +621,14 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         String.format("/submissions/%s/claims/%s/disbursements", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(3),
-        "Disbursement VAT",
+        "Disbursements VAT",
         "£100.00",
         "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements-vat", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(4),
-        "Detention travel and waiting costs",
+        "Detention, travel and waiting (DTW) costs",
         "£100.00",
         "£200.00",
         "£300.00",
@@ -620,7 +636,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
             "/submissions/%s/claims/%s/detention-travel-and-waiting-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(5),
-        "JR and form filling",
+        "Judicial review or form filling",
         "£100.00",
         "£200.00",
         "£300.00",
@@ -633,11 +649,19 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         "£300.00",
         String.format("/submissions/%s/claims/%s/counsel-costs", submissionId, claimId));
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(7), "Oral CMRH", "100", "Not applicable", "Not applicable");
+        claimCostsTable.get(7),
+        "Case management review hearing (CMRH)-oral",
+        "100",
+        "Not applicable",
+        "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(8), "Telephone CMRH", "100", "Not applicable", "Not applicable");
+        claimCostsTable.get(8),
+        "Case management review hearing (CMRH)-telephone",
+        "100",
+        "Not applicable",
+        "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
-        claimCostsTable.get(9), "Home office interview", "100", "Not applicable", "Not applicable");
+        claimCostsTable.get(9), "Home Office interview", "100", "Not applicable", "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
         claimCostsTable.get(10), "Substantive hearing", "Yes", "Not applicable", "Not applicable");
     assertTableRowContainsValuesWithNoChangeLink(
@@ -747,14 +771,14 @@ class ReviewAndAmendViewTest extends ViewTestBase {
         String.format("/submissions/%s/claims/%s/disbursements", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(3),
-        "Disbursement VAT",
+        "Disbursements VAT",
         "£100.00",
         "£200.00",
         "£300.00",
         String.format("/submissions/%s/claims/%s/disbursements-vat", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(4),
-        "Detention travel and waiting costs",
+        "Detention, travel and waiting (DTW) costs",
         "£100.00",
         "£200.00",
         "£300.00",
@@ -762,7 +786,7 @@ class ReviewAndAmendViewTest extends ViewTestBase {
             "/submissions/%s/claims/%s/detention-travel-and-waiting-costs", submissionId, claimId));
     assertTableRowContainsValuesWithChangeLink(
         claimCostsTable.get(5),
-        "JR and form filling",
+        "Judicial review or form filling",
         "£100.00",
         "£200.00",
         "£300.00",

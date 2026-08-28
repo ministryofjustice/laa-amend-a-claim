@@ -152,7 +152,7 @@ public class AssessCostsValidationTest extends BaseTest {
   }
 
   @Test
-  @DisplayName("Crime: Disbursement VAT - letters cause number validation error")
+  @DisplayName("Crime: Disbursements VAT - letters cause number validation error")
   void crimeDisbursementVatLettersShowsError() {
     navigateToReviewAndAmend(CRIME_OFFICE_CODE, CRIME_MONTH, CRIME_YEAR, CRIME_UFN);
 
@@ -197,7 +197,8 @@ public class AssessCostsValidationTest extends BaseTest {
   }
 
   @Test
-  @DisplayName("Civil: Detention travel and waiting costs - letters cause number validation error")
+  @DisplayName(
+      "Civil: Detention, travel and waiting (DTW) costs - letters cause number validation error")
   void civilDetentionTravelWaitingLettersShowsError() {
     navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 
@@ -213,7 +214,7 @@ public class AssessCostsValidationTest extends BaseTest {
   }
 
   @Test
-  @DisplayName("Civil: JR and form filling - letters cause number validation error")
+  @DisplayName("Civil: judicial review or form filling - letters cause number validation error")
   void civilJrFormFillingLettersShowsError() {
     navigateToReviewAndAmend(CIVIL_OFFICE_CODE, CIVIL_MONTH, CIVIL_YEAR, CIVIL_UFN);
 

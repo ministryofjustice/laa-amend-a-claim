@@ -103,7 +103,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
         summaryList1.get(2), "Unique client number (UCN)", "Not applicable");
     assertSummaryListRowContainsValues(
         summaryList1.get(3), "Provider name", "Currently not available");
-    assertSummaryListRowContainsValues(summaryList1.get(4), "Office Account Number", "0P322F");
+    assertSummaryListRowContainsValues(summaryList1.get(4), "Office account number", "0P322F");
     assertSummaryListRowContainsValues(
         summaryList1.get(5), "Date submitted", "15 June 2020 at 10:30am");
     assertSummaryListRowContainsValues(summaryList1.get(6), "Area of law", "Legal help");
@@ -113,7 +113,8 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(summaryList1.get(10), "Matter type 1", "IMLB");
     assertSummaryListRowContainsValues(summaryList1.get(11), "Matter type 2", "AHQS");
     assertSummaryListRowContainsValues(summaryList1.get(12), "Case start date", "01 January 2020");
-    assertSummaryListRowContainsValues(summaryList1.get(13), "Case end date", "31 December 2020");
+    assertSummaryListRowContainsValues(
+        summaryList1.get(13), "Case concluded date", "31 December 2020");
     assertSummaryListRowContainsValues(summaryList1.get(14), "Escape case", "Yes");
     assertSummaryListRowContainsValues(summaryList1.get(15), "VAT requested", "Not applicable");
 
@@ -127,17 +128,19 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(
         summaryList2.get(3), "Net disbursements", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(4), "Disbursement VAT", "£100.00", "£200.00");
+        summaryList2.get(4), "Disbursements VAT", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(5), "Detention travel and waiting costs", "£100.00", "£200.00");
+        summaryList2.get(5), "Detention, travel and waiting (DTW) costs", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(6), "JR and form filling", "£100.00", "£200.00");
+        summaryList2.get(6), "Judicial review or form filling", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(7), "Net cost of counsel", "£100.00", "£200.00");
-    assertSummaryListRowContainsValues(summaryList2.get(8), "Oral CMRH", "100", "£200.00");
-    assertSummaryListRowContainsValues(summaryList2.get(9), "Telephone CMRH", "100", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(10), "Home office interview", "100", "£200.00");
+        summaryList2.get(8), "Case management review hearing (CMRH)-oral", "100", "£200.00");
+    assertSummaryListRowContainsValues(
+        summaryList2.get(9), "Case management review hearing (CMRH)-telephone", "100", "£200.00");
+    assertSummaryListRowContainsValues(
+        summaryList2.get(10), "Home Office interview", "100", "£200.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(11), "Substantive hearing", "Yes", "£200.00");
     assertSummaryListRowContainsValues(
@@ -213,19 +216,31 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(
         summaryList2.get(3), "Net disbursements", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(4), "Disbursement VAT", "£100.00", "£200.00", "£300.00");
+        summaryList2.get(4), "Disbursements VAT", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(5), "Detention travel and waiting costs", "£100.00", "£200.00", "£300.00");
+        summaryList2.get(5),
+        "Detention, travel and waiting (DTW) costs",
+        "£100.00",
+        "£200.00",
+        "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(6), "JR and form filling", "£100.00", "£200.00", "£300.00");
+        summaryList2.get(6), "Judicial review or form filling", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(7), "Net cost of counsel", "£100.00", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(8), "Oral CMRH", "100", "£200.00", "£300.00");
+        summaryList2.get(8),
+        "Case management review hearing (CMRH)-oral",
+        "100",
+        "£200.00",
+        "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(9), "Telephone CMRH", "100", "£200.00", "£300.00");
+        summaryList2.get(9),
+        "Case management review hearing (CMRH)-telephone",
+        "100",
+        "£200.00",
+        "£300.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(10), "Home office interview", "100", "£200.00", "£300.00");
+        summaryList2.get(10), "Home Office interview", "100", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(11), "Substantive hearing", "Yes", "£200.00", "£300.00");
     assertSummaryListRowContainsValues(
@@ -260,7 +275,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
         summaryList1.get(1), "Unique file number (UFN)", "Not applicable");
     assertSummaryListRowContainsValues(
         summaryList1.get(2), "Provider name", "Currently not available");
-    assertSummaryListRowContainsValues(summaryList1.get(3), "Office Account Number", "0P322F");
+    assertSummaryListRowContainsValues(summaryList1.get(3), "Office account number", "0P322F");
     assertSummaryListRowContainsValues(
         summaryList1.get(4), "Date submitted", "15 June 2020 at 10:30am");
     assertSummaryListRowContainsValues(summaryList1.get(5), "Area of law", "Crime lower");
@@ -268,11 +283,12 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(summaryList1.get(7), "Fee code", "FC");
     assertSummaryListRowContainsValues(summaryList1.get(8), "Fee code description", "FCD");
     assertSummaryListRowContainsValues(
-        summaryList1.get(9), "Police Station / Court / Prison ID", "POLICE_STATION_COURT_PRISON");
+        summaryList1.get(9), "Police station/Court ID/Prison ID", "POLICE_STATION_COURT_PRISON");
     assertSummaryListRowContainsValues(summaryList1.get(10), "Scheme ID", "SCHEME");
     assertSummaryListRowContainsValues(summaryList1.get(11), "Matter type", "IMLB");
     assertSummaryListRowContainsValues(summaryList1.get(12), "Case start date", "01 January 2020");
-    assertSummaryListRowContainsValues(summaryList1.get(13), "Case end date", "31 December 2020");
+    assertSummaryListRowContainsValues(
+        summaryList1.get(13), "Case concluded date", "31 December 2020");
     assertSummaryListRowContainsValues(summaryList1.get(14), "Escape case", "Yes");
     assertSummaryListRowContainsValues(summaryList1.get(15), "VAT requested", "Not applicable");
 
@@ -286,7 +302,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(
         summaryList2.get(3), "Net disbursements", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
-        summaryList2.get(4), "Disbursement VAT", "£100.00", "£200.00");
+        summaryList2.get(4), "Disbursements VAT", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
         summaryList2.get(5), "Net travel costs", "£100.00", "£200.00");
     assertSummaryListRowContainsValues(
@@ -322,7 +338,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
         summaryList1.get(2), "Unique client number (UCN)", "Not applicable");
     assertSummaryListRowContainsValues(
         summaryList1.get(3), "Provider name", "Currently not available");
-    assertSummaryListRowContainsValues(summaryList1.get(4), "Office Account Number", "0P322F");
+    assertSummaryListRowContainsValues(summaryList1.get(4), "Office account number", "0P322F");
     assertSummaryListRowContainsValues(
         summaryList1.get(5), "Date submitted", "15 June 2020 at 10:30am");
     assertSummaryListRowContainsValues(summaryList1.get(6), "Area of law", "Mediation");
@@ -332,7 +348,8 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(summaryList1.get(10), "Matter type 1", "IMLB");
     assertSummaryListRowContainsValues(summaryList1.get(11), "Matter type 2", "AHQS");
     assertSummaryListRowContainsValues(summaryList1.get(12), "Case start date", "01 January 2020");
-    assertSummaryListRowContainsValues(summaryList1.get(13), "Case end date", "31 December 2020");
+    assertSummaryListRowContainsValues(
+        summaryList1.get(13), "Case concluded date", "31 December 2020");
     assertSummaryListRowContainsValues(summaryList1.get(14), "Escape case", "Yes");
     assertSummaryListRowContainsValues(summaryList1.get(15), "VAT requested", "Not applicable");
 
@@ -415,21 +432,24 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type 1"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type 2"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case start date"));
-    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case end date"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Summary", "Case concluded date"));
 
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net profit costs"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net disbursements"));
-    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Disbursement VAT"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Disbursements VAT"));
     assertSummaryListRowHasAmendedTag(
-        getSummaryListRowInCard(doc, "Values", "Detention travel and waiting costs"));
+        getSummaryListRowInCard(doc, "Values", "Detention, travel and waiting (DTW) costs"));
     assertSummaryListRowHasAmendedTag(
-        getSummaryListRowInCard(doc, "Values", "JR and form filling"));
+        getSummaryListRowInCard(doc, "Values", "Judicial review or form filling"));
     assertSummaryListRowHasAmendedTag(
         getSummaryListRowInCard(doc, "Values", "Net cost of counsel"));
-    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Oral CMRH"));
-    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Telephone CMRH"));
     assertSummaryListRowHasAmendedTag(
-        getSummaryListRowInCard(doc, "Values", "Home office interview"));
+        getSummaryListRowInCard(doc, "Values", "Case management review hearing (CMRH)-oral"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Values", "Case management review hearing (CMRH)-telephone"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Values", "Home Office interview"));
     assertSummaryListRowHasAmendedTag(
         getSummaryListRowInCard(doc, "Values", "Substantive hearing"));
     assertSummaryListRowHasAmendedTag(
@@ -471,15 +491,16 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
         getSummaryListRowInCard(doc, "Summary", "Unique file number (UFN)"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Fee code"));
     assertSummaryListRowHasAmendedTag(
-        getSummaryListRowInCard(doc, "Summary", "Police Station / Court / Prison ID"));
+        getSummaryListRowInCard(doc, "Summary", "Police station/Court ID/Prison ID"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Scheme ID"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case start date"));
-    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case end date"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Summary", "Case concluded date"));
 
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net profit costs"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net disbursements"));
-    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Disbursement VAT"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Disbursements VAT"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net travel costs"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net waiting costs"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "VAT indicator"));
@@ -520,11 +541,12 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type 1"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type 2"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case start date"));
-    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case end date"));
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(doc, "Summary", "Case concluded date"));
 
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net profit costs"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net disbursements"));
-    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Disbursement VAT"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Disbursements VAT"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "VAT indicator"));
   }
 

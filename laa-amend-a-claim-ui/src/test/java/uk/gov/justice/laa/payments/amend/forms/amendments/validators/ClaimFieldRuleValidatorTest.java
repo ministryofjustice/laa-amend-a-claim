@@ -1383,7 +1383,7 @@ class ClaimFieldRuleValidatorTest {
     assertThat(errors.hasErrors()).isTrue();
     var fieldError = errors.getFieldError("inputs[HOME_OFFICE]");
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Home Office Interview");
+    assertThat(fieldError.getArguments()[0]).isEqualTo("Home Office interview");
     assertThat(fieldError.getArguments()[1]).isEqualTo("0");
     assertThat(fieldError.getArguments()[2]).isEqualTo("9");
   }

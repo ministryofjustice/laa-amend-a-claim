@@ -87,7 +87,7 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
   }
 
   public void clickChangeDisbursementsVat() {
-    clickChangeInRow("Disbursement VAT", claimCostsTable);
+    clickChangeInRow("Disbursements VAT", claimCostsTable);
   }
 
   public void clickChangeTravelCosts() {
@@ -103,11 +103,11 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
   }
 
   public void clickChangeDetentionTravelAndWaitingCosts() {
-    clickChangeInRow("Detention travel and waiting costs", claimCostsTable);
+    clickChangeInRow("Detention, travel and waiting (DTW) costs", claimCostsTable);
   }
 
   public void clickChangeJrAndFormFilling() {
-    clickChangeInRow("JR and form filling", claimCostsTable);
+    clickChangeInRow("Judicial review or form filling", claimCostsTable);
   }
 
   public void clickChangeCounselCosts() {
@@ -143,7 +143,7 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
         "Fixed fee",
         "Net profit costs",
         "Net disbursements",
-        "Disbursement VAT",
+        "Disbursements VAT",
         "Net travel costs",
         "Net waiting costs");
     assertClaimCostsNotHasItems("Total");
@@ -162,9 +162,9 @@ public class ReviewAndAmendPage extends LaaErrorSummaryPage {
         "Fixed fee",
         "Net profit costs",
         "Net disbursements",
-        "Disbursement VAT",
-        "Detention travel and waiting costs",
-        "JR and form filling",
+        "Disbursements VAT",
+        "Detention, travel and waiting (DTW) costs",
+        "Judicial review or form filling",
         "Net cost of counsel");
     assertClaimCostsNotHasItems("Total");
 
