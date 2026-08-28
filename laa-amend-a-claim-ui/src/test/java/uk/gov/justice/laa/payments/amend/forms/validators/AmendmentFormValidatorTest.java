@@ -89,15 +89,15 @@ class AmendmentFormValidatorTest {
   }
 
   @Test
-  void throwsForTamperedBooleanValueDuringFieldMapping() {
+  void reportsBooleanValidationErrorForTamperedBooleanValue() {
     var validator =
         new AmendmentFormValidator(
             MockClaimsFunctions.createMockCrimeClaim(), defaultFieldValidators(), List.of());
 
-    assertThatThrownBy(() -> validate(validator, Map.of("IS_DUTY_SOLICITOR", "notABoolean")))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessageContaining("Invalid Boolean value")
-        .hasMessageContaining("IS_DUTY_SOLICITOR");
+    var errors = validate(validator, Map.of("IS_DUTY_SOLICITOR", "notABoolean"));
+
+    assertThat(errors.getFieldError("inputs[IS_DUTY_SOLICITOR]").getCode())
+        .isEqualTo("amendmentForm.boolean.invalid");
   }
 
   @Test
@@ -152,15 +152,12 @@ class AmendmentFormValidatorTest {
     assertThat(invalidForCrime.getFieldError("inputs[STANDARD_FEE_CATEGORY]").getCode())
         .isEqualTo("amendmentForm.enum.invalid");
 
-    assertThatThrownBy(
-            () ->
-                validate(
-                    new AmendmentFormValidator(
-                        MockClaimsFunctions.createMockCivilClaim(),
-                        defaultFieldValidators(),
-                        List.of()),
-                    Map.of("STANDARD_FEE_CATEGORY", "1A")))
-        .isInstanceOf(IllegalArgumentException.class);
+    var civilClaimErrors =
+        validate(
+            new AmendmentFormValidator(
+                MockClaimsFunctions.createMockCivilClaim(), defaultFieldValidators(), List.of()),
+            Map.of("STANDARD_FEE_CATEGORY", "1A"));
+    assertThat(civilClaimErrors.hasErrors()).isFalse();
   }
 
   @Test

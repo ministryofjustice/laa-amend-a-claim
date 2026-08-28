@@ -122,6 +122,17 @@ class AmendmentFormTest {
   }
 
   @Test
+  void getFieldValuesThrowsWhenTypedValueIsInvalid() {
+    var form = new AmendmentForm();
+    form.setInputs(new HashMap<>(Map.of("IS_ELIGIBLE_CLIENT", "not-a-boolean")));
+
+    assertThatThrownBy(() -> form.getFieldValues(CivilClaimDetails.class))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Invalid Boolean value")
+        .hasMessageContaining("IS_ELIGIBLE_CLIENT");
+  }
+
+  @Test
   void getDateValueRecombinesSubInputs() {
     var form = new AmendmentForm();
     form.setInputs(

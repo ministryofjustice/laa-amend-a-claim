@@ -80,7 +80,9 @@ public class AmendCaseTypeController extends AbstractAmendController {
 
     model.addAttribute("currentFeeCode", currentFeeCode);
     model.addAttribute("feeCodes", availableFeeCodes);
-    model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
+    if (!model.containsAttribute("caseTypeForm")) {
+      model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
+    }
     return "pages/amendments/amend-fee-code";
   }
 
@@ -96,16 +98,19 @@ public class AmendCaseTypeController extends AbstractAmendController {
     requireEditable(ClaimDetailsViewField.FEE_CODE, claim);
 
     var amendmentForms = getAmendmentForms(session, claimId);
-
-    saveCaseTypeForm(session, claimId, amendmentForms, caseTypeForm, claim);
+    var retainedForm = retainCaseTypeFormInputs(amendmentForms, caseTypeForm, claim);
 
     if (bindingResult.hasErrors()) {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "caseTypeFormErrors",
+          "caseTypeForm",
+          retainedForm,
           "/submissions/%s/claims/%s/amendments/amend-fee-code".formatted(submissionId, claimId));
     }
+
+    amendmentForms.getCaseTypeForm().setCurrent(retainedForm);
+    saveAmendmentForms(session, claimId, amendmentForms);
 
     if (claim.getAreaOfLaw() == AreaOfLaw.CRIME_LOWER) {
       return "redirect:/submissions/%s/claims/%s/amendments/amend-stage-reached"
@@ -132,7 +137,9 @@ public class AmendCaseTypeController extends AbstractAmendController {
     var amendmentForms = getAmendmentForms(session, claimId);
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("stageReachedOptions", FieldOptions.CRIME_STAGE_REACHED);
-    model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
+    if (!model.containsAttribute("caseTypeForm")) {
+      model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
+    }
     return "pages/amendments/amend-stage-reached";
   }
 
@@ -152,17 +159,20 @@ public class AmendCaseTypeController extends AbstractAmendController {
     requireEditable(CrimeClaimDetailsViewField.STAGE_REACHED, claim);
 
     var amendmentForms = getAmendmentForms(session, claimId);
-
-    saveCaseTypeForm(session, claimId, amendmentForms, caseTypeForm, claim);
+    var retainedForm = retainCaseTypeFormInputs(amendmentForms, caseTypeForm, claim);
 
     if (bindingResult.hasErrors()) {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "caseTypeFormErrors",
+          "caseTypeForm",
+          retainedForm,
           "/submissions/%s/claims/%s/amendments/amend-stage-reached"
               .formatted(submissionId, claimId));
     }
+
+    amendmentForms.getCaseTypeForm().setCurrent(retainedForm);
+    saveAmendmentForms(session, claimId, amendmentForms);
 
     return "redirect:/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
   }
@@ -178,7 +188,9 @@ public class AmendCaseTypeController extends AbstractAmendController {
     var amendmentForms = getAmendmentForms(session, claimId);
 
     model.addAttribute("forms", amendmentForms);
-    model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
+    if (!model.containsAttribute("caseTypeForm")) {
+      model.addAttribute("caseTypeForm", amendmentForms.getCaseTypeForm().getCurrent());
+    }
 
     return "pages/amendments/amend-matter-type";
   }
@@ -193,32 +205,30 @@ public class AmendCaseTypeController extends AbstractAmendController {
       @PathVariable UUID claimId) {
     var claim = getValidClaim(session, submissionId, claimId);
     var amendmentForms = getAmendmentForms(session, claimId);
-
-    saveCaseTypeForm(session, claimId, amendmentForms, caseTypeForm, claim);
+    var retainedForm = retainCaseTypeFormInputs(amendmentForms, caseTypeForm, claim);
 
     if (bindingResult.hasErrors()) {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "caseTypeFormErrors",
+          "caseTypeForm",
+          retainedForm,
           "/submissions/%s/claims/%s/amendments/amend-matter-type"
               .formatted(submissionId, claimId));
     }
 
+    amendmentForms.getCaseTypeForm().setCurrent(retainedForm);
+    saveAmendmentForms(session, claimId, amendmentForms);
+
     return "redirect:/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
   }
 
-  private static void saveCaseTypeForm(
-      HttpSession session,
-      UUID claimId,
-      AmendmentForms amendmentForms,
-      AmendmentForm caseTypeForm,
-      ClaimDetails claim) {
+  private static AmendmentForm retainCaseTypeFormInputs(
+      AmendmentForms amendmentForms, AmendmentForm caseTypeForm, ClaimDetails claim) {
     var caseType = amendmentForms.getCaseTypeForm();
     var lockedFields =
         lockedFields(ClaimCaseViewFactory.create(claim).caseTypeRows().keySet(), claim);
 
-    caseType.setCurrent(retainLockedInputs(caseTypeForm, caseType.getOriginal(), lockedFields));
-    saveAmendmentForms(session, claimId, amendmentForms);
+    return retainLockedInputs(caseTypeForm, caseType.getOriginal(), lockedFields);
   }
 }

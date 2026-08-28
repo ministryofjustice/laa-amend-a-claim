@@ -34,8 +34,7 @@ public class AmendmentFormValidator implements Validator {
   public void validate(Object target, Errors errors) {
     var form = (AmendmentForm) target;
 
-    for (var entry : form.getFieldValues(claimDetailsType).entrySet()) {
-      var field = entry.getKey();
+    for (var field : form.getFields(claimDetailsType)) {
 
       var matched = false;
       for (var fieldValidator : fieldValidators) {

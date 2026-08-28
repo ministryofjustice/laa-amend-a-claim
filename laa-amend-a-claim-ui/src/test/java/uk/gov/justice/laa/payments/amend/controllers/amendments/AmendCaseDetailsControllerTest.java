@@ -7,6 +7,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -138,21 +139,29 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), updatedForms);
 
     var tooLong = "a".repeat(51);
+    var previousValue =
+        updatedForms.getCaseDetailsForm().getCurrent().getInputs().get("UNIQUE_FILE_NUMBER");
     var request =
         post(buildAmendCaseDetailsPath())
             .param(INPUTS.formatted("UNIQUE_FILE_NUMBER"), tooLong)
             .session(session)
             .with(csrf());
 
-    mockMvc
-        .perform(request)
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildAmendCaseDetailsPath()));
+    var postResult =
+        mockMvc
+            .perform(request)
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(buildAmendCaseDetailsPath()))
+            .andExpect(flash().attributeExists("formErrors", "caseDetailsForm"))
+            .andReturn();
+
+    var flashedForm = (AmendmentForm) postResult.getFlashMap().get("caseDetailsForm");
+    assertThat(flashedForm.getInputs().get("UNIQUE_FILE_NUMBER")).isEqualTo(tooLong);
 
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCaseDetailsForm().getCurrent().getInputs().get("UNIQUE_FILE_NUMBER"))
-        .isEqualTo(tooLong);
+        .isEqualTo(previousValue);
   }
 
   @Test

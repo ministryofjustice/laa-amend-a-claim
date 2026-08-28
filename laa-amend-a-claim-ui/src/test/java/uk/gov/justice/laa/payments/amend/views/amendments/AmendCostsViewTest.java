@@ -4,20 +4,22 @@ import static uk.gov.justice.laa.payments.amend.constants.AmendClaimConstants.La
 import static uk.gov.justice.laa.payments.amend.utils.SessionUtils.AMENDMENTS_KEY;
 
 import java.util.List;
+import java.util.Map;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import uk.gov.justice.laa.payments.amend.controllers.amendments.CostsController;
+import uk.gov.justice.laa.payments.amend.controllers.amendments.AmendCostsController;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
+import uk.gov.justice.laa.payments.amend.forms.errors.AmendmentFormError;
 import uk.gov.justice.laa.payments.amend.models.BoltOnClaimField;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.payments.amend.viewmodels.claimcosts.ClaimCostsViewFactory;
 
-@WebMvcTest(CostsController.class)
+@WebMvcTest(AmendCostsController.class)
 class AmendCostsViewTest extends AmendmentsBaseTest {
 
   AmendCostsViewTest() {
@@ -90,6 +92,65 @@ class AmendCostsViewTest extends AmendmentsBaseTest {
         costs.get(11).get(2).select("select#SUBSTANTIVE_HEARING").isEmpty(),
         "Not-provided bolt-on should still be editable");
     assertBooleanSelectRow(costs.get(15), "London rate", "Yes", "IS_LONDON_RATE", true);
+  }
+
+  @Test
+  void testShowsErrorSummaryWhenCostFormErrorsPresent() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+
+    var forms = createCostsForms(claim);
+    forms.getCostsForm().getCurrent().getInputs().put("PROFIT_COST", "not-a-number");
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var errors =
+        List.of(
+            new AmendmentFormError(
+                "PROFIT_COST",
+                "amendmentForm.bigDecimal.invalid",
+                new Object[] {"Net profit costs"}));
+
+    var doc = renderDocument(Map.of("formErrors", errors));
+
+    Assertions.assertFalse(
+        doc.select(".govuk-error-summary").isEmpty(), "Error summary should be present");
+    Assertions.assertTrue(
+        doc.select(".govuk-error-summary")
+            .text()
+            .contains("Net profit costs must be entered as a valid amount"),
+        "Error summary should contain the field error message");
+  }
+
+  @Test
+  void testShowsInlineErrorOnBigDecimalInputWhenErrorPresent() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    this.claim = claim;
+    claim.setSubmissionId(submissionId);
+    claim.setClaimId(claimId);
+
+    var forms = createCostsForms(claim);
+    forms.getCostsForm().getCurrent().getInputs().put("PROFIT_COST", "not-a-number");
+    session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
+
+    var errors =
+        List.of(
+            new AmendmentFormError(
+                "PROFIT_COST",
+                "amendmentForm.bigDecimal.invalid",
+                new Object[] {"Net profit costs"}));
+
+    var doc = renderDocument(Map.of("formErrors", errors));
+
+    var costs = getSummaryListInCard(doc, "List of costs");
+    List<Element> profitCostRow = costs.get(2);
+    Assertions.assertFalse(
+        profitCostRow.get(2).select(".govuk-error-message").isEmpty(),
+        "Inline error message should be shown for PROFIT_COST");
+    Assertions.assertFalse(
+        profitCostRow.get(2).select("input.govuk-input--error").isEmpty(),
+        "Input should have error class when invalid");
   }
 
   private static AmendmentForms createCostsForms(ClaimDetails claimDetails) {

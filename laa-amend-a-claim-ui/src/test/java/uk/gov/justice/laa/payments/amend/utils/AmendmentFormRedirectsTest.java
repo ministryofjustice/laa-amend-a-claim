@@ -15,7 +15,7 @@ import uk.gov.justice.laa.payments.amend.forms.errors.AmendmentFormError;
 class AmendmentFormRedirectsTest {
 
   @Test
-  void flashesPlainErrorListUnderGivenAttributeNameNotTheRawBindingResult() {
+  void flashesPlainErrorListUnderFormErrorsNotTheRawBindingResult() {
     var redirectAttributes = mock(RedirectAttributes.class);
     var bindingResult = mock(BindingResult.class);
     when(bindingResult.getFieldErrors())
@@ -32,24 +32,36 @@ class AmendmentFormRedirectsTest {
 
     var result =
         AmendmentFormRedirects.redirectWithErrors(
-            redirectAttributes, bindingResult, "caseDetailsFormErrors", "/some/redirect/url");
+            redirectAttributes, bindingResult, "/some/redirect/url");
 
     verify(redirectAttributes)
         .addFlashAttribute(
-            "caseDetailsFormErrors",
-            List.of(new AmendmentFormError("FEE_CODE", "Value is required")));
+            "formErrors", List.of(new AmendmentFormError("FEE_CODE", "Value is required")));
     assertThat(result).isEqualTo("redirect:/some/redirect/url");
   }
 
   @Test
-  void usesGivenAttributeNameForFlashKey() {
+  void flashesUnderFormErrorsKey() {
     var redirectAttributes = mock(RedirectAttributes.class);
     var bindingResult = mock(BindingResult.class);
     when(bindingResult.getFieldErrors()).thenReturn(List.of());
 
-    AmendmentFormRedirects.redirectWithErrors(
-        redirectAttributes, bindingResult, "caseTypeFormErrors", "/other/url");
+    AmendmentFormRedirects.redirectWithErrors(redirectAttributes, bindingResult, "/other/url");
 
-    verify(redirectAttributes).addFlashAttribute("caseTypeFormErrors", List.of());
+    verify(redirectAttributes).addFlashAttribute("formErrors", List.of());
+  }
+
+  @Test
+  void flashesFormObjectWhenProvided() {
+    var redirectAttributes = mock(RedirectAttributes.class);
+    var bindingResult = mock(BindingResult.class);
+    var form = new Object();
+    when(bindingResult.getFieldErrors()).thenReturn(List.of());
+
+    AmendmentFormRedirects.redirectWithErrors(
+        redirectAttributes, bindingResult, "costsForm", form, "/other/url");
+
+    verify(redirectAttributes).addFlashAttribute("formErrors", List.of());
+    verify(redirectAttributes).addFlashAttribute("costsForm", form);
   }
 }

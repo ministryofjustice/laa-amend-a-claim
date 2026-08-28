@@ -35,13 +35,15 @@ import uk.gov.justice.laa.payments.amend.viewmodels.claimcase.ClaimCaseViewFacto
 @HasRoleClaimAmendmentsCaseworker
 public class AmendCaseDetailsController extends AbstractAmendController {
 
+  public static final String CASE_DETAILS_FORM = "caseDetailsForm";
+
   public AmendCaseDetailsController(
       List<GenericAmendmentFieldValidator> genericAmendmentFieldValidators,
       List<FieldSpecificAmendmentValidator> fieldSpecificAmendmentValidators) {
     super(genericAmendmentFieldValidators, fieldSpecificAmendmentValidators);
   }
 
-  @InitBinder("caseDetailsForm")
+  @InitBinder(CASE_DETAILS_FORM)
   public void initCaseDetailsFormBinder(
       WebDataBinder binder,
       HttpSession session,
@@ -61,7 +63,9 @@ public class AmendCaseDetailsController extends AbstractAmendController {
     var caseView = ClaimCaseViewFactory.create(claim);
 
     model.addAttribute("caseView", caseView);
-    model.addAttribute("caseDetailsForm", amendmentForms.getCaseDetailsForm().getCurrent());
+    if (!model.containsAttribute(CASE_DETAILS_FORM)) {
+      model.addAttribute(CASE_DETAILS_FORM, amendmentForms.getCaseDetailsForm().getCurrent());
+    }
     model.addAttribute("forms", amendmentForms);
     model.addAttribute("claimIsAssessed", AmendmentsHeaderView.isAssessed(claim));
     return "pages/amendments/amend-case-details";
@@ -70,7 +74,7 @@ public class AmendCaseDetailsController extends AbstractAmendController {
   @PostMapping
   public String postAmendCaseDetails(
       HttpSession session,
-      @Valid @ModelAttribute("caseDetailsForm") AmendmentForm caseDetailsForm,
+      @Valid @ModelAttribute(CASE_DETAILS_FORM) AmendmentForm caseDetailsForm,
       BindingResult bindingResult,
       RedirectAttributes redirectAttributes,
       @PathVariable UUID submissionId,
@@ -79,21 +83,24 @@ public class AmendCaseDetailsController extends AbstractAmendController {
     var amendmentForms = getAmendmentForms(session, claimId);
     var caseDetails = amendmentForms.getCaseDetailsForm();
 
-    caseDetails.setCurrent(
+    var retainedForm =
         retainLockedInputs(
             caseDetailsForm,
             caseDetails.getOriginal(),
-            lockedFields(ClaimCaseViewFactory.create(claim).caseDetailsRows().keySet(), claim)));
-    saveAmendmentForms(session, claimId, amendmentForms);
+            lockedFields(ClaimCaseViewFactory.create(claim).caseDetailsRows().keySet(), claim));
 
     if (bindingResult.hasErrors()) {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "caseDetailsFormErrors",
+          CASE_DETAILS_FORM,
+          retainedForm,
           "/submissions/%s/claims/%s/amendments/amend-case-details"
               .formatted(submissionId, claimId));
     }
+
+    caseDetails.setCurrent(retainedForm);
+    saveAmendmentForms(session, claimId, amendmentForms);
 
     return "redirect:/submissions/%s/claims/%s/amendments/case".formatted(submissionId, claimId);
   }

@@ -6,17 +6,17 @@ import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import uk.gov.justice.laa.payments.amend.controllers.amendments.CostsController;
+import uk.gov.justice.laa.payments.amend.controllers.amendments.AmendCostsTabController;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.payments.amend.viewmodels.claimcosts.ClaimCostsViewFactory;
 
-@WebMvcTest(CostsController.class)
-class ViewCostsViewTest extends AmendmentsBaseTest {
+@WebMvcTest(AmendCostsTabController.class)
+class AmendCostsTabViewTest extends AmendmentsBaseTest {
 
-  ViewCostsViewTest() {
+  AmendCostsTabViewTest() {
     this.mapping = costsUrl;
   }
 

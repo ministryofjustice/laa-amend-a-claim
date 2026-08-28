@@ -110,7 +110,7 @@ class AmendmentRequestedReasonControllerTest extends BaseControllerTest {
                     .param("requestedReason", REQUESTED_REASON_FAIL))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl(buildRequestedReasonPath()))
-            .andExpect(flash().attributeExists("requestedReasonFormErrors"))
+            .andExpect(flash().attributeExists("formErrors", "requestedReasonForm"))
             .andReturn();
 
     mockMvc
@@ -138,7 +138,7 @@ class AmendmentRequestedReasonControllerTest extends BaseControllerTest {
             .perform(post(buildRequestedReasonPath()).session(session).with(csrf()))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl(buildRequestedReasonPath()))
-            .andExpect(flash().attributeExists("requestedReasonFormErrors"))
+            .andExpect(flash().attributeExists("formErrors", "requestedReasonForm"))
             .andReturn();
 
     mockMvc

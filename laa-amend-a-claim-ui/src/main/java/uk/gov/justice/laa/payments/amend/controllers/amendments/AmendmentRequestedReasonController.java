@@ -62,7 +62,9 @@ public class AmendmentRequestedReasonController {
     }
     model.addAttribute("claimId", claimId);
     model.addAttribute("submissionId", submissionId);
-    model.addAttribute("requestedReasonForm", amendmentForms.getRequestedReasonForm());
+    if (!model.containsAttribute("requestedReasonForm")) {
+      model.addAttribute("requestedReasonForm", amendmentForms.getRequestedReasonForm());
+    }
     return "pages/amendments/amend-request-reason";
   }
 
@@ -83,7 +85,8 @@ public class AmendmentRequestedReasonController {
       return redirectWithErrors(
           redirectAttributes,
           bindingResult,
-          "requestedReasonFormErrors",
+          "requestedReasonForm",
+          form,
           "/submissions/%s/claims/%s/amendments/requested-reason".formatted(submissionId, claimId));
     }
 

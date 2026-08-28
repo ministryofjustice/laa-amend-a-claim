@@ -8,6 +8,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -296,6 +297,8 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
         .thenReturn(Map.of(FEE_CODE, FEE_CODE));
 
     var invalidStageReached = "NOT_A_VALID_STAGE";
+    var previousStageReached =
+        forms.getCaseTypeForm().getCurrent().getInputs().get("STAGE_REACHED");
     var request =
         post(buildAmendStageReachedPath())
             .param(INPUTS.formatted("FEE_CODE"), FEE_CODE)
@@ -303,15 +306,21 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .session(session)
             .with(csrf());
 
-    mockMvc
-        .perform(request)
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildAmendStageReachedPath()));
+    var postResult =
+        mockMvc
+            .perform(request)
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(buildAmendStageReachedPath()))
+            .andExpect(flash().attributeExists("formErrors", "caseTypeForm"))
+            .andReturn();
+
+    var flashedForm = (AmendmentForm) postResult.getFlashMap().get("caseTypeForm");
+    assertThat(flashedForm.getInputs().get("STAGE_REACHED")).isEqualTo(invalidStageReached);
 
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCaseTypeForm().getCurrent().getInputs().get("STAGE_REACHED"))
-        .isEqualTo(invalidStageReached);
+        .isEqualTo(previousStageReached);
   }
 
   @Test
@@ -383,21 +392,28 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var tooLong = "a".repeat(51);
+    var previousFeeCode = forms.getCaseTypeForm().getCurrent().getInputs().get("FEE_CODE");
     var request =
         post(buildAmendFeeCodePath())
             .param(INPUTS.formatted("FEE_CODE"), tooLong)
             .session(session)
             .with(csrf());
 
-    mockMvc
-        .perform(request)
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildAmendFeeCodePath()));
+    var postResult =
+        mockMvc
+            .perform(request)
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(buildAmendFeeCodePath()))
+            .andExpect(flash().attributeExists("formErrors", "caseTypeForm"))
+            .andReturn();
+
+    var flashedForm = (AmendmentForm) postResult.getFlashMap().get("caseTypeForm");
+    assertThat(flashedForm.getInputs().get("FEE_CODE")).isEqualTo(tooLong);
 
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCaseTypeForm().getCurrent().getInputs().get("FEE_CODE"))
-        .isEqualTo(tooLong);
+        .isEqualTo(previousFeeCode);
   }
 
   @Test
@@ -476,15 +492,21 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .session(session)
             .with(csrf());
 
-    mockMvc
-        .perform(request)
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildAmendFeeCodePath()));
+    var postResult =
+        mockMvc
+            .perform(request)
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(buildAmendFeeCodePath()))
+            .andExpect(flash().attributeExists("formErrors", "caseTypeForm"))
+            .andReturn();
+
+    var flashedForm = (AmendmentForm) postResult.getFlashMap().get("caseTypeForm");
+    assertThat(flashedForm.getInputs().get("FEE_CODE")).isEqualTo("NOT_A_VALID_CODE");
 
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCaseTypeForm().getCurrent().getInputs().get("FEE_CODE"))
-        .isEqualTo("NOT_A_VALID_CODE");
+        .isEqualTo(FEE_CODE);
   }
 
   @Test
@@ -516,15 +538,21 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .session(session)
             .with(csrf());
 
-    mockMvc
-        .perform(request)
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildAmendFeeCodePath()));
+    var postResult =
+        mockMvc
+            .perform(request)
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(buildAmendFeeCodePath()))
+            .andExpect(flash().attributeExists("formErrors", "caseTypeForm"))
+            .andReturn();
+
+    var flashedForm = (AmendmentForm) postResult.getFlashMap().get("caseTypeForm");
+    assertThat(flashedForm.getInputs().get("FEE_CODE")).isIn("", null);
 
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCaseTypeForm().getCurrent().getInputs().get("FEE_CODE"))
-        .isNullOrEmpty();
+        .isEqualTo(FEE_CODE);
   }
 
   @Test
@@ -642,6 +670,8 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
     session.setAttribute(AMENDMENTS_KEY.formatted(claimId), forms);
 
     var tooLong = "a".repeat(51);
+    var previousMatterType1 =
+        forms.getCaseTypeForm().getCurrent().getInputs().get("MATTER_TYPE_CODE_1");
     var request =
         post(buildAmendMatterTypeCodePath())
             .param(INPUTS.formatted("FEE_CODE"), FEE_CODE)
@@ -650,15 +680,21 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .session(session)
             .with(csrf());
 
-    mockMvc
-        .perform(request)
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildAmendMatterTypeCodePath()));
+    var postResult =
+        mockMvc
+            .perform(request)
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(buildAmendMatterTypeCodePath()))
+            .andExpect(flash().attributeExists("formErrors", "caseTypeForm"))
+            .andReturn();
+
+    var flashedForm = (AmendmentForm) postResult.getFlashMap().get("caseTypeForm");
+    assertThat(flashedForm.getInputs().get("MATTER_TYPE_CODE_1")).isEqualTo(tooLong);
 
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCaseTypeForm().getCurrent().getInputs().get("MATTER_TYPE_CODE_1"))
-        .isEqualTo(tooLong);
+        .isEqualTo(previousMatterType1);
   }
 
   @Test
@@ -756,15 +792,21 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .session(session)
             .with(csrf());
 
-    mockMvc
-        .perform(request)
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildAmendMatterTypeCodePath()));
+    var postResult =
+        mockMvc
+            .perform(request)
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(buildAmendMatterTypeCodePath()))
+            .andExpect(flash().attributeExists("formErrors", "caseTypeForm"))
+            .andReturn();
+
+    var flashedForm = (AmendmentForm) postResult.getFlashMap().get("caseTypeForm");
+    assertThat(flashedForm.getInputs().get("FEE_CODE")).isEqualTo("TAMPERED_CODE");
 
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCaseTypeForm().getCurrent().getInputs().get("FEE_CODE"))
-        .isEqualTo("TAMPERED_CODE");
+        .isEqualTo(FEE_CODE);
   }
 
   @Test
@@ -807,15 +849,21 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .session(session)
             .with(csrf());
 
-    mockMvc
-        .perform(request)
-        .andExpect(status().is3xxRedirection())
-        .andExpect(redirectedUrl(buildAmendMatterTypeCodePath()));
+    var postResult =
+        mockMvc
+            .perform(request)
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl(buildAmendMatterTypeCodePath()))
+            .andExpect(flash().attributeExists("formErrors", "caseTypeForm"))
+            .andReturn();
+
+    var flashedForm = (AmendmentForm) postResult.getFlashMap().get("caseTypeForm");
+    assertThat(flashedForm.getInputs().get("FEE_CODE")).isIn("", null);
 
     AmendmentForms updatedForm =
         (AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId));
     assertThat(updatedForm.getCaseTypeForm().getCurrent().getInputs().get("FEE_CODE"))
-        .isNullOrEmpty();
+        .isEqualTo(FEE_CODE);
   }
 
   @Test
@@ -1047,20 +1095,27 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .caseDetails(new AmendmentForm())
             .build());
 
-    mockMvc
-        .perform(
-            post(buildAmendStageReachedPath())
-                .param(INPUTS.formatted("STAGE_REACHED"), "INVB")
-                .param(INPUTS.formatted("FEE_CODE"), "tampered")
-                .session(session)
-                .with(csrf()))
-        .andExpect(status().is3xxRedirection());
+    var postResult =
+        mockMvc
+            .perform(
+                post(buildAmendStageReachedPath())
+                    .param(INPUTS.formatted("STAGE_REACHED"), "INVB")
+                    .param(INPUTS.formatted("FEE_CODE"), "tampered")
+                    .session(session)
+                    .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(flash().attributeExists("formErrors", "caseTypeForm"))
+            .andReturn();
+
+    var flashedForm = (AmendmentForm) postResult.getFlashMap().get("caseTypeForm");
+    assertThat(flashedForm.getInputs().get("STAGE_REACHED")).isEqualTo("INVB");
+    assertThat(flashedForm.getInputs().get("FEE_CODE")).isEqualTo(FEE_CODE);
 
     var saved =
         requireNonNull((AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId)));
     var current = saved.getCaseTypeForm().getCurrent();
 
-    assertThat(current.getInputs().get("STAGE_REACHED")).isEqualTo("INVB");
+    assertThat(current.getInputs().get("STAGE_REACHED")).isEqualTo("INVC");
     assertThat(current.getInputs().get("FEE_CODE")).isEqualTo(FEE_CODE);
   }
 
@@ -1084,21 +1139,28 @@ class AmendCaseTypeControllerTest extends BaseControllerTest {
             .caseDetails(new AmendmentForm())
             .build());
 
-    mockMvc
-        .perform(
-            post(buildAmendMatterTypeCodePath())
-                .param(INPUTS.formatted("MATTER_TYPE_CODE_1"), "NEW1")
-                .param(INPUTS.formatted("MATTER_TYPE_CODE_2"), "NEW2")
-                .param(INPUTS.formatted("FEE_CODE"), "tampered")
-                .session(session)
-                .with(csrf()))
-        .andExpect(status().is3xxRedirection());
+    var postResult =
+        mockMvc
+            .perform(
+                post(buildAmendMatterTypeCodePath())
+                    .param(INPUTS.formatted("MATTER_TYPE_CODE_1"), "NEW1")
+                    .param(INPUTS.formatted("MATTER_TYPE_CODE_2"), "NEW2")
+                    .param(INPUTS.formatted("FEE_CODE"), "tampered")
+                    .session(session)
+                    .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(flash().attributeExists("formErrors", "caseTypeForm"))
+            .andReturn();
+
+    var flashedForm = (AmendmentForm) postResult.getFlashMap().get("caseTypeForm");
+    assertThat(flashedForm.getInputs().get("MATTER_TYPE_CODE_1")).isEqualTo("NEW1");
+    assertThat(flashedForm.getInputs().get("FEE_CODE")).isEqualTo(FEE_CODE);
 
     var saved =
         requireNonNull((AmendmentForms) session.getAttribute(AMENDMENTS_KEY.formatted(claimId)));
     var current = saved.getCaseTypeForm().getCurrent();
 
-    assertThat(current.getInputs().get("MATTER_TYPE_CODE_1")).isEqualTo("NEW1");
+    assertThat(current.getInputs().get("MATTER_TYPE_CODE_1")).isEqualTo(MATTER_TYPE_CODE_1);
     assertThat(current.getInputs().get("FEE_CODE")).isEqualTo(FEE_CODE);
   }
 

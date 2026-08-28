@@ -19,7 +19,7 @@
             <form method="post"
                   th:action="@{/submissions/{submissionId}/claims/{claimId}/amendments/requested-reason(submissionId=${submissionId}, claimId=${claimId})}"
                   th:object="${requestedReasonForm}"
-                  th:with="formErrors=${@ThymeleafUtils.orEmpty(requestedReasonFormErrors)}">
+                  th:with="formErrors=${@ThymeleafUtils.orEmpty(formErrors)}">
 
                 <th:block th:replace="~{fragments/error-summary.html :: error-summary(${formErrors})}"></th:block>
 
