@@ -73,9 +73,6 @@ public final class ClaimFieldRuleJsonLoader {
                   ruleSpecs.addAll(groupedRuleSpecs);
                 }
               }
-              if (fieldConfig.rules() != null) {
-                ruleSpecs.addAll(toRuleSpecs(fieldConfig.rules()));
-              }
               result.put(field, List.copyOf(ruleSpecs));
             });
 
