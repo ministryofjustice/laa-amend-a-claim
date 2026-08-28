@@ -44,9 +44,20 @@ public final class ClaimFieldRuleJsonLoader {
   }
 
   static Map<ClaimViewField<?>, List<FieldRuleSpec>> load(String resourcePath) {
-    // Deserialize JSON rules from the specified resource path
-    var rulesRoot = readValue(resourcePath);
+    var rulesRoot = readValueFromResource(resourcePath);
+    return buildRulesMap(rulesRoot);
+  }
 
+  static Map<ClaimViewField<?>, List<FieldRuleSpec>> loadFromContent(String jsonContent) {
+    try {
+      var rulesRoot = readValueFromContent(jsonContent);
+      return buildRulesMap(rulesRoot);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Failed to parse JSON content", e);
+    }
+  }
+
+  private static Map<ClaimViewField<?>, List<FieldRuleSpec>> buildRulesMap(RulesRoot rulesRoot) {
     // Loops through all rule groups to fetch each field's rule specifications
     Map<String, List<FieldRuleSpec>> ruleGroups = new HashMap<>();
     rulesRoot
@@ -79,7 +90,7 @@ public final class ClaimFieldRuleJsonLoader {
     return result;
   }
 
-  private static RulesRoot readValue(String resourcePath) {
+  private static RulesRoot readValueFromResource(String resourcePath) {
     try (InputStream in = ClaimFieldRuleJsonLoader.class.getResourceAsStream(resourcePath)) {
       if (in == null) {
         throw new IllegalStateException(
@@ -90,6 +101,10 @@ public final class ClaimFieldRuleJsonLoader {
     } catch (IOException e) {
       throw new UncheckedIOException("Failed to parse amendments-claim-field-rules.json", e);
     }
+  }
+
+  private static RulesRoot readValueFromContent(String jsonContent) throws IOException {
+    return new ObjectMapper().readValue(jsonContent, RulesRoot.class);
   }
 
   private static List<FieldRuleSpec> toRuleSpecs(List<RuleDto> ruleDtos) {
