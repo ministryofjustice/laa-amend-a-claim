@@ -2,6 +2,7 @@ package uk.gov.justice.laa.payments.amend.service;
 
 import static java.time.ZoneOffset.UTC;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.ASSESSMENT;
@@ -244,7 +245,7 @@ public class ClaimHistoryServiceTest {
         new MicrosoftApiUser(UUID.randomUUID().toString(), "Submitted user", null, null);
     var submittedDateTime = CREATED_DATE_TIME;
 
-    claim.setLastUpdatedUser(submittedUser.id());
+    claim.setLastUpdatedUser(null); // No user is set until the first non submission event occurs
     claim.setLastUpdatedDateTime(submittedDateTime);
 
     var history =
@@ -261,13 +262,15 @@ public class ClaimHistoryServiceTest {
                         Map.of())));
 
     when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
-    when(userRetrievalService.getUser(submittedUser.id())).thenReturn(submittedUser);
+    verifyNoInteractions(userRetrievalService);
 
     var summary = claimHistoryService.getClaimHistorySummary(claim);
 
-    assertThat(summary.lastUpdatedUser()).isEqualTo(submittedUser);
+    assertThat(summary.lastUpdatedUser()).isNull();
     assertThat(summary.lastUpdatedDateTime()).isEqualTo(submittedDateTime);
     assertThat(summary.amendedFields()).isEmpty();
+
+    verifyNoInteractions(userRetrievalService);
   }
 
   @Test

@@ -76,9 +76,10 @@ public class ClaimHistoryService {
 
     if (history == null || history.getEvents() == null) {
       log.error("Could not get claim history for claim {}", claim.getClaimId());
+      var lastUpdated = getLastUpdated(claim, history);
       return ClaimHistorySummary.builder()
-          .lastUpdatedUser(userRetrievalService.getUser(claim.getLastUpdatedUser()))
-          .lastUpdatedDateTime(claim.getLastUpdatedDateTime())
+          .lastUpdatedUser(lastUpdated.user())
+          .lastUpdatedDateTime(lastUpdated.dateTime())
           .amendedFields(Set.of())
           .build();
     }
@@ -121,6 +122,9 @@ public class ClaimHistoryService {
   }
 
   private LastUpdated getLastUpdated(ClaimDetails claim) {
+    if (claim.getLastUpdatedUser() == null) {
+      return new LastUpdated(null, claim.getLastUpdatedDateTime());
+    }
     return new LastUpdated(
         userRetrievalService.getUser(claim.getLastUpdatedUser()), claim.getLastUpdatedDateTime());
   }
