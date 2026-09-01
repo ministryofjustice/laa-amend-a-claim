@@ -133,7 +133,9 @@ public class ClaimHistoryService {
 
     var eventType =
         switch (claim.getDerivedClaimStatus()) {
-          case ACCEPTED -> ClaimHistoryEventType.SUBMISSION;
+          // We are intentionally not using the SUBMISSION event because this does not have
+          // an Entra ID as the actor ID, it just hardcodes Data-Claims-Event-Service
+          case ACCEPTED -> null;
           case AMENDED -> ClaimHistoryEventType.AMENDMENT;
           case ASSESSED -> ClaimHistoryEventType.ASSESSMENT;
           case VOIDED -> ClaimHistoryEventType.VOID;

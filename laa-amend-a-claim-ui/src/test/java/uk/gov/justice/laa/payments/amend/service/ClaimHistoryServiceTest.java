@@ -244,12 +244,16 @@ public class ClaimHistoryServiceTest {
         new MicrosoftApiUser(UUID.randomUUID().toString(), "Submitted user", null, null);
     var submittedDateTime = CREATED_DATE_TIME;
 
+    claim.setLastUpdatedUser(submittedUser.id());
+    claim.setLastUpdatedDateTime(submittedDateTime);
+
     var history =
         new ClaimHistoryResultSet()
             .claimId(claim.getClaimId())
             .events(
                 List.of(
-                    historyEvent(SUBMISSION, submittedUser.id(), submittedDateTime, Map.of()),
+                    historyEvent(
+                        SUBMISSION, "Data-Claims-Event-Service", submittedDateTime, Map.of()),
                     historyEvent(
                         AMENDMENT,
                         UUID.randomUUID().toString(),
