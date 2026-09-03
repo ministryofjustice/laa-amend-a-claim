@@ -198,7 +198,7 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       Function<MediationClaimDetails, ?> getter,
       BiFunction<Builder, T, Builder> patcher,
       String claimsApiFieldName) {
-    this(fieldType, patchType, getter, patcher, List.of(), claimsApiFieldName);
+    this(fieldType, patchType, getter, patcher, NO_OPTIONS, claimsApiFieldName);
   }
 
   <T> MediationClaimDetailsViewField(

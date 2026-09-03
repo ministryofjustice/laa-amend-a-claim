@@ -3,13 +3,17 @@ package uk.gov.justice.laa.payments.amend.views.claimdetails;
 import static java.util.stream.Stream.concat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static uk.gov.justice.laa.payments.amend.models.enums.Amendability.NEVER;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +34,7 @@ import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendedEvent
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendmentChange;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAssessedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryCreatedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryFspEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryVoidedEvent;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField;
@@ -190,6 +195,54 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
         List.of(
             "Claim uploaded to Submit a Bulk Claim",
             "Claim financial values calculated by Fee Scheme Platform"));
+  }
+
+  @Test
+  void testPageWithFspEventShowsExpectedCopyAndRecalculatedFields() {
+    var fspEvent =
+        new ClaimHistoryFspEvent(
+            ASSESSED_AT,
+            null,
+            new BigDecimal("1000.00"),
+            new BigDecimal("1200.50"),
+            List.of(
+                new ClaimHistoryAmendmentChange(
+                    ClaimDetailsViewField.PROFIT_COST,
+                    "fee.netProfitCostsAmount",
+                    new BigDecimal("500.00"),
+                    new BigDecimal("600.00"),
+                    AreaOfLaw.LEGAL_HELP),
+                new ClaimHistoryAmendmentChange(
+                    ClaimDetailsViewField.DISBURSEMENTS,
+                    "fee.disbursementAmount",
+                    new BigDecimal("100.00"),
+                    new BigDecimal("200.00"),
+                    AreaOfLaw.LEGAL_HELP)));
+
+    when(claimHistoryService.getClaimHistory(claim))
+        .thenReturn(new ClaimHistory(List.of(fspEvent), null, null));
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    var timelineItem = selectFirst(doc, ".moj-timeline .moj-timeline__item");
+    assertThat(timelineItem.selectFirst(".moj-timeline__title").text())
+        .isEqualTo("Claim recalculated");
+    assertThat(timelineItem.selectFirst(".moj-timeline__byline").text())
+        .isEqualTo("by Fee Scheme Platform");
+    assertThat(timelineItem.selectFirst(".moj-timeline__description p:nth-of-type(1)").text())
+        .isEqualTo("Total claim value recalculated from £1,000.00 to £1,200.50");
+    assertThat(timelineItem.selectFirst(".moj-timeline__description p:nth-of-type(2)").text())
+        .isEqualTo("The following fields were recalculated:");
+
+    var bulletItems =
+        timelineItem.select(".moj-timeline__description ul.govuk-list--bullet li").stream()
+            .map(Element::text)
+            .toList();
+    assertThat(bulletItems)
+        .containsExactly(
+            "net disbursements changed from £100.00 to £200.00",
+            "net profit costs changed from £500.00 to £600.00");
   }
 
   @Test
@@ -355,6 +408,73 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "VAT indicator changed from before to after"));
   }
 
+  @Test
+  void testPageWithFspEventShowsBulletListCrimeLower() {
+    assertFspBulletListForArea(
+        AreaOfLaw.CRIME_LOWER,
+        fspHistoryFieldsForArea(AreaOfLaw.CRIME_LOWER),
+        List.of(
+            "calculated VAT amount changed from before to after",
+            "category of law changed from before to after",
+            "disbursements VAT changed from before to after",
+            "escape case changed from before to after",
+            "fee type changed from before to after",
+            "fixed fee changed from before to after",
+            "hourly total amount changed from before to after",
+            "net disbursements changed from before to after",
+            "net profit costs changed from before to after",
+            "net travel costs changed from before to after",
+            "net waiting costs changed from before to after",
+            "scheme ID changed from before to after",
+            "VAT rate applied changed from before to after"));
+  }
+
+  @Test
+  void testPageWithFspEventShowsBulletListLegalHelp() {
+    assertFspBulletListForArea(
+        AreaOfLaw.LEGAL_HELP,
+        fspHistoryFieldsForArea(AreaOfLaw.LEGAL_HELP),
+        List.of(
+            "adjourned hearing fee changed from before to after",
+            "bolt-on total fee amount changed from before to after",
+            "calculated VAT amount changed from before to after",
+            "case management review hearing (CMRH)-oral changed from before to after",
+            "case management review hearing (CMRH)-telephone changed from before to after",
+            "category of law changed from before to after",
+            "detention, travel and waiting (DTW) costs changed from before to after",
+            "disbursements VAT changed from before to after",
+            "escape case changed from before to after",
+            "fee type changed from before to after",
+            "fixed fee changed from before to after",
+            "Home Office interview changed from before to after",
+            "hourly total amount changed from before to after",
+            "judicial review or form filling changed from before to after",
+            "net cost of counsel changed from before to after",
+            "net disbursements changed from before to after",
+            "net profit costs changed from before to after",
+            "substantive hearing changed from before to after",
+            "travel and waiting costs changed from before to after",
+            "VAT rate applied changed from before to after"));
+  }
+
+  @Test
+  void testPageWithFspEventShowsBulletListMediation() {
+    assertFspBulletListForArea(
+        AreaOfLaw.MEDIATION,
+        fspHistoryFieldsForArea(AreaOfLaw.MEDIATION),
+        List.of(
+            "calculated VAT amount changed from before to after",
+            "category of law changed from before to after",
+            "disbursements VAT changed from before to after",
+            "escape case changed from before to after",
+            "fee type changed from before to after",
+            "fixed fee changed from before to after",
+            "hourly total amount changed from before to after",
+            "net disbursements changed from before to after",
+            "net profit costs changed from before to after",
+            "VAT rate applied changed from before to after"));
+  }
+
   private void assertAmendmentBulletListForArea(
       AreaOfLaw areaOfLaw, List<String> fieldNames, List<String> expectedLines) {
     var changes =
@@ -402,6 +522,47 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
     assertThat(bulletItems).containsExactlyElementsOf(sortedExpectedLines);
   }
 
+  private void assertFspBulletListForArea(
+      AreaOfLaw areaOfLaw, List<ClaimViewField<?>> fields, List<String> expectedLines) {
+    var changes =
+        fields.stream()
+            .map(
+                field ->
+                    new ClaimHistoryAmendmentChange(
+                        field, field.getFeeApiFieldName(), "before", "after", areaOfLaw))
+            .toList();
+
+    var fspEvent =
+        new ClaimHistoryFspEvent(
+            ASSESSED_AT, null, new BigDecimal("1000.00"), new BigDecimal("1200.50"), changes);
+    when(claimHistoryService.getClaimHistory(claim))
+        .thenReturn(new ClaimHistory(List.of(fspEvent), null, null));
+
+    var doc = renderDocument();
+    assertCommonPageContent(doc);
+
+    var timelineItem = selectFirst(doc, ".moj-timeline .moj-timeline__item");
+    assertThat(timelineItem.selectFirst(".moj-timeline__title").text())
+        .isEqualTo("Claim recalculated");
+    assertThat(timelineItem.selectFirst(".moj-timeline__description p:nth-of-type(1)").text())
+        .isEqualTo("Total claim value recalculated from £1,000.00 to £1,200.50");
+    assertThat(timelineItem.selectFirst(".moj-timeline__description p:nth-of-type(2)").text())
+        .isEqualTo("The following fields were recalculated:");
+
+    var bulletItems =
+        timelineItem.select(".moj-timeline__description ul.govuk-list--bullet li").stream()
+            .map(Element::text)
+            .toList();
+    assertThat(bulletItems).hasSize(fields.size());
+
+    var sortedBulletItems = new ArrayList<>(bulletItems);
+    sortedBulletItems.sort(String.CASE_INSENSITIVE_ORDER);
+    assertThat(bulletItems).containsExactlyElementsOf(sortedBulletItems);
+    var sortedExpectedLines = new ArrayList<>(expectedLines);
+    sortedExpectedLines.sort(String.CASE_INSENSITIVE_ORDER);
+    assertThat(bulletItems).containsExactlyElementsOf(sortedExpectedLines);
+  }
+
   private static List<String> areaFieldNames(AreaOfLaw areaOfLaw) {
     var common = Arrays.stream(ClaimDetailsViewField.values());
     var areaSpecific =
@@ -420,10 +581,61 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
 
   private static boolean isAmendableHistoryField(ClaimViewField<?> field) {
     var identifier = field.getClaimsApiFieldName();
-    return identifier != null
-        && !identifier.isBlank()
-        && field.getAmendability()
-            != uk.gov.justice.laa.payments.amend.models.enums.Amendability.NEVER;
+    return identifier != null && !identifier.isBlank() && field.getAmendability() != NEVER;
+  }
+
+  private static List<ClaimViewField<?>> fspHistoryFieldsForArea(AreaOfLaw areaOfLaw) {
+    var fields =
+        new LinkedHashSet<ClaimViewField<?>>(
+            Arrays.stream(ClaimDetailsViewField.values())
+                .filter(ClaimHistoryViewTest::isDisplayedFspHistoryField)
+                .toList());
+
+    switch (areaOfLaw) {
+      case CRIME_LOWER -> {
+        fields.addAll(
+            Arrays.stream(CrimeClaimDetailsViewField.values())
+                .filter(ClaimHistoryViewTest::isDisplayedFspHistoryField)
+                .toList());
+      }
+      case LEGAL_HELP ->
+          fields.addAll(
+              Arrays.stream(CivilClaimDetailsViewField.values())
+                  .filter(ClaimHistoryViewTest::isDisplayedFspHistoryField)
+                  .toList());
+      case MEDIATION ->
+          fields.addAll(
+              Arrays.stream(MediationClaimDetailsViewField.values())
+                  .filter(ClaimHistoryViewTest::isDisplayedFspHistoryField)
+                  .toList());
+      default -> throw new IllegalStateException("Unexpected value: " + areaOfLaw);
+    }
+    return List.copyOf(fields);
+  }
+
+  private static final Set<String> IGNORED_FSP_FIELDS =
+      Set.of(
+          "boltOnAdjournedHearingCount",
+          "boltOnCmrhTelephoneCount",
+          "boltOnCmrhOralCount",
+          "boltOnHomeOfficeInterviewCount",
+          "feeCodeDescription",
+          "feeCode",
+          "vatIndicator",
+          "requestedNetProfitCostsAmount",
+          "requestedNetDisbursementAmount");
+
+  private static boolean isDisplayedFspHistoryField(ClaimViewField<?> field) {
+    var identifier = field.getFeeApiFieldName();
+    return identifier != null && !identifier.isBlank() && !isIgnoredFspFieldIdentifier(identifier);
+  }
+
+  private static boolean isIgnoredFspFieldIdentifier(String fieldIdentifier) {
+    if (IGNORED_FSP_FIELDS.contains(fieldIdentifier)) {
+      return true;
+    }
+    return fieldIdentifier.startsWith("fee.")
+        && IGNORED_FSP_FIELDS.contains(fieldIdentifier.substring("fee.".length()));
   }
 
   private void assertCommonPageContent(Document doc) {

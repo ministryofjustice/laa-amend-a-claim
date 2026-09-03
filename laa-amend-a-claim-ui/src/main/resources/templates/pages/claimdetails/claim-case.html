@@ -26,7 +26,7 @@
                         <div class="govuk-summary-list__row" th:each="entry : ${claim.caseTypeRows}">
                             <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + entry.key}}"></dt>
                             <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
-                            <dd class="govuk-summary-list__actions" th:if="${amendedFields.contains(entry.key.claimsApiFieldName)}">
+                            <dd class="govuk-summary-list__actions" th:if="${entry.key.isAmended(amendedFields)}">
                                 <strong class="govuk-tag govuk-tag--yellow" th:text="#{service.amended}"></strong>
                             </dd>
                         </div>
@@ -45,7 +45,7 @@
                         <div class="govuk-summary-list__row" th:each="entry : ${claim.caseDetailsRows}">
                             <dt class="govuk-summary-list__key" th:text="#{${'claimField.' + entry.key}}"></dt>
                             <dd class="govuk-summary-list__value" th:text="${@ThymeleafUtils.getFormattedValue(entry.key, entry.value).resolve(#messages)}"></dd>
-                            <dd class="govuk-summary-list__actions" th:if="${amendedFields.contains(entry.key.claimsApiFieldName)}">
+                            <dd class="govuk-summary-list__actions" th:if="${entry.key.isAmended(amendedFields)}">
                                 <strong class="govuk-tag govuk-tag--yellow" th:text="#{service.amended}"></strong>
                             </dd>
                         </div>

@@ -34,6 +34,7 @@ feature-flags:
   is-requested-and-calculated-swap-enabled: true
   is-full-claim-details-enabled: true
   is-claim-amendment-enabled: true
+  is-fsp-history-enabled: false
 
 maintenance:
   disable-at-time: 2030-05-29T17:29:00Z

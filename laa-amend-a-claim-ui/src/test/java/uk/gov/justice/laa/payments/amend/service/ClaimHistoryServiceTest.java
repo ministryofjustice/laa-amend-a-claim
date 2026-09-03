@@ -5,6 +5,8 @@ import static java.util.stream.Stream.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
@@ -36,10 +38,12 @@ import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
+import uk.gov.justice.laa.payments.amend.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.payments.amend.models.AmendmentConfirmation;
 import uk.gov.justice.laa.payments.amend.models.MicrosoftApiUser;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAssessedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryCreatedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryFspEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryVoidedEvent;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
@@ -75,13 +79,19 @@ public class ClaimHistoryServiceTest {
 
   @Mock private ClaimHistoryAmendmentsService claimHistoryAmendmentsService;
 
+  @Mock private FeatureFlagsConfig featureFlagsConfig;
+
   private ClaimHistoryService claimHistoryService;
 
   @BeforeEach
   void setUp() {
     claimHistoryService =
         new ClaimHistoryService(
-            claimsApiClient, providerService, userRetrievalService, claimHistoryAmendmentsService);
+            claimsApiClient,
+            providerService,
+            userRetrievalService,
+            claimHistoryAmendmentsService,
+            featureFlagsConfig);
   }
 
   @Test
@@ -344,6 +354,94 @@ public class ClaimHistoryServiceTest {
     assertThat(summary.lastUpdatedUser()).isNull();
     assertThat(summary.lastUpdatedDateTime()).isNull();
     assertThat(summary.amendedFields()).isEmpty();
+  }
+
+  @Test
+  void getClaimHistoryIncludesFspEventWhenFeatureFlagEnabled() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+
+    var providerFirm =
+        ProviderFirmOfficeDto.builder()
+            .firm(ProviderFirmSummary.builder().firmName(PROVIDER_NAME).build())
+            .build();
+    when(providerService.getProviderFirm(OFFICE_CODE)).thenReturn(providerFirm);
+
+    when(featureFlagsConfig.isFspHistoryEnabled()).thenReturn(true);
+    when(claimsApiClient.getClaimHistory(claim.getClaimId()))
+        .thenReturn(
+            Mono.just(
+                new ClaimHistoryResultSet()
+                    .claimId(claim.getClaimId())
+                    .events(
+                        List.of(
+                            historyEvent(
+                                SUBMISSION,
+                                UUID.randomUUID().toString(),
+                                CREATED_DATE_TIME,
+                                Map.of("office_account_number", OFFICE_CODE)),
+                            historyEvent(
+                                AMENDMENT,
+                                UUID.randomUUID().toString(),
+                                CREATED_DATE_TIME.plusDays(1),
+                                Map.of())))));
+
+    var fspEvent =
+        new ClaimHistoryFspEvent(CREATED_DATE_TIME.plusDays(1), null, null, null, List.of());
+    var amendedEvent =
+        new uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendedEvent(
+            CREATED_DATE_TIME.plusDays(1), null, List.of(), null, null);
+
+    when(claimHistoryAmendmentsService.toFspClaimHistoryEventsFromApiEvents(anyList(), any()))
+        .thenReturn(java.util.stream.Stream.of(fspEvent));
+    when(claimHistoryAmendmentsService.toAmendmentClaimHistoryEventsFromApiEvents(anyList(), any()))
+        .thenReturn(java.util.stream.Stream.of(amendedEvent));
+
+    var claimHistory = claimHistoryService.getClaimHistory(claim);
+
+    assertThat(claimHistory.events())
+        .containsExactly(
+            fspEvent,
+            amendedEvent,
+            new ClaimHistoryCreatedEvent(
+                CREATED_DATE_TIME, PROVIDER_NAME, Boolean.TRUE.equals(claim.getEscaped())));
+  }
+
+  @Test
+  void getClaimHistorySkipsFspEventsWhenFeatureFlagDisabled() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+
+    var providerFirm =
+        ProviderFirmOfficeDto.builder()
+            .firm(ProviderFirmSummary.builder().firmName(PROVIDER_NAME).build())
+            .build();
+    when(providerService.getProviderFirm(OFFICE_CODE)).thenReturn(providerFirm);
+
+    when(featureFlagsConfig.isFspHistoryEnabled()).thenReturn(false);
+    when(claimsApiClient.getClaimHistory(claim.getClaimId()))
+        .thenReturn(
+            Mono.just(
+                new ClaimHistoryResultSet()
+                    .claimId(claim.getClaimId())
+                    .events(
+                        List.of(
+                            historyEvent(
+                                SUBMISSION,
+                                UUID.randomUUID().toString(),
+                                CREATED_DATE_TIME,
+                                Map.of("office_account_number", OFFICE_CODE)),
+                            historyEvent(
+                                AMENDMENT,
+                                UUID.randomUUID().toString(),
+                                CREATED_DATE_TIME.plusDays(1),
+                                Map.of())))));
+
+    when(claimHistoryAmendmentsService.toAmendmentClaimHistoryEventsFromApiEvents(anyList(), any()))
+        .thenReturn(empty());
+
+    claimHistoryService.getClaimHistory(claim);
+
+    verify(claimHistoryAmendmentsService, never())
+        .toFspClaimHistoryEventsFromApiEvents(anyList(), any());
   }
 
   @Test

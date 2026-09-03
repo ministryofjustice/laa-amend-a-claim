@@ -22,6 +22,7 @@ import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryAssessment
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryChangeEntry;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistorySubmissionMetadata;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
+import uk.gov.justice.laa.payments.amend.config.FeatureFlagsConfig;
 import uk.gov.justice.laa.payments.amend.models.AmendmentConfirmation;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.ClaimHistorySummary;
@@ -46,6 +47,7 @@ public class ClaimHistoryService {
   private final ProviderService providerService;
   private final UserRetrievalService userRetrievalService;
   private final ClaimHistoryAmendmentsService claimHistoryAmendmentsService;
+  private final FeatureFlagsConfig featureFlagsConfig;
 
   public ClaimHistory getClaimHistory(ClaimDetails claim) {
     var history = claimsApiClient.getClaimHistory(claim.getClaimId()).block();
@@ -178,10 +180,16 @@ public class ClaimHistoryService {
     if (historyEvents.isEmpty()) {
       return Stream.empty();
     }
+    var fspEvents =
+        featureFlagsConfig.isFspHistoryEnabled()
+            ? claimHistoryAmendmentsService.toFspClaimHistoryEventsFromApiEvents(
+                historyEvents, claim)
+            : Stream.<BaseClaimHistoryEvent>empty();
     return Stream.of(
             toCreatedEvents(historyEvents, claim),
             toAssessmentEvents(historyEvents),
             toVoidEvents(historyEvents),
+            fspEvents,
             claimHistoryAmendmentsService.toAmendmentClaimHistoryEventsFromApiEvents(
                 historyEvents, claim))
         .flatMap(s -> s);
