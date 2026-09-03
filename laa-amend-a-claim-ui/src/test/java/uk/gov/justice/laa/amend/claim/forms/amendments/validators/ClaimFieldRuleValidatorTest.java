@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -36,29 +37,28 @@ class ClaimFieldRuleValidatorTest {
     assertThat(validator.appliesTo(ClaimDetailsViewField.PROFIT_COST)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.DISBURSEMENTS)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.DISBURSEMENTS_VAT)).isTrue();
-    assertThat(validator.appliesTo(ClaimDetailsViewField.VAT)).isFalse();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.VAT)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.FIXED_FEE)).isFalse();
-    assertThat(validator.appliesTo(ClaimDetailsViewField.GENDER)).isFalse();
-    assertThat(validator.appliesTo(ClaimDetailsViewField.DISABILITY)).isFalse();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.GENDER)).isTrue();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.DISABILITY)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.POSTCODE)).isTrue();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.POSTCODE)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.UNIQUE_CLIENT_NUMBER)).isTrue();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.UNIQUE_CLIENT_NUMBER)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.HOME_OFFICE_CLIENT_NUMBER)).isTrue();
-    assertThat(validator.appliesTo(CivilClaimDetailsViewField.DATE_OF_BIRTH)).isFalse();
+    assertThat(validator.appliesTo(CivilClaimDetailsViewField.DATE_OF_BIRTH)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.CLIENT_TYPE)).isFalse();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.IS_ELIGIBLE_CLIENT)).isFalse();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.CLIENT_2_FORENAME)).isTrue();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.CLIENT_2_SURNAME)).isTrue();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.CLIENT_2_POSTCODE)).isTrue();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.CLIENT_2_UCN)).isTrue();
-    assertThat(validator.appliesTo(MediationClaimDetailsViewField.CLIENT_2_DATE_OF_BIRTH))
-        .isFalse();
-    assertThat(validator.appliesTo(MediationClaimDetailsViewField.CLIENT_2_GENDER)).isFalse();
-    assertThat(validator.appliesTo(MediationClaimDetailsViewField.CLIENT_2_ETHNICITY)).isFalse();
-    assertThat(validator.appliesTo(MediationClaimDetailsViewField.CLIENT_2_DISABILITY)).isFalse();
+    assertThat(validator.appliesTo(MediationClaimDetailsViewField.CLIENT_2_DATE_OF_BIRTH)).isTrue();
+    assertThat(validator.appliesTo(MediationClaimDetailsViewField.CLIENT_2_GENDER)).isTrue();
+    assertThat(validator.appliesTo(MediationClaimDetailsViewField.CLIENT_2_ETHNICITY)).isTrue();
+    assertThat(validator.appliesTo(MediationClaimDetailsViewField.CLIENT_2_DISABILITY)).isTrue();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.IS_CLIENT_2_LEGALLY_AIDED))
-        .isFalse();
+        .isTrue();
     assertThat(
             validator.appliesTo(
                 MediationClaimDetailsViewField.IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED))
@@ -68,7 +68,7 @@ class ClaimFieldRuleValidatorTest {
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.MATTER_TYPE_CODE_2)).isTrue();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.MATTER_TYPE_CODE_1)).isTrue();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.MATTER_TYPE_CODE_2)).isTrue();
-    assertThat(validator.appliesTo(CrimeClaimDetailsViewField.STAGE_REACHED)).isFalse();
+    assertThat(validator.appliesTo(CrimeClaimDetailsViewField.STAGE_REACHED)).isTrue();
     assertThat(validator.appliesTo(CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE)).isFalse();
     assertThat(validator.appliesTo(CrimeClaimDetailsViewField.STANDARD_FEE_CATEGORY)).isFalse();
     assertThat(validator.appliesTo(CrimeClaimDetailsViewField.OUTCOME_FOR_CLIENT)).isFalse();
@@ -88,18 +88,18 @@ class ClaimFieldRuleValidatorTest {
     assertThat(validator.appliesTo(CrimeClaimDetailsViewField.TRAVEL_COSTS)).isTrue();
     assertThat(validator.appliesTo(CrimeClaimDetailsViewField.WAITING_COSTS)).isTrue();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.CLAIM_ID)).isTrue();
-    assertThat(validator.appliesTo(MediationClaimDetailsViewField.UNIQUE_CASE_ID)).isFalse();
+    assertThat(validator.appliesTo(MediationClaimDetailsViewField.UNIQUE_CASE_ID)).isTrue();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.MEDIATION_SESSIONS_COUNT))
         .isTrue();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.MEDIATION_TIME_MINUTES)).isTrue();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.OUTCOME)).isFalse();
     assertThat(validator.appliesTo(MediationClaimDetailsViewField.OUTREACH_LOCATION)).isTrue();
-    assertThat(validator.appliesTo(MediationClaimDetailsViewField.REFERRAL_SOURCE)).isFalse();
-    assertThat(validator.appliesTo(MediationClaimDetailsViewField.SCHEDULE_REFERENCE)).isFalse();
+    assertThat(validator.appliesTo(MediationClaimDetailsViewField.REFERRAL_SOURCE)).isTrue();
+    assertThat(validator.appliesTo(MediationClaimDetailsViewField.SCHEDULE_REFERENCE)).isTrue();
     assertThat(validator.appliesTo(ClaimDetailsViewField.CASE_REFERENCE_NUMBER)).isTrue();
-    assertThat(validator.appliesTo(ClaimDetailsViewField.CASE_START_DATE)).isFalse();
+    assertThat(validator.appliesTo(ClaimDetailsViewField.CASE_START_DATE)).isTrue();
     assertThat(validator.appliesTo(CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER)).isTrue();
-    assertThat(validator.appliesTo(CrimeClaimDetailsViewField.CASE_CONCLUDED_DATE)).isFalse();
+    assertThat(validator.appliesTo(CrimeClaimDetailsViewField.CASE_CONCLUDED_DATE)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.CASE_ID)).isTrue();
     assertThat(validator.appliesTo(CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE))
         .isFalse();
@@ -177,9 +177,9 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.POSTCODE, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[POSTCODE]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[POSTCODE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.postcode.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Postcode");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Postcode");
   }
 
   @ParameterizedTest
@@ -188,7 +188,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(MediationClaimDetailsViewField.POSTCODE, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[POSTCODE]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[POSTCODE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.postcode.invalidFormat");
   }
 
@@ -206,9 +206,9 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(MediationClaimDetailsViewField.CLIENT_2_POSTCODE, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CLIENT_2_POSTCODE]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[CLIENT_2_POSTCODE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.postcode.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Postcode");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Postcode");
   }
 
   @ParameterizedTest
@@ -234,9 +234,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.UNIQUE_CLIENT_NUMBER, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[UNIQUE_CLIENT_NUMBER]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[UNIQUE_CLIENT_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.uniqueClientNumber.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Unique client number (UCN)");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Unique client number (UCN)");
   }
 
   @ParameterizedTest
@@ -246,7 +247,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(MediationClaimDetailsViewField.UNIQUE_CLIENT_NUMBER, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[UNIQUE_CLIENT_NUMBER]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[UNIQUE_CLIENT_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.uniqueClientNumber.invalidFormat");
   }
 
@@ -265,9 +266,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(MediationClaimDetailsViewField.CLIENT_2_UCN, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CLIENT_2_UCN]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[CLIENT_2_UCN]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.uniqueClientNumber.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Unique client number (UCN)");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Unique client number (UCN)");
   }
 
   @ParameterizedTest
@@ -290,9 +292,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.HOME_OFFICE_CLIENT_NUMBER, "a".repeat(17));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[HOME_OFFICE_CLIENT_NUMBER]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[HOME_OFFICE_CLIENT_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.tooLong");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("16");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("16");
   }
 
   @ParameterizedTest
@@ -301,9 +304,11 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.HOME_OFFICE_CLIENT_NUMBER, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[HOME_OFFICE_CLIENT_NUMBER]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[HOME_OFFICE_CLIENT_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Home Office unique client number (HO UCN)");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Home Office unique client number (HO UCN)");
   }
 
   @Test
@@ -312,7 +317,8 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.HOME_OFFICE_CLIENT_NUMBER, "-".repeat(17));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[HOME_OFFICE_CLIENT_NUMBER]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[HOME_OFFICE_CLIENT_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
   }
 
@@ -344,9 +350,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(field, "a".repeat(31));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[%s]".formatted(field.name()));
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[%s]".formatted(field.name())));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.tooLong");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("30");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("30");
   }
 
   @ParameterizedTest
@@ -355,7 +362,8 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(field, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[%s]".formatted(field.name()));
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[%s]".formatted(field.name())));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.invalidFormat");
   }
 
@@ -365,7 +373,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(ClaimDetailsViewField.SURNAME, "#".repeat(31));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[SURNAME]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[SURNAME]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.invalidFormat");
   }
 
@@ -396,9 +404,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(field, "a".repeat(31));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[%s]".formatted(field.name()));
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[%s]".formatted(field.name())));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.tooLong");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("30");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("30");
   }
 
   @ParameterizedTest
@@ -408,7 +417,8 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(field, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[%s]".formatted(field.name()));
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[%s]".formatted(field.name())));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.invalidFormat");
   }
 
@@ -417,7 +427,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(MediationClaimDetailsViewField.CLIENT_2_SURNAME, "#".repeat(31));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CLIENT_2_SURNAME]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[CLIENT_2_SURNAME]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.invalidFormat");
   }
 
@@ -425,16 +435,16 @@ class ClaimFieldRuleValidatorTest {
   void client2ValuesCarryTheClient2FieldLabelAsTheFirstArgument() {
     var errors = validate(MediationClaimDetailsViewField.CLIENT_2_SURNAME, "#".repeat(31));
 
-    var fieldError = errors.getFieldError("inputs[CLIENT_2_SURNAME]");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Last name");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[CLIENT_2_SURNAME]"));
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Last name");
   }
 
   @Test
   void rejectedValuesCarryTheFieldLabelAsTheFirstArgument() {
     var errors = validate(ClaimDetailsViewField.SURNAME, "#".repeat(31));
 
-    var fieldError = errors.getFieldError("inputs[SURNAME]");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Last name");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[SURNAME]"));
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Last name");
   }
 
   @Test
@@ -442,7 +452,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(ClaimDetailsViewField.SURNAME, "");
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[SURNAME]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[SURNAME]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.mandatoryField.error");
   }
 
@@ -458,7 +468,8 @@ class ClaimFieldRuleValidatorTest {
         MockClaimsFunctions.createMockCrimeClaim(), ClaimDetailsViewField.SURNAME, form, errors);
 
     assertThat(errors.getFieldErrors("inputs[SURNAME]")).hasSize(1);
-    assertThat(errors.getFieldError("inputs[SURNAME]").getCode()).isEqualTo("some.other.code");
+    assertThat(Objects.requireNonNull(errors.getFieldError("inputs[SURNAME]")).getCode())
+        .isEqualTo("some.other.code");
   }
 
   @ParameterizedTest
@@ -476,9 +487,9 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.MATTER_TYPE_CODE, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[MATTER_TYPE_CODE]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[MATTER_TYPE_CODE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.matterTypeCode.invalid");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Matter type");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Matter type");
   }
 
   @ParameterizedTest
@@ -496,9 +507,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(field, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[%s]".formatted(field.name()));
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[%s]".formatted(field.name())));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.matterTypeCode.wrongLength");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("4");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("4");
   }
 
   @ParameterizedTest
@@ -517,10 +529,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(field, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[%s]".formatted(field.name()));
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[%s]".formatted(field.name())));
     assertThat(fieldError.getCode())
         .isEqualTo("amendmentForm.matterTypeCode.invalidUppercaseFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo(field.label(TestMessageSources.real()));
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo(field.label(TestMessageSources.real()));
   }
 
   @ParameterizedTest
@@ -537,9 +551,9 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(ClaimDetailsViewField.FEE_CODE, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[FEE_CODE]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[FEE_CODE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Fee code");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Fee code");
   }
 
   @Test
@@ -547,9 +561,9 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(ClaimDetailsViewField.FEE_CODE, "a".repeat(11));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[FEE_CODE]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[FEE_CODE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.tooLong");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("10");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("10");
   }
 
   @Test
@@ -557,14 +571,14 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(ClaimDetailsViewField.FEE_CODE, "-".repeat(11));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[FEE_CODE]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[FEE_CODE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
   }
 
   @Test
   void feeCodeLocalRuleAndFeeSchemeMembershipRuleCanEachIndependentlyReject() {
     var localRuleErrors = validate(ClaimDetailsViewField.FEE_CODE, "a".repeat(11));
-    assertThat(localRuleErrors.getFieldError("inputs[FEE_CODE]").getCode())
+    assertThat(Objects.requireNonNull(localRuleErrors.getFieldError("inputs[FEE_CODE]")).getCode())
         .isEqualTo("amendmentForm.text.tooLong");
 
     var availableFeeCodesService = mock(AvailableFeeCodesService.class);
@@ -579,7 +593,7 @@ class ClaimFieldRuleValidatorTest {
         form,
         fspErrors);
 
-    assertThat(fspErrors.getFieldError("inputs[FEE_CODE]").getCode())
+    assertThat(Objects.requireNonNull(fspErrors.getFieldError("inputs[FEE_CODE]")).getCode())
         .isEqualTo("amendmentForm.feeCode.invalid");
   }
 
@@ -598,10 +612,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.POLICE_STATION_COURT_PRISON_ID, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[POLICE_STATION_COURT_PRISON_ID]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[POLICE_STATION_COURT_PRISON_ID]"));
     assertThat(fieldError.getCode())
         .isEqualTo("amendmentForm.alphanumericWithLetter.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Police station/Court ID/Prison ID");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Police station/Court ID/Prison ID");
   }
 
   @Test
@@ -609,9 +625,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.POLICE_STATION_COURT_PRISON_ID, "a1b2c3d4");
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[POLICE_STATION_COURT_PRISON_ID]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[POLICE_STATION_COURT_PRISON_ID]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.tooLong");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("6");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("6");
   }
 
   @Test
@@ -620,7 +637,8 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.POLICE_STATION_COURT_PRISON_ID, "1234567");
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[POLICE_STATION_COURT_PRISON_ID]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[POLICE_STATION_COURT_PRISON_ID]"));
     assertThat(fieldError.getCode())
         .isEqualTo("amendmentForm.alphanumericWithLetter.invalidFormat");
   }
@@ -639,10 +657,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.SCHEME_ID, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[SCHEME_ID]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[SCHEME_ID]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.wrongLength");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Scheme ID");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("4");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Scheme ID");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("4");
   }
 
   @ParameterizedTest
@@ -651,7 +669,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.SCHEME_ID, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[SCHEME_ID]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[SCHEME_ID]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
   }
 
@@ -660,7 +678,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.SCHEME_ID, "-".repeat(5));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[SCHEME_ID]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[SCHEME_ID]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
   }
 
@@ -678,9 +696,9 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.DSCC_NUMBER, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[DSCC_NUMBER]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[DSCC_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.wrongLength");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("10");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("10");
   }
 
   @Test
@@ -688,7 +706,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.DSCC_NUMBER, "AB-1234567");
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[DSCC_NUMBER]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[DSCC_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
   }
 
@@ -705,9 +723,9 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.MAAT_ID, "a".repeat(11));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[MAAT_ID]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[MAAT_ID]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.tooLong");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("10");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("10");
   }
 
   @Test
@@ -715,7 +733,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.MAAT_ID, "AB-1234");
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[MAAT_ID]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[MAAT_ID]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
   }
 
@@ -724,7 +742,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.MAAT_ID, "-".repeat(11));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[MAAT_ID]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[MAAT_ID]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
   }
 
@@ -742,10 +760,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.PRISON_LAW_PRIOR_APPROVAL_NUMBER, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[PRISON_LAW_PRIOR_APPROVAL_NUMBER]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[PRISON_LAW_PRIOR_APPROVAL_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.wrongLength");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Prison Law Prior Approval number");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("10");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Prison Law Prior Approval number");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("10");
   }
 
   @Test
@@ -754,7 +774,8 @@ class ClaimFieldRuleValidatorTest {
         validate(CrimeClaimDetailsViewField.PRISON_LAW_PRIOR_APPROVAL_NUMBER, "AB-1234567");
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[PRISON_LAW_PRIOR_APPROVAL_NUMBER]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[PRISON_LAW_PRIOR_APPROVAL_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
   }
 
@@ -785,10 +806,11 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(field, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[%s]".formatted(field.name()));
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[%s]".formatted(field.name())));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("99");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("99");
   }
 
   @Test
@@ -812,11 +834,11 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.TRAVEL_COSTS, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[TRAVEL_COSTS]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[TRAVEL_COSTS]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Net travel costs");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("9999.99");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Net travel costs");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0.00");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("9999.99");
   }
 
   @ParameterizedTest
@@ -833,10 +855,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.WAITING_COSTS, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[WAITING_COSTS]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[WAITING_COSTS]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("999999.99");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0.00");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("999999.99");
   }
 
   @Test
@@ -860,9 +882,9 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(MediationClaimDetailsViewField.CLAIM_ID, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CLAIM_ID]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[CLAIM_ID]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.claimId.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Claim ID");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Claim ID");
   }
 
   @ParameterizedTest
@@ -879,10 +901,11 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(MediationClaimDetailsViewField.MEDIATION_SESSIONS_COUNT, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[MEDIATION_SESSIONS_COUNT]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[MEDIATION_SESSIONS_COUNT]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("1");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("99");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("1");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("99");
   }
 
   @Test
@@ -906,10 +929,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(MediationClaimDetailsViewField.MEDIATION_TIME_MINUTES, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[MEDIATION_TIME_MINUTES]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[MEDIATION_TIME_MINUTES]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("99999");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("99999");
   }
 
   @ParameterizedTest
@@ -926,10 +949,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(MediationClaimDetailsViewField.OUTREACH_LOCATION, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[OUTREACH_LOCATION]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[OUTREACH_LOCATION]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.wrongLength");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Outreach location");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("3");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Outreach location");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("3");
   }
 
   @ParameterizedTest
@@ -938,7 +961,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(MediationClaimDetailsViewField.OUTREACH_LOCATION, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[OUTREACH_LOCATION]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[OUTREACH_LOCATION]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
   }
 
@@ -948,7 +971,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(MediationClaimDetailsViewField.OUTREACH_LOCATION, "-".repeat(4));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[OUTREACH_LOCATION]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[OUTREACH_LOCATION]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
   }
 
@@ -972,10 +995,11 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(ClaimDetailsViewField.CASE_REFERENCE_NUMBER, "a".repeat(31));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CASE_REFERENCE_NUMBER]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[CASE_REFERENCE_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.tooLong");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Case reference number (CRN)");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("30");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Case reference number (CRN)");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("30");
   }
 
   @ParameterizedTest
@@ -984,9 +1008,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(ClaimDetailsViewField.CASE_REFERENCE_NUMBER, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CASE_REFERENCE_NUMBER]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[CASE_REFERENCE_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.caseReferenceNumber.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Case reference number (CRN)");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Case reference number (CRN)");
   }
 
   @Test
@@ -994,7 +1019,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(ClaimDetailsViewField.CASE_REFERENCE_NUMBER, "#".repeat(31));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CASE_REFERENCE_NUMBER]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[CASE_REFERENCE_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.caseReferenceNumber.invalidFormat");
   }
 
@@ -1012,9 +1037,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CrimeClaimDetailsViewField.UNIQUE_FILE_NUMBER, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[UNIQUE_FILE_NUMBER]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[UNIQUE_FILE_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.uniqueFileNumber.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Unique file number (UFN)");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Unique file number (UFN)");
   }
 
   @ParameterizedTest
@@ -1031,9 +1057,9 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.CASE_ID, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CASE_ID]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[CASE_ID]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.claimId.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Case ID");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Case ID");
   }
 
   @ParameterizedTest
@@ -1056,10 +1082,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL, "a".repeat(21));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[SCHEDULE_REFERENCE_CIVIL]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[SCHEDULE_REFERENCE_CIVIL]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.tooLong");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Schedule reference");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("20");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Schedule reference");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("20");
   }
 
   @ParameterizedTest
@@ -1068,9 +1096,11 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[SCHEDULE_REFERENCE_CIVIL]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[SCHEDULE_REFERENCE_CIVIL]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.scheduleReference.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Schedule reference");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Schedule reference");
   }
 
   @Test
@@ -1078,7 +1108,8 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.SCHEDULE_REFERENCE_CIVIL, "#".repeat(21));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[SCHEDULE_REFERENCE_CIVIL]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[SCHEDULE_REFERENCE_CIVIL]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.scheduleReference.invalidFormat");
   }
 
@@ -1103,9 +1134,11 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(field, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[%s]".formatted(field.name()));
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[%s]".formatted(field.name())));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.locationCode.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo(field.label(TestMessageSources.real()));
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo(field.label(TestMessageSources.real()));
   }
 
   @ParameterizedTest
@@ -1122,9 +1155,9 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.ACCESS_POINT, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[ACCESS_POINT]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[ACCESS_POINT]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.accessPoint.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Access point");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Access point");
   }
 
   @ParameterizedTest
@@ -1147,10 +1180,11 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER, "a".repeat(31));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[LOCAL_AUTHORITY_NUMBER]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[LOCAL_AUTHORITY_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.tooLong");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Local authority number");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("30");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Local authority number");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("30");
   }
 
   @ParameterizedTest
@@ -1159,9 +1193,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[LOCAL_AUTHORITY_NUMBER]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[LOCAL_AUTHORITY_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Local authority number");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Local authority number");
   }
 
   @Test
@@ -1169,7 +1204,7 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.LOCAL_AUTHORITY_NUMBER, "-".repeat(31));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[LOCAL_AUTHORITY_NUMBER]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[LOCAL_AUTHORITY_NUMBER]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
   }
 
@@ -1187,10 +1222,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.VALUE_OF_COSTS, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[VALUE_OF_COSTS]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[VALUE_OF_COSTS]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("99999.99");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0.00");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("99999.99");
   }
 
   @ParameterizedTest
@@ -1207,10 +1242,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.EXCEPTIONAL_CASE_FUNDING, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[EXCEPTIONAL_CASE_FUNDING]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[EXCEPTIONAL_CASE_FUNDING]"));
     assertThat(fieldError.getCode())
         .isEqualTo("amendmentForm.exceptionalCaseFunding.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Exceptional case funding (ECF) reference");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Exceptional case funding (ECF) reference");
   }
 
   @ParameterizedTest
@@ -1227,10 +1264,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_REFERENCE, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CIVIL_LEGAL_ADVICE_REFERENCE]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[CIVIL_LEGAL_ADVICE_REFERENCE]"));
     assertThat(fieldError.getCode())
         .isEqualTo("amendmentForm.civilLegalAdviceReference.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Civil Legal Advice (CLA) reference number");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Civil Legal Advice (CLA) reference number");
   }
 
   @ParameterizedTest
@@ -1247,10 +1286,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.CIVIL_LEGAL_ADVICE_EXEMPTION, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CIVIL_LEGAL_ADVICE_EXEMPTION]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[CIVIL_LEGAL_ADVICE_EXEMPTION]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.wrongLength");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Civil Legal Advice (CLA) exemption code");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("4");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Civil Legal Advice (CLA) exemption code");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("4");
   }
 
   @ParameterizedTest
@@ -1282,10 +1323,11 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(field, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[%s]".formatted(field.name()));
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[%s]".formatted(field.name())));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("99999");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("99999");
   }
 
   @ParameterizedTest
@@ -1302,11 +1344,13 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.MEDICAL_REPORTS_CLAIMED, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[MEDICAL_REPORTS_CLAIMED]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[MEDICAL_REPORTS_CLAIMED]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Medical reports claimed");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("10");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Medical reports claimed");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("10");
   }
 
   @ParameterizedTest
@@ -1323,10 +1367,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.SURGERY_CLIENTS_COUNT, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[SURGERY_CLIENTS_COUNT]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[SURGERY_CLIENTS_COUNT]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("1");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("20");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("1");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("20");
   }
 
   @ParameterizedTest
@@ -1343,10 +1387,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.SURGERY_MATTERS_COUNT, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[SURGERY_MATTERS_COUNT]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[SURGERY_MATTERS_COUNT]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("99");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("99");
   }
 
   @ParameterizedTest
@@ -1363,10 +1407,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.MENTAL_HEALTH_TRIBUNAL_REFERENCE, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[MENTAL_HEALTH_TRIBUNAL_REFERENCE]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[MENTAL_HEALTH_TRIBUNAL_REFERENCE]"));
     assertThat(fieldError.getCode())
         .isEqualTo("amendmentForm.mentalHealthTribunalReference.invalidFormat");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Mental health tribunal reference");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Mental health tribunal reference");
   }
 
   @ParameterizedTest
@@ -1383,11 +1429,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.HOME_OFFICE, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[HOME_OFFICE]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[HOME_OFFICE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Home Office Interview");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("9");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Home Office Interview");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("9");
   }
 
   @ParameterizedTest
@@ -1411,11 +1458,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.PRIOR_AUTHORITY_REFERENCE, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[PRIOR_AUTHORITY_REFERENCE]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[PRIOR_AUTHORITY_REFERENCE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.text.wrongLength");
-    assertThat(fieldError.getArguments()[0])
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
         .isEqualTo("National Immigration Asylum Team Disbursement prior authority number");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("7");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("7");
   }
 
   @ParameterizedTest
@@ -1424,7 +1472,8 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.PRIOR_AUTHORITY_REFERENCE, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[PRIOR_AUTHORITY_REFERENCE]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[PRIOR_AUTHORITY_REFERENCE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
   }
 
@@ -1433,7 +1482,8 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.PRIOR_AUTHORITY_REFERENCE, "-".repeat(8));
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[PRIOR_AUTHORITY_REFERENCE]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[PRIOR_AUTHORITY_REFERENCE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.alphanumeric.invalidFormat");
   }
 
@@ -1451,11 +1501,11 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(ClaimDetailsViewField.PROFIT_COST, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[PROFIT_COST]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[PROFIT_COST]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Net profit costs");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("999999999.99");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Net profit costs");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0.00");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("999999999.99");
   }
 
   @Test
@@ -1486,11 +1536,11 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(ClaimDetailsViewField.DISBURSEMENTS, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[DISBURSEMENTS]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[DISBURSEMENTS]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Net disbursements");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("999999999.99");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Net disbursements");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0.00");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("999999999.99");
   }
 
   @Test
@@ -1514,10 +1564,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(ClaimDetailsViewField.DISBURSEMENTS_VAT, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[DISBURSEMENTS_VAT]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[DISBURSEMENTS_VAT]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.min");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Disbursements VAT");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0]).isEqualTo("Disbursements VAT");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0.00");
   }
 
   @Test
@@ -1548,11 +1598,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.COUNSELS_COST, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[COUNSELS_COST]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[COUNSELS_COST]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Net cost of counsel");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("99999.99");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Net cost of counsel");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0.00");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("99999.99");
   }
 
   @Test
@@ -1576,11 +1627,13 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.TRAVEL_AND_WAITING_COSTS, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[TRAVEL_AND_WAITING_COSTS]");
+    var fieldError =
+        Objects.requireNonNull(errors.getFieldError("inputs[TRAVEL_AND_WAITING_COSTS]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Travel and waiting costs");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("9999.99");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Travel and waiting costs");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0.00");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("9999.99");
   }
 
   @Test
@@ -1604,11 +1657,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.DETENTION_TRAVEL, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[DETENTION_TRAVEL]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[DETENTION_TRAVEL]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Detention, travel and waiting (DTW) costs");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("99999999.99");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Detention, travel and waiting (DTW) costs");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0.00");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("99999999.99");
   }
 
   @Test
@@ -1632,11 +1686,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.JR_FORM_FILLING, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[JR_FORM_FILLING]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[JR_FORM_FILLING]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.bigDecimal.range");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Judicial review or form filling");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0.00");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("9999.99");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Judicial review or form filling");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0.00");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("9999.99");
   }
 
   @Test
@@ -1667,11 +1722,12 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[ADJOURNED_HEARING_FEE]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[ADJOURNED_HEARING_FEE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
-    assertThat(fieldError.getArguments()[0]).isEqualTo("Adjourned hearing fee");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("9");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo("Adjourned hearing fee");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("9");
   }
 
   @ParameterizedTest
@@ -1688,10 +1744,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.CMRH_TELEPHONE, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CMRH_TELEPHONE]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[CMRH_TELEPHONE]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("9");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("9");
   }
 
   @ParameterizedTest
@@ -1708,10 +1764,10 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.CMRH_ORAL, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[CMRH_ORAL]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[CMRH_ORAL]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.number.range");
-    assertThat(fieldError.getArguments()[1]).isEqualTo("0");
-    assertThat(fieldError.getArguments()[2]).isEqualTo("9");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[1]).isEqualTo("0");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[2]).isEqualTo("9");
   }
 
   @Test
@@ -1735,9 +1791,9 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[OUTCOME_FOR_CLIENT]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[OUTCOME_FOR_CLIENT]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.civilOutcomeCode.invalidFormat");
-    assertThat(fieldError.getArguments()[0])
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
         .isEqualTo(CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT.label(TestMessageSources.real()));
   }
 
@@ -1755,10 +1811,22 @@ class ClaimFieldRuleValidatorTest {
     var errors = validate(CivilClaimDetailsViewField.STAGE_REACHED, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = errors.getFieldError("inputs[STAGE_REACHED]");
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[STAGE_REACHED]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.civilOutcomeCode.invalidFormat");
-    assertThat(fieldError.getArguments()[0])
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
         .isEqualTo(CivilClaimDetailsViewField.STAGE_REACHED.label(TestMessageSources.real()));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"", "  "})
+  void rejectsEmptyOrWhitespaceValuesNamingTheField(String value) {
+    var errors = validate(ClaimDetailsViewField.FORENAME, value);
+
+    assertThat(errors.hasErrors()).isTrue();
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[FORENAME]"));
+    assertThat(fieldError.getCode()).isEqualTo("amendmentForm.mandatoryField.error");
+    assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
+        .isEqualTo(ClaimDetailsViewField.FORENAME.label(TestMessageSources.real()));
   }
 
   private Errors validate(ClaimViewField<?> field, String value) {

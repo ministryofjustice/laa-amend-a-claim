@@ -117,7 +117,8 @@ public final class ClaimFieldRuleJsonLoader {
         rule.messageArgs() != null
             ? rule.messageArgs().stream().<Object>map(s -> s).toList()
             : List.of();
-    return new FieldRuleSpec(category, rule.messageCode(), toPredicate(rule), messageArgs);
+    return new FieldRuleSpec(
+        category, rule.messageCode(), toPredicate(rule), messageArgs, rule.areasOfLaw());
   }
 
   static BiPredicate<ClaimDetails, String> toPredicate(RuleDto rule) {
