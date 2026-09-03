@@ -8,10 +8,11 @@ public record FieldRuleSpec(
     RuleCategory category,
     String messageCode,
     BiPredicate<ClaimDetails, String> isInvalid,
-    List<Object> messageArgs) {
+    List<Object> messageArgs,
+    List<String> areasOfLaw) {
 
   public FieldRuleSpec(
       RuleCategory category, String messageCode, BiPredicate<ClaimDetails, String> isInvalid) {
-    this(category, messageCode, isInvalid, List.of());
+    this(category, messageCode, isInvalid, List.of(), List.of());
   }
 }
