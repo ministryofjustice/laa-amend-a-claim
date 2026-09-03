@@ -217,7 +217,8 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
     claim = createMediationClaim();
     mockClaimHistorySummary(
         "claim.feeCode",
-        "claim.matterTypeCode",
+        "claim.matterTypeCode#0",
+        "claim.matterTypeCode#1",
         "claimCase.caseId",
         "claimCase.uniqueCaseId",
         "claim.mediationSessionsCount",
@@ -246,6 +247,28 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
         "Outreach location",
         "Referral",
         "Schedule reference (outcome)");
+  }
+
+  @Test
+  void testTagsOnlySecondMatterTypeRowWhenSecondHalfOfCodeChanged() {
+    claim = createCivilClaim();
+    mockClaimHistorySummary("claim.matterTypeCode", "claim.matterTypeCode#1");
+
+    var doc = renderDocument();
+
+    assertSummaryListRowHasNoAmendedTag(getSummaryListRowInCard(doc, "Case type", "Matter type 1"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Case type", "Matter type 2"));
+  }
+
+  @Test
+  void testTagsOnlyFirstMatterTypeRowWhenFirstHalfOfCodeChanged() {
+    claim = createCivilClaim();
+    mockClaimHistorySummary("claim.matterTypeCode", "claim.matterTypeCode#0");
+
+    var doc = renderDocument();
+
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Case type", "Matter type 1"));
+    assertSummaryListRowHasNoAmendedTag(getSummaryListRowInCard(doc, "Case type", "Matter type 2"));
   }
 
   @Test
@@ -344,7 +367,8 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
     claim = createCivilClaim();
     mockClaimHistorySummary(
         "claim.feeCode",
-        "claim.matterTypeCode",
+        "claim.matterTypeCode#0",
+        "claim.matterTypeCode#1",
         "claim.scheduleReference",
         "claimCase.caseId",
         "claim.caseReferenceNumber",

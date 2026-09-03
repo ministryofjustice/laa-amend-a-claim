@@ -2,6 +2,7 @@ package uk.gov.justice.laa.payments.amend.viewmodels.viewfield;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import uk.gov.justice.laa.payments.amend.models.CivilClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.enums.Amendability;
 import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
+import uk.gov.justice.laa.payments.amend.utils.MatterTypeUtils;
 
 @Getter
 public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetails> {
@@ -70,13 +72,23 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       String.class,
       CivilClaimDetails::getMatterType1,
       ClaimPatch.Builder::matterTypeCode,
-      "claim.matterTypeCode"),
+      "claim.matterTypeCode") {
+    @Override
+    public Set<String> getAmendedFieldIdentifiers() {
+      return Set.of(MatterTypeUtils.partIdentifier(MatterTypeUtils.FIRST_PART));
+    }
+  },
   MATTER_TYPE_CODE_2(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getMatterType2,
       ClaimPatch.Builder::matterTypeCode,
-      "claim.matterTypeCode"),
+      "claim.matterTypeCode") {
+    @Override
+    public Set<String> getAmendedFieldIdentifiers() {
+      return Set.of(MatterTypeUtils.partIdentifier(MatterTypeUtils.SECOND_PART));
+    }
+  },
 
   // Case details fields
   STAGE_REACHED(

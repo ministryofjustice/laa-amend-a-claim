@@ -2,6 +2,7 @@ package uk.gov.justice.laa.payments.amend.viewmodels.viewfield;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.Getter;
@@ -15,7 +16,12 @@ import uk.gov.justice.laa.payments.amend.viewmodels.ThymeleafMessage;
 @Getter
 public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   // Claim overview only fields
-  CLIENT_NAME(FieldType.TEXT, ClaimDetailsViewField::getClientName),
+  CLIENT_NAME(FieldType.TEXT, ClaimDetailsViewField::getClientName) {
+    @Override
+    public Set<String> getAmendedFieldIdentifiers() {
+      return Set.of("client.clientForename", "client.clientSurname");
+    }
+  },
   PROVIDER_NAME(FieldType.TEXT, ClaimDetailsViewField::getProviderName),
   OFFICE_CODE(FieldType.TEXT, ClaimDetails::getOfficeCode),
   SUBMITTED_DATE(FieldType.DATE, ClaimDetails::getSubmittedDate),
@@ -24,7 +30,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   FEE_CODE_DESCRIPTION(FieldType.TEXT, ClaimDetails::getFeeCodeDescription),
   ESCAPED(FieldType.BOOLEAN, ClaimDetails::getEscaped),
   VAT_REQUESTED(FieldType.BOOLEAN, ClaimDetails::getVatApplicable),
-  TOTAL(FieldType.TEXT, ClaimDetails::getTotalAmount),
+  TOTAL(FieldType.TEXT, ClaimDetails::getTotalAmount, "fee.totalAmount"),
 
   // Common client fields
   SURNAME(
@@ -90,13 +96,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       "claim.feeCode"),
 
   // Common cost fields
-  FIXED_FEE(
-      FieldType.TEXT,
-      Object.class,
-      ClaimDetails::getFixedFee,
-      (b, v) -> b,
-      Amendability.NEVER,
-      "fee.fixedFeeAmount"),
+  FIXED_FEE(FieldType.TEXT, ClaimDetails::getFixedFee, "fee.fixedFeeAmount"),
   PROFIT_COST(
       FieldType.BIG_DECIMAL,
       BigDecimal.class,
@@ -134,8 +134,21 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   private final Amendability amendability;
   private final List<FieldOption> options;
 
-  <T> ClaimDetailsViewField(FieldType fieldType, Function<ClaimDetails, ?> getter) {
-    this(fieldType, Object.class, getter, (b, v) -> b, List.of(), Amendability.NEVER, "", null);
+  ClaimDetailsViewField(FieldType fieldType, Function<ClaimDetails, ?> getter) {
+    this(fieldType, Object.class, getter, (b, _) -> b, List.of(), Amendability.NEVER, "", null);
+  }
+
+  ClaimDetailsViewField(
+      FieldType fieldType, Function<ClaimDetails, ?> getter, String feeApiFieldName) {
+    this(
+        fieldType,
+        Object.class,
+        getter,
+        (b, _) -> b,
+        List.of(),
+        Amendability.NEVER,
+        "",
+        feeApiFieldName);
   }
 
   <T> ClaimDetailsViewField(

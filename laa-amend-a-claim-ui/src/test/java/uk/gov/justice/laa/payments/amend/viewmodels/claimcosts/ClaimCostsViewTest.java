@@ -3,7 +3,9 @@ package uk.gov.justice.laa.payments.amend.viewmodels.claimcosts;
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField.COUNSELS_COST;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField.SUBSTANTIVE_HEARING;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.FIXED_FEE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.PROFIT_COST;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.TOTAL;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CrimeClaimDetailsViewField.TRAVEL_COSTS;
 
@@ -44,5 +46,9 @@ class ClaimCostsViewTest {
     assertThat(VAT.getFeeApiFieldName()).isEqualTo("fee.vatIndicator");
     assertThat(COUNSELS_COST.getFeeApiFieldName()).isEqualTo("fee.netCostOfCounselAmount");
     assertThat(TRAVEL_COSTS.getFeeApiFieldName()).isEqualTo("fee.netTravelCostsAmount");
+    assertThat(FIXED_FEE.getFeeApiFieldName()).isEqualTo("fee.fixedFeeAmount");
+    assertThat(TOTAL.getFeeApiFieldName()).isEqualTo("fee.totalAmount");
+    assertThat(FIXED_FEE.getClaimsApiFieldName()).isBlank();
+    assertThat(TOTAL.getClaimsApiFieldName()).isBlank();
   }
 }

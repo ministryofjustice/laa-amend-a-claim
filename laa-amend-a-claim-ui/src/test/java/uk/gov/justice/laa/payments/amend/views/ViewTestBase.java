@@ -427,6 +427,10 @@ public abstract class ViewTestBase {
     Assertions.assertEquals("Amended", tag.text());
   }
 
+  protected void assertSummaryListRowHasNoAmendedTag(Element row) {
+    Assertions.assertTrue(row.select(".govuk-summary-list__actions .govuk-tag").isEmpty());
+  }
+
   protected void assertPageHasNoAmendedTags(Document doc) {
     Assertions.assertTrue(doc.select(".govuk-summary-list__actions .govuk-tag").isEmpty());
   }
