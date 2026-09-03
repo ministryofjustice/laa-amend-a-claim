@@ -96,8 +96,10 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       String.class,
       CrimeClaimDetails::getSchemeId,
       Builder::schemeId,
+      NO_OPTIONS,
       Amendability.UNTIL_ASSESSED,
-      "claim.schemeId"),
+      "claim.schemeId",
+      "fee.schemeId"),
   DSCC_NUMBER(
       FieldType.TEXT,
       String.class,
@@ -163,7 +165,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
         List.of(),
         Amendability.ALWAYS,
         claimsApiFieldName,
-        null);
+        NO_FEE_API_FIELD_NAME);
   }
 
   <T> CrimeClaimDetailsViewField(
@@ -181,7 +183,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
         options,
         Amendability.ALWAYS,
         claimsApiFieldName,
-        null);
+        NO_FEE_API_FIELD_NAME);
   }
 
   <T> CrimeClaimDetailsViewField(
@@ -196,7 +198,7 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
         patchType,
         getter,
         patcher,
-        List.of(),
+        NO_OPTIONS,
         Amendability.ALWAYS,
         claimsApiFieldName,
         feeApiFieldName);
@@ -209,7 +211,15 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       BiFunction<Builder, T, Builder> patcher,
       Amendability amendability,
       String claimsApiFieldName) {
-    this(fieldType, patchType, getter, patcher, List.of(), amendability, claimsApiFieldName, null);
+    this(
+        fieldType,
+        patchType,
+        getter,
+        patcher,
+        NO_OPTIONS,
+        amendability,
+        claimsApiFieldName,
+        NO_FEE_API_FIELD_NAME);
   }
 
   <T> CrimeClaimDetailsViewField(

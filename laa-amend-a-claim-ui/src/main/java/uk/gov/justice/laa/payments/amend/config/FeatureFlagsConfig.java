@@ -17,6 +17,7 @@ public class FeatureFlagsConfig {
 
   @NotNull private Boolean isBulkUploadEnabled;
   @NotNull private Boolean isClaimAmendmentEnabled;
+  @NotNull private Boolean isFspHistoryEnabled;
 
   private void checkBulkUploadEnabled() {
     if (!TRUE.equals(isBulkUploadEnabled)) {
@@ -30,11 +31,22 @@ public class FeatureFlagsConfig {
     }
   }
 
+  private void checkFspHistoryEnabled() {
+    if (!TRUE.equals(isFspHistoryEnabled)) {
+      throw new FeatureNotEnabledException("isFspHistoryEnabled is false");
+    }
+  }
+
+  public boolean isFspHistoryEnabled() {
+    return TRUE.equals(isFspHistoryEnabled);
+  }
+
   public void checkEnabled(Feature... features) {
     for (var feature : features) {
       switch (feature) {
         case BULK_UPLOAD -> checkBulkUploadEnabled();
         case CLAIM_AMENDMENT -> checkClaimAmendmentEnabled();
+        case FSP_HISTORY -> checkFspHistoryEnabled();
         default -> throw new FeatureNotImplementedRuntimeException(feature);
       }
     }
