@@ -77,6 +77,38 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
   }
 
   @Test
+  void testTagsRowsRecalculatedByTheFeeScheme() {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    createClaimSummary(claim);
+    claim.setClaimId(claimId);
+    claim.setSubmissionId(submissionId);
+    claim.setAreaOfLaw(LEGAL_HELP);
+
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    mockClaimHistorySummary("fee.totalAmount", "fee.fixedFeeAmount");
+
+    Document doc = renderDocument();
+
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Total"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Fixed fee"));
+  }
+
+  @Test
+  void testTagsCombinedClientNameRowWhenEitherNameChanged() {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    createClaimSummary(claim);
+    claim.setClaimId(claimId);
+    claim.setSubmissionId(submissionId);
+    claim.setAreaOfLaw(LEGAL_HELP);
+
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    mockClaimHistorySummary("client.clientSurname");
+
+    assertSummaryListRowHasAmendedTag(
+        getSummaryListRowInCard(renderDocument(), "Summary", "Client name"));
+  }
+
+  @Test
   void testCivilClaimPage() {
     CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
     createClaimSummary(claim);
@@ -406,7 +438,8 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
         "claim.uniqueFileNumber",
         "client.uniqueClientNumber",
         "claim.feeCode",
-        "claim.matterTypeCode",
+        "claim.matterTypeCode#0",
+        "claim.matterTypeCode#1",
         "claim.caseStartDate",
         "claim.caseConcludedDate",
         "claimSummaryFee.netProfitCostsAmount",
@@ -523,7 +556,8 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
         "claim.uniqueFileNumber",
         "client.uniqueClientNumber",
         "claim.feeCode",
-        "claim.matterTypeCode",
+        "claim.matterTypeCode#0",
+        "claim.matterTypeCode#1",
         "claim.caseStartDate",
         "claim.caseConcludedDate",
         "claimSummaryFee.netProfitCostsAmount",

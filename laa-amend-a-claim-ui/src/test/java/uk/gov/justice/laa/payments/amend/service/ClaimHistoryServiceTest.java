@@ -195,7 +195,7 @@ public class ClaimHistoryServiceTest {
   }
 
   @Test
-  void getClaimHistorySummaryReturnsRequestedAmendmentFieldIdentifiers() {
+  void getClaimHistorySummaryReturnsAmendmentFieldIdentifiersFromEveryChangeSource() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
     claim.setAmended(true);
     claim.setDerivedClaimStatus(AMENDED);
@@ -208,7 +208,7 @@ public class ClaimHistoryServiceTest {
         List.of(
             change("REQUESTED", "claim.feeCode"),
             change("REQUESTED", "claimSummaryFee.netProfitCostsAmount"),
-            change("CALCULATED", "claim.caseStartDate"),
+            change("FSP", "fee.totalAmount"),
             change("REQUESTED", "claim.feeCode"));
 
     var history =
@@ -233,7 +233,67 @@ public class ClaimHistoryServiceTest {
     assertThat(summary.lastUpdatedUser()).isEqualTo(amendedUser);
     assertThat(summary.lastUpdatedDateTime()).isEqualTo(amendedDateTime);
     assertThat(summary.amendedFields())
-        .containsExactlyInAnyOrder("claim.feeCode", "claimSummaryFee.netProfitCostsAmount");
+        .containsExactlyInAnyOrder(
+            "claim.feeCode", "claimSummaryFee.netProfitCostsAmount", "fee.totalAmount");
+  }
+
+  @Test
+  void getClaimHistorySummaryIdentifiesOnlyTheChangedHalfOfTheMatterTypeCode() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setAmended(true);
+    claim.setDerivedClaimStatus(AMENDED);
+
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .metadata(
+                            Map.of(
+                                "changes",
+                                List.of(
+                                    change(
+                                        "REQUESTED",
+                                        "claim.matterTypeCode",
+                                        "FAMA:FPET",
+                                        "FAMA:FPRO"))))));
+
+    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
+
+    assertThat(claimHistoryService.getClaimHistorySummary(claim).amendedFields())
+        .containsExactlyInAnyOrder("claim.matterTypeCode", "claim.matterTypeCode#1");
+  }
+
+  @Test
+  void getClaimHistorySummaryIdentifiesBothHalvesOfTheMatterTypeCodeWhenBothChanged() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setAmended(true);
+    claim.setDerivedClaimStatus(AMENDED);
+
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .metadata(
+                            Map.of(
+                                "changes",
+                                List.of(
+                                    change(
+                                        "REQUESTED",
+                                        "claim.matterTypeCode",
+                                        "FAMA:FPET",
+                                        "FAMB:FPRO"))))));
+
+    when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
+
+    assertThat(claimHistoryService.getClaimHistorySummary(claim).amendedFields())
+        .containsExactlyInAnyOrder(
+            "claim.matterTypeCode", "claim.matterTypeCode#0", "claim.matterTypeCode#1");
   }
 
   @Test
@@ -400,6 +460,24 @@ public class ClaimHistoryServiceTest {
     var change = new LinkedHashMap<String, String>();
     change.put("change_source", source);
     change.put("field_identifier", fieldIdentifier);
+    return change;
+  }
+
+  private static LinkedHashMap<String, String> change(
+      String source, String fieldIdentifier, String before, String after) {
+    var change = change(source, fieldIdentifier);
+    change.put("before", before);
+    change.put("after", after);
+    return change;
+  }
+
+  private static LinkedHashMap<String, Object> change(
+      String source, String fieldIdentifier, Object before, Object after) {
+    var change = new LinkedHashMap<String, Object>();
+    change.put("change_source", source);
+    change.put("field_identifier", fieldIdentifier);
+    change.put("before", before);
+    change.put("after", after);
     return change;
   }
 

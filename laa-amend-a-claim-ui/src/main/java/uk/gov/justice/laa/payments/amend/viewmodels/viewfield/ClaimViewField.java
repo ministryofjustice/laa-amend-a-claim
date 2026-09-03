@@ -3,6 +3,8 @@ package uk.gov.justice.laa.payments.amend.viewmodels.viewfield;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -29,6 +31,17 @@ public interface ClaimViewField<T extends Claim> {
 
   default String getFeeApiFieldName() {
     return null;
+  }
+
+  default Set<String> getAmendedFieldIdentifiers() {
+    return Stream.of(getClaimsApiFieldName(), getFeeApiFieldName())
+        .filter(name -> name != null && !name.isBlank())
+        .collect(Collectors.toUnmodifiableSet());
+  }
+
+  default boolean isAmended(Set<String> amendedFields) {
+    return amendedFields != null
+        && getAmendedFieldIdentifiers().stream().anyMatch(amendedFields::contains);
   }
 
   ClaimViewFieldPatcher<?> getPatcher();
