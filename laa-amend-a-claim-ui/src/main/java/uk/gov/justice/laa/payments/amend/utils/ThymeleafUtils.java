@@ -111,8 +111,16 @@ public class ThymeleafUtils {
   }
 
   public ThymeleafString getFormattedValue(ClaimViewField<?> field, Object value) {
+    if (field == null) {
+      return getFormattedValue(value);
+    }
+
     if (field.getFieldType() == FieldType.ENUM && value != null) {
       return getFormattedOptionValue(field.getOptions(), value);
+    }
+
+    if (field.getFieldType() == FieldType.PERCENTAGE && value instanceof BigDecimal bigDecimal) {
+      return new ThymeleafLiteralString(bigDecimal.stripTrailingZeros().toPlainString() + "%");
     }
 
     return getFormattedValue(value);

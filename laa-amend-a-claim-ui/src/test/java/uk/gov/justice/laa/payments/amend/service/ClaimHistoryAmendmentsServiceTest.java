@@ -42,15 +42,13 @@ class ClaimHistoryAmendmentsServiceTest {
 
   @Mock private UserRetrievalService userRetrievalService;
   @Mock private SystemReferenceService systemReferenceService;
-  @Mock private AvailableFeeCodesService availableFeeCodesService;
 
   private ClaimHistoryAmendmentsService claimHistoryAmendmentsService;
 
   @BeforeEach
   void setUp() {
     claimHistoryAmendmentsService =
-        new ClaimHistoryAmendmentsService(
-            userRetrievalService, systemReferenceService, availableFeeCodesService);
+        new ClaimHistoryAmendmentsService(userRetrievalService, systemReferenceService);
   }
 
   @Test
@@ -66,9 +64,6 @@ class ClaimHistoryAmendmentsServiceTest {
         .thenReturn(Map.of("PROVIDER", "Provider"));
     when(systemReferenceService.getAmendmentRequestReason("PROVIDER", referenceList))
         .thenReturn(Map.of("CORRECTION", "Correction"));
-    when(availableFeeCodesService.getAvailableFeeCodes(claim.getAreaOfLaw()))
-        .thenReturn(Map.of("OLDFEE", "OLDFEE - Old fee", "NEWFEE", "NEWFEE - New fee"));
-
     var changes =
         List.of(
             change("REQUESTED", "client.genderCode", "M", "F"),
@@ -130,8 +125,8 @@ class ClaimHistoryAmendmentsServiceTest {
             .orElseThrow();
     assertThat(feeCodeChange.field()).isNotNull();
     assertThat(feeCodeChange.field().name()).isEqualTo("FEE_CODE");
-    assertThat(feeCodeChange.before()).isEqualTo("OLDFEE - Old fee");
-    assertThat(feeCodeChange.after()).isEqualTo("NEWFEE - New fee");
+    assertThat(feeCodeChange.before()).isEqualTo("OLDFEE");
+    assertThat(feeCodeChange.after()).isEqualTo("NEWFEE");
   }
 
   @Test
@@ -222,16 +217,6 @@ class ClaimHistoryAmendmentsServiceTest {
     var claim = claimForArea(areaOfLaw);
     var before = sampleValue(expectedField, false);
     var after = sampleValue(expectedField, true);
-    if (expectedField == ClaimDetailsViewField.FEE_CODE) {
-      when(availableFeeCodesService.getAvailableFeeCodes(areaOfLaw))
-          .thenReturn(
-              Map.of(
-                  String.valueOf(before.raw()),
-                  "Before fee",
-                  String.valueOf(after.raw()),
-                  "After fee"));
-    }
-
     var history =
         new ClaimHistoryResultSet()
             .claimId(claim.getClaimId())
@@ -260,13 +245,8 @@ class ClaimHistoryAmendmentsServiceTest {
     assertThat(actual.areaOfLaw()).isEqualTo(areaOfLaw);
     assertThat(actual.fieldIdentifier()).isEqualTo(expectedField.getClaimsApiFieldName());
     assertThat(actual.field()).isEqualTo(expectedField);
-    if (expectedField == ClaimDetailsViewField.FEE_CODE) {
-      assertThat(actual.before()).isEqualTo("Before fee");
-      assertThat(actual.after()).isEqualTo("After fee");
-    } else {
-      assertThat(actual.before()).isEqualTo(before.expected());
-      assertThat(actual.after()).isEqualTo(after.expected());
-    }
+    assertThat(actual.before()).isEqualTo(before.expected());
+    assertThat(actual.after()).isEqualTo(after.expected());
   }
 
   private static Stream<Arguments> allMappedFields() {
@@ -284,16 +264,6 @@ class ClaimHistoryAmendmentsServiceTest {
     var claim = claimForArea(areaOfLaw);
     var before = sampleValue(expectedField, false);
     var after = sampleValue(expectedField, true);
-    if (expectedField == ClaimDetailsViewField.FEE_CODE) {
-      when(availableFeeCodesService.getAvailableFeeCodes(areaOfLaw))
-          .thenReturn(
-              Map.of(
-                  String.valueOf(before.raw()),
-                  "Before fee",
-                  String.valueOf(after.raw()),
-                  "After fee"));
-    }
-
     var history =
         new ClaimHistoryResultSet()
             .claimId(claim.getClaimId())
@@ -328,13 +298,8 @@ class ClaimHistoryAmendmentsServiceTest {
     assertThat(actual.areaOfLaw()).isEqualTo(areaOfLaw);
     assertThat(actual.fieldIdentifier()).isEqualTo(expectedField.getFeeApiFieldName());
     assertThat(actual.field()).isEqualTo(expectedField);
-    if (expectedField == ClaimDetailsViewField.FEE_CODE) {
-      assertThat(actual.before()).isEqualTo("Before fee");
-      assertThat(actual.after()).isEqualTo("After fee");
-    } else {
-      assertThat(actual.before()).isEqualTo(before.expected());
-      assertThat(actual.after()).isEqualTo(after.expected());
-    }
+    assertThat(actual.before()).isEqualTo(before.expected());
+    assertThat(actual.after()).isEqualTo(after.expected());
   }
 
   private static Stream<Arguments> allMappedFspFields() {
@@ -384,6 +349,7 @@ class ClaimHistoryAmendmentsServiceTest {
             "fee.boltOnHomeOfficeInterviewCount",
             "fee.feeCodeDescription",
             "fee.feeCode",
+            "fee.schemeId",
             "fee.vatIndicator",
             "fee.requestedNetProfitCostsAmount",
             "fee.requestedNetDisbursementAmount")
@@ -462,6 +428,7 @@ class ClaimHistoryAmendmentsServiceTest {
           "boltOnHomeOfficeInterviewCount",
           "feeCodeDescription",
           "feeCode",
+          "schemeId",
           "vatIndicator",
           "requestedNetProfitCostsAmount",
           "requestedNetDisbursementAmount");
@@ -512,8 +479,12 @@ class ClaimHistoryAmendmentsServiceTest {
         var raw = isAfter ? "8" : "7";
         yield new SampleValue(raw, Integer.parseInt(raw));
       }
-      case BIG_DECIMAL -> {
+      case MONETARY -> {
         var raw = isAfter ? "201.75" : "100.50";
+        yield new SampleValue(raw, new BigDecimal(raw));
+      }
+      case PERCENTAGE -> {
+        var raw = isAfter ? "20.00" : "12.34";
         yield new SampleValue(raw, new BigDecimal(raw));
       }
       case DATE -> {

@@ -227,7 +227,7 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
 
     var timelineItem = selectFirst(doc, ".moj-timeline .moj-timeline__item");
     assertThat(timelineItem.selectFirst(".moj-timeline__title").text())
-        .isEqualTo("Claim recalculated");
+        .isEqualTo("Total claim value recalculated");
     assertThat(timelineItem.selectFirst(".moj-timeline__byline").text())
         .isEqualTo("by Fee Scheme Platform");
     assertThat(timelineItem.selectFirst(".moj-timeline__description p:nth-of-type(1)").text())
@@ -425,7 +425,6 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "net profit costs changed from before to after",
             "net travel costs changed from before to after",
             "net waiting costs changed from before to after",
-            "scheme ID changed from before to after",
             "VAT rate applied changed from before to after"));
   }
 
@@ -473,6 +472,34 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
             "net disbursements changed from before to after",
             "net profit costs changed from before to after",
             "VAT rate applied changed from before to after"));
+  }
+
+  @Test
+  void testPageWithFspEventFormatsVatRateAppliedAsPercentage() {
+    var fspEvent =
+        new ClaimHistoryFspEvent(
+            ASSESSED_AT,
+            null,
+            new BigDecimal("1000.00"),
+            new BigDecimal("1200.50"),
+            List.of(
+                new ClaimHistoryAmendmentChange(
+                    ClaimDetailsViewField.VAT_RATE_APPLIED,
+                    "fee.vatRateApplied",
+                    new BigDecimal("12.34"),
+                    new BigDecimal("20"),
+                    AreaOfLaw.LEGAL_HELP)));
+
+    when(claimHistoryService.getClaimHistory(claim))
+        .thenReturn(new ClaimHistory(List.of(fspEvent), null, null));
+
+    var doc = renderDocument();
+    var bulletItems =
+        doc.select(".moj-timeline__description ul.govuk-list--bullet li").stream()
+            .map(Element::text)
+            .toList();
+
+    assertThat(bulletItems).containsExactly("VAT rate applied changed from 12.34% to 20%");
   }
 
   private void assertAmendmentBulletListForArea(
@@ -543,7 +570,7 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
 
     var timelineItem = selectFirst(doc, ".moj-timeline .moj-timeline__item");
     assertThat(timelineItem.selectFirst(".moj-timeline__title").text())
-        .isEqualTo("Claim recalculated");
+        .isEqualTo("Total claim value recalculated");
     assertThat(timelineItem.selectFirst(".moj-timeline__description p:nth-of-type(1)").text())
         .isEqualTo("Total claim value recalculated from £1,000.00 to £1,200.50");
     assertThat(timelineItem.selectFirst(".moj-timeline__description p:nth-of-type(2)").text())
@@ -621,6 +648,7 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
           "boltOnHomeOfficeInterviewCount",
           "feeCodeDescription",
           "feeCode",
+          "schemeId",
           "vatIndicator",
           "requestedNetProfitCostsAmount",
           "requestedNetDisbursementAmount");

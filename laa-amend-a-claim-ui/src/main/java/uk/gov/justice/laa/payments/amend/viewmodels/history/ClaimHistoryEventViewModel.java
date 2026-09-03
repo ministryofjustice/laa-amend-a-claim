@@ -151,7 +151,10 @@ public record ClaimHistoryEventViewModel(
         .map(
             change ->
                 new ClaimHistoryAmendmentChangeViewModel(
-                    toAmendmentFieldLabel(change, messageSource), change.before(), change.after()))
+                    change.field(),
+                    toAmendmentFieldLabel(change, messageSource),
+                    change.before(),
+                    change.after()))
         .toList();
   }
 
@@ -236,7 +239,10 @@ public record ClaimHistoryEventViewModel(
         .map(
             change ->
                 new ClaimHistoryAmendmentChangeViewModel(
-                    toAmendmentFieldLabel(change, messageSource), change.before(), change.after()))
+                    change.field(),
+                    toAmendmentFieldLabel(change, messageSource),
+                    change.before(),
+                    change.after()))
         .toList();
   }
 }

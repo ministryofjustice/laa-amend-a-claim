@@ -130,7 +130,7 @@ public class AmendmentForm {
   }
 
   public boolean isAmendment(String key, AmendmentForm originalForm, FieldType fieldType) {
-    if (fieldType == FieldType.BIG_DECIMAL) {
+    if (fieldType == FieldType.MONETARY) {
       try {
         return !Objects.equals(originalForm.getBigDecimalValue(key), getBigDecimalValue(key));
       } catch (IllegalArgumentException e) {
@@ -178,7 +178,7 @@ public class AmendmentForm {
     return switch (field.getFieldType()) {
       case DATE -> getDateValue(field.name());
       case BOOLEAN -> getBooleanValue(field.name());
-      case BIG_DECIMAL -> getBigDecimalValue(field.name());
+      case MONETARY, PERCENTAGE -> getBigDecimalValue(field.name());
       case NUMBER -> getIntegerValue(field.name());
       case ENUM, TEXT -> inputs.get(field.name());
     };
