@@ -37,7 +37,7 @@
                         <p th:text="#{claimHistory.claimAmended.fieldsIntro}"></p>
                         <ul class="govuk-list govuk-list--bullet">
                             <li th:each="change : ${event.amendmentChanges}"
-                                th:text="#{claimHistory.claimAmended.change(${change.fieldLabel.resolve(#messages)}, ${@ThymeleafUtils.getFormattedValue(change.before).resolve(#messages)}, ${@ThymeleafUtils.getFormattedValue(change.after).resolve(#messages)})}"></li>
+                                th:text="#{claimHistory.claimAmended.change(${change.fieldLabel.resolve(#messages)}, ${@ThymeleafUtils.getFormattedValue(change.field, change.before).resolve(#messages)}, ${@ThymeleafUtils.getFormattedValue(change.field, change.after).resolve(#messages)})}"></li>
                         </ul>
                     </div>
                     <div class="moj-timeline__description" th:if="${event.fspEvent}">
@@ -47,7 +47,7 @@
                             <p th:text="#{claimHistory.claimFspRecalculated.fieldsIntro}"></p>
                             <ul class="govuk-list govuk-list--bullet">
                                 <li th:each="change : ${event.fspRecalculatedChanges}"
-                                    th:text="#{claimHistory.claimFspRecalculated.change(${change.fieldLabel.resolve(#messages)}, ${@ThymeleafUtils.getFormattedValue(change.before).resolve(#messages)}, ${@ThymeleafUtils.getFormattedValue(change.after).resolve(#messages)})}"></li>
+                                    th:text="#{claimHistory.claimFspRecalculated.change(${change.fieldLabel.resolve(#messages)}, ${@ThymeleafUtils.getFormattedValue(change.field, change.before).resolve(#messages)}, ${@ThymeleafUtils.getFormattedValue(change.field, change.after).resolve(#messages)})}"></li>
                             </ul>
                         </th:block>
                     </div>

@@ -11,8 +11,8 @@
   <th:block th:if="${field.fieldType.name() == 'ENUM'}">
     <th:block th:replace="~{fragments/amendments/enum-input :: amendmentEnumInput(${field}, ${labelMessageKey}, ${formErrors})}"></th:block>
   </th:block>
-  <th:block th:if="${field.fieldType.name() == 'BIG_DECIMAL'}">
-    <th:block th:replace="~{fragments/amendments/big-decimal-input :: amendmentBigDecimalInput(${field.name()}, ${labelMessageKey}, ${formErrors})}"></th:block>
+  <th:block th:if="${field.fieldType.name() == 'MONETARY'}">
+    <th:block th:replace="~{fragments/amendments/monetary-input :: amendmentMonetaryInput(${field.name()}, ${labelMessageKey}, ${formErrors})}"></th:block>
   </th:block>
   <th:block th:if="${field.fieldType.name() == 'NUMBER'}">
     <th:block th:replace="~{fragments/amendments/number-input :: amendmentNumberInput(${field.name()}, ${labelMessageKey}, ${formErrors})}"></th:block>

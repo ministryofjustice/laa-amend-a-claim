@@ -129,14 +129,14 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
 
   // Cost fields
   TRAVEL_COSTS(
-      FieldType.BIG_DECIMAL,
+      FieldType.MONETARY,
       BigDecimal.class,
       CrimeClaimDetails::getTravelCosts,
       Builder::travelWaitingCostsAmount,
       "claimSummaryFee.travelWaitingCostsAmount",
       "fee.netTravelCostsAmount"),
   WAITING_COSTS(
-      FieldType.BIG_DECIMAL,
+      FieldType.MONETARY,
       BigDecimal.class,
       CrimeClaimDetails::getWaitingCosts,
       Builder::netWaitingCostsAmount,

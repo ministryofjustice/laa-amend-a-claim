@@ -130,7 +130,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       FieldOptions.CASE_STAGE,
       "claimCase.caseStageCode"),
   VALUE_OF_COSTS(
-      FieldType.BIG_DECIMAL,
+      FieldType.MONETARY,
       BigDecimal.class,
       CivilClaimDetails::getValueOfCosts,
       Builder::costsDamagesRecoveredAmount,
@@ -317,28 +317,28 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
 
   // Cost fields
   COUNSELS_COST(
-      FieldType.BIG_DECIMAL,
+      FieldType.MONETARY,
       BigDecimal.class,
       CivilClaimDetails::getCounselsCost,
       Builder::netCounselCostsAmount,
       "claimSummaryFee.netCounselCostsAmount",
       "fee.netCostOfCounselAmount"),
   TRAVEL_AND_WAITING_COSTS(
-      FieldType.BIG_DECIMAL,
+      FieldType.MONETARY,
       BigDecimal.class,
       CivilClaimDetails::getTravelAndWaitingCosts,
       Builder::travelWaitingCostsAmount,
       "claimSummaryFee.travelWaitingCostsAmount",
       "fee.travelAndWaitingCostsAmount"),
   DETENTION_TRAVEL(
-      FieldType.BIG_DECIMAL,
+      FieldType.MONETARY,
       BigDecimal.class,
       CivilClaimDetails::getDetentionTravelWaitingCosts,
       Builder::detentionTravelWaitingCostsAmount,
       "claimSummaryFee.detentionTravelWaitingCostsAmount",
       "fee.detentionTravelAndWaitingCostsAmount"),
   JR_FORM_FILLING(
-      FieldType.BIG_DECIMAL,
+      FieldType.MONETARY,
       BigDecimal.class,
       CivilClaimDetails::getJrFormFillingCost,
       Builder::jrFormFillingAmount,
@@ -380,7 +380,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       "claimSummaryFee.isSubstantiveHearing",
       "fee.boltOnSubstantiveHearingFee"),
   BOLT_ON_TOTAL_FEE(
-      FieldType.BIG_DECIMAL,
+      FieldType.MONETARY,
       NO_PATCH_TYPE,
       NO_CIVIL_GETTER,
       NO_PATCHER,
