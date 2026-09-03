@@ -316,7 +316,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£999.99");
     assertSummaryListRow(page, "Amendment request details", "Amendment requested by", "Provider");
     assertSummaryListRow(
-        page, "Amendment request details", "Reason for amendment", "Provider Error");
+        page, "Amendment request details", "Reason for amendment", "Provider error");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);
@@ -423,7 +423,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     assertSummaryListRow(page, "Reported costs", "Net disbursements", "£400.00", "£200.00");
     assertSummaryListRow(page, "Amendment request details", "Amendment requested by", "Provider");
     assertSummaryListRow(
-        page, "Amendment request details", "Reason for amendment", "Provider Error");
+        page, "Amendment request details", "Reason for amendment", "Provider error");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);
@@ -535,7 +535,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
         page, "Case details", "Case concluded date", "30 January 2020", "31 January 2020");
     assertSummaryListRow(page, "Amendment request details", "Amendment requested by", "Provider");
     assertSummaryListRow(
-        page, "Amendment request details", "Reason for amendment", "Provider Error");
+        page, "Amendment request details", "Reason for amendment", "Provider error");
 
     checkPage.clickSubmitButton();
     new ConfirmationPage(page);

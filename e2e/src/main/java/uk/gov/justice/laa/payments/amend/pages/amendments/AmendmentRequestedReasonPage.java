@@ -16,7 +16,7 @@ public class AmendmentRequestedReasonPage extends LaaPage {
   public AmendmentRequestedReasonPage(Page page) {
     super(page, "Why was the amendment requested?");
 
-    providerErrorRadio = page.getByLabel("Provider Error");
+    providerErrorRadio = page.getByLabel("Provider error");
     continueButton = page.getByRole(BUTTON, new Page.GetByRoleOptions().setName("Continue"));
   }
 }

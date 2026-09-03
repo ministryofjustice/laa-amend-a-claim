@@ -1,15 +1,18 @@
 package uk.gov.justice.laa.payments.amend.service;
 
 import static java.time.ZoneOffset.UTC;
+import static java.util.stream.Stream.empty;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.ASSESSMENT;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.SUBMISSION;
+import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.VOID;
 import static uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum.ESCAPE_CASE_ASSESSMENT;
 import static uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum.STAGE_DISBURSEMENT_ASSESSMENT;
-import static uk.gov.justice.laa.payments.amend.models.enums.AssessmentTypeEnum.VOID;
 import static uk.gov.justice.laa.payments.amend.models.enums.DerivedClaimStatus.ACCEPTED;
 import static uk.gov.justice.laa.payments.amend.models.enums.DerivedClaimStatus.AMENDED;
 import static uk.gov.justice.laa.payments.amend.models.enums.DerivedClaimStatus.ASSESSED;
@@ -17,7 +20,6 @@ import static uk.gov.justice.laa.payments.amend.models.enums.DerivedClaimStatus.
 import static uk.gov.justice.laa.payments.amend.models.enums.DerivedClaimStatus.VOIDED;
 import static uk.gov.justice.laa.payments.amend.models.enums.OutcomeType.PAID_IN_FULL;
 import static uk.gov.justice.laa.payments.amend.models.enums.OutcomeType.REDUCED;
-import static uk.gov.justice.laa.payments.amend.service.ClaimHistoryService.MAXIMUM_ASSESSMENTS;
 
 import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
@@ -31,10 +33,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryResultSet;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
 import uk.gov.justice.laa.payments.amend.models.AmendmentConfirmation;
-import uk.gov.justice.laa.payments.amend.models.AssessmentInfo;
 import uk.gov.justice.laa.payments.amend.models.MicrosoftApiUser;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAssessedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryCreatedEvent;
@@ -47,6 +49,7 @@ import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
 public class ClaimHistoryServiceTest {
 
   private static final String PROVIDER_NAME = "Some Provider";
+  private static final String OFFICE_CODE = "123456";
 
   private static final MicrosoftApiUser ESCAPE_CASE_ASSESSED_USER =
       new MicrosoftApiUser(UUID.randomUUID().toString(), "Escape case assessment user", null, null);
@@ -64,8 +67,6 @@ public class ClaimHistoryServiceTest {
       CREATED_DATE_TIME.plusDays(2);
   private static final OffsetDateTime VOIDED_DATE_TIME = CREATED_DATE_TIME.plusDays(3);
 
-  @Mock private AssessmentService assessmentService;
-
   @Mock private ClaimsApiClient claimsApiClient;
 
   @Mock private ProviderService providerService;
@@ -80,25 +81,19 @@ public class ClaimHistoryServiceTest {
   void setUp() {
     claimHistoryService =
         new ClaimHistoryService(
-            assessmentService,
-            claimsApiClient,
-            providerService,
-            userRetrievalService,
-            claimHistoryAmendmentsService);
+            claimsApiClient, providerService, userRetrievalService, claimHistoryAmendmentsService);
   }
 
   @Test
   void getClaimHistory() {
     var claim = MockClaimsFunctions.createMockCivilClaim();
-    claim.setSubmittedDate(CREATED_DATE_TIME);
-    claim.setHasAssessment(true);
     claim.setEscaped(true);
 
     var providerFirm =
         ProviderFirmOfficeDto.builder()
             .firm(ProviderFirmSummary.builder().firmName(PROVIDER_NAME).build())
             .build();
-    when(providerService.getProviderFirm(claim.getOfficeCode())).thenReturn(providerFirm);
+    when(providerService.getProviderFirm(OFFICE_CODE)).thenReturn(providerFirm);
 
     when(userRetrievalService.getUser(ESCAPE_CASE_ASSESSED_USER.id()))
         .thenReturn(ESCAPE_CASE_ASSESSED_USER);
@@ -106,39 +101,44 @@ public class ClaimHistoryServiceTest {
         .thenReturn(STAGE_DISBURSEMENT_ASSESSED_USER);
     when(userRetrievalService.getUser(VOIDED_USER.id())).thenReturn(VOIDED_USER);
 
-    var voided =
-        AssessmentInfo.builder()
-            .assessmentType(VOID)
-            .lastAssessedBy(VOIDED_USER.id())
-            .lastAssessmentDate(VOIDED_DATE_TIME)
-            .build();
-
-    var assessedStageDisbursement =
-        AssessmentInfo.builder()
-            .assessmentType(STAGE_DISBURSEMENT_ASSESSMENT)
-            .lastAssessedBy(STAGE_DISBURSEMENT_ASSESSED_USER.id())
-            .lastAssessmentDate(STAGE_DISBURSEMENT_ASSESSED_DATE_TIME)
-            .lastAssessmentOutcome(PAID_IN_FULL)
-            .build();
-
-    var assessedEscapeCase =
-        AssessmentInfo.builder()
-            .assessmentType(ESCAPE_CASE_ASSESSMENT)
-            .lastAssessedBy(ESCAPE_CASE_ASSESSED_USER.id())
-            .lastAssessmentDate(ESCAPE_CASE_ASSESSED_DATE_TIME)
-            .lastAssessmentOutcome(REDUCED)
-            .build();
-
-    var assessments = List.of(voided, assessedStageDisbursement, assessedEscapeCase);
-    when(assessmentService.getLatestAssessmentsByClaim(claim.getClaimId(), MAXIMUM_ASSESSMENTS))
-        .thenReturn(assessments);
     when(claimsApiClient.getClaimHistory(claim.getClaimId()))
         .thenReturn(
-            Mono.just(new ClaimHistoryResultSet().claimId(claim.getClaimId()).events(List.of())));
-    when(claimHistoryAmendmentsService.toAmendmentClaimHistoryEvents(
-            org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any()))
-        .thenReturn(java.util.stream.Stream.empty());
-
+            Mono.just(
+                new ClaimHistoryResultSet()
+                    .claimId(claim.getClaimId())
+                    .events(
+                        List.of(
+                            historyEvent(
+                                SUBMISSION,
+                                UUID.randomUUID().toString(),
+                                CREATED_DATE_TIME,
+                                Map.of("office_account_number", OFFICE_CODE)),
+                            historyEvent(
+                                ASSESSMENT,
+                                ESCAPE_CASE_ASSESSED_USER.id(),
+                                ESCAPE_CASE_ASSESSED_DATE_TIME,
+                                Map.of(
+                                    "assessment_type",
+                                    "ESCAPE_CASE_ASSESSMENT",
+                                    "assessment_outcome",
+                                    "REDUCED_STILL_ESCAPED")),
+                            historyEvent(
+                                ASSESSMENT,
+                                STAGE_DISBURSEMENT_ASSESSED_USER.id(),
+                                STAGE_DISBURSEMENT_ASSESSED_DATE_TIME,
+                                Map.of(
+                                    "assessment_type",
+                                    "STAGE_DISBURSEMENT_ASSESSMENT",
+                                    "assessment_outcome",
+                                    "PAID_IN_FULL")),
+                            historyEvent(
+                                VOID,
+                                VOIDED_USER.id(),
+                                VOIDED_DATE_TIME,
+                                Map.of(
+                                    "assessment_type", "VOID", "assessment_reason", "Voided"))))));
+    when(claimHistoryAmendmentsService.toAmendmentClaimHistoryEventsFromApiEvents(anyList(), any()))
+        .thenReturn(empty());
     var claimHistory = claimHistoryService.getClaimHistory(claim);
 
     var voidedEvent = new ClaimHistoryVoidedEvent(VOIDED_DATE_TIME, VOIDED_USER.displayName());
@@ -156,8 +156,8 @@ public class ClaimHistoryServiceTest {
             REDUCED);
     var createdEvent = new ClaimHistoryCreatedEvent(CREATED_DATE_TIME, PROVIDER_NAME, true);
 
-    assertThat(claimHistory.lastUpdatedUser()).isNull();
-    assertThat(claimHistory.lastUpdatedDateTime()).isNull();
+    assertThat(claimHistory.lastUpdatedUser()).isEqualTo(ESCAPE_CASE_ASSESSED_USER);
+    assertThat(claimHistory.lastUpdatedDateTime()).isEqualTo(ESCAPE_CASE_ASSESSED_DATE_TIME);
     assertThat(claimHistory.events())
         .containsExactly(
             voidedEvent, assessedStageDisbursementEvent, assessedEscapeCaseEvent, createdEvent);
@@ -216,10 +216,10 @@ public class ClaimHistoryServiceTest {
             .claimId(claim.getClaimId())
             .events(
                 List.of(
-                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                    new ClaimHistoryEvent()
                         .eventType(ASSESSMENT)
                         .metadata(Map.of("changes", requestedChanges)),
-                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                    new ClaimHistoryEvent()
                         .eventType(AMENDMENT)
                         .actorId(amendedUser.id())
                         .eventTimestamp(amendedDateTime)
@@ -312,14 +312,7 @@ public class ClaimHistoryServiceTest {
     var history =
         new ClaimHistoryResultSet()
             .claimId(claim.getClaimId())
-            .events(
-                List.of(
-                    historyEvent(
-                        uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType
-                            .VOID,
-                        voidedUser.id(),
-                        VOIDED_DATE_TIME,
-                        Map.of())));
+            .events(List.of(historyEvent(VOID, voidedUser.id(), VOIDED_DATE_TIME, Map.of())));
 
     when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
     when(userRetrievalService.getUser(voidedUser.id())).thenReturn(voidedUser);
@@ -368,7 +361,7 @@ public class ClaimHistoryServiceTest {
             .claimId(claim.getClaimId())
             .events(
                 List.of(
-                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                    new ClaimHistoryEvent()
                         .eventType(AMENDMENT)
                         .metadata(Map.of("price_changed", true, "changes", changes))));
 
@@ -393,7 +386,7 @@ public class ClaimHistoryServiceTest {
             .claimId(claim.getClaimId())
             .events(
                 List.of(
-                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                    new ClaimHistoryEvent()
                         .eventType(AMENDMENT)
                         .metadata(Map.of("price_changed", false, "changes", List.of()))));
 
@@ -410,22 +403,12 @@ public class ClaimHistoryServiceTest {
     return change;
   }
 
-  private static LinkedHashMap<String, Object> change(
-      String source, String fieldIdentifier, Object before, Object after) {
-    var change = new LinkedHashMap<String, Object>();
-    change.put("change_source", source);
-    change.put("field_identifier", fieldIdentifier);
-    change.put("before", before);
-    change.put("after", after);
-    return change;
-  }
-
-  private static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent historyEvent(
+  private static ClaimHistoryEvent historyEvent(
       uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType eventType,
       String actorId,
       OffsetDateTime eventTimestamp,
       Map<String, Object> metadata) {
-    return new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+    return new ClaimHistoryEvent()
         .eventType(eventType)
         .actorId(actorId)
         .eventTimestamp(eventTimestamp)
