@@ -17,8 +17,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.openapitools.jackson.nullable.JsonNullable;
 import reactor.core.publisher.Mono;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimAmendmentPatch;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
@@ -135,7 +136,7 @@ class CheckAmendmentsServiceTest {
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     var expected =
-        ClaimPatch.builder()
+        ClaimAmendmentPatch.builder()
             .amendmentUserId(patch.getAmendmentUserId())
             .amendmentReasonCode("CASE_REOPENED_REBILLED")
             .amendmentRequestedBy("PROVIDER")
@@ -359,7 +360,7 @@ class CheckAmendmentsServiceTest {
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     var expected =
-        ClaimPatch.builder()
+        ClaimAmendmentPatch.builder()
             .amendmentUserId(patch.getAmendmentUserId())
             .amendmentReasonCode("CASE_REOPENED_REBILLED")
             .amendmentRequestedBy("PROVIDER")
@@ -558,7 +559,7 @@ class CheckAmendmentsServiceTest {
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
     var expected =
-        ClaimPatch.builder()
+        ClaimAmendmentPatch.builder()
             .amendmentUserId(USER_ID)
             .amendmentReasonCode("CASE_REOPENED_REBILLED")
             .amendmentRequestedBy("PROVIDER")
@@ -650,23 +651,23 @@ class CheckAmendmentsServiceTest {
     var claimId = UUID.randomUUID();
     var patch = submitAndCapturePatch(submissionId, claimId, claim, amendmentForms);
 
-    assertThat(patch.getFeeCode()).isNull();
-    assertThat(patch.getUniqueFileNumber()).isNull();
-    assertThat(patch.getSchemeId()).isNull();
-    assertThat(patch.getPoliceStationCourtPrisonId()).isNull();
+    assertThat(patch.getFeeCode()).isEqualTo(JsonNullable.undefined());
+    assertThat(patch.getUniqueFileNumber()).isEqualTo(JsonNullable.undefined());
+    assertThat(patch.getSchemeId()).isEqualTo(JsonNullable.undefined());
+    assertThat(patch.getPoliceStationCourtPrisonId()).isEqualTo(JsonNullable.undefined());
 
-    assertThat(patch.getMaatId()).isEqualTo("NEW_MAAT");
-    assertThat(patch.getStageReachedCode()).isEqualTo("NEW_STAGE");
+    assertThat(patch.getMaatId()).isEqualTo(JsonNullable.of("NEW_MAAT"));
+    assertThat(patch.getStageReachedCode()).isEqualTo(JsonNullable.of("NEW_STAGE"));
   }
 
-  private ClaimPatch submitAndCapturePatch(
+  private ClaimAmendmentPatch submitAndCapturePatch(
       UUID submissionId, UUID claimId, ClaimDetails claim, AmendmentForms amendmentForms) {
-    when(claimsApiClient.updateClaim(eq(submissionId), eq(claimId), any(ClaimPatch.class)))
+    when(claimsApiClient.updateClaim(eq(submissionId), eq(claimId), any(ClaimAmendmentPatch.class)))
         .thenReturn(Mono.empty());
 
     checkAmendmentsService.submitAmendments(submissionId, claimId, USER_ID, claim, amendmentForms);
 
-    var patchCaptor = ArgumentCaptor.forClass(ClaimPatch.class);
+    var patchCaptor = ArgumentCaptor.forClass(ClaimAmendmentPatch.class);
     verify(claimsApiClient).updateClaim(eq(submissionId), eq(claimId), patchCaptor.capture());
     return patchCaptor.getValue();
   }

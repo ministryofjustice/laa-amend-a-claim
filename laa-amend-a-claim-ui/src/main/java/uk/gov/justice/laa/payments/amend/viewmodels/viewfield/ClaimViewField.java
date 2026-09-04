@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.stream.Stream;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimPatch;
+import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimAmendmentPatch;
 import uk.gov.justice.laa.payments.amend.models.CivilClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.Claim;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
@@ -39,7 +39,8 @@ public interface ClaimViewField<T extends Claim> {
     return messageSource.getMessage(new DefaultMessageSourceResolvable(codes), Locale.UK);
   }
 
-  default ClaimPatch.Builder applyPatch(ClaimPatch.Builder patchBuilder, Object value) {
+  default ClaimAmendmentPatch.Builder applyPatch(
+      ClaimAmendmentPatch.Builder patchBuilder, Object value) {
     return getPatcher().apply(patchBuilder, value);
   }
 
