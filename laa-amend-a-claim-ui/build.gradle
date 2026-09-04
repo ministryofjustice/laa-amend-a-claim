@@ -1,7 +1,7 @@
 plugins {
     id 'uk.gov.justice.service.laa.laa-spring-boot-gradle-plugin' version '3.0.3'
-    id "com.diffplug.spotless" version "8.10.0"
-    id "io.sentry.jvm.gradle" version "6.19.0"
+    id "com.diffplug.spotless" version "8.10.1"
+    id "io.sentry.jvm.gradle" version "6.20.0"
     id 'au.com.dius.pact' version '4.7.5'
 }
 
@@ -73,7 +73,7 @@ dependencies {
     implementation("io.vavr:vavr:1.0.1")
 
     // Sentry observability for Spring Boot 4
-    implementation enforcedPlatform('io.sentry:sentry-bom:8.53.0')
+    implementation enforcedPlatform('io.sentry:sentry-bom:8.54.0')
     implementation 'io.sentry:sentry-spring-boot-4'
 
     compileOnly 'org.projectlombok:lombok'
@@ -98,7 +98,7 @@ dependencies {
     testImplementation 'org.jmockit:jmockit:1.50'
     testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-    testImplementation 'org.jsoup:jsoup:1.23.1'
+    testImplementation 'org.jsoup:jsoup:1.23.2'
     testImplementation 'com.github.codemonstur:embedded-redis:1.4.4'
 }
 
