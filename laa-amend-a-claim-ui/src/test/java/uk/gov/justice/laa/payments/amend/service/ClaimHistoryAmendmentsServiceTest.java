@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +29,7 @@ import uk.gov.justice.laa.payments.amend.models.MicrosoftApiUser;
 import uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.payments.amend.models.enums.GenderCode;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryFspEvent;
 import uk.gov.justice.laa.payments.amend.resources.MockClaimsFunctions;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField;
@@ -40,15 +42,13 @@ class ClaimHistoryAmendmentsServiceTest {
 
   @Mock private UserRetrievalService userRetrievalService;
   @Mock private SystemReferenceService systemReferenceService;
-  @Mock private AvailableFeeCodesService availableFeeCodesService;
 
   private ClaimHistoryAmendmentsService claimHistoryAmendmentsService;
 
   @BeforeEach
   void setUp() {
     claimHistoryAmendmentsService =
-        new ClaimHistoryAmendmentsService(
-            userRetrievalService, systemReferenceService, availableFeeCodesService);
+        new ClaimHistoryAmendmentsService(userRetrievalService, systemReferenceService);
   }
 
   @Test
@@ -64,9 +64,6 @@ class ClaimHistoryAmendmentsServiceTest {
         .thenReturn(Map.of("PROVIDER", "Provider"));
     when(systemReferenceService.getAmendmentRequestReason("PROVIDER", referenceList))
         .thenReturn(Map.of("CORRECTION", "Correction"));
-    when(availableFeeCodesService.getAvailableFeeCodes(claim.getAreaOfLaw()))
-        .thenReturn(Map.of("OLDFEE", "OLDFEE - Old fee", "NEWFEE", "NEWFEE - New fee"));
-
     var changes =
         List.of(
             change("REQUESTED", "client.genderCode", "M", "F"),
@@ -128,8 +125,8 @@ class ClaimHistoryAmendmentsServiceTest {
             .orElseThrow();
     assertThat(feeCodeChange.field()).isNotNull();
     assertThat(feeCodeChange.field().name()).isEqualTo("FEE_CODE");
-    assertThat(feeCodeChange.before()).isEqualTo("OLDFEE - Old fee");
-    assertThat(feeCodeChange.after()).isEqualTo("NEWFEE - New fee");
+    assertThat(feeCodeChange.before()).isEqualTo("OLDFEE");
+    assertThat(feeCodeChange.after()).isEqualTo("NEWFEE");
   }
 
   @Test
@@ -220,16 +217,6 @@ class ClaimHistoryAmendmentsServiceTest {
     var claim = claimForArea(areaOfLaw);
     var before = sampleValue(expectedField, false);
     var after = sampleValue(expectedField, true);
-    if (expectedField == ClaimDetailsViewField.FEE_CODE) {
-      when(availableFeeCodesService.getAvailableFeeCodes(areaOfLaw))
-          .thenReturn(
-              Map.of(
-                  String.valueOf(before.raw()),
-                  "Before fee",
-                  String.valueOf(after.raw()),
-                  "After fee"));
-    }
-
     var history =
         new ClaimHistoryResultSet()
             .claimId(claim.getClaimId())
@@ -258,13 +245,8 @@ class ClaimHistoryAmendmentsServiceTest {
     assertThat(actual.areaOfLaw()).isEqualTo(areaOfLaw);
     assertThat(actual.fieldIdentifier()).isEqualTo(expectedField.getClaimsApiFieldName());
     assertThat(actual.field()).isEqualTo(expectedField);
-    if (expectedField == ClaimDetailsViewField.FEE_CODE) {
-      assertThat(actual.before()).isEqualTo("Before fee");
-      assertThat(actual.after()).isEqualTo("After fee");
-    } else {
-      assertThat(actual.before()).isEqualTo(before.expected());
-      assertThat(actual.after()).isEqualTo(after.expected());
-    }
+    assertThat(actual.before()).isEqualTo(before.expected());
+    assertThat(actual.after()).isEqualTo(after.expected());
   }
 
   private static Stream<Arguments> allMappedFields() {
@@ -273,6 +255,105 @@ class ClaimHistoryAmendmentsServiceTest {
             areaOfLaw ->
                 mappedFieldsForArea(areaOfLaw).stream()
                     .map(field -> Arguments.of(areaOfLaw, field)));
+  }
+
+  @ParameterizedTest(name = "{0} resolves FSP {1}")
+  @MethodSource("allMappedFspFields")
+  void toFspClaimHistoryEventsResolvesAllMappedFspFields(
+      AreaOfLaw areaOfLaw, ClaimViewField<?> expectedField) {
+    var claim = claimForArea(areaOfLaw);
+    var before = sampleValue(expectedField, false);
+    var after = sampleValue(expectedField, true);
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .metadata(
+                            Map.of(
+                                "price_changed",
+                                true,
+                                "changes",
+                                List.of(
+                                    change("FSP", "fee.totalAmount", "100.00", "200.00"),
+                                    change(
+                                        "FSP",
+                                        expectedField.getFeeApiFieldName(),
+                                        before.raw(),
+                                        after.raw()))))));
+
+    var events =
+        claimHistoryAmendmentsService
+            .toFspClaimHistoryEventsFromApiEvents(
+                ClaimHistoryMetadataMapper.toApiEvents(history), claim)
+            .toList();
+    assertThat(events).hasSize(1);
+
+    var fspEvent = (ClaimHistoryFspEvent) events.getFirst();
+    assertThat(fspEvent.recalculatedChanges()).hasSize(1);
+
+    var actual = fspEvent.recalculatedChanges().getFirst();
+    assertThat(actual.areaOfLaw()).isEqualTo(areaOfLaw);
+    assertThat(actual.fieldIdentifier()).isEqualTo(expectedField.getFeeApiFieldName());
+    assertThat(actual.field()).isEqualTo(expectedField);
+    assertThat(actual.before()).isEqualTo(before.expected());
+    assertThat(actual.after()).isEqualTo(after.expected());
+  }
+
+  private static Stream<Arguments> allMappedFspFields() {
+    return Stream.of(AreaOfLaw.CRIME_LOWER, AreaOfLaw.LEGAL_HELP, AreaOfLaw.MEDIATION)
+        .flatMap(
+            areaOfLaw ->
+                mappedFspFieldsForArea(areaOfLaw).stream()
+                    .map(field -> Arguments.of(areaOfLaw, field)));
+  }
+
+  @ParameterizedTest(name = "ignores FSP field {0}")
+  @MethodSource("ignoredFspFieldIdentifiers")
+  void toFspClaimHistoryEventsIgnoresConfiguredFields(String fspFieldIdentifier) {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .metadata(
+                            Map.of(
+                                "price_changed",
+                                true,
+                                "changes",
+                                List.of(
+                                    change("FSP", "fee.totalAmount", "100.00", "200.00"),
+                                    change("FSP", fspFieldIdentifier, "1", "2"))))));
+
+    var events =
+        claimHistoryAmendmentsService
+            .toFspClaimHistoryEventsFromApiEvents(
+                ClaimHistoryMetadataMapper.toApiEvents(history), claim)
+            .toList();
+
+    assertThat(events).hasSize(1);
+    var fspEvent = (ClaimHistoryFspEvent) events.getFirst();
+    assertThat(fspEvent.recalculatedChanges()).isEmpty();
+  }
+
+  private static Stream<Arguments> ignoredFspFieldIdentifiers() {
+    return Stream.of(
+            "fee.boltOnAdjournedHearingCount",
+            "fee.boltOnCmrhTelephoneCount",
+            "fee.boltOnCmrhOralCount",
+            "fee.boltOnHomeOfficeInterviewCount",
+            "fee.feeCodeDescription",
+            "fee.feeCode",
+            "fee.schemeId",
+            "fee.vatIndicator",
+            "fee.requestedNetProfitCostsAmount",
+            "fee.requestedNetDisbursementAmount")
+        .map(Arguments::of);
   }
 
   private static List<ClaimViewField<?>> mappedFieldsForArea(AreaOfLaw areaOfLaw) {
@@ -306,12 +387,74 @@ class ClaimHistoryAmendmentsServiceTest {
     return List.copyOf(byIdentifier.values());
   }
 
+  private static List<ClaimViewField<?>> mappedFspFieldsForArea(AreaOfLaw areaOfLaw) {
+    var fields = new LinkedHashSet<ClaimViewField<?>>();
+    fields.addAll(
+        stream(ClaimDetailsViewField.values())
+            .filter(ClaimHistoryAmendmentsServiceTest::hasFeeApiIdentifier)
+            .toList());
+
+    switch (areaOfLaw) {
+      case CRIME_LOWER ->
+          fields.addAll(
+              stream(CrimeClaimDetailsViewField.values())
+                  .filter(ClaimHistoryAmendmentsServiceTest::hasFeeApiIdentifier)
+                  .toList());
+      case LEGAL_HELP ->
+          fields.addAll(
+              stream(CivilClaimDetailsViewField.values())
+                  .filter(ClaimHistoryAmendmentsServiceTest::hasFeeApiIdentifier)
+                  .toList());
+      case MEDIATION ->
+          fields.addAll(
+              stream(MediationClaimDetailsViewField.values())
+                  .filter(ClaimHistoryAmendmentsServiceTest::hasFeeApiIdentifier)
+                  .toList());
+      default -> throw new IllegalArgumentException("Unexpected area of law: " + areaOfLaw);
+    }
+
+    var byIdentifier = new LinkedHashMap<String, ClaimViewField<?>>();
+    fields.stream()
+        .filter(field -> !isIgnoredFspFieldIdentifier(field.getFeeApiFieldName()))
+        .forEach(field -> byIdentifier.putIfAbsent(field.getFeeApiFieldName(), field));
+    return List.copyOf(byIdentifier.values());
+  }
+
+  private static final Set<String> IGNORED_FSP_FIELDS =
+      Set.of(
+          "boltOnAdjournedHearingCount",
+          "boltOnCmrhTelephoneCount",
+          "boltOnCmrhOralCount",
+          "boltOnHomeOfficeInterviewCount",
+          "feeCodeDescription",
+          "feeCode",
+          "schemeId",
+          "vatIndicator",
+          "requestedNetProfitCostsAmount",
+          "requestedNetDisbursementAmount");
+
+  private static boolean isIgnoredFspFieldIdentifier(String fieldIdentifier) {
+    if (fieldIdentifier == null || fieldIdentifier.isBlank()) {
+      return false;
+    }
+    if (IGNORED_FSP_FIELDS.contains(fieldIdentifier)) {
+      return true;
+    }
+    return fieldIdentifier.startsWith("fee.")
+        && IGNORED_FSP_FIELDS.contains(fieldIdentifier.substring("fee.".length()));
+  }
+
   private static boolean hasClaimsApiIdentifier(ClaimViewField<?> field) {
     var identifier = field.getClaimsApiFieldName();
     return identifier != null
         && !identifier.isBlank()
         && field.getAmendability()
             != uk.gov.justice.laa.payments.amend.models.enums.Amendability.NEVER;
+  }
+
+  private static boolean hasFeeApiIdentifier(ClaimViewField<?> field) {
+    var identifier = field.getFeeApiFieldName();
+    return identifier != null && !identifier.isBlank();
   }
 
   private static ClaimDetails claimForArea(AreaOfLaw areaOfLaw) {
@@ -336,8 +479,12 @@ class ClaimHistoryAmendmentsServiceTest {
         var raw = isAfter ? "8" : "7";
         yield new SampleValue(raw, Integer.parseInt(raw));
       }
-      case BIG_DECIMAL -> {
+      case MONETARY -> {
         var raw = isAfter ? "201.75" : "100.50";
+        yield new SampleValue(raw, new BigDecimal(raw));
+      }
+      case PERCENTAGE -> {
+        var raw = isAfter ? "20.00" : "12.34";
         yield new SampleValue(raw, new BigDecimal(raw));
       }
       case DATE -> {
@@ -362,5 +509,127 @@ class ClaimHistoryAmendmentsServiceTest {
     change.put("before", before);
     change.put("after", after);
     return change;
+  }
+
+  @Test
+  void toFspClaimHistoryEventsReturnsEmptyWhenNoFspChanges() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .metadata(
+                            Map.of(
+                                "changes",
+                                List.of(change("REQUESTED", "client.genderCode", "M", "F"))))));
+
+    var events =
+        claimHistoryAmendmentsService.toFspClaimHistoryEventsFromApiEvents(
+            ClaimHistoryMetadataMapper.toApiEvents(history), claim);
+
+    assertThat(events.toList()).isEmpty();
+  }
+
+  @Test
+  void toFspClaimHistoryEventsReturnsFspEventWithTotalAmounts() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    var eventTime = java.time.OffsetDateTime.of(2026, 5, 1, 10, 0, 0, 0, java.time.ZoneOffset.UTC);
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .eventTimestamp(eventTime)
+                        .metadata(
+                            Map.of(
+                                "price_changed",
+                                true,
+                                "changes",
+                                List.of(
+                                    change("FSP", "fee.totalAmount", "1000.00", "1200.50"),
+                                    change(
+                                        "FSP", "fee.netProfitCostsAmount", "500.00", "600.00"))))));
+
+    var events =
+        claimHistoryAmendmentsService
+            .toFspClaimHistoryEventsFromApiEvents(
+                ClaimHistoryMetadataMapper.toApiEvents(history), claim)
+            .toList();
+
+    assertThat(events).hasSize(1);
+    var fspEvent = (ClaimHistoryFspEvent) events.getFirst();
+    assertThat(fspEvent.eventDateTime()).isEqualTo(eventTime);
+    assertThat(fspEvent.totalBefore()).isEqualByComparingTo(new BigDecimal("1000.00"));
+    assertThat(fspEvent.totalAfter()).isEqualByComparingTo(new BigDecimal("1200.50"));
+    assertThat(fspEvent.recalculatedChanges()).hasSize(1);
+    assertThat(fspEvent.recalculatedChanges().getFirst().fieldIdentifier())
+        .isEqualTo("fee.netProfitCostsAmount");
+  }
+
+  @Test
+  void toFspClaimHistoryEventsExcludesTotalAmountFromRecalculatedFields() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .metadata(
+                            Map.of(
+                                "price_changed",
+                                true,
+                                "changes",
+                                List.of(change("FSP", "fee.totalAmount", "1000.00", "1200.50"))))));
+
+    var events =
+        claimHistoryAmendmentsService
+            .toFspClaimHistoryEventsFromApiEvents(
+                ClaimHistoryMetadataMapper.toApiEvents(history), claim)
+            .toList();
+
+    assertThat(events).hasSize(1);
+    var fspEvent = (ClaimHistoryFspEvent) events.getFirst();
+    assertThat(fspEvent.recalculatedChanges()).isEmpty();
+  }
+
+  @Test
+  void toFspClaimHistoryEventsDoesNotThrowWhenPriceChangedButTotalAmountMissing() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    var history =
+        new ClaimHistoryResultSet()
+            .claimId(claim.getClaimId())
+            .events(
+                List.of(
+                    new uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEvent()
+                        .eventType(AMENDMENT)
+                        .metadata(
+                            Map.of(
+                                "price_changed",
+                                true,
+                                "changes",
+                                List.of(
+                                    change(
+                                        "FSP", "fee.netProfitCostsAmount", "500.00", "600.00"))))));
+
+    var events =
+        claimHistoryAmendmentsService
+            .toFspClaimHistoryEventsFromApiEvents(
+                ClaimHistoryMetadataMapper.toApiEvents(history), claim)
+            .toList();
+
+    assertThat(events).hasSize(1);
+    var fspEvent = (ClaimHistoryFspEvent) events.getFirst();
+    assertThat(fspEvent.totalBefore()).isNull();
+    assertThat(fspEvent.totalAfter()).isNull();
+    assertThat(fspEvent.recalculatedChanges()).hasSize(1);
+    assertThat(fspEvent.recalculatedChanges().getFirst().fieldIdentifier())
+        .isEqualTo("fee.netProfitCostsAmount");
   }
 }

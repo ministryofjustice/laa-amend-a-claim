@@ -70,6 +70,7 @@ maintenance:
 feature-flags:
   is-bulk-upload-enabled: ${IS_BULK_UPLOAD_ENABLED:false}
   is-claim-amendment-enabled: ${IS_CLAIM_AMENDMENT_ENABLED:false}
+  is-fsp-history-enabled: ${IS_FSP_HISTORY_ENABLED:false}
 management:
   server:
     port: 8282

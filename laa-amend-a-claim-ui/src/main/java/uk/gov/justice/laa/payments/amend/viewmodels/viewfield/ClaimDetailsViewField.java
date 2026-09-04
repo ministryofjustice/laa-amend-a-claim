@@ -20,9 +20,11 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   OFFICE_CODE(FieldType.TEXT, ClaimDetails::getOfficeCode),
   SUBMITTED_DATE(FieldType.DATE, ClaimDetails::getSubmittedDate),
   AREA_OF_LAW(FieldType.TEXT, ClaimDetailsViewField::getAreaOfLaw),
-  CATEGORY_OF_LAW(FieldType.TEXT, ClaimDetails::getCategoryOfLaw),
-  FEE_CODE_DESCRIPTION(FieldType.TEXT, ClaimDetails::getFeeCodeDescription),
-  ESCAPED(FieldType.BOOLEAN, ClaimDetails::getEscaped),
+  CATEGORY_OF_LAW(FieldType.TEXT, ClaimDetails::getCategoryOfLaw, "fee.categoryOfLaw"),
+  FEE_CODE_DESCRIPTION(
+      FieldType.TEXT, ClaimDetails::getFeeCodeDescription, "fee.feeCodeDescription"),
+  FEE_TYPE(FieldType.TEXT, ClaimDetails::getFeeType, "fee.feeType"),
+  ESCAPED(FieldType.BOOLEAN, ClaimDetails::getEscaped, "fee.escapeCaseFlag"),
   VAT_REQUESTED(FieldType.BOOLEAN, ClaimDetails::getVatApplicable),
   TOTAL(FieldType.TEXT, ClaimDetails::getTotalAmount),
 
@@ -86,38 +88,46 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       String.class,
       ClaimDetails::getFeeCode,
       Builder::feeCode,
+      NO_OPTIONS,
       Amendability.UNTIL_ASSESSED,
-      "claim.feeCode"),
+      "claim.feeCode",
+      "fee.feeCode"),
 
   // Common cost fields
   FIXED_FEE(
-      FieldType.TEXT,
-      Object.class,
+      FieldType.MONETARY,
+      NO_PATCH_TYPE,
       ClaimDetails::getFixedFee,
-      (b, v) -> b,
+      NO_PATCHER,
+      NO_OPTIONS,
       Amendability.NEVER,
+      NO_CLAIMS_API_FIELD_NAME,
       "fee.fixedFeeAmount"),
+  HOURLY_TOTAL_AMOUNT(FieldType.MONETARY, NO_GETTER, "fee.hourlyTotalAmount"),
   PROFIT_COST(
-      FieldType.BIG_DECIMAL,
+      FieldType.MONETARY,
       BigDecimal.class,
       ClaimDetails::getNetProfitCost,
       Builder::netProfitCostsAmount,
       "claimSummaryFee.netProfitCostsAmount",
       "fee.netProfitCostsAmount"),
   DISBURSEMENTS(
-      FieldType.BIG_DECIMAL,
+      FieldType.MONETARY,
       BigDecimal.class,
       ClaimDetails::getNetDisbursementAmount,
       Builder::netDisbursementAmount,
       "claimSummaryFee.netDisbursementAmount",
       "fee.disbursementAmount"),
   DISBURSEMENTS_VAT(
-      FieldType.BIG_DECIMAL,
+      FieldType.MONETARY,
       BigDecimal.class,
       ClaimDetails::getDisbursementVatAmount,
       Builder::disbursementsVatAmount,
       "claimSummaryFee.disbursementsVatAmount",
       "fee.disbursementVatAmount"),
+  CALCULATED_VAT_AMOUNT(
+      FieldType.MONETARY, ClaimDetails::getDisbursementVatAmount, "fee.calculatedVatAmount"),
+  VAT_RATE_APPLIED(FieldType.PERCENTAGE, NO_GETTER, "fee.vatRateApplied"),
   VAT(
       FieldType.BOOLEAN,
       Boolean.class,
@@ -134,8 +144,29 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
   private final Amendability amendability;
   private final List<FieldOption> options;
 
-  <T> ClaimDetailsViewField(FieldType fieldType, Function<ClaimDetails, ?> getter) {
-    this(fieldType, Object.class, getter, (b, v) -> b, List.of(), Amendability.NEVER, "", null);
+  ClaimDetailsViewField(FieldType fieldType, Function<ClaimDetails, ?> getter) {
+    this(
+        fieldType,
+        NO_PATCH_TYPE,
+        getter,
+        NO_PATCHER,
+        NO_OPTIONS,
+        Amendability.NEVER,
+        NO_CLAIMS_API_FIELD_NAME,
+        NO_FEE_API_FIELD_NAME);
+  }
+
+  ClaimDetailsViewField(
+      FieldType fieldType, Function<ClaimDetails, ?> getter, String feeApiFieldName) {
+    this(
+        fieldType,
+        NO_PATCH_TYPE,
+        getter,
+        NO_PATCHER,
+        NO_OPTIONS,
+        Amendability.NEVER,
+        NO_CLAIMS_API_FIELD_NAME,
+        feeApiFieldName);
   }
 
   <T> ClaimDetailsViewField(
@@ -149,10 +180,10 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
         patchType,
         getter,
         patcher,
-        List.of(),
+        NO_OPTIONS,
         Amendability.ALWAYS,
         claimsApiFieldName,
-        null);
+        NO_FEE_API_FIELD_NAME);
   }
 
   <T> ClaimDetailsViewField(
@@ -167,7 +198,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
         patchType,
         getter,
         patcher,
-        List.of(),
+        NO_OPTIONS,
         Amendability.ALWAYS,
         claimsApiFieldName,
         feeApiFieldName);
@@ -188,7 +219,7 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
         options,
         Amendability.ALWAYS,
         claimsApiFieldName,
-        null);
+        NO_FEE_API_FIELD_NAME);
   }
 
   <T> ClaimDetailsViewField(
@@ -198,7 +229,15 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       BiFunction<Builder, T, Builder> patcher,
       Amendability amendability,
       String claimsApiFieldName) {
-    this(fieldType, patchType, getter, patcher, List.of(), amendability, claimsApiFieldName, null);
+    this(
+        fieldType,
+        patchType,
+        getter,
+        patcher,
+        NO_OPTIONS,
+        amendability,
+        claimsApiFieldName,
+        NO_FEE_API_FIELD_NAME);
   }
 
   <T> ClaimDetailsViewField(

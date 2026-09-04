@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.payments.amend.service;
 
+import static java.lang.Boolean.TRUE;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryChangeEntry.ChangeSourceEnum.FSP;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryChangeEntry.ChangeSourceEnum.REQUESTED;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +34,7 @@ import uk.gov.justice.laa.payments.amend.models.history.BaseClaimHistoryEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendmentChange;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryApiEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryFspEvent;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
@@ -44,19 +47,39 @@ import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDeta
 @Slf4j
 public class ClaimHistoryAmendmentsService {
 
-  private static final String FIELD_IDENTIFIER_FEE_CODE = "claim.feeCode";
   private static final String FIELD_IDENTIFIER_MATTER_TYPE_CODE = "claim.matterTypeCode";
+  private static final String FIELD_IDENTIFIER_TOTAL_AMOUNT = "fee.totalAmount";
+
+  // FSP echos back the fields passed to it. Ignore these as they aren't really
+  // modified by FSP.
+  private static final Set<String> FSP_IGNORED_FIELDS =
+      Set.of(
+          "fee.boltOnAdjournedHearingCount",
+          "fee.boltOnCmrhTelephoneCount",
+          "fee.boltOnCmrhOralCount",
+          "fee.boltOnHomeOfficeInterviewCount",
+          "fee.feeCodeDescription",
+          "fee.feeCode",
+          "fee.schemeId",
+          "fee.vatIndicator",
+          "fee.requestedNetProfitCostsAmount",
+          "fee.requestedNetDisbursementAmount",
+          "fee.requestedNetDisbursementVatAmount");
 
   private final UserRetrievalService userRetrievalService;
   private final SystemReferenceService systemReferenceService;
-  private final AvailableFeeCodesService availableFeeCodesService;
 
-  private static final Map<AreaOfLaw, Map<String, ClaimViewField<?>>>
-      AMENDABLE_FIELDS_BY_IDENTIFIER =
-          Map.of(
-              CRIME_LOWER, viewFieldsByAreaOfLaw(CRIME_LOWER),
-              LEGAL_HELP, viewFieldsByAreaOfLaw(LEGAL_HELP),
-              MEDIATION, viewFieldsByAreaOfLaw(MEDIATION));
+  private static final Map<AreaOfLaw, Map<String, ClaimViewField<?>>> HISTORY_FIELDS_BY_IDENTIFIER =
+      Map.of(
+          CRIME_LOWER, historyFieldsByAreaOfLaw(CRIME_LOWER),
+          LEGAL_HELP, historyFieldsByAreaOfLaw(LEGAL_HELP),
+          MEDIATION, historyFieldsByAreaOfLaw(MEDIATION));
+
+  private static final Map<AreaOfLaw, Map<String, ClaimViewField<?>>> FSP_FIELDS_BY_IDENTIFIER =
+      Map.of(
+          CRIME_LOWER, fspFieldsByAreaOfLaw(CRIME_LOWER),
+          LEGAL_HELP, fspFieldsByAreaOfLaw(LEGAL_HELP),
+          MEDIATION, fspFieldsByAreaOfLaw(MEDIATION));
 
   public Stream<BaseClaimHistoryEvent> toAmendmentClaimHistoryEvents(
       ClaimHistoryResultSet history, ClaimDetails claim) {
@@ -73,6 +96,66 @@ public class ClaimHistoryAmendmentsService {
     return historyEvents.stream()
         .filter(e -> e.eventType() == AMENDMENT)
         .map(e -> toAmendmentClaimHistoryEvent(e, claim, requestedByReferenceList));
+  }
+
+  public Stream<BaseClaimHistoryEvent> toFspClaimHistoryEventsFromApiEvents(
+      List<ClaimHistoryApiEvent> historyEvents, ClaimDetails claim) {
+    if (historyEvents == null || historyEvents.isEmpty()) {
+      return Stream.empty();
+    }
+    return historyEvents.stream()
+        .filter(e -> e.eventType() == AMENDMENT)
+        .flatMap(e -> toFspClaimHistoryEvent(e, claim.getAreaOfLaw()).stream());
+  }
+
+  private Optional<BaseClaimHistoryEvent> toFspClaimHistoryEvent(
+      ClaimHistoryApiEvent apiEvent, AreaOfLaw areaOfLaw) {
+    var metadata =
+        Optional.ofNullable(apiEvent.amendmentMetadata())
+            .orElseGet(ClaimHistoryAmendmentMetadata::new);
+
+    if (!TRUE.equals(metadata.getPriceChanged())) {
+      return Optional.empty();
+    }
+
+    var changes = Optional.ofNullable(metadata.getChanges()).orElse(List.of());
+
+    var fspChanges = changes.stream().filter(c -> c.getChangeSource() == FSP).toList();
+
+    if (fspChanges.isEmpty()) {
+      return Optional.empty();
+    }
+
+    BigDecimal totalBefore = null;
+    BigDecimal totalAfter = null;
+    var totalAmountChange =
+        fspChanges.stream()
+            .filter(c -> FIELD_IDENTIFIER_TOTAL_AMOUNT.equals(c.getFieldIdentifier()))
+            .findFirst()
+            .orElse(null);
+    if (totalAmountChange == null) {
+      log.warn(
+          "Price changed is true for event at {} but no {} change was present",
+          apiEvent.eventTimestamp(),
+          FIELD_IDENTIFIER_TOTAL_AMOUNT);
+    } else {
+      totalBefore =
+          toBigDecimalOrNull(
+              totalAmountChange.getBefore(), FIELD_IDENTIFIER_TOTAL_AMOUNT, "before");
+      totalAfter =
+          toBigDecimalOrNull(totalAmountChange.getAfter(), FIELD_IDENTIFIER_TOTAL_AMOUNT, "after");
+    }
+
+    var recalculatedChanges =
+        fspChanges.stream()
+            .filter(c -> !FIELD_IDENTIFIER_TOTAL_AMOUNT.equals(c.getFieldIdentifier()))
+            .filter(c -> !isIgnoredFspFieldIdentifier(c.getFieldIdentifier()))
+            .flatMap(c -> resolveChanges(c, areaOfLaw).stream())
+            .toList();
+
+    return Optional.of(
+        new ClaimHistoryFspEvent(
+            apiEvent.eventTimestamp(), null, totalBefore, totalAfter, recalculatedChanges));
   }
 
   private BaseClaimHistoryEvent toAmendmentClaimHistoryEvent(
@@ -103,38 +186,25 @@ public class ClaimHistoryAmendmentsService {
   private List<ClaimHistoryAmendmentChange> resolveAmendmentChanges(
       List<ClaimHistoryChangeEntry> changes, AreaOfLaw areaOfLaw) {
     var safeChanges = Optional.ofNullable(changes).orElse(List.of());
-    var availableFeeCodes = resolveAvailableFeeCodes(safeChanges, areaOfLaw);
     return safeChanges.stream()
         .filter(ClaimHistoryAmendmentsService::isDisplayableChange)
-        .flatMap(change -> resolveChanges(change, areaOfLaw, availableFeeCodes).stream())
+        .flatMap(change -> resolveChanges(change, areaOfLaw).stream())
         .toList();
   }
 
-  private Map<String, String> resolveAvailableFeeCodes(
-      List<ClaimHistoryChangeEntry> changes, AreaOfLaw areaOfLaw) {
-    if (areaOfLaw == null || changes.stream().noneMatch(this::isFeeCodeChange)) {
-      return Map.of();
-    }
-    return availableFeeCodesService.getAvailableFeeCodes(areaOfLaw);
-  }
-
   private static boolean isDisplayableChange(ClaimHistoryChangeEntry change) {
+    var claimsApiFeeCodeIdentifier = ClaimDetailsViewField.FEE_CODE.getClaimsApiFieldName();
     if (change.getChangeSource() == REQUESTED) {
       return true;
     }
     if (change.getChangeSource() != FSP) {
       return false;
     }
-    return FIELD_IDENTIFIER_FEE_CODE.equals(change.getFieldIdentifier());
-  }
-
-  private boolean isFeeCodeChange(ClaimHistoryChangeEntry change) {
-    return isDisplayableChange(change)
-        && FIELD_IDENTIFIER_FEE_CODE.equals(change.getFieldIdentifier());
+    return claimsApiFeeCodeIdentifier.equals(change.getFieldIdentifier());
   }
 
   private ClaimHistoryAmendmentChange resolveChange(
-      ClaimHistoryChangeEntry change, AreaOfLaw areaOfLaw, Map<String, String> availableFeeCodes) {
+      ClaimHistoryChangeEntry change, AreaOfLaw areaOfLaw) {
     var fieldIdentifier = change.getFieldIdentifier();
     var fieldOpt = resolveField(areaOfLaw, fieldIdentifier);
 
@@ -153,55 +223,44 @@ public class ClaimHistoryAmendmentsService {
     return new ClaimHistoryAmendmentChange(
         field,
         fieldIdentifier,
-        resolveValue(change.getBefore(), field, availableFeeCodes),
-        resolveValue(change.getAfter(), field, availableFeeCodes),
+        resolveValue(change.getBefore(), field),
+        resolveValue(change.getAfter(), field),
         areaOfLaw);
   }
 
   private List<ClaimHistoryAmendmentChange> resolveChanges(
-      ClaimHistoryChangeEntry change, AreaOfLaw areaOfLaw, Map<String, String> availableFeeCodes) {
+      ClaimHistoryChangeEntry change, AreaOfLaw areaOfLaw) {
     var fieldIdentifier = change.getFieldIdentifier();
     if (FIELD_IDENTIFIER_MATTER_TYPE_CODE.equals(fieldIdentifier)) {
-      return resolveMatterTypeChanges(change, areaOfLaw, availableFeeCodes);
+      return resolveMatterTypeChanges(change, areaOfLaw);
     }
-    return List.of(resolveChange(change, areaOfLaw, availableFeeCodes));
+    return List.of(resolveChange(change, areaOfLaw));
   }
 
   private List<ClaimHistoryAmendmentChange> resolveMatterTypeChanges(
-      ClaimHistoryChangeEntry change, AreaOfLaw areaOfLaw, Map<String, String> availableFeeCodes) {
+      ClaimHistoryChangeEntry change, AreaOfLaw areaOfLaw) {
     var beforeParts = splitMatterTypeCode(change.getBefore());
     var afterParts = splitMatterTypeCode(change.getAfter());
     var resolvedChanges = new ArrayList<ClaimHistoryAmendmentChange>();
 
     var firstMatterTypeIndex = 0;
     addMatterTypeChangeIfChanged(
-        resolvedChanges,
-        areaOfLaw,
-        availableFeeCodes,
-        beforeParts,
-        afterParts,
-        firstMatterTypeIndex);
+        resolvedChanges, areaOfLaw, beforeParts, afterParts, firstMatterTypeIndex);
 
     var secondMatterTypeIndex = 1;
     addMatterTypeChangeIfChanged(
-        resolvedChanges,
-        areaOfLaw,
-        availableFeeCodes,
-        beforeParts,
-        afterParts,
-        secondMatterTypeIndex);
+        resolvedChanges, areaOfLaw, beforeParts, afterParts, secondMatterTypeIndex);
 
     if (!resolvedChanges.isEmpty()) {
       return List.copyOf(resolvedChanges);
     }
 
-    return List.of(resolveChange(change, areaOfLaw, availableFeeCodes));
+    return List.of(resolveChange(change, areaOfLaw));
   }
 
   private void addMatterTypeChangeIfChanged(
       List<ClaimHistoryAmendmentChange> resolvedChanges,
       AreaOfLaw areaOfLaw,
-      Map<String, String> availableFeeCodes,
       String[] beforeParts,
       String[] afterParts,
       int indexOfPart) {
@@ -221,8 +280,8 @@ public class ClaimHistoryAmendmentsService {
         new ClaimHistoryAmendmentChange(
             field,
             FIELD_IDENTIFIER_MATTER_TYPE_CODE,
-            resolveValue(beforePart, field, availableFeeCodes),
-            resolveValue(afterPart, field, availableFeeCodes),
+            resolveValue(beforePart, field),
+            resolveValue(afterPart, field),
             areaOfLaw));
   }
 
@@ -260,16 +319,15 @@ public class ClaimHistoryAmendmentsService {
     if (areaOfLaw == null || fieldIdentifier == null) {
       return Optional.empty();
     }
-    return Optional.ofNullable(AMENDABLE_FIELDS_BY_IDENTIFIER.get(areaOfLaw))
-        .map(fields -> fields.get(fieldIdentifier));
-  }
-
-  private static Object resolveValue(
-      Object raw, ClaimViewField<?> field, Map<String, String> availableFeeCodes) {
-    if (field == ClaimDetailsViewField.FEE_CODE) {
-      return resolveFeeCodeDisplay(raw, availableFeeCodes);
+    var historyFields = HISTORY_FIELDS_BY_IDENTIFIER.get(areaOfLaw);
+    if (historyFields != null && historyFields.containsKey(fieldIdentifier)) {
+      return Optional.ofNullable(historyFields.get(fieldIdentifier));
     }
-    return resolveValue(raw, field);
+    var fspFields = FSP_FIELDS_BY_IDENTIFIER.get(areaOfLaw);
+    if (fspFields == null) {
+      return Optional.empty();
+    }
+    return Optional.ofNullable(fspFields.get(fieldIdentifier));
   }
 
   private static Object resolveValue(Object raw, ClaimViewField<?> field) {
@@ -283,7 +341,7 @@ public class ClaimHistoryAmendmentsService {
         case BOOLEAN -> raw instanceof Boolean b ? b : Boolean.parseBoolean(String.valueOf(raw));
         case NUMBER ->
             raw instanceof Number n ? n.intValue() : Integer.parseInt(String.valueOf(raw));
-        case BIG_DECIMAL -> new BigDecimal(String.valueOf(raw));
+        case MONETARY, PERCENTAGE -> new BigDecimal(String.valueOf(raw));
         case DATE -> LocalDate.parse(String.valueOf(raw));
         case ENUM -> resolveEnumValue(raw, field.getOptions());
       };
@@ -296,14 +354,6 @@ public class ClaimHistoryAmendmentsService {
           e);
     }
     return raw;
-  }
-
-  private static String resolveFeeCodeDisplay(Object raw, Map<String, String> availableFeeCodes) {
-    var feeCode = toFallbackString(raw);
-    if (feeCode == null) {
-      return null;
-    }
-    return availableFeeCodes.getOrDefault(feeCode, feeCode);
   }
 
   private static Object resolveEnumValue(Object raw, List<FieldOption> options) {
@@ -322,11 +372,39 @@ public class ClaimHistoryAmendmentsService {
     return rawValue == null ? null : String.valueOf(rawValue);
   }
 
-  private static Map<String, ClaimViewField<?>> viewFieldsByAreaOfLaw(AreaOfLaw areaOfLaw) {
+  private static BigDecimal toBigDecimalOrNull(
+      Object rawValue, String fieldIdentifier, String edge) {
+    if (rawValue == null) {
+      return null;
+    }
+    try {
+      return new BigDecimal(String.valueOf(rawValue));
+    } catch (NumberFormatException e) {
+      log.warn(
+          "Unable to parse {} value '{}' for field identifier '{}' as BigDecimal",
+          edge,
+          rawValue,
+          fieldIdentifier);
+      return null;
+    }
+  }
+
+  private static Map<String, ClaimViewField<?>> historyFieldsByAreaOfLaw(AreaOfLaw areaOfLaw) {
     var lookup = new LinkedHashMap<String, ClaimViewField<?>>();
     areaOfLawViewFields(areaOfLaw)
-        .forEach(field -> putFieldIdentifier(lookup, field.getClaimsApiFieldName(), field));
+        .forEach(field -> putHistoryFieldIdentifier(lookup, field.getClaimsApiFieldName(), field));
     return Map.copyOf(lookup);
+  }
+
+  private static Map<String, ClaimViewField<?>> fspFieldsByAreaOfLaw(AreaOfLaw areaOfLaw) {
+    var lookup = new LinkedHashMap<String, ClaimViewField<?>>();
+    areaOfLawViewFields(areaOfLaw)
+        .forEach(field -> putFspFieldIdentifier(lookup, field.getFeeApiFieldName(), field));
+    return Map.copyOf(lookup);
+  }
+
+  private static boolean isIgnoredFspFieldIdentifier(String fieldIdentifier) {
+    return FSP_IGNORED_FIELDS.contains(fieldIdentifier);
   }
 
   private static Stream<ClaimViewField<?>> areaOfLawViewFields(AreaOfLaw areaOfLaw) {
@@ -343,12 +421,20 @@ public class ClaimHistoryAmendmentsService {
     return Stream.concat(commonFields, areaSpecificFields.map(field -> (ClaimViewField<?>) field));
   }
 
-  private static void putFieldIdentifier(
+  private static void putHistoryFieldIdentifier(
       Map<String, ClaimViewField<?>> fieldLookup, String identifier, ClaimViewField<?> field) {
     if (identifier == null || identifier.isBlank()) {
       return;
     }
     if (field.getAmendability() == NEVER) {
+      return;
+    }
+    fieldLookup.putIfAbsent(identifier, field);
+  }
+
+  private static void putFspFieldIdentifier(
+      Map<String, ClaimViewField<?>> fieldLookup, String identifier, ClaimViewField<?> field) {
+    if (identifier == null || identifier.isBlank()) {
       return;
     }
     fieldLookup.putIfAbsent(identifier, field);
