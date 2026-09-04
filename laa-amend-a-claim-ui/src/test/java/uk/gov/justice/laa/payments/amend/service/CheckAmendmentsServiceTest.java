@@ -2,12 +2,14 @@ package uk.gov.justice.laa.payments.amend.service;
 
 import static java.util.Map.entry;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 import org.jspecify.annotations.NonNull;
@@ -18,9 +20,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimAmendmentPatch;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
+import uk.gov.justice.laa.payments.amend.exceptions.AmendmentSubmissionFailedException;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.payments.amend.forms.amendments.OriginalAndCurrent;
@@ -42,6 +47,51 @@ class CheckAmendmentsServiceTest {
   @BeforeEach
   void setUp() {
     checkAmendmentsService = new CheckAmendmentsService(claimsApiClient);
+  }
+
+  @Test
+  void submitThrowsAmendmentSubmissionFailedExceptionWithErrorMessagesFromResponseBody() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setVersion(1L);
+    var amendmentForms =
+        amendmentForms(
+            forms(Map.of(), Map.of()),
+            forms(Map.of("FEE_CODE", "OLD_FEE"), Map.of("FEE_CODE", "NEW_FEE")),
+            forms(Map.of(), Map.of()),
+            null,
+            forms(Map.of(), Map.of()));
+    amendmentForms.setRequestedByForm(createRequestedByForm());
+    amendmentForms.setRequestedReasonForm(createRequestReasonForm());
+
+    var submissionId = UUID.randomUUID();
+    var claimId = UUID.randomUUID();
+    var responseBody =
+        """
+        {"errors":[{"code":"CLAIM_VERSION_CONFLICT","message":"This claim has been modified by another user."}]}
+        """;
+    when(claimsApiClient.updateClaim(eq(submissionId), eq(claimId), any(ClaimAmendmentPatch.class)))
+        .thenReturn(
+            Mono.error(
+                WebClientResponseException.create(
+                    HttpStatus.CONFLICT.value(),
+                    "Conflict",
+                    null,
+                    responseBody.getBytes(StandardCharsets.UTF_8),
+                    null)));
+
+    assertThatThrownBy(
+            () ->
+                checkAmendmentsService.submitAmendments(
+                    submissionId, claimId, USER_ID, claim, amendmentForms))
+        .isInstanceOf(AmendmentSubmissionFailedException.class)
+        .satisfies(
+            ex -> {
+              var failure = (AmendmentSubmissionFailedException) ex;
+              assertThat(failure.getSubmissionId()).isEqualTo(submissionId);
+              assertThat(failure.getClaimId()).isEqualTo(claimId);
+              assertThat(failure.getErrorMessages())
+                  .containsExactly("This claim has been modified by another user.");
+            });
   }
 
   @Test
