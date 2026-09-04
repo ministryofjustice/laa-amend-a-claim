@@ -3,13 +3,13 @@ package uk.gov.justice.laa.payments.amend.service;
 import static java.lang.Boolean.TRUE;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
-import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryChangeEntry.ChangeSourceEnum.REQUESTED;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.AMENDMENT;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.ASSESSMENT;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.SUBMISSION;
 import static uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimHistoryEventType.VOID;
 
 import java.time.OffsetDateTime;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -34,6 +34,7 @@ import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryApiEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAssessedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryCreatedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryVoidedEvent;
+import uk.gov.justice.laa.payments.amend.utils.MatterTypeUtils;
 import uk.gov.justice.laadata.providers.model.ProviderFirmOfficeDto;
 import uk.gov.justice.laadata.providers.model.ProviderFirmSummary;
 
@@ -79,14 +80,13 @@ public class ClaimHistoryService {
     builder.lastUpdatedUser(lastUpdated.user()).lastUpdatedDateTime(lastUpdated.dateTime());
 
     if (claim.isAmended()) {
-      builder.amendedFields(
-          historyEvents.stream()
-              .filter(event -> event.eventType() == AMENDMENT)
-              .map(ClaimHistoryService::getChanges)
-              .flatMap(List::stream)
-              .filter(ClaimHistoryService::isRequested)
-              .map(ClaimHistoryChangeEntry::getFieldIdentifier)
-              .collect(toSet()));
+      var amendedFields = new LinkedHashSet<String>();
+      historyEvents.stream()
+          .filter(event -> event.eventType() == AMENDMENT)
+          .map(ClaimHistoryService::getChanges)
+          .flatMap(List::stream)
+          .forEach(change -> addFieldIdentifiers(change, amendedFields));
+      builder.amendedFields(amendedFields);
     } else {
       builder.amendedFields(Set.of());
     }
@@ -288,8 +288,22 @@ public class ClaimHistoryService {
     return Optional.ofNullable(toAmendmentMetadata(historyEvent).getChanges()).orElse(List.of());
   }
 
-  private static boolean isRequested(ClaimHistoryChangeEntry change) {
-    return change.getChangeSource() == REQUESTED;
+  private static void addFieldIdentifiers(
+      ClaimHistoryChangeEntry change, Set<String> amendedFields) {
+    var fieldIdentifier = change.getFieldIdentifier();
+    if (fieldIdentifier == null) {
+      return;
+    }
+    amendedFields.add(fieldIdentifier);
+    if (MatterTypeUtils.MATTER_TYPE_CODE.equals(fieldIdentifier)) {
+      amendedFields.addAll(
+          MatterTypeUtils.changedPartIdentifiers(
+              toFallbackString(change.getBefore()), toFallbackString(change.getAfter())));
+    }
+  }
+
+  private static String toFallbackString(Object rawValue) {
+    return rawValue == null ? null : String.valueOf(rawValue);
   }
 
   private record LastUpdated(MicrosoftApiUser user, OffsetDateTime dateTime) {}

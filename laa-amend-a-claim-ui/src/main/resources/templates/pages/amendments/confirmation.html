@@ -48,7 +48,7 @@
                   th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
               <dd class="govuk-summary-list__value" th:if="${claim.hasAssessment}" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></dd>
               <dd class="govuk-summary-list__actions"
-                  th:if="${confirmation.amendedFields.contains(field.claimsApiFieldName) || confirmation.amendedFields.contains(field.feeApiFieldName)}">
+                  th:if="${field.isAmended(confirmation.amendedFields)}">
                 <strong class="govuk-tag govuk-tag--yellow" th:text="#{service.amended}"></strong>
               </dd>
             </div>

@@ -7,6 +7,7 @@ import static uk.gov.justice.laa.payments.amend.models.enums.Amendability.NEVER;
 import static uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw.CRIME_LOWER;
 import static uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw.LEGAL_HELP;
 import static uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw.MEDIATION;
+import static uk.gov.justice.laa.payments.amend.utils.MatterTypeUtils.MATTER_TYPE_CODE;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -45,7 +46,6 @@ import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDeta
 public class ClaimHistoryAmendmentsService {
 
   private static final String FIELD_IDENTIFIER_FEE_CODE = "claim.feeCode";
-  private static final String FIELD_IDENTIFIER_MATTER_TYPE_CODE = "claim.matterTypeCode";
 
   private final UserRetrievalService userRetrievalService;
   private final SystemReferenceService systemReferenceService;
@@ -161,7 +161,7 @@ public class ClaimHistoryAmendmentsService {
   private List<ClaimHistoryAmendmentChange> resolveChanges(
       ClaimHistoryChangeEntry change, AreaOfLaw areaOfLaw, Map<String, String> availableFeeCodes) {
     var fieldIdentifier = change.getFieldIdentifier();
-    if (FIELD_IDENTIFIER_MATTER_TYPE_CODE.equals(fieldIdentifier)) {
+    if (MATTER_TYPE_CODE.equals(fieldIdentifier)) {
       return resolveMatterTypeChanges(change, areaOfLaw, availableFeeCodes);
     }
     return List.of(resolveChange(change, areaOfLaw, availableFeeCodes));
@@ -220,7 +220,7 @@ public class ClaimHistoryAmendmentsService {
     resolvedChanges.add(
         new ClaimHistoryAmendmentChange(
             field,
-            FIELD_IDENTIFIER_MATTER_TYPE_CODE,
+            MATTER_TYPE_CODE,
             resolveValue(beforePart, field, availableFeeCodes),
             resolveValue(afterPart, field, availableFeeCodes),
             areaOfLaw));
