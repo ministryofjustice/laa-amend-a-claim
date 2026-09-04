@@ -3,13 +3,18 @@ package uk.gov.justice.laa.payments.amend.service;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField.MATTER_TYPE_CODE_1;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField.MATTER_TYPE_CODE_2;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimAmendmentPatch;
 import uk.gov.justice.laa.payments.amend.client.ClaimsApiClient;
+import uk.gov.justice.laa.payments.amend.exceptions.AmendmentSubmissionFailedException;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForms;
 import uk.gov.justice.laa.payments.amend.forms.amendments.OriginalAndCurrent;
 import uk.gov.justice.laa.payments.amend.models.CivilClaimDetails;
@@ -21,6 +26,10 @@ import uk.gov.justice.laa.payments.amend.viewmodels.AmendmentsHeaderView;
 @Slf4j
 @RequiredArgsConstructor
 public class CheckAmendmentsService {
+
+  private static final String GENERIC_ERROR_MESSAGE =
+      "A technical error occurred, please try again after some time";
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   private final ClaimsApiClient claimsApiClient;
 
@@ -51,18 +60,37 @@ public class CheckAmendmentsService {
     try {
       claimsApiClient.updateClaim(submissionId, claimId, patchBuilder.build()).block();
     } catch (WebClientResponseException ex) {
-      // TODO: This will be handled gracefully by BC-651
-      log.error(
-          "Failed to submit amendment for submission {} claim {} with status {}: {}",
+      log.warn(
+          "Amendment submission rejected for submission {} claim {} with status {}: {}",
           submissionId,
           claimId,
           ex.getStatusCode(),
-          ex.getResponseBodyAsString(),
-          ex);
-      throw ex;
+          ex.getResponseBodyAsString());
+      throw new AmendmentSubmissionFailedException(submissionId, claimId, extractErrorMessages(ex));
     } catch (Exception ex) {
       log.error("Failed to submit amendment for submission {} claim {}", submissionId, claimId, ex);
       throw ex;
+    }
+  }
+
+  private List<String> extractErrorMessages(WebClientResponseException ex) {
+    try {
+      JsonNode root = OBJECT_MAPPER.readTree(ex.getResponseBodyAsString());
+      JsonNode errors = root.path("errors");
+      if (errors.isArray() && !errors.isEmpty()) {
+        List<String> messages = new ArrayList<>();
+        errors.forEach(
+            error -> messages.add(error.path("message").asString(GENERIC_ERROR_MESSAGE)));
+        return messages;
+      }
+      String detail = root.path("detail").asString(null);
+      return detail != null ? List.of(detail) : List.of(GENERIC_ERROR_MESSAGE);
+    } catch (Exception parseException) {
+      log.warn(
+          "Failed to parse amendment error response body: {}",
+          ex.getResponseBodyAsString(),
+          parseException);
+      return List.of(GENERIC_ERROR_MESSAGE);
     }
   }
 

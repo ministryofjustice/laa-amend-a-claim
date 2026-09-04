@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(
+        title=#{amendments.cannotBeSubmitted.title},
+        mainContent=~{::#main-content},
+        pageCategory=${null},
+        showBackLink=${false}
+    )}">
+<body>
+<main class="govuk-main-wrapper" id="main-content">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl" th:text="#{amendments.cannotBeSubmitted.title}"></h1>
+
+      <p class="govuk-body" th:text="#{amendments.cannotBeSubmitted.subheading}"></p>
+
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row" th:each="error : ${errors}">
+          <dd class="govuk-summary-list__value" th:text="${error}"></dd>
+        </div>
+      </dl>
+
+      <div class="govuk-button-group">
+        <a th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/check(submissionId=${submissionId}, claimId=${claimId})}"
+           th:text="#{amendments.cannotBeSubmitted.resolveIssues}"
+           role="button"
+           class="govuk-button"
+           data-module="govuk-button"
+           id="resolve-issues"></a>
+        <a th:href="@{/submissions/{submissionId}/claims/{claimId}(submissionId=${submissionId}, claimId=${claimId})}"
+           th:text="#{amendments.cannotBeSubmitted.cancelAmendments}"
+           class="govuk-link govuk-link--no-visited-state"
+           id="cancel-amendments"></a>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.payments.amend.utils;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ public class SessionUtils {
 
   public static final String CLAIM_KEY = "%s";
   public static final String AMENDMENTS_KEY = "amendments:%s";
+  public static final String AMENDMENT_ERRORS_KEY = "amendmentErrors:%s";
 
   public static void saveClaim(HttpSession session, UUID claimId, Claim claim) {
     var key = CLAIM_KEY.formatted(claimId.toString());
@@ -85,5 +87,22 @@ public class SessionUtils {
   public static void removeAllForClaim(HttpSession session, UUID claimId) {
     removeClaim(session, claimId);
     removeAmendmentForms(session, claimId);
+  }
+
+  public static void saveAmendmentErrors(HttpSession session, UUID claimId, List<String> errors) {
+    var key = AMENDMENT_ERRORS_KEY.formatted(claimId.toString());
+    session.setAttribute(key, errors);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static List<String> getAmendmentErrors(HttpSession session, UUID claimId) {
+    var key = AMENDMENT_ERRORS_KEY.formatted(claimId.toString());
+    var errors = session.getAttribute(key);
+    return errors == null ? List.of() : (List<String>) errors;
+  }
+
+  public static void removeAmendmentErrors(HttpSession session, UUID claimId) {
+    var key = AMENDMENT_ERRORS_KEY.formatted(claimId.toString());
+    session.removeAttribute(key);
   }
 }
