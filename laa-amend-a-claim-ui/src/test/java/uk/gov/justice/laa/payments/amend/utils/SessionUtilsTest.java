@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -125,5 +126,21 @@ public class SessionUtilsTest {
             () -> SessionUtils.getValidAssessableClaim(session, SUBMISSION_ID, CLAIM_ID));
 
     assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+  }
+
+  @Test
+  void removeAllForClaimRemovesClaimFormsAndAmendmentErrors() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    var session = new MockHttpSession();
+    SessionUtils.saveClaim(session, CLAIM_ID, claim);
+    SessionUtils.saveAmendmentErrors(session, CLAIM_ID, List.of("Some error"));
+
+    SessionUtils.removeAllForClaim(session, CLAIM_ID);
+
+    assertThrows(
+        NoClaimInSessionException.class,
+        () -> SessionUtils.getClaim(session, SUBMISSION_ID, CLAIM_ID));
+    assertThat(session.getAttribute(SessionUtils.AMENDMENT_ERRORS_KEY.formatted(CLAIM_ID)))
+        .isNull();
   }
 }
