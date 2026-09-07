@@ -11,6 +11,7 @@ import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.ClaimFieldRuleJsonLoader;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.FieldRuleEngine;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.RuleCategory;
 
@@ -33,7 +34,8 @@ public class ClaimFieldRuleValidator implements FieldSpecificAmendmentValidator 
   @Override
   public void validate(
       ClaimDetails claimDetails, ClaimViewField<?> field, AmendmentForm form, Errors errors) {
-    var value = form.getInputs().get(field.name());
+    var value = valueForValidation(field, form);
+
     var rules = ClaimFieldRuleJsonLoader.rulesFor(field);
     var rulesToEvaluate =
         isBlank(value)
@@ -48,5 +50,13 @@ public class ClaimFieldRuleValidator implements FieldSpecificAmendmentValidator 
               args.addAll(rule.messageArgs());
               addUniqueFieldError(field, rule.messageCode(), args.toArray(), errors);
             });
+  }
+
+  private static String valueForValidation(ClaimViewField<?> field, AmendmentForm form) {
+    if (field.getFieldType() != FieldType.DATE) {
+      return form.getInputs().get(field.name());
+    }
+    var dateValue = form.getDateValue(field.name());
+    return dateValue == null ? "" : dateValue.toString();
   }
 }

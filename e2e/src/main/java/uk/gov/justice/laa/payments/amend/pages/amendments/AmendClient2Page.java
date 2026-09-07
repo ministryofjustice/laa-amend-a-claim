@@ -17,10 +17,21 @@ public class AmendClient2Page extends LaaPage {
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue"));
   }
 
+  public void selectSelectionValue(String id, String value) {
+    page.locator(String.format("#%s", id)).selectOption(value);
+  }
+
   public void fillInput(String inputKey, String value) {
     var surnameInput = page.locator(String.format("input#%s", inputKey));
     assertThat(surnameInput).isVisible();
     surnameInput.fill(value);
+  }
+
+  public void selectFromComboBox(String fieldName, String optionName) {
+    Locator genderCombo = page.locator(String.format("#%s", fieldName));
+    genderCombo.click();                  // opens suggestions
+    genderCombo.fill(optionName);
+    genderCombo.press("Enter");
   }
 
   public void clickContinueButton() {

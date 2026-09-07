@@ -363,11 +363,32 @@ public class AmendmentsFlowE2ETest extends BaseTest {
     viewAmendClient.getChangeClientTwoLink().click();
 
     var amendClient2 = new AmendClient2Page(page);
-    amendClient2.fillInput("CLIENT_2_SURNAME", "changedTwo");
+    amendClient2.fillInput("CLIENT_2_SURNAME", "changedTwoSurname");
+    amendClient2.fillInput("CLIENT_2_FORENAME", "changedTwoForename");
+    amendClient2.fillInput("CLIENT_2_DATE_OF_BIRTH-day", "01");
+    amendClient2.selectSelectionValue("CLIENT_2_DATE_OF_BIRTH-month", "May");
+    amendClient2.fillInput("CLIENT_2_DATE_OF_BIRTH-year", "1995");
+    amendClient2.fillInput("CLIENT_2_UCN", "01051995/X/WXYZ");
+    amendClient2.fillInput("CLIENT_2_POSTCODE", "XX196XX");
+    amendClient2.selectFromComboBox("CLIENT_2_GENDER", "Female");
+    amendClient2.selectFromComboBox("CLIENT_2_ETHNICITY", "00 - White British");
+    amendClient2.selectFromComboBox("CLIENT_2_DISABILITY", "NCD - No Condition Declared");
+    amendClient2.selectSelectionValue("IS_CLIENT_2_LEGALLY_AIDED", "Yes");
+    amendClient2.selectSelectionValue("IS_CLIENT_2_POSTAL_APPLICATION_ACCEPTED", "Yes");
     amendClient2.clickContinueButton();
 
     viewAmendClient = new ViewClientPage(page);
-    assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
+    assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwoSurname");
+    assertSummaryListRow(page, "Client 2 details", "First name", "Not applicable", "changedTwoForename");
+    assertSummaryListRow(page, "Client 2 details", "Date of birth", "Not applicable","01 May 1995");
+    assertSummaryListRow(page, "Client 2 details", "Unique client number (UCN)", "Not applicable","01051995/X/WXYZ");
+    assertSummaryListRow(page, "Client 2 details", "Postcode", "Not applicable","XX196XX");
+    assertSummaryListRow(page, "Client 2 details", "Gender", "Not applicable","F");
+    assertSummaryListRow(page, "Client 2 details", "Ethnicity", "Not applicable","00");
+    assertSummaryListRow(page, "Client 2 details", "Disability", "Not applicable","NCD");
+    assertSummaryListRow(page, "Client 2 details", "Legally aided", "Not applicable","Yes");
+    assertSummaryListRow(page, "Client 2 details", "Postal application accepted", "Not applicable","Yes");
+
     viewAmendClient.clickCaseTab();
 
     // View Case → Change case type → View Case
@@ -415,7 +436,7 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var checkPage = new CheckPage(page);
     assertSummaryListRow(page, "Client 1 details", "Last name", "Elonga", "changed");
-    assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwo");
+    assertSummaryListRow(page, "Client 2 details", "Last name", "Not applicable", "changedTwoSurname");
     assertSummaryListRow(page, "Case details", "Claim ID", "711", "123");
     assertSummaryListRow(page, "Case type", "Fee code", "MDAS2S", "MDPS1B");
     assertSummaryListRow(page, "Case type", "Matter type 1", "IMCB", "MONE");
