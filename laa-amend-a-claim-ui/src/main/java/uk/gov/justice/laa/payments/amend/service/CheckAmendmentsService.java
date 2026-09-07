@@ -5,9 +5,11 @@ import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimD
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import tools.jackson.databind.JsonNode;
@@ -30,6 +32,9 @@ public class CheckAmendmentsService {
   private static final String GENERIC_ERROR_MESSAGE =
       "A technical error occurred, please try again after some time";
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+  private static final Set<HttpStatus> VALIDATION_REJECTION_STATUSES =
+      Set.of(HttpStatus.BAD_REQUEST, HttpStatus.CONFLICT, HttpStatus.SERVICE_UNAVAILABLE);
 
   private final ClaimsApiClient claimsApiClient;
 
@@ -60,6 +65,16 @@ public class CheckAmendmentsService {
     try {
       claimsApiClient.updateClaim(submissionId, claimId, patchBuilder.build()).block();
     } catch (WebClientResponseException ex) {
+      if (!VALIDATION_REJECTION_STATUSES.contains(HttpStatus.resolve(ex.getStatusCode().value()))) {
+        log.error(
+            "Amendment submission to claims-api failed unexpectedly for submission {} claim {}"
+                + " with status {}",
+            submissionId,
+            claimId,
+            ex.getStatusCode(),
+            ex);
+        throw ex;
+      }
       log.warn(
           "Amendment submission rejected for submission {} claim {} with status {}: {}",
           submissionId,

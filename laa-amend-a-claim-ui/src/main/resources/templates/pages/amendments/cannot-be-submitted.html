@@ -15,11 +15,9 @@
 
       <p class="govuk-body" th:text="#{amendments.cannotBeSubmitted.subheading}"></p>
 
-      <dl class="govuk-summary-list">
-        <div class="govuk-summary-list__row" th:each="error : ${errors}">
-          <dd class="govuk-summary-list__value" th:text="${error}"></dd>
-        </div>
-      </dl>
+      <ul class="govuk-list govuk-list--bullet">
+        <li th:each="error : ${errors}" th:text="${error}"></li>
+      </ul>
 
       <div class="govuk-button-group">
         <a th:href="@{/submissions/{submissionId}/claims/{claimId}/amendments/check(submissionId=${submissionId}, claimId=${claimId})}"

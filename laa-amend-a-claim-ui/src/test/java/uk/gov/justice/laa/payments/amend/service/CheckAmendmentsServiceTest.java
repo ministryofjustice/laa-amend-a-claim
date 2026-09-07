@@ -95,6 +95,43 @@ class CheckAmendmentsServiceTest {
   }
 
   @Test
+  void submitRethrowsWebClientResponseExceptionForNonValidationStatus() {
+    var claim = MockClaimsFunctions.createMockCrimeClaim();
+    claim.setVersion(1L);
+    var amendmentForms =
+        amendmentForms(
+            forms(Map.of(), Map.of()),
+            forms(Map.of("FEE_CODE", "OLD_FEE"), Map.of("FEE_CODE", "NEW_FEE")),
+            forms(Map.of(), Map.of()),
+            null,
+            forms(Map.of(), Map.of()));
+    amendmentForms.setRequestedByForm(createRequestedByForm());
+    amendmentForms.setRequestedReasonForm(createRequestReasonForm());
+
+    var submissionId = UUID.randomUUID();
+    var claimId = UUID.randomUUID();
+    var responseBody =
+        """
+        {"detail":"An unexpected application error has occurred."}
+        """;
+    var thrownException =
+        WebClientResponseException.create(
+            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            "Internal Server Error",
+            null,
+            responseBody.getBytes(StandardCharsets.UTF_8),
+            null);
+    when(claimsApiClient.updateClaim(eq(submissionId), eq(claimId), any(ClaimAmendmentPatch.class)))
+        .thenReturn(Mono.error(thrownException));
+
+    assertThatThrownBy(
+            () ->
+                checkAmendmentsService.submitAmendments(
+                    submissionId, claimId, USER_ID, claim, amendmentForms))
+        .isSameAs(thrownException);
+  }
+
+  @Test
   void submitPopulatesCrimePatchFromAllFormFields() {
     var claim = MockClaimsFunctions.createMockCrimeClaim();
     claim.setVersion(1L);

@@ -87,6 +87,7 @@ public class SessionUtils {
   public static void removeAllForClaim(HttpSession session, UUID claimId) {
     removeClaim(session, claimId);
     removeAmendmentForms(session, claimId);
+    removeAmendmentErrors(session, claimId);
   }
 
   public static void saveAmendmentErrors(HttpSession session, UUID claimId, List<String> errors) {
