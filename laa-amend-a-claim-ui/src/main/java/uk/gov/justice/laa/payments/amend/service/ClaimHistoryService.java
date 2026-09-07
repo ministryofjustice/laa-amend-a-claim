@@ -181,7 +181,7 @@ public class ClaimHistoryService {
       return Stream.empty();
     }
     var fspEvents =
-        featureFlagsConfig.isFspHistoryEnabled()
+        featureFlagsConfig.isClaimAmendmentEnabled()
             ? claimHistoryAmendmentsService.toFspClaimHistoryEventsFromApiEvents(
                 historyEvents, claim)
             : Stream.<BaseClaimHistoryEvent>empty();

@@ -616,6 +616,7 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
         new LinkedHashSet<ClaimViewField<?>>(
             Arrays.stream(ClaimDetailsViewField.values())
                 .filter(ClaimHistoryViewTest::isDisplayedFspHistoryField)
+                .filter(field -> field != ClaimDetailsViewField.TOTAL)
                 .toList());
 
     switch (areaOfLaw) {

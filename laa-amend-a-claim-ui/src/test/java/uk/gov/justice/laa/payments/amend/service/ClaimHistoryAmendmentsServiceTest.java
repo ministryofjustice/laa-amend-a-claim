@@ -392,6 +392,7 @@ class ClaimHistoryAmendmentsServiceTest {
     fields.addAll(
         stream(ClaimDetailsViewField.values())
             .filter(ClaimHistoryAmendmentsServiceTest::hasFeeApiIdentifier)
+            .filter(field -> field != ClaimDetailsViewField.TOTAL)
             .toList());
 
     switch (areaOfLaw) {

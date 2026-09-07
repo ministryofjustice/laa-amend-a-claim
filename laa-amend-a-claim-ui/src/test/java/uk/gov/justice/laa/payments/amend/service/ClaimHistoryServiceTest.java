@@ -425,7 +425,7 @@ public class ClaimHistoryServiceTest {
             .build();
     when(providerService.getProviderFirm(OFFICE_CODE)).thenReturn(providerFirm);
 
-    when(featureFlagsConfig.isFspHistoryEnabled()).thenReturn(true);
+    when(featureFlagsConfig.isClaimAmendmentEnabled()).thenReturn(true);
     when(claimsApiClient.getClaimHistory(claim.getClaimId()))
         .thenReturn(
             Mono.just(
@@ -475,7 +475,7 @@ public class ClaimHistoryServiceTest {
             .build();
     when(providerService.getProviderFirm(OFFICE_CODE)).thenReturn(providerFirm);
 
-    when(featureFlagsConfig.isFspHistoryEnabled()).thenReturn(false);
+    when(featureFlagsConfig.isClaimAmendmentEnabled()).thenReturn(false);
     when(claimsApiClient.getClaimHistory(claim.getClaimId()))
         .thenReturn(
             Mono.just(
