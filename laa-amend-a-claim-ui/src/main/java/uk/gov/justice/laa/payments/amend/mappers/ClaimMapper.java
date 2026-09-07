@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
-import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -19,6 +18,7 @@ import uk.gov.justice.laa.payments.amend.models.CrimeClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.MediationClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.payments.amend.models.enums.DerivedClaimStatus;
+import uk.gov.justice.laa.payments.amend.utils.MatterTypeUtils;
 
 @Mapper(
     componentModel = "spring",
@@ -262,11 +262,7 @@ public interface ClaimMapper {
    */
   @Named("matterType1")
   default String getMatterType1(String matterTypeCode) {
-    if (StringUtils.isNotBlank(matterTypeCode)) {
-      String[] matterType = matterTypeCode.split("[+:]");
-      return matterType.length > 0 ? matterType[0] : null;
-    }
-    return null;
+    return MatterTypeUtils.part(matterTypeCode, MatterTypeUtils.FIRST_PART);
   }
 
   /**
@@ -277,11 +273,7 @@ public interface ClaimMapper {
    */
   @Named("matterType2")
   default String getMatterType2(String matterTypeCode) {
-    if (StringUtils.isNotBlank(matterTypeCode)) {
-      String[] matterType = matterTypeCode.split("[+:]");
-      return matterType.length > 1 ? matterType[1] : null;
-    }
-    return null;
+    return MatterTypeUtils.part(matterTypeCode, MatterTypeUtils.SECOND_PART);
   }
 
   @ObjectFactory

@@ -36,7 +36,7 @@
                             <dd class="govuk-summary-list__value"
                                 th:text="${@ThymeleafUtils.getFormattedValue(row.calculated).resolve(#messages)}"></dd>
                             <dd class="govuk-summary-list__value" th:if="${claim.hasAssessment}" th:text="${@ThymeleafUtils.getFormattedValue(row.assessed).resolve(#messages)}"></dd>
-                            <dd class="govuk-summary-list__actions" th:if="${amendedFields.contains(field.claimsApiFieldName)}">
+                            <dd class="govuk-summary-list__actions" th:if="${field.isAmended(amendedFields)}">
                                 <strong class="govuk-tag govuk-tag--yellow" th:text="#{service.amended}"></strong>
                             </dd>
                         </div>

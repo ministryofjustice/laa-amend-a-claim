@@ -10,6 +10,7 @@ import uk.gov.justice.laa.payments.amend.models.CivilClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.enums.Amendability;
 import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
+import uk.gov.justice.laa.payments.amend.utils.MatterTypeUtils;
 
 @Getter
 public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetails> {
@@ -70,13 +71,13 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       String.class,
       CivilClaimDetails::getMatterType1,
       Builder::matterTypeCode,
-      "claim.matterTypeCode"),
+      MatterTypeUtils.MATTER_TYPE_CODE_1),
   MATTER_TYPE_CODE_2(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getMatterType2,
       Builder::matterTypeCode,
-      "claim.matterTypeCode"),
+      MatterTypeUtils.MATTER_TYPE_CODE_2),
 
   // Case details fields
   STAGE_REACHED(

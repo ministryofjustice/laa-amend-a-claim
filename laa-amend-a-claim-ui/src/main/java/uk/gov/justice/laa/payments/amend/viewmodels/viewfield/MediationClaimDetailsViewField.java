@@ -7,6 +7,7 @@ import lombok.Getter;
 import uk.gov.justice.laa.dstew.payments.claimsdata.model.ClaimAmendmentPatch.Builder;
 import uk.gov.justice.laa.payments.amend.models.MediationClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
+import uk.gov.justice.laa.payments.amend.utils.MatterTypeUtils;
 
 @Getter
 public enum MediationClaimDetailsViewField implements ClaimViewField<MediationClaimDetails> {
@@ -120,13 +121,13 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       String.class,
       MediationClaimDetails::getMatterType1,
       Builder::matterTypeCode,
-      "claim.matterTypeCode"),
+      MatterTypeUtils.MATTER_TYPE_CODE_1),
   MATTER_TYPE_CODE_2(
       FieldType.TEXT,
       String.class,
       MediationClaimDetails::getMatterType2,
       Builder::matterTypeCode,
-      "claim.matterTypeCode"),
+      MatterTypeUtils.MATTER_TYPE_CODE_2),
 
   // Case Details fields
   CLAIM_ID(

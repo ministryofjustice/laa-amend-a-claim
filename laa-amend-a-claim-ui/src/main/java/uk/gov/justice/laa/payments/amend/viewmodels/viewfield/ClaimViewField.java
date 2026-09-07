@@ -3,6 +3,8 @@ package uk.gov.justice.laa.payments.amend.viewmodels.viewfield;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -31,6 +33,17 @@ public interface ClaimViewField<T extends Claim> {
     return null;
   }
 
+  default Set<String> getAmendedFieldIdentifiers() {
+    return Stream.of(getClaimsApiFieldName(), getFeeApiFieldName())
+        .filter(name -> name != null && !name.isBlank())
+        .collect(Collectors.toSet());
+  }
+
+  default boolean isAmended(Set<String> amendedFields) {
+    return amendedFields != null
+        && getAmendedFieldIdentifiers().stream().anyMatch(amendedFields::contains);
+  }
+
   ClaimViewFieldPatcher<?> getPatcher();
 
   default String label(MessageSource messageSource) {
@@ -39,9 +52,8 @@ public interface ClaimViewField<T extends Claim> {
     return messageSource.getMessage(new DefaultMessageSourceResolvable(codes), Locale.UK);
   }
 
-  default ClaimAmendmentPatch.Builder applyPatch(
-      ClaimAmendmentPatch.Builder patchBuilder, Object value) {
-    return getPatcher().apply(patchBuilder, value);
+  default void applyPatch(ClaimAmendmentPatch.Builder patchBuilder, Object value) {
+    getPatcher().apply(patchBuilder, value);
   }
 
   default Amendability getAmendability() {
