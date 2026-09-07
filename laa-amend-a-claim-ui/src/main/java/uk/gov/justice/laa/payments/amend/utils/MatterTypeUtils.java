@@ -16,6 +16,9 @@ public class MatterTypeUtils {
   public static final int FIRST_PART = 0;
   public static final int SECOND_PART = 1;
 
+  public static final String MATTER_TYPE_CODE_1 = MATTER_TYPE_CODE + PART_SUFFIX + FIRST_PART;
+  public static final String MATTER_TYPE_CODE_2 = MATTER_TYPE_CODE + PART_SUFFIX + SECOND_PART;
+
   public static String part(String matterTypeCode, int part) {
     if (matterTypeCode == null || matterTypeCode.isBlank()) {
       return null;
@@ -24,16 +27,13 @@ public class MatterTypeUtils {
     return part < split.length ? split[part] : null;
   }
 
-  public static String partIdentifier(int part) {
-    return MATTER_TYPE_CODE + PART_SUFFIX + part;
-  }
-
   public static Set<String> changedPartIdentifiers(String before, String after) {
     Set<String> identifiers = new LinkedHashSet<>();
-    for (int part : new int[] {FIRST_PART, SECOND_PART}) {
-      if (!Objects.equals(part(before, part), part(after, part))) {
-        identifiers.add(partIdentifier(part));
-      }
+    if (!Objects.equals(part(before, FIRST_PART), part(after, FIRST_PART))) {
+      identifiers.add(MATTER_TYPE_CODE_1);
+    }
+    if (!Objects.equals(part(before, SECOND_PART), part(after, SECOND_PART))) {
+      identifiers.add(MATTER_TYPE_CODE_2);
     }
     return identifiers;
   }

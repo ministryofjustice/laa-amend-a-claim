@@ -2,7 +2,6 @@ package uk.gov.justice.laa.payments.amend.viewmodels.viewfield;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.Getter;
@@ -72,23 +71,13 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       String.class,
       CivilClaimDetails::getMatterType1,
       Builder::matterTypeCode,
-      "claim.matterTypeCode") {
-    @Override
-    public Set<String> getAmendedFieldIdentifiers() {
-      return Set.of(MatterTypeUtils.partIdentifier(MatterTypeUtils.FIRST_PART));
-    }
-  },
+      MatterTypeUtils.MATTER_TYPE_CODE_1),
   MATTER_TYPE_CODE_2(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getMatterType2,
       Builder::matterTypeCode,
-      "claim.matterTypeCode") {
-    @Override
-    public Set<String> getAmendedFieldIdentifiers() {
-      return Set.of(MatterTypeUtils.partIdentifier(MatterTypeUtils.SECOND_PART));
-    }
-  },
+      MatterTypeUtils.MATTER_TYPE_CODE_2),
 
   // Case details fields
   STAGE_REACHED(

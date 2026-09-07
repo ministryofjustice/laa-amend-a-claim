@@ -491,6 +491,48 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
   }
 
   @Test
+  void testAmendedCivilClaimTagsMatterType1WithoutMatterType2() {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    createClaimSummary(claim);
+    claim.setClaimId(claimId);
+    claim.setSubmissionId(submissionId);
+    claim.setDerivedClaimStatus(AMENDED);
+    claim.setAreaOfLaw(LEGAL_HELP);
+    claim.setCategoryOfLaw("TEST");
+    claim.setMatterType1("IMLB");
+    claim.setMatterType2("AHQS");
+
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    mockClaimHistorySummary("claim.matterTypeCode#0");
+
+    Document doc = renderDocument();
+
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type 1"));
+    assertSummaryListRowHasNoAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type 2"));
+  }
+
+  @Test
+  void testAmendedCivilClaimTagsMatterType2WithoutMatterType1() {
+    CivilClaimDetails claim = MockClaimsFunctions.createMockCivilClaim();
+    createClaimSummary(claim);
+    claim.setClaimId(claimId);
+    claim.setSubmissionId(submissionId);
+    claim.setDerivedClaimStatus(AMENDED);
+    claim.setAreaOfLaw(LEGAL_HELP);
+    claim.setCategoryOfLaw("TEST");
+    claim.setMatterType1("IMLB");
+    claim.setMatterType2("AHQS");
+
+    when(claimService.getClaimDetails(any(), any())).thenReturn(claim);
+    mockClaimHistorySummary("claim.matterTypeCode#1");
+
+    Document doc = renderDocument();
+
+    assertSummaryListRowHasNoAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type 1"));
+    assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type 2"));
+  }
+
+  @Test
   void testAmendedCrimeLowerClaim() {
     CrimeClaimDetails claim = MockClaimsFunctions.createMockCrimeClaim();
     createClaimSummary(claim);

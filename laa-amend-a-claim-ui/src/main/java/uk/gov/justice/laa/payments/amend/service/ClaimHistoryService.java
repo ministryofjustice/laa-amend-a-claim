@@ -294,11 +294,12 @@ public class ClaimHistoryService {
     if (fieldIdentifier == null) {
       return;
     }
-    amendedFields.add(fieldIdentifier);
     if (MatterTypeUtils.MATTER_TYPE_CODE.equals(fieldIdentifier)) {
       amendedFields.addAll(
           MatterTypeUtils.changedPartIdentifiers(
               toFallbackString(change.getBefore()), toFallbackString(change.getAfter())));
+    } else {
+      amendedFields.add(fieldIdentifier);
     }
   }
 

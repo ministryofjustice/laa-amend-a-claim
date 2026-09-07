@@ -36,7 +36,7 @@ public interface ClaimViewField<T extends Claim> {
   default Set<String> getAmendedFieldIdentifiers() {
     return Stream.of(getClaimsApiFieldName(), getFeeApiFieldName())
         .filter(name -> name != null && !name.isBlank())
-        .collect(Collectors.toUnmodifiableSet());
+        .collect(Collectors.toSet());
   }
 
   default boolean isAmended(Set<String> amendedFields) {
@@ -52,9 +52,8 @@ public interface ClaimViewField<T extends Claim> {
     return messageSource.getMessage(new DefaultMessageSourceResolvable(codes), Locale.UK);
   }
 
-  default ClaimAmendmentPatch.Builder applyPatch(
-      ClaimAmendmentPatch.Builder patchBuilder, Object value) {
-    return getPatcher().apply(patchBuilder, value);
+  default void applyPatch(ClaimAmendmentPatch.Builder patchBuilder, Object value) {
+    getPatcher().apply(patchBuilder, value);
   }
 
   default Amendability getAmendability() {

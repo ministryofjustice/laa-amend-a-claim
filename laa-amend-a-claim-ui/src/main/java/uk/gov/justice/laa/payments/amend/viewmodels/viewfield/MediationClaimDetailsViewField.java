@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.payments.amend.viewmodels.viewfield;
 
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import lombok.Getter;
@@ -122,23 +121,13 @@ public enum MediationClaimDetailsViewField implements ClaimViewField<MediationCl
       String.class,
       MediationClaimDetails::getMatterType1,
       Builder::matterTypeCode,
-      "claim.matterTypeCode") {
-    @Override
-    public Set<String> getAmendedFieldIdentifiers() {
-      return Set.of(MatterTypeUtils.partIdentifier(MatterTypeUtils.FIRST_PART));
-    }
-  },
+      MatterTypeUtils.MATTER_TYPE_CODE_1),
   MATTER_TYPE_CODE_2(
       FieldType.TEXT,
       String.class,
       MediationClaimDetails::getMatterType2,
       Builder::matterTypeCode,
-      "claim.matterTypeCode") {
-    @Override
-    public Set<String> getAmendedFieldIdentifiers() {
-      return Set.of(MatterTypeUtils.partIdentifier(MatterTypeUtils.SECOND_PART));
-    }
-  },
+      MatterTypeUtils.MATTER_TYPE_CODE_2),
 
   // Case Details fields
   CLAIM_ID(

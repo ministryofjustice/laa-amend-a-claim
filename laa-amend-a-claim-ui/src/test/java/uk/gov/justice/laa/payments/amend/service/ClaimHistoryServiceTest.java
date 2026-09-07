@@ -263,7 +263,7 @@ public class ClaimHistoryServiceTest {
     when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
 
     assertThat(claimHistoryService.getClaimHistorySummary(claim).amendedFields())
-        .containsExactlyInAnyOrder("claim.matterTypeCode", "claim.matterTypeCode#1");
+        .containsExactlyInAnyOrder("claim.matterTypeCode#1");
   }
 
   @Test
@@ -292,8 +292,7 @@ public class ClaimHistoryServiceTest {
     when(claimsApiClient.getClaimHistory(claim.getClaimId())).thenReturn(Mono.just(history));
 
     assertThat(claimHistoryService.getClaimHistorySummary(claim).amendedFields())
-        .containsExactlyInAnyOrder(
-            "claim.matterTypeCode", "claim.matterTypeCode#0", "claim.matterTypeCode#1");
+        .containsExactlyInAnyOrder("claim.matterTypeCode#0", "claim.matterTypeCode#1");
   }
 
   @Test
