@@ -492,7 +492,7 @@
     ]
   },
   "fields": {
-    "CrimeClaimDetailsViewField.INITIAL":  { "ruleGroups": ["name"] },
+    "CrimeClaimDetailsViewField.INITIAL":  { "ruleGroups": ["mandatoryCrimeLower", "name"] },
     "CivilClaimDetailsViewField.FORENAME": { "ruleGroups": [ "mandatoryLegalHelp", "name"] },
     "MediationClaimDetailsViewField.FORENAME": { "ruleGroups": ["mandatoryMediation", "name"] },
     "ClaimDetailsViewField.SURNAME": { "ruleGroups": ["mandatoryLegalHelp", "mandatoryCrimeLower", "mandatoryMediation", "name"] },
