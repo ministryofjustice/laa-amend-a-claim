@@ -112,8 +112,9 @@ class IndexViewTest extends ViewTestBase {
         headers.get(3), "none", "Submission period", "/?page=1&sort=submission_period,asc");
     assertTableHeaderIsSortable(
         headers.get(4), "none", "Category of law", "/?page=1&sort=category_of_law,asc");
-    assertTableHeaderIsNotSortable(headers.get(5), "Escape case");
-    assertTableHeaderIsSortable(headers.get(6), "none", "Status", "/?page=1&sort=status,asc");
+    assertTableHeaderIsNotSortable(headers.get(5), "Claim value");
+    assertTableHeaderIsNotSortable(headers.get(6), "Escape case");
+    assertTableHeaderIsSortable(headers.get(7), "none", "Status", "/?page=1&sort=status,asc");
   }
 
   @Test
@@ -154,7 +155,7 @@ class IndexViewTest extends ViewTestBase {
     var row = doc.selectFirst("tbody.govuk-table__body tr.govuk-table__row");
     assertThat(row).isNotNull();
     var cells = row.select("td.govuk-table__cell");
-    var statusTag = cells.get(6).selectFirst("strong.govuk-tag");
+    var statusTag = cells.get(7).selectFirst("strong.govuk-tag");
     assertThat(statusTag).isNotNull();
     assertThat(statusTag.text()).isEqualTo(expectedTagText);
     assertThat(statusTag.classNames()).contains(expectedTagClass);
