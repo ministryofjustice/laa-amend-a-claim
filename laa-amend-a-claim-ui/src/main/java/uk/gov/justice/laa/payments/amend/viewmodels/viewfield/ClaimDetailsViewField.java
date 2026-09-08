@@ -115,6 +115,8 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       BigDecimal.class,
       ClaimDetails::getNetProfitCost,
       Builder::netProfitCostsAmount,
+      NO_OPTIONS,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.netProfitCostsAmount",
       "fee.netProfitCostsAmount"),
   DISBURSEMENTS(
@@ -122,6 +124,8 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       BigDecimal.class,
       ClaimDetails::getNetDisbursementAmount,
       Builder::netDisbursementAmount,
+      NO_OPTIONS,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.netDisbursementAmount",
       "fee.disbursementAmount"),
   DISBURSEMENTS_VAT(
@@ -129,6 +133,8 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       BigDecimal.class,
       ClaimDetails::getDisbursementVatAmount,
       Builder::disbursementsVatAmount,
+      NO_OPTIONS,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.disbursementsVatAmount",
       "fee.disbursementVatAmount"),
   CALCULATED_VAT_AMOUNT(
@@ -139,6 +145,8 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Boolean.class,
       ClaimDetails::getVatClaimed,
       Builder::isVatApplicable,
+      NO_OPTIONS,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.isVatApplicable",
       "fee.vatIndicator");
 

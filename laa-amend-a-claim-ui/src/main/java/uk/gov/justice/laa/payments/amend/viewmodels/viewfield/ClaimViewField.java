@@ -25,6 +25,7 @@ public interface ClaimViewField<T extends Claim> {
   Function<ClaimDetails, ?> NO_GETTER = _ -> null;
   Function<CivilClaimDetails, ?> NO_CIVIL_GETTER = _ -> null;
   Class<Object> NO_PATCH_TYPE = Object.class;
+  FieldType NO_FEE_API_TYPE = null;
   BiFunction<ClaimAmendmentPatch.Builder, Object, ClaimAmendmentPatch.Builder> NO_PATCHER =
       (builder, _) -> builder;
   List<FieldOption> NO_OPTIONS = List.of();

@@ -13,7 +13,12 @@ class AssessedFieldLockTest {
   void locksOnlyTheFinancialFieldsSharedAcrossAreasOfLaw() {
     assertThat(lockedIn(ClaimDetailsViewField.values()))
         .containsExactlyInAnyOrder(
-            ClaimDetailsViewField.FEE_CODE, ClaimDetailsViewField.CASE_START_DATE);
+            ClaimDetailsViewField.FEE_CODE,
+            ClaimDetailsViewField.CASE_START_DATE,
+            ClaimDetailsViewField.PROFIT_COST,
+            ClaimDetailsViewField.DISBURSEMENTS,
+            ClaimDetailsViewField.DISBURSEMENTS_VAT,
+            ClaimDetailsViewField.VAT);
   }
 
   @Test
@@ -24,13 +29,28 @@ class AssessedFieldLockTest {
             CrimeClaimDetailsViewField.REPRESENTATION_ORDER_DATE,
             CrimeClaimDetailsViewField.CASE_CONCLUDED_DATE,
             CrimeClaimDetailsViewField.POLICE_STATION_COURT_PRISON_ID,
-            CrimeClaimDetailsViewField.SCHEME_ID);
+            CrimeClaimDetailsViewField.SCHEME_ID,
+            CrimeClaimDetailsViewField.TRAVEL_COSTS,
+            CrimeClaimDetailsViewField.WAITING_COSTS);
   }
 
   @Test
   void locksOnlyTheFinancialLegalHelpFields() {
     assertThat(lockedIn(CivilClaimDetailsViewField.values()))
-        .containsExactlyInAnyOrder(CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE);
+        .containsExactlyInAnyOrder(
+            CivilClaimDetailsViewField.DATE_OF_BIRTH,
+            CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE,
+            CivilClaimDetailsViewField.COUNSELS_COST,
+            CivilClaimDetailsViewField.TRAVEL_AND_WAITING_COSTS,
+            CivilClaimDetailsViewField.DETENTION_TRAVEL,
+            CivilClaimDetailsViewField.JR_FORM_FILLING,
+            CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE,
+            CivilClaimDetailsViewField.CMRH_TELEPHONE,
+            CivilClaimDetailsViewField.CMRH_ORAL,
+            CivilClaimDetailsViewField.HOME_OFFICE,
+            CivilClaimDetailsViewField.SUBSTANTIVE_HEARING,
+            CivilClaimDetailsViewField.IS_LONDON_RATE,
+            CivilClaimDetailsViewField.PRIOR_AUTHORITY_REFERENCE);
   }
 
   @Test
