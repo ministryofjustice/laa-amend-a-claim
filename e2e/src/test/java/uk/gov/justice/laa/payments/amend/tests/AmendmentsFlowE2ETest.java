@@ -504,10 +504,12 @@ public class AmendmentsFlowE2ETest extends BaseTest {
 
     var amendClient1 = new AmendClient1Page(page);
     amendClient1.fillInput("SURNAME", "changed");
+    amendClient1.fillInput("INITIAL", "C");
     amendClient1.clickContinueButton();
 
     viewAmendClient = new ViewClientPage(page);
     assertSummaryListRow(page, "Client details", "Last name", "Not applicable", "changed");
+    assertSummaryListRow(page, "Client details", "Initial", "Not applicable", "C");
 
     // View Case → Change case type → View Case
 
