@@ -30,6 +30,10 @@ public class FeatureFlagsConfig {
     }
   }
 
+  public boolean isClaimAmendmentEnabled() {
+    return TRUE.equals(isClaimAmendmentEnabled);
+  }
+
   public void checkEnabled(Feature... features) {
     for (var feature : features) {
       switch (feature) {

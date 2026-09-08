@@ -26,6 +26,11 @@ public class NumberAmendmentFieldValidator implements GenericAmendmentFieldValid
   }
 
   @Override
+  public boolean supports(FieldType fieldType) {
+    return fieldType == FieldType.NUMBER;
+  }
+
+  @Override
   public void validate(ClaimViewField<?> field, AmendmentForm form, Errors errors) {
     var value = form.getInputs().get(field.name());
     if (isBlank(value)) {

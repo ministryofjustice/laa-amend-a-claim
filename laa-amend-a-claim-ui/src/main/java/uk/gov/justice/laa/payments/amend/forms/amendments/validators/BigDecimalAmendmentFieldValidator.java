@@ -22,7 +22,7 @@ public class BigDecimalAmendmentFieldValidator implements GenericAmendmentFieldV
 
   @Override
   public FieldType supportedType() {
-    return FieldType.BIG_DECIMAL;
+    return FieldType.MONETARY;
   }
 
   @Override

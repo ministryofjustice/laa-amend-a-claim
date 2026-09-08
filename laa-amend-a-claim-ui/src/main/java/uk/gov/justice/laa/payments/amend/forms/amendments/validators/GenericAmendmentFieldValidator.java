@@ -9,5 +9,9 @@ public interface GenericAmendmentFieldValidator extends AmendmentFieldValidator 
 
   FieldType supportedType();
 
+  default boolean supports(FieldType fieldType) {
+    return supportedType() == fieldType;
+  }
+
   void validate(ClaimViewField<?> field, AmendmentForm form, Errors errors);
 }

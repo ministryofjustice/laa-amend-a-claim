@@ -13,7 +13,9 @@ import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendedEvent
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAmendmentChange;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryAssessedEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryCreatedEvent;
+import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryFspEvent;
 import uk.gov.justice.laa.payments.amend.models.history.ClaimHistoryVoidedEvent;
+import uk.gov.justice.laa.payments.amend.utils.CurrencyUtils;
 import uk.gov.justice.laa.payments.amend.viewmodels.ThymeleafLiteralString;
 import uk.gov.justice.laa.payments.amend.viewmodels.ThymeleafMessage;
 import uk.gov.justice.laa.payments.amend.viewmodels.ThymeleafString;
@@ -26,7 +28,10 @@ public record ClaimHistoryEventViewModel(
     List<ClaimHistoryAmendmentChangeViewModel> amendmentChanges,
     ThymeleafString amendmentRequestedBy,
     ThymeleafString amendmentReason,
-    boolean amendmentEvent) {
+    boolean amendmentEvent,
+    boolean fspEvent,
+    ThymeleafString fspTotalChangedDescription,
+    List<ClaimHistoryAmendmentChangeViewModel> fspRecalculatedChanges) {
 
   private static final String BY_USER_KEY = "claimHistory.byUser";
   private static final ThymeleafMessage USER_NOT_AVAILABLE =
@@ -55,7 +60,10 @@ public record ClaimHistoryEventViewModel(
         toAmendmentChanges(event, messageSource),
         toAmendmentRequestedBy(event),
         toAmendmentReason(event),
-        event instanceof ClaimHistoryAmendedEvent);
+        event instanceof ClaimHistoryAmendedEvent,
+        event instanceof ClaimHistoryFspEvent,
+        toFspTotalChangedDescription(event),
+        toFspRecalculatedChanges(event, messageSource));
   }
 
   private static ThymeleafMessage toTypeMessage(BaseClaimHistoryEvent event) {
@@ -64,6 +72,9 @@ public record ClaimHistoryEventViewModel(
     }
     if (event instanceof ClaimHistoryAmendedEvent) {
       return new ThymeleafMessage("claimHistory.claimAmended.type");
+    }
+    if (event instanceof ClaimHistoryFspEvent) {
+      return new ThymeleafMessage("claimHistory.claimFspRecalculated.type");
     }
     if (event instanceof ClaimHistoryVoidedEvent) {
       return new ThymeleafMessage("claimHistory.claimVoided.type");
@@ -79,6 +90,9 @@ public record ClaimHistoryEventViewModel(
   }
 
   private static ThymeleafString toUserMessage(BaseClaimHistoryEvent event) {
+    if (event instanceof ClaimHistoryFspEvent) {
+      return new ThymeleafMessage("claimHistory.claimFspRecalculated.byUser");
+    }
     if (event.user() == null) {
       return USER_NOT_AVAILABLE;
     }
@@ -94,6 +108,9 @@ public record ClaimHistoryEventViewModel(
           : List.of(CLAIM_CREATED_DESCRIPTION, CLAIM_CALCULATED_DESCRIPTION);
     }
     if (event instanceof ClaimHistoryAmendedEvent amendedEvent) {
+      return List.of();
+    }
+    if (event instanceof ClaimHistoryFspEvent) {
       return List.of();
     }
     if (event instanceof ClaimHistoryVoidedEvent) {
@@ -134,7 +151,10 @@ public record ClaimHistoryEventViewModel(
         .map(
             change ->
                 new ClaimHistoryAmendmentChangeViewModel(
-                    toAmendmentFieldLabel(change, messageSource), change.before(), change.after()))
+                    change.field(),
+                    toAmendmentFieldLabel(change, messageSource),
+                    change.before(),
+                    change.after()))
         .toList();
   }
 
@@ -192,5 +212,37 @@ public record ClaimHistoryEventViewModel(
     return amendedEvent.amendmentReasonCode() == null
         ? new ThymeleafMessage("service.noData")
         : new ThymeleafLiteralString(amendedEvent.amendmentReasonCode());
+  }
+
+  private static ThymeleafString toFspTotalChangedDescription(BaseClaimHistoryEvent event) {
+    if (!(event instanceof ClaimHistoryFspEvent fspEvent)) {
+      return null;
+    }
+    if (fspEvent.totalBefore() == null || fspEvent.totalAfter() == null) {
+      return null;
+    }
+    return new ThymeleafMessage(
+        "claimHistory.claimFspRecalculated.totalChanged",
+        new ThymeleafLiteralString(CurrencyUtils.formatCurrency(fspEvent.totalBefore())),
+        new ThymeleafLiteralString(CurrencyUtils.formatCurrency(fspEvent.totalAfter())));
+  }
+
+  private static List<ClaimHistoryAmendmentChangeViewModel> toFspRecalculatedChanges(
+      BaseClaimHistoryEvent event, MessageSource messageSource) {
+    if (!(event instanceof ClaimHistoryFspEvent fspEvent)) {
+      return List.of();
+    }
+    return fspEvent.recalculatedChanges().stream()
+        .sorted(
+            Comparator.comparing(
+                change -> resolvedFieldLabel(change, messageSource), String.CASE_INSENSITIVE_ORDER))
+        .map(
+            change ->
+                new ClaimHistoryAmendmentChangeViewModel(
+                    change.field(),
+                    toAmendmentFieldLabel(change, messageSource),
+                    change.before(),
+                    change.after()))
+        .toList();
   }
 }

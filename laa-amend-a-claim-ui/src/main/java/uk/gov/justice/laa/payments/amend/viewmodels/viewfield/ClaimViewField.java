@@ -4,6 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.context.MessageSource;
@@ -19,6 +21,16 @@ import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
 
 public interface ClaimViewField<T extends Claim> {
 
+  // Helper constants to make the field definitions more readable
+  Function<ClaimDetails, ?> NO_GETTER = _ -> null;
+  Function<CivilClaimDetails, ?> NO_CIVIL_GETTER = _ -> null;
+  Class<Object> NO_PATCH_TYPE = Object.class;
+  BiFunction<ClaimAmendmentPatch.Builder, Object, ClaimAmendmentPatch.Builder> NO_PATCHER =
+      (builder, _) -> builder;
+  List<FieldOption> NO_OPTIONS = List.of();
+  String NO_CLAIMS_API_FIELD_NAME = null;
+  String NO_FEE_API_FIELD_NAME = null;
+
   List<String> ROW_LABEL_KEY_PREFIXES = List.of("claimField.");
 
   String name();
@@ -27,10 +39,21 @@ public interface ClaimViewField<T extends Claim> {
 
   FieldType getFieldType();
 
+  default FieldType getFieldType(String fieldIdentifier) {
+    if (fieldIdentifier != null && fieldIdentifier.equals(getFeeApiFieldName())) {
+      return getFeeFieldType();
+    }
+    return getFieldType();
+  }
+
+  default FieldType getFeeFieldType() {
+    return getFieldType();
+  }
+
   String getClaimsApiFieldName();
 
   default String getFeeApiFieldName() {
-    return null;
+    return NO_FEE_API_FIELD_NAME;
   }
 
   default Set<String> getAmendedFieldIdentifiers() {

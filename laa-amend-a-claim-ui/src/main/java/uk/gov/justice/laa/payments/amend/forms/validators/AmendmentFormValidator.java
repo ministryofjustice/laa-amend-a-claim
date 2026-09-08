@@ -38,7 +38,7 @@ public class AmendmentFormValidator implements Validator {
 
       var matched = false;
       for (var fieldValidator : fieldValidators) {
-        if (fieldValidator.supportedType() == field.getFieldType()) {
+        if (fieldValidator.supports(field.getFieldType())) {
           matched = true;
           fieldValidator.validate(field, form, errors);
         }

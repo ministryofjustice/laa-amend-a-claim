@@ -1,5 +1,8 @@
 package uk.gov.justice.laa.payments.amend.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -14,8 +17,11 @@ import uk.gov.justice.laa.payments.amend.forms.errors.AmendmentFormError;
 import uk.gov.justice.laa.payments.amend.forms.errors.AssessedTotalFormError;
 import uk.gov.justice.laa.payments.amend.forms.errors.AssessmentOutcomeFormError;
 import uk.gov.justice.laa.payments.amend.forms.errors.SearchFormError;
+import uk.gov.justice.laa.payments.amend.models.enums.GenderCode;
+import uk.gov.justice.laa.payments.amend.viewmodels.ThymeleafLiteralString;
 import uk.gov.justice.laa.payments.amend.viewmodels.ThymeleafMessage;
 import uk.gov.justice.laa.payments.amend.viewmodels.ThymeleafString;
+import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField;
 
 public class ThymeleafUtilsTest {
 
@@ -311,6 +317,37 @@ public class ThymeleafUtilsTest {
       Assertions.assertEquals("fulldate.format", message.getKey());
       Assertions.assertEquals("15 June 2025", message.getParams()[0]);
       Assertions.assertEquals("3:30pm", message.getParams()[1]);
+    }
+
+    @Test
+    void formatsPercentageFieldWithoutCurrencySymbol() {
+      ThymeleafUtils sut = new ThymeleafUtils();
+
+      ThymeleafString result =
+          sut.getFormattedValue(ClaimDetailsViewField.VAT_RATE_APPLIED, new BigDecimal("12.34"));
+
+      Assertions.assertInstanceOf(ThymeleafLiteralString.class, result);
+      Assertions.assertEquals("12.34%", ((ThymeleafLiteralString) result).getValue());
+    }
+
+    @Test
+    void trimsTrailingZerosFromPercentageField() {
+      ThymeleafUtils sut = new ThymeleafUtils();
+
+      ThymeleafString result =
+          sut.getFormattedValue(ClaimDetailsViewField.VAT_RATE_APPLIED, new BigDecimal("20.00"));
+
+      Assertions.assertInstanceOf(ThymeleafLiteralString.class, result);
+      Assertions.assertEquals("20%", ((ThymeleafLiteralString) result).getValue());
+    }
+
+    @Test
+    void formatsFieldOptionValuesUsingTheirLocalizedLabel() {
+      var result = new ThymeleafUtils().getFormattedValue(GenderCode.MALE);
+
+      assertThat(result).isInstanceOf(ThymeleafMessage.class);
+      assertThat(((ThymeleafMessage) result).getKey())
+          .isEqualTo("claimCase.options.genderCode.MALE");
     }
   }
 }

@@ -38,4 +38,3 @@ feature-flags:
 maintenance:
   disable-at-time: 2030-05-29T17:29:00Z
   outage-banner-message: Planned maintenance.
-
