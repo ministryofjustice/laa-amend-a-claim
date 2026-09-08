@@ -26,6 +26,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       String.class,
       CivilClaimDetails::getClientDateOfBirth,
       Builder::clientDateOfBirth,
+      Amendability.UNTIL_ASSESSED,
       "client.clientDateOfBirth"),
   POSTCODE(
       FieldType.TEXT,
@@ -109,11 +110,8 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       String.class,
       CivilClaimDetails::getCaseConcludedDate,
       Builder::caseConcludedDate,
-      NO_OPTIONS,
       Amendability.UNTIL_ASSESSED,
-      "claim.caseConcludedDate",
-      NO_FEE_API_FIELD_NAME,
-      FieldType.DATE),
+      "claim.caseConcludedDate"),
   UNIQUE_FILE_NUMBER(
       FieldType.TEXT,
       String.class,
@@ -322,30 +320,38 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   // Cost fields
   COUNSELS_COST(
       FieldType.MONETARY,
+      FieldType.MONETARY,
       BigDecimal.class,
       CivilClaimDetails::getCounselsCost,
       Builder::netCounselCostsAmount,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.netCounselCostsAmount",
       "fee.netCostOfCounselAmount"),
   TRAVEL_AND_WAITING_COSTS(
       FieldType.MONETARY,
+      FieldType.MONETARY,
       BigDecimal.class,
       CivilClaimDetails::getTravelAndWaitingCosts,
       Builder::travelWaitingCostsAmount,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.travelWaitingCostsAmount",
       "fee.travelAndWaitingCostsAmount"),
   DETENTION_TRAVEL(
       FieldType.MONETARY,
+      FieldType.MONETARY,
       BigDecimal.class,
       CivilClaimDetails::getDetentionTravelWaitingCosts,
       Builder::detentionTravelWaitingCostsAmount,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.detentionTravelWaitingCostsAmount",
       "fee.detentionTravelAndWaitingCostsAmount"),
   JR_FORM_FILLING(
       FieldType.MONETARY,
+      FieldType.MONETARY,
       BigDecimal.class,
       CivilClaimDetails::getJrFormFillingCost,
       Builder::jrFormFillingAmount,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.jrFormFillingAmount",
       "fee.jrFormFillingAmount"),
   ADJOURNED_HEARING_FEE(
@@ -354,6 +360,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Integer.class,
       CivilClaimDetails::getAdjournedHearing,
       Builder::adjournedHearingFeeAmount,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.adjournedHearingFeeAmount",
       "fee.boltOnAdjournedHearingFee"),
   CMRH_TELEPHONE(
@@ -362,6 +369,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Integer.class,
       CivilClaimDetails::getCmrhTelephone,
       Builder::cmrhTelephoneCount,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.cmrhTelephoneCount",
       "fee.boltOnCmrhTelephoneFee"),
   CMRH_ORAL(
@@ -370,6 +378,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Integer.class,
       CivilClaimDetails::getCmrhOral,
       Builder::cmrhOralCount,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.cmrhOralCount",
       "fee.boltOnCmrhOralFee"),
   HOME_OFFICE(
@@ -378,6 +387,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Integer.class,
       CivilClaimDetails::getHoInterview,
       Builder::hoInterview,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.hoInterview",
       "fee.boltOnHomeOfficeInterviewFee"),
   SUBSTANTIVE_HEARING(
@@ -386,29 +396,31 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Boolean.class,
       CivilClaimDetails::getSubstantiveHearing,
       Builder::isSubstantiveHearing,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.isSubstantiveHearing",
       "fee.boltOnSubstantiveHearingFee"),
   BOLT_ON_TOTAL_FEE(
       FieldType.MONETARY,
+      FieldType.MONETARY,
       NO_PATCH_TYPE,
       NO_CIVIL_GETTER,
       NO_PATCHER,
-      NO_OPTIONS,
       Amendability.NEVER,
       NO_CLAIMS_API_FIELD_NAME,
-      "fee.boltOnTotalFeeAmount",
-      FieldType.MONETARY),
+      "fee.boltOnTotalFeeAmount"),
   IS_LONDON_RATE(
       FieldType.BOOLEAN,
       Boolean.class,
       CivilClaimDetails::getIsLondonRate,
-      Builder::isLondonRate,
+      (Builder builder, Boolean isLondonRate) -> builder.isLondonRate(isLondonRate),
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.isLondonRate"),
   PRIOR_AUTHORITY_REFERENCE(
       FieldType.TEXT,
       String.class,
       CivilClaimDetails::getPriorAuthorityReference,
       Builder::priorAuthorityReference,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.priorAuthorityReference");
 
   private final CivilClaimViewFieldGetter<?> getter;
@@ -428,14 +440,14 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       String claimsApiFieldName) {
     this(
         fieldType,
+        NO_FEE_API_TYPE,
         patchType,
         getter,
         patcher,
         List.of(),
         Amendability.ALWAYS,
         claimsApiFieldName,
-        NO_FEE_API_FIELD_NAME,
-        fieldType);
+        NO_FEE_API_FIELD_NAME);
   }
 
   <T> CivilClaimDetailsViewField(
@@ -447,14 +459,14 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       String claimsApiFieldName) {
     this(
         fieldType,
+        NO_FEE_API_TYPE,
         patchType,
         getter,
         patcher,
         options,
         Amendability.ALWAYS,
         claimsApiFieldName,
-        NO_FEE_API_FIELD_NAME,
-        fieldType);
+        NO_FEE_API_FIELD_NAME);
   }
 
   <T> CivilClaimDetailsViewField(
@@ -462,18 +474,18 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Class<T> patchType,
       Function<CivilClaimDetails, ?> getter,
       BiFunction<Builder, T, Builder> patcher,
-      String claimsApiFieldName,
-      String feeApiFieldName) {
+      Amendability amendability,
+      String claimsApiFieldName) {
     this(
         fieldType,
+        NO_FEE_API_TYPE,
         patchType,
         getter,
         patcher,
         List.of(),
-        Amendability.ALWAYS,
+        amendability,
         claimsApiFieldName,
-        feeApiFieldName,
-        fieldType);
+        NO_FEE_API_FIELD_NAME);
   }
 
   <T> CivilClaimDetailsViewField(
@@ -482,30 +494,31 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
       Class<T> patchType,
       Function<CivilClaimDetails, ?> getter,
       BiFunction<Builder, T, Builder> patcher,
+      Amendability amendability,
       String claimsApiFieldName,
       String feeApiFieldName) {
     this(
         fieldType,
+        feeFieldType,
         patchType,
         getter,
         patcher,
         List.of(),
-        Amendability.ALWAYS,
+        amendability,
         claimsApiFieldName,
-        feeApiFieldName,
-        feeFieldType);
+        feeApiFieldName);
   }
 
   <T> CivilClaimDetailsViewField(
       FieldType fieldType,
+      FieldType feeFieldType,
       Class<T> patchType,
       Function<CivilClaimDetails, ?> getter,
       BiFunction<Builder, T, Builder> patcher,
       List<FieldOption> options,
       Amendability amendability,
       String claimsApiFieldName,
-      String feeApiFieldName,
-      FieldType feeFieldType) {
+      String feeApiFieldName) {
     this.getter = new CivilClaimViewFieldGetter<>(getter);
     this.claimsApiFieldName = claimsApiFieldName;
     this.feeApiFieldName = feeApiFieldName;

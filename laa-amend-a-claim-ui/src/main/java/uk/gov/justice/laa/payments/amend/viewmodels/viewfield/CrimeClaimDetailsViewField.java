@@ -133,6 +133,8 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       BigDecimal.class,
       CrimeClaimDetails::getTravelCosts,
       Builder::travelWaitingCostsAmount,
+      NO_OPTIONS,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.travelWaitingCostsAmount",
       "fee.netTravelCostsAmount"),
   WAITING_COSTS(
@@ -140,6 +142,8 @@ public enum CrimeClaimDetailsViewField implements ClaimViewField<CrimeClaimDetai
       BigDecimal.class,
       CrimeClaimDetails::getWaitingCosts,
       Builder::netWaitingCostsAmount,
+      NO_OPTIONS,
+      Amendability.UNTIL_ASSESSED,
       "claimSummaryFee.netWaitingCostsAmount",
       "fee.netWaitingCostsAmount");
 
