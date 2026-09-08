@@ -1,13 +1,10 @@
 package uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import uk.gov.justice.laa.payments.amend.models.Claim;
 import uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField;
@@ -19,34 +16,39 @@ public class MandatoryFieldRuleConfigTest {
 
   @ParameterizedTest
   @MethodSource("mandatoryParameterizedCrimeClaimFields")
-  void mandatoryRuleConfigCheckForClaimFieldsReturns(ClaimViewField<?> field) {
-    mandatoryRuleCheck(field, AreaOfLaw.CRIME_LOWER);
+  void fieldShouldHaveMandatoryRuleForCrimeAreaOfLaw(ClaimViewField<?> field) {
+    assertMandatoryRuleExists(field, AreaOfLaw.CRIME_LOWER);
   }
 
   @ParameterizedTest
   @MethodSource("mandatoryParameterizedMediationClaimFields")
-  void mandatoryRuleConfigCheckForMediationClaimFields(ClaimViewField<?> field) {
-    mandatoryRuleCheck(field, AreaOfLaw.MEDIATION);
+  void fieldShouldHaveMandatoryRuleForMediationAreaOfLaw(ClaimViewField<?> field) {
+    assertMandatoryRuleExists(field, AreaOfLaw.MEDIATION);
   }
 
   @ParameterizedTest
   @MethodSource("mandatoryParameterizedCivilClaimFields")
-  void mandatoryRuleConfigCheckForCivilClaimFields(ClaimViewField<?> field) {
-    mandatoryRuleCheck(field, AreaOfLaw.LEGAL_HELP);
+  void fieldShouldHaveMandatoryRuleForLegalHelpAreaOfLaw(ClaimViewField<?> field) {
+    assertMandatoryRuleExists(field, AreaOfLaw.LEGAL_HELP);
   }
 
-  private static <T extends Claim> void mandatoryRuleCheck(
-      ClaimViewField<T> field, AreaOfLaw areaOfLaw) {
-    var rules = ClaimFieldRuleJsonLoader.hasRules(field);
-    assertThat(rules).isTrue();
-    List<FieldRuleSpec> rulesList = ClaimFieldRuleJsonLoader.rulesFor(field);
-    assertThat(rulesList).isNotEmpty();
-    assertTrue(
-        rulesList.stream().anyMatch(spec -> spec.category() == RuleCategory.MANDATORY),
-        "Expected at least one mandatory rule");
-    assertTrue(
-        rulesList.stream().anyMatch(spec -> spec.areasOfLaw().contains(areaOfLaw.name())),
-        String.format("Expected at least one rule for %s area of law", areaOfLaw.name()));
+  private static void assertMandatoryRuleExists(ClaimViewField<?> field, AreaOfLaw areaOfLaw) {
+    assertThat(ClaimFieldRuleJsonLoader.hasRules(field)).isTrue();
+
+    var rulesList = ClaimFieldRuleJsonLoader.rulesFor(field);
+
+    assertThat(rulesList)
+        .as("Field %s should have a mandatory rule covering %s", field.name(), areaOfLaw.name())
+        .anySatisfy(
+            rule -> {
+              assertThat(rule.category())
+                  .as("Rule category for field %s", field.name())
+                  .isEqualTo(RuleCategory.MANDATORY);
+
+              assertThat(rule.areasOfLaw())
+                  .as("Areas of law for field %s", field.name())
+                  .contains(areaOfLaw.name());
+            });
   }
 
   private static Stream<ClaimViewField<?>> mandatoryParameterizedMediationClaimFields() {
