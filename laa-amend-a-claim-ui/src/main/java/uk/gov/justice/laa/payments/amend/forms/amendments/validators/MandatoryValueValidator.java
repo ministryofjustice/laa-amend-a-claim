@@ -1,8 +1,8 @@
-package uk.gov.justice.laa.amend.claim.forms.amendments.validators;
+package uk.gov.justice.laa.payments.amend.forms.amendments.validators;
 
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.model.RuleDto;
-import uk.gov.justice.laa.amend.claim.forms.validators.Validator;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.model.RuleDto;
+import uk.gov.justice.laa.payments.amend.forms.validators.Validator;
+import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 
 public class MandatoryValueValidator extends Validator {
 

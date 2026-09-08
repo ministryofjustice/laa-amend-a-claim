@@ -2,7 +2,7 @@ package uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules;
 
 import java.util.List;
 import java.util.function.BiPredicate;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 
 public record FieldRuleSpec(
     RuleCategory category,

@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 
 /** Selects the single highest-priority failing rule for a field's submitted value, if any. */
 @UtilityClass

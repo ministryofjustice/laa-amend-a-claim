@@ -53,7 +53,7 @@ public class MandatoryFieldRuleConfigTest {
     return Stream.of(
         MediationClaimDetailsViewField.OUTREACH_LOCATION,
         MediationClaimDetailsViewField.REFERRAL_SOURCE,
-        ClaimDetailsViewField.FORENAME,
+        MediationClaimDetailsViewField.FORENAME,
         MediationClaimDetailsViewField.CLIENT_2_FORENAME,
         ClaimDetailsViewField.SURNAME,
         MediationClaimDetailsViewField.CLIENT_2_SURNAME,
@@ -83,7 +83,7 @@ public class MandatoryFieldRuleConfigTest {
         ClaimDetailsViewField.CASE_CONCLUDED_DATE,
         CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT,
         CivilClaimDetailsViewField.TRAVEL_AND_WAITING_COSTS,
-        ClaimDetailsViewField.FORENAME,
+        CivilClaimDetailsViewField.FORENAME,
         ClaimDetailsViewField.SURNAME,
         CivilClaimDetailsViewField.DATE_OF_BIRTH,
         CivilClaimDetailsViewField.UNIQUE_CLIENT_NUMBER,

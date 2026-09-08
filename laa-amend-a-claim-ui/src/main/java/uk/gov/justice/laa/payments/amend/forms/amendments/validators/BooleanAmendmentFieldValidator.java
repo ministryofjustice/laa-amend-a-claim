@@ -21,8 +21,8 @@ public class BooleanAmendmentFieldValidator implements GenericAmendmentFieldVali
   }
 
   @Override
-  public boolean appliesTo(ClaimViewField<?> field) {
-    return field.getFieldType() == FieldType.BOOLEAN;
+  public FieldType supportedType() {
+    return FieldType.BOOLEAN;
   }
 
   @Override

@@ -1824,13 +1824,13 @@ class ClaimFieldRuleValidatorTest {
   @ParameterizedTest
   @ValueSource(strings = {"", "  "})
   void rejectsEmptyOrWhitespaceValuesNamingTheField(String value) {
-    var errors = validate(ClaimDetailsViewField.FORENAME, value);
+    var errors = validate(ClaimDetailsViewField.SURNAME, value);
 
     assertThat(errors.hasErrors()).isTrue();
-    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[FORENAME]"));
+    var fieldError = Objects.requireNonNull(errors.getFieldError("inputs[SURNAME]"));
     assertThat(fieldError.getCode()).isEqualTo("amendmentForm.mandatoryField.error");
     assertThat(Objects.requireNonNull(fieldError.getArguments())[0])
-        .isEqualTo(ClaimDetailsViewField.FORENAME.label(TestMessageSources.real()));
+        .isEqualTo(ClaimDetailsViewField.SURNAME.label(TestMessageSources.real()));
   }
 
   private Errors validate(ClaimViewField<?> field, String value) {

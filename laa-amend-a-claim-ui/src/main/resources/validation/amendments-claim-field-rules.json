@@ -494,9 +494,8 @@
   "fields": {
     "CrimeClaimDetailsViewField.INITIAL":  { "ruleGroups": ["name"] },
     "CivilClaimDetailsViewField.FORENAME": { "ruleGroups": [ "mandatoryLegalHelp", "name"] },
-    "CrimeClaimDetailsViewField.FORENAME": { "ruleGroups": ["mandatoryCrimeLower", "name"] },
     "MediationClaimDetailsViewField.FORENAME": { "ruleGroups": ["mandatoryMediation", "name"] },
-    "ClaimDetailsViewField.SURNAME": { "ruleGroups": ["mandatoryLegalHelp", "mandatoryCrimeLower","name"] },
+    "ClaimDetailsViewField.SURNAME": { "ruleGroups": ["mandatoryLegalHelp", "mandatoryCrimeLower", "mandatoryMediation", "name"] },
     "CivilClaimDetailsViewField.POSTCODE": { "ruleGroups": ["mandatoryLegalHelp", "postcode"] },
     "MediationClaimDetailsViewField.POSTCODE": { "ruleGroups": ["mandatoryMediation", "postcode"] },
     "CivilClaimDetailsViewField.UNIQUE_CLIENT_NUMBER": { "ruleGroups": ["mandatoryLegalHelp", "uniqueClientNumber"] },

@@ -10,10 +10,10 @@ import org.springframework.validation.Errors;
 import uk.gov.justice.laa.payments.amend.forms.amendments.AmendmentForm;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.ClaimFieldRuleJsonLoader;
 import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.FieldRuleEngine;
+import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.RuleCategory;
 import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
 import uk.gov.justice.laa.payments.amend.models.enums.FieldType;
 import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField;
-import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.RuleCategory;
 
 // Makes this validator run first before all others
 @Order(0)

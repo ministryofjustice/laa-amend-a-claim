@@ -13,10 +13,6 @@ import org.junit.jupiter.api.Test;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import uk.gov.justice.laa.payments.amend.support.TestMessageSources;
-import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.model.RuleDto;
-import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
-import uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw;
-import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField;
 
 class ClaimFieldRuleJsonLoaderTest {
 

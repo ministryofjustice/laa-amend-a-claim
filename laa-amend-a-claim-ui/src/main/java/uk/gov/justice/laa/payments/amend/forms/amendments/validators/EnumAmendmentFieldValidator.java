@@ -21,8 +21,8 @@ public class EnumAmendmentFieldValidator implements GenericAmendmentFieldValidat
   }
 
   @Override
-  public boolean appliesTo(ClaimViewField<?> field) {
-    return field.getFieldType() == FieldType.ENUM;
+  public FieldType supportedType() {
+    return FieldType.ENUM;
   }
 
   @Override

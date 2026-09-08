@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules;
+package uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -6,10 +6,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.model.RuleDto;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
-import uk.gov.justice.laa.amend.claim.viewmodels.viewfield.ClaimDetailsViewField;
+import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.model.RuleDto;
+import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw;
+import uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField;
 
 public class ClaimFieldRuleJsonLoaderFunctionalityTest {
 
@@ -17,12 +17,12 @@ public class ClaimFieldRuleJsonLoaderFunctionalityTest {
   void ruleGroupsForFieldAreInJsonDeclarationOrder() {
     var testJson = createTestJsonWithOrderedRuleGroups();
     var rules = ClaimFieldRuleJsonLoader.loadFromContent(testJson);
-    var foreNameRules = rules.get(ClaimDetailsViewField.FORENAME);
+    var loadedRules = rules.get(ClaimDetailsViewField.SURNAME);
 
-    assertThat(foreNameRules).hasSize(3);
-    assertThat(foreNameRules.get(0).category()).isEqualTo(RuleCategory.MANDATORY);
-    assertThat(foreNameRules.get(1).category()).isEqualTo(RuleCategory.FORMAT);
-    assertThat(foreNameRules.get(2).category()).isEqualTo(RuleCategory.LENGTH);
+    assertThat(loadedRules).hasSize(3);
+    assertThat(loadedRules.get(0).category()).isEqualTo(RuleCategory.MANDATORY);
+    assertThat(loadedRules.get(1).category()).isEqualTo(RuleCategory.FORMAT);
+    assertThat(loadedRules.get(2).category()).isEqualTo(RuleCategory.LENGTH);
   }
 
   // Tests for toPredicate method
@@ -350,7 +350,7 @@ public class ClaimFieldRuleJsonLoaderFunctionalityTest {
             ]
           },
           "fields": {
-            "ClaimDetailsViewField.FORENAME": {
+            "ClaimDetailsViewField.SURNAME": {
               "ruleGroups": ["groupFirst", "groupSecond", "groupThird"]
             }
           }

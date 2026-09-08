@@ -21,8 +21,8 @@ public class TextAmendmentFieldValidator implements GenericAmendmentFieldValidat
   }
 
   @Override
-  public boolean appliesTo(ClaimViewField<?> field) {
-    return field.getFieldType() == FieldType.TEXT;
+  public FieldType supportedType() {
+    return FieldType.TEXT;
   }
 
   @Override

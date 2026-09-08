@@ -21,8 +21,8 @@ public class BigDecimalAmendmentFieldValidator implements GenericAmendmentFieldV
   }
 
   @Override
-  public boolean appliesTo(ClaimViewField<?> field) {
-    return field.getFieldType() == FieldType.BIG_DECIMAL;
+  public FieldType supportedType() {
+    return FieldType.BIG_DECIMAL;
   }
 
   @Override

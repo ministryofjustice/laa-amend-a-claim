@@ -6,9 +6,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.amend.claim.forms.amendments.validators.rules.model.RuleDto;
-import uk.gov.justice.laa.amend.claim.models.ClaimDetails;
-import uk.gov.justice.laa.amend.claim.models.enums.AreaOfLaw;
+import uk.gov.justice.laa.payments.amend.forms.amendments.validators.rules.model.RuleDto;
+import uk.gov.justice.laa.payments.amend.models.ClaimDetails;
+import uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw;
 
 class MandatoryValueValidatorTest {
 
