@@ -127,10 +127,7 @@ jobs:
 
       - name: Build and start services
         working-directory: laa-data-claims-parent
-        run: |
-          task assemble:amend
-          task assemble:api
-          docker compose up --build -d claims-api amend-redis postgres amend-ui
+        run: task up:amend
         env:
           GITHUB_TOKEN: ${{ secrets.pat_token }}
           FEE_SCHEME_PLATFORM_API_URL: "http://host.docker.internal:8095"
