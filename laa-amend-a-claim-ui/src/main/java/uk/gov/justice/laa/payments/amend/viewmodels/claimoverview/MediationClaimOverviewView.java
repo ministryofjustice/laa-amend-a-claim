@@ -2,7 +2,6 @@ package uk.gov.justice.laa.payments.amend.viewmodels.claimoverview;
 
 import static uk.gov.justice.laa.payments.amend.viewmodels.claimoverview.ClaimOverviewView.putField;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.AREA_OF_LAW;
-import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CASE_CONCLUDED_DATE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CASE_START_DATE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CATEGORY_OF_LAW;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CLIENT_NAME;
@@ -22,6 +21,7 @@ import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetail
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT_REQUESTED;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.asMediationField;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.toFieldMap;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.CASE_CONCLUDED_DATE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.MATTER_TYPE_CODE_1;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.MATTER_TYPE_CODE_2;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.MediationClaimDetailsViewField.UNIQUE_CLIENT_NUMBER;
@@ -67,7 +67,7 @@ public record MediationClaimOverviewView(
             MATTER_TYPE_CODE_1,
             MATTER_TYPE_CODE_2,
             asMediationField(CASE_START_DATE),
-            asMediationField(CASE_CONCLUDED_DATE),
+            CASE_CONCLUDED_DATE,
             asMediationField(ESCAPED),
             asMediationField(VAT_REQUESTED)),
         claim);
