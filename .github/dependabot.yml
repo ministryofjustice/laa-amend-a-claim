@@ -42,7 +42,7 @@ updates:
         patterns:
           - "**"
   - package-ecosystem: "npm"
-    directory: "/laa-amend-a-claim-ui"
+    directory: "/laa-amend-a-claim-ui/"
     schedule:
       interval: "daily"
     cooldown:
