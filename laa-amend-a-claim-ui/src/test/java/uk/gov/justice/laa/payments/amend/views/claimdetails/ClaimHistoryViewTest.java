@@ -502,6 +502,64 @@ class ClaimHistoryViewTest extends ClaimDetailsBaseTest {
     assertThat(bulletItems).containsExactly("VAT rate applied changed from 12.34% to 20%");
   }
 
+  @Test
+  void testPageWithFspEventFormatsCivilBoltOnFeesAsCurrency() {
+    var fspEvent =
+        new ClaimHistoryFspEvent(
+            ASSESSED_AT,
+            null,
+            new BigDecimal("1000.00"),
+            new BigDecimal("1200.50"),
+            List.of(
+                new ClaimHistoryAmendmentChange(
+                    CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE,
+                    "fee.boltOnAdjournedHearingFee",
+                    new BigDecimal("40.00"),
+                    new BigDecimal("50.00"),
+                    AreaOfLaw.LEGAL_HELP),
+                new ClaimHistoryAmendmentChange(
+                    CivilClaimDetailsViewField.CMRH_ORAL,
+                    "fee.boltOnCmrhOralFee",
+                    new BigDecimal("60.00"),
+                    new BigDecimal("70.00"),
+                    AreaOfLaw.LEGAL_HELP),
+                new ClaimHistoryAmendmentChange(
+                    CivilClaimDetailsViewField.CMRH_TELEPHONE,
+                    "fee.boltOnCmrhTelephoneFee",
+                    new BigDecimal("80.00"),
+                    new BigDecimal("90.00"),
+                    AreaOfLaw.LEGAL_HELP),
+                new ClaimHistoryAmendmentChange(
+                    CivilClaimDetailsViewField.HOME_OFFICE,
+                    "fee.boltOnHomeOfficeInterviewFee",
+                    new BigDecimal("100.00"),
+                    new BigDecimal("110.00"),
+                    AreaOfLaw.LEGAL_HELP),
+                new ClaimHistoryAmendmentChange(
+                    CivilClaimDetailsViewField.SUBSTANTIVE_HEARING,
+                    "fee.boltOnSubstantiveHearingFee",
+                    new BigDecimal("120.00"),
+                    new BigDecimal("130.00"),
+                    AreaOfLaw.LEGAL_HELP)));
+
+    when(claimHistoryService.getClaimHistory(claim))
+        .thenReturn(new ClaimHistory(List.of(fspEvent), null, null));
+
+    var doc = renderDocument();
+    var bulletItems =
+        doc.select(".moj-timeline__description ul.govuk-list--bullet li").stream()
+            .map(Element::text)
+            .toList();
+
+    assertThat(bulletItems)
+        .containsExactlyInAnyOrder(
+            "adjourned hearing fee changed from £40.00 to £50.00",
+            "case management review hearing (CMRH)-oral changed from £60.00 to £70.00",
+            "case management review hearing (CMRH)-telephone changed from £80.00 to £90.00",
+            "Home Office interview changed from £100.00 to £110.00",
+            "substantive hearing changed from £120.00 to £130.00");
+  }
+
   private void assertAmendmentBulletListForArea(
       AreaOfLaw areaOfLaw, List<String> fieldNames, List<String> expectedLines) {
     var changes =

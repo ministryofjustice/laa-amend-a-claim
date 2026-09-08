@@ -39,6 +39,17 @@ public interface ClaimViewField<T extends Claim> {
 
   FieldType getFieldType();
 
+  default FieldType getFieldType(String fieldIdentifier) {
+    if (fieldIdentifier != null && fieldIdentifier.equals(getFeeApiFieldName())) {
+      return getFeeFieldType();
+    }
+    return getFieldType();
+  }
+
+  default FieldType getFeeFieldType() {
+    return getFieldType();
+  }
+
   String getClaimsApiFieldName();
 
   default String getFeeApiFieldName() {

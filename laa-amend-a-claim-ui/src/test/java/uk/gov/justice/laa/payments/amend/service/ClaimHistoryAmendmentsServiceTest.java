@@ -215,8 +215,8 @@ class ClaimHistoryAmendmentsServiceTest {
   void toAmendmentClaimHistoryEventsResolvesAllMappedFields(
       AreaOfLaw areaOfLaw, ClaimViewField<?> expectedField) {
     var claim = claimForArea(areaOfLaw);
-    var before = sampleValue(expectedField, false);
-    var after = sampleValue(expectedField, true);
+    var before = sampleValue(expectedField, expectedField.getClaimsApiFieldName(), false);
+    var after = sampleValue(expectedField, expectedField.getClaimsApiFieldName(), true);
     var history =
         new ClaimHistoryResultSet()
             .claimId(claim.getClaimId())
@@ -262,8 +262,8 @@ class ClaimHistoryAmendmentsServiceTest {
   void toFspClaimHistoryEventsResolvesAllMappedFspFields(
       AreaOfLaw areaOfLaw, ClaimViewField<?> expectedField) {
     var claim = claimForArea(areaOfLaw);
-    var before = sampleValue(expectedField, false);
-    var after = sampleValue(expectedField, true);
+    var before = sampleValue(expectedField, expectedField.getFeeApiFieldName(), false);
+    var after = sampleValue(expectedField, expectedField.getFeeApiFieldName(), true);
     var history =
         new ClaimHistoryResultSet()
             .claimId(claim.getClaimId())
@@ -466,8 +466,9 @@ class ClaimHistoryAmendmentsServiceTest {
     };
   }
 
-  private static SampleValue sampleValue(ClaimViewField<?> field, boolean isAfter) {
-    return switch (field.getFieldType()) {
+  private static SampleValue sampleValue(
+      ClaimViewField<?> field, String fieldIdentifier, boolean isAfter) {
+    return switch (field.getFieldType(fieldIdentifier)) {
       case TEXT -> {
         var raw = isAfter ? "after" : "before";
         yield new SampleValue(raw, raw);

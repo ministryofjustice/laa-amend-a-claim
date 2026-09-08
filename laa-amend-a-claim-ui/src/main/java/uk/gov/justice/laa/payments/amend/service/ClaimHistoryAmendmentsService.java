@@ -223,8 +223,8 @@ public class ClaimHistoryAmendmentsService {
     return new ClaimHistoryAmendmentChange(
         field,
         fieldIdentifier,
-        resolveValue(change.getBefore(), field),
-        resolveValue(change.getAfter(), field),
+        resolveValue(change.getBefore(), fieldIdentifier, field),
+        resolveValue(change.getAfter(), fieldIdentifier, field),
         areaOfLaw);
   }
 
@@ -280,8 +280,8 @@ public class ClaimHistoryAmendmentsService {
         new ClaimHistoryAmendmentChange(
             field,
             MATTER_TYPE_CODE,
-            resolveValue(beforePart, field),
-            resolveValue(afterPart, field),
+            resolveValue(beforePart, MATTER_TYPE_CODE, field),
+            resolveValue(afterPart, MATTER_TYPE_CODE, field),
             areaOfLaw));
   }
 
@@ -330,11 +330,11 @@ public class ClaimHistoryAmendmentsService {
     return Optional.ofNullable(fspFields.get(fieldIdentifier));
   }
 
-  private static Object resolveValue(Object raw, ClaimViewField<?> field) {
+  private static Object resolveValue(Object raw, String fieldIdentifier, ClaimViewField<?> field) {
     if (raw == null) {
       return null;
     }
-    var fieldType = field.getFieldType();
+    var fieldType = field.getFieldType(fieldIdentifier);
     try {
       return switch (fieldType) {
         case TEXT -> String.valueOf(raw);
