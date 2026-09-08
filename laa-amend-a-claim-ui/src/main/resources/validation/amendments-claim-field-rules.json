@@ -596,7 +596,7 @@
     "ClaimDetailsViewField.DISABILITY": { "ruleGroups": ["mandatoryMediation", "mandatoryLegalHelp"] },
     "ClaimDetailsViewField.VAT": { "ruleGroups": ["mandatoryLegalHelp"] },
     "CivilClaimDetailsViewField.DATE_OF_BIRTH": { "ruleGroups": ["mandatoryLegalHelp"] },
-    "MediationClaimDetailsViewField.REFERRAL_SOURCE": { "ruleGroups": ["mandatoryMediation", "mediationSessionsCount"] },
+    "MediationClaimDetailsViewField.REFERRAL_SOURCE": { "ruleGroups": ["mandatoryMediation"] },
     "MediationClaimDetailsViewField.IS_LEGALLY_AIDED": { "ruleGroups": ["mandatoryMediation"] },
     "MediationClaimDetailsViewField.IS_CLIENT_2_LEGALLY_AIDED": { "ruleGroups": ["mandatoryMediation"] },
     "MediationClaimDetailsViewField.UNIQUE_CASE_ID": { "ruleGroups": ["mandatoryMediation"] },
