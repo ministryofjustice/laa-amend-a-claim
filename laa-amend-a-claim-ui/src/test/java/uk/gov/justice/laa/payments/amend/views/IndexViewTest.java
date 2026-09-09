@@ -2,6 +2,7 @@ package uk.gov.justice.laa.payments.amend.views;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -160,6 +161,23 @@ class IndexViewTest extends ViewTestBase {
     assertThat(statusTag).isNotNull();
     assertThat(statusTag.text()).isEqualTo(expectedTagText);
     assertThat(statusTag.classNames()).contains(expectedTagClass);
+  }
+
+  @Test
+  void testPageShowsFormattedClaimValue() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setEffectiveTotalValue(new BigDecimal("1234.5"));
+
+    List<BaseClaimView<Claim>> claims = List.of(new ClaimView(claim));
+    var pagination = new Pagination(1, 10, 1, "/");
+    var viewModel = new SearchResultView(claims, pagination);
+
+    var doc = renderDocument(Map.of("viewModel", viewModel));
+
+    var row = doc.selectFirst("tbody.govuk-table__body tr.govuk-table__row");
+    assertThat(row).isNotNull();
+    var cells = row.select("td.govuk-table__cell");
+    assertThat(cells.get(5).text()).isEqualTo("£1,234.50");
   }
 
   @Test
