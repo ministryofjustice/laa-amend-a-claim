@@ -37,8 +37,8 @@ dependencies {
     testImplementation 'org.postgresql:postgresql:42.7.13'
 
     // Lombok
-    compileOnly 'org.projectlombok:lombok:1.18.46'
-    annotationProcessor 'org.projectlombok:lombok:1.18.46'
+    compileOnly 'org.projectlombok:lombok:1.18.48'
+    annotationProcessor 'org.projectlombok:lombok:1.18.48'
 }
 
 tasks.withType(Test).configureEach {
