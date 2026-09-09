@@ -2,6 +2,7 @@ package uk.gov.justice.laa.payments.amend.viewmodels.claimoverview;
 
 import static uk.gov.justice.laa.payments.amend.viewmodels.claimoverview.ClaimOverviewView.putField;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField.ADJOURNED_HEARING_FEE;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField.CASE_CONCLUDED_CLAIMED_DATE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField.CMRH_ORAL;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField.CMRH_TELEPHONE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField.COUNSELS_COST;
@@ -13,7 +14,6 @@ import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimD
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField.SUBSTANTIVE_HEARING;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CivilClaimDetailsViewField.UNIQUE_CLIENT_NUMBER;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.AREA_OF_LAW;
-import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CASE_CONCLUDED_DATE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CASE_START_DATE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CATEGORY_OF_LAW;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CLIENT_NAME;
@@ -75,7 +75,7 @@ public record CivilClaimOverviewView(
             MATTER_TYPE_CODE_1,
             MATTER_TYPE_CODE_2,
             asCivilField(CASE_START_DATE),
-            asCivilField(CASE_CONCLUDED_DATE),
+            CASE_CONCLUDED_CLAIMED_DATE,
             asCivilField(ESCAPED),
             asCivilField(VAT_REQUESTED)),
         claim);

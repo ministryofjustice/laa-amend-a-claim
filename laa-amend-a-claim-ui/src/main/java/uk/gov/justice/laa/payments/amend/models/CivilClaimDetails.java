@@ -40,16 +40,10 @@ public class CivilClaimDetails extends ClaimDetails {
 
   private String scheduleReference;
   private String caseId;
-  private String caseReferenceNumber;
-  private LocalDate caseStartDate;
-  private LocalDate caseConcludedDate;
-  private String uniqueFileNumber;
   private String caseStage;
   private BigDecimal valueOfCosts;
   private String procurementArea;
   private String accessPoint;
-  private String stageReached;
-  private String outcome;
   private String exceptionalCaseFundingReference;
   private String civilLegalAdviceReference;
   private String civilLegalAdviceExemption;
