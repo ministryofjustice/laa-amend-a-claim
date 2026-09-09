@@ -255,7 +255,7 @@ class AmendCaseDetailsControllerTest extends BaseControllerTest {
     civilClaim.setScheduleReference(SCHEDULE_REFERENCE);
     civilClaim.setUniqueFileNumber(UFN);
     civilClaim.setCaseStartDate(CASE_START_DATE);
-    civilClaim.setCaseConcludedDate(CASE_CONCLUDED_DATE);
+    civilClaim.setCaseEndDate(CASE_CONCLUDED_DATE);
     civilClaim.setHasAssessment(true);
     civilClaim.setLastAssessment(
         MockClaimsFunctions.createAssessment(AssessmentTypeEnum.ESCAPE_CASE_ASSESSMENT));

@@ -25,9 +25,7 @@ import uk.gov.justice.laa.payments.amend.viewmodels.ClaimDetailsView;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class ClaimDetails extends Claim {
-  private String categoryOfLaw;
   private String providerName;
-  private Boolean vatApplicable;
   private ClaimField vatClaimed;
   private ClaimField fixedFee;
   private ClaimField netProfitCost;

@@ -108,7 +108,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   CASE_CONCLUDED_CLAIMED_DATE(
       FieldType.DATE,
       String.class,
-      CivilClaimDetails::getCaseConcludedDate,
+      CivilClaimDetails::getCaseEndDate,
       Builder::caseConcludedDate,
       Amendability.UNTIL_ASSESSED,
       "claim.caseConcludedDate"),
@@ -121,7 +121,7 @@ public enum CivilClaimDetailsViewField implements ClaimViewField<CivilClaimDetai
   CASE_CONCLUDED_DATE(
       FieldType.DATE,
       String.class,
-      CivilClaimDetails::getCaseConcludedDate,
+      CivilClaimDetails::getCaseEndDate,
       Builder::caseConcludedDate,
       "claim.caseConcludedDate"),
   CASE_STAGE(
