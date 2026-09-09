@@ -2,6 +2,7 @@ package uk.gov.justice.laa.payments.amend.views;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -112,8 +113,10 @@ class IndexViewTest extends ViewTestBase {
         headers.get(3), "none", "Submission period", "/?page=1&sort=submission_period,asc");
     assertTableHeaderIsSortable(
         headers.get(4), "none", "Category of law", "/?page=1&sort=category_of_law,asc");
-    assertTableHeaderIsNotSortable(headers.get(5), "Escape case");
-    assertTableHeaderIsSortable(headers.get(6), "none", "Status", "/?page=1&sort=status,asc");
+    assertTableHeaderIsSortable(
+        headers.get(5), "none", "Claim value", "/?page=1&sort=effective_total_value,asc");
+    assertTableHeaderIsNotSortable(headers.get(6), "Escape case");
+    assertTableHeaderIsSortable(headers.get(7), "none", "Status", "/?page=1&sort=status,asc");
   }
 
   @Test
@@ -154,10 +157,27 @@ class IndexViewTest extends ViewTestBase {
     var row = doc.selectFirst("tbody.govuk-table__body tr.govuk-table__row");
     assertThat(row).isNotNull();
     var cells = row.select("td.govuk-table__cell");
-    var statusTag = cells.get(6).selectFirst("strong.govuk-tag");
+    var statusTag = cells.get(7).selectFirst("strong.govuk-tag");
     assertThat(statusTag).isNotNull();
     assertThat(statusTag.text()).isEqualTo(expectedTagText);
     assertThat(statusTag.classNames()).contains(expectedTagClass);
+  }
+
+  @Test
+  void testPageShowsFormattedClaimValue() {
+    var claim = MockClaimsFunctions.createMockCivilClaim();
+    claim.setEffectiveTotalValue(new BigDecimal("1234.5"));
+
+    List<BaseClaimView<Claim>> claims = List.of(new ClaimView(claim));
+    var pagination = new Pagination(1, 10, 1, "/");
+    var viewModel = new SearchResultView(claims, pagination);
+
+    var doc = renderDocument(Map.of("viewModel", viewModel));
+
+    var row = doc.selectFirst("tbody.govuk-table__body tr.govuk-table__row");
+    assertThat(row).isNotNull();
+    var cells = row.select("td.govuk-table__cell");
+    assertThat(cells.get(5).text()).isEqualTo("£1,234.50");
   }
 
   @Test

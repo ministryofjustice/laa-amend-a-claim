@@ -81,6 +81,7 @@ public interface ClaimMapper {
   @Mapping(target = "escaped", source = "feeCalculationResponse.boltOnDetails.escapeCaseFlag")
   @Mapping(target = "uniqueCaseId", source = "uniqueCaseId")
   @Mapping(target = "derivedClaimStatus", expression = "java(mapDerivedClaimStatus(claimResponse))")
+  @Mapping(target = "effectiveTotalValue", source = "effectiveTotalValue")
   Claim mapToClaim(ClaimResponseV2 claimResponse);
 
   @InheritConfiguration(name = "mapToCommonDetails")
