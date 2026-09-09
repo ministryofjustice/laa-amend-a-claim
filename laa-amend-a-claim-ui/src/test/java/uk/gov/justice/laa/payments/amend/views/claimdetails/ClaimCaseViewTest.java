@@ -509,7 +509,7 @@ class ClaimCaseViewTest extends ClaimDetailsBaseTest {
     claim.setCaseId(CASE_ID);
     claim.setCaseReferenceNumber(CASE_REFERENCE_NUMBER);
     claim.setCaseStartDate(CASE_START_DATE);
-    claim.setCaseConcludedDate(CASE_CONCLUDED_DATE);
+    claim.setCaseEndDate(CASE_CONCLUDED_DATE);
     claim.setUniqueFileNumber(UNIQUE_FILE_NUMBER);
     claim.setCaseStage(CASE_STAGE);
     claim.setValueOfCosts(VALUE_OF_COSTS);

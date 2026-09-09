@@ -146,7 +146,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowContainsValues(summaryList1.get(11), "Matter type 2", "AHQS");
     assertSummaryListRowContainsValues(summaryList1.get(12), "Case start date", "01 January 2020");
     assertSummaryListRowContainsValues(
-        summaryList1.get(13), "Case concluded date", "31 December 2020");
+        summaryList1.get(13), "Case concluded date or case claimed date", "31 December 2020");
     assertSummaryListRowContainsValues(summaryList1.get(14), "Escape case", "Yes");
     assertSummaryListRowContainsValues(summaryList1.get(15), "VAT requested", "Not applicable");
 
@@ -466,7 +466,7 @@ class ClaimSummaryViewTest extends ClaimDetailsBaseTest {
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Matter type 2"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Summary", "Case start date"));
     assertSummaryListRowHasAmendedTag(
-        getSummaryListRowInCard(doc, "Summary", "Case concluded date"));
+        getSummaryListRowInCard(doc, "Summary", "Case concluded date or case claimed date"));
 
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net profit costs"));
     assertSummaryListRowHasAmendedTag(getSummaryListRowInCard(doc, "Values", "Net disbursements"));

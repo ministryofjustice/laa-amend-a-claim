@@ -684,6 +684,8 @@ class ClaimMapperTest {
     assertEquals(
         uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw.LEGAL_HELP, claim.getAreaOfLaw());
     assertEquals("0P322F", claim.getOfficeCode());
+    assertEquals(LocalDate.parse("2025-01-01"), claim.getCaseStartDate());
+    assertEquals(LocalDate.parse("2025-02-01"), claim.getCaseEndDate());
     assertNull(claim.getProviderName());
     assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());
     assertEquals(ClaimStatus.VALID, claim.getStatus());
@@ -782,6 +784,8 @@ class ClaimMapperTest {
     assertEquals("SchemeId", claim.getSchemeId());
     assertEquals(ClaimStatus.VALID, claim.getStatus());
     assertEquals("0P322F", claim.getOfficeCode());
+    assertEquals(LocalDate.parse("2025-01-01"), claim.getCaseStartDate());
+    assertEquals(LocalDate.parse("2025-02-01"), claim.getCaseEndDate());
     assertEquals("StageReachedCode", claim.getStageReached());
     assertEquals("OutcomeCode", claim.getOutcome());
     assertEquals(LocalDate.parse("2025-01-01"), claim.getRepresentationOrderDate());
@@ -894,6 +898,8 @@ class ClaimMapperTest {
     assertEquals(
         uk.gov.justice.laa.payments.amend.models.enums.AreaOfLaw.MEDIATION, claim.getAreaOfLaw());
     assertEquals("0P322F", claim.getOfficeCode());
+    assertEquals(LocalDate.parse("2025-01-01"), claim.getCaseStartDate());
+    assertEquals(LocalDate.parse("2025-02-01"), claim.getCaseEndDate());
     assertNull(claim.getProviderName());
     assertEquals(OffsetDateTime.parse("2025-01-10T14:30:00+02:00"), claim.getSubmittedDate());
     assertEquals(ClaimStatus.VALID, claim.getStatus());

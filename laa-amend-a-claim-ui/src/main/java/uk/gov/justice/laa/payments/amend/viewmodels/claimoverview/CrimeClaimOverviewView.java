@@ -2,7 +2,6 @@ package uk.gov.justice.laa.payments.amend.viewmodels.claimoverview;
 
 import static uk.gov.justice.laa.payments.amend.viewmodels.claimoverview.ClaimOverviewView.putField;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.AREA_OF_LAW;
-import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CASE_CONCLUDED_DATE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CASE_START_DATE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CATEGORY_OF_LAW;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.CLIENT_NAME;
@@ -22,6 +21,7 @@ import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetail
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimDetailsViewField.VAT_REQUESTED;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.asCrimeField;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.ClaimViewField.toFieldMap;
+import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CrimeClaimDetailsViewField.CASE_CONCLUDED_DATE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CrimeClaimDetailsViewField.MATTER_TYPE_CODE;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CrimeClaimDetailsViewField.POLICE_STATION_COURT_PRISON_ID;
 import static uk.gov.justice.laa.payments.amend.viewmodels.viewfield.CrimeClaimDetailsViewField.SCHEME_ID;
@@ -69,7 +69,7 @@ public record CrimeClaimOverviewView(
             SCHEME_ID,
             MATTER_TYPE_CODE,
             asCrimeField(CASE_START_DATE),
-            asCrimeField(CASE_CONCLUDED_DATE),
+            CASE_CONCLUDED_DATE,
             asCrimeField(ESCAPED),
             asCrimeField(VAT_REQUESTED)),
         claim);

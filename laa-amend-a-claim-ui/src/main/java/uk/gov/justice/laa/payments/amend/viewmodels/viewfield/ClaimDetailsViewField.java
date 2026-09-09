@@ -83,12 +83,6 @@ public enum ClaimDetailsViewField implements ClaimViewField<ClaimDetails> {
       Claim::getUniqueFileNumber,
       Builder::uniqueFileNumber,
       "claim.uniqueFileNumber"),
-  CASE_CONCLUDED_DATE(
-      FieldType.DATE,
-      String.class,
-      Claim::getCaseEndDate,
-      Builder::caseConcludedDate,
-      "claim.caseConcludedDate"),
   FEE_CODE(
       FieldType.TEXT,
       String.class,
