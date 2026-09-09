@@ -137,4 +137,4 @@ task('compile-stylesheets', compileStylesheets);
 task('compile-scripts', series('copy-js', compileScripts));
 
 task('default', series('copy-assets', 'copy-js', 'type-check', 'compile-stylesheets', 'compile-scripts'));
-task('watch', series(watch));
+task('watch', series('copy-js', watch));
