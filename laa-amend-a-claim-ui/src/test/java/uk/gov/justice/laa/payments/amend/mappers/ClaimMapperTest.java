@@ -911,6 +911,18 @@ class ClaimMapperTest {
     assertEquals("112233/001", claimField);
   }
 
+  @Test
+  void testEffectiveTotalValue() {
+    var response = createClaimResponse(AreaOfLaw.MEDIATION);
+    response.setEffectiveTotalValue(BigDecimal.valueOf(120.20));
+
+    var claim = mapper.mapToClaimDetails(response);
+
+    BigDecimal claimField = claim.getEffectiveTotalValue();
+    assertNotNull(claimField);
+    assertEquals(BigDecimal.valueOf(120.20), claimField);
+  }
+
   @ParameterizedTest
   @ValueSource(
       strings = {"ACCEPTED", "AMENDED", "ASSESSED", "VOIDED", "INVALID", "READY_TO_PROCESS"})

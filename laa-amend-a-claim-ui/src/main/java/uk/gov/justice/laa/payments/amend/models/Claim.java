@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.payments.amend.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.UUID;
@@ -40,6 +41,7 @@ public class Claim {
   private ClaimStatus status;
   private String uniqueCaseId;
   private DerivedClaimStatus derivedClaimStatus;
+  private BigDecimal effectiveTotalValue;
 
   public BaseClaimView<? extends Claim> toViewModel() {
     return new ClaimView(this);
