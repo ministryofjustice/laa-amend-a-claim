@@ -82,7 +82,7 @@ public class MandatoryFieldRuleConfigTest {
     return Stream.of(
         CivilClaimDetailsViewField.UNIQUE_FILE_NUMBER,
         ClaimDetailsViewField.CASE_START_DATE,
-        ClaimDetailsViewField.CASE_CONCLUDED_DATE,
+        CivilClaimDetailsViewField.CASE_CONCLUDED_DATE,
         CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT,
         CivilClaimDetailsViewField.TRAVEL_AND_WAITING_COSTS,
         CivilClaimDetailsViewField.FORENAME,

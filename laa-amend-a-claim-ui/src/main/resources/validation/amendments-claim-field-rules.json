@@ -590,7 +590,7 @@
     "CivilClaimDetailsViewField.OUTCOME_FOR_CLIENT": { "ruleGroups": ["mandatoryLegalHelp", "civilOutcomeCode"] },
     "CivilClaimDetailsViewField.STAGE_REACHED": { "ruleGroups": ["civilStageReached"]},
     "ClaimDetailsViewField.CASE_START_DATE": { "ruleGroups": ["mandatoryMediation", "mandatoryLegalHelp"] },
-    "ClaimDetailsViewField.CASE_CONCLUDED_DATE": { "ruleGroups": ["mandatoryLegalHelp"] },
+    "CivilClaimDetailsViewField.CASE_CONCLUDED_DATE": { "ruleGroups": ["mandatoryLegalHelp"] },
     "ClaimDetailsViewField.GENDER": { "ruleGroups": ["mandatoryMediation", "mandatoryLegalHelp"] },
     "ClaimDetailsViewField.ETHNICITY": { "ruleGroups": ["mandatoryMediation", "mandatoryLegalHelp"] },
     "ClaimDetailsViewField.DISABILITY": { "ruleGroups": ["mandatoryMediation", "mandatoryLegalHelp"] },
