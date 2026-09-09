@@ -914,13 +914,14 @@ class ClaimMapperTest {
   @Test
   void testEffectiveTotalValue() {
     var response = createClaimResponse(AreaOfLaw.MEDIATION);
-    response.setEffectiveTotalValue(BigDecimal.valueOf(120.20));
+    var effectiveTotalValue = new BigDecimal("120.20");
+    response.setEffectiveTotalValue(effectiveTotalValue);
 
     var claim = mapper.mapToClaimDetails(response);
 
     BigDecimal claimField = claim.getEffectiveTotalValue();
     assertNotNull(claimField);
-    assertEquals(BigDecimal.valueOf(120.20), claimField);
+    assertEquals(effectiveTotalValue, claimField);
   }
 
   @ParameterizedTest
