@@ -53,6 +53,13 @@ public class SearchSortFieldTest {
       Assertions.assertEquals(SearchSortField.STATUS, result);
     }
 
+    @Test
+    void shouldConvertEffectiveTotalValue() {
+      String str = "effective_total_value";
+      SearchSortField result = SearchSortField.fromValue(str);
+      Assertions.assertEquals(SearchSortField.EFFECTIVE_TOTAL_VALUE, result);
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"foo", "bar"})
     void shouldThrowExceptionForAnythingElse(String str) {
